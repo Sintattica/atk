@@ -202,7 +202,6 @@
             if (empty($formName)) $formName = $listName;
             $liststart = '<form name="'.$formName.'" method="post">'.
                        session_form(SESSION_NESTED).
-                       '<input type="hidden" name="atkescape" value="">'.
                        '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">';
           }
