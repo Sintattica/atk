@@ -61,6 +61,9 @@
   define("AF_PARENT", 134217728);           // the parent field for parent child relations in a treeview
   define("AF_LARGE", 268435456); // Attribute will have a large ammount of 
                                  // records.. (attribs can optimize accordingly)
+  define("AF_AUTOKEY", AF_PRIMARY|AF_HIDE|AF_AUTOINCREMENT); // short way of saying that an attribute
+                                                             // is an autoincremented primarykey that
+                                                             // is also hidden from the user.
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
@@ -88,6 +91,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.13  2001/07/10 12:55:07  ivo
+   * New flag: AF_AUTOKEY (short for AF_PRIMARY|AF_AUTOINCREMENT|AF_HIDE)
+   *
    * Revision 4.12  2001/06/29 11:26:59  ivo
    * Patches to oracle support.
    *
