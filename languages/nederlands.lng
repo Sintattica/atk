@@ -22,6 +22,7 @@
   $txt_edit = "Bewerk";
   $txt_delete = "Verwijder";
   $txt_add = "Toevoegen";
+  $txt_new = "Nieuw";
   $txt_copy = "Kopieer";
   $txt_editcopy = "Bewerk kopie";
   $txt_admin = "Administratie";
@@ -216,4 +217,7 @@
   
   $txt_access_denied = "Toegang geweigerd";
   $txt_error_node_action_access_denied = "Sorry, u heeft geen toestemming om deze bewerking uit te voeren.";
+
+  $txt_export = "Exporteren";
+
 ?>

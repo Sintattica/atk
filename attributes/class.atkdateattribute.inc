@@ -13,6 +13,7 @@
    *
    * $Id$
    */       
+
   class atkDateAttribute extends atkAttribute
   {
     var $m_date_min;

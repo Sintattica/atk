@@ -13,8 +13,7 @@
    * TODO: - Code clean up (del variable is dirty)
    *       - Support for storing the file itself in the db instead of on disk.
    *
-   * @author Martin Roest <martin@ibuildings.net>
-   *
+   * @author Martin Roest <martin@ibuildings.nl>
    * @version $Revision$
    *
    * $Id$
@@ -128,7 +127,7 @@
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
-        $result .= "<select name=\"select[".$fieldprefix.$this->fieldName()."]\">";
+        $result .= "<select name=\"".$fieldprefix.$this->fieldName()."[select]\">";
         $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
@@ -152,11 +151,10 @@
     function value2db($rec)
     {
       $del    = $_REQUEST["del"];
-      $select = $_REQUEST["select"]; 
 
-      if($rec[$this->fieldName()]["tmpfile"]=="" && $select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
+      if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!="" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
       {
-        return $select[$this->fieldName()];
+        return $rec[$this->fieldName()]["filename"];
       }
 
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
@@ -206,30 +204,32 @@
      */
     function fetchValue($rec)
     {    
-      $select = $_REQUEST["select"];
       $del = $_REQUEST["del"];
-      
+
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
       $basename = $this->fieldName();      
-      if (is_array($_FILES)||($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))) // php4
+      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {   
         // if no new file has been uploaded..    
         if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         { 
            // No file to upload, then check if the select box is filled
-          if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+          if($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
           {
-            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$select[$this->fieldName()];
+            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
             $result = array("tmpfile"=>"",
                           "filename"=>$filename,
                           "filesize"=>0,
-                          "orgfilename"=>'');
-        
-        }
-        elseif (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
-        { 
-          $result = array("tmpfile"=>"",
+                          "orgfilename"=>$filename);
+          }  // maybe we atk restored data from session
+          elseif($rec[$this->fieldName()]["filename"]!="")
+          {
+            $result = $rec[$this->fieldName()];
+          }
+          else
+          {
+            $result = array("tmpfile"=>"",
                           "filename"=>"",
                           "filesize"=>0,
                           "orgfilename"=>$rec[$basename."_orgfilename"]);

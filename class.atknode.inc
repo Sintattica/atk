@@ -1208,7 +1208,7 @@
       $limit = (int)$this->m_postvars['atklimit'];
 
       $filter = $this->validateFilter($this->m_postvars["atkfilter"]);
-
+      
       $count = (int)$this->countDb($filter, $this->m_listExcludes, "", $mode);
 
       // maximum number of bookmarks to pages.
@@ -2645,7 +2645,7 @@
         }
         else
         {
-          $this->addDb($record);
+          $this->addDb($record, true, "add");
 
           $location="";
           if ($this->hasFlag(NF_EDITAFTERADD))
@@ -2965,10 +2965,6 @@
         // parse fields from descriptordef
         $fields = stringfields($descriptordef);
 
-        // There might be fields that have a '.' in them. These fields are
-        // a concatenation of an attributename (probably a relation), and a subfield
-        // (a field of the destination node).
-        // The actual field is the one in front of the '.'.
         for ($i=0, $_i=count($fields);$i<$_i; $i++)
         {
           $elems = explode(".", $fields[$i]);
@@ -3252,7 +3248,7 @@
     function copyDb(&$record)
     {
       $this->preCopy($record);
-      $this->addDb($record);
+      $this->addDb($record, true, "copy");
       return "";
     }
 
@@ -3463,9 +3459,8 @@
      * @param $exectrigger Indicates whether postAdd trigger should be executed or not
      * (defaults to yes)
      */
-    function addDb(&$record, $exectrigger=true)
+    function addDb(&$record, $exectrigger=true, $mode="add")
     {
-//     var_dump($record);
       global $g_db;
 
       $name = "atk".atkconfig("database")."query";
@@ -3507,7 +3502,7 @@
       {
         $p_attrib = &$this->m_attribList[$storelist[$i]];
 
-        $p_attrib->store($g_db, $record,"add");
+        $p_attrib->store($g_db, $record, $mode);
 
       }
 
@@ -3516,7 +3511,7 @@
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
-      if ($exectrigger) $this->postAdd($record);
+      if ($exectrigger) $this->postAdd($record, $mode);
 
       atkdebug($g_db->m_error);
     }
@@ -3563,8 +3558,10 @@
      * after you saved a record.
      *
      * @param $record The record that has just been saved.
+     * @param $mode   The 'mode' indicates whether this is a completely new 
+     *                record ("add") or a copy ("copy").
      */
-    function postAdd($record)
+    function postAdd($record, $mode="add")
     {
       // Do nothing
     }

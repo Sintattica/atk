@@ -597,13 +597,16 @@
           *@param $selector The 'where' clause that indicates which records to select.
           */
     function copyDb($record)
-    {                
+    {   
       $oldparent=$record[$this->m_primaryKey[0]];
-      $this->addDb($record);
-      atkdebug("copyDb - Main Record added");
-      $newparent=$record[$this->m_primaryKey[0]];
-      atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
-      $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);   
+      $this->addDb($record, true, "copy");
+      if(!empty($this->m_parent)) 
+      {
+        atkdebug("copyDb - Main Record added");
+        $newparent=$record[$this->m_primaryKey[0]];
+        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
+        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);         	
+      }
       return "";
     }
     
@@ -623,7 +626,7 @@
         {  
           $recordset[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);                    
           $oldrec = $recordset[$i];
-          $this->addDb($recordset[$i]);
+          $this->addDb($recordset[$i], true, "copy");
           
           atkdebug("Child Record added");
           $newparent=$recordset[$i][$this->m_primaryKey[0]];

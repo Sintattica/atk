@@ -81,7 +81,7 @@
       global $g_user, $g_db;
 
       $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-
+      
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
 
@@ -105,9 +105,22 @@
                     text("check_none").
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     text("invert_selection").'</a>]</div>';
-
+                    
       /* get permissions group*/
       $checked = $record[$this->fieldName()];
+
+      /*get permission of user to find out which permission may be changed*/
+      if(!is_array($g_user['level']))
+        $levels = $g_user['level'];
+      else
+        $levels = implode(",",$g_user['level']);
+      $query = "SELECT DISTINCT node, action  FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+      $activeNodeActions = $g_db->getrows($query);
+
+      foreach( $activeNodeActions as $a)
+      {
+        $active[$a['node']][] = $a['action'];
+      }
 
       /*get permission of user to find out which permission may be changed*/
       if(!is_array($g_user['level']))
@@ -136,20 +149,26 @@
           {
             $html="";
             $showNode = false;
+
             for ($i=0;$i<count($actionarr);$i++)
             {
-              $action = $actionarr[$i];
-              if (substr($action,0,1)=="*") $action=substr($action,1);
 
+              $action = $actionarr[$i]; 
+              if (substr($action,0,1)=="*") $action=substr($action,1);             
+              
               if ((is_array($active_actions) && in_array($action, $active_actions)) || $g_user['name']=='administrator')
-              {
+              {              
                 $boxActive = true;
                 $showModule = true;
                 //'.($disable ? "DISABLED " : "").'
                 $html.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
-
-                $label = $this->permissionName($action, $node);                
+  
+                $label = text("permission_$node_$action");
+                if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
+                {
+                  $label = text($action, $node); // generic action text.
+                }
                 $html.='> '.$label.'&nbsp;&nbsp;&nbsp;';
               }
               else
@@ -161,8 +180,8 @@
                 }
               }
             }
-
-            if($boxActive)
+            
+            if($boxActive)  
             {
               $mainHtml .="<b>".text(getNodeType($node))."</b><br>";
               $mainHtml.=$html;
@@ -183,7 +202,7 @@
         $nodes = $g_nodes[$modname];
         $mainHtml="";
         if (count($nodes) > 0)
-        {
+        {        
           $showModule=false;
           foreach($nodes as $node => $actionarr)
           {
@@ -191,11 +210,11 @@
             $active_actions = $active["$modname.$node"];
             if (is_array($actionarr))
             {
-              $nodename = getNodeType($node);
+              $nodename = getNodeType($node);              
               $html="";
               $boxActive=false;
               for ($i=0;$i<count($actionarr);$i++)
-              {
+              {                
                 $action = $actionarr[$i];
                 if (substr($action,0,1)=="*") $action=substr($action,1);
 
@@ -218,25 +237,25 @@
                   }
                 }
               }
-              if($boxActive)
+              if($boxActive)  
               {
                 $mainHtml .="<b>".text(getNodeType($nodename))."</b><br>";
                 $mainHtml .=$html;
                 $mainHtml .="<br><br>\n";
               }
-              else
+              else 
               {
                 $mainHtml.=$html;
               }
             }
-          }
+          }          
           if ($showModule)
           {
             // only show the header if there are more than only the main module.
             $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>".$mainHtml;
-          }
+          } 
           else    $result .= $mainHtml;
-
+          
         }
       }
       return $result;

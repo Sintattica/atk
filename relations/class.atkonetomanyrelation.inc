@@ -282,7 +282,7 @@
      */
     function store($notused, $record, $mode)
     {
-      if ($mode=="add") // when copying, mode is "add".
+      if ($mode=="copy") // when copying, mode is "copy".
       {
         $onetomanyrecs = $record[$this->fieldName()];
         if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
@@ -296,7 +296,7 @@
               // we reset the correct key.
               $onetomanyrecs[$i][$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
   
-              $this->m_destInstance->addDb($onetomanyrecs[$i]);
+              $this->m_destInstance->addDb($onetomanyrecs[$i], true, $mode);
             }
           }
         }

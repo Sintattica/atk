@@ -73,7 +73,7 @@
      * @param $notused Not used
      * @param $record Current record
      */
-    function store($notused, $record)
+    function store($notused, $record, $mode)
     {
       $this->createLink();
       $rel = &$this->m_linkInstance;
@@ -88,7 +88,7 @@
 
         $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
 
-        $rel->addDb($newrecord);
+        $rel->addDb($newrecord, true, $mode);
       }
     }
 

@@ -16,7 +16,7 @@
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
-    var $m_endTime = 23;
+    var $m_endTime = 24;
     var $m_steps = array("0","30");
     var $m_default = array();
 
@@ -89,7 +89,7 @@
       // generate hour dropdown     
       if ($this->hasflag(AF_TIME_EMPTYFIELD))
         $m_hourBox .= '<option value="-1"'.($m_defHour == -1 ? ' selected' : '').'></option>';
-      for ($i=$this->m_beginTime;$i<$this->m_endTime;$i++)
+      for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
       {
         if ($i == $m_defHour)
         {
@@ -122,11 +122,12 @@
       }
 
       // close dropdown structures
-      $m_hourBox .= "</select>\n";
-      $m_minBox  .= "</select>\n";
-		  $m_secBox  .= "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
+      $m_hourBox .= "</select>";
+      $m_minBox  .= "</select>";
+      $m_secBox  .= "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
+      
       // assemble display version
-      return $m_hourBox."&nbsp;".$m_minBox."&nbsp;".$m_secBox;
+      return $m_hourBox.":".$m_minBox.$m_secBox;
     }
 
 
@@ -219,7 +220,6 @@
     {
       return "time";
     }
-
 
   }
 ?>

@@ -204,8 +204,7 @@
         {          
           $vars[$this->m_refKey] = $record[$this->m_ownerInstance->primaryKeyField()];
         }
-        atkdebug("MODE1: ".$vars["mode"]." | MODE2: ".$mode);
-        atk_var_dump($vars);
+
         if ($vars["mode"]=="edit")
         {
           atkdebug("Updating existing one2one record");
@@ -214,10 +213,10 @@
           $this->m_destInstance->m_postvars = $vars;
           $this->m_destInstance->updateDb($vars);
         }
-        elseif ($vars["mode"]=="add" || $mode == "add")
+        elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
           atkdebug("Adding new one2one record");
-          $this->m_destInstance->addDb($vars);
+          $this->m_destInstance->addDb($vars, true, $mode);
         }
         else
         {
@@ -225,16 +224,16 @@
         }
       }
     }
-    
-    /**
-           * Check if destination node has a relation to this node, or a 'regular'
-           * atkattribute to store it's referential key.
-           */
+        
+   /**
+    * Check if destination node has a relation to this node, or a 'regular'
+    * atkattribute to store it's referential key.
+    */
     function destinationHasRelation()
     {
       if ($this->createDestination())
       {
-        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];        
+        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];
         if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
       }
       return false;

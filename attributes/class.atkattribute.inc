@@ -408,8 +408,8 @@
     function display($record)
     {
       // the next if-statement is a workaround for derived attributes which do
-      // not override the hide() method properly. This will not give them a 
-      // working hide() functionality but at least it will not give error messages.
+      // not override the display() method properly. This will not give them a 
+      // working display() functionality but at least it will not give error messages.
       if (!is_array($record[$this->fieldName()])) 
       {
         // default behaviour is that we display a value 'as is'.
