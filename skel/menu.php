@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.6  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.5  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -32,9 +35,10 @@
    * or more modules which can, but don't have to, contain ATK nodes.
    *
    */
-  require_once("atk/class.atknode.inc");
-  require_once("atk/atkmenutools.inc");
-  include_once("config.menu.inc");
+  $config_atkroot = "./";
+  require_once($config_atkroot."atk/class.atknode.inc");
+  require_once($config_atkroot."atk/atkmenutools.inc");
+  include_once($config_atkroot."config.menu.inc");
 
   /* first add module menuitems */
   for ($i = 0; $i < count($g_modules); $i++)

@@ -10,6 +10,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.2  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -96,9 +99,8 @@
      */    
     function store($notused, $record)
     {
-      $classname = $this->m_name;
-      include_once("class.".$classname.".inc");
-      $rel = new $classname();
+      $classname = $this->m_name;      
+      $rel = createNode($classname);
             
       $this->createDestination();
       

@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.2  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -49,12 +52,12 @@
    *
    */
    
-   require_once("atk/security/class.auth_interface.inc");
+   require_once($config_atkroot."atk/security/class.auth_interface.inc");
    
    if ($config_authentication == "") $config_authentication_type = "none";
    if ($config_securityscheme == "") $config_securityscheme = "none";
    
-   include_once("atk/security/class.auth_".$config_authentication.".inc");
+   include_once($config_atkroot."atk/security/class.auth_".$config_authentication.".inc");
    
    class atkSecurityManager
    {

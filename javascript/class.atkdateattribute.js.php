@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.6  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.5  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -30,15 +33,15 @@
   
   /* change dir for includes */
   chdir("../../");
-  include_once("atk/defaultconfig.inc.php");
-  include_once("config.inc.php");
-  include_once("atk/atktools.inc");
-  include_once("atk/languages/".$config_languagefile);
+  include_once($config_atkroot."atk/defaultconfig.inc.php");
+  include_once($config_atkroot."config.inc.php");
+  include_once($config_atkroot."atk/atktools.inc");
+  include_once($config_atkroot."atk/languages/".$config_languagefile);
   
   /* application specific language file */
-  if (file_exists("languages/".$config_languagefile))
+  if (file_exists($config_atkroot."languages/".$config_languagefile))
   {
-    include_once("languages/".$config_languagefile);
+    include_once($config_atkroot."languages/".$config_languagefile);
   }
 
   /* english month names and weekdays */

@@ -10,6 +10,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.2  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -114,9 +117,8 @@
     */
     function load($notused, $record)
     {
-      $classname = $this->m_name;
-      include_once("class.".$classname.".inc");
-      $rel = new $classname();      
+      $classname = $this->m_name;      
+      $rel = createNode($classname()); 
 
       $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
       return $rel->m_records;
@@ -127,9 +129,8 @@
      */
     function delete($record)
     {
-      $classname = $this->m_name;
-      include_once("class.".$classname.".inc");
-      $rel = new $classname();      
+      $classname = $this->m_name;      
+      $rel = createNode($classname);
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }

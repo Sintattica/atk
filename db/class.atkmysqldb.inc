@@ -1,6 +1,6 @@
 <?php
 
-  require_once("atk/db/class.atkdb.inc");
+  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
 
   /**
    * Handles database connectivity and database interaction
@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.1  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files

@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.21  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.20  2001/05/07 14:47:32  ivo
    * fix in atkroot.
    *
@@ -350,8 +353,8 @@
   // Global menu
   $g_menu = array();
 
-  require_once("atk/atkconfigtools.inc");
-  require_once("atk/defaultconfig.inc.php");
+  require_once($config_atkroot."atk/atkconfigtools.inc");
+  require_once($config_atkroot."atk/defaultconfig.inc.php");
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
@@ -2654,6 +2657,6 @@
 
   }
   
-  require_once("atk/class.atktreenode.inc");
+  require_once($config_atkroot."atk/class.atktreenode.inc");
 
 ?>

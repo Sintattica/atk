@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.7  2001/05/07 15:13:49  ivo
+ * Put config_atkroot in all files.
+ *
  * Revision 1.6  2001/05/07 14:46:15  ivo
  * Atk now has a configurable rootdirectory (specified in dispatcher)
  *
@@ -81,7 +84,7 @@
    */
   function createNode($node)
   {
-    global $config_module_path;
+    global $config_module_path, $config_atkroot;
   
     /* module and type */
     $module = getNodeModule($node);

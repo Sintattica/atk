@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.3  2001/05/07 15:13:49  ivo
+  * Put config_atkroot in all files.
+  *
   * Revision 4.2  2001/05/01 09:49:49  ivo
   * Replaced all require() and include() calls by require_once() and
   * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -469,17 +472,17 @@
         $this->m_tpldir = "themes/".$g_theme["Name"]."/";
       }
       // else check atk themes directory
-      else if (file_exists("atk/themes/".$g_theme["Name"]."/layout.inc") &&
-               file_exists("atk/themes/".$g_theme["Name"]."/block_top.tmpl") &&
-               file_exists("atk/themes/".$g_theme["Name"]."/block_bottom.tmpl"))
+      else if (file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/layout.inc") &&
+               file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/block_top.tmpl") &&
+               file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/block_bottom.tmpl"))
       {
-        $this->m_tpldir = "atk/themes/".$g_theme["Name"]."/";
+        $this->m_tpldir = atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/";
       }
       // else fallback to default.
       else      
       {
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
-        $this->m_tpldir = "atk/themes/default/";
+        $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
       }    
     }
   }

@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.9  2001/05/07 15:13:49  ivo
+    * Put config_atkroot in all files.
+    *
     * Revision 4.8  2001/05/02 13:06:23  sandy
     * fixed the AF_CASCADE_DELETE flag
     * CV: ----------------------------------------------------------------------
@@ -47,7 +50,7 @@
     * Added atk4 to repository.
     *
     */
-  include_once("atk/atktreetools.inc");
+  include_once($config_atkroot."atk/atktreetools.inc");
   
   $g_limit = 10;
   $g_start = 0;

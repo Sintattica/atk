@@ -17,6 +17,9 @@
    *              long ones) (Ivo)
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.1  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -292,15 +295,15 @@
       while (list($name,$value) = each($record))
       {
         if(substr($name,0,3)=="al_")
-	{
+	      {
           $name = substr($name,0,strlen($name)-1).strtoupper(substr($name,strlen($name)-1,strlen($name)));
-	}
+	      }
         if ($this->m_aliasLookup[$name]!="") $record[$this->m_aliasLookup[$name]]=$value;
       }     
     }
   }
 
-  $name = "atk/db/class.atk".$GLOBALS["config_database"]."query.inc";
+  $name = $config_atkroot."atk/db/class.atk".$GLOBALS["config_database"]."query.inc";
   include_once($name);
 
 ?>

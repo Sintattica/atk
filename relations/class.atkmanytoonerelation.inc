@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.4  2001/05/04 11:37:42  sandy
    * small bug fixes (split function, refresh, treeview,etc)
    *
@@ -276,5 +279,5 @@
       return "";
     }
   }
-  include "atk/relations/class.atkmanytoonetreerelation.inc";
+  include $config_atkroot."atk/relations/class.atkmanytoonetreerelation.inc";
 ?>

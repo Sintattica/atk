@@ -16,6 +16,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/05/07 15:13:49  ivo
+   * Put config_atkroot in all files.
+   *
    * Revision 4.4  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
    * new relational features: maxRecords for oneToManyRelation, filter for
@@ -118,9 +121,9 @@
 
   }
 
-  include_once("atk/relations/class.atkmanytoonerelation.inc");
-  include_once("atk/relations/class.atkmanytomanyrelation.inc");
-  include_once("atk/relations/class.atkmanyboolrelation.inc");
-  include_once("atk/relations/class.atkonetomanyrelation.inc");
-  include_once("atk/relations/class.atkmatrixrelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkmanytoonerelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkmanyboolrelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkonetomanyrelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkmatrixrelation.inc");
 ?>
