@@ -33,6 +33,7 @@
     include_once($config_atkroot."atk/attributes/class.atkpasswordattribute.inc");
     include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
     include_once($config_atkroot."atk/attributes/class.atkprofileattribute.inc");
+    include_once($config_atkroot."atk/attributes/class.atkfileattribute.inc");
 
     include_once($config_atkroot."atk/attributes/class.atkcolorpickerattribute.inc"); 
   
