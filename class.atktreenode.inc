@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.24  2001/08/01 12:38:59  martin
+    * added nowrap to some td's because of the ugly word wrap
+    *
     * Revision 4.23  2001/07/18 16:07:45  ivo
     * Replaced dispatch.php by PHP_SELF
     *
@@ -489,12 +492,12 @@
 			    /****************************************/ 
 			    /* output item text                     */ 
 			    /****************************************/ 
-  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])."><font size=2>".$this->m_tree[$cnt]["label"]."</font></td>\n"; 
+  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])." nowrap><font size=2>".$this->m_tree[$cnt]["label"]."</font></td>\n"; 
       
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
-          $res.='<td> ';
+          $res.='<td nowrap> ';
           if (!$this->hasFlag(NF_NO_ADD))
           {
             $res.=href($PHP_SELF."?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
