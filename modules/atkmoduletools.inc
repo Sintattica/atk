@@ -137,7 +137,15 @@
   function &newNode($node, $init=TRUE)
   {
     $module = getNodeModule($node);
-    $module_inst = &getModule(getNodeModule($node));
+    if ($module=="")
+    {
+      // No module, use the default instance.
+      $module_inst = &new atkModule();
+    }
+    else
+    {
+      $module_inst = &getModule(getNodeModule($node));
+    }
     $node = &$module_inst->newNode($node);
     if ($init && $node != NULL) $node->init();
     return $node;
