@@ -127,7 +127,7 @@
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
-        $result .= "<select name=\"".$fieldprefix.$this->fieldName()."[select]\">";
+        $result .= "<select name=\"".$fieldprefix.$this->fieldName()."_select\">";
         $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
@@ -210,16 +210,16 @@
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
       $basename = $this->fieldName();      
-      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
-      {   
+      if (is_array($_FILES)||($rec[$this->fieldName()."_select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
+      { 
         // if no new file has been uploaded..    
 
         if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
-        { 
+        {
            // No file to upload, then check if the select box is filled
-          if($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
-          {
-            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
+          if($rec[$this->fieldName()."_select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+          {atkdebug("file selected!");
+            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()."_select"];
             $result = array("tmpfile"=>"",
 
                           "filename"=>$filename,
