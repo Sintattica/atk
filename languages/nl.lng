@@ -16,6 +16,7 @@ $nl=array(
 
   "yes" =>  "Ja",
   "no" =>  "Nee",
+  "or" => "of",
 
   "none" =>  "Geen",
 
@@ -117,6 +118,7 @@ $nl=array(
   "back_to" =>  "Terug naar",
 
   "permission_denied" =>  "Sorry, u heeft geen toestemming om deze aktie uit te voeren",
+  "replace_by" => "Vervangen door",
 
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   "charset" => "iso-8859-1",
