@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.15  2001/06/27 07:39:49  ivo
+   * Small logout fix for Internet Explorer 4.0
+   *
    * Revision 4.14  2001/06/26 11:27:21  ivo
    * Administrator user didn't properly log in. Fixed that.
    *
@@ -133,7 +136,7 @@
      
     function authenticate()
     {
-      global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $config_administratorpassword;
+      global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $SERVER_NAME, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
       $md5 = false; // PHP_AUTH_PW is plain text..            
 
@@ -243,7 +246,7 @@
       }
 
       // we are authenticated, but atklogout is still active, let's get rid of it!
-      else if (isset($atklogout)) header("Location: $PHP_SELF");
+      else if (isset($atklogout)) header("Location: $PHP_SELF"."?");
 
       // we keep the relogin state until the atklogout variable isn't set anymore
       else if (!isset($atklogout) && session_is_registered("relogin")) session_unregister("relogin");
