@@ -156,7 +156,7 @@
             
             if (count($node->getTabs($node->m_action)) > 1
                  && $error["tab"])
-              $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"],text("tab_".$error["tab"]), SESSION_DEFAULT, true, 'onClick="javascript:showTab(\''.$error["tab"].'\');"').' )';
+              $error_tab = ' ('.text("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.text("tab_".$error["tab"]).'</a>';
             else $error_tab = "";
             
             if(!is_array($error['attrib_name']))
