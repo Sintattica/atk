@@ -113,12 +113,17 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function search($record="")
+    function search($record="", $extended=false)
     {
       // todo: configurable rows
-      $result = '<select name="atksearch['.$this->formName().']">';
+      $result = '<select ';
+      if ($extended) 
+      {
+        $result.='multiple size="'.min(5,count($this->m_values)+1).'"';
+      }
+      $result.='name="atksearch['.$this->formName().'][]">';
       $result.= '<option value="">'.text('search_all');
-      for ($i=0;$i<count($this->m_values);$i++)
+      for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)
       {
         if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
         {
@@ -141,16 +146,20 @@
      * @return a piece of the SQL where clause
      */
     function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      if ($searchmode=="substring") $searchmode="exact";
-      $func = $searchmode."Condition";
-      if (method_exists($query,$func))
+    {      
+      // We only support 'exact' matches. 
+      // But you can select more than one value, which we search using the IN() statement,
+      // which should work in any ansi compatible database.
+      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
-        $query->addSearchCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
-      }
-      else
-      {
-        atkdebug("Database doesn't support searchmode '$searchmode', ignoring condition.");
+        if (count($value)==1) // exactly one value
+        {
+          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+        }
+        else // search for more values using IN()
+        {
+          $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
+        }
       }
     }
 

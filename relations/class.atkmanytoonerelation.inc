@@ -254,7 +254,7 @@
      * @param $maxsize Maxsize of the editbox
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record="")
+    function search($record="", $extended=false)
     {
       $this->createDestination();
       if ($this->m_destinationFilter!="")
@@ -263,7 +263,12 @@
       }
       $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
-      $result = '<select name="atksearch['.$this->fieldName().']">';
+      $result = '<select ';
+      if ($extended)
+      {
+        $result.='multiple size="'.min(5,count($recordset)+1).'"';
+      }
+      $result.='name="atksearch['.$this->fieldName().'][]">';
 
       $pkfield = $this->m_destInstance->primaryKeyField();
 
@@ -287,7 +292,20 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      // We only support 'exact' matches. 
+      // But you can select more than one value, which we search using the IN() statement,
+      // which should work in any ansi compatible database.
+      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      {
+        if (count($value)==1) // exactly one value
+        {
+          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+        }
+        else // search for more values using IN()
+        {
+          $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
+        }
+      }
     }
 
     /**
