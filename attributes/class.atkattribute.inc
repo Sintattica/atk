@@ -131,15 +131,29 @@
     var $m_ownerInstance="";
 
     /**
-     * The size, searchsize and maxsize of the attribute's field.
+     * The size the attribute's field.
+     * @access private
      * @var int
      */
     var $m_size = 0;
+    
+    /**
+     * The size the attribute's search input field.
+     * @access private
+     * @var int
+     */
     var $m_searchsize = 0;
+    
+    /**
+     * The maximum size the attribute's value may have in the database.
+     * @access private
+     * @var int
+     */
     var $m_maxsize = 0;
     
     /**
      * The database fieldtype.
+     * @access private
      * @var String 
      */
     var $m_dbfieldtype = "";
@@ -159,6 +173,7 @@
         
     /**
      * The tab(s) on which the attribute lives.
+     * @access private
      * @var mixed 
      */
     var $m_tabs="*";

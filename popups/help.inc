@@ -1,18 +1,34 @@
 <?php
 
- /* help.php
-  *
-  * descr.  : Opens a new page in the same atk-template style as the atk-application, in a new pop-up screen and shows a help page.
-  * input   : $node     -> name of the to be included text file ( help.[node].inc) 
-  * example : help.php?node=[node]
-  *
-  * @author : Rene Bakx (rene@ibuildings.nl)
-  * @version: $Revision$
-  *
-  * $Id$
-  *
-  */
-  
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *   
+   * Help popup.
+   *
+   * Opens a new page in the same atk-template style as the
+   * atk-application, in a new pop-up screen and shows a help page.
+   * input   : $node -> name of the to node for which help is retrieved.
+   *
+   * This file should only be included from inside the include.php wrapper.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @author Rene Bakx <rene@ibuildings.nl>
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * @internal include default include file.
+   */
   include_once($config_atkroot."atk.inc");  
   
   atksession();
@@ -44,5 +60,3 @@
   $output->outputFlush();
 
 ?>
-
-
