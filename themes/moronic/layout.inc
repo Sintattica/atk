@@ -9,8 +9,8 @@
   $g_theme["BgURL"] = "";    // Background url
   $g_theme["LogoURLl"] = "";  // Logo url
 
-  $g_theme["FontFamily"] = "Arial, Helvetica"; // Font
-  $g_theme["FontSize"] = "8"; // Font size in pt.
+  $g_theme["FontFamily"] = "Arial,Helvetica"; // Font
+  $g_theme["FontSize"] = "10"; // Font size in pt.
   $g_theme["FontWeight"] = "none";
 
   // Font settings for a block
