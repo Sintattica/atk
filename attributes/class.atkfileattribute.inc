@@ -302,16 +302,15 @@
      */
     function delete($record)
     {
-      if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
+      if($this->hasFlag(AF_FILE_PHYSICAL_DELETE)&&($record[$this->fieldname()]["orgfilename"]!=""))
       {
         if(!@unlink($this->m_dir.$record[$this->fieldName()]["orgfilename"]))
-	      {
-	        return false;
-	      }
+        {
+          return false;
+        }
       }
       return true;
     }
-
 
     /**
      * Display values
