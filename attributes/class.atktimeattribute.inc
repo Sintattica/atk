@@ -8,17 +8,17 @@
    *
    * $Id$
    *
+   * TODO (martin): cleanup default param.
+   *                bugfix in the initial current time value. At 14.58 this will be set at 14.00
+   *
    */
    
-  /* flag(s) specific for atkTimeAttribute */      
-  define("AF_TIME_EMPTYFIELD", AF_SPECIFIC_1); // Fields have one empty option
-
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
     var $m_endTime = 24;
     var $m_steps = array("0","30");
-    var $m_default = array();
+    var $m_default = "";
 
     /**
      * Constructor
@@ -35,8 +35,7 @@
       $this->m_beginTime = $beginTime;
       $this->m_endTime   = $endTime;
       $this->m_steps     = $steps;
-			if($default=="") $default=date("H:i");
-      $this->m_default   = split(":",$default);
+      $this->m_default   = $default;
     }
 
 
@@ -70,6 +69,13 @@
      */
     function edit($record="", $fieldprefix="")
     {    
+			if(($default=="NOW" && $this->m_ownerInstance->m_action=="add") OR
+			   ($default=="" && $this->hasFlag(AF_OBLIGATORY)))
+		  {
+		    $default=date("H:i");
+		  }
+		  $default = split(":",$this->m_default);
+
       $id = $fieldprefix.$this->fieldName();
       $field = $record[$this->fieldName()];
 
@@ -81,20 +87,21 @@
       // set default values for both boxes
       // depends upon atkaction
       // if add/admin, use $default param, else use time in $record
-      if (!is_array($field))
-      {
-        $m_defHour = $this->m_default[0];
-        $m_defMin  = $this->m_default[1];
-      }
-      else
+      if (is_array($field))
       {
         $m_defHour = $field["hours"];
         $m_defMin  = $field["minutes"];
       }
+      else
+      {
+        $m_defHour = $default[0];
+        $m_defMin  = $default[1];
+      }
 
+      atkdebug("defhour=$m_defHour   defmin=$m_defMin");
       // generate hour dropdown     
-      if ($this->hasflag(AF_TIME_EMPTYFIELD))
-        $m_hourBox .= '<option value="-1"'.($m_defHour == -1 ? ' selected' : '').'></option>';
+      if (!$this->hasflag(AF_OBLIGATORY))
+        $m_hourBox .= '<option value=""'.($m_defHour == "" ? ' selected' : '').'></option>';
       for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
       {
         if ($i == $m_defHour)
@@ -109,13 +116,13 @@
       }
 
       // generate minute dropdown
-      if ($this->hasflag(AF_TIME_EMPTYFIELD))
-        $m_minBox .= '<option value="-1"'.($m_defMin == -1 ? ' selected' : '').'></option>';
+      if (!$this->hasflag(AF_OBLIGATORY))
+        $m_minBox .= '<option value=""'.($m_defMin == "" ? ' selected' : '').'></option>';
       for ($i=0;$i<=count($this->m_steps)-1;$i++)
       {
        if($i!=0) $prev = $this->m_steps[$i-1];
        else $prev= -1;
-       if ($this->m_steps[$i] >= $m_defMin && $prev < $m_defMin)
+       if ($this->m_steps[$i] >= $m_defMin && $prev < $m_defMin&&($m_defMin!=""))
        {
         $sel = " selected";
        }
@@ -144,8 +151,7 @@
      $minutes = $rec[$this->fieldName()]["minutes"];
      $seconds = $rec[$this->fieldName()]["seconds"];
 
-     if (empty($hours) || empty($minutes) || empty($seconds)) return "";
-     if ($hours==-1 || $minutes==-1) return "NULL";
+     if ($hours=="" || $minutes=="") return "NULL";
 
 		 $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
 
