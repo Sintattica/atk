@@ -732,7 +732,10 @@
 
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
-      $g_layout->output(session_form());
+
+      /* if we are on an admin page we would like to stay on the admin page after adding a new record */
+      if ($this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
+      else $g_layout->output(session_form());
 
 
       if (count($this->m_tabListAdd) > 1) $g_layout->tabs_top($this->buildTabs());
@@ -1179,7 +1182,7 @@
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
-      $g_layout->output($this->statusbar());      
+      $g_layout->output($this->statusbar());
 
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
@@ -1267,7 +1270,7 @@
     {
       global $g_layout, $PHP_SELF,$g_theme, $atklevel;
       $output = $g_layout->data_top();
-      
+
       $output.="<tr>";
 
       // stuff for the totals row..
@@ -1462,7 +1465,7 @@
                 $action=str_replace('[pk]',rawurlencode($pk),$action);
               }
               $action=stringparse($action,$recordset[$i],true);
-              
+
               $stractions.=href($action,text($action_name),SESSION_NESTED, $sessionsave).'&nbsp;';
             }
           }
@@ -1975,7 +1978,7 @@
         $this->redirect($target);
       }
       else
-      {        
+      {
         $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'select'));
         $g_layout->output($this->statusbar());
         $g_layout->output(text($this->m_type.'_select').'<br>');
@@ -2222,6 +2225,7 @@
         $this->validate($record, "add");
         if (count($record['atkerror'])>0)
         {
+          $this->m_action="add";
           $this->addPage($record);
         }
         else
@@ -2353,6 +2357,7 @@
               $back = 1;
             }
             break;
+
           default:
             $back = 1;
             break;
