@@ -746,7 +746,7 @@
               $day = $month-$day;
               $month -= $day;
             }
-            return array('day'=>$day+1,'month'=>$month,'year'=>$year);
+            return array('day'=>$day,'month'=>$month,'year'=>$year);
           }
         }
       }
