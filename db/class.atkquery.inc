@@ -203,7 +203,7 @@
       if (count($this->m_searchconditions)>0)
       {
         $prefix=" ";
-        if(count($this->m_conditions)==0) $prefix=" WHERE ";
+        if(count($this->m_conditions)==0) { $prefix=" WHERE "; } else { $prefix=" AND "; }
         if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
         {
           $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
@@ -252,7 +252,7 @@
       if (count($this->m_searchconditions)>0)
       {
         $prefix=" ";
-        if(count($this->m_conditions)==0) $prefix=" WHERE ";
+        if(count($this->m_conditions)==0) { $prefix=" WHERE "; } else { $prefix=" AND "; };
         if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
         {
           $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
