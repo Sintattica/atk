@@ -387,12 +387,13 @@
   */
   function atksession($namespace = "default")
   {
-    global $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
+    global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
 
     $g_sessionManager = new atkSessionManager($namespace);
 
+    $HTTP_REQUEST_VARS = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
     atkDataDecode($HTTP_REQUEST_VARS);
-    $ATK_VARS = $HTTP_REQUEST_VARS;    
+    $ATK_VARS = $HTTP_REQUEST_VARS;   
 
     $g_sessionManager->session_read($ATK_VARS);
     
