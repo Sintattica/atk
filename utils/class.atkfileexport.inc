@@ -57,10 +57,15 @@
       $mime_type='application/x-gzip';
       $ext = "gz";
     }
-    elseif($type=="csv"||$type="excel")
+    elseif($type=="csv"||$type=="excel")
     {
       $mime_type='text/x-csv';
       $ext = "csv";
+    }
+    elseif($type=="xml")
+    {
+      $mime_type='text/xml';
+      $ext = "xml"; 
     }
     else
     {
