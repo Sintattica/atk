@@ -29,6 +29,7 @@
   $txt_select = "Velg";
 
   $txt_save = "Lagre";
+  $txt_close = "Lukk";
   $txt_saveandclose = "Lagre og lukk";
   $txt_cancel = "Avbryt";
   $txt_back = "Tilbake";
@@ -103,5 +104,7 @@
   
   // field is obligatory, leave empty if you don't want this message!
   $txt_field_obligatory = "Fields marked with '*' are required.";
+  
+  $txt_help = "Help";
 
 ?>

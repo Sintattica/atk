@@ -27,6 +27,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/06/29 13:12:10  ivo
+   * New feature: integrated contextsensitive help (contributed by Rene)
+   *
    * Revision 4.6  2001/06/27 13:07:05  sandy
    * Only do a sort when there al files in the directory (you can't sort an
    * empty array =) )
@@ -98,7 +101,7 @@
         $this->m_dir = $this->AddSlash($dir);
 	      $this->m_url = $this->AddSlash($dir);
       }
-      $GLOBALS['g_layout']->register_script("atk/javascript/class.atkfileattribute.js.php");
+      $GLOBALS['g_layout']->register_script("atk/javascript/newwindow.js");
     }
 
 

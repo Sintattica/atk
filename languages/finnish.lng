@@ -29,6 +29,7 @@
   $txt_select = "Valitse";
 
   $txt_save = "Tallenna";
+  $txt_close = "Sulje";
   $txt_saveandclose = "Tallenna ja sulje";
   $txt_cancel = "Peruuta";
   $txt_back = "Takaisin";
@@ -102,5 +103,7 @@
   
   // field is obligatory, leave empty if you don't want this message!
   $txt_field_obligatory = "Fields marked with '*' are required.";  
+  
+  $txt_help = "Help";
     
 ?>

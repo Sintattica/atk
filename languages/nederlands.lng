@@ -29,6 +29,7 @@
   $txt_select = "Selecteren";
 
   $txt_save = "Opslaan";
+  $txt_close = "Sluiten";
   $txt_saveandclose = "Opslaan en sluiten";
   $txt_cancel = "Annuleren";
 
@@ -103,5 +104,7 @@
   
   // field is obligatory, leave empty if you don't want this message!
   $txt_field_obligatory = "Velden met een '*' zijn verplicht.";
+  
+  $txt_help = "Help";
   
 ?>

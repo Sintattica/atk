@@ -29,6 +29,7 @@
   $txt_select = "Vybrat";
 
   $txt_save = "Ulo¾it";
+  $txt_close = "Zavøít";
   $txt_saveandclose = "Ulo¾it a zavøít";
   $txt_cancel = "Zru¹it";
   $txt_back = "Zpìt";
@@ -103,5 +104,7 @@
   
   // field is obligatory, leave empty if you don't want this message!
   $txt_field_obligatory = "Fields marked with '*' are required.";
+  
+  $txt_help = "Help";
     
 ?>

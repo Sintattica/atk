@@ -29,6 +29,7 @@
   $txt_select = "Select";
 
   $txt_save = "Save";
+  $txt_close = "Close";
   $txt_saveandclose = "Save and close";
   $txt_cancel = "Cancel";
   $txt_back = "Back";
@@ -102,5 +103,7 @@
 
   // field is obligatory, leave empty if you don't want this message!
   $txt_field_obligatory = "Fields marked with '*' are required.";
+  
+  $txt_help = "Help";
   
 ?>

@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.68  2001/06/29 13:12:10  ivo
+   * New feature: integrated contextsensitive help (contributed by Rene)
+   *
    * Revision 4.67  2001/06/29 11:26:59  ivo
    * Patches to oracle support.
    *
@@ -115,7 +118,8 @@
    * Revision 4.50  2001/06/08 14:33:30  ivo
    * Optimisations to atktreenode.
    * Smaller imp of row color alternationi feature.
-   * (...)
+   *
+   * (older logs have been removed...)
    */
 
   // Global theme variable, must be declared before the includes
@@ -364,7 +368,7 @@
      * Boolean that is set to true when the stacktrace is displayed, so it
      * is displayed only once.
      */
-    var $m_stackTraceDone = false; 
+    var $m_statusbarDone = false; 
 
     /*** Public functions ***/
 
@@ -597,7 +601,7 @@
       global $g_layout, $atklevel, $PHP_SELF;
       $g_layout->register_script("atk/javascript/formfocus.js");      
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());
@@ -626,7 +630,7 @@
       global $g_layout;  
     
       $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
 
       $page.=$g_layout->ret_table_simple();
 
@@ -693,7 +697,7 @@
       global $g_layout;
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
@@ -990,7 +994,7 @@
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
 
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
@@ -1453,7 +1457,7 @@
       else
       {
         $g_layout->ui_top(text('title_'.$this->m_type.'_select'));
-        $g_layout->output($this->stackTrace());      
+        $g_layout->output($this->statusbar());      
         $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
         
@@ -1484,7 +1488,7 @@
       global $g_layout;
       
       $g_layout->ui_top(text('title_delete'));
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
 
       $g_layout->output('<form action="dispatch.php?"'.SID.' method="post">');
       $g_layout->output(session_form());
@@ -2509,16 +2513,49 @@
       return $res;
     }
     
-    function stackTrace()
+    /**
+     * Display a statusbar with a stacktrace and a help button.
+     */
+    function statusbar()
     {
-      global $g_sessionManager;
-      if (atkconfig("stacktrace")&&!$this->m_stackTraceDone)
+      global $g_sessionManager, $g_layout;
+      if (!$this->m_statusbarDone)
       {
-        $this->m_stackTraceDone = true;
-        return '<div align="right">'.$g_sessionManager->stackTrace().'</div><br>';   
+        $this->m_statusbarDone = true;                
+        if (atkconfig("stacktrace"))
+        {
+          $statusbar.= $g_layout->ret_td('<i>'.$g_sessionManager->stackTrace().'</i>','align="left"');
+        }
+        
+        $helpurl = $this->helpUrl();
+        if ($helpurl!="")
+        {
+          $g_layout->register_script("atk/javascript/newwindow.js");      
+          $statusbar.= $g_layout->ret_td('<i><a href="'.$helpurl.'">'.text("help").'</a></i>','align="right"');
+        }
+        
+        if ($statusbar!="") return $g_layout->ret_table_simple(0,true).'<tr>'.$statusbar.'</tr></table><br>';
       }
       return "";
     }      
+    
+    /**
+     * If there is help available for this node, return the url
+     */
+    function helpUrl()
+    {
+      $language = strtok(atkconfig("languagefile"),".");
+      $file   = "help/".$language."/help.".$this->m_type.".inc";
+      if (!file_exists($file))
+      {
+        // no help available..
+        return "";
+      }
+      else
+      {
+        return "javascript:NewWindow('atk/help.php?node=".$this->m_type."','".text("help")."',600,400,'yes')";
+      }
+    }
 
   }
   
