@@ -1041,13 +1041,12 @@
       $form.=$g_layout->ret_td($sel);
       $form.='</tr>';
       $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="3"').'</tr>';
-
+      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $attribSearchModes = $p_attrib->getsearchmodes();
         $searchModes = array_intersect($dbSearchModes,$attribSearchModes);
-
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {
           $form.='<tr>';
@@ -1095,12 +1094,12 @@
           else
           {
             $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
-            for ($i = 0, $_i = count($searchModes); $i < $_i; $i++)
+            while (list($key, $searchMode) = each($searchModes))
             {
               // if supported, we select the 'like' searchmode by default
               $selected="";
-              if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchModes[$i]||($this->m_postvars["atksearchmode"][$p_attrib->m_name]==""&&$searchModes[$i]=="substring")) $selected="selected";
-              $sel.= '<option value="'.$searchModes[$i].'" '.$selected.'>'.text("search_".$searchModes[$i]);
+              if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchMode||($this->m_postvars["atksearchmode"][$p_attrib->m_name]==""&&$searchMode=="substring")) $selected="selected";
+              $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.text("search_".$searchMode);
             }
             $sel.= '</select>';
           }
@@ -1151,12 +1150,12 @@
       if ($curr > 1)
       {
         $newstart = $this->m_postvars['atkstartat'] - $limit;
-        $nav = href($PHP_SELF.'?atkstartat='.$newstart,text('previous'))."&nbsp;|&nbsp;";
+        $nav = href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
       {
-        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF.'?atkstartat='.max(0, ($i-1) * $limit),"$i");
+        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atkstartat=".max(0, ($i-1) * $limit),"$i");
         if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
       }
 
@@ -1185,7 +1184,6 @@
       // for now, we use all letters:
       $available_letters = array('A','B','C','D','E','F','G','H','I','J','K','L','M',
                                  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
-
       $count = count($available_letters);
       for ($i=0;$i<$count;$i++)
       {
@@ -1194,7 +1192,8 @@
         else $label=$char;
 
         // We use wildcard search for the index. Should be supported by any database.
-        $nav.=href($PHP_SELF."?atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
+        
+        $nav.=href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
@@ -1411,7 +1410,7 @@
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = href($PHP_SELF.'?atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName(),$this->m_type));
+            $tmp = href($PHP_SELF."?atknodetype=".$this->atkNodeType().'&atkaction=admin&atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName(),$this->m_type));
           }
           else $tmp = text($p_attrib->fieldName(),$this->m_type);
 
@@ -1548,6 +1547,9 @@
         $output .= '<input type="hidden" name="'.$listName.'_atknodetype" value="'.$this->atknodetype().'">'.
                    '<script language="javascript" src="'.atkconfig("atkroot").'atk/javascript/formselect.js"></script>'.
                    '<script language="javascript">'.$listName.' = new Object();</script>';
+                   
+        //$g_layout->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");
+        //$g_layout->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
       }
 
       // output rows
@@ -2356,11 +2358,11 @@
           $this->callHandler($this->m_action);
         }
         else
-        {
-          $g_layout->output("Sorry, you don't have permission to perform this action");
+        {          
+            $g_layout->output("Sorry, you don't have permission to perform this action");
         }
-
-        $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']));
+        if ((!isset($this->m_postvars['atknoheadbody'])) && ($this->m_postvars['atknoheadbodyd'] != 1))
+          $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']));
 
         // This is the end of all things for this page..
         // so we clean up some resources..
