@@ -10,6 +10,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.7  2001/10/09 12:44:09  maurice
+   * Changed MX record check to DNS check
+   *
    * Revision 4.6  2001/09/26 12:05:52  maurice
    * Code optimalisations for error handling
    *
@@ -87,9 +90,10 @@
         if ($this->$m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records
-          if (!( checkdnsrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
+          $domain = substr(strstr($check[0], '@'), 1);
+          if (!( checkdnsrr( $domain, "ANY") ))
           {
-            triggerError($record, $this->fieldName(), 'error_invalid_email');
+            triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
           }
         }       
       } 
