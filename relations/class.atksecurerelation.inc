@@ -173,7 +173,6 @@
         }
         
         if ($tablename) $tablename .= ".";
-        
         $query->addCondition($tablename.$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
       }
     }
@@ -205,16 +204,19 @@
             $this->m_destInstance->m_postvars["atksearch"] = $this->m_searcharray;
             $records = $this->m_destInstance->selectDb();
 
+            $errorconfig = atkconfig("securerelation_decrypterror", null);
+
             // create lookup table for easy reference.
             $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
             for ($i=0, $_i=count($records); $i<$_i; $i++)
             {
-              $link = $records[$i][$this->m_linkbackfield];                              
+              $link = $records[$i][$this->m_linkbackfield];     
               $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
 
-              if(!$decryptedlink) {
-                atkdebug("Unable to decrypt link: ".$link);
-                atkerror("Unable to decrypt link: ".$link);
+              if(!$decryptedlink && $errorconfig) 
+              {
+                atkdebug("Unable to decrypt link: ".$link."for record: ".atk_var_dump($records[$i])." with linkbackfield: ".$this->m_linkbackfield);
+                $decrypterror=true;
               }
               else
               {
@@ -222,12 +224,17 @@
                 $this->m_records[] = $records[$i];     
               }
             }
-
+            if ($decrypterror)
+            {
+              if ($errorconfig==2)      atkerror("There were errors decrypting the secured links, see debuginfo");
+              else if ($errorconfig==1) mailreport();
+            }
             return $this->m_records;
           }
         }
         else // lookup table present, postload stage
         {
+          $this->m_searching = false;
           return $this->m_records[$this->m_keylookup[$record[$this->m_ownerInstance->primaryKeyField()]]];
         }
       }
@@ -325,10 +332,9 @@
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // Off course, the secure relation has to have a special search condition
-      // because searching on a 
-      
-      //if (!$this->m_ownersearch[$value]) $this->m_ownersearch[$value] = $this->m_ownerInstance->searchDb($value);
-      // search for the value in all the destination's descriptorFields
+      // because searching on a secure relation has to be broken up in 2 pieces
+      // first the destination, then the owner, filtered by the results from
+      // the search on the destination
 
       $searchConditions = array();
       $descfields = $this->m_destInstance->descriptorFields();
@@ -375,7 +381,8 @@
       
       foreach ($this->m_destsearch[$value] as $result)
       {
-        $destresults[] = $this->m_crypt->decrypt($result[$this->m_linkbackfield],$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+        $destresult = $this->m_crypt->decrypt($result[$this->m_linkbackfield],$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+        if ($destresult) $destresults[] = $destresult;
       }
       
       if ($query->m_joinaliases[$this->m_ownerInstance->m_table."*".$this->m_ownerInstance->primaryKeyField()]) $table = $query->m_joinaliases[$this->m_ownerInstance->m_table."*".$this->m_ownerInstance->primaryKeyField()];

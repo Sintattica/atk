@@ -11,6 +11,9 @@ Changes in ATK 5.0.8
   atkLanguages behaviour [Boy]
 + Searching in nodes with AF_LARGE flag now is done with a textfield
   (substring search) instead of a selectbox [Yury,Harrie,Boy]
++ Added $config_securerelation_decrypterror where you can specify
+  if you want to see decrypterrors (2) or get a mail when they occur (1)
+  or just hide them all together (null) [Boy]
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
