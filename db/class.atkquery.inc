@@ -244,17 +244,24 @@
          $result.=$this->m_joins[$i];
        }
  
-       if (count($this->m_conditions)>0)
-       {
-         if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
-         {
-           $result.= " WHERE ".implode(" AND ",$this->m_conditions);
-         }
-         else
-         {
-           $result.= " WHERE ".implode(" OR ",$this->m_conditions);
-         }
-       }
+      if (count($this->m_conditions)>0)
+      {
+        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+      }
+       
+      if (count($this->m_searchconditions)>0)
+      {
+        $prefix=" ";
+        if(count($this->m_conditions)==0) $prefix=" WHERE ";
+        if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
+        {
+          $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
+        }
+        else
+        {
+          $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
+        }
+      }
        
        if (count($this->m_groupbys)>0)
        {
