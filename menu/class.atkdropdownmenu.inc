@@ -29,7 +29,7 @@
 
     function atkDropdownMenu() 
     {
-      $this->height = "108";
+      $this->height = "106";
     }
 
     function render()
