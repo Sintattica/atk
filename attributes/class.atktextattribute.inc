@@ -12,6 +12,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/08/16 07:17:49  ivo
+   * Replaced htmlentities with htmlspecialchars for some attributes.
+   * (people with different charactersets experience problems with
+   * htmlentities)
+   *
    * Revision 4.2  2001/06/01 14:59:33  ivo
    * Better metadata reading for postgresql.
    * Fixed a bug with input sizes in textarea.
@@ -66,7 +71,7 @@
  	    // todo: configurable rows
 	    // watch out, $maxsize isn't supported for a textarea.
       $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="10" cols="'.$g_layout->maxInputSize().'" wrap="virtual"'.               
-               '>'.htmlentities($record[$this->fieldName()]).'</textarea>';
+               '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
   }

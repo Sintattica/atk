@@ -100,6 +100,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.18  2001/08/16 07:17:49  ivo
+   * Replaced htmlentities with htmlspecialchars for some attributes.
+   * (people with different charactersets experience problems with
+   * htmlentities)
+   *
    * Revision 4.17  2001/07/18 12:10:10  ivo
    * New flags: AF_READONLY_ADD and AF_READONLY_EDIT (AF_READONLY automatically
    * selects both flags)
@@ -384,7 +389,7 @@
     function edit($record="", $fieldprefix="")
     {
       $result = '<input type="text" name="'.$fieldprefix.$this->formName().
-                '" value="'.htmlentities($record[$this->fieldName()]).'"'.
+                '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
               
@@ -449,7 +454,7 @@
     function display($record)
     {
       // default behaviour is that we display a value 'as is'.
-      return nl2br(htmlentities($record[$this->fieldName()]));
+      return nl2br(htmlspecialchars($record[$this->fieldName()]));
     }
 
     /**

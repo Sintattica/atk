@@ -6,6 +6,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/08/16 07:17:49  ivo
+   * Replaced htmlentities with htmlspecialchars for some attributes.
+   * (people with different charactersets experience problems with
+   * htmlentities)
+   *
    * Revision 4.5  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -137,7 +142,7 @@
     function display($record)
     {
       global $config_language;
-      return nl2br(htmlentities($record[$this->fieldName()][$config_language[0]]));
+      return nl2br(htmlspecialchars($record[$this->fieldName()][$config_language[0]]));
     }
 
     /**

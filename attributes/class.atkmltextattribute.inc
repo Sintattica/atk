@@ -10,6 +10,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/08/16 07:17:49  ivo
+   * Replaced htmlentities with htmlspecialchars for some attributes.
+   * (people with different charactersets experience problems with
+   * htmlentities)
+   *
    * Revision 4.2  2001/06/01 14:59:33  ivo
    * Better metadata reading for postgresql.
    * Fixed a bug with input sizes in textarea.
@@ -62,14 +67,14 @@
       $result .= text('language_'.$config_language[0]).':<br>'.
                '<textarea name="'.$this->formName().'['.$config_language[0].']"'.
                ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
-               htmlentities($record[$this->fieldName()][$config_language[0]]).
+               htmlspecialchars($record[$this->fieldName()][$config_language[0]]).
                '</textarea><br><br>';
 
       /* first language of other languages */
       $result .= text('multilanguage_choice').':<br>'.
                '<textarea name="'.$this->formName().'[multilanguage]"'.
                ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
-               htmlentities($record[$this->fieldName()][$config_language[1]]).
+               htmlspecialchars($record[$this->fieldName()][$config_language[1]]).
                '</textarea><br><br>';
 
       return $result;
