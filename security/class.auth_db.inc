@@ -10,8 +10,11 @@
    *    
    * $Id$
    * $Log$
-   * Revision 1.1  2001/04/23 10:17:14  ivo
-   * Initial revision
+   * Revision 4.0  2001/04/23 10:20:39  ivo
+   * revision tags.
+   *
+   * Revision 1.1.1.1  2001/04/23 10:17:14  ivo
+   * Added atk4 to repository.
    *
    * Revision 1.5  2001/04/02 08:22:58  ivo
    * Improved groupbased attribute security.

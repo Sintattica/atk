@@ -87,8 +87,11 @@
    *
    * $Id$
    * $Log$
-   * Revision 1.1  2001/04/23 10:17:07  ivo
-   * Initial revision
+   * Revision 4.0  2001/04/23 10:20:39  ivo
+   * revision tags.
+   *
+   * Revision 1.1.1.1  2001/04/23 10:17:07  ivo
+   * Added atk4 to repository.
    *
    * Revision 1.12  2001/04/19 08:56:21  ivo
    * Got sick of mistyping AUTO_INCREMENT as AUTOINCREMENT: now both are

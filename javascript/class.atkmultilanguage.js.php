@@ -39,8 +39,11 @@
  *
  * $Id$
  * $Log$
- * Revision 1.1  2001/04/23 10:17:12  ivo
- * Initial revision
+ * Revision 4.0  2001/04/23 10:20:39  ivo
+ * revision tags.
+ *
+ * Revision 1.1.1.1  2001/04/23 10:17:12  ivo
+ * Added atk4 to repository.
  *
  * Revision 1.1  2001/02/22 22:42:19  peter
  * initial release of the multilanguage script

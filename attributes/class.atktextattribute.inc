@@ -12,8 +12,11 @@
    *
    * $Id$
    * $Log$
-   * Revision 1.1  2001/04/23 10:17:10  ivo
-   * Initial revision
+   * Revision 4.0  2001/04/23 10:20:39  ivo
+   * revision tags.
+   *
+   * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
+   * Added atk4 to repository.
    *
    * Revision 1.3  2001/02/28 15:34:32  sandy
    * - fixed a bug in the text attributes (length)

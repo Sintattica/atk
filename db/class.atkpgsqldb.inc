@@ -16,8 +16,11 @@ if (!defined("CLASS_ATKPGSQLDB_INC"))
    *
    * $Id$
    * $Log$
-   * Revision 1.1  2001/04/23 10:17:11  ivo
-   * Initial revision
+   * Revision 4.0  2001/04/23 10:20:39  ivo
+   * revision tags.
+   *
+   * Revision 1.1.1.1  2001/04/23 10:17:11  ivo
+   * Added atk4 to repository.
    *
    * Revision 1.1  2001/04/06 11:27:47  peter
    * Added PostgreSQL support (really this time!), please note this version
