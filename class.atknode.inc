@@ -132,7 +132,6 @@
   require_once($config_atkroot."atk/relations/class.atkrelation.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
-  require_once($config_atkroot."atk/atkmenutools.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
   require_once($config_atkroot."atk/lock/class.atklock.inc");

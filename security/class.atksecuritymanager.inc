@@ -659,6 +659,8 @@
     return $user;
   }
   
+  
+  
   function &atkGetSecurityManager()
   {
     global $g_securityManager; // WORKAROUND: we use a global var since many 
@@ -672,6 +674,19 @@
     }
     return $g_securityManager;
   }
+  
+  /**
+   * Check whatever someone has got permission
+   * to view a certain node with a certain action
+   * @param $node the (module.)node name
+   * @param $action the atk action
+   * @return boolean if allowed or not
+   */
+  function is_allowed($node, $action)
+  {
+    $secMgr = &atkGetSecurityManager();
+    if (!is_object($secMgr)) return 1;
+    else return $secMgr->allowed($node, $action);
+  }
      
-
 ?>

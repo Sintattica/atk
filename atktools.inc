@@ -1040,5 +1040,29 @@
       case ACTION_SUCCESS: return "success";
     }
   }
+  
+  /**
+   * Generate a dispatch menu URL for use with nodes
+   * and their specific actions.
+   * @param $node the (module.)node name
+   * @param $action the atk action the link will perform
+   * param $params: A key/value array with extra options for the url
+   * @return url for the node with the action
+   */
+  function dispatch_url($node, $action, $params="")
+  {
+    /* create url */
+    $url = "dispatch.php?atknodetype=".$node."&atkaction=".$action;
+    if ($params!=""&&is_array($params))
+    {
+      foreach ($params as $key => $value)
+      {
+        $url .= "&$key=".rawurlencode($value);
+      }
+    }
+    
+    /* return url */
+    return $url;
+  }
 
 ?>

@@ -51,42 +51,4 @@
       }
   }
 
-  /**
-   * Generate a dispatch menu URL for use with nodes
-   * and their specific actions.
-   * @param $node the (module.)node name
-   * @param $action the atk action the link will perform
-   * param $params: A key/value array with extra options for the url
-   * @return url for the node with the action
-   */
-  function dispatch_url($node, $action, $params="")
-  {
-    /* create url */
-    $url = "dispatch.php?atknodetype=".$node."&atkaction=".$action;
-    if ($params!=""&&is_array($params))
-    {
-      foreach ($params as $key => $value)
-      {
-        $url .= "&$key=".rawurlencode($value);
-      }
-    }
-    
-    /* return url */
-    return $url;
-  }
-  
-  /**
-   * Check whatever someone has got permission
-   * to view a certain node with a certain action
-   * @param $node the (module.)node name
-   * @param $action the atk action
-   * @return boolean if allowed or not
-   */
-  function is_allowed($node, $action)
-  {
-    $secMgr = &atkGetSecurityManager();
-    if (!is_object($secMgr)) return 1;
-    else return $secMgr->allowed($node, $action);
-  }
-
 ?>
