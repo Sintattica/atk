@@ -2209,77 +2209,10 @@
         if (!array_key_exists("filename", $outputparamKeyVal))
           $outputparamKeyVal["filename"] = "achievo";
 
-        $this->export2File($output, $outputparamKeyVal["filename"],"csv","csv",$compression);
+        $exporter = &atknew("atk.utils.atkfileexport");
+        $exporter->export2File($output, $outputparamKeyVal["filename"],"csv","csv",$compression);
       }
     }
-
-    /**
-    * export2file   exporteert data naar een file
-    *@param  $data  -- the content
-    *@param $fileName -- bestandsnaam
-    *@param  $ext   -- extension of the file
-    *@param  $type  -- the type (cvs / excel)
-    *@param $compression -- Compression technique (bzip / gzip)
-    * used by specialRecordist();
-    * BROWSER BUG:
-    * IE has problems with the use of attachment; needs atachment (someone at MS can't spell) or none.
-    * however ns under version 6 accepts this also.
-    * NS 6+ has problems with the absense of attachment; and the misspelling of attachment;
-    * at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
-    */
-
-   function export2File($data, $fileName, $type, $ext, $compression="")
-   {
-    if($compression=="bzip")
-    {
-      $mime_type='application/x-bzip';
-      $ext = "bz2";
-    }
-    elseif($compression=="gzip")
-    {
-      $mime_type='application/x-gzip';
-      $ext = "gz";
-    }
-    elseif($type=="csv"||$type="excel")
-    {
-      $mime_type='text/x-csv';
-      $ext = "csv";
-    }
-    else
-    {
-      $mime_type='application/octetstream';
-    }
-
-    header('Content-Type: '. $mime_type);
-    header('Content-Disposition:  filename="'.$fileName.'.'.$ext.'"');
-    header('Pragma: no-cache');
-    header('Expires: 0');
-
-    // 1. as a bzipped file
-    if($compression=="bzip")
-    {
-      if (@function_exists('bzcompress'))
-      {
-        echo bzcompress($data);
-      }
-    }
-    // 2. as a gzipped file
-    else if ($compression == 'gzip')
-    {
-      if (@function_exists('gzencode'))
-      {
-        // without the optional parameter level because it bug
-        echo gzencode($data);
-      }
-    }
-    // 3. on screen
-    else
-    {
-      echo $data;
-    }
-
-    exit;
-   }
 
     /**
      * Function outputs a page in which the user is asked if he really wants
@@ -2785,7 +2718,8 @@
         if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
           $record["atkmlsplit"]=1;
-          $this->updateMlRecords($record,"update");
+          $mltool = &atknew("atk.utils.atkmlsplitter");
+          $mltool->updateMlRecords($this, $record,"update");
         }
         
         if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;        
@@ -3067,7 +3001,8 @@
       
       if(($mode=="edit" || $mode=="copy") && count($dbrecords)>1) // do we have mlrecords?
       {
-        $this->combineMlRecordSet($dbrecords,$query);
+        $mltool = &atknew("atk.utils.atkmlsplitter");
+        $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
 
 //      $this->setOrgKeyValue($dbrecords[0]);
@@ -3112,137 +3047,7 @@
       }
       return $recordset;
     }
-
-   /**
-   * this is used to find 1:1 relations with multilanguage support
-   * we need these relation because the recordlist will have them included
-   * when editting a record we have to combine these records
-   */
-   function getMlNodes()
-   {
-     // we only have to check the 1:1 relations!!
-     $hasrelationwithmlnode=Array();
-     if(is_array($this->m_relations["atkonetoonerelation"]))
-     {
-       foreach($this->m_relations["atkonetoonerelation"] as $attribname=>$attribute)
-       {
-         $p_attrib = &$this->m_attribList[$attribname];
-         if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
-         {
-           $hasrelationwithmlnode[$attribname]=&$this->m_attriblist[$attribname];
-         }
-       }
-     }
-     return $hasrelationwithmlnode;
-   }
-   
-   /**
-   * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
-   */
-   function combineMlRecordSet(&$recordset,$query)
-   {
-     $ml_record=Array();
-     
-     // possible situations
-     // 1. we are a ML node and thus we have multiple records
-     // 2. we are a ML node and have 1 or more 1:1 relations with ML nodes (ai what happends then)
-     // 3. we aren't a ML node but we have 1 or more 1:1 relation with a ML node
-
-     $hasrelationwithmlnode = $this->getMlNodes();
-     
-     if($this->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
-     {
-       $this->mergeMlRecords(&$recordset);
-     }
-     else if($this->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
-     {
-       // oh oh what to do.
-       atkdebug("combineMlRecordSet action not supported!!!!!");
-     }
-     else if(!$this->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
-     {
-       $newrecord[0] = $recordset[0];
-       // we have relations with mlnodes
-       for($i=0,$i_=count($recordset);$i<$i_;$i++)
-       {
-         $query->deAlias($recordset[$i]);
-         atkDataDecode($recordset[$i]);
-         foreach($hasrelationwithmlnode as $attribname=>$attrib)
-         {
-           $tmprecord[$attribname][] = $recordset[$i][$attribname];
-         }
-       }
-       foreach($tmprecord as $attribname=>$attribrecords)
-       {
-         $this->m_attribList[$attribname]->createDestination();
-         $this->m_attribList[$attribname]->m_destInstance->combineMlRecordSet($attribrecords,$query);
-         $newrecord[0][$attribname]=$attribrecords[0];
-       }
-       $recordset=$newrecord;
-     }
-   }
-   
-   function mergeMlRecords(&$recordset)
-   {
-     foreach($this->m_attribList as $attribname=>$attrib)
-     {
-       if($this->m_attribList[$attribname]->m_mlattribute) $lngattribs[$attribname] = &$this->m_attribList[$attribname];
-     }
-     for($i=0, $max=count($recordset);$i<$max;$i++)
-     {
-       if($this->m_defaultlanguage==$recordset[$i][$this->m_lngfield]) $ml_record[0]=$recordset[$i];
-       foreach($lngattribs as $lngattribname=>$lngattrib)
-       {
-         $lngattribvalues[$lngattribname][$recordset[$i][$this->m_lngfield]]=$recordset[$i][$lngattribname];
-       }
-     }
-     foreach($lngattribvalues as $lngattribname=>$value)
-     {
-       $ml_record[0][$lngattribname]=$value;
-     }
-     $recordset=$ml_record;
-   }
-   
-   /**
-   * add/update multiple language records
-   */
-   function updateMlRecords($record,$mode="add")
-   {
-     $languages = $this->getLanguages();
-
-     foreach($this->m_primaryKey as $primkey)
-     {
-       // Make sure we don't increment the primkey
-       if($this->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
-       $this->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
-     }
-
-     foreach($languages as $language)
-     {
-       if($language==$this->m_defaultlanguage) continue;
-       foreach($this->m_attribList as $attribname=>$attrib)
-       {
-         if($this->m_attribList[$attribname]->hasFlag(AF_ML)) $record[$attribname]=$language;
-         if($this->m_attribList[$attribname]->m_mlattribute)
-         {
-           // change the language of the attribute
-           $this->m_attribList[$attribname]->m_language=$language;
-         }
-       }
-       $record["atkprimkey"] = $oldprimkey;
-       $record["atkprimkey"] = $this->primaryKey($record)." AND ".$this->m_table.".".$this->m_lngfield."='$language' ";
-       switch($mode)
-       {
-         case "update":
-           $this->updateDb($record);
-           break;
-         default:
-           $this->addDb($record,false,"add");
-        }
-        $record["atkprimkey"]=$oldprimkey;
-      }
-    }
-
+  
     /**
     * Add this node to a query. (mostly used when you have to join two nodes in a relation.
     */
@@ -3350,7 +3155,8 @@
       if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
         $record["atkmlsplit"]=1;
-        $this->updateMlRecords($record,"add");
+        $mltool = &atknew("atk.utils.atkmlsplitter");
+        $mltool->updateMlRecords($this, $record,"add");
       }
 
       // Now we call a postAdd function, that can be used to do some processing after the record
@@ -3621,26 +3427,7 @@
       {
         $this->m_unsecuredActions[] = $action;
       }
-    }
-
-    /**
-     * Puts all sticky vars in hidden form elements.
-     * DEPRECATED.
-     */
-    function stickyForm()
-    {
-    }
-
-    /**
-     * Dirty function to see if the current edit form is following an add screen
-     * that had NF_EDITAFTERADD set...
-     * DEPRECATED
-     */
-    function editingAfterAdd()
-    {
-      atkdebug("WARNING: use of deprecated function 'editingAfterAdd()'!");
-      return FALSE;
-    }
+    }    
 
     /**
      * Display a statusbar with a stacktrace and a help button.
@@ -3833,12 +3620,7 @@
         if (in_array($relation_new, array_keys($this->m_attribList))) return $filter;
       }
       return "";
-    }
-    
-    function getLanguages()
-    {
-      return strtoupper(atkconfig("language"));
-    }
+    }    
     
     function addStyle($style)
     {
