@@ -1,18 +1,15 @@
 <?php
+  require_once(atkconfig("atkroot")."atk/atkmenutools.inc");
 
-  require_once($config_atkroot."atk/atkmenutools.inc");
-
-/**
- * A generalization of an ATK module class.
- * All ATK modules have to extend this class.
- *
- * @author Peter C. Verhage <peter@ibuildings.nl>
- * @version $Revision$
- *
- * $Id$
- *
- */
-
+  /**
+   * A generalization of an ATK module class.
+   * All ATK modules have to extend this class.
+   *
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @version $Revision$
+   *
+   * $Id$
+   */
   class atkModule
   {
     var $m_name;
@@ -27,10 +24,8 @@
     }
 
     /**
-     * Will return an array of atknode names and their supported actions
-     * that are part of this module. If there are no atknodes within this
-     * module an empty array will be returned.
-     * @return array with atknode names
+     * Register nodes with their supported actions. Can be used
+     * for security etc.
      */
     function getNodes()
     {
@@ -61,7 +56,7 @@
      */
     function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
     {
-      // Call basic menuitem.
+      /* call basic menuitem */
       menuitem($name, $url, $parent, $enable, $order, $this->m_name);
     }
 
@@ -86,11 +81,12 @@
     }
 
     /**
-     * Construct a new node. A module can override this method for it's own nodes.
-     * @param $node the node type
-     * @return new node object
+     * Returns the node overloader if it exists. Else it
+     * will just return the module/node name of the given node.
+     * @param $node module/node string
+     * @return (overloader) module/node string
      */
-    function &newNode($node)
+    function nodeOverloader($node)
     {
       global $g_modules, $config_atkroot, $g_overloaders;
 
@@ -114,6 +110,21 @@
         $node = $g_overloaders[$node];
       }
 
+      /* return */
+      return $node;
+    }
+
+    /**
+     * Construct a new node. A module can override this method for it's own nodes.
+     * @param $node the node type
+     * @return new node object
+     */
+    function &newNode($node)
+    {
+      global $g_modules, $config_atkroot, $g_overloaders;
+
+      /* get overloader etc. */
+      $node = $this->nodeOverloader($node);
       $file = nodeFile($node);
       $type = getNodeType($node);
       $module = getNodeModule($node);
@@ -135,11 +146,10 @@
       /* include file */
       include_once($file);
 
-      /* initialize node */
+      /* initialize node  and return */
       $node =  new $type();
       $node->m_module = $module;
       $node->init();
-
       return $node;
     }
   }
