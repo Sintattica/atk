@@ -26,16 +26,16 @@
    */
   class atkOpenSSLEncryption extends atkEncryption
   {
-    var $config_default;
-    var $config_nokey;
+    var $m_config_default;
+    var $m_config_nokey;
 
     /**
      * The constructor of this class makes two configurations which are used by other functions
      */
     function atkOpenSSLEncryption()
     {
-      $this->config_default = array('config'=>"c:\php\openssl\openssl.cnf");
-      $this->config_nokey = array_merge($this->config_default,array('encrypt_key'=>false));
+      $this->m_config_default = array();
+      $this->m_config_nokey = array_merge($this->m_config_default,array('encrypt_key'=>false));
     }
 
 
@@ -104,9 +104,9 @@
         $priv = openssl_get_privatekey($key);
         
       if($priv && $newprivkeypass!="")
-        openssl_pkey_export($priv,$newprivatekey,$newprivkeypass,$this->config_default);
+        openssl_pkey_export($priv,$newprivatekey,$newprivkeypass,$this->m_config_default);
       else if($priv)
-        openssl_pkey_export($priv,$newprivatekey,"",$this->config_nokey);
+        openssl_pkey_export($priv,$newprivatekey,"",$this->m_config_nokey);
 
       return $newprivatekey;
     }
@@ -130,16 +130,16 @@
       );
 
       //generate a private key
-      $privkey = openssl_pkey_new($this->config_default);
+      $privkey = openssl_pkey_new($this->m_config_default);
       //generate a certificate signing request
-      $csr = openssl_csr_new($dn,$privkey,$this->config_default);
+      $csr = openssl_csr_new($dn,$privkey,$this->m_config_default);
       //This creates a self-signed cert that is valid for 365 days
-      $sscert = openssl_csr_sign($csr,null,$privkey,365,$this->config_default);
+      $sscert = openssl_csr_sign($csr,null,$privkey,365,$this->m_config_default);
       //now we store the public key, private key and the certificate in variables
       //private key is encrypted with privkeypass
       $result = array();
       openssl_x509_export($sscert, $result['public']);
-      openssl_pkey_export($privkey, $result['private'], $privkeypass,$this->config_default);
+      openssl_pkey_export($privkey, $result['private'], $privkeypass,$this->m_config_default);
 
       return $result;
     }
