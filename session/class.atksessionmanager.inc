@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.19  2001/06/19 19:29:20  ivo
+   * pagevar funktie toegevoegd
+   *
    * Revision 1.18  2001/06/19 12:58:09  peter
    * Session cookie parameters changed so the session cookie will not only
    * be domain based but also domain/path based!
@@ -96,7 +99,7 @@
     }
     
     function session_read(&$postvars)
-    {      
+    { 
       $this->globalscope($postvars);           
       $this->stackscope($postvars);
     }
@@ -136,9 +139,32 @@
       {
         $currentitem[$var] = $value;
       }
+      $currentitem["defined_stackvars"][] = $var;
       // We always return the current value..
       return $currentitem[$var];
       
+    }        
+    
+    function pageVar($var, $value="")
+    {
+      global $g_sessionData, $atklevel;
+            
+      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][$atklevel];
+
+      if ($value=="")
+      {
+        if ($GLOBALS[$var]!="")
+        {
+          $currentitem[$var] = $GLOBALS[$var];
+        }
+      }
+      else
+      {
+        $currentitem[$var] = $value;
+      }
+      $currentitem["defined_pagevars"][] = $var;
+      // We always return the current value..
+      return $currentitem[$var];      
     }        
     
     function globalscope(&$postvars)
@@ -190,13 +216,33 @@
         atkdebug("New level on session stack");
         // new level.. always based on the previous level        
         //$newstackitem = array();
-        $currentitem = $stack[count($stack)-1];
+        //$currentitem = $stack[count($stack)-1];
+        $copieditem = $stack[count($stack)-1];
         
-        // and page vars are cleared because they are no longer valid in an upper level..
+        if (is_array($copieditem))
+        {
+          foreach($copieditem as $key=>$value)
+          {
+            if(in_array($key,$g_sessionVars)||
+               (is_array($copieditem["defined_stackvars"])
+                &&in_array($key,$copieditem["defined_stackvars"])))
+            {
+              $currentitem[$key] = $value;
+            }
+          }
+          $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
+        }
+        
+        /*// and page vars are cleared because they are no longer valid in an upper level..
         foreach($g_pageVars as $var)
         {
           $currentitem[$var]="";
         }
+        
+        for($i=0;$i<count($currentitem["defined_pagevars"]);$i++)
+        {
+          $currentitem[$currentitem["defined_pagevars"][$i]]="";
+        }*/
                 
         // Posted vars always overwrite anything in the current session..
         foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
@@ -286,10 +332,13 @@
         // atkformdata will be present in postvars.. editForm() has to read them..
       }
     
-      foreach($currentitem as $var => $value)
+      if (is_array($currentitem))
       {
-        $postvars[$var] = $value;
-      }  
+        foreach($currentitem as $var => $value)
+        {
+          $postvars[$var] = $value;
+        }  
+      }
 //      var_dump($postvars);
         
       //echo "<hr>STACK: ";
