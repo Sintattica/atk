@@ -101,6 +101,11 @@
   $config_auth_usertable   = "user";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";
+   
+  // if you work with groups/levels  you need these parameters 
+  $config_auth_leveltable  = "users";
+  $config_auth_levelfield  = "entity";
+  
   
   // if you use "mail" as authentication, you have to fill in these
   //parameters.
