@@ -71,7 +71,7 @@
    *               stored in a flat array in class.atknode.inc.
    * @author Ivo Jansch (ivo@achievo.com)
    *
-   * @version 0.11
+   * @version $Revision$
    *
    * <b>Changes</b>:
    *
@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/16 09:05:06  ivo
+   * Revision tag test
+   *
    * Revision 4.5  2001/05/14 10:17:54  ivo
    * Added new atkfilewriter attribute.
    *
