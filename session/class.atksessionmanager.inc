@@ -354,7 +354,19 @@
         // is different. Let's fork the stack.
         atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
         $newid = atkStackID(true);
-        $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
+        
+        // We must also make this stack 'ok' with the atkprevlevel.
+        // (there may be more levels on the stack than we should have, because
+        // we forked from another window which might already be at a higher
+        // stack level).
+        $deletecount = (count($stack)-1)-$atkprevlevel;
+        for ($i=0;$i<$deletecount;$i++)
+        {
+          atkdebug("popped an item out of the forked stack");
+          array_pop($stack);
+        }        
+        
+        $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;        
         return;
       }
     }
