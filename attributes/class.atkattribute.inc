@@ -256,7 +256,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      $id = $fieldprefix.$this->formName();
+      $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
     
       $result = '<input type="text" id="'.$id.'" name="'.$id.
@@ -286,6 +286,14 @@
       }
       else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
     }
+    
+    /**
+     * Return the html identifier (id="") (unique within a page)
+     */
+    function getHtmlId($fieldprefix)
+    {
+      return $fieldprefix.$this->formName();
+    }
 
     /**
      * Adds the attribute's edit / hide HTML code to the edit array. This method
@@ -310,6 +318,8 @@
       else
       {
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+        
+        $entry["id"] = $this->getHtmlId($fieldprefix);
 
         /* label? */        
         $entry["label"] = $this->getLabel($defaults);
