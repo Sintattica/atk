@@ -54,8 +54,8 @@
   $g_theme["RowColor2"] = "#D5E7F4";
 
 	//new : outlookbar settings
-	$g_theme["ol_pimage"] = "dark_back.gif";   //in themes dir.
-  $g_theme["ol_menucolor"] = "#ffffff";
+	$g_theme["ol_pimage"] = "button_back.gif";   //in themes dir.
+        $g_theme["ol_menucolor"] = "#ffffff";
 	$g_theme["ol_wincolor"] = "#eeeee0";
 	$g_theme["ol_background"] = "#677EB1";
 ?>
