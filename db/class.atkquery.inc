@@ -46,6 +46,12 @@
     var $m_fieldaliases;
 
     /**
+    * Array with aliases from joins
+    */
+    var $m_joinaliases;
+
+
+    /**
     * Array with Joins
     */
     var $m_joins;
@@ -78,6 +84,7 @@
       $this->m_aliases = array();
       $this->m_values = array();
       $this->m_fieldaliases = array();
+      $this->m_joinaliases = array();
       $this->m_joins = array();
       $this->m_orderbys = array();
       $this->m_groupbys = array();
@@ -138,6 +145,7 @@
     */
     function addJoin($table, $alias, $condition, $outer)
     {
+    
       if ($outer)
       {
         $join="LEFT JOIN ";
@@ -235,8 +243,8 @@
       if (count($this->m_orderbys)>0)
       {
         $result.= " ORDER BY ".implode(", ",$this->m_orderbys);
-      }
-
+      }          
+      
       return $result;
     }
 
@@ -357,7 +365,7 @@
       return $result;
     }
 
-    /**
+ /**
     * Search Alias in alias array
     * @param $record Array with fields
     * @result $record with correct value
@@ -373,12 +381,12 @@
         if ($this->m_aliasLookup[$name]!="")
         {
           $record[$this->m_aliasLookup[$name]]=$value;
-          unset($record[$name]);
+          unset($record[strtolower($name)]);
         }
       }
     }
 
-    /**
+  /**
      * Generate a searchcondition that checks whether $value matches $field exactly.
      */
     function exactCondition($field, $value)

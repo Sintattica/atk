@@ -39,6 +39,18 @@
     
 
     /**
+     * Get the value if it exits, otherwise return 0
+     * @param $rec Array with values
+     * @return String with slashes
+     */
+    function value2db($rec)
+    {   
+      (isset($rec[$this->fieldName()]) ? $ret =  $rec[$this->fieldName()]: $ret = 0);
+      return $ret;
+    }
+
+
+    /**
      * Returns a piece of html code that can be used in a form to search for values   
      * @param $record Array with fields
      * @return piece of html code with a checkbox

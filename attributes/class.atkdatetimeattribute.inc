@@ -119,7 +119,41 @@
 			//var_dump(array_merge($result_date,$result_time));
 			return array_merge($result_date,$result_time);
     }
-		
+	
+    /**
+     * Add's fields to query
+     * @param $query The SQL query
+     * @param $tablename Tablename
+     * @param $fieldaliasprefix Field alias prefix
+     * @param $level ?
+     * @param $mode select/admin/copy/edit
+     * @return New SQL Query
+     */
+    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    {
+      if ($mode == "add" || $mode == "update")
+      {
+        if($this->value2db($rec) == '')
+        {
+          $query->addField($this->fieldName(),'NULL','','',false);
+        }
+        else
+        {
+         if (atkconfig('database') != 'oci9')
+          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
+         else
+          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");      
+        }
+      }
+      else
+      {
+        if (atkconfig('database') != 'oci9')
+          $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+        else
+          $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");      
+      }
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to search values   
      * @param $record Array with fields
@@ -147,6 +181,8 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
+    
+    
     
     
   }

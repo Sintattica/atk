@@ -1,6 +1,6 @@
 <?php
   
-  require_once("atk/db/class.atkdb.inc");
+  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
 
   /**
    * Handles database connectivity and database interaction
