@@ -1,5 +1,5 @@
 <?php
-
+  
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -23,7 +23,10 @@
   define("AF_DATE_DISPLAY_DAY",         AF_SPECIFIC_4); // Show the day of the week in the display
   
   // Include adodb workarounds for <1970 dates on windows.
+  $config_atkroot = atkconfig("atkroot");
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
+  // Include browsertools for PDA detection
+  include_once("atk/atkbrowsertools.inc");
 
   /**
    * The atkDateAttribute class offers a date widget for date fields.
@@ -132,7 +135,6 @@
     {
       $txt_date_format_edit = atktext("date_format_edit","","","","",true);
       $txt_date_format_view = atktext("date_format_view","","","","",true);
-      $config_atkroot = atkconfig("atkroot");
       
       /* *** API SUPPORT HACK ***
        * Because of backwards compatability and because of the number
@@ -183,9 +185,9 @@
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
-      global $g_layout;
-
-      $this->_registerScripts();
+      $pda = browserInfo::detectPDA();
+      
+      if (!$pda) $this->_registerScripts();
       
       $fieldname = $fieldprefix.$this->fieldName().$postfix;
       
@@ -218,8 +220,17 @@
           $current = NULL; /* NULL date selected (normal date selection) */
         elseif (!is_array($field) && empty($field))
           $current = NULL; /* NULL date selected (NULL value in database) */
-        elseif (is_array($field) && checkdate($field["month"], $field["day"], $field["year"]))
-          $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
+        elseif (is_array($field))
+        {
+          if (checkdate($field["month"], $field["day"], $field["year"]))
+          {
+            $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
+          }
+          else
+          {
+            triggerError($record, $this->fieldName(), "date_invalid");
+          }
+        }
         else
         {
           $date = $this->dateArray($field);
@@ -246,18 +257,11 @@
       elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
       elseif (empty($current)) $current = time();
 
-
-      /* if for some weird reason $current is still not set, assign current time */
-      //if (!isset($current))
-      //{
-      //  $current = adodb_mktime();
-      //}
-
       /* get dates in array format */
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
       if (!empty($maximum))  $maximum = adodb_getdate($maximum);
-//
+
       /* minimum and maximum */
       $current["d_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] && $current["mon"] == $minimum["mon"] ? $minimum["mday"] : 1);
       $current["d_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] && $current["mon"] == $maximum["mon"] ? $maximum["mday"] : $this->getDays($current));
@@ -281,7 +285,7 @@
         return $result;
       }
       
-      $result.='<script language="javascript"> var '.$fieldname.'_fmt = \''.$str_format.'\';</script>';
+      if (!$pda) $result.='<script language="javascript"> var '.$fieldname.'_fmt = \''.$str_format.'\';</script>';
 
       /* other date selections */
       for($i = 0; $i < strlen($str_format); $i++)
@@ -292,7 +296,7 @@
         else $emptyfield=false;
         
         /* javascript method */
-        $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
+        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
         
         if (count($this->m_onchangecode))
         {
@@ -334,14 +338,37 @@
           $result .= '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" onChange="'.$str_script.'">';
           if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD)) 
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
-          for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
+          if (!$pda)
           {
-            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
-            if (($current['year']!="") && ($current['mon']!=""))
-              $str_day = $this->formatDate($tmp_date, $str_format[$i]);
-            else
-              $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
-            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+            for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
+            {
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
+              if (($current['year']!="") && ($current['mon']!=""))
+              {
+                $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+              }
+              else
+              {
+                $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
+              }
+              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+            }
+          }
+          else 
+          {
+            for ($j = 0; $j <= 31; $j++)
+            {
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
+              if (($current['year']!="") && ($current['mon']!=""))
+              {
+                $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+              }
+              else
+              {
+                $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
+              }
+              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+            }
           }
           $result .= '</select>';
         }
@@ -353,11 +380,23 @@
           $result .= '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" onChange="'.$str_script.'">';
           if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
-          for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
+          if (!$pda)
           {
-            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
-            $str_month = $this->formatDate($tmp_date, $str_format[$i]);
-            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+            for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
+            {
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
+              $str_month = $this->formatDate($tmp_date, $str_format[$i]);
+              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+            }
+          }
+          else 
+          {
+            for ($j = 0; $j <= 12; $j++)
+            {
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
+              $str_month = $this->formatDate($tmp_date, $str_format[$i]);
+              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+            }
           }
           $result .= '</select>';
         }
@@ -366,7 +405,7 @@
         else $result .= $str_format[$i];
       }
             
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
+      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$pda)
       {
         $result.=' <input type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
       }
@@ -688,7 +727,7 @@
       return "date";
     }  
     
-        /** 
+    /** 
      * Add a javascript onchange event handler.
      * @param $jscode A block of valid javascript code.
      */
