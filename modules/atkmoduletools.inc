@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.11  2001/05/14 12:57:27  ivo
+ * Added some code to detect if node was created succesfully.
+ *
  * Revision 1.10  2001/05/11 15:24:54  peter
  * Some updates for the module support and some other things...
  *
@@ -111,7 +114,10 @@
     {
       atkdebug("Constructing a new node - $node");
       $g_nodeRepository[$node] = newNode($node);  
-      $g_nodeRepository[$node]->m_module = getNodeModule($node);
+      if (is_object($g_nodeRepository[$node]))
+      {
+        $g_nodeRepository[$node]->m_module = getNodeModule($node);
+      }
     } 
     atkdebug("Returning node instance - $node");
     return $g_nodeRepository[$node];    
