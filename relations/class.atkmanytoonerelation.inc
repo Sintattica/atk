@@ -345,7 +345,7 @@
 
         // we use the current level to automatically return to this page
         // when we come from the select..
-        $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
+        $atktarget = rawurlencode("dispatch.php?atknodetype=$this->m_destination&atkaction=".$ATK_VARS["atkaction"]."&atklevel=".atkLevel()."&".$selname."=[pk]");
 
         $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                                    "&atkaction=select&atktarget=".$atktarget,
