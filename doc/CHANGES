@@ -38,6 +38,7 @@ Changes in ATK 5.1.1
   records [Yury]
 * Functional decomposition of importhandler [Boy]
 * Improved postgres error reporting [Boy]
+* Fixed file export with MSIE in combination with SSL (HTTPS) [Wim]
 
 Changes in ATK 5.1.0
 --------------------

@@ -74,7 +74,18 @@
 
     header('Content-Type: '. $mime_type);
     header('Content-Disposition:  filename="'.$fileName.'.'.$ext.'"');
-    header('Pragma: no-cache');
+
+    // Fix for downloading (Office) documents using an SSL connection in
+    // combination with MSIE.
+    if ($_SERVER["SERVER_PORT"] == "443" AND eregi("msie", $_SERVER["HTTP_USER_AGENT"]))
+    {
+      header('Pragma: public');
+    }
+    else
+    {
+      header('Pragma: no-cache');
+    }
+
     header('Expires: 0');
 
     // 1. as a bzipped file
