@@ -21,7 +21,7 @@
    * @package atk
    * @subpackage attributes
    */
-  class fuzzySearchAttribute extends atkAttribute
+  class atkFuzzySearchAttribute extends atkAttribute
   {
     /**
      * The node we are searching on
@@ -85,7 +85,7 @@
      * @param int    $flags      The flags of the attribute
      * @param int    $size       The size of the search field
      */
-    function fuzzySearchAttribute($name, $searchnode, $callback, $mode="all", $flags=0, $size=0)
+    function atkFuzzySearchAttribute($name, $searchnode, $callback, $mode="all", $flags=0, $size=0)
     {
       if ($size==0)
       {
