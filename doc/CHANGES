@@ -8,38 +8,35 @@ Changes in ATK 5.0.5
 --------------------
 + Added generic CSV import feature. [Ivo, Mark]
 + Added atkFormatAttribute for editing formatted values. [Ivo]
++ Added paging to atkOneToManyrelation (embedded recordlists). [Harrie]
 + Added edit_values() and initial_values() methods to atkNode class. [Ivo]
++ Login screen now uses its own CSS file (login.css). [Boy]
++ Added autoadjust feature to atkTextAttribute. [Boy]
++ Added deleteAllowed method to all attributes, so attributes can now
+  'approve' the delete of a record. [Boy]
++ Added AF_RESTRICTED_DELETE flag to the atkOneToManyRelation. [Boy]
++ Added AF_DUMMY_SHOW_LABEL, which causes dummy attribs to be labeled [Boy]
++ Added register_hiddenvars() to atkPage [Boy]
++ Added flags to atkPage's render() method. [Sandy]
++ validateFilter() now recognizes all standard SQL operators. [Boy]
++ atkNavigator now accepts custom filters. [Boy]
 * Fixed alignment of fieldlabels and error messages. [Ivo]
 * Fix in NF_ML, when having optional relationships. [Lineke,Ivo]
 * Fixed removal of leading spaces from values by removing a php4.0.4pl1
   compatibility hack. [Ivo]
 * Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
-  turn was a manytoonerelation (in addToQuery function). [Lineke,Ivo]
+  turn was a relation. [Lineke,Ivo]
 * atkManyBoolRelation now takes initial_values into account. [Ivo]
-* Fixed: atkLanguage broke tooltip functionality [Boy]
-* Changed some globals to proper functions (atkconfig & atktext) [Boy]
-* Moved Doctype to defaultconfig [Boy]
-+ Login screen now also uses own CSS file (login.css) [Boy]
-+ Added autoadjust feature to atkTextAttribute [Boy]
-+ Added deleteAllowed method to all attributes and a AF_RESTRICTED_DELETE
-  flag to the atkOneToManyRelation [Boy]
+* Fixed tooltip functionality. [Boy]
+* Replaced some globals with function calls (atkconfig, atktext). [Boy]
+* Moved Doctype to defaultconfig. [Boy]
 * Fix for bug that would cause obligatory atkdateattributes to be empty 
   instead of assuming the current date [Boy]
-+ Added AF_DUMMY_SHOW_LABEL, which causes dummy attribs to be labeled [Boy]
-+ Added register_hiddenvars() to atkPage [Boy]
-* Fixed tabbing, atkNode now passes along the nodetype as a hidden var 
-  and the DHTML tabbing uses this instead of the URL [Boy]
-+ Added paging in atkOneToManyrelation (embedded recordlist) [Harrie]
-* You can now pass along your own filter to the atkNavigator [Boy]
-* Tab-remembering fixed for older browsers 
-  and for both IE and Gecko engine [Boy]
-* Fixed bug that would cause the navigator to fail and generate SQL errors 
-  when AF_LARGE is set and an atkfilter is passed along [Boy,Yuri]
-* ValidateFilter now recognizes all SQL operators instead of just '=' [Boy]
-* Fixed bug in oneToManyRelation::isEmpty() [Harrie]
-+ Added flags to the atkPage::render function [Sandy]
-* Fixed the outlook menu [Sandy]
-
+* Fixed DHTML tab functionality (last tab is now remembered). (bug #301) [Boy]
+* Fixed SQL errors in atkNavigator when when AF_LARGE is set and an atkfilter
+  is used [Boy,Yuri]
+* Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
+* Fixed the outlook menu. (bug #352) [Sandy]
 
 Changes in ATK 5.0.4
 --------------------
