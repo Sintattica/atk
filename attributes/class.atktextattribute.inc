@@ -36,7 +36,7 @@
       }
       else                   
       {
-        $flags = $rows;
+        $flags = $size;
       }
       $this->atkAttribute($name,$flags); // base class constructor
     }
