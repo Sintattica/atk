@@ -15,7 +15,8 @@
    * @version $Revision$
    * $Id$
    */
-   
+   atkimport("atk.relations.atkrelation");   
+
   /**
    * Many to many relation. Should not be used directly.
    *
@@ -29,7 +30,7 @@
    * @package atk
    * @subpackage relations
    *
-   */  
+   */ 
   class atkManyToManyRelation extends atkRelation
   {
     var $m_localKey = "";
@@ -50,6 +51,9 @@
     {
       $this->m_link = $link;
       $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE);
+
+      $this->m_localKey = substr (strrchr ($this->m_owner, '.'), 1 );
+      $this->m_remoteKey = substr (strrchr ($this->m_destination, '.'), 1 );
     }
 
     /**
