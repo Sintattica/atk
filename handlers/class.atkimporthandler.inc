@@ -32,6 +32,9 @@
      */
     function action_import()
     {
+      global $organizationFilter;
+      atkerror($organizationFilter);
+
       $phase = ($this->m_postvars["phase"]!=""?$this->m_postvars["phase"]:"init");
 
       switch ($phase)
@@ -102,7 +105,7 @@
       
       $allFieldValue = $g_sessionManager->pageVar("allFieldValue");
       $allField = $g_sessionManager->pageVar("allField");
-
+      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
       $columncount = $this->estimateColumnCount($rows, $delimiter);
 
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
@@ -114,7 +117,7 @@
       if (!is_array($col_map))
       {
         // init colmap
-        $col_map = $this->getUsableAttributes();
+        $col_map = $this->initColmap($csv_data[0]);
       }
 
       if ($columncount>count($col_map))
@@ -198,7 +201,9 @@
       $content.= 'Waarde: <input type="text" size="50" name="allFieldValue" value="'.htmlentities($allFieldValue).'"><br/>';
       $attr = $this->getUsableAttribute($allField);
       if(is_object($attr) && $attr->display($attr->parseStringValue($allFieldValue)))
-        $content.= 'Resultaat: <i>'.$attr->display($attr->parseStringValue($allFieldValue)).'</i><br/><br/>';
+        $content.= 'Resultaat: <i>'.$attr->display($attr->parseStringValue($allFieldValue)).'</i><br/>';
+
+      $content.= '<br/>Het eerste record overslaan? <input type="checkbox" name="passOverFirstRecord" value="1" '.($passOverFirstRecord?"CHECKED":"").'/><br/><br/>';
         
       $content.= ' <input type="submit" name="analyse" value="Analyseer opnieuw">';
       $content.= ' <input type="submit" name="import" value="Importeer"> ';
@@ -437,7 +442,7 @@
       foreach ($attrs as $attribname)
       {
         $selected = "";
-        if (($value=="" && $index==$j) || ($value!="" && $value==$attribname))
+        if ($value!="" && $value==$attribname)
         {
           // select the next.
           $selected="selected";
@@ -453,6 +458,63 @@
       $res.= '</select>';
       return $res;
     }
+    
+    //the same als the php function array_search, but now much better.
+    //This function is not case sensitive
+    function inArray($array,$value)
+    {
+      foreach($array as $key=>$item)
+      {
+        if(strtolower($item) == strtolower($value))
+          return $key;
+
+        if(strtolower($item) == strtolower(atktext($value, $this->m_node->m_module, $this->m_node->m_type)))
+          return $key;
+      }
+      
+      return false;
+    }
+    
+    //make a record of translations of the given attributes
+    function getAttributesTranslation($attributes){
+      $result = array();
+      
+      foreach($attributes as $attribute)
+      {
+        $result[] = atktext($attribute, $this->m_node->m_module, $this->m_node->m_type);
+      }
+      
+      return $result;
+    }
+    
+    //tries to make a default col_map with the first record of the csv-file
+    function initColmap($firstRecord)
+    {
+      $result = array();
+
+      $attributes = $this->getUsableAttributes();
+      $translations = $this->getAttributesTranslation($attributes);
+      
+      foreach($firstRecord as $value)
+      {
+        $key = $this->inArray($attributes,$value);
+        if($key)
+        {
+          $result[] = $attributes[$key];
+        }
+        else
+        {
+          //checks the translation
+          $key = $this->inArray($translations,$value);
+          if($key)
+            $result[] = $attributes[$key];
+          else
+            $result[] = "-";
+        }
+      }
+    
+      return $result;
+    }
 
     function doImport()
     {
@@ -464,13 +526,16 @@
       $columncount = $this->m_postvars["columncount"];
       $allField = $this->m_postvars["allField"];
       $allFieldValue = $this->m_postvars["allFieldValue"];
+      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
 
       //add the allField to the col_map array
       $col_map[] = $allField;
 
+      $initial_values = $this->m_node->initial_values();
+
       $importerror = "";
 
-      $importerror = $this->checkImport($col_map);
+      $importerror = $this->checkImport($col_map,$initial_values);
       
       if(is_array($importerror)){
         $this->doAnalyze($this->m_postvars["fileid"],$importerror);
@@ -486,11 +551,12 @@
 
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
+      if($passOverFirstRecord == "1") $line = fgets($fp);
       for($line = fgets($fp); $line!==false; $line = fgets($fp))
       {
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
 
-        $rec = $this->m_node->initial_values();
+        $rec = $initial_values;
 
         for ($i=0, $_i=count($col_map); $i<$_i; $i++)
         {
@@ -512,6 +578,7 @@
         
         if (!$this->add($rec))
         {
+          //continue;
           $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ","spec"=>text($rec['atkerror'][0]['attrib_name']));
           break;
         }
@@ -533,8 +600,11 @@
     
     function add($record)
     {
+      //atkerror(arrayToString($record));
+      //return false;
+
       $this->m_node->preAdd($record);
-      
+
       if(isset($record['atkerror']))
         return false;
 
@@ -555,10 +625,12 @@
         return true;
     }
     
-    function checkImport($col_map)
+    function checkImport($col_map,$initial_values)
     {
       //get the unused obligatory fields
       $unused = array_values(array_diff($this->getObligatoryAttributes(),$col_map));
+      $unused = array_values(array_diff($unused,array_keys($initial_values)));
+      
       if(count($unused) > 0){
         if(count($unused) == 1)
           $msg = "Het volgende veld moet verplicht gebruikt worden: ";
@@ -576,6 +648,13 @@
 
       //check if there ar double values in col_map
       $doubles = array_values(array_diff_assoc($col_map,array_unique($col_map)));
+      //"-" may be used twice, so delete it from doubles
+      while(array_search("-",$doubles) !== false)
+      {
+        $key = array_search("-",$doubles);
+        unset($doubles[$key]);
+      }
+      
       if(count($doubles) > 0)
       {
         if(count($doubles) == 1)
