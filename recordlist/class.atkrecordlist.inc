@@ -195,9 +195,15 @@
         $actionloader = "rl_a['".$listName."'] = new Array();";
         $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED)."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
-
-        if ($navigation["next"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['next'] = '".$navigation["next"]["url"]."';";
-        if ($navigation["previous"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['previous'] = '".$navigation["previous"]["url"]."';";
+        
+        if (is_array($navigation["next"]) && $navigation["next"]["url"]!="") 
+        {
+          $actionloader.="\nrl_a['".$listName."']['next'] = '".$navigation["next"]["url"]."';";
+        }
+        if (is_array($navigation["next"]) && $navigation["previous"]["url"]!="") 
+        {
+          $actionloader.="\nrl_a['".$listName."']['previous'] = '".$navigation["previous"]["url"]."';";
+        }
         
         for ($i = 0, $_i = count($list["rows"]); $i < $_i; $i++)
         {
