@@ -122,7 +122,7 @@
      */
     function _getCachedTheme()
     {
-      $this->_loadThemedef();
+      if (!atkconfig("force_theme_recompile")) $this->_loadThemedef();
       if(!$this->m_def)
       {
         atkdebug("Cached themedefinition was not found, compiling one");
@@ -277,7 +277,12 @@
      */
     function iconPath($icon, $type, $extension=".gif")
     {
-      return $this->_getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension);
+      $iconpath = $this->_getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension);
+      if (!file_exists($iconpath))
+      {
+        $iconpath = $this->_getAttribute($type."_icons", "default".$extension, "/icons/$type/default".$extension);
+      }
+      return $iconpath;
     }
       
     /**
