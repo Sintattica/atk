@@ -89,7 +89,7 @@ function atkLockCheckResponse(XMLdocument)
 */
 function atkLockCheck()
 {
-  var sURI = 'include.php?file=atk/lock/lock.php&type=xml&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+  var sURI = '<?=session_url('include.php?file=atk/lock/lock.php&type=xml&stack='.$stack)?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
 
   if (atkLock.type == 'xml')
   {
@@ -110,7 +110,7 @@ function atkLockCheck()
   {
     var image = new Image();
     image.onerror = atkLockUnlock;
-    image.src = 'include.php?file=atk/lock/lock.php&type=image&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+    image.src = '<?=session_url('include.php?file=atk/lock/lock.php&type=image&stack='.$stack)?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
   }
 }
 

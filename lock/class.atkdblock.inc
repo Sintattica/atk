@@ -16,7 +16,7 @@ class atkDbLock extends atkLock
    */
   function atkDbLock()
   {
-    global $g_layout;
+    global $g_layout, $ATK_VARS;
 
     $atklockList = $this->loadLockList();
     if (!is_array($atklockList)) $atklockList = array();
@@ -40,6 +40,13 @@ class atkDbLock extends atkLock
         if (is_array($selectorList))
           foreach ($selectorList as $selector => $table) $this->unlock($selector, $table);
       }
+      
+      if ($ATK_VARS["atklevel"] == -2)
+      {
+        $selectorList = array_pop($atklock["stack"]);
+        if (is_array($selectorList))
+          foreach ($selectorList as $selector => $table) $this->unlock($selector, $table);
+      }
 
       $empty = TRUE;
       for ($i = 0, $_i = count($atklock["stack"]); $i < $_i; $i++)
@@ -54,7 +61,7 @@ class atkDbLock extends atkLock
     if ($this->m_id > 0)
     {
       $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");    
-      $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
+      $g_layout->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
     }
   }
 
@@ -121,7 +128,7 @@ class atkDbLock extends atkLock
       {
         $this->m_id = $g_db->nextid("db_lock");
         $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");            
-        $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
+        $g_layout->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
       }
 
       $user = getUser();
