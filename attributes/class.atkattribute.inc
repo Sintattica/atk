@@ -462,7 +462,6 @@
     
     /**
      * Returns the binairy representation of flags set in the attribute.
-     * @param 
      * @return $m_flags
      */
     function getFlags()
