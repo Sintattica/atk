@@ -3,7 +3,7 @@
   /**
    * With the atkDummyAttribute class you can place comments between the edit boxes.
    * Use the flag AF_NOLABEL if you want to start at the begin of the line.
-   * 
+   *
    * @author	 : Sandy Pleyte <sandy@ibuildings.nl>
    * @version	 : $Revision$
    *
@@ -22,11 +22,11 @@
          */
     function atkDummyAttribute($name, $text="", $flags=0)
     {
-      $flags=$flags|AF_BLANKLABEL;
+      $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
     }
-   
+
     /**
     * Edit  record
     * Here it will only return the text, no edit box.
@@ -37,11 +37,11 @@
     {
       return $this->m_text;
     }
-    
+
    /**
     * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
     * @param $record Array with fields
-    */    
+    */
     function search($record="", $size=0, $maxsize=0)
     {
       return "&nbsp;";
@@ -57,7 +57,7 @@
     {
       return $this->m_text;
     }
- 
+
     /**
     * No function, but is neccesary
     */
@@ -71,7 +71,7 @@
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="",$level)
     {
     }
-    
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.

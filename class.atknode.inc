@@ -428,7 +428,7 @@
         {
           $this->m_viewExcludes[]=$attribute->fieldName();
         }
-      }            
+      }
 
       $attribute->init();
 
@@ -456,7 +456,7 @@
         {
           if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabListAdd = atk_array_merge($this->m_tabListAdd, $tab);
           if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabListEdit = atk_array_merge($this->m_tabListEdit, $tab);
-          if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT)) $this->m_tabListView = atk_array_merge($this->m_tabListView, $tab);
+          if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabListView = atk_array_merge($this->m_tabListView, $tab);
         }
 
         $attribute->m_order = $order;
