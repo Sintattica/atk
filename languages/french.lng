@@ -40,8 +40,21 @@
   $txt_confirm_delete = "Are you sure you want to delete this item?";
   $txt_title_delete = "Confirm delete";
   
-  $txt_select_none = "None";
+  $txt_select_none = "None";  
   
-  $txt_menu_main = $txt_menu;
+  $txt_fri = "Fri";
+  $txt_sat = "Sat";
+  $txt_sun = "Sun";
+  $txt_mon = "Mon";
+  $txt_tue = "Tue";
+  $txt_wed = "Wed";
+  $txt_thu = "Thu";
+  
+  $txt_permission_denied = "Sorry, you don't have permission to perform this action";
+  
+  $txt_menu_main = "Main";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-1";
   
 ?>

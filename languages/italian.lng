@@ -9,9 +9,9 @@
 
   // --------==== Strings that were there from the beginning: ====---------
 
-  $txt_app_title = "ATK Application";
+  $txt_app_title = "Applicazione ATK";
   $txt_app_shorttitle = "ATKApp";
-  $txt_app_description = "Welcome to this ATK application.";  
+  $txt_app_description = "Benvenuto su questa applicazione ATK.";  
 
   $txt_yes = "Si";
   $txt_no = "No";
@@ -20,75 +20,80 @@
   $txt_edit = "Modifica";
   $txt_delete = "Elimina";
   $txt_add = "Aggiungi";
-  $txt_admin = "Administration";
-  $txt_search = "Search";
-  $txt_search_all = "Search all";
+  $txt_admin = "Amministra";
+  $txt_search = "Ricerca";
+  $txt_search_all = "Cerca su tutto/i";
 
-  $txt_next = "Next";
-  $txt_previous = "Previous";
-  $txt_select = "Select";  
+  $txt_next = "Successivo";
+  $txt_previous = "Precedente";
+  $txt_select = "Seleziona";  
    
   $txt_save = "Salva";
-  $txt_saveandclose = "Save and close";
+  $txt_saveandclose = "salva e chiudi";
   $txt_cancel = "Annulla";
-  $txt_back = "Back";
+  $txt_back = "Indietro";
    
   $txt_menu = "Menu";
   $txt_error = "Errore";
   
-  $txt_error_obligatoryfield = "This field is required";
-  $txt_error_formdataerror = "Save failed due to the following reason: ";
-  $txt_error_uniquefield = "The value for this field must be unique";
-  $txt_confirm_delete = "Are you sure you want to delete this item?";
-  $txt_title_delete = "Confirm delete";
+  $txt_error_obligatoryfield = "Quetso campo è obbligatorio";
+  $txt_error_formdataerror = "Il salvataggio è fallito per questa ragione: ";
+  $txt_error_uniquefield = "Il valire di quetso campo deve essere univoco";
+  $txt_confirm_delete = "Sicuro di volerlo cancellare?";
+  $txt_title_delete = "Comferma la cancellazione";
   
-  $txt_select_none = "None";
+  $txt_select_none = "Nessuno/a";
   
   // Specific File Attribute Text
-  $txt_no_valid_directory = "There is no valid directory";
-  $txt_remove_current_file = "Remove current file";
-  $txt_file_not_exist = "File doesn't exist";
-  $txt_cannot_remove_file = "Can't remove file!";
+  $txt_no_valid_directory = "Non è una directory valida";
+  $txt_remove_current_file = "Rimuovere il file corrente";
+  $txt_file_not_exist = "Il file non esiste";
+  $txt_cannot_remove_file = "Non posso rimuovere il file!";
 
   // specific password attribute text
-  $txt_password_current = "Current";
-  $txt_password_new = "New";
-  $txt_password_again = "Again";
+  $txt_password_current = "Corrente";
+  $txt_password_new = "Nuova";
+  $txt_password_again = "Ripeti";
   $txt_password_hidden = "*****";
-  $txt_password_invalid = "The supplied password is not a valid password.";
-  $txt_password_incorrect = "The password you entered was not correct!";
-  $txt_password_nomatch = "The supplied passwords do not match.";
+  $txt_password_invalid = "La password fornita non è in un formato valido.";
+  $txt_password_incorrect = "La password inserita non è valida!";
+  $txt_password_nomatch = "La password fornita non corrisponde.";
 
   // multilanguage text
-  $txt_multilanguage_select = "Select a language:";
-  $txt_multilanguage_choice = "Selected language:"; 
+  $txt_multilanguage_select = "Seleziona una lingua:";
+  $txt_multilanguage_choice = "Lingua seelezionata:"; 
   
   $txt_language_nl = "Dutch";
   $txt_language_de = "German";
   
-  $txt_until = "until";
+  $txt_until = "fino a";
     
-  $txt_january = "January";
-  $txt_february = "February";
-  $txt_march = "March";
-  $txt_april = "April";
-  $txt_may = "May";
-  $txt_june = "June";
-  $txt_july = "July";
-  $txt_august = "August";
-  $txt_september = "September";
-  $txt_october = "October";
-  $txt_november = "November";
-  $txt_december = "December";
+  $txt_january = "Gennaio";
+  $txt_february = "Febbraio";
+  $txt_march = "Marzo";
+  $txt_april = "Aprile";
+  $txt_may = "Maggio";
+  $txt_june = "Giugno";
+  $txt_july = "Luglio";
+  $txt_august = "Agosto";
+  $txt_september = "Settembre";
+  $txt_october = "Ottobre";
+  $txt_november = "Novembre";
+  $txt_december = "Dicembre";
   
-  $txt_fri = "Fri";
-  $txt_sat = "Sat";
-  $txt_sun = "Sun";
-  $txt_mon = "Mon";
-  $txt_tue = "Tue";
-  $txt_wed = "Wed";
-  $txt_thu = "Thu";
+  $txt_fri = "Ven";
+  $txt_sat = "Sab";
+  $txt_sun = "Dom";
+  $txt_mon = "Lun";
+  $txt_tue = "Mar";
+  $txt_wed = "Mer";
+  $txt_thu = "Gio";
   
-  $txt_menu_main = $txt_menu;
+  $txt_menu_main = "Main";
+  
+  $txt_permission_denied = "Sorry, you don't have permission to perform this action";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-1";
 
 ?>

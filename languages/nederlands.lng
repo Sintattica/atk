@@ -93,6 +93,11 @@
   $txt_wed = "Woe";
   $txt_thu = "Don";
   
-  $txt_menu_main = $txt_menu;
+  $txt_menu_main = "Hoofdmenu";
+  
+  $txt_permission_denied = "Sorry, u heeft geen toestemming om deze aktie uit te voeren";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-1";
   
 ?>

@@ -92,6 +92,11 @@
   $txt_wed = "Mit";
   $txt_thu = "Don";
   
-  $txt_menu_main = $txt_menu;
+  $txt_menu_main = "Hauptmenu";
+  
+  $txt_permission_denied = "Sorry, you don't have permission to perform this action";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-1";
 
 ?>

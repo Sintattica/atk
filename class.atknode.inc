@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.46  2001/06/07 09:24:49  ivo
+   * Updated language files.
+   * Support for non-western-european charsets. (backport from 0.6.4)
+   *
    * Revision 4.45  2001/06/01 12:52:49  peter
    * Fixed a bug in menu.php (atksecure() was called to late).
    * Updated english language file month names (long names to short).
@@ -536,6 +540,11 @@
   header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
   header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
   header ("Pragma: no-cache");                          // HTTP/1.0
+  
+  // Set the content type.
+  header ("Content-Type: text/html; charset=".text('charset')); // The character set (defined
+                                                                // in the language files
+                                                                
 
   // The atk node class
   class atkNode

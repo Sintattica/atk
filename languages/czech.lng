@@ -1,0 +1,103 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Application";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Vítejte v aplikaci ATK.";
+
+  $txt_yes = "Ano";
+  $txt_no = "Ne";
+
+  $txt_view = "Zobrazit";
+  $txt_edit = "Editovat";
+  $txt_delete = "Odstranit";
+  $txt_add = "Pøidat";
+  $txt_admin = "Administrace";
+  $txt_search = "Vyhledat";
+  $txt_search_all = "Vyhledat v¹e";
+
+  $txt_next = "Následující";
+  $txt_previous = "Pøedchozí";
+  $txt_select = "Vybrat";
+
+  $txt_save = "Ulo¾it";
+  $txt_saveandclose = "Ulo¾it a zavøít";
+  $txt_cancel = "Zru¹it";
+  $txt_back = "Zpìt";
+
+  $txt_menu = "Menu";
+  $txt_error = "Chyba";
+
+  $txt_error_obligatoryfield = "Toto pole je povinné";
+  $txt_error_formdataerror = "Ukládání selhalo z následujících dùvodù ";
+  $txt_error_uniquefield = "Hodnota pro toto pole musí bý jedineèná";
+  $txt_confirm_delete = "Jste si jistý ¾e chcete odstranit tuto polo¾ku";
+  $txt_title_delete = "Potvrdit odstranìní";
+
+  $txt_select_none = "®ádný";
+  
+  $txt_clickheretoadd_prefix = "Kliknutím lze pøidat nový ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Nelze najít adresáø";
+  $txt_remove_current_file = "Odstranit teno soubor";
+  $txt_file_not_exist = "Soubor neexistuje";
+  $txt_cannot_remove_file = "Nelze odstranit soubor!";
+
+  // specific password attribute text
+  $txt_password_current = "Aktuální";
+  $txt_password_new = "Nové";
+  $txt_password_again = "Znovu";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "Nové hesle má nesprávný formát";
+  $txt_password_incorrect = "Nesprávné heslo!";
+  $txt_password_nomatch = "Poskytnuté heslo neodpovídá";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Vyberte jazyk";
+  $txt_multilanguage_choice = "Vybraný jazyk"; 
+  
+  $txt_language_nl = "Dutch";
+  $txt_language_de = "German";
+  $txt_language_de = "Èesky";
+  
+  $txt_until = "do";
+    
+  $txt_january = "Leden";
+  $txt_february = "Únor";
+  $txt_march = "Bøezen";
+  $txt_april = "Duben";
+  $txt_may = "Kvìten";
+  $txt_june = "Èerven";
+  $txt_july = "Èervenec";
+  $txt_august = "Srpen";
+  $txt_september = "Záøí";
+  $txt_october = "Øíjen";
+  $txt_november = "Listopad";
+  $txt_december = "Prosinec";
+  
+  $txt_fri = "Pátek";
+  $txt_sat = "Sobota";
+  $txt_sun = "Nedìle";
+  $txt_mon = "Pondìlí";
+  $txt_tue = "Úterý";
+  $txt_wed = "Støeda";
+  $txt_thu = "Ètvrtek";
+  
+  $txt_menu_main = "Main";
+  
+  $txt_permission_denied = "Bohu¾el, k provedení této akce nemáte potøebné oprávnìní";	
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-2"; // 'central european' charset for czech..
+    
+?>
