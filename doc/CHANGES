@@ -8,6 +8,7 @@ Changes in ATK 5.1.1
 --------------------
 + Added support for turning CSV file-exporting off in customRecordList. [Boy]
 * Fixed typo in php version check. [Ivo]
+* Fixed bug in cascade delete. (bug #419) [Ivo]
 
 Changes in ATK 5.1.0
 --------------------
