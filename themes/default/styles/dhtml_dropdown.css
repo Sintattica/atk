@@ -1,7 +1,7 @@
-.rootText { text-decoration: none; color: #000000; font: 11px Arial, Helvetica; text-align: center }
+.rootText { text-decoration: none; color: #FFFFFF; font: 11px Verdana, Arial, Helvetica; font-weight: bold; text-align: left}
 
-.menuLowText { text-decoration: none; color: #000000; font: 11px Arial, Helvetica; text-align: left }
-.menuHighText { text-decoration: none; color: #FFFFFF; font: 11px Arial, Helvetica; text-align: left }
+.menuLowText { text-decoration: none; color: #000000; font: 11px Verdana, Arial, Helvetica; font-weight: bold; text-align: left }
+.menuHighText { text-decoration: none; color: #FFFFFF; font: 11px Verdana, Arial, Helvetica bold; font-weight: bold; text-align: left }
 
-.itemBorder { border: 1px solid #666666 }
+.itemBorder { border: 0px solid #666666 }
 .itemBorderBlank { border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #333333; border-bottom: 1px solid #333333 }

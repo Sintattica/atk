@@ -94,6 +94,19 @@ INPUT.btn_saveandclose
   font-weight: bold;
 }
 
+.topbg
+{
+  background: #52006A;
+ 
+}
+
+.menubg
+{
+  background: #F00;  
+}
+
+
+
 .error
 {  
   color: #FF0000;
