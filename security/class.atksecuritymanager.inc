@@ -108,7 +108,6 @@
       global $config_guestpassword;
 
       $md5 = false; // PHP_AUTH_PW is plain text..            
-
       // first check if we want to logout
       if (isset($atklogout) && !session_is_registered("relogin"))
       {        
@@ -310,8 +309,11 @@
       else if (!isset($atklogout) && session_is_registered("relogin")) session_unregister("relogin");
 
       // return
-      // g_user always lowercase
+      // g_user always lowercase      
       $this->m_user["name"] =  strtolower($this->m_user["name"]);
+      //Send the username with the header
+      //This way we can always retrieve the user from apache logs
+      header('user: '.$this->m_user["name"]);            
       $GLOBALS["g_user"] = $this->m_user;
       $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
       sessionStore('loginattempts',''); //reset maxloginattempts
