@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.10  2001/07/11 21:17:42  ivo
+  * Version number now also contains tag.
+  *
   * Revision 4.9  2001/07/11 21:14:30  ivo
   * Added a global atk version number.
   *
@@ -298,7 +301,7 @@
       
       // $Name$ is the CVS tag.
       $version = atkversion();
-      if ("$Name$"!="") $version.=" ($Name$)";
+      if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <meta name="atkversion" value="'.$version.'">'."\n";
       
       for ($i = 0; $i < count($this->m_scripts); $i++) 
