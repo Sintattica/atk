@@ -289,8 +289,8 @@
           $entry["html"] = $this->hide($defaults, $fieldprefix);
           $funcname = $this->m_name."_display";
           if (method_exists($this->m_ownerInstance, $funcname))
-            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults);
-          else $entry["html"] .= $this->display($defaults);
+            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, "view");
+          else $entry["html"] .= $this->display($defaults, "view");
         }
 
         /* normal */
