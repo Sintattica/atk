@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.12  2001/06/19 11:41:49  ivo
+   * Authentication data is now stored globaly instead of per namespace.
+   *
    * Revision 4.11  2001/06/18 22:49:02  peter
    * Added ability to logout of the HTTP authentication (set variable atklogout to something...)
    *
@@ -127,6 +130,9 @@
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
       $md5 = false; // PHP_AUTH_PW is plain text..            
 
+      // authentication implies session
+//      atksession();
+
       // first check if we want to logout
       if (isset($atklogout) && !session_is_registered("relogin"))
       {
@@ -195,7 +201,7 @@
             $authenticated = true;
 
             // Remember that we are logged in..
-            $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user));
+            $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
 
             // write cookie
             if (atkconfig("authentication_cookie")&&$PHP_AUTH_USER!="administrator")
@@ -212,7 +218,8 @@
       // use session for authentication
       else
       {
-        $session_auth = $ATK_VARS["authentication"];
+    //    $session_auth = $ATK_VARS["authentication"];
+      $session_auth = $g_sessionManager->getValue("authentication", true);  
         if (atkconfig("authentication_session") && session_is_registered("login") && !empty($session_auth["authenticated"]) && !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];
@@ -378,6 +385,7 @@
     
     if (!$g_securityManager->authenticate())
     {
+      echo text("login_failed");
       atkdebug("login failed");
       exit;
     }
