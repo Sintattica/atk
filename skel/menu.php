@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.13  2001/06/14 12:26:45  ivo
+   * Submenu's are now opened with SESSION_DEFAULT instead of SESSION_NEW
+   *
    * Revision 4.12  2001/06/14 09:50:43  ivo
    * Submenu's opened a new session. This corrupted the session. Now they
    * continue in the same session.
@@ -101,7 +104,7 @@
     if ($g_menu[$atkmenutop][$i] == "-") $menu .= "<br>";
     
     /* submenu ? */
-    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_NEW).$config_menu_delimiter;
+    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$config_menu_delimiter;
     else if (empty($url) && !$enable) $menu .=text("menu_$name").$config_menu_delimiter;
       
     /* normal menu item */
