@@ -16,6 +16,8 @@ Changes in ATK 5.0.5
   turn was a manytoonerelation (in addToQuery function). [Lineke,Ivo]
 * atkManyBoolRelation now takes initial_values into account. [Ivo]
 * Fixed: atkLanguage broke tooltip functionality [Boy]
+* Changed some globals to proper functions (atkconfig & atktext) [Boy]
+* Moved Doctype to defaultconfig [Boy]
 
 Changes in ATK 5.0.4
 --------------------

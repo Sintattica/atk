@@ -591,7 +591,7 @@
     }
   }
 
-  $name = $config_atkroot."atk/db/class.atk".$GLOBALS["config_database"]."query.inc";
+  $name = $config_atkroot."atk/db/class.atk".atkconfig("database")."query.inc";
   include_once($name);
 
 ?>
