@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -31,7 +31,7 @@
                                            // but a link to the form.
   define("NF_NO_VIEW",               128); // Records may not be viewed.
   define("NF_COPY",                  256); // Records / trees may  be copied
-  
+
   define("NF_AUTOSELECT",            512); // If this flag is set and only one record is
                                            // present on a selectpage, atk automatically
                                            // selects it and moves on to the target.
@@ -46,24 +46,24 @@
 
   define("NF_NO_EXTENDED_SEARCH",   4096); // Extended search feature is turned off.
 
-  define("NF_MULTI_RECORD_ACTIONS", 8192); // Multi-selection of records is turned on.  
+  define("NF_MULTI_RECORD_ACTIONS", 8192); // Multi-selection of records is turned on.
   define("NF_MRPA",                16384); // Multi-priority-selection of records is turned on.
 
   define("NF_LOCK",                32768); // lock records
-  define("NF_ML",                  65536); // multilanguage support  
-  
+  define("NF_ML",                  65536); // multilanguage support
+
   define("NF_NO_IMPORT",          131072); // Quick way to disable the import feature
 
   define("NF_SPECIFIC_1",       33554432); // specific node flag 1
   define("NF_SPECIFIC_2",       67108864); // specific node flag 2
   define("NF_SPECIFIC_3",      134217728); // specific node flag 3
   define("NF_SPECIFIC_4",      268435456); // specific node flag 4
-  define("NF_SPECIFIC_5",      536870912); // specific node flag 5  
+  define("NF_SPECIFIC_5",      536870912); // specific node flag 5
 
   define("NF_MRA",           NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
-  define("NF_MULTILANGUAGE", NF_ML);  
+  define("NF_MULTILANGUAGE", NF_ML);
   define("NF_READONLY",      NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT); // aggregate flag to quickly create readonly nodes.
-  
+
   /**
    * action status flags
    * Note that these have binary numbers, even though an action could never have
@@ -111,13 +111,13 @@
   //error_reporting(E_ALL);
 
   require_once($config_atkroot."atk/ui/class.atkoutput.inc");
-  require_once($config_atkroot."atk/class.layout.inc");  
-  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");  
-  require_once($config_atkroot."atk/attributes/class.atkattribute.inc");  
+  require_once($config_atkroot."atk/class.layout.inc");
+  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
+  require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
-  require_once($config_atkroot."atk/modules/class.atkmodule.inc");  
+  require_once($config_atkroot."atk/modules/class.atkmodule.inc");
   require_once($config_atkroot."atk/lock/class.atklock.inc");
 
   // Create database object.
@@ -155,8 +155,8 @@
   /*******************************************/
 
   /**
-   * The atkNode class represents a piece of information that is part of an 
-   * application. This class provides standard functionality for adding, 
+   * The atkNode class represents a piece of information that is part of an
+   * application. This class provides standard functionality for adding,
    * editing and deleting nodes.
    * This class must be seen as an abstract base class: For every piece of
    * information in an application, a class must be derived from this class
@@ -164,21 +164,21 @@
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
-   */  
+   */
   class atkNode
-  {    
-        
+  {
+
     /**
      * reference to the class which is used to validate atknodes
      * the validator is overridable by changing this variabele
      *
      * @access private
-     * @var String 
+     * @var String
      */
     var $m_validate_class = "atk.atknodevalidator";
 
     /**
-     * Unique field sets of a certain node. 
+     * Unique field sets of a certain node.
      *
      * Indicates which field combinations should be unique.
      * It doesn't contain the unique fields which have been set by flag
@@ -213,7 +213,7 @@
      * @var array
      */
     var $m_attribList = array();
-    
+
     /**
      * Index list containing the attributes in the order in which they will
      * appear on screen.
@@ -221,7 +221,7 @@
      * @var array
      */
     var $m_attribIndexList = array();
-    
+
     /**
      * Reference to the page on which the node is rendering its output.
      * @access private
@@ -236,23 +236,23 @@
      * @var array
      */
     var $m_tabList = array();
-    
+
     /**
      * Keep track of tabs per attribute.
      * @access private
      * @var array
      */
     var $m_attributeTabs = array();
-    
+
     /**
-     * The nodetype. 
+     * The nodetype.
      * @access protected
      * @var String
      */
     var $m_type;
 
     /**
-     * The module of the node. 
+     * The module of the node.
      * @access protected
      * @var String
      */
@@ -264,21 +264,21 @@
      * @var atkDb
      */
     var $m_db;
-    
+
     /**
      * The table to use for data storage.
      * @access protected
      * @var String
      */
     var $m_table;
-    
+
     /**
-     * The name of the sequence used for autoincrement fields.     
+     * The name of the sequence used for autoincrement fields.
      * @access protected
      * @var String
      */
     var $m_seq;
-    
+
     /**
      * Name of the attribute that contains the language of a record.
      * Used with ATK's data internationalization feature.
@@ -309,7 +309,7 @@
      * @var String
      */
     var $m_action;
-    
+
     /**
      * The active action handler.
      * @access protected
@@ -326,16 +326,16 @@
 
     /**
      * var used for tracking relation within this node.
-     * @todo Remove this member, it's using memory while it's used only in 
+     * @todo Remove this member, it's using memory while it's used only in
      *       the case of multilanguage node, and even then only on one
      *       occasion.
      * @access private
      * @var array
      */
     var $m_relations = array();
-    
+
     /**
-     * Bitwise mask of node flags (NF_* flags). 
+     * Bitwise mask of node flags (NF_* flags).
      * @var int
      */
     var $m_flags;
@@ -358,10 +358,10 @@
     /**
      * Record filters, in attributename/required value pairs.
      * @access private
-     * @var array     
+     * @var array
      */
     var $m_filters = array();
-    
+
     /**
      * Record filters, as a list of sql statements.
      * @access private
@@ -370,7 +370,7 @@
     var $m_fuzzyFilters = array();
 
     /**
-     * For speed, we keep track of a list of attributes that we don't have to 
+     * For speed, we keep track of a list of attributes that we don't have to
      * load in recordlists.
      * @access protected
      * @var array
@@ -378,7 +378,7 @@
     var $m_listExcludes = array();
 
     /**
-     * For speed, we keep track of a list of attributes that we don't have to 
+     * For speed, we keep track of a list of attributes that we don't have to
      * load when in view pages.
      * @todo This can probably be moved to the view handler.
      * @access protected
@@ -387,7 +387,7 @@
     var $m_viewExcludes = array();
 
     /**
-     * For speed, we keep track of a list of attributes that have the cascade 
+     * For speed, we keep track of a list of attributes that have the cascade
      * delete flag set.
      * @todo This should be moved to the delete handler, or should not be
      *       cached at all. (caching this on each load is slower than just
@@ -398,11 +398,11 @@
     var $m_cascadingAttribs = array();
 
     /**
-     * Actions are mapped to security units. 
+     * Actions are mapped to security units.
      *
-     * For example, both actions "save" and "add" require access "add". If an 
-     * item is not in this list, it's treated 'as-is'. Derived nodes may add 
-     * more mappings to tell the systems that some custom actions require the 
+     * For example, both actions "save" and "add" require access "add". If an
+     * item is not in this list, it's treated 'as-is'. Derived nodes may add
+     * more mappings to tell the systems that some custom actions require the
      * same privilege as others.
      * Structure: array($action=>$requiredPrivilege)
      * @access protected
@@ -431,7 +431,7 @@
      *
      * If a class is named 'project', then by default, if the system needs to
      *  know whether a user may edit a record, the securitymanager searches
-     * for 'edit' access on 'project'. However, if an alias is set here, the 
+     * for 'edit' access on 'project'. However, if an alias is set here, the
      * securitymanger searches for 'edit' on that alias.
      * @access private
      * @var String
@@ -474,22 +474,22 @@
      * @var array
      */
     var $m_priority_actions = array();
-    
-    /** 
+
+    /**
      * Minimum for the mra priority select
      * @access private
      * @var int
      */
     var $m_priority_min = 1;
-    
-    /** 
+
+    /**
      * Maximum for the mra priority select
      * @access private
      * @var int
      */
     var $m_priority_max = 0;
 
-    /** 
+    /**
      * The lock instance
      * @access protected
      * @var atkLock
@@ -497,26 +497,26 @@
     var $m_lock = NULL;
 
     /**
-     * List of actions that should give success/failure feedback 
+     * List of actions that should give success/failure feedback
      * @access private
      * @var array
      */
-    var $m_feedback = array();        
-    
+    var $m_feedback = array();
+
     /**
      * Default language used by Multilanguage Nodes.
      * @access protected
      * @var String
      */
     var $m_defaultlanguage = "";
-    
+
     /**
      * Cached ui object
      * @access protected
      * @var atkUI
      */
-    var $m_atkUI = NULL; 
-    
+    var $m_atkUI = NULL;
+
     /**
      * Number to use with numbering
      * @access protected
@@ -525,7 +525,7 @@
     var $m_numbering = null;
 
     /**
-     * Constructor. 
+     * Constructor.
      *
      * This initialises the node. Derived classes should always call their
      * parent constructor ($this->atkNode($name, $flags), to initialize the
@@ -540,7 +540,7 @@
     {
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
-      $this->m_flags = $flags;            
+      $this->m_flags = $flags;
     }
 
     /**
@@ -548,10 +548,10 @@
      * @param atkAttribute $attribute The attribute you want to add
      * @param mixed $tab The tab(s) on which the attribute should be
      *                   displayed. Can be a tabname (String) or a list of
-     *                   tabs (array) or "*" if the attribute should be 
-     *                   displayed on all tabs.     
+     *                   tabs (array) or "*" if the attribute should be
+     *                   displayed on all tabs.
      * @param int $order The order at which the attribute should be displayed.
-     *                   If ommitted, this defaults to 100 for the first 
+     *                   If ommitted, this defaults to 100 for the first
      *                   attribute, and 100 more for each next attribute that
      *                   is added.
      */
@@ -641,7 +641,7 @@
           $this->m_primaryKey[] = $attribute->fieldName();
         }
       }
-      
+
       if($attribute->hasFlag(AF_MULTILANGUAGE))
       {
         $this->m_lngfield = $attribute->fieldName();
@@ -672,7 +672,7 @@
           // add new tab(s) to the tab list ("*" isn't a tab!)
           if (!is_array($tab) && $tab != "*") $tab = array($tab);
           if ($tab != "*")
-          {            
+          {
             if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = atk_array_merge($this->m_tabList["add"], $tab);
             if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = atk_array_merge($this->m_tabList["edit"], $tab);
             if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = atk_array_merge($this->m_tabList["view"], $tab);
@@ -681,7 +681,7 @@
 
         $attribute->m_order = $order;
         $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tab,"order"=>$attribute->m_order);
-        $attribute->m_index = $attrib_index;        
+        $attribute->m_index = $attrib_index;
         //$attribute->m_tabs = $tab;
         $this->m_attributeTabs[$attribute->fieldname()] = $tab;
         $attrib_index++;
@@ -691,12 +691,12 @@
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
-    }      
+    }
 
     /**
      * Remove an attribute.
-     * 
-     * Completely removes an attribute from a node. 
+     *
+     * Completely removes an attribute from a node.
      * Note: Since other functionality may already depend on the attribute
      * that you are about to remove, it's often better to just hide an
      * attribute if you don't need it.
@@ -725,7 +725,7 @@
         unset($this->m_attribIndexList[$listindex]);
       }
     }
-    
+
     /**
      * Get an attribute by name.
      * @param String $name The name of the attribute to retrieve.
@@ -735,7 +735,7 @@
     {
       return $this->m_attribList[$name];
     }
-    
+
     /**
      * Checks if the node has a certain flag set.
      * @param int $flag The flag to set.
@@ -748,7 +748,7 @@
 
     /**
      * Returns the primary key sql expression of a record.
-     * @param array $rec The record for which the primary key is calculated.     
+     * @param array $rec The record for which the primary key is calculated.
      * @return String the primary key of the record.
      */
     function primaryKey($rec)
@@ -763,10 +763,10 @@
       }
 
       return $primKey;
-    }       
+    }
 
     /**
-     * Retrieve the name of the primary key attribute. 
+     * Retrieve the name of the primary key attribute.
      *
      * Note: If a node has a primary key that consists of multiple attributes,
      * this method will retrieve only the first attribute!
@@ -781,10 +781,10 @@
      * Returns a primary key template.
      *
      * Like primaryKey(), this method returns a sql expression, but in this
-     * case, no actual data is used. Instead, template fields are inserted 
+     * case, no actual data is used. Instead, template fields are inserted
      * into the expression. This is useful for rendering multiple primary
      * keys later with a record and a template parser.
-     * 
+     *
      * @return String Primary key template
      */
     function primaryKeyTpl()
@@ -812,7 +812,7 @@
 
 
     /**
-     * Set the table that the node should use. 
+     * Set the table that the node should use.
      *
      * Note: This should be called in the constructor of derived classes,
      * after the base class constructor is called.
@@ -837,7 +837,7 @@
     /**
      * Create an alphabetical index.
      *
-     * Any string- or textbased attribute can be used to create an 
+     * Any string- or textbased attribute can be used to create an
      * alphabetical index in admin- and selectpages.
      * @param String $attribname The name of the attribute for which to create
      *                           the alphabetical index.
@@ -852,7 +852,7 @@
      * After calling this method, all attributes which are added after the
      * method call without specification of tab will be placed on the default
      * tab. This means you should use this method before you add any
-     * attributes to the node. 
+     * attributes to the node.
      * If you accept the default name for the first tab ("default") you do not
      * need to call this method.
      * @param String $tab the name of the default tab
@@ -861,23 +861,23 @@
     {
       $this->m_default_tab = $tab;
     }
-    
+
     /**
      * Get a list of tabs for a certain action.
-     * @param String $action The action for which you want to retrieve the 
+     * @param String $action The action for which you want to retrieve the
      *                       list of tabs.
      * @return array The list of tabnames.
-     * 
+     *
      */
     function getTabs($action)
     {
-      $list = &$this->m_tabList[$action];      
-      if (!is_array($list)) 
+      $list = &$this->m_tabList[$action];
+      if (!is_array($list))
       {
         // fallback to view tabs.
         $list = &$this->m_tabList["view"];
       }
-      
+
       // Attributes can also add tabs to the tablist.
       foreach(array_keys($this->m_attribList) as $attribname)
       {
@@ -886,7 +886,7 @@
         {
           $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
         } else atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
-      }      
+      }
       return $list;
     }
 
@@ -900,13 +900,13 @@
     function getActiveTab()
     {
       global $ATK_VARS;
-      $tablist = $this->getTabs($ATK_VARS["atkaction"]);          
-      
+      $tablist = $this->getTabs($ATK_VARS["atkaction"]);
+
       // Note: we may not read atktab from $this->m_postvars, because $this->m_postvars is not filled if this is
       // a nested node (in a relation for example).
       if (!empty($ATK_VARS["atktab"]) && in_array($ATK_VARS["atktab"], $tablist)) $tab = $ATK_VARS["atktab"];
       elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $tablist)) $tab = $this->m_default_tab;
-      else $tab = $tablist[0];      
+      else $tab = $tablist[0];
       return $tab;
     }
 
@@ -972,26 +972,26 @@
       $output.= '<img src="'.atkconfig("atkroot").'atk/images/lock.gif"><br><br>'.text("lock_locked").'<br>';
       $output.= '<br><form method="get">'.session_form(SESSION_BACK).
                         '<input type="submit" class="btn_cancel" value="&lt;&lt; '.text('back').'"></form>';
-      
+
       $ui = &$this->getUi();
       if (is_object($ui))
-      {                
+      {
         $total = $ui->renderBox(array("title"=>$this->actionTitle($this->m_action),
                                       "content"=>$output));
       }
       return $total;
-      
+
     }
-    
+
     /**
      * Get the ui instance for drawing and templating purposes.
      *
      * @return atkUi An atkUi instance for drawing and templating.
      */
     function &getUi()
-    {          
+    {
       if (!is_object($this->m_atkUI))
-      {      
+      {
         $this->m_atkUI = &atknew("atk.ui.atkui");
         if (is_object($this->m_atkUI))
         {
@@ -1000,19 +1000,19 @@
       }
       return $this->m_atkUI;
     }
-    
-    /** 
+
+    /**
      * Generate a title for a certain action on a certain action.
      *
      * The default implementation displayes the action name, and the
-     * descriptor of the current record between brackets. This can be 
+     * descriptor of the current record between brackets. This can be
      * overridden by derived classes.
      * @param String $action The action for which the title is generated.
      * @param array $record The record for which the title is generated.
      * @return String The full title of the action.
      */
     function actionTitle($action, $record="")
-    {      
+    {
       $ui = &$this->getUi();
       if (is_object($ui))
       {
@@ -1024,10 +1024,10 @@
         if ($descr!="") $res.= "&nbsp; [".$descr."]";
       }
       return $res;
-    }     
-    
+    }
+
     /**
-     * Place a set of tabs around content. 
+     * Place a set of tabs around content.
      * @param String $action The action for which the tabs are loaded.
      * @param String $content The content that is to be displayed within the
      *                        tabset.
@@ -1037,8 +1037,8 @@
     {
       $this->addStyle("tabs.css");
       $list = $this->getTabs($action);
-      if (count($list) > 1) 
-      {     
+      if (count($list) > 1)
+      {
         $ui = &$this->getUi();
         if (is_object($ui))
         {
@@ -1046,9 +1046,9 @@
                                        "content"=>$content));
         }
       }
-      return $content;      
+      return $content;
     }
-    
+
     /**
      * Determine the default form parameters for an action template.
      * @param boolean $locked If the current record is locked, pass true, so
@@ -1061,8 +1061,8 @@
       $params["lockstatus"] = $this->getLockStatusIcon($locked);
       $params["formend"] = '</form>';
       return $params;
-    }        
-    
+    }
+
     /**
      * Function outputs an array with edit fields. For each field the array
      * contains the name, edit HTML code etc. (name, html, obligatory,
@@ -1072,7 +1072,7 @@
      *       form, instead of an array with an overly complex structure.
      * @param String $mode        The edit mode ("add" or "edit")
      * @param array $record       The record currently being edited.
-     * @param array $forcelist    A key-value array used to preset certain 
+     * @param array $forcelist    A key-value array used to preset certain
      *                            fields to a certain value, regardless of the
      *                            value in the record.
      * @param array $suppresslist List of attributenames that you want to hide
@@ -1152,23 +1152,23 @@
                 if(is_object($this->m_attribList[$firstpart]))
                 {
                   $defaults[$firstpart][$field] = $forcedvalue;
-                  $attribname = $firstpart;                  
+                  $attribname = $firstpart;
                 }
                 else
-                {                  
+                {
                   // This is not a filter for this node.
                 }
               }
             }
             else
-            {              
+            {
               $defaults[$forcedvarname]=$forcedvalue;
               $attribname = $forcedvarname;
             }
 
             if($attribname!="")
-            {              
-              $p_attrib = &$this->m_attribList[$attribname];           
+            {
+              $p_attrib = &$this->m_attribList[$attribname];
               if (is_object($p_attrib)&&(!$p_attrib->hasFlag(AF_NO_FILTER))) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
             }
           }
@@ -1186,7 +1186,7 @@
        * edit() method by supplying an <attributename>_edit function in the derived classes.
        */
       $tab = $this->getActiveTab();
-            
+
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
@@ -1199,18 +1199,18 @@
           {
             $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
           }
-  
+
           /* sometimes a field is hidden although not specified by the field itself */
           $tabs = $this->m_attribIndexList[$r]["tabs"];
-          
+
           $theme = &atkTheme::getInstance();
           if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
-          
-          if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)            
+
+          if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)
           {
             $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
           }
-  
+
           /* we let the attribute add itself to the edit array */
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
@@ -1231,7 +1231,7 @@
      * Retrieve the initial values for a new record.
      *
      * The system calls this method to create a new record. By default
-     * this method returns an empty record, but derived nodes may override 
+     * this method returns an empty record, but derived nodes may override
      * this method to perform record initialization.
      *
      * @return array Array containing an initial value per attribute.
@@ -1247,10 +1247,10 @@
      * Retrieve new values for an existing record.
      *
      * The system calls this method to override the values of a record
-     * before editing the record. 
-     * The default implementation does not do anything to the record, but 
+     * before editing the record.
+     * The default implementation does not do anything to the record, but
      * derived classes may override this method to make modifications to.
-     * the record. 
+     * the record.
      *
      * @param array $record The record that is about to be edited.
      * @return array The manipulated record.
@@ -1260,15 +1260,15 @@
       return $record;
     }
 
-  
+
     /**
      * Get the template to use for a certain action.
      *
-     * The system calls this method to determine which template to use when 
-     * rendering a certain screen. The default implementation always returns 
-     * the same template for the same action (it ignores parameter 2 and 3). 
-     * You can override this method in derived classes however, to determine 
-     * on the fly which template to use. 
+     * The system calls this method to determine which template to use when
+     * rendering a certain screen. The default implementation always returns
+     * the same template for the same action (it ignores parameter 2 and 3).
+     * You can override this method in derived classes however, to determine
+     * on the fly which template to use.
      * The action, the current record (if any) and the tab are passed as
      * parameter. By using these params, you can have custom templates per
      * action, and/or per tab, and even per record.
@@ -1277,7 +1277,7 @@
      *                       template.
      * @param array $record  The record for which you want to return the
      *                       template (or NULL if there is no record).
-     * @param String $tab    The name of the tab for which you want to 
+     * @param String $tab    The name of the tab for which you want to
      *                       retrieve the template.
      * @return String The filename of the template (without path)
      */
@@ -1299,9 +1299,9 @@
      *
      * @param String $mode        The edit mode ("add" or "edit")
      * @param array $record       The record that should be hidden.
-     * @param array $forcelist    A key-value array used to preset certain 
+     * @param array $forcelist    A key-value array used to preset certain
      *                            fields to a certain value, regardless of the
-     *                            value in the record.     
+     *                            value in the record.
      * @param String $fieldprefix Of set, each form element is prefixed with
      *                            the specified prefix (used in embedded form
      *                            fields)
@@ -1321,25 +1321,25 @@
       $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
       foreach ($data["hide"] as $hide) $form .= $hide;
       return $form;
-    }        
+    }
 
     /**
      * Builds a list of tabs.
      *
-     * This doesn't generate the actual HTML code, but returns the data for 
+     * This doesn't generate the actual HTML code, but returns the data for
      * the tabs (title, selected, urls that should be loaded upon click of the
      * tab etc).
      * @param String $action The action for which the tabs should be generated.
      * @return array List of tabs
      */
     function buildTabs($action="")
-    {      
+    {
       if ($action=="")
       {
         // assume active action
         $action = $this->m_action;
       }
-      
+
       $result = array();
 
       // which tab is currently selected
@@ -1347,7 +1347,7 @@
 
       // build navigator
       $list = &$this->getTabs($action);
-      
+
       if (is_array($list))
       {
         $newtab["total"] = count($list);
@@ -1356,11 +1356,11 @@
           $newtab["title"] = text("tab_$t",$this->m_type);
           $newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
-          if ($this->m_action == "view") 
+          if ($this->m_action == "view")
           {
             $newtab["link"] = session_url($url, SESSION_DEFAULT);
           }
-          else 
+          else
           {
             $newtab["link"] = "javascript:atkSubmit('".atkurlencode(session_url($url, SESSION_DEFAULT))."')";
           }
@@ -1369,14 +1369,14 @@
         }
       }
       return $result;
-    }    
+    }
 
     /**
      * Retrieve an array with the default actions for a certain mode.
-     *     
+     *
      * This will return a list of actions that can be performed on records
      * of this node in an admin screen.
-     * The actions may contain a [pk] template variable to reference a record, 
+     * The actions may contain a [pk] template variable to reference a record,
      * so for each record you should run the stringparser on the action.
      *
      * @param String $mode The mode for which you want a list of actions.
@@ -1386,14 +1386,14 @@
      *                       displaying a recordlist in a onetomany-relation)
      *                     - "view" (for actions when viewing only)
      *                     Note: the default implementation of defaultActions
-     *                     makes no difference between "relation" and "admin" 
-     *                     and will return the same actions for both, but you 
+     *                     makes no difference between "relation" and "admin"
+     *                     and will return the same actions for both, but you
      *                     might want to override this behaviour in derived
      *                     classes.
      * @param array $params An array of extra parameters to add to all the
      *                      action urls. You can use this to pass things like
      *                      an atkfilter for example. The array should be
-     *                      key/value based.     
+     *                      key/value based.
      * @return array List of actions in the form array($action=>$actionurl)
      */
     function defaultActions($mode, $params=array())
@@ -1436,7 +1436,7 @@
       }
 
       return $actions;
-    }    
+    }
 
     /**
      * Sets the priority range, for multi-record-priority actions.
@@ -1458,8 +1458,8 @@
     {
       if (!is_array($actions)) $this->m_priority_actions = array();
       else $this->m_priority_actions = $actions;
-    }        
-  
+    }
+
     /**
      * Function returns a page in which the user is asked if he really wants
      * to perform a certain action.
@@ -1472,7 +1472,7 @@
      * @param String $action The action for which confirmation is needed.
      * @param boolean $locked Pass true if the current record is locked.
      * @param boolean $checkoverride If set to true, this method will try to
-     *                               find a custom method named 
+     *                               find a custom method named
      *                               "confirm".$action."()" (e.g.
      *                               confirmDelete() and call that method
      *                               instead.
@@ -1481,35 +1481,35 @@
      *                override if $checkoverride was true.
      */
     function confirmAction($atkselector, $action, $locked=false, $checkoverride=true)
-    {    
+    {
       $method = 'confirm'.$action;
       if ($checkoverride && method_exists($this, $method))
-        return $this->$method($atkselector, $locked);  
-    
+        return $this->$method($atkselector, $locked);
+
       $ui = &$this->getUi();
-      
+
       $this->addStyle("style.css");
 
       if (is_array($atkselector))
         $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
-      else $atkselector_str = $atkselector;        
-      
+      else $atkselector_str = $atkselector;
+
       $formstart ='<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">';
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
-      $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';    
-      
+      $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
+
       $buttons = array();
       $buttons[] = '<input name="confirm" class="btn" type="submit" value="'.text('yes').'">';
       $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.text('no').'">';
-      
+
       $content = "";
       $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
       if (count($recs)==1)
       {
         // 1 record, put it in the page title (with the actionTitle call, a few lines below)
-        $record = $recs[0];      
+        $record = $recs[0];
       }
       else
       {
@@ -1526,24 +1526,24 @@
           }
           $content.= "</ul>";
         }
-      }      
+      }
 
-      $content.= '<br>'.$this->confirmActionText($atkselector, $action, $checkoverride);      
-      
+      $content.= '<br>'.$this->confirmActionText($atkselector, $action, $checkoverride);
+
       $output.=$ui->renderAction($action, array("content"=>$content,
                                                 "formstart"=>$formstart,
                                                 "formend"=>'</form>',
                                                 "buttons"=>$buttons));
       return $ui->renderBox(array("title"=>$this->actionTitle('delete', $record),
-                                  "content"=>$output));                                          
+                                  "content"=>$output));
     }
 
     /**
-     * Determine the confirmation message. 
-     * @param String $atkselector The record(s) on which the action is 
+     * Determine the confirmation message.
+     * @param String $atkselector The record(s) on which the action is
      *                            performed.
      * @param String $action The action being performed.
-     * @param boolean $checkoverride If true, returns the output of a custom 
+     * @param boolean $checkoverride If true, returns the output of a custom
      *                               method named "confirm".$action."text()"
      * @return String The confirmation text.
      */
@@ -1557,7 +1557,7 @@
     /**
      * Small compare function for sorting attribs on order field
      * @access private
-     */    
+     */
     function attrib_cmp($a,$b)
     {
       if ($a["order"] == $b["order"]) return 0;
@@ -1568,7 +1568,7 @@
      * This function initialises certain elements of the node.
      *
      * This must be called right after the constructor. The function has a
-     * check to prevent it from being executed twice. If you construct a node 
+     * check to prevent it from being executed twice. If you construct a node
      * using 'new', you have to call this method. If you construct it with the
      * getNode or newNode method, you don't have to call this method.
      */
@@ -1623,29 +1623,29 @@
           $mod->$modifiername($this);
         }
       }
-      
+
       // We set the tabs for the attributes
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
       }
-      
+
       $this->attribSort();
 
       if ($this->hasFlag(NF_LOCK))
-      {        
+      {
         $this->m_lock = &atkLock::getInstance();
       }
-      
-      $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));      
-      
+
+      $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
+
 
       $this->m_initialised = true;
     }
 
     /**
-     * This function reads meta information from the database and initialises 
+     * This function reads meta information from the database and initialises
      * its attributes with the metadata.
      *
      * This method should be called before rendering a form, if you want the
@@ -1679,7 +1679,7 @@
      * @param boolean $fullpage If true (default), the dispatch function
      *                          renders a complete html page, including
      *                          <html><head><body> etc. If you set this to
-     *                          false, plain output is generated. Warning: If 
+     *                          false, plain output is generated. Warning: If
      *                          you set this to false, you are responsible for
      *                          loading all the required scripts, stylesheets
      *                          etc. (When $fullpage is true, these are
@@ -1698,7 +1698,7 @@
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
       }
-      
+
       $page = &$this->getPage();
 
       if ($this->allowed($this->m_action))
@@ -1710,12 +1710,12 @@
       }
       else
       {
-        $page->addContent($this->genericPage(text('access_denied'), "<br><br>".text("error_node_action_access_denied", $this->m_type)."<br><br><br>"));      
+        $page->addContent($this->genericPage(text('access_denied'), "<br><br>".text("error_node_action_access_denied", $this->m_type)."<br><br><br>"));
       }
-      
+
       $ui = &$this->getUi();
-      $screen = $page->render(text('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);            
-      
+      $screen = $page->render(text('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
+
       $output = &atkOutput::getInstance();
       $output->output($screen);
 
@@ -1727,7 +1727,7 @@
 
     /**
      * Render a generic page, with a box, title, stacktrace etc.
-     * @param String $title The title of the page. Appears in the box title 
+     * @param String $title The title of the page. Appears in the box title
      *                      and in the page header.
      * @param String $content The content to display in the box.
      * @return String A complete html page with the desired content.
@@ -1738,17 +1738,17 @@
        $this->addStyle("style.css");
        return $this->renderActionPage($title, $ui->renderBox(array("title"=>$title,
                                                                    "content"=>$content)));
-    }                    
-   
+    }
+
     /**
      * Render a generic action.
      *
-     * Renders actionpage.tpl for the desired action. This doesn't include a 
+     * Renders actionpage.tpl for the desired action. This doesn't include a
      * box. The output can be rendered in a box with atkUi's renderBox method
      * if desired.
      * @param String $action The action for which the page is rendered.
-     * @param mixed $blocks Pieces of html content to be rendered. Can be a 
-     *                      single string with content, or an array with 
+     * @param mixed $blocks Pieces of html content to be rendered. Can be a
+     *                      single string with content, or an array with
      *                      multiple content blocks.
      * @param String HTLM fragment for the action.
      * @param String $content The content to display in the box.
@@ -1760,13 +1760,13 @@
       {
         $blocks = ($blocks==""?array():array($blocks));
       }
-      
+
       $ui = &$this->getUi();
-      
+
       // todo: overridable action templates
       return $ui->render("actionpage.tpl", array("blocks"=>$blocks,
                                                  "title"=>$ui->title($this->m_module, $this->m_type, $action)));
-    }        
+    }
 
     /**
      * Use this function to enable feedback for one or more actions.
@@ -1780,7 +1780,7 @@
      * @param int $statusmask The status(ses) for which feedback is enabled.
      *                        If for example this is set to ACTION_FAILED,
      *                        feedback is enabled only when the specified
-     *                        action failed. It is possible to specify more 
+     *                        action failed. It is possible to specify more
      *                        than one status by concatenating with '|'.
      */
     function setFeedback($action, $statusmask)
@@ -1797,8 +1797,8 @@
         $this->m_feedback[$action] = $statusmask;
       }
     }
-            
-    /** 
+
+    /**
      * Get the page instance of the page on which the node can render output.
      * @return atkPage The page instance.
      */
@@ -1806,26 +1806,26 @@
     {
       atkimport("atk.ui.atkpage");
       $page = &atkPage::getInstance();
-     
+
       // Backwardscompatibility hack. We must inform the (deprecated) layout class
       // of the page.
       global $g_layout;
       $g_layout->m_atkpage = &$page;
-      
+
       return $page;
     }
 
     /**
      * Redirect the browser to a different location.
      *
-     * This is usually used at the end of actions that have no output. An 
-     * example: when the user clicks 'save and close' in an edit screen, the 
+     * This is usually used at the end of actions that have no output. An
+     * example: when the user clicks 'save and close' in an edit screen, the
      * action 'save' is executed. If the save is succesful, this method is
      * called to redirect the user back to the adminpage.
      * When $config_debug is set to 2, redirects are paused and you can click
      * a link to execute the redirect (useful for debugging the action that
      * called the redirect).
-     * Note: this method should be called before any output has been sent to 
+     * Note: this method should be called before any output has been sent to
      * the browser, i.e. before any echo or before the call to
      * atkOutput::outputFlush().
      *
@@ -1835,7 +1835,7 @@
      *                         back on the session stack).
      * @param array $record If you pass a record here, the record is passed
      *                      as 'atkpkret' to the redirected url. Usually it's
-     *                      not necessary to pass this parameter.      
+     *                      not necessary to pass this parameter.
      */
     function redirect($location="", $record=array())
     {
@@ -1849,15 +1849,15 @@
       {
         $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,1);
       }
-      
+
       if (count($record))
       {
         if ($this->m_postvars["atkpkret"]!="")
         {
-          $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));        
+          $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));
         }
       }
-      
+
       // The actual redirect.
       if (atkconfig("debug")>=2)
       {
@@ -1884,7 +1884,7 @@
      * Parse a set of url vars into a valid record structure.
      *
      * When attributes are posted in a formposting, the values may not be
-     * valid yet. After posting, a call to updateRecord should be made to 
+     * valid yet. After posting, a call to updateRecord should be made to
      * translate the html values into the internal values that the attributes
      * work with.
      * @param array $vars The request variables that were posted from a form.
@@ -1908,7 +1908,7 @@
      *
      * Similar to updateRecord(), but here you can pass an existing record
      * (for example loaded from the db), and update it with the the variables
-     * from the request. Instead of returning a record, the record you pass 
+     * from the request. Instead of returning a record, the record you pass
      * is modified directly.
      *
      * @param array $record The record to update.
@@ -1968,7 +1968,7 @@
 
     /**
      * Determine a descriptor of a record.
-     * 
+     *
      * The descriptor is a string that describes a record for the user. For
      * person records, this may be the firstname and the lastname, for
      * companies it may be the company name plus the city etc.
@@ -2006,11 +2006,11 @@
     }
 
     /**
-     * Validates a record. 
+     * Validates a record.
      *
      * Validates unique fields, required fields, dataformat etc.
      *
-     * @internal This method instantiates the node's validator object, and 
+     * @internal This method instantiates the node's validator object, and
      *           delegates validation to that object.
      *
      * @param array $record The record to validate
@@ -2028,7 +2028,7 @@
       $validateObj->setMode($mode);
 
       return $validateObj->validate();
-    } 
+    }
 
     /**
      * Add a unique field set.
@@ -2042,7 +2042,7 @@
      *                        unique in combination.
      */
     function addUniqueFieldset($fieldArr)
-    {  
+    {
       sort($fieldArr);
       if(!in_array($fieldArr, $this->m_uniqueFieldSets))
         $this->m_uniqueFieldSets[] = $fieldArr;
@@ -2050,18 +2050,18 @@
 
     /**
      * Update a record in the database.
-     * 
+     *
      * The record should already exist in the database, or this method will
      * fail.
      * @param array $record The record to update in the database.
-     * @return boolean True if succesful, false if not.     
+     * @return boolean True if succesful, false if not.
      */
     function updateDb(&$record)
     {
       $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
-      
+
       // The record that must be updated is indicated by 'atkorgkey'
       // (not by atkselector, since the primary key might have
       // changed, so we use the atkorgkey, which is the value before
@@ -2085,23 +2085,23 @@
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->needsUpdate($record))
           {
-            $storemode = $p_attrib->storageType($mode);            
+            $storemode = $p_attrib->storageType($mode);
             if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
             if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
             if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
           }
         }
-        
+
         if (!$this->_storeAttributes($storelist["pre"], $record, "update")) return false;
-        
+
         for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
         {
-          $p_attrib = &$this->m_attribList[$storelist["query"][$i]]; 
+          $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
           $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
 
-        if (count($query->m_fields) && !$query->executeUpdate()) return false;                      
-        
+        if (count($query->m_fields) && !$query->executeUpdate()) return false;
+
         if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
           $record["atkmlsplit"]=1;
@@ -2109,7 +2109,7 @@
           $mltool->updateMlRecords($this, $record,"update");
         }
 
-        if (!$this->_storeAttributes($storelist["post"], $record, "update")) return false;        
+        if (!$this->_storeAttributes($storelist["post"], $record, "update")) return false;
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
         // has been saved.
@@ -2118,7 +2118,7 @@
         {
           atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!</font>");
           $return = true;
-        }        
+        }
         return $return;
       }
       else
@@ -2127,21 +2127,21 @@
       }
       return true;
     }
-    
+
     /**
      * Call the store() method on a list of attributes.
      * @access private
-     * @param array $storelist The list of attributes for which the 
+     * @param array $storelist The list of attributes for which the
      *                         store() method should be called.
      * @param array $record The master record being stored.
      * @param String $mode The storage mode ("add", "copy" or "update")
      * @return boolean True if succesful, false if not.
      */
     function _storeAttributes($storelist, &$record, $mode)
-    {       
+    {
       // store special storage attributes.
       for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
-      {        
+      {
         $p_attrib = &$this->m_attribList[$storelist[$i]];
         if (!$p_attrib->store($this->m_db, $record, $mode))
         {
@@ -2156,8 +2156,8 @@
     /**
      * Count the number of records in the database that a call to selectDb
      * would return.
-     *     
-     * @param String $selector Sql expression used as a where-condition, to 
+     *
+     * @param String $selector Sql expression used as a where-condition, to
      *                         count only records that match the expression.
      * @param array $excludeList List of attributes to be excluded from the
      *                           query. By default, the attributes that should
@@ -2178,10 +2178,10 @@
       $query->addTable($this->m_table);
       $query->addCondition($selector);
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
-      
+
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
-       
+
       if (!$this->hasFlag(NF_NO_FILTER))
       {
         /* hard filters may be set */
@@ -2237,7 +2237,7 @@
              (
                is_object($p_attrib)
              )
-             &&             
+             &&
              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
@@ -2246,11 +2246,11 @@
               )
            )
         {
-          $loadmode = $p_attrib->loadType($mode);          
+          $loadmode = $p_attrib->loadType($mode);
           if (hasFlag($loadmode, ADDTOQUERY)) $loadlist["query"][]=$attribname;
-          
+
         }
-      }            
+      }
 
       for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
       {
@@ -2263,12 +2263,12 @@
         {
           $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
         }
-      }            
-   
+      }
+
 
       $querystring = $query->buildCount($this->hasFlag(NF_ML));
-      $result = $this->m_db->getrows($querystring);          
-      
+      $result = $this->m_db->getrows($querystring);
+
       // group by fix:
       // if there exists a group by (added by atk/filters) the 'else' situation occurs
       if(count($result)==1)
@@ -2278,10 +2278,10 @@
     }
 
     /**
-     * Copy a record in the database. 
+     * Copy a record in the database.
      *
      * Primarykeys are automatically regenerated for the copied record. Any
-     * detail records (onetomanyrelation) are copied too. Refered records 
+     * detail records (onetomanyrelation) are copied too. Refered records
      * manytoonerelation) are not copied.
      *
      * @param array $record The record to copy.
@@ -2307,11 +2307,11 @@
      *
      * Note that if 'atksearch' is set in the request vars, the search
      * expressions are automatically added as extra where-clauses.
-     * 
+     *
      * @todo Handling atksearch in this method is dirty, this should be
      *       controlable with parameters.
      *
-     * @param String $selector Sql expression used as a where-condition, to 
+     * @param String $selector Sql expression used as a where-condition, to
      *                         retrieve only records that match the
      *                         expression.
      * @param String $order The order in which to retrieve the records.
@@ -2344,7 +2344,7 @@
       $query->addCondition($selector);
 
       $mltool->addMlCondition($query,$this,$mode);
-      
+
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
       if (!$this->hasFlag(NF_NO_FILTER))
@@ -2365,8 +2365,8 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = $this->m_postvars['atksearch'];        
-        if (is_array($searchArray) && count($searchArray)>0)      
+        $searchArray = $this->m_postvars['atksearch'];
+        if (is_array($searchArray) && count($searchArray)>0)
         {
           $searchmode = $this->m_postvars["atksearchmode"];
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
@@ -2402,10 +2402,10 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         if (
-              ( 
+              (
                 is_object($p_attrib)
-              ) 
-              && 
+              )
+              &&
               (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
@@ -2413,8 +2413,8 @@
                 || ($p_attrib->hasFlag(AF_FORCE_LOAD))
               )
            )
-        {          
-          $loadmode = $p_attrib->loadType($mode);        
+        {
+          $loadmode = $p_attrib->loadType($mode);
           if (hasFlag($loadmode, POSTLOAD))
           {
             $loadlist[]=$attribname;
@@ -2443,7 +2443,7 @@
       $querystring = $query->buildSelect();
 
       $dbrecords = $this->m_db->getrows($querystring);
-      
+
       if(($mode=="edit" || $mode=="copy") && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
@@ -2466,7 +2466,7 @@
           } else
           $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
-        
+
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming
         // that attributes with load() functions can never be part of the primary key.
         // They can't be, because load() might *depend* on a primary key.
@@ -2476,7 +2476,7 @@
 
         $recordset[] = $therecord;
       }
-      
+
       // also load special storage attributes.
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
@@ -2490,15 +2490,15 @@
 
       return $recordset;
     }
-  
+
     /**
-     * Add this node to an existing query. 
+     * Add this node to an existing query.
      *
      * Framework method, it should not be necessary to call this method
      * directly.
-     * This method is used when adding the entire node to an existing     
+     * This method is used when adding the entire node to an existing
      * query, as part of a join.
-     * @todo The allfields parameter is too inflexible. 
+     * @todo The allfields parameter is too inflexible.
      * @param atkQuery $query The query statement
      * @param String $alias The aliasprefix to use for fields from this node
      * @param int $level The recursion level.
@@ -2541,7 +2541,7 @@
         $p_attrib = &$this->m_attribList[$attribname];
         $loadmode = $p_attrib->loadType($mode);
         if (hasFlag($loadmode, ADDTOQUERY))
-        {        
+        {
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
           if (!is_object($p_attrib))
           {
@@ -2574,7 +2574,7 @@
     {
       $query = &$this->m_db->createQuery();
 
-      $storelist = array();      
+      $storelist = array();
 
       $query->addTable($this->m_table);
 
@@ -2589,7 +2589,7 @@
           if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
         }
       }
-      
+
       if (!$this->_storeAttributes($storelist["pre"], $record, $mode)) return false;
 
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
@@ -2601,7 +2601,7 @@
         }
 
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
-      }            
+      }
 
       if (!$query->executeInsert())
       {
@@ -2611,7 +2611,7 @@
 
       // new primary key
       $record["atkprimkey"] = $this->primaryKey($record);
-      
+
       if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
         $record["atkmlsplit"]=1;
@@ -2626,10 +2626,10 @@
       }
 
       // Now we call a postAdd function, that can be used to do some processing after the record
-      // has been saved.      
-      if ($exectrigger) 
+      // has been saved.
+      if ($exectrigger)
       {
-        $return = $this->postAdd($record, $mode);       
+        $return = $this->postAdd($record, $mode);
         if(!isSet($return))
         {
           atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
@@ -2638,21 +2638,21 @@
         if (!$return)
         {
           atkdebug("postAdd failed..");
-        }        
+        }
         return $return;
 
       }
-      
+
       atkdebug($this->m_db->m_error);
       return false;
     }
 
     /**
-     * Delete record(s) from the database.     
+     * Delete record(s) from the database.
      *
      * After deletion, the postDel() trigger in the node method is called, and
      * on any attribute that has the AF_CASCADE_DELETE flag set, the delete()
-     * method is invoked. 
+     * method is invoked.
      *
      * @todo There's a discrepancy between updateDb, addDb and deleteDb:
      *       There should be a deleteDb which accepts a record, instead
@@ -2672,10 +2672,13 @@
           for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j++)
           {
             $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];
-            if (!$p_attrib->delete($recordset[$i]))
+            if (is_array($recordset[$i][$this->m_cascadingAttribs[$j]]) && $recordset[$i][$this->m_cascadingAttribs[$j]] !== NULL && !$p_attrib->isEmpty($recordset[$i]))
             {
-              // error
-              return false;
+              if (!$p_attrib->delete($recordset[$i]))
+              {
+                // error
+                return false;
+              }
             }
           }
         }
@@ -2707,15 +2710,15 @@
     }
 
     /**
-     * Function that is called by the framework, right after a new record has 
+     * Function that is called by the framework, right after a new record has
      * been saved to the database.
      *
      * This function does essentially nothing, but it can be overriden in
-     * derived classes if you want to do something special after you saved a 
+     * derived classes if you want to do something special after you saved a
      * record.
      *
      * @param array $record The record that has just been saved.
-     * @param String $mode The 'mode' indicates whether the added record was a 
+     * @param String $mode The 'mode' indicates whether the added record was a
      *                     completely new record ("add") or a copy ("copy").
      * @return boolean True if succesful, false if not.
      */
@@ -2729,7 +2732,7 @@
      * Function that is called by the framework, just before a new record will
      * be saved to the database.
      *
-     * This function does essentially nothing, but it can be overriden in 
+     * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to modify the record just before it will
      * be saved.
      *
@@ -2764,7 +2767,7 @@
 
     /**
      * Function that is called by the framework, just before an existing
-     * record will be saved to the database. 
+     * record will be saved to the database.
      *
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to modify the record just before it will
@@ -2781,7 +2784,7 @@
      * Function that is called by the framework, right after a record has been
      * deleted.
      *
-     * This function does essentially nothing, but it can be overriden in 
+     * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to do something special after a record is
      * deleted.
      *
@@ -2799,9 +2802,9 @@
      *
      * This function does nothing, but it can be overriden in derived classes
      * if you want to do some processing on a record before it is
-     * being copied. 
+     * being copied.
      * Typical usage would be: Suppose you have a field named 'title' in a
-     * record. In the preCopy method, you could change the title field of the 
+     * record. In the preCopy method, you could change the title field of the
      * record to 'Copy of ..', so the user can distinguish between the
      * original and the copy.
      *
@@ -2810,7 +2813,7 @@
      *                 reference.
      */
     function preCopy(&$record)
-    {      
+    {
     }
 
     /**
@@ -2829,7 +2832,7 @@
      * @param array $record The record for which the actions need to be
      *                      determined.
      * @param &$actions Reference to an array with the already defined
-     *                  actions. This is an associative array with the action 
+     *                  actions. This is an associative array with the action
      *                  identifier as key, and an url as value. Actions can be
      *                  removed from it, or added to the array.
      * @param &$mraactions List of multirecordactions that are supported for
@@ -2839,7 +2842,7 @@
     {
       // Do nothing.
     }
-    
+
 
     /**
      * Retrieve the security key of an action.
@@ -2871,8 +2874,8 @@
      * action on the node.
      *
      * @param String $action The action to be checked.
-     * @param array $record The record on which the action is to be performed. 
-     *                      The standard implementation ignores this 
+     * @param array $record The record on which the action is to be performed.
+     *                      The standard implementation ignores this
      *                      parameter, but derived classes may override this
      *                      method to implement their own record based
      *                      security policy. Keep in mind that a record is not
@@ -2897,9 +2900,9 @@
 
       // Resolve action
       $action = $this->securityKey($action);
-      
+
       // If action contains a dot, it's a complete nodename.action alias.
-      // Else, it's only an action alias, and we use the default node. 
+      // Else, it's only an action alias, and we use the default node.
       // (TODO: make it possible to use modulename.nodename.action aliases)
       if (strpos($action, ".")!==false)
       {
@@ -2921,7 +2924,7 @@
      * have a master/detail relationship, and people may manipulate details
      * when they have privileges on the master node.
      * Note: When setting an alias for the node, the node no longer has to
-     * have a registerNode call in the getNodes method in module.inc. 
+     * have a registerNode call in the getNodes method in module.inc.
      *
      * @param String $alias The node (module.nodename) to set as a security
      *                      alias for this node.
@@ -2949,7 +2952,7 @@
       {
         $this->m_unsecuredActions[] = $action;
       }
-    }    
+    }
 
     /**
      * Display a statusbar with a stacktrace and a help button.
@@ -2957,31 +2960,31 @@
      * @param boolean $locked is the currently displayed item locked?
      */
     function statusbar($locked=FALSE)
-    {      
+    {
       atkdebug("Obsolete use of statusbar()");
       if (!$this->m_statusbarDone)
       {
         global $g_sessionManager;
         $ui = &$this->getUi();
-        
+
         $params = array();
-                
-        $this->m_statusbarDone = true;        
+
+        $this->m_statusbarDone = true;
         if (atkconfig("stacktrace"))
         {
           $params["stacktrace"] = $g_sessionManager->stackTrace();
         }
-                
+
         $help = $this->getHelp();
         $params = array_merge($params, $help);
-                
-        $params["lockstatus"] = $this->getLockStatusIcon($locked);        
-        
-        return $ui->render("statusbar.tpl", $params);        
+
+        $params["lockstatus"] = $this->getLockStatusIcon($locked);
+
+        return $ui->render("statusbar.tpl", $params);
       }
       return "";
     }
-    
+
     /**
      * Retrieve help link for the current node.
      * @return String Complete html link, linking to the help popup.
@@ -2993,13 +2996,13 @@
       if ($res["helpurl"]!="")
       {
         $page = &$this->getPage();
-        $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");          
+        $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
         $res["helplabel"] = text("help");
         $res["helplink"] = '<a href="'.$res["helpurl"].'">'.$res["helplabel"].'</a>';
       }
       return $res;
     }
-    
+
     /**
      * Get img tag for lock icon.
      * @param boolean $lockstatus True if the record is locked, false if not.
@@ -3016,8 +3019,8 @@
 
     /**
      * Get the help url for this node.
-     * 
-     * Retrieves the url of the help popup, if there is help available for 
+     *
+     * Retrieves the url of the help popup, if there is help available for
      * this node.
      * @return String The help url, or an empty string if help is not
      *                available.
@@ -3063,18 +3066,18 @@
       else
       {
         $this->m_handler = &$this->getHandler($action);
-        $this->m_handler->handle($this, $action, $this->m_postvars);        
+        $this->m_handler->handle($this, $action, $this->m_postvars);
       }
     }
-    
-    /** 
+
+    /**
      * Get the atkActionHandler object for a certain action.
      *
-     * The default implementation returns a default handler for the action, 
+     * The default implementation returns a default handler for the action,
      * but derived classes may override this to return a custom handler.
      * @param String $action The action for which the handler is retrieved.
      * @return atkActionHandler The action handler.
-     */ 
+     */
     function &getHandler($action)
     {
       atkimport("atk.handlers.atkactionhandler");
@@ -3084,7 +3087,7 @@
     }
 
     /**
-     * Sets the search action. 
+     * Sets the search action.
      *
      * The search action is the action that will be performed
      * if only a single record is found after doing a certain search query.
@@ -3103,7 +3106,7 @@
     }
 
     /**
-     * This function resorts the attribIndexList. 
+     * This function resorts the attribIndexList.
      *
      * This is necessary if you add attributes *after* init() is already
      * called, and you set an order for those attributes.
@@ -3117,7 +3120,7 @@
      * Search all records for the occurance of a certain expression.
      *
      * This function searches in all fields that are not AF_HIDE_SEARCH, for
-     * a certain expression (substring match). The search performed is an 
+     * a certain expression (substring match). The search performed is an
      * 'or' search. If any of the fields contains the expression, the record
      * is added to the resultset.
      * @param String $epxression The keyword to search for.
@@ -3128,7 +3131,7 @@
       // Set default searchmethod to OR (put it in m_postvars, because selectDb
       // will use m_postvars to built it's search conditions).
       $this->m_postvars['atksearchmethod'] = "OR";
-      
+
       // To perform the search, we fill atksearch, so selectDb automatically
       // searches. Because an atksearch variable may have already been set,
       // we save it to restore it after the query.
@@ -3147,15 +3150,15 @@
 
       // We load records in admin mode, se we are certain that all fields are added.
       $recs = $this->selectDb("", $this->m_defaultOrder, "", $this->m_listExcludes, "", "admin");
-      
+
       // Restore original atksearch
       $this->m_postvars['atksearch'] = $orgsearch;
-      
+
       return $recs;
     }
 
     /**
-     * Determine the url for the feedbackpage. 
+     * Determine the url for the feedbackpage.
      *
      * Output is dependent on the feedback configuration. If feedback is not
      * enabled for the action, this method returns an empty string, so the
@@ -3163,7 +3166,7 @@
      * after completing the action.
      *
      * The $record parameter is ignored by the default implementation, but
-     * derived classes may override this method to perform record-specific 
+     * derived classes may override this method to perform record-specific
      * feedback.
      * @param String $action The action that was performed
      * @param int $status The status of the action.
@@ -3195,32 +3198,32 @@
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
-       
+
       // if the filter includes a tablename
       if ($field != "")
       {
         // check if the filter table is the same as the nodes table
         if (strtolower(trim($relation)) !== strtolower($this->m_table)) return "";
-        
+
         // go on to check the field
         $relation = $field;
       }
-      
+
       // All standard SQL operators
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
-      	
+
       // Check the filter for every operator
       foreach ($sqloperators as $sqloperator)
       {
         // split the fieldname from the fieldvalue
         list($relation_new, $dummy) = explode($sqloperator, $relation);
-          
+
         // check if the fieldname is in the attriblist
       	if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
       }
       return "";
-    }    
-    
+    }
+
     /**
      * Add a stylesheet to the page.
      *
@@ -3234,8 +3237,8 @@
       $theme = &atkTheme::getInstance();
       $page = &$this->getPage();
       $page->register_style($theme->stylePath($style));
-    }  
-    
+    }
+
     /**
      * Sets numbering of the attributes to begin with the number that was passed to it,
      * or defaults to 1.
@@ -3245,7 +3248,7 @@
     {
       $this->m_numbering = $number;
     }
-    
+
     /**
      * Gets the numbering of the attributes
      * @return mixed the number whith which the numbering starts
@@ -3287,7 +3290,7 @@
             $this->changeMapping($key,$value);
           }
     }
-    
+
     /**
      * change the securitymap that already exist. Where actions are mapped on $oldmapped change it by $newmapped
      * @param string $oldmapped the old value
