@@ -36,7 +36,7 @@
 
       // TODO/FIXME:This is platform specific code and should not be here
       // I think is still needed for older platform version (M1, M2) and RWS
-      $res .= '&nbsp;<img src="'.$iconpath.'delimiter.gif" border="0">&nbsp;';
+      $res .= '&nbsp;<img src="'.$theme->iconPath("delimiter","toolbar").'" border="0">&nbsp;';
       $res .= '<a href="javascript:popupSelection(\'pagesel.php\',\'pagesel\');" onmouseover="selectie=document.selection.createRange();"><img src="'.$iconpath.'link.gif" border="0" alt="Link"></a>';    
 
       return $res;
