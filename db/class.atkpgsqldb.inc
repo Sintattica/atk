@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/06/29 13:35:01  ivo
+   * pgsqldb and oci8db no longer assume sequence names to begin with 'seq_'
+   *
    * Revision 4.5  2001/06/27 15:25:43  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -241,7 +244,7 @@
       $this->connect();
 
       /* get sequence number and increment */
-      $query = "SELECT nextval('seq_$sequence') AS nextid";
+      $query = "SELECT nextval('$sequence') AS nextid";
     
       /* execute query */
       $id = @pg_exec($this->m_link_id, $query);
@@ -250,12 +253,12 @@
       if (empty($id))
       {
         /* create sequence */
-        $query = "CREATE SEQUENCE 'seq_$sequence'";
-        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");        
+        $query = "CREATE SEQUENCE '$sequence'";
+        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequence'");        
         
         /* try again */
-        $query = "SELECT nextval('seq_$sequence') AS nextid";
-        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
+        $query = "SELECT nextval('$sequence') AS nextid";
+        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequence'");                
         
         /* empty? */
         if (empty($id)) return 0;
