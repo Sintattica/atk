@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.3  2001/05/01 13:43:57  ivo
+   * New session features: stackVars and globalVars..
+   *
    * Revision 1.2  2001/05/01 12:17:02  ivo
    * bugfix
    *
@@ -31,12 +34,63 @@
     
     function session_read(&$postvars)
     {
+      $this->globalscope($postvars);           
+      $this->stackscope($postvars);
+    }
+    
+    function globalVar($var, $value="")
+    {
+      global $g_sessionData;
+      
+      if ($value=="") $value = $GLOBALS[$var];
+      
+      $g_sessionData["globals"][$var] = $value;
+    }
+    
+    function stackVar($var, $value="")
+    {
+      global $g_sessionData, $atklevel;
+            
+      $currentitem = &$g_sessionData["stack"][$atklevel];
+      
+      $currentitem[$var] = $value;
+      
+    }
+    
+    function globalscope(&$postvars)
+    {
+      global $g_sessionData;
+                  
+      $current = &$g_sessionData["globals"];
+      if (!is_array($current))
+      {
+        $current = array();
+      }
+                               
+      // Posted vars always overwrite anything in the current session..
+      foreach($current as $var => $value)
+      {
+        if (isset($postvars[$var])&&$postvars[$var]!="")
+        {
+          $current[$var] = $postvars[$var];
+        }
+      }                                     
+         
+      foreach($current as $var => $value)
+      {
+        $postvars[$var] = $value;
+      }                             
+          
+      var_dump($g_sessionData["globals"]);
+    }
+    
+    function stackscope(&$postvars)
+    {
       global $g_sessionData, $atklevel, $g_sessionVars;
-           
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
       atkdebug("ATKLEVEL: ".$atklevel);
             
-      $stack = $g_sessionData["stack"];            
+      $stack = &$g_sessionData["stack"];            
             
            
       if ($atklevel==-1||!is_array($stack))
@@ -87,15 +141,15 @@
       }
                 
          
-      foreach($g_sessionVars as $var)
+      foreach($currentitem as $var => $value)
       {
-        $postvars[$var] = $currentitem[$var];
+        $postvars[$var] = $value;
       }                             
-    
-      $g_sessionData["stack"] = $stack;
-      //echo "<hr>";
-      //var_dump($g_sessionData["stack"]);
-    }          
+        
+      echo "<hr>";
+      var_dump($g_sessionData["stack"]);
+    }
+
 
   }
 
