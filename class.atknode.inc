@@ -1251,7 +1251,7 @@
      * (if a limit is set, and there are more records)
      * @return a HTML string for navigating through records
      */
-    function buildNavigation($mode)
+    function buildNavigation($mode="")
     {
       global $PHP_SELF;
       $limit = (int)$this->m_postvars['atklimit'];
