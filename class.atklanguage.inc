@@ -34,7 +34,7 @@
      * @access private
      * @var String
      */ 
-    var $LANGDIR = "languages";
+    var $LANGDIR = "languages/";
     
     /**
      * Contains all currently loaded language strings.
@@ -294,15 +294,15 @@
     {    
       if ($module=="atk")
       {
-        $file = atkconfig("atkroot").$module."/".$this->LANGDIR."/$lng.lng";
+        $file = atkconfig("atkroot").$module."/".$this->LANGDIR."$lng.lng";
       }
       else if ($module=="langoverrides")
       {
-        $file = atkconfig("atklangoverridedir", atkconfig("atktempdir").$this->LANGDIR)."/$lng.lng";
+        $file = atkconfig("language_basedir", $this->LANGDIR)."$lng.lng";
       }
       else
       {
-        $file = moduleDir($module).$this->LANGDIR."/$lng.lng";
+        $file = moduleDir($module).$this->LANGDIR."$lng.lng";
       }
       if(file_exists($file)) {return $this->_setLanguage($file, $module, $lng);}
       else 
