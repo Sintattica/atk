@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.22  2001/09/12 11:30:44  ivo
+   * Changed guest level from 0 to -2, since 0 may be a valid userlevel.
+   *
    * Revision 4.21  2001/09/12 11:25:12  ivo
    * New feature: guest account (user that may login but do nothing)
    *
@@ -224,7 +227,7 @@
         // check guest user
         else if ($config_guestpassword!=""&&$PHP_AUTH_USER=="guest"&&$PHP_AUTH_PW==$config_guestpassword)
         {
-          $this->m_user = Array("name"=>"guest","level"=>0);
+          $this->m_user = Array("name"=>"guest","level"=>-2);
           // for convenience, we also store the user as a global variable.                     
           atkdebug("Guest (configfile) logged in");
           $authenticated = true;
@@ -321,7 +324,7 @@
         $allowed = true;
       }
       // user is guest? (guests may do nothing)
-      else if (($this->hasLevel(0)) || (strtolower($this->m_user["name"])=="guest"))
+      else if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="guest"))
       {
         $allowed = false;
       }
@@ -380,7 +383,7 @@
       }
       
       // User is guest (may do nothing)
-      if (($this->hasLevel(0)) || (strtolower($this->m_user["name"])=="administrator")) 
+      if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="administrator")) 
       {        
         return false;
       }
