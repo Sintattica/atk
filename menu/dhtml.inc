@@ -28,15 +28,14 @@
   /**
    * @internal Includes etc.
    */  
-  $config_platformroot = "../";
-  $config_atkroot = "../";
+  $config_atkroot = "../../";
   
   atkimport("atk.ui.atkpage");
   $page = &atkPage::getInstance();
   $ui =   &atknew("atk.ui.atkui");
   $theme = &atkTheme::getInstance();  
 
-  include_once("../atk.inc");
+  include_once($config_atkroot."atk.inc");
   include_once($config_atkroot."atk/menu/general.inc");
 
   global $g_menu;
