@@ -192,6 +192,12 @@
       elseif (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum;
       elseif (empty($current)) $current = mktime();
 
+      /* if for some weird reason $current is still not set, assign current time */
+      if (!isset($current))
+      {
+        $current = mktime();
+      }
+
       /* get dates in array format */
       if ($current !== NULL) $current = getdate($current);
       if (!empty($minimum))  $minimum = getdate($minimum);
