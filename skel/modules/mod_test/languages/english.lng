@@ -1,7 +1,0 @@
-<?php
-  /* menu */
-  $txt_menu_mod_test = "Test module";
-  $txt_menu_test_admin = "Test node admin";
-  $txt_mod_test_test = "Test node";
-    
-?>
