@@ -30,3 +30,10 @@ License (LGPL).
 ATK uses functions from the ADOdb Date Library, for date support prior to
 1970. The ADOdb Date Library (http://php.weblogs.com/adodb_date_time_library)
 is Copyright (c) 2003 John Lim and maide available under a BSD-style license.
+
+ATK uses SimpleTest (http://www.lastcraft.com/simple_test.php) for unit 
+testing. SimpleTest is Copyright (c)2003-2005 Marcus Baker (lastcraft.com) and
+made available under the Open Group Test Suite License. The full version of 
+SimpleTest including full documentation can be found on its homepage. Included 
+with permission.
+
