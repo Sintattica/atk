@@ -115,11 +115,17 @@
  
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
         {
+          /* FOLLOWING LINES ARE INTENTIONALLY DISABLED, in display mode 
+            (when we're viewing something that is readonly) we should not 
+            allow editing the destination record:            
           if ($this->m_destInstance->allowed("edit")&&!$this->m_destInstance->hasFlag(NF_NO_EDIT))
           {
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
           }
-          else if ($this->m_destInstance->allowed("view")&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+          else */
+          
+          // if we are allowed to edit, we're cerrtainly allowed to view.
+          if (($this->m_destInstance->allowed("view")||$this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
           {
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
           }
