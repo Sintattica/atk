@@ -156,7 +156,7 @@
      */
     function maxInputSize()
     {
-      return 60;
+      return 70;
     }
 
     /**
