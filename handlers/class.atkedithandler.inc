@@ -165,7 +165,7 @@
         $field = &$data["fields"][$i];
 				
 				$field_name = $field['name'];
-
+				
 				// elementen die bij een selectie van tabs horen
 				$tabnumber = count($field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs);
 				if($tabnumber > 1)
@@ -183,8 +183,7 @@
 				// elementen die bij 1 of alle tabs horen
 				else
 				{
-					$tab_name = "tab_";
-					$tab_name .= $field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs[0];
+					$tab_name = $field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs[0];
 					
 					// Van deze elementen kijken welke bij de tab horen die moet worden weergegeven
 					if (strstr($tab_name,$tab)){ $initial_on_tab = "yes"; } else { $initial_on_tab = "no"; }	
@@ -194,6 +193,14 @@
 					{
 						$tab_name = "alltabs";
 						$initial_on_tab = "yes";
+					}
+					elseif (empty($tab_name))
+					{
+						$tab_name = "tab_default";
+					}
+					else
+					{				
+						$tab_name = "tab_" . $tab_name;
 					}
 				}
 				
@@ -276,7 +283,7 @@
       $params["errors"] = $errors; // Add the list of errors.
       
       $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);
-      return $result;
+			return $result;
             
     }
   }
