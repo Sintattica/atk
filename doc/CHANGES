@@ -29,6 +29,7 @@ Changes in ATK 5.0.8
   to add a filter to the searchNodeInstance of the fuzzySearch 
   attribute [Boy]
 + Added $config_smart_debug for dynamic debugging based on IP etc.
++ Update functionality added to import handler [Boy]
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
@@ -64,6 +65,8 @@ Changes in ATK 5.0.8
   from Achievo to ATK [Boy]
 * Removed redundant code and minor bugfixes on atktheme, edithandler,
   emailattribute and atkattribute [Andres,Boy]
+* Made selectDb() able to handle with searching on an array [Boy]
+* Added searchmode param to searchDb() [Boy]
 
 Changes in ATK 5.0.7
 --------------------
