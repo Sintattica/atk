@@ -15,12 +15,15 @@
      {       
        global $g_db;
        if (atkconfig("auth_accountdisablefield")!="") 
+       {
          $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
+       }
        else 
+       {
          $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";         
+       }
        $recs = $g_db->getrows($query);              
-
-       if ($recs[0][atkconfig("auth_accountdisablefield")])
+       if ($recs[0][atkconfig("auth_accountdisablefield")]==1)
        {
          sessionStore('accountLocked', true);
          return false;
