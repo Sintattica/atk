@@ -52,6 +52,14 @@
      * @var int
      */
     var $m_maxRecords = 0;
+    
+    
+    /**
+     * The load method might build a custom filter. When it does, we might want
+     * to use it again in other methods.
+     * @var string
+     */
+    var $m_loadFilter = "";
 
     /**
      * Default constructor.
@@ -167,7 +175,6 @@
         // we pass 'admin' as mode, since we show a recordlist, and we need
         // all fields that we also get when we would be on an admin screen.
         $myrecords = $this->load(NULL, $record, "admin");
-
         $output.=$this->editHeader($record, $myrecords);
      
         if (count($myrecords)!=0)
@@ -334,6 +341,7 @@
           }
           $recordset = $this->m_destInstance->selectDb($where,"",$this->fetchLimitArray(),$excludes,"",$mode);
 
+          $this->m_loadFilter = $where;
           return $recordset;
         }
       }
@@ -575,7 +583,8 @@
       global $ATK_VARS;
 
       // create temporary node and set the right parameters
-      $destNode = &getnode($this->m_destination);
+      $this->createDestination();
+      $destNode = &$this->m_destInstance;
 
       $limitArray = $this->fetchLimitArray();
       $destNode->m_postvars["atklimit"]     = $limitArray["limit"];
@@ -583,20 +592,21 @@
       $destNode->m_postvars["limitPostfix"] = $this->fieldName();
       $destNode->m_action                   = $ATK_VARS["atkaction"];
       
+      // If we build a custom loadFilter (in the load method), use this filter
+      if ($this->m_loadFilter) $destfilter=$this->m_loadFilter;
+      // If not, a destinationFilter takes precedense over all other filters
+      elseif ($this->m_destinationFilter) $destfilter = $this->m_destinationFilter;
       // If we have a selector, we need to make sure the navigator filters on this
-      if ($ATK_VARS['atkselector'])
+      elseif ($ATK_VARS['atkselector'])
       {
         // if the filter is valid on the destination (highly unlikely) we just use it
-        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector'])) $destfilter = $ATK_VARS['atkselector'];
+        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector'])) 
+          $destfilter = $ATK_VARS['atkselector'];
         // if the filter is on the owner, we translate it back to the destination
         else if ($this->m_ownerInstance->validateFilter($ATK_VARS['atkselector']))
-        {
         	$destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
-        }
         // otherwise we just don't set a filter
       }
-      // However a destinationFilter takes precedense over all other filters
-      if ($this->m_destinationFilter) $destfilter = $this->m_destinationFilter;
 
       // the type of the temporary node has to be the type of the owner
       if ($destNode->m_type == $this->m_destInstance->m_type)
