@@ -36,6 +36,10 @@
     function edit($record="")
     {
       global $config_language, $g_layout;
+      
+      /* register javascript */
+      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
+      $g_layout->register_submitscript('submitSave(form);');
 
       $this->m_size = $g_layout->maxInputSize();      
 
