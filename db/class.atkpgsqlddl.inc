@@ -17,9 +17,7 @@
    */
    
   /**
-   * Oracle 9i ddl driver. 
-   *
-   * Based on 8i ddl class. Should work with Oracle 10i databases too.
+   * PostgreSQL ddl driver. 
    *
    * @author Peter C. Verhage <peter@ibuildings.nl>
    * @package atk
@@ -34,13 +32,15 @@
     }
     
     function getType($generictype)
-    {
+    {  
+      atkdebug("GETTYPE: " . $type);
+      
       switch ($generictype)
       {
         case "number": 
-          return "INTEGER";
+          return "INT4";
         case "decimal":
-          return "NUMERIC";
+          return "FLOAT8";
         case "string":
           return "VARCHAR";          
         case "date":
@@ -59,12 +59,19 @@
     
     function getGenericType($type)
     {
+      atkdebug("GETGENERICTYPE: " . $type);
+      
       $type = strtolower($type);
       switch($type)
       {
-        case "int": 
+        case "int":
+        case "int2":
+        case "int4":
+        case "int8":
           return "number";
         case "float":
+        case "float8":
+        case "float16":
           return "decimal";        
         case "varchar":
         case "char":

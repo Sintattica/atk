@@ -16,6 +16,10 @@
   /**
    * Base class for all ATK encryption methods
    *
+   * @todo Currently, 2 weak encryption implementations are available for
+   *       testing purposes. Strong encryption using the mcrypt() php 
+   *       extension is yet to be implemented.
+   *
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
    * @package atk

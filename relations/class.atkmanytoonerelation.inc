@@ -110,7 +110,7 @@
     {
       if ($this->isEmpty($rec))
       {
-      atkdebug($this->fieldName()." IS EMPTY!");
+        atkdebug($this->fieldName()." IS EMPTY!");
         return NULL;
       }
       else
@@ -517,8 +517,9 @@
               $query->addField($this->m_refKey[$i],"NULL","","",false); 
             }
             else
-            {                
-              $query->addField($this->m_refKey[$i],$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[$i]],"","",!$this->hasFlag(AF_NO_QUOTES));
+            {         
+              $fk = &$this->m_destInstance->getAttribute($this->m_destInstance->m_primaryKey[$i]);
+              $query->addField($this->m_refKey[$i],$fk->value2db($rec[$this->fieldName()]),"","",!$this->hasFlag(AF_NO_QUOTES));
             }
           }
           

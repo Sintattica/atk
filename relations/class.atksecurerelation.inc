@@ -25,7 +25,7 @@
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
    * @package atk
-   * @subpackage utils
+   * @subpackage relations
    *
    */
   class atkSecureRelation extends atkOneToOneRelation
@@ -79,7 +79,7 @@
       global $g_db;
       
       $linktable = "personData";
-      $linkpass = "linkpass";
+      $linkfield = "linkpass";
       
       $user = &getUser();
       $username = $user['name'];

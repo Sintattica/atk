@@ -16,6 +16,8 @@
   /**
    * Class for encrypting and decrypting data with the base64 algorithm
    *
+   * This isn't strong encryption. It is mainly used for testing purposes.
+   *
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
    * @package atk

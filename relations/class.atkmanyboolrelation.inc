@@ -132,7 +132,7 @@
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
           // magical stuff..
-          $newrecord = array();
+          $newrecord = $this->m_destInstance->initial_values(); 
           $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];
   
           $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];

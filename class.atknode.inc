@@ -2541,7 +2541,7 @@
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
       $query = &$this->m_db->createQuery();
-
+atk_var_dump("In adddb");
       $storelist = array();      
 
       $query->addTable($this->m_table);

@@ -26,6 +26,9 @@
   {
     /**
      * The encryption method for encrypting data with the bajus algorithm
+     * 
+     * This isn't strong encryption, it is meant mainly for testing
+     * purposes.
      * @param mixed $input  the data we want to encrypt
      * @param mixed $key    the key we want to encrypt the data with
      * @return mixed        the encrypted data

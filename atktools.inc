@@ -640,9 +640,8 @@
       }
     }
     else
-    {
-      // ltrim is a workaround for a php4.0.4pl1 bug
-      $var = ltrim(stripslashes($var));
+    {      
+      $var = stripslashes($var);
     }
   }
 
@@ -1278,7 +1277,7 @@
   
   /**
    * Makes an string with hidden input fields containing all posted vars
-   * @paray array $excludes array with the vars to exclude, default empty
+   * @param array $excludes array with the vars to exclude, default empty
    */  
   function makeHiddenPostvars($excludes=array())
   {

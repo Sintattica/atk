@@ -4,6 +4,17 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.0.5
+--------------------
++ Added atkFormatAttribute for editing formatted values. [Ivo]
+* Fixed alignment of fieldlabels and error messages. [Ivo]
+* Fix in NF_ML, when having optional relationships. [Lineke,Ivo]
+* Fixed removal of leading spaces from values by removing a php4.0.4pl1
+  compatibility hack. [Ivo]
+* Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
+  turn was a manytoonerelation (in addToQuery function). [Lineke,Ivo]
+* atkManyBoolRelation now takes initial_values into account. [Ivo]
+
 Changes in ATK 5.0.4
 --------------------
 + Added atkCurrencyAttribute to display currency values. [Mark]
@@ -27,8 +38,11 @@ Changes in ATK 5.0.4
 * Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
   turn was a manytoonerelation. [Lineke,Ivo]
 * atkListAttribute's display values are now fetchd from language file. [Ludo]
+* Fixed bug in postgres sequences support. [Jose]
+* Added 'between' search for PostgreSQL, fixed ddl driver. (bug #310) [Cesar]
 + Added Spanish translation. [Jose]
 * Updated German translation. [Udo]
+* Updated Russian translation and fixed charset problems. [Konstantin]
 
 Changes in ATK 5.0.3
 --------------------

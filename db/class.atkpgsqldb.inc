@@ -267,14 +267,14 @@
           /* empty? */
           if (empty($id)) return 0;
         }
-        return 0;
+              
+        /* get nextid */
+        $result = @pg_result($id, 0, "nextid");      
+
+        /* return id */
+        return $result;
       }
-
-      /* get nextid */
-      $result = @pg_result($id, 0, "nextid");      
-
-      /* return id */
-      return $result;
+      return 0;
     }
 
     /**
@@ -348,7 +348,7 @@
      */
     function getSearchModes()
     {      
-      return array("exact","substring","wildcard","regexp","greaterthan","greaterthanequal","lessthan","lessthanequal");
+      return array("exact","substring","wildcard","regexp","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
     
   }  

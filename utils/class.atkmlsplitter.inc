@@ -171,10 +171,10 @@
         foreach ($relations as $attribname=>$attribute)
         {
           $p_attrib = &$relations[$attribname];
-          if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+          if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML) && !$p_attrib->hasFlag(AF_HIDE))
           {
             $dest = $p_attrib->m_destInstance;
-            $query->addCondition("UPPER(".$attribname.".".$dest->m_lngfield.")='".$node->m_defaultlanguage."'");
+            $query->addCondition("(".$attribname.".".$dest->m_lngfield." IS NULL OR UPPER(".$attribname.".".$dest->m_lngfield.")='".$node->m_defaultlanguage."')");
           }
         }
       }

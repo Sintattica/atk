@@ -107,11 +107,11 @@ INPUT.btn_saveandclose
   background: #F00;  
 }
 
-
-
-.error
+.error,
+.errorlabel
 {  
   color: #FF0000;
   font-family: verdana, helvetica, arial;
   font-size: 12px;   
+  text-align: left;
 }

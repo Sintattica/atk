@@ -45,7 +45,7 @@ A.stacktrace:visited
   font-family: verdana, helvetica, arial, serif;
   font-size: 12px;  
   color: #000000;
-  text-align: right;
+  text-align: left;
 }
 
 .field
@@ -83,9 +83,18 @@ INPUT.btn_saveandclose
   font-weight: bold;
 }
 
-.error
+.errorlabel
 {  
   color: #FF0000;
   font-family: verdana, helvetica, arial, serif;
-  font-size: 12px;   
+  font-size: 12px;     
+  text-align: left;
+}
+
+.error
+{
+  color: #FF0000;
+  font-family: verdana, helvetica, arial, serif;
+  font-size: 12px;     
+  text-align: left;
 }

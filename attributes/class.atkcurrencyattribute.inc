@@ -16,7 +16,7 @@ useattrib("atknumberattribute");
    */
 
   /**
-   * The atkNumberAttribute can be used for money values.
+   * The atkCurrencyAttribute can be used for money values.
    *
    * @author Mark Baaijens <mark@ibuildings.nl>
    * @package atk
@@ -50,11 +50,11 @@ class atkCurrencyAttribute extends atkNumberAttribute
   }
   
   /**
-   * overrides the edit function to put the currencysymbol in from of the input field
+   * overrides the display function to put the currencysymbol in from of the input field
    */
   function display($record, $mode="")
   {
-    return $this->m_valutasymbol.parent::display($record,$mode);
+    return $this->m_valutasymbol.number_format(parent::display($record,$mode),2,",",".");
   }
 }
 
