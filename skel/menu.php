@@ -13,11 +13,15 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.21  2002/08/22 16:22:25  ivo
+   * Atk skel was exploitable by the ?config_atkroot= exploit.
+   *
    * Revision 4.20  2001/11/19 14:51:52  peter
    * Fixed bug in menu.php (did not include the general menu stuff).
    * $config_menu_layout can now be anything and defaults to... "default".
    *
    */  
+  $config_atkroot = "./";
   include_once("atk.inc");  
 
   atksession();

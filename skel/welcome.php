@@ -1,5 +1,5 @@
 <?php
-
+  $config_atkroot = "./";
   include_once("atk.inc");
 
   $g_layout->output("<html>");

@@ -1,6 +1,6 @@
 <?php
   // Setup the system
-
+  $config_atkroot = "./";
   include_once("atk.inc");
 
   atksession("beheer");
