@@ -53,7 +53,7 @@
     {
       $email = $record[$this->fieldName()];
       //first check complete string
-      if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,3}$", $email, $check)))
+      if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$", $email, $check)))
       {
         triggerError($record, $this->fieldName(), 'error_invalid_email');
       }
