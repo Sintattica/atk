@@ -28,6 +28,8 @@
   class atkSessionManager
   {
     var $m_namespace; 
+    
+    var $m_escapemode = false; // are we escaping?
   
     function atkSessionManager($namespace)
     {
@@ -62,53 +64,61 @@
     
     function stackVar($var, $value="")
     {
-      global $g_sessionData;
-            
-      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
-
-      if ($value=="")
+      if (!$this->m_escapemode)
       {
-        if ($GLOBALS[$var]!="")
-        {
-          $currentitem[$var] = $GLOBALS[$var];
-        }
-      }
-      else
-      {
-        $currentitem[$var] = $value;
-      }
-      if (!is_array($currentitem["defined_stackvars"])||!in_array($var, $currentitem["defined_stackvars"]))
-      {
-        $currentitem["defined_stackvars"][] = $var;
-      }
-      // We always return the current value..
-      return $currentitem[$var];
+        global $g_sessionData; // HIER GEBLEVEN, currentitem bestaat hier niet.
+       
+        $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
       
+        if (is_array($currentitem))
+        {
+          if ($value=="")
+          {
+            if ($GLOBALS[$var]!="")
+            {
+              $currentitem[$var] = $GLOBALS[$var];
+            }
+          }
+          else
+          {
+            $currentitem[$var] = $value;
+          }
+          if (!is_array($currentitem["defined_stackvars"])||!in_array($var, $currentitem["defined_stackvars"]))
+          {
+            $currentitem["defined_stackvars"][] = $var;
+          }
+          // We always return the current value..
+          return $currentitem[$var];
+        }  
+      }
     }        
     
     function pageVar($var, $value="")
     {
-      global $g_sessionData;
+      if (!$this->m_escapemode)
+      {
+        global $g_sessionData;
             
-      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
+        $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
 
-      if ($value=="")
-      {
-        if ($GLOBALS[$var]!="")
+        if ($value=="")
         {
-          $currentitem[$var] = $GLOBALS[$var];
+          if ($GLOBALS[$var]!="")
+          {
+            $currentitem[$var] = $GLOBALS[$var];
+          }
         }
+        else
+        {
+          $currentitem[$var] = $value;
+        }
+        if (!is_array($currentitem["defined_pagevars"])||!in_array($var, $currentitem["defined_pagevars"]))
+        {
+          $currentitem["defined_pagevars"][] = $var;
+        }
+        // We always return the current value..
+        return $currentitem[$var];      
       }
-      else
-      {
-        $currentitem[$var] = $value;
-      }
-      if (!is_array($currentitem["defined_pagevars"])||!in_array($var, $currentitem["defined_pagevars"]))
-      {
-        $currentitem["defined_pagevars"][] = $var;
-      }
-      // We always return the current value..
-      return $currentitem[$var];      
     }        
     
     function globalscope(&$postvars)
@@ -145,135 +155,120 @@
       // but we use the global var itself here, because it gets modified in 
       // the stackscope function.
       
-      if (!isset($atklevel)||$atklevel=="") $atklevel=0;
+      if (!isset($atklevel)||$atklevel=="") $atklevel=0;            
       
-      atkdebug("ATKLEVEL : ".$atklevel);
-            
+      atkdebug("ATKLevel: ".$atklevel);
+              
       $this->_verifyStackIntegrity();
-      
+        
       // New stack, new stackid, if level = -1.
       $stackid = atkStackID(($atklevel==-1));      
-                  
+                    
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
-            
-      if ($atklevel==-1||!is_array($stack))
-      {
-        atkdebug("Cleaning stack");
-        $stack = array();
-        $atklevel = 0;
-      }
-      else if ($atklevel==-2)
-      {
-        // Replace top level.
-        array_pop($stack);
-        
-        // Note that the atklevel is now -2. This is actually wrong. We are at 
-        // some level in the stack. We can determine the real level by 
-        // counting the stack.
-        $atklevel = count($stack);
-      }
-    //echo '<hr>precurrentitemcheck<pre>';
-    //var_dump($stack);
-    //echo '</pre><hr>';
       
-      $currentitem = $stack[$atklevel];
-      if (!isset($currentitem)||$currentitem=="")
-      {    
-        atkdebug("New level on session stack");
-        // new level.. always based on the previous level        
-        //$newstackitem = array();
-        //$currentitem = $stack[count($stack)-1];
-        $copieditem = $stack[count($stack)-1];
+      if ($postvars["atkescape"]!="")
+      {
+        $this->m_escapemode = true;
+        atkdebug("ATK session escapemode");
         
-        if (is_array($copieditem))
+        $currentitem = &$stack[count($stack)-1];
+          
+        atkdebug("Saving formdata in session");
+        
+        $atkformdata = array();
+        foreach(array_keys($postvars) as $varname)
         {
-          foreach($copieditem as $key=>$value)
+          // only save formdata itself, hence no $atk.. variables
+          if (substr($varname,0,3)!="atk")
           {
-            if(in_array($key,$g_sessionVars)||
-               (is_array($copieditem["defined_stackvars"])
-                &&in_array($key,$copieditem["defined_stackvars"])))
-            {
-              $currentitem[$key] = $value;
-            }
+            $atkformdata[$varname] = $postvars[$varname];
           }
-          $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
         }
-        
-        /*// and page vars are cleared because they are no longer valid in an upper level..
-        foreach($g_pageVars as $var)
-        {
-          $currentitem[$var]="";
-        }
-        
-        for($i=0;$i<count($currentitem["defined_pagevars"]);$i++)
-        {
-          $currentitem[$currentitem["defined_pagevars"][$i]]="";
-        }*/
-                
-        // Posted vars always overwrite anything in the current session..
-        foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
-        {
+        $currentitem["atkformdata"] = $atkformdata;    
+              
+        // also remember getvars that were passed in the url
+        foreach(array_keys($HTTP_GET_VARS) as $var)
+        {               
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
-            if ($postvars[$var]=="clear")
-            {                    
-              $currentitem[$var] = "";
-            }
-            else
-            {
-              $currentitem[$var] = $postvars[$var];
-            }            
+            $currentitem[$var] = $postvars[$var];
           }
         }
-      //echo '<pre>';var_dump($currentitem);
-              
-        array_push($stack, $currentitem); 
-        //var_dump($stack);
-        //echo '</pre>';
+                      
       }
       else
       {
-        // Stay at the current level..         
-        // If we are getting back from a higher level, we may now delete everything above
-        $deletecount = (count($stack)-1)-$atklevel;
-        for ($i=0;$i<$deletecount;$i++)
+              
+        if ($atklevel==-1||!is_array($stack))
         {
-          atkdebug("popped an item out of the stack");
-          array_pop($stack);
+          atkdebug("Cleaning stack");
+          $stack = array();
+          $atklevel = 0;
         }
-        // Posted vars always overwrite anything in the current session..
-        // unless we are escaping.. 
-        // if atkescape is set, we store the entire form in the stack        
-        $escaped = false;
-        if ($postvars["atkescape"]!="")
+        else if ($atklevel==-2)
         {
-          atkdebug("Saving formdata in session");
-          $escaped = true;
-          $atkformdata = array();
-          foreach(array_keys($postvars) as $varname)
-          {
-            // only save formdata itself, hence no $atk.. variables
-            if (substr($varname,0,3)!="atk")
-            {
-              $atkformdata[$varname] = $postvars[$varname];
-            }
-          }
-          $currentitem["atkformdata"] = $atkformdata;    
+          // Replace top level.
+          array_pop($stack);
           
-          // also remember getvars that were passed in the url
-          foreach(array_keys($HTTP_GET_VARS) as $var)
-          {               
+          // Note that the atklevel is now -2. This is actually wrong. We are at 
+          // some level in the stack. We can determine the real level by 
+          // counting the stack.
+          $atklevel = count($stack);
+        }      
+        
+        $currentitem = $stack[$atklevel];
+          
+        if (!isset($currentitem)||$currentitem=="") 
+        {    
+          atkdebug("New level on session stack");
+          // new level.. always based on the previous level        
+          //$newstackitem = array();
+          //$currentitem = $stack[count($stack)-1];
+          $copieditem = $stack[count($stack)-1];
+            
+          if (is_array($copieditem))
+          {
+            foreach($copieditem as $key=>$value)
+            {
+              if(in_array($key,$g_sessionVars)||
+                 (is_array($copieditem["defined_stackvars"])
+                  &&in_array($key,$copieditem["defined_stackvars"])))
+              {
+                $currentitem[$key] = $value;
+              }
+            }
+            $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
+          }
+
+          // Posted vars always overwrite anything in the current session..
+          foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
+          {
             if (isset($postvars[$var])&&$postvars[$var]!="")
             {
-              $currentitem[$var] = $postvars[$var];
+              if ($postvars[$var]=="clear")
+              {                    
+                $currentitem[$var] = "";
+              }
+              else
+              {
+                $currentitem[$var] = $postvars[$var];
+              }            
             }
           }
-          
-          // save it in the session stack..
-          $stack[$atklevel] = $currentitem;       
+                  
+          array_push($stack, $currentitem); 
         }
         else
-        {        
+        {
+          // Stay at the current level..         
+          // If we are getting back from a higher level, we may now delete everything above
+          $deletecount = (count($stack)-1)-$atklevel;
+          for ($i=0;$i<$deletecount;$i++)
+          {
+            atkdebug("popped an item out of the stack");
+            array_pop($stack);
+          }
+          
           foreach($g_pageVars as $var)                                                         
           {
             if (isset($postvars[$var])&&count($postvars[$var])>0)
@@ -281,9 +276,10 @@
               $currentitem[$var] = $postvars[$var];
             }
           }          
+          
           // page vars must overwrite the current stack..
           $stack[$atklevel] = $currentitem;       
-          
+              
           // session vars need not be remembered.. 
           foreach($g_sessionVars as $var)                                                         
           {
@@ -292,30 +288,24 @@
               $currentitem[$var] = $postvars[$var];
             }
           }
-        }      
-      }              
-          
-      if (is_array($currentitem["atkformdata"]))
-      {
-        atkdebug("Session formdata present");
-        // atkformdata will be present in postvars.. editForm() has to read them..
-      }
-    
-      if (is_array($currentitem))
-      {
-        foreach($currentitem as $var => $value)
+            
+        }              
+              
+        if (is_array($currentitem["atkformdata"]))
         {
-          $postvars[$var] = $value;
-        }  
-      }
-//      var_dump($postvars);
-        
-      //echo "<hr>STACK: ";
-      //var_dump($g_sessionData[$this->m_namespace]["stack"]);
-    //  echo "<hr>Final stack:<pre>";var_dump($g_sessionData[$this->m_namespace]["stack"]);echo '</pre>';
-  //    global $QUERY_STRING;
-//    echo $QUERY_STRING;
-    
+          atkdebug("Session formdata present");
+          // atkformdata will be present in postvars.. editForm() has to read them..
+        }
+      
+        if (is_array($currentitem))
+        {
+          foreach($currentitem as $var => $value)
+          {
+            $postvars[$var] = $value;
+          }  
+        }
+      } // end if atkescape
+            
     }
     
     function stackTrace()
@@ -353,8 +343,7 @@
     function _verifyStackIntegrity()
     {
       global $g_sessionData, $atkstackid, $atklevel, $atkprevlevel;
-      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
-      
+      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];    
       if (!is_array($stack)) $prevlevelfromstack = 0;
       else $prevlevelfromstack = count($stack)-1;      
       
