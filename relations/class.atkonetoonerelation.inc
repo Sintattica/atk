@@ -8,6 +8,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/11 14:59:56  ivo
+   * Fixed serious bug in onetoone relation that could overwrite records in a
+   * table..
+   *
    * Revision 4.2  2001/05/11 12:25:52  ivo
    * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
    * appeared when the two were used in combination)
@@ -197,11 +201,14 @@
       if ($vars["mode"]=="edit")
       {
         atkdebug("Updating existing one2one record");
+        // we put the vars in the postvars, because there is information
+        // like atkorgkey in it that is vital.
+        $this->m_destInstance->m_postvars = $vars;
         $this->m_destInstance->updateDb($vars);
       }
       else if ($vars["mode"]=="add")
       {
-        atkdebug("Adding new one2one record");       
+        atkdebug("Adding new one2one record");
         $this->m_destInstance->addDb($vars);
       }
       else

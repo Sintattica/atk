@@ -10,6 +10,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.9  2001/05/11 14:59:56  ivo
+ * Fixed serious bug in onetoone relation that could overwrite records in a
+ * table..
+ *
  * Revision 1.8  2001/05/10 08:31:01  ivo
  * Major upgrade. Changes:
  * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -119,9 +123,9 @@
     $file = "class.$type.inc";
     
     /* filename */
-    if (empty($module)) $file = $config_atkroot."class.$type.inc";
-    else $file = "$config_module_path/$module/class.$type.inc";
-    
+    if (empty($module)) $file = $config_atkroot."class.$type.inc";  
+    else $file = "$config_atkroot$config_module_path/$module/class.$type.inc";
+  
     /* check for file */
     if (!file_exists($file))
     {

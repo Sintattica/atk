@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.28  2001/05/11 14:59:56  ivo
+   * Fixed serious bug in onetoone relation that could overwrite records in a
+   * table..
+   *
    * Revision 4.27  2001/05/11 12:25:52  ivo
    * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
    * appeared when the two were used in combination)
@@ -2151,42 +2155,50 @@
 
       $query->addTable($this->m_table);
       
-      $query->addCondition($this->m_postvars['atkorgkey']);
-
-      $storelist = array();
-
-      foreach (array_keys($this->m_attribList) as $attribname)
+      if ($this->m_postvars['atkorgkey']!="")
       {
-        $p_attrib = &$this->m_attribList[$attribname];        
-        if ($p_attrib->hasFlag(AF_READONLY)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
- 	      {
-          if (method_exists($p_attrib,"store"))
-          {
-            $storelist[]=$attribname;
-          }
-          else
-          {
-            $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
-          }
-	      }
+      
+        $query->addCondition($this->m_postvars['atkorgkey']);
+
+        $storelist = array();
+
+        foreach (array_keys($this->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_attribList[$attribname];        
+          if ($p_attrib->hasFlag(AF_READONLY)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
+ 	        {
+            if (method_exists($p_attrib,"store"))
+            {
+              $storelist[]=$attribname;
+            }
+            else
+            {
+              $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
+            }
+	        }
+        }
+
+        $querystring = $query->buildUpdate();
+
+        //$query.= " WHERE ;
+        atkdebug("updatedb - querystring: ".$querystring);
+        $g_db->query($querystring);
+
+        // also store special storage attributes.
+        for ($i=0;$i<count($storelist);$i++)
+        {
+          $p_attrib = &$this->m_attribList[$storelist[$i]];
+          $p_attrib->store($g_db, $record,"update");
+        }
+
+        // Now we call a postUpdate function, that can be used to do some processing after the record
+        // has been saved.
+        $this->postUpdate($record);
       }
-
-      $querystring = $query->buildUpdate();
-
-      //$query.= " WHERE ;
-      atkdebug("updatedb - querystring: ".$querystring);
-      $g_db->query($querystring);
-
-      // also store special storage attributes.
-      for ($i=0;$i<count($storelist);$i++)
+      else
       {
-        $p_attrib = &$this->m_attribList[$storelist[$i]];
-        $p_attrib->store($g_db, $record,"update");
+        atkdebug("NOT UPDATING! NO SELECTOR SET!");
       }
-
-      // Now we call a postUpdate function, that can be used to do some processing after the record
-      // has been saved.
-      $this->postUpdate($record);
 
     }
 
