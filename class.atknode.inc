@@ -719,7 +719,7 @@
           // class to display an attribute. If it exists we will use that method
           // else we will just use the attribute's display method.
           $funcname = $p_attrib->m_name."_display";
-          if (method_exists($this, $funcname)) $editsrc = $this->$funcname($record);
+          if (method_exists($this, $funcname)) $editsrc = $this->$funcname($record, "view");
           else $editsrc=$p_attrib->display($record, "view");
 
           $page .= $g_layout->ret_td($editsrc, 'colspan="'.$tdcount.'" valign="top"');
