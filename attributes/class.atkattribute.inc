@@ -47,7 +47,8 @@
   define("AF_NO_FILTER",                      2097152); // ignore filters when selecting records (relation)
   define("AF_PARENT",                         4194304); // parent field for parent child relations (treeview)
   define("AF_NO_QUOTES",                      8388608); // no quotes are used when adding to database
-  define("AF_MULTILANGUAGE",                 16777216); // multi-language field
+  define("AF_ML",                            16777216); // multi-language field
+  define("AF_MULTILANGUAGE",                    AF_ML);
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
 
