@@ -1509,14 +1509,21 @@
           }
         }
 
-        // special rowColor method makes it possible to change the row color based on the record data
+        // special rowColor method makes it possible to change the row color based on the record data.
+        // the method can return a simple value (which will be used for the normal row color), or can be
+        // an array, in which case the first element will be the normal row color, and the second the mouseover
+        // row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
         $method = "rowColor";
         if (method_exists($this, $method))
         {
-          $bgn = $this->$method(&$recordlist[$i], $i, FALSE);
-          $bgh = $this->$method(&$recordlist[$i], $i, TRUE);
+          $bgn = $this->$method(&$recordlist[$i], $i);
+          if (is_array($bgn))
+          {
+            $bgh = $bgn[1];
+            $bgn = $bgn[0];
+          }
+          else $bgh = $g_theme["RowMouseOver"];
         }
-        if (empty($bgh)) $bgh = $g_theme["RowMouseOver"];
 
         // alternate colors of rows
         $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
