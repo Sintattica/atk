@@ -274,6 +274,11 @@
     var $m_listExcludes = array();
 
     /**
+     * For speed, we keep a list of fields we don't have to load when in view mode
+     */
+    var $m_viewExcludes = array();
+
+    /**
      * For speed, we keep a list of fields that have the cascade delete flag set..
      */
     var $m_cascadingAttribs = array();
@@ -407,6 +412,14 @@
         if (!in_array($attribute->fieldName(),$this->m_listExcludes))
         {
           $this->m_listExcludes[]=$attribute->fieldName();
+        }
+      }
+
+      if ($attribute->hasFlag(AF_HIDE)&&!$attribute->hasFlag(AF_PRIMARY))
+      {
+        if (!in_array($attribute->fieldName(),$this->m_viewExcludes))
+        {
+          $this->m_viewExcludes[]=$attribute->fieldName();
         }
       }
 
@@ -2186,7 +2199,7 @@
     function action_view()
     {
       atkdebug("Action view");
-      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","view");
+      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","",$this->m_viewExcludes,"","view");
       $this->viewPage($recordset[0]);
     }
 

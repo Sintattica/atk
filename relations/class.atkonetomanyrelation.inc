@@ -189,7 +189,7 @@
           $this->m_destInstance->addFilter($this->m_destinationFilter);
         }
 
-        if ($mode=="admin" || $mode=="select")
+        if ($mode=="admin" || $mode=="select" || $mode=="view")
         {
           // we only need fields that are displayed in the descriptor.
           $excludes = $this->m_destInstance->m_listExcludes;
