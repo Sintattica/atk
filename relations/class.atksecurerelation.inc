@@ -72,6 +72,24 @@
       $this->m_linkbackfield = $linkbackfield;
     }
   
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    {
+      if ($this->hasFlag(AF_ONETOONE_INTEGRATE))
+      {
+        // integrated version, don't add ourselves, but add all columns from the destination.
+        if ($this->createDestination())
+        {
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+            $p_attrib->addFlag(AF_NO_SORT);
+          }
+        }
+      }
+      parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby);
+    }
+    
+    
     /**
      * Gets the password for the link
      * for more security the administrator gets a random password. You have to capture in your application that
@@ -84,6 +102,7 @@
     {
       global $g_db;
       
+      if ($this->m_linkpass) return $this->m_linkpass;
       if (!$linktable) $linktable = $this->m_linktable;
       if (!$linkfield) $linkfield = $this->m_linkfield;
       
@@ -116,8 +135,8 @@
 
         $linkpass = $encryptedpass['pass'];
       }
-
-      return $crypt->decryptKey($linkpass,$password);
+      $this->m_linkpass = $crypt->decryptKey($linkpass,$password);
+      return $this->m_linkpass;
     }
   
     /**
@@ -174,7 +193,7 @@
             $records = $this->m_destInstance->selectDb();
            
             // create lookup table for easy reference.
-            $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);           
+            $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
             for ($i=0, $_i=count($records); $i<$_i; $i++)
             {
               $link = $records[$i][$this->m_linkbackfield];                              
@@ -226,23 +245,30 @@
       }
       else 
       { 
-        if (!$this->m_linkpass) $this->m_linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
+        $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
         
         $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
         $result = $g_db->getrows($query);
         $link = $result[0][$this->fieldName()];
   
         $cryptedlink = $this->m_crypt->decrypt($link,$this->m_linkpass);
-        $record[$this->fieldName()] = $cryptedlink;
+        if ($cryptedlink)
+        {
+          $record[$this->fieldName()] = $cryptedlink;
 
-        //for the use of encrypted id's we don't want to use the refkey,
-        //because in that case we have to encrypt the id of the employee
-        //and than atk CAN get the destination data, but not the owner data.
-        //so we backup de refkey, make in empty and put it back after loading the record.
-        $backup_refkey = $this->m_refKey;
-        $this->m_refKey = "";
-        return parent::load($db, $record, $mode);
-        $this->m_refKey = $backup_refkey;
+          //for the use of encrypted id's we don't want to use the refkey,
+          //because in that case we have to encrypt the id of the employee
+          //and than atk CAN get the destination data, but not the owner data.
+          //so we backup de refkey, make in empty and put it back after loading the record.
+          $backup_refkey = $this->m_refKey;
+          $this->m_refKey = "";
+          return parent::load($db, $record, $mode);
+          $this->m_refKey = $backup_refkey;
+        }
+        else 
+        {
+          atkdebug("Could not decrypt the link: $link for ".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]);
+        }
       }
     }
 
