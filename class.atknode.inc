@@ -1501,8 +1501,13 @@
     }
 
     /**
-     * Determine the confirmation message. HIER GEBLEVEN
-     * @param String 
+     * Determine the confirmation message. 
+     * @param String $atkselector The record(s) on which the action is 
+     *                            performed.
+     * @param String $action The action being performed.
+     * @param boolean $checkoverride If true, returns the output of a custom 
+     *                               method named "confirm".$action."text()"
+     * @return String The confirmation text.
      */
     function confirmActionText($atkselector="", $action="delete", $checkoverride=TRUE)
     {
@@ -1511,7 +1516,10 @@
       else return text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_type, $this->m_module);
     }
 
-    // Small compare function for sorting attribs on order field
+    /**
+     * Small compare function for sorting attribs on order field
+     * @access private
+     */    
     function attrib_cmp($a,$b)
     {
       if ($a["order"] == $b["order"]) return 0;
@@ -1519,9 +1527,12 @@
     }
 
     /**
-     * This function initialises certain elements of the node. This must be called right
-     * after the constructor. The function has a check to prevent it from being executed
-     * twice
+     * This function initialises certain elements of the node.
+     *
+     * This must be called right after the constructor. The function has a
+     * check to prevent it from being executed twice. If you construct a node 
+     * using 'new', you have to call this method. If you construct it with the
+     * getNode or newNode method, you don't have to call this method.
      */
     function init()
     {
@@ -1592,8 +1603,11 @@
     }
 
     /**
-     * This function reads meta information from the database and initialises it's attributes
-     * with the value of it.
+     * This function reads meta information from the database and initialises 
+     * its attributes with the metadata.
+     *
+     * This method should be called before rendering a form, if you want the
+     * sizes of all the inputs to match the fieldlengths from the database.
      */
     function setAttribSizes()
     {
@@ -1613,18 +1627,21 @@
     }
 
     /**
-     * The dispatcher. This functions looks at the atkaction from the postvars
-     * and determines what should be done.
-     * @param $postvars Posted vars
-     * @param $fullpage If true, the dispatch function renders a complete
-     *                  html page, including <html><head><body> etc.
-     *                  This is the default. If you set this to false,
-     *                  just plain output is generated. Warning:
-     *                  If you set this to false, YOU are responsible for
-     *                  handling $page->m_scripts, $page->m_stylesheets
-     *                  and $page->m_submitscripts. (when $fullpage is true,
-     *                  these are automatically includedn in the head of the page.
+     * This is the wrapper method for all http requests on a node.
      *
+     * The method looks at the atkaction from the postvars and determines what
+     * should be done. If possible, it instantiates actionHandlers for
+     * handling the actual action.
+     *
+     * @param array $postvars The request variables for the node.
+     * @param boolean $fullpage If true (default), the dispatch function
+     *                          renders a complete html page, including
+     *                          <html><head><body> etc. If you set this to
+     *                          false, plain output is generated. Warning: If 
+     *                          you set this to false, you are responsible for
+     *                          loading all the required scripts, stylesheets
+     *                          etc. (When $fullpage is true, these are
+     *                          automatically included in the page header.
      */
     function dispatch($postvars, $fullpage=true)
     {
@@ -1665,8 +1682,13 @@
       atkdebug("disconnected from the database");
     }
 
-    /*** The node actions ***/        
-       
+    /**
+     * Render a generic page, with a box, title, stacktrace etc.
+     * @param String $title The title of the page. Appears in the box title 
+     *                      and in the page header.
+     * @param String $content The content to display in the box.
+     * @return String A complete html page with the desired content.
+     */
     function genericPage($title, $content)
     {
        $ui = &$this->getUi();
@@ -1675,6 +1697,20 @@
                                                                    "content"=>$content)));
     }                    
    
+    /**
+     * Render a generic action.
+     *
+     * Renders actionpage.tpl for the desired action. This doesn't include a 
+     * box. The output can be rendered in a box with atkUi's renderBox method
+     * if desired.
+     * @param String $action The action for which the page is rendered.
+     * @param mixed $blocks Pieces of html content to be rendered. Can be a 
+     *                      single string with content, or an array with 
+     *                      multiple content blocks.
+     * @param String HTLM fragment for the action.
+     * @param String $content The content to display in the box.
+     * @return String A complete html page with the desired content.
+     */
     function renderActionPage($action, $blocks=array())
     {
       if(!is_array($blocks))
@@ -1692,14 +1728,17 @@
     /**
      * Use this function to enable feedback for one or more actions.
      *
-     * @param $action The action for which feedback is enabled. You can either
-     *                pass one action or an array of actions.
-     * @param $statusmask The status(ses) for which feedback is enabled.
-     *                    If for example this is set to ACTION_FAILED,
-     *                    feedback is enabled only when the specified action
-     *                    failed. It is possible to specify more than one
-     *                    status by concatenating them with '|'.
+     * When feedback is enabled, the action does not immediately return to the
+     * previous screen, but first displays a message to the user. (e.g. 'The
+     * record has been saved').
      *
+     * @param mixed $action The action for which feedback is enabled. You can
+     *                      either pass one action or an array of actions.
+     * @param int $statusmask The status(ses) for which feedback is enabled.
+     *                        If for example this is set to ACTION_FAILED,
+     *                        feedback is enabled only when the specified
+     *                        action failed. It is possible to specify more 
+     *                        than one status by concatenating with '|'.
      */
     function setFeedback($action, $statusmask)
     {
@@ -1716,6 +1755,10 @@
       }
     }
             
+    /** 
+     * Get the page instance of the page on which the node can render output.
+     * @return atkPage The page instance.
+     */
     function &getPage()
     {
       atkimport("atk.ui.atkpage");
@@ -1730,8 +1773,26 @@
     }
 
     /**
-     * Make browser of the user go to another page. This should be called before any call
-     * to layout::outputFlush();
+     * Redirect the browser to a different location.
+     *
+     * This is usually used at the end of actions that have no output. An 
+     * example: when the user clicks 'save and close' in an edit screen, the 
+     * action 'save' is executed. If the save is succesful, this method is
+     * called to redirect the user back to the adminpage.
+     * When $config_debug is set to 2, redirects are paused and you can click
+     * a link to execute the redirect (useful for debugging the action that
+     * called the redirect).
+     * Note: this method should be called before any output has been sent to 
+     * the browser, i.e. before any echo or before the call to
+     * atkOutput::outputFlush().
+     *
+     * @param String $location The url to which you want to redirect the user.
+     *                         If ommitted, the call automatically redirects
+     *                         to the previous screen of the user. (one level
+     *                         back on the session stack).
+     * @param array $record If you pass a record here, the record is passed
+     *                      as 'atkpkret' to the redirected url. Usually it's
+     *                      not necessary to pass this parameter.      
      */
     function redirect($location="", $record=array())
     {
@@ -1750,10 +1811,7 @@
       {
         if ($this->m_postvars["atkpkret"]!="")
         {
-        //foreach ($params as $key=>$value)
-        //{
-          $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));
-        //}
+          $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));        
         }
       }
       
@@ -1780,7 +1838,14 @@
     }
 
     /**
-     * Parse the $postvars and fill the record with its data.
+     * Parse a set of url vars into a valid record structure.
+     *
+     * When attributes are posted in a formposting, the values may not be
+     * valid yet. After posting, a call to updateRecord should be made to 
+     * translate the html values into the internal values that the attributes
+     * work with.
+     * @param array $vars The request variables that were posted from a form.
+     * @return array A valid record.
      */
     function updateRecord($vars ="")
     {
@@ -1796,7 +1861,15 @@
     }
 
     /**
-     * Update a record with a set of postvars/sessionvars
+     * Update a record with variables from a form posting.
+     *
+     * Similar to updateRecord(), but here you can pass an existing record
+     * (for example loaded from the db), and update it with the the variables
+     * from the request. Instead of returning a record, the record you pass 
+     * is modified directly.
+     *
+     * @param array $record The record to update.
+     * @param array $vars The request variables that were posted from a form.
      */
     function modifyRecord(&$record, $vars)
     {
@@ -1807,10 +1880,10 @@
       }
     }
 
-
     /**
-     * Search for descriptors of the fields
-     * @return array with fieldnames
+     * Retrieve the list of attributes that are used in the descriptor
+     * definition.
+     * @return array The names of the attributes forming the descriptor.
      */
     function descriptorFields()
     {
@@ -1847,14 +1920,30 @@
         $keys = array_keys($this->m_attribList);
         $fields[0]=$keys[0];
       }
-
       return $fields;
-
     }
 
     /**
-     * Search for descriptor in custom descriptor definition, else first attribute of a node
-     * @return descriptor
+     * Determine a descriptor of a record.
+     * 
+     * The descriptor is a string that describes a record for the user. For
+     * person records, this may be the firstname and the lastname, for
+     * companies it may be the company name plus the city etc.
+     * The descriptor is used when displaying records in a dropdown for
+     * example, or in the title of editpages, delete confirmations etc.
+     *
+     * The descriptor method calls a method named descriptor_def() on the node
+     * to retrieve a template for the descriptor (string with attributenames
+     * between blockquotes, for example "[lastname], [firstname]".
+     *
+     * If the node has no descriptor_def() method, the first attribute of the
+     * node is used as descriptor.
+     *
+     * Derived classes may override this method to implement custom descriptor
+     * logic.
+     *
+     * @param array $rec The record for which the descriptor is returned.
+     * @return String The descriptor for the record.
      */
     function descriptor($rec="")
     {
@@ -1874,10 +1963,17 @@
     }
 
     /**
-     * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-     * @param KeyVal record
-     * @param string mode (add | update)
-     * @param KeyVal ignoreLisdt
+     * Validates a record. 
+     *
+     * Validates unique fields, required fields, dataformat etc.
+     *
+     * @internal This method instantiates the node's validator object, and 
+     *           delegates validation to that object.
+     *
+     * @param array $record The record to validate
+     * @param String mode The mode for which validation is performed ('add' or 'update')
+     * @param array ignoreList The list of attributes that should not be
+     *                         validated
      */
     function validate(&$record, $mode, $ignoreList=array())
     {
@@ -1889,14 +1985,19 @@
       $validateObj->setMode($mode);
 
       return $validateObj->validate();
-    } // end function validate
+    } 
 
     /**
-    * add a unique field set that will be checked within add and update actions
-    *
-    * @param array fieldArr
-    * @return void
-    */
+     * Add a unique field set.
+     *
+     * When you add a set of attributes using this method, any combination of
+     * values for the attributes should be unique. For example, if you pass
+     * array("name", "parent_id"), name does not have to be unique, parent_id
+     * does not have to be unique, but the combination should be unique.
+     *
+     * @param array $fieldArr The list of names of attributes that should be
+     *                        unique in combination.
+     */
     function addUniqueFieldset($fieldArr)
     {	
       sort($fieldArr);
@@ -1905,8 +2006,12 @@
     }
 
     /**
-     * Update a record in the database
-     * Note: for new records use addDb()).
+     * Update a record in the database.
+     * 
+     * The record should already exist in the database, or this method will
+     * fail.
+     * @param array $record The record to update in the database.
+     * @return boolean True if succesful, false if not.     
      */
     function updateDb(&$record)
     {
@@ -1944,7 +2049,7 @@
           }
         }
         
-        if (!$this->storeAttributes($storelist["pre"], $record, "update")) return false;
+        if (!$this->_storeAttributes($storelist["pre"], $record, "update")) return false;
         
         for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
         {
@@ -1961,7 +2066,7 @@
           $mltool->updateMlRecords($this, $record,"update");
         }
 
-        if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;        
+        if (!$this->_storeAttributes($storelist["post"], $record, "update")) return false;        
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
         // has been saved.
@@ -1980,7 +2085,16 @@
       return true;
     }
     
-    function storeAttributes($storelist, &$record, $mode)
+    /**
+     * Call the store() method on a list of attributes.
+     * @access private
+     * @param array $storelist The list of attributes for which the 
+     *                         store() method should be called.
+     * @param array $record The master record being stored.
+     * @param String $mode The storage mode ("add", "copy" or "update")
+     * @return boolean True if succesful, false if not.
+     */
+    function _storeAttributes($storelist, &$record, $mode)
     {       
       // store special storage attributes.
       for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
@@ -1997,11 +2111,22 @@
     }
 
     /**
-     * Count the record(s) from a certain select query.
-     * The 'selector' parameter can be anything that's valid in a 'where' statement.
-     * @param $selector The 'where' clause that indicates which records to select.
-     * @param $execludeList List of attributes to be excluded from the query
-     * @param $includeList List of attributes that have to be included into the query
+     * Count the number of records in the database that a call to selectDb
+     * would return.
+     *     
+     * @param String $selector Sql expression used as a where-condition, to 
+     *                         count only records that match the expression.
+     * @param array $excludeList List of attributes to be excluded from the
+     *                           query. By default, the attributes that should
+     *                           be loaded are determined by the $mode
+     *                           parameter. Using $excludeList, you can
+     *                           explicitly exclude attributes.
+     * @param array $includeList List of attributes to include in the query,
+     *                           regardless of the $mode parameter.
+     * @param String $mode The action for which the selectDb is called.
+     *                     This param is used to determine which attributes
+     *                     to include in the query and which not to include.
+     * @return int Number of records
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
@@ -2109,12 +2234,20 @@
         return count($result);
     }
 
-   /** Copies a record
-        *
-        *@param $selector The 'where' clause that indicates which records to select.
-        */
+    /**
+     * Copy a record in the database. 
+     *
+     * Primarykeys are automatically regenerated for the copied record. Any
+     * detail records (onetomanyrelation) are copied too. Refered records 
+     * manytoonerelation) are not copied.
+     *
+     * @param array $record The record to copy.
+     * @return boolean True if succesful, false if not.
+     */
     function copyDb(&$record)
     {
+      // remove primarykey (copied record will get a new primary key)
+      unset($record["atkprimkey"]);
       $this->preCopy($record);
       if(!$this->addDb($record, true, "copy"))
       {
@@ -2127,12 +2260,32 @@
     }
 
     /**
-     * Select record(s) from the database that have certain criteria.
-     * The 'selector' parameter can be anything that's valid in a 'where'
-     * statement.
-     * @param $selector The 'where' clause that indicates which records to select.
-     * @param $order Order field
-     * @param $limit Limit (Not supported for Oracle databases yet)
+     * Retrieve records from the database.
+     *
+     * Note that if 'atksearch' is set in the request vars, the search
+     * expressions are automatically added as extra where-clauses.
+     * 
+     * @todo Handling atksearch in this method is dirty, this should be
+     *       controlable with parameters.
+     *
+     * @param String $selector Sql expression used as a where-condition, to 
+     *                         retrieve only records that match the
+     *                         expression.
+     * @param String $order The order in which to retrieve the records.
+     * @param array $limit Array containing an "offset" and a "limit" to
+     *                     retrieve only part of the resultset. (Pass NULL or
+     *                     an empty string to retrieve all records.)
+     * @param array $excludeList List of attributes to be excluded from the
+     *                           query. By default, the attributes that should
+     *                           be loaded are determined by the $mode
+     *                           parameter. Using $excludeList, you can
+     *                           explicitly exclude attributes.
+     * @param array $includeList List of attributes to include in the query,
+     *                           regardless of the $mode parameter.
+     * @param String $mode The action for which the selectDb is called.
+     *                     This param is used to determine which attributes
+     *                     to include in the query and which not to include.
+     * @return array Array containing the retrieved records
      */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
     {
@@ -2296,8 +2449,21 @@
     }
   
     /**
-    * Add this node to a query. (mostly used when you have to join two nodes in a relation.
-    */
+     * Add this node to an existing query. 
+     *
+     * Framework method, it should not be necessary to call this method
+     * directly.
+     * This method is used when adding the entire node to an existing     
+     * query, as part of a join.
+     * @todo The allfields parameter is too inflexible. 
+     * @param atkQuery $query The query statement
+     * @param String $alias The aliasprefix to use for fields from this node
+     * @param int $level The recursion level.
+     * @param boolean $allfields If set to true, all fields from the node are
+     *                           added to the query. If set to false, only
+     *                           the primary key and fields from the desriptor
+     *                           are added.
+     */
     function addToQuery(&$query, $alias="", $level=0, $allfields=false)
     {
       $usefieldalias = false;
@@ -2348,11 +2514,18 @@
     }
 
     /**
-     * Save the current record to the database.
-     * Note: the passed record is changed: it may contain new values for auto_increment fields.
-     * @param $record The record to save
-     * @param $exectrigger Indicates whether postAdd trigger should be executed or not
-     * (defaults to yes)
+     * Save a new record to the database.
+     *
+     * The record is passed by reference, because any autoincrement field gets
+     * its value when stored to the database. The record is updated, so after
+     * the call to addDb you can use access the primary key fields.
+     *
+     * @param array $record The record to save.
+     * @param boolean $exectrigger Indicates whether the postAdd trigger
+     *                             should be fired.
+     * @param array $excludelist List of attributenames that should be ignored
+     *                           and not stored in the database.
+     * @return boolean True if succesful, false if not.
      */
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
@@ -2374,7 +2547,7 @@
         }
       }
       
-      if (!$this->storeAttributes($storelist["pre"], $record, $mode)) return false;
+      if (!$this->_storeAttributes($storelist["pre"], $record, $mode)) return false;
 
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
       {
@@ -2403,9 +2576,9 @@
         $mltool->updateMlRecords($this, $record,"add");
       }
 
-      if (!$this->storeAttributes($storelist["post"], $record, $mode))
+      if (!$this->_storeAttributes($storelist["post"], $record, $mode))
       {
-        atkdebug("storeAttributes failed..");
+        atkdebug("_storeAttributes failed..");
         return false;
       }
 
@@ -2432,10 +2605,18 @@
     }
 
     /**
-     * delete record from the database.
-     * todo: instead of delete, set the deleted flag.
-     * @param $selector Selector
-     * @returns true if successful, false if error
+     * Delete record(s) from the database.     
+     *
+     * After deletion, the postDel() trigger in the node method is called, and
+     * on any attribute that has the AF_CASCADE_DELETE flag set, the delete()
+     * method is invoked. 
+     *
+     * @todo: There's a discrepancy between updateDb, addDb and deleteDb:
+     *        There should be a deleteDb which accepts a record, instead
+     *        of a selector.
+     * @param String $selector SQL expression used as where-clause that
+     *                         indicates which records to delete.
+     * @returns boolean True if successful, false if not.
      */
     function deleteDb($selector)
     {
@@ -2483,14 +2664,17 @@
     }
 
     /**
-     * Function that is called right after a new record has been saved to the
-     * database. This function does essentially nothing, but it can be
-     * overriden in your derived classes if you want to do something special
-     * after you saved a record.
+     * Function that is called by the framework, right after a new record has 
+     * been saved to the database.
      *
-     * @param $record The record that has just been saved.
-     * @param $mode   The 'mode' indicates whether this is a completely new
-     *                record ("add") or a copy ("copy").
+     * This function does essentially nothing, but it can be overriden in
+     * derived classes if you want to do something special after you saved a 
+     * record.
+     *
+     * @param array $record The record that has just been saved.
+     * @param String $mode The 'mode' indicates whether the added record was a 
+     *                     completely new record ("add") or a copy ("copy").
+     * @return boolean True if succesful, false if not.
      */
     function postAdd($record, $mode="add")
     {
@@ -2499,12 +2683,14 @@
     }
 
     /**
-     * Function that is called before a new record has been saved to the
-     * database. This function does essentially nothing, but it can be
-     * overriden in your derived classes if you want to do something special
-     * after you saved a record.
+     * Function that is called by the framework, just before a new record will
+     * be saved to the database.
      *
-     * @param $record The record that has just been saved.
+     * This function does essentially nothing, but it can be overriden in 
+     * derived classes if you want to modify the record just before it will
+     * be saved.
+     *
+     * @param array $record The record that will be saved to the database.
      */
     function preAdd(&$record)
     {
@@ -2512,12 +2698,20 @@
     }
 
     /**
-     * Function that is called right after an existing record has been saved to
-     * the database. This function does essentially nothing, but it can be
-     * overriden in your derived classes if you want to do something special
-     * after you saved a record.
+     * Function that is called by the framework, right after an existing
+     * record has been updated in the database.
      *
-     * @param $record The record that has just been saved.
+     * This function does essentially nothing, but it can be overriden in
+     * derived classes if you want to do something special after the record is
+     * updated.
+     *
+     * If the NF_TRACK_CHANGES flag is present for the node, both the new
+     * and the original record are passed to this method. The original
+     * record is stored in the new record, in $record["atkorgrec"].
+     *
+     * @param array $record The record that has just been updated in the
+     *                      database.
+     * @return boolean True if succesful, false if not.
      */
     function postUpdate($record)
     {
@@ -2526,25 +2720,29 @@
     }
 
     /**
-     * Function that is called before an existing record has been saved to
-     * the database. This function does essentially nothing, but it can be
-     * overriden in your derived classes if you want to do something special
-     * after you saved a record.
+     * Function that is called by the framework, just before an existing
+     * record will be saved to the database. 
      *
-     * @param $record The record that has just been saved.
+     * This function does essentially nothing, but it can be overriden in
+     * derived classes if you want to modify the record just before it will
+     * be saved.
+     *
+     * @param array $record The record that will be updated in the database.
      */
-    function preUpdate(&$rec)
+    function preUpdate(&$record)
     {
       // Do nothing
     }
 
     /**
-     * Function that is called right after an existing record has been deleted.
-     * This function does essentially nothing, but it can be
-     * overriden in your derived classes if you want to do something special
-     * after you deleted a record.
+     * Function that is called by the framework, right after a record has been
+     * deleted.
      *
-     * @param $record The record that has just been deleted.
+     * This function does essentially nothing, but it can be overriden in 
+     * derived classes if you want to do something special after a record is
+     * deleted.
+     *
+     * @param array $record The record that has just been deleted.
      */
     function postDel($record)
     {
@@ -2553,40 +2751,46 @@
     }
 
     /**
-     * Function that is called right before a copied record is stored to
-     * the database.
-     * This function does nothing, but it can be overriden in your derived
-     * classes if you want to do some processing on a record before it is
-     * being copied. For example, suppose you have a field 'title' in a
-     * record. You could change the contents to 'Copy of ..', so the user can
-     * distinguish between the original and the copy.
+     * Function that is called by the framework, right before a copied record
+     * is stored to the database.
+     *
+     * This function does nothing, but it can be overriden in derived classes
+     * if you want to do some processing on a record before it is
+     * being copied. 
+     * Typical usage would be: Suppose you have a field named 'title' in a
+     * record. In the preCopy method, you could change the title field of the 
+     * record to 'Copy of ..', so the user can distinguish between the
+     * original and the copy.
      *
      * @param &$record A reference to the copied record. You can change the
-     *                 contents of the record. It is not necessary to return
-     *                 the record.
+     *                 contents of the record, since it is passed by
+     *                 reference.
      */
     function preCopy(&$record)
-    {
-      // remove primarykey
-      unset($record["atkprimkey"]);
+    {      
     }
 
     /**
      * Function that is called for each record in a recordlist, to determine
      * what actions may be performed on the record.
-     * This function does nothing, but it can be overriden in your derived
-     * class.
+     *
+     * This function does nothing, but it can be overriden in derived classes,
+     * to make custom actions for certain records.
      * The array with actions (edit, delete, etc.) is passed to the function
      * and can be modified.
-     * To create a new action, just do $actions["new_action"]="somefile.php";
+     * To create a new action, just do $actions["new_action"]=$url;
      * in the derived function.
-     * To disable the edit action for a record, use unset($actions["edit"]);
+     * To disable existing actions, for example the edit action, for a record,
+     * use: unset($actions["edit"]);
      *
-     * @param $record The record for which actions need to be determined
-     * @param &$actions Reference to an array with the already defined actions.
-     *                  This is an associative array with the action identifier
-     *                  as key, and an url as value.
-     *
+     * @param array $record The record for which the actions need to be
+     *                      determined.
+     * @param &$actions Reference to an array with the already defined
+     *                  actions. This is an associative array with the action 
+     *                  identifier as key, and an url as value. Actions can be
+     *                  removed from it, or added to the array.
+     * @param &$mraactions List of multirecordactions that are supported for
+     *                     the passed record.
      */
     function recordActions($record, &$actions, &$mraactions)
     {
@@ -2595,7 +2799,14 @@
     
 
     /**
-     * Lookup the security 'key' for an action
+     * Retrieve the security key of an action.
+     *
+     * Returns the privilege required to perform a certain action.
+     * Usually, the privilege and the action are equal, but in m_securityMap,
+     * aliasses may be defined.
+     * @param String $action The action for which you want to determine the
+     *                       privilege.
+     * @return String The security privilege required to perform the action.
      */
     function securityKey($action)
     {
@@ -2604,7 +2815,8 @@
     }
 
     /**
-     * Return full atknodetype of this node (module.nodetype or, if no module is set, just nodetype)
+     * Get the full atknodetype of this node (module.nodetype notation).
+     * @return String The atknodetype of the node.
      */
     function atknodetype()
     {
@@ -2612,20 +2824,21 @@
     }
 
     /**
-     * This function determines if the user has the right to perform a certain
+     * This function determines if the user has the privilege to perform a certain
      * action on the node.
      *
-     * @param  $action - The action to be checked
-     *         $record (optional) - The record on which the action is to be
-     *                              performed. The standard implementation
-     *                              ignores this parameter, but in derived
-     *                              nodes you can override this function and
-     *                              implement your own record based security
-     *                              policy. Keep in mind though that a
-     *                              record is not passed in every situation.
+     * @param String $action The action to be checked.
+     * @param array $record The record on which the action is to be performed. 
+     *                      The standard implementation ignores this 
+     *                      parameter, but derived classes may override this
+     *                      method to implement their own record based
+     *                      security policy. Keep in mind that a record is not
+     *                      passed in every occasion. The method is called
+     *                      several times without a record, to just see if
+     *                      the user has the privilege for the action
+     *                      regardless of the record being processed.
      *
-     * @return true if the action may be performed.
-     *         false if the action is not allowed
+     * @return boolean True if the action may be performed, false if not.
      */
     function allowed($action, $record="")
     {
@@ -2657,13 +2870,31 @@
               || ($this->m_securityImplied[$action]!="" && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
     }
 
+    /**
+     * Set the security alias of a node.
+     *
+     * By default a node has it's own set of privileges. With this method,
+     * the privileges of another node can be used. This is useful when you
+     * have a master/detail relationship, and people may manipulate details
+     * when they have privileges on the master node.
+     * Note: When setting an alias for the node, the node no longer has to
+     * have a registerNode call in the getNodes method in module.inc. 
+     *
+     * @param String $alias The node (module.nodename) to set as a security
+     *                      alias for this node.
+     */
     function setSecurityAlias($alias)
     {
       $this->m_securityAlias = $alias;
     }
 
     /**
-     * Specify that an action requires no accesslevel.
+     * Disable privilege checking for an action.
+     *
+     * This method disables privilege checks for the specified action, for the
+     * duration of the current http request.
+     * @param String $action The name of the action for which security is
+     *                       disabled.
      */
     function addAllowedAction($action)
     {
@@ -2679,7 +2910,8 @@
 
     /**
      * Display a statusbar with a stacktrace and a help button.
-     * @param $locked is the currently displayed item locked or not?
+     * @deprecated Use the {statusbar} tag in templates instead.
+     * @param boolean $locked is the currently displayed item locked?
      */
     function statusbar($locked=FALSE)
     {      
@@ -2707,6 +2939,10 @@
       return "";
     }
     
+    /**
+     * Retrieve help link for the current node.
+     * @return String Complete html link, linking to the help popup.
+     */
     function getHelp()
     {
       $res = array();
@@ -2721,6 +2957,11 @@
       return $res;
     }
     
+    /**
+     * Get img tag for lock icon.
+     * @param boolean $lockstatus True if the record is locked, false if not.
+     * @return String HTML image tag with the correct lock icon.
+     */
     function getLockStatusIcon($lockstatus)
     {
       if ($lockstatus)
@@ -2731,7 +2972,12 @@
     }
 
     /**
-     * If there is help available for this node, return the url
+     * Get the help url for this node.
+     * 
+     * Retrieves the url of the help popup, if there is help available for 
+     * this node.
+     * @return String The help url, or an empty string if help is not
+     *                available.
      */
     function helpUrl()
     {
@@ -2751,9 +2997,13 @@
     }
 
     /**
-     * If there is a known registered handler method for the specified action
-     * we call this handler method instead of the normal node action method.
-     * @param $action the node action
+     * Invoke the handler for an action.
+     *
+     * If there is a known registered external handler method for the
+     * specified action, this method will call it. If there is no custom
+     * external handler, the atkActionHandler object is determined and the
+     * actionis invoked on the actionhandler.
+     * @param String $action the node action
      */
     function callHandler($action)
     {
@@ -2775,7 +3025,12 @@
     }
     
     /** 
-     * Get a handler object for a certain action.
+     * Get the atkActionHandler object for a certain action.
+     *
+     * The default implementation returns a default handler for the action, 
+     * but derived classes may override this to return a custom handler.
+     * @param String $action The action for which the handler is retrieved.
+     * @return atkActionHandler The action handler.
      */ 
     function &getHandler($action)
     {
@@ -2789,12 +3044,15 @@
      * Sets the search action. 
      *
      * The search action is the action that will be performed
-     * on the single record that is found after doing a certain search query.
+     * if only a single record is found after doing a certain search query.
      *
-     * You can specify more then 1 action. If the user isn't allowed to execute
-     * the 1st action, the 2nd action will be used, etc.
-     *
-     * @param ... the action name(s)
+     * You can specify more then 1 action. If the user isn't allowed to
+     * execute the 1st action, the 2nd action will be used, etc. If you
+     * want to pass multiple actions, just pass multiple params (function
+     * has a variable number of arguments).
+     * @todo Using func_get_args is non-standard. It's cleaner to accept an
+     *       array.
+     * @param String $action The name of the action.
      */
     function setSearchAction()
     {
@@ -2802,9 +3060,10 @@
     }
 
     /**
-     * This function resorts the attribIndexList. This is necessary if you add
-     * attributes *after* init() is already called, and you set an order for those
-     * attributes.
+     * This function resorts the attribIndexList. 
+     *
+     * This is necessary if you add attributes *after* init() is already
+     * called, and you set an order for those attributes.
      */
     function attribSort()
     {
@@ -2814,8 +3073,12 @@
     /**
      * Search all records for the occurance of a certain expression.
      *
-     * This function searches in all fields that are not AF_HIDE_SEARCH for
-     * a certain expression.
+     * This function searches in all fields that are not AF_HIDE_SEARCH, for
+     * a certain expression (substring match). The search performed is an 
+     * 'or' search. If any of the fields contains the expression, the record
+     * is added to the resultset.
+     * @param String $epxression The keyword to search for.
+     * @return array Set of records matching the keyword.
      */
     function searchDb($expression)
     {
@@ -2848,15 +3111,38 @@
       return $recs;
     }
 
+    /**
+     * Determine the url for the feedbackpage. 
+     *
+     * Output is dependent on the feedback configuration. If feedback is not
+     * enabled for the action, this method returns an empty string, so the
+     * result of this method can be passed directly to the redirect() method
+     * after completing the action.
+     *
+     * The $record parameter is ignored by the default implementation, but
+     * derived classes may override this method to perform record-specific 
+     * feedback.
+     * @param String $action The action that was performed
+     * @param int $status The status of the action.
+     * @param array $record The record on which the action was performed.
+     * @param String $message An optional message to pass to the feedbackpage,
+     *                        for example to explain the reason why an action
+     *                        failed.
+     * @return String The feedback url.
+     */
     function feedbackUrl($action, $status, $record="", $message="")
     {
       return (hasFlag($this->m_feedback[$action], $status)||$status==ACTION_FAILED?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message)),SESSION_REPLACE):"");
     }
 
     /**
-     * Validates the filter if field of filter is part of the attributelist
-     * @param $filter the filter to validate
-     * @returns $filter if filter is part of the attributelist or a empty string
+     * Validates if a filter is valid for this node.
+     *
+     * A filter is considered valid if it doesn't contain any fields that are
+     * not part of the node.
+     * @param String $filter The filter expression to validate
+     * @returns String Returns $filter if the filter is valid or a empty
+     *                 string if not.
      */
     function validateFilter($filter)
     {
@@ -2873,6 +3159,13 @@
       return "";
     }    
     
+    /**
+     * Add a stylesheet to the page.
+     *
+     * The theme engine is used to determine the path, and load the correct
+     * stylesheet.
+     * @param String $style The filename of the stylesheet (without path).
+     */
     function addStyle($style)
     {
       atkimport("atk.ui.atktheme");
