@@ -64,7 +64,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $del;
+      global $del,$atkaction;
       
       if ($del[$this->fieldName()]!="on")
       {
@@ -99,14 +99,15 @@
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
         $result .= "<select name=\"select[".$fieldprefix.$this->fieldName()."]\">";
-        $result .= "<option value=\"\">Selectie";                    // Zorg voor een default met waarde NULL
+        $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
-          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val.$sel."\">".$val;
+          ($record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
+          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val.$sel."\" $selected>".$val;
         }
         if(count($file_arr) > 0) $result .= "</select>";
       }
-      if(!$this->hasFlag(AF_FILE_NO_DELETE) && $GLOBALS['atkaction']=="edit" && $record[$this->fieldname()]['orgfilename']!='')
+      if(!$this->hasFlag(AF_FILE_NO_DELETE) && $record[$this->fieldname()]['filename']!='')
       {      
        $result .= '<br><input type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
       }
@@ -120,21 +121,22 @@
      */
     function value2db($rec)
     {
-      global $del;
-      global $select;            
+      global $del,$select;            
 
-      if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+      if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
       {
         return $select[$this->fieldName()];
       }
+
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
+
       if($del[$this->fieldName()] == "on")
       {    
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
-	      {
-	        unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
-	      }
-        return "";
+	{
+	  unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
+	}
+        return '';
       }
       else
       {
@@ -167,8 +169,7 @@
      */
     function fetchValue($rec)
     {    
-      global $HTTP_POST_FILES;
-      global $select;
+      global $HTTP_POST_FILES,$select,$del;
       
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
@@ -178,10 +179,12 @@
         // if no new file has been uploaded..    
         if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
         {
+
+          ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$select[$this->fieldName()];
           $result = array("tmpfile"=>"",
-                          "filename"=>$select[$this->fieldName()],
+                          "filename"=>$filename,
                           "filesize"=>0,
-                          "orgfilename"=>$rec[$basename."_orgfilename"]);
+                          "orgfilename"=>'');
         
         }
         elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
@@ -245,7 +248,7 @@
      */
     function display($record)
     {
-      $filename    = $record[$this->fieldName()]["orgfilename"];
+      $filename    = $record[$this->fieldName()]["filename"];
 
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
