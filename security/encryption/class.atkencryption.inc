@@ -38,7 +38,7 @@
       if ($type=="") $type = atkconfig("encryption_defaultmethod");
       $encryptionclass = "atk".strtolower($type)."encryption";
       
-      if (atkimport("atk.utils.".$encryptionclass))
+      if (atkimport("atk.security.encryption.".$encryptionclass))
       {
         return new $encryptionclass();
       }
