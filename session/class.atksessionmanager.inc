@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.14  2001/05/18 07:49:42  ivo
+   * Fixes to sessionmanagement.
+   *
    * Revision 1.13  2001/05/17 12:09:11  ivo
    * Improvements to session mangement: search values and page numbers are
    * now remembered if you come back to the admin page.
@@ -214,7 +217,7 @@
           
           // also remember getvars that were passed in the url
           foreach(array_keys($HTTP_GET_VARS) as $var)
-          {       
+          {               
             if (isset($postvars[$var])&&$postvars[$var]!="")
             {
               $currentitem[$var] = $postvars[$var];

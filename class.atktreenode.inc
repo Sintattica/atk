@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.12  2001/05/18 07:49:42  ivo
+    * Fixes to sessionmanagement.
+    *
     * Revision 4.11  2001/05/17 12:39:37  ivo
     * Made atktreenode session aware (if you come back from an edit, your tree
     * state is restored)
@@ -99,6 +102,7 @@
       global $g_securityManager,$g_layout,$g_maxlevel,$g_teller;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
+      $g_layout->output($this->stackTrace());
       $g_layout->output('<br>');
 
       $adminHeader = $this->adminHeader();

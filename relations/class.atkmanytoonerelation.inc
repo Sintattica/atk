@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.10  2001/05/18 07:49:42  ivo
+   * Fixes to sessionmanagement.
+   *
    * Revision 4.9  2001/05/17 10:27:12  ivo
    * Fixes to session management, new AF_LARGE feature for manytoonerelation.
    * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -222,18 +225,18 @@
           $selrec = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         
           $result.= $this->m_destInstance->descriptor($selrec[0])."&nbsp;&nbsp;";
-                        
-          // we use the current level to automatically return to this page 
-          // when we come from the select.. 
-          $atktarget = rawurlencode("dispatch.php?atklevel=".$atklevel."&".$selname."=[".$remotekey."]");
-          $result.= href("dispatch.php?atknodetype=".$this->m_destination.
-                                     "&atkaction=select&atktarget=".$atktarget,
-                         text("link_select_".getNodeType($this->m_destination)),
-                         SESSION_NESTED,
-                         true);
-                
         }
-        var_dump($record[$this->fieldName()]);
+                        
+        // we use the current level to automatically return to this page 
+        // when we come from the select.. 
+        $atktarget = rawurlencode("dispatch.php?atklevel=".$atklevel."&".$selname."=[".$remotekey."]");
+        $result.= href("dispatch.php?atknodetype=".$this->m_destination.
+                                   "&atkaction=select&atktarget=".$atktarget,
+                       text("link_select_".getNodeType($this->m_destination)),
+                       SESSION_NESTED,
+                       true);
+                       
+        //var_dump($record[$this->fieldName()]);
       }
       return $result;
     }

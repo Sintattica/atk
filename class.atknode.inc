@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.39  2001/05/18 07:49:42  ivo
+   * Fixes to sessionmanagement.
+   *
    * Revision 4.38  2001/05/17 15:19:18  peter
    * Security manager now knows how to handle module nodes.
    *
@@ -465,12 +468,12 @@
       
    // session vars are valid until they are set to something else. if you go a session level higher,
    // the next level will still contain these vars (unless overriden in the url)
-   $g_sessionVars = array("atknodetype","atkfilter","atkaction","atkselector");
+   $g_sessionVars = array("atknodetype","atkfilter","atkselector");
    
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
 
-   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree");
+   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree","atkaction");
 
   /************* MODULE HANDLING *************/
 
