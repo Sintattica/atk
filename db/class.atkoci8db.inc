@@ -390,6 +390,17 @@
       return 30;
     }
     
+    /**
+     * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
+     */
+    function escapeSQL($string, $wildcard=false)
+    {    
+      $result = str_replace("'","''",$string);
+      if ($wildcard == true) $result = str_replace("%","%%",$result);
+      return $result;
+    }
+
+    
   }
 
 ?>

@@ -63,10 +63,12 @@
      */
     function display($record)
     { 
-      $result=$this->m_date->display($record);
-			$result.="&nbsp;";
-			$result.=$this->m_time->display($record);
-      return $result;
+      $date = $this->m_date->display($record);
+			$time = $this->m_time->display($record);
+      if($date!='' && $time!='')
+        return $date."&nbsp;".$time;
+      else
+        return "";
     }
 
     function fetchValue($postvars)
@@ -93,12 +95,16 @@
       //$datetime = split(" ",$rec[$this->fieldname()]);
 			//$tmp_rec = $rec;
 			//$tmp_rec[$this->fieldname()]=$datetime[0];
-      $result=$this->m_date->value2db($rec);
-			$result.=" ";
+      $date=$this->m_date->value2db($rec);
+			
 			//$tmp_rec = $rec;
 			//$tmp_rec[$this->fieldname()]=$datetime[1];
-			$result.=$this->m_time->value2db($rec);
-
+			$time=$this->m_time->value2db($rec);
+      
+      if($time!='NULL' && $date!='NULL')
+        $result = $date." ".$time;
+      else
+        $result = 'NULL';
      return $result;
     }
 		/**
@@ -133,16 +139,19 @@
     {
       if ($mode == "add" || $mode == "update")
       {
-        if($this->value2db($rec) == '')
-        {
+        if($this->value2db($rec) == '' || $this->value2db($rec) == 'NULL')
+        {          
           $query->addField($this->fieldName(),'NULL','','',false);
         }
         else
         {
-         if (atkconfig('database') != 'oci9')
-          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
-         else
-          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");      
+          if (atkconfig('database') != 'oci9')
+            $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
+          else
+          {
+            $value = $this->value2db($rec);
+            $query->addField($this->fieldName(),$value,"","",!$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");      
+          }
         }
       }
       else
@@ -150,7 +159,9 @@
         if (atkconfig('database') != 'oci9')
           $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
         else
+        {
           $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, "DATETIME");      
+        }
       }
     }
 

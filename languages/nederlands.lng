@@ -211,4 +211,6 @@
   $txt_feedback_update_cancelled = "Geen wijzigingen opgeslagen.";
   $txt_feedback_update_failed = "De wijzigingen konden niet opgeslagen worden.";  
   $txt_feedback = "Bevestiging";
+  
+  $txt_error_date_invalid = "Ongeldige datum";
 ?>

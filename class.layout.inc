@@ -118,6 +118,7 @@
         // the pages, unless $nocache was set to true.
         if ($nocache)
         {
+	  atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
           header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
           header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
           header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1

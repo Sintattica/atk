@@ -76,7 +76,7 @@ function atkSubmitMRA(name, form, target)
   else var atkaction = form.elements[name + '_atkaction'][index].value;
 
   /* initial target URL */
-  target += 'atkaction=' + atkaction;
+  target += '&atkaction=' + atkaction;
 
   /* get selectors */
   var list = form.elements[name + '_atkselector[]'];

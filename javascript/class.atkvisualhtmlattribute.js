@@ -82,6 +82,9 @@
  OLE_TRISTATE_UNCHECKED =          0 
  OLE_TRISTATE_CHECKED =            1 
  OLE_TRISTATE_GRAY =               2 
+
+ IDM_AUTOURLDETECT_MODE =          2400
+ 
  var obj_editor = 0 ; 
  // Per canvis de gifs a la barra d'icones: 
  
@@ -672,7 +675,8 @@
  
  function bold()
  {    
-   obj_editor.ExecCommand(DECMD_BOLD,OLECMDEXECOPT_DODEFAULT); 
+   //obj_editor.ExecCommand(DECMD_BOLD,OLECMDEXECOPT_DODEFAULT); 
+   obj_editor.ExecCommand(IDM_AUTOURLDETECT_MODE, OLECMDEXECOPT_DONTPROMPTUSER, false); 
    //obj_editor.focus(); 
    return false; 
  } 

@@ -1485,7 +1485,7 @@
           if (!empty($url))
           {
             /* dirty hack */
-            $atkencoded = strpos($url, "_1") > 0;
+            $atkencoded = strpos($url, "_15B") > 0;
 
             $url = str_replace("%5B","[",     $url);
             $url = str_replace("%5D","]",     $url);

@@ -709,14 +709,12 @@
 
 
   /**
-   * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
+   * wrapper for escapeSQL function
    */
   function escapeSQL($string, $wildcard=false)
   {
-    $result = str_replace("'","''",$string);
-    $result = str_replace("\\","\\\\",$result);
-    if ($wildcard == true) $result = str_replace("%","%%",$result);
-    return $result;
+    global $g_db;    
+    return $g_db->escapeSQL($string, $wildcard);    
   }
 
   /**
@@ -981,7 +979,7 @@
    * Makes an string with hidden input fields
    * containing all posted vars
    */  
-  function makeHiddenPostvars()
+  function makeHiddenPostvars($excludes=array())
   {
     global $ATK_VARS;
     
@@ -989,7 +987,8 @@
     {
       foreach ($ATK_VARS as $key => $val)
       {
-        $str .= "<input type='hidden' name=\"$key\" value=\"".$val."\">\n";
+        if (!in_array($key, $excludes))
+          $str .= "<input type='hidden' name=\"$key\" value=\"".$val."\">\n";
       }
       return $str;
     }
