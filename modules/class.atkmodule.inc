@@ -1,5 +1,5 @@
 <?php
-  require_once(atkconfig("atkroot")."atk/atkmenutools.inc");
+  require_once($config_atkroot."atk/atkmenutools.inc");
 
   /**
    * A generalization of an ATK module class.
