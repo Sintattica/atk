@@ -19,10 +19,16 @@
   /** Theme definition */
   $theme["customtpls"] = "scan 'templates/'";  
   $theme["customstyles"] = "scan 'styles/'";
-  $theme["customimgs"] = array("help.gif");
+  $theme["customimgs"] = array("help.gif","arrowup.gif","arrowdown.gif","dark_back.gif","empty.gif");
   
   $theme["highlight"] = "#c5d7ff";
   $theme["select"]    = "#96a7ff";
 
+  // Outlook menu
+  $theme["ol_menucolor"]="#ffffff";
+  $theme["ol_wincolor"]="#eeeee0";
+  $theme["ol_background"]="#677EB1";
+
+  
   $theme["tabtype"] = "dhtml";
 ?>
