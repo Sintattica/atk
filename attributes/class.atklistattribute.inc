@@ -5,21 +5,21 @@
    * that has a selectbox to select from predefined values.
    *
    * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$ 
+   * @version $Revision$
    *
-   * $Id$   
+   * $Id$
    *
    */
   class atkListAttribute extends atkAttribute
   {
     /**
-     * Array with options for Listbox  
+     * Array with options for Listbox
      */
     var $m_options = Array();
-    
+
     /**
-     * Array with values for Listbox  
-     */    
+     * Array with values for Listbox
+     */
     var $m_values = Array();
 
     /**
@@ -32,16 +32,16 @@
      * @param $name Name of the attribute
      * @param $flags Flags for this attribute
      * @param $optionArray Array with options
-     * @param $valueArray Array with values. If you don't use this parameter, 
+     * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      */
     function atkListAttribute($name, $optionArray, $valueArray="", $flags=0)
     {
-      
+
       // API CHANGE HACK
-      // This function used to have the parameters: ($name, $flags=0, $optionArray, 
+      // This function used to have the parameters: ($name, $flags=0, $optionArray,
       // $valueArray="")
-      // It was changed so atkListAttribute is more like the other attributes. 
+      // It was changed so atkListAttribute is more like the other attributes.
       // However, to remain backward compatible with modules based on the old api
       // we detect if the parameters are in the wrong order, and if so, switch 'm.
       if (is_int($optionArray))
@@ -50,12 +50,12 @@
         $tmp = $flags;
         $flags = $optionArray;
         $optionArray = $valueArray;
-        $valueArray = $tmp; 
+        $valueArray = $tmp;
       }
 
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_options = $optionArray;
- 
+
       if (is_array($valueArray) && count($valueArray)>0)
       {
         $this->m_values = $valueArray;
@@ -64,7 +64,7 @@
       {
         $this->m_values = $optionArray;
       }
-      
+
       for ($i=0;$i<count($optionArray);$i++)
       {
         $this->m_lookup[$this->m_values[$i]] = $optionArray[$i];
@@ -78,8 +78,8 @@
      * @return text string of $record
      */
     function display($record)
-    {     
-      return text($this->m_lookup[$record[$this->fieldName()]]);
+    {
+      return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
     }
 
     /**
@@ -96,7 +96,33 @@
       {
         if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
         {
-          $sel = "selected"; 
+          $sel = "selected";
+        }
+        else
+        {
+          $sel = "";
+        }
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
+      }
+      $result.='</select>';
+      return $result;
+    }
+
+    /**
+     * Returns a piece of html code that can be used in a form to search values
+     * @param $record Array with fields
+     * @return piece of html code with a checkbox
+     */
+    function search($record="")
+    {
+      // todo: configurable rows
+      $result = '<select name="atksearch['.$this->formName().']">';
+      $result.= '<option value="">'.text('search_all');
+      for ($i=0;$i<count($this->m_values);$i++)
+      {
+        if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
+        {
+          $sel = "selected";
         }
         else
         {
@@ -107,33 +133,7 @@
       $result.='</select>';
       return $result;
     }
-    
-    /**
-     * Returns a piece of html code that can be used in a form to search values   
-     * @param $record Array with fields
-     * @return piece of html code with a checkbox
-     */
-    function search($record="")
-    {      
-      // todo: configurable rows
-      $result = '<select name="atksearch['.$this->formName().']">';
-      $result.= '<option value="">'.text('search_all');
-      for ($i=0;$i<count($this->m_values);$i++)
-      {
-        if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
-        {         
-          $sel = "selected"; 
-        }
-        else 
-        {
-          $sel = "";
-        }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]);
-      }
-      $result.='</select>';
-      return $result;
-    }
-    
+
     /**
      * Creates an search condition for a given search value
      * @param $table the table name
@@ -153,7 +153,7 @@
         atkdebug("Database doesn't support searchmode '$searchmode', ignoring condition.");
       }
     }
-    
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -162,7 +162,7 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
-    }  
-    
+    }
+
   }
 ?>
