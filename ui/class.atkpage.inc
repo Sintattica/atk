@@ -103,13 +103,6 @@
     var $m_hiddenvars = array();
     
     /**
-     * Keeps a string to put in the <BODY onLoad="<here>">
-     * @access private
-     * @var String
-     */
-    var $m_bodyOnloadString;
-    
-    /**
      * Retrieve the one-and-only atkPage instance.
      * @return atkPage
      */
@@ -303,25 +296,12 @@
       $res = '<body ';
       if (count($this->m_loadscripts)) 
       {
-        $res.='onLoad="globalLoad(); ' . $this->m_bodyOnloadString . ' if ( window.showTab ) {showTab(\'';
+        $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'';
         if ($ATK_VARS['atktab']) $res.=$ATK_VARS['atktab'];
         $res.='\');}" ';
       }
-      elseif($this->m_bodyOnloadString)
-      {
-        $res.='onLoad="'.$this->m_bodyOnLoadString.'" '; 
-      }
       $res.= $extraprops.">\n";
       return $res;
-    }
-    
-    /**
-     * Adds a javascript statement to the <BODY onLoad="<here>"> line
-     * @param string line javascript to add in the onLoad clause. End with ;!
-     */
-    function addOnloadScript($line)
-    {
-      $this->m_bodyOnloadString .= $line;
     }
     
     /**
