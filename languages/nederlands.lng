@@ -93,6 +93,14 @@
   $txt_tue = "Din";
   $txt_wed = "Woe";
   $txt_thu = "Don";
+
+  $txt_friday = "vrijdag";
+  $txt_saturday = "zaterdag";
+  $txt_sunday = "zondag";
+  $txt_monday = "maandag";
+  $txt_tuesday = "dinsdag";
+  $txt_wednesday = "woensdag";
+  $txt_thursday = "donderdag";
   
   $txt_menu_main = "Hoofdmenu";
   $txt_back_to = "Terug naar";
