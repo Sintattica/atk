@@ -88,7 +88,7 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
-      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_HIDE_SEARCH|AF_NO_SORT); 
+      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT); 
       // 1toM Relations are NEVER edited when adding a rec. And for now, we 
       // cannot search or sort them.
                                                                                  
@@ -168,45 +168,122 @@
     {
       if ($this->createDestination())
       {
-        // If someone pressed 'save', no records are loaded from the db.
-        // since we don't post all records in this relation like we do with
-        // other attributes, we have to load them at 'edit' time.
-        // we pass 'admin' as mode, since we show a recordlist, and we need
-        // all fields that we also get when we would be on an admin screen.
-        $myrecords = $this->load(NULL, $record, "admin");
-        $output.=$this->editHeader($record, $myrecords);
-        
-        if (atkconfig("onetomany_addlink_position","bottom")=="top") 
-          $output.=$this->_addAddLink($myrecords, $record);
-          
-        if (count($myrecords)!=0)
-        {     
-          $actions = array();
-          $params = array();
-          
-          if ($this->m_destinationFilter!="")
-          {
-            $params["atkfilter"]=$this->m_destinationFilter;
-          }
-                    
-          $actions = $this->m_destInstance->defaultActions("relation", $params);   
+        $myrecords = $this->_getRecords($record);
 
-          $recordlist = &atknew("atk.recordlist.atkrecordlist");          
-          $flags = RL_EMBED;
-          $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
-          $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;          
-          $output.=$recordlist->render($this->m_destInstance, $myrecords, $actions, $flags, $this->m_refKey, "entryform");
-        }
+        $output.=$this->editHeader($record, $myrecords);          
         
-        if (atkconfig("onetomanyaddlink_position","bottom")=="bottom") 
+        $output.= $this->_getRecordList($myrecords);
+        
+        if (atkconfig("onetomany_addlink_position","bottom")=="bottom") 
           $output.=$this->_addAddLink($myrecords, $record);
           
         $output.=$this->editFooter($record, $myrecords);
         $output.="<br>";
         $this->_fetchNavigationLinks($output);
+        
+        if (atkconfig("onetomany_addlink_position","bottom")=="top") 
+          $output=$this->_addAddLink($myrecords, $record)."<br /><br />".$output;
+        
         return $output;
       }
       return "";
+    }
+
+    /**
+     * If someone pressed 'save', no records are loaded from the db.
+     * Since we don't post all records in this relation like we do with
+     * other attributes, we have to load them at 'edit' time.
+     * We pass 'admin' as mode, since we show a recordlist, and we need
+     * all fields that we also get when we would be on an admin screen.
+     * Also, because the load looks to the owner for it's orderby but we have special orderbys
+     * for each onetomany, we fake it.
+     */
+    function _getRecords($record)
+    {
+      $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
+      $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()."]_"];
+      
+      $myrecords = $this->load(NULL, $record, "admin");
+      
+      $this->m_ownerInstance->m_postvars['atkorderby'] = $ownerorderby;
+      return $myrecords;
+    }
+    
+    /**
+     * Gets the recordlist.
+     * It does a lot of tricks to trick the recordlist into thinking that it is
+     * actually making a recordlist for the destination record, 
+     * but one that's still embedded
+     * @param Array $myrecords The records that are loaded into the recordlist
+     * @return String The generated recordlist
+     */
+    function _getRecordList($myrecords)
+    {
+      if (count($myrecords)!=0)
+      {
+        $actions = array();
+        $params = array();
+        $embedprefix = "{$this->m_name}][";
+
+        if ($this->m_destinationFilter!="")
+        {
+          $params["atkfilter"]=$this->m_destinationFilter;
+        }
+
+        $actions = $this->m_destInstance->defaultActions("relation", $params);
+
+        $desttype =                         $this->m_destInstance->m_type;
+        $destaction =                       $this->m_destInstance->m_action;
+        $destpostvars =                     $this->m_destInstance->m_postvars;
+
+        $this->m_destInstance->m_type =     $this->m_ownerInstance->m_type;
+        $this->m_destInstance->m_action =   $this->m_ownerInstance->m_action;
+        
+        $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()."]_"];
+        $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+        $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
+
+        $output = $this->_getRecordListRecords($myrecords, $actions, (int)$flags, $embedprefix);
+
+        $this->m_destInstance->m_type =     $desttype;
+        $this->m_destInstance->m_action =   $destaction;
+        $this->m_destInstance->m_postvars = $destpostvars;
+      }
+      
+      return $output;
+    }
+    
+    /**
+     * Actually gets the recordlist and does one last trick,
+     * we disable extended searching because that's simply not possible on onetomanys
+     * @param Array   $myrecords    The actual records for the recordlist
+     * @param Array   $actions      The actions for the recordlist
+     * @param Integer $flags        The flags for the recordlist
+     * @param String  $embedprefix  The prefix for embeded fields
+     * @return String The generated recordlist
+     */
+    function _getRecordListRecords($myrecords, $actions, $flags, $embedprefix="")
+    {
+      $recordlist = &atknew("atk.recordlist.atkrecordlist");
+      
+      $flags=RL_EMBED;
+      $flags|= hasFlag($this->m_destInstance->m_flags,NF_MRA) ? RL_MRA  : 0;
+      $flags|= hasFlag($this->m_destInstance->m_flags,NF_MRPA)? RL_MRPA : 0;
+      
+      if (!hasFlag($this->m_destInstance->m_flags, NF_NO_EXTENDED_SEARCH))
+      {
+        $this->m_destInstance->m_flags|=NF_NO_EXTENDED_SEARCH;
+        $removedflag = true;
+      }
+      
+      $output = $recordlist->render($this->m_destInstance, $myrecords, 
+                                    $actions,              $flags, 
+                                    $this->m_refKey,       "entryform",
+                                    array(),               $embedprefix);
+                                      
+      if ($removedflag) $this->m_destInstance->m_flags-=NF_NO_EXTENDED_SEARCH;
+      
+      return $output;
     }
     
     /**
@@ -317,6 +394,8 @@
      */
     function load($db, $record, $mode="")
     {
+      global $ATK_VARS;
+      
       if ($mode=="edit")
       {
         // when editing a record with a onetomanyrelation, we don't
@@ -353,7 +432,10 @@
             // we probably need everything
             $excludes = "";
           }
-          $recordset = $this->m_destInstance->selectDb($where,"",$this->fetchLimitArray(),$excludes,"",$mode);
+          $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+          $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+          $recordset = $this->m_destInstance->selectDb($where,$this->m_ownerInstance->m_postvars['atkorderby'],
+                                                       $this->fetchLimitArray(),$excludes,"",$mode);
 
           $this->m_loadFilter = $where;
           return $recordset;
@@ -498,9 +580,9 @@
      *
      * @return String A piece of html-code
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
-      $id = "atksearch[".$this->formName()."]";
+      $id = "atksearch[".$fieldprefix.$this->formName()."]";
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
@@ -509,36 +591,63 @@
     }
     
     /**
-     * Creates an search condition for a given search value
+     * Adds a search condition for a given search value
      * @param $table the table name
      * @param $value the search value
      * @return a piece of the SQL where clause
      */
      function searchCondition(&$query, $table, $value, $searchmode)
      {
-       $this->createDestination();
-       $usedFields = $this->m_ownerInstance->searchFields($this->fieldName());
-       $qfield=count($usedFields);
-
-       if($qfield>1)
+       if ($this->createDestination() && $this->m_ownerInstance->m_postvars["atkselector"])
        {
-         $fields="CONCAT(";
-         for ($i=0;$i<$qfield;$i++)
+         $query->addTable($this->m_destInstance->m_table);
+         $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
+         $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+       }
+     }
+     
+     function getSearchCondition(&$query, $table, $value, $searchmode)
+     {
+       $usedfields = array();
+       if (!is_array($value))
+       {
+         foreach ($this->m_destInstance->descriptorFields() as $field)
          {
-           $fields.=$usedFields[$i];
-           if($i<>$qfield-1){
-             $fields.=",";
+           if (!in_array($usedfields))
+           {
+             $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field);
+             $usedfields[] = $field;
            }
          }
-         $fields.=")";
        }
        else
        {
-         $fields=$usedFields['0'];
+         foreach ($value as $key=>$val)
+         {
+           if ($val)
+           {
+             $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $val, $searchmode, $key);
+           }
+         }
        }
-
-       $query->addJoin($this->m_destInstance->m_table,$this->fieldName(),$table.".id"."=".$this->fieldName().".".$this->m_refKey['0'],FALSE );//!$this->hasFlag(AF_OBLIGATORY)
-       $query->addSearchCondition($query->substringCondition($fields,escapeSQL($value)));
+     }
+     
+     /**
+      * Calls searchCondition on an attribute in the destination
+      * To hook the destination attribute on the query
+      * @param atkQuery &$query     The query object
+      * @param String   $table      The table to search on
+      * @param mixed    $value      The value to search
+      * @param mixed    $searchmode The mode used when searching
+      * @param String   $field      The name of the attribute
+      */
+     function _callSearchConditionOnDestField(&$query, $table, $value, $searchmode, $field)
+     {
+       if ($this->createDestination())
+       {
+         $attr = &$this->m_destInstance->getAttribute($field);
+         $attr->searchCondition($query, $table, $value, $searchmode);
+       }
      }
 
     /**

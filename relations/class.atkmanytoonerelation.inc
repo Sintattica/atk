@@ -201,7 +201,6 @@
     {      
       if ($this->createDestination())      
       {        
-      
         if (count($record[$this->fieldName()])==1)
         {
           // The record consist of only one field, which is the primary key.
@@ -506,7 +505,7 @@
     }
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
-    {     
+    {
       if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
       {
         // We only support 'exact' matches. 
@@ -527,7 +526,7 @@
           $searchConditions = array();
           $descfields = array();
           $descfields = $this->m_destInstance->descriptorFields();
-      //    $descfields[] = $this->m_destInstance->primaryKeyField();
+          $this->addToQuery($query);
           
           foreach($descfields as $descField)
           {

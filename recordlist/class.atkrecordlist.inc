@@ -19,7 +19,7 @@
   /** recordlist flags */
   define("RL_NO_SORT",                         1); // recordlist is not sortable
   define("RL_NO_SEARCH",                       2); // recordlist is not searchable
-  define("RL_EMBED",   RL_NO_SEARCH|RL_NO_SORT|4); // recordlist is embedded
+  define("RL_EMBED",                           4); // recordlist is embedded
   define("RL_MRA",                             8); // multi-record-actions enabled
   define("RL_MRPA",                           16); // multi-record-priority-actions enabled
   define("RL_LOCK",                           32); // records can be locked
@@ -48,13 +48,16 @@
     
     /**
      * Creates a normal recordlist based on the given parameters.
-     * @param $recordset the list of records
-     * @param $actions the default actions array
-     * @param $flags recordlist flags (see the top of this file)
-     * @param $suppressList fields we don't display
-     * @param $formName if embedded the form name in which we are embedded
+     * @param Array   $recordset    the list of records
+     * @param Array   $actions      the default actions array
+     * @param Integer $flags        recordlist flags (see the top of this file)
+     * @param Array   $suppressList fields we don't display
+     * @param String  $formName     if embedded the form name in which we are embedded
+     * @param Array   $navigation   Navigation links
+     * @param String  $embedprefix  The prefix for embeded fields
+     * @return String The rendered recordlist
      */
-    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array())
+    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array(),$embedprefix="")
     {                  
       $this->setNode($node);
       $this->m_flags = $flags;
@@ -71,7 +74,7 @@
       $selectcolor = $theme->getAttribute("select");
 
       /* retrieve list array */
-      $list = $this->listArray($recordset, $flags, "", $actions, $suppressList);
+      $list = $this->listArray($recordset, $flags, "", $actions, $suppressList, $embedprefix);
 
       /* Check if some flags are still valid or not... */
       if (hasFlag($flags, RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0)) $flags ^= RL_MRA;
@@ -113,7 +116,12 @@
         }    
   
         foreach (array_values($list["heading"]) as $head)
-        {
+        {          
+          if (hasFlag($this->m_flags, RL_EMBED) && !empty($head["url"]))
+          {
+            $head["url"] = str_replace("atkorderby=","atkorderby{$embedprefix}=",$head["url"]);
+          }
+          
           if (empty($head["url"])) 
           {
             $headercols[] = array("content"=>$head["title"]);
@@ -152,9 +160,11 @@
                                                $searchmode,"(".text("search_extended").")",SESSION_NESTED);
           }
   
-          $searchstart = '<a name="searchform"></a><form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.
-                       session_form().
-                         '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
+          $searchstart = '<a name="searchform"></a>';
+          if (!hasFlag($this->m_flags, RL_EMBED))
+            $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();
+          
+          $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                          '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
                          '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
   
@@ -294,7 +304,6 @@
 					
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
-  	        //$str_actions .= href($url, text($name, $this->m_node->m_type, $this->m_node->m_module), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
   	        $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
 						
 						$link = $name;
@@ -462,11 +471,12 @@
     /**
      * Function outputs an array with all information necessary to output a recordlist.
      *
-     * @param $recordset    list of records that need to be displayed
-     * @param $flags        recordlist flags
-     * @param $prefix       prefix for each column name (used for subcalls)
-     * @param $actions      list of default actions for each record
-     * @param $suppress     an array of fields that you want to hide
+     * @param Array   $recordset    List of records that need to be displayed
+     * @param Integer $flags        Recordlist flags
+     * @param String  $prefix       Prefix for each column name (used for subcalls)
+     * @param Array   $actions      List of default actions for each record
+     * @param Array   $suppress     An array of fields that you want to hide
+     * @param String  $embedprefix  The prefix for embeded fields
      *
      * The result array contains the following information:
      *  "heading"  => for each visible column an array containing: "title" {, "url"}
@@ -478,12 +488,17 @@
      *
      * @return see above
      */
-    function listArray(&$recordset, $flags=0, $prefix="", $actions=array(), $suppress=array())
+    function listArray(&$recordset, $flags=0, $prefix="", $actions=array(), $suppress=array(), $embedprefix="")
     {
       if (!is_array($suppress)) $suppress = array();
       $result = array("heading" => array(), "search" => array(), "rows" => array(),
                       "totalraw" => array(), "total" => array(), "mra" => array());
 
+      if (hasFlag($this->m_flags, RL_EMBED) && $embedprefix)
+      {
+        $prefix = $embedprefix;
+      }
+                      
       /* get the heading and search columns */
       if (!hasFlag($flags, RL_NO_SEARCH)) $this->m_node->setAttribSizes();
       foreach (array_keys($this->m_node->m_attribIndexList) as $r)

@@ -2444,7 +2444,7 @@
               
               if (is_object($p_attrib))
               {
-                if (is_array($value))
+                if (is_array($value) && $value[$key])
                 {
                   $value = $value[$key];
                 }

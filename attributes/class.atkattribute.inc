@@ -556,7 +556,7 @@
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
-          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch);
+          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch,null,$fieldprefix);
       }
     }
 
@@ -617,7 +617,7 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      $id = "atksearch".$fieldprefix."[".$this->formName()."]";
+      $id = "atksearch"."[".$fieldprefix.$this->formName()."]";
       
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
