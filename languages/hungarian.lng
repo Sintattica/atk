@@ -1,0 +1,103 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Applikacio";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Udvozollek ebben az ATK applikacioban.";
+
+  $txt_yes = "Igen";
+  $txt_no = "Nem";
+
+  $txt_view = "Mutasd";
+  $txt_edit = "Szerkeszt";
+  $txt_delete = "Torol";
+  $txt_add = "Hozzaad";
+  $txt_admin = "Adminisztracio";
+  $txt_search = "Kereses";
+  $txt_search_all = "Keress mindben";
+
+  $txt_next = "Kovetkezo";
+  $txt_previous = "Elozo";
+  $txt_select = "Kivalaszt";
+
+  $txt_save = "Mentes";
+  $txt_saveandclose = "Mentes es bezaras";
+  $txt_cancel = "Megsem";
+  $txt_back = "Vissza";
+
+  $txt_menu = "Menu";
+  $txt_error = "HIBA!";
+
+  $txt_error_obligatoryfield = "Ez a mezo szukseges";
+  $txt_error_formdataerror = "A mentes nem sikerult, ezert: ";
+  $txt_error_uniquefield = "Ennek a mezonek az erteke paratnal kell, hogy legyen";
+  $txt_confirm_delete = "Biztos, hogy torolni akarod?";
+  $txt_title_delete = "Torles megerositese";
+
+  $txt_select_none = "Semmi";
+  
+  $txt_clickheretoadd_prefix = "Uj hozzaadasa ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Nincs ilyen mappa";
+  $txt_remove_current_file = "Allomany torlese";
+  $txt_file_not_exist = "Nincs ilyen allomany";
+  $txt_cannot_remove_file = "Az allomany nem torolheto!";
+
+  // specific password attribute text
+  $txt_password_current = "Jelenlegi";
+  $txt_password_new = "Uj";
+  $txt_password_again = "Ujra";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "A megadott jelszo nem valos.";
+  $txt_password_incorrect = "Hibas jelszot adtal meg!";
+  $txt_password_nomatch = "A beirt jelszavak nem egyeznek.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Valassz Nyelvet:";
+  $txt_multilanguage_choice = "Selected language:"; 
+  
+  $txt_language_nl = "Holland";
+  $txt_language_de = "Nemet";
+  
+  $txt_until = "-";
+    
+  $txt_january = "Januar";
+  $txt_february = "Februar";
+  $txt_march = "Marcius";
+  $txt_april = "Aprilis";
+  $txt_may = "Majus";
+  $txt_june = "Junius";
+  $txt_july = "Julius";
+  $txt_august = "Augusztus";
+  $txt_september = "Szeptember";
+  $txt_october = "Oktober";
+  $txt_november = "November";
+  $txt_december = "December";
+  
+  $txt_fri = "Pen.";
+  $txt_sat = "Szo.";
+  $txt_sun = "Vas.";
+  $txt_mon = "Het.";
+  $txt_tue = "Kedd";
+  $txt_wed = "Sze.";
+  $txt_thu = "Csu.";
+  
+  $txt_permission_denied = "Sajnalom, de ide nincs hozzaferesed, kerlek lepj kapcsolatba egy adminsztratorral!";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="iso-8859-1";
+  
+  // colorpicker attribute
+  $txt_colorpicker_selectcolor = "Select a color";
+    
+?>
