@@ -748,7 +748,7 @@
      */
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout, $txt_field_obligatory,$config_atkroot;      
+      global $g_layout, $g_theme, $txt_field_obligatory, $config_atkroot;      
                 
       // if there are displayable obligatory fields, we display a message near the bottom.
       $has_oblies = false;
@@ -920,6 +920,41 @@
               }
               else 
               {
+ 
+	       // TOOLTIP support      
+                $ttip = "txt_".$p_attrib->fieldName()."_tooltip";
+                if ($GLOBALS[$ttip] != "")
+                { 
+                 $toolTipImg = "help.gif";
+                 $toolMsg    = $GLOBALS[$ttip];
+                }
+                else
+                {
+                 $toolTipImg = "nohelp.gif";
+                 $toolMsg    = "";
+                }
+
+                $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";  
+                $defaultDir = $config_atkroot."atk/themes/default/images/";
+
+                if (is_file($themeDir.$toolTipImg))
+                {
+                 $toolTipImg = $themeDir.$toolTipImg;
+                }
+                else
+                {
+                 $toolTipImg = $defaultDir.$toolTipImg;
+                }
+
+                if (is_file($toolTipImg))
+                {
+                 $toolTipTag= '<img src="'.$toolTipImg.'" border="0" alt="'.$toolMsg.'">&nbsp;';
+                }
+                else
+                {
+                 $toolTipTag = "";
+                }
+
                 $found = FALSE;
                 for ($i=0; $i < count($record['atkerror']);$i++)
                 {
@@ -927,11 +962,11 @@
                 }
                 if($found)
                 {
-                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
+                  $form.=$g_layout->ret_td('<div class="error">'.$toolTipTag.text($p_attrib->fieldName()).': </div>', 'valign="top"');
                 }
                 else
                 {
-                  $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+                  $form.=$g_layout->ret_td($toolTipTag.text($p_attrib->fieldName()).': ','valign="top"');
                 }
               }
             }
@@ -967,7 +1002,7 @@
               $editsrc .= "&nbsp; *";
               $has_oblies = true;
             }
-	    
+
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
           }
