@@ -1,14 +1,23 @@
 <?php
   /**
-   * Tools for session management
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage session
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
 
+  /**
+   * @internal some session initialization.
+   */
   $cookie_params = session_get_cookie_params();
 
   $cookiepath = atkconfig("application_root");
@@ -36,14 +45,53 @@
   $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
   $atkstackid = trim($_REQUEST["atkstackid"]);      
 
+  /**
+   * The atk session manager. 
+   *
+   * Any file that wants to make use of ATK sessions, should have a call to
+   * atksession() in the top php file (all ATK default files already have
+   * this).
+   * After the session has been initialised with atksession(), the session
+   * manager can be used using the global variable $g_sessionManager.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage session
+   *
+   */
   class atkSessionManager
   {
+    /**
+     * @access private
+     * @var String
+     */
     var $m_namespace;
 
+    /**
+     * @access private
+     * @var boolean
+     */
     var $m_escapemode = false; // are we escaping?
 
+    /** 
+     * @access private
+     * @var boolean
+     */
     var $m_usestack = true; // should we use a session stack?
 
+    /**
+     * Default constructor.
+     * @param String $namespace If multiple scripts/applications are
+     *                          installed on thesame url, they can each use
+     *                          a different namespace to make sure they 
+     *                          don't share session data.
+     * @param boolean $usestack Tell the sessionmanager to use the session
+     *                          stack manager (back/forth navigation in
+     *                          screens, remembering vars over multiple
+     *                          pages etc). This comes with a slight
+     *                          performance impact, so scripts not using
+     *                          the stack should pass false here.
+     */
     function atkSessionManager($namespace, $usestack=true)
     {
       $this->m_namespace = $namespace;
@@ -51,15 +99,32 @@
       atkdebug("creating sessionManager (namespace: $namespace)");
     }
 
+    /**
+     * Read session variables from the stack and the global scope.
+     * @access private
+     * @param array $postvars Any variables passed in the http request.
+     */
     function session_read(&$postvars)
     {
-      $this->globalscope($postvars);
+      $this->_globalscope($postvars);
       if ($this->m_usestack)
       {
-        $this->stackscope($postvars);
+        $this->_stackscope($postvars);
       }
     }
 
+    /**
+     * Register a global variable. 
+     * 
+     * Saves a value in the current namespace. 
+     * @param String $var The name of the variable to save.
+     * @param mixed $value The value of the variable to save. If omitted,
+     *                     the value is retrieved from the http request.
+     * @param boolean $no_namespace If set to false, the variable is saved
+     *                              in the current namespace. If set to true,
+     *                              the variable is available in all
+     *                              namespaces.
+     */
     function globalVar($var, $value="", $no_namespace=false)
     {
       global $g_sessionData;
@@ -71,6 +136,15 @@
             
     }
 
+    /**
+     * Retrieve the value of a session variable.
+     *
+     * @param String $var The name of the variable to retrieve.
+     * @param String $namespace The namespace from which to retrieve the
+     *                          variable, or "globals" if the global value
+     *                          needs to be retrieved.
+     * @return mixed The retrieved value.
+     */
     function getValue($var, $namespace="")
     {
       global $g_sessionData;            
@@ -79,6 +153,24 @@
       return $g_sessionData[$this->m_namespace]["globals"][$var];
     }
 
+    /**
+     * Store a variable in the session stack. The variable is available in the
+     * current page (even after reload), and any screen that is deeper on the
+     * session stack.
+     * The method can be used to transparantly both store and retrieve the value.
+     * If a value gets passed in a url, the following statement is useful:
+     * <code>
+     *   $view = $g_sessionManager->stackVar("view");
+     * </code>
+     * This statement makes sure that $view is always filled. If view is passed
+     * in the url, it is stored as the new default stack value. If it's not 
+     * passed in the url, the last known value is retrieved from the session.
+     *
+     * @param String $var The name of the variable to store.
+     * @param mixed $value The value to store. If omitted, the session manager
+     *                     tries to read the value from the http request.
+     * @return mixed The current value in the session stack. 
+     */
     function stackVar($var, $value="")
     {
       if (!$this->m_escapemode)
@@ -110,6 +202,25 @@
       }
     }
 
+    /**
+     * Store a variable in the session stack. The variable is available only in 
+     * the current page (even after reload). In contrast with stackVar(), the 
+     * variable is invisible in deeper screens.
+     *
+     * The method can be used to transparantly both store and retrieve the value.
+     * If a value gets passed in a url, the following statement is useful:
+     * <code>
+     *   $view = $g_sessionManager->pageVar("view");
+     * </code>
+     * This statement makes sure that $view is always filled. If view is passed
+     * in the url, it is stored as the new default stack value. If it's not 
+     * passed in the url, the last known value is retrieved from the session.
+     *
+     * @param String $var The name of the variable to store.
+     * @param mixed $value The value to store. If omitted, the session manager
+     *                     tries to read the value from the http request.
+     * @return mixed The current value in the session stack. 
+     */
     function pageVar($var, $value="")
     {
       if (!$this->m_escapemode)
@@ -138,7 +249,12 @@
       }
     }
 
-    function globalscope(&$postvars)
+    /**
+     * Process the global variable scope.
+     * @access private
+     * @param array $postvars The http request variables.
+     */
+    function _globalscope(&$postvars)
     {
       global $g_sessionData;
 
@@ -164,7 +280,12 @@
 
     }
 
-    function stackscope(&$postvars)
+    /**
+     * Process the variable stack scope (pagevars, stackvars).
+     * @access private
+     * @param array $postvars The http request variables.
+     */
+    function _stackscope(&$postvars)
     {
       global $g_sessionData, $atklevel;
       
@@ -342,6 +463,12 @@
 
     }
 
+    /**
+     * Retrieve a trace of the current session stack.
+     * @return array Array containing the title and url for each stacklevel.
+     *               The url can be used to directly move back on the session
+     *               stack.
+     */
     function stackTrace()
     {
       global $g_sessionData;
@@ -370,10 +497,13 @@
     }
 
     /**
-     * Verify the integrity of the session stack, in the case a user
-     * opens links in a new window, which could confuse the session manager.
-     * In the case we detect this, we fork the session stack so both windows
-     * have their own stacks.
+     * Verify the integrity of the session stack.
+     *
+     * Fixes the stack in case a user opens links in a new window, which would
+     * normally confuse the session manager. In the case we detect a new
+     * window, we fork the session stack so both windows have their own
+     * stacks.
+     * @access private
      */
     function _verifyStackIntegrity()
     {
@@ -406,18 +536,43 @@
       }
     }
     
-  function &getSession()
-  {
-    return $_SESSION[atkconfig("identifier")];
-  }
-
+    /**
+     * Get direct access to the php session. 
+     * 
+     * The advantage of using atkSessionManager::getSession over php's 
+     * $_SESSION directly, is that this method is application aware.
+     * If multiple applications are stored on the same server, and each has
+     * a unique $config_identifier set, the session returned by this method
+     * is specific to only the current application, whereas php's $_SESSION
+     * is global on the url where the session cookie was set.
+     * @static
+     * @return array The application aware php session.
+     */
+    function &getSession()
+    {
+      return $_SESSION[atkconfig("identifier")];
+    }
 
   }
 
   /**
-    Calling this function will run atk session management.
-    Call this function in every file that you want to use atk sessions.
-  */
+   * Initializes the session.
+   *
+   * After the session has been initialised with atksession(), the session
+   * manager can be used using the global variable $g_sessionManager.
+   * Call this function in every file that you want to use atk sessions.
+   *
+   * @param String $namespace If multiple scripts/applications are
+   *                          installed on thesame url, they can each use
+   *                          a different namespace to make sure they 
+   *                          don't share session data.
+   * @param boolean $usestack Tell the sessionmanager to use the session
+   *                          stack manager (back/forth navigation in
+   *                          screens, remembering vars over multiple
+   *                          pages etc). This comes with a slight
+   *                          performance impact, so scripts not using
+   *                          the stack should pass false here.
+   */
   function atksession($namespace = "default", $usestack=true)
   {
     global $ATK_VARS, $g_sessionManager;
@@ -451,12 +606,35 @@
 
   }
 
+  /**
+   * Store a variable in the current namespace.
+   * @deprecated Use atkSessionManager::getSession() instead, and store
+   *             the variable directly in the application session, or
+   *             use globalVar() to store a variable in the current
+   *             namespace.
+   */
   function sessionStore($var, $value)
   {
     global $g_sessionManager;    
     $g_sessionManager->globalVar($var, $value);
   }
+  
+  /**
+   * Load a variable from a namespace.
+   * @deprecated Use atkSessionManager::getSession() instead, and load
+   *             the variable directly from the application session, or
+   *             use getValue() to retrieve a variable from a given namespace.
+   */
+  function sessionLoad($var, $namespace="")
+  {
+    global $g_sessionManager;
+    return $g_sessionManager->getValue($var, $namespace);
+  }
 
+  /**
+   * @internal Used by the session manager to retrieve a unique id for the 
+   *           current atk stack.
+   */
   function atkStackID($new = false)
   {
     global $atkstackid;
@@ -468,6 +646,17 @@
     return $atkstackid;
   }
 
+  /**
+   * Retrieve the current atkLevel of the session stack.
+   * 
+   * Level 0 is the 'entry screen' of a stack. Any screen deeper from the
+   * entry screen (following an edit link for example) has its atklevel
+   * increased by 1. This method is useful for checking if a 'back' button
+   * should be displayed. A backbutton will work for any screen whose 
+   * atklevel is bigger than 0.
+   *
+   * @return int The current atk level.
+   */
   function atkLevel()
   {
     global $atklevel;
@@ -476,13 +665,7 @@
       $atklevel = 0; // assume bottom level.
     }
     return $atklevel;
-  }
-
-  function sessionLoad($var, $namespace="")
-  {
-    global $g_sessionManager;
-    return $g_sessionManager->getValue($var, $namespace);
-  }
+  }  
     
 
 ?>

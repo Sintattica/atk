@@ -1,11 +1,59 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage ui
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * Outputbuffering class.
+   *
+   * Any output sent to the browser should be directed through the atkOutput 
+   * class. Among other things, it buffers debugging output and errormessages,
+   * and displays them below the actual output. If $config_output_gzip is set
+   * to true, all output is sent gzipped to the browser (saves bandwith).
+   *
+   * If $config_mailreport is set to a valid email address, this class also
+   * takes care of sending error reports to the email address, if any errors
+   * occurred during script execution.
+   *
+   * The atkOutput class is a singleton. The one-and-only instance should be
+   * retrieved with the getInstance() method.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage ui
+   *
+   */
   class atkOutput
   {    
+    /**
+     * Store raw output data.
+     * @access private
+     */
     var $m_raw = ""; 
-    var $m_content = "";
-    var $m_scripts = array();
+    
+    /** 
+     * Store regular output data.
+     * @access private
+     */
+    var $m_content = "";        
   
+    /**
+     * Retrieve the one-and-only atkOutput instance.
+     * @return atkOutput The instance.
+     */
     function &getInstance()
     {
       static $s_instance = NULL;
@@ -17,6 +65,17 @@
       return $s_instance;
     }
     
+    /**
+     * Send all output to the browser.
+     * @param boolean $nocache If true, sends no-cache headers to the browser,
+     *                         so the browser will not cache the output in its
+     *                         browsercache.
+     * @param int $lastmodificationstamp Timestamp of last modification. If 
+     *                                   set, a last-modified header
+     *                                   containing this stamp will be sent to
+     *                                   the browser. If $nocache is true,
+     *                                   this parameter is ignored.     
+     */
     function outputFlush($nocache=true, $lastmodificationstamp="")
     {
       global $g_debug_msg, $g_error_msg;
@@ -36,7 +95,6 @@
 	        atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
           header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
           header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-//          header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
           header ("Cache-Control: private, must-revalidate");  // HTTP/1.1
           header ("Pragma: no-cache");                          // HTTP/1.0
         }
@@ -84,9 +142,12 @@
       }      
     }
     
-   /**
-     * Output rawtext to page
-     * @param $txt Text
+    /**
+     * Output raw, headerless text to the browser. If this method is called,
+     * all regular output is suppressed and the contents of the rawoutput
+     * is passed as-is to the browser when outputFlush() is called.
+     *
+     * @param String $txt The text to output.
      */
     function rawoutput($txt)
     {
@@ -94,14 +155,22 @@
     }
     
     /**
-     * Output text to page
-     * @param $txt Text
+     * Output regular text to the browser.
+     * @param String $txt The text to output.
      */
     function output($txt)
     {
       $this->m_content.= $txt."\n";
     }
     
+    /**
+     * Gzip a piece of text.
+     *
+     * Called internally by atkOutput when $config_output_gzip is set to true,
+     * but can be used by other scripts too, if they need to gzip some data.
+     * @param String $contents The string to gzip.
+     * @return String The gzipped string.
+     */ 
     function gzip($contents)
     {        
       $gzip_size = strlen($contents);
