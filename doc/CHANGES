@@ -37,6 +37,7 @@ Changes in ATK 5.0.5
   is used [Boy,Yuri]
 * Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
 * Fixed the outlook menu. (bug #352) [Sandy]
+* Fixed help link in default view template. (bug #353) [Thom]
 
 Changes in ATK 5.0.4
 --------------------
