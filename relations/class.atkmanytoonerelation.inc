@@ -530,7 +530,7 @@
     		$descfields = array();
     		$descfields = $this->m_destInstance->descriptorFields();
     		$this->addToQuery($query);
-    		return $this->_getSearchPerAttrib($descfields, &$query, $value, $searchmode);
+    		return $this->_getSearchPerAttrib($descfields, $query, $value, $searchmode);
     	}
     	return;
     }
