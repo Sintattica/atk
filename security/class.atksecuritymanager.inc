@@ -393,35 +393,48 @@
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");      
             
+      $tplvars = Array();      
       $output.='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));       
       $output.='<br><br><table border=0 cellspacing=2 cellpadding=0 align=center>';                     
+
+      $tplvars["atksessionformvars"] = makeHiddenPostVars(array("atklogout", "loginattempts"));
+      $tplvars["formurl"] = $_SERVER["PHP_SELF"];
 
       // max_loginattempts of 0 means no maximum.
       if(atkconfig('max_loginattempts')>0 && $loginattempts>atkconfig('max_loginattempts'))
       {        
         $output.="<tr><td class=table>".text('auth_max_loginattempts_exceeded')."<br><br></td></tr>";
+        $tplvars["auth_max_loginattempts_exceeded"] = text('auth_max_loginattempts_exceeded');
       }      
       else
       {
         // generate the username input field
         // based upon the config_authdropdown and auth. method
         $userField = $this->auth_userField($defaultname);
+        $tplvars["username"] = text("username");
+        $tplvars["password"] = text("password");
+        $tplvars["userfield"] = $userField;
+        $tplvars["passwordfield"] = '<input type="password" size="15" name="auth_pw" value="">';
+        $tplvars["submitbutton"] = '<input type="submit" value="'.text('login').'">';
+        $tplvars["title"] = text('login_form');
         
         if ($lastresponse == AUTH_LOCKED)
         {        
           $output.="<tr><td colspan=2 class=error>".text('auth_account_locked')."<br><br></td></tr>";
+          $tplvars["auth_account_locked"] = text('auth_account_locked');
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
           $output.='<tr><td colspan=2 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
+          $tplvars["auth_mismatch"] = text('auth_mismatch');
         }
 
         // generate the form
-        $output.="<tr><td valign=top class=table>".text('username').":</td><td>".$userField."</td></tr>";   
-        $output.="<tr><td colspan=2 class=table height=6></td></tr>";
-        $output.="<tr><td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
-        $output.="<tr><td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";      
+        $output.="<tr><td valign=top>".text('username')."</td><td>:</td><td>".$userField."</td></tr>";   
+        $output.="<tr><td colspan=2 height=6></td></tr>";
+        $output.="<tr><td valign=top>".text('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
+        $output.="<tr><td colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";      
                        
       }
       
@@ -429,8 +442,8 @@
 
       $output.='<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
       
-      $page->addContent($ui->render("login.tpl", array("title"=>text('login_form'),
-                                                       "content"=>$output)));       
+      $tplvars["content"]=$output;
+      $page->addContent($ui->render("login.tpl", $tplvars));       
       $o = &atkOutput::getInstance();
       $o->output($page->render(text("login_form")));
     }
