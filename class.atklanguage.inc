@@ -43,11 +43,14 @@ class atkLanguage
   {
     global $g_modules;
     
+    $this->m_fallbackmodules=array();
+    
     foreach ($g_modules as $modname => $modpath)
     {
       $this->m_fallbackmodules[] = $modname;
     }
     $this->m_fallbackmodules[] = "atk";
+    atk_var_dump($this->m_fallbackmodules);
   }
   
   /**
