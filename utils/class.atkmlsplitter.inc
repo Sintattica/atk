@@ -32,13 +32,15 @@
     */
     function updateMlRecords(&$node, $record, $mode="add")
     {
+      $excludelist = array();
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
         {
           // assume all relations are stored in the PRESTORE so we MUST NOT use addDb()
           // on this node if its contains relations to others
-          unset($node->m_attribList[$attribname]);
+          //unset($node->m_attribList[$attribname]);
+          $excludelist[] = $attribname;
         }
       }
       
@@ -76,7 +78,7 @@
             $node->updateDb($record);
             break;
           default:
-            $node->addDb($record,false,"add");
+            $node->addDb($record,false,"add", $excludelist);
         }
         $record["atkprimkey"]=$oldprimkey;
       }

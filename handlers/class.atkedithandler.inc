@@ -33,7 +33,7 @@
      */
     function editPage($record, $locked=FALSE)
     {        
-      $node = &$this->m_node;      
+      $node = &$this->m_node;            
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");            
       $node->addStyle("style.css");

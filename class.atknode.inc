@@ -946,29 +946,37 @@
        * edit() method by supplying an <attributename>_edit function in the derived classes.
        */
       $tab = $this->getActiveTab();
+            
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
         $field = array("name" => $attribname);
         $p_attrib = &$this->m_attribList[$attribname];
-
-        /* fields that have not yet been initialised may be overriden in the url */
-        if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
+//echo $attribname."<br>";
+        if ($p_attrib!=NULL)
         {
-          $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
+          /* fields that have not yet been initialised may be overriden in the url */
+          if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
+          {
+            $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
+          }
+  
+          /* sometimes a field is hidden although not specified by the field itself */
+          $tabs = $this->m_attribIndexList[$r]["tabs"];
+  
+          if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
+              !$p_attrib->showOnTab($tab))
+          {
+            $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+          }
+  
+          /* we let the attribute add itself to the edit array */
+          $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
-
-        /* sometimes a field is hidden although not specified by the field itself */
-        $tabs = $this->m_attribIndexList[$r]["tabs"];
-
-        if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
-            !$p_attrib->showOnTab($tab))
+        else
         {
-          $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+          atkerror("Attribute $attribname not found!");
         }
-
-        /* we let the attribute add itself to the edit array */
-        $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
       }
 
       /* check for errors */
@@ -1660,7 +1668,7 @@
           $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
 
-        if (count($query->m_fields) && !$query->executeUpdate()) return false;        
+        if (count($query->m_fields) && !$query->executeUpdate()) return false;                      
         
         if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
@@ -1668,7 +1676,7 @@
           $mltool = &atknew("atk.utils.atkmlsplitter");
           $mltool->updateMlRecords($this, $record,"update");
         }
-        
+
         if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;        
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
@@ -1678,7 +1686,7 @@
         {
           atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!</font>");
           $return = true;
-        }
+        }        
         return $return;
       }
       else
@@ -2059,7 +2067,7 @@
      * @param $exectrigger Indicates whether postAdd trigger should be executed or not
      * (defaults to yes)
      */
-    function addDb(&$record, $exectrigger=true, $mode="add")
+    function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
       global $g_db;
 
@@ -2072,7 +2080,7 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if ($mode != "add" || $p_attrib->needsInsert($record))
+        if (!atk_in_array($attribname, $excludelist) && ($mode != "add" || $p_attrib->needsInsert($record)))
         {
           $storemode = $p_attrib->storageType($mode);
           if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;

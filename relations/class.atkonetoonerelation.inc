@@ -322,7 +322,7 @@
         {
           atkdebug("Updating existing one2one record");
           // we put the vars in the postvars, because there is information
-          // like atkorgkey in it that is vital.
+          // like atkorgkey in it that is vital.          
           $this->m_destInstance->m_postvars = $vars;
           return $this->m_destInstance->updateDb($vars);
         }
