@@ -58,7 +58,7 @@
         
         $output = $ui->renderAction("edit", $params);
               
-        return $ui->renderBox(array("title"=>$ui->title($node->m_module, $node->m_type,'edit'),
+        return $ui->renderBox(array("title"=>$node->actionTitle('edit', $record),
                                       "content"=>$output));        
       }
       else
