@@ -203,20 +203,20 @@
       {
         $field = &$data["fields"][$i];
 				
-				$field_name = $field['name'];								
+		$field_name = $field['name'];								
 				
         $tplfield = array();
 				        
-				$tplfield["tab"] = ($field["tabs"][0]=="*"?$tab:$field["tabs"][0]); // $this->getTab($field_name);
-				
-				// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
+		$tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":$field["tabs"][0]); // $this->getTab($field_name);
+		
+		// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+		// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+		$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
 								
-				// ar_ stands voor 'attribrow'.
-				$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+		// ar_ stands voor 'attribrow'.
+		$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-				/* check for seperator */
+		/* check for seperator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
         {
           $tplfield["line"] = "<hr>"; 
