@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.71  2001/07/03 15:49:14  maurice
+   * The validate function of an attribute is only called when a field is not empty.
+   *
    * Revision 4.70  2001/07/01 10:09:52  ivo
    * Replaced the clickheretoadd_prefix/postfix string by link_<nodetype>_add.
    * If you upgrade, please verify your language files!
@@ -1919,17 +1922,21 @@
         }
         else
         {
-          $funcname = $p_attrib->m_name."_validate";
+          //don't validate empty fields
+          if (!( $p_attrib->isEmpty($record)))
+          {
+            $funcname = $p_attrib->m_name."_validate";
 
-          if (method_exists($this,$funcname))
-          {
-            $error = $this->$funcname($record[$attribname]);
-            if ($error!="") $this->m_errors[$attribname] = $error;
-          }
-          else
-          {
-            $error = $p_attrib->validate($record[$attribname]);
-            if ($error!="") $this->m_errors[$attribname] = $error;
+            if (method_exists($this,$funcname))
+            {
+              $error = $this->$funcname($record[$attribname]);
+              if ($error!="") $this->m_errors[$attribname] = $error;
+            }
+            else
+            {
+              $error = $p_attrib->validate($record[$attribname]);
+              if ($error!="") $this->m_errors[$attribname] = $error;
+            }
           }
         }
       }
