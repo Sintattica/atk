@@ -34,6 +34,7 @@ function menu_href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
          position:absolute;
          }
 </STYLE>
+<!-- dit zorgt ervoor dat theme variables ook beschikbaar zijn in javascript en dus outlookmenu -->
 <script language="JavaScript" type="text/javascript">
 
 this.ol_themename       = '<?echo $g_theme["Description"];?>';
@@ -66,10 +67,9 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
  
   while (list ($name) = each ($g_menu))
   {
-    $atkmenutop=$name;
-
-  echo "p = new createPanel('".addslashes($atkmenutop)."','".addslashes(text("menu_".$atkmenutop))."');\n";
-  
+  $atkmenutop=$name;
+	$panelbuttons="";
+	
   for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
   {
     $menu="";
@@ -105,17 +105,26 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
 		{
 		if($g_menu[$atkmenutop][$i]["url"]!="")
 		 {
-  		echo "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+     $panelbuttons .= "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
 		 }
     }
 		else 
     {
-      //$menu .= text("menu_$name").$config_menu_delimiter;    
+      //$menu .= text("menu_$name").$config_menu_delimiter;
+	
     }
 
   }
-  echo "o.addPanel(p);\n";
-  }
+  //    echo "alert('$panelbuttons')";
+  // als panelbuttons is leeg dan zijn er dus geen onderliggende items en hoeft ook het panel niet getoonde te worden
+   if ($panelbuttons!="")
+     {
+      echo "p = new createPanel('".addslashes($atkmenutop)."','".addslashes(text("menu_".$atkmenutop))."');\n";  
+  		echo $panelbuttons;
+			echo "o.addPanel(p);\n";	
+	  	}
+		
+	}
   
   ?>
   
