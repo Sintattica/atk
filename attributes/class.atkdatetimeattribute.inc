@@ -50,7 +50,6 @@
     {
 		  $this->m_date->fetchMeta($metadata);
 		  $this->m_time->fetchMeta($metadata);
-			$this->m_tableMeta = $metadata[$this->m_name];
     }
 
     /**

@@ -314,27 +314,11 @@
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $dateval = $this->value2db(array($this->fieldName()=>$value));
-      $is_date = $this->m_tableMeta['type'] == 'date';      
-      if($is_date)
-      {
-        // TODO & FIXME:
-        // databases have their own way of comparing dates. (OCI8 needs TO_CHAR etc..
-        // so we need to make some $query->dateComparison function..
-        atkdebug("Date support for DATE fields not yet supported (FIXME!)");
-      }
-      else
-      {
-        $func = $searchmode."Condition";
-        if (method_exists($query,$func))
-        {
-          $query->addSearchCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
-        }
-        else
-        {
-          // probably a varchar field..
-          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),$dateval));
-        }
-      }      
+
+      // TODO & FIXME:
+      // databases have their own way of comparing dates. (OCI8 needs TO_CHAR etc..
+      // so we need to make some $query->dateComparison function..
+      atkdebug("Search support for DATE fields not yet supported (FIXME!)");          
     }
 
     /**
@@ -343,8 +327,7 @@
      * @return database value for date
      */
     function value2db($rec)
-    {
-      $is_date = $this->m_tableMeta['type'] == 'date' || $this->m_tableMeta['type'] == 'datetime';      
+    {      
             
       if (!is_array($rec[$this->fieldName()]))
         $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
@@ -354,8 +337,8 @@
       $day = $rec[$this->fieldName()]["day"];
 
       if (empty($year) || empty($month) || empty($day)) return "";
-      $separator = ($is_date ? "-" :"");
-      $result = $year.$separator.sprintf("%02d",$month).$separator.sprintf("%02d",$day);
+      
+      $result = $year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day);
       return $result;
     }
 
@@ -365,13 +348,11 @@
      * @return array with 3 fields (year, month, day)
      */
     function db2value($rec)
-    {
-		 
-      $is_date = $this->m_tableMeta['type'] == 'date' || $this->m_tableMeta['type'] == 'datetime';
+    {		       
       if (strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
-                   "month"=>substr($rec[$this->fieldName()], $is_date ? 5 : 4, 2),
-                   "day"  =>substr($rec[$this->fieldName()], $is_date ? 8 : 6, 2));
+                   "month"=>substr($rec[$this->fieldName()], 5, 2),
+                   "day"  =>substr($rec[$this->fieldName()], 8, 2));
     }
     
     /**

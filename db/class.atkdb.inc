@@ -29,12 +29,11 @@
      * number of affected rows after an update/delete/insert query 
      * NOTE: this is currently only supported for mysql.
      */
-    var $m_affected_rows = 0;
+    var $m_affected_rows = 0;      
     
+    // array to store meta-information about tables.
+    var $m_tableMeta = array();
 
-    /* identification */
-    var $m_type     = "db";
-    var $m_revision = '$Revision$';
 
     /* link and query handles */
     var $m_link_id  = 0;
@@ -324,6 +323,21 @@
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
       // searches can be implemented using LIKE)
       return array("exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal");
+    }
+    
+    function tableMeta($table)
+    {
+      if (!is_array($this->m_tableMeta[$table]))
+      {
+        $tmparr = $this->metadata($table);
+        for ($i=0;$i<count($tmparr);$i++)
+        {
+          $this->m_tableMeta[$table][$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
+          $this->m_tableMeta[$table][$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
+          $this->m_tableMeta[$table][$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];          
+        }      
+      }
+      return $this->m_tableMeta[$table];
     }
   }  
 

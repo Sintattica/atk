@@ -31,7 +31,6 @@
     function atkEmailAttribute($name, $search = false, $flags = 0)
     {
       $this->$m_dnsSearch = $search;
-      atkdebug("dnsSearch ".$this->$m_dnsSearch);
       $this->atkAttribute($name, $flags);
 
     }
@@ -61,7 +60,6 @@
       }
       else
       {
-        atkdebug("dnsSearch ".$this->$m_dnsSearch);
         if ($this->$m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records

@@ -14,11 +14,8 @@
    *
    */ 
   class atkmysqldb extends atkdb
-  {
-    /* identification */
-    var $m_type = "mysql";
-    var $m_revision = '$Revision$';
-  
+  {    
+     
     /**
      * Base constructor 
      */
@@ -269,6 +266,7 @@
       $this->connect();
       
       /* list fields */
+      atkdebug("Retrieving metadata for $table");
       $id = @mysql_list_fields($this->m_database, $table);
       if (!$id) atkdebug("Metadata query failed.");
 
@@ -289,6 +287,7 @@
       }
       /* free result */
       @mysql_free_result($id);
+      atkdebug("Metadata for $table complete");
       return $result;
     }
 
@@ -321,7 +320,7 @@
        * @params $tableName the table to find
        * @params returns true if found, false if not found
        */  
-    function tableExists($tableName)
+    function tableExists($table)
     {
       global $g_db;
       
@@ -329,10 +328,10 @@
       $found = FALSE;
       for($i=0; ($i<count($res)) && (!$found); $i++)
       {
-        if ($res[$i][0] == $tableName) $found = TRUE;
+        if ($res[$i][0] == $table) $found = TRUE;
       }    
       return ($found);    
-    }
+    }    
   
     /**
      * This function indicates what searchmodes the database supports.

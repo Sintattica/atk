@@ -132,8 +132,6 @@
 
     function value2db($rec)
     {
-
-     $is_time = $this->m_tableMeta['type'] == 'time' || $this->m_tableMeta['type'] == 'datetime';
 		 
 		 $hours = $rec[$this->fieldName()]["hours"];
      $minutes = $rec[$this->fieldName()]["minutes"];
@@ -146,15 +144,14 @@
 		 
      return $result;
     }
+    
 		/**
      * Convert database value to time array
      * @param $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
     function db2value($rec)
-    { 
-		  
-      $is_time = $this->m_tableMeta['type'] == 'time' || $this->m_tableMeta['type'] == 'datetime';
+    { 		    
       if (strlen($rec[$this->fieldName()]) == 0 ) return "";
       return array("hours"=>substr($rec[$this->fieldName()], 0, 2),
                    "minutes"=>substr($rec[$this->fieldName()], 3, 2),

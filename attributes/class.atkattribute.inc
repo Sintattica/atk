@@ -149,11 +149,6 @@
     var $m_maxsize = 0;
 
     /**
-     * All meta data for the table this attribute is "part off"
-     */
-    var $m_tableMeta = "";
-
-    /**
        * Order of the attribute
         */
     var $m_order = 0;
@@ -371,7 +366,13 @@
      */    
     function fetchMeta($metadata)
     {
-      $this->m_tableMeta = $metadata[$this->m_name];
+      global $g_layout;
+      
+      $attribname = $this->fieldName();
+      $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
+      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());      
+      $this->m_maxsize = $metadata[$attribname]['len'];                     
+      
     }
     
     /**

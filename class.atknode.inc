@@ -41,17 +41,7 @@
    * This class must be seen as an abstract base class: For
    * every piece of information in an application, a class
    * must be derived from this class with specific
-   * implementations for that type of node.
-   *
-   * <b>Todo's</b>   : - Incorporate some metadata about a node as in Stefan
-   *  	                 Niederhauser's node-code. (like creation date etc.)
-   *                   - Authorization: who is allowed to do what on which node
-   *                   - Install function. And a script that you can use to
-   *                     install new nodetypes in your achievo. The install
-   *                     function would typically create a table and register
-   *                     itself somewhere in the menu.
-   *                   - Lots of other small things need to be done. Search for
-   *                     'todo' in the code :)
+   * implementations for that type of node.   
    *
    * @author Ivo Jansch (ivo@achievo.com)
    * @version $Revision$
@@ -65,8 +55,6 @@
 
   // Global theme variable, must be declared before the includes
   $g_theme = array();
-  // Global array to store meta-information about tables, so we don't have to read them from the db for each class instance.
-  $g_tableMeta = array();
   
   // Global node list
   $g_nodes = array();
@@ -197,19 +185,12 @@
      * This member indicated whether the node has been initialised.
      */
     var $m_initialised = false;
-
+    
     /**
-     * This array will hold the data of records that are read from the database.
-     * NOTE: USE OF THIS VARIABLE IS OBSOLETE
+     * Check to prevent double execution of setAttribSizes on pages with more than one form
      */
-    var $m_records = array();
-
-    /**
-     * Pointer to the current record.
-     * NOTE: USE OF THIS VARIABLE IS OBSOLETE
-     */
-    var $m_currentRec = 0;
-
+    var $m_attribsizesset = false;
+        
     /**
      * The list of attributes of a node. These should be of the class atkAtribute
      * or one of its derivatives.
@@ -250,11 +231,6 @@
      * The last known primary key value for a certain record
      */
     //var $m_orgkey = array();
-
-    /**
-     * Array containing the metadata of the table (with fieldname, type and length)
-     */
-    var $m_tableMeta = array();    
 
     /**
      * The postvars (or getvars) that are passed to a page will be passed
@@ -781,9 +757,10 @@
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
       global $g_layout, $config_atkroot,$g_sessionData,$atklevel;      
-                
-      // if there are displayable obligatory fields, we display a message near the bottom.      
       
+      // read metadata
+      $this->setAttribSizes();
+                            
       $g_layout->register_script($config_atkroot."atk/javascript/formsubmit.js");
       
       if (($mode == 'add' && sizeof($this->m_listMlAdd) > 0 && !$this->m_hasMlSelectAdd) ||
@@ -1032,6 +1009,8 @@
     function searchForm($record = NULL)
     {
       global $g_layout, $g_db;
+      
+      $this->setAttribSizes();
       
       $defaults = $record;           
 
@@ -1475,7 +1454,11 @@
 
       $output.="</tr>";
 
-      if ($searchable) $output.=$searchRow;           
+      if ($searchable) 
+      {
+        $this->setAttribSizes();
+        $output.=$searchRow;           
+      }
       
       
       for ($i=0;$i<count($recordset);$i++)
@@ -2118,8 +2101,6 @@
         }
       }
         
-      // Read metainformation from the database.
-      $this->tableMeta();
       //atk_var_dump($this->m_attribIndexList);
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
       //atk_var_dump($this->m_attribIndexList);
@@ -2130,39 +2111,22 @@
      * This function reads meta information from the database and initialises it's attributes
      * with the value of it.
      */
-    function tableMeta()
+    function setAttribSizes()
     {
-      global $g_tableMeta, $g_db, $g_layout;
+      if ($this->m_attribsizesset) return true;    
+      global $g_db;
 
-      if (!is_array($g_tableMeta[$this->m_table]))
-      {
-        // Get metainformation about the table
-        $tmparr = $g_db->metadata($this->m_table);
-
-        // Store the metadata in a more convenient format.
-        for ($i=0;$i<count($tmparr);$i++)
-        {
-          $this->m_tableMeta[$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
-          $this->m_tableMeta[$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
-          $this->m_tableMeta[$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];
-          $fieldname = $tmparr[$i]['name'];          
-        }
-
-        $g_tableMeta[$this->m_table] = $this->m_tableMeta;
-      }
-
-      $this->m_tableMeta = $g_tableMeta[$this->m_table];
+      $metainfo = $g_db->tableMeta($this->m_table);
+                  
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
         if (is_object($p_attrib))
-        {
-          $p_attrib->fetchMeta($this->m_tableMeta);
-          $p_attrib->m_size = min($this->m_tableMeta[$attribname]['len'], $g_layout->maxInputSize());
-          $p_attrib->m_searchsize = min($this->m_tableMeta[$attribname]['len'], $g_layout->searchSize());      
-          $p_attrib->m_maxsize = $this->m_tableMeta[$attribname]['len'];                     
+        {         
+          $p_attrib->fetchMeta($metainfo);
         }
       }
+      $this->m_attribsizesset = true;
     }
 
     /**
@@ -2818,8 +2782,7 @@
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="")
     {      
       global $g_db;      
-
-      $this->m_records = array();
+      
       $selectlist = array();
       $loadlist = array();
 
@@ -2952,12 +2915,6 @@
           $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i]);
         }
       }
-      // The $this->m_records is here for compatibility reasons.
-      // USE OF M_RECORDS IS OBSOLETE!!!!!!!!!
-      // new usage of selectDb: $recordset = $this->selectDb(...);
-      // use the returned recordset instead of $this->m_records;
-      $this->m_records = $recordset;
-      $this->m_currentRec = 0;
       return $recordset;
     }
 

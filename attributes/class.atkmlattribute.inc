@@ -36,9 +36,6 @@
     {
       global $config_language, $g_layout;
 
-      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta['len']);
-      $this->m_maxsize = $this->m_tableMeta['len'];    
-
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)
       {
@@ -73,9 +70,6 @@
     {
       global $config_language, $g_layout;
       
-      $this->m_searchsize = min($g_layout->searchSize(), $this->m_tableMeta['len']);
-      $this->m_maxsize = $this->m_tableMeta['len'];      
-
       $result= '<input type="text" name="atksearch['.$this->formName().'_'.$config_language[0].']"'.
                ' value="'.$record[$this->fieldName().'_'.$config_language[0]].'"'.
                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
@@ -196,7 +190,11 @@
      */    
     function fetchMeta($metadata)    
     {
-      $this->m_tableMeta = $metadata[$this->fieldName().'_'.$config_language[0]];
+      global $config_language;
+      $attribname = $this->fieldName().'_'.$config_language[0];
+      $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
+      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());      
+      $this->m_maxsize = $metadata[$attribname]['len'];                           
     }
   }
   
