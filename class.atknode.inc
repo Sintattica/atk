@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.106  2001/09/17 09:03:11  ivo
+   * recordlist: empty items are now correctly replaced by &nbsp; if necessary
+   *
    * Revision 4.105  2001/09/14 08:05:22  ivo
    * Fixed a stupid bug with a wrong array indexer, which caused problems for
    * manytoonerelations that have multiple primary keys (problem only occured
@@ -1800,7 +1803,7 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));   
         if (
             ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
             &&
@@ -1890,7 +1893,9 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {                            
-              $totalRow.=$sof.$p_attrib->display($totals[$attribname]).$eof;
+              $value = $p_attrib->display($totals[$attribname]);
+              $totalRow.=$sof.($value==""?$empty:$value).$eof;
+              
             }
             else
             {
