@@ -72,8 +72,8 @@
       
       foreach ($g_modules as $modname => $modpath)
       {
-        $this->m_themedefs[] = "modules/".$modname."/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-        $this->m_themedefs[] = "modules/".$modname."/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
+        $this->m_themedefs[] = "../".$modpath."/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+        $this->m_themedefs[] = "../".$modpath."/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
       }
       
       $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
@@ -171,7 +171,7 @@
      */
     function _scanAutodetectdirectory($directory, $from)
     {
-      $handle=opendir(atkconfig("platformroot").$from.$directory);
+      $handle=opendir(atkconfig("atkroot").$from.$directory);
       while (($file = readdir($handle))!==false) 
       {
         if ($file != "." && $file != ".." && $file != "CVS") 
