@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.42  2001/05/22 15:22:39  peter
+   * Different small enhancements fixes...
+   *
    * Revision 4.41  2001/05/21 15:18:26  ivo
    * Made securitymanager cookie and session based. Authentication now only
    * executes once per session.
@@ -511,7 +514,7 @@
   }
   
   /*******************************************/  
- 
+
   // At some places we need a random number generator, so we seed the generator here.
   srand ((double) microtime() * 1000000);
 
@@ -859,34 +862,6 @@
         }
       }
     }
-
-    /**
-     * Sets the module name a certain node is part off.
-     * @param $module the module name
-     */
-//    function setModule($module)
-//    {
-//      $this->m_module = $module;
-//    }
-
-    /**
-     * Get the relative path for this node
-     * (this does *not* include the trailing slash!)
-     */
-//    function getPath()
-//    {
-//      global $config_module_path;
-      
-//      /* path for module */
-//      if (!empty($this->m_module))
-//      {
-//        $path = "$config_module_path/".$this->m_module;
-//        return $path;
-//      }
-      
-      /* default path */
-//      return "./";
-//    }
 
     /**
      * Add a filter
@@ -2298,7 +2273,10 @@
         {
           if ($value!="")
           {
-            $query->addCondition($this->m_table.".".$key." LIKE '%".$value."%'");
+            $p_attrib = &$this->m_attribList[$key];
+            if (!is_null($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
+            else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
+            $query->addCondition($condition);              
           }
         }
       }
@@ -2401,7 +2379,10 @@
         {
           if ($value!="")
           {
-            $query->addCondition($this->m_table.".".$key." LIKE '%".$value."%'");
+            $p_attrib = &$this->m_attribList[$key];
+            if (!is_null($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
+            else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
+            $query->addCondition($condition);              
           }
         }
       }
@@ -2679,7 +2660,7 @@
     function allowed($action)
     {
       global $g_securityManager;
-      
+
       return (in_array($this->securityKey($action), $this->m_unsecuredActions)
               || $g_securityManager->allowed((empty($this->m_module) ? "" : $this->m_module.".").$this->m_type,$this->securityKey($action)));
     }

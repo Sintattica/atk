@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.7  2001/05/22 15:22:39  peter
+  * Different small enhancements fixes...
+  *
   * Revision 4.6  2001/05/18 08:56:52  sandy
   * small fix in theme load
   *
@@ -122,6 +125,7 @@
    
 
     var $m_scripts = array();   
+    var $m_stylesheets = array();
     
     /**
      * The directory where the current template files are located..
@@ -141,6 +145,7 @@
       if($g_theme["Name"]=="") $g_theme["Name"]="default";
       $this->initTheme();
       $this->import_layout();
+      $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
     }
 	
     /*
@@ -256,6 +261,15 @@
     }
 
     /**
+     * Register a Cascading StyleSheet for use withing the page
+     * @param $file the filename of the external stylesheet
+     */
+    function register_style($file)
+    {
+      if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
+    }
+
+    /**
      * Output a HTML header
      * @param $title Titel van het window
      */
@@ -275,15 +289,13 @@
     function ret_head($title)
     {     
       $res = '<head><title>'.$title.'</title>';
-      for ($i = 0; $i < sizeof($this->m_scripts); $i++) 
-      {
+      
+      for ($i = 0; $i < count($this->m_scripts); $i++) 
         $res.='<script language="javascript" src="'.$this->m_scripts[$i].'"></script>';
-      }
       
-      if (file_exists("./style.php")) $dir = ".";
-      else $dir = "atk";
+      for ($i = 0; $i < count($this->m_stylesheets); $i++) 
+        $res.='<link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">';
       
-      $res.='<link href="'.$dir.'/style.php" rel="stylesheet" type="text/css">';
       $res.="</head>\n";
       return $res;
     }
@@ -384,7 +396,7 @@
     function td($contents="", $extraprops="")
     {
       $this->output('<td class="table" '.$extraprops.'>');
-      if ($contents=="")
+      if (strlen($contents) == 0)
       {
         $this->output("&nbsp;");
       }
@@ -404,13 +416,13 @@
     function ret_td($contents="", $extraprops="")
     {
       $output='<td class="table" '.$extraprops.'>';
-      if ($contents=="")
+      if (strlen($contents) == 0)
       {
         $output.="&nbsp;";
       }
       else
       {
-        $output.=$contents;
+        $output.= $contents;
       }
       $output.="</td>\n";
       return $output;

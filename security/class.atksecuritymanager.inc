@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/22 15:22:39  peter
+   * Different small enhancements fixes...
+   *
    * Revision 4.5  2001/05/21 15:18:26  ivo
    * Made securitymanager cookie and session based. Authentication now only
    * executes once per session.
@@ -90,7 +93,7 @@
     {
       global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $ATK_VARS;
-       
+
       $authenticated = false;       
       $md5 = false; // PHP_AUTH_PW is plain text..            
        
