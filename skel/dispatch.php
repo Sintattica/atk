@@ -14,8 +14,8 @@
     $ATK_VARS = $HTTP_GET_VARS;
   }
    
+  atksession("admin");
   $g_sessionManager->session_read(&$ATK_VARS);
-  atksession();
   atksecure();
    
   // Create node
