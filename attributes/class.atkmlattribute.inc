@@ -49,7 +49,7 @@
     */
     function getLanguages()
     {
-      return atkconfig("language");
+      return atkconfig("supported_languages");
     }
     
     /**

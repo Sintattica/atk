@@ -15,7 +15,7 @@
       if(method_exists($node,"getLanguages"))
         return $node->getLanguages();
       else
-        return strtoupper(atkconfig("language"));
+        return strtoupper(atkconfig("supported_languages"));
     }
     
     function updateLngField(&$node,&$record)
