@@ -6,7 +6,7 @@ class atkLanguage
   * $atklanguage obj an instance of the atkLanguage class
   */
   var $atklanguage;
-  var $m_langdir = "languages";
+  var $LANGDIR = "languages";
   var $m_cachedlang = array();
   var $m_cachedlangfiles = array();
   var $m_fallbackmodules;
@@ -64,19 +64,21 @@ class atkLanguage
   
   /**
   * Text function, main function of the class
-  * @param string $string the name of the string to return
-  * @param string $module module in which the language file should be looked for, defaults to core module with fallback to ATK
-  * @param string $node   the node to which the string belongs
-  * @param string $lng    ISO 639-1 language code, defaults to config variable
+  * @param string $string        the name of the string to return
+  * @param string $module        module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string $node          the node to which the string belongs
+  * @param string $lng           ISO 639-1 language code, defaults to config variable
+  * @param string $firstfallback the first module to check as part of the fallback
+  * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
   * @return string the string from the languagefile
   */
-  function text($string, $module, $node="", $lng="", $nodefaulttext=false)
+  function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
     $atklanguage =& atkLanguage::getInstance();
     
-    $atklanguage->preTextChecks($string, $module, $node, $lng, $nodefaulttext);
+    $atklanguage->preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
     $finalstring = $atklanguage->getStringName($string, $module, $node, $lng);
-    $atklanguage->postTextChecks($finalstring, $string, $module, $node, $lng, $nodefaulttext);
+    $atklanguage->postTextChecks($finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext);
     
     return $finalstring;
   }
@@ -84,12 +86,14 @@ class atkLanguage
   
   /**
   * This function performs some checks on the variables that were passed with the text call
-  * @param string &$string the name of the string to return
-  * @param string &$module module in which the language file should be looked for, defaults to core module with fallback to ATK
-  * @param string &$node   the node to which the string belongs
-  * @param string &$lng    ISO 639-1 language code, defaults to config variable
+  * @param string &$string       the name of the string to return
+  * @param string &$module       module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string &$node         the node to which the string belongs
+  * @param string &$lng          ISO 639-1 language code, defaults to config variable
+  * @param string $firstfallback the first module to check as part of the fallback
+  * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
   */
-  function preTextChecks(&$string, &$module, &$node, &$lng, &$nodefaulttext)
+  function preTextChecks(&$string, &$module, &$node, &$lng, $firstfallback, $nodefaulttext)
   {
     if ($module)
     {
@@ -97,20 +101,27 @@ class atkLanguage
       array_unshift($this->m_fallbackmodules, $module);
     }
     
-    $module = "c_items";
+    if ($firstfallback)
+    {
+      array_unshift($this->m_fallbackmodules, $firstfallback);
+    }
+    
+    $module = "langoverrides";
     
     if (!$lng) { $lng = atkconfig("language", atkconfig("lang")); } // language is nicer, lang is backwardscompatible with iep2.
   }
   
   /**
   * This function performs the final checks on the results of the text call
-  * @param string &$finalstring the result of the text call
-  * @param string &$string      the name/label/ID of the string to return
-  * @param string &$module      module in which the language file should be looked for, defaults to core module with fallback to ATK
-  * @param string &$node        the node to which the string belongs
-  * @param string &$lng         ISO 639-1 language code, defaults to config variable
+  * @param string &$finalstring  the result of the text call
+  * @param string &$string       the name/label/ID of the string to return
+  * @param string &$module       module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string &$node         the node to which the string belongs
+  * @param string &$lng          ISO 639-1 language code, defaults to config variable
+  * @param string $firstfallback the first module to check as part of the fallback
+  * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
   */
-  function postTextChecks(&$finalstring, $string, $module, $node, $lng, $nodefaulttext)
+  function postTextChecks(&$finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext)
   {
     if (!$finalstring)
     {
@@ -135,7 +146,7 @@ class atkLanguage
   */
   function getStringName($string, &$module, $node, $lng)
   {
-    //atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
+//    atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
     if ($this->_getLanguageFile($module,$lng))
     {
       $finalstring = $this->_getString($string, $node, $module, $lng);
@@ -197,11 +208,15 @@ class atkLanguage
   {    
     if ($module=="atk")
     {
-      $file = atkconfig("atkroot").$module."/".$this->m_langdir."/$lng.lng";
+      $file = atkconfig("atkroot").$module."/".$this->LANGDIR."/$lng.lng";
+    }
+    else if ($module=="langoverrides")
+    {
+      $file = atkconfig("atktempdir").$this->LANGDIR."/$lng.lng";
     }
     else
     {
-      $file = moduleDir($module).$this->m_langdir."/$lng.lng";
+      $file = moduleDir($module).$this->LANGDIR."/$lng.lng";
     }
     if(file_exists($file)) {return $this->_setLanguage($file, $module, $lng);}
     else {return false;}
@@ -239,7 +254,7 @@ class atkLanguage
   }
   
   /**
-  * Gets the string from the languagefile or, if we failed, returns true
+  * Gets the string from the languagefile or, if we failed, returns false
   * @param string $string    the name which was given when the text function was called
   * @param string $module    the name of the module to which the text function belongs
   * @param string $node      the name of the node to which the text function belongs
