@@ -1514,6 +1514,9 @@
         // an array, in which case the first element will be the normal row color, and the second the mouseover
         // row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
         $method = "rowColor";
+        
+        $bgh = $g_theme["RowMouseOver"];
+        
         if (method_exists($this, $method))
         {
           $bgn = $this->$method(&$recordset[$i], $i);
@@ -1522,10 +1525,7 @@
             $bgh = $bgn[1];
             $bgn = $bgn[0];
           }
-        }
-
-        // mouseover not specified?
-        if (empty($bgh)) $bgh = $g_theme["RowMouseOver"];
+        }        
 
         // alternate colors of rows
         $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
