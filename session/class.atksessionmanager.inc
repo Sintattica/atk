@@ -66,7 +66,7 @@
     {
       if (!$this->m_escapemode)
       {
-        global $g_sessionData; // HIER GEBLEVEN, currentitem bestaat hier niet.
+        global $g_sessionData; 
        
         $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
       
