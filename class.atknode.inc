@@ -95,6 +95,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.62  2001/06/23 22:52:35  martin
+   * changed hardcoded dispatch.php to $PHP_SELF in navigationbar
+   *
    * Revision 4.61  2001/06/22 15:34:44  ivo
    * Dirty hack to atkurlencode [pk]'s once they have been replaced.
    * TODO: clean up!
@@ -1294,6 +1297,7 @@
      */
     function buildNavigation()
     {
+      global $PHP_SELF;
       $limit    = (int)$this->m_postvars['atklimit'];
       $count    = (int)$this->countDb($this->m_postvars['atkfilter'], $this->m_listExcludes);
       
@@ -1322,19 +1326,19 @@
       if ($curr > 1)
       {
         $newstart = $this->m_postvars['atkstartat'] - $limit;        
-        $nav = href('dispatch.php?atkstartat='.$newstart,text('previous'))."&nbsp;|&nbsp;";
+        $nav = href($PHP_SELF.'?atkstartat='.$newstart,text('previous'))."&nbsp;|&nbsp;";
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
       {      
-        $nav .= ($i == $curr) ? "<b>$i</b>" : href('dispatch.php?atkstartat='.max(0, ($i-1) * $limit),"$i");
+        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF.'?atkstartat='.max(0, ($i-1) * $limit),"$i");
         if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
       }
 
       if ($curr < $pages)
       {
         $newstart = $this->m_postvars['atkstartat'] + $limit;;        
-        $nav .= "&nbsp;|&nbsp;".href('dispatch.php?atkstartat='.$newstart,text('next'));
+        $nav .= "&nbsp;|&nbsp;".href($PHP_SELF.'?atkstartat='.$newstart,text('next'));
       }
 
       return $nav;
