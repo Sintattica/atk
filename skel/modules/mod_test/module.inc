@@ -9,14 +9,14 @@
     function getNodes()
     {
       /* register nodes */
-      registerNode("mode_test.test", array("admin", "add", "edit", "delete"));
+      registerNode("test.test", array("admin", "add", "edit", "delete"));
     }
     
     function getMenuItems()
     {    
       /* add menuitems */     
-      menuitem("mod_test");
-      menuitem("test_admin", dispatch_url("mod_test.test", "admin"), "mod_test", array("mod_test.test", "admin"));
+      menuitem("test");
+      menuitem("test_admin", dispatch_url("test.test", "admin"), "test", array("test.test", "admin"));
     }
   }
 
