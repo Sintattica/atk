@@ -3808,6 +3808,15 @@
       
       // Resolve action
       $action = $this->securityKey($action);
+      
+      // If action contains a dot, it's a complete nodename.action alias.
+      // Else, it's only an action alias, and we use the default node. 
+      // (TODO: make it possible to use modulename.nodename.action aliases)
+      if (strpos($action, ".")!==false)
+      {
+        list($node, $action) = explode(".", $action);
+        $alias = $this->m_module.".".$node;
+      }
 
       return ($this->hasFlag(NF_NO_SECURITY)
               ||in_array($action, $this->m_unsecuredActions)
