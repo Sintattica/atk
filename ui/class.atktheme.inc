@@ -27,15 +27,15 @@
     {          
       if (!$this->m_initialized)
       {
-  
         // First check local theme directory
         $atkroot = atkconfig("atkroot");
-        if(file_exists($atkroot."themes/".$themename))
+        $themefile = $themename."/themedef.inc";
+        if(file_exists($atkroot."themes/".$themefile))
         {
           $this->m_themedir = $atkroot."themes/".$themename."/";
         }
         // else check atk themes directory
-        else if (file_exists($atkroot."atk/themes/".$themename))
+        else if (file_exists($atkroot."atk/themes/".$themefile))
         {
           $this->m_themedir = $atkroot."atk/themes/".$themename."/";        
         }
