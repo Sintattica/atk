@@ -38,11 +38,12 @@
     /**
      * Constructor
      * @param $name 			Name of the attribute
-     * @param $size 			Can be an array with cols and rows key for size or just the rows size
+     * @param $size 			Can be an array with cols and rows key for size and an autoadjust
+     											value or just the rows size
      * @param $flags 			Flags for this attribute
      * @param $autoadjust Wether to autoadjust the number of rows or not, defaults to false
      */
-    function atkTextAttribute($name,$size=0,$flags=0, $autoadjust=false)
+    function atkTextAttribute($name,$size=0,$flags=0)
     { 
       // compatiblity with old versions
       if (func_num_args()==3 || func_num_args()==4)
@@ -51,6 +52,7 @@
          {
            if($size['rows']!='') $this->m_rows = $size['rows'];
            if($size['cols']!='') $this->m_cols = $size['cols'];
+           if($size['autoadjust']) $this->m_autoadjust = $size['autoadjust'];
          }
          else $this->m_rows=$size;
       }
@@ -58,7 +60,7 @@
       {
         $flags = $size;
       }
-      $this->m_autoadjust = $autoadjust;
+      
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
@@ -90,7 +92,7 @@
 	      $this->doAutoAdjust(htmlspecialchars($record[$this->fieldName()]), $rows, $cols);
 	    }
       
-	    $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
+	    $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="soft"'.               
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
