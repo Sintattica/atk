@@ -20,6 +20,7 @@ Changes in ATK 5.0.4
   or otherwise defaults to box.tpl [Boy]
 + Added menu_align config variable [Boy]
 + Added set- and getSelected functionality to atkListAttribute [Boy]
+* Fixed 2 bugs with the AF_LARGE flag (bug #302, #330) [Yuri]
 
 Changes in ATK 5.0.3
 --------------------
