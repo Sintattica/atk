@@ -60,22 +60,24 @@
             else
             {
               // 'save' was clicked
-              $this->m_action="edit";
+              $page = &$this->getPage();
+            //  $this->m_action="edit";
               //update succesful, pk value might be changed so update m_orgkey
               $record["atkprimkey"] = $this->m_node->primaryKey($record);
 
               $locked = FALSE;
               if ($this->m_node->hasFlag(NF_LOCK))
-              {                
-                $page = &$this->getPage();
+              {                              
                 $page->addContent($this->lockPage());
                 return;
               }
 
-              //$this->setOrgKeyValue($record);              
-              $page = &$this->getPage();
+              //$this->setOrgKeyValue($record);
+              $this->m_node->m_action = "edit";              
               $edithandler = $this->m_node->getHandler("edit");
-              $page->addContent($edithandler->invoke("editPage", $record, $locked));
+              $editpage = $edithandler->invoke("editPage", $record, $locked);
+              $screen = $this->m_node->renderActionPage("edit", $editpage);
+              $page->addContent($screen);
             }
 
           }
