@@ -74,7 +74,7 @@
      * @param string $linkfield the field where we find the encrypted linkpass
      * @return string           the password for the link
      */
-    function getLinkPassword($linktable,$linkfield)
+    function getLinkPassword($linktable,$linkfield,$encryption="base64")
     {
       global $g_db;
       
