@@ -1,7 +1,7 @@
 <?php
   /**
    * The atkRelation class defines a relation to another node
-   *   
+   *
    * Note        : A relation is a (very) special kind of attribute.
    *
    * TODO: relations with a referential key that consist of more than one field don't work.
@@ -9,28 +9,28 @@
    * @author Ivo Jansch (ivo@achievo.org)
    *
    * @version $Revision$
-   *   
+   *
    * $Id$
-   *   
+   *
    */
   class atkRelation extends atkAttribute
   {
 
    /**
-    * Destination 
+    * Destination
     */
     var $m_destination;
 
    /**
-    * Destination Instance 
+    * Destination Instance
     */
     var $m_destInstance="";
-    
+
    /**
     * Filter
     */
    var $m_destinationFilter="";
-    
+
    /**
     * Constructor
     * @param $name ?
@@ -41,7 +41,7 @@
     {
       $this->atkAttribute($name, $flags);
       $this->m_destination = $destination;
-            
+
     }
 
     /**
@@ -53,13 +53,15 @@
       {
         $this->m_destInstance = &newNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
-//        if ($this->m_destinationFilter!="")
-  //      {
-    //      $this->m_destInstance->addFilter($this->m_destinationFilter);
-      //  }
-      }      
+        foreach (array_keys($this->m_destInstance->m_attribList) as $key)
+        {
+          $attribute = &$this->m_destInstance->m_attribList[$key];
+          if (is_subclass_of($attribute, "atkrelation") && $attribute->m_destination == $this->m_ownerInstance->atkNodeType())
+            $attribute->m_destInstance = &$this->m_ownerInstance;
+        }
+      }
     }
-    
+
     /**
     * Return a displayable string for this value.
     * @return a displayable string for this value.
@@ -88,7 +90,7 @@
       // mindyou, we must check with '===', because if keyval is  a string, the comparison
       // is always true. (for some reason 'test'==0 is true in php.)
     }
-  
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -98,7 +100,7 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
-    
-    
-  }  
+
+
+  }
 ?>
