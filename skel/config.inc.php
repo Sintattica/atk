@@ -46,10 +46,17 @@
   // The type of authentication (user/password verification) to use.
   // Currently supported are: 
   // "none"   - no authentication
-  // "config" - users/passwords are set in this configfile
-  // "db"     - users/passwords are stored in a table in the database.
-  // "mail" - users / passwords are stored in the POP3 or IMAP server
+  // "config" - users / passwords are set in this configfile
+  // "db"     - users / passwords are stored in a table in the database.
+  // "imap"   - users / passwords are stored in the IMAP server
+  // "pop3"   - users / passwords are stored in the POP3 server
   $config_authentication = "none";
+
+  // The type of authorization (what is a user allowed to do?)
+  // Normally this will be the same as the authentication, but in
+  // special cases like POP3 authentication you might want to
+  // authorize via a table in the database.
+  // $config_authorization = "none";
       
   // NOTE, the following options are only useful if authentication is not 
   // set to "none".    
