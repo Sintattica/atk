@@ -2913,6 +2913,21 @@
 
         // parse fields from descriptordef
         $fields = stringfields($descriptordef);
+        
+        // There might be fields that have a '.' in them. These fields are
+        // a concatenation of an attributename (probably a relation), and a subfield
+        // (a field of the destination node).
+        // The actual field is the one in front of the '.'.
+        for ($i=0, $_i=count($fields);$i<$_i; $i++)
+        {
+          $elems = explode(".", $fields[$i]);
+          if (count($elems)>1)
+          {
+            // dot found. attribute is the first item.
+            $fields[$i] = $elems[0];
+            
+          }
+        }
       }
       else
       {
