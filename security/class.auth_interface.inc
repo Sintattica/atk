@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/21 13:38:18  ivo
+   * Added a cookie that can remember your login if you close your browser.
+   * (disabled by default, enable in your configfile if you need it)
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -31,6 +35,8 @@
 
   class auth_interface 
   {         
+    // Note: if config_authentication_md5 is set to true, the password will 
+    // be passed as an md5 string.
     function validateUser($user, $passwd)
     {
       return false; // dummy implementation. should not be used.

@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/21 13:38:18  ivo
+   * Added a cookie that can remember your login if you close your browser.
+   * (disabled by default, enable in your configfile if you need it)
+   *
    * Revision 4.3  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -80,35 +84,68 @@
      
      function authenticate()
      {
-       global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword;
+       global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword, $HTTP_COOKIE_VARS;              
        
-       // First check superuser..
+       $authenticated = false;       
+       $md5 = false; // PHP_AUTH_PW is plain text..            
        
-       $authenticated = false;
+       if (atkconfig("authentication_cookie"))
+       {
+         // Cookiename is based on the app_title, for there may be more than 1 atk app running,
+         // each with their own cookie..
+         $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
+         list($user, $passwd) = split("\.",$HTTP_COOKIE_VARS[$cookiename]);                           
        
+         // for security reasons administrator will never be cookied..
+         if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator") 
+         {        
+           atkdebug("Using cookie for authentication");
+           $PHP_AUTH_USER = $user;
+           $PHP_AUTH_PW = $passwd;
+           $md5 = true; // cookie is already md5;
+         }
+       }              
+              
+            
+       // First check superuser..       
        if ($config_administratorpassword!=""&&$PHP_AUTH_USER=="administrator"&&$PHP_AUTH_PW==$config_administratorpassword)
        {
          $this->m_user = Array("name"=>"administrator","level"=>-1);
-         // for convenience, we also store the user as a global variable.      
-         $GLOBALS["g_user"] = $this->m_user;
+         // for convenience, we also store the user as a global variable.             
+         atkdebug("Administrator (configfile) logged in");
          $authenticated = true;
        }      
-       else if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
-       {   
-         // We store the username + securitylevel of the logged in user.
-         $this->m_user = $this->m_authentication->getUser($PHP_AUTH_USER);
-         // for convenience, we also store the user as a global variable.      
-         $GLOBALS["g_user"] = $this->m_user;
-         atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
-         $authenticated = true;         
-       } 
        else 
-       {         
-         Header('WWW-Authenticate: Basic realm="'.$GLOBALS["txt_app_title"].'"');
-         Header("HTTP/1.0 401 Unauthorized");
-         echo "Failed to logon\n<br>";
-         $authenticated = false;
-       }  
+       {     
+         if (atkconfig("authentication_md5")&&!$md5)
+         {
+           $PHP_AUTH_PW = md5($PHP_AUTH_PW);
+         }       
+         if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
+         {   
+           // We store the username + securitylevel of the logged in user.
+           $this->m_user = $this->m_authentication->getUser($PHP_AUTH_USER);
+           // for convenience, we also store the user as a global variable.             
+           atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
+           $authenticated = true;
+           
+           // write cookie
+           if (atkconfig("authentication_cookie")&&$PHP_AUTH_USER!="administrator")
+           {
+             setcookie($cookiename,$PHP_AUTH_USER.".".$PHP_AUTH_PW, time()+60*(atkconfig("authentication_cookie_expire")));
+           }
+         } 
+         else 
+         {         
+           Header('WWW-Authenticate: Basic realm="'.text("app_title").'"');
+           Header("HTTP/1.0 401 Unauthorized");
+           echo "Failed to logon\n<br>";
+           $authenticated = false;
+           var_dump($HTTP_COOKIE_VARS);
+         exit;
+         }  
+       }
+       $GLOBALS["g_user"] = $this->m_user;
        return $authenticated;
      }     
           

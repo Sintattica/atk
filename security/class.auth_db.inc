@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/21 13:38:18  ivo
+   * Added a cookie that can remember your login if you close your browser.
+   * (disabled by default, enable in your configfile if you need it)
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -43,9 +47,7 @@
        $query = "SELECT ".$GLOBALS["config_auth_passwordfield"]." FROM ".$GLOBALS["config_auth_usertable"]." WHERE ".$GLOBALS["config_auth_userfield"]." ='$user'";
        atkdebug($query);
        
-       $recs = $g_db->getrows($query);
-              
-       if ($GLOBALS["config_authentication_md5"]) $passwd = md5($passwd);
+       $recs = $g_db->getrows($query);              
           
        $valid = (count($recs)>0 && $user!="" && $recs[0][$GLOBALS["config_auth_passwordfield"]]==$passwd);      
 

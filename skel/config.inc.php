@@ -52,29 +52,15 @@
   $config_authentication = "none";
       
   // NOTE, the following options are only useful if authentication is not 
-  // set to "none".  
+  // set to "none".    
   
-  // if you use "mail" as authentication, you have to fill in these
-  //parameters.
-  // mail login type
-  // "" = normal mail type
-  // "vmailmgr" = for virtual mail, it will add "@<domain>"
-  $config_mail_login_type = "vmailmgr";
-  // Mail suffix, only is mail login type = "vmailmgr"
-  $config_mail_suffix = "ibuildings.nl";
-  // Mail server name
-  $config_mail_server = "localhost"
-  // Port of the mail server
-  $config_mail_port = 143;
-
-  //if you use "ldap" as authentication, these parameters are nessesary
-  $config_ldap_host = "";
-  $config_ldap_context = "";
-  
-  // If you use "db" as authentication, this parameter specifies whether
-  // the passwords are stored as an md5 string in the database. 
+  // This parameter specifies whether the passwords are stored as an md5 
+  // string in the database / configfile / whatever. 
   // If set to false, the passwords are assumed to be plain text.   
-  // (not used for other authentication methods)
+  // Note: Not all authentication methods support md5! e.g, if you use
+  //       pop3 authentication, set this to false.
+  // Note2: If set to false, and authentication_cookie is set to true,
+  //        the password in the cookie will be stored plaintext!!!
   $config_authentication_md5 = true;
   
   // If you specify an administrator password here, you are always able 
@@ -98,11 +84,32 @@
   // for which no access requirements are set. If set to false, access is 
   // always granted if no access requirements are set.
   $config_restrictive = true;
+
+  // If set to true, a cookie with username/password is written, so 
+  // users will stay logged in, even if they close their browser. 
+  $config_authentication_cookie = false;
+  
+  // if you use "mail" as authentication, you have to fill in these
+  //parameters.
+  // mail login type
+  // "" = normal mail type
+  // "vmailmgr" = for virtual mail, it will add "@<domain>"
+  $config_authentication_mail_login_type = "vmailmgr";
+  // Mail suffix, only is mail login type = "vmailmgr"
+  $config_authentication_mail_suffix = "ibuildings.nl";
+  // Mail server name
+  $config_authentication_mail_server = "localhost"
+  // Port of the mail server
+  $config_authentication_mail_port = 143;
+
+  //if you use "ldap" as authentication, these parameters are nessesary
+  $config_authentication_ldap_host = "";
+  $config_authentication_ldap_context = "";
   
   // Atk can write security events to a logfile. 
   // There are several values you can choose for $config_logging.
   // 0 - No logging
-  // 2 - Log actions ("USer x performed action x on module y")
+  // 2 - Log actions ("User x performed action x on module y")
   $config_logging = 0;
   $config_logfile = "/tmp/atk-security.log";
 

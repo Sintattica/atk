@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 1.2  2001/05/21 13:38:18  ivo
+   * Added a cookie that can remember your login if you close your browser.
+   * (disabled by default, enable in your configfile if you need it)
+   *
    * Revision 1.1  2001/05/21 13:09:56  sandy
    * added 2 validation classes, 1 for mail (POP3 / IMAP) and 1 for LDAP
    * both are untested at this moment.
@@ -21,10 +25,10 @@
      function validateUser($user, $passwd)
      { 
      
-        $ldap = ldap_connect(atkconfig("ldap_host"));
+        $ldap = ldap_connect(atkconfig("authentication_ldap_host"));
       
         // find the dn for this uid, the uid is not always in the dn
-        $sri = ldap_search($ldap, atkconfig("ldap_context"), "uid=$user");
+        $sri = ldap_search($ldap, atkconfig("authentication_ldap_context"), "uid=$user");
         $allValues = ldap_get_entries($ldap, $sri);
         if($allValues["count"] > 0)
         {

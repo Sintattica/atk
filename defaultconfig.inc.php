@@ -14,6 +14,9 @@
 
   // security
   $config_authentication = "none";
+  $config_authentication_md5 = true;
+  $config_authentication_cookie = false;
+  $config_authentication_cookie_expire = 10080; // the default cookie expiry time (in minutes) (7 days)
   $config_securityscheme = "none";
   $config_restrictive = true;
   $config_security_attributes = false;

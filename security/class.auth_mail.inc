@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 1.2  2001/05/21 13:38:18  ivo
+   * Added a cookie that can remember your login if you close your browser.
+   * (disabled by default, enable in your configfile if you need it)
+   *
    * Revision 1.1  2001/05/21 13:09:56  sandy
    * added 2 validation classes, 1 for mail (POP3 / IMAP) and 1 for LDAP
    * both are untested at this moment.
@@ -21,13 +25,13 @@
      function validateUser($user, $passwd)
      { 
        // if it's a virtual mail server add @<domain> to the username
-       if(atkconfig("mail_login_type") == "vmailmgr")
+       if(atkconfig("authentication_mail_login_type") == "vmailmgr")
        {
-         $user = $user . "@" . atkconfig("mail_suffix");
+         $user = $user . "@" . atkconfig("authentication_mail_suffix");
        }
  
-      $mailauth = imap_open("{".atkconfig("mail_server")
-			     .":".atkconfig("mail_port")."}INBOX", $user , $passwd);
+      $mailauth = imap_open("{".atkconfig("authentication_mail_server")
+			     .":".atkconfig("authentication_mail_port")."}INBOX", $user , $passwd);
 
       if ($mailauth == False) {
         return False;
