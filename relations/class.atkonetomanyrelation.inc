@@ -126,7 +126,12 @@
           $strfilter.=' AND '.$this->m_destinationFilter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $output.="<tr><td>".href($add_url,text("link_".getNodeType($this->m_destination)."_add"),SESSION_NESTED,true)."</td></tr>";      
+        $label = text("link_".$this->fieldName()."_add");
+        if ($label==""||$label=="link_".$this->fieldName()."_add")
+        {
+          $label = text("link_".getNodeType($this->m_destination)."_add");
+        }
+        $output.="<tr><td>".href($add_url,$label,SESSION_NESTED,true)."</td></tr>";      
       }
       $output.="</table><br>";
       return $output;
