@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.8  2001/05/02 15:01:23  ivo
+   * Added a maximum (4) to the stacktrace.
+   *
    * Revision 1.7  2001/05/02 14:55:46  ivo
    * New cool feature: stacktrace in the topright screen (navigate through
    * pages you visited before)
@@ -188,7 +191,10 @@
       
       $stack = $g_sessionData["stack"];
       
-      for ($i=0;$i<count($stack);$i++)
+      // we only show the last 4 elements of the stack
+      if (count($stack)>4) $res = "... | ";
+      
+      for ($i=max(0,count($stack)-4);$i<count($stack);$i++)
       {
         $title = text("title_".$stack[$i]["atknodetype"]."_".$stack[$i]["atkaction"]);        
         if ($i<count($stack)-1) 
