@@ -12,6 +12,8 @@ Changes in ATK 5.0.1
 + Added getAttribute() method to atkNode. [Ivo]
 + Added 2 lessons to demo application. [Sandy]
 * Added missing strings to language files. [Ivo]
+* Improvements to PostgreSQL driver. [Peter]
++ Implemented atkDDL driver for PostgreSQL. [Peter]
 * Fixed default value of $config_application_root for win compatibility. [Ivo]
 * Updated API documentation. [Ivo]
 * Fixed small bug for the Multi Record Actions. [Sandy]
