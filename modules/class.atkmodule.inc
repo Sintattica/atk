@@ -94,11 +94,24 @@
       if (!empty($g_overloaders[$node]))
       {
         atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-        return getNode($g_overloaders[$node]);
+
+        /* include original file, because overloaders extend the original class */
+        $file = nodeFile($node);
+
+        /* check for file */
+        if (!file_exists($file))
+        {
+          atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+          return NULL;
+        }
+
+        /* return object */
+        include_once($file);
+        $node = $g_overloaders[$node];
       }
 
-      /* no overloader */
-      else return NULL;
+      /* return */
+      return $node;
     }
 
     /**
@@ -110,8 +123,13 @@
     {
       global $g_modules, $config_atkroot, $g_overloaders;
 
-      /* check for file */
+      /* get overloader etc. */
+      $node = $this->nodeOverloader($node);
       $file = nodeFile($node);
+      $type = getNodeType($node);
+      $module = getNodeModule($node);
+
+      /* check for file */
       if (!file_exists($file))
       {
         if (function_exists("missing_class_handler"))
@@ -128,16 +146,9 @@
       /* include file */
       include_once($file);
 
-      /* now that we have included the node source file, we check
-       * for overloaders (because overloaders might need the included file!)
-       */
-      $overloader = $this->nodeOverloader($node);
-      if ($overloader != NULL) return $overloader;
-
-      /* initialize node and return */
-      $type = getNodeType($node);
+      /* initialize node  and return */
       $node =  new $type();
-      $node->m_module = getNodeModule($node);
+      $node->m_module = $module;
       $node->init();
       return $node;
     }
