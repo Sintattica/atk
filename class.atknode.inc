@@ -971,6 +971,14 @@
   
           /* sometimes a field is hidden although not specified by the field itself */
           $tabs = $this->m_attribIndexList[$r]["tabs"];
+					
+					$theme = &atkTheme::getInstance();
+					if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
+					
+					if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)						
+					{
+						$p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+					}
   
           /* we let the attribute add itself to the edit array */
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
