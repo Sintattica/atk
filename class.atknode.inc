@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.47  2001/06/07 09:26:16  ivo
+   * removed a whitespace (how do these things keep getting in again :()
+   *
    * Revision 4.46  2001/06/07 09:24:49  ivo
    * Updated language files.
    * Support for non-western-european charsets. (backport from 0.6.4)
