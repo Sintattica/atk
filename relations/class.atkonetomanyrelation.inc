@@ -47,13 +47,12 @@
       $this->createDestination();
       
       if (count($myrecords)!=0)
-      {
-        $result = "<ul>";
+      {  
         for ($i = 0; $i < count($myrecords);$i++)
         {
-          $result.="<li>".$this->m_destInstance->descriptor($myrecords[$i]);
-        }
-        $result.="</ul>";
+          if ($i!=0) $result.="<br>";
+          $result.=$this->m_destInstance->descriptor($myrecords[$i]);
+        }        
       }
 
       return $result;
