@@ -33,6 +33,8 @@
 
   define("NF_NO_EXTENDED_SEARCH", 32768); // Extended search feature is turned off.
 
+  define("NF_MULTI_RECORD_ACTIONS",  65536); // Multi-selection of records is turned on.
+
 
   /**
    * The atkNode class represents a piece of information that
@@ -491,7 +493,7 @@
      * @param $attribute the attribute you want to add
      */
     function addAttribute($attribute)
-    {      
+    {
       $this->add($attribute);
     }
 
@@ -918,10 +920,10 @@
 
         /* sometimes a field is hidden although not specified by the field itself */
         $tabs = $this->m_attribIndexList[$r]["tabs"];
-      
+
         if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
             ($tabs != "*" && !in_array($tab, $tabs)))
-        {      
+        {
           $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
         }
 
@@ -1303,13 +1305,28 @@
 
       // Vertical orientation for td contents
       if (trim(atkconfig("recordlist_vorientation")) != "")
+        $vorientation = "valign='".atkconfig("recordlist_vorientation")."'";
+      else $vorientation = "valign='top'";
+
+      // We first are going to check which actions are defined for each record. We could do this in one
+      // loop together with the printing of the row you might think... This is (unfortunately) not true
+      // because for the multi-record actions we would like to know if there aren't any defined, because
+      // then we don't have to output! all the multi-record selection stuff.
+      $multiActionsAll = array();
+      for ($i = 0; $i < count($recordset); $i++)
       {
-       $vorientation = "valign='".atkconfig("recordlist_vorientation")."'";
+        $recordActions = $actions;
+        $multiActions  = (!$this->hasFlag(NF_NO_DELETE) ? array("delete") : array());
+        $this->recordActions($recordset[$i], $recordActions, $multiActions);
+        $recordset[$i]["_record_actions_"]["normal"] = $recordActions;
+        $recordset[$i]["_record_actions_"]["multi"]  = $multiActions;
+        $multiActionsAll = array_merge($multiActionsAll, $multiActions);
       }
-      else
-      {
-       $vorientation = "valign='top'";
-      }
+
+      // only unique actions
+      $multiActionsAll = array_unique($multiActionsAll);
+      $multi_record_actions = (($this->m_action == "admin" || $sessionsave) &&
+                               $this->hasFlag(NF_MULTI_RECORD_ACTIONS) && count($multiActionsAll) > 0);
 
       // display a headerrow with titles. each attributetitle is clickable to
       // sort the list by that attribute.
@@ -1319,7 +1336,6 @@
       {
         $attribname = $this->m_attribIndexList[$i]["name"];
         $p_attrib = &$this->m_attribList[$attribname];
-        //$p_attrib = &$this->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
         if (
             ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -1332,11 +1348,11 @@
            )
         {
           $neworder=$this->m_table.".".$p_attrib->fieldName();
-				 if ($neworder==$this->m_postvars["atkorderby"])
-				 {
-					 // we were already sorting, so now we sort the other way
-					   $neworder.=" DESC";
-					 }
+         if ($neworder==$this->m_postvars["atkorderby"])
+         {
+           // we were already sorting, so now we sort the other way
+             $neworder.=" DESC";
+           }
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
@@ -1382,6 +1398,9 @@
           $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
         }
         $searchable = false;
+
+        // multi-record-actions --> empty cell
+        if ($multi_record_actions) $searchRow .= $g_layout->ret_td_datatitle();
 
         $searchBtn = '<input type="submit" value="'.text("search").'">';
         if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
@@ -1434,6 +1453,9 @@
 
       }
 
+      // multi-record-actions --> empty cell
+      if ($multi_record_actions) $output .= $g_layout->ret_td_datatitle();
+
       // one empty title which comes on top of the 'edit/delete/...' column
       if (($orientation=="left"||$orientation=="both") && (count($actions)>0||$searchable))
       {
@@ -1446,7 +1468,7 @@
       if (($orientation=="right"||$orientation=="both") && (count($actions)>0||$searchable))
       {
         $output.=$g_layout->ret_td_datatitle();
-      }
+      }        $recordactions = $actions;
 
       $output.="</tr>";
 
@@ -1456,16 +1478,30 @@
         $output.=$searchRow;
       }
 
+      // multi-record-actions --> selection form
+      if ($multi_record_actions)
+      {
+        $listName = "atkrl_".getUniqueID("recordList");
 
+        // we only add the form tag if it doesn't exist already
+        if (!$sessionsave)
+        {
+          $output .= '<form name="entryform" method="post">'.
+                     session_form(SESSION_NESTED).
+                     '<input type="hidden" name="atkescape">';
+        }
+
+        $output .= '<input type="hidden" name="'.$listName.'_atknodetype" value="'.$this->atknodetype().'">'.
+                   '<script language="javascript" src="'.atkconfig("atkroot").'atk/javascript/formselect.js"></script>'.
+                   '<script language="javascript">'.$listName.' = new Object();</script>';
+      }
+
+      // output rows
       for ($i=0;$i<count($recordset);$i++)
       {
-        // Look for custom record actions.
-        $recordactions = $actions;
-        $this->recordActions($recordset[$i], $recordactions);
-
         // Actions passed to the function.
-
         $actionCol="";
+        $recordactions = &$recordset[$i]["_record_actions_"]["normal"];
         if (count($recordactions)>0)
         {
           $stractions = "";
@@ -1516,9 +1552,9 @@
         // an array, in which case the first element will be the normal row color, and the second the mouseover
         // row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
         $method = "rowColor";
-        
+
         $bgh = $g_theme["RowMouseOver"];
-        
+
         if (method_exists($this, $method))
         {
           $bgn = $this->$method($recordset[$i], $i);
@@ -1527,7 +1563,7 @@
             $bgh = $bgn[1];
             $bgn = $bgn[0];
           }
-        }        
+        }
 
         // alternate colors of rows
         $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
@@ -1537,6 +1573,16 @@
         if ($orientation=="left"||$orientation=="both")
         {
           $output.=$actionCol;
+        }
+
+        // multi-record-actions --> selection box
+        if ($multi_record_actions)
+        {
+          $multiActions = &$recordset[$i]["_record_actions_"]["multi"];
+          $output .= '<td>'.
+                     '  <input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($pk).'" onclick="if (this.disabled) this.checked = false">'.
+                     '  <script language="javascript">'.$listName.'["'.rawurlencode($pk).'"] = new Array("'.implode($multiActions, '","').'");</script>'.
+                     '</td>';
         }
 
         for($r=0;$r<(count($this->m_attribIndexList));$r++)
@@ -1637,8 +1683,42 @@
 
       $output.=$g_layout->data_bottom();
 
-      return $output;
+      // If it's possible to execute actions for multiple records, we display the actions in a drop-down box etc.
+      // multi-record-actions --> selection box
+      if ($multi_record_actions)
+      {
+        $output .= '<table border="0" cellspacing="0" cellpadding="2">'.
+                     '<tr>'.
+                       '<td rowspan="2" valign="top">'.
+                         '<img src="'.atkconfig("atkroot").'atk/images/arrow.gif" border="0">'.
+                       '</td>'.
+                       $g_layout->ret_td
+                       (
+                         '<a href="javascript:updateSelection(\''.$listName.'\', \'all\')">'.text("select_all").'</a> / '.
+                         '<a href="javascript:updateSelection(\''.$listName.'\', \'none\')">'.text("select_none").'</a> / '.
+                          '<a href="javascript:updateSelection(\''.$listName.'\', \'invert\')">'.text("select_invert").'</a>',
+                         'align="center"'
+                       ).
+                     '</tr>'.
+                     '<tr>'.
+                       '<td>'.
+                         '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\')">'.
+                           '<option value="">'.text("with_selected").':</option>';
 
+                           foreach ($multiActionsAll as $name)
+                             $output .= '<option value="'.$name.'">'.text($name).'</option>';
+
+        $output .=       '</select>&nbsp;'.
+                         '<input type="button" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\',\''.session_url($PHP_SELF, SESSION_NESTED).'\')">'.
+                       '</td>'.
+                     '</tr>'.
+                   '</table>';
+
+        // we only close the form tag if necessary
+        if (!$sessionsave) $output .= '</form>';
+      }
+
+      return $output;
     }
 
     /**
@@ -1781,7 +1861,7 @@
      * @param $sof      -- start field
      * @param $eol      -- end record/line
      * @param $type     -- 0=in simple table ; 1= export
-	 *@param $compression -- Compression technique (bzip / gzip)
+   *@param $compression -- Compression technique (bzip / gzip)
   */
    function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $compression="",$suppressList="")
     {
@@ -1921,13 +2001,13 @@
         $output.=$totalRow;
       }
 
-		  // To the Screen
+      // To the Screen
       if ($type=="0")
       {
         $output .= "</table>";
         return $output;
       }
-			// To a File
+      // To a File
       if ($type=="1")
       {
 
@@ -1938,65 +2018,65 @@
     /**
     * export2file   exporteert data naar een file
     *@param  $data  -- the content
-		*@param $fileName -- bestandsnaam
+    *@param $fileName -- bestandsnaam
     *@param  $ext   -- extension of the file
-		*@param  $type  -- the type (cvs / excel)
-		*@param $compression -- Compression technique (bzip / gzip)
+    *@param  $type  -- the type (cvs / excel)
+    *@param $compression -- Compression technique (bzip / gzip)
     * used by specialRecordist();
     * BROWSER BUG:
-		* IE has problems with the use of attachment; needs atachment (someone at MS can't spell) or none.
-		* however ns under version 6 accepts this also.
-		* NS 6+ has problems with the absense of attachment; and the misspelling of attachment;
-		* at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
+    * IE has problems with the use of attachment; needs atachment (someone at MS can't spell) or none.
+    * however ns under version 6 accepts this also.
+    * NS 6+ has problems with the absense of attachment; and the misspelling of attachment;
+    * at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
     */
 
    function export2File($data, $fileName, $type, $ext, $compression="")
    {
     if($compression=="bzip")
-		{
-		  $mime_type='application/x-bzip';
-			$ext = "bz2";
-		}
-		elseif($compression=="gzip")
-		{
-		  $mime_type='application/x-gzip';
-			$ext = "gz";
-		}
-		elseif($type=="csv"||$type="excel")
-		{
-		  $mime_type='text/x-csv';
-			$ext = "csv";
-		}
-		else
-		{
-		  $mime_type='application/octetstream';
-		}
+    {
+      $mime_type='application/x-bzip';
+      $ext = "bz2";
+    }
+    elseif($compression=="gzip")
+    {
+      $mime_type='application/x-gzip';
+      $ext = "gz";
+    }
+    elseif($type=="csv"||$type="excel")
+    {
+      $mime_type='text/x-csv';
+      $ext = "csv";
+    }
+    else
+    {
+      $mime_type='application/octetstream';
+    }
 
     header('Content-Type: '. $mime_type);
     header('Content-Disposition:  filename="'.$fileName.'.'.$ext.'"');
     header('Pragma: no-cache');
     header('Expires: 0');
 
-		// 1. as a bzipped file
-	  if($compression=="bzip")
-		{
-		  if (@function_exists('bzcompress'))
-			{
+    // 1. as a bzipped file
+    if($compression=="bzip")
+    {
+      if (@function_exists('bzcompress'))
+      {
         echo bzcompress($data);
       }
-		}
-		// 2. as a gzipped file
-		else if ($compression == 'gzip')
-		{
+    }
+    // 2. as a gzipped file
+    else if ($compression == 'gzip')
+    {
       if (@function_exists('gzencode'))
-			{
+      {
         // without the optional parameter level because it bug
         echo gzencode($data);
       }
     }
     // 3. on screen
     else
-		{
+    {
       echo $data;
     }
 
@@ -2064,6 +2144,14 @@
     {
       global $g_layout, $PHP_SELF;
 
+      // multi-record?
+      $multi = FALSE;
+      if (is_array($atkselector))
+      {
+        $multi = count($atkselector) > 1;
+        $atkselector = '('. implode($atkselector, ') OR (').')';
+      }
+
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar());
 
@@ -2076,9 +2164,9 @@
       $g_layout->table_simple();
 
       $g_layout->output('<tr>');
-      $g_layout->td(text('confirm_delete'));
+      $g_layout->td(text('confirm_delete'.($multi ? '_multi' : '')), 'align="center"');
       $g_layout->output('</tr><tr>');
-      $g_layout->td('&nbsp;<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
+      $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
       $g_layout->output('</tr></table></form>');
 
       $g_layout->ui_bottom();
@@ -2454,7 +2542,7 @@
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
-      
+
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2624,7 +2712,7 @@
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->needsUpdate($record))
- 	        {
+           {
             if (method_exists($p_attrib,"store"))
             {
               $storelist[]=$attribname;
@@ -2633,7 +2721,7 @@
             {
               $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
             }
-	        }
+          }
         }
 
         $querystring = $query->buildUpdate();
@@ -2964,7 +3052,7 @@
      */
     function addDb(&$record)
     {
-//		 var_dump($record);
+//     var_dump($record);
       global $g_db;
 
       $name = "atk".atkconfig("database")."query";

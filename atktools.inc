@@ -922,4 +922,16 @@
     else $include = $config_atkroot."atk/relations/class.".strtolower($relation).".inc";
     include_once($include);
   }
+
+  /**
+   * Returns the next unique ID for the given sequence.
+   * NOTE: ID's are only unique for the script execution!
+   * @param $sequence the sequence name
+   * @return next unique ID for the given sequence
+   */
+  function getUniqueID($sequence)
+  {
+    static $unique = array();
+    return ++$unique[$sequence];
+  }
 ?>

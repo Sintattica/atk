@@ -44,6 +44,7 @@
   $txt_error_tab = "see";
 
   $txt_confirm_delete = "Are you sure you want to delete this item?";
+  $txt_confirm_delete_multi = "Are you sure you want to delete these items?";
   $txt_title_delete = "Confirm delete";
 
   $txt_select_none = "None";
@@ -147,4 +148,10 @@
   $txt_ww_sourcemode = "Source mode";
   $txt_ww_visualmode = "Visual mode";
 
+  // multi-record actions selection
+  $txt_select_all     = "Select all";
+  $txt_select_none    = "Deselect all";
+  $txt_select_invert  = "Invert selection";
+  $txt_with_selected  = "With selected";
+  $txt_submit         = "Submit";
 ?>

@@ -45,8 +45,9 @@
   $txt_error_uniquefield = "De waarde voor dit veld moet uniek zijn";
   $txt_error_tab = "zie";
 
-  $txt_confirm_delete = "Weet je zeker dat je dit item wil verwijderen?";
-  $txt_title_delete = "Bevestig verwijderen";
+  $txt_confirm_delete        = "Weet u zeker dat u dit item wilt verwijderen?";
+  $txt_confirm_delete_multi  = "Weet u zeker dat u deze items wilt verwijderen?";
+  $txt_title_delete          = "Bevestig verwijderen";
 
   $txt_select_none = "Geen";
 
@@ -163,4 +164,11 @@
   // visual html editor
   $txt_ww_sourcemode = "Broncode modus";
   $txt_ww_visualmode = "Visuele modus";
+
+  // multi-record actions selection
+  $txt_select_all     = "Selecteer alles";
+  $txt_select_none    = "Deselecteer alles";
+  $txt_select_invert  = "Selectie omkeren";
+  $txt_with_selected  = "Met geselecteerd";
+  $txt_submit         = "Uitvoeren";
 ?>
