@@ -108,6 +108,7 @@ class atkDbLock extends atkLock
     $query->addCondition("lock_table = '".escapeSQL($table)."'");
     $query->addCondition("lock_record = '".escapeSQL($selector)."'");
     $query->addCondition("lock_lease >= now()");
+    $query->addCondition("session_id <> '".escapeSQL(session_id())."'");    
     $result = $g_db->getRows($query->buildCount());
 
     /* lock item */
@@ -120,8 +121,7 @@ class atkDbLock extends atkLock
       }
 
       $user = getUser();
-      if (is_array($user))
-        $user = $user['name'];
+      if (is_array($user)) $user = $user['name'];
 
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
@@ -133,11 +133,9 @@ class atkDbLock extends atkLock
       $query->addField("lock_stamp", "now()", "", "", FALSE);
       if (atkconfig("database") != 'oci8' && atkconfig("database") != 'oci9')
         $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
-      else
-        $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
+      else $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
       $query->addField("lock_lease_count", "0");
       $query->addField("session_id", escapeSQL(session_id()));
-      $query->addField("session_stack", escapeSQL(atkStackID()));
       $query->addTable("db_lock");
       $query->executeInsert();
 
@@ -190,8 +188,7 @@ class atkDbLock extends atkLock
         "lock_record = '".escapeSQL($selector)."' AND ".
         "user_id = '".escapeSQL($user)."' AND ".
         "user_ip = '".escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"])."' AND ".
-        "session_id = '".escapeSQL(session_id())."' AND ".
-        "session_stack = '".escapeSQL(atkStackID())."'".
+        "session_id = '".escapeSQL(session_id())."'".
       ") OR (".
         "lock_lease <= now()".
       ")"
@@ -218,8 +215,7 @@ class atkDbLock extends atkLock
     else $atkstackid = atkStackID();
 
     $user = getUser();
-    if (is_array($user))
-      $user = $user['name'];
+    if (is_array($user)) $user = $user['name'];
 
     /* lock the lock table :) */
     $g_db->lock("db_lock");
@@ -229,19 +225,17 @@ class atkDbLock extends atkLock
     $query = new $name();
     if (atkconfig("database") != 'oci8' && atkconfig("database") != 'oci9')
       $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
-    else
-      $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
-
+    else $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
     $query->addField("lock_lease_count", "lock_lease_count + 1", "", "", FALSE);
     $query->addTable("db_lock");
     $query->addCondition("lock_id = ".(int)$identifier);
     $query->addCondition("user_id = '".escapeSQL($user)."'");
     $query->addCondition("user_ip = '".escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"])."'");
     $query->addCondition("session_id = '".escapeSQL(session_id())."'");
-    $query->addCondition("session_stack = '".escapeSQL($atkstackid)."'");
     $query->addCondition("lock_lease >= now()");
     $query->executeUpdate();
     $result = $g_db->affected_rows();
+    
     /* unlock the lock table */
     $g_db->unlock("db_lock");
 
@@ -251,8 +245,8 @@ class atkDbLock extends atkLock
       $atklockList = $this->loadLockList();
       if (is_array($atklockList)) unset($atklockList[$atkstackid]);
       $this->storeLockList($atklockList);
-
     }
+    
     /* return */
     return $result > 0;
   }
@@ -279,7 +273,7 @@ class atkDbLock extends atkLock
       for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
         if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) return NULL;
     }
-
+    
     /* select all locks for the node table -> cache */
     if (!is_array($_cache[$table]))
     {
@@ -294,6 +288,7 @@ class atkDbLock extends atkLock
       $query->addTable("db_lock");
       $query->addCondition("lock_table = '".escapeSQL($table)."'");
       $query->addCondition("lock_lease >= now()");
+      $query->addCondition("session_id <> '".escapeSQL(session_id())."'");          
       $_cache[$table] = $g_db->getRows($query->buildSelect());
     }
 

@@ -11,6 +11,5 @@ CREATE TABLE db_lock
   user_id          VARCHAR(50) NOT NULL,
   user_ip          VARCHAR(50) NOT NULL,
   session_id       VARCHAR(32) NOT NULL,
-  session_stack    VARCHAR(32) NOT NULL,
   PRIMARY KEY (lock_id, lock_table, lock_record)
 );
