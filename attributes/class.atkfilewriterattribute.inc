@@ -1,0 +1,82 @@
+<?php
+  /**
+   * The atkFileWriterAttribute is an attribute that reads data from / saves 
+   * data to a file, instead of the database.
+   *
+   * @author Ivo Jansch (ivo@achievo.com)
+   *
+   * $Id$
+   * $Log$
+   * Revision 4.1  2001/05/14 10:17:54  ivo
+   * Added new atkfilewriter attribute.
+   *   
+   *
+   */
+  class atkFileWriterAttribute extends atkTextAttribute
+  {
+    var $m_filename;
+  
+    /**
+     * Constructor
+     * @param $name Name of the attribute
+     * @param $filename The name of the file to read/write. 
+     *                  Advanced use: This may be a template containing 
+     *                  fields from your class, for example: 
+     *                  "somedir/textfile_[id].txt". If a record has id '9', 
+     *                  this will read/write a file named 
+     *                  somedir/textfile_9.txt. Watch out when using fields
+     *                  that can change; the attribute won't remove the old
+     *                  files.
+     * @param $flags Flags for this attribute
+     */
+    function atkFileWriterAttribute($name, $filename, $flags=0)
+    {
+      $this->m_filename = $filename;
+      $this->atkTextAttribute($name,$flags); // base class constructor
+    }
+
+    function store($db, $record, $mode)
+    {
+      // Note1 : regardless of mode (update or add), we always overwrite the 
+      // file with the current contents.
+      // Note 2: even if contents is "", we write the file, since the file 
+      // might exist and contain old information.
+      
+      $contents = $record[$this->fieldName()];            
+      
+      // determine filename.
+      $filename = stringparse($this->m_filename, $record);
+      
+      $fp = @fopen($filename, "w");
+      
+      if ($fp==false)
+      {
+        atkerror("[".$this->fieldName()."] couldn't open $filename for writing!");
+      }      
+      else
+      {
+        fwrite($fp, $contents);
+        fclose($fp);
+        atkdebug("[".$this->fieldName()."] succesfully wrote $filename..");
+      }      
+    }
+    
+    function load($db, $record)
+    {
+      // determine filename.
+      $filename = stringparse($this->m_filename, $record);
+        
+      if (!file_exists($filename))
+      {
+        atkdebug("[".$this->fieldName()."] warning: $filename doesn't exist");
+      }
+      else
+      {
+        $contents = implode("",file($filename));
+        atkdebug("[".$this->fieldName()."] succesfully read $filename");
+        return $contents;
+      }      
+    }
+  }
+  
+?>

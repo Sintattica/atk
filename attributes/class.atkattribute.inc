@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/05/14 10:17:54  ivo
+   * Added new atkfilewriter attribute.
+   *
    * Revision 4.4  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -448,5 +451,6 @@
   include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmlselectorattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmlattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atkfilewriterattribute.inc");
   
 ?>
