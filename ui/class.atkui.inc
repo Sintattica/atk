@@ -25,7 +25,15 @@
     function renderAction($action, $vars)
     {
       // todo.. action specific templates
-      return $this->render("action.tpl", $vars);
+      switch($action)
+      {
+        case "view":
+          $tpl = "action_view.tpl";
+          break;
+        default:
+          $tpl = "action.tpl";
+      }
+      return $this->render($tpl, $vars);
     }      
     
     function renderList($action, $vars)
