@@ -559,6 +559,16 @@
         return $field." <= '".$value."'";
       }
     }
+    
+    /**
+     * Static factory method. This method returns a new instance of a query 
+     * object for the current database.
+     */
+    function &create()
+    {
+      $name = "atk".atkconfig("database")."query";
+      return new $name();
+    }
   }
 
   $name = $config_atkroot."atk/db/class.atk".$GLOBALS["config_database"]."query.inc";
