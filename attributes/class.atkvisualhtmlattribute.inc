@@ -80,12 +80,17 @@
       }
       else
       {    
-        $viewselectbox = '<select name="atkwwview">
+        $wwview = $atkwwview[$fieldprefix.$this->fieldName()];
+        if ($wwview=="")
+	{
+	  $wwview = atkconfig("ww_defaultview");
+	}
+        $viewselectbox = '<select name="atkwwview['.$fieldprefix.$this->fieldName().']">
                             <option value="visual">'.text("ww_visualmode").
-                            '<option value="plain" '.($atkwwview=="plain"?"selected":"").'>'.text("ww_sourcemode").
+                            '<option value="plain" '.($wwview=="plain"?"selected":"").'>'.text("ww_sourcemode").
                          '</select>';
       
-        if ($atkwwview!="plain")
+        if ($wwview!="plain")
         {
           $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
           $nom_editor = $fieldprefix.$this->fieldname()."_editor";
@@ -97,13 +102,11 @@
           //$action_submit = "sample_submit.php";
           $document_complet = 0;
           $current_value = $record[$this->fieldname()];
-          $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';
-          $result.= '<input type="hidden" name="atkwwview" value="html">';
+          $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';         
           include $config_atkroot."atk/attributes/wysiwyg/editor.php";                    
         }
         else
-        {
-          $result = '<input type="hidden" name="atkwwview" value="plain">';
+        {          
           $result.=$viewselectbox.'<br>';
           $result.=atkTextAttribute::edit($record, $fieldprefix);          
         }
