@@ -812,7 +812,7 @@
                         '&nbsp;<input type="submit" name="atkback" value="&lt;&lt; '.text('back').'">&nbsp;';
                         
       // if appropriate, display an edit button.
-      if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
+      if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit", $record))
       {        
         $buttons.= '<input type="hidden" name="atkaction" value="edit">'.
                    '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
@@ -1343,7 +1343,7 @@
           is_array($this->m_search_action) && count($recordset) == 1)
       {
         for ($i = 0, $_i = count($this->m_search_action); $i < $_i; $i++)
-          if ($this->allowed($this->m_search_action[$i]))
+          if ($this->allowed($this->m_search_action[$i], $recordset[$i]))
           {
             $this->redirect(session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atkNodeType().
                             '&atkaction='.$this->m_search_action[$i].
@@ -1529,8 +1529,8 @@
         $this->recordActions($row["record"], $row["actions"], $row["mra"]);
         $result["mra"] = array_merge($result["mra"], $row["mra"]);
         foreach($row["actions"] as $name => $url)
-        {
-          if (!empty($url))
+        {         
+          if (!empty($url) && $this->allowed($name, $row["record"]))
           {
             /* dirty hack */
             $atkencoded = strpos($url, "_15B") > 0;
@@ -1545,6 +1545,10 @@
 
             $url = stringparse($url, $row["record"], true);
             $row["actions"][$name] = $url;
+          }
+          else
+          {
+            unset($row["actions"][$name]);
           }
         }
 
@@ -2520,7 +2524,6 @@
         $this->m_postvars["atkformdata"]="";
       }
 
-      // check for fake submit (session saving href thingee)
       if ($this->allowed($this->m_action))
       {
         $secMgr = &atkGetSecurityManager();
@@ -3693,7 +3696,23 @@
       return (empty($this->m_module) ? "" : $this->m_module.".").$this->m_type;
     }
 
-    function allowed($action)
+    /**
+     * This function determines if the user has the right to perform a certain
+     * action on the node.
+     * 
+     * @param  $action - The action to be checked
+     *         $record (optional) - The record on which the action is to be
+     *                              performed. The standard implementation 
+     *                              ignores this parameter, but in derived 
+     *                              nodes you can override this function and
+     *                              implement your own record based security
+     *                              policy. Keep in mind though that a 
+     *                              record is not passed in every situation.
+     *      
+     * @return true if the action may be performed.
+     *         false if the action is not allowed
+     */
+    function allowed($action, $record="")
     {
       $secMgr = &atkGetSecurityManager();
       if (empty($this->m_securityAlias))
