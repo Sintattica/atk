@@ -309,9 +309,10 @@
                                
     /**
      * The right to execute certain actions can be implied by the fact that you 
-     * have some other right. For example, if you have the right to edit a
-     * record, you may also view that record, and don't need explicit rights
-     * to view it. So the 'view' right is said to be 'implied' by the 'edit' right. 
+     * have some other right. For example, if you have the right to access a
+     * feature (admin right), you may also view that record, and don't need 
+     * explicit rights to view it. So the 'view' right is said to be 'implied'
+     *  by the 'admin' right. 
      */
     var $m_securityImplied = array("view"=>"admin");
 
