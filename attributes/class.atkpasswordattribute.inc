@@ -7,7 +7,7 @@
  * AF_PASSWORD_NOVALIDATE flag, in which case the password just gets
  * overwritten without any check.
  *
- * @author Peter Verhage (peter@achievo.com)
+ * @author Peter C. Verhage (peter@achievo.org)
  * @version $Revision$
  *
  * $Id$
@@ -15,8 +15,9 @@
  */
 class atkPasswordAttribute extends atkAttribute
 {
-  // to generate or not.
+  /* generate? */
   var $m_generate;
+
   /**
    * Constructor
    * @param $name Name of the attribute
@@ -25,55 +26,50 @@ class atkPasswordAttribute extends atkAttribute
    */
   function atkPasswordAttribute($name, $generate, $flags=0)
   {
-    /* base class constructor */
-      // compatiblity with old versions
-
-      if (func_num_args()==3) $this->m_generate=$generate;
-      else
-      {
+    /* compatiblity with old versions */
+    if (func_num_args() == 3) $this->m_generate = $generate;
+    else
+    {
       $flags = $generate;
-      $this->m_generate="false";
-      }
-     $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
+      $this->m_generate = FALSE;
+    }
+    $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
   }
 
   /**
    * Returns a piece of html code that can be used in a form to edit this
    * attribute's value.
    * @param $record array with fields
+   * @param $fieldprefix the field's prefix
+   * @param $mode the mode (add, edit etc.)
    * @return piece of html code with a textarea
    */
-  function edit($record="", $fieldprefix="")
+  function edit($record="", $fieldprefix="", $mode="")
   {
-    global $ATK_VARS;
-
-    $action = $ATK_VARS["atkaction"];
-
     /* insert */
-    if ($action != 'edit' && $action != 'update')
+    if ($mode != 'edit' && $mode != 'update')
     {
-     if (!$this->m_generate)
-     {
+      if (!$this->m_generate)
+      {
+        $result = text("password_new").':<br>'.
+                  '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
+                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
+                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
 
-      $result = text("password_new").':<br>'.
-                '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
-
-                text("password_again").':<br>'.
-                '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
-     }
-     else
-     {
-      $password = makePassword();
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[again]"'.
-                ' value ="'.$password.'">'.
-                '<input type="text" name="'.$fieldprefix.$this->fieldName().'[new]"'.
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
-     }
+                  text("password_again").':<br>'.
+                  '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
+                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
+                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
+      }
+      else
+      {
+        $password = $this->makePassword();
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[again]"'.
+                  ' value ="'.$password.'">'.
+                  '<input type="text" name="'.$fieldprefix.$this->fieldName().'[new]"'.
+                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
+                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
+      }
     }
 
     /* edit */
@@ -149,10 +145,6 @@ class atkPasswordAttribute extends atkAttribute
    */
   function fetchValue($rec)
   {
-    global $ATK_VARS;
-
-    $action = $ATK_VARS["atkaction"];
-    //if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
     if (strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
       return $rec[$this->fieldName()];
     else return array("hash" =>$rec[$this->fieldName()]["hash"],
@@ -171,19 +163,14 @@ class atkPasswordAttribute extends atkAttribute
    */
   function validate($record, $mode)
   {
-    global $ATK_VARS;
-
     $value = $record[$this->fieldName()];
 
-    $action = $ATK_VARS["atkaction"];
-
-    if ($action == 'update'
+    if ($mode == 'update'
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
         && md5($value["current"]) != $value["hash"])
           triggerError($record, $this->fieldName(), 'error_password_incorrect');
 
-    //var_dump($value);
     if ($value["new"] != $value["again"])
       triggerError($record, $this->fieldName(), 'error_password_nomatch');
   }
@@ -212,32 +199,32 @@ class atkPasswordAttribute extends atkAttribute
 
   function getSearchModes()
   {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+    // exact match and substring search should be supported by any database.
+    // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+    // searches can be implemented using LIKE)
+    // Possible values
+    //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
     return array();
   }
-}
 
-
-  # @param $times number of syllables
-  # @return string with value to display
-
-  function makePassword($times=2)
+  /**
+   * Generates a random password which isn't to bad to remember.
+   * @param $times number of syllables
+   * @return generated password string
+   */
+  function makePassword($times = 2)
   {
-   $klinkers = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
-   $mede   = array("a","e","y","u");
-   for ($i=0;$i<$times;$i++)
-       {
-        srand((double)microtime()*1000000);
-        mt_srand((double)microtime()*1000000);
-        $out .=  $klinkers[rand()%count($klinkers)];
-        $out .= $mede[mt_rand()%count($mede)];
-        $out .= $klinkers[mt_rand()%count($klinkers)];
-       }
-  return $out;
+    $vowels = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
+    $consonants = array("a","e","y","u");
+    for ($i = 0; $i < $times; $i++)
+    {
+      srand((double)microtime()*1000000);
+      mt_srand((double)microtime()*1000000);
+      $out .= $vowels[rand()%count($vowels)];
+      $out .= $consonants[mt_rand()%count($consonants)];
+      $out .= $vowels[mt_rand()%count($vowels)];
+    }
+    return $out;
   }
-
+}
 ?>

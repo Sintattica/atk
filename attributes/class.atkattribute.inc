@@ -284,7 +284,7 @@
       {
         /* when adding, there's nothing to hide... */
         if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
-          $arr["hide"][] = $this->hide($defaults, $fieldprefix);
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
       }
 
       /* edit */
@@ -317,8 +317,8 @@
         {
           $funcname = $this->m_name."_edit";
           if (method_exists($this->m_ownerInstance, $funcname))
-            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix);
-          else $entry["html"] .= $this->edit($defaults, $fieldprefix);
+            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
+          else $entry["html"] .= $this->edit($defaults, $fieldprefix, $mode);
         }
 
         $arr["fields"][] = $entry;

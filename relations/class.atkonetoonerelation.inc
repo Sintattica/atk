@@ -231,11 +231,11 @@
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       /* hide */
-      if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
+      if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD)))
       {
         /* when adding, there's nothing to hide... */
-        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
-          $arr["hide"][] = $this->hide($defaults, $fieldprefix);
+        if ($mode=="edit" || ($mode == "add" && !$this->isEmpty($defaults)))
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
       }
 
 
@@ -246,7 +246,7 @@
          * is this method has the same behaviour as the atkAttribute's method
          */
         if (method_exists($this->m_ownerInstance, $this->m_name."_edit") ||
-            $this->edit($defaults, $fieldprefix) !== NULL)
+            $this->edit($defaults, $fieldprefix, $mode) !== NULL)
         {
           atkAttribute::addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix);
         }
