@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.72  2001/07/03 16:07:13  ivo
+   * the *_display override of readonly attribs was not called.
+   *
    * Revision 4.71  2001/07/03 15:49:14  maurice
    * The validate function of an attribute is only called when a field is not empty.
    *
@@ -902,7 +905,9 @@
             {
               // readonly, display value..              
               $editsrc=$p_attrib->hide($defaults, $fieldprefix);
-              $editsrc.=$p_attrib->display($defaults);                              
+              $funcname = $p_attrib->m_name."_display";
+              if (method_exists($this, $funcname)) $editsrc.= $this->$funcname($record);
+              else $editsrc.=$p_attrib->display($defaults);                              
             }
             else
             {            
