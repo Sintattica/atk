@@ -1,6 +1,6 @@
 <?php
   /**
-   * The atkUpdateStampAttribute class can be used to store 
+   * The atkUpdateStampAttribute class can be used to store
    * the date and time of the last modification of a record.
    * To use this attribute, add a DATETIME field to your table
    * and add this attribute to your node class. No params are necessary,
@@ -14,15 +14,15 @@
    * $Id$
    *
    */
-   
+
   useattrib('atkDateTimeAttribute');
-  
+
   class atkUpdateStampAttribute extends atkDateTimeAttribute
   {
     //Var is need for save without close. In this case the record
-    // is not updated therefor we have to save the value    
+    // is not updated therefor we have to save the value
     var $m_stamp = "";
-    
+
     /**
      * Constructor
      * @param $name Name of the attribute
@@ -37,7 +37,7 @@
     function value2db($rec)
     {
       $stamp = date("Y-m-d H:i:s");
-      $this->m_stamp = $stamp;    
+      $this->m_stamp = $stamp;
       return $stamp;
     }
 
@@ -52,7 +52,13 @@
       // no matter what, we always save a new value.
       return true;
     }
-    
+
+    function needsInsert($rec)
+    {
+      // no matter what, we always save a new value.
+      return true;
+    }
+
 
     /**
      * Returns a piece of html code that can be used in a form to display
