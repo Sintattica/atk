@@ -97,7 +97,7 @@
     /* filename */
     if (empty($module)) 
     {  
-      $file = $config_atkroot."class.$type.inc";  
+      $file = "class.$type.inc";  
     }
     else 
     {      
