@@ -123,9 +123,10 @@
       }
       $result.='name="atksearch['.$this->formName().'][]">';
       $result.= '<option value="">'.text('search_all');
+            
       for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)
       {
-        if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
+        if (atk_in_array($this->m_values[$i],$record[$this->fieldName()]) && $record[$this->fieldName()]!="")
         {
           $sel = "selected";
         }

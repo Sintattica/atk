@@ -277,7 +277,7 @@
       for ($i=0;$i<count($recordset);$i++)
       {
         $pk = $recordset[$i][$pkfield];
-        if ($record[$this->fieldName()]==$pk) $sel = "selected"; else $sel = "";
+        if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
         $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
       }
       $result.='</select>';
