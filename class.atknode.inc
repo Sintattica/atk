@@ -1438,7 +1438,12 @@
         }
       }
 
-      if (hasFlag($flags, RL_MRA)) $result["mra"] = array_unique($result["mra"]);
+      if (hasFlag($flags, RL_MRA))
+      {
+        $result["mra"] = array_unique($result["mra"]);
+        sort($result["mra"]);
+      }
+
       return $result;
     }
 
