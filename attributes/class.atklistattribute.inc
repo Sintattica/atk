@@ -32,11 +32,11 @@
      *
      * Warning: very old versions of this attribute supported passing the
      * parameters in a different order: $name, $flags, $optionArray.
-     * This order used to be supported even when the new order was 
+     * This order used to be supported even when the new order was
      * implemented, but it has now been removed. Keep this in mind
      * when upgrading from a very old ATK version (pre ATK4).
      *
-     * @param $name Name of the attribute     
+     * @param $name Name of the attribute
      * @param $optionArray Array with options
      * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
@@ -44,34 +44,34 @@
      * @param $size  Size of the attribute.
      */
     function atkListAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
-    {            
+    {
       if (!is_array($valueArray) || count($valueArray)==0)
-      {      
+      {
         $valueArray = $optionArray;
       }
-      
+
       // If all values are numeric, we can use a numeric field to store the selected
       // value.
       $this->m_dbfieldtype = "number";
       for ($i=0, $_i=count($valueArray); $i<$_i && $this->m_dbfieldtype=="number"; $i++)
-      {  
+      {
         if (!is_numeric($valueArray[$i])) $this->m_dbfieldtype="string";
         // if one of the values is not a number, the fieldtype must be string, and
         // the loop is stopped.
       }
-      
+
       // If no size is specified, the max size we have is equal to the biggest value.
       if ($size==0)
       {
         for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
-        {  
-          $size = max($size, strlen($valueArray[$i]));          
+        {
+          $size = max($size, strlen($valueArray[$i]));
         }
       }
-      
+
       $this->atkAttribute($name, $flags, $size); // base class constructor
       $this->m_options = $optionArray;
-
+      $this->m_values = $valueArray;
 
       for ($i=0, $_i=count($optionArray); $i<$_i; $i++)
       {
@@ -125,13 +125,13 @@
     {
       // todo: configurable rows
       $result = '<select ';
-      if ($extended) 
+      if ($extended)
       {
         $result.='multiple size="'.min(5,count($this->m_values)+1).'"';
       }
       $result.='name="atksearch['.$this->formName().'][]">';
       $result.= '<option value="">'.text('search_all');
-            
+
       for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)
       {
         if (atk_in_array($this->m_values[$i],$record[$this->fieldName()]) && $record[$this->fieldName()]!="")
@@ -155,8 +155,8 @@
      * @return a piece of the SQL where clause
      */
     function searchCondition(&$query, $table, $value, $searchmode)
-    {      
-      // We only support 'exact' matches. 
+    {
+      // We only support 'exact' matches.
       // But you can select more than one value, which we search using the IN() statement,
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
@@ -181,7 +181,7 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
-    
+
     function dbFieldType()
     {
       // Fieldtype was determined in the constructor.
