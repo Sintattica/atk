@@ -81,12 +81,12 @@
 
       $t = new tree;
       for($i=0;$i<count($recordset);$i++)
-      {
-        $group=$recordset[$i];
-        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+      {        
+        //$t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$recordset[$i],$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
       }
       $this->m_tree[0]["level"]=0; 
-      $this->m_tree[0]["label"]="&nbsp;"; 
+      //$this->m_tree[0]["label"]="&nbsp;"; 
 	    $this->m_tree[0]["id"]=''; 	    
 	    $this->m_tree[0]["isleaf"]=1; 
                        
@@ -99,7 +99,17 @@
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
         $addurl = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
-        $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
+        if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
+        {
+          // specific text
+          $label = text("link_".getNodeType($this->m_type)."_add");
+        }
+        else
+        {
+          // generic text
+          $label = text(getNodeType($this->m_type))." ".text("add");
+        }
+        $g_layout->output(href($addurl,$label,SESSION_NESTED).'<br><br>');
       }
 
       $g_layout->output($this->GraphTreeRender());
@@ -119,7 +129,12 @@
       while (list($id,$objarr) = each($tree))
       {
         $this->m_tree[$g_count]["level"]=$level+1; 
-		    $this->m_tree[$g_count]["label"]=$objarr->m_label; 
+        
+        // Store extra info in the record, so the recordActions override can make 
+        // use of some extra info to determine whether or not to show certain actions.
+        $objarr->m_label["subcount"] = count($objarr->m_sub);
+        
+		    $this->m_tree[$g_count]["label"]=$objarr->m_label;
         $this->m_tree[$g_count]["img"]=$objarr->m_img;         
 		    $this->m_tree[$g_count]["id"]=$objarr->m_id; 
         $exp_index[$objarr->m_id] = $g_count;        		    
@@ -451,25 +466,27 @@
 			    /****************************************/ 
 			    /* output item text                     */ 
 			    /****************************************/ 
-  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])." nowrap><font size=2>".$this->m_tree[$cnt]["label"]."</font></td>\n"; 
+  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])." nowrap><font size=2>".$this->descriptor($this->m_tree[$cnt]["label"])."</font></td>\n"; 
       
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
           $res.='<td nowrap> ';
+          $actions = array();
+          
           if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0))
           {
-            $res.=href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
+            $actions["add"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'");
           }
           if($cnt>0)
-          {
+          {            
             if (!$this->hasFlag(NF_NO_EDIT))
             {
-              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
+              $actions["edit"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
             }
             if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
             {    
-              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
+              $actions["copy"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
             }
             if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
             {
@@ -477,9 +494,19 @@
             }
             else
             {
-              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
+              $actions["delete"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
             }
           }
+          
+          // Look for custom record actions.
+          $recordactions = $actions;
+          $this->recordActions($this->m_tree[$cnt]["label"], $recordactions);    
+          
+          foreach ($recordactions as $action_name => $action_url)
+          {
+            $res.=href($action_url, text($action_name), SESSION_NESTED)."&nbsp;";
+          }
+          
          $res.= "</td></tr>\n";       
 		    } 
 	    	$cnt++;     
