@@ -107,6 +107,7 @@
   "file_not_exist" => "Bestand bestaat niet",
   "fri" => "Vri",
   "friday" => "vrijdag",
+  "fsa_pleasemakeselection" => "Meer dan 1 resultaat gevonden. Maak alstublieft een selectie.",
   "help" => "Help",
   "import" => "Importeer gegevens",
   "import_allfield" => "Standaard waarde voor veld dat niet in de data zit",

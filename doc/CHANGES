@@ -55,6 +55,10 @@ Changes in ATK 5.0.8
   selected not even when it is obligatory [Wouter]
 * atkOneToOneRelation restores destination postvars 
   after it is done updating [Boy]
+* Ported translation for fsa_pleasemakeselection from atkFuzzySearchAttrib.
+	from Achievo to ATK [Boy]
+* Removed redundant code and minor bugfixes on atktheme, edithandler,
+	emailattribute and atkattribute [Andres,Boy]
 
 Changes in ATK 5.0.7
 --------------------

@@ -125,6 +125,7 @@
       /* check for errors and display them */
       $tab = $node->getActiveTab();
       $error_title = "";
+      $pk_err_attrib = array();
 
       // Handle errors
       $errors = array();
@@ -141,16 +142,6 @@
           else
           {
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
-            
-            if(is_array($error['attrib_name']))
-              $attrib_name = $error['attrib_name'][0];
-            else
-              $attrib_name = $error['attrib_name'];
-              
-            $p_attrib = &$node->m_attribList[$attrib_name];
-
-            $index = $p_attrib->m_index;
-            $tabs  = $node->m_attribIndexList[$index]["tabs"];            
             
             if (count($node->getTabs($node->m_action)) > 1
                  && $error["tab"])
@@ -200,8 +191,6 @@
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
-
-		    $field_name = $field['name'];								
 				
         $tplfield = array();
 				        

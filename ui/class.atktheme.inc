@@ -161,7 +161,7 @@
       
       foreach ($themedefs as $themedef)
       {
-        if (file_exists("$themedef/$themefile"))
+        if (file_exists($themedef."/".$this->THEMEFILE))
         {
           $this->m_curthemedir = $themedef."/";
           return;

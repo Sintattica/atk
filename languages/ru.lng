@@ -109,6 +109,7 @@
   "file_not_exist" => "Файл не существует",
   "fri" => "Пят",
   "friday" => "Friday", // Missing string!!!
+  "fsa_pleasemakeselection" => "Найдено несколько запись. Пожалуйста, выберите нужную.",
   "help" => "Помощь",
   "import" => "Import data", // Missing string!!!
   "import_allfield" => "Default value for field not in the import file", // Missing string!!!

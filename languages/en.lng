@@ -107,6 +107,7 @@
   "file_not_exist" => "File doesn't exist",
   "fri" => "Fri",
   "friday" => "Friday",
+  "fsa_pleasemakeselection" => "More than one match was found. Please make a selection.",
   "help" => "Help",
   "import" => "Import data",
   "import_allfield" => "Default value for field not in the import file",

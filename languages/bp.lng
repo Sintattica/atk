@@ -107,6 +107,7 @@
   "file_not_exist" => "Arquivo não existe",
   "fri" => "Fri",
   "friday" => "Friday", // Missing string!!!
+  "fsa_pleasemakeselection" => "Mais de uma ocorrência foi encontrada. Por favor faça sua seleção.",
   "help" => "Help",
   "import" => "Import data", // Missing string!!!
   "import_allfield" => "Default value for field not in the import file", // Missing string!!!
