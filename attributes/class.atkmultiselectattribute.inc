@@ -68,7 +68,7 @@
       //atkdebug("multiselectattribute::value2db()");
       if(is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]>=1))
       {
-        return implode("|",$rec[$this->fieldName()]);
+        return escapeSQL(implode("|",$rec[$this->fieldName()]));
       }
       else return "";
     }
