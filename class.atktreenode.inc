@@ -143,10 +143,9 @@
     {
       global $g_maxlevel,$g_layout,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
       if(count($this->m_tree)==1) return "";  
-   
-      if($g_theme["TreeIcon_dir"]!=""&&is_dir($config_atkroot."themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
+      if($g_theme["TreeIcon_dir"]!=""&&is_dir($config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
-        $icon_path =$config_atkroot."themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
+        $icon_path =$config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
       }
       else
       {
