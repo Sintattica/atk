@@ -2572,13 +2572,13 @@
 
     function action_delete()
     {
-      if ($this->m_postvars['confirm']==text('yes'))
+      if (!empty($this->m_postvars['confirm']))
       {
         // Confirmation page was displayed and 'yes' was clicked
         $recordset = $this->deleteDb($this->m_postvars['atkselector']);
         $this->redirect();
       }
-      elseif ($this->m_postvars['cancel']!=text('no'))
+      elseif (empty($this->m_postvars['cancel']))
       {
         $locked = FALSE;
         if ($this->hasFlag(NF_LOCK))
