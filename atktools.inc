@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.12  2001/06/22 15:34:44  ivo
+  * Dirty hack to atkurlencode [pk]'s once they have been replaced.
+  * TODO: clean up!
+  *
   * Revision 4.11  2001/06/22 14:42:25  ivo
   * Better errorreport template.
   *
@@ -275,6 +279,7 @@
       //$str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
     //echo $url."-".base64_encode(session_url($url,$sessionstatus))."<br>";
       //$str = 'javascript:atkSubmit("'.session_url($url,$sessionstatus).'")';
+    //echo $url."-<br>";
       $str = 'javascript:atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     }
     else

@@ -95,6 +95,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.61  2001/06/22 15:34:44  ivo
+   * Dirty hack to atkurlencode [pk]'s once they have been replaced.
+   * TODO: clean up!
+   *
    * Revision 4.60  2001/06/22 12:09:23  ivo
    * Fixed a bug in [pk] replacement in encoded actions..
    *
@@ -1569,12 +1573,27 @@
           {
             //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
             // experimental: [] tags could be encoded but we still parse them..           
+            
+            // dirty hack:
+            $atkencoded = false;
+            if (strpos($actions[$i],"_#")>0)
+            {
+              // normal value.. 
+              $atkencoded = true;
+            }            
             $action=str_replace("%5B","[",$actions[$j]);
             $action=str_replace("%5D","]",$action);
             $action=str_replace("_#5B","[",$actions[$j]);
             $action=str_replace("_#5D","]",$action);
             
-            $action=str_replace('[pk]',rawurlencode($pk),$action);
+            if ($atkencoded)
+            {
+              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk)),$action);            
+            }
+            else
+            {
+              $action=str_replace('[pk]',rawurlencode($pk),$action);
+            }
             $action=stringparse($action,$recordset[$i],true);
             $stractions.=$action.'&nbsp;';
           }
@@ -2053,9 +2072,9 @@
      * to layout::outputFlush();
      */
     function redirect($location="")
-    {
+    {  
       global $g_returnurl;
-    //echo $location;      
+    
       atkdebug("atknode::redirect()");
       $back = 0;
       
