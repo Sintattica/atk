@@ -343,10 +343,7 @@
       $res = array();
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
 
-      // we only show the last 4 elements of the stack
-      if (count($stack)>4) $res = "... | ";
-
-      for ($i=max(0,count($stack)-4);$i<count($stack);$i++)
+      for ($i=0;$i<count($stack);$i++)
       {
         $mod = getNodeModule($stack[$i]["atknodetype"]);
         $node = getNodeType($stack[$i]["atknodetype"]);
