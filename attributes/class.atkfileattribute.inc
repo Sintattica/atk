@@ -168,15 +168,23 @@
     function fetchValue($rec)
     {    
       global $HTTP_POST_FILES;
-       
+      global $select;
+      
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
       $basename = $this->fieldName();      
-
-      if (is_array($HTTP_POST_FILES)) // php4
-      {    
+      if (is_array($HTTP_POST_FILES)||($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))) // php4
+      {   
         // if no new file has been uploaded..    
-        if (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
+        if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+        {
+          $result = array("tmpfile"=>"",
+                          "filename"=>$select[$this->fieldName()],
+                          "filesize"=>0,
+                          "orgfilename"=>$rec[$basename."_orgfilename"]);
+        
+        }
+        elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
         { 
       
           $result = array("tmpfile"=>"",
