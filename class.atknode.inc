@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.81  2001/07/17 09:51:31  ivo
+   * Replaced all dispatch.php occurrences with $PHP_SELF.
+   *
    * Revision 4.80  2001/07/15 18:10:54  ivo
    * alphabetical index now also available in selectPage.
    *
@@ -645,7 +648,7 @@
      */
     function viewPage($record)
     {
-      global $g_layout;  
+      global $g_layout, $PHP_SELF;  
     
       $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
       $g_layout->output($this->statusbar());
@@ -701,7 +704,7 @@
       }
       $page.='</table>';    
             
-      $page.='<br><br>'.href("dispatch.php",text('back'),SESSION_BACK);
+      $page.='<br><br>'.href($PHP_SELF,text('back'),SESSION_BACK);
       $g_layout->output($page);
       
       $g_layout->ui_bottom();
@@ -712,12 +715,12 @@
      */
     function addPage($record=NULL)
     {
-      global $g_layout;
+      global $g_layout, $PHP_SELF;
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
       $g_layout->output($this->statusbar());
       
-      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());                                   
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
@@ -735,12 +738,12 @@
     
     function searchPage($record=NULL)
     {
-      global $g_layout;
+      global $g_layout, $PHP_SELF;
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
       $g_layout->output($this->statusbar());
       
-      $g_layout->output('<form name="entryform" action="dispatch.php?'.SID.'" method="post">');
+      $g_layout->output('<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">');
       $g_layout->output(session_form(SESSION_BACK));
       
       $g_layout->output($this->searchForm($record));
@@ -1133,11 +1136,11 @@
       for ($i=0;$i<$count;$i++) 
       { 
         $char = $available_letters[$i];        
-        if ($selected[0]==$char) $label="<b>$char</b>";                  
+        if (strtoupper($selected[0])==$char) $label="<b>$char</b>";                  
         else $label=$char;
         
         // We use wildcard search for the index. Should be supported by any database.
-        $nav.=href("dispatch.php?atksearch[".$this->m_index."]=".$char."*&atksearchmode=wildcard",$label);
+        $nav.=href($PHP_SELF."?atksearch[".$this->m_index."]=".$char."*&atksearchmode=wildcard",$label);
         
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else 
@@ -1704,12 +1707,12 @@
      */
     function confirmDelete($atkselector)
     {
-      global $g_layout;
+      global $g_layout, $PHP_SELF;
       
       $g_layout->ui_top(text('title_delete'));
       $g_layout->output($this->statusbar());
 
-      $g_layout->output('<form action="dispatch.php?"'.SID.' method="post">');
+      $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
       $g_layout->output(session_form());
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
@@ -1744,7 +1747,7 @@
       
       /** DIRTY HACK 
           if action is something else than edit, we clear the atkformdata sessionstuff **/    
-      if ($this->m_action!="edit")
+      if ($this->m_action!="edit"&&$this->m_action!="add")
       {
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
@@ -1942,7 +1945,7 @@
      */
     function redirect($location="")
     {  
-      global $g_returnurl;
+      global $g_returnurl, $PHP_SELF;
     
       atkdebug("atknode::redirect()");
       $back = 0;
@@ -1972,13 +1975,13 @@
         
         if ($back>0)
         {
-          $location = session_url("dispatch.php",SESSION_BACK,$back);
+          $location = session_url($PHP_SELF,SESSION_BACK,$back);
         }        
         else    
         {
           if ($location=="")
           {
-            $location = session_url("dispatch.php",SESSION_DEFAULT);
+            $location = session_url($PHP_SELF,SESSION_DEFAULT);
           }
         }
 
