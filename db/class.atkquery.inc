@@ -302,7 +302,7 @@
      }
 
 
-    /**
+ /**
     * Builds the SQL Update query
     * @result a SQL Update Query
     */
@@ -320,6 +320,28 @@
         $result.= " WHERE ".implode(" AND ",$this->m_conditions);
       }
       return $result;
+    }
+
+ /**
+    * Wrapper function to execute an update query 
+    */
+    function executeUpdate()
+    {
+      global $g_db;
+      
+      $query = $this->buildUpdate();
+      $g_db->query($query);      
+    }
+
+ /**
+    * Wrapper function to execute an insert query 
+    */
+    function executeInsert()
+    {
+      global $g_db;
+      
+      $query = $this->buildInsert();
+      $g_db->query($query);      
     }
 
     /**

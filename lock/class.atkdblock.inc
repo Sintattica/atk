@@ -139,7 +139,7 @@ class atkDbLock extends atkLock
       $query->addField("session_id", escapeSQL(session_id()));
       $query->addField("session_stack", escapeSQL(atkStackID()));
       $query->addTable("db_lock");
-      $g_db->query($query->buildInsert());
+      $query->executeInsert();
 
       $atklockList = $this->loadLockList();
       $atklock = &$atklockList[atkStackID()];
@@ -240,7 +240,7 @@ class atkDbLock extends atkLock
     $query->addCondition("session_id = '".escapeSQL(session_id())."'");
     $query->addCondition("session_stack = '".escapeSQL($atkstackid)."'");
     $query->addCondition("lock_lease >= now()");
-    $g_db->query($query->buildUpdate());
+    $query->executeUpdate();
     $result = $g_db->affected_rows();
     /* unlock the lock table */
     $g_db->unlock("db_lock");

@@ -98,7 +98,7 @@
      * @param $offset offset in record list
      * @param $limit maximum number of records
      */
-    function query($query, $offset=-1, $limit=-1)
+    function query($query, $offset=-1, $limit=-1, $bindVars=array())
     {
       /* limit? */
       if ($offset >= 0 && $limit > 0)
@@ -108,9 +108,6 @@
         $query.") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
       }	
       
-      /* query */
-      atkdebug("atkoci9db.query(): ".$query);
-
       /* connect to database */
       $this->connect();
 
@@ -120,18 +117,72 @@
         @OCIFreeStatement($this->m_query_id);
         $this->m_query_id = 0;
       }      
-     
-      /* query database */
+
+      /* query database */     
+      if (count($bindVars))
+      {      
+        $i=0;
+        foreach($bindVars as $bind => $value)
+        {          
+          $clobVar = $bind.$i;
+          $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);                  
+          $i++;          
+          atkdebug("NewDescriptor for ".$bind);
+        }
+        $fieldNames = array();
+        $bindNames = array();
+        $fieldNames = array_keys($bindVars);
+        foreach($fieldNames as $name) $bindNames[] = ":".$name;        
+        $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);
+        
+      }
       $this->m_query_id = OCIParse($this->m_link_id, $query);
       if ($this->m_query_id) 
-      {
-        if (!OCIExecute($this->m_query_id,OCI_COMMIT_ON_SUCCESS))
+      {              
+        if (count($bindVars))
+        {        
+          $i=0;
+          foreach($bindVars as $bind => $value)
+          {          
+            $clobVar = $bind.$i;
+            OCIBindByName($this->m_query_id, $bind, &$$clobVar, -1, OCI_B_CLOB);
+            $i++;          
+            atkdebug("Binding ".$bind);
+          }          
+        }    
+        if (!OCIExecute($this->m_query_id,OCI_DEFAULT))
         {
           /* error in query */
           $error = OCIError($this->m_query_id);
           $this->m_errno = $error["code"];
           $this->m_error = $error["message"];
           $this->halt("Invalid SQL: $query"); 
+        }
+        else
+        {        
+          if (count($bindVars))
+          {
+            $i=0;
+            foreach($bindVars as $bind => $value)
+            {      
+              $clobVar = $bind.$i;                      
+              if (!@$$clobVar->save($value))
+                atkerror("Error bind save: empty value");
+              $i++;
+            }
+          }
+          OCICommit($this->m_link_id);
+        }
+        if (count($bindVars))
+        {
+          $i=0;
+          foreach($bindVars as $bind => $value)
+          {   
+            $clobVar = $bind.$i;                                
+            OCIFreeDesc($$clobVar);
+            $i++;
+          }
+
         }
         $this->m_row = 0;
       }
@@ -143,9 +194,9 @@
         $this->m_error = $error["message"];
         $this->halt("Invalid SQL: $query"); 
       }
-      
-      
-      
+
+      /* query */
+      atkdebug("atkoci9db.query(): ".$query);
 
       /* return query id */
       return $this->m_query_id;
@@ -161,7 +212,7 @@
       $this->m_record = array();
 
       /* get record data */
-      if (@OCIFetchInto($this->m_query_id, $result, OCI_ASSOC|OCI_RETURN_NULLS))
+      if (@OCIFetchInto($this->m_query_id, $result, OCI_ASSOC|OCI_RETURN_NULLS|OCI_RETURN_LOBS))
       {
         for ($i = 1; $i <= OCINumcols($this->m_query_id); $i++)
         {

@@ -13,6 +13,10 @@
   class atkoci9query extends atkquery
   {
 
+    var $m_bind_vars=array();  // array containing name and value of fields which 
+                               // need to be binded in update and insert queries
+                               // Like CLOB fields
+    
     /**
     * Add's a field to the query
     * @param $name Field name
@@ -32,17 +36,24 @@
       if ($fieldType == 'DATETIME' && $mode != 'add' && $mode != 'update')
       {  
         $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;     
-
         $fieldname = "TO_CHAR(".$fieldname.",'YYYY-MM-DD HH24:MI:SS')";   
+        
         $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
-        $this->m_generatedAlias++;
-      
+        $this->m_generatedAlias++;      
       }
+      
       $this->m_fields[] = $fieldname;
 
       if ($fieldType == 'DATETIME' && ($mode == 'add' || $mode == 'update'))
       {
         $value = "TO_TIMESTAMP('".$value."','YYYY-MM-DD HH24:MI:SS')";
+      }
+      elseif ($fieldType == 'TEXT' && ($mode == 'add' || $mode == 'update'))
+      {
+        //binding needed for CLOB     
+        if($value != "")
+          $this->m_bind_vars[$name] = $value;
+        $value = "EMPTY_CLOB()";
       }
       elseif ($quote||$value=="") $value = "'".$value."'";
 
@@ -185,6 +196,29 @@
       $str = preg_replace($pattern, $replace, $str);
       return $str;
     }
+
+  /**
+    * Wrapper function to execute a query 
+    */
+    function executeUpdate()
+    {
+      global $g_db;
+      
+      $query = $this->buildUpdate();
+      $g_db->query($query, 0, 0, $this->m_bind_vars);      
+    }
+
+ /**
+    * Wrapper function to execute a query 
+    */
+    function executeInsert()
+    {
+      global $g_db;
+      
+      $query = $this->buildInsert();
+      $g_db->query($query, 0, 0, $this->m_bind_vars);      
+    }
+
 
   }
 

@@ -61,5 +61,59 @@
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
+
+ /**
+     * Add's fields to query
+     * @param $query The SQL query
+     * @param $tablename Tablename
+     * @param $fieldaliasprefix Field alias prefix
+     * @param $level ?
+     * @param $mode Indicates what kind of query is being processing:
+     *              This can be any action performed on a node (edit, add, etc)
+     *              Mind you that "add" and "update" are the actions that store
+     *              something in the database, whereas the rest are probably
+     *              select queries.
+     * @return New SQL Query
+     */
+    function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
+    {
+      if ($mode == "add" || $mode == "update")
+      {
+        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, "TEXT");         
+      }
+      else
+      {
+        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, "TEXT");
+      }
+    }
+    
+ /**
+     * Add's slashes to the string for the database
+     * @param $rec Array with values
+     * @return String with slashes
+     */
+    function value2db($rec)
+    {
+      if (atkconfig('database') != 'oci9')
+        return escapeSQL($rec[$this->fieldName()]);
+      else 
+        return addslashes($rec[$this->fieldName()]); //CLOB in oci9 don't need quotes to be escapedt
+    }
+    
+        /**
+     * Removes slashes from the string
+     * @param $rec Array with values
+     * @return String without slashes
+     */
+    function db2value($rec)
+    {
+      if (atkconfig('database') != 'oci9')
+        return stripslashes($rec[$this->fieldName()]);
+      else
+        return $rec[$this->fieldName()];
+    }
+
+
+
   }
 ?>

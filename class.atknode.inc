@@ -2924,8 +2924,7 @@
 
         if ($update)
         {
-          $querystring = $query->buildUpdate();
-          $g_db->query($querystring);
+          $query->executeUpdate();
         }
 
         // also store special storage attributes.
@@ -3291,8 +3290,7 @@
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
       }
 
-      $querystring = $query->buildInsert();
-      $g_db->query($querystring);
+      $query->executeInsert();
 
       // also store special storage attributes.
       for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
