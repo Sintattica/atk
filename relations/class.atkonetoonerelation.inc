@@ -219,7 +219,7 @@
         // When storing, we don't add to the query.. we have our own store() method..
         // With one exception. If the foreign key is in the source node, we also need to update
         // the refkey value.
-        if ($this->m_refKey=="" && $mode=="add")
+        if ($this->m_refKey=="")// && $mode=="add")
         {       
           $query->addField($this->fieldName(),$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],"","",!$this->hasFlag(AF_NO_QUOTES));
         }
