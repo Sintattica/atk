@@ -5,6 +5,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/18 07:49:28  ivo
+   * Made nextid() feature of mysqldb a bit more flexible.
+   *
    * Revision 4.2  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -56,7 +59,11 @@
 
     /* sequence table */
     var $m_seq_table = "db_sequence";  
-            
+    // the field in the seq_table that contains the counter..
+    var $m_seq_field = "nextid";
+    // the field in the seq_table that countains the name of the sequence..
+    var $m_seq_namefield = "seq_name";
+    
     /* set to 1 for automatic freeing of results */    
     var $m_auto_free = 0;
     

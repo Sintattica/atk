@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/18 07:49:28  ivo
+   * Made nextid() feature of mysqldb a bit more flexible.
+   *
    * Revision 4.3  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -254,7 +257,8 @@
       if ($this->lock($this->m_seq_table))
       {
         /* get sequence number (locked) and increment */
-        $query = "SELECT nextid FROM ".$this->m_seq_table." WHERE seq_name = '$sequence'";
+        $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";
+        atkdebug($query);
       
         $id = @mysql_query($query, $this->m_link_id);
         $result = @mysql_fetch_array($id);
@@ -263,6 +267,7 @@
         if (!is_array($result))
         {
           $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";
+          atkdebug($query);
           $id = @mysql_query($query, $this->m_link_id);
           $this->unlock();          
           return 1;
@@ -271,8 +276,9 @@
         /* enter next value */
         else
         {
-          $nextid = $result["nextid"] + 1;
-          $query = "UPDATE ".$this->m_seq_table." SET nextid = '$nextid' WHERE seq_name = '$sequence'";
+          $nextid = $result[$this->m_seq_field] + 1;
+          $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
+          atkdebug($query);
           $id = @mysql_query($query, $this->m_link_id);
           $this->unlock();
           return $nextid;
