@@ -200,8 +200,14 @@
                       "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
                       "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
                       
-  $txt_feedback_delete = "Het item is verwijderd.";
-  $txt_feedback_save = "Het item is toegevoegd.";
-  $txt_feedback_update = "De wijzigingen zijn opgeslagen.";
+  $txt_feedback_delete_success = "Het item is verwijderd.";
+  $txt_feedback_delete_cancelled = "Het item is niet verwijderd.";
+  $txt_feedback_delete_failed = "Het item kon niet verwijderd worden.";
+  $txt_feedback_save_success = "Het item is toegevoegd.";
+  $txt_feedback_save_cancelled = "Het item is niet toegevoegd.";
+  $txt_feedback_save_failed = "Het item kon niet toegevoegd worden.";
+  $txt_feedback_update_success = "De wijzigingen zijn opgeslagen.";
+  $txt_feedback_update_cancelled = "Geen wijzigingen opgeslagen.";
+  $txt_feedback_update_failed = "De wijzigingen konden niet opgeslagen worden.";  
   $txt_feedback = "Bevestiging";
 ?>

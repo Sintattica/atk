@@ -975,5 +975,19 @@
     }
     return "";
   }
+  
+  /** 
+   * Returns a string representation of an action status.
+   * @param $status Must be one of ACTION_FAILED, ACTION_SUCCESS or ACTION_CANCELLED.
+   */
+  function atkActionStatus($status)
+  {
+    switch ($status)
+    {
+      case ACTION_CANCELLED: return "cancelled";
+      case ACTION_FAILED: return "failed";
+      case ACTION_SUCCESS: return "success";
+    }
+  }
 
 ?>

@@ -46,6 +46,17 @@
   define("RL_MRA",                             8); // multi-record-actions enabled
   define("RL_MRPA",                           16); // multi-record-priority-actions enabled
   define("RL_LOCK",                           32); // records can be locked
+  
+  /* 
+   * action status flags 
+   * Note that these have binary numbers, even though an action could never have
+   * two statusses at the same time. 
+   * This is done however, so the flags can be used as a mask in the setFeedback
+   * function.
+   */
+  define("ACTION_CANCELLED", 1);
+  define("ACTION_FAILED", 2);
+  define("ACTION_SUCCESS", 4);
 
   /**
    * The atkNode class represents a piece of information that
@@ -2579,7 +2590,7 @@
       {
         // Confirmation page was displayed and 'yes' was clicked
         $recordset = $this->deleteDb($this->m_postvars['atkselector']);
-        $location = (in_array("delete", $this->m_feedback)?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>"delete")),SESSION_REPLACE):"");        
+        $location = $this->feedbackUrl("delete", ACTION_SUCCESS);
         $this->redirect($location);
       }
       elseif (empty($this->m_postvars['cancel']))
@@ -2593,7 +2604,6 @@
             foreach ($this->m_postvars['atkselector'] as $selector)
              if (!$this->m_lock->lock($selector, $this->m_table)) $locked = FALSE;
           }
-
           elseif (!$this->m_lock->lock($this->m_postvars['atkselector'], $this->m_table)) $locked = FALSE;
 
           if (!$locked)
@@ -2609,7 +2619,8 @@
       else
       {
         // Confirmation page was displayed and 'no' was clicked
-        $this->redirect();
+        $location = $this->feedbackUrl("delete", ACTION_CANCELLED);
+        $this->redirect($location);
       }
     }
 
@@ -2687,16 +2698,16 @@
     
     function action_feedback()
     {
-      $this->feedbackPage($this->m_postvars["atkfbaction"]);      
+      $this->feedbackPage($this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"]);
     }
     
-    function feedbackPage($action)
+    function feedbackPage($action, $actionstatus)
     {
       global $g_layout;      
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
       $g_layout->output($this->statusbar());
       
-      $g_layout->output(text('feedback_'.$action, $this->m_type));
+      $g_layout->output(text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type));
 
       if (atkLevel()>0)
       {
@@ -2711,17 +2722,28 @@
     
     /**
      * Use this function to enable feedback for one or more actions.
-     * You can either pass one action or an array of actions.
+     *
+     * @param $action The action for which feedback is enabled. You can either 
+     *                pass one action or an array of actions.
+     * @param $statusmask The status(ses) for which feedback is enabled.
+     *                    If for example this is set to ACTION_FAILED, 
+     *                    feedback is enabled only when the specified action 
+     *                    failed. It is possible to specify more than one 
+     *                    status by concatenating them with '|'.
+     * 
      */
-    function setFeedback($action)
+    function setFeedback($action, $statusmask)
     {
       if (is_array($action))
       {      
-        $this->m_feedback = array_merge($this->m_feedback, $actions);
+        for ($i=0, $_i=count($action); $i<$_i; $i++)
+        {
+          $this->m_feedback[$action[$i]] = $statusmask;
+        }
       }
       else
       {
-        $this->m_feedback[] = $action;
+        $this->m_feedback[$action] = $statusmask;
       }
     }
 
@@ -3749,6 +3771,11 @@
                       );
       }
       return $res;
+    }
+    
+    function feedbackUrl($action, $status)
+    {
+      return (hasFlag($this->m_feedback[$action], $status)?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status)),SESSION_REPLACE):"");
     }
   }
 ?>
