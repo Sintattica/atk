@@ -1,7 +1,7 @@
 <?php
 
-  include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
-
+  useattrib("atklistattribute");
+  
   /**
    * The atkMultiboolAttribute class represents an attribute of a node
    * that has a field with checkboxes, and stores the input seperated by a |
@@ -15,8 +15,8 @@
   class atkMultiSelectAttribute extends atkListAttribute
   {    
    
-  // number of rows
-  var $m_rows;
+  // number of cols
+  var $m_cols;
 
     /**
      * Constructor
@@ -27,21 +27,8 @@
      * @param $flags Flags for this attribute
      * @param $size  Size of the attribute.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray="",$rows, $flags=0, $size="")
+    function atkMultiSelectAttribute($name, $optionArray, $valueArray,$cols, $flags=0, $size="")
     {            
-      // compatiblity with old versions
-      if (func_num_args()>5) $this->m_rows=$rows;
-      else                   
-      {
-        $flags = $rows;
-        $this->m_rows=3;
-      }      
-      
-      if (!is_array($valueArray) || count($valueArray)==0)
-      {
-        $valueArray = $optionArray;
-      }
-      
       // size must be large enough to store a combination of all values.
       if ($size == "")
       {
@@ -52,38 +39,46 @@
         }        
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
-      
       $this->m_dbfieldtype = "string"; // since we store values separated by '|', we always store as string.
+      $this->m_cols=$cols;
     }    
 
-
-    /**
-     * Substracts the postvars and returns a | seperated string 
-     * @param $rec Array with values
-     * @return String with slashes
-     */
-    function fetchValue($postvars)
+    function hide($record="", $fieldprefix="")
     {
-     
-      //global $fieldprefix;
-      //$form = $this->formName()."_nr";
-      $nr = count($this->m_values);
-      for ($i=0;$i<$nr;$i++)
-      {  
-        $field = $this->formName().$i;
-        if ($postvars[$field] != "")
+      if(is_array($record[$this->fieldName()]))
+      {
+        for ($i=0;$i<count($this->m_values);$i++)
         {
-          $string .=$postvars[$field]."|";
-        } 
-        
-        
+          if(in_array($this->m_values[$i],$record[$this->fieldName()]))
+          $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
+                      value="'.$this->m_values[$i].'">';
+        }
+      } else parent::hide($record,$fieldprefix);
+      return $result;
+    }
+
+    function value2db($rec)
+    {
+      //atkdebug("multiselectattribute::value2db()");
+      if(is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]>=1))
+      {
+        return implode("|",$rec[$this->fieldName()]);
       }
-      return substr($string,0,-1); // last | is stripped
+      else return "";
+    }
+    
+    function db2value($rec)
+    {
+      if($rec[$this->fieldName()]!="")
+        return explode("|",$rec[$this->fieldName()]);
+      else return array();
     }
     
     function display($record)
     {
-       $values = explode('|',$record[$this->fieldName()]);
+       //$values = explode('|',$record[$this->fieldName()]);
+       $values = $record[$this->fieldName()];
+       $res=array();
        for ($i=0;$i<count($values);$i++)
        {
          $res[] = text($this->m_lookup[$values[$i]]);
@@ -100,10 +95,10 @@
     function edit($record="", $fieldprefix="")
     {
       global $g_layout,$config_atkroot;
-      $rows = $this->m_rows;
-      $modRows =$rows-1;
+      $cols = $this->m_cols;
+      $modcols =$cols-1;
       $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-      // todo: configurable rows
+      // todo: configurable cols
       if (count($this->m_values)>4)
       {
         $result.='<div align="left"><font size="-2">
@@ -115,15 +110,10 @@
                        text("invert_selection").'</a>]</font></div>';
       } 
       $result .="\n<table><tr>\n";  
-      $explode = array();
-      if (!empty($record[$this->fieldName()]))
-      {
-         $explode = explode("|",$record[$this->fieldName()]);
-      }
             
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        if (in_array($this->m_values[$i],$explode))
+        if (is_array($record[$this->fieldName()]) && in_array($this->m_values[$i],$record[$this->fieldName()]))
         {
           $sel = "checked"; 
         }
@@ -131,8 +121,9 @@
         {
           $sel = "";
         }
-        $result .= '<td class="table" valign="top"><input type="checkbox" name="'.$fieldprefix.$this->formName().$i.'" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
-        if ($i%$rows == $modRows) $result .="</tr><tr>\n";
+        $result .= '<td class="table" valign="top"><input type="checkbox" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
+        if ($i%$cols == $modcols) $result .="</tr><tr>\n";
+        
       }
       $result.="</tr></table>\n";
     
@@ -146,7 +137,17 @@
       
       if(is_array($value) && $value[0]!="" && count($value)>0)
       {
-        return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+        if (count($value)==1)
+        {
+          return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+        }
+        else
+        {
+          foreach($value as $str)
+          {
+            $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($str)));
+          }
+        }
       }
     }
     
