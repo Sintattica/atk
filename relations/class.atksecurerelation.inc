@@ -72,7 +72,7 @@
     function getLinkPassword($linktable,$linkfield)
     {
       global $g_db;
-      
+      atkdebug("atkSecureRelation::getLinkPassword($linktable, $linkfield)");
       $user = &getUser();
       $username = $user['name'];
   
@@ -108,7 +108,7 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if($mode=="add")
+      if($mode=="add" || $mode == "update")
       {
         $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
         $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linkfield,$this->m_linktable));
