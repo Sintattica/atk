@@ -50,7 +50,6 @@ class atkLanguage
       $this->m_fallbackmodules[] = $modname;
     }
     $this->m_fallbackmodules[] = "atk";
-    atk_var_dump($this->m_fallbackmodules);
   }
   
   /**
@@ -73,13 +72,11 @@ class atkLanguage
   */
   function text($string, $module, $node="", $lng="", $nodefaulttext=false)
   {
-    global $config_atkroot, $config_lang;
-
     $atklanguage =& atkLanguage::getInstance();
-    $atklanguage->setOriginalModule($module);
     
-    if (!$lng){$lng = $config_lang;}
-    $finalstring = $atklanguage->getStringName($string, $module, $node, $lng);
+    $atklanguage->preTextChecks($string, $module, $node, $lng, $nodefaulttext);
+    
+    $finalstring = $atklanguage->getStringName($string, $firstmodule, $node, $lng);
  
     if ($finalstring) { return $finalstring; }
     else 
@@ -96,6 +93,25 @@ class atkLanguage
   }
   
   /**
+  * This function performs some checks on the variables that were passed with the text call
+  * @param string &$string the name of the string to return
+  * @param string &$module module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string &$node   the node to which the string belongs
+  * @param string &$lng    ISO 639-1 language code, defaults to config variable
+  */
+  function preTextChecks(&$string, &$module, &$node, &$lng, &$nodefaulttext)
+  {
+    if ($module)
+    {
+      $this->setOriginalModule($module);
+      $firstmodule = array_shift($this->m_fallbackmodules);
+      array_unshift($this->m_fallbackmodules, $module);
+    }
+    
+    if (!$lng){$lng = atkconfig("lang");}
+  }
+  
+  /**
   * Gets the appropriate language file and name to call the string by
   * @param string $string the name of the string to return
   * @param string $module module in which the language file should be looked for, defaults to core module with fallback to ATK
@@ -105,6 +121,7 @@ class atkLanguage
   */
   function getStringName($string, &$module, $node, $lng)
   {
+    //atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
     if ($this->_getLanguageFile($module,$lng))
     {
       $finalstring = $this->_getString($string, $node, $module, $lng);
@@ -163,12 +180,10 @@ class atkLanguage
   * @return bool true if everything went okay, false otherwise
   */
   function _getLanguageFile($module, $lng)
-  {
-    global $config_atkroot;
-    
+  {    
     if ($module=="atk")
     {
-      $file = $config_atkroot.$module."/".$this->m_langdir."/$lng.lng";
+      $file = atkconfig("atkroot").$module."/".$this->m_langdir."/$lng.lng";
     }
     else
     {
