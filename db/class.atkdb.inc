@@ -82,7 +82,6 @@
           */
     function getAtkDbErrno()
     {
-      atkdebug("atkdb::getAtkDbErrno() -> ".$this->getDbErrno());
       return $this->_translateError();
     }
     
@@ -91,7 +90,6 @@
           */
     function getDbErrno()
     {
-      atkdebug("atkdb::getDbErrno() -> ".$this->m_errno);
       return $this->m_errno;
     }
 
@@ -100,7 +98,6 @@
           */
     function getDbError()
     {
-      atkdebug("atkdb::getDbError() -> ".$this->m_error);
       return $this->m_error;
     }
     
@@ -119,14 +116,12 @@
           */
     function getErrorMsg()
     {
-      atkdebug("atkdb::getErrorMsg()");
       $errno = $this->getAtkDbErrNo(); 
-      atkdebug("atkdb::getErrorMsg() -> Get msg for AtkDberror: ".$errno); 
       if($errno==DB_UNKNOWNERROR)
       {
         $tmp = text('db_'.$this->getDbErrno());
         if($tmp==$this->m_errno) { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$tmp; }
-        atkerror($this->m_error);
+      //  atkerror($this->m_error);
         return $this->m_error;
       }
       else
@@ -144,21 +139,24 @@
                                break;
         }
         $this->m_error = $tmp_error;
-        atkerror($this->m_error);
+       // atkerror($this->m_error);
         return $this->m_error;
       }
     }
     
     function halt()
     {
-      atkdebug("atkdb::halt()");
       if ($this->m_haltonerror)
       { 
         if($this->getErrorType()=="system")
         {        
-          atkdebug("atkdb::halt() -> System error");
+          atkdebug("atkdb::halt() on system error");
           if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
           halt($this->getErrorMsg(),$level);
+        }
+        else
+        {
+          atkdebug("atkdb::halt() on user error (not halting)");
         }
       }
     }

@@ -68,7 +68,6 @@
     { 
       $this->m_errno = mysql_errno();
       $this->m_error = mysql_error();  
-      atkdebug("<font color=red>error:".$this->m_error."</font>");
       switch ($this->m_errno)
       {
         case    0: return DB_SUCCESS;
