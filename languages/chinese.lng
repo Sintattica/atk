@@ -1,0 +1,141 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+  // Translated by:
+  // xiaogang sun <sun.xiao.g@263.net>
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Application";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Welcome to this ATK application.";
+
+  $txt_yes = "Yes";
+  $txt_no = "No";
+
+  $txt_view = "查看";
+  $txt_edit = "编辑";
+  $txt_delete = "删除";
+  $txt_add = "添加";
+  $txt_admin = "管理";
+  $txt_search = "搜索";
+  $txt_search_all = "查询所有";
+
+  $txt_next = "后一个";
+  $txt_previous = "前一个";
+  $txt_select = "选择";
+
+  $txt_save = "保存";
+  $txt_close = "关闭";
+  $txt_saveandclose = "保存和关闭";
+  $txt_cancel = "取消";
+  $txt_back = "后退";
+
+  $txt_menu = "菜单";
+  $txt_error = "错误";
+
+  $txt_error_obligatoryfield = "这些区域必须填写";
+  $txt_error_formdataerror = "由于下列原因保存失败: ";
+  $txt_error_uniquefield = "这个区域的值必须唯一";
+  $txt_confirm_delete = "你确定删除这一条吗？";
+  $txt_title_delete = "确定删除";
+
+  $txt_select_none = "没有";
+  
+  $txt_clickheretoadd_prefix = "单击这里新建 ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "没有有效的目录";
+  $txt_remove_current_file = "删除现存文件";
+  $txt_file_not_exist = "文件不存在";
+  $txt_cannot_remove_file = "不能删除文件!";
+
+  // specific password attribute text
+  $txt_password_current = "当前的";
+  $txt_password_new = "新建";
+  $txt_password_again = "再输入一次";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "输入的密码不是有效的密码.";
+  $txt_password_incorrect = "你输入的密码不正确!";
+  $txt_password_nomatch = "两次输入的密码不一致.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "选择一种语言:";
+  $txt_multilanguage_choice = "选择语言:"; 
+  
+  $txt_language_nl = "荷兰";
+  $txt_language_de = "德语";
+  
+  $txt_until = "到";
+    
+  $txt_january = "一月";
+  $txt_february = "二月";
+  $txt_march = "三月";
+  $txt_april = "四月";
+  $txt_may = "五月";
+  $txt_june = "六月";
+  $txt_july = "七月";
+  $txt_august = "八月";
+  $txt_september = "九月";
+  $txt_october = "四月";
+  $txt_november = "十一月";
+  $txt_december = "十二月";
+  
+  $txt_fri = "周五";
+  $txt_sat = "周六";
+  $txt_sun = "周日";
+  $txt_mon = "周一";
+  $txt_tue = "周二";
+  $txt_wed = "周三";
+  $txt_thu = "周四";
+  
+  $txt_menu_main = "主菜单";
+  $txt_back_to = "返回";
+  
+  $txt_permission_denied = "对不起，你没有权限进行这项操作！";
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  $txt_charset="GB2312";
+  
+  $txt_field_obligatory = "这个输入框必须填写";
+  
+  $txt_help = "帮助";
+
+  $txt_search_extended = "高级";
+  
+  $txt_search_exact = "全字匹配搜索";
+  $txt_search_substring = "子字符串搜索";
+  $txt_search_wildcard = "带通配符搜索(*)";
+  $txt_search_regexp = "固定表达式搜索(高级)";
+  $txt_search_soundex = "相似字符串搜索";
+
+  $txt_search_mode = "搜索方式";  
+  
+  $txt_login_failed = "登陆失败";
+  $txt_auth_no_server = "没有指定服务器。不能认证(请联细你的系统管理员).";
+  $txt_auth_unable_to_connect = "不能连接到服务器进行认证(请联系你的系统管理员).";  
+  
+  $txt_error_primarykey_exists = "这个关键字的记录已经存在";
+  $txt_error_invalid_email = "无效的邮件地址";
+  $txt_error_unkown_domain = "不知道的域名";
+  $txt_error_notnumeric = "Value not a number";
+  
+  // colorpicker attribute
+  $txt_colorpicker_selectcolor = "选择一种颜色";    
+  
+  $txt_check_all = "选择所有";
+  $txt_check_none = "没有选择";
+  $txt_invert_selection = "调整选项";
+  
+  // Strings for atkFileEditor
+  $txt_file_exists = "这个文件名已经存在";
+  $txt_filename_invalid = "这个文件名无效";
+  $txt_filename = "文件名";
+  $txt_filecontent = "目录";
+  
+?>
