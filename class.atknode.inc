@@ -37,12 +37,15 @@
   define("NF_MRA", NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
   define("NF_MRPA",                 131072); // Multi-priority-selection of records is turned on.
 
+  define("NF_LOCK",                 262144); // lock records
+
   /* recordlist flags */
   define("RL_NO_SORT",                         1); // recordlist is not sortable
   define("RL_NO_SEARCH",                       2); // recordlist is not searchable
   define("RL_EMBED",   RL_NO_SEARCH|RL_NO_SORT|4); // recordlist is embedded
   define("RL_MRA",                             8); // multi-record-actions enabled
   define("RL_MRPA",                           16); // multi-record-priority-actions enabled
+  define("RL_LOCK",                           32); // records can be locked
 
   /**
    * The atkNode class represents a piece of information that
@@ -101,6 +104,7 @@
   require_once($config_atkroot."atk/atkmenutools.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
+  require_once($config_atkroot."atk/lock/class.atklock.inc");
 
   // Default language file
   require_once($config_atkroot."atk/languages/".$config_languagefile);
@@ -332,6 +336,9 @@
     var $m_priority_min = 1;
     var $m_priority_max = 0;
 
+    /* the lock instance */
+    var $m_lock = NULL;
+
     /*** Public functions ***/
 
     /**
@@ -346,6 +353,9 @@
     {
       $this->m_type = $type;
       $this->m_flags = $flags;
+
+      if ($this->hasFlag(NF_LOCK))
+        $this->m_lock = &atkLock::getInstance();
     }
 
     /**
@@ -641,14 +651,31 @@
     }
 
     /**
+     * Creates a *locked* page
+     */
+    function lockPage()
+    {
+      global $g_layout;
+
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $this->m_action));
+      $g_layout->output($this->statusbar());
+      $g_layout->output ('<img src="'.atkconfig("atkroot").'atk/images/lock.gif"><br><br>'.text("lock_locked").'<br>');
+
+      $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
+                        '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
+      $g_layout->ui_bottom();
+    }
+
+    /**
      * Creates an edit page
      */
-    function editPage($record)
+    function editPage($record, $locked=FALSE)
     {
       global $g_layout, $PHP_SELF,$config_atkroot;
+
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
-      $g_layout->output($this->statusbar());
+      $g_layout->output($this->statusbar($locked));
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
@@ -1327,7 +1354,7 @@
         }
       }
 
-      $flags = ($this->hasFlag(NF_MRA) ? RL_MRA : 0) | ($this->hasFlag(NF_MRPA) ? RL_MRPA : 0);
+      $flags = ($this->hasFlag(NF_MRA) ? RL_MRA : 0) | ($this->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($this->hasFlag(NF_LOCK) ? RL_LOCK : 0);
       $g_layout->output($this->normalRecordList($recordset, $actions, $flags));
 
       if (!empty($nav)) $g_layout->output('<br>'.$nav);
@@ -1388,6 +1415,18 @@
         $result["rows"][$i]["selector"] = $this->primaryKey($recordset[$i]);
         $row = &$result["rows"][$i];
 
+        /* locked */
+        if (hasFlag($flags, RL_LOCK))
+        {
+          $result["rows"][$i]["lock"] = $this->m_lock->isLocked($result["rows"][$i]["selector"], $this->m_table);
+          if (is_array($result["rows"][$i]["lock"]))
+          {
+            unset($row["actions"]["edit"]);
+            unset($row["actions"]["delete"]);
+            $row["mra"] = array();
+          }
+        }
+
         /* actions / mra */
         $this->recordActions($row["record"], $row["actions"], $row["mra"]);
         $result["mra"] = array_merge($result["mra"], $row["mra"]);
@@ -1443,6 +1482,7 @@
       $flags |= (($this->m_action == "admin" || $sessionsave) && $this->hasFlag(NF_MRA)) ? RL_MRA : 0;
       $flags |= (($this->m_action == "admin" || $sessionsave) && $this->hasFlag(NF_MRPA)) ? RL_MRPA : 0;
       $flags |= ($this->hasFlag(NF_NO_SEARCH) || $this->m_postvars["atkaction"] == "search") ? RL_NO_SEARCH : 0;
+      $flags |= $this->hasFlag(NF_LOCK) ? RL_LOCK : 0;
       $form  = ($sessionsave ? "entryform" : "");
       return $this->normalRecordList($recordset, $actions, $flags, $suppressList, $form);
     }
@@ -1512,6 +1552,7 @@
       $output .= "<tr>";
 
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA)) $output .= $g_layout->ret_td_datatitle();
+        if (hasFlag($flags, RL_LOCK)) $output .= $g_layout->ret_td_datatitle('<img src="'.atkconfig("atkroot").'atk/images/lock_head.gif">');
         if ($orientation == "left" || $orientation == "both") $output .= $g_layout->ret_td_datatitle();
 
         foreach ($list["heading"] as $field => $head)
@@ -1551,6 +1592,7 @@
                        '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
 
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA)) $output .= $g_layout->ret_td_datatitle();
+          if (hasFlag($flags, RL_LOCK)) $output .= $g_layout->ret_td_datatitle();
           if ($orientation == "left" || $orientation == "both") $output .= $g_layout->ret_td_datatitle($button);
 
           foreach (array_keys($list["heading"]) as $key)
@@ -1633,6 +1675,17 @@
           else $output .= '<td>&nbsp;</td>';
         }
 
+        /* locked? */
+        if (hasFlag($flags, RL_LOCK))
+        {
+          if (is_array($list["rows"][$i]["lock"]))
+          {
+            $alt = $list["rows"][$i]["lock"]["user_id"]." / ".$list["rows"][$i]["lock"]["user_ip"];
+            $output .= $g_layout->ret_td('<img src="'.atkconfig("atkroot").'atk/images/lock.gif" alt="'.$alt.'" border="0">');
+          }
+          else $output .= $g_layout->ret_td('&nbsp;');
+        }
+
         $str_actions = "";
         foreach ($list["rows"][$i]["actions"] as $name => $url)
           $str_actions .= href($url, text($name), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
@@ -1666,6 +1719,7 @@
         $output .= '<tr>';
 
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA)) $output .= $g_layout->ret_td_datatitle();
+          if (hasFlag($flags, RL_LOCK)) $output .= $g_layout->ret_td_datatitle();
           if ($orientation == "left" || $orientation == "both") $output .= $g_layout->ret_td_datatitle();
 
           foreach (array_keys($list["heading"]) as $key)
@@ -2206,7 +2260,7 @@
      * to delete the record.
      * @param $atkselector Selected record you want to delete
      */
-    function confirmDelete($atkselector)
+    function confirmDelete($atkselector, $locked=FALSE)
     {
       global $g_layout, $PHP_SELF;
 
@@ -2219,7 +2273,7 @@
       }
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
-      $g_layout->output($this->statusbar());
+      $g_layout->output($this->statusbar($locked));
 
       $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
       $g_layout->output(session_form());
@@ -2296,9 +2350,7 @@
         }
       }
 
-      //atk_var_dump($this->m_attribIndexList);
       $this->attribSort();
-      //atk_var_dump($this->m_attribIndexList);
       $this->m_initialised = true;
     }
 
@@ -2425,8 +2477,20 @@
             $this->m_action="edit";
             //update succesful, pk value might be changed so update m_orgkey
             $record["atkprimkey"] = $this->primaryKey($record);
+
+            $locked = FALSE;
+            if ($this->hasFlag(NF_LOCK))
+            {
+              if ($this->m_lock->lock($record["atkprimkey"], $this->m_table)) $locked = TRUE;
+              else
+              {
+                $this->lockPage();
+                return;
+              }
+            }
+
             //$this->setOrgKeyValue($record);
-            $this->editPage($record);
+            $this->editPage($record, $locked);
           }
         }
       }
@@ -2485,10 +2549,29 @@
         $recordset = $this->deleteDb($this->m_postvars['atkselector']);
         $this->redirect();
       }
-      else if ($this->m_postvars['cancel']!=text('no'))
+      elseif ($this->m_postvars['cancel']!=text('no'))
       {
+        $locked = FALSE;
+        if ($this->hasFlag(NF_LOCK))
+        {
+          $locked = TRUE;
+          if (is_array($this->m_postvars['atkselector']))
+          {
+            foreach ($this->m_postvars['atkselector'] as $selector)
+             if (!$this->m_lock->lock($selector, $this->m_table)) $locked = FALSE;
+          }
+
+          elseif (!$this->m_lock->lock($this->m_postvars['atkselector'], $this->m_table)) $locked = FALSE;
+
+          if (!$locked)
+          {
+            $this->lockPage();
+            return;
+          }
+        }
+
         // Confirmation page was not displayed
-        $this->confirmDelete($this->m_postvars['atkselector']);
+        $this->confirmDelete($this->m_postvars['atkselector'], $locked);
       }
       else
       {
@@ -2550,7 +2633,18 @@
     {
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
 
-      $this->editPage($recordset[0]);
+      $locked = FALSE;
+      if ($this->hasFlag(NF_LOCK))
+      {
+        if ($this->m_lock->lock($this->primaryKey($recordset[0]), $this->m_table)) $locked = TRUE;
+        else
+        {
+          $this->lockPage();
+          return;
+        }
+      }
+
+      $this->editPage($recordset[0], $locked);
     }
 
     function action_select()
@@ -3442,8 +3536,9 @@
 
     /**
      * Display a statusbar with a stacktrace and a help button.
+     * @param $locked is the currently displayed item locked or not?
      */
-    function statusbar()
+    function statusbar($locked=FALSE)
     {
       global $g_sessionManager, $g_layout, $config_atkroot;
       if (!$this->m_statusbarDone)
@@ -3454,12 +3549,16 @@
           $statusbar.= $g_layout->ret_td('<i>'.$g_sessionManager->stackTrace().'</i>','align="left"');
         }
 
+        $td = "";
         $helpurl = $this->helpUrl();
         if ($helpurl!="")
         {
           $g_layout->register_script($config_atkroot."atk/javascript/newwindow.js");
-          $statusbar.= $g_layout->ret_td('<i><a href="'.$helpurl.'">'.text("help").'</a></i>','align="right"');
+          $td = '<i><a href="'.$helpurl.'">'.text("help").'</a></i>';
         }
+
+        if ($locked) $td = '&nbsp;<img src="'.atkconfig("atkroot").'atk/images/lock.gif" name="_lock_">';
+        if (!empty($td)) $statusbar .= $g_layout->ret_td($td, 'align="right"');
 
         if ($statusbar!="") return $g_layout->ret_table_simple(0,true).'<tr>'.$statusbar.'</tr></table><br>';
       }

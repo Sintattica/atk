@@ -178,4 +178,10 @@
   $txt_password = "Wachtwoord";
   $txt_login = "Inloggen";
   $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw systeembeheerder.";
+
+  $txt_lock_locked  = "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.";
+
+  $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".
+                      "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
+                      "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
 ?>

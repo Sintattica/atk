@@ -14,6 +14,9 @@
   $config_languagefile="english.lng";
   $config_recordsperpage=25;
 
+  // lock type
+  $config_lock_type = "dummy";
+
   // security
   $config_authentication = "none";
   $config_authentication_md5 = true;
