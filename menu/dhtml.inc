@@ -70,7 +70,7 @@
 <HEAD>
  <TITLE>menu</TITLE>
  <link href="../../platform/atk/style.php" rel="stylesheet" type="text/css">
- <LINK REL="stylesheet" HREF="../../styles/tabs.css">
+ <LINK REL="stylesheet" HREF="tabs.css">
  <script language="JavaScript">
   var tabSelectMode = "<? echo $config_tabselectMode ?>";
  </script>
