@@ -64,7 +64,7 @@
         $myrecords = $this->load(NULL, $record, "admin");
       }
       
-      $result = text("none"); // default result
+      $result = text("none","","atk"); // default result
 
       if ($this->createDestination())
       {
@@ -171,7 +171,7 @@
             $label = text($key);
             if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
             {
-              $key = text(getNodeType($this->m_destination))." ".strtolower(text("add"));
+              $key = text(getNodeType($this->m_destination))." ".strtolower(text("add","","atk"));
               $label = text($key);
             }
           } 

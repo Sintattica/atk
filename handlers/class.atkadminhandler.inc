@@ -82,7 +82,7 @@
           else
           {
             // generic text
-            $label = text(getNodeType($node->m_type))." ".text("add");
+            $label = text(getNodeType($node->m_type))." ".text("add","","atk");
           }
           $params["header"].="<br><br>".href($addurl,$label,SESSION_NESTED);
         }
