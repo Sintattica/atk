@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.10  2001/06/18 12:58:20  ivo
+   * Bugfix in securitymanager constructor.
+   *
    * Revision 4.9  2001/06/18 10:43:41  peter
    * Small bug fix with authorization... :/
    *
@@ -103,7 +106,7 @@
       /* authorization class */
       if ($authorization_type == $authentication_type)
       {
-        $this->m_authorization &= $this->m_authentication;
+        $this->m_authorization = &$this->m_authentication;
       }
       else
       { 
