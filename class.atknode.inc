@@ -2992,10 +2992,11 @@
     function action_update()
     {
       global $g_db;
+      
+      $record = $this->updateRecord();
 
       if ($this->m_postvars['atkcancel']=="")
-      {
-        $record = $this->updateRecord();
+      {      
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
         $this->preUpdate($record);
@@ -3025,7 +3026,7 @@
             }
             else
             {
-              $location = $this->feedbackUrl("update",ACTION_FAILED,$g_db->getErrorMsg());
+              $location = $this->feedbackUrl("update",ACTION_FAILED, $record, $g_db->getErrorMsg());
               $this->redirect($location);
             }
           }
@@ -3036,7 +3037,7 @@
             if ($this->m_postvars['atknoclose']=="")
             {
               // 'save and close' was clicked
-              $location = $this->feedbackUrl("update", ACTION_SUCCESS);
+              $location = $this->feedbackUrl("update", ACTION_SUCCESS, $record, "");
               $this->redirect($location);
             }
             else
@@ -3066,7 +3067,7 @@
       else
       {
         // Cancel was pressed
-        $location = $this->feedbackUrl("update", ACTION_CANCELLED);
+        $location = $this->feedbackUrl("update", ACTION_CANCELLED, $record);
         $this->redirect($location);
       }
     }
@@ -3074,9 +3075,11 @@
     function action_save()
     {
       global $g_db;
+      
+      $record = $this->updateRecord();   
+      
       if ($this->m_postvars['atkcancel']=="")
-      {
-        $record = $this->updateRecord();
+      {      
 
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
         $this->preAdd($record);
@@ -3113,7 +3116,7 @@
             }
             else
             {
-              $location = $this->feedbackUrl("save",ACTION_FAILED,$g_db->getErrorMsg());
+              $location = $this->feedbackUrl("save", ACTION_FAILED, $record, $g_db->getErrorMsg());
               $this->redirect($location);
             }
           }
@@ -3128,7 +3131,7 @@
             }
             else
             {
-              $location = $this->feedbackUrl("save", ACTION_SUCCESS);
+              $location = $this->feedbackUrl("save", ACTION_SUCCESS, $record);
             }
             $this->redirect($location);
           }
@@ -3137,7 +3140,7 @@
       else
       {
         // Cancel was pressed
-        $location = $this->feedbackUrl("save", ACTION_CANCELLED);
+        $location = $this->feedbackUrl("save", ACTION_CANCELLED, $record);
         $this->redirect($location);
       }
     }
@@ -3214,7 +3217,7 @@
         {
           atkdebug("atknode::action_copy() -> Error");
           $g_db->rollback();
-          $location = $this->feedbackUrl("save",ACTION_FAILED,$g_db->getErrorMsg());
+          $location = $this->feedbackUrl("save", ACTION_FAILED, $recordset[0], $g_db->getErrorMsg());
           atkdebug("atknode::action_copy() -> Redirect");
           $this->redirect($location);
         }
@@ -3242,7 +3245,7 @@
         if(!$this->copyDb($recordset[0]))
         {
           $g_db->rollback();
-          $location = $this->feedbackUrl("editcopy",ACTION_FAILED,$g_db->getErrorMsg());
+          $location = $this->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $g_db->getErrorMsg());
           $this->redirect($location);
         }
         else
@@ -4714,7 +4717,7 @@
       return $recs;
     }
 
-    function feedbackUrl($action, $status,$message="")
+    function feedbackUrl($action, $status, $record="", $message="")
     {
       return (hasFlag($this->m_feedback[$action], $status)||$status==ACTION_FAILED?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message)),SESSION_REPLACE):"");
     }
