@@ -7,21 +7,11 @@
    */
   class atkTimeAttribute extends atkAttribute
   {
-    /**
-     * Array with options for Listbox  
-     */
-    var $m_options = Array();
+    var $m_beginTime = 0;
+    var $m_endTime = 23;
+    var $m_steps = array("0","30");
+    var $m_default = 0;
     
-    /**
-     * Array with values for Listbox  
-     */    
-    var $m_values = Array();
-
-    /**
-     * Array for fast lookup of what value belongs to what option.
-     */
-    var $m_lookup = Array();
-
     /**
      * Constructor
      * @param $name        Name of the attribute
@@ -79,7 +69,7 @@
         $m_defMin  = substr($record[$this->fieldName()],3,2);
        }
 
-       echo $m_defHour.":".$m_defMin;
+       //echo $m_defHour.":".$m_defMin;
 
 
       // generate hour dropdown
