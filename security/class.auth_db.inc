@@ -46,7 +46,7 @@
          return AUTH_LOCKED;
        }
 
-       return ((count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd)?AUTH_SUCCESS:AUTH_MISMATCH);
+       return ((count($recs)>0 && $user!="" && strtoupper($recs[0][atkconfig("auth_passwordfield")])==strtoupper($passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
      }
 
      function canMd5()
