@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.12  2001/05/17 15:03:45  peter
+ * Added module_url function, usefull for url's to files in the module dir.
+ *
  * Revision 1.11  2001/05/14 12:57:27  ivo
  * Added some code to detect if node was created succesfully.
  *
@@ -154,4 +157,15 @@
     return new $type();
   }
 
+  /**
+   * Creates an URL to a file within the modules directory
+   * @param $module the module name
+   * @param $file the directory/filename
+   * @return URL to file within modules directory
+   */
+  function module_url($module, $file)
+  {
+    global $config_module_path;
+    return "$config_module_path/$module/$file";
+  }
 ?>
