@@ -913,12 +913,12 @@
    *        $msg optinal error string
    */
 
-  function triggerError(&$rec, $attrib, $err, $msg="")
+  function triggerError(&$rec, $attrib, $err, $msg="", $tab="")
   {
     global $lng;
     if($msg=="")  $msg = text($err,"","atk",$lng);
-
-    $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
+    
+    $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg, tab=>$tab);
   }
 
 
