@@ -809,32 +809,23 @@
 
   /**
    * Does a var dump of an array. Makes use of atkdebug for displaying the values
-   *        $a array
-   * @param string description a description from the vardump
+   *        
+   * Note, this method uses var_export to output the data. If using a php
+   * version older than 4.2, atk_var_dump will output nothing.
+   *
+   * @param $a data to be displayed
+   * @param $d name of the data that's being displayed.
    */
   function atk_var_dump($a, $d="")
   {
-    atkdebug("vardump $d:".create_var_dump($a));
-  }
-
-  function create_var_dump($a)
-  {
-    if(!is_array($a) && !is_object($a))
+    if (atkconfig("debug")>0) // atkdebug checks this, but if we check it here too, it saves us
+                              // a call to var_export.
     {
-      return $a;
-    }
-    $dump = "<ul>";
-    while(list($key, $val) = @each($a))
-    {
-      if(is_array($val) || is_object($val))
+      if (function_exists("var_export"))
       {
-        $dump .= "<LI>$key => array(".count($val).")";
-        $dump .= create_var_dump($val);
+        atkdebug("vardump: ".($d!=""?$d." = ":"")."<pre>".var_export($a, true)."</pre>");
       }
-      else $dump .= "<LI>$key = '$val'";
     }
-    $dump .= "</ul>";
-    return $dump;
   }
 
   /**
