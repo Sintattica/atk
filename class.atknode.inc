@@ -76,6 +76,11 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
+  
+  // Once atktools is loaded, we can register our own error handler.
+  set_error_handler("atkErrorHandler");
+  error_reporting(E_ALL);
+  
   require_once($config_atkroot."atk/class.layout.inc");
   require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
   require_once($config_atkroot."atk/db/class.atkquery.inc");

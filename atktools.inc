@@ -11,6 +11,43 @@
   * $Id$
   *
   */
+  
+  /**
+   * Function atkErrorHandler
+   * This function catches PHP parse errors etc, and passes
+   * them to atkerror(), so errors can be mailed and output
+   * can be regulated.
+   * This funtion must be registered with set_error_handler("atkErrorHandler");
+   *
+   * @param $errtype: One of the PHP errortypes (E_PARSE, E_USER_ERROR, etc)
+                      (See http://www.php.net/manual/en/function.error-reporting.php)
+   * @param $errstr: Error text
+   * @param $errfile: The php file in which the error occured.
+   * @param $errline: The line in the file on which the error occured.
+   */
+  function atkErrorHandler($errtype, $errstr, $errfile, $errline)
+  {      
+    // Don't handle notices.
+    if ($errtype==E_NOTICE) 
+    {
+      return;
+    }              
+    else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
+    {
+      // This is something we should pay attention to, but we don't need to die.
+      atkerror("[$errtype] $errstr in $errfile (line $errline)");
+      return;
+    }
+    else
+    {
+      atkerror("[$errtype] $errstr in $errfile (line $errline)");
+      
+      // we must die. we can't even output anything anymore.. :(
+      // we can mail though.
+      mailreport();
+      die;
+    }
+  }
 
   /**
   * Function halt
