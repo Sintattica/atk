@@ -1278,7 +1278,17 @@
       $totalisable = false;
       $totals = array();
 
-      $orientation = atkconfig("recordlist_orientation");
+      $orientation  = atkconfig("recordlist_orientation");
+
+      // Vertical orientation for td contents
+      if (trim(atkconfig("recordlist_vorientation")) != "")
+      {
+       $vorientation = "valign='".atkconfig("recordlist_vorientation")."'";
+      }
+      else
+      {
+       $vorientation = "valign='top'";
+      }
 
       // display a headerrow with titles. each attributetitle is clickable to
       // sort the list by that attribute.
@@ -1470,7 +1480,7 @@
               $stractions.=href($action,text($action_name),SESSION_NESTED, $sessionsave).'&nbsp;';
             }
           }
-          $actionCol=$g_layout->ret_td($stractions);
+          $actionCol=$g_layout->ret_td($stractions, $vorientation);
         }
         else
         {
@@ -1510,13 +1520,13 @@
 
             if (method_exists($this,$funcname))
             {
-              $output.=$g_layout->ret_td($this->$funcname($recordset[$i]));
+              $output.=$g_layout->ret_td($this->$funcname($recordset[$i]), $vorientation);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]),'');
+              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]), $vorientation);
             }
 
             // Calculate totals..
