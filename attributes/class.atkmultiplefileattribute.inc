@@ -97,8 +97,7 @@
      */
     function value2db($rec)
     {
-      $select = "select_".$this->fieldName();
-      global $$select;    
+      $select = $_REQUEST["select_".$this->fieldName()];      
 
       if(!$this->isEmpty($_POST))
       {
