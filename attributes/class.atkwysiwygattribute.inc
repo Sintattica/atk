@@ -312,6 +312,7 @@
         $result.= "\n attrib.content = ".$current_value_aux;
         $result.= "\n attrib.editor = '".$this->m_editorname."';";
         $result.= "\n attribute[attribute.length] = attrib;";
+        $result.= "\n stylesheet = '".atkconfig("site_url")."'+'styles/style.css';";
         $result.= "\n } ";
       }
       $result.= "\n </script>";
@@ -402,7 +403,7 @@
         $buttons["style"]["buttons"][] = "<a href=''  onclick=\"obj_editor=".$this->m_editorname."; callFormatting('Bold'); return false;\"  onmouseover=\"load_image('".$this->m_editorname."_negr','".$this->m_urlpath."images/bold_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_negr','".$this->m_urlpath."images/bold.gif')\" ><img src='".$this->m_urlpath."images/bold.gif' alt='Vet' border=0 align=absmiddle name='".$this->m_editorname."_negr' ></a>";
         //buttons["style"]["buttons"][] = "<img alt='Bold' name='".$this->m_editorname."_ae' src='".$this->m_urlpath."images/bold.gif' alt='' border=0 align=absmiddle onMouseOver=\"selOn(this)\" onMouseOut=\"selOff(this)\" onMouseDown=\"selDown(this)\" onMouseUp=\"selUp(this)\" onClick=\"callFormatting('bold')\">";
         $buttons["style"]["buttons"][] = "<a href='' onclick=\"obj_editor=".$this->m_editorname."; callFormatting('Italic'); return false;\" onmouseover=\"load_image('".$this->m_editorname."_curs','".$this->m_urlpath."images/italic_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_curs','".$this->m_urlpath."images/italic.gif')\" ><img name='".$this->m_editorname."_curs' src='".$this->m_urlpath."images/italic.gif' alt='Cursief' border=0 align=absmiddle ></a>";
-        $buttons["style"]["buttons"][] = "<a href='' onclick=\"obj_editor=".$this->m_editorname."; callFormatting('Underline'); return false;\" onmouseover=\"load_image('".$this->m_editorname."_subr','".$this->m_urlpath."images/under_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_subr','".$this->m_urlpath."images/under.gif')\" ><img name='".$this->m_editorname."_subr' src='".$this->m_urlpath."images/under.gif' alt='Onderstrepen' border=0 align=absmiddle ></a>";
+        //$buttons["style"]["buttons"][] = "<a href='' onclick=\"obj_editor=".$this->m_editorname."; callFormatting('Underline'); return false;\" onmouseover=\"load_image('".$this->m_editorname."_subr','".$this->m_urlpath."images/under_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_subr','".$this->m_urlpath."images/under.gif')\" ><img name='".$this->m_editorname."_subr' src='".$this->m_urlpath."images/under.gif' alt='Onderstrepen' border=0 align=absmiddle ></a>";
         $buttons["style"]["size"] = 3;
 
       }

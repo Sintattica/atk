@@ -1,4 +1,5 @@
  var attribute = new Array();
+ var stylesheet = '';
  window.onload = set_html;
 
  function callFormatting(sFormatString)
@@ -37,7 +38,7 @@
      obj_editor = eval(attribute[i].editor);
      obj_editor.document.designMode = 'on';
      obj_editor.document.open();
-     obj_editor.document.write(attribute[i].content);
+     obj_editor.document.write('<html><head><link rel=\"stylesheet\" type=\"text/css\" href=\"'+stylesheet+'\"></head><body>'+attribute[i].content+'</body></html>');
      obj_editor.document.close();
    }
  }
