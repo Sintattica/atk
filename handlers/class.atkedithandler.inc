@@ -115,7 +115,7 @@
             $index = $p_attrib->m_index;
             $tabs  = $node->m_attribIndexList[$index]["tabs"];            
             if (count($node->getTabs($node->m_action)) > 1
-                 && $p_attrib->showOnTab($tab))
+                 && is_object($p_attrib) && $p_attrib->showOnTab($tab))
               $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             
