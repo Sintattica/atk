@@ -118,6 +118,8 @@
   // "db"     - users / passwords are stored in a table in the database.
   // "imap"   - users / passwords are stored in the IMAP server
   // "pop3"   - users / passwords are stored in the POP3 server
+  // "ldap"   - users / passwords are stored in an LDAP server
+  // "server" - authentication is done by the webserver (.htaccess)
   // if you need to use multiple authentication types list them delimited by comma
   $config_authentication = "none";
 

@@ -135,7 +135,6 @@
     function authenticate()
     {    
       global $g_sessionManager, $ATK_VARS;      
-      
       $session = &atkSessionManager::getSession();
       
       $response=AUTH_UNVERIFIED;
@@ -172,8 +171,7 @@
           header("Location: logout.php");
           exit;
         }
-      } 
- 
+      }  
       // do we need to login?
       else if ($session["login"]!=1)
       {         
@@ -181,8 +179,17 @@
         $authenticated = false;
 
         // sometimes we manually have to set the PHP_AUTH vars 
+        // old style http_authorization
         if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"]))
-        list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
+        {
+          list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
+        }
+        // external authentication
+        elseif (empty($auth_user) && empty($auth_pw) && !empty($_SERVER["PHP_AUTH_USER"]))
+        {          
+          $auth_user = $_SERVER["PHP_AUTH_USER"];
+          $auth_pw = $_SERVER["PHP_AUTH_PW"];
+        }
 
         // check previous sessions.. 
         if (atkconfig("authentication_cookie"))
@@ -236,7 +243,7 @@
           // these accounts have been validated above. If we don't check this, an account could be
           // created in the database that provides administrator access.        
           else if ($auth_user!=""&&$auth_user!="administrator"&&$auth_user!="guest") 
-          {               
+          {          
             if(is_array($this->m_authentication))
             {
               foreach($this->m_authentication as $name => $obj)
@@ -325,8 +332,7 @@
             !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];
-          atkdebug("Using session for authentication / user = ".$this->m_user["name"]);
-          //atk_var_dump($this->m_user);
+          atkdebug("Using session for authentication / user = ".$this->m_user["name"]);          
         }
         else
         {

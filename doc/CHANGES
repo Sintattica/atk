@@ -19,6 +19,7 @@ Changes in ATK 5.1.1
 + Added the SimpleTest testframework for unittesting. [Ivo]
 + Added phpDoc documentation to attribute and node flags. [Boy]
 + If decimals are set, atkNumberAttribute now rounds the value. [Nicola]
++ Added "server" authentication method (htaccess). [Gabriele, Ivo]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
