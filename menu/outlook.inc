@@ -42,7 +42,8 @@ this.ol_pimage     = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/i
 this.ol_menucolor  = '<? echo $g_theme["ol_menucolor"];?>';
 this.ol_wincolor   = '<? echo $g_theme["ol_wincolor"];?>'; 
 this.ol_background = '<? echo $g_theme["ol_background"];?>';
-
+this.ol_arrowup    = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowup.gif";?>';
+this.ol_arrowdown  = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowdown.gif";?>';
 
 
 </script>
