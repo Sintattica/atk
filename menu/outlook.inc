@@ -105,7 +105,14 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
 		{
 		if($g_menu[$atkmenutop][$i]["url"]!="")
 		 {
-     $panelbuttons .= "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+          if(file_exists($config_atkroot.'icons/'.$atkmenutop.'_'.$name.'.gif'))
+		   {
+           $panelbuttons .= "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+           }
+		   else
+		   {
+		   $panelbuttons .= "p.addButton('".$config_atkroot."icons/empty.gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+		   }
 		 }
     }
 		else 
@@ -122,7 +129,7 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
       echo "p = new createPanel('".addslashes($atkmenutop)."','".addslashes(text("menu_".$atkmenutop))."');\n";  
   		echo $panelbuttons;
 			echo "o.addPanel(p);\n";	
-	  	}
+	 }
 		
 	}
   
