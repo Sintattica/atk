@@ -83,8 +83,10 @@
      * @param $nocache. If set to true, the function sends no-cache headers 
      *                                (the default, for backwardcompatibility)
      *                  If set to false, browsers can cache the result.
+     * @param $lastmodificationstamp. If set, this timestamp is used to send
+     *                                the http Last-Modified header.
      */
-    function outputFlush($nocache=true)
+    function outputFlush($nocache=true, $lastmodificationstamp="")
     {
       global $g_debug_msg, $g_error_msg;
       $res = "";
@@ -104,6 +106,10 @@
           header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
           header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
           header ("Pragma: no-cache");                          // HTTP/1.0
+        }
+        else if ($lastmodificationstamp!=0)
+        {
+          header ("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
         }
 
         // Set the content type.
