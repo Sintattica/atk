@@ -173,7 +173,7 @@
         }
         
         if ($tablename) $tablename .= ".";
-        $query->addCondition($tablename.$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
+        $query->addSearchCondition($tablename.$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
       }
     }
   
