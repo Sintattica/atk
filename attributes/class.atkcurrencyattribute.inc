@@ -1,4 +1,5 @@
 <?php
+useattrib("atknumberattribute");
 
   /**
    * This file is part of the Achievo ATK distribution.
@@ -22,8 +23,6 @@
    * @subpackage attributes
    *
    */
-useattrib("atknumberattribute");
-
 class atkCurrencyAttribute extends atkNumberAttribute
 {
   var $m_valutasymbol;
