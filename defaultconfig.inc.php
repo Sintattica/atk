@@ -35,6 +35,7 @@
   $config_logfile = "/tmp/atk-security.log";
 
   $config_debug = 0;
+  $config_display_errors = true;
   $config_halt_on_error = "critical";
 
   // Layout config

@@ -107,8 +107,14 @@
         echo $this->m_content;
         if (count($g_error_msg)>0)
         {
-          echo '<br><font color="#FF0000">error: '.implode("<br>\nerror: ",$g_error_msg).'</font>';
+          if (atkconfig("display_errors")||atkconfig("debug")>0)
+          {
+            // only show errors in debugmode, or when display_errors is
+            // true.
+            echo '<br><font color="#FF0000">error: '.implode("<br>\nerror: ",$g_error_msg).'</font>';
+          }
           // also send a mail report with errormessages..
+          // (even when display of errors is turned off)
           mailreport();
         }
         if ($GLOBALS['config_debug'])
