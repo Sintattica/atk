@@ -188,7 +188,8 @@ for ($i = 0; $i < count($menurootarray); $i++)
 
 // Add the user preferences option to the menu root
 $userpreferences = &getNode("users.userprefs");
-if ($userpreferences->allowed("edit"))
+$user = getUser();
+if ($userpreferences->allowed("edit") && $user['name']!= "administrator")
 {
   $menuroot .= 'addItem("'.text("settings", "", "atk").'","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
 }
