@@ -542,7 +542,7 @@
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
       global $g_sessionManager;
-
+      
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = text($this->fieldName(), $this->m_ownerInstance->m_type);
@@ -556,7 +556,7 @@
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
-          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch,false,$fieldprefix);
+          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch);
       }
     }
 
@@ -617,21 +617,10 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      $fieldvalue=$record[$this->fieldName()];
-      if ($fieldprefix != "")
-      {
-        $id = "atksearch_".$fieldprefix . "[" . $this->formName() . "]";
-        $relation = explode("AE_",$fieldprefix);
-        if ($relation[1])
-          $fieldvalue = $record[$relation[1]][$this->fieldName()];
-      }
-      else
-      {
-        $id = "atksearch[".$this->formName()."]";
-      }
+      $id = "atksearch".$fieldprefix."[".$this->formName()."]";
       
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
-      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$fieldvalue.'"'.
+      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
@@ -1242,6 +1231,77 @@
     {
       return $stringvalue;
     }
-  }
+    
+    /**
+    * Adds the needed searchbox(es) for this attribute to the fields array. This
+    * method should only be called by the atkSearchHandler.
+    *
+    * @param array     $fields   The array containing fields to use in the
+    *                            extended search
+    * @param atkNode   $node     The node where the field is in
+    * @param array     $record   A record containing default values to put
+    *                            into the search fields.
+    */
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    {
+      $field = array();
+      $defaults = $record;
 
+      $dbSearchModes = $node->m_db->getSearchModes();
+      $attribSearchModes = $this->getSearchModes();
+      $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
+
+
+      // set "widget" value:
+      $funcname = $this->m_name."_search";
+
+      if (method_exists($node,$funcname))
+      $field["widget"] = $node->$funcname($defaults, $fieldprefix);
+      else
+      {
+        $field["widget"] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
+      }
+
+
+      // pre-emptive set "full" value:
+      $field["full"] = $field["widget"]; // lateron, we might add more to full
+
+      // set "searchmode" value:
+      if(count($searchModes)==1)
+      $field["searchmode"] = '<input type="hidden" name="atksearchmode['.$this->m_name.']" value="'.$searchModes[0].'">'.text("search_".$searchModes[0]);
+      else
+      {
+        $sel = '<select name="atksearchmode['.$this->m_name.']">';
+        foreach (array_values($searchModes) as $searchMode)
+        {
+          // if supported, we select the 'like' searchmode by default
+          $selected="";
+          if ($node->m_postvars["atksearchmode"][$this->m_name]==$searchMode||
+          ((!is_array($node->m_postvars["atksearchmode"]) || $node->m_postvars["atksearchmode"][$this->m_name]=="")&&
+          $searchMode=="substring")) $selected="selected";
+          $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.text("search_".$searchMode);
+        }
+        $sel.= '</select>';
+        $field["searchmode"] = $sel;
+      }
+
+
+      // set "label" value:
+      if ($this->hasFlag(AF_NOLABEL)==false)
+      {
+        if ($this->hasFlag(AF_BLANKLABEL))
+        $field['label'] = "";
+        else
+        $field['label'] = $this->label($record);
+      }
+      else
+      {
+        $field['line'] = $field['widget'];
+      }
+
+      // add $field to fields array
+      $fields[] = $field;
+
+    }
+  }
 ?>

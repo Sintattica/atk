@@ -119,7 +119,7 @@
      * @param $record Array with values
      * @return Piece of htmlcode
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
       $value = $record[$this->fieldName()];
       if (!$extended) 
@@ -140,13 +140,13 @@
       }
       else
       {
-        $id = "atksearch[".$this->formName()."][from]";
+        $id = "atksearch".$fieldprefix."[".$this->formName()."][from]";
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
         $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
                   
-        $id = "atksearch[".$this->formName()."][to]";
+        $id = "atksearch".$fieldprefix."[".$this->formName()."][to]";
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
         $result.= " (".text("until").' <input type="text" id="'.$id.'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').

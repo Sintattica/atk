@@ -421,15 +421,15 @@
      * @param array $record array with 3 fields (year, month, day)
      * @return piece of HTML code
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {    
       if (!$extended) return "&nbsp;"; // Only search on dates in extended mode.     
       // Set default values to null.
       $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
 
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
-      $res = $this->draw($record, "atksearch_AE_", "_AE_from");
-      $res.= "&nbsp;".text("until").": ".$this->draw($record, "atksearch_AE_", "_AE_to");
+      $res = $this->draw($record, "atksearch".$fieldprefix, "_AE_from");
+      $res.= "&nbsp;".text("until").": ".$this->draw($record, "atksearch".$fieldprefix, "_AE_to");
       return $res;
     }
 
