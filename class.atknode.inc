@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.85  2001/07/25 13:46:34  ivo
+   * New feature: DESC sort when you select a column that was already sorted.
+   *
    * Revision 4.84  2001/07/19 11:35:04  ivo
    * Formsession save now works for action==admin
    *
@@ -1283,10 +1286,15 @@
            )
         {          
           $neworder=$this->m_table.".".$p_attrib->fieldName();
+          if ($neworder==$this->m_postvars["atkorderby"])
+          {
+            // we were already sorting, so now we sort the other way
+            $neworder.=" DESC";
+          }
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = href($PHP_SELF.'?atkorderby='.$neworder,text($p_attrib->fieldName()));
+            $tmp = href($PHP_SELF.'?atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName()));
           }
           else $tmp = text($p_attrib->fieldName());
 
