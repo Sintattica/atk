@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.14  2001/06/26 12:39:21  ivo
+   * Adjusted link text (it contained a dot, making the link untranslatable)
+   *
    * Revision 4.13  2001/06/20 14:33:51  ivo
    * ManyToOneRelation now supports templated destinationfilters.
    *
@@ -238,7 +241,7 @@
           $strfilter.=' AND '.$this->m_destinationFilter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $output.="<tr><td>".href($add_url,text("link_".$this->m_destination."_add"),SESSION_NESTED,true)."</td></tr>";      
+        $output.="<tr><td>".href($add_url,text("link_".getNodeType($this->m_destination)."_add"),SESSION_NESTED,true)."</td></tr>";      
       }
       $output.="</table><br>";
       return $output;
