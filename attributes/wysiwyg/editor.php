@@ -239,6 +239,7 @@ if ($this->editmode(WW_INDENT))
   $result.="\n	<a href=''  onclick=\"obj_editor=".$nom_editor."; indent(); return false;\" onmouseover=\"load_image('".$nom_editor."_ind','".$url_path_editor."images/inindent_focus.gif');\" onmouseout=\"load_image('".$nom_editor."_ind','".$url_path_editor."images/inindent.gif')\" ><img name='".$nom_editor."_ind' src='".$url_path_editor."images/inindent.gif' alt='".$mesg40[$idi_edit]."' border=0 align=absmiddle ></a> "; 
   $result.='</td>';
 }
+$result.='<td align="right">'.$viewselectbox.'</td>';
 // Objetos para tablas y para acceder propiedades (si se necesita):
 $result.=  "<td>";
 if( !isset($insertat_editor) ){

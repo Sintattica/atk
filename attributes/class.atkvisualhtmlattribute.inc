@@ -36,7 +36,7 @@
   
   // predefine for a 'simple' visual editor that only supports basic options
   // that don't allow a user to crap a sites layout.
-  define("WW_LIGHT", WW_STYLE|WW_TOOLS|WW_LIST);
+  define("WW_LIGHT", WW_STYLE|WW_TOOLS|WW_LIST|WW_LINK);
    
   class atkVisualHtmlAttribute extends atkTextAttribute
   {
@@ -70,6 +70,7 @@
     function edit($record="", $fieldprefix="")
     {      
       global $config_atkroot, $g_layout, $config_enable_ie_extensions;
+      global $atkwwview, $PHP_SELF;
       
       //var_dump($record);
                                                             
@@ -79,18 +80,33 @@
       }
       else
       {    
-        $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
-        $nom_editor = $fieldprefix.$this->fieldname()."_editor";
-        $g_layout->register_submitscript($nom_editor."_save();");
-        $idi_edit = 'eng';
-        $editor_height = 200;
-        $editor_width= 550;
-        //$funcio_save= 'guardaho(codi);';
-        //$action_submit = "sample_submit.php";
-        $document_complet = 0;
-        $current_value = $record[$this->fieldname()];
-        $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';
-        include $config_atkroot."atk/attributes/wysiwyg/editor.php";
+        $viewselectbox = '<select name="atkwwview">
+                            <option value="visual">'.text("ww_visualmode").
+                            '<option value="plain" '.($atkwwview=="plain"?"selected":"").'>'.text("ww_sourcemode").
+                         '</select>';
+      
+        if ($atkwwview!="plain")
+        {
+          $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
+          $nom_editor = $fieldprefix.$this->fieldname()."_editor";
+          $g_layout->register_submitscript($nom_editor."_save();");
+          $idi_edit = 'eng';
+          $editor_height = 200;
+          $editor_width= 550;
+          //$funcio_save= 'guardaho(codi);';
+          //$action_submit = "sample_submit.php";
+          $document_complet = 0;
+          $current_value = $record[$this->fieldname()];
+          $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';
+          $result.= '<input type="hidden" name="atkwwview" value="html">';
+          include $config_atkroot."atk/attributes/wysiwyg/editor.php";                    
+        }
+        else
+        {
+          $result = '<input type="hidden" name="atkwwview" value="plain">';
+          $result.=$viewselectbox.'<br>';
+          $result.=atkTextAttribute::edit($record, $fieldprefix);          
+        }
         return $result;
       }
     }
