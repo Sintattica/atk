@@ -38,7 +38,8 @@
     function edit($record="", $fieldprefix="")
     {
       // todo: configurable rows
-     $result ="<p>";  
+     //$result ="<p>";  
+     $result ='';
       for ($i=0;$i<count($this->m_values);$i++)
       {
         if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
@@ -51,7 +52,7 @@
         }
         $result .= '<input type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'&nbsp; ';
       }
-      $result.='</P>';
+      //$result.='</P>';
       return $result;
     }
   }
