@@ -474,7 +474,6 @@
 
       $attribname = $this->fieldName();
       // Maybe the size is set manual (setAttribSize)
-      atkdebug($this->m_size);
       if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $g_layout->maxInputSize());
       else $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());
