@@ -22,8 +22,12 @@
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   *
+   * @todo autadjust needs to be modified as not every character == 1 column,
+   *       perhaps forcing every textattribute to use a non-proportional font?
    */  
+   
+  include(atkconfig("atkroot")."atk/atkbrowsertools.inc");
+  
   class atkTextAttribute extends atkAttribute
   {
     // number of rows of the edit box
@@ -83,17 +87,14 @@
 	    
 	    if ($this->m_autoadjust)
 	    {
-	      // If the number of newlines in what we want to display is larger than 
-	    	// the rows, we increase the rows 
-	    	$data = count_chars(htmlspecialchars($record[$this->fieldName()]), 0);
-	    	if ($data[13]>$rows) $rows= $data[13];
+	      $this->doAutoAdjust(htmlspecialchars($record[$this->fieldName()]), $rows, $cols);
 	    }
       
 	    $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
-
+    
     /**
      * Add's fields to query
      * @param $query The SQL query
@@ -157,6 +158,42 @@
     function fetchMeta($metadata)
     {
       $this->m_dbfieldtype = $metadata[$this->fieldName()]["type"];
+    }
+    
+    /**
+     * Parses the data that we are going to display in the textfield
+     * and adjust rows to ensure that all the data is actually displayed
+     * @param string $data	Data we want to display
+     * @param int 	 &$rows	Rows of the textarea
+     * @param int		 $cols	Columns of the textarea
+     */
+    function doAutoAdjust($data, &$rows, &$cols)
+    {    	
+    	$browser = new browserInfo; 
+    	
+    	for ($counter = 0, $linecharacters=0, $rowsrequired=1; 
+    	     $counter<strlen($data); 
+    	     $counter++, $linecharacters++)
+    	{
+    		// Current character we are parsing
+    		$character = substr($data, $counter, 1);
+    		
+    		// If we encounter a newline character or the number of characters
+    		// equals the number of columns we have (with IE)...
+    		if ($character == chr(13) || ($linecharacters==$cols && $browser->browser == "MSIE")) 
+    		{
+    			if ($linecharacters>$maxlinechars) $maxlinechars = $linecharacters;
+    			// We start another line
+    			$linecharacters = 0;
+    			// But need another row
+    			$rowsrequired++;
+    		}
+    	}
+    	// If we need more rows, we set them
+  	  if ($rowsrequired>$rows) $rows= $rowsrequired;
+  	  // IE wraps characters, other don't, so if we're not dealing with IE 
+  	  // we need more columns
+  	  if ($maxlinechars>$cols && $browser->browser!=="MSIE") $cols = $maxlinechars;
     }
   }
 ?>
