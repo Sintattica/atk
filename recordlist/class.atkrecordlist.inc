@@ -197,7 +197,7 @@
             $searchcols[] = array("content"=>$button);
           }
   
-          $searchend = '</form>';
+          if (!hasFlag($this->m_flags, RL_EMBED)) $searchend = '</form>';
         }
   
         /*******************************************/
