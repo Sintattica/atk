@@ -16,6 +16,10 @@
    */
   class atkUpdateStampAttribute extends atkAttribute
   {
+    //Var is need for save without close. In this case the record
+    // is not updated therefor we have to save the value    
+    var $m_stamp = "";
+    
     /**
      * Constructor
      * @param $name Name of the attribute
@@ -28,12 +32,14 @@
 
     function value2db($rec)
     {
-      return date("Y-m-d H:i:s");
+      $stamp = date("Y-m-d H:i:s");
+      $this->m_stamp = $stamp;    
+      return $stamp;
     }
 
     function display($rec)
     {
-      $stamp = $rec[$this->fieldname()];
+      $stamp = ($this->m_stamp != "" ? $this->m_stamp : $rec[$this->fieldname()]);
       return $stamp;
     }
 
