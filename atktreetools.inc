@@ -64,6 +64,27 @@
       return $res;  
     }
     
+    /**
+         *
+         * Pops tree's on the session
+         */
+         
+    function sessionTree()
+    {
+    global $ATK_VARS;
+    $postTree = $ATK_VARS["atktree"];
+      $sessionTree = sessionLoad("atktree");
+      if ($postTree !="" && $sessionTree != $postTree) 
+      {
+       sessionStore("atktree",$postTree); // new in the session
+       $realTree = $postTree;
+      }
+      else
+      {
+       $realTree = $sessionTree; // use the last known tree
+      }
+       $ATK_VARS["atktree"] == $realTree; // postvars now should contain the last Knowtree
+     }
   }
   
 ?>
