@@ -167,7 +167,7 @@
 
   // multi-record actions selection
   $txt_select_all     = "Selecteer alles";
-  $txt_select_none    = "Deselecteer alles";
+  $txt_select_none    = "Geen";
   $txt_select_invert  = "Selectie omkeren";
   $txt_with_selected  = "Met geselecteerd";
   $txt_submit         = "Uitvoeren";
