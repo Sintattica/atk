@@ -415,11 +415,11 @@
         $this->m_cascadingAttribs[]=$attribute->fieldName();
       }
 
-      // check for title fieldname (treeview)
+      /*// check for title fieldname (treeview)
       if($attribute->hasFlag(AF_TITLE))
       {
         $this->m_title = $attribute->fieldName();
-      }
+      }*/
 
       if ($attribute->hasFlag(AF_HIDE_LIST)&&!$attribute->hasFlag(AF_PRIMARY))
       {
@@ -620,8 +620,8 @@
     function editPage($record)
     {
       global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->ui_top($g_layout->title($this->m_type,"edit"));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
@@ -650,7 +650,7 @@
     {
       global $g_layout, $PHP_SELF;  
     
-      $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
+      $g_layout->ui_top($g_layout->title($this->m_type,'view'));
       $g_layout->output($this->statusbar());
 
       $page.=$g_layout->ret_table_simple();
@@ -717,8 +717,8 @@
     function addPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->ui_top($g_layout->title($this->m_type,'add'));
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
@@ -740,8 +740,8 @@
     function searchPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->ui_top($g_layout->title($this->m_type,'search'));
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">');
@@ -798,7 +798,7 @@
       $defaults = $record;
       
       // Form may have been saved in a session..
-      atk_var_dump($g_sessionData);
+      //atk_var_dump($g_sessionData);
       
       if ($this->m_postvars["atkformdata"]!="")
       {
@@ -1244,7 +1244,7 @@
     {
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
-      $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
+      $g_layout->ui_top($g_layout->title($this->m_type,'admin'));
       $g_layout->output($this->statusbar());
 
       $adminHeader = $this->adminHeader();
@@ -1264,7 +1264,17 @@
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
         $addurl = $PHP_SELF.'?atkaction=add';
-        $g_layout->output(href($addurl,text("link_".getNodeType($this->m_type)."_add"),SESSION_NESTED).'<br><br>');
+        if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
+        {
+          // specific text
+          $label = text("link_".getNodeType($this->m_type)."_add");
+        }
+        else
+        {
+          // generic text
+          $label = text(getNodeType($this->m_type))." ".text("add");
+        }
+        $g_layout->output(href($addurl,$label,SESSION_NESTED).'<br><br>');
       }
 
       // create navigation bar      
@@ -2011,7 +2021,7 @@
       }
       else
       {
-        $g_layout->ui_top(text('title_'.$this->m_type.'_select'));
+        $g_layout->ui_top($g_layout->title($this->m_type,'select'));
         $g_layout->output($this->statusbar());      
         $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
@@ -2044,7 +2054,7 @@
     {
       global $g_layout, $PHP_SELF;
       
-      $g_layout->ui_top(text('title_delete'));
+      $g_layout->ui_top($g_layout->title($this->m_type,'delete'));
       $g_layout->output($this->statusbar());
 
       $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
@@ -2201,7 +2211,7 @@
           $g_layout->output("Sorry, you don't have permission to perform this action");
         }      
       
-        $g_layout->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
+        $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_type,$this->m_postvars['atkaction']));
       
         // This is the end of all things for this page..
         // so we clean up some resources..
@@ -3303,6 +3313,8 @@
        return atkPopup('help.php','node='.$node,$name,650,650,'yes','no');
       }
     }
+    
+    
 
   }  
 

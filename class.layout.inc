@@ -192,6 +192,27 @@
     {
       if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
     }
+    
+    /** 
+     * This function returns a suitable title text for an action.
+     * Example: echo $g_layout->title("employee", "edit"); might return:
+     *          'Edit an existing employee'
+     */
+    function title($nodetype, $action)
+    {
+      // first look for specific text.
+      $key = 'title_'.$nodetype.'_'.$action;
+      if ($GLOBALS["txt_".$key]!="")
+      {
+        return text($key);
+      }
+      else
+      {
+        // if no specific text available for this node, 
+        // generate a generic title
+        return text($nodetype)." - ".text($action);
+      }
+    }
 
     /**
      * Output a HTML header
@@ -491,4 +512,5 @@
   {    
     $g_layout = new layout();
   }  
+    
 ?>

@@ -293,7 +293,7 @@
     
     function stackTrace()
     {
-      global $g_sessionData;
+      global $g_sessionData, $g_layout;
       $res = "";
       $stack = $g_sessionData[$this->m_namespace]["stack"];
       
@@ -302,7 +302,7 @@
       
       for ($i=max(0,count($stack)-4);$i<count($stack);$i++)
       {
-        $title = text("title_".getNodeType($stack[$i]["atknodetype"])."_".$stack[$i]["atkaction"]);        
+        $title = text($g_layout->title(getNodeType($stack[$i]["atknodetype"]),$stack[$i]["atkaction"]));
         if ($i<count($stack)-1) 
         {
           $res.='<a href="dispatch.php?atklevel='.$i.'">'.$title.'</a> | ';
