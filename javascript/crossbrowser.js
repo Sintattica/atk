@@ -1,3 +1,12 @@
+  /**   
+   *
+   * @package atk
+   * @subpackage javascript
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
 // ---------------------------------------------------------------------------
 // this script is copyright (c) 2001 by Michael Wallner!
 // http://www.wallner-software.com

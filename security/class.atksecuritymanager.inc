@@ -1,15 +1,25 @@
 <?php
 
   /**
-   * This class manages security in atk.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage security
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
-   * $Id$   
-   *
+   * $Id$
    */
    
+  /** 
+   * @internal includes and definitions
+   */
   require_once($config_atkroot."atk/security/class.auth_interface.inc");
   
   // initialise g_user array.
@@ -48,6 +58,18 @@
 
   include_once($config_atkroot."atk/security/class.auth_".$config_authorization.".inc");
    
+  /**
+   * The security manager for ATK applications.
+   * 
+   * Don't instantiate this class yourself, use the global instance 
+   * that is returned by atkGetSecurityManager() instead.
+   *
+   * @todo Make a real singleton with a getInstance class.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage security
+   */
   class atkSecurityManager
   {
     var $m_authentication = "";    
@@ -59,7 +81,10 @@
     // error message that caused the fatal error is put in this variable.
     var $m_fatalError = "";
              
-    // constructor
+    /**
+     * Constructor
+     * @access private
+     */
     function atkSecurityManager($authentication_type="none", $authorization_type="none", $securityscheme="none")
     {       
      
@@ -101,6 +126,12 @@
       $this->m_scheme = $securityscheme;
     }
      
+    /**
+     * Perform user authentication. 
+     *
+     * Called by the framework, it should not be necessary to call this method
+     * directly.
+     */
     function authenticate()
     {    
       global $g_sessionManager, $ATK_VARS;      
@@ -364,6 +395,10 @@
       $g_sessionManager->globalVar("authentication",$old_auth, true);
     }
           
+    /**
+     * Display a login form.
+     * @access private
+     */
     function loginForm($defaultname, $lastresponse)
     {      
 
@@ -448,7 +483,11 @@
       $o->output($page->render(text("login_form")));
     }
 
-
+    /**
+     * Generate field for entering the username (dropdown or input box,
+     * depending on settings.
+     * @access private
+     */
     function auth_userField($defaultname)
     {            
       if (atkconfig("auth_dropdown") == true)
@@ -492,12 +531,19 @@
       }
     }
 
-
-    function allowed($node, $action)
+    /**
+     * Check if the currently logged-in user has a certain privilege on a
+     * node.
+     * @param String $node The full nodename of the node for which to check
+     *                     access privileges. (modulename.nodename notation).
+     * @param String $action The privilege to check. 
+     * @return boolean True if the user has the privilege, false if not.
+     */
+    function allowed($node, $privilege)
     {
       static $_cache = array();
       
-      if (!isset($_cache[$node][$action]))
+      if (!isset($_cache[$node][$privilege]))
       {
         // security disabled or user is superuser? (may do anything)
         if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
@@ -513,7 +559,7 @@
         else
         {
          
-          $required = $this->m_authorization->getEntity($node, $action);       
+          $required = $this->m_authorization->getEntity($node, $privilege);       
          
           if (count($required)==0)
           {
@@ -550,12 +596,21 @@
           }
         }  
         
-        $_cache[$node][$action] = $allowed;
+        $_cache[$node][$privilege] = $allowed;
       }        
       
-      return $_cache[$node][$action];
+      return $_cache[$node][$privilege];
     }
         
+    /**
+     * Check if the currently logged-in user has the right to view or edit
+     * an attribute of a node.
+     * @param String $node The full nodename of the node for which to check
+     *                     access.
+     * @param String $attribute The name of the attribute to check.
+     * @param String $mode "edit" or "view"
+     * @return boolean True if access is granted, false if not.
+     */
     function attribAllowed($node, $attribute, $mode)
     {      
       // No securityscheme, or user is superuser.
@@ -599,8 +654,9 @@
     }
     
     /**
-     * Returns true if the current logged in user has
-     * the given level.
+     * Check if the currently logged in user has the requested level.
+     * @param int $level The level to check.
+     * @return boolean True if the user has the required level, false if not.
      */
     function hasLevel($level)
     {
@@ -628,11 +684,25 @@
       }
     }
      
+    /**
+     * Write an access entry in the logfile.
+     * @param String $node The full name of the node that is being accessed.
+     * @param String $action The action that has been performed.
+     */
     function logAction($node, $action)
     {
       $this->log(2,"Performing $node.$action");
     }
      
+    /**
+     * Write a logentry in the logfile.
+     * The entry is only written to the file, if the level of the message is
+     * equal or higher than the setting of $config_logging.
+     *
+     * @todo Logging should be moved to a separate atkLogger class.
+     * @param int $level The loglevel.
+     * @param String $message The message to log.
+     */
     function log($level, $message)
     {      
     
@@ -653,11 +723,11 @@
     }     
   }
   
-  /* 
-    Calling this function will invoke the login process. Call this function in 
-    every file that you want to have secured.
-    (This is actually a small wrapper for $securityManager->authenticate(), 
-    so you can quickly secure an application.
+  /**
+   * Calling this function will invoke the login process. Call this function in 
+   * every file that you want to have secured.
+   * (This is actually a small wrapper for $securityManager->authenticate(), 
+   * so you can quickly secure an application.
    */
   function atksecure()
   {
@@ -672,8 +742,8 @@
   }      
   
   /**
-   * Retrieve the currently logged in user.
-   * if no user is logged in, returns "".
+   * Retrieve all known information about the currently logged-in user.
+   * @return array Array with userinfo, or "" if no user is logged in.
    */
   function getUser()
   {
@@ -691,9 +761,11 @@
     }    
     return $user;
   }
-  
-  
-  
+    
+  /**
+   * Wrapper method to access the security manager.
+   * @todo Rewrite to a getInstance method in atkSecurityManager.
+   */
   function &atkGetSecurityManager()
   {
     global $g_securityManager; // WORKAROUND: we use a global var since many 
@@ -709,17 +781,18 @@
   }
   
   /**
-   * Check whatever someone has got permission
-   * to view a certain node with a certain action
-   * @param $node the (module.)node name
-   * @param $action the atk action
-   * @return boolean if allowed or not
+   * Check if the currently logged-in user has a certain privilege.
+   *
+   * @deprecated Use the allowed method of the security manager instead.
+   * @param String $node The full name of the node for which to check access.
+   * @param String $privilege The privilege to check.
+   * @return boolean True if access is granted, false if not.
    */
-  function is_allowed($node, $action)
+  function is_allowed($node, $privilege)
   {
     $secMgr = &atkGetSecurityManager();
     if (!is_object($secMgr)) return 1;
-    else return $secMgr->allowed($node, $action);
+    else return $secMgr->allowed($node, $privilege);
   }
      
 ?>

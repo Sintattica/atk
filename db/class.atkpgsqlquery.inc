@@ -1,15 +1,30 @@
 <?php
 
   /**
-   * Class to handle specific PostgreSQL commands
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Peter Verhage (peter@ibuildings.nl)
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
+   */
+   
+  /**
+   * SQL query builder for PostgreSQL.
+   *
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage db
    *
    */
-  class atkpgsqlquery extends atkquery
+  class atkPgsqlQuery extends atkQuery
   {
     /**
      * Makes a join SQL query for PostgreSQL
@@ -45,7 +60,7 @@
      *
      * @param $distinct distinct rows?
      *
-     * @result a SQL Select COUNT(*) Query
+     * @return String a SQL Select COUNT(*) Query
      */
     function buildCount($distinct = FALSE)
     {

@@ -1,17 +1,30 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
    * The atkProfileAttribute is an attribute to edit a security profile.
    * The best way to use it is inside the class where you edit your
    * profile or usergroup records.
    *
-   * @author Ivo Jansch (ivo@ibuildings.nl)
-   * @version $Revision$
+   * @author Ivo Jansch <ivo@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
-   * $Id$
-   *
-   */
-
-  // for editing profiles we create a custom attribute
+   */  
   class atkProfileAttribute extends atkAttribute
   {
     function atkProfileAttribute($name, $flags=0)

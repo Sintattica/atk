@@ -1,17 +1,30 @@
 <?php
-
   /**
-   * This class is the interface for all auth_ classes. All new 
-   * authentication/authorization methods need to derive from this 
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage security
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * This class is the abstract baseclass (interface) for all auth_ classes. 
+   * All new authentication/authorization methods need to derive from this 
    * class.   
    *
-   * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$
-   *   
-   * $Id$
-   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage security
+   * @abstract
    */
-
   class auth_interface 
   { 
     /**
@@ -24,18 +37,21 @@
     /**
      * Authenticate a user. 
      *
-     * Allowed return values: AUTH_SUCCESS - Authentication succesful
-     *                        AUTH_MISMATCH - Authentication failed, wrong 
-     *                                        user/password combination
-     *                        AUTH_LOCKED - Account is locked, can not login
-     *                                      with current username.
-     *                        AUTH_ERROR - Authentication failed due to some 
-     *                                     error which cannot be solved by 
-     *                                     just trying again. If you return 
-     *                                     this value, you *must* also 
-     *                                     fill the m_fatalError variable.
+     * @param String $user The login of the user to authenticate.
+     * @param String $passwd The password of the user. Note: if the canMd5 
+     *                       function of an implementation returns true,      
+     *                       $passwd will be passed as an md5 string.
      *
-     * Note: if the canMd5 function returns true, $passwd is passed as an md5 string.
+     * @return int AUTH_SUCCESS - Authentication succesful
+     *             AUTH_MISMATCH - Authentication failed, wrong 
+     *                             user/password combination
+     *             AUTH_LOCKED - Account is locked, can not login
+     *                           with current username.
+     *             AUTH_ERROR - Authentication failed due to some 
+     *                          error which cannot be solved by 
+     *                          just trying again. If you return 
+     *                          this value, you *must* also 
+     *                          fill the m_fatalError variable.
      */
     function validateUser($user, $passwd)
     {      
@@ -45,10 +61,11 @@
     /**
      * Does the authentication method support md5 encoding of passwords?
      *
-     * This function should return: true if md5 is always used.
-     *                              false if md5 is not supported.
-     *                              atkconfig("authentication_md5") if it
-     *                              is configurable.
+     * @return boolean True if md5 is always used. false if md5 is not
+     *                 supported.
+     *                 Drivers that support both md5 and cleartext passwords
+     *                 can return atkconfig("authentication_md5") to let the
+     *                 application decide whether to use md5.
      */ 
     function canMd5()
     {
@@ -68,7 +85,11 @@
      * "name" -> the userid (should normally be the same as the $user 
      *           variable that gets passed to it.
      * "level" -> The level/group(s) to which this user belongs.
+     * Specific implementations of the method may add more information if
+     * necessary.
      *
+     * @param String The login of the user to retrieve.
+     * @return array Information about a user.
      */
     function getUser($user)
     {
@@ -78,6 +99,11 @@
     /**
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
+     * @param String $node The full nodename of the node for which to check
+     *                     the privilege. (modulename.nodename)
+     * @param String $action The privilege to check.
+     * @return mixed One (int) or more (array) entities that are allowed to
+     *               perform the action.
      */
     function getEntity($node, $action)
     {
@@ -86,7 +112,13 @@
     
     /** 
      * This function returns the level/group(s) that are allowed to 
-     * view/edit ($mode) a certain attribute of a given node.
+     * view/edit a certain attribute of a given node.
+     * @param String $node The full nodename of the node for which to check
+     *                     attribute access.
+     * @param String $attrib The name of the attribute to check
+     * @param String $mode "view" or "edit"
+     * @param mixed One (int) or more (array) entities that are allowed to 
+     *              view/edit the attribute. 
      */
     function getAttribEntity($node, $attrib, $mode)
     {
@@ -94,9 +126,15 @@
     }    
     
     /**
-     * This function returns the list of users that may login.
-     * Format is: array of record, each record is associative array with
-     * a userid and a username field.
+     * This function returns the list of users that may login. This can be
+     * used to display a dropdown of user from which to choose.
+     *
+     * Implementations that do not support retrieval of a list of users, 
+     * should either not implement this method, or return an empty array.
+     *
+     * @return array List of users as an associative array with the following 
+     *               format: array of records, each record is an associative
+     *               array with a userid and a username field.
      */
     function getUserList()
     {

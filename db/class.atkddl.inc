@@ -1,6 +1,22 @@
 <?php
 
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
    * Some flags that can be used to configure database fields.
    */
   define("DDL_PRIMARY"       , 1);
@@ -10,18 +26,15 @@
   //define("DDL_AUTOINCREMENT" , 8);
 
   /**
-   * The Data Definition Language utility class.
+   * The Data Definition Language abstract base class.
    *
-   * This class can be used to create and execute CREATE TABLE statements.
-   *
-   * @todo - support for the other databases (oci, postgresql)
-   *       - alter table support. 
-   *
+   * Database drivers should derive a class from this base class to implement
+   * vendor specific ddl commands.
+   *   
    * @author Ivo Jansch <ivo@achievo.org>
-   * 
-   * @version $Revision$
-   *
-   * $Id$
+   * @package atk
+   * @subpackage db
+   * @abstract
    */
   class atkDDL
   {

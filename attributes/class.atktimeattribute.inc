@@ -1,18 +1,29 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
    * The atkTimeAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined time values.
    *
-   * @author Wim Kosten (wim@achievo.org)
-   * @version $Revision$
+   * @author Wim Kosten <wim@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
-   * $Id$
-   *
-   * TODO (martin): cleanup default param.
-   *                bugfix in the initial current time value. At 14.58 this will be set at 14.00
-   *
-   */
-   
+   */   
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
@@ -26,7 +37,7 @@
      * @param $beginTime   Time to start with (eg 8)
      * @param $endTime     Time to end with (eg 24)
      * @param $steps       Array containing possible minute values (eg array("00","15","30","45"))
-	 * @param $default  Start Time (exp: 20:30)
+	   * @param $default  Start Time (exp: 20:30)
      * @param $flags Flags for this attribute
      */
     function atkTimeAttribute($name, $beginTime, $endTime, $steps, $default="", $flags=0)

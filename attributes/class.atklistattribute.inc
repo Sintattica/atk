@@ -1,13 +1,28 @@
 <?php
 
   /**
-   * The atkListAttribute class represents an attribute of a node
-   * that has a selectbox to select from predefined values.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
+   */
+
+  /**
+   * The atkListAttribute class represents an attribute of a node
+   * that has a selectbox to select from predefined values. 
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkListAttribute extends atkAttribute

@@ -1,5 +1,21 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
    * The atkMlHtmlAttribute class is the same as a normal
    * atkMlTextAttribute. It only has a different display
    * function. For this attribute, the value is rendered as-is,
@@ -7,11 +23,9 @@
    *
    * Based on atkHtmlAttribute.
    *
-   * @author Peter Verhage (peter@ibuildings.nl)
-   * @version $Revision$
-   * @see atkHtmlAttribute
-   *
-   * $Id$
+   * @author Peter Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkMlHtmlAttribute extends atkMlTextAttribute

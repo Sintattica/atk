@@ -1,21 +1,36 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**   
+   * @internal Include baseclass
+   */
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
   //Mysql errors includen
   include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
 
   /**
-   * Handles database connectivity and database interaction
-   * with the MySQL database server. Portions of this class are
-   * based on the db_mysql.inc file of PHPLib.
+   * Driver for MySQL databases.
    *
    * @author Peter Verhage <peter@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$   
-   *
+   * @package atk
+   * @subpackage db
    */ 
-  class atkmysqldb extends atkdb
+  class atkMysqlDb extends atkDb
   {    
   
     /* sequence table */
@@ -364,13 +379,13 @@
       return $result;
     }
     
-  /**
-       * This function checks the database for a table with 
-       * the provide name
-       *
-       * @params $tableName the table to find
-       * @params returns true if found, false if not found
-       */  
+    /**
+     * This function checks the database for a table with 
+     * the provide name
+     *
+     * @param String $tableName the table to find
+     * @return boolean true if found, false if not found
+     */  
     function tableExists($table)
     {
       global $g_db;

@@ -1,18 +1,33 @@
 <?php
 
-/**
- * Oracle 9 specific SQL functions.
- * 
- * @author Sandy Pleyte (sandy@ibuildings.net)
- * @version $Revision$
- *
- * $Id$
- *
- */
- 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+  
+  /** @internal include base class */ 
   require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
-
-  class atkoci9query extends atkoci8query
+   
+  /**
+   * Query builder for Oracle 9i and later databases.
+   *
+   * @author Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   *
+   */   
+  class atkOci9Query extends atkOci8Query
   {
 
     var $m_bind_vars=array();  // array containing name and value of fields which 
@@ -113,11 +128,11 @@
 
     }
     
- /**
-    * Builds the SQL Select query
-    * @result a SQL Select Query
-    * @param $distinct distinct records?
-    */
+    /**
+     * Builds the SQL Select query    
+     * @param $distinct distinct records?
+     * @return String SQL Query
+     */
     function buildSelect($distinct = FALSE)
     {
       $query = parent::buildSelect($distinct);
@@ -130,15 +145,15 @@
       return $result;
     }
 
- /**
-     * Builds the SQL Select COUNT(*) query. This is different from select,
-     * because we do joins, like in a select, but we don't really select the
-     * fields.
-     *
-     * @param $distinct distinct rows?
-     *
-     * @result a SQL Select COUNT(*) Query
-     */
+     /**
+      * Builds the SQL Select COUNT(*) query. This is different from select,
+      * because we do joins, like in a select, but we don't really select the
+      * fields.
+      *
+      * @param $distinct distinct rows?
+      *
+      * @return String a SQL Select COUNT(*) Query
+      */
      function buildCount($distinct = FALSE)
      {
       $query = "SELECT COUNT(*) AS count FROM (".$this->buildSelect($distinct).")";
@@ -149,9 +164,9 @@
     * Converts the SQL Select query. All aliases which
     * have been added with addJoin are replaced with
     * generated aliases
-    * bug #137
-    * @result a SQL Select Query
+    * bug #137    
     * @param $query query string
+    * @return String SQL query
     */
     function convertQuery($query)
     {

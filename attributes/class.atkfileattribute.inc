@@ -1,5 +1,21 @@
 <?php
-  /* flag(s) specific for the atkFileAttribute */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /** flag(s) specific for the atkFileAttribute */
   define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1); // unable to upload files
   define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2); // unable to select files
   define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3); // unable to delete files
@@ -8,17 +24,16 @@
   define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline  
 
   /**
-   * With this you can upload, select and remove files in a given directory   
+   * With this you can upload, select and remove files in a given directory.
    *
-   * TODO: - Code clean up (del variable is dirty)
+   * @todo - Code clean up (del variable is dirty)
    *       - Support for storing the file itself in the db instead of on disk.
    *
    * @author Martin Roest <martin@ibuildings.nl>
-   * @version $Revision$
+   * @package atk
+   * @subpackage attributes
    *
-   * $Id$
-   *     
-   */        
+   */
   class atkFileAttribute extends atkAttribute
   {
     /** 

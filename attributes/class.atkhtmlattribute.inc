@@ -1,23 +1,34 @@
 <?php
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
 
   /**
-   * The atkHtmlAttribute class is the same as a normal
-   * atkAttribute. It only has a different display
-   * function. For this attribute, the value is
-   * rendered as-is, which means you can use html
-   * codes in the text.
-   *
-   * <b>Remarks:</b>
-   *   There might me times where you want the user to be able to
-   *   use html tags, but you don't want to give him the
-   *   inconvenience of using br's for each line. For this
-   *   reason the constructor accepts a parameter which tells
-   *   it to do a newline-to-br conversion.
-   *
-   * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$
+   * The atkHtmlAttribute class is the same as a normal atkAttribute. It only 
+   * (has a different display function. For this attribute, the value is
+   * rendered as-is, which means you can use html codes in the text.
+   *  
+   * There might me times where you want the user to be able to use html tags,
+   * but you don't want to have the inconvenience of using br's for each line.
+   * For this reason the constructor accepts a parameter which tells it to do 
+   * a newline-to-br conversion.
    *   
-   * $Id$   
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkHtmlAttribute extends atkTextAttribute

@@ -1,8 +1,25 @@
 <?php
 
-  /* flag(s) specific for atkRadioAttribute */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** Flag(s) specific for atkRadioAttribute */
   define("AF_DISPLAY_VERT",             AF_SPECIFIC_1); // erm, dislpays a set of radio buttons vertically
 
+  /** @internal Include base class */
   include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
 
   /**
@@ -12,9 +29,9 @@
    * This attribute is almost identical to atkListAttribute, 
    * with some slight modification to show radiobuttons instead of a listbox
    *
-   * @author Rene Bakx (rene@ibuildings.nl)
-   * @version $Revision$
-   * @see atkListAttribute
+   * @author Rene Bakx <rene@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkRadioAttribute extends atkListAttribute

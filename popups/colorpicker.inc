@@ -1,18 +1,27 @@
 <?php   
 
- /* colorpicker.php
-  *
-  * descr.  : Show the colorpicker and returns the value to the the text field
-  * input   : $form.field     -> name of the form and field from wich the picker is called
-  * call    : colorpicker.php?form=[form.field]
-  *
-  * @author : Rene Bakx (rene@ibuildings.nl)
-  * @version: $Revision$
-  *
-  * $Id$
-  *
-  */
-
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * Popup file used by the colorpicker attribute.
+   *
+   * @package atk
+   * @subpackage popups
+   * @access private
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * @internal Includes etc.
+   */
   include_once($config_atkroot."atk.inc");  
   
   atksession("admin");

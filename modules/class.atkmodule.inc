@@ -1,13 +1,31 @@
 <?php
 
   /**
-   * A generalization of an ATK module class.
-   * All ATK modules have to extend this class.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage modules
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * The atkModule abstract base class.
+   *
+   * All modules in an ATK application should derive from this class, and
+   * override the methods of this abstract class as they see fit.
    *
    * @author Peter C. Verhage <peter@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$
+   * @package atk
+   * @subpackage modules
+   * @abstract
    */
   class atkModule
   {
@@ -15,7 +33,8 @@
 
     /**
      * Constructor. The module needs to register it's nodes
-     * overhere, create it's menuitems etc.
+     * overhere, create its menuitems etc.
+     * @param String $name The name of the module.
      */
     function atkModule($name="")
     {

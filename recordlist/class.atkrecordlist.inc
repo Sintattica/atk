@@ -1,6 +1,22 @@
 <?php
 
-  /* recordlist flags */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage recordlist
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** recordlist flags */
   define("RL_NO_SORT",                         1); // recordlist is not sortable
   define("RL_NO_SEARCH",                       2); // recordlist is not searchable
   define("RL_EMBED",   RL_NO_SEARCH|RL_NO_SORT|4); // recordlist is embedded
@@ -10,6 +26,16 @@
 
   atkimport("atk.utils.atkstringparser");
 
+  /**
+   * Handler for the 'editcopy' action of a node. It copies the selected
+   * record, and then redirects to the edit action for the copied record.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage recordlist
+   *
+   */
   class atkRecordList
   {    
     var $m_node=NULL;    

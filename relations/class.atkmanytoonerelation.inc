@@ -1,10 +1,35 @@
 <?php
 
-  /* flag(s) specific for atkManyToOneRelation */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */   
+
+  /**
+   * flag(s) specific for atkManyToOneRelation 
+   */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
   
   /**
+   * @internal include base class
+   */
+  userelation("atkrelation");
+  
+  /**
    * A N:1 relation between two classes.
+   *
    * For example, projects all have one coordinator, but one
    * coordinator can have multiple projects. So in the project
    * class, there's a ManyToOneRelation to a coordinator.
@@ -13,35 +38,48 @@
    * you can select from a set of records.
    *
    * @author Ivo Jansch <ivo@achievo.org>
-   * @version $Revision$
+   * @package atk
+   * @subpackage relations
    *
-   * $Id$
-   */
-  
-   userelation("atkrelation");
+   */         
   class atkManyToOneRelation extends atkRelation
   {  
-    var $m_leftjoin = true; // by default, we do a left join. this means that
-                            // records that don't have a record in this
-                            // relation, will be displayed anyway. NOTE: set
-                            // this to false only if you know what you're
-                            // doing. When in doubt, 'true' is usually the
-                            // best option.
+    /**
+     * By default, we do a left join. this means that records that don't have
+     * a record in this relation, will be displayed anyway. NOTE: set  this to
+     * false only if you know what you're doing. When in doubt, 'true' is
+     * usually the best option.
+     * @var boolean
+     */
+    var $m_leftjoin = true; 
                             
-    var $m_refKey = array(); // The array of referential key fields.
+    /**
+     * The array of referential key fields.
+     * @access private
+     * @var array
+     */
+    var $m_refKey = array(); 
                
-    var $m_joinFilter = ""; // Extra filters for the join that retrieves the selected record.
+    /**
+     * SQL statement with extra filter for the join that retrieves the
+     * selected record.
+     * @var String
+     */
+    var $m_joinFilter = ""; 
     
     
     /**
-     * Constructor
-     * @param $name The name of the attribute. This is the name of the field that is the referential key
-     *              to the destination. 
-     *              For relations with more than one field in the foreign key, you should pass an array
-     *              of referential key fields. The order of the fields must match the order of the
-     *              primary key attributes in the destination node.
-     * @param $destination The node we have a relationship with.
-     * @param $flags Flags for the relation
+     * Constructor.
+     * @param String $name The name of the attribute. This is the name of the
+     *                     field that is the referential key to the
+     *                     destination. 
+     *                     For relations with more than one field in the
+     *                     foreign key, you should pass an array of
+     *                     referential key fields. The order of the fields
+     *                     must match the order of the primary key attributes
+     *                     in the destination node.
+     * @param String $destination The node we have a relationship with.
+     * @param int $flags Flags for the relation
      */
     function atkManyToOneRelation($name, $destination, $flags=0)
     {
@@ -414,7 +452,6 @@
      * @param $tablename Table name
      * @param $fieldaliasprefix Field alias prefix
      * @param $level Level
-     * @result A good query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {

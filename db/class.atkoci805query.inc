@@ -22,14 +22,14 @@
   require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
   
   /**
-   * SQL Builder for Oracle 8.0.5 databases. 
+   * SQL Querybuilder for Oracle 8.0.5 databases. 
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage db
    *
    */
-  class atkoci805query extends atkoci8query
+  class atkOci805Query extends atkOci8Query
   {
 
     /**

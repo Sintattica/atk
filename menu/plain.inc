@@ -1,20 +1,30 @@
 <?php
   /**
-   * Builds a navigation menu for the ATK application. 
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage menu
+   * @author Peter Verhage <peter@ibuildings.nl>
+   *
+   * @todo Move this to the menu class that wraps this code.
+   *
+   * Builds a plain text navigation menu for the ATK application. 
    * Items for the main application can be added within the
    * config.menu.inc file with the menuitem() method. Modules
    * can register menuitems in their constructor. The menu
    * has support for enabling/disabling items on a user profile base.
    *
-   * For more information check the atkmoduletools.inc file!
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
-   * @author Peter Verhage <peter@ibuildings.nl>
    * @version $Revision$
-   *
-   * $Id$      
-   *
-   */  	 	
+   * $Id$
+   */  
 	
+  /** @internal defines etc. */
   global $g_menu, $atkmenutop, $g_menu_parent;
 	
   atkimport("atk.ui.atkpage");

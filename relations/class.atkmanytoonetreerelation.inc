@@ -1,16 +1,35 @@
 <?php
-  /**
-   * A special many to one relation, where the destination of the relation
-   * is a tree structure. 
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Sandy Pleyte <sandy@achievo.org>
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *   
    * $Id$
-   *
+   */
+   
+  /** 
+   * @internal include base class
    */
   userelation("atkManyToOneRelation");  
    
+  /**
+   * Extension of the atkManyToOneRelation, that is aware of the treestructure
+   * (parent/child relation) in the destination node, and renders items in the
+   * dropdown accordingly.
+   *
+   * @author Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage relations
+   *
+   */    
   class atkManyToOneTreeRelation extends atkManyToOneRelation
   {
   

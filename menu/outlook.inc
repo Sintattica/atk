@@ -1,7 +1,27 @@
 <?php
 
-  // TODO/FIXME: Menu doesn't work because of a problem with the $g_theme and $atkmenutop variables
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage menu
+   * @author Paul Verhoef <paul@ibuildings.nl>
+   *
+   * @todo Move this to the menu class that wraps this code.
+   *
+   * Builds an outlook-ish navigation menu for the ATK application.    
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */  
 
+  /** @internal includes and defines etc. */
 	$config_platformroot = "../";
 	$config_atkroot = "../";
 	include_once("../atk.inc");

@@ -24,7 +24,7 @@
    * @subpackage db
    *
    */
-  class atkmysqlquery extends atkquery
+  class atkMysqlQuery extends atkQuery
   {
     /**
      * Generate an SQL searchcondition for a regular expression match.

@@ -1,25 +1,46 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
+   * @package atk
+   * @subpackage relations
    *
-   * @author      : Ivo Jansch <ivo@achievo.org>
-   * @version     : $Revision$
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
+   * @version $Revision$
    * $Id$
-   *
    */
-
+  
+  /** @internal include baseclass. */
   userelation("atkmanytomanyrelation");
-
+   
+  /**
+   * Many-to-many relation.
+   *
+   * The relation shows a list of available records, and a set of checkboxes
+   * to link the records with the current record on the source side.
+   *   
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage relations
+   *
+   */  
   class atkManyBoolRelation extends atkManyToManyRelation
   {
 
     /**
-    * Constructor
-    * @param $name
-    * @param $destination
-    * @param $flags
-    */
+     * Constructor.
+     * @param String $name The name of the relation.
+     * @param String $link The full name of the node that is used as
+     *                     intermediairy node.
+     * @param String $destination The full name of the node that is the
+     *                            destination end of the relationship.
+     * @param int $flags Attribute flags.
+     */
     function atkManyBoolRelation($name, $link, $destination, $flags=0)
     {
       $this->atkManyToManyRelation($name, $link, $destination, $flags);
@@ -28,7 +49,7 @@
     /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
-     * @result piece of html code
+     * @return String piece of html code
      */
     function edit($record="", $fieldprefix="")
     {

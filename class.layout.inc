@@ -34,7 +34,7 @@
    * rows, cells, boxes etc.
    *
    * @author Ivo Jansch <ivo@achievo.org>
-   *   
+   * @package atk
    * @deprecated Since version 5.0. Use classes from the ui subpackage instead.
    */
   class layout

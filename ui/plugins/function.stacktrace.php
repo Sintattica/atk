@@ -33,8 +33,6 @@
    * </code>
    *
    * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage ui
    *
    */
   function smarty_function_stacktrace($params, &$smarty)

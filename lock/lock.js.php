@@ -1,18 +1,32 @@
 <?php
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage lock
+   *
+   * The ATK lock javascript. This script allows us to extend the lock lease
+   * for a certain record / item.
+   *
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** @internal some defines */
   global $ATK_VARS;
   $id = (int)$ATK_VARS["id"];
   $message = text("lock_expired");
   $stack = $ATK_VARS["stack"];
 ?>
-/**
- * $Id$
- *
- * The ATK lock javascript. This script allows us to extend the lock lease
- * for a certain record / item.
- *
- * @author Peter C. Verhage <peter@ibuildings.nl>
- * @version $Revision$
- */
 var atkLock = new Object();
 
 /**

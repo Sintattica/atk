@@ -38,16 +38,16 @@
    * @package atk
    * @subpackage db
    */
-  class atkoci805db extends atkoci8db
+  class atkOci805Db extends atkOci8Db
   {    
     var $m_type = "oci805";
     
     /**
      * Base constructor
      */
-    function atkoci805db()
+    function atkOci805Db()
     {
-       return $this->atkoci8db();
+       return $this->atkOci8Db();
     }    
 
   }

@@ -1,15 +1,24 @@
 <?php
-  /**
-   * The atkWysiwygAttribute class is an MS IE html edit control thingee
-   *
-   * @author Lineke Willems <lineke@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$
-   *
-   */
 
-  //include_once($config_atkroot."atk/attributes/wysiwyg/property_accessor.php");
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /** 
+   * @internal include baseclass.
+   */  
   include_once($config_atkroot."atk/atkbrowsertools.inc");
   include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");
 
@@ -41,6 +50,14 @@
   // that don't allow a user to crap a sites layout.
   define("WW_LIGHT", WW_STYLE|WW_TOOLS|WW_LIST|WW_LINK|WW_ALIGN);
 
+  /**
+   * The atkWysiwygAttribute class is an MS IE html edit control thingee.
+   *
+   * @author Lineke Willems <lineke@ibuildings.nl>   
+   * @package atk
+   * @subpackage attributes
+   *
+   */
   class atkWysiwygAttribute extends atkTextAttribute
   {
 
@@ -264,6 +281,7 @@
         {
           $result.= "<!-- DEInsertTableParam Object -->";
           //$result.= "<object ID=\"ObjTableInfo\" CLASSID=\"clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C\" width=2 height=2 VIEWASTEXT>";
+          
           //$result.= "</object>";
           $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:350;width:630;background-color:white;\">";
           $result.= "</IFRAME>";

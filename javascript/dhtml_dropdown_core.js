@@ -1,9 +1,18 @@
-/*
-
-  CASCADING POPUP MENUS v5.2beta (c) 2001-2003 Angus Turnbull, http://www.twinhelix.com
-  This notice may not be altered or removed. See my site for licensing and more scripts!
-
-*/
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage javascript
+   *
+   * @version $Revision$
+   * $Id$
+   *
+   * CASCADING POPUP MENUS v5.2beta (c) 2001-2003 Angus Turnbull, http://www.twinhelix.com
+   * This notice may not be altered or removed. See my site for licensing and more scripts!
+   */
 
 var isDOM=document.getElementById?1:0;
 var isIE=document.all?1:0;

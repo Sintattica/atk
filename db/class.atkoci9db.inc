@@ -1,21 +1,36 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** @internal Include base class */
   require_once(atkconfig("atkroot")."atk/db/class.atkoci8db.inc");
 
   /**
-   * Handles database connectivity and database interaction
-   * with the Oracle 9i database server. 
+   * Oracle 9i database driver.
    *
-   * This class is based on oci8db, but makes use of some
-   * featurss that where introduced in Oracle 9i
+   * This class is based on oci8db, but makes use of some features that were
+   * introduced in Oracle 9i. Should work with Oracle 10i databases too.
    *
    * @author Maurice Maas <maurice@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$   
+   * @package atk
+   * @subpackage db
    *
    */
-  class atkoci9db extends atkoci8db
+  class atkOci9Db extends atkOci8Db
   {        
     var $m_bindresult = array();
 
@@ -24,9 +39,9 @@
     /**
      * Base constructor
      */
-    function atkoci9db()
+    function atkOci9Db()
     {
-      return $this->atkoci8db();
+      return $this->atkOci8Db();
     }
 
     /**

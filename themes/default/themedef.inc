@@ -1,4 +1,21 @@
 <?php
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage themes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** Theme definition */
 
   $theme["customtpls"] = array("action.tpl","action_view.tpl","actionpage.tpl","box.tpl","editform.tpl","list.tpl","login.tpl","recordlist.tpl","searchform.tpl","statusbar.tpl","tabs.tpl","viewform.tpl");  
   $theme["customimgs"] = array("help.gif","hide_bg.gif","hide_explorer.gif", "menubanner.jpg", "menulogo.gif", "required_field.gif", "show_explorer.gif");

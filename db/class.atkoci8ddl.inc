@@ -1,17 +1,35 @@
 <?php
 
   /**
-   * Oracle8i specific implementations of the aktDDL utility class.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Martin Roest <martin@ibuildings.nl>
+   * @package atk
+   * @subpackage db
    *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
    * $Id$
    */
-
-  class atkoci8ddl extends atkDDL
+   
+  /**
+   * Oracle 8i ddl driver. 
+   *
+   * Implements specific ddl statements for Oracle 8i databases.
+   *
+   * @author Martin Roest <martin@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   *
+   */
+  class atkOci8DDL extends atkDDL
   {
     
-    function atkoci8ddl()
+    function atkOci8DDL()
     {
     }
     

@@ -1,16 +1,36 @@
 <?php
-  /**
-   * This class does authentication via a user/password in the configfile
+/**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage security
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
    
+  /**
+   * Driver for authentication and authorization using entries in the
+   * configurationfile.
+   *
+   * See the methods in atkconfigtools.inc for an explanation of how to add
+   * users and privileges.
+   *
+   * Does not support authorization.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage security
+   *
+   */   
    class auth_config extends auth_interface
-   {
+   {     
      function validateUser($user, $passwd)
      {       
        global $config_user;       

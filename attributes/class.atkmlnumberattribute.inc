@@ -1,15 +1,29 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
    * The atkMlNumberAttribute class represents an multilanguage
    * attribute of a node that can have a numeric value.
    *
    * Based on atkNumberAttribute.
    *
-   * @author Peter Verhage (peter@ibuildings.nl)
-   * @see atkNumberAttribute
-   * @version $Revision$
-   *
-   * $Id$   
+   * @author Peter Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkMlNumberAttribute extends atkMlAttribute

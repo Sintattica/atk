@@ -88,7 +88,7 @@
 
   /**
    * The global default database object.
-   * @global atkDb
+   * @global atkDb $g_db
    */
   $g_db = getDb();
 

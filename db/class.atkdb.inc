@@ -39,7 +39,7 @@
    * @subpackage db
    *
    */
-  class atkdb
+  class atkDb
   {
     /**
      * The hostname/ip to connect to.
@@ -489,8 +489,8 @@
      * This function checks the database for a table with 
      * the provide name
      *
-     * @params $tableName the table to find
-     * @params returns true if found, false if not found
+     * @param String $tableName the table to find
+     * @return boolean true if found, false if not found
      */  
     function tableExists($tableName)
     {

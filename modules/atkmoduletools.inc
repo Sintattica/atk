@@ -1,17 +1,27 @@
 <?php
   /**
-   * Atk Module Tools
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * A collection of functions which can be used
-   * for ATK module support.
+   * @package atk
+   * @subpackage modules
    *
-   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * Collection of utility methods for use with modules and nodes.
+   * @todo Move the global methods to classes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
-   */
+   */    
 
+  /**
+   * @internal Includes, global definitions etc.
+   */
+   
   // A repository of node instances..
   $g_nodeRepository = array();
 
@@ -224,21 +234,24 @@
   /**
    * Perform a member function on all active modules, and return the 
    * collective result.
-   * 
-   * @param $function The name of the module member function to be called.
-   *                  The function does not have to exist for all modules, as
-   *                  atkHarvestModules will check if it exists before it
-   *                  makes the call.
-   * @param $param    Parameter to be passed to all functions. It is only
-   *                  possible to pass zero or one parameter.
-   * @param $associative If true, return is an associative
-   *                     array with the results indexed by
-   *                     modulename. If false, results are
-   *                     put together in one array.
    *
-   * @example $menuitems = atkHarvestModules("getStuff");
-   *          This will return the result of the getStuff
-   *          calls for all modules in a single array, 
+   * <b>Example:</b>
+   * <code>
+   *  $menuitems = atkHarvestModules("getStuff");
+   * </code>
+   * This will return the result of the getStuff calls for all modules in a
+   * single array.
+   * 
+   * @param String $function The name of the module member function to be
+   *                         called. The function does not have to exist for
+   *                         all modules, as atkHarvestModules will check if
+   *                         it exists before it makes the call.
+   * @param mixed $param Parameter to be passed to all functions. It is only
+   *                     possible to pass zero or one parameter.
+   * @param boolean $associative If true, return is an associative array with
+   *                             the results indexed by modulename. If false,
+   *                             results are put together in one array.
+   * @return array The result of the harvest.
    */
   function atkHarvestModules($function, $param="", $associative=false)
   {

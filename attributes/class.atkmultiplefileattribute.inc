@@ -1,13 +1,28 @@
 <?php
   /**
-   * This is an extend of the famous atkfileattribute :). Now its possible to insert one or more
-   * files in one database field
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Martin Roest (martin@ibuildings.nl)
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *   
+   */
+   
+  /**
+   * This is an extend of the famous atkfileattribute :). Now its possible 
+   * to insert one or more files in one database field
+   *
+   * @author Martin Roest <martin@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
+   *
    */
   class atkMultipleFileAttribute extends atkFileAttribute
   {

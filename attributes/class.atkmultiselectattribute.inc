@@ -1,17 +1,33 @@
 <?php
-
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /** Defines */
   define(AF_NO_TOGGLELINKS, AF_SPECIFIC_1);
   
+  /** @internal Include base class */
   useattrib("atklistattribute");
   
   /**
    * The atkMultiboolAttribute class represents an attribute of a node
-   * that has a field with checkboxes, and stores the input seperated by a |
+   * that has a field with checkboxes, and stores the input seperated by a '|'
    *
-   *
-   * @author Rene Bakx (rene@ibuildings.nl)
-   * @version $Revision$
-   * @see atkListAttribute
+   * @author Rene Bakx <rene@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkMultiSelectAttribute extends atkListAttribute
@@ -21,7 +37,7 @@
     var $m_cols;
 
     /**
-     * Constructor
+     * Constructor 
      * @param $name Name of the attribute
      * @param $optionArray Array with options
      * @param $valueArray Array with values. If you don't use this parameter, 

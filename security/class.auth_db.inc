@@ -1,14 +1,28 @@
 <?php
   /**
-   * This class does authentication through a set of tables in a db
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage security
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
+   */
+   
+  /**
+   * Driver for authentication and authorization using tables in the database.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage security
    *
    */
-
    class auth_db extends auth_interface
    {
      var $m_rightscache = array();  

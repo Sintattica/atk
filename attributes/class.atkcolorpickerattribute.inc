@@ -1,20 +1,24 @@
 <?php
 
-  /**  
-   * The atkColorPickerAttribute class represents an attribute of an atkNode.
-   * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
-   * from wich the user can select a color or enter the hexcode in a textfield
-   * 
-   * flags: AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
-   * 
-   * @author Rene Bakx <rene@ibuildings.nl>
-   * @version $Revision$
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
    * $Id$
    */  
 
   /**
-    * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color
+   * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color
+   * @access private
    */
   function drawTD($field,$color,$colHeight,$colWidth,$extern=0)
   {
@@ -35,7 +39,8 @@
   }
 
   /**
-    * Returns a string with the entire colorPicker matrix
+   * Returns a string with the entire colorPicker matrix
+   * @access private
    */
   function colorMatrix($colHeight,$colWidth,$field,$extern=0,$userColors)
   {
@@ -119,14 +124,14 @@
     return array($matrix_rb, $matrix_rg, $matrix_gb, $matrix_red, $matrix_green, $matrix_blue, $matrix_grey, $matrix_user);
   }
 
- /**
-  * Function to check if a color is correct (default is hex colors)
-  * Example:
-  * check_color("#zff, "hex"")
-  * check_color("rgb(204,255,0)", "rgb")
-  *
-  * @return boolean valid color or not
-  */
+  /**
+   * Function to check if a color is correct (default is hex colors)
+   * Example:
+   * check_color("#zff, "hex"")
+   * check_color("rgb(204,255,0)", "rgb")
+   * @access private
+   * @return boolean valid color or not
+   */
   function check_color()
   {
     $numargs = func_num_args();
@@ -195,13 +200,20 @@
     }
   }
 
-
-  
-  
-  
-  
-  
-  
+  /**  
+   * The atkColorPickerAttribute class represents an attribute of an atkNode.
+   * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
+   * from wich the user can select a color or enter the hexcode in a textfield
+   * 
+   * flags: AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
+   * @todo There are many global functions in the class file
+   *       class.atkcolorpickerattribute.inc. These should be moved to private
+   *       class methods.
+   * @author Rene Bakx <rene@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
+   *
+   */
   class atkColorPickerAttribute extends atkAttribute
   {
     var $m_userColors;

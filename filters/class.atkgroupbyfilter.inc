@@ -1,20 +1,36 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage filters
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */  
+
+  /** @internal include baseclass */
   usefilter("atkfilter");
 
-/**
- * add a group by clausule to a query
- * use this filter, like you use an attribute, for example:
- * $this->add(new atkGroupByFilter("street_place", "street, place"));
- * 
- * @authors Kees van Dieren <kees@ibuildings.nl>
- *          Ivo Jansch <ivo@ibuildings.nl>
- * @version $Revision$
- * $Id$
- * @copyright Ibuildings.nl BV
- * @package atk
- * @subpackage filters
- */
+  /**
+   * Add a group by clausule to a query.
+   *
+   * Use this filter, like you use an attribute, for example:
+   * $this->add(new atkGroupByFilter("street_place", "street, place"));
+   * 
+   * @author Kees van Dieren <kees@ibuildings.nl>
+   * @author Ivo Jansch <ivo@ibuildings.nl>
+   * @package atk
+   * @subpackage filters
+   *
+   */
   class atkGroupByFilter extends atkFilter
   {	
     /**

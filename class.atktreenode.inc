@@ -57,8 +57,8 @@
   
     /**
      * Constructor
-     * @Param $name Node name
-     * @Param $flags Node flags
+     * @param String $name Node name
+     * @param int $flags Node flags
      */
     function atkTreeNode($name,$flags=0)
     {
@@ -620,10 +620,10 @@
     }
     
     /** 
-          * Copies a record and the Childs if there are any
-          *
-          *@param $selector The 'where' clause that indicates which records to select.
-          */
+     * Copies a record and the Childs if there are any
+     *
+     *@param $selector The 'where' clause that indicates which records to select.
+     */
     function copyDb($record)
     {   
       $oldparent=$record[$this->m_primaryKey[0]];
@@ -639,11 +639,11 @@
     }
     
     /**
-        * This is a recursive function to copy the children from a parent.
-        *
-        * @param $selector Selector
-        * @param $parent Parent ID
-        */
+     * This is a recursive function to copy the children from a parent.
+     *
+     * @param $selector Selector
+     * @param $parent Parent ID
+     */
     function copyChildren($selector, $parent="")
     {
       $recordset = $this->selectDb($selector,"","","","","copy");
@@ -670,10 +670,10 @@
     }
     
     /**
-         * delete record from the database also the childrecords.
-         * todo: instead of delete, set the deleted flag.
-         * @param $selector Selector
-         */
+     * delete record from the database also the childrecords.
+     * todo: instead of delete, set the deleted flag.
+     * @param $selector Selector
+     */
     function deleteDb($selector)
     {
       global $g_db;
@@ -716,11 +716,11 @@
     }
     
     /**
-         * Recursive function whitch deletes all the child records of a parent
-         *
-         * @Param $selector Selector
-         * @Param $parent Parent
-         */
+     * Recursive function whitch deletes all the child records of a parent
+     *
+     * @param $selector Selector
+     * @param $parent Parent
+     */
     function deleteChildren($selector,$parent)
     {
       global $g_db;

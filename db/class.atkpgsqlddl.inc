@@ -1,16 +1,34 @@
 <?php
 
   /**
-   * PostgreSQL specific implementations of the aktDDL utility class.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Peter C. Verhge <peter@achievo.org>
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
    */
-  class atkpgsqlddl extends atkDDL
+   
+  /**
+   * Oracle 9i ddl driver. 
+   *
+   * Based on 8i ddl class. Should work with Oracle 10i databases too.
+   *
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   *
+   */  
+  class atkPgsqlDDL extends atkDDL
   {
-    function atkpgsqlddl()
+    function atkPgsqlDDL()
     {
       $this->atkDDL();
     }

@@ -34,7 +34,7 @@
    * @subpackage db
    *
    */
-  class atkoci8db extends atkdb
+  class atkOci8Db extends atkDb
   {    
     /**
      * @var String
@@ -45,7 +45,7 @@
     /**
      * Default constructor
      */
-    function atkoci8db()
+    function atkOci8Db()
     {
       // set the user error's
       $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);   
@@ -500,7 +500,7 @@
     /**
      * This function checks in the database if a table exists.     
      *
-     * @params String $tableName The name of the table to check.
+     * @param String $tableName The name of the table to check.
      * @return boolean True if the table exists, false if not.
      */  
     function tableExists($table)

@@ -1,21 +1,35 @@
 <?php
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
   
+  /** @internal include baseclass */
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
   //PostgreSQL error's includen
   include_once(atkconfig("atkroot")."atk/db/languages/postgresql_".atkconfig('language').'.lng');
 
   /**
-   * Handles database connectivity and database interaction
-   * with the PostgreSQL database server. Portions of this class are
-   * based on the db_pgql.inc file of PHPLib.
+   * Database driver for PostgreSQL.
    *
    * @author Peter Verhage <peter@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$   
+   * @package atk
+   * @subpackage db
    *
    */ 
-  class atkpgsqldb extends atkdb
+  class atkPgsqlDb extends atkDb
   {
     /* identification */
     var $m_type = "pgsql";  

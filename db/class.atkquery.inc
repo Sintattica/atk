@@ -1,18 +1,34 @@
 <?php
 
   /**
-   * This class builds queries. Sometimes databases require specific, non
-   * ansi compliant SQL. The code for this should go into classes
-   * that extend this class.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
-
-  class atkquery
+   
+  /**
+   * Abstract baseclass for SQL query builder drivers.
+   * 
+   * All db drivers should derive a class from this baseclass and implement
+   * the necessary methods.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage db
+   * @abstract
+   */
+  class atkQuery
   {
     /**
     * Array with Fieldnames
@@ -218,8 +234,8 @@
 
     /**
      * Builds the SQL Select query
-     * @result a SQL Select Query
      * @param $distinct distinct records?
+     * @return String a SQL Select Query
      */
     function buildSelect($distinct = FALSE)
     {
@@ -304,9 +320,9 @@
      * because we do joins, like in a select, but we don't really select the
      * fields.
      *
-     * @param $distinct distinct rows?
+     * @param boolean $distinct distinct rows?
      *
-     * @result a SQL Select COUNT(*) Query
+     * @return String a SQL Select COUNT(*) Query
      */
      function buildCount($distinct = FALSE)
      {
@@ -353,10 +369,10 @@
      }
 
 
- /**
-    * Builds the SQL Update query
-    * @result a SQL Update Query
-    */
+    /**
+     * Builds the SQL Update query
+     * @return String a SQL Update Query
+     */
     function buildUpdate()
     {
       $result = "UPDATE ".$this->m_tables[0]." SET ";
@@ -396,9 +412,9 @@
     }
 
     /**
-    * Builds the SQL Insert query
-    * @result a SQL Insert Query
-    */
+     * Builds the SQL Insert query
+     * @return String a SQL Insert Query
+     */
     function buildInsert()
     {
       $result = "INSERT INTO ".$this->m_tables[0]." (";
@@ -424,7 +440,7 @@
 
     /**
      * Builds the SQL Delete query
-     * @result a SQL Delete Query
+     * @return String a SQL Delete Query
      */
     function buildDelete()
     {
@@ -438,11 +454,10 @@
       return $result;
     }
 
- /**
-    * Search Alias in alias array
-    * @param $record Array with fields
-    * @result $record with correct value
-    */
+    /**
+     * Search Alias in alias array
+     * @param array $record Array with fields     
+     */
     function deAlias(&$record)
     {
       foreach ($record as $name => $value)
@@ -455,7 +470,7 @@
       }
     }
 
-  /**
+    /**
      * Generate a searchcondition that checks whether $value matches $field exactly.
      */
     function exactCondition($field, $value)
@@ -546,8 +561,8 @@
     }
 
     /**
-        *  generate searchcondition with less than
-        */
+     *  generate searchcondition with less than
+     */
     function lessthanequalCondition($field, $value)
     {
       if($value[0]=='!')

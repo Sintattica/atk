@@ -1,16 +1,30 @@
 <?php
 
- /**
-  * filter base class
-  * 
-  * @authors Ivo Jansch      <ivo@ibuildings.nl>
-             Kees van Dieren <kees@ibuildings.nl>
-  * @version $Revision$
-  * $Id$
-  * @copyright Ibuildings.nl BV
-  * @package atk
-  * @subpackage filters
-  */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage filters
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */     
+
+  /**
+   * Abstract base class for atkFilters.
+   * 
+   * @author Ivo Jansch <ivo@ibuildings.nl>
+   * @author Kees van Dieren <kees@ibuildings.nl>
+   * @package atk
+   * @subpackage filters
+   * @abstract
+   */
   class atkFilter extends atkAttribute
   {	
     function atkFilter($name, $flags=0)

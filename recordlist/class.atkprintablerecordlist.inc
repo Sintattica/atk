@@ -1,7 +1,36 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage recordlist
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** @internal include base class */
   atkimport("atk.recordlist.atkrecordlist");
   
+  /**
+   * Recordlist implementation that renders a recordlist that is 
+   * 'printer-friendly'.
+   *
+   * It doesn't render any actions or links, and can only be used as a
+   * readonly list of records.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage recordlist
+   *
+   */
   class atkPrintableRecordList extends atkRecordList 
   {
     

@@ -1,16 +1,30 @@
 <?php
 
-/**
- * Oracle 8 specific SQL functions.
- * 
- * @author Sandy Pleyte (sandy@ibuildings.net)
- * @version $Revision$
- *
- * $Id$
- *
- */
-
-  class atkoci8query extends atkquery
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Query build for Oracle 8i databases.
+   *
+   * @author Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   *
+   */   
+  class atkOci8Query extends atkQuery
   {
 
     /**

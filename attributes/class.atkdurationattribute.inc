@@ -1,11 +1,26 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
    * The atkDurationAttribute is an attribute for entering a length of time.
    *
-   * @author  Ivo Jansch <ivo@achievo.org>
-   * @version $Revision$
-   *
-   * $Id$
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkDurationAttribute extends atkAttribute
@@ -46,8 +61,8 @@
     /**   
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (hours, minutes and seconds will be a dropdownbox)
-     * @params $record 
-     * @return Piece a of HTML Code
+     * @param array $record 
+     * @return String Piece a of HTML Code
      */
     function edit($record="", $fieldprefix="")
     {  
@@ -106,8 +121,8 @@
     
     /**   
      * Returns a piece of html code that can be used in a form to search values.    
-     * @params $record Array of records, with for each record 2 fields (hours, minutes)
-     * @return Piece a of HTML Code
+     * @param array $record Array of records, with for each record 2 fields (hours, minutes)
+     * @return String Piece a of HTML Code
      */
     function search($record="")
     {

@@ -1,5 +1,9 @@
 <?php
 /**
+
+@package atk
+@subpackage utils
+
 ADOdb Date Library, part of the ADOdb abstraction library
 Download: http://php.weblogs.com/adodb_date_time_library
 
@@ -204,7 +208,7 @@ First implementation.
 */
 
 
-/* Initialization */
+/** @internal Initialization */
 
 /*
 	Version Number

@@ -1,18 +1,36 @@
 <?php
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /** 
+   * @internal include base class.
+   */
+  useattrib("atkTextAttribute");
+  include_once(atkconfig("atkroot")."atk/utils/class.atkstringparser.inc");
+  
   /**
    * The atkFileWriterAttribute is an attribute that reads data from / saves 
    * data to a file, instead of the database.
+   *  
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
    *
-   * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$
-   *
-   * $Id$      
-   *
-   */
-
-  useattrib("atkTextAttribute");
-  include_once(atkconfig("atkroot")."atk/utils/class.atkstringparser.inc");
-
+   */  
   class atkFileWriterAttribute extends atkTextAttribute
   {
     var $m_filename;

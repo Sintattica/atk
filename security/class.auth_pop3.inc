@@ -28,7 +28,7 @@
   class auth_pop3 extends auth_interface
   {
     /**
-     * Validate user with $user and $passwd
+     * Validate user.
      * @param String $user the username
      * @param String $passwd the password
      * @return boolean True if login is valid, false if not.

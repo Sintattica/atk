@@ -1,20 +1,34 @@
 <?php
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /** @internal Include base class */
+  useattrib("atkmlattribute");
+   
+  /**
    * The atkMlTextAttribute class represents an multilanguage attribute
    * of a node that is a big text field.
    *
    * Based on atkTextAttribute.
    *
-   * @author Peter Verhage (peter@ibuildings.nl)
-   * @see atkTextAttribute
-   * @version $Revision$
+   * @author Peter Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
    *
-   * $Id$
-   *
-   */
-
-  useattrib("atkmlattribute");
-
+   */  
   class atkMlTextAttribute extends atkMlAttribute
   {
 

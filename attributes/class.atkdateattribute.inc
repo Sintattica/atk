@@ -1,6 +1,22 @@
 <?php
 
-  /* flag(s) specific for atkDateAttribute */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /** flag(s) specific for atkDateAttribute */
   define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
   define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
   define("AF_DATE_NO_CALENDAR",         AF_SPECIFIC_3); // Do not append the popup calendar.
@@ -9,15 +25,13 @@
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
 
   /**
-   * The atkDateAttribute class offers an advanced date widget for date fields.
-   * @author  Peter C. Verhage <peter@achievo.org>
-   *          Tom Schenkenberg <tom@achievo.org>
+   * The atkDateAttribute class offers a date widget for date fields.
+   * @author Peter C. Verhage <peter@achievo.org>
+   * @author Tom Schenkenberg <tom@achievo.org>
+   * @package atk
+   * @subpackage attributes
    *
-   * @version $Revision$
-   *
-   * $Id$
-   */       
-
+   */
   class atkDateAttribute extends atkAttribute
   {
     var $m_date_min;
@@ -160,7 +174,7 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
-     * @params $record Array with 3 fields (year, month, day)
+     * @param array $record Array with 3 fields (year, month, day)
      * @return Piece a of HTML Code
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
@@ -397,7 +411,7 @@
     /**
      * Returns a piece of html code that can be used in a form to search values.
      * Searching is disabled for the date attribute, we only return a space.
-     * @params $record array with 3 fields (year, month, day)
+     * @param array $record array with 3 fields (year, month, day)
      * @return piece of HTML code
      */
     function search($record="", $extended=false)
