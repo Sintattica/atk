@@ -8,12 +8,6 @@
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @version $Revision$
  */
-chdir("../../");
-include_once($config_atkroot."atk.inc");
-
-atksession();
-atksecure();
-
 global $ATK_VARS;
 $id = (int)$ATK_VARS["id"];
 
@@ -22,12 +16,12 @@ $lock = &atkLock::getInstance();
 /* extend lock lease */
 if ($lock->extend($id))
 {
-   header("Content-type: image/png");
-   $image = imagecreate(1, 1);
-   $color = imagecolorallocate($image, 255, 255, 255);
-   imagefill($image, 0, 0, $color);
-   imagepng($image);
-   imagedestroy($image);
+  header("Content-type: image/png");
+  $image = imagecreate(1, 1);
+  $color = imagecolorallocate($image, 255, 255, 255);
+  imagefill($image, 0, 0, $color);
+  imagepng($image);
+  imagedestroy($image);
 }
 
 /* not found header */

@@ -52,7 +52,7 @@ class atkDbLock extends atkLock
     $this->storeLockList($atklockList);
 
     if ($this->m_id > 0)
-      $g_layout->register_script(atkconfig("atkroot")."atk/lock/lock.js.php?stack=".atkStackID()."&id=".$this->m_id);
+      $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
   }
 
   /**
@@ -93,7 +93,7 @@ class atkDbLock extends atkLock
     if (is_array($atklockList))
     {
       $atklock = $atklockList[atkStackID()];
-      for ($i = 0, $_i = count($atklock["stack"]); $i < $_i; $i++)
+      for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
         if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) return TRUE;
     }
 
@@ -116,7 +116,7 @@ class atkDbLock extends atkLock
       if ($this->m_id <= 0)
       {
         $this->m_id = $g_db->nextid("db_lock");
-        $g_layout->register_script(atkconfig("atkroot")."atk/lock/lock.js.php?stack=".atkStackID()."&id=".$this->m_id);
+        $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
       }
 
       $user = getUser();
@@ -263,10 +263,19 @@ class atkDbLock extends atkLock
   function isLocked($selector, $table)
   {
     global $g_db;
-    static $_cache = NULL;
+    static $_cache = array();
+
+    /* first check if we haven't locked the item ourselves already */
+    $atklockList = $this->loadLockList();
+    if (is_array($atklockList))
+    {
+      $atklock = $atklockList[atkStackID()];
+      for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
+        if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) return NULL;
+    }
 
     /* select all locks for the node table -> cache */
-    if ($_cache == NULL)
+    if (!is_array($_cache[$table]))
     {
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
@@ -279,12 +288,12 @@ class atkDbLock extends atkLock
       $query->addTable("db_lock");
       $query->addCondition("lock_table = '".escapeSQL($table)."'");
       $query->addCondition("lock_lease >= now()");
-      $_cache = $g_db->getRows($query->buildSelect());
+      $_cache[$table] = $g_db->getRows($query->buildSelect());
     }
 
     /* search for lock */
-    for ($i = 0, $_i = count($_cache); $i < $_i; $i++)
-      if ($_cache[$i]["lock_record"] == $selector) return $_cache[$i];
+    for ($i = 0, $_i = count($_cache[$table]); $i < $_i; $i++)
+      if ($_cache[$table][$i]["lock_record"] == $selector) return $_cache[$table][$i];
 
     /* not found */
     return NULL;

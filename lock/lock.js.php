@@ -1,10 +1,4 @@
 <?php
-  chdir("../../");
-  include_once($config_atkroot."atk.inc");
-
-  atksession();
-  atksecure();
-
   global $ATK_VARS;
   $id = (int)$ATK_VARS["id"];
   $message = text("lock_expired");
@@ -57,7 +51,7 @@ function atkLockCheck()
 {
   var image = new Image();
   image.onerror = atkLockUnlock;
-  image.src = '<?=atkconfig("atkroot")?>atk/lock/lock.php?stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+  image.src = 'include.php?file=atk/lock/lock.php&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
 }
 
 /**
@@ -68,7 +62,7 @@ function atkLockUnlock()
   atkLock.isLocked = false;
   if (typeof(document.images['_lock_']) != 'undefined')
     document.images['_lock_'].src='<?=atkconfig("atkroot")?>atk/images/lock_expired.gif';
-  alert('<?=escapeSQL($message)?>');
+  alert('<?=addslashes($message)?>');
 }
 
 atkLockInit('<?=$id?>');
