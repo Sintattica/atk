@@ -111,8 +111,7 @@
   function atkdebug($txt)
   {
      global $g_debug_msg;
-
-     $g_debug_msg[]="[".elapsed()."] ".$txt;
+     if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()."] ".$txt;
   }
 
   /**
