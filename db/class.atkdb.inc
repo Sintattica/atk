@@ -285,6 +285,18 @@
       return array();
     }
   
+   /**
+     * This function checks the database for a table with 
+     * the provide name
+     *
+     * @params $tableName the table to find
+     * @params returns true if found, false if not found
+     */  
+    function tableExists($tableName)
+    {
+      return FALSE;
+    } 
+  
     /**
      * Get all rows that are the result
      * of a certain specified query

@@ -314,6 +314,26 @@
       return $result;
     }
     
+  /**
+       * This function checks the database for a table with 
+       * the provide name
+       *
+       * @params $tableName the table to find
+       * @params returns true if found, false if not found
+       */  
+    function tableExists($tableName)
+    {
+      global $g_db;
+      
+      $res = $g_db->getrows("SHOW TABLES");    
+      $found = FALSE;
+      for($i=0; ($i<count($res)) && (!$found); $i++)
+      {
+        if ($res[$i][0] == $tableName) $found = TRUE;
+      }    
+      return ($found);    
+    }
+  
     /**
      * This function indicates what searchmodes the database supports.
      * @return array with search modes
