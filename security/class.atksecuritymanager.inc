@@ -346,33 +346,98 @@
 
       $g_layout->table_simple();
       $g_layout->output('<tr>');
+
       if($loginattempts>atkconfig('max_loginattempts'))
       {
-        $g_layout->output("<td class=table>".text('max_loginattempts_exceeded')."<br><br></td>");
+        $g_layout->output("<script language='javascript'>window.alert('".text("max_loginattempts_exceeded")."')</script>");
+//        $g_layout->output("<td class=table>".text('max_loginattempts_exceeded')."<br><br></td>");
       }
       else
       {
         if($loginattempts>=1&&$atkaction=="login"&&$authorization=="loginform")
         {
-          $g_layout->output('<tr><td colspan=2 class=error>'.text('login_failed').'<br></td></tr>');
+          $g_layout->output("<script language='javascript'>window.alert('".text("login_failed")."')</script>");
+//          $g_layout->output('<tr><td colspan=2 class=error>'.text('login_failed').'<br></td></tr>');
         }
-        $g_layout->output("<td valign=top class=table>".text('username').":</td><td><input type=text size=15 name='atkusername' value='".$atkusername."' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'></td>");
+         
+        // generate the username input field
+        // based upon the config_authdropdown and auth. method
+        $userField = $this->auth_userField($atkusername);
+
+        // generate the form
+        $g_layout->output("<td valign=top class=table>".text('username').":</td><td>".$userField."</td>");   
         $g_layout->output("</tr><tr><td colspan=2 class=table height=6></td></tr><tr>");
         $g_layout->output("<td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=atkpassword value='' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'></td>");
         $g_layout->output("</tr><tr>");
       }
       $g_layout->output('</tr></table>');
       $g_layout->output('</td>');
+
       if(!($loginattempts>atkconfig('max_loginattempts')))
       {
         $g_layout->output('</tr><tr>');
         $g_layout->output("<td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td>");
       }
+
       $g_layout->output('</tr></table>');
+//      $g_layout->output("</td></tr></table>");
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
       $g_layout->ui_bottom();
 
     }
+
+
+    function auth_userField($atkusername)
+    {
+      global $g_db;
+
+      $defaultField = "<input type=text size=15 name='atkusername' value='".$atkusername."' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'>";
+
+      if (atkconfig("auth_dropdown") == true)
+      {
+        switch (atkconfig("authentication"))
+        {
+          // TODO: LDAP tree browser to select correct DN in an LDAP/ADSI environment
+
+          // DB authentication
+          case "db":
+            $auth_table = atkconfig("auth_usertable");
+            $query      = "SELECT userid, lastname, firstname FROM $auth_table WHERE account_enabled=1 ORDER BY firstname, lastname";
+            $userRows   = $g_db->getRows($query);
+            $userRows[] = array("userid"=>"administrator","lastname"=>"","firstname"=>"Administrator");
+            
+            if (count($userRows) <= 1)
+            {
+              return $defaultField;
+            }
+            else
+            {
+              $userField  = "<SELECT name='atkusername' style='background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'>\n";
+              for ($i=0;$i<=count($userRows)-1;$i++)
+              {
+                $selected = "";
+                if (trim(strtolower($atkusername)) == strtolower(trim($userRows[$i]["userid"])))
+                {
+                  $selected = " SELECTED";
+                }
+                $userField .= "<OPTION VALUE='".$userRows[$i]["userid"]."'".$selected.">".$userRows[$i]["firstname"]." ".$userRows[$i]["lastname"]."</OPTION>\n";
+              }
+              $userField .= "</SELECT>\n";
+              return $userField;
+            }
+            break;
+ 
+           // Anything else
+          default:
+            return $defaultField;
+        }
+      }
+      else
+      {
+        return $defaultField;
+      }
+    }
+
 
     function allowed($node, $action)
     {
