@@ -17,6 +17,7 @@ Changes in ATK 5.0.7
 + Added AF_DATE_DISPLAY_DAY which will make the display function
   of a date attribute include the day of the week [Boy]
 + Added {atkstyle} plugin to template engine. [Ivo]
++ Added {atktext} plugin for internationalization in templates. [Ivo]
 + Added default fieldvalue and title row skip features to CSV import. [Mark]
 * Attributes can now use preload for loading before the main query. [Ivo, Boy]
 * Optimized atkSecureRelation searching. [Ivo, Boy]
@@ -32,7 +33,7 @@ Changes in ATK 5.0.7
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
   for normal/extended searching and sorting. [Boy, Harrie]
 * Fixed navigating for select mode. [Boy,Yuri]
-* In copy mode the selectdb function takes atkonetomanyrelations in account for the NF_ML nodes [Lineke]
+* Fixed bug in NF_ML functionality for 'copy' action. [Lineke]
 * atkQuery now checks for double joins. [Boy,Harrie]
 * Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute. [Boy]
 * Made atkFuzzySearch attrib use multiselect attribute and use the
