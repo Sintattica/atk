@@ -17,6 +17,12 @@
    *              long ones) (Ivo)
    * $Id$
    * $Log$
+   * Revision 4.5  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.4  2001/07/10 09:17:01  ivo
    * Fixed a bug with non-left joins in mysql.
    *
@@ -190,7 +196,7 @@
     function addCondition($condition)
     {
       if ($condition!="") $this->m_conditions[] = $condition;
-    }
+    }        
 
     /**
     * Builds the SQL Select query
@@ -330,6 +336,31 @@
         if ($this->m_aliasLookup[$name]!="") $record[$this->m_aliasLookup[$name]]=$value;
       }     
     }
+    
+    /**
+     * Generate a searchcondition that checks whether $value matches $field exactly.
+     */ 
+    function exactCondition($field, $value)
+    {
+      return "UPPER(".$field.")=UPPER('".$value."')";
+    }
+    
+    /**
+     * Generate a searchcondition that checks whether $field contains $value .
+     */ 
+    function substringCondition($field, $value)
+    {
+      return "UPPER(".$field.") LIKE UPPER('%".$value."%')";
+    }
+    
+    /**
+     * Generate a searchcondition that accepts '*' as wildcard character.
+     */ 
+    function wildcardCondition($field, $value)
+    {
+      return "UPPER(".$field.") LIKE UPPER('".str_replace("*","%",$value)."')";
+    }
+    
   }
 
   $name = $config_atkroot."atk/db/class.atk".$GLOBALS["config_database"]."query.inc";

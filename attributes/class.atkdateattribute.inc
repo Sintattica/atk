@@ -22,6 +22,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.10  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.9  2001/06/29 14:48:37  peter
    * Fixed small bug; if you want to know the days of a certain month, you have
    * to use the "0" day of the next month (not the month you want to know it off...)
@@ -220,7 +226,9 @@
       $GLOBALS['g_layout']->register_script("atk/javascript/class.atkdateattribute.js.php");
 
       /* base class constructor */
-      $this->atkAttribute($name, $flags);
+      $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // FIXME.. until the searchCondition() and
+                                                         // search() methods are fixed, 
+                                                         // you can't search on dates..
     }
 
     /**
@@ -389,9 +397,31 @@
      * @params $record array with 3 fields (year, month, day)
      * @return piece of HTML code
      */
-    function search($record="")
+    function search($record="", $extended=false)
     {
-      return "&nbsp;";
+      if (!$extended) return "&nbsp;";
+      
+      // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
+      $res = $this->edit($record, "atksearch_AE_");
+      return $res;
+    }
+    
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      $dateval = $this->value2db(array($this->fieldName()=>$value));
+      $is_date = $this->m_tableMeta['type'] == 'date';      
+      if($is_date)
+      {
+        // TODO & FIXME:
+        // databases have their own way of comparing dates. (OCI8 needs TO_CHAR etc..
+        // so we need to make some $query->dateComparison function..
+        atkdebug("Date support for DATE fields not yet supported (FIXME!)");
+      }
+      else
+      {
+        // probably a varchar field..
+        $query->addCondition($query->exactCondition($table.".".$this->fieldName(),$dateval));
+      }      
     }
 
     /**
@@ -401,7 +431,7 @@
      */
     function value2db($rec)
     {
-      $is_date = $this->m_tableMeta['type'] == 'date';
+      $is_date = $this->m_tableMeta['type'] == 'date';      
             
       if (!is_array($rec[$this->fieldName()]))
         $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);

@@ -5,6 +5,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.5  2001/07/03 16:38:52  ivo
    * new variable: m_affected_rows (only for mysql for now)
    *
@@ -331,6 +337,16 @@
         $result[] = $this->m_record;
       
       return $result;
+    }
+    
+    /**
+     * This function indicates what searchmodes the database supports.
+     * @return array with search modes
+     */
+    function getSearchModes()
+    {
+      // exact match and substring search should be supported by any database.
+      return array("exact","substring", "wildcard");
     }
   }  
 

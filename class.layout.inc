@@ -21,6 +21,12 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.11  2001/07/15 16:37:19  ivo
+  * New atk.inc includefile in skel.
+  * New feature: extended search.
+  * Fixed a bug in session management; style.php and other files that get
+  * loaded between two dispatches could corrupt a session.
+  *
   * Revision 4.10  2001/07/11 21:17:42  ivo
   * Version number now also contains tag.
   *
@@ -253,11 +259,11 @@
 
     /**
      * Returns the searchSize 
-     * @return 15
+     * @return 20
      */
     function searchSize()
     {
-      return 15;
+      return 20;
     }
 
     /**

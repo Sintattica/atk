@@ -1,5 +1,4 @@
-<?php
-
+<?php    
   // Define some flags for nodes. Use the constructor of the atkNode
   // class to set the flags. (concatenate multiple flags with '|')
 
@@ -26,6 +25,8 @@
   define("NF_NO_SECURITY",8192);  // Quick way to disable accessright checking
                                   // for an entire node. (Everybody may access
                                   // this node
+  define("NF_NO_EXTENDED_SEARCH",16384); // Extended search feature is turned 
+                                         // off.
 
   /**
    * The atkNode class represents a piece of information that
@@ -51,6 +52,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.78  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.77  2001/07/11 21:14:30  ivo
    * Added a global atk version number.
    *
@@ -157,8 +164,8 @@
   // Global module list
   $g_modules = array();
   // Global menu
-  $g_menu = array();
-
+  $g_menu = array();    
+  
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
@@ -169,8 +176,8 @@
   require_once($config_atkroot."atk/db/class.atkquery.inc");
   require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
   require_once($config_atkroot."atk/relations/class.atkrelation.inc");
-  require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
+  require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");  
   require_once($config_atkroot."atk/atkmenutools.inc");  
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
@@ -213,7 +220,7 @@
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
 
-   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree");
+   $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree");
 
   /************* MODULE HANDLING *************/
 
@@ -378,7 +385,8 @@
      */
     var $m_securityMap = array("save"=>"add",
                                "update"=>"edit",
-                               "copy"=>"add");
+                               "copy"=>"add",
+                               "search"=>"admin");
                                
     /*
      * Nodes can specify actions that require no access level 
@@ -739,6 +747,23 @@
       $g_layout->ui_bottom();
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
     }
+    
+    function searchPage($record=NULL)
+    {
+      global $g_layout;
+      $g_layout->register_script("atk/javascript/formfocus.js");
+      $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
+      $g_layout->output($this->statusbar());
+      
+      $g_layout->output('<form name="entryform" action="dispatch.php?'.SID.'" method="post">');
+      $g_layout->output(session_form(SESSION_BACK));
+      
+      $g_layout->output($this->searchForm($record));
+      $g_layout->output('<br><input type="submit" value="'.text('search').'">');
+      $g_layout->output('</form>');
+      $g_layout->ui_bottom();
+      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
+    }
 
     /**
      * Function outputs a form in which a record can be edited.
@@ -956,6 +981,97 @@
       
       return $form;
     }
+    
+    /**
+     * Function outputs a form that the user can use to search records.
+     */
+    function searchForm($record = NULL)
+    {
+      global $g_layout, $g_db;
+      
+      $defaults = $record;           
+
+      $form.=$g_layout->ret_table_simple();      
+   
+      $searchModes = $g_db->getSearchModes();
+            
+      if (count($searchModes)>1)
+      {      
+        $form.='<tr>';
+        $form.=$g_layout->ret_td(text("search_mode"));                
+        $sel = '<select name="atksearchmode">';
+        for ($i=0;$i<count($searchModes);$i++)
+        {
+          // if supported, we select the 'like' searchmode by default
+          $selected="";
+          if ($this->m_postvars["atksearchmode"]==$searchModes[$i]||($this->m_postvars["atksearchmode"]==""&&$searchModes[$i]=="substring")) $selected="selected";
+          
+          $sel.= '<option value="'.$searchModes[$i].'" '.$selected.'>'.text("search_".$searchModes[$i]);
+        }
+        $sel.= '</select>';
+        $form.=$g_layout->ret_td($sel);
+        $form.='</tr>';
+      }
+      elseif (count($searchModes)==1)
+      {
+        $form.='<input type="hidden" name="atksearchmode" value="'.$searchModes[0].'">';
+      }
+      
+      $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="2"').'</tr>';
+                      
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {      
+        $p_attrib = &$this->m_attribList[$attribname];
+        
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
+        {        
+          $form.='<tr>';
+
+          // Keep track of the number of td's we have to fill with the edit thingee..
+          // This depends on AF_NOLABEL for example.
+          $tdcount = 1;
+
+          // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
+          // For each attribute, a txt_<attributename> must be provided in the language files.
+          if ($p_attrib->hasFlag(AF_NOLABEL)==false)
+          {
+            if ($p_attrib->hasFlag(AF_BLANKLABEL))
+            {
+              $form.=$g_layout->ret_td('&nbsp;');
+            }            
+            else
+            {
+              $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+            }
+          }
+          else
+          {
+            $tdcount++; // If there's no label, the other td's have to be filled up.
+          }            
+            	                    
+                       
+          $funcname = $p_attrib->m_name."_search";
+            
+          if (method_exists($this,$funcname))
+          {
+            $editsrc = $this->$funcname($defaults, $fieldprefix);
+          }
+          else
+          {                             
+            $editsrc = $p_attrib->search($defaults, true); // second param indicates extended search.
+          }
+                                    
+	    
+          $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
+          $form.='</tr>';
+        }
+                 
+      }
+      
+      $form.='</table>';      
+      
+      return $form;
+    }
 
     /**
      * Creates a navigation bar, for browsing through the record pages
@@ -1136,8 +1252,9 @@
         }
       }      
 
-      // Searchrow.. 
-      if (!$this->hasFlag(NF_NO_SEARCH))
+      // Searchrow.. (do not display if NF_NO_SEARCH flag has been set, 
+      // or if we are in extended search mode (otherwise we have 2 search forms)
+      if (!$this->hasFlag(NF_NO_SEARCH)&&$this->m_postvars["atkaction"]!="search")
       {
         $rand = rand(1,1000);
         
@@ -1147,6 +1264,11 @@
         // used it once.
         $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="get">';
         $searchRow.= session_form();
+        
+        $searchmode = $this->m_postvars["atksearchmode"];
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        
+        $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
         $searchable = false;
         
         $actioncol = $g_layout->ret_td_datatitle('<input type="submit" value="'.text("search").'">');  
@@ -1184,6 +1306,19 @@
             }
           }
         }
+        $searchBtn = '<input type="submit" value="'.text("search").'">';
+                
+        if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
+        {
+          $searchBtn.='<br>'.href($PHP_SELF."?atkaction=search&atksearchmode=".$searchmode,"(".text("search_extended").")",SESSION_NESTED);
+          //$searchBtn.='<form action="'.$PHP_SELF.'?'.SID.'" method="get">'.
+            //          session_form(SESSION_NESTED).
+              //        '<input type="hidden" name="atkaction" value="search">'.
+                //      '<input type="submit" value="'.text("ext").'"></form>';
+        }
+        
+        $searchRow.=$g_layout->ret_td_datatitle($searchBtn);
+        $searchRow.='<input type="hidden" name="atkaction" value="'.$this->m_action.'">';
         
         if ($orientation=="right"||$orientation=="both")
         {
@@ -1765,6 +1900,11 @@
       $this->adminPage();                    
     }
     
+    function action_search()
+    {     
+      $this->searchPage($this->m_postvars["atksearch"]);
+    }
+    
     function action_edit()
     {
       $recordset = $this->selectDb($this->m_postvars['atkselector']);
@@ -2109,14 +2249,22 @@
       $searchArray = $this->m_postvars['atksearch'];
       if (is_array($searchArray) && count($searchArray)>0)
       {
+        $searchmode = $this->m_postvars["atksearchmode"];
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         while (list($key,$value) = each($searchArray))
         {
           if ($value!="")
           {
             $p_attrib = &$this->m_attribList[$key];
-            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);            
-            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-            $query->addCondition($condition);              
+            if (is_object($p_attrib)) 
+            {
+              $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+            }
+            else 
+            {
+              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+              $query->addCondition($condition);              
+            }
           }
         }
       }
@@ -2146,8 +2294,7 @@
 
 
       $querystring = $query->buildCount();
-
-      $g_db->query($querystring);
+      //$g_db->query($querystring);      
       $result = $g_db->getrows($querystring);
       return $result[0]["count"];
     }
@@ -2214,15 +2361,24 @@
       /* there may be search criteria, which we also filter */
       $searchArray = $this->m_postvars['atksearch'];
       if (is_array($searchArray) && count($searchArray)>0)
-      {
+      {      
+        $searchmode = $this->m_postvars["atksearchmode"];
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        
         while (list($key,$value) = each($searchArray))
         {
           if ($value!="")
           {
             $p_attrib = &$this->m_attribList[$key];
-            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
-            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-            $query->addCondition($condition);              
+            if (is_object($p_attrib)) 
+            {
+              $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+            }
+            else 
+            {
+              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+              $query->addCondition($condition);              
+            }
           }
         }
       }
@@ -2625,8 +2781,6 @@
       }
     }
 
-  }
-  
-  require_once($config_atkroot."atk/class.atktreenode.inc");
+  }  
 
 ?>

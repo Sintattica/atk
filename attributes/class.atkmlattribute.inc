@@ -6,6 +6,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.4  2001/06/29 11:26:59  ivo
    * Patches to oracle support.
    *
@@ -223,7 +229,4 @@
     }
   }
   
-  include_once($config_atkroot."atk/attributes/class.atkmltextattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkmlnumberattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkmlhtmlattribute.inc");
 ?>

@@ -11,6 +11,12 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.19  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.18  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -145,14 +151,14 @@
     }
      
     function authenticate()
-    {
+    {    
       global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $SERVER_NAME, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
       $md5 = false; // PHP_AUTH_PW is plain text..            
 
       // first check if we want to logout
       if (isset($atklogout) && !session_is_registered("relogin"))
-      {
+      {        
         session_destroy();
         $cookie_params = session_get_cookie_params();
         session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
@@ -237,8 +243,8 @@
       // use session for authentication
       else
       {
-    //    $session_auth = $ATK_VARS["authentication"];
-        $session_auth = $g_sessionManager->getValue("authentication", true);  
+    //    $session_auth = $ATK_VARS["authentication"];    
+        $session_auth = $g_sessionManager->getValue("authentication", true);          
         if (atkconfig("authentication_session") && session_is_registered("login") && !empty($session_auth["authenticated"]) && !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];

@@ -18,6 +18,21 @@
   // next buttons. You can specify the number of records to show on a page.
   $config_recordsperpage=25; 
   
+  //----------------- DEBUGGER CONFIGURATION ----------------------
+  
+  // The automatic error reporter
+  // Error reports are sent to the given email address.
+  // If you set this to "", error reporting will be turned off.
+  // WARNING: DO NOT LEAVE THIS TO THE DEFAULT ADDRESS OR PREPARE TO BE
+  // SEVERELY FLAMED!  
+  // $config_mailreport = "ivo@ibuildings.net";
+  
+    // The debug level.
+  // 0 - No debug information
+  // 1 - Print some debug information at the bottom of each screen
+  // 2 - Print debug information, and pause before redirects
+  $config_debug = 0;
+  
   //----------------- LAYOUT CONFIGURATION --------------------
 
   // The theme defines the layout of your application. You can see which 
@@ -150,19 +165,6 @@
   // If securityscheme is "level" or "group", you may also specify the 
   // level or group as third parameter:
   // user("harry","password",3);
-  // user("harry","password","admins");
-
-  // The debug level.
-  // 0 - No debug information
-  // 1 - Print some debug information at the bottom of each screen
-  // 2 - Print debug information, and pause before redirects
-  $config_debug = 0;
-  
-  // The automatic error reporter
-  // Error reports are sent to the given email address.
-  // If you set this to "", error reporting will be turned off.
-  // WARNING: DO NOT LEAVE THIS TO THE DEFAULT ADDRESS OR PREPARE TO BE
-  // SEVERELY FLAMED!  
-  $config_mailreport = "ivo@ibuildings.net";
+  // user("harry","password","admins");  
 
 ?>

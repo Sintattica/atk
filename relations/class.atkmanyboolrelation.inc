@@ -10,6 +10,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.4  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -50,6 +56,8 @@
    * Achievo Tool Kit
    *
    */
+  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");  
+   
   class atkManyBoolRelation extends atkManyToManyRelation
   {
  

@@ -15,6 +15,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.14  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.13  2001/06/27 15:25:43  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -321,16 +327,20 @@
      * @param $value the search value
      * @return a piece of the SQL where clause
      */
-    function searchCondition($table, $value)
+    function searchCondition(&$query, $table, $value, $searchmode)
     {
-      return $table.".".$this->fieldName()." = '".$value."'";
+      $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      
+      //return $table.".".$this->fieldName()." = '".$value."'";
       
       // *** THIS DOES NOT WORK AT THE MOMENT BECAUSE OF THE WAY ATK CREATES JOINS!!! *** 
-      //$descriptor = $this->m_destInstance->descriptorFields();
-      //$desc_size = count($descriptor);
+  //    $descriptor = $this->m_destInstance->descriptorFields();
+//      $desc_size = count($descriptor);
       
       /* no descriptor fields */
-      //if ($desc_size == 0) return $table.".".$this->fieldName()." = '".$value."'";
+      //if ($desc_size == 0) 
+      //{
+//        return $table.".".$this->fieldName()." = '".$value."'";
 
       /* build condition based on descriptor fields */
       //$condition = "(";

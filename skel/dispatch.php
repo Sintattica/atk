@@ -1,21 +1,9 @@
 <?php
-  // Setup the system
-  $config_atkroot = "./";
-  require_once($config_atkroot."atk/class.atknode.inc");
+  // Setup the system  
   
-  if (count($HTTP_POST_VARS)>0)
-  {  
-    atkDataDecode(&$HTTP_POST_VARS);   
-    $ATK_VARS = $HTTP_POST_VARS;
-  }
-  else
-  {
-    atkDataDecode(&$HTTP_GET_VARS);   
-    $ATK_VARS = $HTTP_GET_VARS;
-  }
-   
-  atksession("admin");
-  $g_sessionManager->session_read(&$ATK_VARS);
+  include_once("atk.inc");
+  
+  atksession();
   atksecure();
    
   // Create node

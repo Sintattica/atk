@@ -16,6 +16,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.7  2001/06/20 14:33:51  ivo
    * ManyToOneRelation now supports templated destinationfilters.
    *
@@ -132,13 +138,6 @@
       return "";
     }
 
-  }
-
-  include_once($config_atkroot."atk/relations/class.atkmanytoonerelation.inc");
-  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
-  include_once($config_atkroot."atk/relations/class.atkmanyboolrelation.inc");
-  include_once($config_atkroot."atk/relations/class.atkonetomanyrelation.inc");
-  //include_once($config_atkroot."atk/relations/class.atkmatrixrelation.inc");
-  include_once($config_atkroot."atk/relations/class.atkonetoonerelation.inc");
+  }  
 
 ?>

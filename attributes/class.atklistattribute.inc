@@ -17,6 +17,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.2  2001/05/22 08:36:50  peter
    * Added the searchCondition method which will be used by atkNode to create
    * a proper search condition for the attribute.
@@ -177,9 +183,9 @@
      * @param $value the search value
      * @return a piece of the SQL where clause
      */
-    function searchCondition($table, $value)
+    function searchCondition(&$query, $table, $value, $searchmode)
     {
-      return $table.".".$this->fieldName()." = '$value'";
+      return $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
     }    
   }
 ?>

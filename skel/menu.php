@@ -13,6 +13,12 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.15  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.14  2001/06/24 07:13:30  sandy
    * - Updated the Skel directory with the new atksession function, so
    * people can make a new admin module again from the skel dir.
@@ -69,12 +75,10 @@
    * Introduction of module support. An ATK application can now have zero
    * or more modules which can, but don't have to, contain ATK nodes.
    *
-   */
-  $config_atkroot = "./";
-  require_once($config_atkroot."atk/class.atknode.inc");
-  require_once($config_atkroot."atk/atkmenutools.inc");
+   */  
+  include_once("atk.inc");  
 
-  atksession("admin");
+  atksession();
   atksecure();
 
   /* get main menuitems */

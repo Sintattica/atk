@@ -6,6 +6,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.20  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 1.19  2001/06/19 19:29:20  ivo
    * pagevar funktie toegevoegd
    *
@@ -75,14 +81,14 @@
    * Added the sessionmanager.
    *
    *
-   */     
-   
+   */        
+      
   $cookie_params = session_get_cookie_params();
   session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
   session_start();
-
-  session_register("g_sessionData");           
-  
+  session_register("g_sessionData");  
+     
+//  echo "<hr>beginstack:<pre>";var_dump($g_sessionData["default"]["stack"]);echo '</pre>';
   define(SESSION_DEFAULT,0);
   define(SESSION_NEW,1);
   define(SESSION_NESTED,2);
@@ -198,7 +204,7 @@
     {
       global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars, $HTTP_GET_VARS;
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
-      atkdebug("ATKLEVEL: ".$atklevel);
+      atkdebug("ATKLEVEL : ".$atklevel);
             
       $stack = &$g_sessionData[$this->m_namespace]["stack"];            
             
@@ -208,6 +214,9 @@
         $stack = array();
         $atklevel = 0;
       }
+    //echo '<hr>precurrentitemcheck<pre>';
+    //var_dump($stack);
+    //echo '</pre><hr>';
       
       $currentitem = $stack[$atklevel];
                 
@@ -259,8 +268,11 @@
             }            
           }
         }
+      //echo '<pre>';var_dump($currentitem);
               
-        array_push($stack, $currentitem);    
+        array_push($stack, $currentitem); 
+        //var_dump($stack);
+        //echo '</pre>';
       }
       else
       {
@@ -343,7 +355,8 @@
         
       //echo "<hr>STACK: ";
       //var_dump($g_sessionData[$this->m_namespace]["stack"]);
-      //echo "<hr>";
+      //echo "<hr>Final stack:<pre>";var_dump($g_sessionData[$this->m_namespace]["stack"]);echo '</pre>';
+    
     }
     
     function stackTrace()
@@ -380,7 +393,7 @@
   */
   function atksession($namespace = "default")
   {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager;
+    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager;        
     
     $g_sessionManager = new atkSessionManager($namespace);
     

@@ -1,9 +1,6 @@
 <?php
-  $config_atkroot = "./";
-  require_once($config_atkroot."atk/class.atknode.inc"); 
 
-  atksession("admin");
-  atksecure();
+  include_once("atk.inc"); 
 
   $g_layout->output("<html>");
   $g_layout->head($txt_app_title);

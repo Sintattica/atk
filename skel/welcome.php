@@ -1,6 +1,6 @@
 <?php
-  $config_atkroot = "./";
-  include_once($config_atkroot."atk/class.atknode.inc");
+
+  include_once("atk.inc");
 
   $g_layout->output("<html>");
   $g_layout->head($txt_app_title);

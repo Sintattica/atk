@@ -7,6 +7,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.3  2001/06/24 15:09:52  sandy
    * Ooops, forgot to remove the debug code....
    *
@@ -88,10 +94,9 @@
      * @param $value the search value
      * @return a piece of the SQL where clause
      */
-    function searchCondition($table, $value)
+    function searchCondition(&$query, $table, $value, $searchmode)
     {
-      atkdebug("SEARCH - $table - $value");
-      return $table.".".$this->fieldName()." = '$value'";
+      $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
     }     
     
 

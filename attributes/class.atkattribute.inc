@@ -20,14 +20,14 @@
   define("AF_AUTO_INCREMENT",512); // Attribute is autoincrement..
   define("AF_AUTOINCREMENT",512);  // AF_AUTO_INCREMENT is often mistyped without undersore..
 
-  define("AF_HIDE",AF_HIDE_EDIT|AF_HIDE_ADD|AF_HIDE_LIST); // Attribute is totally hidden
-  define("AF_NO_SORT"       ,1024);    // Attribute is totally hidden
+  define("AF_HIDE",AF_HIDE_EDIT|AF_HIDE_ADD|AF_HIDE_LIST|AF_HIDE_SEARCH); // Attribute is totally hidden
+  define("AF_NO_SORT"       ,1024);    // Attribute can not be sorted in recordlists.
   define("AF_NOSORT"  ,AF_NO_SORT);  // AF_NOSORT has wrong naming convention but is still there
                                      // for compatibility reasons.
   define("AF_READONLY"     ,2048);   // Attribute is readonly
-
-  define("AF_SEARCHABLE"  ,4096);   // Attribute is searchable in list views
-
+  
+  define("AF_SEARCHABLE"  ,4096); // Attribute is searchable in list views 
+  
   // flags specific for AtkFileAttribute
   define("AF_FILE_NO_UPLOAD"     , 8192);   // Unable to upload files
   define("AF_FILE_NO_SELECT"     , 16384);  // Unable to select files
@@ -64,7 +64,12 @@
   define("AF_AUTOKEY", AF_PRIMARY|AF_HIDE|AF_AUTOINCREMENT); // short way of saying that an attribute
                                                              // is an autoincremented primarykey that
                                                              // is also hidden from the user.
-  /**
+  define("AF_HIDE_SEARCH", 536870912); // Attribute is not searchable in extended search  
+                                       
+  // FLAGS MAY NOT EXCEED 2^31 (2147483648), because that's the integer limit beyond which
+  // the bitwise operators won't work anymore.
+                                                             
+  /**  
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
    * control its behaviour, like whether an atkAttribute
@@ -91,6 +96,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.15  2001/07/15 16:37:19  ivo
+   * New atk.inc includefile in skel.
+   * New feature: extended search.
+   * Fixed a bug in session management; style.php and other files that get
+   * loaded between two dispatches could corrupt a session.
+   *
    * Revision 4.14  2001/07/10 14:23:09  ivo
    * Fixed a bug in atkAttribute that caused texts with "" to fail.
    *
@@ -278,7 +289,7 @@
     function atkAttribute($name, $flags = 0)
     {
       $this->m_name = $name;
-      $this->m_flags = $flags;
+      $this->m_flags = (double)$flags;
     }
 
     /**
@@ -386,14 +397,13 @@
      * @param $record Array with values
      * @return Piece of htmlcode
      */
-    function search($record="", $size=0, $maxsize=0)
+    function search($record="", $extended=false)
     {
       $result= '<input type="text" name="atksearch['.$this->formName().']" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';                      
       return $result;
-    }
+    }        
 
     /**
      * Creates an search condition for a given search value
@@ -401,9 +411,17 @@
      * @param $value the search value
      * @return a piece of the SQL where clause
      */
-    function searchCondition($table, $value)
+    function searchCondition(&$query, $table, $value, $searchmode)
     {      
-      return "lower(".$table.".".$this->fieldName().") LIKE lower('%".escapeSQL($value,true)."%')";
+      $func = $searchmode."Condition";
+      if (method_exists($query,$func))
+      {
+        $query->addCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
+      }
+      else
+      {
+        atkdebug("Database doesn't support searchmode '$searchmode', ignoring condition.");
+      }
     }
 
     /**
@@ -482,23 +500,5 @@
     }
 
   }
-
-  include_once($config_atkroot."atk/attributes/class.atkboolattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkemailattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");  
-  include_once($config_atkroot."atk/attributes/class.atkhtmlattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkparserattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");  
-  include_once($config_atkroot."atk/attributes/class.atkfileattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkmultiplefileattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkpasswordattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkmlselectorattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkmlattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkfilewriterattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkprofileattribute.inc");
   
 ?>

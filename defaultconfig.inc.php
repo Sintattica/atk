@@ -54,6 +54,8 @@
   
   // Automatic error reporting is turned off by default.
   $config_mailreport = "";
+
+  $config_search_defaultmode = "substring";
   
   // Whether the action links in a recordlist appear left or right 
   $config_recordlist_orientation = "right";

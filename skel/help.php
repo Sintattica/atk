@@ -10,6 +10,12 @@
 *
 * $Id$
 * $Log$
+* Revision 1.2  2001/07/15 16:37:19  ivo
+* New atk.inc includefile in skel.
+* New feature: extended search.
+* Fixed a bug in session management; style.php and other files that get
+* loaded between two dispatches could corrupt a session.
+*
 * Revision 1.1  2001/07/04 10:51:07  ivo
 * help file moved to skel
 *
@@ -18,9 +24,8 @@
 *
 *
 */
-
-  chdir("../");    
-  include("atk/class.atknode.inc");  
+  
+  include("atk.inc");  
 
 //  Renders the help screen
   $language = strtok(atkconfig("languagefile"),".");

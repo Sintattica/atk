@@ -3,6 +3,12 @@
 /**
 * $Id$
 * $Log$
+* Revision 4.2  2001/07/15 16:37:19  ivo
+* New atk.inc includefile in skel.
+* New feature: extended search.
+* Fixed a bug in session management; style.php and other files that get
+* loaded between two dispatches could corrupt a session.
+*
 * Revision 4.1  2001/05/01 09:49:49  ivo
 * Replaced all require() and include() calls by require_once() and
 * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -27,7 +33,21 @@
 
   class atkmysqlquery extends atkquery
   {
-     // no specifics yet
+    /**
+     * Generate a searchcondition that does a regular expression match.
+     */ 
+    function regexpCondition($field, $value)
+    {
+      return $field." REGEXP '$value'";
+    }
+    
+    /**
+     * Generate a searchcondition that does a soundex match of two strings.
+     */ 
+    function soundexCondition($field, $value)
+    {
+      return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
+    }
   }
 
 ?>
