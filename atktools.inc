@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.22  2001/10/10 11:33:49  ivo
+  * Added stickyurl feature.
+  *
   * Revision 4.21  2001/10/09 10:01:35  ivo
   * Improved the elapsed function.
   *
@@ -224,9 +227,11 @@
    */
   function session_form($sessionstatus=SESSION_DEFAULT)
   {
-    global $atklevel;
+    global $atklevel, $g_stickyurl;
     
     if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
+    
+    $res = "";
     
     switch ($sessionstatus)
     {
@@ -253,9 +258,19 @@
     
     if ($newlevel!=0) 
     {
-      return '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
+      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
     }
-    return "";
+    
+    for ($i=0;$i<count($g_stickyurl);$i++)
+    {
+      $value = $GLOBALS[$g_stickyurl[$i]];
+      if ($value!="")
+      {        
+        $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'">';
+      }
+    }
+  
+    return $res;
   
   }
   
@@ -266,7 +281,7 @@
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $atklevel;
+    global $atklevel, $g_stickyurl;
     
     if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
     
@@ -311,6 +326,17 @@
     {
       $url.= $start.SID;
     }
+    
+    for ($i=0;$i<count($g_stickyurl);$i++)
+    {
+      $value = $GLOBALS[$g_stickyurl[$i]];
+      if ($value!="")
+      {
+        if (substr($url,-1)!="&") $url.="&";
+        $url.=$g_stickyurl[$i]."=".$value;
+      }
+    }
+    
     return $url;
   }
   

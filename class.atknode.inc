@@ -57,6 +57,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.118  2001/10/10 11:33:49  ivo
+   * Added stickyurl feature.
+   *
    * Revision 4.117  2001/10/10 08:28:44  ivo
    * Created 'overloader' feature for modules.
    *
@@ -331,6 +334,8 @@
    // visible until you return.
 
    $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree");
+    
+   $g_stickyurl = array();
 
   /************* MODULE HANDLING *************/
           
