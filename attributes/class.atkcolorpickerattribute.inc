@@ -211,7 +211,7 @@
 
       if ($this->hasFlag(AF_POPUP))
       {
-        $url = atkPopup('colorpicker.php','form='.$this->formName().'&usercol='.$userCol,'colorPicker',190,400,'no','no');
+        $url = atkPopup('colorpicker.php','field='.$fieldprefix.$this->fieldName().'&usercol='.$userCol,'colorPicker',190,400,'no','no');
         $text ='&nbsp;<a href ="'.$url.'">'.text("colorpicker_selectcolor").'</a>'; 
         $result .=$text;      
       }

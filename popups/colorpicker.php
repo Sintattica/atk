@@ -13,15 +13,17 @@
   *
   */
 
-  include($config_atkroot."atk.inc");  
+  include_once($config_atkroot."atk.inc");  
   
-  atksession();
+  atksession("popup");
   atksecure();  
+  
+  useattrib("atkcolorpickerattribute");
   
  // builds matrix
    $colHeight = "9"; // height of each color element
    $colWidth = "9";   // width of each color element
-   $formRef   = $form;
+   $formRef   = $field;
    $matrix = colorMatrix($colHeight,$colWidth,$formRef,1,$usercol);
   //  Display's the picker in the current ATK style-template
   $g_layout->output("<html>");

@@ -13,7 +13,7 @@
   *
   */
   
-  include("atk.inc");  
+  include_once($config_atkroot."atk.inc");  
   
   atksession();
   atksecure();  
