@@ -51,7 +51,6 @@
 
   define("NF_LOCK",                32768); // lock records
   define("NF_ML",                  65536); // multilanguage support  
-  define("NF_NUMBERING",          131072); // Number the attributes
    
   define("NF_SPECIFIC_1",       33554432); // specific node flag 1
   define("NF_SPECIFIC_2",       67108864); // specific node flag 2
@@ -515,6 +514,13 @@
      * @var atkUI
      */
     var $m_atkUI = NULL; 
+    
+    /**
+     * Number to use with numbering
+     * @access protected
+     * @var mixed
+     */
+    var $m_numbering = null;
 
     /**
      * Constructor. 
@@ -3177,7 +3183,25 @@
       $theme = &atkTheme::getInstance();
       $page = &$this->getPage();
       $page->register_style($theme->stylePath($style));
+    }  
+    
+    /**
+     * Sets numbering of the attributes to begin with the number that was passed to it,
+     * or defaults to 1.
+     * @param mixed $number the number that the first attribute begins with
+     */
+    function setNumbering($number = 1)
+    {
+      $this->m_numbering = $number;
     }
     
+    /**
+     * Gets the numbering of the attributes
+     * @return mixed the number whith which the numbering starts
+     */
+    function getNumbering()
+    {
+      return $this->m_numbering;
+    }  
   }
 ?>

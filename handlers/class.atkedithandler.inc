@@ -148,7 +148,6 @@
               $attrib_name = $error['attrib_name'];
               
             $p_attrib = &$node->m_attribList[$attrib_name];
-            
 
             $index = $p_attrib->m_index;
             $tabs  = $node->m_attribIndexList[$index]["tabs"];            
@@ -201,7 +200,7 @@
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
-				
+
 		    $field_name = $field['name'];								
 				
         $tplfield = array();
@@ -231,10 +230,10 @@
         }
         /* edit field */
         else
-        {                  
-          if ($this->m_node->hasFlag(NF_NUMBERING))
+        {                           
+          if ($field["attribute"]->m_ownerInstance->getNumbering())
           {
-            $this->addNumbering($field, $tplfield, $i);
+            $this->_addNumbering($field, $tplfield, $i);
           }
           
           /* does the field have a label? */
@@ -299,27 +298,35 @@
     } 
     
     /**
-     * Adds numbering to the label of a field, if a field has the AF_SUBITEM flag set 
-     * it will become a subitem in the numbering.
+     * Adds numbering to the label of a field
      * @param array $field    the currently handled attribute
      * @param array $tplfield the template data for the current attribute
      * @param int $i          the counter being used to loop the node for each attribute
      */
-    function addNumbering(&$field, &$tplfield, &$i)
+    function _addNumbering(&$field, &$tplfield, &$i)
     {
-      if (!$number) static $number = 0;
-      if (!$subnumber) static $subnumber = 1;
-           
-      if ($field["attribute"]->hasFlag(AF_SUBITEM)) 
-      { 
-        $tplfield["label"]="&nbsp;&nbsp;$number.$subnumber. "; 
-        $subnumber++;
+      static $number, $subnumber;
+      
+      if (!$number && !$subnumber) $number = $field["attribute"]->m_ownerInstance->getNumbering();
+      if (!$subnumber)
+      {
+        if (strlen($number) == 1 || (floor($number) <= 9 && floor($number) >= -9 && floor($number) == $number)) 
+        {
+          $subnumber = $number;
+          $number = null;
+        }
+        else 
+        {
+          $subnumber = substr($number, strrpos($number, ".")+1);
+          $number = substr($number, 0, strrpos($number, "."));
+        }
       }
-      else 
-      { 
-        $number++;
-        $subnumber = 1;
-        $tplfield["label"]="$number. ";
+      
+      if ($field["label"]) 
+      {
+        if ($number) $tplfield["label"]="$number.$subnumber. "; 
+        else $tplfield["label"]="$subnumber. "; 
+        $subnumber++;
       }
     }
   }
