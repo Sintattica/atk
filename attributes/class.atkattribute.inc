@@ -22,51 +22,241 @@
    * that's the integer limit beyond which the bitwise operators won't 
    * work anymore!
    */
-
-  /* "database-level" processing flags */
-  define("AF_OBLIGATORY",                           1); // value must be entered
-  define("AF_UNIQUE",                               2); // value must be unique
-  define("AF_PRIMARY",                4|AF_OBLIGATORY); // part of primary-key node
-  define("AF_AUTO_INCREMENT",                       8); // auto-increment field
-  define("AF_AUTOINCREMENT",        AF_AUTO_INCREMENT); // auto-increment flag is often mistyped
-
-  /* hide flags */
-  define("AF_HIDE_LIST",                           16); // don't show in record lists
-  define("AF_HIDE_ADD",                            32); // don't show on add pages (unless obligatory)
+  
+  /**
+   * Value must be entered
+   *
+   * "database-level" processing flag
+   */
+  define("AF_OBLIGATORY",                           1);
+  
+  /**
+   * Value must be unique
+   * 
+   * "database-level" processing flag
+   */
+  define("AF_UNIQUE",                               2);
+  
+  /**
+   * Part of the primary-key node, also makes it obligatory
+   * 
+   * "database-level" processing flag
+   */
+  define("AF_PRIMARY",                4|AF_OBLIGATORY);
+  
+  /**
+   * Auto-increment field
+   * 
+   * "database-level" processing flag
+   */
+  define("AF_AUTO_INCREMENT",                       8);
+  
+  /**
+   * Alias for AF_AUTO_INCREMENT (auto-increment flag is often mistyped)
+   *
+   * "database-level" processing flag
+   */
+  define("AF_AUTOINCREMENT",        AF_AUTO_INCREMENT);
+  
+  /**
+   * Don't show in record lists
+   * 
+   * hide flag
+   */
+  define("AF_HIDE_LIST",                           16);
+  
+  /**
+   * Don't show on add pages (unless obligatory)
+   * 
+   * hide flag
+   */
+  define("AF_HIDE_ADD",                            32);
+  
+  /**
+   * Don't show on edit pages
+   * 
+   * hide flag
+   */
   define("AF_HIDE_EDIT" ,                          64); // don't show on edit pages
+  
+  /**
+   * Don't show on select pages
+   * 
+   * hide flag
+   */
   define("AF_HIDE_SELECT",                        128); // don't show on select pages.
+  
+  /**
+   * Don't show on view pages
+   * 
+   * hide flag
+   */
   define("AF_HIDE_VIEW"	 ,                        256); // don't show on view pages
+  
+  /**
+   * Not searchable in extended search
+   * 
+   * hide flag
+   */
   define("AF_HIDE_SEARCH",                        512); // not searchable in extended search
+  
+  /**
+   * Load always, even if not displayed anywhere
+   * 
+   * hide flag
+   */
   define("AF_FORCE_LOAD",                        1024); // load always, even if not displayed anywhere
+  
+  /**
+   * Attribute is totally hidden
+   * 
+   * hide flag
+   */
   define("AF_HIDE",          AF_HIDE_EDIT|AF_HIDE_ADD|  // attribute is totally hidden
                           AF_HIDE_LIST|AF_HIDE_SEARCH|
                           AF_HIDE_VIEW|AF_HIDE_SELECT);
-
-  /* readonly flags */
+  
+  /**
+   * Readonly in add
+   * 
+   * readonly flag
+   */
   define("AF_READONLY_ADD",                      2048); // readonly in add
+  
+  /**
+   * Readonly when edited
+   * 
+   * readonly flag
+   */
   define("AF_READONLY_EDIT",                     4096); // readonly when edited
+  
+  /**
+   * Always readonly
+   * 
+   * readonly flag
+   */
   define("AF_READONLY",              AF_READONLY_EDIT|
                                       AF_READONLY_ADD); // always readonly
-
-  /* display-related processing flags */
+  
+  /**
+   * No label in forms
+   * 
+   * display-related processing flag
+   */
   define("AF_NO_LABEL",                          8192); // no label in forms
+  
+  /**
+   * Alias for AF_NO_LABEL (mistyped)
+   * 
+   * display-related processing flag
+   */
   define("AF_NOLABEL",                    AF_NO_LABEL); // no label (mistyped)
+  
+  /**
+   * Blank label in forms
+   * 
+   * display-related processing flag
+   */
   define("AF_BLANK_LABEL",                      16384); // blank label in forms
+  
+  /**
+   * Alias for AF_BLANK_LABEL (mistyped)
+   * 
+   * display-related processing flag
+   */
   define("AF_BLANKLABEL",              AF_BLANK_LABEL); // blank label (mistyped)
+  
+  /**
+   * Cannot be sorted in recordlists
+   * 
+   * display-related processing flag
+   */
   define("AF_NO_SORT",                          32768); // cannot be sorted in recordlists.
+  
+  /**
+   * Alias for AF_NO_SORT (mistyped)
+   * 
+   * display-related processing flag
+   */
   define("AF_NOSORT",                      AF_NO_SORT); // no-sort flag is often mistyped
+  
+  /**
+   * Attribute is searchable in list views
+   * 
+   * display-related processing flag
+   */
   define("AF_SEARCHABLE",                       65536); // Attribute is searchable in list views
+  
+  /**
+   * The attribute will have a 'total' column in lists
+   * 
+   * display-related processing flag
+   */
   define("AF_TOTAL",                           131072); // The attribute will have a 'total' column in lists.
+  
+  /**
+   * If supported, use pop-up window
+   * 
+   * display-related processing flag
+   */
   define("AF_POPUP",                           262144); // if supported, use pop-up window
-
-  /* other processing flags */
+  
+  /**
+   * Delete function is called when owning node is deleted
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_CASCADE_DELETE",                  524288); // delete function is called when owning node is deleted
+  
+  /**
+   * Will have a large amount of recors (relation)
+   *
+   * Instead of showing a listbox with all the records it will show an add link to a select page
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_LARGE",                          1048576); // will have a large ammount of records (relation)
+  
+  /**
+   * Ignore filters when selecting records (relation)
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_NO_FILTER",                      2097152); // ignore filters when selecting records (relation)
+  
+  /**
+   * Parent field for parent child relations (treeview)
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_PARENT",                         4194304); // parent field for parent child relations (treeview)
+  
+  /**
+   * No quotes are used when adding to the database
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_NO_QUOTES",                      8388608); // no quotes are used when adding to database
+  
+  /**
+   * Multi-language field
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_ML",                            16777216); // multi-language field
+  
+  /**
+   * Alias for AF_ML (spelled out)
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_MULTILANGUAGE",                    AF_ML);
+  
+  /**
+   * Shortcut for hidden auto-incremented primary key
+   * 
+   * miscellaneous processing flag
+   */
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
                                      
@@ -76,20 +266,72 @@
    * compatibility reasons we support them anyway. Newly derived attributes 
    * should not use these specific flags, but work with extra parameters.
    */
+  
+   /**
+    * Specific attribute flag 1
+    */
    define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1 	
+   
+   /**
+    * Specific attribute flag 2
+    */
    define("AF_SPECIFIC_2",                    67108864); // specific attribute flag 2
+   
+   /**
+    * Specific attribute flag 3
+    */
    define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
+   
+   /**
+    * Specific attribute flag 4
+    */
    define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
+   
+   /**
+    * Specific attribute flag 5
+    */
    define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5
   
   /**
-   * Storage types, used by the storageType() and related methods
+   * Do not store this attribute
+   * 
+   * Storage type flag, used by the storageType() and related methods
    */
   define("NOSTORE"   ,0);
+  
+  /**
+   * Store before all other ('normal') attributes (?)
+   * 
+   * Storage type flag, used by the storageType() and related methods
+   */
   define("PRESTORE"  ,1);
+  
+  /**
+   * Call load before selectDb()
+   * 
+   * Storage type flag, used by the storageType() and related methods
+   */
   define("PRELOAD",   1);
+  
+  /**
+   * Store after all other ('normal') attributes (?)
+   * 
+   * Storage type flag, used by the storageType() and related methods
+   */
   define("POSTSTORE" ,2);
+  
+  /**
+   * Call load after selectDb()
+   * 
+   * Storage type flag, used by the storageType() and related methods
+   */
   define("POSTLOAD", 2);  
+  
+  /**
+   * Do addToQuery() of this attribute
+   * 
+   * Storage type flag, used by the storageType() and related methods
+   */
   define("ADDTOQUERY",4);  
   
   /**

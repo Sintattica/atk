@@ -16,7 +16,8 @@ Changes in ATK 5.1.1
 + Added $config_onetomany_addlink_position which can be either bottom 
   (default) or top. [Boy]
 + Made it possible to search and sort on atkOneToManys. [Boy]
-+ Added the SimplelTest testframework for unittesting. [Ivo]
++ Added the SimpleTest testframework for unittesting. [Ivo]
++ Added phpDoc documentation to attribute flags [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
@@ -26,7 +27,7 @@ Changes in ATK 5.1.1
 * Improved searching on atkOneToManys and atkManyToOnes. [Boy]
 * Made onetone check if there are errors before actually looping 
   through them and removed deprecated call by reference. [MartinL, Boy]
-* Fixed bug in atkOneToOneRelation search.
+* Fixed bug in atkOneToOneRelation search [Ivo]
 
 Changes in ATK 5.1.0
 --------------------
