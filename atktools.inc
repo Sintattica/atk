@@ -101,16 +101,18 @@
 
   }
 
-
-
   /**
     * Function atkdebug
     *
     * Adds the debug txt to the debug log
+    * @param bool viewhtml: make viewable in html
     */
-  function atkdebug($txt)
+  function atkdebug($txt, $viewhtml=false)
   {
      global $g_debug_msg;
+     if($viewhtml) 
+       $txt = htmlentities($txt);
+     	
      if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()."] ".$txt;
   }
 
@@ -783,11 +785,11 @@
   /**
    * Does a var dump of an array. Makes use of atkdebug for displaying the values
    *        $a array
+   * @param string description a description from the vardump
    */
-
-  function atk_var_dump($a)
+  function atk_var_dump($a, $d="")
   {
-    atkdebug(create_var_dump($a));
+    atkdebug("vardump $d:".create_var_dump($a));
   }
 
   function create_var_dump($a)
