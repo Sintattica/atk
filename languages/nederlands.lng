@@ -174,6 +174,7 @@
   $txt_select_invert  = "Selectie omkeren";
   $txt_with_selected  = "Met geselecteerd";
   $txt_submit         = "Uitvoeren";
+  $txt_list_null_value = "Geen waarde";
 
   // Login form
   $txt_login_form = "Inloggen";
@@ -201,7 +202,7 @@
 
   $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".
                       "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
-                      "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
+                      "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeï¿½igend!";
 
   $txt_feedback_delete_success = "Het item is verwijderd.";
   $txt_feedback_delete_cancelled = "Het item is niet verwijderd.";

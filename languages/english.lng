@@ -182,4 +182,6 @@
   $txt_db_access_denied_user = "User'%s' can't connect with database '%s'";
   $txt_db_access_denied_database = "User '%s' has no rights for database '%s'";
   
+  $txt_list_null_value = "No value";
+  
 ?>
