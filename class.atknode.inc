@@ -2455,7 +2455,7 @@
      */
     function helpUrl()
     {
-      $language = atkconfig("lang");
+      $language = atkconfig("language");
       $file   = "help/".$language."/help.".$this->m_type.".inc";
       if (!file_exists($file))
       {
