@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.11  2001/06/11 08:23:40  ivo
+   * Replaced '<<' in submenu's by translatable 'back to' string.
+   *
    * Revision 4.10  2001/06/01 12:52:49  peter
    * Fixed a bug in menu.php (atksecure() was called to late).
    * Updated english language file month names (long names to short).
@@ -107,7 +110,7 @@
   {
     $parent = $g_menu_parent[$atkmenutop];
     $menu .= $config_menu_delimiter;
-    $menu .= href('menu.php?atkmenutop='.$parent,'<< '.text("menu_$parent"),SESSION_NEW).'<br>';  
+    $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_NEW).'<br>';  
   }
 
   /* bottom */
