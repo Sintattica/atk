@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.23  2001/05/10 09:16:47  ivo
+   * Fix to formsession.
+   *
    * Revision 4.22  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -1717,6 +1720,15 @@
       $this->m_postvars = $postvars;            
       
       $this->m_action = $postvars['atkaction'];
+      
+      /** DIRTY HACK 
+          if action is something else than edit, we clear the atkformdata sessionstuff **/    
+      if ($this->m_action!="edit")
+      {
+        atkdebug("Clearing stored formdata");
+        $this->m_postvars["atkformdata"]="";
+      }
+      
       
       // check for fake submit (session saving href thingee)
       if ($this->m_postvars["atkescape"]!="")
