@@ -65,6 +65,7 @@ Changes in ATK 5.1.0
 * Removed redundant code and minor bugfixes on atkTheme, atkEditHandler,
   atkEmailAttribute and atkAttribute [Andres,Boy]
 * Added searchmode param to atkNode's searchDb() method. [Boy]
+* atkErrorHandler now takes E_STRICT (php5) into account. [Brian]
 
 Changes in ATK 5.0.7
 --------------------
