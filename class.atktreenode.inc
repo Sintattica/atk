@@ -17,7 +17,7 @@
    * $Id$
    *
    */
-  include_once($config_atkroot."atk/atktreetools.inc");
+  include_once(atkconfig("atkroot")."atk/atktreetools.inc");
   
   global $g_maxlevel;
   $g_maxlevel = 0;
@@ -71,22 +71,24 @@
      */
     function adminPage()
     {
-      global $g_layout,$g_maxlevel, $PHP_SELF;
+      global $g_maxlevel, $PHP_SELF;
+      
+      $this->addStyle("style.css");
 
-      $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
-      $g_layout->output($this->statusbar());
-      $g_layout->output('<br>');
-
+      $ui = &$this->getUi();      
+      
+      $content = "";
+                
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
       {
-        $g_layout->output($adminHeader."<br><br>");
+        $content.= $adminHeader."<br><br>";
       }
 
       atkdebug("Entering treeview page.");
       //$this->addStickyVar($p);
       
-      $t = $this->buildTree();
+      $t = $this->buildTree();          
       
       $this->m_tree[0]["level"]=0; 
       //$this->m_tree[0]["label"]="&nbsp;"; 
@@ -98,7 +100,7 @@
       $g_maxlevel=$g_maxlevel+2;            
 
        $width = ($g_maxlevel*16)+600;
-      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".$width.">\n");
+      $content.="<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".$width.">\n";
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
@@ -113,13 +115,17 @@
           // generic text
           $label = text(getNodeType($this->m_type))." ".text("add");
         }
-        $g_layout->output(href($addurl,$label,SESSION_NESTED).'<br><br>');
+        $content.=href($addurl,$label,SESSION_NESTED).'<br><br>';
       }
-
-      $g_layout->output($this->GraphTreeRender());
-      $g_layout->output("</table><br>");      
-      $g_layout->ui_bottom();
-      atkdebug("Generating treeview finished!");
+      
+      $content.= $this->GraphTreeRender();
+      $content.= "</table><br>";        
+      
+      atkdebug("Generating treeview finished!");          
+      
+      return $ui->renderBox(array("title"=>text('title_'.$this->m_type.'_tree'),
+                           "content"=>$content));
+            
     }
    
 /**
@@ -173,7 +179,7 @@
      */
     function GraphTreeRender($showactions=true, $expandAll=false, $foldable=true)
     {
-      global $g_maxlevel,$g_layout,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
+      global $g_maxlevel,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
       if(count($this->m_tree)==1) return "";  
           
       if ($expandAll) $this->m_tree[0]["expand"] = 1;
@@ -584,6 +590,7 @@
 		    } 
 	    	$cnt++;     
 	    } 
+            
       return $res;
     }
     
