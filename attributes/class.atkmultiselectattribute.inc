@@ -35,9 +35,25 @@
       {
         $flags = $rows;
         $this->m_rows=3;
-      }          
+      }      
       
+      if (!is_array($valueArray) || count($valueArray)==0)
+      {
+        $valueArray = $optionArray;
+      }
+      
+      // size must be large enough to store a combination of all values.
+      if ($size == "")
+      {
+        $size=0;
+        for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
+        {
+          $size+=(strlen($valueArray[$i])+1); // 1 extra for the '|' symbol
+        }        
+      }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
+      
+      $this->m_dbfieldtype = "string"; // since we store values separated by '|', we always store as string.
     }    
 
 
@@ -139,23 +155,5 @@
       return array("substring");
     }  
     
-    /**
-     * Return the size of the field in the database.    
-     */
-    function dbFieldSize()
-    {
-      if ($this->m_maxsize!=0) return $this->m_maxsize;
-      else
-      {
-        // size must be large enough to store a combination of all values.
-        $size = 0;
-        for ($i=0, $_i=count($this->m_values); $i<$_i; $i++)
-        {
-          $size+=(strlen($this->m_values[$i])+1); // 1 extra for the '|' symbol
-        }
-        return $size;
-      }
-    }    
-
   }
 ?>
