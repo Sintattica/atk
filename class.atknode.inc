@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.43  2001/05/23 09:46:28  ivo
+   * SelectPage now also parses encoded action templates.
+   *
    * Revision 4.42  2001/05/22 15:22:39  peter
    * Different small enhancements fixes...
    *
@@ -1478,7 +1481,11 @@
           $pk = $this->primaryKey($recordset[$i]);
           for ($j=0;$j<count($actions);$j++)
           {
-            $action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
+            //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
+            // experimental: [] tags could be encoded but we still parse them.. 
+            $action=str_replace("%5B","[",$actions[$j]);
+            $action=str_replace("%5D","]",$action);
+            $action=str_replace('[pk]',rawurlencode($pk),$action);
             $action=stringparse($action,$recordset[$i],true);
             $stractions.=$action.'&nbsp;';
           }
@@ -1707,8 +1714,9 @@
         // create navigation bar
         $nav = $this->buildNavigation();
         if (!empty($nav)) $g_layout->output("$nav<br><br>");
-
+        
         $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
+        var_dump($actions);
 
         $g_layout->output($this->recordList($recordset, $actions));
 
