@@ -10,6 +10,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.2  2001/07/03 15:52:31  maurice
+   * The validate function checks string and checks DNS for valid host
+   *
    * Revision 4.1  2001/06/07 21:06:54  ivo
    * Added atkemailattribute
    *
@@ -44,11 +47,21 @@
      * @param $value Value to be validated
      * @return "" if ok, or an errormessage if not ok.
      */
-    function validate($value)
+    function validate($email)
     {
-      // TODO, FIXME: put a regexp here that validates an emailaddress..
-      if (!(strpos($value,".")>0) && (strpos($value,"@")>0))
+      //first check complete string
+      if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,3}$", $email, $check)))
+      {
         return text("invalid_email");
+      }
+      else
+      {
+        //now check if domain exists, searches DNS for MX records
+        if (!( getmxrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
+        {
+	  return text("invalid_email");        
+        }       
+      } 
     }
     
   }
