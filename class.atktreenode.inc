@@ -13,6 +13,12 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.25  2001/10/08 16:26:50  peter
+    * Added NF_TREE_NO_ROOT_ADD flag for atkTreeNode(). This makes it possible to
+    * prevent the user from adding new root elements in a tree. Also added an
+    * isEmpty() method for the atkRelation() class because the atkAttribute()
+    * isEmpty() does not work properly in case of relationships.
+    *
     * Revision 4.24  2001/08/01 12:38:59  martin
     * added nowrap to some td's because of the ugly word wrap
     *
@@ -125,13 +131,24 @@
      */
     function atkTreeNode($name,$flags=0)
     {
-      if($this->hasFlag(NF_TREE_NO_ROOT_ADD))
-      {
-       //
-      }
-      $this->atkNode($name,$flags);    
+      $this->atkNode($name,$flags);  
     }  
-    
+
+    /**
+     * Action "admin" handler method, we override this method because we don't want
+     * an add form when the flag NF_TREE_NO_ROOT_ADD. Because the add form is only
+     * used to add root elements.
+     */
+    function action_admin()
+    {
+      if ((!$this->hasFlag(NF_NO_ADD) && $this->allowed("add")) && !$this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_TREE_NO_ROOT_ADD))
+      {
+        $this->addPage();
+      }
+      
+      $this->adminPage();                    
+    }
+
     /**
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview
@@ -498,7 +515,7 @@
     			/* end row   with the functions                      */     
     			/****************************************/ 
           $res.='<td nowrap> ';
-          if (!$this->hasFlag(NF_NO_ADD))
+          if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0))
           {
             $res.=href($PHP_SELF."?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
           }

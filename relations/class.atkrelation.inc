@@ -16,6 +16,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/10/08 16:26:50  peter
+   * Added NF_TREE_NO_ROOT_ADD flag for atkTreeNode(). This makes it possible to
+   * prevent the user from adding new root elements in a tree. Also added an
+   * isEmpty() method for the atkRelation() class because the atkAttribute()
+   * isEmpty() does not work properly in case of relationships.
+   *
    * Revision 4.11  2001/09/26 12:05:52  maurice
    * Code optimalisations for error handling
    *
@@ -148,6 +154,14 @@
     {
     }
 
+    /**
+     * Check if the attribute is empty
+     * @return true if it's empty
+     */
+    function isEmpty($postvars)
+    {
+      $this->createDestination();
+      return ($postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()] == "");
+    }
   }  
-
 ?>

@@ -12,21 +12,25 @@
   define("NF_ADD_LINK"      , 64); // Doesn't show an add form on admin pages, 
                                    // but a link to the form.
   define("NF_NO_VIEW"       ,128); // Records may not be viewed.
-  define("NF_COPY"          ,256); // Records / trees may  be copied
-  define("NF_TREE_NO_ROOT_DELETE",512); // No root elements can be deleted
-  define("NF_TREE_NO_ROOT_COPY",1024); // No root elements can be copied
+  
+  define("NF_COPY",                256); // Records / trees may  be copied
+  define("NF_TREE_NO_ROOT_DELETE", 512); // No root elements can be deleted
+  define("NF_TREE_NO_ROOT_COPY",  1024); // No root elements can be copied
+  define("NF_TREE_NO_ROOT_ADD",   2048); // No root elements can be added
     
-  define("NF_AUTOSELECT",2048); // If this flag is set and only one record is 
-                                // present on a selectpage, atk automatically 
-                                // selects it and moves on to the target.
-  define("NF_TRACK_CHANGES",4096); // If set, atk stores the old values of 
-                                  // a record as ["atkold"] in the $rec that
-                                  // gets passed to the postUpdate
-  define("NF_NO_SECURITY",8192);  // Quick way to disable accessright checking
-                                  // for an entire node. (Everybody may access
-                                  // this node
-  define("NF_NO_EXTENDED_SEARCH",16384); // Extended search feature is turned 
-                                         // off.
+  define("NF_AUTOSELECT", 4096); // If this flag is set and only one record is 
+                                 // present on a selectpage, atk automatically 
+                                 // selects it and moves on to the target.
+                                 
+  define("NF_TRACK_CHANGES", 8192); // If set, atk stores the old values of 
+                                    // a record as ["atkold"] in the $rec that
+                                    // gets passed to the postUpdate
+                                    
+  define("NF_NO_SECURITY", 16384);  // Quick way to disable accessright checking
+                                    // for an entire node. (Everybody may access
+                                    // this node
+                                    
+  define("NF_NO_EXTENDED_SEARCH", 32768); // Extended search feature is turned off.
 
 
   /**
@@ -53,6 +57,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.115  2001/10/08 16:26:50  peter
+   * Added NF_TREE_NO_ROOT_ADD flag for atkTreeNode(). This makes it possible to
+   * prevent the user from adding new root elements in a tree. Also added an
+   * isEmpty() method for the atkRelation() class because the atkAttribute()
+   * isEmpty() does not work properly in case of relationships.
+   *
    * Revision 4.114  2001/10/01 13:56:06  ivo
    * New feature: securityAliases for nodes.
    * Updates to module api.
@@ -566,6 +576,9 @@
       // check for parent fieldname (treeview)
       if($attribute->hasFlag(AF_PARENT))
       {
+        /* if no root elements may be added to the tree, then every record needs to have a parent! */
+        if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) $attribute->m_flags |= AF_OBLIGATORY;
+        
         $this->m_parent = $attribute->fieldName();
       }
       
