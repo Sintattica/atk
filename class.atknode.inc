@@ -38,6 +38,8 @@
   define("NF_MRPA",                 131072); // Multi-priority-selection of records is turned on.
 
   define("NF_LOCK",                 262144); // lock records
+  define("NF_ML",                   524288); // multilanguage support
+  define("NF_MULTILANGUAGE",         NF_ML);
 
   define("NF_READONLY", NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT); // aggregate flag to quickly create readonly nodes.
     

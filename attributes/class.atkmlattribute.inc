@@ -176,7 +176,6 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
-      $languages = $this->getLanguages();
       if(!$this->m_ownerInstance->hasFlag(NF_ML))
       {
         $languages = $this->getLanguages();
