@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.11  2001/05/11 15:24:55  peter
+   * Some updates for the module support and some other things...
+   *
    * Revision 1.10  2001/05/10 09:42:28  sandy
    * bugfix in menu.php (config menu delimiter) and for the clear posting
    *
@@ -238,7 +241,7 @@
       
       for ($i=max(0,count($stack)-4);$i<count($stack);$i++)
       {
-        $title = text("title_".$stack[$i]["atknodetype"]."_".$stack[$i]["atkaction"]);        
+        $title = text("title_".getNodeType($stack[$i]["atknodetype"])."_".$stack[$i]["atkaction"]);        
         if ($i<count($stack)-1) 
         {
           $res.='<a href="dispatch.php?atklevel='.$i.'">'.$title.'</a> | ';

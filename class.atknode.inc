@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.29  2001/05/11 15:24:54  peter
+   * Some updates for the module support and some other things...
+   *
    * Revision 4.28  2001/05/11 14:59:56  ivo
    * Fixed serious bug in onetoone relation that could overwrite records in a
    * table..
@@ -514,6 +517,11 @@
      * to the atkNode class.
      */
     var $m_type;
+
+    /**
+     * The module of the node. (If it's part of a module)
+     */
+    var $m_module;
 
     /**
      * The table to use for data storage.
@@ -2634,7 +2642,7 @@
       global $g_securityManager;
       
       return (in_array($this->securityKey($action), $this->m_unsecuredActions)
-              || $g_securityManager->allowed($this->m_type,$this->securityKey($action)));
+              || $g_securityManager->allowed((empty($this->m_module) ? "" : $this->m_module.".").$this->m_type,$this->securityKey($action)));
     }
     
     /**

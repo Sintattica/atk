@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.10  2001/05/11 15:24:54  peter
+ * Some updates for the module support and some other things...
+ *
  * Revision 1.9  2001/05/11 14:59:56  ivo
  * Fixed serious bug in onetoone relation that could overwrite records in a
  * table..
@@ -107,12 +110,18 @@
     if (!is_object($g_nodeRepository[$node]))
     {
       atkdebug("Constructing a new node - $node");
-      $g_nodeRepository[$node] = newNode($node);      
+      $g_nodeRepository[$node] = newNode($node);  
+      $g_nodeRepository[$node]->m_module = getNodeModule($node);
     } 
     atkdebug("Returning node instance - $node");
     return $g_nodeRepository[$node];    
   }
   
+  /**
+   * Construct a new node 
+   * @param $node the node type
+   * @return new node object
+   */
   function newNode($node)
   {
    global $config_module_path, $config_atkroot;

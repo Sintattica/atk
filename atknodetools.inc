@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.3  2001/05/11 15:24:54  peter
+ * Some updates for the module support and some other things...
+ *
  * Revision 4.2  2001/05/01 09:49:49  ivo
  * Replaced all require() and include() calls by require_once() and
  * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -29,7 +32,7 @@
   function registerNode($node, $action)
   {
     global $g_nodes;
-    g_nodes[$node] = $action;
+    $g_nodes[$node] = $action;
   }
 
 ?>

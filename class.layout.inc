@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.4  2001/05/11 15:24:54  peter
+  * Some updates for the module support and some other things...
+  *
   * Revision 4.3  2001/05/07 15:13:49  ivo
   * Put config_atkroot in all files.
   *
@@ -277,7 +280,11 @@
       {
         $res.='<script language="javascript" src="'.$this->m_scripts[$i].'"></script>';
       }
-      $res.='<link href="atk/style.php" rel="stylesheet" type="text/css">';
+      
+      if (file_exists("./style.php")) $dir = ".";
+      else $dir = "atk";
+      
+      $res.='<link href="'.$dir.'/style.php" rel="stylesheet" type="text/css">';
       $res.="</head>\n";
       return $res;
     }
