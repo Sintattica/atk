@@ -950,7 +950,7 @@
         // the 'saveandclose' button. Unless, a feedback screen is configured.
         if (atkLevel() >0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
         {
-          $result[] = '<input type="submit" class="btn_saveandclose" value="'.text('saveandclose').'">';
+          $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.text('saveandclose').'">';
         }
         $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="'.text('save').'">';
         $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.text('cancel').'">';
