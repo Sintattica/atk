@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.17  2001/06/19 11:42:35  ivo
+    * New feature in treeview: leaf icon can now be userdefined.
+    *
     * Revision 4.16  2001/06/12 13:19:55  ivo
     * Added a <br> to the bottom of the treeview.
     * Removed save and close button when editpage is bottom of the stack.
@@ -172,15 +175,17 @@
       {
         $this->m_tree[$g_count]["level"]=$level+1; 
 		    $this->m_tree[$g_count]["label"]=$objarr->m_label; 
+        $this->m_tree[$g_count]["img"]=$objarr->m_img;         
 		    $this->m_tree[$g_count]["id"]=$objarr->m_id; 
         $exp_index[$objarr->m_id] = $g_count;        		    
 		    $this->m_tree[$g_count]["isleaf"]=0; 
 		    if ($this->m_tree[$g_count]["level"] > $g_maxlevel) $g_maxlevel=$this->m_tree[$g_count]["level"];     
+        
 		    $g_count++;
         if (count($objarr->m_sub)>0)
         {          
           $this->Fill_tree($objarr->m_sub, $level+1);
-        }              
+        }                      
       }
       return "";  
     }
@@ -424,7 +429,14 @@
 			    	/*************************/ 
 			    	/* Tree Leaf             */ 
 			    	/*************************/ 
-			    	$res.= "<td><img src=\"".$img_leaf."\"></td>\n";          
+            $img = $img_leaf; // the image is a leaf image by default, but it can be overridden 
+                              // by putting img to something else
+            if ($this->m_tree[$cnt]["img"]!="") 
+            {
+              $imgname = $this->m_tree[$cnt]["img"];
+              $img = $$imgname;
+            }
+			    	$res.= "<td><img src=\"".$img."\"></td>\n";          
 			    } 
        
 			    /****************************************/ 

@@ -4,6 +4,9 @@
 *
 * $Id$
 * $Log$
+* Revision 4.2  2001/06/19 11:42:35  ivo
+* New feature in treeview: leaf icon can now be userdefined.
+*
 * Revision 4.1  2001/05/01 12:32:54  sandy
 * removed the debug functions and created a new Tree relations
 *
@@ -21,12 +24,14 @@
   {
     var $m_id;
     var $m_label;
+    var $m_img;
     var $m_sub = array();
     
-    function node($id, $label)
+    function node($id, $label, $img="")
     {
       $this->m_id = $id;
       $this->m_label = $label;
+      $this->m_img = $img;      
     }
   }
   
@@ -35,15 +40,15 @@
     var $m_tree = array();                 
     var $m_allnodes = array();
     
-    function addNode($id, $naam, $parent=0)
+    function addNode($id, $naam, $parent=0, $img="")
     {
-      $n = new node($id, $naam);
+      $n = new node($id, $naam, $img);
       $this->m_allnodes[$id] = &$n;
       
       if ($parent==0)
       {
         $this->m_tree[] = &$n;
-      }
+        }
       else
       {
         $tmp = &$this->m_allnodes[$parent];
