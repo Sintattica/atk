@@ -8,6 +8,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/09/07 07:21:32  ivo
+   * Improved primarykey handling.
+   *
    * Revision 4.5  2001/05/17 08:06:33  ivo
    * Fixes to atkfileattribute and onetoonerelation.
    *
@@ -181,6 +184,8 @@
           $p_attrib = &$this->m_destInstance->m_attribList[$attribname];        
           $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
         }
+        // also set the primkey..
+        $rec[$this->fieldName()]["atkprimkey"] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
         return $rec[$this->fieldName()];
       }     
     }

@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.21  2001/09/07 07:21:32  ivo
+   * Improved primarykey handling.
+   *
    * Revision 4.20  2001/09/04 08:30:32  maurice
    * Changed functionname orgKeyField to orgKeyValue
    *
@@ -223,8 +226,8 @@
         // If someone pressed 'save', no records are loaded from the db.
         // since we don't post all records in this relation like we do with
         // other attributes, we have to load them at 'edit' time.
-        $keyfield = $this->m_ownerInstance->primaryKeyField();
-        $myrecords = $this->load($notused, array($keyfield=>$record[$keyfield]));
+//        $myrecords = $this->load($notused, array($keyfield=>$record[$keyfield]));
+        $myrecords = $this->load($notused, $record);
       }
       
       if (count($myrecords)!=0)
@@ -256,7 +259,13 @@
 
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
-        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$this->m_ownerInstance->orgKeyValue();
+        //$strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
+      //echo $record["atkprimkey"];
+        // we need to set the filter of the record we are going to add. The referential key must
+        // be set to the value of the current primary key. However, the current primary key 
+        // contains the table name and a dot. So we strip that.
+        list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
+        $strfilter = $this->m_refKey.".".$refkeyvalue;
 
         if ($this->m_destinationFilter!="")
         {
@@ -280,7 +289,14 @@
       atkdebug("load called for ".$this->m_name);
       $this->createDestination();
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
-      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$this->m_ownerInstance->orgKeyValue()."'";
+      
+      
+      $key = decodeKeyValueSet($record["atkprimkey"]);
+      // we assume singular referential keys, which means, there's only one value in $keyvalue;
+      list($tmp,$keyvalue) = each($key);
+      
+      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
+
       if ($this->m_destinationFilter!="")
       {
         $this->m_destInstance->addFilter($this->m_destinationFilter);
@@ -299,8 +315,8 @@
       $classname = $this->m_destination;      
       $rel = getNode($classname);      
       atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
-
-      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->orgKeyValue()."'");
+ 
+      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
     }
     
 

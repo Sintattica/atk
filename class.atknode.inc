@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.99  2001/09/07 07:21:32  ivo
+   * Improved primarykey handling.
+   *
    * Revision 4.98  2001/09/06 12:23:00  paul
    * export2file function noted IE atachmentbug
    *
@@ -353,7 +356,7 @@
     /*
      * The last known primary key value for a certain record
      */
-    var $m_orgkey = array();
+    //var $m_orgkey = array();
 
     /**
      * Array containing the metadata of the table (with fieldname, type and length)
@@ -630,44 +633,43 @@
      * Fills the m_orgkey array
      * 
      */
-    function setOrgKeyValue($rec)
-    {      
-      $nrOfElements = count($this->m_primaryKey);
-      for ($i=0;$i<$nrOfElements;$i++)
-      {
-        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
-        $this->m_orgkey[$i] = $p_attrib->value2db($rec);
-      }
-      atkdebug("SetOrgKeyValue");
-    }
+    //function setOrgKeyValue($rec)
+    //{      
+//      $nrOfElements = count($this->m_primaryKey);
+      //for ($i=0;$i<$nrOfElements;$i++)
+      //{
+//        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
+        //$this->m_orgkey[$i] = $p_attrib->value2db($rec);
+      //}
+      //atkdebug("SetOrgKeyValue");
+    //}
 
     
     /**
      * Returns the key of the record currently being edited
      * @return orgKey
      */
-    function orgKey()
-    {      
-      $origKey="";
-      $nrOfElements = count($this->m_orgkey);
-      for ($i=0;$i<$nrOfElements;$i++)
-      {
-        $origKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_orgkey[$i]."'";
-        if ($i<($nrOfElements-1)) $origKey.=" AND ";
-      }
-      return $origKey;
-    }
+    //function orgKey()
+    //{      
+//      $origKey="";
+      //$nrOfElements = count($this->m_orgkey);
+      //for ($i=0;$i<$nrOfElements;$i++)
+      //{
+//        $origKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_orgkey[$i]."'";
+        //if ($i<($nrOfElements-1)) $origKey.=" AND ";
+      //}
+      //return $origKey;
+    //}
 
     /**
      * WATCH OUT, THIS FUNCTION ONLY RETURNS THE FIRST ORIGINAL KEY ATTRIB (so watch out
      * when using this with classes that have multiple)
      * @return Primary key field
      */
-    function orgKeyValue()
-    {
-      return $this->m_orgkey[0];
-    }
-
+    //function orgKeyValue()
+    //{
+//      return $this->m_orgkey[0];
+    //}
 
    /**
     * Set default order for the class
@@ -973,12 +975,8 @@
         }
       }
 
-      // Set de orgkey as hidden variables. One variable for each separate part of the key  
-      for($i=0;$i<count($this->m_orgkey);$i++)
-      {
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkorgkey['.$i.']" value="'.$this->m_orgkey[$i].'">';
-      }
-
+      $form.='<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
+       
       if (is_array($forceList))
       {          
         while(list($forcedvarname,$forcedvalue)=each($forceList))
@@ -2193,14 +2191,14 @@
     
     function action_view()
     {
-atkdebug("Action view");
+      atkdebug("Action view");
       $recordset = $this->selectDb($this->m_postvars['atkselector']);
       $this->viewPage($recordset[0]);
     }
       
     function action_add()
     {
-atkdebug("Action add");
+      atkdebug("Action add");
       $this->addPage();
     }
      
@@ -2209,10 +2207,10 @@ atkdebug("Action add");
       if ($this->m_postvars['atkcancel']=="")
       {
         // Fill the m_orgkey array
-        for($i=0;$i<count($this->m_postvars['atkorgkey']);$i++)
-        {
-          $this->m_orgkey[$i] = $this->m_postvars['atkorgkey'][$i];
-        }
+        //for($i=0;$i<count($this->m_postvars['atkorgkey']);$i++)
+        //{
+//          $this->m_orgkey[$i] = $this->m_postvars['atkorgkey'][$i];
+        //}
 
         $record = $this->updateRecord();
         $this->validate($record, "update");
@@ -2234,7 +2232,8 @@ atkdebug("Action add");
             // 'save' was clicked
             $this->m_action="edit";
             //update succesful, pk value might be changed so update m_orgkey
-            $this->setOrgKeyValue($record);
+            $record["atkprimkey"] = $this->primaryKey($record);
+            //$this->setOrgKeyValue($record);
             $this->editPage($record);
           }
         }
@@ -2460,6 +2459,7 @@ atkdebug("Action add");
         $p_attrib = &$this->m_attribList[$attribname];
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
+      $record["atkprimkey"] = $vars["atkprimkey"];
       return $record;
     }
     
@@ -2540,7 +2540,8 @@ atkdebug("Action add");
         //Validate if ne
         if ($p_attrib->hasFlag(AF_PRIMARY))
         {
-          $atkorgkey = $this->orgKey();
+        //  $atkorgkey = $this->orgKey();
+          $atkorgkey = $record["atkprimkey"];
           if(($atkorgkey == '' // no orgkey, so adding this record
               || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
              &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
@@ -2555,7 +2556,8 @@ atkdebug("Action add");
         {
           $this->m_errors[$attribname] = text('error_obligatoryfield');
         }
-        else if ($p_attrib->hasFlag(AF_UNIQUE) &&
+        // if flag is primary 
+        else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
                  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
@@ -2601,15 +2603,17 @@ atkdebug("Action add");
       // (not by atkselector, since the primary key might have 
       // changed, so we use the atkorgkey, which is the value before
       // any update happened.)
-      if (count($this->m_postvars['atkorgkey']))
+      if ($record['atkprimkey']!="")
       {
+        $pk = $record['atkprimkey'];
+        
         // If we need to track changes, we first load the original values..
         if ($this->hasFlag(NF_TRACK_CHANGES))
         {
-          $recordset = $this->selectDb($this->orgKey());
+          $recordset = $this->selectDb($pk);
           $record["atkorgrec"] = $recordset[0];
         }      
-        $query->addCondition($this->orgKey());
+        $query->addCondition($pk);
 
         $storelist = array();
 
@@ -2617,7 +2621,7 @@ atkdebug("Action add");
         {
           $p_attrib = &$this->m_attribList[$attribname];        
           if ($p_attrib->hasFlag(AF_READONLY_EDIT)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
- 	  {
+ 	        {
             if (method_exists($p_attrib,"store"))
             {
               $storelist[]=$attribname;
@@ -2626,7 +2630,7 @@ atkdebug("Action add");
             {
               $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
             }
-	  }
+	        }
         }
 
         $querystring = $query->buildUpdate();
@@ -2861,7 +2865,7 @@ atkdebug("Action add");
       if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
       else $dbrecords = $g_db->getrows($querystring);
 
-      $this->setOrgKeyValue($dbrecords[0]);
+//      $this->setOrgKeyValue($dbrecords[0]);
       
       $recordset = array();
       for ($i=0;$i<count($dbrecords);$i++)
@@ -2871,26 +2875,35 @@ atkdebug("Action add");
         atkDataDecode($dbrecords[$i]);                
         foreach (array_keys($this->m_attribList) as $attribname)
         {
-          $p_attrib = &$this->m_attribList[$attribname];        
+          $p_attrib = &$this->m_attribList[$attribname];                
           $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
+        
+        // We now have a semi-complete record. We can now calculate it's primarykey, assuming
+        // that attributes with load() functions can never be part of the primary key.
+        // They can't be, because load() might *depend* on a primary key.
+        // so the primary key must always be known before we start loading
+        // attributes with load() functions.
+        $therecord["atkprimkey"] = $this->primaryKey($therecord);
                 
         $recordset[] = $therecord;
-      }      
+        
+      }            
 
 
       // also load special storage attributes.
-      for ($i=0;$i<count($loadlist);$i++)
+  
+      for ($i=0;$i<count($recordset);$i++)
       {
-        for ($j=0;$j<count($recordset);$j++)
+        for ($j=0;$j<count($loadlist);$j++)
         {
-          $p_attrib = &$this->m_attribList[$loadlist[$i]];
+          $p_attrib = &$this->m_attribList[$loadlist[$j]];
 
-          $this->setOrgKeyValue($recordset[$j]);
+        //  $this->setOrgKeyValue($recordset[$j]);
           
-          atkdebug("orgkeyvalue SelectDb ".$this->orgKeyValue()." NodeName ".$this->m_type);
+          //atkdebug("orgkeyvalue SelectDb ".$this->orgKeyValue()." NodeName ".$this->m_type);
 
-          $recordset[$j][$loadlist[$i]] = $p_attrib->load($g_db, $recordset[$j]);
+          $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i]);
         }
       }
       // The $this->m_records is here for compatibility reasons.
