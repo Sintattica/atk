@@ -77,8 +77,6 @@
 						}
 					}
 					
-					$test.=$initial_on_tab;
-					
 					$tplfield["tab"] = $tab_name;
 					$tplfield["initial_on_tab"] = $initial_on_tab;
 				 
@@ -139,7 +137,6 @@
         
         $total = $ui->renderBox(array("title"=>$ui->title($node->m_module, $node->m_type,'view'),
                                       "content"=>$output));
-				$total.=$test;
         return $total;
       }
       else
