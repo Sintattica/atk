@@ -228,6 +228,34 @@
 
   }
 
+  function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+  {
+    $newlevel = session_level($sessionstatus, $levelskip);
+    $vars="";
+   // atklevel is already set manually, we don't append it..
+    if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
+    {
+      $vars.= "atklevel=".$newlevel."&";
+    }
+    $vars.= "atkprevlevel=".atkLevel();
+    if ($sessionstatus!=SESSION_NEW)
+    {
+      $vars.="&atkstackid=".atkStackID();
+    }
+    $vars.= "&".SID;
+
+    for ($i=0;$i<count($g_stickyurl);$i++)
+    {
+      $value = $GLOBALS[$g_stickyurl[$i]];
+      if ($value!="")
+      {
+        if (substr($vars,-1)!="&") $vars.="&";
+        $vars.=$g_stickyurl[$i]."=".$value;
+      }
+    }
+     return $vars;
+  }
+
   /**
    * Function session_url
    *
@@ -236,8 +264,6 @@
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
     global $g_stickyurl;
-
-    $newlevel = session_level($sessionstatus, $levelskip);
 
     if ($name=="") $name=$url;
     if (strpos($url,"?")>0)
@@ -250,27 +276,9 @@
     }
 
     $url.=$start;
-    // atklevel is already set manually, we don't append it..
-    if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
-    {
-      $url.= "atklevel=".$newlevel."&";
-    }
-    $url.= "atkprevlevel=".atkLevel();
-    if ($sessionstatus!=SESSION_NEW)
-    {
-      $url.="&atkstackid=".atkStackID();
-    }
-    $url.= "&".SID;
 
-    for ($i=0;$i<count($g_stickyurl);$i++)
-    {
-      $value = $GLOBALS[$g_stickyurl[$i]];
-      if ($value!="")
-      {
-        if (substr($url,-1)!="&") $url.="&";
-        $url.=$g_stickyurl[$i]."=".$value;
-      }
-    }
+    $url.=session_vars($sessionstatus, $levelskip);
+   
     return $url;
   }
 
