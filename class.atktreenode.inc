@@ -372,11 +372,11 @@
 						    } 
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
-						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
+						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=admin&".$params,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
                 }
                 else
                 {
-						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_plus."\" border=0>")."</td>\n";
+						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=admin&".$params,"<img src=\"".$img_plus."\" border=0>")."</td>\n";
                 }
 					    }
 					    else
@@ -403,11 +403,11 @@
 						    }
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
-						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
+						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=admin&".$params,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
                 }
                 else
                 {
-						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
+						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=admin&".$params,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
                 }
 					    }
 					    else
