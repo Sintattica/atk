@@ -121,6 +121,7 @@
   
   $txt_error_primarykey_exists = "A record with this key already exists";
   $txt_error_invalid_email = "Invalid e-mail adress";
+  $txt_error_unkown_domain = "Unkown domainn";
   $txt_error_notnumeric = "Value not a number";
   
   // colorpicker attribute
