@@ -52,6 +52,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.94  2001/09/05 07:29:44  paul
+   * added
+   * specialrecordlist
+   * export2file for exporting recordlists to external files
+   *
    * Revision 4.93  2001/09/04 09:19:35  ivo
    * Fixed an issue with objects being copied instead of referenced when the
    * reference was created inside the constructor of the referenced object.
@@ -1664,6 +1669,7 @@
     /**
      * Creates printableRecordlist
      * @param $suppresslist
+     * obsolete by specialRecordList
      */
     function printableRecordList($recordset, $suppressList="")
     {
@@ -1791,6 +1797,185 @@
 
     }
 
+  /**
+     * Creates a special Recordlist that can be used for exporting to files of to make it printable
+     * @param $recordset $suppresslist
+
+     * @param $sol      -- start row/record/line
+     * @param $eof      -- end field 
+     * @param $sof      -- start field
+     * @param $eol      -- end record/line
+     * @param $type     -- 0=in simple table ; 1= export 
+  */
+   function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $suppressList="")
+    {
+      // example      html         csv
+
+      // $sol     = "<tr>"         or  ""
+      // $eof     = "</td>"        or  ";"
+      // $sof     = "<td>"         or  ""
+      // $eol     = "</tr>"        or  "\r\n"   
+      //$empty  om lege tabelvelden op te vullen;
+  
+      // stuff for the totals row..
+      $totalisable = false;
+      $totals = array();      
+      if ($type=="0")
+       {
+        $output = '<table border="0" cellspacing="0" cellpadding="4">';
+        $empty = "&nbsp;";
+       }        
+      if ($type=="1")
+       {
+        $output=""; 
+        $empty="";
+       }
+       
+       $output .= $sol;
+    
+      // display a headerrow with titles. 
+      // Since we are looping the attriblist anyway, we also check if there
+      // are totalisable collumns.
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+        if (
+            ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+            &&
+            (
+              ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
+              ||($this->m_action!="select")
+            )
+            &&$musthide==false
+           )
+        {
+          $output.=$sof.text($p_attrib->fieldName()).$eof;
+          
+          // the totalisable check..
+          if ($p_attrib->hasFlag(AF_TOTAL))
+          {
+            $totalisable = true;
+          }
+
+        }
+      }      
+      
+      $output.=$eol;    
+
+      for ($i=0;$i<count($recordset);$i++)
+      {        
+        $output.=$sol;
+        foreach (array_keys($this->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_attribList[$attribname];
+          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+          if (
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+              &&
+              (
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
+                ||($this->m_action!="select")
+              )
+              &&$musthide==false
+             )
+          {
+            // An <attributename>_display function may be provided in a derived
+            // class to display an attribute.
+            $funcname = $p_attrib->m_name."_display";
+
+            if (method_exists($this,$funcname))
+            {
+              $value=$this->$funcname($recordset[$i]);
+            }
+            else
+            {
+              // otherwise, the display function of the particular attribute
+              // is called.              
+              $value=$p_attrib->display($recordset[$i]);
+            }
+            $output.=$sof.($value==""?$empty:$value).$eof;
+            
+            // Calculate totals..
+            if ($p_attrib->hasFlag(AF_TOTAL))
+            {
+              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
+            }
+          }
+        }
+        
+        $output.=$eol;
+      }
+      
+      // totalrow..
+      if ($totalisable) 
+      {
+        $totalRow = $sol;
+        
+        // Third loop.. this time for the totals row.
+        foreach (array_keys($this->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_attribList[$attribname];
+          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+          if (
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+              &&
+              (
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
+                ||($this->m_action!="select")
+              )
+              &&$musthide==false
+             )
+          {
+            if ($p_attrib->hasFlag(AF_TOTAL))
+            {                            
+              $totalRow.=$sof.$p_attrib->display($totals[$attribname]).$eof;
+            }
+            else
+            {
+              $totalRow.= $sof.$empty.$eof;
+            }
+          }
+        }     
+      
+        $totalRow.=$eol;
+
+        $output.=$totalRow;      
+      }
+
+  
+      if ($type=="0")
+      {
+        $output .= "</table>";
+        return $output;
+      }
+      if ($type=="1")
+      {
+
+        $this->export2File($output,"achievo","text/x-csv","csv");
+      }
+    }
+
+    /**
+    * export2file   exporteert data naar een file
+    *@param  $data  -- the content
+		*@param $fileName -- bestandsnaam
+    *@param  $ext   -- extension of the file
+		*@param  $mime_type  -- the mimetype
+    * used by specialRecordist();
+    */
+    
+   function export2File($data, $fileName, $mime_type, $ext)
+   {
+
+     header('Content-Type: '. $mime_type);
+     header('Content-Disposition: filename="'.$fileName.'.'.$ext.'"');
+     header('Pragma: no-cache');
+     header('Expires: 0');
+    echo $data;
+    exit;
+   }
+    
 
     /**
      * Select page displays records and gives the user the ability to select a record

@@ -156,6 +156,7 @@
     return $matrix;
  }
 
+
   class atkColorPickerAttribute extends atkAttribute
   {
     var $m_userColors;
@@ -194,16 +195,13 @@
              $colHeight = "11";
              $colWidth  = "11";
              $formRef   = $this->fieldName();
-             
-   
-   
+  
              if ($this->m_userColors !="")
              {      
              $temp = $this->m_userColors;
              $userCol = implode("|",$temp);
              }
-
-       
+      
         
              $result = '<input type="text" name="'.$fieldprefix.$this->formName().
                           '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
