@@ -10,6 +10,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.6  2001/09/27 14:12:19  sandy
+   * filled the g_user with complete record
+   *
    * Revision 4.5  2001/07/19 11:40:07  ivo
    * Updated authentication classes with an additional returncode for fatal
    * errors. Added a feature to pop3 authentication to handle server-specific
@@ -118,7 +121,10 @@
          $level = $recs[0][atkconfig("auth_levelfield")];
        }
        
-       return Array("name"=>$user, "level"=>$level);
+			 $userinfo = $recs[0];
+			 $userinfo["name"]=$user;
+			 $userinfo["level"]=$level;
+       return $userinfo;
      }
      
      function getEntity($node, $action)

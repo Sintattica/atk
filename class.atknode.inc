@@ -53,6 +53,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.112  2001/09/27 14:12:19  sandy
+   * filled the g_user with complete record
+   *
    * Revision 4.111  2001/09/27 13:27:41  ivo
    * Fixed a bug in atkerror count.
    *
@@ -3046,6 +3049,7 @@
      */
     function addDb(&$record)
     {
+		 //var_dump($record);
       global $g_db;
      
       $name = "atk".atkconfig("database")."query";
