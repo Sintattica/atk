@@ -3610,7 +3610,7 @@
       {
        $name = text("help");
        $node = $this->m_type;
-       return atkPopup('help.php','node='.$node,$name,650,650,'yes','no');
+       return atkPopup('atk/popups/help.inc','node='.$node,$name,650,650,'yes','no');
       }
     }
 
