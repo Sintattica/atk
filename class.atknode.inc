@@ -721,7 +721,6 @@
     {
       global $g_layout, $config_atkroot;
       $g_layout->initGui();
-
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
       $g_layout->output($this->statusbar($locked));
@@ -730,14 +729,14 @@
       $g_layout->output(session_form());
 
       if (count($this->m_tabListEdit) > 1) $g_layout->tabs_top($this->buildTabs());
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
       $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
       if (count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
 
       $g_layout->output('<br>');
       $g_layout->output($this->getFormButtons("edit"));
       $g_layout->output('</form>');
-      $g_layout->ui_bottom();
+      $g_layout->ui_bottom();      
     }
 
     /**
@@ -911,7 +910,7 @@
       global $config_atkroot, $g_sessionData;
 
       /* read metadata */
-      $this->setAttribSizes();
+      $this->setAttribSizes();          
 
       /* default values */
       $defaults = $record;
@@ -923,7 +922,7 @@
         $this->modifyRecord($defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
         $g_sessionData["default"]["stack"][atkStackID()][atkLevel()]["atkformdata"]="";
-      }
+      }          
 
       $pk = $this->primaryKey($record);
 
@@ -940,7 +939,7 @@
           {
             $defaults[$varname]=$value;
           }
-        }
+        }        
       }
 
       /* add mode */
@@ -1005,7 +1004,7 @@
           }
         }
       }
-
+            
       /* extra submission data */
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
@@ -1016,7 +1015,7 @@
        * to get HTML code for hideing the attribute's data. You can override the attribute's
        * edit() method by supplying an <attributename>_edit function in the derived classes.
        */
-      $tab = $this->getActiveTab();
+      $tab = $this->getActiveTab();      
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
@@ -1040,7 +1039,7 @@
 
         /* we let the attribute add itself to the edit array */
         $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
-      }
+      }            
 
       /* check for errors */
       $result["error"] = $record['atkerror'];
@@ -1064,8 +1063,8 @@
     {
       global $g_layout;
 
-      /* get data, transform into form, return */
-      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+      /* get data, transform into form, return */            
+      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);      
       $form = $g_layout->ret_editForm($data, $this);
       return $form;
     }
@@ -2788,7 +2787,6 @@
           return;
         }
       }
-
       $this->editPage($recordset[0], $locked);
     }
 
@@ -3325,10 +3323,10 @@
             }
           }
         }
-      }
+      }      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
-        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib = &$this->m_attribList[$attribname];        
         if (
              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
@@ -3425,12 +3423,12 @@
         foreach (array_keys($this->m_attribList) as $name)
           if ($this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD)) $usedFields[] = $name;
         $usedFields = array_unique($usedFields);
-      }
-
-      for ($i = 0, $_i = count($usedFields); $i < $_i; $i++)
+      }             
+      
+      foreach ($usedFields as $usedfield)
       {
-        list($attribname) = explode(".", $usedFields[$i]);
-        $p_attrib = &$this->m_attribList[$attribname];
+        list($attribname) = explode(".", $usedfield);
+        $p_attrib = &$this->m_attribList[$attribname];        
         if (method_exists($p_attrib,"load"))
         {
           //$loadlist[]=$attribname;
@@ -3441,7 +3439,7 @@
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
           if (!is_object($p_attrib))
           {
-            atkdebug($usedFields[$i]." is not an object?! Check your descriptor_def for non-existant fields");
+            atkdebug($usedfield." is not an object?! Check your descriptor_def for non-existant fields");
           }
           else
           {
