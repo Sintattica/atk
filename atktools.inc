@@ -27,8 +27,8 @@
    */
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
   {      
-    // Don't handle notices.
-    if ($errtype==E_NOTICE) 
+    // Don't handle notices, and don't do anything if @ was u sed
+    if ($errtype==E_NOTICE || error_reporting()==0) 
     {
       return;
     }              
