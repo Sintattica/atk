@@ -39,10 +39,13 @@
     function edit($record="", $fieldprefix="")
     {
       global $g_layout;
+      if ($this->m_size != 0) $cols = $this->m_size;
+      else $cols = $g_layout->maxInputSize();
       $rows = $this->m_rows;
+      
       if ($rows =="" || $rows == 0) $rows = 10;
 	    // watch out, $maxsize isn't supported for a textarea.
-      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="'.$rows.'" cols="'.$g_layout->maxInputSize().'" wrap="virtual"'.               
+      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
