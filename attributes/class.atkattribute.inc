@@ -123,6 +123,9 @@
     var $m_order = 0;
     // just a var for keeping a index
     var $m_index = 0;
+        
+    // The tab on which the attribute lives.
+    var $m_tabs="*";
 
     /**
      * Constructor
@@ -796,6 +799,23 @@
     {
       $configsize = atkconfig("max_input_size");
       return ($configsize==""?70:$configsize);
+    }
+    
+    /**
+     * Attributes can add tabs to tabbed screens. This method will be called to retrieve
+     * the tabs.
+     */
+    function getTabs($action)
+    {
+      return array();
+    }
+
+    /**
+     * Check if the attribute wants to be shown on a certain tab.
+     */
+    function showOnTab($tab)
+    {
+      return ($this->m_tabs == "*" || atk_in_array($tab, $this->m_tabs));
     }
             
   }

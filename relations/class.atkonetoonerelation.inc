@@ -571,5 +571,35 @@
       }
     }
     
+    /**
+     * Integrated onetoone relations must add all tabs that the destination
+     * node has, to the main screen.
+     */
+    function getTabs($action)
+    {
+      if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
+      {
+        return $this->m_destInstance->getTabs($action);
+      }
+      return parent::getTabs($action);
+    }
+    
+    // A onetoone must show itself on a tab, if one of the destination attributes
+    // should be shown on that tab. 
+    function showOnTab($tab)
+    {
+      if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
+      {
+        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
+          if ($p_attrib->showOnTab($tab)) return true; // If we have one match, we can return true.
+        }
+        return false;
+      }
+      
+      return parent::showOnTab($tab);      
+    }
+    
   }
 ?>

@@ -549,7 +549,8 @@
 
         $attribute->m_order = $order;
         $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tab,"order"=>$attribute->m_order);
-        $attribute->m_index = $attrib_index;
+        $attribute->m_index = $attrib_index;        
+        $attribute->m_tabs = $tab;
         $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
@@ -701,11 +702,11 @@
     {
       $this->m_default_tab = $tab;
     }
-
+    
     /**
-     * Returns the currently active tab.
+     * Get a list of tabs for a certain action.
      */
-    function getActiveTab()
+    function getTabs($action)
     {
       $list = &$this->m_tabList[$this->m_action];
       if (!is_array($list)) 
@@ -714,9 +715,28 @@
         $list = &$this->m_tabList["view"];
       }
       
-      if (!empty($this->m_postvars["atktab"]) && in_array($this->m_postvars["atktab"], $list)) $tab = $this->m_postvars["atktab"];
-      elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $list)) $tab = $this->m_default_tab;
-      else $tab = $list[0];
+      // Attributes can also add tabs to the tablist.
+      foreach(array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $list = atk_array_merge($list, $p_attrib->getTabs($action));
+      }
+      return $list;
+    }
+
+    /**
+     * Returns the currently active tab.
+     */
+    function getActiveTab()
+    {
+      global $ATK_VARS;
+      $tablist = $this->getTabs($action);          
+      
+      // Note: we may not read atktab from $this->m_postvars, because $this->m_postvars is not filled if this is
+      // a nested node (in a relation for example).
+      if (!empty($ATK_VARS["atktab"]) && in_array($ATK_VARS["atktab"], $tablist)) $tab = $ATK_VARS["atktab"];
+      elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $tablist)) $tab = $this->m_default_tab;
+      else $tab = $tablist[0];      
       return $tab;
     }
 
@@ -854,7 +874,8 @@
     
     function tabulate($action, $content)
     {
-      if (count($this->m_tabList[$action]) > 1) 
+      $list = $this->getTabs($action);
+      if (count($list) > 1) 
       {     
         $ui = &$this->getUi();
         if (is_object($ui))
@@ -899,7 +920,7 @@
           $tplfield = array();
           $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
   
-          if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && ($this->m_attribIndexList[$i]["tabs"] == "*" || in_array($tab, $this->m_attribIndexList[$i]["tabs"])))
+          if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && $p_attrib->showOnTab($tab))
           {          
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute. If it exists we will use that method
@@ -1048,7 +1069,6 @@
         }
         $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';        
         $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
-
 
         $params["content"] = $this->searchForm($record);
         $params["buttons"][] = '<input type="submit" class="btn_search" value="'.text('search').'">';
@@ -1204,7 +1224,7 @@
         $tabs = $this->m_attribIndexList[$r]["tabs"];
 
         if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
-            ($tabs != "*" && !atk_in_array($tab, $tabs)))
+            !$p_attrib->showOnTab($tab))
         {
           $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
         }
@@ -1260,11 +1280,14 @@
               $attrib_name = $error['attrib_name'][0];
             else
               $attrib_name = $error['attrib_name'];
+              
+            $p_attrib = &$this->m_attribList[$attrib_name];
 
-            $index = $this->m_attribList[$attrib_name]->m_index;
+            $index = $p_attrib->m_index;
             $tabs  = $this->m_attribIndexList[$index]["tabs"];
-            if (count($this->m_tabList[$this->m_action]) > 1
-                 && $tabs != "*" && !atk_in_array($tab, $tabs))
+            
+            if (count($this->getTabs($this->m_action)) > 1
+                 && $p_attrib->showOnTab($tab))
               $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $this->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             
@@ -1476,7 +1499,7 @@
   
               if (method_exists($this,$funcname))
               {
-                $field["widget"] = $this->$funcname($defaults);
+                $field["widget"] = $this->$funcname($defaults, $fieldprefix);
               }
               else
               {
@@ -1647,7 +1670,7 @@
       $tab = $this->getActiveTab();
 
       // build navigator
-      $list = &$this->m_tabList[$action];
+      $list = &$this->getTabs($action);
       
       if (is_array($list))
       {
@@ -3236,7 +3259,6 @@
 
       if(count($recordset) > 0)
       {
-
         if(!$this->copyDb($recordset[0]))
         {
           $g_db->rollback();
@@ -3305,7 +3327,6 @@
       
       atkdebug("actionedit calling selectDb()");
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
-
       if ($this->hasFlag(NF_LOCK))
       {
         if ($this->m_lock->lock($this->primaryKey($recordset[0]), $this->m_table)) 
@@ -3949,7 +3970,6 @@
         $this->combineMlRecordSet($dbrecords,$query);
       }
 
-      
 //      $this->setOrgKeyValue($dbrecords[0]);
 
       $recordset = array();
@@ -4253,7 +4273,6 @@
       atkdebug("atkNode::addDb() stop ".$this->m_type." mode:".$mode);
 
       return false;
-
     }
 
     /**
