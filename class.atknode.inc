@@ -52,6 +52,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.105  2001/09/14 08:05:22  ivo
+   * Fixed a stupid bug with a wrong array indexer, which caused problems for
+   * manytoonerelations that have multiple primary keys (problem only occured
+   * in IE4.0)
+   *
    * Revision 4.104  2001/09/13 12:27:44  ivo
    * Moved no-cache headers etc. to outputFlush() function.
    *
@@ -1483,7 +1488,7 @@
             
             // dirty hack:
             $atkencoded = false;
-            if (strpos($actions[$i],"_#")>0)
+            if (strpos($actions[$j],"_#")>0)
             {
               // normal value.. 
               $atkencoded = true;
@@ -1501,7 +1506,7 @@
             {
               $action=str_replace('[pk]',rawurlencode($pk),$action);
             }
-            $action=stringparse($action,$recordset[$i],true);
+            $action=stringparse($action,$recordset[$i],true);          
             $stractions.=$action.'&nbsp;';
           }
           $actionCol=$g_layout->ret_td($stractions);
@@ -2165,8 +2170,7 @@
           
       // check for fake submit (session saving href thingee)
       if ($this->m_postvars["atkescape"]!="")
-      {
-    //echo $this->m_postvars["atkescape"];
+      {            
         $this->redirect(atkurldecode($this->m_postvars["atkescape"]));
       }
       else
@@ -2365,7 +2369,7 @@
      */
     function redirect($location="")
     {  
-      global $g_returnurl, $PHP_SELF;
+      global $g_returnurl, $PHP_SELF;            
     
       atkdebug("atknode::redirect()");
       $back = 0;
