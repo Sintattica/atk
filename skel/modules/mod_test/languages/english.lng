@@ -1,0 +1,10 @@
+<?php
+  /* menu */
+  $txt_menu_mod_test = "Mod Test";
+  
+  /* test */
+  $txt_title_test_admin = "Test Admin";  
+  $txt_title_test_add   = "Test Add";
+  $txt_title_test_edit  = "Test Edit";
+  $txt_name        	= "Name";
+?>
