@@ -58,4 +58,6 @@
   $g_theme["ol_menucolor"] = "#ffffff";
 	$g_theme["ol_wincolor"] = "#eeeee0";
 	$g_theme["ol_background"] = "#677EB1";
+ 
+  $g_theme["RowMouseOver"] = "#b5c7f4";
 ?>
