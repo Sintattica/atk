@@ -89,6 +89,12 @@
   // users will stay logged in, even if they close their browser. 
   $config_authentication_cookie = false;
   
+  // If you use "db" as authentication type, you can set the table and fields
+  // from which atk should read the username and password information.
+  $config_auth_usertable   = "user";
+  $config_auth_userfield   = "userid";
+  $config_auth_passwordfield = "password";
+  
   // if you use "mail" as authentication, you have to fill in these
   //parameters.
   // mail login type
@@ -98,7 +104,7 @@
   // Mail suffix, only is mail login type = "vmailmgr"
   $config_authentication_mail_suffix = "ibuildings.nl";
   // Mail server name
-  $config_authentication_mail_server = "localhost"
+  $config_authentication_mail_server = "localhost";
   // Port of the mail server
   $config_authentication_mail_port = 143;
 
