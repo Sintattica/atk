@@ -642,7 +642,7 @@
     /**
      * Return the label of the field.
      */
-    function label($record)
+    function label($record = array())
     {    
       return text($this->fieldName(),$this->m_ownerInstance->m_type, $this->m_ownerInstance->m_module);
     }

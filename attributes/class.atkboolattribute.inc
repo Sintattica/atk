@@ -108,6 +108,16 @@
     {
       return "number";
     }
+
+    /**
+     * Return the label of the field.
+     */
+    function label($record = array())
+    { 
+      $label_txt = parent::label($record);
+      return '<label for="'.$this->m_name.'">'.$label_txt.'</label>';
+    }
+
     
   }
 ?>
