@@ -10,6 +10,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/06/01 14:59:33  ivo
+   * Better metadata reading for postgresql.
+   * Fixed a bug with input sizes in textarea.
+   *
    * Revision 4.1  2001/04/25 08:46:08  ivo
    * Big optimisations: using references for attribute manipulation.
    *
@@ -45,8 +49,7 @@
     {
       global $config_language, $g_layout;
 
-      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta['len']);
-      $this->m_maxsize = $this->m_tableMeta['len'];    
+      $this->m_size = $g_layout->maxInputSize();      
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)

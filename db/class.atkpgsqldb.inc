@@ -11,6 +11,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/01 14:59:33  ivo
+   * Better metadata reading for postgresql.
+   * Fixed a bug with input sizes in textarea.
+   *
    * Revision 4.2  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -261,35 +265,40 @@
      * @return array with meta data
      */
     function metadata($table, $full=false)
-    {
-      /* first connect */
-      $this->connect();
+    {  
+      $meta    = array();    // Metadata array - return value
 
-      /* try to get metadata */
-      $id = @pg_exec($this->m_link_id, "SELECT * FROM $table") or $this->halt("metadata query for table $table failed");
-      if (empty($id)) return array();
-      
-      /* number of fields / result array */
-      $count = pg_numfields($id);
-      $result = array();
-    
-      /* get meta data */
-      for ($i=0; $i<$count; $i++)
+      // See PostgreSQL developer manual (www.postgresql.org) for system table spec.
+      // Get catalog data from system tables.
+      $sql = 'SELECT a.attnum, a.attname, t.typname, a.attlen, a.atttypmod, a.attnotnull, 
+                     a.atthasdef 
+              FROM pg_class as c, pg_attribute a, pg_type t 
+              WHERE a.attnum > 0 and a.attrelid = c.oid and 
+                    c.relname = '."'$table'".' and 
+                    a.atttypid = t.oid order by a.attnum';
+
+      $rows = $this->getrows($sql);
+              
+      // Store meta data
+      for ($i = 0; $i < count($rows); $i++) 
       {
-        $result[$i]["table"] = $table;
-        $result[$i]["name"]  = @pg_fieldname($id, $i); 
-        $result[$i]["type"]  = @pg_fieldtype($id, $i);
-        $result[$i]["len"]   = @pg_fieldsize($id, $i);
-        $result[$i]["flags"] = "";
-        if ($full) $result["meta"][$result[$i]["name"]] = $i;        
+        // Field Name
+        $meta[$i]['table'] = $table;
+        $meta[$i]['name'] = $rows[$i]['attname'];
+        $meta[$i]['type'] = $rows[$i]['typname'];
+        $meta[$i]['len']  = $rows[$i]['attlen'];
+        if ($meta[$i]['type']=='varchar'&&$meta[$i]['len']==-1)
+        {          
+          $meta[$i]['len'] = $rows[$i]['atttypmod']-4;
+        }
+        if ($full) $result["meta"][$result[$i]["name"]] = $i;
+        
       }
-      
-      /* free result */
-      @pg_freeresult($id);
-      
-      /* return */
-      return $result;
+ 
+      return $meta;
     }
+
+    
 
     /**
      * Return the available table names

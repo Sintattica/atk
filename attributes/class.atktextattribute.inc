@@ -12,6 +12,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/06/01 14:59:33  ivo
+   * Better metadata reading for postgresql.
+   * Fixed a bug with input sizes in textarea.
+   *
    * Revision 4.1  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -58,10 +62,10 @@
      */
     function edit($record="", $fieldprefix="")
     {
+      global $g_layout;
  	    // todo: configurable rows
 	    // watch out, $maxsize isn't supported for a textarea.
-      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="10" wrap="virtual"'.
-               ($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').
+      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="10" cols="'.$g_layout->maxInputSize().'" wrap="virtual"'.               
                '>'.htmlentities($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
