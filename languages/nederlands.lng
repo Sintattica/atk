@@ -61,8 +61,8 @@
   $txt_password_new = "Nieuw";
   $txt_password_again = "Opnieuw";
   $txt_password_hidden = "*****";
-  $txt_password_invalid = "Het ingevoerde wachtwoord is geen correct wachtwoord.";
-  $txt_password_incorrect = "Het ingevoerde wachtwoord is fout!";
+  $txt_error_password_invalid = "Het ingevoerde wachtwoord is geen correct wachtwoord!";
+  $txt_error_password_incorrect = "Het ingevoerde wachtwoord is fout!";
   $txt_error_password_nomatch = "De ingevoerde wachtwoorden komen niet met elkaar overeen!";
 
   // multilanguage text
@@ -156,7 +156,7 @@
 
   $txt_title_session_expired = "Sessie verlopen";
   $txt_explain_session_expired = "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw in te loggen.";
-  
+
   // visual html editor
   $txt_ww_sourcemode = "Broncode modus";
   $txt_ww_visualmode = "Visuele modus";
