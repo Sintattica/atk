@@ -139,6 +139,15 @@
     $node = &$module_inst->newNode($node);
     return $node;
   }
+  
+  /** 
+   * Return the physical directory of a module..
+   */
+  function moduleDir($module)
+  {
+    global $g_modules;
+    return $g_modules[$module];
+  }
 
   /**
    * Creates an URL to a file within the modules directory
