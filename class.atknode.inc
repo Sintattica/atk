@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.91  2001/09/03 15:57:29  ivo
+   * Fixed a bug in the load( api that was introduced in previous checkin.
+   *
    * Revision 4.90  2001/08/31 14:53:05  maurice
    * Added primary key check
    *
@@ -229,7 +232,7 @@
   // Auto-register modules
   if (file_exists("$config_module_path/config.modules.inc"))
     include_once("$config_module_path/config.modules.inc");
-  
+    
   // Module specific language file
   for ($i = 0; $i < sizeof($g_modules); $i++)
   {
@@ -2614,7 +2617,7 @@ atkdebug("Action add");
           // It looks like m_ownerInstance is not a real reference to the
           // owner of the attribute. Therefor copy de owner again to m_ownerInstance
           $p_attrib->m_ownerInstance  = &$this;
-          $recordset[$j][$loadlist[$i]] = $p_attrib->load($this->orgKeyField(), $recordset[$j]);
+          $recordset[$j][$loadlist[$i]] = $p_attrib->load($g_db, $recordset[$j]);
         }
       }
       // The $this->m_records is here for compatibility reasons.
