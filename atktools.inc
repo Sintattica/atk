@@ -799,6 +799,7 @@
    */
   function exportFile($file, $filename)
   {   
+    include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
     $browser = getBrowserInfo();
     if (eregi("ie", $browser["browser"]))
     {
