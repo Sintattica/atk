@@ -2186,7 +2186,7 @@
         // There's only one record and the autoselect flag is set, so we
         // automatically go to the target.
         $target = stringparse(rawurldecode(atkurldecode($this->m_postvars['atktarget'])),$recordset[0], true);
-        $this->redirect($target);
+        $this->redirect(session_url($target, SESSION_NESTED));
       }
       else
       {
