@@ -22,6 +22,12 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/05/22 08:35:25  peter
+   * Made the API a bit more user friendly by allowing the user to specify
+   * "" for the date formats. This means the attribute will automagically
+   * change the formats to their default. The default now can also be specified
+   * in the language file(s) ($txt_date_format_edit / ..._view)!
+   *
    * Revision 4.7  2001/05/11 07:15:56  peter
    * Forgot the new fieldprefix in previous commits.
    *
@@ -175,34 +181,41 @@
      *
      * @see atkAttribute
      */
-    function atkDateAttribute($name, $format_edit="F j Y", $format_view="F j Y", $min=0, $max=0, $flags=0)
+    function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
-      // *** API CHANGE HACK ***
-      // This function used to have the parameters: ($name, $flags=0) but because of
-      // the new features of the atkDateAttribute this has changed as you can see above.
-      // However, to remain backward compatible with modules based on the old api we
-      // (try) to detect which api is used, and initialize accordingly.
-
+      global $txt_date_format_edit, $txt_date_format_view;
+      
+      // *** API SUPPORT HACK ***
+      // Because of backwards compatability and because of the number
+      // of arguments this method has we also support the old API: ($name, $flags=0).
       if (is_int($format_edit))
       {
-        // old api use detected...
         $flags = $format_edit;
-        $format_edit = "F j Y";
-        $format_view = "F j Y";
-        $date_min = 0;
-        $date_max = 0;
+        $format_edit = "";
+        $format_view = "";
+        $min = 0;
+        $max = 0;
       }
 
-      $this->m_date_format_edit = $format_edit;
-      $this->m_date_format_view = $format_view;
+      /* edit date format */
+      if     (!empty($format_edit)) $this->m_date_format_edit = $format_edit;
+      else if (!empty($txt_date_format_edit)) $this->m_date_format_edit = $txt_date_format_edit;
+      else   $this->m_date_format_edit = "F j Y";
+
+      /* display date format */
+      if     (!empty($format_view)) $this->m_date_format_view = $format_view;
+      else if (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
+      else   $this->m_date_format_view = "F j Y";
+
+      /* max / min date */
       $this->m_date_min = $min;
       $this->m_date_max = $max;
 
-      // register javascript
+      /* register javascript */
       $GLOBALS['g_layout']->register_script("atk/javascript/class.atkdateattribute.js.php");
 
-      // base class constructor
-      $this->atkAttribute($name,$flags);
+      /* base class constructor */
+      $this->atkAttribute($name, $flags);
     }
 
     /**
