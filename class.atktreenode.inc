@@ -529,23 +529,14 @@
           *
           *@param $selector The 'where' clause that indicates which records to select.
           */
-    function copyDb($selector)
-    {
-      $recordset = $this->selectDb($selector,"","","","","copy");
-      
-      if(count($recordset)>0)
-      { 
-        $oldparent=$recordset[0][$this->m_primaryKey[0]];
-        $this->addDb($recordset[0]);
-        atkdebug("copyDb - Main Record added");
-        $newparent=$recordset[0][$this->m_primaryKey[0]];
-        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
-        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);
-      }
-      else
-      {
-        atkdebug("No records found with Selector: $selector - $parent");
-      }
+    function copyDb($record)
+    {                
+      $oldparent=$record[$this->m_primaryKey[0]];
+      $this->addDb($record);
+      atkdebug("copyDb - Main Record added");
+      $newparent=$record[$this->m_primaryKey[0]];
+      atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
+      $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);   
       return "";
     }
     
