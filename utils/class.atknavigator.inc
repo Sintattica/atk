@@ -96,7 +96,7 @@
       if ($curr > 1)
       {
         $newstart = $node->m_postvars['atkstartat'] - $limit;
-        $res['previous'] = array(	"title"=>text("previous"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
+        $res['previous'] = array(	"title"=>text("previous"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$action."&atktarget=".rawurlencode($ATK_VARS["atktarget"])."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
       }
       
       for ($i = $begpg; $i <= $endpg; $i++)
@@ -104,13 +104,13 @@
          if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
          else $res[$i] = array("title"=>$i,
                                "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".
-                                                  $action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".$ATK_VARS['atkselector']);
+                                                  $action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".$ATK_VARS['atkselector']."&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
       }
 
       if ($curr < $pages)
       {
         $newstart = $node->m_postvars['atkstartat'] + $limit;
-        $res['next'] = array("title"=>text("next"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
+        $res['next'] = array("title"=>text("next"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart."&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
       }
 
       return $res;
