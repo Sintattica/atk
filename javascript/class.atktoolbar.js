@@ -27,6 +27,7 @@ function popupSelection(url,title)
  
   if (!document.selection)
   {   
+   alert("Selecteer eerst het stuk tekst dat u wilt bewerken (werkt alleen in Internet Explorer)");
    return;
   }
  
@@ -35,11 +36,12 @@ function popupSelection(url,title)
  
   if (current == '')
   {
+   alert("Selecteer eerst het stuk tekst dat u wilt bewerken (werkt alleen in Internet Explorer)");
    // nothing selected
    return;
   }
     
-  NewWindow(url,title,600,300,'yes');
+  NewWindow(url,title,400,400,'yes');
   
 }
 

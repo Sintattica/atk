@@ -9,7 +9,6 @@
             function changeCont(tgt,header) {
 
                 target=('T' +tgt);
-
                 if (DOM) {
 
                     // Hide the last one, and flip the tab color back.
