@@ -1,10 +1,24 @@
 <?php
+
   // USAGE:
   //
   // Just set the following in your config.inc.php 
   //
   // $config_menu_layout   = "dhtml";
   // $config_tabselectMode = "mouseover"; (can also be "click") 
+  
+  $config_platformroot = "../";
+  $config_atkroot = "../";
+  
+  atkimport("atk.ui.atkpage");
+  $page = &atkPage::getInstance();
+  $ui =   &atknew("atk.ui.atkui");
+  $theme = &atkTheme::getInstance();  
+
+  include_once("../atk.inc");
+  include_once($config_atkroot."atk/menu/general.inc");
+
+  global $g_menu;
 
   $tabs = "";
   $divs = "";
@@ -95,5 +109,9 @@
                         else if (NS4) { currShow=document.layers[\'T11\'];}'."\n".
                        'changeCont("11", "tab11");'."\n</script>");
    
+  $string = $page->render("Menu", true);
+  $output = &atkOutput::getInstance();
+  $output->output($string);
+  $output->outputFlush();
 
 ?>

@@ -7,6 +7,7 @@
     var $m_submitscripts = array();
     var $m_loadscripts = array();
     var $m_stylesheets = array();
+		var $m_stylecode = array();
     var $m_content = "";
     
     function &getInstance()
@@ -64,6 +65,15 @@
     {    
       if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
     }
+		
+    /**
+     * Register a piece of Cascading StyleSheet code for use in the header.
+     * @param String $code The Cascading StyleSheet code to place in the header.
+     */
+		function register_stylecode($code)
+		{
+      if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
+		}
     
     /**
      * Return a HTML header
@@ -114,6 +124,9 @@
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
         $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
+				
+			for ($i = 0; $i < count($this->m_stylecode); $i++)
+			$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
 
       $res.="</head>\n";
       return $res;

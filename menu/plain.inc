@@ -14,11 +14,23 @@
    * $Id$      
    *
    */  
+	 
+	$config_platformroot = "../";
+	$config_atkroot = "../";
+	include_once("../atk.inc");
+	include_once($config_atkroot."atk/menu/general.inc");
+	
+	global $g_menu;
+	
+  atkimport("atk.ui.atkpage");
+  $page = &atkPage::getInstance();
+  $ui =   &atknew("atk.ui.atkui");
+  $theme = &atkTheme::getInstance();
 
   /* output html */
   $menu = "<div align='center'>"; 
   
-  /* build menu */    
+  /* build menu */
   
   function menu_cmp($a,$b)
   {
@@ -85,5 +97,10 @@
                                             "content"=>$menu));
  
   $page->addContent($box);
-  
+			
+	$string = $page->render("Menu", true);
+  $output = &atkOutput::getInstance();
+  $output->output($string);
+  $output->outputFlush();
+
 ?>
