@@ -1523,8 +1523,16 @@
         }
       }
 
+      /* actions array can contain multi-record-actions */
+      if (count($actions) == 2 && count(array_diff(array_keys($actions), array("actions", "mra"))) == 0)
+      {
+        $mra = $actions["mra"];
+        $actions = $actions["actions"];
+      }
+      else
+        $mra = $this->hasFlag(NF_NO_DELETE) ? array() : array("delete");
+
       /* get the rows */
-      $mra = $this->hasFlag(NF_NO_DELETE) ? array() : array("delete");
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $result["rows"][$i] = array("columns" => array(), "actions" => $actions, "mra" => $mra, "record" => &$recordset[$i], "data" => array());
