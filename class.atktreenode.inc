@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.23  2001/07/18 16:07:45  ivo
+    * Replaced dispatch.php by PHP_SELF
+    *
     * Revision 4.22  2001/07/13 12:58:46  sandy
     * Small bugfix for the Tree, it now shows a correct tree in NS6
     *
@@ -132,7 +135,7 @@
      */
     function adminPage()
     {
-      global $g_securityManager,$g_layout,$g_maxlevel;
+      global $g_securityManager,$g_layout,$g_maxlevel, $PHP_SELF;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
       $g_layout->output($this->statusbar());
@@ -169,7 +172,7 @@
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
-        $addurl = "dispatch.php?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
+        $addurl = $PHP_SELF."?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
         $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
       }
 
@@ -215,7 +218,7 @@
      */
     function GraphTreeRender()
     {
-      global $g_maxlevel,$g_layout,$g_theme, $exp_index;
+      global $g_maxlevel,$g_layout,$g_theme, $exp_index, $PHP_SELF;
    
       if(count($this->m_tree)==1) return "";  
    
@@ -391,11 +394,11 @@
 						    } 
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
-						      if($cnt!=0) $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_end_plus."\" border=no>")."</td>\n";
+						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_end_plus."\" border=no>")."</td>\n";
                 }
                 else
                 {
-						      if($cnt!=0) $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n";
+						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n";
                 }
 					    }
 					    else
@@ -422,11 +425,11 @@
 						    }
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
-						      if($cnt!=0) $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_end_minus."\" border=no>")."</td>\n";
+						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_end_minus."\" border=no>")."</td>\n";
                 }
                 else
                 {
-						      if($cnt!=0) $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n";
+						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n";
                 }
 					    }
 					    else
@@ -464,9 +467,9 @@
 				    } 
 				                    
 				    if ($expand[$cnt]==0) 
-					    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_expand."\" border=no>")."</td>\n"; 
+					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=no>")."</td>\n"; 
 				    else 
-					    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_collapse."\" border=no>")."</td>\n";          
+					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_collapse."\" border=no>")."</td>\n";          
 			    } 
 			    else 
 			    { 
@@ -494,17 +497,17 @@
           $res.='<td> ';
           if (!$this->hasFlag(NF_NO_ADD))
           {
-            $res.=href("dispatch.php?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
+            $res.=href($PHP_SELF."?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
           }
           if($cnt>0)
           {
             if (!$this->hasFlag(NF_NO_EDIT))
             {
-              $res.=' '.href("dispatch.php?atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
+              $res.=' '.href($PHP_SELF."?atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
             }
             if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
             {    
-              $res.=' '.href("dispatch.php?atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
+              $res.=' '.href($PHP_SELF."?atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
             }
             if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
             {
@@ -512,7 +515,7 @@
             }
             else
             {
-              $res.=' '.href("dispatch.php?atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
+              $res.=' '.href($PHP_SELF."?atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
             }
           }
          $res.= "</td></tr>\n";       
