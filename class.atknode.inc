@@ -43,7 +43,7 @@
    * must be derived from this class with specific
    * implementations for that type of node.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$
@@ -1179,7 +1179,7 @@
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
-      $g_layout->output($this->statusbar());
+      $g_layout->output($this->statusbar());      
 
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
@@ -1263,11 +1263,11 @@
      * @param $sortable
      * @param $suppresslist
      */
-    function recordList($recordset, $actions, $sortable=true,$suppressList="")
+    function recordList($recordset, $actions, $sortable=true,$suppressList="", $sessionsave=false)
     {
       global $g_layout, $PHP_SELF,$g_theme, $atklevel;
       $output = $g_layout->data_top();
-
+      
       $output.="<tr>";
 
       // stuff for the totals row..
@@ -1462,11 +1462,7 @@
                 $action=str_replace('[pk]',rawurlencode($pk),$action);
               }
               $action=stringparse($action,$recordset[$i],true);
-
-              $sessionsave = false;
-              if ($atklevel>0) $sessionsave=true; // If we're at a higher atk level, we
-                                                  // need to remember form data.
-
+              
               $stractions.=href($action,text($action_name),SESSION_NESTED, $sessionsave).'&nbsp;';
             }
           }
@@ -1979,7 +1975,7 @@
         $this->redirect($target);
       }
       else
-      {
+      {        
         $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'select'));
         $g_layout->output($this->statusbar());
         $g_layout->output(text($this->m_type.'_select').'<br>');
@@ -1992,7 +1988,7 @@
         if (!empty($nav)) $g_layout->output("$nav<br>");
         $g_layout->output('<br>');
 
-        $actions=array(href(atkurldecode($this->m_postvars['atktarget']),text('select'),SESSION_NESTED));
+        $actions["select"]=atkurldecode($this->m_postvars['atktarget']);
 
         $g_layout->output($this->recordList($recordset, $actions));
 
