@@ -276,6 +276,7 @@
       if (strpos($rows[0], ";")!==false) return ";";
       if (strpos($rows[0], ",")!==false) return ",";
       if (strpos($rows[0], ":")!==false) return ":";
+      else return ";";
     }
 
     /**
@@ -298,6 +299,7 @@
     function estimateColumnCount($rows, $delimiter)
     {
       if (!is_array($rows)||count($rows)==0) return 0;
+      if ($delimiter == "") return 1;
       return (substr_count($rows[0], $delimiter)+1);
 
     }
@@ -714,11 +716,10 @@
         {
           if ($col_map[$i]!="-")
           {
-            if($i != $_i-1)// column is mapped
+            if($i != $_i-1 || $col_map[$i] != $allField)// column is mapped
               $value = $data[$i+1];
             else //this is the allField
               $value = $allFieldValue;
-
             $this->addToRecord($rec,$col_map[$i],trim($value));
             unset($value);
           }
@@ -854,8 +855,10 @@
       $attr = $this->getUsableAttribute($field);
       if(!$attr)
         return;
-        
-      $result = $attr->display($attr->parseStringValue($value));
+
+      $record = array();
+      $this->addToRecord($record,$field,$value);
+      $result = $attr->display($record);
 
       if(!$result)
         if(in_array($field,$this->getObligatoryAttributes()))
