@@ -21,6 +21,7 @@ if (!defined("CLASS_ATKNODE_INC"))
   define("NF_COPY"          ,256); // Records / trees may  be copied
   define("NF_TREE_NO_ROOT_DELETE",512); // No root elements can be deleted
   define("NF_TREE_NO_ROOT_COPY",1024); // No root elements can be copied
+  
   define("NF_AUTOSELECT",2048); // No root elements can be copied
 
   /**
@@ -91,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/04/24 09:06:09  sandy
+   * first level of the tree always visible, and fixed the NF_TREE flags.
+   *
    * Revision 4.1  2001/04/23 13:21:22  peter
    * Introduction of module support. An ATK application can now have zero
    * or more modules which can, but don't have to, contain ATK nodes.
@@ -281,19 +285,14 @@ if (!defined("CLASS_ATKNODE_INC"))
 
   // Global theme variable, must be declared before the includes
   $g_theme = array();
-
   // Global array to store meta-information about tables, so we don't have to read them from the db for each class instance.
-  $g_tableMeta = Array();
-
+  $g_tableMeta = array();
   // Global debug msg
   $g_debug_msg = "";
-
   // Global node list
   $g_nodes = array();
-
   // Global module list
   $g_modules = array();
-  
   // Global menu
   $g_menu = array();
 

@@ -17,6 +17,9 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     *
     * $Id$
     * $Log$
+    * Revision 4.3  2001/04/24 09:06:09  sandy
+    * first level of the tree always visible, and fixed the NF_TREE flags.
+    *
     * Revision 4.2  2001/04/23 13:10:48  sandy
     * small bugfix in the tree class
     *
@@ -85,7 +88,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
         $t->addNode($this->m_records[$i][$this->m_primaryKey[0]],$this->descriptor($group),$this->m_records[$i][$this->m_parent][$this->m_primaryKey[0]]);    
       }
       $this->m_tree[$g_teller][0]=0; 
-      $this->m_tree[$g_teller][1]="treeview"; 
+      $this->m_tree[$g_teller][1]="&nbsp;"; 
 	    $this->m_tree[$g_teller][2]=''; 
 	    $this->m_tree[$g_teller][3]=''; 
 	    $this->m_tree[$g_teller][4]=1; 
@@ -164,8 +167,24 @@ if (!defined("CLASS_ATKTREENODE_INC"))
       $lastlevel=0;
       for ($i=0; $i<count($this->m_tree); $i++) 
 	    { 
-	    	$expand[$i]=0; 
-	    	$visible[$i]=0; 
+        if($this->m_tree[$i][0]<2)
+        {
+          if($this->m_tree[$i][4]==1&&$this->m_tree[$i][0]<1)
+          {
+     	      $expand[$i]=1; 
+	   	      $visible[$i]=1;
+          }
+          else
+          {
+     	      $expand[$i]=0; 
+	   	      $visible[$i]=1;
+          }
+        }
+        else
+        {
+     	    $expand[$i]=0; 
+	   	    $visible[$i]=0;
+        }
 	    	$levels[$i]=0; 
 	    } 
       /*********************************************/ 
@@ -174,7 +193,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
    
 	    if ($p!="") $explevels = explode("|",$p); 
    
-	    $i=0; 
+	    $i=0;
 	    while($i<count($explevels)) 
 	    { 
 	    	$expand[$explevels[$i]]=1; 
@@ -370,11 +389,11 @@ if (!defined("CLASS_ATKTREENODE_INC"))
           if($cnt>0)
           {
             $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
-            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt][0]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
             {    
               $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
             }
-            if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
+            if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt][0]==1)
             {
                // Do nothing
             }
