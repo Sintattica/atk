@@ -18,14 +18,14 @@
    * $Id$
    */
   class atkManyToOneRelation extends atkRelation
-  {
+  {  
     var $m_leftjoin = true; // by default, we do a left join. this means that
                             // records that don't have a record in this
                             // relation, will be displayed anyway. NOTE: set
                             // this to false only if you know what you're
                             // doing. When in doubt, 'true' is usually the
                             // best option.
-
+               
     /**
      * Constructor
      * @param $name ?
@@ -51,7 +51,7 @@
         {
           $pkfield = $this->m_destInstance->m_primaryKey[0];
           return $rec[$this->fieldName()][$pkfield];
-	}
+        }
       }
       // This never happens, does it?
       return "";
@@ -91,6 +91,7 @@
     function db2value($rec)
     {
       $myrec = $rec[$this->fieldName()];
+            
       if (is_array($myrec)) return $myrec;
       else
       {
@@ -106,10 +107,22 @@
      * @return a displayable string
      */
     function display($record)
-    {
+    {      
       if ($this->createDestination())
       {
-        $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        if (count($record[$this->fieldName()])==1)
+        {
+          // The record consist of only one field, which is the primary key.
+          // This means we have to load the rest of the data, in order to 
+          // load a descriptor. 
+          atkdebug("Delayed loading of descriptor fields for ".$this->m_name);
+          $recs = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $this->m_destInstance->descriptorFields());
+          $title = $this->m_destInstance->descriptor($recs[0]);
+        }
+        else
+        {
+          $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        }
 
         $result = $title; // default result is just the title.
  
