@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.16  2001/07/03 15:25:14  ivo
+   * authentication cookie is now encoded.
+   *
    * Revision 4.15  2001/06/27 07:39:49  ivo
    * Small logout fix for Internet Explorer 4.0
    *
@@ -172,13 +175,13 @@
         {
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
-          $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
-          list($user, $passwd) = split("\.",$HTTP_COOKIE_VARS[$cookiename]);                           
+          $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));          
+          list($user, $passwd) = split("\.",base64_decode($HTTP_COOKIE_VARS[$cookiename]));          
        
           // for security reasons administrator will never be cookied..
           if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator")
           {        
-            atkdebug("Using cookie to retrieve previously used userid/password");
+            atkdebug("Using cookie to retrieve previously used userid/password");          
             $PHP_AUTH_USER = $user;
             $PHP_AUTH_PW = $passwd;
             $md5 = true; // cookie is already md5;
@@ -215,7 +218,7 @@
             // write cookie
             if (atkconfig("authentication_cookie")&&$PHP_AUTH_USER!="administrator")
             {
-              setcookie($cookiename,$PHP_AUTH_USER.".".$PHP_AUTH_PW, time()+60*(atkconfig("authentication_cookie_expire")));
+              setcookie($cookiename,base64_encode($PHP_AUTH_USER.".".$PHP_AUTH_PW), time()+60*(atkconfig("authentication_cookie_expire")));
             }
           }
         }
