@@ -8,7 +8,7 @@
    * $Id$
    *
    */
-  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
+
   userelation("atkmanytomanyrelation");
 
   class atkManyBoolRelation extends atkManyToManyRelation
@@ -20,9 +20,9 @@
     * @param $destination
     * @param $flags
     */
-    function atkManyBoolRelation($name, $destination, $flags=0)
+    function atkManyBoolRelation($name, $link, $destination, $flags=0)
     {
-      $this->atkManyToManyRelation($name, $destination, $flags);
+      $this->atkManyToManyRelation($name, $link, $destination, $flags);
     }
 
     /**
@@ -75,10 +75,8 @@
      */
     function store($notused, $record)
     {
-      $classname = $this->m_name;
-      $rel = &getNode($classname);
-
-      $this->createDestination();
+      $this->createLink();
+      $rel = &$this->m_linkInstance;
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
