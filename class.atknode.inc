@@ -95,6 +95,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.59  2001/06/22 11:44:42  ivo
+   * Workaround for IE4 'bug' that causes javascript to decode urlencoded
+   * values that it shouldn't encode: atkurlencode and atkurldecode.
+   *
    * Revision 4.58  2001/06/19 14:00:01  ivo
    * searchform posts to phpself instead of dispatch.php
    *
@@ -1863,7 +1867,8 @@
       // check for fake submit (session saving href thingee)
       if ($this->m_postvars["atkescape"]!="")
       {
-        $this->redirect($this->m_postvars["atkescape"]);
+    //echo $this->m_postvars["atkescape"];
+        $this->redirect(atkurldecode($this->m_postvars["atkescape"]));
       }
       else
       {            
@@ -2044,7 +2049,7 @@
     function redirect($location="")
     {
       global $g_returnurl;
-      
+    //echo $location;      
       atkdebug("atknode::redirect()");
       $back = 0;
       

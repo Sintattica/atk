@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.10  2001/06/22 11:44:42  ivo
+  * Workaround for IE4 'bug' that causes javascript to decode urlencoded
+  * values that it shouldn't encode: atkurlencode and atkurldecode.
+  *
   * Revision 4.9  2001/06/12 13:55:59  ivo
   * If no string can be found in the language file, the default one generated
   * by atk is now more usable. (strips title_ etc.) (contributed by Tom)
@@ -142,35 +146,7 @@
   {
     return $GLOBALS["config_".$tag];
   }
-
-  /**
-    * function ArrayToUrlVars
-    *
-    * Creates an Url String
-    */
-/*  function arrayToUrlVars($array, $leadchar="?", $prefix="")
-  {
-    $str = "";
-    if (count($array>0))
-    {
-      $str = $leadchar;
-      for  ($i=0;list($key,$value) = each($array);$i++)
-      {        
-        if (is_array($value))
-        {
-          $str.=arrayToUrlVars($value,"",$prefix.$key."_AMDAE_")."&";
-        }
-        else
-        {
-          $str.=$prefix.$key."=".rawurlencode($value);
-          if ($i<count($array)-1) $str.="&";
-        }
-      }
-    }
-    return $str; 
-  }*/
-
-
+  
    /**
    * Function Text
    *
@@ -294,7 +270,9 @@
     if ($saveform)
     {
       //$str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
-      $str = 'javascript:atkSubmit("'.session_url($url,$sessionstatus).'")';
+    //echo $url."-".base64_encode(session_url($url,$sessionstatus))."<br>";
+      //$str = 'javascript:atkSubmit("'.session_url($url,$sessionstatus).'")';
+      $str = 'javascript:atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     }
     else
     {
@@ -304,6 +282,7 @@
     // note, we use single quotes instead of doublequotes in the href='', 
     // because we otherwise have a problem with internet explorers buggy
     // javascript parser.. 
+  //echo $str;
     return "<a href='".$str."' ".$extraprops.">".$name."</a>";
   }
 
@@ -575,6 +554,16 @@
       }
     }
     return $string;
+  }
+  
+  function atkurlencode($string)
+  {
+    return str_replace("%","_#",rawurlencode($string));
+  }
+  
+  function atkurldecode($string)
+  {
+    return rawurldecode(str_replace("_#","%",$string));
   }
   
   /**
