@@ -773,7 +773,7 @@
       if (count($this->m_tabListView) > 1) $g_layout->tabs_bottom();
 
       $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
-                        '<input type="submit" value="'.text('back').'"></form>');
+                        '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
 
       $g_layout->ui_bottom();
     }

@@ -35,7 +35,7 @@
   $txt_close = "Sluiten";
   $txt_saveandclose = "Opslaan en sluiten";
   $txt_cancel = "Annuleren";
-  $txt_back = "&lt;&lt; Terug";
+  $txt_back = "Terug";
 
   $txt_menu = "Menu";
   $txt_error = "Error";
