@@ -18,7 +18,7 @@
 
   /** Theme definition */
   $theme["customtpls"] = array("box.tpl", "tabs.tpl", "login.tpl");  
-  $theme["customstyles"] = array("style.css", "recordlist.css");
+  $theme["customstyles"] = array("style.css", "recordlist.css", "tabs.css");
   $theme["customimgs"] = array("help.gif");
   
   $theme["highlight"] = "#c5d7ff";
