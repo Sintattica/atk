@@ -717,9 +717,10 @@
       //$g_layout->ui_bottom($g_layout->title($this->m_module, $this->m_type,"edit"));
 
       $g_layout->output('<br>');
-      if (atkLevel()>0) // if atklevel is 0 or less, we are at the bottom of the session stack,
+      // if atklevel is 0 or less, we are at the bottom of the session stack,
                        // which means that 'saveandclose' doesn't close anyway, so we leave out
-                       // the 'saveandclose' button.
+                       // the 'saveandclose' button. Unless, a feedback screen is configured.
+      if (atkLevel()>0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
       {
         $g_layout->output('&nbsp;<input type="submit" value="'.text('saveandclose').'">&nbsp;');
       }
@@ -2512,7 +2513,8 @@
           if ($this->m_postvars['atknoclose']=="")
           {
             // 'save and close' was clicked
-            $this->redirect();
+            $location = $this->feedbackUrl("update", ACTION_SUCCESS);
+            $this->redirect($location);
           }
           else
           {
@@ -2540,7 +2542,8 @@
       else
       {
         // Cancel was pressed
-        $this->redirect();
+        $location = $this->feedbackUrl("update", ACTION_CANCELLED);
+        $this->redirect($location);
       }
     }
 
@@ -2574,13 +2577,18 @@
           {
             $location = session_url($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)), SESSION_REPLACE);
           }
+          else
+          {
+            $location = $this->feedbackUrl("save", ACTION_SUCCESS);
+          }
           $this->redirect($location);
         }
       }
       else
       {
         // Cancel was pressed
-        $this->redirect();
+        $location = $this->feedbackUrl("save", ACTION_CANCELLED);
+        $this->redirect($location);
       }
     }
 
