@@ -479,10 +479,14 @@
    * uninitialised array, we provide a small wrapper that performs
    * an is_array on the haystack first, just to make sure the user
    * doesn't get an error message.
+   *
+   * @param mixed $needle   The value to search for.
+   * @param array $haystack The array to search.
+   * @param boolean $strict If true, type must match.
    */
-  function atk_in_array($needle, $haystack)
+  function atk_in_array($needle, $haystack, $strict=false)
   {
-    return (is_array($haystack)&&in_array($needle, $haystack));
+    return (is_array($haystack)&&in_array($needle, $haystack, $strict));
   }
 
   /**
