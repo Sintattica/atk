@@ -195,7 +195,7 @@
                 if($decryptedlink) {
                   //change in the database
                   $link_better = $this->m_crypt->stripbackslashes($link_better);
-                  $query = "UPDATE ".$this->m_destInstance->m_table." SET ".$this->m_refKey."='".addslashes($link_better)."' WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
+                  $query = "UPDATE ".$this->m_destInstance->m_table." SET ".$this->m_linkbackfield."='".addslashes($link_better)."' WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
                   $g_db->query($query);
                   atkdebug("Fixed!");
                 }
