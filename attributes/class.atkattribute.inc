@@ -640,15 +640,24 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $func = $searchmode."Condition";
-      if (method_exists($query,$func))
+      $searchCondition = &$this->getSearchCondition($query, $table, $value, $searchmode);
+      if ($searchCondition)
       {
-        $query->addSearchCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
+        $query->addSearchCondition($searchCondition);
       }
       else
       {
         atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
       }
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+      $func = $searchmode."Condition";
+      if (method_exists($query,$func))
+        return $query->$func($table.".".$this->fieldName(),escapeSQL($value));
+      else
+        return false;
     }
 
     /**
@@ -1302,6 +1311,18 @@
       // add $field to fields array
       $fields[] = $field;
 
+    }
+    
+    /**
+     * Returns the condition (SQL) that should be used when we want to join a relation's
+     * owner node with the parent node. Void implementation for normal non-relation
+     * attributes
+     * @return String SQL string for joining the owner with the destination. 
+     *                Returns false when impossible (f.e. attrib is not a relation).
+     */
+    function getJoinCondition()
+    {
+      return false; 
     }
   }
 ?>

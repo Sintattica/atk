@@ -13,6 +13,8 @@ Changes in ATK 5.0.8
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
 * $config_language_basedir now defaults to "languages/" again [Thom,Boy]
+* Searching in nodes with AF_LARGE flag now is done with a textfield
+  (substring search) instead of a selectbox [Yury,Harrie]
 
 Changes in ATK 5.0.7
 --------------------

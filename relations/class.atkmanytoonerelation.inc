@@ -26,6 +26,11 @@
    * @internal include base class
    */
   userelation("atkrelation");
+
+  /**
+   * @internal include used utility class(es)
+   */
+  atkimport("atk.utils.atkstringparser");
   
   /**
    * A N:1 relation between two classes.
@@ -66,6 +71,8 @@
      * @var String
      */
     var $m_joinFilter = ""; 
+    
+    var $m_tablealias="";
     
     
     /**
@@ -426,62 +433,112 @@
      * @param $maxsize Maxsize of the editbox
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
-      atkimport("atk.utils.atkstringparser");
-      if ($this->createDestination())
+      if (!$this->hasFlag(AF_LARGE))
       {
-        if ($this->m_destinationFilter!="")
+        if ($this->createDestination())
         {
-          $parser = new atkStringParser($this->m_destinationFilter);
-          $filter = $parser->parse($record);
-          $this->m_destInstance->addFilter($filter);
+          if ($this->m_destinationFilter!="")
+          {
+            $parser = new atkStringParser($this->m_destinationFilter);
+            $filter = $parser->parse($record);
+            $this->m_destInstance->addFilter($filter);
+          }
+          $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          
+          $result = '<select ';
+          if ($extended)
+          {
+            $result.='multiple size="'.min(5,count($recordset)+1).'"';
+          }
+          $result.='name="atksearch['. $this->fieldName().'][]">';
+  
+          $pkfield = $this->m_destInstance->primaryKeyField();
+  
+          $result.= '<option value="">'.atktext('search_all');
+  
+          for ($i=0;$i<count($recordset);$i++)
+          {
+            $pk = $recordset[$i][$pkfield];
+            if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+          }
+          $result.='</select>';
+          return $result;
         }
-        $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-
-        $result = '<select ';
-        if ($extended)
-        {
-          $result.='multiple size="'.min(5,count($recordset)+1).'"';
-        }
-        $result.='name="atksearch['.$this->fieldName().'][]">';
-
-        $pkfield = $this->m_destInstance->primaryKeyField();
-
-        $result.= '<option value="">'.text('search_all');
-
-        for ($i=0;$i<count($recordset);$i++)
-        {
-          $pk = $recordset[$i][$pkfield];
-          if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
-        }
-        $result.='</select>';
+        return "";
+      }
+      else
+      {
+        $id = "atksearch[".$fieldprefix.$this->fieldName()."]";
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+        $result = '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+          ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
+          ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
         return $result;
       }
-      return "";
     }
 
     /**
      * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
+     * @param  atkQuery $query query to hook ourselves in to
+     * @param  string   $table the table name
+     * @param  string   $value the search value
+     * @return string          a piece of the SQL where clause
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      // We only support 'exact' matches. 
-      // But you can select more than one value, which we search using the IN() statement,
-      // which should work in any ansi compatible database.
-      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
       {
-        if (count($value)==1) // exactly one value
+        // We only support 'exact' matches. 
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
         {
-          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+          if (count($value)==1) // exactly one value
+            $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+          else // search for more values using IN()
+            $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
         }
-        else // search for more values using IN()
+      }
+      else
+      { 
+        if ($this->createDestination())
         {
-          $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
+          $searchConditions = array();
+          $df = $this->m_destInstance->descriptorFields();
+          foreach($df as $descField)
+          {
+            $p_attrib = &$this->m_destInstance->getAttribute($descField);
+            if (is_object($p_attrib))
+            {
+              if ($p_attrib->m_destInstance)
+                $itsTable = $p_attrib->m_destInstance->m_table;
+              else
+                $itsTable = $p_attrib->m_ownerInstance->m_table;
+              
+              if ($p_attrib)
+              {
+                $tmpJoinCondition = $p_attrib->getJoinCondition();
+                if ($tmpJoinCondition)
+                  $query->addJoin($itsTable,$itsTable,$tmpJoinCondition,false);
+              }
+                
+              // if is here for backward compatibility 
+              if (method_exists($p_attrib,"getSearchCondition"))
+              {
+                $searchcondition = $p_attrib->getSearchCondition($query,$itsTable,$value,$searchmode);
+                if ($searchcondition) $searchConditions[] = $searchcondition;
+              }
+              else
+              {
+                $p_attrib->searchCondition($query,$itsTable,$value,$searchmode);
+              }
+            }
+          }
+          if ($searchConditions) 
+            $query->addSearchCondition(implode(" OR ",$searchConditions));
         }
       }
     }
@@ -498,26 +555,18 @@
       if ($this->createDestination())
       {
         if ($mode != "update" && $mode != "add")
-        {
-          if ($tablename!="") $realtablename=$tablename.".";
-                  
-          $joinconditions = array();
-          $alias = $fieldaliasprefix.$this->fieldName();
-          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+        {              
+          if ($fieldaliasprefix)
           {
-            $joinconditions[] = $realtablename.$this->m_refKey[$i].
-                                "=".
-                                $alias.".".$this->m_destInstance->m_primaryKey[$i];
-          }
-          
-          if ($this->m_joinFilter!="")
+            $alias = $fieldaliasprefix . $this->m_destInstance->m_table;
+          }    
+          else
           {
-            $joinconditions[] = $this->m_joinFilter;
+            $alias = $this->m_destInstance->m_table; 
           }
-          
           $query->addJoin($this->m_destInstance->m_table, 
                           $alias,
-                          implode(" AND ",$joinconditions), 
+                          $this->getJoinCondition($tablename,$alias), 
                           $this->m_leftjoin);
           $this->m_destInstance->addToQuery($query, $alias, $level+1);
         }
@@ -539,7 +588,6 @@
         } 
       }
     }
-
 
     /**
      * Dummy function
@@ -587,6 +635,41 @@
       return 0;
     }
     
+      
+   /**
+    * Returns the condition (SQL) that should be used when we want to join a relation's
+    * owner node with the parent node.
+    * @return String SQL string for joining the owner with the destination.
+    *                Returns false when impossible (f.e. attrib is not a relation).
+    */
+    function getJoinCondition($tablename,$fieldalias="")
+    {
+      if (!$this->createDestination()) return false;
+  
+      if ($tablename!="") $realtablename=$tablename.".";
+      $joinconditions = array();
+      $this->m_tablealias = $fieldalias;
+      if ($this->m_tablealias)
+      {
+        $alias = $this->m_tablealias;
+      }
+      else
+      {
+        $alias = $realtablename; 
+      }
+      for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+      {
+        $joinconditions[] = $realtablename.$this->m_refKey[$i].
+        "=".
+        $alias.".".$this->m_destInstance->m_primaryKey[$i];
+      }
+
+      if ($this->m_joinFilter!="")
+      {
+        $joinconditions[] = $this->m_joinFilter;
+      }
+      return implode(" AND ",$joinconditions);
+    }
   }
 
 ?>

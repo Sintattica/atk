@@ -475,15 +475,65 @@
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
      *
-     * Because oneToManyRelations can not be searched directly from the master
-     * node, we override the default search() implementation with a dummy
-     * function.
-     * @return boolean false
+     * The framework calls this method to display the searchbox
+     * in the search bar of the recordlist, and to display a more extensive
+     * search in the 'extended' search screen.
+     * The regular atkAttributes returns a simple text input box for entering
+     * a keyword to search for.
+     *
+     * @param array   $record   Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the 
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended' 
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     *
+     * @return String A piece of html-code
      */
-    function search()
+    function search($record="", $extended=false)
     {
-      return FALSE;
+      $id = "atksearch[".$this->formName()."]";
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+      return $result;
     }
+    
+    /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+     function searchCondition(&$query, $table, $value, $searchmode)
+     {
+       $this->createDestination();
+       $usedFields = $this->m_ownerInstance->searchFields($this->fieldName());
+       $qfield=count($usedFields);
+
+       if($qfield>1)
+       {
+         $fields="CONCAT(";
+         for ($i=0;$i<$qfield;$i++)
+         {
+           $fields.=$usedFields[$i];
+           if($i<>$qfield-1){
+             $fields.=",";
+           }
+         }
+         $fields.=")";
+       }
+       else
+       {
+         $fields=$usedFields['0'];
+       }
+
+       $query->addJoin($this->m_destInstance->m_table,$this->fieldName(),$table.".id"."=".$this->fieldName().".".$this->m_refKey['0'],FALSE );//!$this->hasFlag(AF_OBLIGATORY)
+       $query->addSearchCondition($query->substringCondition($fields,escapeSQL($value)));
+     }
 
     /**
      * Determine the type of the foreign key on the other side.
