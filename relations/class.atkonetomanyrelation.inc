@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.19  2001/08/31 14:53:06  maurice
+   * Added primary key check
+   *
    * Revision 4.18  2001/08/16 10:06:58  ivo
    * Fixed a bug in delete function when primary key is not numeric.
    *
@@ -211,6 +214,7 @@
       
       $myrecords = $record[$this->fieldName()];
                   
+
       if (count($myrecords)==0)
       {
         // If someone pressed 'save', no records are loaded from the db.
@@ -241,7 +245,6 @@
         
         // User may not search in embedded forms..        
         $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
-        
         $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey));
       
         $output.=$GLOBALS['g_layout']->ret_td($cell);
@@ -250,7 +253,8 @@
 
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
-        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
+        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$this->m_ownerInstance->orgKeyField();
+
         if ($this->m_destinationFilter!="")
         {
           $strfilter.=' AND '.$this->m_destinationFilter;
@@ -272,10 +276,8 @@
     {
       atkdebug("load called for ".$this->m_name);
       $this->createDestination();
-      
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
-      
-      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$this->m_ownerInstance->orgKeyField()."'";
       if ($this->m_destinationFilter!="")
       {
         $this->m_destInstance->addFilter($this->m_destinationFilter);
@@ -295,7 +297,7 @@
       $rel = getNode($classname);      
       atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
 
-      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
+      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->orgKeyField()."'");
     }
     
 

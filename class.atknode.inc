@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.90  2001/08/31 14:53:05  maurice
+   * Added primary key check
+   *
    * Revision 4.89  2001/08/27 07:38:57  ivo
    * changed validate() api: atk now passes record to the function instead of
    * just one value. Also added a mode parameter that indicates whether we
@@ -149,7 +152,7 @@
    *   
    * (older logs have been removed...)
    */
-   
+
   // The atk version number. (REMEMBER: update this whenever a new atk release is tagged stable!)
   $g_atkversion = "4.2";
 
@@ -316,7 +319,13 @@
     /**
      * The primary key of this node
      */
+
     var $m_primaryKey = array();
+
+    /*
+     * The last know primary key value for a certain record
+     */
+    var $m_orgkey = array();
 
     /**
      * Array containing the metadata of the table (with fieldname, type and length)
@@ -360,7 +369,7 @@
      var $m_parent;
 
     /**
-     * Record filters
+                              * Record filters
      */
     var $m_filters = array();
     var $m_fuzzyFilters = array();
@@ -408,6 +417,8 @@
      */
     var $m_statusbarDone = false; 
 
+
+
     /*** Public functions ***/
 
     /**
@@ -438,7 +449,6 @@
 
       $attribute->m_owner = $this->m_type;
       $attribute->m_ownerInstance = &$this;
-
       if (!$g_securityManager->attribAllowed($this->m_type, $attribute->m_name, "edit"))
       {
         $attribute->m_flags |= AF_READONLY;
@@ -497,13 +507,25 @@
       
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
     }
+
+    /**
+     * Add an atkAttribute to the node ($attribute should be an object of type
+     * atkAttribute or one of its derivatives)
+     * This function is an alias for add(), and is the same in every way.
+     * (It exists for backwardcompatibility reasons)
+     * @param $attribute the attribute you want to add
+     */
+    function addAttribute($attribute)
+    {
+      $this->add($attribute);
+    }
 		
 		 /**        * Add an atkAttribute to the node ($attribute should be an object of type       
 		   * atkAttribute or one of its derivatives)        
 		  * This function is an alias for add(), and is the same in every way.        
 			* (It exists for backwardcompatibility reasons)        
 			* @param $attribute the attribute you want to add        
-			*/       
+			*      
 			function addAttribute($attribute)       
 			{         
 				$this->add($attribute);      
@@ -548,6 +570,7 @@
       return $this->m_primaryKey[0];
     }
 
+
     /**
      * Returns the primary key
      * @return Primary key
@@ -564,7 +587,50 @@
       atkdebug("Primary key tpl: ".$primKey);
       return $primKey;
     }
+
+    /**
+     * Fills the m_orgkey array
+     * 
+     */
+    function setOrgKeyValue($rec)
+    {      
+      $nrOfElements = count($this->m_primaryKey);
+      for ($i=0;$i<$nrOfElements;$i++)
+      {
+        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
+        $this->m_orgkey[$i] = $p_attrib->value2db($rec);
+      }
+      atkdebug("SetOrgKeyValue");
+    }
+
     
+    /**
+     * Returns the key of the record currently being edited
+     * @return orgKey
+     */
+    function orgKey()
+    {      
+      $origKey="";
+      $nrOfElements = count($this->m_orgkey);
+      for ($i=0;$i<$nrOfElements;$i++)
+      {
+        $origKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_orgkey[$i]."'";
+        if ($i<($nrOfElements-1)) $origKey.=" AND ";
+      }
+      return $origKey;
+    }
+
+    /**
+     * WATCH OUT, THIS FUNCTION ONLY RETURNS THE FIRST ORIGINAL KEY ATTRIB (so watch out
+     * when using this with classes that have multiple)
+     * @return Primary key field
+     */
+    function orgKeyField()
+    {
+      return $this->m_orgkey[0];
+    }
+
+
    /**
     * Set default order for the class
     * @param $tablename Table name
@@ -808,6 +874,7 @@
     {
       global $g_layout, $txt_field_obligatory;      
       
+
       // if there are displayable obligatory fields, we display a message near the bottom.
       $has_oblies = false;
       
@@ -867,8 +934,13 @@
           }
         }
       }
-      
-      $form.='<input type="hidden" name="'.$fieldprefix.'atkorgkey" value="'.$pk.'">';
+
+      // Set de orgkey as hidden variables. One variable for each separate part of the key  
+      for($i=0;$i<count($this->m_orgkey);$i++)
+      {
+        $form.='<input type="hidden" name="'.$fieldprefix.'atkorgkey['.$i.']" value="'.$this->m_orgkey[$i].'">';
+      }
+
       if (is_array($forceList))
       {          
         while(list($forcedvarname,$forcedvalue)=each($forceList))
@@ -914,8 +986,12 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {      
         $p_attrib = &$this->m_attribList[$attribname];
+
+        // It looks like m_ownerInstance is not a real reference to the
+        // owner of the attribute. Therefor copy de owner again to m_ownerInstance
+        $p_attrib->m_ownerInstance = &$this;
         // fields that have not yet been initialised may be overriden in the url..
-        
+
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
@@ -965,6 +1041,7 @@
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
             }            
+
             if (($mode=="edit"&&$p_attrib->hasFlag(AF_READONLY_EDIT))||($mode=="add"&&$p_attrib->hasFlag(AF_READONLY_ADD)))                   
             {
               // readonly, display value..              
@@ -982,7 +1059,7 @@
                 $editsrc = $this->$funcname($defaults, $fieldprefix);
               }
               else
-              {                             
+              {                        
                 $editsrc = $p_attrib->edit($defaults, $fieldprefix);
               }
             }
@@ -1839,12 +1916,14 @@
     
     function action_view()
     {
+atkdebug("Action view");
       $recordset = $this->selectDb($this->m_postvars['atkselector']);
       $this->viewPage($recordset[0]);
     }
       
     function action_add()
     {
+atkdebug("Action add");
       $this->addPage();
     }
      
@@ -1852,6 +1931,12 @@
     {
       if ($this->m_postvars['atkcancel']=="")
       {
+        // Fill the m_orgkey array
+        for($i=0;$i<count($this->m_postvars['atkorgkey']);$i++)
+        {
+          $this->m_orgkey[$i] = $this->m_postvars['atkorgkey'][$i];
+        }
+
         $record = $this->updateRecord();
         $this->validate($record, "update");
         if (count($this->m_errors)>0)
@@ -1871,6 +1956,8 @@
           {
             // 'save' was clicked
             $this->m_action="edit";
+            //update succesful, pk value might be changed so update m_orgkey
+            $this->setOrgKeyValue($record);
             $this->editPage($record);
           }
         }
@@ -1885,7 +1972,6 @@
     function action_save()
     {
       global $PHP_SELF;
-
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
@@ -1975,7 +2061,9 @@
     
     function action_edit()
     {
-      $recordset = $this->selectDb($this->m_postvars['atkselector']);
+      $recordset = $this->selectDb($this->m_postvars['atkselector']);      
+      $recordset = $this->selectDb($this->m_postvars['atkselector']);      
+      
       $this->editPage($recordset[0]);
     }
     
@@ -2168,9 +2256,23 @@
     {
       global $g_db;
       atkdebug("validate()");
+
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
+        //Validate if ne
+        if ($p_attrib->hasFlag(AF_PRIMARY))
+        {
+          $atkorgkey = $this->orgKey();
+          if(($atkorgkey == '' // no orgkey, so adding this record
+              || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
+             &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
+            )
+          {
+            $this->m_errors[$attribname] = text('error_primarykey_exists');
+          }
+        }
+        
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
         if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
@@ -2182,6 +2284,7 @@
         {
           $this->m_errors[$attribname] = text('error_uniquefield');
         }
+        
         else
         {
           //don't validate empty fields
@@ -2216,21 +2319,20 @@
       $query = new $name();
 
       $query->addTable($this->m_table);
-      
+
       // The record that must be updated is indicated by 'atkorgkey'
       // (not by atkselector, since the primary key might have 
       // changed, so we use the atkorgkey, which is the value before
-      // any updated happended.)
-      if ($this->m_postvars['atkorgkey']!="")
+      // any update happened.)
+      if (count($this->m_postvars['atkorgkey']))
       {
         // If we need to track changes, we first load the original values..
         if ($this->hasFlag(NF_TRACK_CHANGES))
         {
-          $recordset = $this->selectDb($this->m_postvars['atkorgkey']);
+          $recordset = $this->selectDb($this->orgKey());
           $record["atkorgrec"] = $recordset[0];
         }      
-      
-        $query->addCondition($this->m_postvars['atkorgkey']);
+        $query->addCondition($this->orgKey());
 
         $storelist = array();
 
@@ -2238,7 +2340,7 @@
         {
           $p_attrib = &$this->m_attribList[$attribname];        
           if ($p_attrib->hasFlag(AF_READONLY_EDIT)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
- 	        {
+ 	  {
             if (method_exists($p_attrib,"store"))
             {
               $storelist[]=$attribname;
@@ -2247,7 +2349,7 @@
             {
               $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
             }
-	        }
+	  }
         }
 
         $querystring = $query->buildUpdate();
@@ -2451,6 +2553,8 @@
         }
       }
 
+
+
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];        
@@ -2479,6 +2583,8 @@
       
       if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
       else $dbrecords = $g_db->getrows($querystring);
+
+      $this->setOrgKeyValue($dbrecords[0]);
       
       $recordset = array();
       for ($i=0;$i<count($dbrecords);$i++)
@@ -2495,16 +2601,22 @@
         $recordset[] = $therecord;
       }      
 
+
       // also load special storage attributes.
       for ($i=0;$i<count($loadlist);$i++)
       {
         for ($j=0;$j<count($recordset);$j++)
         {
           $p_attrib = &$this->m_attribList[$loadlist[$i]];
-          $recordset[$j][$loadlist[$i]] = $p_attrib->load($g_db, $recordset[$j]);
+
+          $this->setOrgKeyValue($recordset[$j]);
+          atkdebug("orgkeyvalue SelectDb ".$this->orgKeyField()." NodeName ".$this->m_type);
+          // It looks like m_ownerInstance is not a real reference to the
+          // owner of the attribute. Therefor copy de owner again to m_ownerInstance
+          $p_attrib->m_ownerInstance  = &$this;
+          $recordset[$j][$loadlist[$i]] = $p_attrib->load($this->orgKeyField(), $recordset[$j]);
         }
       }
-      
       // The $this->m_records is here for compatibility reasons.
       // USE OF M_RECORDS IS OBSOLETE!!!!!!!!!
       // new usage of selectDb: $recordset = $this->selectDb(...);
