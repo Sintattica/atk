@@ -20,7 +20,7 @@ Changes in ATK 5.0.5
 * Moved Doctype to defaultconfig [Boy]
 + Login screen now also uses own CSS file (login.css) [Boy]
 + Added autoadjust feature to atkTextAttribute [Boy]
-+ Added deleteAllowed method to all attributes and a AF_RESTRICTED_DELETION 
++ Added deleteAllowed method to all attributes and a AF_RESTRICTED_DELETE
   flag to the atkOneToManyRelation [Boy]
 
 Changes in ATK 5.0.4

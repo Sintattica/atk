@@ -1178,12 +1178,18 @@
     }
     
     /**
-     * Wether or not the attribute allows deletion
-     * @return boolean wether or not the attribute allows deletion
+     * Check if delete of the record is allowed. 
+     *
+     * This method is called by the framework to check if the attribute
+     * allows the record to be deleted. The default implementation always
+     * returns true, but derived attributes may implement their own 
+     * logic to prevent deletion of the record. 
+     *
+     * @return boolean True if delete is allowed, false if not.
      */
     function deleteAllowed()
     {
-    	return true;
+      return true;
     }
             
   }
