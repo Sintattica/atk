@@ -18,6 +18,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.10  2001/09/28 08:49:39  peter
+   * Added workaround for a bug in old Mozilla 0.9.x releases (and Netscape 6)
+   *
    * Revision 4.9  2001/07/24 08:05:48  ivo
    * config.inc.php was included without including atkconfigtools.inc. This lead
    * to php errors in the javascript when functions from atkconfigtools.inc are
@@ -104,14 +107,14 @@ function getDays(date)
 function AdjustDate(el, arr, format, str_min, str_max, obligatory)
 {
   var format_month, format_day, array_months;
-	var frm = el.form;
+  var frm = el.form;
 
   /* check obligatory */
-	if (!obligatory && (str_min != "0" || str_max != "0"))
-	{
-	  str_min = 0;
-		str_max = 0;
-	}
+  if (!obligatory && (str_min != "0" || str_max != "0"))
+  {
+     str_min = 0;
+     str_max = 0;
+  }
   
   /* check month format */
   if      (format.indexOf("F") >= 0) array_months = m_months_long;
@@ -140,24 +143,25 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   if (current["y"].toString() == "NaN") current["y"] = 0;
 
   /* we just changed one of the fields to null */
-	if (!obligatory && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == ""))) 
-	{
+  if (!obligatory && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == ""))) 
+  {
     for (i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;	
     input["d"].options[0] = new Option("", 0);
     for (i = 1; i <= 31; i++) input["d"].options[input["d"].options.length] = new Option(("d" == format_day) ? (i < 10 ? "0" : "") + i : i, i);    
-	  input["m"].options[0].selected = true;		
-		input["y"].value = "";
-		return;
-	}
+    input["m"].options[0].selected = true;		
+    input["m"].selectedIndex = 0;
+    input["y"].value = "";
+    return;
+  }
 	
   /* we just changed one of the fields from null to something */
-	else if (!obligatory && (current["d"] == 0 || current["y"] == 0 || current["m"] == 0))
-	{
-	  today = new Date();
-	  if (current["d"] == 0) current["d"] = today.getDate();
-	  if (current["m"] == 0) current["m"] = today.getMonth() + 1;		
-	  if (current["y"] == 0) current["y"] = today.getFullYear();	
-	}
+  else if (!obligatory && (current["d"] == 0 || current["y"] == 0 || current["m"] == 0))
+  {
+    today = new Date();
+    if (current["d"] == 0) current["d"] = today.getDate();
+    if (current["m"] == 0) current["m"] = today.getMonth() + 1;		
+    if (current["y"] == 0) current["y"] = today.getFullYear();	
+  }
 
   /* minimum date */
   minimum = Array();
@@ -220,7 +224,11 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
     date = new Date(current["y"], current["m"]-1, i);
     value = m_weekdays[date.getDay()] + " " + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
     input["d"].options[input["d"].options.length] = new Option(value, i);    
-    if (i == current["d"]) input["d"].options[input["d"].options.length-1].selected = true;
+    if (i == current["d"])
+    {
+      input["d"].options[input["d"].options.length-1].selected = true;
+      input["d"].options.selectedIndex = input["d"].options.length-1;
+    }
   }
   
   /* clean month input, and build new one */
@@ -230,7 +238,11 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   {
     value = ("m" == format_month) ? (i < 10 ? "0" : "") + i : ("n" == format_month) ? i : array_months[i-1];
     input["m"].options[input["m"].options.length] = new Option(value, i);
-    if (i == current["m"]) input["m"].options[input["m"].options.length-1].selected = true;    
+    if (i == current["m"])
+    {
+      input["m"].options[input["m"].options.length-1].selected = true;
+      input["m"].options.selectedIndex = input["m"].options.length-1;
+    }
   }
   
   /* clean year input, and build new one */
@@ -241,7 +253,11 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
     for(i = current["y_min"]; i <= current["y_max"]; i++)
     {
       input["y"].options[input["y"].options.length] = new Option(i, i);
-      if (i == current["y"]) input["y"].options[input["y"].options.length-1].selected = true;    
+      if (i == current["y"])
+      {
+        input["y"].options[input["y"].options.length-1].selected = true;
+        input["y"].options.selectedIndex = input["y"].options.length-1;
+      }
     }
   }
   else input["y"].value = current["y"];
