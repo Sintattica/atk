@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.14  2001/06/11 13:18:36  sandy
+    * - fixed a small bug in the copy tree function
+    *
     * Revision 4.13  2001/06/08 14:33:30  ivo
     * Optimisations to atktreenode.
     * Smaller imp of row color alternationi feature.
@@ -465,12 +468,13 @@
       $recordset = $this->selectDb($selector);
       
       if(count($recordset)>0)
-      {      
+      { 
+        $oldparent=$recordset[0][$this->m_primaryKey[0]];
         $this->addDb($recordset[0]);
         atkdebug("copyDb - Main Record added");
         $newparent=$recordset[0][$this->m_primaryKey[0]];
-        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$recordset[0][$this->m_primaryKey[0]].','.$newparent.')');
-        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[0][$this->m_primaryKey[0]], $newparent);
+        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
+        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);
       }
       else
       {
