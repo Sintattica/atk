@@ -14,11 +14,13 @@
      function validateUser($user, $passwd)
      {       
        global $g_db;
-       $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_lockfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
-       
+       if (atkconfig("auth_accountdisablefield")!="") 
+         $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
+       else 
+         $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";         
        $recs = $g_db->getrows($query);              
 
-       if ($recs[0][atkconfig("auth_lockfield")])
+       if ($recs[0][atkconfig("auth_accountdisablefield")])
        {
          sessionStore('accountLocked', true);
          return false;
