@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.16  2001/06/14 13:48:10  ivo
+   * New cool feature: namespaces for sessionmanagement.
+   *
    * Revision 1.15  2001/05/30 07:05:43  ivo
    * Removed is_null funtion calls (because they require PHP4.0.4)
    * Moved session management initialisation code to a function.
@@ -74,8 +77,12 @@
   
   class atkSessionManager
   {
-    function atkSessionManager()
+    var $m_namespace; 
+  
+    function atkSessionManager($namespace)
     {
+      $this->m_namespace = $namespace;
+      atkdebug("creating sessionManager (namespace: $namespace)");
     }
     
     function session_read(&$postvars)
@@ -90,14 +97,20 @@
       
       if ($value=="") $value = $GLOBALS[$var];
       
-      $g_sessionData["globals"][$var] = $value;
+      $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
+    }
+    
+    function getValue($var)
+    {
+      global $g_sessionData;
+      return $g_sessionData[$this->m_namespace]["globals"][$var];
     }
     
     function stackVar($var, $value="")
     {
       global $g_sessionData, $atklevel;
             
-      $currentitem = &$g_sessionData["stack"][$atklevel];
+      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][$atklevel];
 
       if ($value=="")
       {
@@ -119,7 +132,7 @@
     {
       global $g_sessionData;
                   
-      $current = &$g_sessionData["globals"];
+      $current = &$g_sessionData[$this->m_namespace]["globals"];
       if (!is_array($current))
       {
         $current = array();
@@ -139,7 +152,7 @@
         $postvars[$var] = $value;
       }                             
           
-      //var_dump($g_sessionData["globals"]);
+      //var_dump($g_sessionData[$this->m_namespace]["globals"]);
     }
     
     function stackscope(&$postvars)
@@ -148,7 +161,7 @@
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
       atkdebug("ATKLEVEL: ".$atklevel);
             
-      $stack = &$g_sessionData["stack"];            
+      $stack = &$g_sessionData[$this->m_namespace]["stack"];            
             
       if ($atklevel==-1||!is_array($stack))
       {
@@ -267,7 +280,7 @@
 //      var_dump($postvars);
         
       //echo "<hr>STACK: ";
-      //var_dump($g_sessionData["stack"]);
+      //var_dump($g_sessionData[$this->m_namespace]["stack"]);
       //echo "<hr>";
     }
     
@@ -276,7 +289,7 @@
       global $g_sessionData;
       $res = "";
       
-      $stack = $g_sessionData["stack"];
+      $stack = $g_sessionData[$this->m_namespace]["stack"];
       
       // we only show the last 4 elements of the stack
       if (count($stack)>4) $res = "... | ";
@@ -303,9 +316,11 @@
     Calling this function will run atk session management. 
     Call this function in every file that you want to use atk sessions.    
   */
-  function atksession()
+  function atksession($namespace = "default")
   {
     global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager;
+    
+    $g_sessionManager = new atkSessionManager($namespace);
     
     if (count($HTTP_POST_VARS)>0)
     {  
@@ -319,9 +334,6 @@
     }
    
     $g_sessionManager->session_read(&$ATK_VARS);
-  }
-
-  $g_sessionManager = new atkSessionManager();
-  
+  }  
 
 ?>
