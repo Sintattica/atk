@@ -18,7 +18,7 @@
          * @param $text text field
          * @param $flags Flags for this attribute
          */
-    function atkDummyAttribute($name, $text, $flags=0)
+    function atkDummyAttribute($name, $text="", $flags=0)
     {
       $flags=$flags|AF_BLANKLABEL;
       $this->atkAttribute($name,$flags); // base class constructor
