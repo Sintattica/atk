@@ -279,8 +279,11 @@
           {
             /* record has no primarykey yet, so we must add instead of update */
             $myrecord = $defaults[$this->fieldName()];
-            if ($myrecord[$this->m_destInstance->primaryKeyField()] == NULL) $mode = "add";
-
+            if ($myrecord[$this->m_destInstance->primaryKeyField()] == NULL) 
+            {
+              $mode = "add";
+              $myrecord="";
+            }
             /* record exists! */
             else
             {
@@ -290,14 +293,19 @@
           }
 
           /* record does not exist */
-          else $mode = "add";
+          else 
+          { 
+             $mode = "add";
+             $myrecord="";
+          }
 
           /* mode */
           $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
-
           /* add fields */
           $forceList = decodeKeyValueSet($this->m_destinationFilter);
           $forceList[$this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+          
+          
           $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
 
           /* errors and hidden fields */
