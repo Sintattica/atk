@@ -115,6 +115,7 @@
   "login" => "Login",
   "login_failed" => "Login failed",
   "login_form" => "Login",
+  "logged_in_as" => "Logged in as",
   "march" => "March",
   "may" => "May",
   "menu" => "Menu",
