@@ -4,6 +4,10 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.0.3
+--------------------
+* Small bugfixes in language files. [Boy, Ivo]
+
 Changes in ATK 5.0.2
 --------------------
 * Fixed missing db_sequence entries in demo install.sql file. [Yuri]
