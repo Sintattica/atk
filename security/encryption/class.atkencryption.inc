@@ -6,9 +6,9 @@
    * included in the distribution.
    * 
    * @package atk
-   * @subpackage utils
+   * @subpackage security
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    */
@@ -19,20 +19,23 @@
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
    * @package atk
-   * @subpackage utils
+   * @subpackage security
    *
    */
   class atkEncryption
   {
     /**
      * Get function for encryption
-     * Gets a new instance of an encryption node with the type we passed along
-     * @param string $type the type of encryption we want, 
-     *                      defaults to base class a.k.a. no encryption
+     *
+     * Gets a new instance of an encryption class with the type we passed 
+     * along
+     * @param string $type The type of encryption we want, 
+     *                     defaults to $config)_encryption_defaultmethod
      * @return obj the node with which to encrypt or decrypt your data
      */
-    function &getEncryption($type)
+    function &getEncryption($type="")
     {
+      if ($type=="") $type = atkconfig("encryption_defaultmethod");
       $encryptionclass = "atk".strtolower($type)."encryption";
       
       if (atkimport("atk.utils.".$encryptionclass))

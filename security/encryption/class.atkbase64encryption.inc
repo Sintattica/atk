@@ -6,9 +6,9 @@
    * included in the distribution.
    * 
    * @package atk
-   * @subpackage utils
+   * @subpackage security
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    */
@@ -19,7 +19,7 @@
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
    * @package atk
-   * @subpackage utils
+   * @subpackage security
    *
    */
   class atkBase64Encryption extends atkEncryption
