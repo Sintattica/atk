@@ -620,7 +620,7 @@
     function editPage($record)
     {
       global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
-      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_type,"edit"));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
@@ -717,7 +717,7 @@
     function addPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
-      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_type,'add'));
       $g_layout->output($this->statusbar());
       
@@ -740,7 +740,7 @@
     function searchPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
-      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_type,'search'));
       $g_layout->output($this->statusbar());
       
