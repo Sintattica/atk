@@ -128,7 +128,6 @@
         if (eregi( 'AOL ([0-9].[0-9a-zA-Z]{1,4})',$this->ua,$info))
         {
          $ver                = $this->full_version;
-         echo $ver."<br>";
          $this->full_version = $info[1];
          $this->browser      = 'AOL (MSIE $ver)'; 
          $this->brName       = "AOL"; 
