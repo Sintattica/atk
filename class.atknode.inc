@@ -3350,8 +3350,11 @@
     /**
      * Save the current record to the database.
      * Note: the passed record is changed: it may contain new values for auto_increment fields.
+     * @param $record The record to save
+     * @param $exectrigger Indicates whether postAdd trigger should be executed or not 
+     * (defaults to yes)
      */
-    function addDb(&$record)
+    function addDb(&$record, $exectrigger=true)
     {
 //     var_dump($record);
       global $g_db;
@@ -3404,7 +3407,7 @@
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
-      $this->postAdd($record);
+      if ($exectrigger) $this->postAdd($record);
 
       atkdebug($g_db->m_error);
     }
