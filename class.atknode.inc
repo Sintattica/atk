@@ -2355,7 +2355,7 @@
       {
         $g_layout->ui_top($this->actionTitle('select'));
         $g_layout->output($this->statusbar());
-        $g_layout->output(text("title_select", $this->m_type).'<br>');
+        $g_layout->output(text("title_select", $this->m_type, $this->m_module).'<br>');
         $g_layout->output('<br>');
 
         if ($this->m_index != "") $g_layout->output($this->buildIndex($recordset[0][$this->m_index]).'<br><br>');
