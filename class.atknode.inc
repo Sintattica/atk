@@ -683,7 +683,7 @@
     /**
      * Returns the form buttons for a certain page.
      */
-    function getFormButtons($mode)
+    function getFormButtons($mode, $record)
     {
       $result = "";
 
@@ -752,7 +752,7 @@
       if (count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
 
       $g_layout->output('<br>');
-      $g_layout->output($this->getFormButtons("edit"));
+      $g_layout->output($this->getFormButtons("edit", $record));
       $g_layout->output('</form>');
       $g_layout->ui_bottom();      
     }
