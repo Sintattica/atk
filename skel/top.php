@@ -1,7 +1,7 @@
 <?php
   $config_atkroot = "./";
   include_once("atk.inc"); 
-
+  $g_layout->initGui();
   $g_layout->output("<html>");
   $g_layout->head($txt_app_title);
   $g_layout->body();
