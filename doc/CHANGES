@@ -7,6 +7,10 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changes in ATK 5.0.4
 --------------------
 * atkLanguage now also supports empty values in language files. [Boy]
++ atkEncryption and atkBase64Encryption introduced [Mark]
++ atkSecureRelation introduced [Mark]
+* Added documentation to new classes above [Boy]
+* atkManyToManyRelation sets the ref and local key upon construction [Mark]
 
 Changes in ATK 5.0.3
 --------------------
