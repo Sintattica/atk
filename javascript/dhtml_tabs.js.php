@@ -9,7 +9,7 @@ function showTab(tab)
 		var tabclass = tags.item(i).className;
 		var id = tags.item(i).id;
 
-		if (id.substring(0,10)=="attribrow_")
+		if (id.substring(0,3)=="ar_")
 		{
 		  if (tabclass==tab||tabclass=="alltabs")
 		  {		  

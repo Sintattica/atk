@@ -35,6 +35,7 @@
       $node = &$this->m_node;            
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");            
+      $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_formtools.js");            
       $node->addStyle("style.css");
       
       $params = $node->getDefaultActionParams($locked);
@@ -172,7 +173,8 @@
 				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
 				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
 								
-				$tplfield["rowid"] = "attribrow_".($field['name']!=''?$field['name']:getUniqueID("anonymousattribrows")); // The id of the containing row
+				// ar_ stands voor 'attribrow'.
+				$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 				
 
 				/* check for seperator */
