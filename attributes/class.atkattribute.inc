@@ -280,9 +280,6 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-      atkdebug("AtkAttribute.addToEditArray:: entered with $mode, attrib".$this->m_name);
-
-
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
