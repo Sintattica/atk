@@ -129,7 +129,7 @@
       
       if ($atklanguage->preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext))
       {
-        $finalstring = $atklanguage->_getStringName($string, $module, $node, $lng);
+        $finalstring = $atklanguage->_getStringName($string, $module, $node, $lng, $nodefaulttext);
       }
       $atklanguage->postTextChecks($finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext);
       return $finalstring;
@@ -212,20 +212,20 @@
      * @param string $lng    ISO 639-1 language code, defaults to config variable
      * @return string the name with which to call the string we want from the languagefile
      */
-    function _getStringName($string, &$module, $node, $lng)
+    function _getStringName($string, &$module, $node, $lng, &$nodefaulttext)
     {
 //      atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
       if ($this->_getLanguageFile($module,$lng))
       {
-        $finalstring = $this->_getString($string, $node, $module, $lng);
+        $finalstring = $this->_getString($string, $node, $module, $lng, $nodefaulttext);
         if($finalstring)
         {
           $this->_checkTextForModule($module, $string);
           return $finalstring;
         }
-        else {return $this->_stringNameFallback($string, $node, $lng);}
+        else {return $this->_stringNameFallback($string, $node, $lng, $nodefaulttext);}
       }
-      else {return $this->_stringNameFallback($string, $node, $lng);}
+      else {return $this->_stringNameFallback($string, $node, $lng, $nodefaulttext);}
     }
     
     /**
@@ -265,10 +265,10 @@
      * @param string $node   the node to which the string belongs
      * @param string $lng    ISO 639-1 language code, defaults to config variable
      */
-    function _stringNameFallback($string, $node, $lng)
+    function _stringNameFallback($string, $node, $lng, $nodefaulttext)
     {
       $module = array_shift($this->m_fallbackmodules);
-      if ($module) { return $this->_getStringName($string, $module, $node, $lng); }
+      if ($module) { return $this->_getStringName($string, $module, $node, $lng, $nodefaulttext); }
       else { atkdebug("atkLanguage: We ran out of modules! $string just couldn't be found"); return; }
     }
     
@@ -345,7 +345,7 @@
      * @param string $node      the name of the node to which the text function belongs
      * @return var the true name by which the txt is called or false if we can't find any entry
      */
-    function _getString($string, $node, $module, $lng)
+    function _getString($string, $node, $module, $lng, &$nodefaulttext)
     { 
       if (atkconfig("atklangcheckmodule"))
       {
@@ -363,7 +363,15 @@
       if (!$key || !$this->m_cachedlang[$module][$lng][$key])
       { $key = $string; }
       
-      return (!empty($this->m_cachedlang[$module][$lng][$key])?$this->m_cachedlang[$module][$lng][$key]:false);
+      if (is_array($this->m_cachedlang[$module][$lng]))
+      {
+        if (in_array($key, array_keys($this->m_cachedlang[$module][$lng])))
+        {
+          if ($this->m_cachedlang[$module][$lng][$key]) return $this->m_cachedlang[$module][$lng][$key];
+          else $nodefaulttext=true;
+        }
+      }
+      return;
     }
   }
 ?>
