@@ -659,7 +659,7 @@
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
       $this->m_flags = $flags;
-      if ($g_db && !$this->m_db) $this->m_db = $g_db;
+      if ($g_db && !$this->m_db) $this->m_db = &$g_db;
     }
 
     /**
