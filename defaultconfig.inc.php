@@ -1,7 +1,6 @@
 <?
 
   // set several default configuration options
-
   $config_databasehost = "localhost";
   $config_databasename = "";
   $config_databaseuser = "";

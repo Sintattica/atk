@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.6  2001/05/07 14:46:15  ivo
+ * Atk now has a configurable rootdirectory (specified in dispatcher)
+ *
  * Revision 1.5  2001/05/01 09:49:49  ivo
  * Replaced all require() and include() calls by require_once() and
  * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -86,7 +89,7 @@
     $file = "class.$type.inc";
     
     /* filename */
-    if (empty($module)) $file = "class.$type.inc";
+    if (empty($module)) $file = $config_atkroot."class.$type.inc";
     else $file = "$config_module_path/$module/class.$type.inc";
     
     /* check for file */

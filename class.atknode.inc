@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.19  2001/05/07 14:46:15  ivo
+   * Atk now has a configurable rootdirectory (specified in dispatcher)
+   *
    * Revision 4.18  2001/05/04 11:37:42  sandy
    * small bug fixes (split function, refresh, treeview,etc)
    *
@@ -348,25 +351,25 @@
   require_once("atk/defaultconfig.inc.php");
 
   include_once("./config.inc.php");
-  require_once("atk/atktools.inc");
-  require_once("atk/class.layout.inc");
-  require_once("atk/db/class.atk".$config_database."db.inc");
-  require_once("atk/db/class.atkquery.inc");
-  require_once("atk/attributes/class.atkattribute.inc");
-  require_once("atk/relations/class.atkrelation.inc");
-  require_once("atk/security/class.atksecuritymanager.inc");
-  require_once("atk/session/class.atksessionmanager.inc");
-  require_once("atk/atkmenutools.inc");  
-  require_once("atk/modules/atkmoduletools.inc");
-  require_once("atk/modules/class.atkmodule.inc");
+  require_once($config_atkroot."atk/atktools.inc");
+  require_once($config_atkroot."atk/class.layout.inc");
+  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
+  require_once($config_atkroot."atk/db/class.atkquery.inc");
+  require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
+  require_once($config_atkroot."atk/relations/class.atkrelation.inc");
+  require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
+  require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
+  require_once($config_atkroot."atk/atkmenutools.inc");  
+  require_once($config_atkroot."atk/modules/atkmoduletools.inc");
+  require_once($config_atkroot."atk/modules/class.atkmodule.inc");
 
   // Default language file
-  require_once("atk/languages/".$config_languagefile);
+  require_once($config_atkroot."atk/languages/".$config_languagefile);
 
   // Application specific language file
-  if (file_exists("languages/".$config_languagefile))
+  if (file_exists($config_atkroot."languages/".$config_languagefile))
   {
-    include_once("languages/".$config_languagefile);
+    include_once($config_atkroot."languages/".$config_languagefile);
   }
 
   // Global database..
