@@ -84,7 +84,7 @@ with (pMenu) {
 				else
 				{
 					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"'.$config_atkroot.'icons/dropdown/unknown.gif\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+					$menubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/unknown.gif\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
 				}
 			}
 			
@@ -92,7 +92,7 @@ with (pMenu) {
 			elseif($atkmenutop != "main" && $name != "-")
 			{
 				$menuname = addslashes (text("menu_".$name));
-				$submenubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"'.$config_atkroot.'icons/folder.gif\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+				$submenubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/folder.gif\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
 				$subsubmenu[] = $name;
 			}
 		}
