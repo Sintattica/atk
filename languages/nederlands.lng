@@ -107,4 +107,12 @@
   
   $txt_help = "Help";
   
+  $txt_search_extended = "Uitgebreid";
+  
+  $txt_search_exact = "Zoek naar een exact resultaat";
+  $txt_search_substring = "Zoek resultaten waarin het gegeven woord voorkomt";
+  $txt_search_wildcard = "Zoek met 'wildcards' (*)";
+  $txt_search_regexp = "Zoek met een reguliere expressie (geavanceerd)";
+  $txt_search_soundex = "Zoek naar een string die ongeveer hetzelfde klinkt";
+  
 ?>

@@ -105,5 +105,13 @@
   $txt_field_obligatory = "Fields marked with '*' are required.";
   
   $txt_help = "Hilfe";
+  
+  $txt_search_extended = "Erweitert";
+  
+  $txt_search_exact = "Suche nach genauer Text";
+  $txt_search_substring = "Suche nach Unterword";
+  $txt_search_wildcard = "Suche met Platzhaltern (*)";
+  $txt_search_regexp = "Suche mit regulären Ausdrücken (Profi)";
+  $txt_search_soundex = "Suche nach Wörtern met ähnlichen Klang";
 
 ?>
