@@ -81,7 +81,7 @@
       $output=atkOutput::getInstance();
       $res ="<html>";
       $res.='<body bgcolor="#ffffff" color="#000000">';
-      $res.="<font color=\"$level_color\"><b>".text($level)."</b></font>: $msg.<br>\n";
+      $res.="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br>\n";
       $res.="<b>Halted</b>";
       $output->output($res);
       $output->outputFlush();
@@ -277,12 +277,35 @@
    * @param boolean $nodefaulttext  if true, then it doesn't return a default text 
    *                                when it can't find a translation
    * @return String the string from the languagefile  
+   * @deprecated Use atktext instead
    */
-  function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
+  function text($string, $node="", $module="atk", $lng="", $firstfallback="", $nodefaulttext=false)
   {
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
   }
+  
+  /**
+   * Replaces the [vars] with the values from the language files
+   * Please note that it is important, for performance reasons, 
+   * that you pass along the module where the language files can be found
+   * @param String $string          the name of the string to return
+   * @param String $module          module in which the language file should be looked for, 
+   *                                defaults to core module with fallback to ATK
+   * @param String $node            the node to which the string belongs
+   * @param String $lng             ISO 639-1 language code, defaults to config variable
+   * @param String $firstfallback   the first module to check as part of the fallback
+   * @param boolean $nodefaulttext  if true, then it doesn't return a default text 
+   *                                when it can't find a translation
+   * @return String the string from the languagefile  
+   */
+  function atktext($string, $module="atk",$node="", $lng="", $firstfallback="", $nodefaulttext=false)
+  {
+    atkimport("atk.atklanguage");
+    return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
+  }
+  
+  
 
   /**
    * Calculate a new session level based on current level and
@@ -990,7 +1013,7 @@
   function triggerError(&$rec, $attrib, $err, $msg="", $tab="")
   {
     global $lng;
-    if($msg=="")  $msg = text($err,"","atk",$lng);
+    if($msg=="")  $msg = atktext($err,"atk","",$lng);
     
     $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg, tab=>$tab);
   }
