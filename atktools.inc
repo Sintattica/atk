@@ -1401,6 +1401,7 @@
    * @param bool   $path          Wether or not it is NOT an ATK classname 
    *                                 ("map.class"), if true it will interpret classname
    *                                 as: "map/class.classname.inc", default false.
+   * @return bool wether the file we want to import was actually imported or not
    */
   function atkimport($fullclassname, $failsafe=true, $path = false)
   {
@@ -1409,10 +1410,14 @@
     else 
       $filename = $fullclassname;
         
-    if ($failsafe)
-      require_once($filename);
-    else
-      include_once($filename);
+    if (file_exists($filename))
+    {
+      if ($failsafe)
+        require_once($filename);
+      else
+        include_once($filename);
+      return true;
+    }
   }
   
   /**
