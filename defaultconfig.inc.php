@@ -47,6 +47,12 @@
   // this parameter can be used to specify a where clause which will be used to validate users login credentials
   $config_auth_accountenableexpression = "";
 
+  // LDAP settings
+  // to use LDAP you should fill this config_variabels with the right values
+  $config_authentication_ldap_host    = "";
+  $config_authentication_ldap_context = "";
+  $config_authentication_ldap_field   = "";
+
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";
 

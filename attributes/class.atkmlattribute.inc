@@ -286,6 +286,32 @@
       $this->m_searchsize = min($metadata[$attribname]['len'], 20);
       $this->m_maxsize = $metadata[$attribname]['len'];                           
     }
+
+     /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      //TODO: support for multilanguages nodes wich have multiple records per occurance
+      $languages = $this->getLanguages();
+      if(!$this->isMlNode())
+      {
+        $func = $searchmode."Condition";
+        if (method_exists($query,$func))
+        {
+          $query->addSearchCondition($query->$func($table.".".$this->fieldName()."_".$languages[0],escapeSQL($value)));
+        }
+        else
+        {
+          atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
+        }
+      }
+      else atkdebug("ERROR: atkmlattribute::searchCondition() unsupported action!!!");
+    }
+ 
   }
   
 ?>
