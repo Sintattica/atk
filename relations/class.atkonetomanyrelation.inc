@@ -127,7 +127,7 @@
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
         $label = text("link_".$this->fieldName()."_add");
-        if ($label==""||$label=="link_".$this->fieldName()."_add")
+        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower("link_".$this->fieldName()."_add")))
         {
           $label = text("link_".getNodeType($this->m_destination)."_add");
         }
