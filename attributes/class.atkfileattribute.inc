@@ -62,9 +62,10 @@
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
-     * @param $flags Flags for this attribute
+     * @param string $name Name of the attribute
+     * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
+     * @param int $flags Flags for this attribute
+     * @param int $size Filename size
      */
     function atkFileAttribute($name, $dir, $flags=0, $size=0)
     {          
@@ -88,7 +89,7 @@
 
     /**
      * returns a string with a / on the end
-     * @param $string String with the url/dir
+     * @param string $dir_url String with the url/dir
      * @return string with a / on the end
      */
     function AddSlash($dir_url)
@@ -101,10 +102,9 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
-     * @param $size Not used
-     * @param $maxsize Not used
-     * @return piece of html code with a browsebox
+     * @param array $record Record
+     * @param string $fieldprefix Field prefix
+     * @return string piece of html code with a browsebox
      */
     function edit($record="", $fieldprefix="")
     {  
@@ -168,8 +168,8 @@
 
     /**
      * Convert value to record for database
-     * @param $rec Array with Fields
-     * @return Nothing or Fieldname or Original filename
+     * @param array $rec Array with Fields
+     * @return string Nothing or Fieldname or Original filename
      */
     function value2db($rec)
     {
@@ -218,8 +218,8 @@
     
     /** 
      * Convert value to string
-     * @param $rec Array with fields
-     * @return Array with tmpfile, orgfilename,filesize
+     * @param array $rec Array with fields
+     * @return array Array with tmpfile, orgfilename,filesize
      */
     function db2value($rec)
     {
@@ -228,8 +228,8 @@
 
     /**
      * Get filename out of Array
-     * @param $rec
-     * @return Array with tmpfile,filename,filesize,orgfilename
+     * @param array $rec Record
+     * @return array Array with tmpfile,filename,filesize,orgfilename
      */
     function fetchValue($rec)
     {    
@@ -238,16 +238,17 @@
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
       $basename = $this->fieldName();      
-      if (is_array($_FILES)||($rec[$this->fieldName()."_select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
+      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       { 
         // if no new file has been uploaded..    
 
         if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         {
            // No file to upload, then check if the select box is filled
-          if($rec[$this->fieldName()."_select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
-          {atkdebug("file selected!");
-            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()."_select"];
+          if($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+          {
+            atkdebug("file selected!");
+            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
             $result = array("tmpfile"=>"",
 
                           "filename"=>$filename,
@@ -280,7 +281,8 @@
     
     /**
      * Check if the attribute is empty..
-     * @returns true if no image was uploaded
+     * @param array $postvars Array with the postvars
+     * @return boolean true if no image was uploaded
      */    
     function isEmpty($postvars)
     {      
@@ -298,7 +300,8 @@
 
     /**
      * Deletes file from HD
-     * @param $record Array with fields
+     * @param array $record Array with fields
+     * @return boolean False if the delete went wrong
      */
     function delete($record)
     {
@@ -314,8 +317,8 @@
 
     /**
      * Display values
-     * @param $record Array with fields
-     * @return Filename or Nothing
+     * @param array $record Array with fields
+     * @return string Filename or Nothing
      */
     function display($record)
     {      
@@ -386,8 +389,8 @@
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * @param array $record Array with values
+     * @return string Piece of htmlcode
      */
     function hide($record="", $fieldprefix)
     {
