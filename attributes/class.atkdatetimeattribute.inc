@@ -17,10 +17,8 @@
     /**
      * Constructor
      * @param $name        Name of the attribute
-     * @param $beginTime   Time to start with (eg 8)
-     * @param $endTime     Time to end with (eg 24)
-     * @param $steps       Array containing possible minute values (eg array("00","15","30","45"))
-	 * @param $default  Start Time (exp: 20:30)
+     * @param $default_date   start date
+     * @param $default_time     start time
      * @param $flags Flags for this attribute
      */
     function atkDateTimeAttribute($name, $default_date="",$default_time="",$flags=0)
