@@ -9,6 +9,8 @@ Changes in ATK 5.0.7
 + atkFuzzySearchAttribute ported from Achievo to ATK [Boy]
 + Added AF_NO_TRANSLATION flag to listattribute, this will prevent
   the options from being automatically translated [Boy]
++ Added $config_use_keyboard_handler with which you can turn
+  the keyboardhandler off [Boy]
 * Fixed deleteAllowed in oneToManyRelation, when the filter is not 
   on the destination node. [Boy,Harrie]
 * Fixed filtering and navigating after update/save for navigator [Boy]

@@ -1164,8 +1164,11 @@
      */
     function registerKeyListener($id, $navkeys=KB_CTRLCURSOR)
     {      
-      $kb = &atkKeyboard::getInstance();
-      $kb->addFormElementHandler($id, $navkeys);
+      if (atkconfig("use_keyboard_handler"))
+      {
+        $kb = &atkKeyboard::getInstance();
+        $kb->addFormElementHandler($id, $navkeys);
+      }
     }
 
     /**

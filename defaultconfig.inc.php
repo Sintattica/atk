@@ -163,4 +163,8 @@
   // uncomment the config variable below.
   // This can be handy when working on themes.
   // $config_force_theme_recompile = true;
+  
+  // Wether or not to use the keyboardhandler for attributes and the recordlist
+  // Defaults to 1 (true), comment or set to null to remove keyboard handler
+  $config_use_keyboard_handler = 1;
 ?>

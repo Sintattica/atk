@@ -426,8 +426,11 @@
           if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';
         }
         
-        $kb = &atkKeyboard::getInstance();
-        $kb->addRecordListHandler($listName, $selectcolor, count($records));
+        if (atkconfig("use_keyboard_handler"))
+        {
+          $kb = &atkKeyboard::getInstance();
+          $kb->addRecordListHandler($listName, $selectcolor, count($records));
+        }
         
         $res = $ui->render("recordlist.tpl", array("vorientation"=>$vorientation,
                                                    "rows"=>$records,
