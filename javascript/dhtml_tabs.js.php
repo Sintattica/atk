@@ -37,14 +37,34 @@ function showTab(tab)
 			// De actieve tab
 			if(tabs[j] == tab)
 			{
-				document.getElementById(tabs[j]).style.backgroundColor = tabSelectedBackground;
-				document.getElementById(tabs[j]).style.color = tabSelectedColor;		
+				if(window.tabLeftImage)
+				{
+					document.getElementById("imgLeft_"+tabs[j]).src = tabSelectedLeftImage;
+					document.getElementById("imgRight_"+tabs[j]).src = tabSelectedRightImage;
+					document.getElementById(tabs[j]).background = tabSelectedBackgroundImage;
+					document.getElementById(tabs[j]).style.color = tabSelectedColor;		
+				}
+				else
+				{
+					document.getElementById(tabs[j]).style.backgroundColor = tabSelectedBackground;
+					document.getElementById(tabs[j]).style.color = tabSelectedColor;		
+				}
 			}
 			// De niet-actieve tabs
 			else
 			{
-				document.getElementById(tabs[j]).style.backgroundColor = tabBackground;
-				document.getElementById(tabs[j]).style.color = tabColor;			
+				if(window.tabLeftImage)
+				{
+					document.getElementById("imgLeft_"+tabs[j]).src = tabLeftImage;
+					document.getElementById("imgRight_"+tabs[j]).src = tabRightImage;
+					document.getElementById(tabs[j]).background = tabBackgroundImage;
+					document.getElementById(tabs[j]).style.color = tabColor;	
+				}
+				else
+				{
+					document.getElementById(tabs[j]).style.backgroundColor = tabBackground;
+					document.getElementById(tabs[j]).style.color = tabColor;	
+				}				
 			}
 		}
 	}
