@@ -60,38 +60,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      atkdebug("edit called for ".$this->fieldName());
-
-      $this->createDestination();
-
-      if ($record[$this->fieldName()]!=NULL)
-      {
-        $myrecord = $record[$this->fieldName()];
-
-        if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
-        {
-          // rec has no primkey yet, so we must add instead of update..
-          $mode = "add";
-        }
-        else
-        {
-          $mode = "edit";
-          $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
-        }
-      }
-      else
-      {
-        $mode = "add";
-      }
-
-      $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
-      $forceList = decodeKeyValueSet($this->m_destinationFilter);
-      $forceList[$this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-
-      $output.= $this->m_destInstance->editform($mode,$myrecord,$forceList,array(),$this->fieldName()."_AE_");
-
-      $output.= "<br>";
-      return $output;
+      /* dummy */
     }
 
     /**
@@ -248,6 +217,85 @@
 
       $output.= $this->m_destInstance->hideform($mode,$myrecord,$forceList,$this->fieldName()."_AE_");
       return $output;
+    }
+
+    /**
+     * Adds the attribute's edit / hide HTML code to the edit array. This method
+     * is called by the node if it want the data needed to create an edit form.
+     * @param $mode     the edit mode ("add" or "edit")
+     * @param $arr      pointer to the edit array
+     * @param $defaults pointer to the default values array
+     * @param $error    pointer to the error array
+     * @param $prefix   the fieldprefix
+     */
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      /* hide */
+      if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
+      {
+        /* when adding, there's nothing to hide... */
+        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix);
+      }
+
+
+      /* edit */
+      else
+      {
+        /* we first check if there is no edit override method, if there
+         * is this method has the same behaviour as the atkAttribute's method
+         */
+        if (method_exists($this->m_ownerInstance, $this->m_name."_edit") ||
+            $this->edit($defaults, $fieldprefix) !== NULL)
+        {
+          atkAttribute::addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix);
+        }
+
+        /* how we handle 1:1 relations normally */
+        else
+        {
+          $this->createDestination();
+
+          /* we first check if the record doesn't already exist */
+          if ($defaults[$this->fieldName()] != NULL)
+          {
+            /* record has no primarykey yet, so we must add instead of update */
+            $myrecord = $defaults[$this->fieldName()];
+            if ($myrecord[$this->m_destInstance->primaryKeyField()] == NULL) $mode = "add";
+
+            /* record exists! */
+            else
+            {
+              $mode = "edit";
+              $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+            }
+          }
+
+          /* record does not exist */
+          else $mode = "add";
+
+          /* mode */
+          $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+
+          /* add fields */
+          $forceList = decodeKeyValueSet($this->m_destinationFilter);
+          $forceList[$this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+          $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
+
+          /* errors and hidden fields */
+          $error = array_merge($error, $a["error"]);
+          $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+
+          /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+           * same name as the relation we don't display a label
+           */
+          if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            $arr["fields"][] = array("html" => "<hr><b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>");
+          $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+          if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            $arr["fields"][] = array("html" => "<hr>");
+        }
+      }
     }
   }
 ?>

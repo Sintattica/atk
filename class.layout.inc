@@ -509,6 +509,115 @@
       return $output;
     }
 
+    /**
+     * Returns the HTML code for an edit form based on the supplied data.
+     * @param  $data pointer to the data array
+     * @param  $node pointer to the originating node
+     * @return HTML code (string) for edit form
+     */
+    function ret_editForm(&$data, &$node)
+    {
+      global $config_atkroot, $PHP_SELF;
+
+      /* javascript */
+      $this->register_script($config_atkroot."atk/javascript/formsubmit.js");
+
+      $tab = $node->getActiveTab();
+
+      $form .= $this->ret_table_simple();
+      foreach ($data["hide"] as $hide) $form .= $hide;
+
+      /* check for errors and display them */
+      if (count($data['error']) > 0)
+      {
+        $form .= '<tr>';
+        $error_title = '<b>'.text('error_formdataerror').'</b>';
+        $errormsg = "";
+
+        $pk_err = array();
+        foreach ($data["error"] as $error)
+        {
+          if ($error['err'] == error_primarykey_exists)
+          {
+            $pk_err_attrib[] = $error['attrib_name'];
+          }
+          else
+          {
+            $index = $node->m_attribList[$error['attrib_name']]->m_index;
+            $tabs  = $node->m_attribIndexList[$index]["tabs"];
+            if (($node->m_action == "add" && count($node->m_tabListAdd) > 1 ||
+                 $node->m_action == "edit" && count($node->m_tabListEdit) > 1) &&
+                 $tabs != "*" && !atk_in_array($tab, $tabs))
+              $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0]),SESSION_DEFAULT,true).')';
+            else $error_tab = "";
+            $errormsg.="<br>".text($error['attrib_name']).': '.$error['msg'].$error_tab;
+          }
+        }
+        if (count($pk_err_attrib)>0) // Make primary key error message
+        {
+          $pk_err_msg = "<br>".text(error_primarykey_exists).": ";
+          for($i=0;$i<count($pk_err_attrib); $i++)
+          {
+            $pk_err_msg .= text($pk_err_attrib[$i]);
+            if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
+          }
+          $form.=$this->ret_td($error_title.$pk_err_msg.$errormsg.'<br><br>','colspan="2"');
+        }
+        else
+        {
+          $form.=$this->ret_td($error_title.$errormsg.'<br><br>','colspan="2"');
+        }
+
+        $form.='</tr>';
+      }
+
+      // load images
+      $reqimg = '<img align="top" onMouseOver="javascript:window.status=\''.addslashes(text("field_obligatory")).'\';" src="'.$this->getImgSrc("required_field.gif").'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
+      $tipimg = $this->getImgSrc("help.gif");
+
+      /* display the edit fields */
+      for ($i = 0; $i < count($data["fields"]); $i++)
+      {
+        $field = &$data["fields"][$i];
+
+        $form.='<tr>';
+
+        /* Keep track of the number of td's we have to fill with the edit thingee..
+         * This depends on AF_NOLABEL for example.
+         */
+        $tdcount = 1;
+
+        /* does the field have a label? */
+        if ($field["label"] !== NULL)
+        {
+          if ($field["label"] == "") $form .= $this->ret_td('&nbsp;');
+          elseif ($field["error"]) $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
+          else $form .= $this->ret_td($field["label"].': ','valign="top"');
+        }
+
+        /* If there's no label, the other td's have to be filled up. */
+        else $tdcount++;
+
+        $editsrc = $field["html"];
+
+        /* obligatory indicator */
+        if ($field["obligatory"]) $editsrc.= $reqimg;
+
+        /* tooltip */
+        $ttip = "txt_".$this->m_type."_".$field["name"]."_tooltip";
+        if ($GLOBALS[$ttip] != "")
+        {
+          $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
+        }
+
+        $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
+        $form.='</tr>';
+      }
+
+      $form.='</table>';
+      return $form;
+    }
+
     function getTemplate($templatefile)
     {
       if (file_exists($this->m_tpldir.$templatefile.".tmpl"))

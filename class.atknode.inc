@@ -397,12 +397,6 @@
         $this->m_cascadingAttribs[]=$attribute->fieldName();
       }
 
-      /*// check for title fieldname (treeview)
-      if($attribute->hasFlag(AF_TITLE))
-      {
-        $this->m_title = $attribute->fieldName();
-      }*/
-
       if ($attribute->hasFlag(AF_HIDE_LIST)&&!$attribute->hasFlag(AF_PRIMARY))
       {
         if (!in_array($attribute->fieldName(),$this->m_listExcludes))
@@ -633,10 +627,10 @@
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
 
-      if ($this->m_action == "edit" && count($this->m_tabListEdit) > 1) $g_layout->tabs_top($this->buildTabs());
+      if (count($this->m_tabListEdit) > 1) $g_layout->tabs_top($this->buildTabs());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
-      if ($this->m_action == "edit" && count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
+      if (count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
 
       //$g_layout->ui_bottom($g_layout->title($this->m_module, $this->m_type,"edit"));
 
@@ -789,71 +783,45 @@
     }
 
     /**
-     * Function outputs a form in which a record can be edited.
-     * or, if there is no record, defaults from the postvars will be
-     * read.
-     * @param $mode Mode of the form ("edit" or "add")
-     * @param $forcelist A key-value array used to preset certain fields to
-     *                   a certain value
-     * @param $suppresslist An array of fields that you want to hide.
-     * @param $fieldprefix If set, each form element is prefixed with the
-     *                     specified prefix (used in embedded forms)
+     * Function outputs an array with edit fields. For each field the array
+     * contains the name, edit HTML code etc. ( name, html, obligatory, error, label }
+     *
+     * @param $mode         the edit mode ("add" or "edit")
+     * @param $forcelist    a key-value array used to preset certain fields to a certain value
+     * @param $suppresslist an array of fields that you want to hide
+     * @param $fieldprefix  if set, each form element is prefixed with the specified
+     *                      prefix (used in embedded form fields)
+     *
+     * @return array with edit fields (per field ( name, html, obligatory, error, label })
      */
-    function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
+    function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="")
     {
-      global $g_layout, $config_atkroot,$g_sessionData,$atklevel, $PHP_SELF;
+      global $config_atkroot, $g_sessionData, $atklevel;
 
-      // which tab should we display?
-      $tab = $this->getActiveTab();
-
-      // read metadata
+      /* read metadata */
       $this->setAttribSizes();
 
-      $g_layout->register_script($config_atkroot."atk/javascript/formsubmit.js");
-
-      if (($mode == 'add' && sizeof($this->m_listMlAdd) > 0 && !$this->m_hasMlSelectAdd) ||
-         ($mode == 'edit' && sizeof($this->m_listMlEdit) > 0 && !$this->m_hasMlSelectEdit))
-      {
-        $selector = new atkMlSelectorAttribute();
-        array_unshift($this->m_attribList, $selector);
-      }
-
-//      $form.=$this->stickyForm();
-
+      /* default values */
       $defaults = $record;
 
-      // Form may have been saved in a session..
-      //atk_var_dump($g_sessionData);
-
-      // atknorestore may be passed to force the sessiondata for the form
-      // to be removed.
-      //if ($this->m_postvars["atknorestore"]!="")
-      //{
-//        atkdebug("Removing stored sessiondata");
-        //$this->m_postvars["atkformdata"]="";
-      //}
-      //else
+      /* formdata from session */
       if ($this->m_postvars["atkformdata"]!="")
       {
         atkdebug("Restoring formdata from session");
         $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
-        //atk_var_dump($g_sessionData);
         $g_sessionData["default"]["stack"][$atklevel]["atkformdata"]="";
       }
 
       $pk = $this->primaryKey($record);
-      // hidden value that is used by the atkSubmit javascript function as a means
-      // of posting extra data when submitting..
-      $form.='<input type="hidden" name="'.$fieldprefix.'atkescape">';
-      $form.='<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
 
-      if ($mode=="edit")
+      /* edit mode */
+      if ($mode == "edit")
       {
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
+        $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
 
-        // Nodes can define edit_values
-        if (method_exists($this,"edit_values"))
+        /* nodes can define edit_values */
+        if (method_exists($this, "edit_values"))
         {
           $overrides = $this->edit_values($defaults);
           while (list($varname,$value) = each($overrides))
@@ -862,12 +830,13 @@
           }
         }
       }
+
+      /* add mode */
       else
       {
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
-//        $defaults = $this->m_postvars;
+        $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
 
-        // Nodes can define initial values, if they don't already have values.
+        /* nodes can define initial values, if they don't already have values. */
         if (method_exists($this,"initial_values"))
         {
           $overrides = $this->initial_values();
@@ -878,8 +847,7 @@
         }
       }
 
-      $form.='<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
-
+      /* check for forced values */
       if (is_array($forceList))
       {
         while(list($forcedvarname,$forcedvalue)=each($forceList))
@@ -903,264 +871,90 @@
         }
       }
 
-      $form.=$g_layout->ret_table_simple();
+      /* extra submission data */
+      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
+      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
+      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
 
-      // Check for errors and display them
-      if (count($record['atkerror'])>0)
+      /* For all attributes we use the edit() method to get HTML code for editting the
+       * attribute's data. If the attribute is hidden we use the hide() method method
+       * to get HTML code for hideing the attribute's data. You can override the attribute's
+       * edit() method by supplying an <attributename>_edit function in the derived classes.
+       */
+      $tab = $this->getActiveTab();
+      for ($r = 0; $r < count($this->m_attribIndexList); $r++)
       {
-        $form.='<tr>';
-        $error_title= '<b>'.text('error_formdataerror').'</b>';
-        $errormsg = "";
+        $field = array("name" => $this->m_attribIndexList[$r]["name"]);
+        $p_attrib = &$this->m_attribList[$field["name"]];
 
-        $pk_err = array();
-        foreach ($record['atkerror'] as $data)
-        {
-          if ($data['err'] == error_primarykey_exists)
-          {
-            $pk_err_attrib[] = $data['attrib_name'];
-          }
-          else
-          {
-            $index = $this->m_attribList[$data['attrib_name']]->m_index;
-            $tabs  = $this->m_attribIndexList[$index]["tabs"];
-            if (($this->m_action = "add" && count($this->m_tabListAdd) > 1 ||
-                 $this->m_action = "edit" && count($this->m_tabListEdit) > 1
-                ) && $tabs != "*" && !atk_in_array($tab, $tabs))
-              $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0]),SESSION_DEFAULT,true).')';
-            else $error_tab = "";
-            $errormsg.="<br>".text($data['attrib_name']).': '.$data['msg'].$error_tab;
-          }
-        }
-        if (count($pk_err_attrib)>0) // Make primary key error message
-        {
-          $pk_err_msg = "<br>".text(error_primarykey_exists).": ";
-          for($i=0;$i<count($pk_err_attrib); $i++)
-          {
-            $pk_err_msg .= text($pk_err_attrib[$i]);
-            if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
-          }
-          $form.=$g_layout->ret_td($error_title.$pk_err_msg.$errormsg.'<br><br>','colspan="2"');
-        }
-        else
-        {
-          $form.=$g_layout->ret_td($error_title.$errormsg.'<br><br>','colspan="2"');
-        }
-
-        $form.='</tr>';
-      }
-
-      // load images
-      $reqimg     = '<img align="top" onMouseOver="javascript:window.status=\''.addslashes(text("field_obligatory")).'\';" src="'.$g_layout->getImgSrc("required_field.gif").'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
-      $tipimg     = $g_layout->getImgSrc("help.gif");
-
-      // For all attributes we use the edit() function to display an
-      // appropriate way to edit the data. This may be overridden by supplying
-      // an <attributename>_edit function in the derived classes.
-      for($r=0;$r<count($this->m_attribIndexList);$r++)
-      {
-        $attribname = $this->m_attribIndexList[$r]["name"];
-        $attribtabs = $this->m_attribIndexList[$r]["tabs"];
-        $p_attrib = &$this->m_attribList[$attribname];
-        // fields that have not yet been initialised may be overriden in the url..
+        /* fields that have not yet been initialised may be overriden in the url */
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
         }
-        if ((is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList)) || ($attribtabs != "*" && !in_array($tab, $attribtabs)))
+
+        /* sometimes a field is hidden although not specified by the field itself */
+        $tabs = $this->m_attribIndexList[$r]["tabs"];
+        if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
+            ($tabs != "*" && !in_array($tab, $tabs)))
         {
-          $form.=$p_attrib->hide($defaults, $fieldprefix);
+          $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
         }
-        else
-        {
-          if (($mode=="edit"&&$p_attrib->hasFlag(AF_HIDE_EDIT))
-              ||
-              ($mode=="add"&&$p_attrib->hasFlag(AF_HIDE_ADD))
-             )
-          {
-            if ($mode=="edit" || ($mode=="add" && !$p_attrib->isEmpty($defaults))) // when adding, there's nothing to hide..
-            {
-              $form.=$p_attrib->hide($defaults, $fieldprefix);
-            }
-          }
-          else
-          {
-            $form.='<tr>';
 
-            // Keep track of the number of td's we have to fill with the edit thingee..
-            // This depends on AF_NOLABEL for example.
-            $tdcount = 1;
-
-            // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-            // For each attribute, a txt_<attributename> must be provided in the language files.
-            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
-            {
-              if ($p_attrib->hasFlag(AF_BLANKLABEL))
-              {
-                $form.=$g_layout->ret_td('&nbsp;');
-              }
-              else
-              {
-                $found = FALSE;
-                for ($i=0; $i < count($record['atkerror']);$i++)
-                {
-                  if ($record['atkerror'][$i]['attrib_name'] == $p_attrib->fieldName()) $found = TRUE;
-                }
-                if($found)
-                {
-                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName(),$this->m_type).': </div>', 'valign="top"');
-                }
-                else
-                {
-                  $form.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
-                }
-              }
-            }
-            else
-            {
-              $tdcount++; // If there's no label, the other td's have to be filled up.
-            }
-
-            if (($mode=="edit"&&$p_attrib->hasFlag(AF_READONLY_EDIT))||($mode=="add"&&$p_attrib->hasFlag(AF_READONLY_ADD)))
-            {
-              // readonly, display value..
-              $editsrc=$p_attrib->hide($defaults, $fieldprefix);
-              $funcname = $p_attrib->m_name."_display";
-              if (method_exists($this, $funcname)) $editsrc.= $this->$funcname($record);
-              else $editsrc.=$p_attrib->display($defaults);
-            }
-            else
-            {
-              $funcname = $p_attrib->m_name."_edit";
-
-              if (method_exists($this,$funcname))
-              {
-                $editsrc = $this->$funcname($defaults, $fieldprefix, $tab);
-              }
-              else
-              {
-                $editsrc = $p_attrib->edit($defaults, $fieldprefix);
-              }
-
-                    // Obligatory indicator
-              if ($p_attrib->hasFlag(AF_OBLIGATORY))
-              {
-                $editsrc.= $reqimg;
-              }
-              // Tooltip
-              $ttip = "txt_".$this->m_type."_".$p_attrib->fieldName()."_tooltip";
-              if ($GLOBALS[$ttip] != "")
-              {
-                $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
-              }
-
-            }
-
-            $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
-            $form.='</tr>';
-          }
-        }
+        /* we let the attribute add itself to the edit array */
+        $p_attrib->addToEditArray($mode, &$result, &$defaults, &$record['atkerror'], $fieldprefix);
       }
 
-      $form.='</table>';
+      /* check for errors */
+      $result["error"] = $record['atkerror'];
 
+      /* return the result array */
+      return $result;
+    }
+
+    /**
+     * Function outputs a form in which a record can be edited.
+     *
+     * @param $mode         the edit mode ("add" or "edit")
+     * @param $forcelist    a key-value array used to preset certain fields to a certain value
+     * @param $suppresslist an array of fields that you want to hide
+     * @param $fieldprefix  if set, each form element is prefixed with the specified
+     *                      prefix (used in embedded form fields)
+     *
+     * @return edit form HTML string
+     */
+    function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="")
+    {
+      global $g_layout;
+
+      /* get data, transform into form, return */
+      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+      $form = $g_layout->ret_editForm(&$data, &$this);
       return $form;
     }
 
     /**
      * Function outputs a form with all values hidden. This is probably only
      * usefull for the atkOneToOneRelation's hide method.
-     * @param $mode mode of the form ("edit" or "add")
-     * @param $forcelist a key-value array used to preset certain fields to
-     *                   a certain value
-     * @param $fieldprefix if set, each form element is prefixed with the
-     *                     specified prefix (used in embedded forms)
+     *
+     * @param $mode         the edit mode ("add" or "edit")
+     * @param $forcelist    a key-value array used to preset certain fields to a certain value
+     * @param $fieldprefix  if set, each form element is prefixed with the specified
+     *
+     * @return hide form HTML string
      */
     function hideForm($mode="add",$record = NULL, $forceList="", $fieldprefix="")
     {
       global $g_layout, $config_atkroot,$g_sessionData,$atklevel;
 
-      $defaults = $record;
+      /* suppress all */
+      $suppressList = array();
+      for ($r = 0; $r < count($this->m_attribIndexList); $r++)
+        $suppressList[] = $this->m_attribIndexList[$r]["name"];
 
-      // Form may have been saved in a session..
-      if ($this->m_postvars["atkformdata"]!="")
-      {
-        atkdebug("Session formdata present");
-        $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
-        $this->m_postvars["atkformdata"]="";
-        //atk_var_dump($g_sessionData);
-        $g_sessionData["default"]["stack"][$atklevel]["atkformdata"]="";
-      }
-
-      $pk = $this->primaryKey($record);
-
-      if ($mode=="edit")
-      {
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
-
-        // Nodes can define edit_values
-        if (method_exists($this,"edit_values"))
-        {
-          $overrides = $this->edit_values($defaults);
-          while (list($varname,$value) = each($overrides))
-          {
-            $defaults[$varname]=$value;
-          }
-        }
-      }
-      else
-      {
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
-
-        // Nodes can define initial values, if they don't already have values.
-        if (method_exists($this,"initial_values"))
-        {
-          $overrides = $this->initial_values();
-          while (list($varname,$value) = each($overrides))
-          {
-            if ($defaults[$varname]=="") $defaults[$varname]=$value;
-          }
-        }
-      }
-
-      $form.='<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
-
-      if (is_array($forceList))
-      {
-        while(list($forcedvarname,$forcedvalue)=each($forceList))
-        {
-          if ($forcedvarname!="")
-          {
-            if (strpos($forcedvarname,'.')>0)
-            {
-              list($table,$field) = split('\.',$forcedvarname);
-              $defaults[$table][$field] = $forcedvalue;
-              $attribname = $table;
-            }
-            else
-            {
-              $defaults[$forcedvarname]=$forcedvalue;
-              $attribname = $forcedvarname;
-            }
-            $p_attrib = &$this->m_attribList[$attribname];
-            $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
-          }
-        }
-      }
-
-      for($r=0;$r<count($this->m_attribIndexList);$r++)
-      {
-        $attribname = $this->m_attribIndexList[$r]["name"];
-        $attribtabs = $this->m_attribIndexList[$r]["tabs"];
-        $p_attrib = &$this->m_attribList[$attribname];
-
-        // fields that have not yet been initialised may be overriden in the url..
-        if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
-        {
-          $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
-        }
-        $form.=$p_attrib->hide($defaults, $fieldprefix);
-      }
-
+      /* get data, transform into "form", return */
+      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+      foreach ($data["hide"] as $hide) $form .= $hide;
       return $form;
     }
 
@@ -1632,10 +1426,10 @@
       {
         // Look for custom record actions.
         $recordactions = $actions;
-        $this->recordActions($recordset[$i], $recordactions);    
-        
+        $this->recordActions($recordset[$i], $recordactions);
+
         // Actions passed to the function.
-        
+
         $actionCol="";
         if (count($recordactions)>0)
         {
@@ -1643,7 +1437,7 @@
           $pk = $this->primaryKey($recordset[$i]);
 
           foreach($recordactions as $action_name => $action_url)
-          {          
+          {
             if ($action_url!="")
             {
               // dirty hack:
@@ -1668,8 +1462,8 @@
                 $action=str_replace('[pk]',rawurlencode($pk),$action);
               }
               $action=stringparse($action,$recordset[$i],true);
-              
-              $sessionsave = false; 
+
+              $sessionsave = false;
               if ($atklevel>0) $sessionsave=true; // If we're at a higher atk level, we
                                                   // need to remember form data.
 
@@ -2842,7 +2636,7 @@
       }
 
     }
-    
+
     /**
      * Count the record(s) from a certain select query.
      * The 'selector' parameter can be anything that's valid in a 'where' statement.
@@ -3297,14 +3091,14 @@
     {
       // Do nothing
     }
-    
+
     /**
      * Function that is called for each record in a recordlist, to determine
-     * what actions may be performed on the record. 
+     * what actions may be performed on the record.
      * This function does nothing, but it can be overriden in your derived
-     * class. 
-     * The array with actions (edit, delete, etc.) is passed to the function 
-     * and can be modified.     
+     * class.
+     * The array with actions (edit, delete, etc.) is passed to the function
+     * and can be modified.
      * To create a new action, just do $actions["new_action"]="somefile.php";
      * in the derived function.
      * To disable the edit action for a record, use unset($actions["edit"]);

@@ -269,6 +269,63 @@
     }
 
     /**
+     * Adds the attribute's edit / hide HTML code to the edit array. This method
+     * is called by the node if it want the data needed to create an edit form.
+     * @param $mode     the edit mode ("add" or "edit")
+     * @param $arr      pointer to the edit array
+     * @param $defaults pointer to the default values array
+     * @param $error    pointer to the error array
+     * @param $prefix   the fieldprefix
+     */
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      /* hide */
+      if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
+      {
+        /* when adding, there's nothing to hide... */
+        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix);
+      }
+
+      /* edit */
+      else
+      {
+        $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+
+        /* label? */
+        if     ($this->hasFlag(AF_NOLABEL))    $entry["label"] = NULL;
+        elseif ($this->hasFlag(AF_BLANKLABEL)) $entry["label"] = "";
+        else   $entry["label"] = text($this->m_name, $this->m_ownerInstance->m_type);
+
+        /* error? */
+        $entry["error"] = FALSE;
+        for ($i = 0; $i < count($error) && !$entry["error"]; $i++)
+          if ($error[$i]['attrib_name'] == $this->fieldName()) $entry["error"] = TRUE;
+
+        /* readonly */
+        if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+        {
+          $entry["html"] = $this->hide($defaults, $fieldprefix);
+          $funcname = $this->m_name."_display";
+          if (method_exists($this->m_ownerInstance, $funcname))
+            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults);
+          else $entry["html"] .= $this->display($defaults);
+        }
+
+        /* normal */
+        else
+        {
+          $funcname = $this->m_name."_edit";
+          if (method_exists($this->m_ownerInstance, $funcname))
+            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix);
+          else $entry["html"] .= $this->edit($defaults, $fieldprefix);
+        }
+
+        $arr["fields"][] = $entry;
+      }
+    }
+
+    /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
      * @param $record Array with values
