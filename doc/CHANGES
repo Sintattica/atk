@@ -24,6 +24,7 @@ Changes in ATK 5.0.3
 * DHTML dropdown handler now only shows what you are allowed to do [Boy]
 * Fix for bug with select pages when AF_LARGE is set (bug #302) [Boy]
 * Fixed the Multi Record Actions. [Sandy] 
+* Fixed bug in the fileattribute. (bug #300) [Sandy]
 
 Changes in ATK 5.0.2
 --------------------
