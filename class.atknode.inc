@@ -296,6 +296,11 @@
     var $m_default_order = "";
 
     /**
+    * var used for tracking relation within this node
+    */
+    var $m_relations = array();
+    
+    /**
      * Node flags
      */
     var $m_flags;
@@ -548,7 +553,11 @@
         $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
-
+      
+      if(is_subclass_of($attribute,"atkrelation"))
+      {
+        $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
+      }
     }
 
     /**
@@ -3024,11 +3033,6 @@
           {
             $g_db->commit();
             
-            if($this->hasFlag(NF_ML))
-            {
-              $this->updateMlRecords($record,"update");
-            }
-            
             if ($this->m_postvars['atknoclose']=="")
             {
               // 'save and close' was clicked
@@ -3116,11 +3120,6 @@
           else
           {
             $g_db->commit();
-            
-            if($this->hasFlag(NF_ML))
-            {
-              $this->updateMlRecords($record,"add");
-            }
             
             $location="";
             if ($this->hasFlag(NF_EDITAFTERADD))
@@ -3306,6 +3305,7 @@
     {
       $page = &$this->getPage();    
       
+      atkdebug("actionedit calling selectDb()");
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
 
       if ($this->hasFlag(NF_LOCK))
@@ -3492,9 +3492,9 @@
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
-
       foreach (array_keys($this->m_attribList) as $attribname)
       {
+        atkdebug("calling fetchvalue for $attribname");
         $p_attrib = &$this->m_attribList[$attribname];
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
@@ -3615,11 +3615,13 @@
     function updateDb(&$record)
     {
       global $g_db;
+      static $s_mlRecordUpdate=false;
+      
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $query->addTable($this->m_table);
-
+      
       // The record that must be updated is indicated by 'atkorgkey'
       // (not by atkselector, since the primary key might have
       // changed, so we use the atkorgkey, which is the value before
@@ -3671,6 +3673,12 @@
             // something went wrong.
             return false;
           }
+        }
+
+        if($this->hasFlag(NF_ML)&&$s_mlRecordUpdate==false)
+        {
+          $s_mlRecordUpdate=true;
+          $this->updateMlRecords($record,"update");
         }
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
@@ -3930,26 +3938,30 @@
 
       $dbrecords = $g_db->getrows($querystring);
       
-      if($this->hasFlag(NF_ML) && count($dbrecords)>1 && $mode=="edit")
+      if($mode=="edit" && count($dbrecords)>1) // do we have mlrecords?
       {
-        $this->combineMlRecordSet($dbrecords);
+        $this->combineMlRecordSet($dbrecords,$query);
       }
 
-
+      
 //      $this->setOrgKeyValue($dbrecords[0]);
 
       $recordset = array();
       for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
       {
         $therecord = array();
+        $recordcopy = $dbrecords[$i];
         $query->deAlias($dbrecords[$i]); // dereference aliases..
         atkDataDecode($dbrecords[$i]);
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+          {
+            $therecord[$attribname] = $recordcopy[$attribname];
+          } else  $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
-
+        
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming
         // that attributes with load() functions can never be part of the primary key.
         // They can't be, because load() might *depend* on a primary key.
@@ -3960,8 +3972,7 @@
         $recordset[] = $therecord;
 
       }
-
-
+      
       // also load special storage attributes.
 
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -3973,17 +3984,80 @@
           $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i], $mode);
         }
       }
-      
       return $recordset;
     }
 
    /**
-   * changes the multiple records to one multilanguage record
+   * this is used to find 1:1 relations with multilanguage support
+   * we need these relation because the recordlist will have them included
+   * when editting a record we have to combine these records
    */
-   function combineMlRecordSet(&$recordset)
+   function getMlNodes()
    {
-     //atk_var_dump($recordset,"combinerecord in");
+     // we only have to check the 1:1 relations!!
+     $hasrelationwithmlnode=Array();
+     if(is_array($this->m_relations["atkonetoonerelation"]))
+     {
+       foreach($this->m_relations["atkonetoonerelation"] as $attribname=>$attribute)
+       {
+         $p_attrib = &$this->m_attribList[$attribname];
+         if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+         {
+           $hasrelationwithmlnode[$attribname]=&$this->m_attriblist[$attribname];
+         }
+       }
+     }
+     return $hasrelationwithmlnode;
+   }
+   
+   /**
+   * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
+   */
+   function combineMlRecordSet(&$recordset,$query)
+   {
      $ml_record=Array();
+     
+     // possible situations
+     // 1. we are a ML node and thus we have multiple records
+     // 2. we are a ML node and have 1 or more 1:1 relations with ML nodes (ai what happends then)
+     // 3. we aren't a ML node but we have 1 or more 1:1 relation with a ML node
+
+     $hasrelationwithmlnode = $this->getMlNodes();
+     
+     if($this->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
+     {
+       $this->mergeMlRecords(&$recordset);
+     }
+     else if($this->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
+     {
+       // oh oh what to do.
+       atkdebug("combineMlRecordSet action not supported!!!!!");
+     }
+     else if(!$this->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
+     {
+       $newrecord[0] = $recordset[0];
+       // we have relations with mlnodes
+       for($i=0,$i_=count($recordset);$i<$i_;$i++)
+       {
+         $query->deAlias($recordset[$i]);
+         atkDataDecode($recordset[$i]);
+         foreach($hasrelationwithmlnode as $attribname=>$attrib)
+         {
+           $tmprecord[$attribname][] = $recordset[$i][$attribname];
+         }
+       }
+       foreach($tmprecord as $attribname=>$attribrecords)
+       {
+         $this->m_attribList[$attribname]->createDestination();
+         $this->m_attribList[$attribname]->m_destInstance->combineMlRecordSet($attribrecords,$query);
+         $newrecord[0][$attribname]=$attribrecords[0];
+       }
+       $recordset=$newrecord;
+     }
+   }
+   
+   function mergeMlRecords(&$recordset)
+   {
      foreach($this->m_attribList as $attribname=>$attrib)
      {
        if($this->m_attribList[$attribname]->m_languageattribute) $lngattribs[$attribname] = &$this->m_attribList[$attribname];
@@ -4001,13 +4075,12 @@
        $ml_record[0][$lngattribname]=$value;
      }
      $recordset=$ml_record;
-     //atk_var_dump($recordset,"combinerecord out");
    }
    
    /**
    * add/update multiple language records
    */
-   function updateMlRecords(&$record,$mode="add")
+   function updateMlRecords($record,$mode="add")
    {
      $languages = $this->getLanguages();
 
@@ -4110,6 +4183,7 @@
     function addDb(&$record, $exectrigger=true, $mode="add")
     {
       global $g_db;
+      static $s_mlRecordAdd=false;
 
       atkdebug("atkNode::addDb() start ".$this->m_type." mode: ".$mode);
 
@@ -4166,6 +4240,12 @@
 
         // new primary key
         $record["atkprimkey"] = $this->primaryKey($record);
+        
+        if($this->hasFlag(NF_ML)&&$s_mlRecordAdd==false)
+        {
+          $s_mlRecordAdd=true;
+          $this->updateMlRecords($record,"add");
+        }
 
         // Now we call a postAdd function, that can be used to do some processing after the record
         // has been saved.

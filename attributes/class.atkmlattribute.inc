@@ -55,7 +55,7 @@
      * @param $record array with values
      * @return piece of html code
      */
-    function edit($record="")
+    function edit($record="",$fieldprefix="")
     {
       /* register javascript */
       $page = &atkPage::getInstance();
@@ -67,13 +67,13 @@
       /* hidden values */
       for ($i = 1; $i < sizeof($languages); $i++)
       {
-        $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
+        $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$languages[$i].']"'.
                    ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[$i]]).'" >';
       }
 
       /* default language */
       $result .= text('language_'.$languages[0]).': '.
-                 '<input type="text" name="'.$this->formName().'['.$languages[0].']"'.
+                 '<input type="text" name="'.$fieldprefix.$this->formName().'['.$languages[0].']"'.
                  ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[0]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -81,7 +81,7 @@
       
       /* first language of other languages */
       $result .= text((count($languages)==2 ? $languages[1] : "multilanguage_choice").'').': '.
-                 '<input type="text" name="'.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
+                 '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
                  ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[1]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
