@@ -19,6 +19,7 @@
   "access_denied" => "Access denied",
   "add" => "Add",
   "admin" => "Administration",
+  "administration_application" => "Administration application",
   "apply" => "Apply",
   "app_close" => "Close",
   "app_description" => "Welcome to this ATK application.",

@@ -19,6 +19,7 @@
   "access_denied" => "Toegang geweigerd",
   "add" => "Toevoegen",
   "admin" => "Administratie",
+  "administration_application"=>"Beheeromgeving",
   "apply" => "Toepassen",
   "app_close" => "Afsluiten",
   "app_description" => "Welkom bij deze ATK applicatie.",
