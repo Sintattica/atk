@@ -69,7 +69,6 @@
 
       $content.= '</form><br><br>';
 
-
       $page = &$this->getPage();
       $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
       return true;
@@ -122,7 +121,8 @@
     {
       global $g_sessionManager;
       $filename = $this->getTmpFileDestination($fileid);
-      $rows = $this->getSampleRows($filename);
+
+      $rows = $this->getSampleRows($filename);      
       $delimiter = $g_sessionManager->pageVar("delimiter");
       if ($delimiter=="") $delimiter = $this->estimateDelimiter($rows);
       $enclosure = $g_sessionManager->pageVar("enclosure");
@@ -130,10 +130,11 @@
       
       $allFieldValue = $g_sessionManager->pageVar("allFieldValue");
       $allField = $g_sessionManager->pageVar("allField");
-      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
+      $skipfirstrow = $this->m_postvars['skipfirstrow'];
       $columncount = $this->estimateColumnCount($rows, $delimiter);
 
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
+      
 
       // Display sample
       $sample = '<br><br>'.atktext("import_sample").':<br><br><table class="recordlist">';
@@ -179,29 +180,29 @@
         $sample.='<tr class="row'.(($i%2)+1).'">';
         for ($j=0; $j<$columncount; $j++)
         {
-          $sample.='<td>';
+          $sample.=($i==0&&$skipfirstrow)?'<th>':'<td>';
           if ($col_map[$j]!="" && $col_map[$j]!="-")
-          {
+          {            
             $attr = &$this->getUsableAttribute($col_map[$j]);
-            $newval = $attr->parseStringValue(trim($line[$j+1]));
+            $newval = $attr->parseStringValue(trim($line[$j]));
             $sample.=$attr->display(array($col_map[$j]=>$newval));
 
-            if ((string)$newval!=(string)$line[$j+1])
+            if ((string)$newval!=(string)$line[$j])
             {
               // Also display raw value so we can verify
-              $sample.= ' <i style="color: #777777">('.trim($line[$j+1]).")</i>";
+              $sample.= ' <i style="color: #777777">('.trim($line[$j]).")</i>";
             }
           }
           else if ($col_map[$j]=="-")
           {
             // ignoring.
-            $sample.='<div style="color: #777777">'.trim($line[$j+1]).'</div>';
+            $sample.='<div style="color: #777777">'.trim($line[$j]).'</div>';
           }
           else
           {
-            $sample.=trim($line[$j+1]);
+            $sample.=trim($line[$j]);
           }
-          $sample.='</td>';
+          $sample.=($i==0&&$skipfirstrow)?'</th>':'</td>';
         }
         $sample.='</tr>';
       }
@@ -222,16 +223,20 @@
 
       $content.= $sample;
 
-      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';
-      $attr = $this->getUsableAttribute($allField);
-      
-      if(is_object($attr)){
-        $record = array();
-
-        $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
+      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';      
+      if ($allField!="")
+      {
+        $attr = $this->getUsableAttribute($allField);
+        
+        if(is_object($attr))
+        {
+          $record = array();
+  
+          $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
+        }
       }
 
-      $content.= '<br/>'.atktext("import_passfirstrecord").' <input type="checkbox" name="passOverFirstRecord" value="1" '.($passOverFirstRecord?"CHECKED":"").'/><br/><br/>';
+      $content.= '<br/>'.atktext("import_skipfirstrow").' <input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/><br/><br/>';
         
       $content.= ' <input type="submit" name="analyse" value="'.atktext("import_analyse").'">';
       $content.= ' <input type="submit" name="import" value="'.atktext("import_import").'"> ';
@@ -288,7 +293,7 @@
     {
       if (!is_array($rows)||count($rows)==0) return '"';
       if (substr_count($rows[0], '"')>=2) return '"';
-      return '"';
+      return '';
     }
 
     /**
@@ -335,8 +340,17 @@
      * @return array          The fields
      */
     function fgetcsvfromline ($line, $columncount, $delimiterChar = ',', $enclosureChar = '"')
-    {
-      $regExpSpecialChars = array (
+    {      
+      $line = trim($line);
+      if ($enclosureChar!='')
+      {
+        $start = (($line[0]==$enclosureChar)?1:0);
+        $end = (($line[strlen($line)-1]==$enclosureChar)?-1:NULL);
+        $line = substr($line, $start, $end);
+      }
+                  
+      $regExpSpecialChars = array 
+      (
           "|" => "\\|",
           "&" => "\\&",
           "$" => "\\$",
@@ -352,30 +366,17 @@
           "\\" => "\\\\",
           "/" => "\\/"
       );
-//"
+
       $matches = array();
 
       $delimiterChar = strtr($delimiterChar, $regExpSpecialChars);
       $enclosureChar = strtr($enclosureChar, $regExpSpecialChars);
-
-      $regExp = "/^";
-
-      for ($i = 0; $i < $columncount; $i++) {
-          $regExp .= '('.$enclosureChar.'?)(.*)\\'.(2*$i + 1).$delimiterChar; // construct the regular expression
-      }
-//"'
-      $regExp = substr($regExp, 0, (strlen($regExp) - strlen($delimiterChar)))."/"; // format the regular expression
-
-      if (preg_match($regExp, $line, $matches)) {
-          $result = array();
-          for ($i = 1; $i < count($matches)/2; $i++) {
-              $result[$i] = $matches[2*$i]; // get only the fields but not the delimiters
-          }
-
-          return $result;
-      }
-
-      return FALSE;
+      
+      // Some exports don't enclose empty fields with the enclosureChar. Let's fix that first so we can use
+      // one preg_split statement that works in those cases too.
+      $line = str_replace($delimiterChar.$delimiterChar,$delimiterChar.$enclosureChar.$enclosureChar.$delimiterChar, $line);      
+      $expression = '#'.$enclosureChar.' *'.$delimiterChar.' *'.$enclosureChar.'#';
+      return preg_split($expression, $line);                
     }
 
     /**
@@ -390,32 +391,38 @@
       {
         $attrib = &$this->m_node->getAttribute($attribname);
 
-        if($this->integrateAttribute($attrib)){
+        if($this->integrateAttribute($attrib))
+        {
           $attrib->createDestination();
-          foreach(array_keys($attrib->m_destInstance->m_attribList) as $relattribname){
+          foreach(array_keys($attrib->m_destInstance->m_attribList) as $relattribname)
+          {
             $relattrib = &$attrib->m_destInstance->getAttribute($relattribname);
             
-            if($obligatoryOnly && !$this->isObligatory($relattrib))
-              continue;
-
-            if ($relattrib->storageType("add")==ADDTOQUERY && !$relattrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($relattrib))
+            if ($this->_usableForImport($obligatoryOnly, $relattrib))
             {
               $attrs[] = $relattribname;
             }
           }
-          continue;
         }
-        
-        if($obligatoryOnly && !$this->isObligatory($attrib))
-          continue;
-        
-        if ($attrib->storageType("add")==ADDTOQUERY && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib))
-        {
-          $attrs[] = $attribname;
+        else
+        {        
+          if ($this->_usableForImport($obligatoryOnly, $attrib))
+          {
+            $attrs[] = $attribname;
+          }
         }
       }
 
       return $attrs;
+    }
+    
+    /**
+     * Check if an attribute is usable for import.
+     */
+    function _usableForImport($obligatoryOnly, &$attrib)
+    {
+      return ((!$obligatoryOnly || $this->isObligatory($attrib))
+              && $attrib->storageType("add")==ADDTOQUERY && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib));
     }
     
     /**
@@ -494,16 +501,18 @@
      * @param $attrname string  name of the attribute
      * @return boolean          result of the check
      */
-    function hasRelationAttribute($attrname){
+    function hasRelationAttribute($attrname)
+    {      
       return in_array(get_class($this->getUsableAttribute($attrname)),array("atkmanytoonerelation","atkmanytoonetreerelation"));
     }
 
     /**
-     * Get the real attribute (instance) bij his name
+     * Get the real attribute (instance) by his name
      * @param $name string    name of the attribute
      * @return object         instance of the attribute
      */
-    function getUsableAttribute($name){
+    function getUsableAttribute($name)
+    {      
       if(array_key_exists($name,$this->m_node->m_attribList))
         return $this->m_node->getAttribute($name);
 
@@ -524,7 +533,8 @@
      * @param $attrname string  the name of the attribute
      * @param $value string     the value of that attribute
      */
-    function addToRecord(&$record,$attrname,$value){
+    function addToRecord(&$record,$attrname,$value)
+    {
       $attr = $this->getUsableAttribute($attrname);
     
       if(!is_object($attr)){
@@ -662,19 +672,24 @@
       //add the allField to the col_map array
       //but only if a valid field is selected
       $allField = $this->m_postvars["allField"];
-
-      $attr = $this->getUsableAttribute($allField);
-      if($attr)
-        $col_map[] = $allField;
+      if ($allField!="")
+      {        
+        $attr = $this->getUsableAttribute($allField);
+        if($attr)
+        {
+          $col_map[] = $allField;      
+        }
       
-      //get the value from the postvars
-      $allFieldValue = $this->m_postvars[$allField];
-      if(strstr($allFieldValue,"=")){
-        $allFieldValue = substr(strstr($allFieldValue,"="),2);
-        $allFieldValue = substr($allFieldValue,0,strlen($allFieldValue)-1);
+        //get the value from the postvars
+        $allFieldValue = $this->m_postvars[$allField];
+        if(strstr($allFieldValue,"="))
+        {
+          $allFieldValue = substr(strstr($allFieldValue,"="),2);
+          $allFieldValue = substr($allFieldValue,0,strlen($allFieldValue)-1);
+        }
       }
 
-      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
+      $skipfirstrow = $this->m_postvars['skipfirstrow'];
 
       $initial_values = $this->m_node->initial_values();
 
@@ -696,17 +711,17 @@
 
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
-      if($passOverFirstRecord == "1") $line = fgets($fp);
-      for($line = fgets($fp); $line!==false && !feof($fp); $line = fgets($fp))
+      if($skipfirstrow == "1") $line = fgets($fp);
+      for($line = fgets($fp); $line!==false; $line = fgets($fp))
       {
+        echo 'jeej';
         //if we have an empty line, pass it
         if(trim($line)=="")
           continue;
           
         //large import are a problem for the maximum execution time, so we want to set for each
         //loop of the for-loop an maximum execution time
-        set_time_limit(30);
-        //echo memory_get_usage()."<br/>";
+        set_time_limit(30);        
       
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
         
@@ -717,7 +732,7 @@
           if ($col_map[$i]!="-")
           {
             if($i != $_i-1 || $col_map[$i] != $allField)// column is mapped
-              $value = $data[$i+1];
+              $value = $data[$i]; 
             else //this is the allField
               $value = $allFieldValue;
             $this->addToRecord($rec,$col_map[$i],trim($value));
@@ -810,40 +825,29 @@
       
       if(count($unused) > 0)
       {
-        $msg = atktext((count($unused)==1)?"import_error_fieldisobligatory":"import_error_fieldsareobligatory");
-
-        foreach($unused as $field)
-        {
-          $spec .= text($field).", ";
-        }
-        $spec = substr($spec,0,strlen($spec)-2);
-
-        return array("msg"=>$msg,"spec"=>$spec);
+        $msg = atktext((count($unused)==1)?"import_error_fieldisobligatory":"import_error_fieldsareobligatory").": ";        
+        return array("msg"=>$msg,"spec"=>implode(", ",$unused));
       }
 
-      //check if there ar double values in col_map
-      $doubles = array_values(array_diff_assoc($col_map,array_unique($col_map)));
-      //"-" may be used twice, so delete it from doubles
-      while(array_search("-",$doubles) !== false)
-      {
-        $key = array_search("-",$doubles);
-        unset($doubles[$key]);
-      }
+      $doubles = $this->_getDuplicateColumns($col_map);
       
       if(count($doubles) > 0)
-      {
-        if(count($doubles) == 1)
-        $msg = atktext((count($doubles)==1)?"import_error_fieldusedtwice":"import_error_fieldsusedtwice");
-
-        foreach($doubles as $field)
-        {
-          $spec .= text($field).", ";
-        }
-        $spec = substr($spec,0,strlen($spec)-2);
-
-        return array("msg"=>$msg,"spec"=>$spec);
+      {        
+        $msg = atktext((count($doubles)==1)?"import_error_fieldusedtwice":"import_error_fieldsusedtwice").": ";        
+        return array("msg"=>$msg,"spec"=>implode(", ",$doubles));
       }
       
+    }
+    
+    function _getDuplicateColumns($array)
+    {
+      $result = array();
+      $frequencies = array_count_values($array);
+      foreach ($frequencies as $key=>$count) 
+      {
+        if ($count>1 && $key!="-") $result[] = $key;
+      }
+      return $result;
     }
     
     function checkAllField($field, &$value)
