@@ -1211,8 +1211,7 @@
     function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="")
     {      
       /* get data, transform into form, return */            
-      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);                        
-      
+      $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);                 
       // Format some things for use in tpl.
       /* check for errors and display them */
       $tab = $this->getActiveTab();
@@ -1290,6 +1289,7 @@
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
+        $this->debug($field["label"]."LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL".$field["error"]);
         
         $tplfield = array();
 
@@ -1322,8 +1322,6 @@
               $tplfield["label"] =  $field["label"];
               if ($field["error"]) // TODO KEES
               {
-                $this->debug("BLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL".$field["error"]);
-                $field["error"] .= "34rdsfsdfds";
                 $tplfield["error"] = $field["error"];
               }
             }            
@@ -3059,7 +3057,19 @@
 
         $this->validate($record, "add");
 
+        // bugfix Kees:
+        // todo: let Ivo this review
+        // sometimes the atkerror field contains NULL, which results in an empty error,
+        // (which is very difficult to detect)
+        if($record['atkerror'] == NULL)
+          $record['atkerror'] = "";
+
+       $record['atkerror'] = "";
+
         $error = count($record['atkerror']) > 0;
+        if(!is_array($record['atkerror']))
+          $record['atkerror'] = array();
+
         foreach (array_keys($record) as $key)
           $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
 
@@ -3082,6 +3092,7 @@
             }
             else
             {
+              atkdebug($g_db->getErrorType()."ERRORTYPE!!!!!!!!!!!!!!!!!");
               $location = $this->feedbackUrl("save",ACTION_FAILED,$g_db->getErrorMsg());
               $this->redirect($location);
             }
