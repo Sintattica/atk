@@ -1146,7 +1146,7 @@
               }
               $sel.= '</select>';
             }
-            $form.=$g_layout->ret_td($sel);
+            $form.=$g_layout->ret_td($sel,'valign="top"');
             $form.='</tr>';
           }
         }
