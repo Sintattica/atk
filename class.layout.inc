@@ -21,8 +21,11 @@
   *
   * $Id$
   * $Log$
-  * Revision 1.1  2001/04/23 10:17:06  ivo
-  * Initial revision
+  * Revision 4.0  2001/04/23 10:19:38  ivo
+  * Revision number update
+  *
+  * Revision 1.1.1.1  2001/04/23 10:17:06  ivo
+  * Added atk4 to repository.
   *
   * Revision 1.15  2001/04/05 13:58:31  ivo
   * Small navigation fix.

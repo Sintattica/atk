@@ -9,8 +9,11 @@
   *
   * $Id$
   * $Log$
-  * Revision 1.1  2001/04/23 10:17:02  ivo
-  * Initial revision
+  * Revision 4.0  2001/04/23 10:19:38  ivo
+  * Revision number update
+  *
+  * Revision 1.1.1.1  2001/04/23 10:17:02  ivo
+  * Added atk4 to repository.
   *
   * Revision 1.5  2001/03/30 15:08:13  ivo
   * Improved the stringparser: It can now parse associative arrays.

@@ -91,8 +91,11 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
-   * Revision 1.1  2001/04/23 10:17:05  ivo
-   * Initial revision
+   * Revision 4.0  2001/04/23 10:19:38  ivo
+   * Revision number update
+   *
+   * Revision 1.1.1.1  2001/04/23 10:17:05  ivo
+   * Added atk4 to repository.
    *
    * Revision 1.52  2001/04/19 07:36:32  ivo
    * New flag NF_AUTOSELECT for automatic redirect in select pages when only

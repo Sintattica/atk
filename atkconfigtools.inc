@@ -9,8 +9,11 @@
    * $Id$
    *
    $ $Log$
-   $ Revision 1.1  2001/04/23 10:17:02  ivo
-   $ Initial revision
+   $ Revision 4.0  2001/04/23 10:19:38  ivo
+   $ Revision number update
+   $
+   $ Revision 1.1.1.1  2001/04/23 10:17:02  ivo
+   $ Added atk4 to repository.
    $
    * Revision 1.2  2001/02/22 22:49:26  peter
    * added the language() method
