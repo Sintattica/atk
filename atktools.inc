@@ -958,8 +958,8 @@
    */
   function atkversion()
   {
-    global $g_atkversion;
-    return $g_atkversion;
+    include($config_atkroot."version.inc");
+    return $atk_version;
   }
 
   /**
