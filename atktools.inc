@@ -148,11 +148,11 @@
       {
         // Node is not empty. We try to find a node specific string first. If that doesn't exist,
         // we return the generic string.
-        $key = "txt_".$node."_".$var;
+        $key = "txt_".$node."_".$var;        
         if (empty($GLOBALS[$key]))
         {
-          // No node specific string. We should use the generic string.
-          $key = "txt_".$var;
+          // No node specific string. We should use the generic string.          
+          $key = "txt_".$var;          
         }        
       }
     }
@@ -169,7 +169,7 @@
         // specific fallback string.
         return text($var, $node);
       }      
-    }        
+    }            
     return (!empty($GLOBALS[$key])?$GLOBALS[$key]:ucfirst(str_replace("_"," ",str_replace('title_','',$var))));
   }
 

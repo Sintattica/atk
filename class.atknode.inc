@@ -148,19 +148,7 @@
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
-
-  /**
-   * Sticky vars are variables that are passed in each url, or each form post.
-   * There are a few default sticky vars, but nodes can add their own sticky vars
-   * if they want to.
-   * Sticky vars use the global value of a var, so if you change the value in your
-   * code, the changed value is passed along.
-   *
-   * Sticky vars.. sticky vars.. what are they feeding you....
-   * Sticky vars.. sticky vars.. it's not your fault!
-   */
-   //$g_stickyVars = array("atknodetype","atktarget","atkfilter","atkaction");
-
+  
    // session vars are valid until they are set to something else. if you go a session level higher,
    // the next level will still contain these vars (unless overriden in the url)
    $g_sessionVars = array("atknodetype","atkfilter","atkselector","atkaction");
