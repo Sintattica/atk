@@ -134,7 +134,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $atklevel, $ATK_VARS;  
+      global $ATK_VARS;  
     
       $this->createDestination();
       // Two variances.. one with a dropdownbox containing all records,
@@ -219,7 +219,7 @@
                         
         // we use the current level to automatically return to this page 
         // when we come from the select.. 
-        $atktarget = rawurlencode("dispatch.php?atklevel=".$atklevel."&".$selname."=[".$remotekey."]");
+        $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[".$remotekey."]");
         $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                                    "&atkaction=select&atktarget=".$atktarget,
                        text("link_select_".getNodeType($this->m_destination)),

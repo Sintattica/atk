@@ -22,6 +22,8 @@
 
   /* Workaround for a PHP4.0.4 bug */
   $atklevel = trim($atklevel);
+  $atkprevlevel = trim($atkprevlevel);
+  $atkstackid = trim($atkstackid);
 
   class atkSessionManager
   {
@@ -60,9 +62,9 @@
     
     function stackVar($var, $value="")
     {
-      global $g_sessionData, $atklevel;
+      global $g_sessionData;
             
-      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][$atklevel];
+      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
 
       if ($value=="")
       {
@@ -86,9 +88,9 @@
     
     function pageVar($var, $value="")
     {
-      global $g_sessionData, $atklevel;
+      global $g_sessionData;
             
-      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][$atklevel];
+      $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
 
       if ($value=="")
       {
@@ -138,10 +140,21 @@
     function stackscope(&$postvars)
     {
       global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars, $HTTP_GET_VARS;
+      
+      // Mental note: We have an atkLevel() function for retrieving the atklevel,
+      // but we use the global var itself here, because it gets modified in 
+      // the stackscope function.
+      
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
+      
       atkdebug("ATKLEVEL : ".$atklevel);
             
-      $stack = &$g_sessionData[$this->m_namespace]["stack"];            
+      $this->_verifyStackIntegrity();
+      
+      // New stack, new stackid, if level = -1.
+      $stackid = atkStackID(($atklevel==-1));      
+                  
+      $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
             
       if ($atklevel==-1||!is_array($stack))
       {
@@ -309,7 +322,7 @@
     {
       global $g_sessionData, $g_layout;
       $res = "";
-      $stack = $g_sessionData[$this->m_namespace]["stack"];
+      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       
       // we only show the last 4 elements of the stack
       if (count($stack)>4) $res = "... | ";
@@ -321,7 +334,7 @@
         $title = text($g_layout->title($mod, $node, $stack[$i]["atkaction"]));
         if ($i<count($stack)-1) 
         {
-          $res.='<a href="dispatch.php?atklevel='.$i.'">'.$title.'</a> | ';
+          $res.='<a href="'.session_url('dispatch.php?atklevel='.$i).'">'.$title.'</a> | ';
         }
         else
         {
@@ -329,6 +342,32 @@
         }
       }            
       return $res;
+    }
+    
+    /**
+     * Verify the integrity of the session stack, in the case a user
+     * opens links in a new window, which could confuse the session manager.
+     * In the case we detect this, we fork the session stack so both windows
+     * have their own stacks.
+     */
+    function _verifyStackIntegrity()
+    {
+      global $g_sessionData, $atkstackid, $atklevel, $atkprevlevel;
+      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+      
+      if (!is_array($stack)) $prevlevelfromstack = 0;
+      else $prevlevelfromstack = count($stack)-1;      
+      
+      if ($atkprevlevel!=$prevlevelfromstack)
+      {
+        // What we think we came from (as indicated in the url by atkprevlevel)
+        // and what the REAL situation on the stack was when we got here (prevlevelfromstack)
+        // is different. Let's fork the stack.
+        atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
+        $newid = atkStackID(true);
+        $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
+        return;
+      }      
     }
 
 
@@ -362,6 +401,27 @@
   {
     global $g_sessionManager;
     $g_sessionManager->globalVar($var, $value);      
+  }
+  
+  function atkStackID($new = false)
+  {
+    global $atkstackid;
+    if (!isset($atkstackid)||$atkstackid==""||$new)
+    {
+      // No stack id yet, or forced creation of a new one.
+      $atkstackid = uniqid("");
+    }
+    return $atkstackid;
+  }
+  
+  function atkLevel()
+  {
+    global $atklevel;
+    if (!isset($atklevel)||$atklevel=="")
+    {
+      $atklevel = 0; // assume bottom level.
+    }
+    return $atklevel;
   }
   
   function sessionLoad($var, $namespace="")

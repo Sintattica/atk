@@ -637,7 +637,7 @@
      */
     function editPage($record)
     {
-      global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
+      global $g_layout, $PHP_SELF,$config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
       $g_layout->output($this->statusbar());
@@ -653,7 +653,7 @@
       //$g_layout->ui_bottom($g_layout->title($this->m_module, $this->m_type,"edit"));
 
       $g_layout->output('<br>');
-      if ($atklevel>0) // if atklevel is 0 or less, we are at the bottom of the session stack,
+      if (atkLevel()>0) // if atklevel is 0 or less, we are at the bottom of the session stack,
                        // which means that 'saveandclose' doesn't close anyway, so we leave out
                        // the 'saveandclose' button.
       {
@@ -775,7 +775,7 @@
 
     function searchPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
+      global $g_layout, $PHP_SELF, $config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'search'));
       $g_layout->output($this->statusbar());
@@ -784,7 +784,7 @@
 
       // usually, extended search is called from a page, and we go back to that page
       // when the user presses search.
-      if ($atklevel>0)
+      if (atkLevel()>0)
       {
         $g_layout->output(session_form(SESSION_BACK));
       }
@@ -818,7 +818,7 @@
      */
     function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="")
     {
-      global $config_atkroot, $g_sessionData, $atklevel;
+      global $config_atkroot, $g_sessionData;
 
       /* read metadata */
       $this->setAttribSizes();
@@ -832,7 +832,7 @@
         atkdebug("Restoring formdata from session");
         $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
-        $g_sessionData["default"]["stack"][$atklevel]["atkformdata"]="";
+        $g_sessionData["default"]["stack"][atkStackID()][atkLevel()]["atkformdata"]="";
       }
 
       $pk = $this->primaryKey($record);
@@ -967,7 +967,7 @@
      */
     function hideForm($mode="add",$record = NULL, $forceList="", $fieldprefix="")
     {
-      global $g_layout, $config_atkroot,$g_sessionData,$atklevel;
+      global $g_layout, $config_atkroot,$g_sessionData;
 
       /* suppress all */
       $suppressList = array();
@@ -1288,7 +1288,7 @@
      */
     function recordList($recordset, $actions, $sortable=true,$suppressList="", $sessionsave=false)
     {
-      global $g_layout, $PHP_SELF,$g_theme, $atklevel;
+      global $g_layout, $PHP_SELF,$g_theme;
       $output = $g_layout->data_top();
 
       $output.="<tr>";

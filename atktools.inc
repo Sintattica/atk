@@ -157,8 +157,7 @@
    */
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $atklevel;
-    if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
+    $currentlevel = atkLevel();    
 
     $newlevel = -1;
 
@@ -176,17 +175,17 @@
       }
       case SESSION_NESTED:
       {
-        $newlevel = $atklevel+1;
+        $newlevel = $currentlevel+1;
         break;
       }
       case SESSION_BACK:
       {
-        $newlevel = max(0,$atklevel-$levelskip);
+        $newlevel = max(0,$currentlevel-$levelskip);
         break;
       }
       default:
       {
-        $newlevel = $atklevel;
+        $newlevel = $currentlevel;
       }
     }
     return $newlevel;
@@ -207,7 +206,13 @@
 
     if ($newlevel!=0)
     {
-      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
+      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';      
+    }
+    $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'">';
+    
+    if ($sessionstatus!=SESSION_NEW)
+    {
+      $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
     }
 
     for ($i=0;$i<count($g_stickyurl);$i++)
@@ -243,15 +248,19 @@
     {
       $start = "?";
     }
+    
+    $url.=$start;
     // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
     {
-      $url.= $start."atklevel=".$newlevel."&".SID;
-    }
-    else
+      $url.= "atklevel=".$newlevel."&";
+    }    
+    $url.= "atkprevlevel=".atkLevel();
+    if ($sessionstatus!=SESSION_NEW)
     {
-      $url.= $start.SID;
+      $url.="&atkstackid=".atkStackID();
     }
+    $url.= "&".SID;
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
