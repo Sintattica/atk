@@ -53,6 +53,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.111  2001/09/27 13:27:41  ivo
+   * Fixed a bug in atkerror count.
+   *
    * Revision 4.110  2001/09/26 12:05:51  maurice
    * Code optimalisations for error handling
    *
@@ -2286,7 +2289,7 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "update");
-        if (count($record['atkerror']>0))
+        if (count($record['atkerror'])>0)
         {
           $this->m_action="edit";
           $this->editPage($record);
@@ -2601,7 +2604,7 @@
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
      */
     function validate(&$record, $mode)
-    {
+    {  
       global $g_db;
       atkdebug("validate()");
 
