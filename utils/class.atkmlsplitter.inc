@@ -6,9 +6,12 @@
 
   class atkmlsplitter
   {
-    function getLanguages()
+    function getLanguages(&$node)
     {
-      return strtoupper(atkconfig("language"));
+      if(method_exists($node,"getLanguages"))
+        return $node->getLanguages();
+      else
+        return strtoupper(atkconfig("language"));
     }
     
     /**
@@ -16,7 +19,7 @@
     */
     function updateMlRecords(&$node, $record,$mode="add")
     {
-      $languages = $this->getLanguages();
+      $languages = $this->getLanguages($node);
       
       foreach($node->m_primaryKey as $primkey)
       {
@@ -109,10 +112,10 @@
      {
        foreach($node->m_relations["atkonetoonerelation"] as $attribname=>$attribute)
        {
-         $p_attrib = &$this->m_attribList[$attribname];
+         $p_attrib = &$node->m_attribList[$attribname];
          if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
          {
-           $hasrelationwithmlnode[$attribname]=&$this->m_attriblist[$attribname];
+           $hasrelationwithmlnode[$attribname]=&$node->m_attriblist[$attribname];
          }
        }
      }
@@ -140,7 +143,5 @@
       }
       $recordset=$ml_record;
     }
-    
   }
-
 ?>
