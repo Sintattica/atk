@@ -30,7 +30,6 @@
    */
   class atkDummyAttribute extends atkAttribute
   {
-    var $m_name;
     var $m_text;
 
     /**
@@ -42,7 +41,6 @@
     {
       $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
       $this->atkAttribute($name,$flags); // base class constructor
-      $this->m_name = $name;
       $this->m_text = $text;
     }
 
