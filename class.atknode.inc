@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.98  2001/09/06 12:23:00  paul
+   * export2file function noted IE atachmentbug
+   *
    * Revision 4.97  2001/09/06 11:25:35  ivo
    * Made the popup for help pages a littlebit larger.
    *
@@ -1976,11 +1979,15 @@
 		*@param  $type  -- the type (cvs / excel)
 		*@param $compression -- Compression technique (bzip / gzip)
     * used by specialRecordist();
+    * BROWSER BUG:
+		* IE has problems with the use of attachment; needs atachment (someone at MS can't spell) or none.
+		* however ns under version 6 accepts this also.
+		* NS 6+ has problems with the absense of attachment; and the misspelling of attachment;
+		* at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
     */
     
    function export2File($data, $fileName, $type, $ext, $compression="")
    {
-
     if($compression=="bzip")
 		{
 		  $mime_type='application/x-bzip';
@@ -2002,7 +2009,7 @@
 		}
 
     header('Content-Type: '. $mime_type);
-    header('Content-Disposition: filename="'.$fileName.'.'.$ext.'"');
+    header('Content-Disposition:  filename="'.$fileName.'.'.$ext.'"');
     header('Pragma: no-cache');
     header('Expires: 0');
 		
