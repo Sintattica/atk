@@ -5,10 +5,6 @@
 
   // Specify the type of database. 
   // Currently supported are: "mysql", "oci8" and "pgsql".
-  // Please note that "pgsql" is in an early stage of development
-  // and does not support left join's at the moment, which means
-  // the ATK application may not display tables with relations 
-  // properly because it uses a normal join instead!
   $config_database="mysql";
 
   // The database configuration. Specify the hostname of the database server,
