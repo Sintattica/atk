@@ -2324,7 +2324,7 @@
         $multi = count($atkselector) > 1;
         $atkselector = '('. implode($atkselector, ') OR (').')';
       }
-      return text('confirm_delete'.($multi ? '_multi':''));
+      return text('confirm_delete'.($multi ? '_multi':''), $this->m_type);
     }
 
     // Small compare function for sorting attribs on order field
