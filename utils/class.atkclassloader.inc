@@ -43,13 +43,17 @@
      *                 returns the output of the invoked method. (be 
      *                 careful with methods that return false).
      */
-    function invokeFromString($str, $params)
+    function invokeFromString($str, $params=array())
     {
       list($class, $method) = explode("#", $str);
       if ($class!="" && $method!="")
       {
         $handler = &atknew($class);
-        return $handler->$method($params);
+        if (is_object($handler))
+        {
+          return $handler->$method($params);
+        }
+        return false;
       }
       else
       {        
