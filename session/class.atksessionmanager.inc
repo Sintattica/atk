@@ -301,8 +301,10 @@
       if (count($stack)>4) $res = "... | ";
       
       for ($i=max(0,count($stack)-4);$i<count($stack);$i++)
-      {
-        $title = text($g_layout->title(getNodeType($stack[$i]["atknodetype"]),$stack[$i]["atkaction"]));
+      {    
+        $mod = getNodeModule($stack[$i]["atknodetype"]);
+        $node = getNodeType($stack[$i]["atknodetype"]);
+        $title = text($g_layout->title($mod, $node, $stack[$i]["atkaction"]));
         if ($i<count($stack)-1) 
         {
           $res.='<a href="dispatch.php?atklevel='.$i.'">'.$title.'</a> | ';
