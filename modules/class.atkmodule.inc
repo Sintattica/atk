@@ -94,7 +94,7 @@
       if (!empty($g_overloaders[$node]))
       {
         atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-        return getNode($g_overloaders[$node], FALSE);
+        return newNode($g_overloaders[$node], FALSE);
       }
 
       /* no overloader */
