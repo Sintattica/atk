@@ -662,6 +662,7 @@
    */
   function stringfields($string)
   {
+    atkdebug("Warning: deprecated use of stringfields(). Use atkStringParser class instead");
     $tmp = "";
     $adding = false;
     for ($i=0;$i<strlen($string);$i++)
@@ -692,6 +693,7 @@
     */
   function stringparse($string, $data,$encode=false)
   {
+    atkdebug("Warning: deprecated use of stringfields(). Use atkStringParser class instead");
     $fields = stringfields($string);
     for ($i=0;$i<count($fields);$i++)
     {
