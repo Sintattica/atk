@@ -147,12 +147,12 @@
         atkdebug("Invoking '$methodname' override on node");
         // We pass the original object as first parameter to the override. 
         array_unshift($arguments, $this);
-        return call_user_func_array(array($this->m_node, $methodname), $arguments);
+        return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
       }
       else if (method_exists($this, $methodname)) 
       {
         atkdebug("Invoking '$methodname' on actionhandler for action ".$this->m_action);
-        return call_user_func_array(array($this, $methodname), $arguments);
+        return call_user_func_array(array(&$this, $methodname), $arguments);
       }
       atkerror("Undefined method '$methodname' in atkActionHandler");
     }
