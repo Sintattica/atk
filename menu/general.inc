@@ -1,6 +1,8 @@
 <?php
 
   include_once(atkconfig("atkroot")."atk/atkmenutools.inc");
+  
+  $atkmenutop = $_REQUEST["atkmenutop"];
 
   /* first add module menuitems */
   foreach ($g_modules as $modname => $modpath)
