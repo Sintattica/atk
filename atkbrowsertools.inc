@@ -533,12 +533,12 @@
        $this->platform = "Unix";
        $this->os = "HP UX";
       }
-      if(eregi('hp-ux',$this->ua) && ereg('10.',$this-UA))
+      if(eregi('hp-ux',$this->ua) && ereg('10.',$this->ua))
       { 
        $this->platform = "Unix";
        $this->os = "HP UX 10.x";
       }
-      elseif(eregi('hp-ux',$this->ua) && ereg('09.',$this-UA))
+      elseif(eregi('hp-ux',$this->ua) && ereg('09.',$this->ua))
       {  
        $this->platform = "Unix";
        $this->os = "HP UX 9.x";
