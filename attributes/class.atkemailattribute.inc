@@ -32,7 +32,6 @@
     {
       $this->$m_dnsSearch = $search;
       $this->atkAttribute($name, $flags, $size);
-
     }
 
     /**

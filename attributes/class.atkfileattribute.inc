@@ -179,7 +179,8 @@
           }
           else
           {
-            atkerror("File ($filename) kon niet worden opgeslagen");
+            atkdebug("tmp file ".$rec[$this->fieldName()]["tmpfile"]." dir ".$this->m_dir.$filename);
+            atkerror("File kon niet worden opgeslagen");
             return "";
           }
         }

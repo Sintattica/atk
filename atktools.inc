@@ -5,7 +5,6 @@
   * A collection of functions for general use in ATK
   *
   * @author Ivo Jansch <ivo@ibuildings.nl>
-  *
   * @version $Revision$
   *
   * $Id$
