@@ -260,7 +260,6 @@
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
-            atk_var_dump($current);
             if (($current['year']!="") && ($current['mon']!=""))
               $str_day = $this->formatDate($tmp_date, $str_format[$i]);
             else
