@@ -13,6 +13,11 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.18  2001/06/25 13:31:07  sandy
+    * - Added 2 new tree icons to the CVS. And fixed the atktreenode. Now it
+    * will also show a + (or -) symbol when the folder is at the end of a tree.
+    * Don't forget to copy the new icons to your own theme when you upgrade atk.
+    *
     * Revision 4.17  2001/06/19 11:42:35  ivo
     * New feature in treeview: leaf icon can now be userdefined.
     *
@@ -213,7 +218,9 @@
 	    $img_split	  = $icon_path."tree_split.gif"; 
 	    $img_plus     = $icon_path."tree_split_plus.gif";
 	    $img_minus    = $icon_path."tree_split_minus.gif";
-	    $img_end      = $icon_path."tree_end.gif"; 
+	    $img_end      = $icon_path."tree_end.gif";
+      $img_end_plus = $icon_path."tree_end_plus.gif";
+      $img_end_minus= $icon_path."tree_end_minus.gif";
 	    $img_leaf     = $icon_path."tree_leaf.gif"; 
 	    $img_spc      = $icon_path."tree_space.gif"; 
   
@@ -342,11 +349,11 @@
 			    /****************************************/ 
 			    /* corner at end of subtree or t-split  */ 
 			    /****************************************/          
-			    if ($this->m_tree[$cnt]["isleaf"]==1)  
+          if ($this->m_tree[$cnt]["isleaf"]==1 && $this->m_tree[$cnt+1]["level"]<$this->m_tree[$cnt]["level"])  
 			    { 
 			    	if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\"></td>\n"; 
-				    $levels[$this->m_tree[$cnt]["level"]-1]=0; 
-			    } 
+            $levels[$this->m_tree[$cnt]["level"]-1]=0; 
+			    }
 			    else 
 			    {
 				    if ($expand[$cnt]==0) 
@@ -366,7 +373,14 @@
 							    } 
 							    $i++; 
 						    } 
-						    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n"; 
+                if($this->m_tree[$cnt]["isleaf"]==1)
+                {
+						      if($cnt!=0) $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_end_plus."\" border=no>")."</td>\n";
+                }
+                else
+                {
+						      if($cnt!=0) $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n";
+                }
 					    }
 					    else
 					    {
@@ -389,15 +403,29 @@
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
-						    } 
-						    $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n"; 
+						    }
+                if($this->m_tree[$cnt]["isleaf"]==1)
+                {
+						      if($cnt!=0) $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_end_minus."\" border=no>")."</td>\n";
+                }
+                else
+                {
+						      if($cnt!=0) $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n";
+                }
 					    }
 					    else
 					    {
 					    	$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
 					    }
 				    }
-				    $levels[$this->m_tree[$cnt]["level"]-1]=1;     
+            if($this->m_tree[$cnt]["isleaf"]==1)
+            {
+              $levels[$this->m_tree[$cnt]["level"]-1]=0;
+            }
+            else
+            {
+				      $levels[$this->m_tree[$cnt]["level"]-1]=1;
+            }
 			    }  
        
 			    /********************************************/ 
