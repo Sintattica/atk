@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.17  2001/07/09 12:58:28  ivo
+   * Small fixes to pop3 authentication.
+   *
    * Revision 4.16  2001/07/03 15:25:14  ivo
    * authentication cookie is now encoded.
    *
@@ -370,20 +373,23 @@
      
     function log($level, $message)
     {
-     global $config_logging, $config_logfile, $REMOTE_ADDR;
+      global $config_logging, $config_logfile, $REMOTE_ADDR;
     
-     if ($config_logging>0 && $config_logging>=$level)
-     {
-       $fp = @fopen($config_logfile,"a");
-       if ($fp)
-       {
-         $logstamp = "[".date("d-m-Y H:i:s")."] [".$REMOTE_ADDR."] ".$this->m_user["name"]." | ";
-         @fwrite($fp, $logstamp.$message."\n");
-         @fclose($fp);
+      if ($config_logging>0 && $config_logging>=$level)
+      {
+        $fp = @fopen($config_logfile,"a");
+        if ($fp)
+        {
+          $logstamp = "[".date("d-m-Y H:i:s")."] [".$REMOTE_ADDR."] ".$this->m_user["name"]." | ";
+          @fwrite($fp, $logstamp.$message."\n");
+          @fclose($fp);
+        }
+        else
+        {
+          atkdebug("error opening logfile");
+        }
       }
-     }
-    }
-     
+    }     
   }
   
   /* 

@@ -107,26 +107,32 @@
   $config_auth_levelfield  = "entity";
   
   
-  // if you use "mail" as authentication, you have to fill in these
-  //parameters.
-  // mail login type
-  // "" = normal mail type
-  // "vmailmgr" = for virtual mail, it will add "@<domain>"
-  $config_authentication_mail_login_type = "vmailmgr";
-  // Mail suffix, only is mail login type = "vmailmgr"
-  $config_authentication_mail_suffix = "ibuildings.nl";
+  // if you use "pop3" or "imap" as authentication, you have to fill in 
+  // these parameters:
+  
+  // Set this to true if you have virtual mail domains.
+  // Atk will append '@' and the config_auth_mail_suffix
+  // to the login name.
+  // $config_auth_mail_virtual = false;
+  
+  // Mail suffix, if mail_virtual is set to true.
+  //$config_auth_mail_suffix = "ibuildings.nl";
+  
   // Mail server name
-  $config_authentication_mail_server = "localhost";
-  // Port of the mail server
-  $config_authentication_mail_port = 143;
+  // $config_auth_mail_server = "localhost";
+  
+  // Port of the mail server (default is 110 (pop3) but you can set it 
+  // to 143 (imap) or something else.
+  // $config_auth_mail_port = 143;
 
-  //if you use "ldap" as authentication, these parameters are nessesary
-  $config_authentication_ldap_host = "";
-  $config_authentication_ldap_context = "";
+  // if you use "ldap" as authentication, these parameters are nessesary
+  // $config_auth_ldap_host = "";
+  // $config_auth_ldap_context = "";
   
   // Atk can write security events to a logfile. 
   // There are several values you can choose for $config_logging.
   // 0 - No logging
+  // 1 - Log logins
   // 2 - Log actions ("User x performed action x on module y")
   $config_logging = 0;
   $config_logfile = "/tmp/atk-security.log";
