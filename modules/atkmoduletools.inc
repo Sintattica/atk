@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.24  2001/10/18 14:02:47  ivo
+ * Fixed a bug in the nodeFile function.
+ *
  * Revision 1.23  2001/10/10 08:28:44  ivo
  * Created 'overloader' feature for modules.
  *
@@ -172,7 +175,7 @@
   
   function nodeFile($node)
   {
-    global $g_modules;
+    global $g_modules, $config_atkroot;
     
     /* module and type */
     $module = getNodeModule($node);
