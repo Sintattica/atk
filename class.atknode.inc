@@ -1471,7 +1471,7 @@
      */
     function recordList($recordset, $actions, $sortable=true,$suppressList="")
     {
-      global $g_layout, $PHP_SELF,$g_theme;
+      global $g_layout, $PHP_SELF,$g_theme, $atklevel;
       $output = $g_layout->data_top();
 
       $output.="<tr>";
@@ -1668,8 +1668,12 @@
                 $action=str_replace('[pk]',rawurlencode($pk),$action);
               }
               $action=stringparse($action,$recordset[$i],true);
+              
+              $sessionsave = false; 
+              if ($atklevel>0) $sessionsave=true; // If we're at a higher atk level, we
+                                                  // need to remember form data.
 
-              $stractions.=href($action,text($action_name),SESSION_NESTED).'&nbsp;';
+              $stractions.=href($action,text($action_name),SESSION_NESTED, $sessionsave).'&nbsp;';
             }
           }
           $actionCol=$g_layout->ret_td($stractions);
