@@ -97,7 +97,7 @@ class atkPasswordAttribute extends atkAttribute
    */
   function value2db($rec)
   {
-    return addslashes($rec[$this->fieldName()]["hash"]);
+    return addslashes(md5($rec[$this->fieldName()]["new"]));
   }
 
   /**
@@ -123,9 +123,11 @@ class atkPasswordAttribute extends atkAttribute
     //if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
     if (strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
       return $rec[$this->fieldName()];
-    else return array("hash" => md5($rec[$this->fieldName()]["new"]), 
+    else return array("hash" =>$rec[$this->fieldName()]["hash"], 
                       "new"=>$rec[$this->fieldName()]["new"],
-                      "again"=>$rec[$this->fieldName()]["again"]);
+                      "again"=>$rec[$this->fieldName()]["again"],
+                      "current"=>$rec[$this->fieldname()]["current"]
+                      );
   }
 
   /**
@@ -145,10 +147,13 @@ class atkPasswordAttribute extends atkAttribute
 
 //    if ($action == 'save' && (strlen($value["new"]) == 0 || strlen($value["again"]) == 0))
 //      return text("password_invalid");
-      
-    if ($action == 'update' && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) &&
-        !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && md5($value["current"]) != $value["hash"])
-      triggerError($record, $this->fieldName(), 'error_password_incorrect');
+    atkdebug("Current : ".md5($value["current"])."(".$value["current"].")");
+    atkdebug("Original: ".$value["hash"]);
+    if ($action == 'update' 
+        && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) 
+        && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) 
+        && md5($value["current"]) != $value["hash"])
+          triggerError($record, $this->fieldName(), 'error_password_incorrect');
     
     //var_dump($value);
     if ($value["new"] != $value["again"])
