@@ -23,7 +23,7 @@
     $g_layout->output('
                    <noframes>
                     <body bgcolor="#CCCCCC" text="#000000">
-                      <p>Your browser doesnt support frames, but this is required to run <? echo $txt_app_title; ?></p>
+                      <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
                     </body>
                   </noframes>
                </frameset>
@@ -49,7 +49,7 @@
     $g_layout->output('
                    <noframes>
                     <body bgcolor="#CCCCCC" text="#000000">
-                      <p>Your browser doesnt support frames, but this is required to run <? echo $txt_app_title; ?></p>
+                      <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
                     </body>
                   </noframes>
                </frameset>
@@ -75,7 +75,7 @@
     $g_layout->output('
         <noframes>
           <body bgcolor="#CCCCCC" text="#000000">
-            <p>Your browser doesnt support frames, but this is required to run <? echo $txt_app_title; ?></p>
+            <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
           </body>
         </noframes>
       </frameset>
@@ -101,7 +101,7 @@
     $g_layout->output('
         <noframes>
           <body bgcolor="#CCCCCC" text="#000000">
-            <p>Your browser doesnt support frames, but this is required to run <? echo $txt_app_title; ?></p>
+            <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
           </body>
         </noframes>
       </frameset>

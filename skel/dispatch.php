@@ -1,4 +1,4 @@
-<?
+<?php
   // Setup the system
   $config_atkroot = "./";
   require_once($config_atkroot."atk/class.atknode.inc");

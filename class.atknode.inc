@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.31  2001/05/16 06:52:24  ivo
+   * removed php short-tags.
+   *
    * Revision 4.30  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -1049,7 +1052,7 @@
         {
           $overrides = $this->initial_values();
           while (list($varname,$value) = each($overrides))
-          {
+          {          
             if ($defaults[$varname]=="") $defaults[$varname]=$value;
           }
         }
@@ -1099,7 +1102,7 @@
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
       foreach (array_keys($this->m_attribList) as $attribname)
-      {
+      {      
         $p_attrib = &$this->m_attribList[$attribname];
         // fields that have not yet been initialised may be overriden in the url..
         
@@ -1107,7 +1110,6 @@
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
         }
-
         if (is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList))
         {
           $form.=$p_attrib->hide($defaults, $fieldprefix);
@@ -2411,7 +2413,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          $therecord[$attribname] = $p_attrib->db2value($dbrecord);          
+          $therecord[$attribname] = $p_attrib->db2value($dbrecord);                    
         }
                 
         $recordset[] = $therecord;

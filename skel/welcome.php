@@ -1,4 +1,4 @@
-<?
+<?php
   $config_atkroot = "./";
   include_once($config_atkroot."atk/class.atknode.inc");
 

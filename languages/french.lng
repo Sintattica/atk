@@ -1,4 +1,5 @@
-<?
+<?php
+
   // To keep language files up to date, all strings that are introduced in a new version
   // Have to be kept in a separate section, so we can easily see which strings need to be
   // translated when a new version comes out.
@@ -42,4 +43,5 @@
   $txt_select_none = "None";
   
   $txt_menu_main = $txt_menu;
+  
 ?>

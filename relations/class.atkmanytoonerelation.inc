@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/05/16 06:52:25  ivo
+   * removed php short-tags.
+   *
    * Revision 4.7  2001/05/11 12:25:52  ivo
    * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
    * appeared when the two were used in combination)
@@ -137,7 +140,7 @@
       $myrec = $rec[$this->fieldName()];
       if (is_array($myrec)) return $myrec;
       else
-      {        
+      {              
         // if the record is not an array, probably only the value of the primary key was loaded..
         $this->createDestination();        
         return array($this->m_destInstance->primaryKeyField() => $myrec);

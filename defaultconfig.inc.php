@@ -1,4 +1,4 @@
-<?
+<?php
 
   // set several default configuration options
   $config_databasehost = "localhost";
