@@ -2765,7 +2765,7 @@
       
       $formstart ='<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">';
       $formstart.=session_form();
-      $formstart.='<input type="hidden" name="atkaction" value="delete">';
+      $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
       $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';    
       
