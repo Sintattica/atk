@@ -5,8 +5,9 @@
   include "atk//atktools.inc";
   include "atk/languages/".$config_languagefile;
 
-  $m_options_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
-  $m_options_long  = Array(1 => "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
+  $m_months_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
+  $m_months_long  = Array(1 => "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
+  $m_weekdays     = Array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
 ?>
 function GetDays(month, year)
 {
@@ -28,7 +29,8 @@ function DateArray(date)
 
 function AdjustDate(frm, arr, format, min, max)
 {
-  set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_options_long[$i])."'".($i < 12 ? "," : ""); ?>);
+  set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_long[$i])."'".($i < 12 ? "," : ""); ?>);
+  set_weekdays = Array(<?php for ($i = 0; $i <= 6; $i++) echo "'".text($m_weekdays[$i])."'".($i < 6 ? "," : ""); ?>);
   set_day = 0;
 
   for (i = 0; i < format.length; i++)
@@ -36,11 +38,11 @@ function AdjustDate(frm, arr, format, min, max)
     switch(format.substr(i, 1))
     {
       case "F":
-        set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_options_long[$i])."'".($i < 12 ? "," : ""); ?>);
+        set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_long[$i])."'".($i < 12 ? "," : ""); ?>);
         break;
 
       case "M":
-        set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_options_short[$i])."'".($i < 12 ? "," : ""); ?>);
+        set_month = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_short[$i])."'".($i < 12 ? "," : ""); ?>);
         break;
 
       case "m":
@@ -86,23 +88,24 @@ function AdjustDate(frm, arr, format, min, max)
       date_new_arr[2] == date_min_arr[2] && date_min_arr[0] > 1 &&
       date_max_arr[0] < GetDays(date_new_arr[1], date_new_arr[2]))
       day_i = Array(date_min_arr[0], date_max_arr[0]);
+      
     else if(date_new_arr[1] == date_min_arr[1] && date_new_arr[2] == date_min_arr[2] &&
       date_min_arr[0] > 1) day_i = Array(date_min_arr[0], GetDays(date_new_arr[1], date_new_arr[2]));
+      
     else if(date_new_arr[1] == date_max_arr[1] && date_new_arr[2] == date_max_arr[2] &&
       date_max_arr[0] < GetDays(date_new_arr[1], date_new_arr[2])) day_i = Array(1, date_max_arr[0]);
+      
     else day_i = Array(1, GetDays(date_new_arr[1], date_new_arr[2]));
 
     for(i = day.options.length; i >= 0; i--) day.options[i] = null;    
     for(i = day_i[0]; i <= day_i[1]; i++) 
     {      
-      var dayname = new String(i);
-      if (i<10) 
-      {
-       // alert("k");
-        dayname = "0"+dayname;
-      }      
-      day.options[i-day_i[0]] = new Option(dayname, i);
-      //day.options[i-day_i[0]] = new Option(i,i);
+      var daynr = new String(i);
+      if (i<10 && set_day) daynr = "0"+daynr;
+      datestr = date_new_arr[1] + "/" + i + "/" + date_new_arr[2];
+      tempdate = new Date(datestr);
+      daystr = set_weekdays[tempdate.getDay()] + " " + daynr;
+      day.options[i-day_i[0]] = new Option(daystr, i);
     }
 
     for(i = 0; i < day.options.length; i++)
