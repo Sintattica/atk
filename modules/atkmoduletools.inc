@@ -100,7 +100,7 @@
   
   function nodeFile($node)
   {
-    global $g_modules, $config_atkroot, $config_classroot;
+    global $g_modules, $config_atkroot, $config_classroot, $config_module_path;
     
     /* module and type */
     $module = getNodeModule($node);
@@ -121,7 +121,8 @@
       }      
       else
       {
-        atkerror("Couldn't find node '$node' in module '$module'");        
+        atkdebug("Couldn't find node '$node' in module '$module'. Trying default module path.");        
+        $file = $config_module_path."/".$module."/class.$type.inc";
       }
     }
     return $file;
@@ -141,6 +142,7 @@
       atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
       // include original file, because overloaders extend the original class.
       $file = nodeFile($node);
+    
       /* check for file */
       if (!file_exists($file))
       {  
