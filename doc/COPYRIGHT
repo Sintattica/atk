@@ -37,7 +37,7 @@ made available under the Open Group Test Suite License. The full version of
 SimpleTest including full documentation can be found on its homepage. Included 
 with permission.
 
-ATK uses the fckEditor (http://www.fckeditor.net) for wysiwyg editing.
+ATK uses the FCKEditor (http://www.fckeditor.net) for wysiwyg editing.
 fckEditor is Copyright (c)2003-2005 Frederico Caldeira Knabben and made 
 available under the LGPL license. The full version of fckEditor including full
 documentation can be found on its homepage.
