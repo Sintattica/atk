@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.5  2001/05/11 09:03:12  ivo
+  * fixed an internetexplorer single/doublequote javascript issue.
+  *
   * Revision 4.4  2001/05/10 08:31:00  ivo
   * Major upgrade. Changes:
   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -263,14 +266,18 @@
   {    
     if ($saveform)
     {
-      $str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
+      //$str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
+      $str = 'javascript:atkSubmit("'.session_url($url,$sessionstatus).'")';
     }
     else
     {
       $str = session_url($url,$sessionstatus);
     }
-       
-    return '<a href="'.$str.'" '.$extraprops.'>'.$name.'</a>';
+     
+    // note, we use single quotes instead of doublequotes in the href='', 
+    // because we otherwise have a problem with internet explorers buggy
+    // javascript parser.. 
+    return "<a href='".$str."' ".$extraprops.">".$name."</a>";
   }
 
   
@@ -396,14 +403,13 @@
   /**
     * function atkDataDecode
     *
-    * performs stripslashes on all vars
-    *
-    * and translates: something_AMDAE_other[] into something[][other]
+    * performs stripslashes on all vars and translates: 
+    *                 something_AMDAE_other[] into something[][other]
     *                 something_AE_other into something[other]
     *                 (and a_AE_b_AE_c into a[b][c] and so on...
     */
   function atkDataDecode(&$vars)
-  {  
+  {      
     foreach (array_keys($vars) as $varname)
     {
       $value = &$vars[$varname];
