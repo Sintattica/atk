@@ -33,50 +33,53 @@
     if ($a["order"] == $b["order"]) return 0;
     return ($a["order"] < $b["order"]) ? -1 : 1;
   }
-  usort($g_menu[$atkmenutop],"menu_cmp");   
-
-  for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
+  
+  if (is_array($g_menu[$atkmenutop]))
   {
-    if ($i==count($g_menu[$atkmenutop])-1)
+    usort($g_menu[$atkmenutop],"menu_cmp");   
+  
+    for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
     {
-      $delimiter = "";
-    }
-    else
-    {
-      $delimiter = $config_menu_delimiter;
-    }
-    $name = $g_menu[$atkmenutop][$i]["name"];
-    $url = $g_menu[$atkmenutop][$i]["url"];
-    $enable = $g_menu[$atkmenutop][$i]["enable"];
-    
-    if (is_array($enable))
-    {
-      $enabled = false;
-      for ($j=0;$j<(count($enable)/2);$j++)
+      if ($i==count($g_menu[$atkmenutop])-1)
       {
-        $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
+        $delimiter = "";
       }
-      $enable = $enabled;
-    }
-
-    /* delimiter ? */
-    if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
-    
-    /* submenu ? */
-    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$delimiter;
-    else if (empty($url) && !$enable)
-    {
-      //$menu .=text("menu_$name").$config_menu_delimiter;
-    }
+      else
+      {
+        $delimiter = $config_menu_delimiter;
+      }
+      $name = $g_menu[$atkmenutop][$i]["name"];
+      $url = $g_menu[$atkmenutop][$i]["url"];
+      $enable = $g_menu[$atkmenutop][$i]["enable"];
       
-    /* normal menu item */
-    else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
-    else 
-    {
-      //$menu .= text("menu_$name").$config_menu_delimiter;    
+      if (is_array($enable))
+      {
+        $enabled = false;
+        for ($j=0;$j<(count($enable)/2);$j++)
+        {
+          $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
+        }
+        $enable = $enabled;
+      }
+  
+      /* delimiter ? */
+      if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
+      
+      /* submenu ? */
+      else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$delimiter;
+      else if (empty($url) && !$enable)
+      {
+        //$menu .=text("menu_$name").$config_menu_delimiter;
+      }
+        
+      /* normal menu item */
+      else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
+      else 
+      {
+        //$menu .= text("menu_$name").$config_menu_delimiter;    
+      }
     }
   }
-  
   /* previous */
   if ($atkmenutop != "main")
   {

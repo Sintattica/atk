@@ -116,6 +116,7 @@
   error_reporting(E_ALL);
 
   require_once($config_atkroot."atk/class.layout.inc");
+  require_once($config_atkroot."atk/utils/adodb-time.inc.php");
   require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
   require_once($config_atkroot."atk/db/class.atkquery.inc");
   require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
@@ -2370,7 +2371,7 @@
       $g_layout->initGui();
 
       if (is_array($atkselector))
-        $atkselector_str = '('. implode($atkselector, ') OR (').')';
+        $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
       else $atkselector_str = $atkselector;
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
@@ -3350,11 +3351,16 @@
         }
       }
 
-      if ($order!="") $query->addOrderBy($order);
-      $querystring = $query->buildSelect();
+      if ($order!="") $query->addOrderBy($order);      
 
-      if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
-      else $dbrecords = $g_db->getrows($querystring);
+      if (is_array($limit) && count($limit) == 2)
+      {
+        $query->setLimit($limit["offset"], $limit["limit"]);
+      }      
+      
+      $querystring = $query->buildSelect();   
+      
+      $dbrecords = $g_db->getrows($querystring);
 
 //      $this->setOrgKeyValue($dbrecords[0]);
 

@@ -9,8 +9,10 @@
  * $Id$
  *
  */
+ 
+  require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
 
-  class atkoci9query extends atkquery
+  class atkoci9query extends atkoci8query
   {
 
     var $m_bind_vars=array();  // array containing name and value of fields which 
@@ -28,7 +30,7 @@
     *               done without quotes, e.d. SET number = 4.
     */
     function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $mode="", $fieldType="")
-    {
+    {    
       //$this->m_fields[] = strtr($name,"_",".");
       if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;

@@ -70,6 +70,12 @@
      * Do we need to perform a DISTINCT query?
      */
     var $m_distinct=false;    
+    
+    /**
+      * Do we need to fetch only a specific set of records?
+      */
+    var $m_offset=0;
+    var $m_limit=0;
 
     /**
     * Array with generated aliasses
@@ -203,6 +209,12 @@
     {
       $this->m_distinct = $distinct;
     }
+    
+    function setLimit($offset, $limit)
+    {
+      $this->m_offset = $offset;
+      $this->m_limit = $limit;
+    }
 
     /**
      * Builds the SQL Select query
@@ -258,11 +270,34 @@
 
       if (count($this->m_orderbys)>0)
       {
-        $result.= " ORDER BY ".implode(", ",$this->m_orderbys);
+        $this->_addOrderBy($result);
       }          
+      
+      if ($this->m_limit>0)
+      {
+        $this->_addLimiter($result);
+      }
       
       return $result;
     }
+    
+    /**
+      * Add limiting clauses to the query.
+      * Default implementation: no limit supported. Derived classes should implement this.
+      */
+    function _addLimiter(&$query)
+    {
+      // not supported..
+    }
+    
+    function _addOrderBy(&$query)
+    {
+      if (count($this->m_orderbys)>0)
+      {
+        $query.= " ORDER BY ".implode(", ",$this->m_orderbys);
+      }
+    }
+    
 
     /**
      * Builds the SQL Select COUNT(*) query. This is different from select,

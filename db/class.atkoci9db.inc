@@ -224,8 +224,8 @@
       {
         $result[$i]["table"]  = $this->m_record["table_name"];
         $result[$i]["name"]   = strtolower($this->m_record["column_name"]);
-        $result[$i]["type"]   = strtolower($this->m_record["data_type"]);
-        $result[$i]["len"]    = $this->m_record["data_length"];
+        $result[$i]["type"]   = $this->getGenericType($this->m_record["data_type"]);
+        $result[$i]["len"]    = $this->m_record["data_length"];                
 
         if ($this->m_record["index_name"]) $result[$i]["flags"] = "INDEX ";
         if ($this->m_record["nullable"] == "N") $result[$i]["flags"] .= "NOT NULL";
@@ -240,6 +240,7 @@
           $result["num_fields"] = $i;
         } 
       }
+      
 
       /* return */
       return $result;

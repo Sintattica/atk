@@ -79,11 +79,11 @@
     {
       if ($mode == "add" || $mode == "update")
       {
-        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, "TEXT");         
+        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());         
       }
       else
       {
-        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, "TEXT");
+        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES), $mode, $this->dbFieldType());
       }
     }
     
@@ -115,7 +115,12 @@
 
     function dbFieldType()
     {
-      return "text";
+      return $this->m_dbfieldtype;
+    }
+    
+    function fetchMeta($metadata)
+    {
+      $this->m_dbfieldtype = $metadata[$this->fieldName()]["type"];
     }
   }
 ?>

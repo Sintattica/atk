@@ -62,5 +62,30 @@
     {
       return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
     }    
+    
+    /**
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     * @param $record Array with values
+     * @param $fieldprefix The attribute must use this to prefix its form elements (used for
+     *                     embedded forms)
+     * @return Piece of htmlcode
+     */
+    function edit($record="", $fieldprefix="")
+    {
+      $maxsize = $this->m_maxsize;
+      if ($this->m_decimals>0)
+      {
+        $maxsize += ($this->m_decimals+1); // make room for the number of decimals
+      }
+    
+      $result = '<input type="text" name="'.$fieldprefix.$this->formName().
+                '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
+                ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').'>';
+
+      return $result;
+    }
+      
   }
 ?>

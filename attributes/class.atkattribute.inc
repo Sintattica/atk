@@ -487,8 +487,7 @@
       
       // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
       // set accordingly. Currently the metadata contains database specific types, so this
-      // feature is not yet implemented, until metadata contains generic field types.
-
+      // feature is not yet implemented, until metadata contains generic field types.      
     }
 
     /**

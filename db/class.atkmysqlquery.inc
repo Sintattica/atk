@@ -41,6 +41,14 @@
         return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
       }
     }
+    
+    function _addLimiter(&$query)
+    {
+      if ($this->m_offset >= 0 && $this->m_limit > 0)
+      {
+        $query .= " LIMIT ".$this->m_offset.", ".$this->m_limit;  
+      }      
+    }
   }
 
 ?>

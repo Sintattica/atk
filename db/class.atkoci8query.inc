@@ -23,13 +23,22 @@
     */ 
     
     function addJoin($table, $alias, $condition, $outer)
-    {
-      // $this->m_joins[]= ", ".$table." ".$alias." WHERE ".$condition." ";
+    {      
       if ($outer) $condition.=" (+)";
       $this->addtable($table,$alias);
       $this->addcondition($condition);
     }
-
+    
+    function _addLimiter(&$query)
+    {
+      /* limit? */
+      if ($this->m_offset >= 0 && $this->m_limit > 0)
+      {
+        /* row id's start at 1! */
+	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (".
+            $query.") XX) YY  WHERE YY.rid >= ".($this->m_offset+1)." AND YY.rid <= ".($this->m_offset + $this->m_limit);
+      }	      
+    }
   }
 
 ?>

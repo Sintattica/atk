@@ -29,6 +29,14 @@
       }
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
     }
+    
+    function _addLimiter(&$query)
+    {
+      if ($this->m_offset >= 0 && $this->m_limit > 0)
+      {
+        $query .= " LIMIT ".$this->m_limit." OFFSET ".$this->m_offset;
+      }      
+    }
   }
 
 ?>
