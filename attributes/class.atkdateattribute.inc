@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/23 14:20:12  peter
+   * Day now includes day-of-the-week name
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -76,9 +79,12 @@
     var $date_format_view;
 
     // english month names short and long, will be overruled by other languages
-    var $m_options_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
-    var $m_options_long  = Array(1 => "january", "february", "march", "april", "may", "june",
-                                 "july", "august", "september", "october", "november", "december");
+    var $m_months_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
+    var $m_months_long  = Array(1 => "january", "february", "march", "april", "may", "june",
+                                     "july", "august", "september", "october", "november", "december");
+                                     
+    // english day-of-the-week names, will be overruled by other languages
+    var $m_weekdays     = Array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
     
     /**
      * Format date according to a format string
@@ -95,7 +101,7 @@
       $replace = array(substr($year, 2, 2), $year, (int)$day, $day, (int)$month, $month, "MONTH_SHORT", "MONTH_LONG");
       $date = preg_replace($pattern, $replace, $format);
       $date = preg_replace(array("/MONTH_SHORT/", "/MONTH_LONG/"),
-                           array(text($this->m_options_short[(int)$month]), text($this->m_options_long[(int)$month])),
+                           array(text($this->m_months_short[(int)$month]), text($this->m_months_long[(int)$month])),
                            $date);
       return $date;
     }
@@ -298,7 +304,11 @@
               $result .= '<select name="'.$this->fieldName().'[day]" onChange="'.$jscript.'">';
               $days = $this->getDays($set_month, $set_year, $min, $max);
               while (list ($key, $j) = each ($days))
-                $result .= '<option value="'.sprintf("%02d",$j).'" '.($j == $set_day ? "selected" : "").'>'.($format[$i] == "d" && $j < 10 ? "0" : "").$j.'</option>';
+              {
+                $dayofw = date("w", mktime(0, 0, 0, $set_month, $set_day, $set_year));
+                $daystr = $this->m_weekdays[$dayofw] . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
+                $result .= '<option value="'.$j.'" '.($j == $set_day ? "selected" : "").'>'.$daystr.'</option>';
+              }
               $result .= '</select>';
             }
 
@@ -349,7 +359,11 @@
             $result .= '<select name="'.$this->fieldName().'[day]" onChange="'.$jscript.'">';
             $days = $this->getDays($set_month, $set_year, $min, $max);
             while (list ($key, $j) = each ($days))
-              $result .= '<option value="'.sprintf("%02d",$j).'" '.($j == $set_day ? "selected" : "").'>'.($format[$i] == "d" && $j < 10 ? "0" : "").$j.'</option>';
+            {
+              $dayofw = date("w", mktime(0, 0, 0, $set_month, $j, $set_year));
+              $daystr = $this->m_weekdays[$dayofw] . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
+              $result .= '<option value="'.$j.'" '.($j == $set_day ? "selected" : "").'>'.$daystr.'</option>';
+            }
             $result .= '</select>';
           }
 
