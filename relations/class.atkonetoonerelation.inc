@@ -172,7 +172,6 @@
        // Foreign key is in the source node.        
        $condition = $rel->m_table.'.'.$rel->m_primaryKey[0]."=".$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
       }
-      echo $condition;
       return $rel->deleteDb($condition);
     }
 
