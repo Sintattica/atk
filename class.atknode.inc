@@ -1386,8 +1386,9 @@
 
       /* get the heading and search columns */
       if (!hasFlag($flags, RL_NO_SEARCH)) $this->setAttribSizes();
-      foreach (array_keys($this->m_attribList) as $name)
+      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
       {
+        $name = $this->m_attribIndexList[$r]["name"];
         if (!in_array($name, $suppress))
         {
           $attribute = &$this->m_attribList[$name];
@@ -1428,8 +1429,9 @@
         }
 
         /* columns */
-        foreach (array_keys($this->m_attribList) as $name)
+        for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
         {
+          $name = $this->m_attribIndexList[$r]["name"];
           if (!in_array($name, $suppress))
           {
             $attribute = &$this->m_attribList[$name];
