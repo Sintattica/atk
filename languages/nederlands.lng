@@ -40,14 +40,16 @@
   $txt_error_obligatoryfield = "Dit veld is verplicht";
   $txt_error_formdataerror = "Opslaan mislukt om de volgende reden: ";
   $txt_error_uniquefield = "De waarde voor dit veld moet uniek zijn";
+  $txt_error_tab = "zie";
+
   $txt_confirm_delete = "Weet je zeker dat je dit item wil verwijderen?";
   $txt_title_delete = "Bevestig verwijderen";
 
   $txt_select_none = "Geen";
-  
+
   $txt_clickheretoadd_prefix = "Klik hier om een nieuw ";
   $txt_clickheretoadd_postfix = " toe te voegen.";
-  
+
   // Teksten voor file attribute
   $txt_no_valid_directory = "Geen geldige directory opgegeven";
   $txt_remove_current_file = "Verwijder huidige bestand";
@@ -71,9 +73,9 @@
   $txt_language_de = "Duits";
   $txt_language_en = "Engels";
   $txt_language_fr = "Frans";
-  
+
   $txt_until = "t/m";
-    
+
   $txt_january = "januari";
   $txt_february = "februari";
   $txt_march = "maart";
@@ -86,7 +88,7 @@
   $txt_october = "oktober";
   $txt_november = "november";
   $txt_december = "december";
-  
+
   $txt_fri = "Vri";
   $txt_sat = "Zat";
   $txt_sun = "Zon";
@@ -102,21 +104,21 @@
   $txt_tuesday = "dinsdag";
   $txt_wednesday = "woensdag";
   $txt_thursday = "donderdag";
-  
+
   $txt_menu_main = "Hoofdmenu";
   $txt_back_to = "Terug naar";
-  
+
   $txt_permission_denied = "Sorry, u heeft geen toestemming om deze aktie uit te voeren";
-  
+
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-1";
-    
+
   $txt_field_obligatory = "Dit veld is verplicht";
-  
+
   $txt_help = "Help";
-  
+
   $txt_search_extended = "Uitgebreid";
-  
+
   $txt_search_exact = "Zoek naar een exact resultaat";
   $txt_search_substring = "Zoek resultaten waarin het gegeven woord voorkomt";
   $txt_search_wildcard = "Zoek met 'wildcards' (*)";
@@ -129,11 +131,11 @@
   $txt_search_and = "Alle criteria voldoen";
   $txt_search_or = "Een van de criteria voldoet";
   $txt_search_mode = "Zoekmanier";
-  
+
   $txt_login_failed = "Inloggen mislukt";
   $txt_auth_no_server = "Geen server opgegeven. Geen authenticatie mogelijk (raadpleeg uw systeembeheerder).";
-  $txt_auth_unable_to_connect = "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).";  
-  
+  $txt_auth_unable_to_connect = "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).";
+
   $txt_error_primarykey_exists = "Er bestaat al een record met deze sleutel";
   $txt_error_invalid_email = "Ongeldig e-mail adres";
   $txt_error_unkown_domain = "Onbekend domein";
@@ -141,18 +143,18 @@
 
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Kies een kleur";
-  
+
   $txt_check_all = "Alles selecteren";
   $txt_check_none = "Niets selecteren";
   $txt_invert_selection = "Selectie omkeren";
-  
+
   // Strings for atkFileEditor
   $txt_file_exists = "Er bestaat al een bestand met deze naam";
   $txt_filename_invalid = "Deze bestandsnaam is niet geldig";
   $txt_filename = "Bestandsnaam";
   $txt_filecontent = "Inhoud";
-  
+
   $txt_title_session_expired = "Sessie verlopen";
   $txt_explain_session_expired = "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw in te loggen.";
-  
+
 ?>

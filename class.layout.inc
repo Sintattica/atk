@@ -7,35 +7,35 @@
   *
   * @version $Revision$
   *
-  * $Id$  
+  * $Id$
   *
   */
-  
+
   // Global debug and error msg
   $g_debug_msg = array();
   $g_error_msg = array();
 
   class layout
-  {       
-    /* 
+  {
+    /*
      * Content
      */
     var $m_content = "";
-  
+
     /**
      * Raw
      */
     var $m_raw = "";
-   
+
     var $m_submitscripts = array();
-    var $m_scripts = array();   
+    var $m_scripts = array();
     var $m_stylesheets = array();
-    
+
     /**
      * The directory where the current template files are located..
      */
     var $m_tpldir = "";
-    
+
     var $m_wrotehead = false;
     var $m_wrotebody = false;
 
@@ -51,20 +51,20 @@
       $this->import_layout();
       $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
     }
-	
+
     /*
      * Import_layout
      * Imports the layout file with all the items.
      */
     function import_layout()
-    {        
+    {
       global $g_theme;
       include_once($this->m_tpldir."layout.inc");
     }
 
     /**
      * Output text to page
-     * @param $txt Text 
+     * @param $txt Text
      */
     function output($txt)
     {
@@ -73,7 +73,7 @@
 
     /**
      * Output rawtext to page
-     * @param $txt Text 
+     * @param $txt Text
      */
     function rawoutput($txt)
     {
@@ -81,8 +81,8 @@
     }
 
     /**
-     * Output 
-     * @param $txt Text 
+     * Output
+     * @param $txt Text
      */
     function outputFlush()
     {
@@ -94,23 +94,23 @@
       else
       {
         // echo some headers first..
-  
+
         // Since atk pages are always dynamic, we have to prevent that some browsers cache
         // the pages
         header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
         header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
         header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
         header ("Pragma: no-cache");                          // HTTP/1.0
-  
+
         // Set the content type.
         header ("Content-Type: text/html; charset=".text('charset')); // The character set (defined
                                                                       // in the language files
-                                                                
+
         echo $this->m_content;
         if (count($g_error_msg)>0)
         {
           echo '<br><font color="#FF0000">error: '.implode("<br>\nerror: ",$g_error_msg).'</font>';
-          // also send a mail report with errormessages.. 
+          // also send a mail report with errormessages..
           mailreport();
         }
         if ($GLOBALS['config_debug'])
@@ -119,9 +119,9 @@
         }
       }
     }
-    
-    /** 
-     * Generate a complete page.. 
+
+    /**
+     * Generate a complete page..
      */
     function page($title="")
     {
@@ -130,13 +130,13 @@
       $m_page.= $this->ret_body();
       $m_page.= $this->m_content;
       $m_page.= "\n</body>\n</html>\n";
-      
+
       // hele pagina terug in de output schrijven..
       $this->m_content = $m_page;
     }
 
     /**
-     * Error report 
+     * Error report
      * @param $title Title of the window
      * @param $txt Error message
      */
@@ -149,9 +149,9 @@
       $this->ui_bottom();
     }
 
-    
+
     /**
-     * Returns the maxInputSize 
+     * Returns the maxInputSize
      * @return 60
      */
     function maxInputSize()
@@ -162,7 +162,7 @@
     }
 
     /**
-     * Returns the searchSize 
+     * Returns the searchSize
      * @return 20
      */
     function searchSize()
@@ -178,7 +178,7 @@
     {
       if (!in_array($file, $this->m_scripts)) $this->m_scripts[] = $file;
     }
-    
+
     function register_submitscript($code)
     {
       if (!in_array($code, $this->m_submitscripts)) $this->m_submitscripts[] = $code;
@@ -192,18 +192,18 @@
     {
       if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
     }
-    
-    /** 
+
+    /**
      * This function returns a suitable title text for an action.
      * Example: echo $g_layout->title("employee", "edit"); might return:
      *          'Edit an existing employee'
      */
     function title($module, $nodetype, $action)
-    {  
+    {
       // first look for specific text.
       $key = 'title_'.$module.'_'.$nodetype.'_'.$action;
       if ($GLOBALS["txt_".$key]!="")
-      {    
+      {
         return text($key);
       }
       else
@@ -222,9 +222,9 @@
           }
           else
           {
-            // if no specific text available for this node, 
-            // generate a generic title              
-            return text($nodetype)." - ".text($action);    
+            // if no specific text available for this node,
+            // generate a generic title
+            return text($nodetype)." - ".text($action);
           }
         }
       }
@@ -242,23 +242,23 @@
         $this->m_wrotehead = true;
       }
     }
-    
+
     /**
      * Return a HTML header
      * @param $title Titel van het window
      */
     function ret_head($title)
-    {     
+    {
       $res = "<head>\n  <title>$title</title>\n";
       global $config_atkroot;
       // $Name$ is the CVS tag.
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <meta name="atkversion" value="'.$version.'">'."\n";
-      
-      for ($i = 0; $i < count($this->m_scripts); $i++) 
+
+      for ($i = 0; $i < count($this->m_scripts); $i++)
         $res.='  <script language="javascript" src="'.$this->m_scripts[$i].'"></script>'."\n";
-              
+
       $res.="<script language=\"javascript\">\n
                function globalSubmit(form)
                {
@@ -267,18 +267,18 @@
       {
         $res.="retval = ".$this->m_submitscripts[$i]."\n";
         $res.="if (retval!=true) return false;\n";
-      }      
+      }
       $res.="return retval;
                }
              </script>\n";
-      
-      for ($i = 0; $i < count($this->m_stylesheets); $i++) 
+
+      for ($i = 0; $i < count($this->m_stylesheets); $i++)
         $res.='  <link href="'.$config_atkroot.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
-      
+
       $res.="</head>\n";
       return $res;
     }
-   
+
     /**
      * Output a HTML body
      * @param $extraops Not used
@@ -291,7 +291,7 @@
         $this->m_wrotebody = true;
       }
     }
-    
+
     /**
      * Return a HTML body
      * @param $extraops Not used
@@ -300,18 +300,18 @@
     {
       return "<body ".$extraprops.">\n";
     }
-    
+
 
     /**
      * Create the UI top
      * @param $title Title of the UI top
      */
     function ui_top($heading)
-    {    
-      $template = $this->getTemplate("block_top");      
-      
+    {
+      $template = $this->getTemplate("block_top");
+
       $template=str_replace('[HEADER]',$heading,$template);
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);      
+      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
       $this->output($template);
     }
 
@@ -319,19 +319,56 @@
      * Create UI Bottom
      */
     function ui_bottom()
-    {     
-      $template=$this->getTemplate("block_bottom");      
+    {
+      $template=$this->getTemplate("block_bottom");
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
       $this->output($template);
     }
-    
+
+    /**
+     * Create the tab panel top
+     * @param $tabs the tab panel tabs
+     */
+    function tabs_top($tabs)
+    {
+      $template = $this->getTemplate("tabs_top");
+      $template = str_replace('[TABS]', $tabs, $template);
+      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      $this->output($template);
+    }
+
+    /**
+     * Create the tab panel bottom
+     */
+    function tabs_bottom()
+    {
+      $template = $this->getTemplate("tabs_bottom");
+      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      $this->output($template);
+    }
+
+    /**
+     * Creates a tab HTML string
+     * @param $title the tab title
+     * @param $link the tab link
+     * @param $selected is this tab selected?
+     */
+    function ret_tab($title, $link, $selected=false)
+    {
+      $template = $this->getTemplate("tab_".($selected ? "selected" : "normal"));
+      $template = str_replace('[TITLE]', $title, $template);
+      $template = str_replace('[LINK]', $link, $template);
+      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      return $template;
+    }
+
     function data_top()
     {
       global $g_theme;
-      $template=$this->getTemplate("data_top");      
+      $template=$this->getTemplate("data_top");
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
       if (!isset($g_theme["border"]))
-      {  
+      {
         if ($template=="") $template='<table border="1" cellspacing="0" cellpadding="3">';
       }
       else
@@ -340,12 +377,12 @@
       }
       return $template;
     }
-       
+
     function data_bottom()
-    {      
+    {
       global $g_theme;
-      $template=$this->getTemplate("data_bottom");      
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);      
+      $template=$this->getTemplate("data_bottom");
+      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
       if (!isset($g_theme["border"]))
       {
         if ($template=="") $template='</table>';
@@ -357,7 +394,7 @@
 
       return $template;
     }
- 
+
     /**
      * Create simple table
      * @param $border border of the table
@@ -391,7 +428,7 @@
      */
     function td($contents="", $extraprops="")
     {
-      $this->output($this->ret_td($contents, $extraprops));      
+      $this->output($this->ret_td($contents, $extraprops));
     }
 
     /**
@@ -414,25 +451,25 @@
       $output.="</td>\n";
       return $output;
     }
-    
+
     /**
-     * Create TR 
+     * Create TR
      * @param $contents contents for the TD
      * @param $extraops Extra options for the TD (Width, Height)
      * @return HTML Code with TD + Content
      */
     function tr_top($alt=false, $extraprops="")
     {
-      return '<tr class="row'.($alt?"2":"1").'" '.$extraprops.'>';            
+      return '<tr class="row'.($alt?"2":"1").'" '.$extraprops.'>';
     }
-    
+
     function tr_bottom()
     {
       return '</tr>';
     }
-    
+
     /**
-     * Create TD header 
+     * Create TD header
      * @param $contents contents for the TD header
      * @param $extraops Extra options for the TD header (Width, Height)
      */
@@ -471,25 +508,25 @@
       $output.="</td>\n";
       return $output;
     }
-       
+
     function getTemplate($templatefile)
-    {      
+    {
       if (file_exists($this->m_tpldir.$templatefile.".tmpl"))
       {
         return implode(file($this->m_tpldir.$templatefile.".tmpl"), "");
       }
       return "";
     }
-    
+
     function initTheme()
     {
       global $g_theme;
-                  
+
       // First check local theme directory
       if(file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/layout.inc") &&
          file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_top.tmpl") &&
          file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_bottom.tmpl"))
-      {        
+      {
         $this->m_tpldir = atkconfig("atkroot")."themes/".$g_theme["Name"]."/";
       }
       // else check atk themes directory
@@ -500,17 +537,17 @@
         $this->m_tpldir = atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/";
       }
       // else fallback to default.
-      else      
+      else
       {
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
         $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
-      }    
+      }
     }
-    
+
     function getImgSrc($img)
     {
       global $config_atkroot, $g_theme;
-      $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";  
+      $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";
       $defaultDir = $config_atkroot."atk/themes/default/images/";
       if (file_exists($themeDir.$img))
       {
@@ -522,11 +559,11 @@
       }
     }
   }
-  
-   // The one and only layout object   
+
+   // The one and only layout object
   if (empty($g_layout))
-  {    
+  {
     $g_layout = new layout();
-  }  
-    
+  }
+
 ?>
