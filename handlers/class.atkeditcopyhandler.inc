@@ -4,7 +4,6 @@
   {
     function action_editcopy()
     {
-      global $g_db;
       atkdebug("atknode::action_editcopy()");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","copy");
 
@@ -12,13 +11,13 @@
       {
         if(!$this->m_node->copyDb($recordset[0]))
         {
-          $g_db->rollback();
-          $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $g_db->getErrorMsg());
+          $this->m_node->m_db->rollback();
+          $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $this->m_node->m_db->getErrorMsg());
           $this->m_node->redirect($location);
         }
         else
         {
-          $g_db->commit();
+          $this->m_node->m_db->commit();
           $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($recordset[0]))), SESSION_REPLACE);
           $this->m_node->redirect($location);
         }

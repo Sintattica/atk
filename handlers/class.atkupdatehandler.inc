@@ -5,9 +5,6 @@
     
     function action_update()
     {
-      global $g_db;
-      
-      
       $record = $this->m_node->updateRecord();
 
       if ($this->m_postvars['atkcancel']=="")
@@ -33,10 +30,10 @@
         {
           if(!$this->m_node->updateDb($record))
           {
-            $g_db->rollback();
-            if($g_db->getErrorType()=="user")
+            $this->m_node->m_db->rollback();
+            if($this->m_node->m_db->getErrorType()=="user")
             {
-              triggerError($record, 'Error', $g_db->getErrorMsg(), '', '');
+              triggerError($record, 'Error', $this->m_node->m_db->getErrorMsg(), '', '');
               $this->m_node->m_action="edit";
               $page = &$this->getPage();
               $edithandler = $this->m_node->getHandler("edit");
@@ -44,13 +41,13 @@
             }
             else
             {
-              $location = $this->m_node->feedbackUrl("update",ACTION_FAILED, $record, $g_db->getErrorMsg());
+              $location = $this->m_node->feedbackUrl("update",ACTION_FAILED, $record, $this->m_node->m_db->getErrorMsg());
               $this->m_node->redirect($location);
             }
           }
           else
           {
-            $g_db->commit();            
+            $this->m_node->m_db->commit();            
             
             if ($this->m_postvars['atknoclose']=="")
             {

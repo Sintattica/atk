@@ -17,6 +17,8 @@
    *
    * $Id$
    */
+  
+   userelation("atkrelation");
   class atkManyToOneRelation extends atkRelation
   {  
     var $m_leftjoin = true; // by default, we do a left join. this means that

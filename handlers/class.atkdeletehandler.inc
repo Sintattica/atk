@@ -6,18 +6,17 @@
     {    
       if (!empty($this->m_postvars['confirm']))
       {
-        global $g_db;
         // Confirmation page was displayed and 'yes' was clicked
         if($this->m_node->deleteDb($this->m_postvars['atkselector']))
         {
-          $g_db->commit();
+          $this->m_node->m_db->commit();
           $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
           $this->m_node->redirect($location);
         }
         else
         {
-          $g_db->rollback();
-          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$g_db->getErrorMsg());
+          $this->m_node->m_db->rollback();
+          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$this->m_node->m_db->getErrorMsg());
           $this->m_node->redirect($location);
         }
       }

@@ -15,6 +15,8 @@
    *
    * $Id$
    */
+   
+   userelation("atkrelation");
   class atkOneToOneRelation extends atkRelation
   {
     /* The referential key in the target node */

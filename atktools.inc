@@ -1113,26 +1113,22 @@
     return false;
   }
 
-  function useattrib($attribute)
-  {
-    global $config_atkroot;
-    $a = explode(".", $attribute);
-    if (count($a) == 2)
-      $include = moduleDir(strtolower($a[0]))."/attributes/class.".strtolower($a[1]).".inc";
-    else $include = $config_atkroot."atk/attributes/class.".strtolower($attribute).".inc";
-    include_once($include);
-  }
+  function useattrib($attribute)  { atkuse("attribute", $attribute); }
+  function userelation($relation) { atkuse("relation" , $relation);  }
+  function usefilter($filter)     { atkuse("filter"   , $filter);    }
 
-  function userelation($relation)
-  {
+  /**
+  * use an atk class (attribute, relation or filter)
+  *
+  * @return void
+  */
+  function atkuse($type, $name)
+  {	
     global $config_atkroot;
-    
-    // Include base class. 
-    require_once($config_atkroot."atk/relations/class.atkrelation.inc");    
-    $a = explode(".", $relation);
+    $a = explode(".", $name);
     if (count($a) == 2)
-      $include = $config_atkroot."modules/".strtolower($a[0])."/relations/class.".strtolower($a[1]).".inc";
-    else $include = $config_atkroot."atk/relations/class.".strtolower($relation).".inc";
+      $include = moduleDir(strtolower($a[0])).$type."s/class.".strtolower($a[1]).".inc";
+    else $include = $config_atkroot."atk/".$type."s/class.".strtolower($name).".inc";
     include_once($include);
   }
 

@@ -60,8 +60,6 @@
      */
     function searchForm($record = NULL)
     {
-      global $g_db;
-      
       $node = &$this->m_node;
       
       $ui = &$this->getUi();
@@ -72,7 +70,7 @@
   
         $defaults = $record;
   
-        $dbSearchModes = $g_db->getSearchModes();
+        $dbSearchModes = $node->m_db->getSearchModes();
         $params = array();
         $params['searchmode_title'] = text("search_mode");
         $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" value="AND" checked>'.text("search_and");

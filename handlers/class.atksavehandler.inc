@@ -4,8 +4,6 @@
   {
     function action_save()
     {      
-      global $g_db;
-      
       $record = $this->m_node->updateRecord();   
       
       if ($this->m_postvars['atkcancel']=="")
@@ -38,22 +36,22 @@
         {
           if(!$this->m_node->addDb($record, true, "add"))
           {
-            $g_db->rollback();
-            if($g_db->getErrorType()=="user")
+            $this->m_node->m_db->rollback();
+            if($this->m_node->m_db->getErrorType()=="user")
             {
-              triggerError($record, 'Error', $g_db->getErrorMsg(), '', '');
+              triggerError($record, 'Error', $this->m_node->m_db->getErrorMsg(), '', '');
               $this->m_action="add";
               $this->m_node->addPage($record);
             }
             else
             {
-              $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $g_db->getErrorMsg());
+              $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $this->m_node->m_db->getErrorMsg());
               $this->m_node->redirect($location);
             }
           }
           else
           {
-            $g_db->commit();
+            $this->m_node->m_db->commit();
             
             $location="";
             if ($this->m_node->hasFlag(NF_EDITAFTERADD))

@@ -233,6 +233,11 @@
     var $m_module;
 
     /**
+    * The database
+    */
+    var $m_db;
+    
+    /**
      * The table to use for data storage.
      */
     var $m_table;
@@ -640,12 +645,16 @@
      * the atkNode class itself is called.
      * @param $tablename The Tablename
      * @param $seq sequence
+     * @param $db database
      */
-    function setTable($tablename,$seq="")
+    function setTable($tablename,$seq="",$db=NULL)
     {
+      global $g_db;
       $this->m_table      = $tablename;
       if ($seq=="") $seq = $tablename;
       $this->m_seq        = $seq;
+      if ($db==NULL) $this->m_db = &$g_db;
+  	   else $this->m_db = &$db;
     }
 
     /**
@@ -1312,9 +1321,8 @@
     function setAttribSizes()
     {
       if ($this->m_attribsizesset) return true;
-      global $g_db;
 
-      $metainfo = $g_db->tableMeta($this->m_table);
+      $metainfo = $this->m_db->tableMeta($this->m_table);
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -1343,7 +1351,6 @@
      */
     function dispatch($postvars, $fullpage=true)
     {
-      global $g_db;
       $this->m_postvars = $postvars;
 
       $this->m_action = $postvars['atkaction'];
@@ -1377,7 +1384,7 @@
 
       // This is the end of all things for this page..
       // so we clean up some resources..
-      $g_db->disconnect();
+      $this->m_db->disconnect();
       atkdebug("disconnected from the database");
     }
 
@@ -1451,7 +1458,7 @@
      */
     function redirect($location="", $record=array())
     {
-      global $g_returnurl,$g_db;
+      global $g_returnurl;
 
       atkdebug("atknode::redirect()");
 
@@ -1623,9 +1630,7 @@
      */
     function updateDb(&$record)
     {
-      global $g_db;      
-      
-      $query = &$g_db->createQuery();
+      $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
       
@@ -1697,13 +1702,11 @@
     
     function storeAttributes($storelist, &$record, $mode)
     {       
-      global $g_db;
-         
       // store special storage attributes.
       for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
       {        
         $p_attrib = &$this->m_attribList[$storelist[$i]];
-        if (!$p_attrib->store($g_db, $record, $mode))
+        if (!$p_attrib->store($this->m_db, $record, $mode))
         {
           // something went wrong.
           return false;
@@ -1721,13 +1724,15 @@
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
-      global $g_db;
-      $query = &$g_db->createQuery();
+      $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
-
+      
+      if(array_key_exists("atkfilter", $this->m_postvars))
+  	   $query->addCondition($this->m_postvars["atkfilter"]);
+  	   
       if (!$this->hasFlag(NF_NO_FILTER))
       {
         /* hard filters may be set */
@@ -1809,8 +1814,7 @@
    
 
       $querystring = $query->buildCount($this->hasFlag(N_ML));
-      //$g_db->query($querystring);
-      $result = $g_db->getrows($querystring);          
+      $result = $this->m_db->getrows($querystring);          
       
       // group by fix:
       // if there exists a group by (added by atk/filters) the 'else' situation occurs
@@ -1847,14 +1851,12 @@
      */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
     {
-      global $g_db;
-
       $selectlist = array();
       $loadlist = array();
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
-      $query = &$g_db->createQuery();
+      $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -1956,7 +1958,7 @@
 
       $querystring = $query->buildSelect();
 
-      $dbrecords = $g_db->getrows($querystring);
+      $dbrecords = $this->m_db->getrows($querystring);
       
       if(($mode=="edit" || $mode=="copy") && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
@@ -2001,7 +2003,7 @@
         {
           $p_attrib = &$this->m_attribList[$loadlist[$j]];
 
-          $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i], $mode);
+          $recordset[$i][$loadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
         }
       }
       return $recordset;
@@ -2068,9 +2070,7 @@
      */
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
-      global $g_db;
-
-      $query = &$g_db->createQuery();
+      $query = &$this->m_db->createQuery();
 
       $storelist = array();      
 
@@ -2095,7 +2095,7 @@
         $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
         if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
-          $record[$p_attrib->fieldName()]=$g_db->nextid($this->m_seq);
+          $record[$p_attrib->fieldName()]=$this->m_db->nextid($this->m_seq);
         }
 
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
@@ -2131,7 +2131,7 @@
 
       }
       
-      atkdebug($g_db->m_error);
+      atkdebug($this->m_db->m_error);
       return false;
     }
 
@@ -2143,9 +2143,6 @@
      */
     function deleteDb($selector)
     {
-      global $g_db;
-
-
       $recordset = $this->selectDb($selector,"","","","","delete");
 
       if (count($this->m_cascadingAttribs)>0)
@@ -2164,7 +2161,7 @@
         }
       }
 
-      if ($g_db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
+      if ($this->m_db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {

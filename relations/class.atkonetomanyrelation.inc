@@ -10,6 +10,8 @@
    * $Id$
    *
    */
+   
+  userelation("atkrelation");
   class atkOneToManyRelation extends atkRelation
   {
     /*** Member variables ***/
@@ -171,7 +173,7 @@
             {
               $key = text(getNodeType($this->m_destination))." ".strtolower(text("add"));
               $label = text($key);
-          }
+            }
           } 
           $output.= href($add_url,$label,SESSION_NESTED,true);
         }

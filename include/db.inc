@@ -55,6 +55,7 @@
     $db->m_password = $password;
     $db->m_host     = $host;
     $db->m_debug    = 0;
+    
     return $db;
   }
 

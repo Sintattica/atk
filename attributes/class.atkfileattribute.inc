@@ -178,19 +178,24 @@
       else
       {
         $filename = $rec[$this->fieldName()]["filename"];
-        if ($filename!="")
+        // why copy if the files are the same?
+        
+        if ($this->m_dir.$filename != $rec[$this->fieldName()]["tmpfile"])
         {
-          if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
-          {
-            atkdebug("FILE OPGESLAGEN: ".$rec[$this->fieldName()]["tmpfile"]." -> ".$this->m_dir.$filename);
-            return $filename;
-          }
-          else
-          {
-            atkdebug("tmp file ".$rec[$this->fieldName()]["tmpfile"]." dir ".$this->m_dir.$filename);
-            atkerror("File kon niet worden opgeslagen");
-            return "";
-          }
+            if ($filename!="")
+            {
+              if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
+              {
+                atkdebug("COPY: ".$rec[$this->fieldName()]["tmpfile"]." -> ".$this->m_dir.$filename);
+                return $filename;
+              }
+              else
+              {
+                atkdebug("tmp file ".$rec[$this->fieldName()]["tmpfile"]." dir ".$this->m_dir.$filename);
+                atkerror("File kon niet worden opgeslagen");
+                return "";
+              }
+            }
         }
         return $rec[$this->fieldName()]["orgfilename"];
       }

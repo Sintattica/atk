@@ -100,8 +100,6 @@
     {	
       atkdebug("validate() with mode $mode for node ".$this->m_nodeObj->atkNodeType());
 
-      global $g_db;
-
       // check overrides
       if(count($ignoreList))
         $this->setIgnoreList($ignoreList);
@@ -150,7 +148,7 @@
             $atkorgkey = $record["atkprimkey"];
             if(($atkorgkey == '' // no orgkey, so adding this record
                 || $atkorgkey != $this->m_nodeObj->primaryKey($record)) // key has changed, so check is necessary
-               &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
+               &&  count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
               )
             {
               triggerError($record, $attribname, 'error_primarykey_exists', '', $this->m_nodeObj->m_type);
@@ -168,7 +166,7 @@
           }
           // if flag is primary
           else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
-                   count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".escapeSQL($this->m_nodeObj->m_postvars[$this->m_nodeObj->m_attribList[$attribname]->fieldName()])."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
+                   count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".escapeSQL($this->m_nodeObj->m_postvars[$this->m_nodeObj->m_attribList[$attribname]->fieldName()])."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
                   )
           {
             triggerError($record, $attribname, 'error_uniquefield', '', $this->m_nodeObj->m_type);
@@ -207,7 +205,6 @@
     */
     function validateUniqueFieldSets(&$record)
     {	
-      global $g_db;
       foreach($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet)
       {
         $whereStr = " WHERE 1 ";
@@ -233,7 +230,7 @@
 
           $whereStr .= "AND ".$field." = ".$whereValueStr." " ;
         }
-        if(count($g_db->getRows("
+        if(count($this->m_nodeObj->m_db->getRows("
           SELECT 
             1            
           FROM

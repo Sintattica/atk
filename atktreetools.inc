@@ -66,8 +66,8 @@
     }  
    
     /** 
-            * Example render function. Implement your own.
-            */
+    * Example render function. Implement your own.
+    */
     function render($tree="", $level=0)
     {
       // First time: root tree..
@@ -85,14 +85,13 @@
     }
     
     /**
-         *
-         * Pops tree's on the session
-         */
-         
+    *
+    * Pops tree's on the session
+    */
     function sessionTree()
     {
-    global $ATK_VARS;
-    $postTree = $ATK_VARS["atktree"];
+      global $ATK_VARS;
+      $postTree = $ATK_VARS["atktree"];
       $sessionTree = sessionLoad("atktree");
       if ($postTree !="" && $sessionTree != $postTree) 
       {
@@ -103,8 +102,7 @@
       {
        $realTree = $sessionTree; // use the last known tree
       }
-       $ATK_VARS["atktree"] == $realTree; // postvars now should contain the last Knowtree
-     }
+      $ATK_VARS["atktree"] == $realTree; // postvars now should contain the last Knowtree
+    }
   }
-  
 ?>
