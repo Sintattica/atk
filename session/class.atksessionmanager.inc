@@ -712,7 +712,7 @@
       $buf = sprintf("%.15s%ld%ld%0.8f", $_SERVER['REMOTE_ADDR'], $tv['sec'], $tv['usec'], php_combined_lcg() * 10);
       session_id(md5($buf));
       if (ini_get('session.use_cookies'))
-        setcookie('PHPSESSID', session_id(), NULL, '/');
+        setcookie(atkconfig("identifier"), session_id(), NULL, '/');
       return TRUE;
     }
   }
