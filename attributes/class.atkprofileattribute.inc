@@ -14,7 +14,7 @@
   // for editing profiles we create a custom attribute
   class atkProfileAttribute extends atkAttribute
   {
-    function atkProfileAttribute($name, $flags)
+    function atkProfileAttribute($name, $flags=0)
     {
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH);
     }
