@@ -17,6 +17,9 @@
    *              long ones) (Ivo)
    * $Id$
    * $Log$
+   * Revision 4.4  2001/07/10 09:17:01  ivo
+   * Fixed a bug with non-left joins in mysql.
+   *
    * Revision 4.3  2001/06/12 12:25:35  ivo
    * New feature: 'group by' for queries.
    *
@@ -164,12 +167,15 @@
       if ($outer) 
       {
         $join="LEFT JOIN ";
+        $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
       }
       else 
       {
         $join="JOIN ";
+        $this->m_joins[]= " ".$join.$table." ".$alias;    
+        $this->addCondition($condition);
       }
-      $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
+      
     }
     
     function addGroupBy($element)
