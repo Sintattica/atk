@@ -546,7 +546,10 @@
         $meta = $this->metadata($table);
         $this->m_tableMeta[$table] = array();
         for ($i = 0, $_i = count($meta); $i < $_i; $i++)
+        {
+          $meta[$i]['num'] = $i;
           $this->m_tableMeta[$table][$meta[$i]['name']] = &$meta[$i];
+        }
       }
       
       return $this->m_tableMeta[$table];

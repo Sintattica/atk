@@ -45,7 +45,7 @@ class mod_meta extends atkModule
   function &newNode($node)
   {
     $table = getNodeType($node);
-    $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => new atkMetaHandler(array($this, "initMetaPolicy"))));
+    $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => new atkMetaHandler(array(&$this, "initMetaPolicy"))));
     $node->m_module = "meta";
     $node->setSecurityAlias("meta.meta");
     return $node;
@@ -60,14 +60,12 @@ class mod_meta extends atkModule
     
     foreach(array_keys($attrs) as $name)
     {
-      if (($attrs[$name]["flags"] & AF_AUTOKEY) == AF_AUTOKEY)
+      if (hasFlag($attrs[$name]["flags"], AF_AUTOKEY))
       {
         $attrs[$name]["flags"] ^= AF_HIDE;
-        $attrs[$name]["flags"] |= AF_READONLY;
+        $attrs[$name]["flags"] |= AF_READONLY|AF_HIDE_ADD;
       }
     }
-    
-    $policy->removeFlags(array_keys($attrs), AF_HIDE);
   }
 }
 ?>

@@ -11,6 +11,7 @@ class atkMetaPolicy
   
   var $m_includes = NULL;
   var $m_excludes = NULL;
+  var $m_order = NULL;
 
   var $m_attrs = array();
   
@@ -41,10 +42,15 @@ class atkMetaPolicy
   function _getFlags($name, $meta)
   {
     $flags =
-      (($meta['flags'] & MF_PRIMARY) == MF_PRIMARY ? AF_PRIMARY : 0) |
-      (($meta['flags'] & MF_UNIQUE) == MF_UNIQUE ? AF_UNIQUE : 0) |
-      (($meta['flags'] & MF_NOT_NULL) == MF_NOT_NULL ? AF_OBLIGATORY : 0) |
-      (($meta['flags'] & (MF_AUTO_INCREMENT|MF_PRIMARY)) == (MF_AUTO_INCREMENT|MF_PRIMARY) ? AF_AUTOKEY : 0);
+      (hasFlag($meta['flags'], MF_PRIMARY) ? AF_PRIMARY : 0) |
+      (hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
+      (hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
+      (hasFlag($meta['flags'], MF_AUTO_INCREMENT|MF_PRIMARY) ? AF_AUTOKEY : 0) |
+      ($meta['type'] == "text" ? AF_HIDE_LIST : 0);
+
+    if (hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
+        in_array($name, array("id", $meta['table']."id", $meta['table']."_id")))
+      $flags |= AF_AUTOKEY;
 
     return $flags;
   }
@@ -143,6 +149,8 @@ class atkMetaPolicy
   
     $this->m_includes = $attrs;
     $this->m_excludes = NULL;
+    
+    $this->setOrder($attrs);
   }
   
   /**
@@ -156,15 +164,64 @@ class atkMetaPolicy
     $this->m_excludes = $attrs;
     $this->m_includes = NULL;
   }
+  
+  /**
+   * Sets the attribute order. All attributes not mentioned
+   * will be put at the bottom using their current order.
+   */
+  function setOrder($attrs)
+  {
+    atkdebug("setOrder");
+    if (func_num_args() > 1)
+      $attrs = func_get_args();
+    else if (!is_array($attrs))
+      $attrs = array($attrs);
+    
+    $this->m_order = $attrs;
+    uksort($this->m_attrs, array($this, "_order"));
+    $this->m_order = array_keys($this->m_attrs);
+    
+    foreach ($this->m_order as $i => $key)
+      $this->m_attrs[$key]['order'] = ($i + 1) * 100;
+    atkdebug("setOrder done");
+  }
+  
+  /**
+   * Order callback. Sorts the given attributes
+   * using the currently set order.
+   */
+  function _order($attr1, $attr2)
+  {
+    $attr1_index = array_search($attr1, $this->m_order);
+    $attr2_index = array_search($attr2, $this->m_order); 
+    if (is_int($attr1_index) && is_int($attr2_index))
+      return $attr1_index < $attr2_index ? -1 : 1;
+    else if (is_int($attr1_index)) return -1;
+    else if (is_int($attr2_index)) return 1;
+    else
+    {
+      $keys = array_keys($this->m_attrs);
+      $attr1_index = array_search($attr1, $keys);
+      $attr2_index = array_search($attr2, $keys);       
+      return $attr1_index < $attr2_index ? -1 : 1;
+    }
+  }  
 
   /**
    * Set flag(s) for the given attribute or list of attributes.
    * If $autoDetect is set to FALSE (defaults to TRUE) no
    * auto-detected flags will be added later on.
    */
+  function setFlag($attrs, $flag) { call_user_func_array(array($this, "setFlags"), func_get_args()); }   
   function setFlags($attrs, $flags)
   {
-    if (!is_array($attrs))
+    if (func_num_args() > 2)
+    {
+      $attrs = func_get_args();
+      $flags = array_pop($attrs);
+    }
+    
+    else if (!is_array($attrs))
       $attrs = array($attrs);
     
     foreach ($attrs as $attr)
@@ -175,6 +232,7 @@ class atkMetaPolicy
   /**
    * Add flag(s) to the given attribute or list of attributes.
    */
+  function addFlag($attrs, $flag) { $args = func_get_args(); call_user_func_array(array($this, "addFlags"), $args); }
   function addFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
@@ -194,6 +252,7 @@ class atkMetaPolicy
   /**
    * Remove flag(s) from the given attribute or list of attributes.
    */
+  function removeFlag($attrs, $flag) { $args = func_get_args(); call_user_func_array(array($this, "removeFlags"), $args); }   
   function removeFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
@@ -209,6 +268,26 @@ class atkMetaPolicy
       if (array_key_exists($attr, $this->m_attrs))
         $this->m_attrs[$attr]["flags"] = ($this->m_attrs[$attr]["flags"] | $flags) ^ $flags;
   }  
+  
+  /**
+   * Set the tab(s) for the given attribute or list of attributes.
+   */
+  function setTab($attrs, $tab) { $args = func_get_args(); call_user_func_array(array(&$this, "setTabs"), $args); }
+  function setTabs($attrs, $tabs)
+  {
+    if (func_num_args() > 2)
+    {
+      $attrs = func_get_args();
+      $tabs = array_pop($attrs);
+    }
+    
+    else if (!is_array($attrs))
+      $attrs = array($attrs);
+      
+    foreach ($attrs as $attr)
+      if (array_key_exists($attr, $this->m_attrs))
+        $this->m_attrs[$attr]["tabs"] = $tabs;
+  }
   
   /**
    * Returns the attributes data array.
@@ -229,7 +308,7 @@ class atkMetaPolicy
     
     $flags = $this->_getFlags($name, $meta);
 
-    $this->m_attrs[$name] = $typeAndParams + array("flags" => $flags);
+    $this->m_attrs[$name] = $typeAndParams + array("flags" => $flags, "tabs" => NULL, "order" => ($meta['num'] + 1) * 100);
   }
 
   /**
@@ -240,12 +319,13 @@ class atkMetaPolicy
     $cols = $this->m_node->m_db->tableMeta($this->m_node->getTable());
     foreach ($cols as $name => $meta)
       $this->_initAttribute($name, $meta);
+    $this->m_order = array_keys($this->m_attrs);
   }  
   
   /**
    * Apply attribute.
    */
-  function _applyAttribute($name, $type, $params, $flags)
+  function _applyAttribute($name, $type, $params, $flags, $tabs, $order)
   {
     if ($this->m_includes !== NULL && !in_array($name, $this->m_includes)) return;
     if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return;
@@ -260,7 +340,7 @@ class atkMetaPolicy
     $call .= ", \$flags);";  
     eval($call);
     
-    $this->m_node->add($attr);
+    $this->m_node->add($attr, $tabs, $order);
   }  
   
   /**
@@ -269,7 +349,7 @@ class atkMetaPolicy
   function apply()
   {
     foreach ($this->m_attrs as $name => $data)
-      $this->_applyAttribute($name, $data["type"], $data["params"], $data["flags"]);
+      $this->_applyAttribute($name, $data["type"], $data["params"], $data["flags"], $data["tabs"], $data["order"]);
   }
 }
 ?>

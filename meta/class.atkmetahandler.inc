@@ -42,7 +42,7 @@ class atkMetaHandler
         return new $class($node);
     }
       
-    return new atkMetaHandler(array($node, "meta"));
+    return new atkMetaHandler(array(&$node, "meta"));
   }
   
   /**
