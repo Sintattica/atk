@@ -25,6 +25,7 @@ function atkLockInit(identifier)
   atkLock.theIdentifier = identifier;
   atkLock.theSequence   = 1;
   atkLock.isLocked      = true;
+  atkLock.type          = (window.XMLHttpRequest || window.ActiveXObject) ? 'xml' : 'image';
 
   /* start the timer */
   atkLockTimer();
@@ -44,14 +45,73 @@ function atkLockTimer()
 }
 
 /**
+ * Check the DOM XML document response.
+ * @param XMLDocument the DOM XML document
+ */
+function atkLockCheckResponse(XMLdocument)
+{
+  try
+  {
+    var root = XMLdocument.getElementsByTagName("response");
+    if (root.length == 0) throw Error("Invalid lock response document.");
+    var response = root.item(0);
+
+    // success?
+    if (response.getElementsByTagName("success").length > 0)
+    {
+      // lock lease extended, do nothing at this time
+    }
+
+    // failure?
+    else if (response.getElementsByTagName("failure").length > 0)
+    {
+      throw Error("Lock has expired");
+    }
+      
+    // invalid response?
+    else
+    {
+      throw Error("Invalid lock response document.");
+    }
+  }  
+  
+  // failure
+  catch (exception)
+  {
+    // for now ignore the exception messages
+    atkLockUnlock();
+  }
+}
+
+/**
  * Fetch a new lock image, which extends the lock, or if
  * the lock lease has expired triggers an error.
 */
 function atkLockCheck()
 {
-  var image = new Image();
-  image.onerror = atkLockUnlock;
-  image.src = 'include.php?file=atk/lock/lock.php&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+  var sURI = 'include.php?file=atk/lock/lock.php&type=xml&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+
+  if (atkLock.type == 'xml')
+  {
+    var xmlHttp = XmlHttp.create();
+    xmlHttp.open("GET", sURI, true);
+    xmlHttp.onreadystatechange = function ()
+    {
+      if (xmlHttp.readyState == 4)
+      {
+        atkLockCheckResponse(xmlHttp.responseXML);
+      }
+    }
+    
+    xmlHttp.send(null);  
+  }  
+  
+  else
+  {
+    var image = new Image();
+    image.onerror = atkLockUnlock;
+    image.src = 'include.php?file=atk/lock/lock.php&type=image&stack=<?=$stack?>&id=' + atkLock.theIdentifier + '&sequence=' + atkLock.theSequence;
+  }
 }
 
 /**

@@ -52,7 +52,10 @@ class atkDbLock extends atkLock
     $this->storeLockList($atklockList);
 
     if ($this->m_id > 0)
+    {
+      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");    
       $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
+    }
   }
 
   /**
@@ -117,6 +120,7 @@ class atkDbLock extends atkLock
       if ($this->m_id <= 0)
       {
         $this->m_id = $g_db->nextid("db_lock");
+        $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");            
         $g_layout->register_script("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id);
       }
 

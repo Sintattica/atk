@@ -214,7 +214,7 @@
       else
       {
         if ($this->createDestination())
-	{
+	      {
           if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
 
           $key = decodeKeyValueSet($record["atkprimkey"]);
@@ -281,7 +281,7 @@
         if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
         {
           if ($this->createDestination())
-	  {
+	        {
             for ($i=0;$i<count($onetomanyrecs);$i++)
             {
               // the referential key of the onetomanyrecs could be wrong, if we

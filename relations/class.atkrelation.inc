@@ -55,11 +55,11 @@
 
         // Validate if destination was created succesfully
         if (!is_object($this->m_destInstance))
-	{
-	  atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
-	  $this->m_destInstance = NULL;
-	  return false;
-	}
+	      {
+	        atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
+	        $this->m_destInstance = NULL;
+	        return false;
+	      }
 	
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
         foreach (array_keys($this->m_destInstance->m_attribList) as $key)

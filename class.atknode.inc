@@ -95,13 +95,13 @@
   // We don't actually care which one it is.
   // In Php 4.1.0 we can use the $_REQUEST array. However, sometimes we 
   // run in older PHP's, so we create our own $HTTP_REQUEST_VARS.
-  if (count($HTTP_POST_VARS)>0)
+  if (is_array($ATK_VARS) && count($ATK_VARS) > 0)
   {     
-    $HTTP_REQUEST_VARS = $HTTP_POST_VARS;
+    $HTTP_REQUEST_VARS = $ATK_VARS;
   }
   else
   {    
-    $HTTP_REQUEST_VARS = $HTTP_GET_VARS;
+    $HTTP_REQUEST_VARS = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
   }
    
   // Another workaround. We use PHP_SELF a lot. Withour register_globals=On, we 

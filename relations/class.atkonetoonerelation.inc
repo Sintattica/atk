@@ -90,8 +90,7 @@
         if ($tablename!="") $tablename.=".";
 
         if ($this->createDestination())
-	{
-
+	      {
           $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
           if ($this->m_destinationFilter!="")
           {
@@ -101,7 +100,7 @@
 
           // we pass true as the last param to addToQuery, because we need all fields..
           $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
-	}
+	      }
       }
 
       // When storing, we don't add to the query.. we have our own store() method..
@@ -280,7 +279,7 @@
         else
         {
           if ($this->createDestination())
-	  {
+	        {
             /* we first check if the record doesn't already exist */
             if ($defaults[$this->fieldName()] != NULL)
             {
@@ -333,7 +332,7 @@
               $arr["fields"][] = "-";
             }
           }
-	}
+	      }
       }
     }
 
@@ -348,9 +347,9 @@
       if ($this->hasFlag(AF_ONETOONE_ERROR))
       {
         if ($this->createDestination())
-	{
+	      {
           $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
-	}
+	      }
       }
     }
   }
