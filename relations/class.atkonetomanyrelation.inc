@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/05/02 13:06:23  sandy
+   * fixed the AF_CASCADE_DELETE flag
+   * CV: ----------------------------------------------------------------------
+   *
    * Revision 4.6  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
    * new relational features: maxRecords for oneToManyRelation, filter for
@@ -249,6 +253,23 @@
       
       return $this->m_destInstance->m_records;
     }
+
+
+
+  /** 
+     * delete relational records..
+     */
+    function delete($record)
+    {
+      $classname = $this->m_destination;
+      include_once("class.".$classname.".inc");
+      $rel = new $classname();      
+      atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+
+      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+    }
+
+
 
     /**
      * Store values

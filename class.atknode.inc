@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.14  2001/05/02 13:06:23  sandy
+   * fixed the AF_CASCADE_DELETE flag
+   * CV: ----------------------------------------------------------------------
+   *
    * Revision 4.13  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
    * new relational features: maxRecords for oneToManyRelation, filter for
@@ -2423,7 +2427,6 @@
     function deleteDb($selector)
     {
       global $g_db;
-
       $this->selectDb($selector);
 
       for ($i=0;$i<count($this->m_records);$i++)

@@ -13,6 +13,10 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.8  2001/05/02 13:06:23  sandy
+    * fixed the AF_CASCADE_DELETE flag
+    * CV: ----------------------------------------------------------------------
+    *
     * Revision 4.7  2001/05/01 13:43:57  ivo
     * New session features: stackVars and globalVars..
     *
@@ -486,6 +490,17 @@
       global $g_db;
       atkdebug("Retrieve record");
       $this->selectDb($selector);
+      for ($i=0;$i<count($this->m_records);$i++)
+      {
+        foreach (array_keys($this->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_attribList[$attribname];
+          if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
+          {
+            $p_attrib->delete($this->m_records[$i]);
+          }
+        }
+      }   
       $tmpparentrecs = $this->m_records;
       $parent = $tmpparentrecs[0][$this->m_primaryKey[0]];
       atkdebug("Check for child records");
@@ -497,7 +512,7 @@
         $this->deleteChilderen($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      $this->debug("deleteDb - query: ".$query);
+      atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
     }
@@ -513,6 +528,17 @@
       global $g_db;
       atkdebug("Check for child records of the Child");
       $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      for ($i=0;$i<count($this->m_records);$i++)
+      {
+        foreach (array_keys($this->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_attribList[$attribname];
+          if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
+          {
+            $p_attrib->delete($this->m_records[$i]);
+          }
+        }
+      }   
       $tmprecs = $this->m_records;
       if(count($tmprecs)>0)
       {
@@ -524,7 +550,7 @@
         }
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      $this->debug("deleteChilderen - query: ".$query);
+      atkdebug("deleteChilderen - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
     }
