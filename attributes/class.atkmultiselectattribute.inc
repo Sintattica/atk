@@ -16,9 +16,9 @@
    */
    
   /** Defines */
-  define(AF_NO_TOGGLELINKS, AF_SPECIFIC_1);
-  define(AF_CHECK_ALL, AF_SPECIFIC_2);
-  define(AF_LINKS_BOTTOM, AF_SPECIFIC_3);
+  define(AF_NO_TOGGLELINKS, AF_SPECIFIC_2);
+  define(AF_CHECK_ALL, AF_SPECIFIC_3);
+  define(AF_LINKS_BOTTOM, AF_SPECIFIC_4);
   
   /** @internal Include base class */
   useattrib("atklistattribute");
