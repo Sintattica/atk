@@ -156,7 +156,7 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
       }
       $result.='</select>';
       return $result;
