@@ -289,10 +289,26 @@
       $page.= $this->head($title);
       if ($body) $page.= $this->body();
       $page.= $this->m_content."\n";
+      $page.= $this->renderATKvars();
       if ($body) $page.= "</body>\n";
-      $page.= "</html>\n";            
-     
+      $page.= "</html>\n";       
       return $page;
+    }
+    
+    /**
+     * Here we set a hidden div in the page with specific ATK variables
+     * that we want to make accessible to javascripts
+     * @return string a hidden div with the selected ATK variabels
+     */
+    function renderATKvars()
+    {
+    	global $ATK_VARS;
+    	
+    	$page.= "\n".'<div id="ATKVARS" style="display: none">';
+      $page.="\n <span id='atknodetype'>".$ATK_VARS['atknodetype']."</span>";
+      $page.="\n</div>";
+      
+    	return $page;
     }
     
     /**

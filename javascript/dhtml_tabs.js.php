@@ -17,9 +17,10 @@
 ?>
    
 function showTab(tab)
-{
+{  
 	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
+	var tabid = document.getElementById("atknodetype").innerHTML;
 	
 	// Next, check wether the parent tab array has been set
 	if (!parent.document.tab)
@@ -31,9 +32,9 @@ function showTab(tab)
 	// If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
 	if (!tab)
 	{
-	  if (parent.document.tab[document.location.href])
+	  if (parent.document.tab[tabid])
     {
-      tab = parent.document.tab[document.location.href];
+      tab = parent.document.tab[tabid];
     }
     else
     {
@@ -42,7 +43,7 @@ function showTab(tab)
   }
   
   // Then we store what tab we are going to visit in the parent
-	parent.document.tab[document.location.href] = tab;
+	parent.document.tab[tabid] = tab;
 	
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none
