@@ -178,6 +178,7 @@
               if($response==1)
               {
                 atkdebug("atkSecurityManager::authenticate() using $name authentication");
+                $authname=$name;
                 break;
               }
             }
@@ -186,6 +187,7 @@
           {   
             // We store the username + securitylevel of the logged in user. 
             $this->m_user = $this->m_authorization->getUser($PHP_AUTH_USER);
+            $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
             // for convenience, we also store the user as a global variable.             
             atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
             $authenticated = true;
