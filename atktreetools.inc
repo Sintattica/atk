@@ -23,7 +23,7 @@
     {
       $this->m_id = $id;
       $this->m_object = $object;
-      $this->m_label = $object; // DEPRECATED, but available for backwardcompatibility.
+      $this->m_label = &$this->m_object; // DEPRECATED, but available for backwardcompatibility.
       $this->m_img = $img;      
     }
   }
