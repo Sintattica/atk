@@ -354,15 +354,15 @@
       {
         if ($tablename!="") $realtablename=$tablename.".";
         if ($this->createDestination())
-	{
+        {          
           $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$realtablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], $this->m_leftjoin);
-          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1);
-	}
+          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1);          
+        }
       }
       else
       {
         $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
-      }
+      } 
     }
 
 
