@@ -125,7 +125,7 @@
   function atkerror($txt)
   {
     global $g_error_msg;
-    $g_error_msg[]=$txt;
+    $g_error_msg[]="[".elapsed()."] ".$txt;    
   }
 
   /**
