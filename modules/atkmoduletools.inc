@@ -84,8 +84,10 @@
       }
       else
       {
-        // construct dummy module
-        $mod = new atkmodule($modname);
+        // Changed by Ivo: This used to construct a dummy module, so
+        // modules could exist that didn't have a module.inc file.
+        // We no longer support this (2003-01-11)
+        $mod = NULL;
       }
       $g_moduleRepository[$modname] = $mod;
     }
