@@ -215,7 +215,7 @@
         $key = $module."_".$nodetype;
         if ($GLOBALS["txt_".$key]!="")
         {
-          return text($key)." - ".text($action);
+          return text($key)." - ".text($action, $nodetype);
         }
         else
         {
@@ -228,7 +228,7 @@
           {
             // if no specific text available for this node,
             // generate a generic title
-            return text($nodetype, $module)." - ".text($action);
+            return text($nodetype, $module)." - ".text($action, $nodetype);
           }
         }
       }
