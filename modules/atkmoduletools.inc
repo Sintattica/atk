@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.23  2001/10/10 08:28:44  ivo
+ * Created 'overloader' feature for modules.
+ *
  * Revision 1.22  2001/09/28 10:29:33  ivo
  * Modulehandling cleanup.
  *
@@ -167,15 +170,10 @@
     return $g_moduleRepository[$modname];    
   }
   
-  /**
-   * Construct a new node 
-   * @param $node the node type
-   * @return new node object
-   */
-  function newNode($node)
+  function nodeFile($node)
   {
-    global $g_modules, $config_atkroot;  
-  
+    global $g_modules;
+    
     /* module and type */
     $module = getNodeModule($node);
     $type = getNodeType($node);
@@ -195,9 +193,40 @@
       }      
       else
       {
-        atkerror("Couldn't find node '$node' in module '$module'");
+        atkerror("Couldn't find node '$node' in module '$module'");        
       }
     }
+    return $file;
+  }
+  
+  /**
+   * Construct a new node 
+   * @param $node the node type
+   * @return new node object
+   */
+  function newNode($node)
+  {
+    global $g_modules, $config_atkroot, $g_overloaders;  
+    
+    if ($g_overloaders[$node]!="")
+    {
+      atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
+      // include original file, because overloaders extend the original class.
+      $file = nodeFile($node);
+      /* check for file */
+      if (!file_exists($file))
+      {  
+        atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+        return NULL;
+      }  
+      /* return object */
+      include_once($file);
+      $node = $g_overloaders[$node];
+    }
+    
+    $file = nodeFile($node);
+    $type = getNodeType($node);
+  
     /* check for file */
     if (!file_exists($file))
     {  

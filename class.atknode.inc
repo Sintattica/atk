@@ -57,6 +57,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.117  2001/10/10 08:28:44  ivo
+   * Created 'overloader' feature for modules.
+   *
    * Revision 4.116  2001/10/08 19:38:44  peter
    * Small fix for previous commit. Parent field will now only be set obligatory
    * when the user tries to add a new record. This makes it possible to edit the
@@ -267,6 +270,7 @@
   
   // modifiers
   $g_modifiers = array();
+  $g_overloaders = array();
   
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
@@ -345,10 +349,15 @@
     {
       // the include file may specify modifiers.
       $modifiers = array();
+      $overloaders = array();
       include_once($filename);        
       for ($i=0;$i<count($modifiers);$i++)
       {
         $g_modifiers[$modifiers[$i]][] = $modname;
+      }      
+      if (count($overloaders)>0)
+      {
+        $g_overloaders = array_merge($g_overloaders,$overloaders);
       }
     }
     else
