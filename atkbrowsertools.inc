@@ -669,6 +669,17 @@
            "gecko"=>$tmp->gecko
           );
            
-    }
+ }
+ 
+ /**
+   * This function can be used to determine if we are using ie specific extensions.
+   * The function checks the value of the $config_enable_ie_extensions variable 
+   * and also the browser that the user is using.
+   */
+  function ieExtensions()
+  {
+    $browser = getBrowserInfo();
+    return (atkconfig("enable_ie_extensions") && $browser["family"]=="ie5up");
+  }
 
 ?>
