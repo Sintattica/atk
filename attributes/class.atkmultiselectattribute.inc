@@ -21,21 +21,23 @@
     /**
      * Constructor
      * @param $name Name of the attribute
-     * @param $flags Flags for this attribute
      * @param $optionArray Array with options
      * @param $valueArray Array with values. If you don't use this parameter, 
      *                    values are assumed to be the same as the options.
+     * @param $flags Flags for this attribute
+     * @param $size  Size of the attribute.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray="",$rows, $flags=0)
+    function atkMultiSelectAttribute($name, $optionArray, $valueArray="",$rows, $flags=0, $size="")
     {            
       // compatiblity with old versions
-      if (func_num_args()==5) $this->m_rows=$rows;
+      if (func_num_args()>5) $this->m_rows=$rows;
       else                   
       {
         $flags = $rows;
-      $this->m_rows=3;
-      }
-      $this->atkListAttribute($name, $optionArray, $valueArray, $flags); // base class constructor      
+        $this->m_rows=3;
+      }          
+      
+      $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
     }    
 
 
@@ -137,8 +139,23 @@
       return array("substring");
     }  
     
-    
-    
+    /**
+     * Return the size of the field in the database.    
+     */
+    function dbFieldSize()
+    {
+      if ($this->m_maxsize!=0) return $this->m_maxsize;
+      else
+      {
+        // size must be large enough to store a combination of all values.
+        $size = 0;
+        for ($i=0, $_i=count($this->m_values); $i<$_i; $i++)
+        {
+          $size+=(strlen($this->m_values[$i])+1); // 1 extra for the '|' symbol
+        }
+        return $size;
+      }
+    }    
 
   }
 ?>
