@@ -190,7 +190,6 @@
         /********/
         
         $records = array();    
-        
         $actionloader = "rl_a['".$listName."'] = new Array();";
         $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED)."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
@@ -257,12 +256,31 @@
   
           $str_actions = "";
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
+					$icons = atkconfig("recordlist_icons");
+					
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
   	        //$str_actions .= href($url, text($name, $this->m_node->m_type, $this->m_node->m_module), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
   	        $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
-  	 
-  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($name, $this->m_node->m_type, $this->m_node->m_module).'</a>&nbsp;';
+						
+						$link = $name;
+						
+						if($icons == "true")
+						{
+							$icon_path = atkconfig("atkroot")."icons/record/";
+							$icon = $icon_path.$name.".gif";
+							
+							if(file_exists($icon))
+							{
+								$link = '<img width="16" height="16" border="0" src="'.$icon.'" alt="'.$name.'">';
+							}
+							else
+							{
+								$link = '<img width="16" height="16" border="0" src="'.$icon_path.'default.gif'.'" alt="'.$name.'">';
+							}
+						}
+						
+  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($link, $this->m_node->m_type, $this->m_node->m_module).'</a>&nbsp;';
   	      }
   
           /* actions (left) */
