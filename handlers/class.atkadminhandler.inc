@@ -126,7 +126,11 @@
         
         $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
   	 
-  	    $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
+        if ($navigation)
+        {
+          if ($params["index"]) $params["index"].="<br />";
+          $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
+        }
         
         if(!is_array($actions))
         {
