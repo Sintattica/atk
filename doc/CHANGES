@@ -45,7 +45,8 @@ Changes in ATK 5.0.5
 * atkOneToOne's AF_ONETOONE_INTEGRATE integrates columns in recordlists. 
   (bug #346) [Ivo]
 * <attribute>_display overrides get passed the right $mode. (bug #339) [Ivo]
-* Updated French translation [Camille]
+* Updated French translation. [Camille]
+* Updated Norwegian translation. [Olav]
 
 Changes in ATK 5.0.4
 --------------------
