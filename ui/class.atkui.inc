@@ -48,6 +48,9 @@
     
     function renderTabs($vars)
     {
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php");
+			
       return $this->render("tabs.tpl", $vars);
     }
     

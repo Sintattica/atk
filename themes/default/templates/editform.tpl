@@ -1,3 +1,4 @@
+<br>
 <table width="100%">
   {if (count($errors)>0)}
     <tr>
@@ -12,10 +13,10 @@
   {foreach from=$fields item=field}
     <tr>
       {if $field.line!=""}
-        <td colspan="2" valign="top">{$field.line}</td>      
+        <td class="{$field.tab}" {if $field.initial_on_tab!='yes'}style="display: none"{/if} colspan="2" valign="top">{$field.line}</td>      
       {else}
-        <td valign="top" class="{if $field.error!=""}error{else}fieldlabel{/if}">{if $field.label!=""}{$field.label}: {/if}</td>
-        <td valign="top" class="field">{$field.full}</td>
+        <td class="{$field.tab}" {if $field.initial_on_tab!='yes'}style="display: none"{/if} valign="top" class="{if $field.error!=""}error{else}fieldlabel{/if}">{if $field.label!=""}{$field.label}: {/if}</td>
+        <td class="{$field.tab}" {if $field.initial_on_tab!='yes'}style="display: none"{/if} valign="top" class="field">{$field.full}</td>
       {/if}
     </tr>
   {/foreach}

@@ -972,12 +972,6 @@
           /* sometimes a field is hidden although not specified by the field itself */
           $tabs = $this->m_attribIndexList[$r]["tabs"];
   
-          if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
-              !$p_attrib->showOnTab($tab))
-          {
-            $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
-          }
-  
           /* we let the attribute add itself to the edit array */
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
@@ -1061,9 +1055,11 @@
       
       if (is_array($list))
       {
+				$newtab["total"] = count($list);
         foreach ($list as $t)
         {
           $newtab["title"] = text("tab_$t",$this->m_type);
+					$newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view") 
           {
