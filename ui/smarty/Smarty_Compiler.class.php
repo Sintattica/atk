@@ -1321,17 +1321,20 @@ class Smarty_Compiler extends Smarty {
             1 - expecting '='
             2 - expecting attribute value (not '=') */
         $state = 0;
-				
+			
         foreach ($tokens as $token) {
+           
             switch ($state) {
-                case 0:
+                case 0:                
                     /* If the token is a valid identifier, we set attribute name
                        and go to state 1. */
-                    if (preg_match('!^\w+$!', $token)) {
+                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!
+                    // VORIGE REGEXP: ^(/|/?\w+)$
+                    if (preg_match('!^(?>\w|/)\w*$!', $token)) {
                         $attr_name = $token;
                         $state = 1;
                     } else
-                        $this->_syntax_error("invalid attribute name: '$token'", E_USER_ERROR, __FILE__, __LINE__);
+                        $this->_syntax_error("invalid attribute name: '$token' ", E_USER_ERROR, __FILE__, __LINE__);
                     break;
 
                 case 1:
@@ -1340,16 +1343,16 @@ class Smarty_Compiler extends Smarty {
                         $state = 2;
                         break;
                     } else 
-                    {          // IVO HACK          *** TODO FIXME: this'll only work for tags with just one unnamed param.
-                                //                                          if there is a second param (named or unnamed this code will gloriously fail) ***
-                        // $this->_syntax_error("expecting '=' after attribute name '$last_token'", E_USER_ERROR, __FILE__, __LINE__);
+                    {   // IVO HACK  *** TODO FIXME: this'll only work for tags with just one unnamed param.
+                        //               if there is a second param (named or unnamed this code will gloriously fail) ***
+                        //$this->_syntax_error("expecting '=' after attribute name '$last_token'", E_USER_ERROR, __FILE__, __LINE__);
                         $state = 0;
                         $token = $attr_name; // last token was already the attrvalue, without real attrname. 
                         $attr_name = 0; 
-                         // no break, so the token is parsed in the next case as a real value.
-                         // END IVO HACK  
+                        // no break, so the token is parsed in the next case as a real value.
+                        // END IVO HACK  
                     }
-                    
+                    //break;
 
                 case 2:
                     /* If token is not '=', we set the attribute value and go to
@@ -1376,7 +1379,7 @@ class Smarty_Compiler extends Smarty {
                         $this->_syntax_error("'=' cannot be an attribute value", E_USER_ERROR, __FILE__, __LINE__);
                     break;
             }
-			$last_token = $token;
+		      	$last_token = $token;
         }
 
 		if($state != 0) {
@@ -1832,8 +1835,12 @@ class Smarty_Compiler extends Smarty {
 		} else {
 			$info = null;
 		}
-        trigger_error('Smarty: [in ' . $this->_current_file . ' line ' .
-                      $this->_current_line_no . "]: syntax error: $error_msg$info", $error_type);
+//      SANDY HACK		    
+//        trigger_error('Smarty: [in ' . $this->_current_file . ' line ' .
+//                      $this->_current_line_no . "]: syntax error: $error_msg$info", $error_type);
+
+        atkerror("Template compile error: [in ".$this->_current_file." line ".$this->_current_line_no."]: syntax error: $error_msg$info");
+
     }
 }
 
