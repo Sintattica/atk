@@ -17,6 +17,7 @@ Changes in ATK 5.0.7
 + Added AF_DATE_DISPLAY_DAY which will make the display function
   of a date attribute include the day of the week [Boy]
 + Added {atkstyle} plugin to template engine. [Ivo]
++ Added default fieldvalue and title row skip features to CSV import. [Mark]
 * Attributes can now use preload for loading before the main query. [Ivo, Boy]
 * Optimized atkSecureRelation searching. [Ivo, Boy]
 * Fixed deleteAllowed in oneToManyRelation, when the filter is not 
@@ -37,6 +38,7 @@ Changes in ATK 5.0.7
   new flags by default. [Boy]
 * Changed deprecated $txt_ global variables in mailreport() and the
   atkdateattrib to atktext() calls. [Boy]
+* Bugfixes and codecleanups in CSV import feature (bug #406). [Ivo]
 * Updated Norwegian translation. [Olav]
 
 Changes in ATK 5.0.6
