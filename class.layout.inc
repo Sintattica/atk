@@ -714,7 +714,7 @@
           $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip","atk","","","",true);
           if ($ttip != "")
           {
-            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.addslashes($ttip).'\')" onMouseOver="javascript:window.status=\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">&nbsp;';
+            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\')" onMouseOver="javascript:window.status=\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">&nbsp;';
           }
 
           $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');

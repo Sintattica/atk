@@ -269,7 +269,7 @@
           
           if ($ttip)
           {
-            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.addslashes($ttip).'\')" onMouseOver="javascript:window.status=\''. preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">';
+            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\')" onMouseOver="javascript:window.status=\''. preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">';
             $tplfield["tooltip"] = $tooltip;
             $editsrc.=$tooltip."&nbsp;";
           }
