@@ -128,7 +128,6 @@
   $config_auth_leveltable  = "users";
   $config_auth_levelfield  = "entity";
   
-  
   // use this if you want a loginform instead off an htaccess boxske
   // currently this is only supported when using the outlook theme
   $config_auth_loginform = false;

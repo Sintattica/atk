@@ -30,6 +30,7 @@
   $config_auth_levelfield = "entity";
   $config_auth_mail_port = "110"; // default pop3 port
   $config_auth_mail_virtual = false; // no vmail.
+  $config_auth_loginattempts = 5;
 
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";
