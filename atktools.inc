@@ -630,6 +630,12 @@
         $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
       }
 
+      $body.= "\n\nHTTP_POST_VARS\n".str_repeat("-",70)."\n";
+      foreach ($HTTP_POST_VARS as $key=>$value)
+      { 
+        $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
+      }
+
       $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
       foreach ($GLOBALS as $key=>$value)
       {
