@@ -43,6 +43,26 @@
       return true;
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to display
+     * hidden values for this attribute.
+     * @param $record Array with values
+     * @return Piece of htmlcode
+     */
+    function hide($record="", $fieldprefix)
+    {
+      $field = $record[$this->fieldName()];
+
+      if (is_array($field))
+        foreach ($field as $key => $value)
+          $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$key.']" '.'value="'.$value.'">';
+
+      else
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
+
+      return $result;
+    }
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
