@@ -48,6 +48,13 @@
       global $g_layout;
 
       $myrecords = $record[$this->fieldName()];
+      
+      if (!is_array($myrecords))
+      {
+        atkdebug("Lazy loading of records.");
+        $myrecords = $this->load(NULL, $record, "admin");
+      }
+      
       $result = text("none"); // default result
 
       if ($this->createDestination())
