@@ -361,9 +361,9 @@
         $tab = "default";
       }
 
-      // If no tab is specified we use the current default tab
+      // If no tab is specified or tabs are disabled, we use the current default tab
       // (specified with the setDefaultTab method, or "default" otherwise)
-      elseif ($tab === NULL) $tab = $this->m_default_tab;
+      elseif ($tab === NULL || !atkconfig("tabs")) $tab = $this->m_default_tab;
 
       // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
       // constructor, m_ownerInstance ends up being a copy of $this, rather than
