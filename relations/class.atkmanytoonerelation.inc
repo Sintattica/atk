@@ -211,6 +211,9 @@
 
         if ($record[$this->fieldName()][$remotekey]!="")
         {
+          // TODO FIXME: this selectDb isn't always necessary. In regular edit mode (no new
+          // record selected), the record is already present in $record, so this selectDb
+          // is not necessary.
           $selrec = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
           $result.= $this->m_destInstance->descriptor($selrec[0])."&nbsp;&nbsp;";
