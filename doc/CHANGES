@@ -37,6 +37,9 @@ Changes in ATK 5.0.5
   when AF_LARGE is set and an atkfilter is passed along [Boy,Yuri]
 * ValidateFilter now recognizes all SQL operators instead of just '=' [Boy]
 * Fixed bug in oneToManyRelation::isEmpty() [Harrie]
++ Added flags to the atkPage::render function [Sandy]
+* Fixed the outlook menu [Sandy]
+
 
 Changes in ATK 5.0.4
 --------------------
