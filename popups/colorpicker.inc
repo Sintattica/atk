@@ -23,8 +23,8 @@
  // builds matrix
    $colHeight = "9"; // height of each color element
    $colWidth = "9";   // width of each color element
-   $formRef   = $field;
-   $matrix = colorMatrix($colHeight,$colWidth,$formRef,1,$usercol);
+   $formRef   = $_GET["field"];
+   $matrix = colorMatrix($colHeight,$colWidth,$formRef,1,$_GET["usercol"]);
   //  Display's the picker in the current ATK style-template
   $g_layout->initGui();
   $g_layout->output("<html>");
