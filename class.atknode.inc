@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.35  2001/05/17 12:20:36  ivo
+   * removed atkselector from sessionvars.. it's not a session var!
+   *
    * Revision 4.34  2001/05/17 12:09:11  ivo
    * Improvements to session mangement: search values and page numbers are
    * now remembered if you come back to the admin page.
@@ -456,7 +459,7 @@
    
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
-   $g_pageVars = array("atkselector","atksearch","atkorderby","atkstartat","atktarget","atkformdata");
+   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata");
 
   /************* MODULE HANDLING *************/
 
