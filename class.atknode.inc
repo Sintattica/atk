@@ -1522,8 +1522,10 @@
             $bgh = $bgn[1];
             $bgn = $bgn[0];
           }
-          else $bgh = $g_theme["RowMouseOver"];
         }
+
+        // mouseover not specified?
+        if (empty($bgh)) $bgh = $g_theme["RowMouseOver"];
 
         // alternate colors of rows
         $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
