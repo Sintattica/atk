@@ -5,7 +5,7 @@
   * A collection of functions for general use in ATK
   *
   * @author Ivo Jansch <ivo@ibuildings.nl>
-
+  *
   * @version $Revision$
   *
   * $Id$
@@ -658,10 +658,23 @@
       $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
       $body.= implode("\n",$g_debug_msg);
 
-      $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
-      foreach ($_GET as $key=>$value)
+      if (count($_GET)>0)
       {
-        $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
+        $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
+        foreach ($_GET as $key=>$value)
+        {
+          $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
+        }
+      }
+
+      $request = getallheaders();
+      if (count($request)>0)
+      {
+        $body.= "\n\nREQUEST INFORMATION\n".str_repeat("-",70)."\n";
+        foreach($request as $key=>$value)
+        {
+          $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+        }
       }
 
       if (count($_POST)>0)

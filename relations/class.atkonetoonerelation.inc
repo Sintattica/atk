@@ -2,7 +2,8 @@
   /* flag(s) specific for atkOneToOneRelation */
   define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
-
+  define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.  
+  
   /**
    * An atkOneToOneRelation defines a relation between two tables where there
    * is one record in the first table that belongs to one record in the
@@ -56,7 +57,16 @@
           /* display in view mode */
           else
           {
-            if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+            if(is_array($this->m_destinationFilter))
+            {
+              $filter="";
+              for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
+              {
+                if($filter!="") $filter.=rawurlencode(" AND ");
+                $filter.= rawurlencode($this->m_destinationFilter[$i]);
+              }
+            }
+            elseif (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
@@ -96,7 +106,14 @@
         if ($this->createDestination())
 	      {
           $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
-          if ($this->m_destinationFilter!="")
+          if(is_array($this->m_destinationFilter))
+          {
+            for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
+            {
+              $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter[$i];
+            }
+          }
+          elseif ($this->m_destinationFilter!="")
           {
             $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
           }
@@ -179,8 +196,16 @@
       if ($this->createDestination())
       {
         $vars = &$record[$this->fieldName()];
-        $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-
+        if ($this->destinationHasRelation())
+        {        
+          $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+        }
+        else
+        {          
+          $vars[$this->m_refKey] = $record[$this->m_ownerInstance->primaryKeyField()];
+        }
+        atkdebug("MODE1: ".$vars["mode"]." | MODE2: ".$mode);
+        atk_var_dump($vars);
         if ($vars["mode"]=="edit")
         {
           atkdebug("Updating existing one2one record");
@@ -199,6 +224,20 @@
           atkdebug("Nothing to store in one2one record");
         }
       }
+    }
+    
+    /**
+           * Check if destination node has a relation to this node, or a 'regular'
+           * atkattribute to store it's referential key.
+           */
+    function destinationHasRelation()
+    {
+      if ($this->createDestination())
+      {
+        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];        
+        if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
+      }
+      return false;
     }
 
     /**
@@ -234,8 +273,7 @@
         }
 
         $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
-        $forceList = decodeKeyValueSet($this->m_destinationFilter);
-
+        $forceList = decodeKeyValueSet($this->getFilter());
         $output.= $this->m_destInstance->hideform($mode,$myrecord,$forceList,$this->fieldName()."_AE_");
         return $output;
       }
@@ -312,8 +350,15 @@
             $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
 
             /* add fields */
-            $forceList = decodeKeyValueSet($this->m_destinationFilter);
-            $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];                 
+            $forceList = decodeKeyValueSet($this->getFilter());
+            if ($this->destinationHasRelation())
+            {
+              $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];                 
+            }
+            else
+            {
+              $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];                 
+            }
             $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
 
             /* errors and hidden fields */
@@ -322,15 +367,17 @@
 
             /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
+             * TODO FIXME
              */
-            if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* seperator and name */
               $arr["fields"][] = "-";
               $arr["fields"][] = "<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>";
-            }  
-            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-            if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            }              
+            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);            
+            
+            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* seperator */
               $arr["fields"][] = "-";
@@ -356,5 +403,25 @@
 	      }
       }
     }
+    
+    function getFilter()
+    {
+      $filter = $this->m_destinationFilter;
+      if(is_array($filter))
+      {
+        $tmp_filter="";
+        for($i=0,$_i=count($filter);$i<$_i;$i++)
+        {
+          if($tmp_filter!="") $tmp_filter.=" AND ";
+          $tmp_filter.=$filter[$i];
+        }
+        return $tmp_filter;
+      }
+      else
+      {
+        return $filter;
+      }
+    }
+    
   }
 ?>

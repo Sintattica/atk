@@ -14,6 +14,7 @@
    *       - Support for storing the file itself in the db instead of on disk.
    *
    * @author Martin Roest <martin@ibuildings.net>
+   *
    * @version $Revision$
    *
    * $Id$
@@ -92,8 +93,8 @@
      * @return piece of html code with a browsebox
      */
     function edit($record="", $fieldprefix="")
-    {
-      global $del,$atkaction, $g_layout;        
+    {  
+      $del = $_REQUEST["del"];
       
       if ($del[$this->fieldName()]!="on")
       {
@@ -150,9 +151,10 @@
      */
     function value2db($rec)
     {
-      global $del,$select;            
+      $del    = $_REQUEST["del"];
+      $select = $_REQUEST["select"]; 
 
-      if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
+      if($rec[$this->fieldName()]["tmpfile"]=="" && $select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
       {
         return $select[$this->fieldName()];
       }
@@ -162,9 +164,9 @@
       if($del[$this->fieldName()] == "on")
       {    
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
-	      {
-	        unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
-	      }
+        {
+          unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
+        }
         return '';
       }
       else
@@ -174,11 +176,12 @@
         {
           if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
           {
+            atkdebug("FILE OPGESLAGEN: ".$rec[$this->fieldName()]["tmpfile"]." -> ".$this->m_dir.$filename);
             return $filename;
           }
           else
           {
-            atkerror("File kon niet worden opgeslagen");
+            atkerror("File ($filename) kon niet worden opgeslagen");
             return "";
           }
         }
@@ -203,7 +206,8 @@
      */
     function fetchValue($rec)
     {    
-      global $select,$del;          
+      $select = $_REQUEST["select"];
+      $del = $_REQUEST["del"];
       
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
@@ -211,10 +215,13 @@
       if (is_array($_FILES)||($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))) // php4
       {   
         // if no new file has been uploaded..    
-        if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
-        {
-          ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$select[$this->fieldName()];
-          $result = array("tmpfile"=>"",
+        if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
+        { 
+           // No file to upload, then check if the select box is filled
+          if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+          {
+            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$select[$this->fieldName()];
+            $result = array("tmpfile"=>"",
                           "filename"=>$filename,
                           "filesize"=>0,
                           "orgfilename"=>'');
@@ -226,6 +233,7 @@
                           "filename"=>"",
                           "filesize"=>0,
                           "orgfilename"=>$rec[$basename."_orgfilename"]);
+          }
         }
         else
         {    
@@ -234,7 +242,7 @@
                           "filename"=>$realname,
                           "filesize"=>$_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$realname);
-        }                      
+        }
         return $result;
       }      
     }
@@ -283,7 +291,7 @@
       global $g_layout; 
             
       $filename    = $record[$this->fieldName()]["orgfilename"];
-
+      atkdebug($this->fieldname()." - File: $filename");
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
       if($filename != "")

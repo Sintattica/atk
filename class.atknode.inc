@@ -70,6 +70,7 @@
    * implementations for that type of node.
    *
    * @author Ivo Jansch (ivo@achievo.org)
+   *
    * @version $Revision$
    *
    * $Id$
@@ -782,7 +783,7 @@
             else
             {
 
-              $page.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
+              $page.=$g_layout->ret_td($p_attrib->label($record).': ','valign="top"');
             }
           }
           else
@@ -1147,7 +1148,7 @@
               }
               else
               {
-                $form.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
+                $form.=$g_layout->ret_td($p_attrib->label($record).': ','valign="top"');
               }
             }
             else

@@ -271,7 +271,7 @@
         /* label? */
         if     ($this->hasFlag(AF_NOLABEL))    $entry["label"] = NULL;
         elseif ($this->hasFlag(AF_BLANKLABEL)) $entry["label"] = "";
-        else   $entry["label"] = text($this->m_name, $this->m_ownerInstance->m_type);
+        else   $entry["label"] = $this->label($defaults);
 
         /* error? */
         $entry["error"] = FALSE;
@@ -637,6 +637,14 @@
           return "100"; // default for strings.
         }
       }
+    }
+    
+    /**
+     * Return the label of the field.
+     */
+    function label($record)
+    {    
+      return text($this->fieldName(),$this->m_ownerInstance->m_type);
     }
 
   }
