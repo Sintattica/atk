@@ -2912,6 +2912,7 @@
 
       if(count($recordset)>0)
       {
+        $this->preCopy($recordset[0]);
         $this->addDb($recordset[0]);
       }
       else
@@ -3249,6 +3250,24 @@
      * @param $record The record that has just been deleted.
      */
     function postDel($record)
+    {
+      // Do nothing
+    }
+    
+    /**
+     * Function that is called right before a copied record is stored to 
+     * the database. 
+     * This function does nothing, but it can be overriden in your derived
+     * classes if you want to do some processing on a record before it is 
+     * being copied. For example, suppose you have a field 'title' in a 
+     * record. You could change the contents to 'Copy of ..', so the user can
+     * distinguish between the original and the copy.
+     *
+     * @param &$record A reference to the copied record. You can change the
+     *                 contents of the record. It is not necessary to return 
+     *                 the record.
+     */
+    function preCopy(&$record)
     {
       // Do nothing
     }
