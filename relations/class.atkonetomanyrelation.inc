@@ -524,7 +524,7 @@
     * Retrieves navigation links (prev/pagenumbers/next) and puts it
     * on the top and the bottom of the output string
     *
-    * @params string &$output Pointer to the output string
+    * @param string &$output Pointer to the output string
     */
     function _fetchNavigationLinks(&$output)
     {
