@@ -66,12 +66,14 @@
         // critical
         $level_color="#ff0000";
       }
-      global $g_debug_msg;
-      print implode("<br>", $g_debug_msg);
-      echo "<html>";
-      echo '<body bgcolor="#ffffff" color="#000000">';
-      echo "<font color=\"$level_color\"><b>$level</b></font>: $msg<br>\n";
-      die("<b>Halted.</b>");
+      $output=atkOutput::getInstance();
+      $res ="<html>";
+      $res.='<body bgcolor="#ffffff" color="#000000">';
+      $res.="<font color=\"$level_color\"><b>".text($level)."</b></font>: $msg.<br>\n";
+      $res.="<b>Halted</b>";
+      $output->output($res);
+      $output->outputFlush();
+      die("Halted...");
     }
     else
     {
