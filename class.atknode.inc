@@ -29,7 +29,7 @@
    * implementations for that type of node.
    *
    * <b>Todo's</b>   : - Incorporate some metadata about a node as in Stefan
-   *  	                Niederhauser's node-code. (like creation date etc.)
+   *  	                 Niederhauser's node-code. (like creation date etc.)
    *                   - Authorization: who is allowed to do what on which node
    *                   - Install function. And a script that you can use to
    *                     install new nodetypes in your achievo. The install
@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.25  2001/05/10 09:48:07  ivo
+   * Added a cancel buttons to add forms.
+   *
    * Revision 4.24  2001/05/10 09:42:28  sandy
    * bugfix in menu.php (config menu delimiter) and for the clear posting
    *
@@ -948,6 +951,11 @@
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("add",$record,$forceList));
       $g_layout->output('<br><input type="submit" value="'.text('save').'">');
+      if ($this->m_action=="add")
+      {
+        // if action is admin, we don't show the cancelbutton..
+        $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
+      }
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
@@ -1818,22 +1826,30 @@
     
     function action_save()
     {
-      $record = $this->updateRecord();
-      $this->validate($record);
-      if (count($this->m_errors)>0)
+      if ($this->m_postvars['atkcancel']=="")
       {
-        $this->addPage($record);
+        $record = $this->updateRecord();
+        $this->validate($record);
+        if (count($this->m_errors)>0)
+        {
+          $this->addPage($record);
+        }
+        else
+        {
+          $this->addDb($record);
+          
+          $location="";
+          if ($this->hasFlag(NF_EDITAFTERADD))              
+          {          
+            $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
+          }         
+          $this->redirect($location);
+        }
       }
       else
       {
-        $this->addDb($record);
-        
-        $location="";
-        if ($this->hasFlag(NF_EDITAFTERADD))              
-        {          
-           $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
-        }         
-        $this->redirect($location);
+        // Cancel was pressed
+        $this->redirect();
       }
     }
     
