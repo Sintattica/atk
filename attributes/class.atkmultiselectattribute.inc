@@ -110,11 +110,11 @@
       if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
       {
         $result.='<div align="left"><font size="-2">
-                  [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                  [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
                        text("check_all").
-                  '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                  '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
                        text("check_none").
-                  '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                  '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
                        text("invert_selection").'</a>]</font></div>';
       } 
       $result .="\n<table><tr>\n";  
