@@ -3180,26 +3180,40 @@
      *
      * A filter is considered valid if it doesn't contain any fields that are
      * not part of the node.
+     *
+     * Why isn't this used more often???
+     *
      * @param String $filter The filter expression to validate
      * @returns String Returns $filter if the filter is valid or a empty
      *                 string if not.
      */
     function validateFilter($filter)
     {
+      // Get the field that it applies to
+      // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
-      
+       
+      // if the filter includes a tablename
       if ($field != "")
       {
-        if (in_array($relation, array_keys($this->m_attribList))) return $filter;
+        // check if the filter table is the same as the nodes table
+        if (strtolower(trim($relation)) !== strtolower($this->m_table)) return "";
+        
+        // go on to check the field
+        $relation = $field;
       }
-      else
+      
+      // All standard SQL operators
+      $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
+      	
+      // Check the filter for every operator
+      foreach ($sqloperators as $sqloperator)
       {
-      	$sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
-      	foreach ($sqloperators as $sqloperator)
-      	{
-          list($relation_new, $dummy) = explode($sqloperator, $relation);
-        	if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
-      	}
+        // split the fieldname from the fieldvalue
+        list($relation_new, $dummy) = explode($sqloperator, $relation);
+          
+        // check if the fieldname is in the attriblist
+      	if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
       }
       return "";
     }    
