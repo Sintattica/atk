@@ -59,17 +59,13 @@
          // Level and userid are stored in two separate tables. This could
          // mean (but doesn't have to) that a user can have more than one
          // level.
-         $query = "SELECT
-                     *
-                   FROM
-                     $usertable
-                   LEFT JOIN
-                     $leveltable
-                   ON
-                     $usertable.$userfield = $leveltable.$userfield
-                   WHERE
-                     $usertable.$userfield = '$user'";
-
+	 $objname = "atk".atkconfig("database")."query";
+	 $qryobj = new $objname();
+	 $qryobj->addTable($usertable);
+	 $qryobj->addField("*");
+	 $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userfield = usergroup.$userfield", true);
+	 $qryobj->addCondition("$usertable.$userfield = '$user'");
+	 $query = $qryobj->buildSelect();
        }
 
        $recs = $g_db->getrows($query);
