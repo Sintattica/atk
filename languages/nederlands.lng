@@ -178,6 +178,7 @@
   $txt_password = "Wachtwoord";
   $txt_login = "Inloggen";
   $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw systeembeheerder.";
+  $txt_account_locked = "Uw account is vergrendeld. Neem contact op met uw systeembeheerder om uw account te ontgrendelen.";
 
   $txt_lock_locked  = "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.";
 

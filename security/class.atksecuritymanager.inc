@@ -134,7 +134,7 @@
       else if (!session_is_registered("login"))
       { 
         // did we login from a html formpje
-        if($atkaction=="login" && $authorization=="loginform" && trim($atkusername)!="" && trim($atkpassword)!="")
+        if($atkaction=="login" && $authorization=="loginform" && trim($atkusername)!="")
         {
           $PHP_AUTH_USER=$atkusername;
           $PHP_AUTH_PW=$atkpassword;
@@ -325,6 +325,7 @@
       global $g_layout,$PHP_SELF,$atkusername,$atkaction,$authorization;
 
       $loginattempts = sessionLoad('loginattempts');
+      $accountLocked = sessionLoad('accountLocked');
       if($loginattempts=="") $loginattempts = 0;
       
       if($atkaction=="login" && $authorization=="loginform")
@@ -354,12 +355,7 @@
       }
       else
       {
-        if($loginattempts>=1&&$atkaction=="login"&&$authorization=="loginform")
-        {
-          $g_layout->output("<script language='javascript'>window.alert('".text("login_failed")."')</script>");
-//          $g_layout->output('<tr><td colspan=2 class=error>'.text('login_failed').'<br></td></tr>');
-        }
-         
+               
         // generate the username input field
         // based upon the config_authdropdown and auth. method
         $userField = $this->auth_userField($atkusername);
@@ -369,6 +365,18 @@
         $g_layout->output("</tr><tr><td colspan=2 class=table height=6></td></tr><tr>");
         $g_layout->output("<td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=atkpassword value='' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'></td>");
         $g_layout->output("</tr><tr>");
+
+        if (isset($accountLocked) && $accountLocked==true)
+        {
+          $g_layout->output("<script language='javascript'>window.alert('".text("account_locked")."')</script>"); 
+          sessionStore('accountLocked',false);
+        }
+        elseif($loginattempts>=1&&$atkaction=="login"&&$authorization=="loginform")
+        {
+          $g_layout->output("<script language='javascript'>window.alert('".text("login_failed")."')</script>");          
+//          $g_layout->output('<tr><td colspan=2 class=error>'.text('login_failed').'<br></td></tr>');
+        }
+        
       }
       $g_layout->output('</tr></table>');
       $g_layout->output('</td>');
