@@ -13,6 +13,10 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.18  2001/09/19 15:21:55  ivo
+   * Improved API for module handling: modules may now be constructorless,
+   * which prevents a lot of overhead.
+   *
    * Revision 4.17  2001/09/12 09:01:50  ivo
    * Added the menu authorisation optimisation that was already in the rws menu
    * to the standard atk skel.
@@ -96,9 +100,10 @@
   /* first add module menuitems */
   foreach ($g_modules as $modname => $modpath)
   {
-    $module = getModule($modname);
-    menuitems($module->getMenuItems());
+    $mod = getModule($modname);
+    if (method_exists($mod,"getMenuItems")) $mod->getMenuItems(); 
   }
+
 
   if (!isset($atkmenutop)||$atkmenutop=="") $atkmenutop = "main";
 
@@ -106,13 +111,13 @@
   $g_layout->output("<html>");
   $g_layout->head($txt_app_title);
   $g_layout->body();
-  $g_layout->output("<br><div align='center'>"); 
+  $g_layout->output("<div align='center'>"); 
   $g_layout->ui_top(text("menu_".$atkmenutop));
   $g_layout->output("<br>");
 
   /* build menu */    
   
-  $menu = "";  
+  $menu = "";
   
   function menu_cmp($a,$b)
   {

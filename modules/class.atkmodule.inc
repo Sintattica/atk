@@ -11,6 +11,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.7  2001/09/19 15:21:55  ivo
+ * Improved API for module handling: modules may now be constructorless,
+ * which prevents a lot of overhead.
+ *
  * Revision 1.6  2001/09/12 09:04:58  ivo
  * Bugfixes to module modifiers that corrupted atknodes.
  *
@@ -59,7 +63,7 @@
      * Constructor. The module needs to register it's nodes
      * overhere, create it's menuitems etc.
      */
-    function atkModule($name)
+    function atkModule($name="")
     {
       $this->m_name = $name;
     }

@@ -10,6 +10,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.20  2001/09/19 15:21:55  ivo
+ * Improved API for module handling: modules may now be constructorless,
+ * which prevents a lot of overhead.
+ *
  * Revision 1.19  2001/09/18 07:13:57  ivo
  * Added a check that prevents module instanciation if a module is classless.
  *
@@ -149,22 +153,21 @@
   function getModule($modname)
   {
     global $g_moduleRepository;
-    //if (!is_object($g_moduleRepository[$modname]))
-    //{  
+    if (!is_object($g_moduleRepository[$modname]))
+    {  
       atkdebug("Constructing a new module - $modname");
-      //$g_moduleRepository[$modname] = new $modname();        
-    //}     
-    //atkdebug("Returning module instance - $modname");
-    //return $g_moduleRepository[$modname];    
-    if (class_exists($modname))
-    {
-      return new $modname();
-    }
-    else
-    {
-      // return the dummy
-      return new atkmodule($modname);
-    }
+      if (class_exists($modname))
+      {
+        $mod = new $modname();
+      }
+      else
+      {
+        $mod = new atkmodule($modname);
+      }
+      $g_moduleRepository[$modname] = $mod;
+    }     
+    atkdebug("Returning module instance - $modname");
+    return $g_moduleRepository[$modname];    
   }
   
   /**
