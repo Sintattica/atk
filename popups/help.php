@@ -10,6 +10,9 @@
 *
 * $Id$
 * $Log$
+* Revision 1.3  2001/08/23 12:25:11  maurice
+* Solved page title bug
+*
 * Revision 1.2  2001/08/02 08:37:27  sandy
 * New hover function for the color picker, and removed theme.inc
 *
@@ -39,7 +42,8 @@
 
 //  Renders the help screen
   $language = strtok(atkconfig("languagefile"),".");
-  $title ="$txt_title_".$node;
+  $title1 ="txt_title_".$node;
+  $title = $$title1;
   $file   = "help/".$language."/help.".$node.".inc";
   $data = '<div align="left">';
   $data .= implode("<br>",file($file));
