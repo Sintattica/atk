@@ -68,8 +68,17 @@
      */
     function edit($record="", $fieldprefix="")
     {
+    global $g_layout,$config_atkroot;
+    $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
      // todo: configurable rows
-     
+     $result.='<div align="center">
+               [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                    text("check_all").
+             '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                    text("check_none").
+             '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                    text("invert_selection").'</a>]</div>';
+  
      $result .="\n<table><tr>\n";  
      $explode = explode("|",$record[$this->fieldName()]);
       for ($i=0;$i<count($this->m_values);$i++)
