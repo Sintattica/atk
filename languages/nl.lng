@@ -151,6 +151,7 @@
   "no" => "Nee",
   "none" => "Geen",
   "november" => "november",
+  "no_results_found"=>"Geen resultaten gevonden",
   "no_valid_directory" => "Geen geldige directory opgegeven",
   "october" => "oktober",
   "password" => "Wachtwoord",

@@ -172,10 +172,26 @@
       if ($this->m_select && $this->createSearchNodeInstance())
       {
         $res = "";
+        
+        // First check if we actually found anything
+        if ($this->m_matches)
+        {
+          foreach ($this->m_matches as $match)
+          {
+            if (!empty($match)) 
+            {
+              $notempty=true;
+              continue;
+            } 
+          }
+          if (!$notempty) return atktext("no_results_found");
+        }
+         
         if ($this->m_mode=="multiselect")
         {
           // Select multiple records from all matches
           $checkboxes = array();
+          
           foreach($this->m_matches as $keyword => $matches)
           { 
             for ($i=0, $_i=count($matches); $i<$_i; $i++)
@@ -248,6 +264,7 @@
     {
       atkdebug("Performing search");
       $result = array();
+      
       if ($this->createSearchNodeInstance() && $searchstring!="")
       {      
         $tokens = explode(",", $searchstring);
