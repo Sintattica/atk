@@ -11,7 +11,7 @@
   * $Id$
   *
   */
-  
+
   /**
    * Function atkErrorHandler
    * This function catches PHP parse errors etc, and passes
@@ -26,12 +26,12 @@
    * @param $errline: The line in the file on which the error occured.
    */
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
-  {      
+  {
     // Don't handle notices, and don't do anything if @ was u sed
-    if ($errtype==E_NOTICE || error_reporting()==0) 
+    if ($errtype==E_NOTICE || error_reporting()==0)
     {
       return;
-    }              
+    }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
     {
       // This is something we should pay attention to, but we don't need to die.
@@ -41,7 +41,7 @@
     else
     {
       atkerror("[$errtype] $errstr in $errfile (line $errline)");
-      
+
       // we must die. we can't even output anything anymore.. :(
       // we can mail though.
       mailreport();
@@ -157,7 +157,7 @@
    */
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    $currentlevel = atkLevel();    
+    $currentlevel = atkLevel();
 
     $newlevel = -1;
 
@@ -206,10 +206,10 @@
 
     if ($newlevel!=0)
     {
-      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';      
+      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
     }
     $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'">';
-    
+
     if ($sessionstatus!=SESSION_NEW)
     {
       $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
@@ -248,13 +248,13 @@
     {
       $start = "?";
     }
-    
+
     $url.=$start;
     // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
     {
       $url.= "atklevel=".$newlevel."&";
-    }    
+    }
     $url.= "atkprevlevel=".atkLevel();
     if ($sessionstatus!=SESSION_NEW)
     {
@@ -497,34 +497,15 @@
    * AE_decode($dest, "a_AE_c_AE_b");
    * then $dest will contain a decoded array:
    * echo $dest["a"]["b"]["c"]; <- this will display 3
-   *
-   * Note, this may be implemented more efficiently.
    */
   function AE_decode(&$dest, $var)
   {
-    $items = split("_AE_",$var);
-
-    if (count($items)>1)
-    {
-      $result = $dest[$var];
-
-      for ($i=count($items)-1;$i>0;$i--)
-      {
-        $tmp = $result;
-        $result = array();
-        $result[$items[$i]] = $tmp;
-      }
-      if (is_array($dest[$items[0]]))
-      {
-        // the decoded var already exists! so we add the value to the already
-        // existing variable.
-        $dest[$items[0]][$items[1]] = $result[$items[1]];
-      }
-      else
-      {
-        $dest[$items[0]] = $result;
-      }
-    }
+    $items = explode("_AE_", $var);
+    if (count($items) <= 1) return;
+    $current = &$dest;
+    foreach ($items as $key) $current = &$current[$key];
+    $current = $dest[$var];
+    unset($dest[$var]);
   }
 
   /**

@@ -74,19 +74,18 @@
       if ($mode!= "update" && $mode!="add")
       {
         if ($tablename!="") $tablename.=".";
-        if ($level<2)
-        {
-          $this->createDestination();
-          // we pass true as the last param to addToQuery, because we need all fields..
-          $this->m_destInstance->addToQuery($query, $this->fieldName(), $level+1, true);
 
-          $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$this->fieldName().".".$this->m_refKey;
-          if ($this->m_destinationFilter!="")
-          {
-            $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
-          }
-          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$condition, true);
+        $this->createDestination();
+
+        $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
+        if ($this->m_destinationFilter!="")
+        {
+          $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
         }
+        $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
+
+        // we pass true as the last param to addToQuery, because we need all fields..
+        $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
       }
 
       // When storing, we don't add to the query.. we have our own store() method..
@@ -236,6 +235,11 @@
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
       }
 
+      /* readonly */
+      elseif (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+      {
+        parent::addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix);
+      }
 
       /* edit */
       else

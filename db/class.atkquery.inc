@@ -354,7 +354,11 @@
 	      {
           $name = substr($name,0,strlen($name)-1).strtoupper(substr($name,strlen($name)-1,strlen($name)));
 	      }
-        if ($this->m_aliasLookup[$name]!="") $record[$this->m_aliasLookup[$name]]=$value;
+        if ($this->m_aliasLookup[$name]!="")
+        {
+          $record[$this->m_aliasLookup[$name]]=$value;
+          unset($record[$name]);
+        }
       }
     }
 
