@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.13  2001/06/19 12:58:09  peter
+   * Session cookie parameters changed so the session cookie will not only
+   * be domain based but also domain/path based!
+   *
    * Revision 4.12  2001/06/19 11:41:49  ivo
    * Authentication data is now stored globaly instead of per namespace.
    *
@@ -126,17 +130,16 @@
      
     function authenticate()
     {
-      global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword;
+      global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
       $md5 = false; // PHP_AUTH_PW is plain text..            
-
-      // authentication implies session
-//      atksession();
 
       // first check if we want to logout
       if (isset($atklogout) && !session_is_registered("relogin"))
       {
         session_destroy();
+        $cookie_params = session_get_cookie_params();
+        session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
         session_start();
         session_register("relogin");
 

@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.18  2001/06/19 12:58:09  peter
+   * Session cookie parameters changed so the session cookie will not only
+   * be domain based but also domain/path based!
+   *
    * Revision 1.17  2001/06/19 11:41:14  ivo
    * Global vars can now be namespace-global or completely global.
    *
@@ -70,7 +74,10 @@
    *
    */     
    
+  $cookie_params = session_get_cookie_params();
+  session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
   session_start();
+
   session_register("g_sessionData");           
   
   define(SESSION_DEFAULT,0);
