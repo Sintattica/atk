@@ -15,7 +15,7 @@
    * $Id$   
    *
    */
-  class atkoci9db extends atkdb
+  class atkoci9db extends atkoci8db
   {        
     var $m_bindresult = array();
 
