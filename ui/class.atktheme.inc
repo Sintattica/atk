@@ -4,7 +4,6 @@
 */
 class atkTheme
 {
-  var $atkroot;                      //root of the ATK application
   var $m_initialized = false;        //boolean, true if atkTheme object is initialised
   
   var $m_themedirname = "themes";    //directoryname where the themes can be found... this shouldn't change often
@@ -36,7 +35,6 @@ class atkTheme
   function atkTheme()
   {
     atkdebug("Created a new atkTheme instance");
-    $this->atkroot = atkconfig("atkroot");
     $this->m_curtheme = atkconfig("defaulttheme");
     $this->getCurThemedir();
     $this->initTheme();
@@ -96,10 +94,11 @@ class atkTheme
   */
   function getCurThemedir()
   {
+    global $config_atkroot;
     $themedefs = array(
-    $this->atkroot.$this->m_themedirname."/".$this->m_curtheme,
-    $this->atkroot."atk/".$this->m_themedirname."/".$this->m_curtheme,
-    $this->atkroot."atk/".$this->m_themedirname."/default",
+    $config_atkroot.$this->m_themedirname."/".$this->m_curtheme,
+    $config_atkroot."atk/".$this->m_themedirname."/".$this->m_curtheme,
+    $config_atkroot."atk/".$this->m_themedirname."/default",
     );
     
     foreach ($themedefs as $themedef)
@@ -147,14 +146,16 @@ class atkTheme
   */
   function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
   {
+    global $config_atkroot;
+    
     if(is_array($this->m_def[$attribname]))
     {
       $attrib = $this->getStackedItem($attribname,$attribvalue);
       if ($attrib)
       {
-        return $this->atkroot."../".$attrib["dir"].$returnpath;
+        return $config_atkroot."../".$attrib["dir"].$returnpath;
       }
-      return $this->atkroot."atk/themes/default/".$defaultreturnpath;
+      return $config_atkroot."atk/themes/default/".$defaultreturnpath;
     }
     else
     {
