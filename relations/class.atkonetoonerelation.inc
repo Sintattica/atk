@@ -37,14 +37,29 @@
      * @param $record Record
      * @return a displayable string
      */
-    function display($record)
+    function display($record, $mode="list")
     {
       $myrecord = $record[$this->fieldName()];
 
       $this->createDestination();
 
       if (is_array($myrecord))
-        $result = $this->m_destInstance->descriptor($myrecord);
+      {
+        /* display in list mode */
+        if ($mode == "list")
+          $result = $this->m_destInstance->descriptor($myrecord);
+
+        /* display in view mode */
+        else
+        {
+          if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+          $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+          $this->m_destInstance->m_flags |= NF_NO_SEARCH;
+          $result = $this->m_destInstance->recordList(array($myrecord), $actions, false, array($this->m_refKey), false)."<br>";
+        }
+      }
+
+      else $result = text("none");
 
       return $result;
     }
