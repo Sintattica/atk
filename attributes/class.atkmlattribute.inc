@@ -20,10 +20,6 @@
       global $config_atkroot;
       /* base class constructor */
       $this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY));
-
-      /* register javascript */
-      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
-      $GLOBALS['g_layout']->register_submitscript('submitSave(form);');
     }
 
     /**
@@ -35,6 +31,10 @@
     function edit($record="")
     {
       global $config_language, $g_layout;
+      
+      /* register javascript */
+      $g_layout->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
+      $g_layout->register_submitscript('submitSave(form);');
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)

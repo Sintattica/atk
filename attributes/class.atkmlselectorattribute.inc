@@ -47,10 +47,7 @@ class atkMlSelectorAttribute extends atkAttribute
   {
     global $config_atkroot;
     /* base class constructor */
-    $this->atkAttribute("multilanguage_select", $flags|AF_HIDE_LIST);
-
-    /* register javascript */
-    $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
+    $this->atkAttribute("multilanguage_select", $flags|AF_HIDE_LIST);    
   }
 
   /**
@@ -60,6 +57,8 @@ class atkMlSelectorAttribute extends atkAttribute
    */
   function edit($record="")
   {
+    /* register javascript */
+    $g_layout->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
     return $this->getSelector();
   }
 
