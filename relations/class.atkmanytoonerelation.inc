@@ -425,7 +425,7 @@
                           $alias,
                           implode(" AND ",$joinconditions), 
                           $this->m_leftjoin);
-          $this->m_destInstance->addToQuery($query, $alias, $level+1);              
+          $this->m_destInstance->addToQuery($query, $alias, $level+1);
         }
         else
         {

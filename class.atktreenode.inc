@@ -58,6 +58,7 @@
     
     function buildTree()
     {
+      atkdebug("atktreenode::buildtree() ".$this->m_parent);
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],"","",$this->m_listExcludes,"", "admin");
 
       $t = new tree;
@@ -73,7 +74,7 @@
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete) in a Treeview
      */
-    function adminPage()
+    function adminPage(&$handler)
     {
       global $g_maxlevel, $PHP_SELF;
       
@@ -83,7 +84,7 @@
       
       $content = "";
                 
-      $adminHeader = $this->adminHeader();
+      $adminHeader = $handler->adminHeader();
       if ($adminHeader!="")
       {
         $content.= $adminHeader."<br><br>";
@@ -99,8 +100,8 @@
 	    $this->m_tree[0]["id"]=''; 	    
 	    $this->m_tree[0]["isleaf"]=1; 
 
-      $test = $this->treeToArray($t->m_tree);
-            
+      $this->treeToArray($t->m_tree);
+
       $g_maxlevel=$g_maxlevel+2;            
 
        $width = ($g_maxlevel*16)+600;
