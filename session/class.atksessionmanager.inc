@@ -15,7 +15,6 @@
   session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
   session_name(atkconfig("identifier"));
   session_start();    
-  atkdebug("cookiepath: ".$cookiepath." session_name(): ".session_name()." session_id(): ".session_id()." SID: ".SID." REQUEST: ".$_REQUEST[session_name()]." COOKIE: ".$_COOKIE[session_name()]);  
 
   global $config_identifier;
   if (empty($config_identifier)) $config_identifier = "default";
