@@ -420,6 +420,64 @@
       }
     }
 
+    /**
+     * Detect wether the user is browsing with a PDA
+     * Returns true if he is, an array if he is using Windows CE
+     * and an array with ["width"] and ["height"] if those variables are known
+     * @return mixed wether or not the user is using a PDA and size of the screen if it is passed along
+     */
+    function detectPDA()
+    {
+      global $HTTP_USER_AGENT;
+      $browser=substr(trim($HTTP_USER_AGENT),0,4);
+
+      if ($browser=="Noki" || // Nokia phones and emulators
+          $browser=="Eric" || // Ericsson WAP phones and emulators
+          $browser=="WapI" || // Ericsson WapIDE 2.0
+          $browser=="MC21" || // Ericsson MC218
+          $browser=="AUR " || // Ericsson R320
+          $browser=="R380" || // Ericsson R380
+          $browser=="UP.B" || // UP.Browser
+          $browser=="WinW" || // WinWAP browser
+          $browser=="UPG1" || // UP.SDK 4.0
+          $browser=="upsi" || // another kind of UP.Browser ??
+          $browser=="QWAP" || // unknown QWAPPER browser
+          $browser=="Jigs" || // unknown JigSaw browser
+          $browser=="Java" || // unknown Java based browser
+          $browser=="Alca" || // unknown Alcatel-BE3 browser (UP based?)
+          $browser=="MITS" || // unknown Mitsubishi browser
+          $browser=="MOT-" || // unknown browser (UP based?)
+          $browser=="My S" || // unknown Ericsson devkit browser ?
+          $browser=="WAPJ" || // Virtual WAPJAG www.wapjag.de
+          $browser=="fetc" || // fetchpage.cgi Perl script from www.wapcab.de
+          $browser=="ALAV" || // yet another unknown UP based browser ?
+          $browser=="Wapa") // another unknown browser ("Wapalyzer"?)
+        return true;
+      else if (strstr($HTTP_USER_AGENT,"Windows CE")) // Every device with Windows CE
+      {
+        $extrainfo = substr($HTTP_USER_AGENT, strpos($HTTP_USER_AGENT,"("));
+        $seperated = explode(";",substr($extrainfo,0,strlen($extrainfo)-1));
+        foreach ($seperated as $key => $info)
+        {
+          // We trim the whitespaces
+          $seperated[$key]= $info = trim($info);
+
+          // And check for size
+          $explodedinfo = explode("x",$info);
+          $size = array();
+          if ($explodedinfo[0] && is_numeric($explodedinfo[0]) && $explodedinfo[1] && is_numeric($explodedinfo[1]))
+          {
+            // We've got browser size
+            $size["width"]  = $explodedinfo[0];
+            $size["height"] = $explodedinfo[1];
+          }
+        }
+        return $size;
+      }
+      else
+        return false;
+    }
+
     function detectOS()
     {
      // Windows 3.x
