@@ -53,6 +53,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.114  2001/10/01 13:56:06  ivo
+   * New feature: securityAliases for nodes.
+   * Updates to module api.
+   *
    * Revision 4.113  2001/09/28 10:29:32  ivo
    * Modulehandling cleanup.
    *
@@ -482,6 +486,13 @@
                                "update"=>"edit",
                                "copy"=>"add",
                                "search"=>"admin");
+    
+    /**
+     * If a class is named 'project', then by default, if the system needs to know whether
+     * a user may edit a record, the securitymanager searches for 'edit' access on 'project'.
+     * However, if an alias is set here, the securitymanger searches for 'edit' on that alias.
+     */
+    var $m_securityAlias = "";
                                
     /*
      * Nodes can specify actions that require no access level 
@@ -3203,10 +3214,23 @@
     function allowed($action)
     {
       global $g_securityManager;
+      if (empty($this->m_securityAlias))
+      {
+        $alias = (empty($this->m_module) ? "" : $this->m_module.".").$this->m_type;
+      }
+      else
+      {
+        $alias = $this->m_securityAlias;
+      }
 
       return ($this->hasFlag(NF_NO_SECURITY)
               ||in_array($this->securityKey($action), $this->m_unsecuredActions)
-              || $g_securityManager->allowed((empty($this->m_module) ? "" : $this->m_module.".").$this->m_type,$this->securityKey($action)));
+              || $g_securityManager->allowed($alias,$this->securityKey($action)));
+    }
+    
+    function setSecurityAlias($alias)
+    {
+      $this->m_securityAlias = $alias;
     }
     
     /**

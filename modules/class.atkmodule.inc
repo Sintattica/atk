@@ -11,6 +11,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.9  2001/10/01 13:56:06  ivo
+ * New feature: securityAliases for nodes.
+ * Updates to module api.
+ *
  * Revision 1.8  2001/09/28 10:29:33  ivo
  * Modulehandling cleanup.
  *
@@ -136,7 +140,7 @@
     function adminlink($name, $url, $enable=1)
     {
       if (!empty($name) && !empty($url)) $this->m_admin_links[$name] = $url;
-    }
+    }          
         
   }
 

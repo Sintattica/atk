@@ -10,6 +10,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.4  2001/10/01 13:56:06  ivo
+ * New feature: securityAliases for nodes.
+ * Updates to module api.
+ *
  * Revision 4.3  2001/05/11 15:24:54  peter
  * Some updates for the module support and some other things...
  *
@@ -32,7 +36,11 @@
   function registerNode($node, $action)
   {
     global $g_nodes;
-    $g_nodes[$node] = $action;
+    $module = getNodeModule($node);
+    $type = getNodeType($node);
+    
+    if ($module=="") $module="main";    
+    $g_nodes[$module][$type] = $action;
   }
 
 ?>
