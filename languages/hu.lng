@@ -1,0 +1,166 @@
+<?php
+$hu=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Applikacio",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Udvozollek ebben az ATK applikacioban.",
+
+  "yes" =>  "Igen",
+  "no" =>  "Nem",
+
+  "view" =>  "Mutasd",
+  "edit" =>  "Szerkeszt",
+  
+  "delete" =>  "Töröl",
+  "add" =>  "Hozzáad",
+  "copy" =>  "Copy",  
+  "admin" =>  "Adminisztráció",
+  "search" =>  "Keresés",
+
+  "search_all" =>  "Keress mindben",
+
+  "next" =>  "Következo"",
+  "previous" =>  "Elo"zo"",
+  "select" =>  "Kiválaszt",
+
+  "save" =>  "Mentés",
+  "saveandclose" =>  "Mentés és bezárás",
+  "cancel" =>  "Mégsem",
+  "back" =>  "Vissza",
+
+  "menu" =>  "Menü",
+  "error" =>  "HIBA!",
+
+  "error_obligatoryfield" =>  "Ez a mezo" szükséges",
+  "error_formdataerror" =>  "A mentés nem sikerült, mert:",
+  "error_uniquefield" =>  "Ennek a mezo"nek az érteke páratlan kell, hogy legyen",
+  "confirm_delete" =>  "Biztos, hogy törölni kívánja?",
+  "title_delete" =>  "Törlés megero"sítése",
+
+  "select_none" =>  "Semmi",
+  
+  "clickheretoadd_prefix" =>  "Új hozzáadása",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Nincs ilyen mappa",
+  "remove_current_file" =>  "Állomány törlése",
+  "file_not_exist" =>  "Nincs ilyen állomany",
+  "cannot_remove_file" =>  "Az állomany nem törölheto"!",
+
+  // specific password attribute text
+  "password_current" =>  "Jelenlegi",
+  "password_new" =>  "Új",
+  "password_again" =>  "Újra",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "A megadott jelszó nem valós.",
+  "password_incorrect" =>  "Hibás jelszót adott meg!",
+  "error_password_nomatch" =>  "A beírt jelszavak nem egyeznek.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Válasszon Nyelvet:",
+  "multilanguage_choice" =>  "Választott nyelv:", 
+  
+  "language_nl" =>  "Holland",
+  "language_de" =>  "Német",
+  
+  "until" =>  "-",
+    
+  "january" =>  "Január",
+  "february" =>  "Február",
+  "march" =>  "Március",
+  "april" =>  "Április",
+  "may" =>  "Május",
+  "june" =>  "Június",
+  "july" =>  "Július",
+  "august" =>  "Augusztus",
+  "september" =>  "Szeptember",
+  "october" =>  "Október",
+  "november" =>  "November",
+  "december" =>  "December",
+  
+  "fri" =>  "Péntek",
+  "sat" =>  "Szombat",
+  "sun" =>  "Vasárnap",
+  "mon" =>  "Hétfo"",
+  "tue" =>  "Kedd",
+  "wed" =>  "Szerda",
+  "thu" =>  "Csürörtök",
+  
+  "permission_denied" =>  "Sajnálom, de ide nincs hozzaférése, kérem lepjen kapcsolatba egy adminsztrátorral!",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+  
+  "error_primarykey_exists" =>  "Ezzel a kulcsal már létezik egy rekord",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Válasszon színt",
+
+  "help" =>  "Súgó",
+
+  "search_extended" =>  "Kiterjedt",
+
+  "search_exact" =>  "Pontos találatra keres",
+  "search_substring" =>  "Részre keres",
+  "search_wildcard" =>  "Helyettesíto" karakterrel keres (*)",
+  "search_regexp" =>  "Normál kifejezéssel keres (haladóknak)",
+  "search_soundex" =>  "Hasonlóra keres",
+
+  "search_mode" =>  "Keresés módja",
+
+  "login_failed" =>  "Siekrtelen belépés",
+  "auth_no_server" =>  "Nincs szerver megadva. Az azonosítás nem lehetséges (lépjen kapcsolatba egy adminisztrátorral).",
+  "auth_unable_to_connect" =>  "Az azonosító szerverhez történo"o" kapcsolódás sikertelen (lépjen kapcsolatba egy adminisztrátorral).",
+
+  "error_invalid_email" =>  "Hibás e-mail cím",
+  "error_unkown_domain" =>  "Ismeretlen domain",
+  "error_notnumeric" =>  "Az érték nem szám",
+
+  "check_all" =>  "Mindet kijelöli",
+  "check_none" =>  "Semmit sem jelöl ki",
+  "invert_selection" =>  "Inverz kijelölés",
+
+  // Strings for atkFileEditor
+  "file_exists" =>  "Ilyen névvel már létezik állomány",
+  "filename_invalid" =>  "Helytelen az állomány neve",
+  "filename" =>  "Állománynév",
+  "filecontent" =>  "Tartalom",    
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+
+);
+?>
