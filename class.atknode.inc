@@ -2096,14 +2096,16 @@
      * Creates a special Recordlist that can be used for exporting to files of to make it printable
      * @param $recordset $suppresslist
 
-     * @param $sol      -- start row/record/line
-     * @param $eof      -- end field
-     * @param $sof      -- start field
-     * @param $eol      -- end record/line
-     * @param $type     -- 0=in simple table ; 1= export
-   *@param $compression -- Compression technique (bzip / gzip)
+     * @param $sol                -- start row/record/line
+     * @param $eof                -- end field
+     * @param $sof                -- start field
+     * @param $eol                -- end record/line
+     * @param $type               -- 0=in simple table ; 1= export
+     * @param outputparamKeyVal   -- Key-Value parameters for output. Currently existening: 
+     *                               filename   -- the name of the file (without extension .cvs)
+   *@param $compression         -- Compression technique (bzip / gzip)
   */
-   function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $compression="",$suppressList="")
+   function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $compression="",$suppressList="", $outputparamKeyVal = Array())
     {
       // example      html         csv
 
@@ -2250,8 +2252,10 @@
       // To a File
       if ($type=="1")
       {
+        if (!array_key_exists("filename", $outputparamKeyVal))
+          $outputparamKeyVal["filename"] = "achievo";
 
-        $this->export2File($output,"achievo","csv","csv",$compression);
+        $this->export2File($output, $outputparamKeyVal["filename"],"csv","csv",$compression);
       }
     }
 
