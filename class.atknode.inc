@@ -52,6 +52,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.93  2001/09/04 09:19:35  ivo
+   * Fixed an issue with objects being copied instead of referenced when the
+   * reference was created inside the constructor of the referenced object.
+   *
    * Revision 4.92  2001/09/04 08:30:32  maurice
    * Changed functionname orgKeyField to orgKeyValue
    *
@@ -329,7 +333,7 @@
     var $m_primaryKey = array();
 
     /*
-     * The last know primary key value for a certain record
+     * The last known primary key value for a certain record
      */
     var $m_orgkey = array();
 
@@ -454,6 +458,13 @@
       global $g_securityManager;
 
       $attribute->m_owner = $this->m_type;
+      
+      // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
+      // constructor, m_ownerInstance ends up being a copy of $this, rather than 
+      // a reference. Don't ask me why, it has something to do with the way PHP
+      // handles the constructor.
+      // To work around this, we reassign the this pointer to the attributes as 
+      // soon as possible AFTER the constructor. (the dispatcher function)
       $attribute->m_ownerInstance = &$this;
       if (!$g_securityManager->attribAllowed($this->m_type, $attribute->m_name, "edit"))
       {
@@ -510,8 +521,11 @@
       if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_hasMlSelectEdit = 1;
       
       $attribute->init();            
-      
+            
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
+      
+      $this->m_currentRec = "AA";    
+            
     }
 
     /**
@@ -523,7 +537,7 @@
      */
     function addAttribute($attribute)
     {
-      $this->add($attribute);
+      $this->add(&$attribute);      
     }
 		
 		 /**        * Add an atkAttribute to the node ($attribute should be an object of type       
@@ -992,10 +1006,6 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {      
         $p_attrib = &$this->m_attribList[$attribname];
-
-        // It looks like m_ownerInstance is not a real reference to the
-        // owner of the attribute. Therefor copy de owner again to m_ownerInstance
-        $p_attrib->m_ownerInstance = &$this;
         // fields that have not yet been initialised may be overriden in the url..
 
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
@@ -1879,8 +1889,21 @@
       {
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
-      }
+      }                  
       
+      /** WORKAROUND
+          We assign the $this reference to the attributes at this stage, since it fails
+          when we do it in the add() function 
+          See also the comments in the add() function.
+          TODO: we need a cleaner api for nodes. currently, all initialisation is done
+          in the constructor. This can lead to errors. We need some init() function in which 
+          the initialisation is handled.
+       **/
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib->m_ownerInstance = &$this;
+      }
       
       // check for fake submit (session saving href thingee)
       if ($this->m_postvars["atkescape"]!="")
@@ -2616,10 +2639,9 @@ atkdebug("Action add");
           $p_attrib = &$this->m_attribList[$loadlist[$i]];
 
           $this->setOrgKeyValue($recordset[$j]);
+          
           atkdebug("orgkeyvalue SelectDb ".$this->orgKeyValue()." NodeName ".$this->m_type);
-          // It looks like m_ownerInstance is not a real reference to the
-          // owner of the attribute. Therefor copy de owner again to m_ownerInstance
-          $p_attrib->m_ownerInstance  = &$this;
+
           $recordset[$j][$loadlist[$i]] = $p_attrib->load($g_db, $recordset[$j]);
         }
       }
