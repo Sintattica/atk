@@ -31,7 +31,7 @@
     var $m_searchconditions;
 
     /**
-    * Var with AND or OR method 
+    * Var with AND or OR method
     */
     var $m_searchmethod;
 
@@ -49,20 +49,20 @@
     * Array with Joins
     */
     var $m_joins;
-    
+
     /**
      * Array with group by statements
      */
     var $m_groupbys;
-    
+
     /**
      * Array with order by statements
      */
     var $m_orderbys;
-    
+
     /**
     * Array with generated aliasses
-    * Oracle has a problem when aliases are too long 
+    * Oracle has a problem when aliases are too long
     */
     var $m_generatedAlias;
 
@@ -82,10 +82,10 @@
       $this->m_orderbys = array();
       $this->m_groupbys = array();
       $this->m_searchmethod = "";
-      
+
       // start at 'A'.
       $this->m_generatedAlias = "A";
-      
+
       $this->m_aliasLookup = array();
     }
 
@@ -107,14 +107,14 @@
       $this->m_fields[] = $fieldname;
 
       if ($quote||$value=="") $value = "'".$value."'";
-      
+
       $this->m_values[$fieldname] = $value;
-      
-      if ($fieldaliasprefix!="") 
+
+      if ($fieldaliasprefix!="")
       {
         $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;
         $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
-        
+
         $this->m_generatedAlias++;
       }
     }
@@ -129,7 +129,7 @@
       $this->m_tables[] = $name;
       $this->m_aliases[count($this->m_tables)-1] = $alias;
     }
-    
+
     /**
     * Add join to Join Array
     * @param $table Table name
@@ -138,25 +138,25 @@
     */
     function addJoin($table, $alias, $condition, $outer)
     {
-      if ($outer) 
+      if ($outer)
       {
         $join="LEFT JOIN ";
         $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
       }
-      else 
+      else
       {
         $join="JOIN ";
-        $this->m_joins[]= " ".$join.$table." ".$alias;    
+        $this->m_joins[]= " ".$join.$table." ".$alias;
         $this->addCondition($condition);
       }
-      
+
     }
-    
+
     function addGroupBy($element)
     {
       $this->m_groupbys[] = $element;
     }
-    
+
     function addOrderBy($element)
     {
       $this->m_orderbys[] = $element;
@@ -169,7 +169,7 @@
     function addCondition($condition)
     {
       if ($condition!="") $this->m_conditions[] = $condition;
-    }        
+    }
 
   /**
     * Add search condition to search condition Array
@@ -178,15 +178,16 @@
     function addSearchCondition($condition)
     {
       if ($condition!="") $this->m_searchconditions[] = $condition;
-    }        
+    }
 
     /**
     * Builds the SQL Select query
     * @result a SQL Select Query
+    * @param $distinct distinct records?
     */
-    function buildSelect()
+    function buildSelect($distinct = FALSE)
     {
-      $result = "SELECT ";
+      $result = "SELECT ".($distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
         $result.= $this->m_fields[$i];
@@ -201,11 +202,11 @@
         if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
         if ($i < count($this->m_tables)-1) $result.=",";
       }
-      
+
       for ($i=0;$i<count($this->m_joins);$i++)
       {
         $result.=$this->m_joins[$i];
-      }     
+      }
 
       if (count($this->m_conditions)>0)
       {
@@ -225,30 +226,34 @@
           $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
         }
       }
-      
+
       if (count($this->m_groupbys)>0)
       {
         $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
       }
-      
+
       if (count($this->m_orderbys)>0)
       {
         $result.= " ORDER BY ".implode(", ",$this->m_orderbys);
       }
-      
+
       return $result;
     }
-    
+
     /**
      * Builds the SQL Select COUNT(*) query. This is different from select,
      * because we do joins, like in a select, but we don't really select the
      * fields.
      *
+     * @param $distinct distinct rows?
+     *
      * @result a SQL Select COUNT(*) Query
      */
-     function buildCount()
+     function buildCount($distinct = FALSE)
      {
-       $result = "SELECT COUNT(*) as count FROM ";
+       if ($distinct && count($this->m_fields) > 0)
+        $result = "SELECT COUNT(DISTINCT ".implode($this->m_fields, ",").") as count FROM ";
+       else $result = "SELECT COUNT(*) as count FROM ";
 
        for ($i=0;$i<count($this->m_tables);$i++)
        {
@@ -261,12 +266,12 @@
        {
          $result.=$this->m_joins[$i];
        }
- 
+
       if (count($this->m_conditions)>0)
       {
         $result.= " WHERE ".implode(" AND ",$this->m_conditions);
       }
-       
+
       if (count($this->m_searchconditions)>0)
       {
         $prefix=" ";
@@ -280,15 +285,15 @@
           $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
         }
       }
-       
+
        if (count($this->m_groupbys)>0)
        {
          $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
        }
        return $result;
      }
-    
-    
+
+
     /**
     * Builds the SQL Update query
     * @result a SQL Update Query
@@ -350,15 +355,15 @@
           $name = substr($name,0,strlen($name)-1).strtoupper(substr($name,strlen($name)-1,strlen($name)));
 	      }
         if ($this->m_aliasLookup[$name]!="") $record[$this->m_aliasLookup[$name]]=$value;
-      }     
+      }
     }
-    
+
     /**
      * Generate a searchcondition that checks whether $value matches $field exactly.
-     */ 
+     */
     function exactCondition($field, $value)
     {
-      if($value[0]=='!') 
+      if($value[0]=='!')
       {
         return "UPPER(".$field.")!=UPPER('".substr($value,1,strlen($value))."')";
       }
@@ -367,10 +372,10 @@
         return "UPPER(".$field.")=UPPER('".$value."')";
       }
     }
-    
+
     /**
      * Generate a searchcondition that checks whether $field contains $value .
-     */ 
+     */
     function substringCondition($field, $value)
     {
       if($value[0]=='!')
@@ -382,10 +387,10 @@
         return "UPPER(".$field.") LIKE UPPER('%".$value."%')";
       }
     }
-    
+
     /**
      * Generate a searchcondition that accepts '*' as wildcard character.
-     */ 
+     */
     function wildcardCondition($field, $value)
     {
       if($value[0]=='!')
@@ -397,7 +402,7 @@
         return "UPPER(".$field.") LIKE UPPER('".str_replace("*","%",$value)."')";
       }
     }
-    
+
     /**
         *  generate searchcondition with greater than
         */
@@ -412,7 +417,7 @@
         return $field." > '".$value."'";
       }
     }
- 
+
    /**
         *  generate searchcondition with greater than
         */
@@ -427,7 +432,7 @@
         return $field." >= '".$value."'";
       }
     }
-    
+
     /**
         *  generate searchcondition with less than
         */
