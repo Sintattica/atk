@@ -26,6 +26,7 @@
    $formRef   = $field;
    $matrix = colorMatrix($colHeight,$colWidth,$formRef,1,$usercol);
   //  Display's the picker in the current ATK style-template
+  $g_layout->initGui();
   $g_layout->output("<html>");
   $g_layout->head("ColorPicker");
   $g_layout->output('<script language="javascript" src="'.$config_atkroot.'atk/javascript/colorpicker.js"></script>');
