@@ -101,39 +101,46 @@
         }
               
         $d = dir($this->m_dir);
-        while (false !== ($entry = $d->read()))
+        if($d->handle)
         {
-          // list only regular files.
-          if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
+          while (false !== ($entry = $d->read()))
           {
-            
-            $arr[] = $entry;
-          }
-        }
-        $d->close();
-
-        if (count($arr)>0)
-        {
-          if ($orderby=="dummy.filename DESC")
-          {      
-            rsort($arr);
-          }
-          else
-          {
-            sort($arr);
-          }
-        }
-        
-        $res = array();
-  
-        for ($i=0;$i<count($arr);$i++)
-        {
-          if ($i>=$start && ($max==-1||count($res)<$max))
-          {
-            $res[] = array('filename'=>$arr[$i]);
-          }
-        }      
+            // list only regular files.
+            if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
+            {
               
+              $arr[] = $entry;
+            }
+          }
+          $d->close();
+        
+
+          if (count($arr)>0)
+          {
+            if ($orderby=="dummy.filename DESC")
+            {      
+              rsort($arr);
+            }
+            else
+            {
+              sort($arr);
+            }
+          }
+          
+          $res = array();
+    
+          for ($i=0;$i<count($arr);$i++)
+          {
+            if ($i>=$start && ($max==-1||count($res)<$max))
+            {
+              $res[] = array('filename'=>$arr[$i]);
+            }
+          }      
+        }
+        else
+        {
+          atkdebug("Dir " . $this->m_dir . " could not be read");
+        }
       }
       else
       {
