@@ -506,7 +506,7 @@
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
+      if (!$this->hasFlag(AF_LARGE) || !$this->createDestination())
       {
         // We only support 'exact' matches. 
         // But you can select more than one value, which we search using the IN() statement,
@@ -518,6 +518,11 @@
           else // search for more values using IN()
             return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
         }
+        else
+        {
+          return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+        }
+
       }
       else
       {
