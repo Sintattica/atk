@@ -87,7 +87,7 @@
   
   function nodeFile($node)
   {
-    global $g_modules, $config_atkroot;
+    global $g_modules, $config_atkroot, $config_classroot;
     
     /* module and type */
     $module = getNodeModule($node);
@@ -97,7 +97,7 @@
     /* filename */
     if (empty($module)) 
     {  
-      $file = "class.$type.inc";  
+      $file = $config_classroot."class.$type.inc";  
     }
     else 
     {      
