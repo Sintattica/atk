@@ -201,6 +201,7 @@
 	    $img_leaf     = $icon_path."tree_leaf.gif"; 
       $img_leaflink = $icon_path."tree_leaf_link.gif"; 
 	    $img_spc      = $icon_path."tree_space.gif"; 
+      $img_extfile  = $icon_path."tree_extfile.gif"; 
        
       $res="";
       $lastlevel=0;
