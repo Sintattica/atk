@@ -104,10 +104,12 @@
       global $g_modules;
       
       $this->m_fallbackmodules=array();
-      
-      foreach ($g_modules as $modname => $modpath)
-      {
-        $this->m_fallbackmodules[] = $modname;
+      if (is_array($g_modules))
+      { 
+        foreach ($g_modules as $modname => $modpath)
+        {
+          $this->m_fallbackmodules[] = $modname;
+        }
       }
       $this->m_fallbackmodules[] = "atk";
     }      
