@@ -33,6 +33,9 @@ Changes in ATK 5.0.7
   for normal/extended searching and sorting [Boy, Harrie]
 * Fixed navigating for select mode [Boy,Yuri]
 * atkQuery now checks for double joins [Boy,Harrie]
+* Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute [Boy]
+* Made atkFuzzySearch attrib use multiselect attribute and use the
+  new flags by default [Boy]
 
 Changes in ATK 5.0.6
 --------------------

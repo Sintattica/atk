@@ -17,6 +17,8 @@
    
   /** Defines */
   define(AF_NO_TOGGLELINKS, AF_SPECIFIC_1);
+  define(AF_CHECK_ALL, AF_SPECIFIC_2);
+  define(AF_LINKS_BOTTOM, AF_SPECIFIC_3);
   
   /** @internal Include base class */
   useattrib("atklistattribute");
@@ -126,28 +128,27 @@
       $page = &atkPage::getInstance();
       $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");      
 
-      if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
-      {
-        $result.='<div align="left"><font size="-2">
-                  [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
-                       text("check_all").
-                  '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
-                       text("check_none").
-                  '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
-                       text("invert_selection").'</a>]</font></div>';
-      } 
+      if (!$this->hasFlag(AF_LINKS_BOTTOM)) $result.=$this->_addLinks($fieldprefix);
+      
       $result .="\n<table><tr>\n";  
-            
+      
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
+        if (!$this->hasFlag(AF_CHECK_ALL)) 
+        {
+          (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
+        }
+        else 
+        {
+          $sel = "checked";
+        }
         $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
         $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);  
 
-        if ($i%$cols == $modcols) $result .="</tr><tr>\n";
-        
+        if ($i%$cols == $modcols) $result .="</tr><tr>\n";        
       }
       $result.="</tr></table>\n";
+      if ($this->hasFlag(AF_LINKS_BOTTOM))$result.=$this->_addLinks($fieldprefix);
     
       return $result;
     }
@@ -182,5 +183,18 @@
       return array("substring");
     }  
     
+    function _addLinks($fieldprefix)
+    {
+      if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
+      {
+        return '<div align="left"><font size="-2">
+                  [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
+                       atktext("check_all").
+                  '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
+                       atktext("check_none").
+                  '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
+                       atktext("invert_selection").'</a>]</font></div>';
+      } 
+    }
   }
 ?>

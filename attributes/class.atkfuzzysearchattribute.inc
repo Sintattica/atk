@@ -12,6 +12,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    */
 
+   useattrib("atkMultiSelectAttribute");
   /**
    * The atkFuzzySearchAttribute class represents an attribute of a node
    * that has a field where you can enter certain keywords to search for
@@ -187,7 +188,7 @@
           if (!$notempty) return atktext("no_results_found");
         }
          
-        if ($this->m_mode=="multiselect")
+        if ($this->m_mode=="multiselect" && count($this->m_matches>1))
         {
           // Select multiple records from all matches
           $checkboxes = array();
@@ -196,15 +197,13 @@
           { 
             for ($i=0, $_i=count($matches); $i<$_i; $i++)
             {
-              $item = '<INPUT TYPE="CHECKBOX" NAME="'.$prefix.$this->fieldName().'[]" VALUE="'.
-                              $this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);
-              if (!in_array($item, $checkboxes))
-              {
-                $checkboxes[] = $item;
-              }
+              $optionArray[]= $this->m_searchnodeInstance->descriptor($matches[$i]);
+              $valueArray[] = $this->m_searchnodeInstance->primaryKey($matches[$i]);
             }
           }
-          $res.= implode("<BR>", $checkboxes);
+          
+          $attrib = new atkMultiSelectAttribute($this->m_name, $optionArray, $valueArray,1, AF_NO_LABEL|AF_CHECK_ALL|AF_LINKS_BOTTOM);
+          $res.= $attrib->edit();
         }
         else if ($this->m_mode=="select" || ($this->m_mode=="multiselect" && count($this->m_matches)==1))
         {
