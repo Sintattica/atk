@@ -37,7 +37,7 @@
   $txt_menu = "Menu";
   $txt_error = "Errore";
   
-  $txt_error_obligatoryfield = "Quetso campo è obbligatorio";
+  $txt_error_obligatoryfield = "Questo campo è obbligatorio";
   $txt_error_formdataerror = "Il salvataggio è fallito per questa ragione: ";
   $txt_error_uniquefield = "Il valire di quetso campo deve essere univoco";
   $txt_confirm_delete = "Sicuro di volerlo cancellare?";
@@ -62,7 +62,7 @@
 
   // multilanguage text
   $txt_multilanguage_select = "Seleziona una lingua:";
-  $txt_multilanguage_choice = "Lingua seelezionata:"; 
+  $txt_multilanguage_choice = "Lingua selezionata:"; 
   
   $txt_language_nl = "Dutch";
   $txt_language_de = "German";
@@ -93,13 +93,13 @@
   $txt_menu_main = "Main";
   $txt_back_to = "Back to";
   
-  $txt_permission_denied = "Sorry, you don't have permission to perform this action";
+  $txt_permission_denied = "Attenzione, non si dispongono dei permessi per questa operazione";
   
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-1";
   
   // field is obligatory, leave empty if you don't want this message!
-  $txt_field_obligatory = "Fields marked with '*' are required.";  
+  $txt_field_obligatory = "Fields marked with '*' are required."; 
   
   $txt_help = "Help";
 
