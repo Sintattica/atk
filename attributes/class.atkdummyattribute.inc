@@ -15,7 +15,11 @@
    * @version $Revision$
    * $Id$
    */
-   define("AF_DUMMY_SHOW_LABEL",              AF_SPECIFIC_1); // make the dummy label it's fields
+
+   /**
+    * Custom flags
+    */
+   define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
    
   /**
    * With the atkDummyAttribute class you can place comments between other
