@@ -229,6 +229,7 @@
   "yes" => "Yes",
   
   "import_relation_value_failed" => "Of the field '%s' has been found, on line %s, the value '%s', however this is not a unique value for this relation",
+  "decimal_seperator"=>"."
 );
 
 ?>

@@ -39,6 +39,8 @@ Changes in ATK 5.1.1
 * Functional decomposition of importhandler [Boy]
 * Improved postgres error reporting [Boy]
 * Fixed file export with MSIE in combination with SSL (HTTPS) [Wim]
+* Made atkNumberAttribute replace "decimals_seperator" from the language files 
+  for . while validating numbers [Boy]
 
 Changes in ATK 5.1.0
 --------------------

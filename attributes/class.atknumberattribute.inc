@@ -51,6 +51,10 @@
      */    
     function validate(&$record, $mode)
     {
+      // Replace decimal seperator by . so the Dutch 99,95 would become 99.95
+      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
+        $record[$this->fieldName()] = str_replace(atktext("decimal_seperator"),".",$record[$this->fieldName()]);
+      
       if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
          triggerError($record, $this->fieldName(), 'error_notnumeric');
     }
