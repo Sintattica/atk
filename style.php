@@ -83,6 +83,6 @@ A:hover
  if (isset($g_theme["RowColor2"]))
 {?>
   background-color: <?php echo $g_theme["RowColor2"]; ?>;
-<?}?>
+<?php}?>
 }
 
