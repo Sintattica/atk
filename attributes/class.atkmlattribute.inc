@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/10/22 13:07:48  ivo
+   * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
+   * features have been disabled because they don't seem to work.
+   *
    * Revision 4.6  2001/08/16 07:17:49  ivo
    * Replaced htmlentities with htmlspecialchars for some attributes.
    * (people with different charactersets experience problems with
@@ -58,6 +62,7 @@
 
       /* register javascript */
       $GLOBALS['g_layout']->register_script("atk/javascript/class.atkmultilanguage.js.php");
+      $GLOBALS['g_layout']->register_submitscript('submitSave(form);');
     }
 
     /**

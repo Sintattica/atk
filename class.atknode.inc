@@ -57,6 +57,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.120  2001/10/22 13:07:48  ivo
+   * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
+   * features have been disabled because they don't seem to work.
+   *
    * Revision 4.119  2001/10/11 11:59:57  ivo
    * Added init.sql file to create db_sequence table, and set default sequence
    * to tablename instead of 'node' (finally!)
@@ -789,7 +793,7 @@
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
-                                   ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
+                                   ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("edit",$record,$forceList));
@@ -886,7 +890,7 @@
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
-                                   ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
+                                   ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());                                   
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("add",$record,$forceList));

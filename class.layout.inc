@@ -21,6 +21,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.15  2001/10/22 13:07:48  ivo
+  * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
+  * features have been disabled because they don't seem to work.
+  *
   * Revision 4.14  2001/10/09 12:19:31  rene
   * made the $config_atkroot more global, so it's easier to include from a
   * NON atk directory
@@ -148,7 +152,7 @@
      */
     var $m_raw = "";
    
-
+    var $m_submitscripts = array();
     var $m_scripts = array();   
     var $m_stylesheets = array();
     
@@ -297,6 +301,11 @@
     {
       if (!in_array($file, $this->m_scripts)) $this->m_scripts[] = $file;
     }
+    
+    function register_submitscript($code)
+    {
+      if (!in_array($code, $this->m_submitscripts)) $this->m_submitscripts[] = $code;
+    }
 
     /**
      * Register a Cascading StyleSheet for use withing the page
@@ -335,6 +344,19 @@
       
       for ($i = 0; $i < count($this->m_scripts); $i++) 
         $res.='  <script language="javascript" src="'.$this->m_scripts[$i].'"></script>'."\n";
+              
+      $res.="<script language=\"javascript\">\n
+               function globalSubmit(form)
+               {
+                 var retval = true;\n";
+      for ($i=0; $i < count($this->m_submitscripts); $i++)
+      {
+        $res.="retval = ".$this->m_submitscripts[$i]."\n";
+        $res.="if (retval!=true) return false;\n";
+      }      
+      $res.="return retval;
+               }
+             </script>\n";
       
       for ($i = 0; $i < count($this->m_stylesheets); $i++) 
         $res.='  <link href="'.$config_atkroot.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";

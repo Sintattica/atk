@@ -39,6 +39,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.1  2001/10/22 13:07:48  ivo
+ * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
+ * features have been disabled because they don't seem to work.
+ *
  * Revision 4.0  2001/04/23 10:20:39  ivo
  * revision tags.
  *
@@ -111,4 +115,5 @@
         }
       }
     }
+    return true;
   }
