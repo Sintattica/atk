@@ -2611,9 +2611,9 @@
      * on any attribute that has the AF_CASCADE_DELETE flag set, the delete()
      * method is invoked. 
      *
-     * @todo: There's a discrepancy between updateDb, addDb and deleteDb:
-     *        There should be a deleteDb which accepts a record, instead
-     *        of a selector.
+     * @todo There's a discrepancy between updateDb, addDb and deleteDb:
+     *       There should be a deleteDb which accepts a record, instead
+     *       of a selector.
      * @param String $selector SQL expression used as where-clause that
      *                         indicates which records to delete.
      * @returns boolean True if successful, false if not.
