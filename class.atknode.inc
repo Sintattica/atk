@@ -52,18 +52,8 @@
    *
    * $Id$
    * $Log$
-   * Revision 4.85  2001/07/25 13:46:34  ivo
-   * New feature: DESC sort when you select a column that was already sorted.
-   *
-   * Revision 4.84  2001/07/19 11:35:04  ivo
-   * Formsession save now works for action==admin
-   *
-   * Revision 4.83  2001/07/18 16:08:18  ivo
-   * $this->addAttribute() now has a shorter alias: $this->add()
-   *
-   * Revision 4.82  2001/07/18 12:10:10  ivo
-   * New flags: AF_READONLY_ADD and AF_READONLY_EDIT (AF_READONLY automatically
-   * selects both flags)
+   * Revision 4.86  2001/07/27 13:16:14  sandy
+   * advanced colorpicker attrib + new popup system
    *
    * Revision 4.81  2001/07/17 09:51:31  ivo
    * Replaced all dispatch.php occurrences with $PHP_SELF.
@@ -412,13 +402,13 @@
       $this->m_type = $type;
       $this->m_flags = $flags;      
     }
-    
+
     /**
      * Add an atkAttribute to the node ($attribute should be an object of type
      * atkAttribute or one of its derivatives)
      * @param $attribute the attribute you want to add
      */
-    function add($attribute)
+    function addAttribute($attribute)
     {
       global $g_securityManager;
 
@@ -482,18 +472,6 @@
       $attribute->init();            
       
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
-    }
-
-    /**
-     * Add an atkAttribute to the node ($attribute should be an object of type
-     * atkAttribute or one of its derivatives)
-     * This function is an alias for add(), and is the same in every way.
-     * (It exists for backwardcompatibility reasons)
-     * @param $attribute the attribute you want to add
-     */
-    function addAttribute($attribute)
-    {
-      $this->add($attribute);
     }
 
     /**
@@ -950,11 +928,8 @@
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
             }            
-            	                                
-            if (($mode=="edit"&&$p_attrib->hasFlag(AF_READONLY_EDIT))
-              ||
-              ($mode=="add"&&$p_attrib->hasFlag(AF_READONLY_ADD))
-             )
+            	                    
+            if ($p_attrib->hasFlag(AF_READONLY))
             {
               // readonly, display value..              
               $editsrc=$p_attrib->hide($defaults, $fieldprefix);
@@ -967,7 +942,7 @@
               $funcname = $p_attrib->m_name."_edit";
               
               if (method_exists($this,$funcname))
-              {            
+              {
                 $editsrc = $this->$funcname($defaults, $fieldprefix);
               }
               else
@@ -1286,15 +1261,10 @@
            )
         {          
           $neworder=$this->m_table.".".$p_attrib->fieldName();
-          if ($neworder==$this->m_postvars["atkorderby"])
-          {
-            // we were already sorting, so now we sort the other way
-            $neworder.=" DESC";
-          }
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = href($PHP_SELF.'?atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName()));
+            $tmp = href($PHP_SELF.'?atkorderby='.$neworder,text($p_attrib->fieldName()));
           }
           else $tmp = text($p_attrib->fieldName());
 
@@ -1780,7 +1750,7 @@
       
       /** DIRTY HACK 
           if action is something else than edit, we clear the atkformdata sessionstuff **/    
-      if ($this->m_action!="edit"&&$this->m_action!="add"&&$this->m_action!="admin")
+      if ($this->m_action!="edit"&&$this->m_action!="add")
       {
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
@@ -2225,7 +2195,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          if ($p_attrib->hasFlag(AF_READONLY_EDIT)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
+          if ($p_attrib->hasFlag(AF_READONLY)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
  	        {
             if (method_exists($p_attrib,"store"))
             {
@@ -2833,7 +2803,9 @@
       }
       else
       {
-        return "javascript:NewWindow('help.php?node=".$this->m_type."','".text("help")."',600,400,'yes')";
+       $name = text("help");
+       $node = $this->m_type;
+       return atkPopup('help.php','node='.$node,$name,600,400,'yes','no');
       }
     }
 

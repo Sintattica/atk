@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.17  2001/07/27 13:16:14  sandy
+  * advanced colorpicker attrib + new popup system
+  *
   * Revision 4.16  2001/07/11 21:14:30  ivo
   * Added a global atk version number.
   *
@@ -663,4 +666,12 @@
     return $g_atkversion;
   }
 
+  /** 
+   * Returns a url to open a popup window
+   */   
+  function atkPopup($target,$params,$winName,$width,$height,$scroll='no',$resize='no')
+  {
+  $url ="javascript:NewWindow('popup.php?target=".$target."&".$params."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
+  return $url;
+  }
 ?>
