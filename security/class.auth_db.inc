@@ -94,7 +94,9 @@
          $access = array();
          for ($i=0;$i<count($recs);$i++)
          {
-           $access[] = $recs[$i][atkconfig("auth_accesslevelfield")];
+           if($i==0) $access = $recs[$i][atkconfig("auth_accesslevelfield")];
+           if($recs[$i][atkconfig("auth_accesslevelfield")]>$access) $access = $recs[$i][atkconfig("auth_accesslevelfield")];
+//           $access[] = $recs[$i][atkconfig("auth_accesslevelfield")];
          }
        }
        else
