@@ -124,7 +124,7 @@
 
   $page->addContent($divs);
    
-  $page->addContent('<script language="JavaScript">
+  $page->addContent('<script language="JavaScript"  type="text/javascript">
                         if (DOM) { currShow=document.getElementById(\'T11\');}
                         else if (IE) { currShow=document.all[\'T11\'];}
                         else if (NS4) { currShow=document.layers[\'T11\'];}'."\n".

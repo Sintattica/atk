@@ -209,7 +209,7 @@
   
           if (hasFlag($flags, RL_MRA))
           {
-            $liststart.= '<script language="javascript">var '.$listName.' = new Object();</script>';
+            $liststart.= '<script language="javascript" type="text/javascript">var '.$listName.' = new Object();</script>';
           }
         }
   
@@ -272,7 +272,7 @@
             if (count($list["rows"][$i]["mra"]) > 0)
               $record["cols"][] = array(
                            "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($list["rows"][$i]["selector"]).'" onclick="if (this.disabled) this.checked = false">'.
-                                      '<script language="javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>');
+                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>');
   
             else $record["cols"][] = array("content"=>"");
           }
@@ -288,7 +288,7 @@
             else $record["cols"][] = array("content"=>"");
           }
   
-          $str_actions = "";
+          $str_actions = "<span class=\"actions\">";
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
 					$icons = atkconfig("recordlist_icons", true);
 					
@@ -310,7 +310,7 @@
 						}
   	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.$link.'</a>&nbsp;';
   	      }
-  
+          $str_actions.="</span>";
           /* actions (left) */
           if ($orientation == "left" || $orientation == "both")
           {
