@@ -14,14 +14,16 @@
   class node 
   {
     var $m_id;
-    var $m_label;
+    var $m_label; // DEPRECATED, use $m_object instead.
+    var $m_object; 
     var $m_img;
     var $m_sub = array();
     
-    function node($id, $label, $img="")
+    function node($id, $object, $img="")
     {
       $this->m_id = $id;
-      $this->m_label = $label;
+      $this->m_object = $object;
+      $this->m_label = $object; // DEPRECATED, but available for backwardcompatibility.
       $this->m_img = $img;      
     }
   }
@@ -30,11 +32,19 @@
   {                                    
     var $m_tree = array();                 
     var $m_allnodes = array();
+    var $m_parentless = array(); // Array to keep stuff that can not yet be inserted into the array. 
     
     function addNode($id, $naam, $parent=0, $img="")
     {
       $n = new node($id, $naam, $img);
       $this->m_allnodes[$id] = &$n;
+            
+      if (is_array($this->m_parentless[$id]))
+      {
+        // In the parentless array, there are children that belong to this new record.
+        $n->m_sub = &$this->m_parentless[$id];
+        unset($this->m_parentless[$id]);        
+      }
       
       if ($parent==0)
       {
@@ -43,11 +53,21 @@
       else
       {
         $tmp = &$this->m_allnodes[$parent];
-        $tmp->m_sub[] = &$n;
+        if (is_object($tmp))
+        {
+          $tmp->m_sub[] = &$n;
+        }
+        else
+        {
+          // Dangling thingee.
+          $this->m_parentless[$parent][] = &$n;
+        }
       }      
-    }
-    
+    }  
    
+    /** 
+            * Example render function. Implement your own.
+            */
     function render($tree="", $level=0)
     {
       // First time: root tree..

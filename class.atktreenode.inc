@@ -55,6 +55,19 @@
       
       $this->adminPage();                    
     }
+    
+    function buildTree()
+    {
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes,"", "admin");
+
+      $t = new tree;
+      for($i=0;$i<count($recordset);$i++)
+      {              
+        //$t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$recordset[$i],$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+      }      
+      return $t;
+    }
 
     /**
      * Admin page displays records and the actions that can be performed on
@@ -77,24 +90,19 @@
       atkdebug("Entering treeview page.");
       //$this->addStickyVar($p);
       
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes,"", "admin");
-
-      $t = new tree;
-      for($i=0;$i<count($recordset);$i++)
-      {        
-        //$t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
-        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$recordset[$i],$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
-      }
+      $t = $this->buildTree();
+      
       $this->m_tree[0]["level"]=0; 
       //$this->m_tree[0]["label"]="&nbsp;"; 
 	    $this->m_tree[0]["id"]=''; 	    
 	    $this->m_tree[0]["isleaf"]=1; 
 
-      $test = $this->Fill_tree($t->m_tree);
+      $test = $this->treeToArray($t->m_tree);
             
       $g_maxlevel=$g_maxlevel+2;            
 
-      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".(($g_maxlevel*30)+300).">\n");
+       $width = ($g_maxlevel*16)+600;
+      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".$width.">\n");
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
@@ -117,18 +125,29 @@
       $g_layout->ui_bottom();
       atkdebug("Generating treeview finished!");
     }
+   
+/**
+     * Recursive funtion whitch fills an array with all the items of the tree.  
+     * DEPRECATED, use treeToArray instead.
+     * @param $tree Tree
+     * @param $level Level
+     */   
+    function Fill_tree($tree="", $level=0)
+    {
+      atkdebug("WARNING: use of deprecated function Fill_tree, use treeToArray instead");
+      return treeToArray($tree, $level);
+    }
     
     /**
      * Recursive funtion whitch fills an array with all the items of the tree. 
      * @param $tree Tree
      * @param $level Level
      */
-    function Fill_tree($tree="",$level=0)
+    function treeToArray($tree="",$level=0)
     {
       static $s_count = 1;
       global $g_maxlevel, $exp_index;
       while (list($id,$objarr) = each($tree))
-
       {        
         $this->m_tree[$s_count]["level"]=$level+1; 		    
         // Store extra info in the record, so the recordActions override can make 
@@ -144,7 +163,7 @@
 		    $s_count++;
         if (count($objarr->m_sub)>0)  
         {          
-          $this->Fill_tree($objarr->m_sub, $level+1);
+          $this->treeToArray($objarr->m_sub, $level+1);
         }                      
       }
       return "";  
@@ -156,10 +175,12 @@
      * @param $tree Tree
      * @param $level Level
      */
-    function GraphTreeRender()
+    function GraphTreeRender($showactions=true, $expandAll=false, $foldable=true)
     {
       global $g_maxlevel,$g_layout,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
       if(count($this->m_tree)==1) return "";  
+          
+      if ($expandAll) $this->m_tree[0]["expand"] = 1;
       if($g_theme["TreeIcon_dir"]!=""&&is_dir($config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
         $icon_path =$config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
@@ -185,7 +206,7 @@
       $lastlevel=0;
      // echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
       if ($this->m_tree[0]["expand"] !=1 && $this->m_tree[0]["colapse"] !=1) // normal operation
-      {
+      {      
        for ($i=0; $i<count($this->m_tree); $i++) 
 	     {    
         if($this->m_tree[$i]["level"]<2)
@@ -211,20 +232,19 @@
        if ($this->m_postvars["atktree"]!="") $explevels = explode("|",$this->m_postvars["atktree"]); 
       }
       elseif ($this->m_tree[0]["expand"] == 1) // expand all mode!
-      {
-       for ($i=0; $i<count($this->m_tree); $i++) 
-	     {
-        $expand[$i]=1; 
-        $visible[$i]=1;
-       	$levels[$i]=0; 
-	     }
-       $this->m_tree[0]["expand"]=0; // next time we are back in normal view mode!
+      {       
+        for ($i=0; $i<count($this->m_tree); $i++) 
+	      {
+          $expand[$i]=1; 
+          $visible[$i]=1;
+       	  $levels[$i]=0; 
+	      }
+        $this->m_tree[0]["expand"]=0; // next time we are back in normal view mode!
       }
       elseif ($this->m_tree[0]["colapse"]== 1) //  colapse all mode!
       {
        for ($i=0; $i<count($this->m_tree); $i++) 
-	     { 
-        
+	     {         
         if($this->m_tree[$i]["level"]<2)
          {
           if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
@@ -244,13 +264,9 @@
        $this->m_tree[0]["colapse"]=0; // next time we are back in normal view mode!
        $explevels ="";
       }
-
       /*********************************************/ 
     	/*  Get Node numbers to expand               */ 
     	/*********************************************/ 
-   
-	    
-   
 	    $i=0;
 	    while($i<count($explevels)) 
 	    { 
@@ -270,8 +286,7 @@
 	    	if ( $this->m_tree[$i]["level"] < $lastlevel ) 
 	    	{ 
     			for ($j=$this->m_tree[$i]["level"]+1; $j <= $g_maxlevel; $j++)    
-			    { 
-        
+			    {         
 			    	$levels[$j]=0; 
 			    } 
 		    } 
@@ -309,7 +324,7 @@
       
       $res.= "<tr>"; 
       // Make cols for max level
-	    for ($i=0; $i<$g_maxlevel; $i++) $res.= "<td width=10>&nbsp;</td>\n"; 
+	    for ($i=0; $i<$g_maxlevel; $i++) $res.= "<td width=16>&nbsp;</td>\n"; 
       // Make the last text column
 	    $res.= "<td width=300>&nbsp;</td>";
       // Column for the functions
@@ -400,14 +415,34 @@
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
-						    }
+						    }                
                 if($this->m_tree[$cnt]["isleaf"]==1)
-                {
-						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
+                {                  
+                  if($cnt!=0) 
+                  {
+                    if ($foldable)
+                    {                    
+                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
+                    }
+                    else
+                    {                    
+                      $res.="<td><img src=\"".$img_end."\" border=0></td>\n";
+                    }
+                  }
                 }
                 else
-                {
-						      if($cnt!=0) $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
+                {                
+						      if($cnt!=0) 
+                  {
+                    if ($foldable)
+                    {
+                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
+                    }
+                    else
+                    {
+                      $res.="<td><img src=\"".$img_split."\" border=0></td>\n";
+                    }
+                  }
                 }
 					    }
 					    else
@@ -432,22 +467,29 @@
 			    { 
     				/****************************************/ 
 	    			/* Create expand/collapse parameters    */ 
-		    		/****************************************/ 
-			    	$i=0; $params="atktree="; 
-			    	while($i<count($expand)) 
-				    { 
-					    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
-					    { 
-					    	$params=$params.$this->m_tree[$i]["id"];
-					    	$params=$params."|"; 
-					    } 
-					    $i++; 
-				    } 
+		    		/****************************************/            
+            if ($foldable)            
+            {            
+			    	  $i=0; $params="atktree="; 
+			    	  while($i<count($expand)) 
+				      { 
+  					    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+					      { 
+  					    	$params=$params.$this->m_tree[$i]["id"];
+					    	  $params=$params."|"; 
+					      } 
+					      $i++; 
+				      } 
 				                    
-				    if ($expand[$cnt]==0) 
-					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=0>")."</td>\n"; 
-				    else 
-					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_collapse."\" border=0>")."</td>\n";          
+				      if ($expand[$cnt]==0) 
+  					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=0>")."</td>\n"; 
+				      else 
+  					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_collapse."\" border=0>")."</td>\n";          
+            }
+            else
+            {
+              $res.= "<td><img src=\"".$img_collapse."\" border=0></td>\n";          
+            }
 			    } 
 			    else 
 			    { 
@@ -482,43 +524,63 @@
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
-          $res.='<td nowrap> ';
-          $actions = array();
-          
-          if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0))
+          if ($showactions)
           {
-            $actions["add"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'");
-          }
-          if($cnt>0)
-          {            
-            if (!$this->hasFlag(NF_NO_EDIT))
+            $res.='<td nowrap> ';
+            $actions = array();
+            
+            if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0))
             {
-              $actions["edit"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
+              $actions["add"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'");
             }
-            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
-            {    
-              $actions["copy"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
+            if($cnt>0)
+            {            
+              if (!$this->hasFlag(NF_NO_EDIT))
+              {
+                $actions["edit"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
+              }
+              if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+              {    
+                $actions["copy"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
+              }
+              if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
+              {
+                 // Do nothing
+              }
+              else
+              {
+                $actions["delete"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
+              }
             }
-            if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
+            
+            // Look for custom record actions.
+            $recordactions = $actions;
+            $this->recordActions($this->m_tree[$cnt]["label"], $recordactions,$dummy);    
+            
+            foreach($recordactions as $name => $url)
             {
-               // Do nothing
+              if (!empty($url))
+              {
+                /* dirty hack */
+                $atkencoded = strpos($url, "_1") > 0;
+   
+                $url = str_replace("%5B","[",     $url);
+                $url = str_replace("%5D","]",     $url);
+                $url = str_replace("_1"."5B","[", $url);
+                $url = str_replace("_1"."5D","]", $url);
+  
+                if ($atkencoded) $url = str_replace('[pk]', atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), false), $url);
+                else $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), $url);
+   
+                $url = stringparse($url, $this->m_tree[$cnt]["label"], true);              
+                      
+                $res.=href($url, text($name), SESSION_NESTED)."&nbsp;";
+              }
             }
-            else
-            {
-              $actions["delete"] = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"];
-            }
+            
+           $res.= "</td>";
           }
-          
-          // Look for custom record actions.
-          $recordactions = $actions;
-          $this->recordActions($this->m_tree[$cnt]["label"], $recordactions,$dummy);    
-          
-          foreach ($recordactions as $action_name => $action_url)
-          {
-            $res.=href($action_url, text($action_name), SESSION_NESTED)."&nbsp;";
-          }
-          
-         $res.= "</td></tr>\n";       
+          $res.="</tr>\n";       
 		    } 
 	    	$cnt++;     
 	    } 
