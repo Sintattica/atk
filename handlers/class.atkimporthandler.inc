@@ -342,6 +342,10 @@
     function fgetcsvfromline ($line, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {      
       $line = trim($line);
+      
+      if (substr($line, -1) == $delimiterChar)
+        $line .= $enclosureChar.$enclosureChar;
+      
       if ($enclosureChar!='')
       {
         $start = (($line[0]==$enclosureChar)?1:0);
