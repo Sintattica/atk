@@ -263,6 +263,11 @@
      */
     var $m_table;
     var $m_seq;
+    
+    /**
+     * Language field
+     */
+    var $m_lngfield;
 
     /**
      * The primary key of this node
@@ -384,6 +389,9 @@
     
     /* Cached ui object */
     var $m_atkUI = NULL;
+    
+    /* default language used by Multilanguage Nodes */
+    var $m_defaultlanguage = "";
 
     /*** Public functions ***/
 
@@ -494,6 +502,12 @@
         {
           $this->m_primaryKey[] = $attribute->fieldName();
         }
+      }
+      
+      if($attribute->hasFlag(AF_MULTILANGUAGE))
+      {
+        atkdebug("atknode::add() multilanguagefield ".$attribute->fieldName());
+        $this->m_lngfield = $attribute->fieldName();
       }
 
       $attribute->init();
@@ -2865,6 +2879,8 @@
 
       if ($this->hasFlag(NF_LOCK))
         $this->m_lock = &atkLock::getInstance();
+      
+      $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
       $this->m_initialised = true;
     }
@@ -3007,6 +3023,12 @@
           else
           {
             $g_db->commit();
+            
+            if($this->hasFlag(NF_ML))
+            {
+              $this->updateMlRecords($record,"update");
+            }
+            
             if ($this->m_postvars['atknoclose']=="")
             {
               // 'save and close' was clicked
@@ -3094,6 +3116,12 @@
           else
           {
             $g_db->commit();
+            
+            if($this->hasFlag(NF_ML))
+            {
+              $this->updateMlRecords($record,"add");
+            }
+            
             $location="";
             if ($this->hasFlag(NF_EDITAFTERADD))
             {
@@ -3279,7 +3307,7 @@
       $page = &$this->getPage();    
       
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
-      
+
       if ($this->hasFlag(NF_LOCK))
       {
         if ($this->m_lock->lock($this->primaryKey($recordset[0]), $this->m_table)) 
@@ -3745,13 +3773,20 @@
           }
           else
           {
-            $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+            if(!$this->hasFlag(NF_ML))
+            {
+              $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+            }
+            else if($this->m_primaryKey[0] == $p_attrib->fieldName())
+            {
+              $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
+            }
           }
         }
       }
 
 
-      $querystring = $query->buildCount();
+      $querystring = $query->buildCount($this->hasFlag(N_ML));
       //$g_db->query($querystring);
       $result = $g_db->getrows($querystring);
       return $result[0]["count"];
@@ -3796,6 +3831,12 @@
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
+      
+      if($this->hasFlag(NF_ML) && $mode!="edit")
+      {
+        $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
+      }
+      
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
       if (!$this->hasFlag(NF_NO_FILTER))
@@ -3888,6 +3929,12 @@
       $querystring = $query->buildSelect();
 
       $dbrecords = $g_db->getrows($querystring);
+      
+      if($this->hasFlag(NF_ML) && count($dbrecords)>1 && $mode=="edit")
+      {
+        $this->combineMlRecordSet($dbrecords);
+      }
+
 
 //      $this->setOrgKeyValue($dbrecords[0]);
 
@@ -3926,11 +3973,78 @@
           $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i], $mode);
         }
       }
+      
       return $recordset;
     }
 
-
    /**
+   * changes the multiple records to one multilanguage record
+   */
+   function combineMlRecordSet(&$recordset)
+   {
+     //atk_var_dump($recordset,"combinerecord in");
+     $ml_record=Array();
+     foreach($this->m_attribList as $attribname=>$attrib)
+     {
+       if($this->m_attribList[$attribname]->m_languageattribute) $lngattribs[$attribname] = &$this->m_attribList[$attribname];
+     }
+     for($i=0, $max=count($recordset);$i<$max;$i++)
+     {
+       if($this->m_defaultlanguage==$recordset[$i][$this->m_lngfield]) $ml_record[0]=$recordset[$i];
+       foreach($lngattribs as $lngattribname=>$lngattrib)
+       {
+         $lngattribvalues[$lngattribname][$recordset[$i][$this->m_lngfield]]=$recordset[$i][$lngattribname];
+       }
+     }
+     foreach($lngattribvalues as $lngattribname=>$value)
+     {
+       $ml_record[0][$lngattribname]=$value;
+     }
+     $recordset=$ml_record;
+     //atk_var_dump($recordset,"combinerecord out");
+   }
+   
+   /**
+   * add/update multiple language records
+   */
+   function updateMlRecords(&$record,$mode="add")
+   {
+     $languages = $this->getLanguages();
+
+     foreach($this->m_primaryKey as $primkey)
+     {
+       // Make sure we don't increment the primkey
+       if($this->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
+       $this->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
+     }
+
+     foreach($languages as $language)
+     {
+       if($language==$this->m_defaultlanguage) continue;
+       foreach($this->m_attribList as $attribname=>$attrib)
+       {
+         if($this->m_attribList[$attribname]->hasFlag(AF_ML)) $record[$attribname]=$language;
+         if($this->m_attribList[$attribname]->m_languageattribute)
+         {
+           // change the language of the attribute
+           $this->m_attribList[$attribname]->m_language=$language;
+         }
+       }
+       $record["atkprimkey"] = $oldprimkey;
+       $record["atkprimkey"] = $this->primaryKey($record)." AND ".$this->m_table.".".$this->m_lngfield."='$language' ";
+       switch($mode)
+       {
+         case "update":
+           $this->updateDb($record);
+           break;
+         default:
+           $this->addDb($record,false,"add");
+        }
+        $record["atkprimkey"]=$oldprimkey;
+      }
+    }
+
+    /**
     * Add this node to a query. (mostly used when you have to join two nodes in a relation.
     */
     function addToQuery(&$query, $alias="", $level=0, $allfields=false)
@@ -4543,6 +4657,11 @@
         if (in_array($relation_new, array_keys($this->m_attribList))) return $filter;
       }
       return "";
+    }
+    
+    function getLanguages()
+    {
+      return strtoupper(atkconfig("language"));
     }
     
     function addStyle($style)

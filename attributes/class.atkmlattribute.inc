@@ -10,6 +10,9 @@
    */
   class atkMlAttribute extends atkAttribute
   {
+    var $m_language = "";
+    var $m_languageattribute = TRUE;
+    
     /**
      * Constructor
      * @param $name name of the attribute
@@ -19,17 +22,31 @@
     {
       global $config_atkroot;
       /* base class constructor */
-      $this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY), $size);
+      //$this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY), $size);
+      $this->atkAttribute($name,$flags,$size);
+      $this->m_language = strtoupper(atkconfig("defaultlanguage"));
     }
 
+    function getValue($rec,$language="")
+    {
+      ($language=="")?$language=$this->m_language:$language=strtoupper($language);
+      return $rec[$this->fieldName()][$language];
+    }
+    
+    /**
+    *
+    */
+    function isMlNode()
+    {
+      return ($this->m_ownerInstance->hasFlag(NF_ML));
+    }
+    
     /**
     * return possible languages
     */
     function getLanguages()
     {
-      global $config_language;
-      atkdebug("atkmlattribute::getlanguages() ".(is_array($config_language)?implode(",",$config_language):""));
-      return $config_language;
+      return atkconfig("language");
     }
     
     /**
@@ -112,8 +129,15 @@
      */
     function display($record)
     {
-      $languages = $this->getLanguages();
-      return nl2br(htmlspecialchars($record[$this->fieldName()][$languages[0]]));
+      if($this->isMlNode())
+      {
+        return nl2br(htmlspecialchars($record[$this->fieldName()]));
+      }
+      else
+      {
+        $languages = $this->getLanguages();
+        return nl2br(htmlspecialchars($record[$this->fieldName()][$languages[0]]));
+      }
     }
 
     /**
@@ -136,6 +160,18 @@
     }
 
     /**
+    *
+    */
+    function value2db($rec)
+    {
+      if($this->isMlNode())
+      {
+        $rec[$this->fieldName()] = $rec[$this->fieldName()][$this->m_language];
+      }
+      return parent::value2db($rec);
+    }
+    
+    /**
      * Removes slashes from the strings
      * @param $rec array with values
      * @return array with string without slashes
@@ -143,9 +179,22 @@
     function db2value($rec)
     {
       $languages = $this->getLanguages();
-      for ($i=0,$_i=count($languages);$i<$_i;$i++)
-      {      
-        $result[$languages[$i]] = stripslashes($rec[$this->fieldName().'_'.$languages[$i]]);
+      if($this->isMlNode())
+      {
+        if(is_array($rec[$this->fieldName()])) 
+        {
+          foreach($rec[$this->fieldName()] as $lng=>$value)
+          {
+            $result[$lng]=stripslashes($value);
+          }
+        } else $result = stripslashes($rec[$this->fieldName()]);
+      }
+      else
+      {
+        for ($i=0,$_i=count($languages);$i<$_i;$i++)
+        {      
+          $result[$languages[$i]] = stripslashes($rec[$this->fieldName().'_'.$languages[$i]]);
+        }
       }
       return $result;
     }
@@ -157,12 +206,19 @@
      */
     function fetchValue($rec)
     {
-      $languages = $this->getLanguages();
-      for ($i=0,$_i=count($languages);$i<$_i;$i++)
+      if($this->isMlNode())
       {
-        $result[$languages[$i]] = stripslashes($rec[$this->fieldName()][$languages[$i]]);
+        return parent::fetchValue($rec);
       }
-      return $result;
+      else
+      {
+        $languages = $this->getLanguages();
+        for ($i=0,$_i=count($languages);$i<$_i;$i++)
+        {
+          $result[$languages[$i]] = stripslashes($rec[$this->fieldName()][$languages[$i]]);
+        }
+        return $result;
+      }
     }
 
     /**
@@ -176,9 +232,9 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
-      if(!$this->m_ownerInstance->hasFlag(NF_ML))
+      $languages = $this->getLanguages();
+      if(!$this->isMlNode())
       {
-        $languages = $this->getLanguages();
         if ($mode == "add" || $mode == "update")
         {
           for ($i=0,$_i=count($languages);$i<$_i;$i++)
@@ -193,6 +249,12 @@
             $query->addField($this->fieldName().'_'.$languages[$i],"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
           }
         }
+      }
+      else
+      {
+        // when this node has multilanguage support we save multiple records per occurance
+        // we only add the default language to this query
+        parent::addToQuery(&$query,$tablename,$fieldaliasprefix,$rec,$level,$mode);
       }
     }
 
