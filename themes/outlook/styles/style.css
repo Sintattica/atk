@@ -54,21 +54,8 @@ A.stacktrace:visited
   color: #000000;
 }
 
-.tab
-{
-  font-family: verdana, helvetica, arial;
-  font-size: 12px;  
-  font-weight: bold;
-  color: #ffffff;
-}
 
-.tab_selected
-{
-  font-family: verdana, helvetica, arial;
-  font-size: 12px;  
-  font-weight: bold;
-  color: #000000;
-}
+
 
 INPUT,
 SELECT,
