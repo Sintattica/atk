@@ -288,9 +288,8 @@
             if ($this->hasFlag(AF_OBLIGATORY)==false)
             {
               //get the select_none string
-              $type = explode(".",$this->m_destInstance->atknodetype());
-              $nodename = array_pop($type);
-              $modulename = array_pop($type);
+              $nodename = $this->m_destInstance->m_type;
+              $modulename = $this->m_destInstance->m_module;;
               $nonetext = atktext('select_none', $modulename, $nodename);
 
               // Relation may be empty, so we must provide an empty selectable..
