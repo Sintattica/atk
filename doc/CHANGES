@@ -8,8 +8,9 @@ Changes in ATK 5.0.6
 --------------------
 * Bugfix in Oracle 9i/10G driver. [Ivo]
 * 'Import' link is now hidden if NF_READONLY is set. [Ivo]
-* Fixed bug in validateFilter for filters with tablename and 
-  added documentation. [Boy]
+* Fixed bug in validateFilter for filters with tablename and added 
+  documentation. [Boy]
+* Fixed bug in record navigator when no form was present on the page. [Ivo]
 
 Changes in ATK 5.0.5
 --------------------

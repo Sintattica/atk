@@ -562,7 +562,7 @@
       // create a navigator and let it create the navigation links using the temporary node
       $navigator  = &atknew("atk.utils.atknavigator");
       $navigation = $navigator->getNavigationUrls($destNode,"admin", $filter);
-      $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation);
+      $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation, true);
 
       // add the navigation to the top and bottom of the page
       $output = $navstr . "<br />" . $output . "<br />" . $navstr . "<br /><br />";

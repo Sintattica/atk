@@ -30,7 +30,7 @@
    */
   class atkNavigator
   {
-    function buildNavigation(&$node, $mode="", $navurls="")
+    function buildNavigation(&$node, $mode="", $navurls="", $embedded=false)
   	{
   	  if ($navurls=="")
   	  {
@@ -40,7 +40,7 @@
   	  $links=array();
   	  foreach ($navurls as $key=>$nav)
   	  {
-				$links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, true);
+				$links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, $embedded);
   	  }
   	  return implode("&nbsp;|&nbsp;", $links);
   	 
