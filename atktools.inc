@@ -1290,44 +1290,67 @@
   
   /**
   * Imports a file
-  * @param $fullclassname name of class in atkformat (map1.map2.classfile)
-  * @param $failsafe boolean that determines wether a class is included or
-  *                   made required. Defaults to true.
+  * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
+  * @param bool   $failsafe      Determines wether a class is included or made required. Defaults to true.
   */
   function atkimport($fullclassname, $failsafe=true)
   {
-    $filename = atkClassnameDecrypt($fullclassname);
+    $filename = getClassPath($fullclassname);
     
     if ($failsafe)
-    {
       require_once($filename);
-    }
     else
-    {
       include_once($filename);
-    }
   }
   
   /**
-  * Converts an ATK classname (like "map1.map2.classname")
-  * to a 'normal' name ("/map1/map2/class.classname.inc")
+  * Converts an ATK classname ("map1.map2.classname")
+  * to a pathname ("/map1/map2/class.classname.inc")
+  * @param string $fullclassname ATK classname to be converted
+  * @return string converted filename
   */
-  function atkClassnameDecrypt($fullclassname)
+  function getClassPath($fullclassname)
   {
     $elems = explode(".", strtolower($fullclassname));
     if($elems["0"] == "module")
     {
-      array_shift($elems);
-      $prefix = moduleDir(array_shift($elems));
+  	  array_shift($elems);
+	    $prefix = moduleDir(array_shift($elems));
     }
     else
-      $prefix = atkconfig("atkroot");
+     $prefix = atkconfig("atkroot");
 
     $last = &$elems[count($elems)-1];
     $last = "class.".$last.".inc";
     
     $filename = $prefix.implode("/", $elems);
+    	
     return $filename;
+  }
+    
+  /**
+  * Converts a pathname ("/map1/map2/class.classname.inc")
+  * to an ATK classname ("map1.map2.classname")
+  * @param string $classpath pathname to be converted
+  * @return string converted filename
+  */
+  function getClassName($classpath)
+  {
+    $elems = explode("/", strtolower($classpath));
+    for($counter=0; $counter<=count($elems);$counter++)
+    {
+      if($elems[$counter] == "../")
+      {
+  	    array_shift($elems);
+      }
+    }
+    $last = &$elems[count($elems)-1];
+    $last = substr($last, 6, -4);
+    
+    $first = array_shift($elems);
+    $classname = $first. implode(".", $elems);
+    
+    return $classname;
   }
   
   function &atknew($fullclassname)
