@@ -808,11 +808,9 @@
       $unused = array_values(array_diff($this->getObligatoryAttributes(),$col_map));
       $unused = array_values(array_diff($unused,array_keys($initial_values)));
       
-      if(count($unused) > 0){
-        if(count($unused) == 1)
-          $msg = atktext("import_error_fieldisobligatory");
-        else
-          $msg = atktext("import_error_fieldsareobligatory");
+      if(count($unused) > 0)
+      {
+        $msg = atktext((count($unused)==1)?"import_error_fieldisobligatory":"import_error_fieldsareobligatory");
 
         foreach($unused as $field)
         {
@@ -835,9 +833,7 @@
       if(count($doubles) > 0)
       {
         if(count($doubles) == 1)
-          $msg = atktext("import_error_fieldusedtwice");
-        else
-          $msg = atktext("import_error_fieldsusedtwice");
+        $msg = atktext((count($doubles)==1)?"import_error_fieldusedtwice":"import_error_fieldsusedtwice");
 
         foreach($doubles as $field)
         {
