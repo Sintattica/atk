@@ -33,7 +33,7 @@
   $theme = &atkTheme::getInstance();
 
   /* output html */
-  $menu = "<div align='center'>"; 
+  $menu = "<div align='".atkconfig("menu_align", "center")."'>"; 
   
   /* build menu */
   

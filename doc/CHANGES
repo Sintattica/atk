@@ -12,6 +12,11 @@ Changes in ATK 5.0.4
 * Added documentation to new classes above [Boy]
 * atkManyToManyRelation sets the ref and local key upon construction [Mark]
 + Added NF_NUMBERING and AF_SUBITEM, setting these will number the fields [Boy]
+* showTab is now called from tabs template in Outlook theme, 
+  ensuring the tab always being set [Boy]
++ Added renderTop function which gets top.tpl if it exists, 
+  or otherwise defaults to box.tpl [Boy]
++ Added menu_align config variable [Boy]
 
 Changes in ATK 5.0.3
 --------------------
