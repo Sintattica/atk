@@ -39,7 +39,11 @@
      */
     function display($record)
     {  
-      return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
+      if ($record[$this->fieldName()]!="")
+      {
+        return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
+      }
+      return '';
     }
 
     /**
