@@ -2379,30 +2379,36 @@
 
     /**
      * Function outputs a page in which the user is asked if he really wants.
-     * to delete the record.
-     * @param $atkselector Selected record you want to delete
+     * to perform a certain action.
+     * @param $atkselector selector for the records on which the action needs to be performed
+     * @param $action which action is it gonna be?     
+     * @param $locked is/are the record(s) locked?
      */
-    function confirmDelete($atkselector, $locked=FALSE, $action="delete")
+    function confirmAction($atkselector, $action, $locked=FALSE)
     {
+      $method = 'confirm'.$action;
+      if (method_exists($this, $method))
+        return $this->$method($atkselector, $locked);
+    
       global $g_layout, $g_db;
       $g_layout->initGui();
 
       if (is_array($atkselector))
         $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
       else $atkselector_str = $atkselector;
-      
-      $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
+
       $list = "";
+      $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
       if (count($recs)==1)
       {
-        // 1 record to delete. Put it in the page title.
+        // 1 record, put it in the page title.
         $record = $recs[0];      
       }
       else
       {
-        // We delete more than one record. Show a list of records
-        // we're going to delete, if we can find a descriptor_def 
-        // function.
+        // we are gonna perform an action on more than one record
+        // show a list of affected records, at least if we can find a
+        // descriptor_def method
         if (method_exists($this,"descriptor_def"))
         {
           $record = "";
@@ -2434,7 +2440,7 @@
       }
       $g_layout->output('<tr>');      
 
-      $text = $this->confirmDeleteText($atkselector);
+      $text = $this->confirmActionText($atkselector, $action);
       
       $g_layout->td("<br>$text", 'align="center"');
       $g_layout->output('</tr><tr>');
@@ -2443,13 +2449,14 @@
       $g_layout->ui_bottom();
     }
 
-    // function to show delete confirmation message
-    function confirmDeleteText($atkselector="")
+    /**
+     * Confirmation message.
+     */
+    function confirmActionText($atkselector="", $action="delete")
     {
-      $multi = FALSE;
-      if (is_array($atkselector)) $multi = count($atkselector) > 1;
-      $result = text('confirm_delete'.($multi ? '_multi':''), $this->m_type, $this->m_module);
-      return $result;
+      $method = 'confirm'.$action.'text';
+      if (method_exists($this, $method)) return $this->$method($atkselector);
+      else return text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_type, $this->m_module);
     }
 
     // Small compare function for sorting attribs on order field
@@ -2749,7 +2756,7 @@
         }
 
         // Confirmation page was not displayed
-        $this->confirmDelete($this->m_postvars['atkselector'], $locked, $this->m_postvars["indexWarning"]);
+        $this->confirmAction($this->m_postvars['atkselector'], "delete", $locked);
       }
       else
       {
