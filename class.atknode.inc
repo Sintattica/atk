@@ -2527,8 +2527,15 @@
           if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
           {
             $therecord[$attribname] = $recordcopy[$attribname];
-          } else
-          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+          } 
+          else if ($p_attrib && method_exists($p_attrib, "db2value"))
+          {
+            $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+          }
+          else
+          {
+            atkerror("Attribute with name: $attribname and node: ".$this->m_type." is empty in attributelist or does not support db2value method");
+          }
         }
 
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming
@@ -2547,7 +2554,7 @@
         for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
         {
           $p_attrib = &$this->m_attribList[$postloadlist[$j]];
-
+          
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
         }
       }
