@@ -58,7 +58,7 @@
     
     function buildTree()
     {
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes,"", "admin");
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],"","",$this->m_listExcludes,"", "admin");
 
       $t = new tree;
       for($i=0;$i<count($recordset);$i++)
