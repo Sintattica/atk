@@ -33,17 +33,14 @@
     function encrypt($input, $key)
     {
       $key = md5($key);
-      echo $key."<br/>";
 
       for($i=0; $i < strlen($input); $i++)
       {
         $char = substr($input,$i,1);
         $keychar = substr($key,$i,1);
-        echo $char. " - ".ord($char)." - ".$keychar." - ".ord($keychar). "<br/>";
         $charvalue = ord($char) + ord($keychar);
         if($charvalue > 255)
           $charvalue -= 255;
-        echo chr($charvalue)." - ".$charvalue. "<br/>";
         $output .= chr($charvalue);
       }
       
