@@ -1,8 +1,12 @@
 <?php
 
-/**
-* @author Martin Roest <martin@ibuildings.nl>
-*/
+  /**
+  * @author Martin Roest <martin@ibuildings.nl>
+  *
+  * This class is responsable for managing multilanguage nodes wich have
+  * multiple records per occurance.
+  * It updates/saves or merges multiple records
+  */
 
   class atkmlsplitter
   {
@@ -14,13 +18,33 @@
         return strtoupper(atkconfig("language"));
     }
     
+    function updateLngField(&$node,&$record)
+    {
+      // blegh
+      global $g_db;
+      $sql = "UPDATE ".$node->m_table." SET ".$node->m_lngfield."='".$node->m_defaultlanguage."'
+               WHERE ".$node->m_lngfield."='' AND ".$record["atkprimkey"];
+      return $g_db->query($sql);
+    }
+    
     /**
     * add/update multiple language records
     */
-    function updateMlRecords(&$node, $record,$mode="add")
+    function updateMlRecords(&$node, $record, $mode="add")
     {
-      $languages = $this->getLanguages($node);
+      foreach($node->m_attribList as $attribname=>$attrib)
+      {
+        if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
+        {
+          // assume all relations are stored in the PRESTORE so we MUST NOT use addDb()
+          // on this node if its contains relations to others
+          unset($node->m_attribList[$attribname]);
+        }
+      }
       
+      $languages = $this->getLanguages($node);
+      $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
+            
       foreach($node->m_primaryKey as $primkey)
       {
         // Make sure we don't increment the primkey
@@ -30,6 +54,10 @@
       
       foreach($languages as $language)
       {
+        if($atklngrecordmodes[$language]["mode"]=="updatelngfield")
+        {
+          $this->updateLngField($node,$record);
+        }
         if($language==$node->m_defaultlanguage) continue;
         foreach($node->m_attribList as $attribname=>$attrib)
         {
@@ -41,16 +69,18 @@
           }
         }
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
+        if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
         switch($mode)
         {
           case "update":
-          $node->updateDb($record);
-          break;
+            $node->updateDb($record);
+            break;
           default:
-          $node->addDb($record,false,"add");
+            $node->addDb($record,false,"add");
         }
         $record["atkprimkey"]=$oldprimkey;
       }
+      sessionStore("atklng_".$node->m_type,NULL); // deleting modes
     }
     
     /**
@@ -58,27 +88,24 @@
     */
     function combineMlRecordSet(&$node, &$recordset,$query)
     {
-      $ml_record=Array();
-      
-      // possible situations
-      // 1. we are a ML node and thus we have multiple records
-      // 2. we are a ML node and have 1 or more 1:1 relations with ML nodes (ai what happends then)
-      // 3. we aren't a ML node but we have 1 or more 1:1 relation with a ML node
-      
       $hasrelationwithmlnode = $this->getMlNodes($node);
-      
+      $languages = $this->getLanguages($node);
+      if(count($languages)!=count($recordset))
+      {
+        $recordset = $this->addLngRecords($node,$recordset);
+      }
       if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
       {
-        $this->mergeMlRecords(&$recordset);
-      }
-      else if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
-      {
-        // oh oh what to do.
-        atkdebug("combineMlRecordSet action not supported!!!!!");
+        $this->mergeMlRecords(&$node,&$recordset);
       }
       else if(!$node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
       {
+        // TODO:
+        // i think this case is no longer valid therefor the code will probably won't work :)
+        // one2one's use the lazy flag and their own load method to load data.
+        atkdebug("WHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA PANIC");
         $newrecord[0] = $recordset[0];
+        
         // we have relations with mlnodes
         for($i=0,$i_=count($recordset);$i<$i_;$i++)
         {
@@ -97,6 +124,7 @@
         }
         $recordset=$newrecord;
       }
+      sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
     }
     
    /**
@@ -123,15 +151,54 @@
    }     
 
     
+   function hasLngRecord(&$node,&$recordset,$lng,&$index)
+   {
+     $index=0;
+     foreach($recordset as $record)
+     {
+       if($record[$node->m_lngfield]==$lng)
+         return true;
+       $index++;
+     }
+     return false;
+   }
+   
+   function addLngRecords(&$node,&$recordset)
+   {
+     $newrecordset=Array();
+     $languages=$this->getLanguages($node);
+     atkdebug("atkmlsplitter adding missings lngrecord for ".$node->m_type."!");
+     for($i=0, $max=count($languages);$i<$max;$i++)
+     {
+       $index=NULL;
+       if(!$this->hasLngRecord($node,$recordset,$languages[$i],$index))
+       {
+         $recordcount=count($newrecordset);
+         $newrecordset[$recordcount]=$recordset[0]; // assume that the first record is OK.
+         $newrecordset[$recordcount][$node->m_lngfield]=$languages[$i];
+         
+         if($languages[$i]!=$node->m_defaultlanguage) // saving atkaction
+           $newrecordset[$recordcount]["atklngrecordmodes"][$languages[$i]]["mode"]="add";
+         else
+           $newrecordset[$recordcount]["atklngrecordmodes"][$languages[$i]]["mode"]="updatelngfield";
+       }
+       else $newrecordset[] = $recordset[$index];
+     }
+     return $newrecordset;
+    }
+   
     function mergeMlRecords(&$node, &$recordset)
     {
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if($node->m_attribList[$attribname]->m_mlattribute) $lngattribs[$attribname] = &$node->m_attribList[$attribname];
       }
+      $ml_record[0]=$recordset[0]; // assume this is the record with the default language
+      $ml_record[0]["atklngrecordmodes"]=Array();
       for($i=0, $max=count($recordset);$i<$max;$i++)
       {
-        if($node->m_defaultlanguage==$recordset[$i][$node->m_lngfield]) $ml_record[0]=$recordset[$i];
+        if(is_array($recordset[$i]["atklngrecordmodes"]))  // keep track off atkactions
+          $ml_record[0]["atklngrecordmodes"] = array_merge($ml_record[0]["atklngrecordmodes"],$recordset[$i]["atklngrecordmodes"]);
         foreach($lngattribs as $lngattribname=>$lngattrib)
         {
           $lngattribvalues[$lngattribname][$recordset[$i][$node->m_lngfield]]=$recordset[$i][$lngattribname];
