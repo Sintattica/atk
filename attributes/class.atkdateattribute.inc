@@ -208,7 +208,6 @@
       $str_format = $this->m_date_format_edit;
 
       /* currently selected date */
-      $current = 0;
       if (isset($record[$this->fieldName()]))
       {
         if (is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
