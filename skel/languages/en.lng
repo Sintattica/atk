@@ -1,0 +1,10 @@
+<?php
+$en=array(
+  "app_title" =>  "Application name",
+
+  // Menu Items
+  "title_test_attributes" =>  "Test attributes",
+  "title_test" =>  "Test",
+
+);
+?>
