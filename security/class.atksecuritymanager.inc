@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.11  2001/06/18 22:49:02  peter
+   * Added ability to logout of the HTTP authentication (set variable atklogout to something...)
+   *
    * Revision 4.10  2001/06/18 12:58:20  ivo
    * Bugfix in securitymanager constructor.
    *
@@ -121,23 +124,35 @@
     function authenticate()
     {
       global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword;
-      global $g_sessionManager, $HTTP_COOKIE_VARS, $ATK_VARS;
-
-      $authenticated = false;       
+      global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
       $md5 = false; // PHP_AUTH_PW is plain text..            
-       
-      // first check current session, we might already be logged in.
-      $session_auth = $ATK_VARS["authentication"];      
-      if (atkconfig("authentication_session") && $session_auth["authenticated"]==1 && $session_auth["user"]!=NULL)      
+
+      // first check if we want to logout
+      if (isset($atklogout) && !session_is_registered("relogin"))
       {
-        $this->m_user = $session_auth["user"];
-        atkdebug("Using session for authentication");
-        $authenticated = true;
-      }       
-      else
-      {
+        session_destroy();
+        session_start();
+        session_register("relogin");
+
+        // destroy cookie
+        if (atkconfig("authentication_cookie") && $PHP_AUTH_USER!="administrator")
+        {
+          $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
+          if (!empty($HTTP_COOKIE_VARS[$cookiename])) setcookie($cookiename, "", 0);
+        }
+      } 
       
-        // otherwise, check previous sessions.. 
+      // do we need to login?
+      else if (!session_is_registered("login"))
+      { 
+        // authenticated?
+        $authenticated = false;
+
+        // sometimes we manually have to set the PHP_AUTH vars 
+        if (empty($PHP_AUTH_USER) && empty($PHP_AUTH_PW) && ereg("^Basic ", $HTTP_AUTHORIZATION))
+        list($PHP_AUTH_USER, $PHP_AUTH_PW) = explode(":", base64_decode(substr($HTTP_AUTHORIZATION, 6)));
+
+        // check previous sessions.. 
         if (atkconfig("authentication_cookie"))
         {
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
@@ -146,7 +161,7 @@
           list($user, $passwd) = split("\.",$HTTP_COOKIE_VARS[$cookiename]);                           
        
           // for security reasons administrator will never be cookied..
-          if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator") 
+          if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator")
           {        
             atkdebug("Using cookie to retrieve previously used userid/password");
             $PHP_AUTH_USER = $user;
@@ -155,14 +170,16 @@
           }
         }              
                           
-        // First check superuser..       
+        // check superuser       
         if ($config_administratorpassword!=""&&$PHP_AUTH_USER=="administrator"&&$PHP_AUTH_PW==$config_administratorpassword)
         {
           $this->m_user = Array("name"=>"administrator","level"=>-1);
           // for convenience, we also store the user as a global variable.             
           atkdebug("Administrator (configfile) logged in");
           $authenticated = true;
-        }      
+        } 
+
+        // other users     
         else 
         {     
           if (atkconfig("authentication_md5")&&!$md5)
@@ -171,7 +188,7 @@
           }       
           if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
           {   
-            // We store the username + securitylevel of the logged in user.
+            // We store the username + securitylevel of the logged in user. 
             $this->m_user = $this->m_authorization->getUser($PHP_AUTH_USER);
             // for convenience, we also store the user as a global variable.             
             atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
@@ -185,19 +202,42 @@
             {
               setcookie($cookiename,$PHP_AUTH_USER.".".$PHP_AUTH_PW, time()+60*(atkconfig("authentication_cookie_expire")));
             }
-          } 
-          else 
-          {         
-            Header('WWW-Authenticate: Basic realm="'.text("app_title").'"');
-            Header("HTTP/1.0 401 Unauthorized");
-            echo "Failed to logon\n<br>";
-            $authenticated = false;            
-            exit;
-          }  
+          }
+        }
+
+        // we are logged in 
+        if ($authenticated) session_register("login");
+      }
+
+      // use session for authentication
+      else
+      {
+        $session_auth = $ATK_VARS["authentication"];
+        if (atkconfig("authentication_session") && session_is_registered("login") && !empty($session_auth["authenticated"]) && !empty($session_auth["user"]))
+        {
+          $this->m_user = $session_auth["user"];
+          atkdebug("Using session for authentication");
         }
       }
+
+      // still not logged in?! 
+      if (!session_is_registered("login"))
+      {
+        header('WWW-Authenticate: Basic realm="'.text("app_title").' - '.strftime("%c",time()).'"');
+        if (ereg("Microsoft", $SERVER_SOFTWARE)) header("Status: 401 Unauthorized");
+        else header("HTTP/1.0 401 Unauthorized");
+        return false;
+      }
+
+      // we are authenticated, but atklogout is still active, let's get rid of it!
+      else if (isset($atklogout)) header("Location: $PHP_SELF");
+
+      // we keep the relogin state until the atklogout variable isn't set anymore
+      else if (!isset($atklogout) && session_is_registered("relogin")) session_unregister("relogin");
+
+      // return
       $GLOBALS["g_user"] = $this->m_user;
-      return $authenticated;
+      return true;
     }     
           
     function allowed($node, $action)
