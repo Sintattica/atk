@@ -67,9 +67,12 @@ function updateSelectable(name)
  */
 function atkSubmitMRA(name, target)
 {
+  /* some stuff we need to know */
+  var atknodetype = document.entryform.elements[name + '_atknodetype'].value;
+  var index  = document.entryform.elements[name + '_atkaction'].selectedIndex;
+  var atkaction = document.entryform.elements[name + '_atkaction'][index].value;
+
   /* initial target URL */
-  atknodetype = document.entryform.elements[name + '_atknodetype'].value;
-  atkaction   = document.entryform.elements[name + '_atkaction'].value;
   target += 'atknodetype=' + atknodetype + '&atkaction=' + atkaction;
 
   /* get selectors */
