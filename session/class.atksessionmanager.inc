@@ -6,8 +6,8 @@
    *
    * $Id$
    * $Log$
-   * Revision 1.3  2001/05/01 13:43:57  ivo
-   * New session features: stackVars and globalVars..
+   * Revision 1.4  2001/05/01 13:48:22  ivo
+   * removed some debugcode.
    *
    * Revision 1.2  2001/05/01 12:17:02  ivo
    * bugfix
@@ -81,7 +81,7 @@
         $postvars[$var] = $value;
       }                             
           
-      var_dump($g_sessionData["globals"]);
+      //var_dump($g_sessionData["globals"]);
     }
     
     function stackscope(&$postvars)
@@ -146,8 +146,8 @@
         $postvars[$var] = $value;
       }                             
         
-      echo "<hr>";
-      var_dump($g_sessionData["stack"]);
+      //echo "<hr>";
+      //var_dump($g_sessionData["stack"]);
     }
 
 
