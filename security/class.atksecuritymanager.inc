@@ -182,8 +182,11 @@
           atkdebug("Guest (configfile) logged in");
           $authenticated = true;
         }
-        // other users     
-        else 
+        // other users 
+        // we must first explicitly check that we are not trying to login as administrator or guest.
+        // these accounts have been validated above. If we don't check this, an account could be
+        // created in the database that provides administrator access.
+        else if ($PHP_AUTH_USER!="administrator"&&$PHP_AUTH_USER!="guest") 
         {     
           $response=0;
           if(is_array($this->m_authentication))
@@ -317,16 +320,14 @@
           
     function loginForm()
     {
-      global $g_layout,$g_theme,$PHP_SELF,$atkusername,$atkaction,$authorization;
+      global $g_layout,$PHP_SELF,$atkusername,$atkaction,$authorization;
 
-      if(sessionLoad('loginattempts')=="")
-      {
-        $loginattempts = 0;
-      }
-      else $loginattempts = sessionLoad('loginattempts');
+      $loginattempts = sessionLoad('loginattempts');
+      if($loginattempts=="") $loginattempts = 0;
+      
       if($atkaction=="login" && $authorization=="loginform")
       {
-        $loginattempts = $loginattempts+1;
+        $loginattempts++;
       }
       sessionStore('loginattempts',$loginattempts);
 
