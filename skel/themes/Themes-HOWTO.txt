@@ -16,6 +16,7 @@ layout.inc                  Layoutfile
 block_top.tmpl              Block Top
 block_bottom.tmpl           Block Bottom
 images/ (optional)          Images used in the template
+tree_icons                  Icons for the treeview
 
 ATK itself has the following default themes:
 
@@ -97,6 +98,8 @@ example of a layout file with comments:
   $g_theme["TableFontSize"] = "12";               // Font size in pt.
   $g_theme["TableFontWeight"] = "none";           // FontWeight (bold) 
   $g_theme["TableFgColor"] = "#000000";           // Table font color;
+  
+  $g_theme["TreeIcon_dir"] = "tree_icons";   // Directory name where the tree icons are stored
 
 ?>
 
@@ -144,4 +147,20 @@ Example of block_bottom.tmpl
 
 images/
 =======
+
+
+tree_icons/
+===========
+The Treeview uses the following gif files:
+
+tree_expand.gif 
+tree_collapse.gif 
+tree_vertline.gif   
+tree_split.gif 
+tree_split_plus.gif
+tree_split_minus.gif
+tree_end.gif 
+tree_leaf.gif 
+tree_space.gif 
+
 

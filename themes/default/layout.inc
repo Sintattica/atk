@@ -43,4 +43,7 @@
   $g_theme["TableFontWeight"] = "none"; // FontWeight (bold) 
   $g_theme["TableFgColor"] = "#000000"; // Table font color;
 
+  // Tree settings
+  $g_theme["TreeIcon_dir"] = "tree_icons";
+
 ?>

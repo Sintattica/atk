@@ -17,6 +17,9 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     *
     * $Id$
     * $Log$
+    * Revision 4.1  2001/04/23 12:32:57  sandy
+    * Made the TreeIcons themeable, updated the Themes howto, and removed some debugging code in the atktreenode.
+    *
     * Revision 4.0  2001/04/23 10:19:38  ivo
     * Revision number update
     *
@@ -85,11 +88,8 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 	    $this->m_tree[$g_teller][4]=1; 
       $g_teller++;
       $test = $this->Fill_tree($t->m_tree);
-      $g_maxlevel++;
-      $g_maxlevel++;
-      
-      //var_dump($this->m_tree);   
-      //$g_layout->output("<table border=\"1\" cellspacing=0 cellpadding=0 cols=$g_maxlevel width=".($g_maxlevel*16+200).">\n");
+      $g_maxlevel=$g_maxlevel+2;
+
       $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".($g_maxlevel*30).">\n");
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
@@ -98,18 +98,18 @@ if (!defined("CLASS_ATKTREENODE_INC"))
         $g_layout->output(url($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix")).'<br><br>');
       }
 
-      //$group = $this->treeGetGroup(0);
-      //$this->treePrintGroup($group, 0);
-      //var_dump($t->m_tree);
-      //$test = $this->Fill_tree($t->m_tree);
       $g_layout->output($this->GraphTreeRender());
       
-      //$g_layout->output($this->TreeRender_org($t->m_tree));
       $g_layout->output("</table>");      
       $g_layout->ui_bottom();
       $this->debug("Generating treeview finished!");
     }
-
+    
+    /**
+         * Recursive funtion whitch fills an array with all the items of the tree. 
+         * @param $tree Tree
+         * @param $level Level
+         */
     function Fill_tree($tree="",$level=0)
     {
       global $g_teller,$g_maxlevel;
@@ -127,27 +127,35 @@ if (!defined("CLASS_ATKTREENODE_INC"))
           $this->Fill_tree($objarr->m_sub, $level+1);
         }              
       }
-      
       return "";  
     }
     
 
-
+    /**
+         * Recursive funtion whitch fills an array with all the items of the tree. 
+         * @param $tree Tree
+         * @param $level Level
+         */
     function GraphTreeRender()
     {
-      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$p;
-      //var_dump($this->m_tree);
-      $img_expand   = "drk_icons/tree_expand.gif"; 
-	$img_collapse = "drk_icons/tree_collapse.gif"; 
-	$img_line     = "drk_icons/tree_vertline.gif";   
-	$img_split	= "drk_icons/tree_split.gif"; 
-	$img_plus     = "drk_icons/tree_split_plus.gif";
-	$img_minus     = "drk_icons/tree_split_minus.gif";
-	$img_end      = "drk_icons/tree_end.gif"; 
-	$img_leaf     = "drk_icons/tree_leaf.gif"; 
-	$img_spc      = "drk_icons/tree_space.gif"; 
-  $tree_color1 = "#aaaaaa";
-  $tree_color2 = "#dddddd";
+      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$p,$g_theme;
+      if(is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
+      {
+        $icon_path ="themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
+      }
+      else
+      {
+        $icon_path ="atk/themes/default/tree_icons/";
+      }
+      $img_expand   = $icon_path."tree_expand.gif"; 
+	    $img_collapse = $icon_path."tree_collapse.gif"; 
+	    $img_line     = $icon_path."tree_vertline.gif";   
+	    $img_split	  = $icon_path."tree_split.gif"; 
+	    $img_plus     = $icon_path."tree_split_plus.gif";
+	    $img_minus    = $icon_path."tree_split_minus.gif";
+	    $img_end      = $icon_path."tree_end.gif"; 
+	    $img_leaf     = $icon_path."tree_leaf.gif"; 
+	    $img_spc      = $icon_path."tree_space.gif"; 
   
       $res="";
       $lastlevel=0;
@@ -178,10 +186,8 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     
 	    for ($i=count($this->m_tree)-1; $i>=0; $i--) 
 	    { 
-        //echo "Lastlevel = $lastlevel   - level = ".$this->m_tree[$i][0]."<br>";
 	    	if ( $this->m_tree[$i][0] < $lastlevel ) 
 	    	{ 
-      //echo "Jaa<br>";  
     			for ($j=$this->m_tree[$i][0]+1; $j <= $g_maxlevel; $j++)    
 			    { 
         
@@ -192,7 +198,6 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 		    { 
 		    	$levels[$this->m_tree[$i][0]]=1; 
 		    	$this->m_tree[$i][4]=1; 
-          //echo "Last node of subtree  - ".$this->m_tree[$i][1]."<br>";
 		    } 
 		    else 
 		    $this->m_tree[$i][4]=0; 
@@ -229,178 +234,166 @@ if (!defined("CLASS_ATKTREENODE_INC"))
       // Column for the functions
       $res.= "<td width=300>&nbsp;</td>";
       $res.= "</tr>\n"; 
-	$cnt=0; 
-while ($cnt<count($this->m_tree)) 
-	{ 
-		if ($visible[$cnt]) 
-		{ 
-			/****************************************/ 
-			/* start new row                        */ 
-			/****************************************/
-      if($tree_color==$tree_color1) { $tree_color=$tree_color2; } else { $tree_color=$tree_color1; }
+    	$cnt=0; 
+      while ($cnt<count($this->m_tree)) 
+	    { 
+	    	if ($visible[$cnt]) 
+		    { 
+			    /****************************************/ 
+			    /* start new row                        */ 
+			    /****************************************/
+          if($tree_color==$tree_color1) { $tree_color=$tree_color2; } else { $tree_color=$tree_color1; }
 			
-      $res.="<tr>"; 
-			/****************************************/ 
-			/* vertical lines from higher levels    */ 
-			/****************************************/ 
-			$i=0; 
-			while ($i<$this->m_tree[$cnt][0]-1)  
-			{ 
-				if ($levels[$i]==1) 
-        {
-          $res.= "<td><img src=\"".$img_line."\"></td>\n";
-        }
-      else
-        {
-          $res.= "<td><img src=\"".$img_spc."\"></td>\n";
-        }
-				$i++; 
-			} 
+          $res.="<tr>"; 
+			    /****************************************/ 
+			    /* vertical lines from higher levels    */ 
+			    /****************************************/ 
+			    $i=0; 
+			    while ($i<$this->m_tree[$cnt][0]-1)  
+			    { 
+				    if ($levels[$i]==1) 
+            {
+              $res.= "<td><img src=\"".$img_line."\"></td>\n";
+            }
+            else
+            {
+              $res.= "<td><img src=\"".$img_spc."\"></td>\n";
+            }
+				    $i++; 
+			    } 
        
-			/****************************************/ 
-			/* corner at end of subtree or t-split  */ 
-			/****************************************/          
-			if ($this->m_tree[$cnt][4]==1)  
-			{ 
-				if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\"></td>\n"; 
-				$levels[$this->m_tree[$cnt][0]-1]=0; 
-			} 
-			else 
-			{
-				if ($expand[$cnt]==0) 
-				{
-					if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
-					{
-						/****************************************/ 
-						/* Create expand/collapse parameters    */ 
-						/****************************************/ 
-						$i=0; $params="p="; 
-						while($i<count($expand)) 
-						{ 
-							if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
-							{ 
-								$params=$params.$i;
-								$params=$params."|"; 
-							} 
-							$i++; 
-						} 
-						$tmp="&menu=$menu";
-						$params=$params.$tmp;
-						$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_plus."\" border=no></a></td>\n"; 
-					}
-					else
-					{
-						$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
-					}
-				}
-				else
-				{
-					if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
-					{
-						/****************************************/ 
-						/* Create expand/collapse parameters    */ 
-						/****************************************/ 
-						$i=0; $params="p="; 
-						while($i<count($expand)) 
-						{ 
-							if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
-							{ 
-								$params=$params.$i;
-								$params=$params."|"; 
-							} 
-							$i++; 
-						} 
-						$tmp="&menu=$menu";
-						$params=$params.$tmp;
-						$res.="<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_minus."\" border=no></a></td>\n"; 
-					}
-					else
-					{
-						$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
-					}
-				}
-				$levels[$this->m_tree[$cnt][0]-1]=1;     
-			}  
+			    /****************************************/ 
+			    /* corner at end of subtree or t-split  */ 
+			    /****************************************/          
+			    if ($this->m_tree[$cnt][4]==1)  
+			    { 
+			    	if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\"></td>\n"; 
+				    $levels[$this->m_tree[$cnt][0]-1]=0; 
+			    } 
+			    else 
+			    {
+				    if ($expand[$cnt]==0) 
+				    {
+					    if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+					    {
+						    /****************************************/ 
+						    /* Create expand/collapse parameters    */ 
+						    /****************************************/ 
+						    $i=0; $params="p="; 
+						    while($i<count($expand)) 
+						    { 
+							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+							    { 
+								    $params=$params.$i;
+								    $params=$params."|"; 
+							    } 
+							    $i++; 
+						    } 
+						    $tmp="&menu=$menu";
+						    $params=$params.$tmp;
+						    $res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_plus."\" border=no></a></td>\n"; 
+					    }
+					    else
+					    {
+						    $res.="<td><img src=\"".$img_split."\" border=no></td>\n";
+					    }
+				    }
+				    else
+			    	{
+			    		if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+			    		{
+						    /****************************************/ 
+						    /* Create expand/collapse parameters    */ 
+						    /****************************************/ 
+					    	$i=0; $params="p="; 
+						    while($i<count($expand)) 
+						    { 
+							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+							    { 
+								    $params=$params.$i;
+								    $params=$params."|"; 
+							    } 
+							    $i++; 
+						    } 
+						    $tmp="&menu=$menu";
+						    $params=$params.$tmp;
+						    $res.="<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_minus."\" border=no></a></td>\n"; 
+					    }
+					    else
+					    {
+					    	$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
+					    }
+				    }
+				    $levels[$this->m_tree[$cnt][0]-1]=1;     
+			    }  
        
-			/********************************************/ 
-			/* Node (with subtree) or Leaf (no subtree) */ 
-			/********************************************/ 
-			if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
-			{ 
-         
-				/****************************************/ 
-				/* Create expand/collapse parameters    */ 
-				/****************************************/ 
-				$i=0; $params="p="; 
-				while($i<count($expand)) 
-				{ 
-					if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
-					{ 
-						$params=$params.$i;
-						$params=$params."|"; 
-					} 
-					$i++; 
-				} 
-				$tmp="&menu=$menu";
-				$params=$params.$tmp;
+			    /********************************************/ 
+			    /* Node (with subtree) or Leaf (no subtree) */ 
+			    /********************************************/ 
+			    if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+			    { 
+    				/****************************************/ 
+	    			/* Create expand/collapse parameters    */ 
+		    		/****************************************/ 
+			    	$i=0; $params="p="; 
+			    	while($i<count($expand)) 
+				    { 
+					    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+					    { 
+					    	$params=$params.$i;
+					    	$params=$params."|"; 
+					    } 
+					    $i++; 
+				    } 
+				    $tmp="&menu=$menu";
+				    $params=$params.$tmp;
                 
-				if ($expand[$cnt]==0) 
-					$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_expand."\" border=no></a></td>\n"; 
-				else 
-					$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_collapse."\" border=no></a></td>\n";          
-			} 
-			else 
-			{ 
-				/*************************/ 
-				/* Tree Leaf             */ 
-				/*************************/ 
-				$res.= "<td><img src=\"".$img_leaf."\"></td>\n";          
-			} 
+				    if ($expand[$cnt]==0) 
+					    $res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_expand."\" border=no></a></td>\n"; 
+				    else 
+					    $res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_collapse."\" border=no></a></td>\n";          
+			    } 
+			    else 
+			    { 
+			    	/*************************/ 
+			    	/* Tree Leaf             */ 
+			    	/*************************/ 
+			    	$res.= "<td><img src=\"".$img_leaf."\"></td>\n";          
+			    } 
        
-			/****************************************/ 
-			/* output item text                     */ 
-			/****************************************/ 
-      //echo "MAX = $g_maxlevel   tree ".$this->m_tree[$cnt][0]."<br>\n";
-			//if ($this->m_tree[$cnt][2]=="") 
-				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><font size=2>".$this->m_tree[$cnt][1]."</font></td>\n"; 
-			//else 
-				//$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><a href=\"".$this->m_tree[$cnt][2]."\" target=\"".$this->m_tree[$cnt][3]."\"><font size=2>".$this->m_tree[$cnt][1]."</a></font></td>\n"; 
+			    /****************************************/ 
+			    /* output item text                     */ 
+			    /****************************************/ 
+  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><font size=2>".$this->m_tree[$cnt][1]."</font></td>\n"; 
       
-			/****************************************/ 
-			/* end row   with the functions                      */ 
-			/****************************************/ 
-      $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
-      $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
-      if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
-      {    
-        $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
-      }
-      if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
-      {
-         // Do nothing
-      }
-      else
-      {
-        $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
-      }
-      $res.= "</td></tr>\n";       
-		} 
-		$cnt++;     
-	} 
-   return $res;
-
-
-
-
-      
+    			/****************************************/ 
+    			/* end row   with the functions                      */     
+    			/****************************************/ 
+         $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
+         $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
+         if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+         {    
+           $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
+         }
+         if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
+         {
+            // Do nothing
+         }
+         else
+         {
+           $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
+          }
+         $res.= "</td></tr>\n";       
+		    } 
+	    	$cnt++;     
+	    } 
+      return $res;
     }
 
     function TreeRender_org($tree="",$level=0)
     {
-      // First time: root tree..
-      //if ($tree == "") $tree = $this->t;
-      //var_dump($tree);
-      //return "";
+      //First time: root tree..
+      if ($tree == "") $tree = $this->t;
       $res="";
       while (list($id,$objarr) = each($tree))
       {
