@@ -27,6 +27,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/15 13:53:17  ivo
+   * Fixed bug in fileattribute: form reposts went wrong when using
+   * data from a session.
+   *
    * Revision 4.3  2001/06/11 14:12:53  martin
    * Yeah! finally the search function on files is finished. If you use the fileattrib
    * use the AF_SEARCHABLE flag to activate the search function!! :)
@@ -211,16 +215,17 @@
      * @return Array with tmpfile,filename,filesize,orgfilename
      */
     function fetchValue($rec)
-    {
+    {    
       global $HTTP_POST_FILES;
        
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
+     
       $basename = $this->fieldName();      
 
-      if (is_array($HTTP_POST_FILES))
-      {
-        // php4
-        if ($HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
+      if (is_array($HTTP_POST_FILES)) // php4
+      {    
+        // if no new file has been uploaded..    
+        if (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
         { 
       
           $result = array("tmpfile"=>"",
@@ -234,7 +239,7 @@
                           "filename"=>$HTTP_POST_FILES[$postfiles_basename]["name"],
                           "filesize"=>$HTTP_POST_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$HTTP_POST_FILES[$postfiles_basename]["name"]);
-        }                
+        }                      
         return $result;
       }      
     }
