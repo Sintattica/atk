@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.24  2001/10/16 07:48:45  martin
+   * improved fallthrough authentication system
+   *
    * Revision 4.23  2001/10/15 15:38:47  martin
    * added feature to use multiple authentication types.
    *
@@ -128,17 +131,24 @@
   if ($config_authorization  == "") $config_authorization = $config_authentication;
   if ($config_securityscheme == "") $config_securityscheme = "none";
    
-  $authentication = explode(",",$config_authentication);
+  $authentication = explode(",",trim($config_authentication));
   if(is_array($authentication))
   {
     foreach($authentication as $value)
     {
-      include_once($config_atkroot."atk/security/class.auth_".$value.".inc");
+      $value = trim($value);
+      if(is_file($config_atkroot."atk/security/class.auth_".$value.".inc"))
+      {
+        include_once($config_atkroot."atk/security/class.auth_".$value.".inc");
+      }
     }
   }
   else
   {
-    include_once($config_atkroot."atk/security/class.auth_".$authentication.".inc");
+    if(is_file($config_atkroot."atk/security/class.auth_".$authentication.".inc"))
+    {
+      include_once($config_atkroot."atk/security/class.auth_".$authentication.".inc");
+    }
   }
 
   include_once($config_atkroot."atk/security/class.auth_".$config_authorization.".inc");
@@ -161,21 +171,31 @@
       atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
 
       /* authentication class */       
-      $authentication = explode(",",$authentication_type);
+      $authentication = explode(",",trim($authentication_type));
       if(is_array($authentication))
       {
         foreach($authentication as $class)
         {
-          $classname = "auth_".$class;
-          atkdebug("atkSecurityManager() constructing class $classname");
-          $this->m_authentication[$class] = new $classname;
+          $class = trim($class);
+          if($class!="")
+          {
+            $classname = "auth_".$class;
+            if(class_exists($classname))
+            {
+              atkdebug("atkSecurityManager() constructing class $classname");
+              $this->m_authentication[$class] = new $classname;
+            }
+          }
         }
       }
       else
       {
         $classname = "auth_".$authentication;
-        atkdebug("atkSecurityManager() constructing class $classname");
-        $this->m_authentication[$authentication] = new $classname;
+        if(class_exists($classname))
+        {
+          atkdebug("atkSecurityManager() constructing class $classname");
+          $this->m_authentication[$authentication] = new $classname;
+        }
       }
       
       /* authorization class */
