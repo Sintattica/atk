@@ -10,6 +10,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.2  2001/06/12 12:24:23  ivo
+   * New feature: users can now have more then one group in db authentication.
+   *
    * Revision 4.1  2001/05/21 13:38:18  ivo
    * Added a cookie that can remember your login if you close your browser.
    * (disabled by default, enable in your configfile if you need it)
@@ -44,12 +47,12 @@
      {       
        global $g_db;
        
-       $query = "SELECT ".$GLOBALS["config_auth_passwordfield"]." FROM ".$GLOBALS["config_auth_usertable"]." WHERE ".$GLOBALS["config_auth_userfield"]." ='$user'";
+       $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
        atkdebug($query);
        
        $recs = $g_db->getrows($query);              
           
-       $valid = (count($recs)>0 && $user!="" && $recs[0][$GLOBALS["config_auth_passwordfield"]]==$passwd);      
+       $valid = (count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd);      
 
        return $valid;          
      }
@@ -58,18 +61,58 @@
      {
        global $g_db;
        
-       $query = "SELECT * FROM ".$GLOBALS["config_auth_usertable"]." WHERE ".$GLOBALS["config_auth_userfield"]." ='$user'";
+       $usertable = atkconfig("auth_usertable");
+       $leveltable = atkconfig("auth_leveltable");
+       $userfield = atkconfig("auth_userfield");
        
+       if ($usertable==$leveltable)
+       {
+         // Level and userid are stored in the same table.
+         // This means one user can only have one level.
+         $query = "SELECT * FROM $usertable WHERE $userfield ='$user'";
+       }
+       else
+       {
+         // Level and userid are stored in two separate tables. This could 
+         // mean (but doesn't have to) that a user can have more than one
+         // level.
+         $query = "SELECT * 
+                   FROM 
+                     $usertable
+                   LEFT JOIN 
+                     $leveltable
+                   ON 
+                     $usertable.$userfield = $leveltable.$userfield
+                   WHERE
+                     $usertable.$userfield = '$user'";                     
+                     
+       }
+       
+       atkdebug("getUser query: $query");
        $recs = $g_db->getrows($query);
        
-       return Array("name"=>$user, "level"=>$recs[0]["entity"]);
+       // We might have more then one level, so we loop the result. 
+       if (count($recs)>1)
+       {
+         $level = array();
+         for ($i=0;$i<count($recs);$i++)
+         {
+           $level[] = $recs[$i][atkconfig("auth_levelfield")];
+         }
+       }
+       else
+       {
+         $level = $recs[0][atkconfig("auth_levelfield")];
+       }
+       
+       return Array("name"=>$user, "level"=>$level);
      }
      
      function getEntity($node, $action)
      {
        global $g_db;
        
-       $query = "SELECT * FROM ".$GLOBALS["config_auth_accesstable"]." WHERE node='$node' AND action IN ('$action','*') ORDER BY action DESC";
+       $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node' AND action IN ('$action','*') ORDER BY action DESC";
        atkdebug($query);           
                           
        $rights = $g_db->getrows($query);
@@ -79,7 +122,7 @@
        
        for ($i=0;$i<count($rights);$i++)
        {
-         $result[] = $rights[$i]["entity"];
+         $result[] = $rights[$i][atkconfig("auth_levelfield")];
        }
              
        return $result;
@@ -98,9 +141,9 @@
                                  
        for ($i=0;$i<count($rights);$i++)
        {         
-         if ($rights[$i]["entity"]!="") 
+         if ($rights[$i][atkconfig("auth_levelfield")]!="") 
          {
-           $result[] = $rights[$i]["entity"];
+           $result[] = $rights[$i][atkconfig("auth_levelfield")];
          }
        }
        

@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.7  2001/06/12 12:24:23  ivo
+   * New feature: users can now have more then one group in db authentication.
+   *
    * Revision 4.6  2001/05/22 15:22:39  peter
    * Different small enhancements fixes...
    *
@@ -99,7 +102,7 @@
        
       // first check current session, we might already be logged in.
       $session_auth = $ATK_VARS["authentication"];      
-      if ($session_auth["authenticated"]==1 && $session_auth["user"]!=NULL)
+      if (atkconfig("authentication_session") && $session_auth["authenticated"]==1 && $session_auth["user"]!=NULL)      
       {
         $this->m_user = $session_auth["user"];
         atkdebug("Using session for authentication");
@@ -119,7 +122,7 @@
           // for security reasons administrator will never be cookied..
           if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator") 
           {        
-            atkdebug("Using cookie for authentication");
+            atkdebug("Using cookie to retrieve previously used userid/password");
             $PHP_AUTH_USER = $user;
             $PHP_AUTH_PW = $passwd;
             $md5 = true; // cookie is already md5;
@@ -173,7 +176,7 @@
           
     function allowed($node, $action)
     {
-      if (($this->m_scheme=="none") || ($this->m_user["level"]==-1) || (strtolower($this->m_user["name"])=="administrator")) 
+      if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
       {
         // No securityscheme, or user is superuser.
         $allowed = true;
@@ -199,7 +202,17 @@
           }
           else if ($this->m_scheme=="group")
           {           
-            $allowed = in_array($this->m_user["level"], $required);          
+            // user may have more then one level
+            if (is_array($this->m_user["level"]))
+            {
+              $allowed = (count(array_intersect($this->m_user["level"], $required))>0);
+            }
+            else
+            {
+              // user has only one level
+              $allowed = in_array($this->m_user["level"], $required);          
+            }
+            
           }
           else // unknown scheme??
           {
@@ -215,7 +228,7 @@
     {
       global $config_security_attributes;
       
-      if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->m_user["level"]==-1) || (strtolower($this->m_user["name"])=="administrator")) 
+      if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
       {
         // No securityscheme, or user is superuser.
         return true;
@@ -246,6 +259,22 @@
      
       return $allowed;
      
+    }
+    
+    /**
+     * Returns true if the current logged in user has
+     * the given level.
+     */
+    function hasLevel($level)
+    {
+      if (is_array($this->m_user["level"]))
+      {
+        return in_array($level, $this->m_user["level"]);
+      }
+      else
+      {
+        return $this->m_user["level"]==$level;
+      }
     }
      
     function logAction($node, $action)
