@@ -12,6 +12,7 @@ Changes in ATK 5.0.8
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
+* $config_language_basedir now defaults to "languages/" again [Thom,Boy]
 
 Changes in ATK 5.0.7
 --------------------
