@@ -185,22 +185,44 @@
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <meta name="atkversion" value="'.$version.'">'."\n";
+               
+      $this->addScripts($res);
 
+      for ($i = 0; $i < count($this->m_stylesheets); $i++)
+        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
+				
+			for ($i = 0; $i < count($this->m_stylecode); $i++)
+			$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
+
+      $res.="</head>\n";
+      return $res;
+    }
+    
+    /**
+     * Adds javascripts from the member variables to HTML output
+     * @param String $res The HTML output
+     */
+    function addScripts(&$res)
+    {
       for ($i = 0; $i < count($this->m_scriptfiles); $i++)
+      {
         $res.='  <script language="javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+      }
 
       $res.="<script language=\"javascript\">\n
                function globalSubmit(form)
                {
                  var retval = true;\n";
+      
       for ($i=0, $_i = count($this->m_submitscripts); $i<$_i; $i++)
       {
         $res.="retval = ".$this->m_submitscripts[$i]."\n";
         $res.="if (retval!=true) return false;\n";
       }
+      
       $res.="return retval;
                }\n";
-               
+      
       if (count($this->m_loadscripts))
       {
         $res.="function globalLoad()
@@ -219,16 +241,8 @@
       }
       
       $res.= "</script>\n";
-
-      for ($i = 0; $i < count($this->m_stylesheets); $i++)
-        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
-				
-			for ($i = 0; $i < count($this->m_stylecode); $i++)
-			$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
-
-      $res.="</head>\n";
-      return $res;
     }
+    
     
     /**
      * Add content to the page.
@@ -247,7 +261,7 @@
     function body($extraprops="")
     {
       $res = '<body ';
-      if (count($this->m_loadscripts)) $res.='onLoad="globalLoad()" ';
+      if (count($this->m_loadscripts)) $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'\');}" ';
       $res.= $extraprops.">\n";
       return $res;
     }
