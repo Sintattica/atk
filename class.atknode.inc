@@ -76,11 +76,11 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
-  
+
   // Once atktools is loaded, we can register our own error handler.
   set_error_handler("atkErrorHandler");
   error_reporting(E_ALL);
-  
+
   require_once($config_atkroot."atk/class.layout.inc");
   require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
   require_once($config_atkroot."atk/db/class.atkquery.inc");
@@ -707,7 +707,7 @@
           // else we will just use the attribute's display method.
           $funcname = $p_attrib->m_name."_display";
           if (method_exists($this, $funcname)) $editsrc = $this->$funcname($record);
-          else $editsrc=$p_attrib->display($record);
+          else $editsrc=$p_attrib->display($record, "view");
 
           $page .= $g_layout->ret_td($editsrc, 'colspan="'.$tdcount.'" valign="top"');
           $page .= "</tr>";
@@ -720,8 +720,9 @@
       $g_layout->output($page);
       if (count($this->m_tabListView) > 1) $g_layout->tabs_bottom();
 
-      $g_layout->output('<br><form method="get" action="'.session_url($PHP_SELF,SESSION_BACK).'">'.
+      $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
                         '<input type="submit" value="'.text('back').'"></form>');
+
       $g_layout->ui_bottom();
     }
 
@@ -1525,13 +1526,13 @@
 
             if (method_exists($this,$funcname))
             {
-              $output.=$g_layout->ret_td($this->$funcname($recordset[$i]), $vorientation);
+              $output.=$g_layout->ret_td($this->$funcname($recordset[$i], "list"), $vorientation);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]), $vorientation);
+              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i], "list"), $vorientation);
             }
 
             // Calculate totals..
@@ -1579,7 +1580,7 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totalRow.=$g_layout->ret_td_datatitle($p_attrib->display($totals[$attribname]));
+              $totalRow.=$g_layout->ret_td_datatitle($p_attrib->display($totals[$attribname], "list"));
             }
             else
             {
@@ -1673,13 +1674,13 @@
 
             if (method_exists($this,$funcname))
             {
-              $value=$this->$funcname($recordset[$i]);
+              $value=$this->$funcname($recordset[$i], "list");
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $value=$p_attrib->display($recordset[$i]);
+              $value=$p_attrib->display($recordset[$i], "list");
             }
             $output.='<td>'.($value==""?"&nbsp;":$value).'</td>';
 
@@ -1716,7 +1717,7 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totalRow.='<td><b>'.$p_attrib->display($totals[$attribname]).'</b></td>';
+              $totalRow.='<td><b>'.$p_attrib->display($totals[$attribname], "list").'</b></td>';
             }
             else
             {
@@ -1826,13 +1827,13 @@
 
             if (method_exists($this,$funcname))
             {
-              $value=$this->$funcname($recordset[$i]);
+              $value=$this->$funcname($recordset[$i], "list");
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $value=$p_attrib->display($recordset[$i]);
+              $value=$p_attrib->display($recordset[$i], "list");
             }
             $output.=$sof.($value==""?$empty:$value).$eof;
 
@@ -1869,7 +1870,7 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $value = $p_attrib->display($totals[$attribname]);
+              $value = $p_attrib->display($totals[$attribname], "list");
               $totalRow.=$sof.($value==""?$empty:$value).$eof;
 
             }

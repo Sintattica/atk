@@ -1,7 +1,7 @@
 <?php
   /**
    * Can be used to create '1 library has N books' relations.
-   *   
+   *
    * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
@@ -21,7 +21,7 @@
      * The maximum number of records that you may have a relation with..
      */
     var $m_maxRecords = 0;
-    
+
     /**
      * Constructor
      * @param $name ?
@@ -37,23 +37,37 @@
 
     /**
      * Returns a displayable string for this value.
-     * @param $record Record
+     * @param $record record
+     * @param $mode display mode (list or view)
      * @return a displayable string
      */
-    function display($record)
+    function display($record, $mode="list")
     {
-      $myrecords = $record[$this->fieldName()];
+      global $g_layout;
 
+      $myrecords = $record[$this->fieldName()];
       $this->createDestination();
 
-      if (count($myrecords)!=0)
+      /* record list */
+      if (count($myrecords) > 0)
       {
-        for ($i = 0; $i < count($myrecords);$i++)
+        /* display in list mode */
+        if ($mode == "list")
+          for ($i = 0; $i < count($myrecords);$i++)
+            $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
+
+        /* display in view mode */
+        else
         {
-          if ($i!=0) $result.="<br>";
-          $result.=$this->m_destInstance->descriptor($myrecords[$i]);
+          if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+          $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+          $this->m_destInstance->m_flags |= NF_NO_SEARCH;
+          $result = $this->m_destInstance->recordList($myrecords, $actions, false, array($this->m_refKey), false)."<br>";
         }
       }
+
+      /* no records */
+      else $result = text("none");
 
       return $result;
     }
@@ -66,7 +80,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $PHP_SELF;      
+      global $PHP_SELF;
 
       $this->createDestination();
 
@@ -94,20 +108,20 @@
         if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
         {
         $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
-        }        
+        }
 
         if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
         {
           $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
-        }                 
+        }
         if($this->m_destInstance->hasFlag(NF_COPY))
         {
           $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
         }
-        
-        // User may not search in embedded forms..        
-        $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
-        
+
+        // User may not search in embedded forms..
+        $this->m_destInstance->m_flags |= NF_NO_SEARCH;
+
         $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey), true);
 
         $output.=$GLOBALS['g_layout']->ret_td($cell);
@@ -145,13 +159,13 @@
      * @param $db pointer to the database
      * @param $record Record
      * @param $mode Mode for loading (admin, select, copy, etc)
-      
+
      * @return ??
      */
     function load($db, $record, $mode="")
     {
       atkdebug("load called for ".$this->m_name." (mode $mode)");
-      
+
       if ($mode=="edit")
       {
         // when editing a record with a onetomanyrelation, we don't
@@ -169,15 +183,15 @@
         list($tmp,$keyvalue) = each($key);
 
         $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
- 
+
         if ($this->m_destinationFilter!="")
         {
           $this->m_destInstance->addFilter($this->m_destinationFilter);
         }
-            
+
         if ($mode=="admin" || $mode=="select")
         {
-          // we only need fields that are displayed in the descriptor. 
+          // we only need fields that are displayed in the descriptor.
           $excludes = $this->m_destInstance->m_listExcludes;
         }
         else
@@ -186,7 +200,7 @@
           $excludes = "";
         }
         $recordset = $this->m_destInstance->selectDb($where,"","",$excludes);
-  
+
         return $recordset;
       }
     }
