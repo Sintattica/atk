@@ -61,12 +61,14 @@
       
       $languages = $this->getLanguages($node);
       $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
-            
+
+      $autoincrementflags=Array();            
       foreach($node->m_primaryKey as $primkey)
       {
         // Make sure we don't increment the primkey
         if($node->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
         $node->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
+        $autoincrementflags[]=$primkey;
       }
       
       foreach($languages as $language)
@@ -96,6 +98,11 @@
             $node->addDb($record,false,"add", $excludelist);
         }
         $record["atkprimkey"]=$oldprimkey;
+      }
+      foreach($autoincrementflags as $primkey)
+      {
+        // restore the attrib flags
+        $node->m_attribList[$primkey]->addFlag(AF_AUTO_INCREMENT);
       }
       sessionStore("atklng_".$node->m_type,NULL); // deleting modes
     }
