@@ -298,7 +298,7 @@
       }
       else if ($module=="langoverrides")
       {
-        $file = atkconfig("language_basedir", $this->LANGDIR)."$lng.lng";
+        $file = atkconfig("language_basedir").$this->LANGDIR."$lng.lng";
       }
       else
       {
