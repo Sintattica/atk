@@ -1,0 +1,70 @@
+ATK Readme
+==========
+
+Copyright and Licensing
+-----------------------
+ATK and all related material is (c)2000-2004 ibuildings.nl and Ivo Jansch.
+ATK is distributed under an open source license (based on the sleepycat 
+license) and commercial licenses can be obtained from ibuildings.nl. See
+doc/LICENSE file for details.
+
+The sleepycat license, and this the license governing ATK, is considered 
+compatible with the GPL. This means that GPL'd applications can make use
+of the ATK software without needing to obtain a commercial license. 
+When bundled with, or distributed as part of, third party software, ATK
+remains bound by the license terms as defined in doc/LICENSE; the license 
+of such third party applications does not affect the ATK license in any way.
+
+
+Contact information
+-------------------
+Technical questions regarding ATK: Ivo Jansch <ivo@achievo.org>
+Questions regarding services that ibuildings.nl provides for ATK
+(like installation and configuration): Tom M. Schenkenberg <tom@achievo.org>
+
+The project homepage can be found at http://www.achievo.org/atk
+
+If you want to be notified when new versions of ATK are released, you can 
+subscribe to our announcements mailinglist, by sending an empty message to
+atk-announce-subscribe@achievo.org. 
+
+If you want to discuss ATK features with the developers and other users,
+you can subscribe to the discussion list, by sending an empty message to
+atk-subscribe@achievo.org.
+
+
+Commercial Support
+------------------
+Ibuildings provides extensive support for ATK. Information about the 
+support program can be found at http://www.achievo.org/support/sponsor.
+Tailormade support is a possibility. Send a message to info@achievo.org
+for more information.
+
+
+Disclaimer
+----------
+This product is provided AS-IS. ibuildings.nl and any other party involved 
+do not warrant any functionality of the product and deny all responsibility 
+in case of failure of the product or any damage following directly or 
+indirectly from use of this product. The official (and more detailed)
+disclaimer can be found in the doc/LICENSE file. 
+
+
+Getting the latest release
+--------------------------
+The latest release of Achievo can always be found at 
+http://www.achievo.org/atk/download.
+
+
+Getting involved
+----------------
+ATK is developed in an Open Source (http://www.opensource.org) fashion in
+order to facilitate collaboration on the project. One of the reasons for
+choosing the Open Source method is to ensure that development is not limited
+by our own resources alone.
+We can also use some help in doing translations of the software and
+documentation writing. If you're creative, we can also use themes.
+If you want to help development, join our mailinglist by sending an empty
+message to atk-subscribe@achievo.org. If you don't like mailinglists
+you can also send an email to ivo@achievo.org with your suggestions.
+

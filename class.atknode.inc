@@ -1,51 +1,51 @@
 <?php
 
-  // Define some flags for nodes. Use the constructor of the atkNode
-  // class to set the flags. (concatenate multiple flags with '|')
-
-  define("NF_NO_ADD"        ,  1); // No new records may be added.
-  define("NF_NO_EDIT"       ,  2); // Records may not be edited
-  define("NF_NO_DELETE"     ,  4); // Records may not be deleted
-  define("NF_EDITAFTERADD"  ,  8); // Immediately after you add a new record,
-                                   // you get the editpage for that record.
-  define("NF_NO_SEARCH"     , 16); // Records may not be searched.
-  define("NF_NO_FILTER"     , 32); // Ignore addFilter filters..
-  define("NF_ADD_LINK"      , 64); // Doesn't show an add form on admin pages,
-                                   // but a link to the form.
-  define("NF_NO_VIEW"       ,128); // Records may not be viewed.
-
-  define("NF_COPY",                256); // Records / trees may  be copied
+  /**
+   * Define some flags for nodes. Use the constructor of the atkNode
+   * class to set the flags. (concatenate multiple flags with '|')
+   */
+  define("NF_NO_ADD",                  1); // No new records may be added.
+  define("NF_NO_EDIT",                 2); // Records may not be edited
+  define("NF_NO_DELETE",               4); // Records may not be deleted
+  define("NF_EDITAFTERADD",            8); // Immediately after you add a new record,
+                                           // you get the editpage for that record.
+  define("NF_NO_SEARCH",              16); // Records may not be searched.
+  define("NF_NO_FILTER",              32); // Ignore addFilter filters..
+  define("NF_ADD_LINK",               64); // Doesn't show an add form on admin pages,
+                                           // but a link to the form.
+  define("NF_NO_VIEW",               128); // Records may not be viewed.
+  define("NF_COPY",                  256); // Records / trees may  be copied
   
-  define("NF_AUTOSELECT", 4096); // If this flag is set and only one record is
-                                 // present on a selectpage, atk automatically
-                                 // selects it and moves on to the target.
+  define("NF_AUTOSELECT",            512); // If this flag is set and only one record is
+                                           // present on a selectpage, atk automatically
+                                           // selects it and moves on to the target.
 
-  define("NF_TRACK_CHANGES", 8192); // If set, atk stores the old values of
-                                    // a record as ["atkold"] in the $rec that
-                                    // gets passed to the postUpdate
+  define("NF_TRACK_CHANGES",        1024); // If set, atk stores the old values of
+                                           // a record as ["atkold"] in the $rec that
+                                           // gets passed to the postUpdate
 
-  define("NF_NO_SECURITY", 16384);  // Quick way to disable accessright checking
-                                    // for an entire node. (Everybody may access
-                                    // this node
+  define("NF_NO_SECURITY",          2048); // Quick way to disable accessright checking
+                                           // for an entire node. (Everybody may access
+                                           // this node
 
-  define("NF_NO_EXTENDED_SEARCH", 32768); // Extended search feature is turned off.
+  define("NF_NO_EXTENDED_SEARCH",   4096); // Extended search feature is turned off.
 
-  define("NF_MULTI_RECORD_ACTIONS",  65536); // Multi-selection of records is turned on.
-  define("NF_MRA", NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
-  define("NF_MRPA",                 131072); // Multi-priority-selection of records is turned on.
+  define("NF_MULTI_RECORD_ACTIONS", 8192); // Multi-selection of records is turned on.  
+  define("NF_MRPA",                16384); // Multi-priority-selection of records is turned on.
 
-  define("NF_LOCK",                 262144); // lock records
-  define("NF_ML",                   524288); // multilanguage support
-  define("NF_MULTILANGUAGE",         NF_ML);
-
-  define("NF_READONLY", NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT); // aggregate flag to quickly create readonly nodes.
+  define("NF_LOCK",                32768); // lock records
+  define("NF_ML",                  65636); // multilanguage support  
     
-  define("NF_SPECIFIC_1",                    33554432); // specific node flag 1
-  define("NF_SPECIFIC_2",                    67108864); // specific node flag 2
-  define("NF_SPECIFIC_3",                   134217728); // specific node flag 3
-  define("NF_SPECIFIC_4",                   268435456); // specific node flag 4
-  define("NF_SPECIFIC_5",                   536870912); // specific node flag 5  
+  define("NF_SPECIFIC_1",       33554432); // specific node flag 1
+  define("NF_SPECIFIC_2",       67108864); // specific node flag 2
+  define("NF_SPECIFIC_3",      134217728); // specific node flag 3
+  define("NF_SPECIFIC_4",      268435456); // specific node flag 4
+  define("NF_SPECIFIC_5",      536870912); // specific node flag 5  
 
+  define("NF_MRA",           NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
+  define("NF_MULTILANGUAGE", NF_ML);  
+  define("NF_READONLY",      NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT); // aggregate flag to quickly create readonly nodes.
+  
   /*
    * action status flags
    * Note that these have binary numbers, even though an action could never have
@@ -58,15 +58,14 @@
   define("ACTION_SUCCESS", 4);
 
   /**
-   * The atkNode class represents a piece of information that
-   * is part of an application. This class provides standard
-   * functionality for adding, editing and deleting nodes.
-   * This class must be seen as an abstract base class: For
-   * every piece of information in an application, a class
-   * must be derived from this class with specific
-   * implementations for that type of node.
+   * The atkNode class represents a piece of information that is part of an 
+   * application. This class provides standard functionality for adding, 
+   * editing and deleting nodes.
+   * This class must be seen as an abstract base class: For every piece of
+   * information in an application, a class must be derived from this class
+   * with specific implementations for that type of node.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @author Ivo Jansch <ivo@achievo.org>
    *
    * @version $Revision$
    *
@@ -90,7 +89,7 @@
   $g_modifiers = array();
   $g_overloaders = array();
 
-  // Another workaround. We use PHP_SELF a lot. Withour register_globals=On, we
+  // Another workaround. We use PHP_SELF a lot. Without register_globals=On, we
   // need to make it global ourselves. Todo: replace EVERY reference to
   // PHP_SELF with _SERVER["PHP_SELF"] eventually.
   $PHP_SELF = $_SERVER["PHP_SELF"];
@@ -2456,7 +2455,7 @@
      */
     function helpUrl()
     {
-      $language = strtok(atkconfig("languagefile"),".");
+      $language = atkconfig("lang");
       $file   = "help/".$language."/help.".$this->m_type.".inc";
       if (!file_exists($file))
       {

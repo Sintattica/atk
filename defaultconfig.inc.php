@@ -16,7 +16,7 @@
   // mysql, oci8 or pgsql
   $config_database="mysql";
 
-  $config_languagefile="english.lng";
+  $config_language="en";
   $config_recordsperpage=25;
 
   // lock type

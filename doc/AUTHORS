@@ -1,0 +1,141 @@
+Author
+------
+Ivo Jansch         <ivo@achievo.org>
+
+
+Additional Development
+----------------------
+Sandy Pleyte       <sandy@achievo.org>
+Peter Verhage      <peter@achievo.org>
+Wim Kosten         <wim@ibuildings.nl>
+Maurice Maas       <maurice@ibuildings.nl>
+Martin Roest       <martin@ibuildings.nl>
+Lineke Willems     <lineke@achievo.org>
+Ludo Beumer        <ludo@ibuildings.nl>
+
+
+Marketing 
+----------
+Tom M. Schenkenberg  <tom@achievo.org>
+Jeroen Stephan       <jeroen@ibuildings.nl>
+Jasper van der Hulst <jasper@ibuildings.nl>
+
+
+Sponsors
+--------
+ATK grows not only through contributions from the Open Source community,
+but also through financial donations from sponsors, who finance the
+development of new features.
+
+* Ibuildings.nl BV, Netherlands (http://www.ibuildings.nl) sponsors the 
+  development of ATK and sponsors ATK's hosting and development
+  facilities (site, mailinglists, cvs etc).
+
+* Cendris BV, Netherlands (http://www.cendris.com) sponsored the development
+  of keyboard navigation, some parts of the oracle driver and field range 
+  search support.
+
+* Prosa.dk, Denmark (http://www.prosa.dk) sponsored the development of the
+  multi-sort and subtotals/aggregation features.
+  
+* Petrosys Pty, Australia (http://www.petrosys.com.au) sponsored the 
+  fix for bug #269.
+
+To become a sponsor, please read http://www.achievo.org/support/sponsor.
+
+
+Translators
+-----------
+The following people contributed a translation or updated an existing one:
+
+Braz. Portuguese: Armando M. Baratti   <ambaratti@aduaneiras.com.br>
+                  Kevin Golding        <kevin@caomhin.demon.co.uk>
+                  Geraldo L M Fonseca  <glmfonseca@uol.com.br>
+                  Marcus TB de Aquino  <tulio@mondo.com.br>
+                  Wanderlei Antonio Cavassin <cavassin@conectiva.com.br>
+Catalan         : Lluís Torrent        <lluis6a@teleline.es>
+Chinese         : Xiaogang Sun         <sun.xiao.g@263.net>
+Czech           : Jakub Kahovec        <jakub.kahovec@newton.cz>
+Dutch           : Ivo Jansch           <ivo@achievo.org>
+Danish          : Morten Oersted       <mo@moch.dk>
+                  Junaid Mukhtar       <JUM@prosa.dk>
+Finnish         : Skyttä Kari          <kari.skytta@koskisen.fi>
+                  Arto Saraniva        <arto.saraniva@imnetti.fi>
+French          : Benoit des Ligneris  <benoit.des.ligneris@physique.usherb.ca>
+                  Olivier Fourdan      <fourdan@xfce.org>
+                  Kevin Golding        <kevin@caomhin.demon.co.uk>
+                  Timduru              <timduru@timduru.org>
+                  Hicham Abassi        <h.abassi@datapresse.com>
+German          : Bastian Kleineidam   <bastian.kleineidam@triplex.de>
+                  Lars Martin          <lars@smb-tec.com>
+                  Michael Gaehwiler    <pegatron@gmx.net>
+                  Lucas Smith          <smith@dybnet.de>
+                  Dirk Weigenand       <Dirk.Weigenand@smb-tec.com>
+                  Rainer Wedrich       <rainer.wedrich@ebd-networks.de>
+                  Nele Vogel           <nele.vogel@hamburg.de>
+                  Stephan Reichhelm    <reichhelm@grit.de>
+                  Christian Veron      <veronc@schneiderkreuznach.com>
+Hungarian       : Miklos Bagi Jr.      <bagim@muszakikiado.hu>
+Italian         : Marco De Toni        <marco.detoni@dedalomedia.it>
+                  Luca Pescatore       <l.pescatore@network.it>
+                  Christophe Vallet    <chris@prismanet.com>
+                  Nicola Busetto       <nicola@cnbtech.it>
+                  Andrea Trasatti      <trasatti@bware.it>
+Norwegian       : Stein Bjorndal       <stein@proact.no>
+                  Tommy Stiansen       <Tommy@tradeit.as>
+                  Stian Hartviksen     <stian.hartviksen@itsopen.no>
+                  Kjetil Byklum        <kbyklum@itsopen.net>
+                  Bjørn Langfors       <bjorn@kulturkonsult.no>
+Portuguese      : Pedro Vieira         <pedro.vieira@filbox.com>
+Russian         : Vitaliy Perekupka    <vit@uptsoft.com>
+                  Maryia I. Davidouskaia <maryia@iatp.by> 
+Spanish         : Jorge Ibsen          <jibsen@eso.org>
+                  Armando Montiel Caba <amontiel@mpsnet.net.mx>
+                  Oswaldo Gómez        <odgomez@cantv.net>
+                  Antonio              <avico@menta.net>
+                  Kevin Golding        <kevin@caomhin.demon.co.uk>
+                  Daniel Adad          <info@adad.net>
+                  Pavel F.             <pavelfg@hotmail.com>
+Swedish         : Thomas Karlsson      <thomas.karlsson@relea.se>
+
+
+Major Contributors
+------------------
+We like to thank the following people especially, since they made
+significant contributions to the ATK project.
+
+Stefan Niederhauser <sn@atelier-w.ch>
+
+  Stefan came up with the idea of the 'node' concept, which later 
+  became the basis of the ATK backend.
+
+William Rhee <willrhee@umich.edu>
+
+  William, of the University of Michigan, added Oracle 8i Support
+  to Achievo.
+
+Ber Dohmen <info@ibuildings.nl>
+
+  Ber developed the DHTML menu, and created a menu abstraction layer,
+  during an internship at ibuildings.nl. 
+
+Boy Baukema <info@ibuildings.nl>
+ 
+  Boy revised internationalization features, to improve overall 
+  application performance through dynamic includes, during an internship
+  at ibuildings.nl.
+
+
+Other Contributors
+------------------
+We received bugfixes and other contributions from the following people:
+
+Rene Bakx                             <rene@dutchphotozone.com>
+Joachim Nübold                        <joachim.nuebold@syngenio.de>
+Kevin Golding                         <kevin@caomhin.demon.co.uk>
+Pieter Heijmans                       <pieter.heijmans@cendris.com>
+Soh Kok Hong                          <kokhong@mobiwave.com>
+Kees van Dieren                       ?
+
+Names between [] are the names they are refered by in the CHANGES file. (If
+different from their first name).

@@ -2,7 +2,7 @@
 
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
   //Mysql errors includen
-  include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('languagefile'));
+  include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
 
   /**
    * Handles database connectivity and database interaction

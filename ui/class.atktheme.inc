@@ -112,7 +112,7 @@ class atkTheme
   
   /**
   * Gets an attribute from a stacked array from the themedefinitions
-  * @param string $name      the name of the attribute
+  * @param string $name      the name of the stack to look in
   * @param string $searchfor the item in the attribute to search for
   * @return array returns array("dir"=>"directory where we found it","item"=>"the item") if found, void otherwise
   */
@@ -144,7 +144,7 @@ class atkTheme
   * @param var the value of the attribute in the theme
   */
   function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
-  {    
+  { 
     if(is_array($this->m_def[$attribname]))
     {
       $attrib = $this->getStackedItem($attribname,$attribvalue);

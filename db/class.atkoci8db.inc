@@ -2,7 +2,7 @@
 
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
   //Oracle error's includen
-  include_once(atkconfig("atkroot")."atk/db/languages/oracle_".atkconfig('languagefile'));
+  include_once(atkconfig("atkroot")."atk/db/languages/oracle_".atkconfig('language').'.lng');
 
   
   /**

@@ -75,22 +75,12 @@ class atkLanguage
     $atklanguage =& atkLanguage::getInstance();
     
     $atklanguage->preTextChecks($string, $module, $node, $lng, $nodefaulttext);
+    $finalstring = $atklanguage->getStringName($string, $module, $node, $lng);
+    $atklanguage->postTextChecks($finalstring, $string, $module, $node, $lng, $nodefaulttext);
     
-    $finalstring = $atklanguage->getStringName($string, $firstmodule, $node, $lng);
- 
-    if ($finalstring) { return $finalstring; }
-    else 
-    { 
-      if(!$nodefaulttext)
-      {
-        return $atklanguage->defaultText($string); 
-      }
-      else 
-      {
-        return false;
-      }
-    }
+    return $finalstring;
   }
+    
   
   /**
   * This function performs some checks on the variables that were passed with the text call
@@ -104,11 +94,35 @@ class atkLanguage
     if ($module)
     {
       $this->setOriginalModule($module);
-      $firstmodule = array_shift($this->m_fallbackmodules);
       array_unshift($this->m_fallbackmodules, $module);
     }
     
-    if (!$lng){$lng = atkconfig("lang");}
+    $module = "c_items";
+    
+    if (!$lng) { $lng = atkconfig("language", atkconfig("lang")); } // language is nicer, lang is backwardscompatible with iep2.
+  }
+  
+  /**
+  * This function performs the final checks on the results of the text call
+  * @param string &$finalstring the result of the text call
+  * @param string &$string      the name/label/ID of the string to return
+  * @param string &$module      module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string &$node        the node to which the string belongs
+  * @param string &$lng         ISO 639-1 language code, defaults to config variable
+  */
+  function postTextChecks(&$finalstring, $string, $module, $node, $lng, $nodefaulttext)
+  {
+    if (!$finalstring)
+    {
+      if(!$nodefaulttext)
+      {
+        $finalstring = $this->defaultText($string); 
+      }
+      else 
+      {
+        $finalstring = false;
+      }
+    }
   }
   
   /**

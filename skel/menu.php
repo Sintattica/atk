@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.25  2004/04/26 20:15:15  ivo
+   * Menu.php now uses the atkMenu utility class to render the menu.
+   *
    * Revision 4.24  2003/08/19 15:48:30  martin
    * [Ivo] Added ui instance to menu.php
    *
@@ -41,8 +44,7 @@
    *
    */  
   $config_atkroot = "./";
-  include_once("atk.inc");  
-  include_once($config_atkroot."atk/atkmenutools.inc");
+  include_once("atk.inc");    
 
   atksession();
   atksecure();
@@ -57,7 +59,10 @@
   include_once($config_atkroot."atk/menu/general.inc");  
 
   /* load menu layout */
-  include_once($config_atkroot."atk/menu/".$config_menu_layout.".inc");
+  atkimport("atk.menu.atkmenu");
+  $menu = &atkMenu::getMenu();
+  
+  $menu->render();
   
   $output->output($page->render(text('app_shorttitle'), true));  
   $output->outputFlush();

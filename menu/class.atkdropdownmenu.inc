@@ -15,30 +15,19 @@
       $page = &atkPage::getInstance();
       $ui =   &atknew("atk.ui.atkui");
       $theme = &atkTheme::getInstance();
-      
-      $menubanner = $theme->imgPath("menubanner.jpg");
-      $menulogo = $theme->imgPath("menulogo.gif");
+      $smarty = &atkSmarty::getInstance();
       
       $page->register_style($ui->stylePath("dhtml_dropdown.css"));
       
       $user = getUser();
-      $name = $user["name"];
       
-      $dhtml_dropdown = '<script language="JavaScript" src="'.atkconfig("atkroot").'atk/javascript/dhtml_dropdown_events.js" type="text/javascript"></script>';
+      $tplvars = array(
+      "jscode"=>atkconfig("atkroot").'atk/javascript/dhtml_dropdown_events.js',
+      "name"=>$user["name"],
+      "menubanner"=>$theme->imgPath("menubanner.jpg"),
+      "menulogo"=>$theme->imgPath("menulogo.gif"));
       
-      $dhtml_dropdown .= '
-		<table width="100%" height="100%" cellpadding="0" cellspacing="0" style="background: #FF0000">
-			<tr>
-				<td height="26" bgcolor="#52006A"><img src="'.$menubanner.'" class="topbg"></td>
-				<td align="right" bgcolor="#52006A"><img src="'.$menulogo.'" class="topbg"></td>
-			</tr>
-			<tr>
-				<td height="22" align="left" class="menubg" style="background: #FF0000; color: #FFFFFF; font-family: verdana; font-size: 12px; padding-left: 12px;">Logged in as: <b>'.$name.'</b></td>
-				<td class="menubg" bgcolor="#FF0000">&nbsp;</td>
-			</tr>
-		</table>
-	';
-      
+      $dhtml_dropdown = $ui->render("dhtml_menu.tpl", $tplvars);
       $page->addContent($dhtml_dropdown);
       
       $string = $page->render("Menu", true);

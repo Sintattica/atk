@@ -18,11 +18,10 @@
   atksession();
   atksecure();  
 
-//  Renders the help screen
-  $language = strtok(atkconfig("languagefile"),".");
+//  Renders the help screen  
   $title1 ="txt_title_".$node;
   $title = $$title1;
-  $file   = $config_atkroot."help/".$language."/help.".$node.".inc";
+  $file   = $config_atkroot."help/".atkconfig('language')."/help.".$node.".inc";
   $data = '<div align="left">';
   $data .= implode("<br>",file($file));
   $data .='</div>';

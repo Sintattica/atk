@@ -47,7 +47,6 @@ class atkThemeCompiler extends atkTheme
   function getThemedef()
   {
     $file = array_shift($this->m_themedefs);
-    
     if (file_exists(atkconfig("atkroot").$file))
     {
       include(atkconfig("atkroot").$file);
@@ -72,8 +71,7 @@ class atkThemeCompiler extends atkTheme
   {
     if ($theme["base"])
     {
-      array_unshift($this->m_themedefs, atkconfig("atkroot")."$from/../".$theme["base"]."/".$this->m_themefile);
-      return $this->getThemedef();
+      array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->m_themefile);
     }
   }
   

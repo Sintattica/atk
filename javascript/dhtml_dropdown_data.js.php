@@ -40,6 +40,9 @@ with (pMenu) {
 	}
 	
 	usort($g_menu[$atkmenutop],"menu_cmp");
+	
+	atkimport("atk.ui.atktheme");
+	$theme = &atkTheme::getInstance();
 
 	// Menu variabelen
 	$menuroot = "";
@@ -73,9 +76,9 @@ with (pMenu) {
 				}
 				else
 				{
-					$menu_icon = $config_atkroot."icons/dropdown/".$atkmenutop."_".$name.".gif";
+					$menu_icon = substr($theme->iconPath($atkmenutop."_".$name.".gif","dropdown"),0,-4);
 				}
-				
+								
 				if(file_exists($menu_icon))
 				{
 					$menuname = addslashes (text("menu_".$name));
@@ -84,7 +87,7 @@ with (pMenu) {
 				else
 				{
 					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/unknown.gif\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.substr($theme->iconPath("unknown.gif","dropdown"),0,-4).'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
 				}
 			}
 			
@@ -92,7 +95,7 @@ with (pMenu) {
 			elseif($atkmenutop != "main" && $name != "-")
 			{
 				$menuname = addslashes (text("menu_".$name));
-				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/folder.gif\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.substr($theme->iconPath("folder.gif","dropdown"),0,-4).'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
 				$subsubmenu[] = $name;
 			}
 		}

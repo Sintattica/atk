@@ -13,14 +13,9 @@
    *
    * $Id$      
    *
-   */  
-	 
-	$config_platformroot = "../";
-	$config_atkroot = "../";
-	include_once("../atk.inc");
-	include_once($config_atkroot."atk/menu/general.inc");
+   */  	 	
 	
-	global $g_menu;
+  global $g_menu, $atkmenutop;
 	
   atkimport("atk.ui.atkpage");
   $page = &atkPage::getInstance();
@@ -84,7 +79,7 @@
       }
     }
   }
-  /* previous */
+  /* previous */  
   if ($atkmenutop != "main")
   {
     $parent = $g_menu_parent[$atkmenutop];

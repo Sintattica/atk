@@ -1,0 +1,210 @@
+<?php
+
+  /**
+   * Frame and frameset utilities.
+   * 
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @version $Revision$
+   *
+   * $Id$
+   *
+   *
+   * @copyright (c) Ivo Jansch 2004
+   * Licensing is governed by the terms described in the LICENSE file 
+   * in the doc/ directory of the ATK distribution. 
+   */
+
+  /** 
+   * Defines used by the frameset utilities.
+   */
+  define("FRAMESET_HORIZONTAL", 1);
+  define("FRAMESET_VERTICAL", 2);
+  
+  define("FRAME_SCROLL_YES", "yes");
+  define("FRAME_SCROLL_NO", "no");
+  define("FRAME_SCROLL_AUTO", "auto");
+
+  /**
+   * Class that represents a frameset.
+   */
+  class atkFrameSet extends atkAbstractFrame
+  {  
+    var $m_border;
+    var $m_orientation;    
+    var $m_noframes;
+    
+    /**
+     * Default constructor.
+     *
+     * @param int $dimension The height or width of this frameset within its
+     *                       parent frameset. Whether you are specifying
+     *                       height or width depends on the orientation of the
+     *                       parent frameset. 
+     * @param int $orientation The orientation of child frames within this
+     *                         frameset. Possible values: FRAMESET_VERTICAL,
+     *                         FRAMESET_HORIZONTAL.
+     * @param int $border The width in pixels of the border of the frameset.
+     * @param String $noframes The text to display instead of the frameset if
+     *                         frames are not supported by the browser. This 
+     *                         param needs to be specified only for the
+     *                         outmost frameset. It is ignored by inner 
+     *                         framesets.
+     *                        
+     */     
+    function atkFrameSet($dimension="*", $orientation=FRAMESET_VERTICAL, $border=0, $noframes='')
+    {
+      $this->atkAbstractFrame($dimension);
+      
+      $this->m_orientation = $orientation;
+      $this->m_border = $border;      
+      $this->m_noframes = $noframes;      
+    }
+    
+    /**
+     * Render the frameset to html
+     * 
+     * @param boolean $embedded If set to true, the frameset is treated as the
+     *                          outmost frameset, causing it to render the
+     *                          noframes tag for frameless browsers.
+     */
+    function render($embedded=false)
+    {
+      $res = '<frameset '.($this->m_orientation==FRAMESET_VERTICAL?'rows':'cols').'="'.$this->getDimensions().'" frameborder="'.$this->m_border.'" border="'.$this->m_border.'">';
+      foreach($this->m_childs as $abstractFrame)
+      {
+        $res.= $abstractFrame->render(true);
+      }
+      if (!$embedded&&$this->m_noframes!="")
+      {
+        $res.= "<noframes>\n".$this->m_noframes."</noframes>\n";
+      }
+      $res.= "</frameset>\n";
+      return $res;
+    }       
+    
+    /**
+     * Returns a dimension specifier ("70,10,*") based on the dimensions of the
+     * framesets' childs.
+     */
+    function getDimensions()
+    {
+      $dimensions = array();
+      foreach($this->m_childs as $abstractFrame)
+      {
+        $dimensions[] = $abstractFrame->getDimension();
+      }
+      return implode(", ", $dimensions);
+    }
+        
+  }
+  
+  /**
+   * Class that represents a frame   
+   */
+  class atkFrame extends atkAbstractFrame
+  {
+    var $m_name;
+    var $m_src;
+    var $m_scrolling;
+    var $m_resize;
+    var $m_margin;
+    
+    /**
+     * Default constructor
+     *
+     * @param int $dimension The height or width of this frame within its
+     *                       parent frameset. Whether you are specifying
+     *                       height or width depends on the orientation of the
+     *                       parent frameset. 
+     * @param String $name The name of the frame. 
+     * @param String $src The url to load into the frame.
+     * @param String $scrolling The scrolling policy for this frame. Possible 
+     *                          values: FRAME_SCROLL_YES, FRAME_SCROLL_NO and
+     *                          FRAME_SCROLL_AUTO.
+     * @param boolean $resize When set to true, the frame is resizable by the
+     *                        user. When set to false, it is not.
+     * @param int $margin The margin (height and width) of the frame contents.
+     *                        
+     */
+    function atkFrame($dimension, $name, $src, $scrolling=FRAME_SCROLL_NO, $resize=false, $margin=0)
+    {
+      $this->atkAbstractFrame($dimension);
+      $this->m_name = $name;
+      $this->m_src = $src;
+      $this->m_scrolling = $scrolling;
+      $this->m_resize = $resize;
+      $this->m_margin = $margin;
+    }
+    
+    /**
+     * Render the frame to html     
+     */
+    function render()
+    {
+      return '<frame name="'.$this->m_name.'" scrolling="'.$this->m_scrolling.'" '.(!$this->m_resize?"noresize":"").
+                       ' src="'.$this->m_src.'" marginwidth="'.$this->m_margin.'" marginheight="'.$this->m_margin.'">'."\n";
+    }
+        
+  }
+  
+  /**
+   * Null frame to optionally hook the topmost frame into. This frame
+   * has no html output, just the output of its child. 
+   * The rootframeset should contain only one child frameset.
+   */
+  class atkRootFrameset extends atkAbstractFrame 
+  {  
+    /**
+     * Render the root frameset.
+     */     
+    function render()
+    {
+      foreach($this->m_childs as $abstractframe)
+      {
+        $res.=$abstractframe->render(false);
+      }
+      return $res;
+    }
+  }
+  
+  /**
+   * Abstract base class for frames and framesets. It defines common 
+   * functionality that frames and framesets share.
+   */
+  class atkAbstractFrame
+  {
+    var $m_childs = array();
+    var $m_dimension;
+    
+    /**
+     * Default constructor
+     */
+    function atkAbstractFrame($dimension="*")
+    {
+      $this->m_dimension = $dimension;
+    }
+    
+    /** 
+     * Add a child to the frameset.
+     * @param atkAbstractFrame $abstractframe The frame or frameset to add.
+     */
+    function addChild(&$abstractframe)
+    {
+      $this->m_childs[] = &$abstractframe;
+    }
+    
+    /**
+     * Abstract render method. Derived classes should implement this method.
+     */
+    function render($embedded=false) { return ""; } 
+    
+    /**
+     * Return the dimension of the frame/frameset, within its parent frameset.
+     */
+    function getDimension()
+    {
+      return $this->m_dimension;
+    }    
+  }
+
+?>

@@ -42,15 +42,17 @@
 		}
 	');
 	
+	$theme = &atkTheme::getInstance();
+	
 	// dit zorgt ervoor dat theme variables ook beschikbaar zijn in javascript en dus outlookmenu
 	$page->register_scriptcode("
 		this.ol_themename       = '".$g_theme['Description']."';
-		this.ol_pimage     = '".$config_atkroot."atk/themes/".$g_theme['Name']."/images/".$g_theme['ol_pimage']."';
+		this.ol_pimage     = '".$config_atkroot."atk/themes//images/".$g_theme['ol_pimage']."';
 		this.ol_menucolor  = '".$g_theme['ol_menucolor']."';
 		this.ol_wincolor   = '".$g_theme['ol_wincolor']."'; 
 		this.ol_background = '".$g_theme['ol_background']."';
-		this.ol_arrowup    = '".$config_atkroot."atk/themes/".$g_theme['Name']."/images/arrowup.gif"."';
-		this.ol_arrowdown  = '".$config_atkroot."atk/themes/".$g_theme['Name']."/images/arrowdown.gif"."';
+		this.ol_arrowup    = '".substr($theme->iconPath("arrowup.gif", "outlook"),0,-4)."';
+		this.ol_arrowdown  = '".substr($theme->iconPath("arrowdown.gif", "outlook"),0,-4)."';
 	");
 	
 	$page->register_script($config_atkroot."atk/javascript/crossbrowser.js");
@@ -111,16 +113,16 @@
 						$menu_icon = $g_modules[$g_menu[$atkmenutop][$i]["module"]].'icons/'.$atkmenutop.'_'.$name.'.gif';
 					}
 					else
-					{
-						$menu_icon = $config_atkroot.'icons/outlook/'.$atkmenutop.'_'.$name.'.gif';
-					}       
+					{					  
+						$menu_icon = substr($theme->iconPath($atkmenutop.'_'.$name.'.gif', "outlook"),0,-4);
+					}
 					if(file_exists($menu_icon))
 					{
 						$panelbuttons .= "p.addButton('".$menu_icon."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
 					}
 					else
 					{
-						$panelbuttons .= "p.addButton('".$config_atkroot."icons/outlook/empty.gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
+						$panelbuttons .= "p.addButton('".substr($theme->iconPath('empty.gif', "outlook"),0,-4)."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
 					}
 				}
 			}

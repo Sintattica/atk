@@ -45,7 +45,7 @@
   
   // The language of the application. You can use any language for which
   // a language file is present in the atk/languages directory.
-  $config_languagefile="english.lng";
+  $config_language="en";
   
   // Menu configuration. You can have a menu at "top", "left", "right" or 
   // "bottom". If you use a horizontal menu (top or bottom, you may want
@@ -53,13 +53,13 @@
   // puts between menu items).
   $config_menu_pos = "left"; 
   $config_menu_delimiter = "<br>";
-  $config_menu_layout = "default";
+  $config_menu_layout = "plain";
   
   // If you have a menu at either left or right, you can add an
   // extra topframe by setting the following option to 1.
   // If you set it to 1, you must provide a "top.php" file in
   // your application directory.
-  $config_top_frame = 0;
+  $config_top_frame = 1;
   
   // This configures whether the action links (edit/delete) in a recordlist 
   // appear to the left or right of the records. If you are crazy, you 

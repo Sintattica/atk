@@ -21,7 +21,13 @@
 
     function getPosition()
     {
-      return MENU_TOP;
+      switch(atkconfig("menu_pos", "left"))
+      {
+        case "left": return MENU_LEFT;
+        case "right": return MENU_RIGHT;
+        case "top": return MENU_TOP;
+        case "bottom": return MENU_BOTTOM;
+      }
     }
 
     function getScrollable()
