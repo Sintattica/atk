@@ -9,6 +9,9 @@
    * $Id$
    *
    $ $Log$
+   $ Revision 4.2  2001/08/30 15:28:34  ivo
+   $ Added preliminary external module support.
+   $
    $ Revision 4.1  2001/07/19 11:40:06  ivo
    $ Updated authentication classes with an additional returncode for fatal
    $ errors. Added a feature to pop3 authentication to handle server-specific
@@ -85,5 +88,12 @@
     {
       global $g_pop3_responses;
       $g_pop3_responses[$substring] = $message;
+    }
+  
+    /* define an external module */  
+    function module($name, $path)
+    {
+      global $g_externalModules;
+      $g_externalModules[$name] = $path;
     }
 ?>

@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.13  2001/08/30 15:28:35  ivo
+ * Added preliminary external module support.
+ *
  * Revision 1.12  2001/05/17 15:03:45  peter
  * Added module_url function, usefull for url's to files in the module dir.
  *
@@ -133,7 +136,7 @@
    */
   function newNode($node)
   {
-   global $config_module_path, $config_atkroot;
+   global $config_module_path, $config_atkroot, $g_externalModules;
   
     /* module and type */
     $module = getNodeModule($node);
@@ -142,7 +145,19 @@
     
     /* filename */
     if (empty($module)) $file = $config_atkroot."class.$type.inc";  
-    else $file = "$config_atkroot$config_module_path/$module/class.$type.inc";
+    else 
+    {
+      // module can be an external module.. if it is, we use it's defined path.
+      if (in_array($module, array_keys($g_externalModules)))
+      {
+        $file = $g_externalModules[$module]."/class.$type.inc";
+      }
+      else
+      {
+        // standard module from the defined module path
+        $file = "$config_atkroot$config_module_path/$module/class.$type.inc";
+      }
+    }
   
     /* check for file */
     if (!file_exists($file))
