@@ -34,18 +34,20 @@
     function fetchValue($postvars)
     {
      
-     global $fieldprefix;
-     $form = $this->formName()."_nr";
-     $nr = $postvars[$form];
-     for ($i=0;$i<$nr;$i++)
-       {  
-       $field = $this->formName().$i;
-       if ($postvars[$field] != "")
-          {
-           $string .=$postvars[$field]."|";
-          } 
-       }
-    return $string;
+      //global $fieldprefix;
+      //$form = $this->formName()."_nr";
+      $nr = count($this->m_values);
+      for ($i=0;$i<$nr;$i++)
+      {  
+        $field = $this->formName().$i;
+        if ($postvars[$field] != "")
+        {
+          $string .=$postvars[$field]."|";
+        } 
+        
+        
+      }
+      return substr($string,0,-1); // last | is stripped
     }
 
   /**
@@ -57,7 +59,7 @@
     function edit($record="", $fieldprefix="")
     {
      // todo: configurable rows
-     $result ='<input type = "hidden" name ="'.$fieldprefix.$this->formName().'_nr" value="'.count($this->m_values).'">';
+     
      $result .="\n<table><tr>\n";  
      $explode = explode("|",$record[$this->fieldName()]);
       for ($i=0;$i<count($this->m_values);$i++)
