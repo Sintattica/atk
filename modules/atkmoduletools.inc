@@ -83,11 +83,20 @@
         $mod = new $modname();
       }
       else
-      {
-        // Changed by Ivo: This used to construct a dummy module, so
-        // modules could exist that didn't have a module.inc file.
-        // We no longer support this (2003-01-11)
-        $mod = NULL;
+      {                  
+        if (function_exists("missing_module_handler"))
+        {
+          atkdebug("Calling missing_module_handler() for module $modname");
+          $mod = missing_module_handler($modname);
+        }
+        else
+        {               
+          // Changed by Ivo: This used to construct a dummy module, so
+          // modules could exist that didn't have a module.inc file.
+          // We no longer support this (2003-01-11)
+          $mod = NULL;
+          atkdebug("Warning: module $modname does not exist");
+        }
       }
       $g_moduleRepository[$modname] = $mod;
     }
@@ -146,9 +155,13 @@
     {
       $module_inst = &getModule(getNodeModule($node));
     }
-    $node = &$module_inst->newNode($node);
-    if ($init && $node != NULL) $node->init();
-    return $node;
+    if (is_object($module_inst))
+    {
+      $node = &$module_inst->newNode($node);
+      if ($init && $node != NULL) $node->init();
+      return $node;
+    }
+    return NULL;
   }
 
   /**
