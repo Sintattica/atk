@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.17  2001/05/03 07:47:35  ivo
+   * Stacktrace is now only displayed once per page..
+   *
    * Revision 4.16  2001/05/02 14:55:46  ivo
    * New cool feature: stacktrace in the topright screen (navigate through
    * pages you visited before)
@@ -559,6 +562,13 @@
      * select action to the action that follows after the select.
      */
     var $m_unsecuredActions = array("select");                                   
+    
+    /*
+     *
+     * Boolean that is set to true when the stacktrace is displayed, so it
+     * is displayed only once.
+     */
+    var $m_stackTraceDone = false; 
 
     /*** Public functions ***/
 
@@ -1613,10 +1623,9 @@
       else
       {
         $g_layout->ui_top(text('title_'.$this->m_type.'_select'));
-        $g_layout->output($this->stackTrace());
-        $g_layout->output('<br>');
+        $g_layout->output($this->stackTrace());      
       
-        $g_layout->output('<br>'.text($this->m_type.'_select').'<br>');
+        $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
         
         // create navigation bar
@@ -1627,7 +1636,8 @@
 
         $g_layout->output($this->recordList($actions));
 
-        if (!empty($nav)) $g_layout->output('<br>'.$nav.'<br><br>');
+        if (!empty($nav)) $g_layout->output('<br>'.$nav.'<br>');
+        $g_layout->output('<br>');
 
         $g_layout->ui_bottom();
       }
@@ -2618,8 +2628,9 @@
     function stackTrace()
     {
       global $g_sessionManager;
-      if (atkconfig("stacktrace"))
+      if (atkconfig("stacktrace")&&!$this->m_stackTraceDone)
       {
+        $this->m_stackTraceDone = true;
         return '<div align="right">'.$g_sessionManager->stackTrace().'</div><br>';   
       }
       return "";
