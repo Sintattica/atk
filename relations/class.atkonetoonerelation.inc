@@ -876,7 +876,8 @@
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $p_attrib->addToListArrayHeader($action, $arr, $fieldprefix, $flags|RL_NO_SORT, $atksearch, $atkorderby);
+            $pref = $fieldprefix . "AE_" .$this->fieldName();
+            $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags|RL_NO_SORT, $atksearch, $atkorderby);
           }
         }
       }
@@ -916,9 +917,64 @@
           }
         }
       }
-    }
-        
+    }        
     
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      // we are a relation, so instead of hooking ourselves into the
+      // query, hook the attributes in the destination node onto the query
+      foreach($value as $key => $val)
+      {
+        // if we aren't searching for anything in this field, there is no need
+        // to look any further:
+        if (!$val) continue;
+        
+        $p_attrib = &$this->m_destInstance->m_attribList[$key];
+        if (is_object($p_attrib))
+        {
+          if ($this->m_refKey && $this->createDestination())
+          {
+            // master mode
+            $new_table = &$this->fieldName();
+          }
+          else
+          {
+            // slave mode
+            $new_table = &$this->m_destInstance->m_table;
+            
+            // we need to left join the destination table into the query
+            // (don't worry ATK won't add it when it's already there)
+            $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+          }
+          $p_attrib->searchCondition($query,$new_table,$val,$searchmode);
+        }
+        else
+        {
+          // attribute not found in destination, so it should
+          // be in the owner (this is the case when extra fields
+          // are in the relation
+          $p_attrib(&$this->m_ownerInstance->m_attribList[$key]);
+          if (is_object($p_attrib))
+          {
+            $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
+          }
+          else atkdebug("Field $key was not found in this relation (this is very weird)"); 
+        }
+      }
+    }
+    
+    /**
+     * Returns the condition which can be used when calling atkQuery's addJoin() method
+     * Joins the relation's owner with the destination
+     * @return  string  condition the condition that can be pasted into the query
+     */
+    function _getJoinCondition()
+    {     
+      $condition = $this->m_ownerInstance->m_table . "." . $this->fieldName();
+      $condition .= "=";
+      $condition .= $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField();
+      return $condition;
+    }
   }
   
 ?>

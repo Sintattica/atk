@@ -99,8 +99,6 @@
         global $linkpass;
         if(!$linkpass)
           $linkpass = $crypt->getRandomKey($password);
-
-
       }
       else
       {
@@ -114,8 +112,6 @@
 
         $linkpass = $encryptedpass['pass'];
       }
-      
-      
 
       return $crypt->decryptKey($linkpass,$password);
     }
@@ -171,5 +167,35 @@
       $g_db->query($query);
     }
     
+    /**
+     * Returns the condition which can be used when calling atkQuery's addJoin() method
+     * Joins the relation's owner with the destination
+     */
+    function _getJoinCondition()
+    {
+      global $g_db;
+      
+      // decrypt the encrypted keys to get the tables joined
+      $temp_query = "SELECT " . $this->fieldName() . " FROM " . $this->m_ownerInstance->m_table;
+      $result = $g_db->getRows($temp_query);
+      
+      $condition = "";
+      
+      foreach($result as $recordArray)
+      {
+        $record = $recordArray[$this->fieldName()];
+        $decrypted_record = $this->m_crypt->decrypt($record,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
+        if ($condition == "")
+          $whereOrAnd = "(";
+        else
+          $whereOrAnd = "OR";
+          
+        $condition .= $whereOrAnd . " (" . $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField() . "='" . $decrypted_record . "' ";
+        $condition .= "AND " . $this->m_ownerInstance->m_table . "." . $this->fieldName() . "=\"".addslashes($record)."\") ";
+      }
+      $condition .= ") ";
+
+      return $condition;
+    }
   }
 ?>

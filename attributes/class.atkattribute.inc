@@ -556,7 +556,7 @@
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
-          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch);
+          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch,false,$fieldprefix);
       }
     }
 
@@ -615,11 +615,23 @@
      *
      * @return String A piece of html-code
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
-      $id = "atksearch[".$this->formName()."]";
+      $fieldvalue=$record[$this->fieldName()];
+      if ($fieldprefix != "")
+      {
+        $id = "atksearch_".$fieldprefix . "[" . $this->formName() . "]";
+        $relation = explode("AE_",$fieldprefix);
+        if ($relation[1])
+          $fieldvalue = $record[$relation[1]][$this->fieldName()];
+      }
+      else
+      {
+        $id = "atksearch[".$this->formName()."]";
+      }
+      
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
-      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$fieldvalue.'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
@@ -1214,7 +1226,6 @@
     {
       return $stringvalue;
     }
-            
   }
 
 ?>
