@@ -2384,12 +2384,12 @@
      * @param $action which action is it gonna be?     
      * @param $locked is/are the record(s) locked?
      */
-    function confirmAction($atkselector, $action, $locked=FALSE)
+    function confirmAction($atkselector, $action, $locked=FALSE, $checkoverride=TRUE)
     {
       $method = 'confirm'.$action;
-      if (method_exists($this, $method))
+      if ($checkoverride && method_exists($this, $method))
         return $this->$method($atkselector, $locked);
-    
+
       global $g_layout, $g_db;
       $g_layout->initGui();
 
@@ -2440,8 +2440,8 @@
       }
       $g_layout->output('<tr>');      
 
-      $text = $this->confirmActionText($atkselector, $action);
-      
+      $text = $this->confirmActionText($atkselector, $action, $checkoverride);
+
       $g_layout->td("<br>$text", 'align="center"');
       $g_layout->output('</tr><tr>');
       $g_layout->td('<br><input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
@@ -2452,10 +2452,10 @@
     /**
      * Confirmation message.
      */
-    function confirmActionText($atkselector="", $action="delete")
+    function confirmActionText($atkselector="", $action="delete", $checkoverride=TRUE)
     {
       $method = 'confirm'.$action.'text';
-      if (method_exists($this, $method)) return $this->$method($atkselector);
+      if ($checkoverride && method_exists($this, $method)) return $this->$method($atkselector);
       else return text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_type, $this->m_module);
     }
 
@@ -2754,9 +2754,9 @@
             return;
           }
         }
-
+        
         // Confirmation page was not displayed
-        $this->confirmAction($this->m_postvars['atkselector'], "delete", $locked);
+        $this->confirmAction($this->m_postvars['atkselector'], "delete", $locked, TRUE);
       }
       else
       {
