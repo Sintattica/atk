@@ -441,6 +441,13 @@
         $this->os       = "Win2000";
         $this->osname   = "Windows 2000";    
        }
+       
+       if(eregi('NT 5.1',$this->ua))
+       {
+        $this->platform = "Win32";
+        $this->os       = "WinXP";
+        $this->osname   = "Windows XP";
+       }
       }
 
      // Windows ME
