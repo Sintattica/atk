@@ -81,6 +81,7 @@
      * @param String $searchnode The node to search on
      * @param String $callback   The function of the owner node to call 
      *                           with the record to store and the results of the search
+     *                           Has to return a status (true or false)
      * @param String $mode       The mode of the search (all(default)|first|firstperkeyword|
      *                                                   select|selectperkeyword|multiselect)
      * @param int    $flags      The flags of the attribute
@@ -101,7 +102,7 @@
     
     /**
      * Creates an instance of the node we are searching on and stores it
-     * in a member variable ($this->m_searchnode)
+     * in a member variable ($this->m_searchnodeInstance)
      */
     function createSearchNodeInstance()
     {
@@ -392,6 +393,19 @@
     function fetchMeta() {}
     function dbFieldSize() {}
     function dbFieldType() {}
+    
+    /**
+     * Adds a filter on the instance of the searchnode
+     * @param String $filter The fieldname you want to filter OR a SQL where
+     *                       clause expression.
+     * @param String $value Required value. (Ommit this parameter if you pass
+     *                      an SQL expression for $filter.)
+     */
+    function addSearchFilter($filter, $value)
+    {
+      if (!$this->m_searchnodeInstance) $this->createSearchNodeInstance();
+      $this->m_searchnodeInstance->addFilter($filter, $value);
+    }
   }
 
 ?>

@@ -25,6 +25,9 @@ Changes in ATK 5.0.8
   to the node. Class can also be extended for even more control.
   Default implementation can be overriden using the $config_meta_handler
   configuration variable. [Peter]
++ Added documentation to callback param and added "addSearchFilter" 
+  to add a filter to the searchNodeInstance of the fuzzySearch 
+  attribute [Boy]
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
