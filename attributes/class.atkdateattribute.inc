@@ -22,6 +22,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/08/27 07:38:58  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.11  2001/07/15 17:03:59  ivo
    * New feature: Alphabetical index on top of recordlists.
    * (use e.g. $this->setIndex("name"); in your class constructor to activate)
@@ -491,8 +496,9 @@
      * @param $value Value to be validated
      * @return Nothing
      */
-    function validate($value)
+    function validate($record, $mode)
     {
+      $value = $record[$this->fieldName()];
 		  /* array or no array */
 		  if (is_array($value)) $date = $this->dateArray($value);
 		

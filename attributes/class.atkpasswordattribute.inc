@@ -11,6 +11,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.4  2001/08/27 07:38:58  ivo
+ * changed validate() api: atk now passes record to the function instead of
+ * just one value. Also added a mode parameter that indicates whether we
+ * are in add or update mode.
+ *
  * Revision 4.3  2001/07/15 17:42:39  ivo
  * Disabled extended search for passwordattribute.
  *
@@ -172,9 +177,11 @@ class atkPasswordAttribute extends atkAttribute
    * @param $value array with password values
    * @return empty string or error message in string
    */
-  function validate($value)
+  function validate($record, $mode)
   {
     global $ATK_VARS;    
+    
+    $value = $record[$this->fieldName()];
 
     $action = $ATK_VARS["atkaction"];
 

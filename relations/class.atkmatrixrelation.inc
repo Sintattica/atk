@@ -165,7 +165,7 @@
  
     
     // check if the input is acyclic when flag is set     
-    function validate($value)
+    function validate($record, $mode)
     {
       if ($this->hasFlag(AF_MATRIX_ACYCLIC)) 
       {

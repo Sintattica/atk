@@ -10,6 +10,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/08/27 07:38:58  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -37,9 +42,11 @@
      * @param $value values that has to be checked
      * @return boolean true or false
      */
-    function validate($value)
-    {
+    function validate($record, $mode)
+    {     
       global $config_language;
+      
+      $value = $record[$this->fieldName()];
 
       reset($config_language);
       while (list($i, $language) = each($config_language))

@@ -52,6 +52,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.89  2001/08/27 07:38:57  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.88  2001/07/31 11:49:55  sandy
    * Due some problems with commiting, some features where deleted :(
    *
@@ -1848,7 +1853,7 @@
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
-        $this->validate($record);
+        $this->validate($record, "update");
         if (count($this->m_errors)>0)
         {
           $this->m_action="edit";
@@ -1884,7 +1889,7 @@
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
-        $this->validate($record);
+        $this->validate($record, "add");
         if (count($this->m_errors)>0)
         {
           $this->addPage($record);
@@ -2159,7 +2164,7 @@
     /**
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
      */
-    function validate($record)
+    function validate($record, $mode)
     {
       global $g_db;
       atkdebug("validate()");
@@ -2191,7 +2196,7 @@
             }
             else
             {
-              $error = $p_attrib->validate($record[$attribname]);
+              $error = $p_attrib->validate($record, $mode);
               if ($error!="") $this->m_errors[$attribname] = $error;
             }
           }

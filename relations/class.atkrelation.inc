@@ -16,6 +16,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.9  2001/08/27 07:38:58  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.8  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -133,7 +138,7 @@
     /**
     * Dummy function
     */
-    function validate($value)
+    function validate($record, $mode)
     {
       return "";
     }

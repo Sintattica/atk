@@ -15,6 +15,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.16  2001/08/27 07:38:58  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.15  2001/08/16 08:37:11  ivo
    * Added an equal() function to atkAttribute, to compare two values.
    *
@@ -394,7 +399,7 @@
     /**
      * Dummy function
      */
-    function validate($value)
+    function validate($record, $mode)
     {
       return "";
     }

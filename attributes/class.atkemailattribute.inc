@@ -10,6 +10,11 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.4  2001/08/27 07:38:58  ivo
+   * changed validate() api: atk now passes record to the function instead of
+   * just one value. Also added a mode parameter that indicates whether we
+   * are in add or update mode.
+   *
    * Revision 4.3  2001/07/04 10:47:51  maurice
    * Added parameter in constructor to switch DNS search on or off.
    *
@@ -60,8 +65,9 @@
      * @param $value Value to be validated
      * @return "" if ok, or an errormessage if not ok.
      */
-    function validate($email)
+    function validate($record, $mode)
     {
+      $email = $record[$this->fieldName()];
       //first check complete string
       if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,3}$", $email, $check)))
       {
