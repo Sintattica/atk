@@ -1,4 +1,22 @@
 <?php
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   *
+   * @copyright (c)2004-2005 Peter C. Verhage   
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+/**
+ * imports..
+ */
 atkimport("atk.meta.atkmetapolicy");
 atkimport("atk.meta.atkmetahandler");
 
@@ -8,8 +26,8 @@ atkimport("atk.meta.atkmetahandler");
  * Makes it possible to create nodes in 1 line of code
  * using metadata from the database.
  *
- * @author Peter C. Verhage <peter@achievo.org>
- * @version $Revision$
+ * @author Peter C. Verhage <peter@achievo.org> 
+ * @package atk
  */
 class atkMetaNode extends atkNode
 {
