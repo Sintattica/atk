@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.19  2001/09/18 07:13:57  ivo
+ * Added a check that prevents module instanciation if a module is classless.
+ *
  * Revision 1.18  2001/09/12 12:31:00  ivo
  * Removed debugcode that was committed by accident.
  *
@@ -153,7 +156,15 @@
     //}     
     //atkdebug("Returning module instance - $modname");
     //return $g_moduleRepository[$modname];    
-    return new $modname();
+    if (class_exists($modname))
+    {
+      return new $modname();
+    }
+    else
+    {
+      // return the dummy
+      return new atkmodule($modname);
+    }
   }
   
   /**
@@ -163,7 +174,7 @@
    */
   function newNode($node)
   {
-    global $g_modules, $config_atkroot;
+    global $g_modules, $config_atkroot;  
   
     /* module and type */
     $module = getNodeModule($node);
@@ -189,11 +200,10 @@
     }
     /* check for file */
     if (!file_exists($file))
-    {
+    {  
       atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
       return NULL;
-    }
-
+    }  
     /* return object */
     include_once($file);
     
