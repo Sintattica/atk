@@ -2434,7 +2434,7 @@
         {        
           while (list($key,$value) = each($searchArray))
           {
-            if (!empty($value) && $value[0]!=="")
+            if ($value!="")
             {
               $p_attrib = &$this->m_attribList[$key];
               if (is_object($p_attrib))

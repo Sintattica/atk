@@ -487,8 +487,22 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-      $query->addSearchCondition($searchcondition);
+      if (is_array($value))
+      {
+        foreach($value as $val)
+        {
+          if ($val!=="")
+          {
+            $searchcondition = $this->getSearchCondition($query, $table, $val, $searchmode);
+            $query->addSearchCondition($searchcondition);
+          }
+        }
+      }
+      else
+      {
+        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+        $query->addSearchCondition($searchcondition);
+      }
     }
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -520,7 +534,6 @@
               $p_attrib = &$this->m_destInstance->getAttribute($descField);
               if (is_object($p_attrib))
               {
-                atk_var_dump($query, "<h1>query in manytoone getsearch, checking for:".$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()."</h1>");
                 if ($query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()])
                 {
                   $itsTable = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
@@ -542,7 +555,6 @@
                   if ($searchcondition)
                   {
                     $searchConditions[] = $searchcondition;
-                    atk_var_dump($searchcondition, "<h1>added searchcondition</h1>");
                   }
                 }
                 else
