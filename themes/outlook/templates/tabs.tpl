@@ -22,17 +22,29 @@ var tabSelectedColor = "#000000";
           {section name=i loop=$tabs}
           
           <td valign="bottom">
+          <div style="position: relative;">
+            <div id="tab_{$tabs[i].tab}" style="position: absolute;">
+            <table border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td><img  src="{$themedir}images/tab_left_s.gif"></td>
+                  <td onclick="showTab('{$tabs[i].tab}')" height="22" valign="middle" background="{$themedir}images/tab_back_s.gif" align="center" nowrap>
+                    <b>{$tabs[i].title}</b>
+                  </td>
+                  <td><img src="{$themedir}images/tab_right_s.gif"></td>
+                </tr>
+              </table>
+            </div>
             <table border="0" cellspacing="0" cellpadding="0">
               <tr>
-                <td><img id="imgLeft_{$tabs[i].tab}" src="{$themedir}images/tab_left{if $tabs[i].selected}_s{/if}.gif"></td>
-                <td id="{$tabs[i].tab}" onclick="showTab('{$tabs[i].tab}')" style="cursor: pointer; cursor: hand; color:{if $tabs[i].selected}#000000{else}#FFFFFF{/if}" height="22" valign="middle" background="{$themedir}images/tab_back{if $tabs[i].selected}_s{/if}.gif" align="center" nowrap>
+                <td><img src="{$themedir}images/tab_left.gif"></td>
+                <td onclick="showTab('{$tabs[i].tab}')" height="22" valign="middle" background="{$themedir}images/tab_back.gif" align="center" nowrap>
                     <b>{$tabs[i].title}</b>
                 </td>
-                <td><img id="imgRight_{$tabs[i].tab}" src="{$themedir}images/tab_right{if $tabs[i].selected}_s{/if}.gif"></td>
+                <td><img src="{$themedir}images/tab_right.gif"></td>
               </tr>
-            </table>
+            </table>  
+          </div>
           </td>
-         
           {/section}
           <td valign="bottom" width="100%">
             <table cellspacing="0" cellpadding="0" border="0" width="100%">
