@@ -76,7 +76,7 @@
       if (class_exists("mod_".$modname))
       {
         $realmodname = "mod_".$modname;
-        $mod = new $realmodname();
+        $mod = new $realmodname($modname);        
       }
       else if (class_exists($modname))
       {

@@ -103,23 +103,30 @@ this.ol_arrowdown  = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/i
       
     /* normal menu item */
     else if ($enable) 
-		{
-		if($g_menu[$atkmenutop][$i]["url"]!="")
-		 {
-          if(file_exists($config_atkroot.'icons/'.$atkmenutop.'_'.$name.'.gif'))
-		   {
-           $panelbuttons .= "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
-           }
-		   else
-		   {
-		   $panelbuttons .= "p.addButton('".$config_atkroot."icons/empty.gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
-		   }
-		 }
+		{            
+		  if($g_menu[$atkmenutop][$i]["url"]!="")
+		  {    
+        if ($g_menu[$atkmenutop][$i]["module"]!="")
+        {              
+          $menu_icon = $g_modules[$g_menu[$atkmenutop][$i]["module"]].'icons/'.$atkmenutop.'_'.$name.'.gif';
+        }
+        else
+        {
+          $menu_icon = $config_atkroot.'icons/'.$atkmenutop.'_'.$name.'.gif';
+        }       
+        if(file_exists($menu_icon))
+		    {
+          $panelbuttons .= "p.addButton('".$menu_icon."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+        }
+		    else
+		    {
+		      $panelbuttons .= "p.addButton('".$config_atkroot."icons/empty.gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
+		    }
+		  }
     }
 		else 
     {
-      //$menu .= text("menu_$name").$config_menu_delimiter;
-	
+      // do nothing
     }
 
   }
@@ -173,5 +180,3 @@ function myOnResize() {
 <body onLoad="resize_op5();" onResize="myOnResize();">
 </body>
 </html>
-
-

@@ -17,8 +17,10 @@
    * @param $parent parent menu name (default is main)
    * @param $url the url the item points to
    * @param $enable enable or disable
+   * @param $order the order in which the menu appears
+   * @param $module the name of the module that added this menuitem
    */
-  function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
+  function menuitem($name="", $url="", $parent="main", $enable=1, $order=0, $module="")
   { 
     static $order_value=100;
     if($order==0) 
@@ -27,7 +29,11 @@
       $order_value+=100;
     }
 //    if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-"; else
-    $GLOBALS["g_menu"][$parent][] = array("name" => $name, "url" => $url, "enable" => $enable, "order"=> $order);
+    $GLOBALS["g_menu"][$parent][] = array("name" => $name, 
+                                          "url" => $url, 
+                                          "enable" => $enable, 
+                                          "order"=> $order,
+                                          "module"=> $module);
     if (empty($url)) $GLOBALS["g_menu_parent"][$name] = $parent;
   }
 

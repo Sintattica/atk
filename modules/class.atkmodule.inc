@@ -54,6 +54,16 @@
     function getMenuItems()
     {      
     }
+    
+    /**
+     * Function that adds a menuitem to the menu. This function can be called
+     * from inside the getMenuItems() function, to register a menuitem.
+     */
+    function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
+    {
+      // Call basic menuitem.
+      menuitem($name, $url, $parent, $enable, $order, $this->m_name);
+    }
 
     /**
      * This method can be used to return an array similar to the menu array
