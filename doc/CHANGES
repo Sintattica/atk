@@ -37,6 +37,7 @@ Changes in ATK 5.0.5
   is used [Boy,Yuri]
 * Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
 * Fixed the outlook menu. (bug #352) [Sandy]
+* Fixed the help popup. (bug #347) [Thom]
 * Fixed help link in default view template. (bug #353) [Thom]
 * Fixed bug in editing empty choices in an atkManyToOneRelation. [Sandy]
 * Fixed a call-time-pass-by-reference. [Ivo]

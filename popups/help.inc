@@ -35,6 +35,7 @@
   atksecure();  
 
 //  Renders the help screen  
+  $node = $_GET["node"];
   $title1 ="txt_title_".$node;
   $title = $$title1;
   $file   = $config_atkroot."help/".atkconfig('language')."/help.".$node.".inc";
