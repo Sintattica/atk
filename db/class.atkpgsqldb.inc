@@ -43,17 +43,17 @@
         if (!empty($this->m_password)) $connection_str .= " password=".$this->m_password;
       
         /* establish connection */              
-        $this->m_link_id = @pg_pconnect($connection_str);
-        if (!$this->m_link_id)
+        $this->m_link_id = pg_connect($connection_str);
+        if ($this->m_link_id === FALSE)
         {
           $this->halt("connect using ".$this->m_database.", ".$this->m_host.", ".$this->m_user.", ***** failed.");
           
           // We can't use pg_result_error, since we need a resource
-          // for that function, and if pg_pconnect fails, we don't even have
+          // for that function, and if pg_connect fails, we don't even have
           // a resource yet.
           if (function_exists("pg_last_error")) // only available since PHP 4.2.0.
           {
-            return $this->_translateError(pg_last_error());
+            return $this->_translateError(@pg_last_error());
           }
           else
           {
@@ -61,7 +61,7 @@
           }
         }
       }
-      /* return link identifier */
+
       return DB_SUCCESS;
     }
     
@@ -69,7 +69,7 @@
      * TODO FIXME: I don't know what errormessges postgresql gives,
      * so this function only returns DB_UNKNOWNERROR for now.
      */
-    function _translateError($error)
+    function _translateError($error="")
     {
       return DB_UNKNOWNERROR;
     }
@@ -271,7 +271,7 @@
      */
     function metadata($table, $full=false)
     {  
-      $meta    = array();    // Metadata array - return value
+      $meta = array();    // Metadata array - return value
 
       // See PostgreSQL developer manual (www.postgresql.org) for system table spec.
       // Get catalog data from system tables.
@@ -282,9 +282,11 @@
                     c.relname = '."'$table'".' and 
                     a.atttypid = t.oid order by a.attnum';
 
-      $rows = $this->getrows($sql);
-              
+      $rows = $this->getRows($sql);
+
       // Store meta data
+      if ($full && count($rows) > 0)
+        $meta["num_fields"] = count($rows);
       for ($i = 0; $i < count($rows); $i++) 
       {
         // Field Name
@@ -292,12 +294,11 @@
         $meta[$i]['name'] = $rows[$i]['attname'];
         $meta[$i]['type'] = $rows[$i]['typname'];
         $meta[$i]['len']  = $rows[$i]['attlen'];
+
         if ($meta[$i]['type']=='varchar'&&$meta[$i]['len']==-1)
-        {          
           $meta[$i]['len'] = $rows[$i]['atttypmod']-4;
-        }
-        if ($full) $result["meta"][$result[$i]["name"]] = $i;
-        
+
+        if ($full) $meta["meta"][$result[$i]["name"]] = $i;
       }
  
       return $meta;
@@ -312,9 +313,11 @@
     function table_names()
     {
       /* query */
-      $this->query("SELECT relname FROM pg_class WHERE relkind = 'r' AND NOT relname LIKE 'pg_%'");
-    
-      for ($i=0; $info = pg_fetch_row($this->m_query_id, $i); $i++)    
+      $this->query("SELECT relname FROM pg_class WHERE relkind = 'r' AND NOT relname LIKE 'pg_%' AND NOT relname LIKE 'sql_%'");
+ 
+
+      $result = array();   
+      for ($i=0; $info = @pg_fetch_row($this->m_query_id, $i); $i++)    
       {
         $result[$i]["table_name"]      = $info[0];
         $result[$i]["tablespace_name"] = $this->m_database;

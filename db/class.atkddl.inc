@@ -293,37 +293,59 @@
     }
     
     /**
-     * Convert all fields to a string that can be used in a CREATE TABLE 
-     * statement.
+     * Convert all fields to string that can be used in a CREATE or ALTER
+     * TABLE statement. Fields will be returned in an array. (INTERNAL USE ONLY)
      */
-    function buildFields()
+    function _buildFieldsArray()
     {
-      $strfields = array();
+      $fields = array();
+
       foreach ($this->m_fields as $fieldname => $fieldconfig)
       {
         if ($fieldname!="" && $fieldconfig["type"]!="" && $this->getType($fieldconfig["type"])!="")
         {
-          $strfields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
+          $fields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
         }
       }
-      if (count($strfields)>0)
-      {
-        return implode(",\n", $strfields);
-      }
-      return "";
+
+      return $fields;
+    }
+
+    /**
+     * Convert all fields to a string that can be used in a CREATE or ALTER
+     * TABLE statement.
+     */
+    function buildFields()
+    {
+      $fields = $this->_buildFieldsArray();
+      if (count($fields) > 0)
+        return implode(",\n", $fields);
+      else return "";
     }
     
+    /**
+     * Convert all constraints to a string that can be used in a CREATE or
+     * ALTER TABLE statement. Returns an array of constraints. (INTERNAL USE ONLY)
+     */
+    function _buildConstraintsArray()
+    {
+      $constraints = array();
+      $pk = $this->buildPrimaryKey($this->m_primarykey);
+      if (!empty($pk)) $constraints[] = $pk;
+      return $constraints;
+    }
+
+
     /**
      * Convert all constraints to a string that can be used in a CREATE TABLE
      * statement.
      */
     function buildConstraints()
     {
-      $res = "";
-      
-      $res.= $this->buildPrimaryKey($this->m_primarykey);
-      
-      return $res;
+      $constraints = $this->_buildConstraintsArray();
+      if (count($constraints) > 0)
+        return implode(",\n", $constraints);
+      else return "";
     }
     
     /**
