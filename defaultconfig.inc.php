@@ -39,6 +39,8 @@
   $config_max_loginattempts = 5; // 0 = no maximum.
   $config_auth_dropdown = false;
   $config_auth_userdescriptor = "[".$config_auth_userfield."]";
+  // this parameter can be used to specify a where clause which will be used to validate users login credentials
+  $config_auth_accountenableexpression = "";
 
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";
@@ -83,9 +85,9 @@
   // include optimizer
   $config_atk_optimized_includes = true;
 
-  // Backwardscompatibility setting. Set this to MYSQL_BOTH if your 
+  // Backwardscompatibility setting. Set this to MYSQL_BOTH if your
   // software relies on numerical indexes (WHICH IS A BAD IDEA!!)
-  $config_mysqlfetchmode = MYSQL_ASSOC; 
+  $config_mysqlfetchmode = MYSQL_ASSOC;
 
   // files that are allowed to be included by the include wrapper script
   // NOTE: this has nothing to do with useattrib and userelation etc.!
