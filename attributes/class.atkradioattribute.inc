@@ -51,7 +51,6 @@
           $sel = "";
         }
 
-        //deze regel is gewijzigd
         $labelID = $fieldprefix.$this->formName()."_".$this->m_values[$i];
 
         $result .= '<input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>
