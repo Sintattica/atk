@@ -597,12 +597,12 @@
     {
       global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_type,"edit"));      
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);            
       $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
       
       $g_layout->output('<br>');
@@ -626,7 +626,7 @@
     {
       global $g_layout, $PHP_SELF;  
     
-      $g_layout->ui_top($g_layout->title($this->m_type,'view'));
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'view'));
       $g_layout->output($this->statusbar());
 
       $page.=$g_layout->ret_table_simple();
@@ -694,13 +694,13 @@
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_type,'add'));
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, 'add'));
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());                                   
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
       $g_layout->output($this->editForm("add",$record,$forceList));
       $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('save').'&nbsp;">');
       if ($this->m_action=="add")
@@ -717,7 +717,7 @@
     {
       global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_type,'search'));
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'search'));
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">');
@@ -1223,7 +1223,7 @@
     {
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
-      $g_layout->ui_top($g_layout->title($this->m_type,'admin'));
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
       $g_layout->output($this->statusbar());
 
       $adminHeader = $this->adminHeader();
@@ -2004,7 +2004,7 @@
       }
       else
       {
-        $g_layout->ui_top($g_layout->title($this->m_type,'select'));
+        $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'select'));
         $g_layout->output($this->statusbar());      
         $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
@@ -2037,7 +2037,7 @@
     {
       global $g_layout, $PHP_SELF;
       
-      $g_layout->ui_top($g_layout->title($this->m_type,'delete'));
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar());
 
       $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
@@ -2045,15 +2045,11 @@
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
       
-
       $g_layout->table_simple();
 
-      $g_layout->output('<tr>');
-
-      $g_layout->td($errormsg,'colspan="2"');
-      $g_layout->output('</tr>');
+      $g_layout->output('<tr>');  
       $g_layout->td(text('confirm_delete'));
-      $g_layout->output('<tr>');
+      $g_layout->output('</tr><tr>');
       $g_layout->td('&nbsp;<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
       $g_layout->output('</tr></table></form>');
 
@@ -2175,7 +2171,7 @@
           $g_layout->output("Sorry, you don't have permission to perform this action");
         }      
       
-        $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_type,$this->m_postvars['atkaction']));
+        $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']));
       
         // This is the end of all things for this page..
         // so we clean up some resources..
