@@ -56,7 +56,7 @@
         fclose($fp);
         atkdebug("[".$this->fieldName()."] succesfully wrote $filename..");
       }      
-      return $contents;
+      return escapeSQL($contents);
     }
     
     function db2value($record)
