@@ -1,6 +1,5 @@
 function placeFocus()
 {
-  alert('PLACEFOCUS');
   if (document.forms.length > 0) 
   {
     var field = document.forms[0];
