@@ -414,14 +414,14 @@ var c=0;
        document.write('<Layer visibility=hide top=40 left='+(this.width-20));
        document.write('><A href="#" onClick="'+this.panels[i].v+'.down(16);" ');
        document.write('onmouseOver="'+this.panels[i].v+'.clear();"><img ');
-       document.write('width=16 height=16 src=img/arrowup.gif border=0>');
+       document.write('width=16 height=16 src='+ol_arrowup+' border=0>');
        document.write('</A></LAYER><Layer top=');
        document.write((this.height-(this.panels.length)*22)+'<Layer top=');
        document.write((this.height-(this.panels.length)*22)+' left=');
        document.write((this.width-20)+'><A href="#" onClick="');
        document.write(this.panels[i].v+'.up(16);" onmouseOver="');
        document.write(this.panels[i].v+'.clear();"><img width=16 height=16 ');
-       document.write('src=img/arrowdown.gif border=0></A></LAYER>');
+       document.write('src='+ol_arrowdown+' border=0></A></LAYER>');
 
       document.write('</LAYER>');
     }
@@ -525,7 +525,7 @@ var c=0;
       document.write((this.width-20)+';"><A href="#" onClick="');
       document.write(this.panels[i].v+'.down(16);this.blur();return false;" ');
       document.write('onmouseOver="'+this.panels[i].v+'.clear();">');
-      document.write('<img width=16 height=16 src=img/arrowup.gif border=0>');
+      document.write('<img width=16 height=16 src='+ol_arrowup+' border=0>');
       document.write('</A></DIV>');
       document.write('<DIV id='+this.name+'_panel'+i);
       document.write('_m2 style="position:absolute;  top:');
@@ -533,7 +533,7 @@ var c=0;
       document.write((this.width-20)+';"><A href="#" onClick="');
       document.write(this.panels[i].v+'.up(16);this.blur();return false" ');
       document.write('onmouseOver="'+this.panels[i].v+'.clear();">');
-      document.write('<img width=16 height=16 src=img/arrowdown.gif border=0>');
+      document.write('<img width=16 height=16 src='+ol_arrowdown+' border=0>');
       document.write('</A></DIV>');
 
 
