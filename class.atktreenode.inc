@@ -328,7 +328,10 @@
       // Make the last text column
 	    $res.= "<td width=300>&nbsp;</td>";
       // Column for the functions
-      $res.= "<td width=300>&nbsp;</td>";
+      if ($showactions)
+      {
+        $res.= "<td width=300>&nbsp;</td>";
+      }
       $res.= "</tr>\n"; 
     	$cnt=0; 
       while ($cnt<count($this->m_tree)) 
