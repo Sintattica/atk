@@ -274,7 +274,7 @@
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // When we get $value as a substring, we autocomplete the time
-      // So 09 becomes 09:00:00 and 11:15 becomes 11:15:00
+      // So 9 becomes 09:00:00 and 11:15 becomes 11:15:00
       if (!is_array($value))
       {
         $retval = array("hours"=>substr($value, 0, 2),
@@ -283,6 +283,11 @@
         
         if (!$retval["seconds"]) $retval["seconds"]="00";
         if (!$retval["minutes"]) $retval["minutes"]="00";
+
+        if (strlen($retval["hours"])==1)   $retval["hours"] =   "0".$retval["hours"];
+        if (strlen($retval["minutes"])==1) $retval["minutes"] = "0".$retval["minutes"];
+        if (strlen($retval["seconds"])==1) $retval["seconds"] = "0".$retval["seconds"]; 
+         
         $value = implode(":",$retval);
       }
       return parent::getSearchCondition($query, $table, $value, $searchmode);
