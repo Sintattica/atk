@@ -170,19 +170,18 @@
     {
       global $config_language;
 
-      if ($mode == "select")
-      {
-        reset($config_language);
-        while (list($i, $language) = each($config_language))
-          $query->addField($this->fieldName().'_'.$language,"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
-      }
-
-      else if ($mode == "add" || $mode == "edit")
+      if ($mode == "add" || $mode == "update")
       {
         reset($config_language);
         while (list($i, $language) = each($config_language))          
           $query->addField($this->fieldName().'_'.$language,escapeSQL($rec[$this->fieldName()][$language]),"","",!$this->hasFlag(AF_NO_QUOTES));
       }
+      else
+      {
+        reset($config_language);
+        while (list($i, $language) = each($config_language))
+          $query->addField($this->fieldName().'_'.$language,"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+      }      
     }
 
     /**

@@ -22,7 +22,7 @@
      * The maximum number of records that you may have a relation with..
      */
     var $m_maxRecords = 0;
-
+    
     /**
      * Constructor
      * @param $name ?
@@ -75,14 +75,12 @@
 
       $myrecords = $record[$this->fieldName()];
 
-      if (!is_array($myrecords) || count($myrecords)==0)
-      {
-        // If someone pressed 'save', no records are loaded from the db.
-        // since we don't post all records in this relation like we do with
-        // other attributes, we have to load them at 'edit' time.
-//        $myrecords = $this->load($notused, array($keyfield=>$record[$keyfield]));
-        $myrecords = $this->load($notused, $record);
-      }
+      // If someone pressed 'save', no records are loaded from the db.
+      // since we don't post all records in this relation like we do with
+      // other attributes, we have to load them at 'edit' time.
+      // we pass 'select' as mode, since we show a recordlist, and we need
+      // all fields that we also get when we would be on an admin screen.
+      $myrecords = $this->load($notused, $record, "admin");
 
       if (count($myrecords)!=0)
       {
@@ -145,30 +143,53 @@
 
     /**
      * load values
-     * @param $notused ?
+     * @param $db pointer to the database
      * @param $record Record
+     * @param $mode Mode for loading (admin, select, copy, etc)
+      
      * @return ??
      */
-    function load($notused, $record)
+    function load($db, $record, $mode="")
     {
-      atkdebug("load called for ".$this->m_name);
-      $this->createDestination();
-      if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
-
-
-      $key = decodeKeyValueSet($record["atkprimkey"]);
-      // we assume singular referential keys, which means, there's only one value in $keyvalue;
-      list($tmp,$keyvalue) = each($key);
-
-      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
-
-      if ($this->m_destinationFilter!="")
+      atkdebug("load called for ".$this->m_name." (mode $mode)");
+      
+      if ($mode=="edit")
       {
-        $this->m_destInstance->addFilter($this->m_destinationFilter);
+        // when editing a record with a onetomanyrelation, we don't
+        // need to load anything, since that is done in the edit()
+        // function.
+        return NULL;
       }
-      $recordset = $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);
+      else
+      {
+        $this->createDestination();
+        if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
 
-      return $recordset;
+        $key = decodeKeyValueSet($record["atkprimkey"]);
+        // we assume singular referential keys, which means, there's only one value in $keyvalue;
+        list($tmp,$keyvalue) = each($key);
+
+        $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
+ 
+        if ($this->m_destinationFilter!="")
+        {
+          $this->m_destInstance->addFilter($this->m_destinationFilter);
+        }
+            
+        if ($mode=="admin" || $mode=="select")
+        {
+          // we only need fields that are displayed in the descriptor. 
+          $excludes = $this->m_destInstance->m_listExcludes;
+        }
+        else
+        {
+          // we probably need everything
+          $excludes = "";
+        }
+        $recordset = $this->m_destInstance->selectDb($where,"","",$excludes);
+  
+        return $recordset;
+      }
     }
 
 

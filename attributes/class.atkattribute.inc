@@ -333,15 +333,19 @@
      * @param $tablename Tablename
      * @param $fieldaliasprefix Field alias prefix
      * @param $level ?
-     * @param $mode select/insert/update
+     * @param $mode Indicates what kind of query is being processing:
+     *              This can be any action performed on a node (edit, add, etc)
+     *              Mind you that "add" and "update" are the actions that store
+     *              something in the database, whereas the rest are probably
+     *              select queries.
      * @return New SQL Query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
-    {
-      if ($mode == "select")
-        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
-      else if ($mode == "add" || $mode == "edit")
+    {      
+      if ($mode == "add" || $mode == "update")
         $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
+      else 
+        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
     }
 
     /**

@@ -1251,11 +1251,11 @@
      * (if a limit is set, and there are more records)
      * @return a HTML string for navigating through records
      */
-    function buildNavigation()
+    function buildNavigation($mode)
     {
       global $PHP_SELF;
       $limit = (int)$this->m_postvars['atklimit'];
-      $count = (int)$this->countDb($this->m_postvars['atkfilter'], $this->m_listExcludes);
+      $count = (int)$this->countDb($this->m_postvars['atkfilter'], $this->m_listExcludes, "", $mode);
 
       // maximum number of bookmarks to pages.
       $max_bm = 10;
@@ -1385,7 +1385,12 @@
 
       if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
 
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],
+                                   $this->m_postvars['atkorderby'],
+                                   array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),
+                                   $this->m_listExcludes,
+                                   "",
+                                   "admin");
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
@@ -1405,7 +1410,7 @@
 
       // create navigation bar
       if ($this->m_index != "") $g_layout->output($this->buildIndex($recordset[0][$this->m_index]).'<br><br>');
-      $nav = $this->buildNavigation();
+      $nav = $this->buildNavigation("admin");
       if (!empty($nav)) $g_layout->output("$nav<br>");
       $g_layout->output('<br>');
 
@@ -2143,7 +2148,12 @@
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
       if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
 
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],
+                                   $this->m_postvars['atkorderby'],
+                                   array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),
+                                   $this->m_listExcludes,
+                                   "",
+                                   "select");
 
       if (count($recordset)==1 && $this->hasFlag(NF_AUTOSELECT))
       {
@@ -2162,7 +2172,7 @@
         if ($this->m_index != "") $g_layout->output($this->buildIndex($recordset[0][$this->m_index]).'<br><br>');
 
         // create navigation bar
-        $nav = $this->buildNavigation();
+        $nav = $this->buildNavigation("select");
         if (!empty($nav)) $g_layout->output("$nav<br>");
         $g_layout->output('<br>');
 	
@@ -2221,7 +2231,7 @@
      */
     function init()
     {
-      global $g_modifiers;
+      global $g_modifiers;          
 
       // Check if initialisation is not already done.
       if ($this->m_initialised == true) return;
@@ -2336,7 +2346,7 @@
     function action_view()
     {
       atkdebug("Action view");
-      $recordset = $this->selectDb($this->m_postvars['atkselector']);
+      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","view");
       $this->viewPage($recordset[0]);
     }
 
@@ -2443,12 +2453,12 @@
     {
       if ($this->m_postvars['atkselector']!="")
       {
-        $recordset = $this->selectDb($this->m_postvars['atkselector']);
+        $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","xml");
         $this->xml($recordset[0]);
       }
       else
       {
-        $recordset = $this->selectDb();
+        $recordset = $this->selectDb("","","","","","xml");
         for ($i=0;$i<count($recordset);$i++)
         {
           $this->xml($recordset[$i]);
@@ -2475,7 +2485,7 @@
 
     function action_edit()
     {
-      $recordset = $this->selectDb($this->m_postvars['atkselector']);
+      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
 
       $this->editPage($recordset[0]);
     }
@@ -2749,7 +2759,7 @@
         // If we need to track changes, we first load the original values..
         if ($this->hasFlag(NF_TRACK_CHANGES))
         {
-          $recordset = $this->selectDb($pk);
+          $recordset = $this->selectDb($pk,"","","","","edit"); // we need the same record we got when editing.
           $record["atkorgrec"] = $recordset[0];
         }
         $query->addCondition($pk);
@@ -2767,7 +2777,7 @@
             }
             else
             {
-              $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
+              $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
             }
 	        }
         }
@@ -2810,7 +2820,7 @@
      * @param $execludeList List of attributes to be excluded from the query
      * @param $includeList List of attributes that have to be included into the query
      */
-    function countDb($selector="", $excludeList="", $includeList="")
+    function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
       global $g_db;
       $name = "atk".atkconfig("database")."query";
@@ -2886,7 +2896,7 @@
           }
           else
           {
-            $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
           }
         }
       }
@@ -2905,7 +2915,7 @@
     function copyDb($selector)
     {
 
-      $recordset = $this->selectDb($selector);
+      $recordset = $this->selectDb($selector,"","","","","copy");
 
       if(count($recordset)>0)
       {
@@ -2926,7 +2936,7 @@
      * @param $order Order field
      * @param $limit Limit (Not supported for Oracle databases yet)
      */
-    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="")
+    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
     {
       global $g_db;
 
@@ -3010,7 +3020,7 @@
           }
           else
           {
-            $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
           }
         }
       }
@@ -3055,11 +3065,7 @@
         {
           $p_attrib = &$this->m_attribList[$loadlist[$j]];
 
-        //  $this->setOrgKeyValue($recordset[$j]);
-
-          //atkdebug("orgkeyvalue SelectDb ".$this->orgKeyValue()." NodeName ".$this->m_type);
-
-          $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i]);
+          $recordset[$i][$loadlist[$j]] = $p_attrib->load($g_db, $recordset[$i], $mode);
         }
       }
       return $recordset;
@@ -3190,7 +3196,7 @@
     {
       global $g_db;
 
-      $recordset = $this->selectDb($selector);
+      $recordset = $this->selectDb($selector,"","","","","delete");
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i=0;$i<count($recordset);$i++)

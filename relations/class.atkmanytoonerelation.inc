@@ -295,7 +295,7 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if ($mode == "select")
+      if ($mode != "update" && $mode != "add")
       {
         if ($tablename!="") $realtablename=$tablename.".";
         if ($level<2)        
@@ -311,9 +311,10 @@
           $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
         }
       }
-
-      else if ($mode == "add" || $mode == "edit")
+      else 
+      {
         $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
+      }
     }
 
 

@@ -104,7 +104,7 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if ($mode == "select")
+      if ($mode!= "update" && $mode!="add")
       {
         if ($tablename!="") $tablename.=".";
         if ($level<2)

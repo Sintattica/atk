@@ -472,14 +472,12 @@
      * @param $tablename Tablename
      * @param $fieldaliasprefix Field alias prefix
      * @param $level ?
-     * @param $mode select/insert/update
+     * @param $mode select/admin/copy/edit
      * @return New SQL Query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
-    {
-      if ($mode == "select")
-        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
-      else if ($mode == "add" || $mode == "edit")
+    {      
+      if ($mode == "add" || $mode == "update")
       {
         if($this->value2db($rec) == '')
         {
@@ -490,6 +488,11 @@
           $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
         }
       }
+      else
+      {
+        $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+      }
+    
     }
     
   }
