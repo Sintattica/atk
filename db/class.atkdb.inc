@@ -581,7 +581,7 @@
      */
     function func_datetochar($fieldname)
     {
-      return "TO_CHAR($fieldname, 'YYYY-MM-DD')";
+      return "TO_CHAR($fieldname, ".atkconfig("date_to_char",'YYYY-MM-DD').")";
     }
       
       

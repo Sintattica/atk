@@ -9,6 +9,7 @@ Changes in ATK 5.1.1
 + Added support for turning CSV file-exporting off 
   in customRecordList [Boy]
 + Added ability to add custom HTML to MRA form [Ivo,Boy]
++ Made datetochar date format configurable [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * ManyToOne no longer default searches on primary key 
