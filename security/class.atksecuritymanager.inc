@@ -391,7 +391,7 @@
         
         if ($lastresponse == AUTH_LOCKED)
         {        
-          $g_layout->output("<tr><td colspan=2 class=error>".text('account_locked')."<br><br></td></tr>");          
+          $g_layout->output("<tr><td colspan=2 class=error>".text('auth_account_locked')."<br><br></td></tr>");          
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
