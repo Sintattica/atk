@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.18  2001/08/16 10:06:58  ivo
+   * Fixed a bug in delete function when primary key is not numeric.
+   *
    * Revision 4.17  2001/07/15 17:03:59  ivo
    * New feature: Alphabetical index on top of recordlists.
    * (use e.g. $this->setIndex("name"); in your class constructor to activate)
@@ -290,9 +293,9 @@
     {
       $classname = $this->m_destination;      
       $rel = getNode($classname);      
-      atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
 
-      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
     }
     
 
