@@ -130,6 +130,14 @@
      return "";
     }
     
+    function hide($record="", $fieldprefix="")
+    {
+      // we only need to return the date part, because the dateattribute also
+      // hides the other (time) elements that are present in the record (is that
+      // a bug of the dateattribute?)
+      return $this->m_date->hide($record, $fieldprefix);
+    }
+    
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
