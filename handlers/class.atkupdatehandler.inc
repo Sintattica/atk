@@ -27,7 +27,7 @@
    * @author Ivo Jansch <ivo@achievo.org>   
    * @package atk
    * @subpackage handlers
-   *
+   * @todo Add locking check for when an application calls an action_update on a locked node
    */
   class atkUpdatehandler extends atkActionHandler 
   {    
