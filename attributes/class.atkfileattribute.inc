@@ -161,9 +161,14 @@
         $filename = $rec[$this->fieldName()]["filename"];
         if ($filename!="")
         {
-          if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename) OR die("<br><br><center><b>Save failed!</b></center><br>"))
+          if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
           {
             return $filename;
+          }
+          else
+          {
+            atkerror("File kon niet worden opgeslagen");
+            return "";
           }
         }
         return $rec[$this->fieldName()]["orgfilename"];
@@ -204,7 +209,7 @@
                           "orgfilename"=>'');
         
         }
-        elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
+        elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none"||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="")
         { 
           $result = array("tmpfile"=>"",
                           "filename"=>"",
