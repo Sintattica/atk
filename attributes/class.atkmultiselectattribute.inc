@@ -27,8 +27,12 @@
      * @param $flags Flags for this attribute
      * @param $size  Size of the attribute.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray,$cols, $flags=0, $size="")
+    function atkMultiSelectAttribute($name, $optionArray, $valueArray="", $cols="", $flags=0, $size="")
     {            
+      if (!is_array($valueArray) || count($valueArray)==0)
+      {
+        $valueArray = $optionArray;
+      }
       // size must be large enough to store a combination of all values.
       if ($size == "")
       {
@@ -40,7 +44,7 @@
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
       $this->m_dbfieldtype = "string"; // since we store values separated by '|', we always store as string.
-      $this->m_cols=$cols;
+      ($cols<1)?$this->m_cols=3:$this->m_cols=$cols;
     }    
 
     function hide($record="", $fieldprefix="")
