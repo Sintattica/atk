@@ -699,13 +699,18 @@
           {
             if ($field["label"] == "") $form .= $this->ret_td('&nbsp;');
             elseif ($field["error"]) $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
-            else $form .= $this->ret_td($field["label"].': ','valign="top"');
+            elseif (get_class($field["attribute"]) == "atkboolattribute")
+              $form .= $this->ret_td('<label for="'.$field["name"].'">'.$field["label"].'</label>: ', 'valign="top"');
+            else 
+              $form .= $this->ret_td($field["label"].': ','valign="top"');
           }
 
           /* If there's no label, the other td's have to be filled up. */
           else $tdcount++;
 
           /* html source */
+          atk_var_dump(array_keys($field), "veld[html]!");
+          atkdebug(get_class($field["attribute"])."attribute!");
           $editsrc = $field["html"];
 
           /* obligatory indicator */
