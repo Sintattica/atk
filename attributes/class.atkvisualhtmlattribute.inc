@@ -7,6 +7,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/10/25 15:15:30  ivo
+   * Fixed visual html attribute for use in onetoonerelations.
+   *
    * Revision 4.2  2001/10/22 14:36:06  ivo
    * Made visual htmlattribute browser aware (automatically defaults to standard
    * textAttribute if not IE5+) and added visualhtmlattrib to skel.
@@ -51,7 +54,7 @@
       else
       {    
         $g_layout->register_script("atk/javascript/class.atkvisualhtmlattribute.js");      
-        $nom_editor = $this->fieldname()."_editor";
+        $nom_editor = $fieldprefix.$this->fieldname()."_editor";
         $g_layout->register_submitscript($nom_editor."_save();");
         $idi_edit = 'eng';
         $editor_height = 100;
@@ -60,7 +63,7 @@
         //$action_submit = "sample_submit.php";
         $document_complet = 0;
         $content_inicial = $record[$this->fieldname()];
-        $result = '<input type="hidden" name="'.$this->fieldname().'" value="">';
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';
         include $config_atkroot."atk/attributes/wysiwyg/editor.php";
         return $result;
       }

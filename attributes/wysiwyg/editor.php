@@ -51,7 +51,7 @@ $result.= "\n function ".$nom_editor."_save() { ";
 // Contingut: (la funció contingut_html ja fa strip_body si cal)
 $result.= "\n var cont = get_html('".$nom_editor."');";
 // Posem el valor al input hidden:
-$result.= "\n document.entryform.".$this->fieldname().".value = cont; ";
+$result.= "\n document.entryform.".$fieldprefix.$this->fieldname().".value = cont; ";
 $result.= "\n return true;";			
 	  
 	$result.= "\n } ";
