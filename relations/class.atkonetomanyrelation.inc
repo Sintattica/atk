@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.20  2001/09/04 08:30:32  maurice
+   * Changed functionname orgKeyField to orgKeyValue
+   *
    * Revision 4.19  2001/08/31 14:53:06  maurice
    * Added primary key check
    *
@@ -253,7 +256,7 @@
 
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
-        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$this->m_ownerInstance->orgKeyField();
+        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$this->m_ownerInstance->orgKeyValue();
 
         if ($this->m_destinationFilter!="")
         {
@@ -277,7 +280,7 @@
       atkdebug("load called for ".$this->m_name);
       $this->createDestination();
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
-      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$this->m_ownerInstance->orgKeyField()."'";
+      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$this->m_ownerInstance->orgKeyValue()."'";
       if ($this->m_destinationFilter!="")
       {
         $this->m_destInstance->addFilter($this->m_destinationFilter);
@@ -297,7 +300,7 @@
       $rel = getNode($classname);      
       atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
 
-      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->orgKeyField()."'");
+      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."='".$this->m_ownerInstance->orgKeyValue()."'");
     }
     
 

@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.92  2001/09/04 08:30:32  maurice
+   * Changed functionname orgKeyField to orgKeyValue
+   *
    * Revision 4.91  2001/09/03 15:57:29  ivo
    * Fixed a bug in the load( api that was introduced in previous checkin.
    *
@@ -628,7 +631,7 @@
      * when using this with classes that have multiple)
      * @return Primary key field
      */
-    function orgKeyField()
+    function orgKeyValue()
     {
       return $this->m_orgkey[0];
     }
@@ -2613,7 +2616,7 @@ atkdebug("Action add");
           $p_attrib = &$this->m_attribList[$loadlist[$i]];
 
           $this->setOrgKeyValue($recordset[$j]);
-          atkdebug("orgkeyvalue SelectDb ".$this->orgKeyField()." NodeName ".$this->m_type);
+          atkdebug("orgkeyvalue SelectDb ".$this->orgKeyValue()." NodeName ".$this->m_type);
           // It looks like m_ownerInstance is not a real reference to the
           // owner of the attribute. Therefor copy de owner again to m_ownerInstance
           $p_attrib->m_ownerInstance  = &$this;
