@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.74  2001/07/04 10:50:27  ivo
+   * Fix to help feature (help.php moved to skel)
+   *
    * Revision 4.73  2001/07/04 07:17:10  ivo
    * searchform now uses method="get"
    *
@@ -2575,7 +2578,7 @@
       }
       else
       {
-        return "javascript:NewWindow('atk/help.php?node=".$this->m_type."','".text("help")."',600,400,'yes')";
+        return "javascript:NewWindow('help.php?node=".$this->m_type."','".text("help")."',600,400,'yes')";
       }
     }
 
