@@ -265,13 +265,13 @@
           $result.= "<!-- DEInsertTableParam Object -->";
           //$result.= "<object ID=\"ObjTableInfo\" CLASSID=\"clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C\" width=2 height=2 VIEWASTEXT>";
           //$result.= "</object>";
-          $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:400;width:650;background-color:white;\">";
+          $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:350;width:630;background-color:white;\">";
           $result.= "</IFRAME>";
         }
       }
       else
       {
-        $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:400;width:650;background-color:white;\">";
+        $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:350;width:630;background-color:white;\">";
         $result.= "</IFRAME>";
       }
       $result.= "</td>";
