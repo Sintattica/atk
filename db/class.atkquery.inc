@@ -17,6 +17,9 @@
    *              long ones) (Ivo)
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/12 12:25:35  ivo
+   * New feature: 'group by' for queries.
+   *
    * Revision 4.2  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -78,6 +81,11 @@
     * Array with Joins
     */
     var $m_joins;
+    
+    /**
+     * Array with group by statements
+     */
+    var $m_groupbys;
     
     /**
     * Array with generated aliasses
@@ -163,6 +171,11 @@
       }
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
     }
+    
+    function addGroupBy($element)
+    {
+      $this->m_groupbys[] = $element;
+    }
 
     /**
     * Add condition to condition Array
@@ -204,6 +217,11 @@
       {
         $result.= " WHERE ".implode(" AND ",$this->m_conditions);
       }
+      
+      if (count($this->m_groupbys)>0)
+      {
+        $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
+      }
       return $result;
     }
     
@@ -233,6 +251,11 @@
        if (count($this->m_conditions)>0)
        {
          $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+       }
+       
+       if (count($this->m_groupbys)>0)
+       {
+         $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
        }
        return $result;
      }
