@@ -158,20 +158,8 @@
 
   class atkColorPickerAttribute extends atkAttribute
   {
-    /**
-     * The name of the attribute
-     */
-    var $m_name;
-    var $userColors;
-    var $m_flags = 0;
-
-    /**
-     * The size, searchsize and maxsize of the attribute's field.
-     */
-    var $m_size = 9;
-    var $m_searchsize = 0;
-    var $m_maxsize = 7;
-    
+    var $m_userColors;
+ 
     /**
      * Constructor
      *
@@ -184,12 +172,12 @@
 
     function atkColorPickerAttribute($name ,$userColors="", $flags = 0)
     {
+      $this->atkAttribute($name, $flags);
       $GLOBALS['g_layout']->register_script("atk/javascript/newwindow.js");      
-      $GLOBALS['g_layout']->register_script("atk/javascript/colorpicker.js");      
-      $this->m_name = $name;
-      $this->m_flags = (double)$flags;
-      $this->userColors = $userColors;
-      }
+      $GLOBALS['g_layout']->register_script("atk/javascript/colorpicker.js");            
+      $this->m_userColors = $userColors;
+     
+    }
 
  
 
@@ -209,16 +197,16 @@
              
    
    
-             if ($this->userColors !="")
+             if ($this->m_userColors !="")
              {      
-             $temp = $this->userColors;
+             $temp = $this->m_userColors;
              $userCol = implode("|",$temp);
              }
 
        
         
              $result = '<input type="text" name="'.$fieldprefix.$this->formName().
-                          '" value="'.htmlentities($record[$this->fieldName()]).'"'.
+                          '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
                             ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                             ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
