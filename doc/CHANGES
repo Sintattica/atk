@@ -50,6 +50,8 @@ Changes in ATK 5.0.8
 * Fixed AF_NO_LABEL [Boy]
 * Changed mysql_pconnect() to mysql_connect() because too many ATK
   apps would make for too many connections [Boy]
+* Removed the auto selection from atkRadioAttribute. Now nothing is
+  selected not even when it is obligatory [Wouter]
 
 Changes in ATK 5.0.7
 --------------------
