@@ -3895,6 +3895,9 @@
     /**
      * Search all records for the occurance of a certain expression.
      *
+     * The method will only return results for which the current user has 
+     * the view-privilege.
+     *
      * This function searches in all fields that are not AF_HIDE_SEARCH for
      * a certain expression.
      */
@@ -3921,12 +3924,15 @@
       $res = array();
       for ($i=0, $_i=count($recs); $i<$_i; $i++)
       {
-        $res[] = array("title"=>$this->descriptor($recs[$i]),
-                       "url"=>dispatch_url($this->atkNodeType(),
-                                           "view",
-                                           array("atkselector"=>$this->primaryKey($recs[$i]))
-                                          )
-                      );
+        if ($this->allowed("view", $recs[$i]))
+        {
+          $res[] = array("title"=>$this->descriptor($recs[$i]),
+                         "url"=>dispatch_url($this->atkNodeType(),
+                                             "view",
+                                             array("atkselector"=>$this->primaryKey($recs[$i]))
+                                            )
+                        );
+        }
       }
       return $res;
     }
