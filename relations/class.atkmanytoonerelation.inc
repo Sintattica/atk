@@ -28,6 +28,9 @@
                             
     var $m_refKey = array(); // The array of referential key fields.
                
+    var $m_joinFilter = ""; // Extra filters for the join that retrieves the selected record.
+    
+    
     /**
      * Constructor
      * @param $name The name of the attribute. This is the name of the field that is the referential key
@@ -207,7 +210,6 @@
       {
         // normal dropdown..
         $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-
         if ($this->m_destinationFilter!="")
         {
           $filter = stringparse($this->m_destinationFilter,$record);
@@ -246,7 +248,6 @@
           
           // Newly added check
           $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
-
           for ($i=0;$i<count($recordset);$i++)
           {
             $pk = $this->m_destInstance->primaryKey($recordset[$i]);
@@ -424,6 +425,12 @@
                                 "=".
                                 $alias.".".$this->m_destInstance->m_primaryKey[$i];
           }
+          
+          if ($this->m_joinFilter!="")
+          {
+            $joinconditions[] = $this->m_joinFilter;
+          }
+          
           $query->addJoin($this->m_destInstance->m_table, 
                           $alias,
                           implode(" AND ",$joinconditions), 
@@ -443,6 +450,7 @@
               $query->addField($this->m_refKey[$i],$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[$i]],"","",!$this->hasFlag(AF_NO_QUOTES));
             }
           }
+          
         } 
       }
     }
