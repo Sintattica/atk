@@ -551,13 +551,11 @@
      */
     function needsInsert($record)
     {
-      return (!$this->hasFlag(AF_READONLY_ADD)
-              && 
-              (!$this->hasFlag(AF_HIDE_ADD) || 
-               $this->hasFlag(AF_AUTO_INCREMENT) || 
-               !$this->isEmpty($record)));
-      // If we are set to read-only, we will never insert something into
-      // the db. If we are set to hide_add, we will only insert into the
+      return (!$this->hasFlag(AF_HIDE_ADD) || 
+              $this->hasFlag(AF_AUTO_INCREMENT) || 
+              !$this->isEmpty($record));
+
+      // If we are set to hide_add, we will only insert into the
       // db if a value has been set (for example by an initial_values
       // method). Also, autoincrement fields might be hidden, and their
       // value is still empty, but they do need to be inserted lateron.
