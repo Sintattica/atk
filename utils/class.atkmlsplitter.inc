@@ -29,11 +29,15 @@
     
     /**
     * add/update multiple language records
+    * because nodes are cached and we have to make some attribute modifications you
+    * can't pass the node as a reference!!
+    *
     */
-    function updateMlRecords(&$node, $record, $mode="add")
+    function updateMlRecords($node, $record, $mode="add")
     {
       atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
       $excludelist = array();
+      
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
