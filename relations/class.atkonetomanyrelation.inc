@@ -271,7 +271,6 @@
     {
       $classname = $this->m_destination;
       $rel = &getNode($classname);
-      //atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
       
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
@@ -317,7 +316,6 @@
               // we reset the correct key.
               if(!$this->destinationHasRelation())
               {
-                atkdebug("hmm.. there's no relation back. fixing the value of refKey...");
                 for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
                 {
                   $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$this->m_ownerInstance->m_primaryKey[$j]];
