@@ -51,6 +51,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.66  2001/06/29 09:08:19  ivo
+   * "Field is required" msg now only appears if there actually are required
+   * fields.
+   *
    * Revision 4.65  2001/06/27 15:25:42  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -719,6 +723,9 @@
     {
       global $g_layout, $txt_field_obligatory;      
       
+      // if there are displayable obligatory fields, we display a message near the bottom.
+      $has_oblies = false;
+      
       $g_layout->register_script("atk/javascript/formsubmit.js");
       
       if (($mode == 'add' && sizeof($this->m_listMlAdd) > 0 && !$this->m_hasMlSelectAdd) ||
@@ -875,12 +882,12 @@
             }            
             	                    
             if ($p_attrib->hasFlag(AF_READONLY))
-	    {
+            {
               // readonly, display value..              
-	      $editsrc=$p_attrib->hide($defaults, $fieldprefix);
+              $editsrc=$p_attrib->hide($defaults, $fieldprefix);
               $editsrc.=$p_attrib->display($defaults);                              
             }
-	    else
+            else
             {            
               $funcname = $p_attrib->m_name."_edit";
               
@@ -892,12 +899,13 @@
               {                             
                 $editsrc = $p_attrib->edit($defaults, $fieldprefix);
               }
-	    }
+            }
             
-	    if ($p_attrib->hasFlag(AF_OBLIGATORY))
-	    {
-	      $editsrc .= "&nbsp; *";
-	    }
+            if ($p_attrib->hasFlag(AF_OBLIGATORY))
+            {
+              $editsrc .= "&nbsp; *";
+              $has_oblies = true;
+            }
 	    
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
@@ -907,9 +915,9 @@
       
       $form.='</table>';
 
-      if (!empty($txt_field_obligatory))
+      if ($has_oblies && !empty($txt_field_obligatory))
       {
-        $form.= '<span style="font:8pt">'.text("field_obligatory").'</span><br>';
+        $form.= '<span style="font-size:8pt">'.text("field_obligatory").'</span><br>';
       }
       
       return $form;
