@@ -3561,13 +3561,16 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if ($p_attrib->hasStore($mode))
+        if ($p_attrib->needsInsert($record))
         {
-          $storelist[]=$attribname;
-        }
-        else
-        {
-          $querylist[]=$attribname;
+          if ($p_attrib->hasStore($mode))
+          {
+            $storelist[]=$attribname;
+          }
+          else
+          {
+            $querylist[]=$attribname;
+          }
         }
       }
 

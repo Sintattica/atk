@@ -543,6 +543,26 @@
       return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));
     }
 
+    /**
+     * This function is called by atkNode to determine if a field
+     * needs to be saved to the database in an addDb call.
+     *
+     * @param $record The record that is about to be saved
+     */
+    function needsInsert($record)
+    {
+      return (!$this->hasFlag(AF_READONLY_ADD)
+              && 
+              (!$this->hasFlag(AF_HIDE_ADD) || 
+               $this->hasFlag(AF_AUTO_INCREMENT) || 
+               !$this->isEmpty($record)));
+      // If we are set to read-only, we will never insert something into
+      // the db. If we are set to hide_add, we will only insert into the
+      // db if a value has been set (for example by an initial_values
+      // method). Also, autoincrement fields might be hidden, and their
+      // value is still empty, but they do need to be inserted lateron.
+    }
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
