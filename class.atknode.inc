@@ -119,15 +119,6 @@
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");  
   require_once($config_atkroot."atk/lock/class.atklock.inc");
 
-  // Default language file
-  require_once($config_atkroot."atk/languages/".$config_languagefile);
-
-  // Application specific language file
-  if (file_exists($config_atkroot."languages/".$config_languagefile))
-  {
-    include_once($config_atkroot."languages/".$config_languagefile);
-  }
-
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
 
@@ -136,13 +127,6 @@
   /************* MODULE HANDLING *************/
   foreach ($g_modules as $modname => $modpath)
   {
-    // Module specific language file
-    $filename = "$modpath/languages/$config_languagefile";
-    if (file_exists($filename))
-    {
-      include_once($filename);
-    }
-
     $filename = "$modpath/module.inc";
 
     // The module itself
