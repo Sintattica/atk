@@ -1,0 +1,48 @@
+<?php
+  /**
+   * The atkUpdateStampAttribute class can be used to store 
+   * the date and time of the last modification of a record.
+   * To use this attribute, add a DATETIME field to your table
+   * and add this attribute to your node class. No params are necessary,
+   * no initial_values need to be set. The timestamps are generated automatically.
+   * This attribute is automatically set to readonly, and to hide add (because we only
+   * have the first timestamp AFTER a record is added).
+   *
+   * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
+   *
+   * $Id$
+   *
+   */
+  class atkUpdateStampAttribute extends atkAttribute
+  {
+    /**
+     * Constructor
+     * @param $name Name of the attribute
+     * @param $flags Flags for this attribute
+     */
+    function atkUpdateStampAttribute($name, $flags=0)
+    {
+      $this->atkAttribute($name,$flags|AF_READONLY|AF_HIDE_ADD); // base class constructor
+    }
+
+    function value2db($rec)
+    {
+      return date("Y-m-d H:i:s");
+    }
+
+    function display($rec)
+    {
+      $stamp = $rec[$this->fieldname()];
+      return $stamp;
+    }
+
+    function needsUpdate($rec)
+    {
+      // no matter what, we always save a new value.
+      return true;
+    }
+
+  }
+
+?>
