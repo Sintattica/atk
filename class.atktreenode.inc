@@ -13,6 +13,10 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.11  2001/05/17 12:39:37  ivo
+    * Made atktreenode session aware (if you come back from an edit, your tree
+    * state is restored)
+    *
     * Revision 4.10  2001/05/10 08:31:00  ivo
     * Major upgrade. Changes:
     * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -73,10 +77,10 @@
     var $m_tree = array(); 
   
     /**
-        * Constructor
-        * @Param $name Node name
-        * @Param $flags Node flags
-        */
+     * Constructor
+     * @Param $name Node name
+     * @Param $flags Node flags
+     */
     function atkTreeNode($name,$flags=0)
     {
       if($this->hasFlag(NF_TREE_NO_ROOT_ADD))
@@ -87,12 +91,12 @@
     }  
     
     /**
-          * Admin page displays records and the actions that can be performed on
-          * them (edit, delete) in a Treeview
-          */
+     * Admin page displays records and the actions that can be performed on
+     * them (edit, delete) in a Treeview
+     */
     function adminPage()
     {
-      global $g_securityManager,$g_layout,$g_maxlevel,$g_teller,$p;
+      global $g_securityManager,$g_layout,$g_maxlevel,$g_teller;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
       $g_layout->output('<br>');
@@ -104,7 +108,7 @@
       }
 
       atkdebug("Entering treeview page.");
-      $this->addStickyVar($p);
+      //$this->addStickyVar($p);
       
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
 
@@ -139,10 +143,10 @@
     }
     
     /**
-         * Recursive funtion whitch fills an array with all the items of the tree. 
-         * @param $tree Tree
-         * @param $level Level
-         */
+     * Recursive funtion whitch fills an array with all the items of the tree. 
+     * @param $tree Tree
+     * @param $level Level
+     */
     function Fill_tree($tree="",$level=0)
     {
       global $g_teller,$g_maxlevel;
@@ -165,13 +169,13 @@
     
 
     /**
-         * Recursive funtion which fills an array with all the items of the tree. 
-         * @param $tree Tree
-         * @param $level Level
-         */
+     * Recursive funtion which fills an array with all the items of the tree. 
+     * @param $tree Tree
+     * @param $level Level
+     */
     function GraphTreeRender()
     {
-      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$p,$g_theme;
+      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$g_theme;
       if(is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
         $icon_path ="themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
@@ -218,7 +222,7 @@
     	/*  Get Node numbers to expand               */ 
     	/*********************************************/ 
    
-	    if ($p!="") $explevels = explode("|",$p); 
+	    if ($this->m_postvars["atktree"]!="") $explevels = explode("|",$this->m_postvars["atktree"]); 
    
 	    $i=0;
 	    while($i<count($explevels)) 
@@ -328,7 +332,7 @@
 						    /****************************************/ 
 						    /* Create expand/collapse parameters    */ 
 						    /****************************************/ 
-						    $i=0; $params="p="; 
+						    $i=0; $params="atktree="; 
 						    while($i<count($expand)) 
 						    { 
 							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
@@ -338,7 +342,7 @@
 							    } 
 							    $i++; 
 						    } 
-						    $res.= "<td>".href("dispatch.php?".$script.$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n"; 
+						    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_plus."\" border=no>")."</td>\n"; 
 					    }
 					    else
 					    {
@@ -352,7 +356,7 @@
 						    /****************************************/ 
 						    /* Create expand/collapse parameters    */ 
 						    /****************************************/ 
-					    	$i=0; $params="p="; 
+					    	$i=0; $params="atktree="; 
 						    while($i<count($expand)) 
 						    { 
 							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
@@ -362,7 +366,7 @@
 							    } 
 							    $i++; 
 						    } 
-						    $res.="<td>".href("dispatch.php?".$script.$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n"; 
+						    $res.="<td>".href("dispatch.php?".$params,"<img src=\"".$img_minus."\" border=no>")."</td>\n"; 
 					    }
 					    else
 					    {
@@ -380,7 +384,7 @@
     				/****************************************/ 
 	    			/* Create expand/collapse parameters    */ 
 		    		/****************************************/ 
-			    	$i=0; $params="p="; 
+			    	$i=0; $params="atktree="; 
 			    	while($i<count($expand)) 
 				    { 
 					    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
@@ -392,9 +396,9 @@
 				    } 
 				                    
 				    if ($expand[$cnt]==0) 
-					    $res.= "<td>".href("dispatch.php?".$script.$params,"<img src=\"".$img_expand."\" border=no>")."</td>\n"; 
+					    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_expand."\" border=no>")."</td>\n"; 
 				    else 
-					    $res.= "<td>".href("dispatch.php?".$script.$params,"<img src=\"".$img_collapse."\" border=no>")."</td>\n";          
+					    $res.= "<td>".href("dispatch.php?".$params,"<img src=\"".$img_collapse."\" border=no>")."</td>\n";          
 			    } 
 			    else 
 			    { 
