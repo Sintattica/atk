@@ -973,7 +973,7 @@
             // attribute not found in destination, so it should
             // be in the owner (this is the case when extra fields
             // are in the relation
-            $p_attrib($this->m_ownerInstance->m_attribList[$key]);
+            $p_attrib = &$this->m_ownerInstance->m_attribList[$key];
             if (is_object($p_attrib))
             {
               $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
