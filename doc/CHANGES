@@ -53,6 +53,8 @@ Changes in ATK 5.0.8
   apps would make for too many connections [Boy]
 * Removed the auto selection from atkRadioAttribute. Now nothing is
   selected not even when it is obligatory [Wouter]
+* atkOneToOneRelation restores destination postvars 
+  after it is done updating [Boy]
 
 Changes in ATK 5.0.7
 --------------------

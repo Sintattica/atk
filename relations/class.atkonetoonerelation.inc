@@ -494,9 +494,13 @@
         {
           atkdebug("Updating existing one2one record");
           // we put the vars in the postvars, because there is information
-          // like atkorgkey in it that is vital.          
+          // like atkorgkey in it that is vital.
+          // but we restore the postvars after we're done updating          
+	  $oldpost = $this->m_destInstance->m_postvars;
           $this->m_destInstance->m_postvars = $vars;
-          return $this->m_destInstance->updateDb($vars);
+          $res = $this->m_destInstance->updateDb($vars);
+          $this->m_destInstance->m_postvars = $oldpost;
+          return $res;
         }
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
