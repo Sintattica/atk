@@ -59,29 +59,29 @@
   
         // get active tab
         $tab = $node->getActiveTab();
-				
+        
         // For all attributes we use the display() function to display the
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
         foreach (array_keys($node->m_attribIndexList) as $i)
-        {		        		
+        {                
           $tplfield = array();
           $p_attrib = &$node->m_attribList[$node->m_attribIndexList[$i]["name"]];
           if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
           {
-					
+          
             $field_name = $node->m_attribIndexList[$i]["name"];
-									
+                  
             $tplfield["tab"] = $p_attrib->m_tabs[0];
             $tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
-				 
+         
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute. If it exists we will use that method
             // else we will just use the attribute's display method.
             $funcname = $p_attrib->m_name."_display";
             if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
             else $editsrc=$p_attrib->display($record, "view");
-  					
+            
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
             $tplfield["rowid"] = "ar_".$field_name; // The id of the containing row
@@ -99,7 +99,7 @@
                 $tplfield["label"] = $p_attrib->label($record);
               }
             }
-  					else
+            else
             {
               // Make the rest fill up the entire line
               $tplfield["label"] = "";
@@ -111,13 +111,14 @@
           }  
         }
         $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
-				
+        
         $params["activeTab"] = $tab;
-				
+        
         $params["content"] = $node->tabulate("view", $innerform);        
   
         $params["formstart"] = '<form method="get">'.session_form(SESSION_NESTED);
-        $params["buttons"][] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.text('back').'">';
+        if(atkLevel() > 0)
+          $params["buttons"][] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.text('back').'">';
                           
         // if appropriate, display an edit button.
         if (!$node->hasFlag(NF_NO_EDIT)&&$node->allowed("edit", $record))
