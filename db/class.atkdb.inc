@@ -1,6 +1,22 @@
 <?php
 
   /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
    * Some defines used for connection statusses, generic error messages, etc.
    */
   define("DB_SUCCESS"           , 0);
@@ -12,65 +28,170 @@
 
 
   /**
-   * Handles database connectivity and database interaction.
+   * Abstract baseclass for ATK database drivers. 
+   *
+   * Implements some custom functionality and defines some methods that
+   * derived classes should override.
    *
    * @author Peter Verhage <peter@achievo.org>
-   * @version $Revision$
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage db
    *
-   * $Id$
-   *
-   */ 
+   */
   class atkdb
   {
-    /* connection parameters */
+    /**
+     * The hostname/ip to connect to.
+     * @access private
+     * @var String
+     */
     var $m_host     = "";
+    
+    /** 
+     * The name of the database/schema to use.
+     * @access private
+     * @var String
+     */
     var $m_database = "";
+    
+    /** 
+     * The username for the connection.
+     * @access private 
+     * @var String
+     */
     var $m_user     = "";
+    
+    /**
+     * The password for the connection.
+     * @access private
+     * @var String
+     */
     var $m_password = "";
 
-    /* result array and current row number */
+    /**
+     * Contains the current record from the result set.
+     * @access private 
+     * @var array
+     */
     var $m_record = array();
+    
+    /**
+     * Current row number
+     * @access private 
+     * @var int
+     */
     var $m_row = 0;
 
-    /*  current error number and error text */
+    /**
+     * Contains error number, in case an error occurred.
+     * @access private
+     * @var int
+     */
     var $m_errno = 0;
+    
+    /** 
+     * Contains textual error message, in case an error occurred.
+     * @access private 
+     * @var String
+     */
     var $m_error = "";
+    
+    /**
+     * If true, an atkerror is raised when an error occurred.
+     *
+     * The calling script can use this to stop execution and rollback.
+     * If false, the error will be ignored and script execution 
+     * continues. Use this only for queries that may fail but still
+     * be valid.
+     * @access private
+     * @var boolean
+     */
     var $m_haltonerror = true;
     
-    /* Driver name. Must be overwritten by each driver. */
+    /**
+     * Driver name.
+     * 
+     * Derived classes should add their own m_type var to the class
+     * definition and put the correct name in it. (e.g. "mysql" etc.)
+     * @abstract
+     * @access private 
+     * @var String
+     */
     var $m_type = "";
     
     /** 
      * number of affected rows after an update/delete/insert query 
-     * NOTE: this is currently only supported for mysql.
+     * @access private
+     * @var int
      */
     var $m_affected_rows = 0;      
     
-    // array to store meta-information about tables.
+    /**
+     * array to cache meta-information about tables.
+     * @access private
+     * @var array
+     */
     var $m_tableMeta = array();
 
-    /* link and query handles */
+    /**
+     * The connection is stored in this variable.
+     * @access private
+     * @var Resource
+     */
     var $m_link_id  = 0;
+    
+    /**
+     * The query statement is stored in this variable.
+     * @access private
+     * @var Resource
+     */
     var $m_query_id = 0;
 
-    /* set to 1 for automatic freeing of results */    
-    var $m_auto_free = 1;
+    /**
+     * Auto free result upon next query.
+     *
+     * When set to true, the previous results are cleared when a new query is
+     * executed. It should generally not be necessary to put this to false.
+     * @access private
+     * @var boolean
+     */    
+    var $m_auto_free = true;
     
-    /* set to 1 to set debugging on */    
-    var $m_debug = 0; 
-    
+    /**
+     * List of error codes that could be caused by an end-user.
+     *
+     * This type of errors is 'recoverable'. An example is a violation of a
+     * unique constraint.
+     * @access private
+     * @var array
+     */    
     var $m_user_error = array();
+    
+    /**
+     * List of unrecoverable system errors.
+     *
+     * This type of errors is non-recoverable. An example would be a
+     * connection failure or an internal server error.     
+     * @access private
+     * @var array
+     */    
     var $m_critical_error = array();
 
     /**
-     * Get the current link id
-     * @return integer link id
+     * Get the current connection.
+     * @return Connection resource id
      */
     function link_id()
     {
       return $this->m_link_id;
     }
     
+    /**
+     * Determine whether an error that occurred is a recoverable (user) error
+     * or a system error.
+     * @return String "user" or "system"
+     */
     function getErrorType()
     {
       if(in_array($this->m_errno,$this->m_user_error))
@@ -81,42 +202,55 @@
     }
     
     /*
-          * Get atk database error
-          */
+     * Get generic atk errorccode
+     * @return int One of the ATK DB_* codes.
+     */
     function getAtkDbErrno()
     {
       return $this->_translateError();
     }
     
-    /*
-          * Get real database error number
-          */
+    /**
+     * Get vendor-dependent database error number.
+     *
+     * Applications should not rely on this method, if they want to be
+     * database independent.
+     * @return mixed Database dependent error code.
+     */
     function getDbErrno()
     {
       return $this->m_errno;
     }
 
-    /*
-          * Get real database error 
-          */
+    /**
+     * Get vendor-dependent database error message.
+     *
+     * Applications should not rely on this method, if they want to be
+     * database independent.
+     * @return String Database dependent error message.
+     */
     function getDbError()
     {
       return $this->m_error;
     }
     
-    /*
-          * Set user error number for your own applications.
-          * When the user gets this error, it will show the feedback screen
-          */
+    /**
+     * Define custom user error codes. 
+     *
+     * Error codes passed to this method will be treated as recoverable user
+     * errors.
+     * @param mixed Vendor-dependent database error code
+     */
     function setUserError($errno)
     {
       atkdebug("atkdb::setUserError() -> ".$errno);
       $this->m_user_error[]=$errno;
     }
     
-    /*
-          * Get the translated error message
-          */
+    /**
+     * Get localized error message (for display in the application)
+     * @return String Error message
+     */
     function getErrorMsg()
     {
       $errno = $this->getAtkDbErrno(); 
@@ -147,6 +281,11 @@
       }
     }
     
+    /**
+     * If haltonerror is set, this will raise an atkerror. If not, it will
+     * place the error in atkdebug and continue.
+     * @access protected     
+     */
     function halt()
     {
       if ($this->m_haltonerror)
@@ -165,8 +304,8 @@
     }
 
     /**
-     * Get the current query id
-     * @return integer query id
+     * Get the current query statement resource id.
+     * @return Resource Query statement resource id.
      */
     function query_id()
     {
@@ -174,24 +313,25 @@
     }
     
     /**
-     * Connect to the database     
-     * @return connection identifier
+     * Connect to the database.
+     * @return int Connection status
+     * @abstract
      */
     function connect()
     {
-      return $this->m_link_id;
+      return DB_UNKNOWNERROR;
     }
 
     
     /**
-     * If possible, derived db-classes should implement this 
-     * function, which can be used to translate database
-     * specific errornumbers/errormessages to standardized
-     * ATK db error statusses.
+     * Translate database-vendor dependent error messages into an ATK generic
+     * error code.
      *
-     * If a class does not override this function, the default
-     * implementation will return DB_UNKNOWNERROR for any 
-     * error that occurs. 
+     * Derived classes should implement this method and translate their error
+     * codes.
+     * @access private
+     * @param mixed Vendor-dependent error code.
+     * @return int ATK error code
      */
     function _translateError($errno)
     {      
@@ -200,31 +340,41 @@
 
     /**
      * Disconnect from database
+     * @abstract
      */
     function disconnect()
     {
     }
 
     /**
-     * Commit
+     * Commit the current transaction.
+     * @abstract
      */
     function commit()
     {
     }
 
     /**
-     * Rollback
+     * Rollback the current transaction.
+     * @abstract
      */
     function rollback()
     {
     }
 
     /**
-     * Performs a query
-     * @param $query the query
-     * @param $offset offset in record list
-     * @param $limit maximum number of records
-     * @return true if successful
+     * Parse and execute a query.
+     *
+     * If the query is a select query, the rows can be retrieved using the
+     * next_record() method. 
+     *
+     * @param String $query The SQL query to execute
+     * @param int $offset Retrieve the results starting at the specified
+     *                    record number. Pass -1 or 0 to start at the first
+     *                    record.
+     * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
+     *                   retrieve all rows.
+     * @abstract
      */
     function query($query, $offset=-1, $limit=-1)
     {
@@ -232,8 +382,10 @@
     }
 
     /**
-     * Goto the next record in the result set
-     * @return result of going to the next record
+     * Retrieve the next record in the resultset.
+     * @return mixed An array containing the record, or 0 if there are no more
+     *               records to retrieve.
+     * @abstract
      */
     function next_record()
     {
@@ -241,10 +393,12 @@
     }
  
     /**
-     * Lock a certain table in the database 
-     * @param $table the table name
-     * @param $mode the type of locking
-     * @return result of locking
+     * Lock a table in the database.
+     *
+     * @param String $table The name of the table to lock.
+     * @param String $mode The lock type. 
+     * @return boolean True if succesful, false if not.
+     * @abstract
      */
     function lock($table, $mode="write")
     {
@@ -252,8 +406,10 @@
     }
   
     /**
-     * Unlock table(s) in the database 
-     * @return result of unlocking
+     * Relieve all locks. 
+     *
+     * @return boolean True if succesful, false if not.
+     * @abstract
      */
     function unlock()
     {
@@ -261,27 +417,34 @@
     }
 
     /**
-     * Evaluate the result; which rows were
-     * affected by the query.
-     * @return affected rows
-     */  
+     * Retrieve the number of rows affected by the last query.
+     *
+     * After calling query() to perform an update statement, this method will
+     * return the number of rows that was updated.
+     *
+     * @return int The number of affected rows
+     * @abstract
+     */
     function affected_rows()
     {
       return array();
     }    
 
     /**
-     * Get the next sequence number
-     * of a certain sequence.
-     * @param $sequence the sequence name
-     * @return the next sequence id
+     * Get the next sequence number of a certain sequence.
+     *
+     * If the sequence does not exist, it is created automatically. 
+     *
+     * @param $sequence The sequence name
+     * @return int The next sequence value
+     * @abstract
      */
     function nextid($sequence)
     {
     }
 
     /**
-     * Return the meta data of a certain table
+     * Return the meta data of a certain table HIE GEBLEVEN
      *
      * depending on $full, metadata returns the following values:
      *  -full is false (default):

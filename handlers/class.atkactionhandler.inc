@@ -96,7 +96,7 @@
     /**
      * Get the ui instance for drawing and templating purposes.
      *
-     * @return atkUi an atkUi instance for drawing and templating.
+     * @return atkUi An atkUi instance for drawing and templating.
      */
     function &getUi()
     {          

@@ -141,6 +141,7 @@
         atkdebug("OCICommit");
         OCICommit($this->m_link_id);
       }    
+      return true;
     }
 
     /*
@@ -153,6 +154,7 @@
         atkdebug("OCIRollback");
         OCIRollback($this->m_link_id);
       }
+      return true;
     }
 
     /**
