@@ -192,13 +192,14 @@ class atkTheme
   
   /**
   * Returns full path for themed icon file, interface to the getAttribute function
-  * @param string $icon the icon name
-  * @param string $type the icon type (example: "recordlist")
+  * @param string $icon      the icon name (no extension)
+  * @param string $type      the icon type (example: "recordlist")
+  * @param string $extension the icon extension, defaults to .gif
   * @return string the full path of the icon file
   */
-  function iconPath($icon, $type)
+  function iconPath($icon, $type, $extension=".gif")
   {
-    return $this->getAttribute($type."_icons", $icon, "/icons/$type/$icon.gif","icons/$type/$icon.gif");
+    return $this->getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension,"icons/$type/$icon".$extension);
   }
     
   /**
