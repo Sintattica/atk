@@ -95,6 +95,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.64  2001/06/27 09:35:32  peter
+   * Fixed bug with searching and browsing through records which sometimes
+   * prevented ATK from showing search results.
+   *
    * Revision 4.63  2001/06/26 07:36:52  martin
    * number of posts to dispatch.php changed to phpself.
    *
@@ -1354,7 +1358,7 @@
      */
     function adminPage()
     {
-      global $g_securityManager, $g_layout, $PHP_SELF;
+      global $g_securityManager, $g_layout, $PHP_SELF, $atksearch;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
       $g_layout->output($this->stackTrace());
@@ -1369,7 +1373,7 @@
       // pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
 
-      if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
 
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
 
