@@ -141,19 +141,19 @@
 
         // check previous sessions.. 
         if (atkconfig("authentication_cookie"))
-        {
+        {          
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
           $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));          
-          list($user, $passwd) = split("\.",base64_decode($HTTP_COOKIE_VARS[$cookiename]));          
-       
+          list($enc, $user, $passwd) = split("\.",base64_decode($HTTP_COOKIE_VARS[$cookiename]));          
+                     
           // for security reasons administrator will never be cookied..
           if ($PHP_AUTH_USER=="" && $user!="" && $user!="administrator")
           {        
             atkdebug("Using cookie to retrieve previously used userid/password");          
             $PHP_AUTH_USER = $user;
             $PHP_AUTH_PW = $passwd;
-            $md5 = true; // cookie is already md5;
+            $md5 = ($enc=="MD5"); // cookie may already be md5;
           }
         }              
                           
@@ -203,10 +203,35 @@
             // Remember that we are logged in..
             //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
 
-            // write cookie
+            // write cookie            
             if (atkconfig("authentication_cookie")&&$PHP_AUTH_USER!="administrator")
-            {
-              setcookie($cookiename,base64_encode($PHP_AUTH_USER.".".$PHP_AUTH_PW), time()+60*(atkconfig("authentication_cookie_expire")));
+            {                           
+              // if the authentication scheme supports md5 passwords, we can safely store
+              // the password as md5 in the cookie.
+              if ($md5) // Password is already md5 encoded
+              {
+                $tmppw = $PHP_AUTH_PW;
+                $enc = "MD5";
+              }
+              else // password is not md5 encoded
+              {
+                if ($this->m_authentication[$authname]->canMd5()) // we can encode it
+                {
+                  $tmppw = md5($PHP_AUTH_PW);
+                  $enc = "MD5";
+                }
+                else // authentication scheme does not support md5 encoding.
+                     // our only choice is to store the password plain text 
+                     // :-(
+                     // NOTE: If you use a non-md5 enabled authentication 
+                     // scheme then, for security reasons, you shouldn't use 
+                     // $config_authentication_cookie at all.
+                {
+                  $tmppw = $PHP_AUTH_PW;
+                  $enc = "PLAIN";
+                }
+              }
+              setcookie($cookiename,base64_encode($enc.".".$PHP_AUTH_USER.".".$tmppw), time()+60*(atkconfig("authentication_cookie_expire")));
             }
           }
           else
