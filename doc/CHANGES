@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.0.7
 --------------------
++ now openssl encryption possible for the atkSecureRelation [Mark]
 + atkFuzzySearchAttribute ported from Achievo to ATK [Boy]
 + Added AF_NO_TRANSLATION flag to listattribute, this will prevent
   the options from being automatically translated [Boy]
