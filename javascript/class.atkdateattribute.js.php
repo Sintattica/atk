@@ -18,6 +18,11 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.9  2001/07/24 08:05:48  ivo
+   * config.inc.php was included without including atkconfigtools.inc. This lead
+   * to php errors in the javascript when functions from atkconfigtools.inc are
+   * used.
+   *
    * Revision 4.8  2001/07/15 17:03:59  ivo
    * New feature: Alphabetical index on top of recordlists.
    * (use e.g. $this->setIndex("name"); in your class constructor to activate)
@@ -51,6 +56,7 @@
   
   /* change dir for includes */
   chdir("../../");
+  include_once($config_atkroot."atk/atkconfigtools.inc");
   include_once($config_atkroot."atk/defaultconfig.inc.php");
   include_once($config_atkroot."config.inc.php");
   include_once($config_atkroot."atk/atktools.inc");
