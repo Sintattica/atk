@@ -336,9 +336,10 @@
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
+     * @param String $mode The mode we're in ('add' or 'edit')
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
@@ -480,11 +481,11 @@
         $funcname = $this->m_name."_display";
         if (method_exists($this->m_ownerInstance, $funcname))
         {
-          $result.= $this->m_ownerInstance->$funcname($defaults, "view");
+          $result.= $this->m_ownerInstance->$funcname($defaults, $mode);
         }
         else 
         {
-          $result.= $this->display($defaults, "view");
+          $result.= $this->display($defaults, $mode);
         }
       }
       /* normal */
@@ -657,10 +658,11 @@
      *
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list" 
-     *                     for displaying in recordlists). The regular
-     *                     atkAttribute does not use this parameter, but
-     *                     derived attributes may use it to distinguish
-     *                     between the two display modes.
+     *                     for displaying in recordlists, "edit" for
+     *                     displaying in editscreens, "add" for displaying in 
+     *                     add screens. The regular atkAttribute does not use
+     *                     this parameter, but derived attributes may use it
+     *                     to distinguish between display modes.
      * @return String HTML String 
      */
     function display($record, $mode="")

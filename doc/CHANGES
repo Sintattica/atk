@@ -44,6 +44,7 @@ Changes in ATK 5.0.5
 * Fixed a reference copy bug. (bug #350) [Yuri]
 * atkOneToOne's AF_ONETOONE_INTEGRATE integrates columns in recordlists. 
   (bug #346) [Ivo]
+* <attribute>_display overrides get passed the right $mode. (bug #339) [Ivo]
 
 Changes in ATK 5.0.4
 --------------------
