@@ -131,7 +131,7 @@
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->addAttribute(new atkAttribute("name",AF_OBLIGATORY, 30));
+     *        $this->add(new atkAttribute("name",AF_OBLIGATORY, 30));
      *
      * @param $name  Name of the attribute
      * @param $flags Flags for the attribute

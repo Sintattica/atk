@@ -128,7 +128,7 @@
      * Constructor
      *
      * <b>Example:</b>
-     * $this->addAttribute(new atkColorPickerAttribute("naam",Array,AF_OBLIGATORY|AF_POPUP));
+     * $this->add(new atkColorPickerAttribute("naam",Array,AF_OBLIGATORY|AF_POPUP));
      * @param $name Name of the attribute
      * @param $array   Array with max. 12 user defined colors 
      * @param $flags Flags for the attribute

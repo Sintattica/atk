@@ -17,6 +17,9 @@
       $node = &$this->m_node;
       $page = &$this->getPage();
             
+      // Utility.
+      $edithandler = &$node->getHandler("edit");
+      
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
       $page->register_loadscript("init_nav();");
@@ -37,7 +40,7 @@
       if (is_object($ui))
       {        
         $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
-        $form = $node->editForm("add",$record,$forceList);                      
+        $form = $edithandler->editForm("add",$record,$forceList);                      
         
         $params["content"] = $node->tabulate("add", $form);                
                     

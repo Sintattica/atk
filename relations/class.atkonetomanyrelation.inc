@@ -83,7 +83,8 @@
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
-            $result = $this->m_destInstance->normalRecordList($myrecords, $actions, RL_NO_SORT|RL_NO_SEARCH, $this->m_refKey)."<br>";
+            $recordlist = &atknew("atk.recordlist.atkrecordlist");
+            $result = $recordlist->render($this->m_destInstance, $myrecords, $actions, RL_NO_SORT|RL_NO_SEARCH, $this->m_refKey)."<br>";
           }
         }
       }
@@ -122,10 +123,11 @@
                     
           $actions = $this->m_destInstance->defaultActions("relation", $params);   
 
+          $recordlist = &atknew("atk.recordlist.atkrecordlist");          
           $flags = RL_EMBED;
           $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
-          $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;
-          $output.=$this->m_destInstance->normalRecordList($myrecords, $actions, $flags, $this->m_refKey, "entryform");
+          $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;          
+          $output.=$recordlist->render($this->m_destInstance, $myrecords, $actions, $flags, $this->m_refKey, "entryform");
           
         }
         if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))

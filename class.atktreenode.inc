@@ -19,6 +19,10 @@
    */
   include_once(atkconfig("atkroot")."atk/atktreetools.inc");
   
+  define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
+  define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied
+  define("NF_TREE_NO_ROOT_ADD", NF_SPECIFIC_3); // No root elements can be added
+  
   global $g_maxlevel;
   $g_maxlevel = 0;
   

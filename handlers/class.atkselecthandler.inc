@@ -45,17 +45,19 @@
         
         $params["header"] = text("title_select", $node->m_type);
 
+        $navigator = &atknew("atk.utils.atknavigator");
         if ($node->m_index != "") 
         {
-          $params["index"] = $node->buildIndex($recordset[0][$node->m_index]);
+          $params["index"] = $navigator->buildIndex($node, $recordset[0][$node->m_index]);
         }
 
-        // create navigation bar
-        $params["navbar"] = $node->buildNavigation("select");        
+        // create navigation bar        
+        $params["navbar"] = $navigator->buildNavigation($node, "select");        
 
         $actions["select"]=atkurldecode($node->m_postvars['atktarget']);
 
-        $params["list"] = $node->normalRecordList($recordset, $actions);
+        $recordlist = &atknew("atk.recordlist.atkrecordlist");
+        $params["list"] = $recordlist->render($node, $recordset, $actions);
         
         $output = $ui->renderList("select", $params);
         

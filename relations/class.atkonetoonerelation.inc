@@ -71,7 +71,8 @@
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
-            $result = $this->m_destInstance->normalRecordList(array($myrecord), $actions, RL_NO_SEARCH|RL_NO_SORT, array($this->m_refKey))."<br>";
+            $recordlist = &atknew("atk.recordlist.atkrecordlist");
+            $result = $recordlist->render($this->m_destInstance, array($myrecord), $actions, RL_NO_SEARCH|RL_NO_SORT, array($this->m_refKey))."<br>";
           }
         }
       }

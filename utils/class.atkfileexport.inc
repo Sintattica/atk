@@ -1,6 +1,6 @@
 <?php
 
-  class atkfileexport
+  class atkFileExport
   {
    /**
     * export2file   exporteert data naar een file

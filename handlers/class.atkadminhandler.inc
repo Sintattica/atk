@@ -88,11 +88,12 @@
         }
 
         // create index and navigation bar
+        $navigator = &atknew("atk.utils.atknavigator");
         if ($node->m_index != "") 
         {
-          $params["index"] = $node->buildIndex($recordset[0][$node->m_index]);
-        }
-        $params["navbar"] = $node->buildNavigation("admin");
+          $params["index"] = $navigator->buildIndex($node, $recordset[0][$node->m_index]);
+        }        
+        $params["navbar"] = $navigator->buildNavigation($node, "admin");
         
         if(!is_array($actions))
         {
@@ -100,7 +101,8 @@
         }
 
         $flags = ($node->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node->hasFlag(NF_LOCK) ? RL_LOCK : 0);
-        $params["list"] = $node->normalRecordList($recordset, $actions, $flags);
+        $recordlist = &atknew("atk.recordlist.atkrecordlist");
+        $params["list"] = $recordlist->render($node, $recordset, $actions, $flags);
  
         $params["footer"] = $this->invoke("adminFooter");
         

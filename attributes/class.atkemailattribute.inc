@@ -23,7 +23,7 @@
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->addAttribute(new atkEmailAttribute("email",AF_OBLIGATORY));
+     *        $this->add(new atkEmailAttribute("email",AF_OBLIGATORY));
      * @param $name Name of the attribute
      * @param $search Search DNS for MX records in validate function
      * @param $flags Flags for the attribute
