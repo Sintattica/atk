@@ -8,6 +8,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.3  2001/05/11 14:59:56  ivo
    * Fixed serious bug in onetoone relation that could overwrite records in a
    * table..
@@ -78,7 +82,7 @@
      */
     function edit($record="", $fieldprefix="")
     {        
-      $GLOBALS['g_layout']->debug("edit called for ".$this->fieldName());
+      atkdebug("edit called for ".$this->fieldName());
       
       $this->createDestination();
       

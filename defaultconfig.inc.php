@@ -42,6 +42,9 @@
   $config_administratorpassword = "";
 
   // Module path (without trailing slash!)
-  $config_module_path = "./modules"
+  $config_module_path = "./modules";
+  
+  // Automatic error reporting is turned off by default.
+  $config_mailreport = "";
 
 ?>

@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.10  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.9  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -172,7 +176,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      $GLOBALS['g_layout']->debug("edit called for ".$this->fieldName());
+      atkdebug("edit called for ".$this->fieldName());
 
       $this->createDestination();      
 
@@ -239,7 +243,7 @@
      */
     function load($notused, $record)
     {
-      $GLOBALS['g_layout']->debug("load called for ".$this->m_name);
+      atkdebug("load called for ".$this->m_name);
       $this->createDestination();
       
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            

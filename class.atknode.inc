@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.30  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.29  2001/05/11 15:24:54  peter
    * Some updates for the module support and some other things...
    *
@@ -377,8 +381,7 @@
   $g_theme = array();
   // Global array to store meta-information about tables, so we don't have to read them from the db for each class instance.
   $g_tableMeta = array();
-  // Global debug msg
-  $g_debug_msg = "";
+  
   // Global node list
   $g_nodes = array();
   // Global module list

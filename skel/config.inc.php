@@ -103,5 +103,12 @@
   // 1 - Print some debug information at the bottom of each screen
   // 2 - Print debug information, and pause before redirects
   $config_debug = 0;
+  
+  // The automatic error reporter
+  // Error reports are sent to the given email address.
+  // If you set this to "", error reporting will be turned off.
+  // WARNING: DO NOT LEAVE THIS TO THE DEFAULT ADDRESS OR PREPARE TO BE
+  // SEVERELY FLAMED!  
+  $config_mailreport = "ivo@ibuildings.net";
 
 ?>

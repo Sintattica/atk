@@ -11,6 +11,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.1  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -322,22 +326,7 @@
       /* return result */
       return $result;
     }
-
-    /**
-     * error handling
-     */
-    function halt($message)
-    {
-      /* no reporting */
-      if ($this->m_halt_on_error = "no") return;
-
-      /* print error */
-      echo "</td></tr></table><b>Database error:</b> %s<br>\n", $message;
-      echo "<b>Oracle Error</b>: ".$this->m_errno." (".$this->m_error.")<br>\n";
-
-      /* not only report but also quit? */
-      if ($this->m_halt_on_error != "report") die();
-    }
+    
   }
 
 ?>

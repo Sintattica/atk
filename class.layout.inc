@@ -21,6 +21,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.5  2001/05/14 10:20:19  ivo
+  * Improved error reporting when database queries fail.
+  * New feature: atk can now send a detailed error report by email.
+  *
   * Revision 4.4  2001/05/11 15:24:54  peter
   * Some updates for the module support and some other things...
   *
@@ -96,6 +100,10 @@
   * Achievo Tool Kit
   *
   */
+  
+  // Global debug and error msg
+  $g_debug_msg = array();
+  $g_error_msg = array();
 
   class layout
   {       
@@ -103,12 +111,7 @@
      * Content
      */
     var $m_content = "";
-
-    /**
-     * Debug message
-     */
-    var $m_debugmsg = "";
-
+  
     /**
      * Raw
      */
@@ -171,7 +174,7 @@
      */
     function outputFlush()
     {
-      global $g_debug_msg;
+      global $g_debug_msg, $g_error_msg;
       if (strlen($this->m_raw)>0)
       {
         echo $this->m_raw;
@@ -179,9 +182,15 @@
       else
       {
         echo $this->m_content;
+        if (count($g_error_msg)>0)
+        {
+          echo '<br><font color="#FF0000">error: '.implode("<br>\nerror: ",$g_error_msg).'</font>';
+          // also send a mail report with errormessages.. 
+          mailreport();
+        }
         if ($GLOBALS['config_debug'])
         {
-          echo '<br>'.$g_debug_msg;
+          echo '<br>dbg: '.implode("<br>\ndbg: ",$g_debug_msg);
         }
       }
     }
@@ -200,19 +209,6 @@
       // hele pagina terug in de output schrijven..
       $this->m_content = $m_page;
     }
-
-    /**
-     * Generate Debug messages 
-     */
-    function debug($txt)
-    {
-      global $g_debug_msg;
-      if ($GLOBALS['config_debug'])
-      {
-        $g_debug_msg.= "dbg: ".$txt."<br>\n";
-      }
-    }
-
 
     /**
      * Error report 

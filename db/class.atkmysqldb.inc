@@ -11,6 +11,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.2  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -295,7 +299,7 @@
       
       /* list fields */
       $id = @mysql_list_fields($this->m_database, $table);
-      if (!$id) $this->halt("Metadata query failed.");
+      if (!$id) atkdebug("Metadata query failed.");
 
       /* count fields */
       $count = @mysql_num_fields($id);
@@ -338,22 +342,7 @@
       /* return result */
       return $result;
     }
-
-    /**
-     * error handling
-     */
-    function halt($message)
-    {
-      /* no reporting */
-      if ($this->m_halt_on_error = "no") return;
-
-      /* print error */
-      echo "</td></tr></table><b>Database error:</b> %s<br>\n", $message;
-      echo "<b>MySQL Error</b>: ".$this->m_errno." (".$this->m_error.")<br>\n";
-
-      /* not only report but also quit? */
-      if ($this->m_halt_on_error != "report") die();
-    }
+    
   }  
   
 ?>

@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.6  2001/05/14 10:20:19  ivo
+  * Improved error reporting when database queries fail.
+  * New feature: atk can now send a detailed error report by email.
+  *
   * Revision 4.5  2001/05/11 09:03:12  ivo
   * fixed an internetexplorer single/doublequote javascript issue.
   *
@@ -66,9 +70,8 @@
   * Halts on critical errors and also on warnings if specified in the config file.
   *
   */
-  function halt($msg,$level) 
+  function halt($msg,$level="warning") 
   {
-    global $g_debug_msg;
     if ($level == $GLOBALS['config_halt_on_error']||$level == "critical")
     {
       if($level == "warning")  
@@ -87,10 +90,8 @@
       die("<b>Halted.</b>"); 
     }
     else
-    {
-      if($level=="warning") { $prefix="warning:"; } else { $prefix="dbg:"; }
-      $g_debug_msg.="$prefix $msg <br>\n";
-      //$g_debug_msg.=$GLOBALS['config_halt_on_error'];
+    {      
+      atkerror("$msg");
     }
     return false;
   }
@@ -104,7 +105,20 @@
   function atkdebug($txt)
   {
      global $g_debug_msg;
-     $g_debug_msg.="dbg: $txt <br>\n";
+     $g_debug_msg[]=$txt;
+  }
+  
+  /**
+   * Like atkdebug, this displays a message at the bottom of the screen.
+   * The difference is, that this is also displayed when debugging is turned
+   * off.
+   *
+   * If errorreporting by email is turned on, the errormessages are also mailed
+   */
+  function atkerror($txt)
+  {
+    global $g_error_msg;
+    $g_error_msg[]=$txt;
   }
   
   /**
@@ -548,6 +562,51 @@
       }
     }
     return $string;
+  }
+  
+  /**
+   * Sent a detailed error report to the maintainer.
+   */
+  function mailreport()
+  {
+    global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS, $HTTP_GET_VARS, $txt_app_title;
+    if ($config_mailreport!="") // only if enabled..
+    {
+      $subject = "Error report from $txt_app_title";
+      $from = $txt_app_title;
+      
+      $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
+      $body.= "\nThe errormessage was:\n\n".implode("\n",$g_error_msg)."\n";
+      $body.= "\nA detailed report follows:\n";
+      $body.= "\nPHP Version: ".phpversion()."\n\n";
+      
+      $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
+      $body.= implode("\n",$g_debug_msg);
+      
+      $body.= "\n\nHTTP_GET_VARS\n".str_repeat("-",70)."\n";
+      foreach ($HTTP_GET_VARS as $key=>$value)
+      {        
+        $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";        
+      }        
+      
+      $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
+      foreach ($GLOBALS as $key=>$value)
+      {
+        if (substr($key,0,7)=="config_")
+        {
+          $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+        }
+      }                  
+      
+      $body.= "\n\nSERVER INFORMATION\n".str_repeat("-",70)."\n";
+      
+      foreach ($HTTP_SERVER_VARS as $key=>$value)
+      {        
+        $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = $value\n";
+      }
+      
+      mail($config_mailreport,$subject,$body,"From: $from <atkinfo@ibuildings.nl>");
+    }
   }
 
 ?>

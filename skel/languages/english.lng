@@ -1,7 +1,8 @@
-<?
- // Menu Items
- $txt_title_test_attributes = "Test attributes";
- $txt_title_test            = "Test";
+<?php
+  $txt_app_title = "Application name";
 
+  // Menu Items
+  $txt_title_test_attributes = "Test attributes";
+  $txt_title_test            = "Test";
 
 ?>

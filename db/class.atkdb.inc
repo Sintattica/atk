@@ -5,6 +5,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/14 10:20:19  ivo
+   * Improved error reporting when database queries fail.
+   * New feature: atk can now send a detailed error report by email.
+   *
    * Revision 4.1  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -52,11 +56,7 @@
 
     /* sequence table */
     var $m_seq_table = "db_sequence";  
-    
-    /* "yes" (halt with message), "no" (ignore errors quietly),
-       "report" (ignore errror, but spit a warning) */
-    var $m_halt_on_error = "no"; 
-    
+            
     /* set to 1 for automatic freeing of results */    
     var $m_auto_free = 0;
     
@@ -82,6 +82,13 @@
         return $this->m_error." (errno: ".$this->m_errno.")"; 
       }
       return "";
+    }
+    
+    function halt($message)
+    {
+      $dbmsg = $this->getError();
+      if ($dbmsg!="") atkerror($dbmsg);
+      halt($message);
     }
 
     /**
@@ -277,15 +284,7 @@
       */
     
       return array();
-    }
-
-    /**
-     * error handling
-     */
-    function halt($message)
-    {
-      if ($this->m_halt_on_error) die();
-    }
+    }   
 
     /**
      * Return the available table names
