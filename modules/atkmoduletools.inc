@@ -61,7 +61,10 @@
         $g_nodeRepository[$node]->m_module = getNodeModule($node);
       }
     } 
-    atkdebug("Returning node instance - $node");
+    else
+    {
+      atkdebug("Returning cached node instance - $node");
+    }
     return $g_nodeRepository[$node];    
   }
   
@@ -88,7 +91,10 @@
       }
       $g_moduleRepository[$modname] = $mod;
     }     
-    atkdebug("Returning module instance - $modname");
+    else
+    {
+      atkdebug("Returning cached module instance - $modname");
+    }
     return $g_moduleRepository[$modname];    
   }
   

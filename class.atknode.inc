@@ -1,4 +1,5 @@
 <?php    
+
   // Define some flags for nodes. Use the constructor of the atkNode
   // class to set the flags. (concatenate multiple flags with '|')
 
@@ -359,10 +360,7 @@
      * @param $flags The flags for the node
      */
     function atkNode($type, $flags=0)
-    {
-      global $g_layout;
-
-      atkdebug('atkNode::atkNode('.$type.')');
+    {       
       $this->m_type = $type;
       $this->m_flags = $flags;      
     }
@@ -533,8 +531,6 @@
     */
     function setOrder($fields)
     {
-      atkdebug('atkNode::setOrder('.$fields.')');
-
       $this->m_default_order = $fields;
     }
 
@@ -1997,8 +1993,7 @@
     function init()
     {
       global $g_modifiers;  
-    
-      atkdebug($this->m_type."::init()");
+        
       // Check if initialisation is not already done.
       if ($this->m_initialised == true) return;
       
@@ -2023,8 +2018,7 @@
           $mod->$modifiername(&$this);
         }
       }
-      
-      
+        
       // Read metainformation from the database.
       $this->tableMeta();
       
@@ -2715,7 +2709,7 @@
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="")
     {      
       global $g_db;      
-      
+          
       $this->m_records = array();
       $selectlist = array();
       $loadlist = array();
