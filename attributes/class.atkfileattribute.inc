@@ -212,6 +212,7 @@
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {   
         // if no new file has been uploaded..    
+
         if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         { 
            // No file to upload, then check if the select box is filled
@@ -219,6 +220,7 @@
           {
             ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
             $result = array("tmpfile"=>"",
+
                           "filename"=>$filename,
                           "filesize"=>0,
                           "orgfilename"=>$filename);

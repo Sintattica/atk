@@ -137,17 +137,22 @@
           $output.=$GLOBALS['g_layout']->ret_td($cell);
           $output.="</tr>";
         }
-
         if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
         {
           //$strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
           //echo $record["atkprimkey"];
-          // we need to set the filter of the record we are going to add. The referential key must
-          // be set to the value of the current primary key. However, the current primary key
-          // contains the table name and a dot. So we strip that.
-          list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
-          $strfilter = $this->m_refKey.".".$refkeyvalue;
-
+          if ($this->destinationHasRelation())
+          {
+            // we need to set the filter of the record we are going to add. The referential key must
+            // be set to the value of the current primary key. However, the current primary key
+            // contains the table name and a dot. So we strip that.
+            list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
+            $strfilter = $this->m_refKey.".".$refkeyvalue;
+          }
+          else
+          {
+            $strfilter = $this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()];
+          }
           if ($this->m_destinationFilter!="")
           {
             $strfilter.=' AND '.$this->m_destinationFilter;
@@ -221,7 +226,7 @@
       else
       {
         if ($this->createDestination())
-	      {
+        {
           if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
 
           $key = decodeKeyValueSet($record["atkprimkey"]);
@@ -288,15 +293,21 @@
         if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
         {
           if ($this->createDestination())
-	        {
+          {
             for ($i=0;$i<count($onetomanyrecs);$i++)
             {
               // the referential key of the onetomanyrecs could be wrong, if we
               // are called for example from a copy function. So just in case,
               // we reset the correct key.
               $onetomanyrecs[$i][$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-  
+
+              if(!$this->destinationHasRelation())
+              {
+                atkdebug("hmm.. there's no relation back. fixing the value of refKey...");
+                $onetomanyrecs[$i][$this->m_refKey] = $record[$this->m_ownerInstance->primaryKeyField()];
+              }  
               $this->m_destInstance->addDb($onetomanyrecs[$i], true, $mode);
+
             }
           }
         }
@@ -307,6 +318,20 @@
     {    
       //Nothing to hide..
       return "";
+    }
+
+    /**
+    * Check if destination node has a relation to this node, or a 'regular'
+    * atkattribute to store it's referential key.
+    */
+    function destinationHasRelation()
+    {
+      if ($this->createDestination())
+      {
+        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];
+        if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
+      }
+      return false;
     }
   }
 ?>

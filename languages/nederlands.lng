@@ -182,10 +182,10 @@
   $txt_auth_max_loginattempts_exceeded = "Teveel pogingen. Inloggen is geblokkeerd. Neem contact op met uw systeembeheerder.";
   $txt_auth_mismatch = "Gebruikernaam en/of wachtwoord zijn niet juist. Probeert u het opnieuw.";
   $txt_auth_account_locked = "Dit account is vergrendeld. Probeer indien mogelijk een ander account, of neem contact op met uw systeembeheerder.";
-                    
+
   $txt_wysiwyg_fontface = "Lettertype";
   $txt_wysiwyg_fontsize = "Pt";
-  
+
   $txt_wysiwyg_insert_table = "Tabel invoegen";
   $txt_wysiwyg_insert_row = "Rij invoegen";
   $txt_wysiwyg_insert_col = "Kolom invoegen";
@@ -195,13 +195,13 @@
   $txt_wysiwyg_delete_cell = "Cel verwijderen";
   $txt_wysiwyg_merge_cell = "Cellen samenvoegen";
   $txt_wysiwyg_split_cell = "Cellen splitsen";
-  
+
   $txt_lock_locked  = "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.";
 
   $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".
                       "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
                       "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
-                      
+
   $txt_feedback_delete_success = "Het item is verwijderd.";
   $txt_feedback_delete_cancelled = "Het item is niet verwijderd.";
   $txt_feedback_delete_failed = "Het item kon niet verwijderd worden.";
@@ -210,16 +210,18 @@
   $txt_feedback_save_failed = "Het item kon niet toegevoegd worden.";
   $txt_feedback_update_success = "De wijzigingen zijn opgeslagen.";
   $txt_feedback_update_cancelled = "Geen wijzigingen opgeslagen.";
-  $txt_feedback_update_failed = "De wijzigingen konden niet opgeslagen worden.";  
+  $txt_feedback_update_failed = "De wijzigingen konden niet opgeslagen worden.";
   $txt_feedback = "Bevestiging";
-  
+
   $txt_error_date_invalid = "Ongeldige datum";
   
   $txt_access_denied = "Toegang geweigerd";
   $txt_error_node_action_access_denied = "Sorry, u heeft geen toestemming om deze bewerking uit te voeren.";
 
   $txt_export = "Exporteren";
+  $txt_error_fileexists = "Bestand bestaat al op de server. Verander de naam van het bestand";
 
   $txt_date_format_edit = "l j F Y";
   $txt_date_format_view = "l j F Y";
+
 ?>
