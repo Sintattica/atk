@@ -626,7 +626,7 @@
           $ttip = "txt_".$node->m_type."_".$field["name"]."_tooltip";
           if ($GLOBALS[$ttip] != "")
           {
-            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascript:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
+            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascript:alert(\''.addslashes($GLOBALS[$ttip]).'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
           }
 
           $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
