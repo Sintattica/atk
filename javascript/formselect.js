@@ -1,12 +1,13 @@
 /**
  * Updates the selection of select boxes for the record list form.
  * @param name unique recordlist name
+ * @param form reference to the form object
  * @param type "all", "none" or "invert"
  */
-function updateSelection(name, type)
+function updateSelection(name, form, type)
 {
   /* get selectors */
-  var list = document.entryform.elements[name + '_atkselector[]'];
+  var list = form.elements[name + '_atkselector[]'];
 
   /* no selectors?! impossible situation, bail out! */
   if (typeof(list) == 'undefined') return;
@@ -25,18 +26,19 @@ function updateSelection(name, type)
  * Disables / enables checkboxes depending if the record supports
  * a certain action or not.
  * @param name unique recordlist name
+ * @param form reference to the form object
  */
-function updateSelectable(name)
+function updateSelectable(name, form)
 {
   /* get selectors */
-  var list = document.entryform.elements[name + '_atkselector[]'];
+  var list = form.elements[name + '_atkselector[]'];
 
   /* no selectors?! impossible situation, bail out! */
   if (typeof(list) == 'undefined') return;
 
   /* some stuff we need to know */
-  var index  = document.entryform.elements[name + '_atkaction'].selectedIndex;
-  var action = document.entryform.elements[name + '_atkaction'][index].value;
+  var index  = form.elements[name + '_atkaction'].selectedIndex;
+  var action = form.elements[name + '_atkaction'][index].value;
 
   /* walk through list */
   if (typeof(list.length) == 'undefined') list = new Array(list);
@@ -63,20 +65,21 @@ function updateSelectable(name)
  * This method uses the atkescape option to redirect the multi-record action to a level higher
  * on the session stack, which makes it possible to return to the edit form (saving updated values!)
  * @param name unique recordlist name
+ * @param form reference to the form object
  * @param target where do we escape to?
  */
-function atkSubmitMRA(name, target)
+function atkSubmitMRA(name, form, target)
 {
   /* some stuff we need to know */
-  var atknodetype = document.entryform.elements[name + '_atknodetype'].value;
-  var index  = document.entryform.elements[name + '_atkaction'].selectedIndex;
-  var atkaction = document.entryform.elements[name + '_atkaction'][index].value;
+  var atknodetype = form.elements[name + '_atknodetype'].value;
+  var index  = form.elements[name + '_atkaction'].selectedIndex;
+  var atkaction = form.elements[name + '_atkaction'][index].value;
 
   /* initial target URL */
   target += 'atknodetype=' + atknodetype + '&atkaction=' + atkaction;
 
   /* get selectors */
-  var list = document.entryform.elements[name + '_atkselector[]'];
+  var list = form.elements[name + '_atkselector[]'];
 
   /* no selectors?! impossible situation, bail out! */
   if (typeof(list) == 'undefined') return;
@@ -94,8 +97,8 @@ function atkSubmitMRA(name, target)
   /* change atkescape value and submit form */
   if (selectorLength > 0)
   {
-    document.entryform.atkescape.value = target;
-    globalSubmit(document.entryform);
-    document.entryform.submit();
+    form.atkescape.value = target;
+    globalSubmit(form);
+    form.submit();
   }
 }

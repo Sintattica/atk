@@ -1319,7 +1319,7 @@
         $multiActions  = (!$this->hasFlag(NF_NO_DELETE) ? array("delete") : array());
         $this->recordActions($recordset[$i], $recordActions, $multiActions);
         $recordset[$i]["_record_actions_"]["normal"] = $recordActions;
-        $recordset[$i]["_record_actions_"]["multi"]  = $multiActions;
+        $recordset[$i]["_record_actions_"]["multi"]  = array_unique($multiActions);
         $multiActionsAll = array_merge($multiActionsAll, $multiActions);
       }
 
@@ -1327,6 +1327,15 @@
       $multiActionsAll = array_unique($multiActionsAll);
       $multi_record_actions = (($this->m_action == "admin" || $sessionsave) &&
                                $this->hasFlag(NF_MULTI_RECORD_ACTIONS) && count($multiActionsAll) > 0);
+
+      // form name / list name
+      if ($multi_record_actions)
+      {
+        $id = getUniqueID("recordList");
+        $listName = "atkrl_".$id;
+        if ($sessionsave) $formName = "entryform"; // embedded
+        else $formName = 'selectForm_'.$id; // our own form
+      }
 
       // display a headerrow with titles. each attributetitle is clickable to
       // sort the list by that attribute.
@@ -1481,12 +1490,10 @@
       // multi-record-actions --> selection form
       if ($multi_record_actions)
       {
-        $listName = "atkrl_".getUniqueID("recordList");
-
         // we only add the form tag if it doesn't exist already
         if (!$sessionsave)
         {
-          $output .= '<form name="entryform" method="post">'.
+          $output .= '<form name="'.$formName.'" method="post">'.
                      session_form(SESSION_NESTED).
                      '<input type="hidden" name="atkescape">';
         }
@@ -1579,10 +1586,17 @@
         if ($multi_record_actions)
         {
           $multiActions = &$recordset[$i]["_record_actions_"]["multi"];
-          $output .= '<td>'.
-                     '  <input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($pk).'" onclick="if (this.disabled) this.checked = false">'.
-                     '  <script language="javascript">'.$listName.'["'.rawurlencode($pk).'"] = new Array("'.implode($multiActions, '","').'");</script>'.
-                     '</td>';
+          if (count($multiActions) > 0)
+          {
+            $output .= '<td>'.
+                       '  <input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($pk).'" onclick="if (this.disabled) this.checked = false">'.
+                       '  <script language="javascript">'.$listName.'["'.rawurlencode($pk).'"] = new Array("'.implode($multiActions, '","').'");</script>'.
+                       '</td>';
+          }
+          else
+          {
+            $output .= '<td>&nbsp;</td>';
+          }
         }
 
         for($r=0;$r<(count($this->m_attribIndexList));$r++)
@@ -1694,22 +1708,22 @@
                        '</td>'.
                        $g_layout->ret_td
                        (
-                         '<a href="javascript:updateSelection(\''.$listName.'\', \'all\')">'.text("select_all").'</a> / '.
-                         '<a href="javascript:updateSelection(\''.$listName.'\', \'none\')">'.text("select_none").'</a> / '.
-                          '<a href="javascript:updateSelection(\''.$listName.'\', \'invert\')">'.text("select_invert").'</a>',
+                         '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.text("select_all").'</a> / '.
+                         '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.text("select_none").'</a> / '.
+                          '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.text("select_invert").'</a>',
                          'align="center"'
                        ).
                      '</tr>'.
                      '<tr>'.
                        '<td>'.
-                         '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\')">'.
+                         '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)">'.
                            '<option value="">'.text("with_selected").':</option>';
 
                            foreach ($multiActionsAll as $name)
                              $output .= '<option value="'.$name.'">'.text($name).'</option>';
 
         $output .=       '</select>&nbsp;'.
-                         '<input type="button" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\',\''.session_url($PHP_SELF, SESSION_NESTED).'\')">'.
+                         '<input type="button" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.session_url($PHP_SELF, SESSION_NESTED).'\')">'.
                        '</td>'.
                      '</tr>'.
                    '</table>';
