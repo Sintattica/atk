@@ -22,7 +22,7 @@
    */
   require_once($config_atkroot."atk/security/class.auth_interface.inc");
   
-  // initialise g_user array.
+  // initialise g_ array.
   $g_user = array();
   
   if ($config_authentication == "") $config_authentication = "none";
@@ -256,7 +256,8 @@
               // We store the username + securitylevel of the logged in user. 
               $this->m_user = $this->m_authorization->getUser($auth_user);
               $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
-              // for convenience, we also store the user as a global variable.             
+              $this->m_user['PASS']=$auth_pw; // used by aktsecurerelation to decrypt an linkpass
+              // for convenience, we also store the user as a global variable.
               (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
               atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
               $authenticated = true;
@@ -758,7 +759,8 @@
     {
       $user = $session_auth["user"];
       if($user["access_level"]=="") $user["access_level"]=0;
-    }    
+    }
+
     return $user;
   }
     
