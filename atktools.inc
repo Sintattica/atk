@@ -820,6 +820,42 @@
     $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
   }
 
+
+  /**
+  * Adds var_export function to PHP versions older then PHP4.2
+  * for documentation about var_export() see
+  * http://www.php.net/manual/en/function.var-export.php
+  */
+  if(!function_exists("var_export"))
+  {
+    function var_export($a)
+    {
+      $result = "";
+      switch (gettype($a))
+      {
+         case "array":
+           reset($a);
+           $result = "array(";
+           while (list($k, $v) = each($a))
+           {
+             $result .= "$k => ".var_export($v).", ";
+           }
+           $result .= ")";
+           break;
+         case "string":
+           $result = "'$a'";
+           break;
+         case "boolean":
+           $result = ($a) ? "true" : "false";
+           break;
+         default:
+           $result = $a;
+           break;
+      }
+      return $result;
+    }
+  }
+
   /**
    * Does a var dump of an array. Makes use of atkdebug for displaying the values
    *        
