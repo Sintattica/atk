@@ -32,6 +32,15 @@
    * @subpackage ui
    *
    */
+   
+   
+   define("HTML_BODY",1);                        // Add body tags to page
+   define("HTML_HEADER",2);                      // Add header to page
+   define("HTML_DOCTYPE",4);                     // Add doctype to page
+   define("HTML_ALL",HTML_BODY|HTML_HEADER);     // Shortcut
+   define("HTML_STRICT",HTML_ALL|HTML_DOCTYPE);  // Shortcut
+    
+   
   class atkPage 
   {
     /**
@@ -227,7 +236,7 @@
     {
       for ($i = 0; $i < count($this->m_scriptfiles); $i++)
       {
-        $res.='  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+        $res.='  <script type="text/javascript" language="JavaScript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
       }
 
       $res.="  <script type=\"text/javascript\">
@@ -296,23 +305,35 @@
     /**
      * Render the complete page, including head and body.
      * @param String $title Title of the HTML page.
-     * @param boolean $body Set to true to generate <body> tags. It is useful
+     * @param boolean $flags Set to true to generate <body> tags. It is useful
      *                      to set this to false only when rendering content
      *                      that either already had its own <body></body>
      *                      statement, or content that needs no body
-     *                      statements, like a frameset.
+     *                      statements, like a frameset. (DEPRICATED !!)
+     * @param int $flags Flags for the render function
+     * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
      * @return String The HTML page, including <html> and </html> tags.
      */
-    function render($title, $body=true)
-    {      
-      $page.= atkconfig("doctype");
+    function render($title, $flags=7,$extrabodyprops="")
+    { 
+      if(is_bool($flags) && $flags==true) 
+      { 
+        $flags=HTML_STRICT; 
+      }
+      elseif(is_bool($flags) && $flags==false)
+      {
+        $flags=HTML_HEADER|HTML_DOCTYPE;
+      }
+      $page = '';
+      if(hasFlag($flags,HTML_DOCTYPE)) $page.=atkconfig("doctype");
       $page.= "\n<html>\n";
-      $page.= $this->head($title);
-      if ($body) $page.= $this->body();
+      if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title);
+      if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
       $page.= $this->m_content."\n";
       $page.= $this->renderHiddenVars();
-      if ($body) $page.= "</body>\n";
-      $page.= "</html>\n";       
+      if (hasFlag($flags,HTML_BODY)) $page.= "</body>\n";
+      $page.= "</html>\n";            
+     
       return $page;
     }
     
