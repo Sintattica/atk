@@ -2,9 +2,11 @@
   /**
    * With this you can upload, select and remove files in a given directory   
    *
-   * <b>Todo</b>        : Code clean up (del variable)
-   *                    : check of ext is jpg, iets anders en ie knalt uit elkaar !!!!
+   * <b>Todo</b>        : Code clean up (del variable) geerfd van atkfileattribute
+   *                    : check of ext is jpg, iets anders en IE knalt uit elkaar !!!! done basic check
+   *                    : globals fixen
    *                    : proper previewdisplay
+   *                    : achtergrond kleuren dienen eigenlijk beheerbaar te zijn
    *
    * @author paul verhoeff paul@ibuildings.nl
    * @version $Revision$
@@ -133,11 +135,11 @@
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
       if($del[$this->fieldName()] == "on")
       {    
-        if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
-	      {
+       if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
+	    {
 	        unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
-	      }
-        return "";
+	    }
+       return "";
       }
       else
       {
@@ -145,10 +147,15 @@
         if ($filename!="")
         {
           if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename) OR die("<br><br><center><b>Save failed!</b></center><br>"))
-          {
+        {
 
-        global $currentByte;
-		global $bytePos;
+        $lengte = strlen($filename);
+        if(substr($filename,$lengte-4)==".jpg")
+		{
+		atkdebug("extensie ok");          //extensie check ok so continue
+		
+        global $currentByte;   //have to fix these globals
+		global $bytePos;       //into non-globals
 		
     	$currentByte = 0; // the value of the current byte being created
  	    $bytePos     = 8; // the number of bits left to fill in the current byte
@@ -164,136 +171,127 @@
 		$height       = $imageSize[1];
 		unset( $imageSize );
 
-atkdebug(":: orgwidth en orgheight :: ".$width." :-: ".$height);
+        atkdebug(":: orgwidth en orgheight :: ".$width." :-: ".$height);
 		
-// 2nd footer
-atkdebug("footer 2");
+        // 2nd footer
+		atkdebug("footer 2");
 
-$footer2 .= $this->WriteWord( 0x02 );
-$footer2 .= $this->WriteRect( $this->MinBits( $width, $height) + 1, 0, $width * SCoord1, 0, $height * SCoord1 ); // rect
+		$footer2 .= $this->WriteWord( 0x02 );
+		$footer2 .= $this->WriteRect( $this->MinBits( $width, $height) + 1, 0, $width * SCoord1, 0, $height * SCoord1 ); // rect
+		$footer2 .= $this->WriteByte( 0x01 ); // FillStyleCount (1 style)
+		$footer2 .= $this->WriteByte( 0x41 ); // clipped bitmap fill
+		$footer2 .= $this->WriteWord( 1 );    // bitmap-id
+		$footer2 .= $this->WriteMatrix( true, 20*Fixed1, 20*Fixed1, false, 0, 0, 0, 0);
+		$footer2 .= $this->WriteByte( 0x00 ); // LineStyleCount (no line)
+		$footer2 .= $this->WriteByte( 0x10 ); // number of fill/line index bits
+		$footer2 .= $this->WriteBits( 0, 1 ); // Non-edge record flag
+		$footer2 .= $this->WriteBits( 0, 1 ); // New styles flag
+		$footer2 .= $this->WriteBits( 0, 1 ); // Line style change flag
+		$footer2 .= $this->WriteBits( 1, 1 ); // Fill style 1 change flag
+		$footer2 .= $this->WriteBits( 0, 1 ); // Fill style 0 change flag
+		$footer2 .= $this->WriteBits( 1, 1 ); // Move to flag
+		$footer2 .= $this->WriteBits( $this->MinBits( $width, $height) + 1, 5 );
+		$footer2 .= $this->WriteBits( $width * SCoord1, $this->MinBits( $width, $height) + 1);
+		$footer2 .= $this->WriteBits( $height * SCoord1, $this->MinBits( $width, $height) + 1);
+		$footer2 .= $this->WriteBits( 1, 1); // Fill 1 Style = 1 (this is our bitmap-style)
+		$footer2 .= $this->WriteLine( 0, -$width  * SCoord1, $width, $height );
+		$footer2 .= $this->WriteLine( 1, -$height * SCoord1, $width, $height );
+		$footer2 .= $this->WriteLine( 0,  $width  * SCoord1, $width, $height );
+		$footer2 .= $this->WriteLine( 1,  $height * SCoord1, $width, $height );
+		$footer2 .= $this->WriteBits( 0, 1); // Non-edge record flag
+		$footer2 .= $this->WriteBits( 0, 5); // End of shape flag
+		$footer2 .= $this->FlushBits(); // flush bits to keep byte aligned
+		
+		// 1st footer
+		atkdebug("footer 1");
+		
+		$footer1 .= $this->WriteWord( 0xbf );
+		$footer1 .= $this->WriteDWord( strlen( $footer2 ) );
 
-$footer2 .= $this->WriteByte( 0x01 ); // FillStyleCount (1 style)
-$footer2 .= $this->WriteByte( 0x41 ); // clipped bitmap fill
-$footer2 .= $this->WriteWord( 1 );    // bitmap-id
+		// 3rd footer
+		atkdebug("footer 3");
+		
+		$footer3 .= $this->WriteWord( 0x0686 ); // placeObject2
+		$footer3 .= $this->WriteByte( 0x06 );   // body has a transform matrix and object has a character ID
+		$footer3 .= $this->WriteWord( 0x01 );   // depth = 1
+		$footer3 .= $this->WriteWord( 0x02 );   // character-id
+		$footer3 .= $this->WriteByte( 0x00 );   // no transformation
+		$footer3 .= $this->WriteWord( 0x40 );
+		$footer3 .= $this->WriteWord( 0x00 );
 
-$footer2 .= $this->WriteMatrix( true, 20*Fixed1, 20*Fixed1, false, 0, 0, 0, 0);
+		// calculate entire file-size
 
-$footer2 .= $this->WriteByte( 0x00 ); // LineStyleCount (no line)
+		$filesize  = 29;
+		$filesize += filesize( $this->m_dir.$filename );
+		$filesize += strlen( $footer1 );
+		$filesize += strlen( $footer2 );
+		$filesize += strlen( $footer3 );
+		$filesize += strlen( $this->WriteRect( $this->MinBits( $width, $height) + 1, 0, SCoord1*$width, 0, SCoord1*$height));
 
-$footer2 .= $this->WriteByte( 0x10 ); // number of fill/line index bits
+		/*****************************************************************************
+		 *
+		 *  Actual output
+		 *
+		 *****************************************************************************/
 
-$footer2 .= $this->WriteBits( 0, 1 ); // Non-edge record flag
-$footer2 .= $this->WriteBits( 0, 1 ); // New styles flag
-$footer2 .= $this->WriteBits( 0, 1 ); // Line style change flag
-$footer2 .= $this->WriteBits( 1, 1 ); // Fill style 1 change flag
-$footer2 .= $this->WriteBits( 0, 1 ); // Fill style 0 change flag
-$footer2 .= $this->WriteBits( 1, 1 ); // Move to flag
-
-$footer2 .= $this->WriteBits( $this->MinBits( $width, $height) + 1, 5 );
-$footer2 .= $this->WriteBits( $width * SCoord1, $this->MinBits( $width, $height) + 1);
-$footer2 .= $this->WriteBits( $height * SCoord1, $this->MinBits( $width, $height) + 1);
-
-$footer2 .= $this->WriteBits( 1, 1); // Fill 1 Style = 1 (this is our bitmap-style)
-
-$footer2 .= $this->WriteLine( 0, -$width  * SCoord1, $width, $height );
-$footer2 .= $this->WriteLine( 1, -$height * SCoord1, $width, $height );
-$footer2 .= $this->WriteLine( 0,  $width  * SCoord1, $width, $height );
-$footer2 .= $this->WriteLine( 1,  $height * SCoord1, $width, $height );
-
-$footer2 .= $this->WriteBits( 0, 1); // Non-edge record flag
-$footer2 .= $this->WriteBits( 0, 5); // End of shape flag
-
-$footer2 .= $this->FlushBits(); // flush bits to keep byte aligned
-
-// 1st footer
-atkdebug("footer 1");
-$footer1 .= $this->WriteWord( 0xbf );
-$footer1 .= $this->WriteDWord( strlen( $footer2 ) );
-
-// 3rd footer
-atkdebug("footer 3");
-$footer3 .= $this->WriteWord( 0x0686 ); // placeObject2
-$footer3 .= $this->WriteByte( 0x06 );   // body has a transform matrix and object has a character ID
-$footer3 .= $this->WriteWord( 0x01 );   // depth = 1
-$footer3 .= $this->WriteWord( 0x02 );   // character-id
-$footer3 .= $this->WriteByte( 0x00 );   // no transformation
-
-$footer3 .= $this->WriteWord( 0x40 );
-$footer3 .= $this->WriteWord( 0x00 );
-
-// calculate entire file-size
-
-
-$filesize  = 29;
-$filesize += filesize( $this->m_dir.$filename );
-$filesize += strlen( $footer1 );
-$filesize += strlen( $footer2 );
-$filesize += strlen( $footer3 );
-$filesize += strlen( $this->WriteRect( $this->MinBits( $width, $height) + 1, 0, SCoord1*$width, 0, SCoord1*$height));
-
-
-/*****************************************************************************
- *
- *  Actual output
- *
- *****************************************************************************/
-
-$swf_file = "FWS";						   // reversed SWF signature (little endian/big endian issue)
-$swf_file .= $this->WriteByte( 3 );          // file version, flash 3 is all we need
-$swf_file .= $this->WriteDWord( $filesize ); // length of entire file in bytes
-
-$swf_file .= $this->WriteRect( $this->MinBits( $width, $height) + 1,
-                0, SCoord1*$width,
-                0, SCoord1*$height ); // frame size in TWIPS
-$swf_file .= $this->WriteByte( 0 );          // this one is ignored!
-$swf_file .= $this->WriteByte( 12 );         // frame delay in 8.8 fixed number of frames per second
-$swf_file .= $this->WriteWord( 1 );          // total number of frames in movie
-$swf_file .= $this->WriteWord( 0x0243 );     // setBackgroundColor
-$swf_file .= $this->WriteByte( 0xff );       // red
-$swf_file .= $this->WriteByte( 0xff );       // green
-$swf_file .= $this->WriteByte( 0xff );       // blue
-
-$swf_file .= $this->WriteWord( 0x057f );     // DefineBitsJPEG2
-$swf_file .= $this->WriteDWord( filesize( $this->m_dir.$filename ) + 6 ); // +6, for 0xff 0xd9 0xff 0xd8 [imagedata] 0xff 0xd8
-$swf_file .= $this->WriteWord( 1 );          // character-id
-
-$swf_file .= $this->WriteByte( 0xff );       // startImage
-$swf_file .= $this->WriteByte( 0xd9 );
-
-$swf_file .= $this->WriteByte( 0xff );       // endImage
-$swf_file .= $this->WriteByte( 0xd8 );
-
-$ip = fopen( $this->m_dir.$filename, "r" );
-$swf_file .= fread( $ip, filesize( $this->m_dir.$filename ) );
-fclose($ip);
-
-
-atkdebug(" -::image filename:: ".$this->m_dir.$filename);
-atkdebug(" -::flash filename:: ".$this->m_dir.$swf_filename);
-
-
-$swf_file .= $footer1;
-$swf_file .= $footer2;
-$swf_file .= $footer3;
-if ($swf_filename!="")
-{
-$fp = fopen($this->m_dir.$swf_filename, "w+");
-fwrite($fp,$swf_file);
-fclose($fp); 
-@unlink($this->m_dir.$filename);
-}
-else
-{
-@unlink($this->m_dir.$filename);
-}
+		$swf_file = "FWS";						   // reversed SWF signature (little endian/big endian issue)
+		$swf_file .= $this->WriteByte( 3 );          // file version, flash 3 is all we need
+		$swf_file .= $this->WriteDWord( $filesize ); // length of entire file in bytes
+		$swf_file .= $this->WriteRect( $this->MinBits( $width, $height) + 1,
+                       			       0, SCoord1*$width,
+					                   0, SCoord1*$height ); // frame size in TWIPS
+		$swf_file .= $this->WriteByte( 0 );          // this one is ignored!
+		$swf_file .= $this->WriteByte( 12 );         // frame delay in 8.8 fixed number of frames per second
+		$swf_file .= $this->WriteWord( 1 );          // total number of frames in movie
+ 		//background (moet eigenlijk beheerbaar worden)
+		$swf_file .= $this->WriteWord( 0x0243 );     // setBackgroundColor
+		$swf_file .= $this->WriteByte( 0xff );       // red
+		$swf_file .= $this->WriteByte( 0xff );       // green
+		$swf_file .= $this->WriteByte( 0xff );       // blue
+		
+		$swf_file .= $this->WriteWord( 0x057f );     // DefineBitsJPEG2
+		$swf_file .= $this->WriteDWord( filesize( $this->m_dir.$filename ) + 6 ); // +6, for 0xff 0xd9 0xff 0xd8 [imagedata] 0xff 0xd8
+		$swf_file .= $this->WriteWord( 1 );          // character-id
+		$swf_file .= $this->WriteByte( 0xff );       // startImage
+		$swf_file .= $this->WriteByte( 0xd9 );
+		$swf_file .= $this->WriteByte( 0xff );       // endImage
+		$swf_file .= $this->WriteByte( 0xd8 );
+		//reading image
+		$ip = fopen( $this->m_dir.$filename, "r" );
+		$swf_file .= fread( $ip, filesize( $this->m_dir.$filename ) );
+		fclose($ip);
+		
+		atkdebug(" -::image filename:: ".$this->m_dir.$filename);
+		atkdebug(" -::flash filename:: ".$this->m_dir.$swf_filename);
+		
+		$swf_file .= $footer1;
+		$swf_file .= $footer2;
+		$swf_file .= $footer3;
+		if ($swf_filename!="")
+		{
+		  $fp = fopen($this->m_dir.$swf_filename, "w+");
+		  fwrite($fp,$swf_file);
+		  fclose($fp); 
+		  @unlink($this->m_dir.$filename);   // get rid of orginal.jpg
+		}
+		else
+		{
+		  @unlink($this->m_dir.$filename);     // get rid of orginal.jpg
+		}
 	   return $swf_filename;
-      } 
-		  
-        }
-		$rec[$this->fieldName()]["orgfilename"]=$swf_filename;
-        return $rec[$this->fieldName()]["orgfilename"];
-      }
-   }
+	 }
+	 else
+	 {
+   	  atkdebug("extensie not ok");        // extensie was geen jpg
+      @unlink($this->m_dir.$filename);   // get rid of orginal.jpg
+	 }
+	   
+   } 
+  }
+   $rec[$this->fieldName()]["orgfilename"]=$swf_filename;
+   return $rec[$this->fieldName()]["orgfilename"];
+ }	  
+}
 
     
     /** 
