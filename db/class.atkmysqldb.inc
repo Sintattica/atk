@@ -394,7 +394,7 @@
      */
     function func_datetochar($fieldname)
     {
-      return DATE_FORMAT($fieldname, "%Y-%m-%d, %Y");
+      return "DATE_FORMAT($fieldname, '%Y-%m-%d, %Y')";
     }
       
     /** 
