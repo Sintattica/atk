@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.14  2001/09/26 07:05:13  maurice
+   * New error handling. Errors are saved in $record variable
+   *
    * Revision 4.13  2001/09/21 11:57:13  sandy
    * updated the time attribute, it now also uses an array for hours, minutes, seconds.
    * Also created a new datetime attrib for the datetime type.
@@ -210,6 +213,7 @@
     {
       global $txt_date_format_edit, $txt_date_format_view;
       
+atkdebug("min ".$min." max ".$max);
       // *** API SUPPORT HACK ***
       // Because of backwards compatability and because of the number
       // of arguments this method has we also support the old API: ($name, $flags=0).
@@ -232,18 +236,22 @@
       else if (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
       else   $this->m_date_format_view = "F j Y";
 
+atkdebug("min ".$this->m_date_min." max ".$this->m_date_max." flags ".$flags);
       /* max / min date (only valid when obligatory) */
-			if ($flags & AF_OBLIGATORY == AF_OBLIGATORY)
+	if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
 			{
+atkdebug("inIf");
         $this->m_date_min = $min;
         $this->m_date_max = $max;
 			}
 			else
 			{
+atkdebug("inElse");
         $this->m_date_min = 0;
         $this->m_date_max = 0;
 			}
 
+atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
       /* register javascript */
       $GLOBALS['g_layout']->register_script("atk/javascript/class.atkdateattribute.js.php");
 
@@ -504,19 +512,23 @@
     function validate($record, $mode)
     {
       $value = $record[$this->fieldName()];
-		  /* array or no array */
-		  if (is_array($value)) $date = $this->dateArray($value);
+      /* array or no array */
+      if (is_array($value)) $date = $this->dateArray($value);
 		
-		  /* if not obligatory and one of the fields is null then the date will be saved as null */
-			if (!$this->hasFlag(AF_OBLIGATORY) && (empty($year) || empty($month) || empty($day))) return "";
+      /* if not obligatory and one of the fields is null then the date will be saved as null */
+      if (!$this->hasFlag(AF_OBLIGATORY) && (empty($year) || empty($month) || empty($day))) return;
 		
       /* currently selected date */
-			if (checkdate($value["month"], $value["day"], $value["year"])) 
-			  $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
-      else return text("error_date_invalid");
+      if (checkdate($value["month"], $value["day"], $value["year"])) 
+        $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
+      else 
+      {
+        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_date_invalid'));
+        return;
+      }
 
       /* allright, if not obligatory, and we have come all this way, we'll bail out */
-			if (!$this->hasFlag(AF_OBLIGATORY)) return "";
+			if (!$this->hasFlag(AF_OBLIGATORY)) return;
 
       /* minimum date */
       $minimum = 0;
@@ -542,14 +554,17 @@
       
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
-        return text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0);
+      {
+        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_date_minimum')." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0));
+        return;
+      }
         
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
-        return text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0);
+        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
         
       /* no problem */
-      return "";
+      //return "";
     }
 
     /**

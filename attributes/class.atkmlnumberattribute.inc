@@ -10,6 +10,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/09/26 07:05:13  maurice
+   * New error handling. Errors are saved in $record variable
+   *
    * Revision 4.1  2001/08/27 07:38:58  ivo
    * changed validate() api: atk now passes record to the function instead of
    * just one value. Also added a mode parameter that indicates whether we
@@ -50,9 +53,8 @@
 
       reset($config_language);
       while (list($i, $language) = each($config_language))
-        if (!is_numeric($value[$language])) return text('error_notnumeric');;
-
-	    return "";
+        if (!is_numeric($value[$language]))
+          $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_notnumuric'));
     }
   }
 ?>

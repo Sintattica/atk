@@ -28,6 +28,13 @@
   define("NF_NO_EXTENDED_SEARCH",16384); // Extended search feature is turned 
                                          // off.
 
+  // Define flags for error handling
+  // Only fields which need seperate handling need to be
+  // defined here.
+
+  define("EF_PRIMARY_KEY_EXISTS", 1);
+
+
   /**
    * The atkNode class represents a piece of information that
    * is part of an application. This class provides standard
@@ -52,6 +59,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.109  2001/09/26 07:05:13  maurice
+   * New error handling. Errors are saved in $record variable
+   *
    * Revision 4.108  2001/09/25 14:23:37  ivo
    * Extended searchform is now directly callable from menu.
    *
@@ -413,7 +423,7 @@
      * This array is used to store error in the input data. The array is an
      * associative array with fieldname as key and an errormessage as value.
      */
-    var $m_errors = array();
+    //var $m_errors = array();
 
     var $m_default_order = "";
 
@@ -972,21 +982,44 @@
       }                 
 
       $form.=$g_layout->ret_table_simple();
-
-      if (count($this->m_errors)>0)
+      
+      // Check for errors and display them
+      if (count($record['error'])>0)
       {
         $form.='<tr>';
-        $errormsg = '<b>'.text('error_formdataerror').'</b>';
+        $error_title= '<b>'.text('error_formdataerror').'</b>';
+        $errormsg = "";
         
-        foreach ($this->m_errors as $attribname => $msg)
+        $pk_err = array();
+        foreach ($record['error'] as $data)
         {
-          $errormsg.='<br>'.text($attribname).': '.$msg;
+          if (($data['err_flag'] & EF_PRIMARY_KEY_EXISTS) == EF_PRIMARY_KEY_EXISTS)
+          {
+            $pk_err_attrib[] = $data['attrib_name'];
+          }
+          else
+          {
+            $errormsg.="<br>".text($data['attrib_name']).': '.$data['msg'];
+          }
+        }
+        if (count($pk_err_attrib)>0) // Make primary key error message
+        {
+          $pk_err_msg = "<br>".text('error_primarykey_exists').": ";
+          for($i=0;$i<count($pk_err_attrib); $i++)
+          {
+            $pk_err_msg .= text($pk_err_attrib[$i]);
+            if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
+          }
+          $form.=$g_layout->ret_td($error_title.$pk_err_msg.$errormsg,'colspan="2"');
+        }
+        else          
+        {
+          $form.=$g_layout->ret_td($error_title.$errormsg,'colspan="2"');
         }
 
-        $form.=$g_layout->ret_td($errormsg,'colspan="2"');
         $form.='</tr>';
-      } 
-            
+      }      
+  
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
@@ -1031,13 +1064,21 @@
               {
                 $form.=$g_layout->ret_td('&nbsp;');
               }
-              else if ($this->m_errors[$attribname]!="")
+              else 
               {
-                $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
-              }
-              else
-              {
-                $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+                $found = FALSE;
+                for ($i=0; $i < count($record['error']);$i++)
+                {
+                  if ($record['error'][$i]['attrib_name'] == $p_attrib->fieldName()) $found = TRUE;
+                }
+                if($found)
+                {
+                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
+                }
+                else
+                {
+                  $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+                }
               }
             }
             else
@@ -2246,15 +2287,9 @@
     {
       if ($this->m_postvars['atkcancel']=="")
       {
-        // Fill the m_orgkey array
-        //for($i=0;$i<count($this->m_postvars['atkorgkey']);$i++)
-        //{
-//          $this->m_orgkey[$i] = $this->m_postvars['atkorgkey'][$i];
-        //}
-
         $record = $this->updateRecord();
         $this->validate($record, "update");
-        if (count($this->m_errors)>0)
+        if (count($record['error']>0))
         {
           $this->m_action="edit";
           $this->editPage($record);
@@ -2292,7 +2327,7 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "add");
-        if (count($this->m_errors)>0)
+        if (count($record['error'])>0)
         {
           $this->addPage($record);
         }
@@ -2568,7 +2603,7 @@
     /**
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
      */
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {
       global $g_db;
       atkdebug("validate()");
@@ -2586,21 +2621,21 @@
              &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
             )
           {
-            $this->m_errors[$attribname] = text('error_primarykey_exists');
+            $record['error'][] = array( attrib_name=> $attribname, err_flag => EF_PRIMARY_KEY_EXISTS, msg=>text('error_primarykey_exists'));
           }
         }
         
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
         if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
-          $this->m_errors[$attribname] = text('error_obligatoryfield');
+          $record['error'][] = array( attrib_name=> $attribname, err_flag  => EF_OBLIGATORY_FIELD, msg=>text('error_obligatoryfield'));
         }
         // if flag is primary 
         else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
                  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
-          $this->m_errors[$attribname] = text('error_uniquefield');
+          $record['error'][] = array( attrib_name=> $attribname, err_flag => EF_UNIQUE_FIELD, msg=>text('error_uniquefield'));
         }
         
         else
@@ -2612,13 +2647,11 @@
 
             if (method_exists($this,$funcname))
             {
-              $error = $this->$funcname($record[$attribname]);
-              if ($error!="") $this->m_errors[$attribname] = $error;
+              $this->$funcname(&$record, $mode);
             }
             else
             {
-              $error = $p_attrib->validate($record, $mode);
-              if ($error!="") $this->m_errors[$attribname] = $error;
+              $p_attrib->validate(&$record, $mode);
             }
           }
         }

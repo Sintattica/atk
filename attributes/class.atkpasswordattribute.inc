@@ -11,6 +11,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.5  2001/09/26 07:05:13  maurice
+ * New error handling. Errors are saved in $record variable
+ *
  * Revision 4.4  2001/08/27 07:38:58  ivo
  * changed validate() api: atk now passes record to the function instead of
  * just one value. Also added a mode parameter that indicates whether we
@@ -190,13 +193,11 @@ class atkPasswordAttribute extends atkAttribute
       
     if ($action == 'update' && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) &&
         !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && md5($value["current"]) != $value["hash"])
-      return text("password_incorrect");
+      $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_password_incorrect'));
     
     //var_dump($value);
     if ($value["new"] != $value["again"])
-      return text("password_nomatch");
-    
-    else return "";
+      $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_password_nomatch'));
   }  
   
 

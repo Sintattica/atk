@@ -129,8 +129,11 @@
   $txt_auth_unable_to_connect = "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).";  
   
   $txt_error_primarykey_exists = "Er bestaat al een record met deze sleutel";
-  
+  $txt_error_invalid_email = "Ongeldig e-mail adres";
+  $txt_error_notnumeric = "Geen numerieke waarde";
+
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Kies een kleur";
+  
   
 ?>

@@ -120,6 +120,8 @@
   $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";  
   
   $txt_error_primarykey_exists = "A record with this key already exists";
+  $txt_error_invalid_email = "Invalid e-mail adress";
+  $txt_error_notnumeric = "Value not a number";
   
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Select a color";    

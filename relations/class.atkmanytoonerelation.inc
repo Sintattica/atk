@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.19  2001/09/26 07:05:13  maurice
+   * New error handling. Errors are saved in $record variable
+   *
    * Revision 4.18  2001/09/12 15:07:07  ivo
    * Added an option to manytoonerelation to perform non-leftjoins.
    *
@@ -414,7 +417,6 @@
      */
     function validate($record, $mode)
     {
-      return "";
     }
     
     function equal($recA, $recB)

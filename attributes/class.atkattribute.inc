@@ -100,6 +100,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.21  2001/09/26 07:05:13  maurice
+   * New error handling. Errors are saved in $record variable
+   *
    * Revision 4.20  2001/08/27 07:38:58  ivo
    * changed validate() api: atk now passes record to the function instead of
    * just one value. Also added a mode parameter that indicates whether we
@@ -473,7 +476,6 @@
      */
     function validate($record, $mode)
     {
-      return "";
     }
 
     /**
