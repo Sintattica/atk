@@ -552,7 +552,7 @@
             if (($node->m_action == "add" && count($node->m_tabListAdd) > 1 ||
                  $node->m_action == "edit" && count($node->m_tabListEdit) > 1) &&
                  $tabs != "*" && !atk_in_array($tab, $tabs))
-              $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0]),SESSION_DEFAULT,true).')';
+              $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             $errormsg.="<br>".text($error['attrib_name'], $node->m_type).': '.$error['msg'].$error_tab;
           }
