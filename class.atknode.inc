@@ -51,6 +51,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.70  2001/07/01 10:09:52  ivo
+   * Replaced the clickheretoadd_prefix/postfix string by link_<nodetype>_add.
+   * If you upgrade, please verify your language files!
+   *
    * Revision 4.69  2001/06/29 13:57:20  ivo
    * Bugfix in selectPage [pk] parser.
    *
@@ -1016,7 +1020,7 @@
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
         $addurl = $PHP_SELF.'?atkaction=add';
-        $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
+        $g_layout->output(href($addurl,text("link_".getNodeType($this->m_type)."_add"),SESSION_NESTED).'<br><br>');
       }
 
       // create navigation bar

@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.14  2001/07/01 10:09:52  ivo
+  * Replaced the clickheretoadd_prefix/postfix string by link_<nodetype>_add.
+  * If you upgrade, please verify your language files!
+  *
   * Revision 4.13  2001/06/29 11:26:59  ivo
   * Patches to oracle support.
   *
