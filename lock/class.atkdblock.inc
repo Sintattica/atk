@@ -131,7 +131,10 @@ class atkDbLock extends atkLock
       $query->addField("user_id", escapeSQL($user));
       $query->addField("user_ip", escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"]));
       $query->addField("lock_stamp", "now()", "", "", FALSE);
-      $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
+      if (atkconfig("database") != 'oci8' && atkconfig("database") != 'oci9')
+        $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
+      else
+        $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
       $query->addField("lock_lease_count", "0");
       $query->addField("session_id", escapeSQL(session_id()));
       $query->addField("session_stack", escapeSQL(atkStackID()));
@@ -224,7 +227,11 @@ class atkDbLock extends atkLock
     /* extend lock lease */
     $name = "atk".atkconfig("database")."query";
     $query = new $name();
-    $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
+    if (atkconfig("database") != 'oci8' && atkconfig("database") != 'oci9')
+      $query->addField("lock_lease", "now() + INTERVAL 60 SECOND", "", "", FALSE);
+    else
+      $query->addField("lock_lease", "now() +  ".(60/86400), "", "", FALSE);
+
     $query->addField("lock_lease_count", "lock_lease_count + 1", "", "", FALSE);
     $query->addTable("db_lock");
     $query->addCondition("lock_id = ".(int)$identifier);
