@@ -691,6 +691,7 @@
     function lockPage()
     {
       global $g_layout;
+      $g_layout->initGui();
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $this->m_action));
       $g_layout->output($this->statusbar());
@@ -707,6 +708,7 @@
     function editPage($record, $locked=FALSE)
     {
       global $g_layout, $PHP_SELF,$config_atkroot;
+      $g_layout->initGui();
 
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
@@ -742,6 +744,7 @@
     function viewPage($record)
     {
       global $g_layout, $PHP_SELF;
+      $g_layout->initGui();
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'view'));
       $g_layout->output($this->statusbar());
@@ -816,6 +819,7 @@
     function addPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
+      $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, 'add'));
       $g_layout->output($this->statusbar());
@@ -847,6 +851,7 @@
     function searchPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
+      $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'search'));
       $g_layout->output($this->statusbar());
@@ -1304,6 +1309,7 @@
     function adminPage($actions="")
     {
       global $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
+      $g_layout->initGui();
 
       // When there's a lot of data, records will be spread across multiple
       // pages.
@@ -2246,7 +2252,7 @@
     function selectPage()
     {
       global $g_layout, $atksearch;
-
+      $g_layout->initGui();
       // When there's a lot of data, records will be spread across multiple pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
       if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
@@ -2299,6 +2305,7 @@
     function confirmDelete($atkselector, $locked=FALSE)
     {
       global $g_layout, $PHP_SELF;
+      $g_layout->initGui();
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar($locked));
@@ -2719,6 +2726,7 @@
     function feedbackPage($action, $actionstatus)
     {
       global $g_layout;      
+      $g_layout->initGui();
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
       $g_layout->output($this->statusbar());
       

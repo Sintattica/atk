@@ -18,7 +18,7 @@
     /*
      * Content
      */
-    var $m_content = "";
+    var $m_content = "";    
 
     /**
      * Raw
@@ -41,13 +41,29 @@
      * Constructor
      */
     function layout()
+    {           
+    }
+    
+    /**
+      * Gui initialisation.
+      * Call this before using gui functions (themes)..
+      */
+    function initGui()
     {
+      static $initialized = false;
       global $g_theme;
-      if($g_theme["Name"]=="") $g_theme["Name"] = $GLOBALS["config_defaulttheme"];
-      if($g_theme["Name"]=="") $g_theme["Name"]="default";
-      $this->initTheme();
-      $this->import_layout();
-      $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
+      
+      if (!$initialized)
+      {
+        global $g_theme;
+        if($g_theme["Name"]=="") $g_theme["Name"] = $GLOBALS["config_defaulttheme"];
+        if($g_theme["Name"]=="") $g_theme["Name"]="default";
+        $this->initTheme();
+        $this->import_layout();
+        $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
+        atkdebug("Initialized GUI");
+        $initialized = true;
+      }
     }
 
     /*
@@ -682,7 +698,7 @@
 
     function initTheme()
     {
-      global $g_theme;
+      global $g_theme;      
 
       // First check local theme directory
       if(file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/layout.inc") &&
@@ -703,7 +719,7 @@
       {
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
         $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
-      }
+      }      
     }
 
     function getImgSrc($img)

@@ -362,6 +362,7 @@
       sessionStore('loginattempts',$loginattempts);      
 
       atkdebug('LoginAttempts: '.$loginattempts);
+      $g_layout->initGui();
       $g_layout->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
       $g_layout->head(text('app_title'));
       $g_layout->output('<br><br><div align="center">');

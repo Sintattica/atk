@@ -1,7 +1,7 @@
 <?php
-  chdir("../");  
-  
+  chdir("../");   
   include_once("atk.inc");
+  $g_layout->initGui();
 ?>
 
 BODY
