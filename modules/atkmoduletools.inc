@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.21  2001/09/26 13:24:00  ivo
+ * New method: moduleExists, to check if a module exists.
+ *
  * Revision 1.20  2001/09/19 15:21:55  ivo
  * Improved API for module handling: modules may now be constructorless,
  * which prevents a lot of overhead.
@@ -226,5 +229,11 @@
   {
     global $config_module_path;
     return "$config_module_path/$module/$file";
+  }
+  
+  function moduleExists($module)
+  {
+    global $g_modules;    
+    return (is_array($g_modules)&&in_array($module, array_keys($g_modules)));
   }
 ?>
