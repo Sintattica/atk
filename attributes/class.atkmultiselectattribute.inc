@@ -12,6 +12,10 @@
    */
   class atkMultiSelectAttribute extends atkListAttribute
   {    
+   
+  // number of rows
+  var $m_rows;
+
     /**
      * Constructor
      * @param $name Name of the attribute
@@ -20,8 +24,15 @@
      * @param $valueArray Array with values. If you don't use this parameter, 
      *                    values are assumed to be the same as the options.
      */
-    function atkMultiSelectAttribute($name, $optionArray, $valueArray="", $flags=0)
+    function atkMultiSelectAttribute($name, $optionArray, $valueArray="",$rows, $flags=0)
     {            
+      // compatiblity with old versions
+      if (func_num_args()==5) $this->m_rows=$rows;
+      else                   
+      {
+        $flags = $rows;
+      $this->m_rows=3;
+      }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags); // base class constructor      
     }    
 
@@ -69,15 +80,17 @@
     function edit($record="", $fieldprefix="")
     {
     global $g_layout,$config_atkroot;
+    $rows = $this->m_rows;
+    $modRows =$rows-1;
     $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
      // todo: configurable rows
-     $result.='<div align="center">
+     $result.='<div align="left"><font size="-2">
                [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
                     text("check_all").
              '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
                     text("check_none").
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
-                    text("invert_selection").'</a>]</div>';
+                    text("invert_selection").'</a>]</font></div>';
   
      $result .="\n<table><tr>\n";  
      $explode = explode("|",$record[$this->fieldName()]);
@@ -92,7 +105,7 @@
           $sel = "";
         }
         $result .= '<td class="table"><input type="checkbox" name="'.$fieldprefix.$this->formName().$i.'" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
-        if ($i%3 == 2) $result .="</tr><tr>\n";
+        if ($i%$rows == $modRows) $result .="</tr><tr>\n";
       }
       $result.="</tr></table>\n";
     
