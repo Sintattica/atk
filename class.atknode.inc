@@ -92,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/04/24 13:51:50  ivo
+   * Fixed some small bugs, and updated the language files, improved the menu.
+   *
    * Revision 4.4  2001/04/24 12:40:50  ivo
    * skel cleanup, typo fix in moduletools.
    *
@@ -306,7 +309,8 @@ if (!defined("CLASS_ATKNODE_INC"))
 
   require "atk/atkconfigtools.inc";
   require "atk/defaultconfig.inc.php";
-  require "config.inc.php";
+
+  include "./config.inc.php";
   require "atk/atktools.inc";
   require "atk/class.layout.inc";
   require ("atk/db/class.atk".$config_database."db.inc");
@@ -2527,7 +2531,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_securityManager;
       
-      return (in_array($action, $this->m_unsecuredActions)
+      return (in_array($this->securityKey($action), $this->m_unsecuredActions)
               || $g_securityManager->allowed($this->m_type,$this->securityKey($action)));
     }
     
@@ -2536,7 +2540,14 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function addAllowedAction($action)
     {
-      $this->m_unsecuredActions[] = $action;
+      if (is_array($action))
+      {
+        $this->m_unsecuredActions = atk_array_merge($this->m_unsecuredActions,$action);
+      }
+      else
+      {
+        $this->m_unsecuredActions[] = $action;
+      }      
     }
     
     /**

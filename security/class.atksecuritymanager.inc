@@ -15,6 +15,9 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/24 13:51:50  ivo
+   * Fixed some small bugs, and updated the language files, improved the menu.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -107,7 +110,7 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
           
      function allowed($node, $action)
      {
-       if (($this->m_scheme=="none") || ($this->m_user["level"]==-1)) 
+       if (($this->m_scheme=="none") || ($this->m_user["level"]==-1) || (strtolower($this->m_user["name"])=="administrator")) 
        {
          // No securityscheme, or user is superuser.
          $allowed = true;
@@ -149,7 +152,7 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
      {
        global $config_security_attributes;
        
-       if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->m_user["level"]==-1)) 
+       if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->m_user["level"]==-1) || (strtolower($this->m_user["name"])=="administrator")) 
        {
          // No securityscheme, or user is superuser.
          return true;

@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/24 13:51:50  ivo
+   * Fixed some small bugs, and updated the language files, improved the menu.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -168,15 +171,23 @@
         $cell="";        
         
         $returnurl=rawurlencode('dispatch.php?atknodetype='.$this->m_owner.'&atkaction=edit&atkselector='.rawurlencode($this->m_ownerInstance->primaryKey()));
-        $delaction=url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]&atkreturnurl='.$returnurl,text("delete"));
-        $editaction=url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]&atkreturnurl='.$returnurl,text("edit"));
+        
+        $actions = array();
+        if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
+        {
+          $actions[] = url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]&atkreturnurl='.$returnurl,text("delete"));
+        }
+        if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
+        {
+          $actions[] = url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]&atkreturnurl='.$returnurl,text("edit"));
+        }        
          
         $this->m_destInstance->m_records = $myrecords;
         
         // User may not search in embedded forms..        
         $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
         
-        $cell.=$this->m_destInstance->recordList(Array($editaction,$delaction),false,Array($this->m_owner));
+        $cell.=$this->m_destInstance->recordList($actions,false,Array($this->m_owner));
       
         $output.=$GLOBALS['g_layout']->ret_td($cell);
         $output.="</tr>";

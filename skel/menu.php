@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.3  2001/04/24 13:51:50  ivo
+   * Fixed some small bugs, and updated the language files, improved the menu.
+   *
    * Revision 4.2  2001/04/23 15:59:07  peter
    * Removed something that didn't belong there...
    *
@@ -32,16 +35,15 @@
     menuitems($module->getMenuItems());
   }
 
+  if (!isset($atkmenutop)||$atkmenutop=="") $atkmenutop = "main";
+
   /* output html */
   $g_layout->output("<html>");
   $g_layout->head($txt_app_title);
   $g_layout->body();
   $g_layout->output("<br><div align='center'>"); 
-  $g_layout->ui_top("Menu");
+  $g_layout->ui_top(text("menu_".$atkmenutop));
   $g_layout->output("<br>");
-
-  /* top (sub)menu */
-  if (!isset($atkmenutop)) $atkmenutop = "main";
 
   /* build menu */
   $menu = "";  

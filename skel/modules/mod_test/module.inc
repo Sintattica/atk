@@ -19,7 +19,7 @@ if(!defined("CLASS_MOD_TEST_INC"))
       /* add menuitems */
       $this->menuitem("-");      
       $this->menuitem("mod_test");
-      $this->menuitem("test_admin", "mod_test", dispatch_url("mod_test.test", "admin"), 1);
+      $this->menuitem("test_admin", dispatch_url("mod_test.test", "admin"), "mod_test", 1);
     }
   }
 }

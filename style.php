@@ -1,4 +1,5 @@
 <?php
+  chdir("../");  
   include "atk/class.atknode.inc";
 ?>
 

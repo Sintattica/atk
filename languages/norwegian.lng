@@ -69,5 +69,28 @@
   $txt_language_nl = "Nederlandsk";
   $txt_language_de = "Tysk";
   $txt_language_no = "Norsk";
-    
+
+  $txt_until = "til";
+
+  $txt_january = "januar";
+  $txt_february = "februar";
+  $txt_march = "mars";
+  $txt_april = "april";
+  $txt_may = "mai";
+  $txt_june = "juni";
+  $txt_july = "juli";
+  $txt_august = "august";
+  $txt_september = "september";
+  $txt_october = "oktober";
+  $txt_november = "november";
+  $txt_december = "desember";
+
+  $txt_fri = "fre";
+  $txt_sat = "lør";
+  $txt_sun = "søn";
+  $txt_mon = "man";
+  $txt_tue = "tir";
+  $txt_wed = "ons";
+  $txt_thu = "tor";
+
 ?>

@@ -1,44 +1,95 @@
-<?
+<?php
+
   // To keep language files up to date, all strings that are introduced in a new version
   // Have to be kept in a separate section, so we can easily see which strings need to be
   // translated when a new version comes out.
-  
+
   // Note that these are ATK defaults. You can always override the defaults by providing
-  // a languages/ dir with language files in your application. 
+  // a languages/ dir with language files in your application.
 
   // --------==== Strings that were there from the beginning: ====---------
 
-  $txt_app_title = "ATK Application";
+  $txt_app_title = "ATK-Ohjelmisto";
   $txt_app_shorttitle = "ATKApp";
-
-  $txt_title_debugger = "Debugger";
+  $txt_app_description = "Tervetuloa ATK-Ohjelmistoon.";
 
   $txt_yes = "Kyllä";
   $txt_no = "Ei";
-  
+
+  $txt_view = "Näytä";
   $txt_edit = "Muokkaa";
   $txt_delete = "Poista";
   $txt_add = "Lisää";
-  $txt_search = "Search";
-  $txt_search_all = "Search all";
+  $txt_admin = "Ylläpito";
+  $txt_search = "Etsi";
+  $txt_search_all = "Etsi kaikki";
 
-  $txt_next = "Next";
-  $txt_previous = "Previous";
-  $txt_select = "Select";
-  
+  $txt_next = "Seuraava";
+  $txt_previous = "Edellinen";
+  $txt_select = "Valitse";
+
   $txt_save = "Tallenna";
-  $txt_saveandclose = "Save and close";
+  $txt_saveandclose = "Tallenna ja sulje";
   $txt_cancel = "Peruuta";
-  
+  $txt_back = "Takaisin";
+
   $txt_menu = "Valikko";
   $txt_error = "Virhe";
-  
-  $txt_error_obligatoryfield = "This field is required";
-  $txt_error_formdataerror = "Save failed due to the following reason: ";
-  $txt_error_uniquefield = "The value for this field must be unique";
-  $txt_confirm_delete = "Are you sure you want to delete this item?";
-  $txt_title_delete = "Confirm delete";
-  
-  $txt_select_none = "None";
 
+  $txt_error_obligatoryfield = "Tämä kenttä tarvitaan";
+  $txt_error_formdataerror = "Tallennuksessa tapahtui virhe kyseisen syyn takia: ";
+  $txt_error_uniquefield = "Tämän kentän arvo tulee olla ainutlaatuinen";
+  $txt_confirm_delete = "Oletko varma että haluat poistaa?";
+  $txt_title_delete = "Vahvista poisto";
+
+  $txt_select_none = "None";
+  
+  $txt_clickheretoadd_prefix = "Paina tästä lisääksesi uuden ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Kyseistä hakemistoa ei ole";
+  $txt_remove_current_file = "Poista kyseinen tiedosto";
+  $txt_file_not_exist = "Tiedostoa ei ole";
+  $txt_cannot_remove_file = "Tiedostoa ei voi poistaa!";
+
+  // specific password attribute text
+  $txt_password_current = "Nykyinen";
+  $txt_password_new = "Uusi";
+  $txt_password_again = "Uudelleen";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "Antamasi salasana ei ole kelvollinen.";
+  $txt_password_incorrect = "Antamasi salasana on väärä!";
+  $txt_password_nomatch = "Salasanat eivät täsmää.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Valitse kieli:";
+  $txt_multilanguage_choice = "Valitse kieli:"; 
+  
+  $txt_language_nl = "Hollanti";
+  $txt_language_de = "Saksa";
+  
+  $txt_until = "until";
+    
+  $txt_january = "January";
+  $txt_february = "February";
+  $txt_march = "March";
+  $txt_april = "April";
+  $txt_may = "May";
+  $txt_june = "June";
+  $txt_july = "July";
+  $txt_august = "August";
+  $txt_september = "September";
+  $txt_october = "October";
+  $txt_november = "November";
+  $txt_december = "December";
+  
+  $txt_fri = "Fri";
+  $txt_sat = "Sat";
+  $txt_sun = "Sun";
+  $txt_mon = "Mon";
+  $txt_tue = "Tue";
+  $txt_wed = "Wed";
+  $txt_thu = "Thu";
+    
 ?>

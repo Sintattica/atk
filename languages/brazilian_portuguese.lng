@@ -68,5 +68,28 @@
 
   $txt_language_nl = "Holandês";
   $txt_language_de = "Alemão";
+  
+  $txt_until = "until";
+    
+  $txt_january = "January";
+  $txt_february = "February";
+  $txt_march = "March";
+  $txt_april = "April";
+  $txt_may = "May";
+  $txt_june = "June";
+  $txt_july = "July";
+  $txt_august = "August";
+  $txt_september = "September";
+  $txt_october = "October";
+  $txt_november = "November";
+  $txt_december = "December";
+  
+  $txt_fri = "Fri";
+  $txt_sat = "Sat";
+  $txt_sun = "Sun";
+  $txt_mon = "Mon";
+  $txt_tue = "Tue";
+  $txt_wed = "Wed";
+  $txt_thu = "Thu";
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+
   // To keep language files up to date, all strings that are introduced in a new version
   // have to be kept in a separate section, so we can easily see which strings need to be
   // translated when a new version comes out.
@@ -68,4 +69,28 @@
   $txt_language_de = "Duits";
   $txt_language_en = "Engels";
   $txt_language_fr = "Frans";
+  
+  $txt_until = "t/m";
+    
+  $txt_january = "Januari";
+  $txt_february = "Februari";
+  $txt_march = "Maart";
+  $txt_april = "April";
+  $txt_may = "Mei";
+  $txt_june = "Juni";
+  $txt_july = "Juli";
+  $txt_august = "Augustus";
+  $txt_september = "September";
+  $txt_october = "Oktober";
+  $txt_november = "November";
+  $txt_december = "December";
+  
+  $txt_fri = "Vri";
+  $txt_sat = "Zat";
+  $txt_sun = "Zon";
+  $txt_mon = "Maa";
+  $txt_tue = "Din";
+  $txt_wed = "Woe";
+  $txt_thu = "Don";
+  
 ?>

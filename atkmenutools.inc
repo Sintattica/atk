@@ -12,6 +12,9 @@ require "atk/modules/atkmoduletools.inc";
  *
  * $Id$
  * $Log$
+ * Revision 4.2  2001/04/24 13:51:50  ivo
+ * Fixed some small bugs, and updated the language files, improved the menu.
+ *
  * Revision 4.1  2001/04/23 13:21:22  peter
  * Introduction of module support. An ATK application can now have zero
  * or more modules which can, but don't have to, contain ATK nodes.
@@ -28,7 +31,7 @@ if (!defined("ATKMENUTOOLS_INC"))
    * @param $url the url the item points to
    * @param $enable enable or disable
    */
-  function menuitem($name="", $parent="main", $url="", $enable=1)
+  function menuitem($name="", $url="", $parent="main", $enable=1)
   {
     if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-";
     else $GLOBALS["g_menu"][$parent][] = array("name" => $name, "url" => $url, "enable" => $enable);

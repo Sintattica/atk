@@ -1,4 +1,5 @@
-<?
+<?php
+
   // To keep language files up to date, all strings that are introduced in a new version
   // have to be kept in a separate section, so we can easily see which strings need to be
   // translated when a new version comes out.
@@ -8,37 +9,87 @@
 
   // --------==== Strings that were there from the beginning: ====---------
 
-  $txt_app_title = "ATK Application";
+  $txt_app_title = "ATK Applikation";
   $txt_app_shorttitle = "ATKApp";
-
-  $txt_title_debugger = "Debugger";
+  $txt_app_description = "Willkommen zu dieser ATK Applikation.";
 
   $txt_yes = "Ja";
   $txt_no = "Nein";
   
+  $txt_view = "Anzeigen";
   $txt_edit = "Bearbeiten";
   $txt_delete = "L&ouml;schen";
   $txt_add = "Hinzuf&uuml;gen";
+  $txt_admin = "Verwalten";
   $txt_search = "Suchen";
-  $txt_search_all = "Search all";
+  $txt_search_all = "Alle suchen";
 
-  $txt_next = "Next";
-  $txt_previous = "Previous";
-  $txt_select = "Select";
+  $txt_next = "N&auml;chster";
+  $txt_previous = "Vorheriger";
+  $txt_select = "Ausw&auml;hlen";
   
   $txt_save = "Speichern";
-  $txt_saveandclose = "Speichern und schliessen";
+  $txt_saveandclose = "Speichern und schlie&szlig;en";
   $txt_cancel = "Abbrechen";
-  
+  $txt_back = "Zur&uuml;ck";
+
   $txt_menu = "Men&uuml;";
   $txt_error = "Fehler";
   
-  $txt_error_obligatoryfield = "This field is required";
-  $txt_error_formdataerror = "Save failed due to the following reason: ";
-  $txt_error_uniquefield = "The value for this field must be unique";
-  $txt_confirm_delete = "Are you sure you want to delete this item?";
-  $txt_title_delete = "Confirm delete";
+  $txt_error_obligatoryfield = "Dieses Feld mu&szlig; ausgef&uuml;llt werden.";
+  $txt_error_formdataerror = "Das Speichern ist fehlgeschlagen aufgrund folgenden Fehlers: ";
+  $txt_error_uniquefield = "Der Wert dieses Feldes mu&szlig; eindeutig sein.";
+  $txt_confirm_delete = "Soll dieser Eintrag wirklich gel&ouml;scht werden?";
+  $txt_title_delete = "L&ouml;schen best&auml;tigen";
   
-  $txt_select_none = "None";
+  $txt_select_none = "(leer)";
+
+  $txt_clickheretoadd_prefix = "Hier klicken f&uuml;r einen neuen ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Es existiert kein g&uuml;ltiges Verzeichnis";
+  $txt_remove_current_file = "Aktuelle Datei l&ouml;schen";
+  $txt_file_not_exist = "Die Datei existiert nicht";
+  $txt_cannot_remove_file = "Die Datei kann nicht gel&ouml;scht werden!";
+
+  // specific password attribute text
+  $txt_password_current = "Jetziges";
+  $txt_password_new = "Neu";
+  $txt_password_again = "Wiederholen";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "Das eingegebene Passwort ist kein g&uuml;ltiges Passwort.";
+  $txt_password_incorrect = "Das eingegebene Passwort war nicht richtig!";
+  $txt_password_nomatch = "Die eingegebenen Passw&ouml;rter stimmen nicht &uuml;berein.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Sprache ausw&auml;hlen:";
+  $txt_multilanguage_choice = "Ausgew&auml;hlte Sprache:"; 
+  
+  $txt_language_nl = "Holl&auml;ndisch";
+  $txt_language_de = "Deutsch";
+
+  $txt_until = "bis";
+
+  $txt_january = "Januar";
+  $txt_february = "Februar";
+  $txt_march = "M&auml;rz";
+  $txt_april = "April";
+  $txt_may = "Mai";
+  $txt_june = "Juni";
+  $txt_july = "Juli";
+  $txt_august = "August";
+  $txt_september = "September";
+  $txt_october = "Oktober";
+  $txt_november = "November";
+  $txt_december = "Dezember";
+
+  $txt_fri = "Fre";
+  $txt_sat = "Sam";
+  $txt_sun = "Son";
+  $txt_mon = "Mon";
+  $txt_tue = "Die";
+  $txt_wed = "Mit";
+  $txt_thu = "Don";
 
 ?>
