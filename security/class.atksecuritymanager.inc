@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.25  2001/10/18 13:32:23  ivo
+   * Fixed bug in authorization from previous commit.
+   *
    * Revision 4.24  2001/10/16 07:48:45  martin
    * improved fallthrough authentication system
    *
@@ -196,18 +199,17 @@
           atkdebug("atkSecurityManager() constructing class $classname");
           $this->m_authentication[$authentication] = new $classname;
         }
-      }
-      
-      /* authorization class */
-      if ($authorization_type == $authentication_type)
-      {
-        $this->m_authorization = &$this->m_authentication;
-      }
-      else
-      { 
+      }          
+      /* authorization class */    
+      //if ($authorization_type == $authentication_type)
+      //{
+//        $this->m_authorization = &$this->m_authentication;
+  //    }
+    //  else
+      //{ 
         $classname = "auth_".$authorization_type; 
         $this->m_authorization = new $classname;
-      }
+      //}
  
       /* security scheme */
       $this->m_scheme = $securityscheme;
