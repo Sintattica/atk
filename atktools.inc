@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.21  2001/10/09 10:01:35  ivo
+  * Improved the elapsed function.
+  *
   * Revision 4.20  2001/10/09 09:48:13  ivo
   * Added 4 decimal accurate elapsed time to debugmessages.
   *
@@ -156,13 +159,13 @@
     if ($offset=="") 
     {
       $offset = getmicrotime();
-      $elapsed = 0;
+      return "@".strftime("%H:%M:%S")."h";
     }
     else
     {
-      $elapsed = getmicrotime()-$offset;
+      return "+".sprintf("%02.05f",getmicrotime()-$offset)."s";
     }
-    return sprintf("%02.05f",$elapsed);
+    
   }
 
 
@@ -176,7 +179,7 @@
   {
      global $g_debug_msg;
   
-     $g_debug_msg[]="[".elapsed()."s] ".$txt;
+     $g_debug_msg[]="[".elapsed()."] ".$txt;
   }
   
   /**
