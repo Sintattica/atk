@@ -116,16 +116,7 @@ class atkPasswordAttribute extends atkAttribute
    */
   function value2db($rec)
   {
-    if(strlen($rec[$this->fieldname()]["new"])>0)
-    {
-      // Use new password
-      return addslashes(md5($rec[$this->fieldName()]["new"]));
-    }
-    else
-    {
-      // Use old hash
-      return addslashes($rec[$this->fieldName()]["hash"]);
-    }
+    return addslashes($rec[$this->fieldName()]["hash"]);
   }
 
   /**
@@ -145,13 +136,24 @@ class atkPasswordAttribute extends atkAttribute
    */
   function fetchValue($rec)
   {
-    if (strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
-      return $rec[$this->fieldName()];
-    else return array("hash" =>$rec[$this->fieldName()]["hash"],
-                      "new"=>$rec[$this->fieldName()]["new"],
-                      "again"=>$rec[$this->fieldName()]["again"],
-                      "current"=>$rec[$this->fieldname()]["current"]
-                      );
+    /* no password change? */
+    if (!empty($rec[$this->fieldName()]["hash"]) &&
+        strlen($rec[$this->fieldName()]["new"]) == 0 &&
+        strlen($rec[$this->fieldName()]["again"]) == 0)
+    {
+      return array("hash" => $rec[$this->fieldName()]["hash"],
+                   "old"  => $rec[$this->fieldName()]["hash"]);
+    }
+
+    /* password has changed, or new record */
+    else
+    {
+      return array("hash"    => md5($rec[$this->fieldName()]["new"]),
+                   "old"     => $rec[$this->fieldName()]["hash"],
+                   "new"     => $rec[$this->fieldName()]["new"],
+                   "again"   => $rec[$this->fieldName()]["again"],
+                   "current" => $rec[$this->fieldName()]["current"]);
+    }
   }
 
   /**
@@ -159,7 +161,6 @@ class atkPasswordAttribute extends atkAttribute
    * @param &$record Record that contains value to be validated.
    *                 Errors are saved in this record
    * @param $mode can be either "add" or "update"
-   * @return $record
    */
   function validate($record, $mode)
   {
@@ -168,13 +169,27 @@ class atkPasswordAttribute extends atkAttribute
     if ($mode == 'update'
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
-        && md5($value["current"]) != $value["hash"])
+        && md5($value["current"]) != $value["old"])
           triggerError($record, $this->fieldName(), 'error_password_incorrect');
 
     if ($value["new"] != $value["again"])
       triggerError($record, $this->fieldName(), 'error_password_nomatch');
+
+    if ($mode =="add" && $this->hasFlag(AF_OBLIGATORY) && strlen($value["new"]) == 0)
+    {
+      triggerError($record, $this->fieldName(), 'error_obligatoryfield');
+    }
   }
 
+  /**
+   * Check if the attribute is empty
+   * @return true if it's empty
+   */
+  function isEmpty($postvars)
+  {
+    /* unfortunately we cannot check this here */
+    return FALSE;
+  }
 
   /**
    * Returns a piece of html code that can be used in a form to display
@@ -197,13 +212,11 @@ class atkPasswordAttribute extends atkAttribute
     return text("password_hidden");
   }
 
+  /**
+   * There can not be searched for passwords!
+   */
   function getSearchModes()
   {
-    // exact match and substring search should be supported by any database.
-    // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-    // searches can be implemented using LIKE)
-    // Possible values
-    //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
     return array();
   }
 
