@@ -156,6 +156,8 @@
      */
     function maxInputSize()
     {
+      $size = atkconfig("max_input_size");
+      if ($size!="") return $size;
       return 70;
     }
 
