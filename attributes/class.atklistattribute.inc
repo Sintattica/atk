@@ -15,6 +15,8 @@
    * @version $Revision$
    * $Id$
    */
+   
+   define("AF_NO_TRANSLATION",             AF_SPECIFIC_1); // Do not translate the options
 
   /**
    * The atkListAttribute class represents an attribute of a node
@@ -156,7 +158,10 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
+        if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
+        else $option=atktext($this->m_options[$i],$this->m_ownerInstance->m_type);
+        
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option;
       }
       $result.='</select>';
       return $result;
