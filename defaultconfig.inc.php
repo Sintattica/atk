@@ -46,5 +46,6 @@
   
   // Automatic error reporting is turned off by default.
   $config_mailreport = "";
+  
 
 ?>

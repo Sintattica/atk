@@ -48,10 +48,28 @@
   // "none"   - no authentication
   // "config" - users/passwords are set in this configfile
   // "db"     - users/passwords are stored in a table in the database.
+  // "mail" - users / passwords are stored in the POP3 or IMAP server
   $config_authentication = "none";
       
   // NOTE, the following options are only useful if authentication is not 
   // set to "none".  
+  
+  // if you use "mail" as authentication, you have to fill in these
+  //parameters.
+  // mail login type
+  // "" = normal mail type
+  // "vmailmgr" = for virtual mail, it will add "@<domain>"
+  $config_mail_login_type = "vmailmgr";
+  // Mail suffix, only is mail login type = "vmailmgr"
+  $config_mail_suffix = "ibuildings.nl";
+  // Mail server name
+  $config_mail_server = "localhost"
+  // Port of the mail server
+  $config_mail_port = 143;
+
+  //if you use "ldap" as authentication, these parameters are nessesary
+  $config_ldap_host = "";
+  $config_ldap_context = "";
   
   // If you use "db" as authentication, this parameter specifies whether
   // the passwords are stored as an md5 string in the database. 
