@@ -260,8 +260,14 @@
      */
     function body($extraprops="")
     {
+      global $ATK_VARS;
       $res = '<body ';
-      if (count($this->m_loadscripts)) $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'\');}" ';
+      if (count($this->m_loadscripts)) 
+      {
+        $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'';
+        if ($ATK_VARS['atktab']) $res.=$ATK_VARS['atktab'];
+        $res.='\');}" ';
+      }
       $res.= $extraprops.">\n";
       return $res;
     }
