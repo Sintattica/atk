@@ -3205,13 +3205,16 @@
     }
 
     /**
-     * Set the security of $action the same as $mapped
-     * @param String $action The action that has to be mapped
+     * Set the security of one or more actions action the same as other actions.
+     * If $mapped is empty $action has to be an array. The key would be used as action and would be mapped to the value.
+     * If $mapped is not empty $action kan be a string containing one action of an array with one or more action. In both
+     * cases al actions would be mapped to $mappped
+     * @param Mixed $action The action that has to be mapped
      * @param String $mapped The action on witch $action has to be mapped
      */
-    function addSecurityMap($action, $mapped=0)
+    function addSecurityMap($action, $mapped="")
     {
-      if($mapped != 0)
+      if($mapped != "")
         if(!is_array($action))
           $this->m_securityMap[$action] = $mapped;
         else
