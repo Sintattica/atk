@@ -125,7 +125,7 @@
       $this->m_record = array();
 
       /* get record data */
-      if (@OCIFetchInto($this->m_query_id, $result, OCI_ASSOC|OCI_RETURN_NULLS))
+      if (@OCIFetchInto($this->m_query_id, $result, OCI_ASSOC|OCI_RETURN_NULLS|OCI_RETURN_LOBS))
       {
         for ($i = 1; $i <= OCINumcols($this->m_query_id); $i++)
         {
