@@ -903,6 +903,16 @@
     else $include = $config_atkroot."atk/relations/class.".strtolower($relation).".inc";
     include_once($include);
   }
+  
+  /**
+   * Returns the (virtual) hostname of the server.
+   */
+  function atkHost()
+  {
+    // todo: make this php 4.2 compatible (check version and use $_SERVER if possible.
+    global $HTTP_SERVER_VARS;
+    return ($HTTP_SERVER_VARS["HTTP_HOST"]!=""?$HTTP_SERVER_VARS["HTTP_HOST"]:$HTTP_SERVER_VARS["SERVER_NAME"]);
+  }
 
   /**
    * Returns the next unique ID for the given sequence.
