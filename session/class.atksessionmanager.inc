@@ -62,7 +62,7 @@
     {
       global $g_sessionData;
 
-      if ($value=="") $value = $GLOBALS[$var];      
+      if ($value=="") $value = $_REQUEST[$var];      
 
       if ($no_namespace) $g_sessionData["globals"][$var] = $value;
       else $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
@@ -89,9 +89,9 @@
         {
           if ($value=="")
           {
-            if ($GLOBALS[$var]!="")
-            {
-              $currentitem[$var] = $GLOBALS[$var];
+            if ($_REQUEST[$var]!="")
+            {              
+              $currentitem[$var] = $_REQUEST[$var];
             }
           }
           else
@@ -118,9 +118,9 @@
 
         if ($value=="")
         {
-          if ($GLOBALS[$var]!="")
+          if ($_REQUEST[$var]!="")
           {
-            $currentitem[$var] = $GLOBALS[$var];
+            $currentitem[$var] = $_REQUEST[$var];
           }
         }
         else
@@ -177,7 +177,7 @@
       $this->_verifyStackIntegrity();
 
       // New stack, new stackid, if level = -1.
-      $stackid = atkStackID(($atklevel==-1));
+      $stackid = atkStackID(($atklevel==-1));            
 
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
 
