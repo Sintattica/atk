@@ -22,6 +22,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.13  2001/09/21 11:57:13  sandy
+   * updated the time attribute, it now also uses an array for hours, minutes, seconds.
+   * Also created a new datetime attrib for the datetime type.
+   *
    * Revision 4.12  2001/08/27 07:38:58  ivo
    * changed validate() api: atk now passes record to the function instead of
    * just one value. Also added a mode parameter that indicates whether we
@@ -451,7 +455,7 @@
      */
     function value2db($rec)
     {
-      $is_date = $this->m_tableMeta['type'] == 'date';      
+      $is_date = $this->m_tableMeta['type'] == 'date' || $this->m_tableMeta['type'] == 'datetime';      
             
       if (!is_array($rec[$this->fieldName()]))
         $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
@@ -473,7 +477,8 @@
      */
     function db2value($rec)
     {
-      $is_date = $this->m_tableMeta['type'] == 'date';
+		 
+      $is_date = $this->m_tableMeta['type'] == 'date' || $this->m_tableMeta['type'] == 'datetime';
       if (strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
                    "month"=>substr($rec[$this->fieldName()], $is_date ? 5 : 4, 2),
