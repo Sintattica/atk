@@ -30,6 +30,7 @@
    */
   class atkDummyAttribute extends atkAttribute
   {
+    var $m_name;
     var $m_text;
 
     /**
@@ -41,6 +42,7 @@
     {
       $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
       $this->atkAttribute($name,$flags); // base class constructor
+      $this->m_name = $name;
       $this->m_text = $text;
     }
 
@@ -52,7 +54,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      return $this->m_text;
+      return "<div ID=\"$this->m_name\">".$this->m_text."</div>";
     }
 
    /**
