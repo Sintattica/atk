@@ -59,8 +59,9 @@
     {
       // first check special WW_ALL flag, which is zero, but results
       // in true anyway.
-      if ($this->m_editflags==WW_ALL) return true;
-      return (($this->m_editflags & $flag) == $flag);
+      $flags = $this->getEditFlags();
+      if ($flags==WW_ALL) return true;
+      return (($flags & $flag) == $flag);
     }
 
 
@@ -133,8 +134,9 @@
       }
 
      // no fonts allowed!
-     if (!$this->hasWWFlag(WW_FONT)) 
+     if (!hasFlag($this->getEditFlags(), WW_FONT)) 
       {
+        atkdebug("NO FONT's ALLOWED");
         $syntax = array("<font[^>.]*>"=>" ",  
                       "</font[^>.]*>"=>" ");
        $content = $this->stripTags($content,$syntax);
@@ -142,12 +144,6 @@
 
     return $content;
     }
-
-    function hasWWFlag($flag)
-    {
-    return ($this->m_editflags&$flag)==$flag;
-    }
-
 
     function stripTags($ostring, $syntax)
     {
@@ -487,6 +483,11 @@
       }        
       
       return $buttons;
+    }
+    
+    function getEditFlags()
+    {
+      return $this->m_editflags;
     }
  
   }
