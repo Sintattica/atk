@@ -2460,11 +2460,18 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+
+          if (is_object($p_attrib))
           {
-            $therecord[$attribname] = $recordcopy[$attribname];
-          } else
-          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+            if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+            {
+              $therecord[$attribname] = $recordcopy[$attribname];
+            } 
+            else
+            {
+              $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+            }
+          }
         }
 
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming

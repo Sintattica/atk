@@ -137,7 +137,7 @@
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
             $recordlist = &atknew("atk.recordlist.atkrecordlist");
-            $result = $recordlist->render($this->m_destInstance, array($myrecord), $actions, RL_NO_SEARCH|RL_NO_SORT, array($this->m_refKey))."<br>";
+            $result = $recordlist->render($this->m_destInstance, array($myrecord), $actions, null, array($this->m_refKey))."<br>";
           }
         }
       }
@@ -877,7 +877,15 @@
           {
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
             $pref = $fieldprefix . "AE_" .$this->fieldName();
-            $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags|RL_NO_SORT, $atksearch, $atkorderby);
+            $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags, $atksearch[$this->fieldName()], $atkorderby);
+            
+            $fieldPointer = &$arr["search"][$pref.$p_attrib->fieldName()];            
+            $fieldPointer = 
+              str_replace(
+                "atksearch[".$p_attrib->fieldName()."]",
+                "atksearch_" . $pref . "[" . $p_attrib->fieldName()."]",
+                $fieldPointer
+              );
           }
         }
       }
@@ -921,44 +929,79 @@
     
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      // we are a relation, so instead of hooking ourselves into the
-      // query, hook the attributes in the destination node onto the query
-      foreach($value as $key => $val)
+      if (is_array($value))
       {
-        // if we aren't searching for anything in this field, there is no need
-        // to look any further:
-        if (!$val) continue;
-        
-        $p_attrib = &$this->m_destInstance->m_attribList[$key];
-        if (is_object($p_attrib))
+        // we are a relation, so instead of hooking ourselves into the
+        // query, hook the attributes in the destination node onto the query
+        foreach($value as $key => $val)
         {
-          if ($this->m_refKey && $this->createDestination())
+          // if we aren't searching for anything in this field, there is no need
+          // to look any further:
+          if (!$val) continue;
+        
+          $p_attrib = &$this->m_destInstance->m_attribList[$key];
+          if (is_object($p_attrib))
           {
-            // master mode
-            $new_table = &$this->fieldName();
+            if ($this->m_refKey && $this->createDestination())
+            {
+              // master mode
+              $new_table = &$this->fieldName();
+            }
+            else
+            {
+              // slave mode
+              $new_table = &$this->m_destInstance->m_table;
+            
+              // we need to left join the destination table into the query
+              // (don't worry ATK won't add it when it's already there)
+              $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+            }
+            $p_attrib->searchCondition($query,$new_table,$val,$searchmode);
           }
           else
           {
-            // slave mode
-            $new_table = &$this->m_destInstance->m_table;
-            
-            // we need to left join the destination table into the query
-            // (don't worry ATK won't add it when it's already there)
-            $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+            // attribute not found in destination, so it should
+            // be in the owner (this is the case when extra fields
+            // are in the relation
+            $p_attrib(&$this->m_ownerInstance->m_attribList[$key]);
+            if (is_object($p_attrib))
+            {
+              $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
+            }
+            else atkdebug("Field $key was not found in this relation (this is very weird)"); 
           }
-          $p_attrib->searchCondition($query,$new_table,$val,$searchmode);
         }
-        else
+      }
+      else 
+      {
+        // we were passed a value that is not an array, so appearantly the function calling us
+        // does not know we are a relation, not just another attrib
+        // so we assume that it is looking for something in the descriptor def of the destination
+        if ($this->createDestination())
         {
-          // attribute not found in destination, so it should
-          // be in the owner (this is the case when extra fields
-          // are in the relation
-          $p_attrib(&$this->m_ownerInstance->m_attribList[$key]);
-          if (is_object($p_attrib))
+          $descfields = $this->m_destInstance->descriptorFields();
+          foreach ($descfields as $key)
           {
-            $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
+            $p_attrib = &$this->m_destInstance->m_attribList[$key];
+            if (is_object($p_attrib))
+            {
+              if ($this->m_refKey && $this->createDestination())
+              {
+                // master mode
+                $new_table = &$this->fieldName();
+              }
+              else
+              {
+                // slave mode
+                $new_table = &$this->m_destInstance->m_table;
+            
+                // we need to left join the destination table into the query
+                // (don't worry ATK won't add it when it's already there)
+                $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+              }
+              $p_attrib->searchCondition($query,$new_table,$value,$searchmode);
+            }
           }
-          else atkdebug("Field $key was not found in this relation (this is very weird)"); 
         }
       }
     }
@@ -974,6 +1017,39 @@
       $condition .= "=";
       $condition .= $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField();
       return $condition;
+    }
+    
+    /**
+     * Overridden method; in the integrated version, we should let the destination
+     * attributes hook themselves into the fieldlist instead of hooking the relation
+     * in it.
+     * For original documentation for this method, please see the atkAttribute class
+     */
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    {
+      if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
+      {
+        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
+          
+          if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
+          {
+            // TODO: This is an ugly way to make sure date attributes are changed as well
+            //       Furthermore it does nothing to save the javascript functionality
+            //       (which completely breaks) in searching a onetoone something like a 'searchname' should
+            //       be implemented and used.
+            if (method_exists($p_attrib, "atkDateAttribute"))
+              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName()."_AE_");
+            else 
+              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName());
+          }
+        }
+      }
+      else
+      {
+        parent::addToSearchformFields($fields,$node,$record, $fieldprefix); 
+      }
     }
   }
   

@@ -115,7 +115,7 @@
 
         $params["header"] = $this->invoke("adminHeader");      
         
-        if ($this->getHeaderLinks()) $params["header"].= "<br><br>".$this->getHeaderLinks();                
+        if ($this->getHeaderLinks()) $params["header"].= $this->getHeaderLinks();                
 
         // create index and navigation bar
         $navigator = &atknew("atk.utils.atknavigator");

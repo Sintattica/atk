@@ -180,11 +180,11 @@
       $result = $g_db->getRows($temp_query);
       
       $condition = "";
-      
+      $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
       foreach($result as $recordArray)
       {
         $record = $recordArray[$this->fieldName()];
-        $decrypted_record = $this->m_crypt->decrypt($record,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
+        $decrypted_record = $this->m_crypt->decrypt($record,$linkpass);
         if ($condition == "")
           $whereOrAnd = "(";
         else

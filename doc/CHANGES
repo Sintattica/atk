@@ -27,8 +27,7 @@ Changes in ATK 5.0.7
   differently from the main and eachother, by using templates
   and stylesheets [Boy]
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
-  this only works for the 'normal' searchfields, extended search still
-  has to be fixed [Harrie]
+  for normal/extended searching and sorting [Boy, Harrie]
 * Fixed navigating for select mode [Boy,Yuri]
 * atkQuery now checks for double joins [Boy,Harrie]
 
