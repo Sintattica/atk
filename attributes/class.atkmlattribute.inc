@@ -33,7 +33,7 @@
       global $config_language, $g_layout;
       
       /* register javascript */
-      $g_layout->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
+      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
       $g_layout->register_submitscript('submitSave(form);');
 
       /* hidden values */

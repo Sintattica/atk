@@ -59,7 +59,7 @@ class atkMlSelectorAttribute extends atkAttribute
   {
     /* register javascript */
     global $g_layout;
-    $g_layout->register_script($config_atkroot."atk/javascript/class.atkmultilanguage.js.php");
+    $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
     return $this->getSelector();
   }
 
