@@ -1217,7 +1217,7 @@
 
         // We use wildcard search for the index. Should be supported by any database.
 
-        $nav.=href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
+        $nav.=href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
