@@ -2842,16 +2842,7 @@
       }
 
     }
-
-    /**
-     * Create a table to store the node.
-     * TODO (function will be used for autoinstallation of modules)
-     */
-    function createDb()
-    {
-      // TODO (function will be used for autoinstallation of modules)
-    }
-
+    
     /**
      * Count the record(s) from a certain select query.
      * The 'selector' parameter can be anything that's valid in a 'where' statement.
