@@ -22,6 +22,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.9  2001/06/29 14:48:37  peter
+   * Fixed small bug; if you want to know the days of a certain month, you have
+   * to use the "0" day of the next month (not the month you want to know it off...)
+   *
    * Revision 4.8  2001/05/22 08:35:25  peter
    * Made the API a bit more user friendly by allowing the user to specify
    * "" for the date formats. This means the attribute will automagically
@@ -150,7 +154,8 @@
      */
     function getDays($date)
     {
-      $date = getdate(mktime (0, 0, 0, $date["mon"], 0, $date["year"]));
+      /* the last day of any given month can be expressed as the "0" day of the next month! */
+      $date = getdate(mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
       return $date["mday"];
     }
 
