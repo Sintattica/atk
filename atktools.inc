@@ -821,8 +821,7 @@
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
       header('Pragma: no-cache');
       header('Expires: 0');
-		  fpassthru($fp);    
-      fclose($fp);  
+		  fpassthru($fp);          
       return true;
     }
     return false;
