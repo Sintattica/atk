@@ -29,7 +29,7 @@
     function atkFileWriterAttribute($name, $filename, $flags=0)
     {
       $this->m_filename = $filename;
-      $this->atkTextAttribute($name,$flags); // base class constructor
+      $this->atkTextAttribute($name,30,$flags); // base class constructor
     }
 
     function value2db($record)
