@@ -117,7 +117,7 @@
      	
      if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()."] ".$txt;
   }
-
+  
   /**
    * Like atkdebug, this displays a message at the bottom of the screen.
    * The difference is, that this is also displayed when debugging is turned
@@ -1288,7 +1288,31 @@
     return '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
   }
   
+  /**
+  * Imports a file
+  * @param $fullclassname name of class in atkformat (map1.map2.classfile)
+  * @param $failsafe boolean that determines wether a class is included or
+  *                   made required. Defaults to true.
+  */
   function atkimport($fullclassname, $failsafe=true)
+  {
+    $filename = atkClassnameDecrypt($fullclassname);
+    
+    if ($failsafe)
+    {
+      require_once($filename);
+    }
+    else
+    {
+      include_once($filename);
+    }
+  }
+  
+  /**
+  * Converts an ATK classname (like "map1.map2.classname")
+  * to a 'normal' name ("/map1/map2/class.classname.inc")
+  */
+  function atkClassnameDecrypt($fullclassname)
   {
     $elems = explode(".", strtolower($fullclassname));
     if($elems["0"] == "module")
@@ -1303,15 +1327,7 @@
     $last = "class.".$last.".inc";
     
     $filename = $prefix.implode("/", $elems);
-    
-    if ($failsafe)
-    {
-      require_once($filename);
-    }
-    else
-    {
-      include_once($filename);
-    }
+    return $filename;
   }
   
   function &atknew($fullclassname)
