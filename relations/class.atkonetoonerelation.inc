@@ -39,14 +39,12 @@
      */
     function display($record)
     {
-      $myrecords = $record[$this->fieldName()];
+      $myrecord = $record[$this->fieldName()];
 
       $this->createDestination();
 
-      if (count($myrecords)!=0)
-      {
-        $result = $this->m_destInstance->descriptor($myrecords[0]);
-      }
+      if (is_array($myrecord))
+        $result = $this->m_destInstance->descriptor($myrecord);
 
       return $result;
     }
