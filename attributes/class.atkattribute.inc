@@ -91,6 +91,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.14  2001/07/10 14:23:09  ivo
+   * Fixed a bug in atkAttribute that caused texts with "" to fail.
+   *
    * Revision 4.13  2001/07/10 12:55:07  ivo
    * New flag: AF_AUTOKEY (short for AF_PRIMARY|AF_AUTOINCREMENT|AF_HIDE)
    *
@@ -357,7 +360,7 @@
     function edit($record="", $fieldprefix="")
     {
       $result = '<input type="text" name="'.$fieldprefix.$this->formName().
-                '" value="'.$record[$this->fieldName()].'"'.
+                '" value="'.htmlentities($record[$this->fieldName()]).'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
               
