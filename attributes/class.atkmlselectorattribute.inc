@@ -65,7 +65,8 @@ class atkMlSelectorAttribute extends atkMlAttribute
   {
     global $config_atkroot;
     /* base class constructor */
-    $this->atkMlAttribute("multilanguage_select", $flags|AF_HIDE_LIST);    
+    $this->atkMlAttribute("multilanguage_select", $flags|AF_HIDE_LIST);
+    $this->m_mlattribute=FALSE; // just a selector and not a real attribute    
   }
 
   /**

@@ -4085,7 +4085,7 @@
    {
      foreach($this->m_attribList as $attribname=>$attrib)
      {
-       if($this->m_attribList[$attribname]->m_languageattribute) $lngattribs[$attribname] = &$this->m_attribList[$attribname];
+       if($this->m_attribList[$attribname]->m_mlattribute) $lngattribs[$attribname] = &$this->m_attribList[$attribname];
      }
      for($i=0, $max=count($recordset);$i<$max;$i++)
      {
@@ -4122,7 +4122,7 @@
        foreach($this->m_attribList as $attribname=>$attrib)
        {
          if($this->m_attribList[$attribname]->hasFlag(AF_ML)) $record[$attribname]=$language;
-         if($this->m_attribList[$attribname]->m_languageattribute)
+         if($this->m_attribList[$attribname]->m_mlattribute)
          {
            // change the language of the attribute
            $this->m_attribList[$attribname]->m_language=$language;

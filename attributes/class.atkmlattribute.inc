@@ -12,7 +12,7 @@
   class atkMlAttribute extends atkAttribute
   {
     var $m_language = "";
-    var $m_languageattribute = TRUE;
+    var $m_mlattribute = TRUE;
     var $m_edited = false;    
     var $m_languages = array();
     
