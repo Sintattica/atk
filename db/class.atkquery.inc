@@ -342,6 +342,22 @@
     }
 
     /**
+     * Builds the SQL Delete query
+     * @result a SQL Delete Query
+     */
+    function buildDelete()
+    {
+      $result = "DELETE FROM ".$this->m_tables[0];
+
+      if (count($this->m_conditions)>0)
+      {
+        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+      }
+
+      return $result;
+    }
+
+    /**
     * Search Alias in alias array
     * @param $record Array with fields
     * @result $record with correct value
