@@ -44,8 +44,7 @@
     function load($db, $record)
     {
       
-      $query = 'SELECT '.$this->m_name1.','.$this->m_name2.' FROM '.$this->m_name;
-      atkdebug("matrix load: ".$query);
+      $query = 'SELECT '.$this->m_name1.','.$this->m_name2.' FROM '.$this->m_name;      
       $checked = $db->getRows($query);
       
       for ($i=0;$i<count($checked);$i++)

@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.3  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -206,8 +209,8 @@
       else if ($mode == "add" || $mode == "edit")
       {
         reset($config_language);
-        while (list($i, $language) = each($config_language))
-          $query->addField($this->fieldName().'_'.$language,addslashes($rec[$this->fieldName()][$language]),"","",!$this->hasFlag(AF_NO_QUOTES));
+        while (list($i, $language) = each($config_language))          
+          $query->addField($this->fieldName().'_'.$language,escapeSQL($rec[$this->fieldName()][$language]),"","",!$this->hasFlag(AF_NO_QUOTES));
       }
     }
 

@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.2  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.1  2001/06/18 10:05:51  ivo
    * New attribute: atkProfileAttribute, for editing security profiles.
    * New node flag: NF_NO_SECURITY
@@ -29,7 +32,7 @@
       $query = "SELECT * 
                 FROM ".atkconfig("auth_accesstable")." 
                 WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
-      atkdebug($query);
+
       $result = Array();
       $rows = $db->getrows($query);
       for ($i=0;$i<count($rows);$i++)
@@ -43,7 +46,7 @@
     {
       $delquery = "DELETE FROM ".atkconfig("auth_accesstable")." 
                    WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
-      atkdebug($delquery);
+
       $db->query($delquery);
       
       $checked = $record[$this->fieldName()];
@@ -54,7 +57,7 @@
         {
           $query = "INSERT INTO ".atkconfig("auth_accesstable")." (node, action, ".atkconfig("auth_levelfield").") ";
           $query.= "VALUES ('".$node."','".$actions[$i]."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
-          atkdebug($query);
+
           $db->query($query);
         }
       }

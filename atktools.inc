@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.13  2001/06/29 11:26:59  ivo
+  * Patches to oracle support.
+  *
   * Revision 4.12  2001/06/22 15:34:44  ivo
   * Dirty hack to atkurlencode [pk]'s once they have been replaced.
   * TODO: clean up!
@@ -618,6 +621,16 @@
       mail($config_mailreport,$subject,$body,"From: $from <atkinfo@ibuildings.nl>");
     }
   }
-    
+  
+  
+  /**
+   * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
+   */
+  function escapeSQL($string, $wildcard=false)
+  {
+    $result = str_replace("'","''",$string);
+    if ($wildcard == true) $result = str_replace("%","%%",$result);
+    return $result;
+  }  
 
 ?>

@@ -10,6 +10,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.2  2001/06/12 12:24:23  ivo
    * New feature: users can now have more then one group in db authentication.
    *
@@ -48,7 +51,6 @@
        global $g_db;
        
        $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
-       atkdebug($query);
        
        $recs = $g_db->getrows($query);              
           
@@ -87,8 +89,7 @@
                      $usertable.$userfield = '$user'";                     
                      
        }
-       
-       atkdebug("getUser query: $query");
+              
        $recs = $g_db->getrows($query);
        
        // We might have more then one level, so we loop the result. 
@@ -113,7 +114,6 @@
        global $g_db;
        
        $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node' AND action IN ('$action','*') ORDER BY action DESC";
-       atkdebug($query);           
                           
        $rights = $g_db->getrows($query);
        

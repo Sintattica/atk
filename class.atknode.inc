@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.67  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.66  2001/06/29 09:08:19  ivo
    * "Field is required" msg now only appears if there actually are required
    * fields.
@@ -1898,7 +1901,7 @@
           $this->m_errors[$attribname] = text('error_obligatoryfield');
         }
         else if ($p_attrib->hasFlag(AF_UNIQUE) &&
-                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".$this->m_postvars[$attribname]."' AND NOT (".$this->primaryKey($record).")"))>0
+                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
           $this->m_errors[$attribname] = text('error_uniquefield');
@@ -1969,8 +1972,6 @@
 
         $querystring = $query->buildUpdate();
 
-        //$query.= " WHERE ;
-        atkdebug("updatedb - querystring: ".$querystring);
         $g_db->query($querystring);
 
         // also store special storage attributes.
@@ -2041,8 +2042,8 @@
           if ($value!="")
           {
             $p_attrib = &$this->m_attribList[$key];
-            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
-            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".$value."%')";
+            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);            
+            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
             $query->addCondition($condition);              
           }
         }
@@ -2073,7 +2074,7 @@
 
 
       $querystring = $query->buildCount();
-      atkdebug("countDb() - query: ".$querystring);
+
       $g_db->query($querystring);
       $result = $g_db->getrows($querystring);
       return $result[0]["count"];
@@ -2148,7 +2149,7 @@
           {
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
-            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".$value."%')";
+            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
             $query->addCondition($condition);              
           }
         }
@@ -2179,7 +2180,6 @@
 
       $querystring = $query->buildSelect();
       if ($order!="") $querystring.=" ORDER BY ".$order;
-      atkdebug("selectDb() - query: ".$querystring);      
       
       if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
       else $dbrecords = $g_db->getrows($querystring);
@@ -2323,7 +2323,6 @@
       }
 
       $querystring = $query->buildInsert();
-      atkdebug("adddb - querystring: ".$querystring);
       $g_db->query($querystring);
 
       // Now we call a postAdd function, that can be used to do some processing after the record
@@ -2357,7 +2356,6 @@
       }
 
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
       

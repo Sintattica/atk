@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.20  2001/06/29 11:26:59  ivo
+    * Patches to oracle support.
+    *
     * Revision 4.19  2001/06/25 15:14:16  sandy
     * when there are no tree items, it won't show a leaf icon anymore
     *
@@ -600,7 +603,7 @@
         $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      atkdebug("deleteDb - query: ".$query);
+
       $g_db->query($query);
       
       
@@ -641,7 +644,7 @@
         }
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      atkdebug("deleteChildren - query: ".$query);
+      
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
     }

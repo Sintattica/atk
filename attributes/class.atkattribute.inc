@@ -88,6 +88,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.11  2001/06/27 15:25:42  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -313,7 +316,7 @@
      */
     function value2db($rec)
     {
-      return addslashes($rec[$this->fieldName()]);
+      return escapeSQL($rec[$this->fieldName()]);
     }
 
     /**
@@ -390,8 +393,8 @@
      * @return a piece of the SQL where clause
      */
     function searchCondition($table, $value)
-    {
-      return "lower(".$table.".".$this->fieldName().") LIKE lower('%".$value."%')";
+    {      
+      return "lower(".$table.".".$this->fieldName().") LIKE lower('%".escapeSQL($value,true)."%')";
     }
 
     /**

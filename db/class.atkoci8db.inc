@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/06/29 11:26:59  ivo
+   * Patches to oracle support.
+   *
    * Revision 4.4  2001/06/27 15:25:43  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -109,7 +112,7 @@
       if ($offset >= 0 && $limit > 0)
       {
         /* row id's start at 1! */
-	$query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (". 
+	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (". 
         $query.") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
       }	
       
@@ -127,8 +130,8 @@
       }      
 
       /* query database */
-      $this->m_query_id = OCIParse($this->m_link_id, $query);
-      if ($this->m_query_id) @OCIExecute($this->m_query_id);
+      $this->m_query_id = @OCIParse($this->m_link_id, $query);
+      if ($this->m_query_id) @OCIExecute($this->m_query_id,OCI_COMMIT_ON_SUCCESS);
       $this->m_row = 0;
 
       /* error in query */
@@ -277,7 +280,7 @@
 
       /* execute query */
       $m_query_id = OCIParse($this->m_link_id, $query);
-      $id = @OCIExecute($m_query_id);
+      $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
 
       /* error? */
       if (empty($id))
@@ -285,7 +288,7 @@
         /* create sequence */
         $query = "CREATE SEQUENCE seq_$sequence INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
         $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id) or $this->halt("cannot create 'seq_$sequence'");
+        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
         
         /* try again */
         $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
@@ -318,7 +321,7 @@
                    "T.char_col_decl_length,I.index_name".
                    " FROM ALL_TAB_COLUMNS T,ALL_IND_COLUMNS I".
                    " WHERE T.column_name=I.column_name (+)".
-                   " AND T.table_name=I.table_name (+)".
+                   " AND T.table_name=I.table_name".
                    " AND T.table_name=UPPER('$table') ORDER BY T.column_id");
 
       /* result */
