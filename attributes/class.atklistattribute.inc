@@ -117,7 +117,7 @@
      */
     function display($record)
     {
-    	return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
+      return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
     }
     
     /**
@@ -128,7 +128,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-    	// todo: configurable rows
+      // todo: configurable rows
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
       
@@ -302,6 +302,35 @@
     function getEmptyValue()
     {
       return $this->m_emptyvalue;
+    }
+    
+    /**
+     * Convert a String representation into an internal value.
+     *
+     * This implementation search for the value first in the valueArray, then in the optionArray
+     * All other values are converted to the first of the valueArray
+     *
+     * @param String $stringvalue The value to parse.
+     * @return Internal value (from valueArray)
+     */
+    function parseStringValue($stringvalue)
+    {
+      foreach($this->m_values as $value)
+        if(strtolower($stringvalue) == strtolower($value))
+          return $value;
+
+      $i=0;
+      foreach($this->m_options as $option)
+      {
+        if(strtolower($stringvalue) == strtolower($option))
+          return $this->m_values[$i];
+
+        if(strtolower(text($stringvalue)) == strtolower($option))
+          return $this->m_values[$i];
+        $i++;
+      }
+
+      return $this->m_value[0];
     }
   }
 
