@@ -8,6 +8,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/05/17 08:06:33  ivo
+   * Fixes to atkfileattribute and onetoonerelation.
+   *
    * Revision 4.4  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -89,12 +92,20 @@
       if ($record[$this->fieldName()]!=NULL)
       {      
         $myrecord = $record[$this->fieldName()];
-        $mode = "edit";        
+        
+        if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
+        {
+          // rec has no primkey yet, so we must add instead of update..        
+          $mode = "add";
+        }
+        else
+        {
+          $mode = "edit";
+        }
       }
       else
       {      
-        $mode = "add";
-        
+        $mode = "add";       
       }                     
       
       $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
@@ -196,9 +207,9 @@
      * @param $notused ??
      * @param $record Record
      */
-    function store($notused, $record)    
+    function store($notused, &$record)
     {
-      $vars = $record[$this->fieldName()];
+      $vars = &$record[$this->fieldName()];
       
       $this->createDestination();      
           
@@ -211,9 +222,9 @@
         $this->m_destInstance->updateDb($vars);
       }
       else if ($vars["mode"]=="add")
-      {
+      {        
         atkdebug("Adding new one2one record");
-        $this->m_destInstance->addDb($vars);
+        $this->m_destInstance->addDb(&$vars);        
       }
       else
       {

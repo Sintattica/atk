@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.32  2001/05/17 08:06:33  ivo
+   * Fixes to atkfileattribute and onetoonerelation.
+   *
    * Revision 4.31  2001/05/16 06:52:24  ivo
    * removed php short-tags.
    *
@@ -2159,7 +2162,7 @@
      * Update a record in the database 
      * Note: for new records use addDb()).
      */
-    function updateDb($record)
+    function updateDb(&$record)
     {
       global $g_db;
 
@@ -2499,7 +2502,7 @@
     function addDb(&$record)
     {
       global $g_db;
-      
+     
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
@@ -2550,7 +2553,7 @@
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
       $this->postAdd($record);
-
+      
       atkdebug($g_db->m_error);
     }
 

@@ -27,6 +27,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/17 08:06:33  ivo
+   * Fixes to atkfileattribute and onetoonerelation.
+   *
    * Revision 4.1  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -106,6 +109,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
+  
       $result=$this->display($record);
 
       if(is_dir($this->m_dir))
@@ -127,6 +131,8 @@
         $result.="<br>";
         $result.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
       }
+      
+      $result.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'_postfileskey" value="'.$fieldprefix.$this->fieldName().'">';
 
       if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) $result .= '<input type="file" name="'.$fieldprefix.$this->fieldName().'">';
 
@@ -170,7 +176,7 @@
     function value2db($rec)
     {
       global $del;
-      global $select;
+      global $select;            
 
       if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
       {
@@ -206,7 +212,7 @@
      */
     function db2value($rec)
     {
-      return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],"orgfilename"=>$rec[$this->fieldName()],"filesize"=>"?");
+      return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],"orgfilename"=>$rec[$this->fieldName()],"filename"=>$rec[$this->fieldName()],"filesize"=>"?");
     }
 
     /**
@@ -217,32 +223,30 @@
     function fetchValue($rec)
     {
       global $HTTP_POST_FILES;
-
-      $basename = $this->fieldName();
+       
+      $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
+      $basename = $this->fieldName();      
 
       if (is_array($HTTP_POST_FILES))
       {
         // php4
-        if ($HTTP_POST_FILES[$basename]["tmp_name"]=="none")
-        {
-          return Array("tmpfile"=>"","filename"=>"","filesize"=>0,"orgfilename"=>$rec[$basename."_orgfilename"]);
+        if ($HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
+        { 
+      
+          $result = array("tmpfile"=>"",
+                          "filename"=>"",
+                          "filesize"=>0,
+                          "orgfilename"=>$rec[$basename."_orgfilename"]);
         }
-
-        $result = Array("tmpfile"=>$HTTP_POST_FILES[$basename]["tmp_name"],"filename"=>$HTTP_POST_FILES[$basename]["name"],"filesize"=>$HTTP_POST_FILES[$basename]["size"],"orgfilename"=>$HTTP_POST_FILES[$basename]["name"]);
+        else
+        {
+          $result = array("tmpfile"=>$HTTP_POST_FILES[$postfiles_basename]["tmp_name"],
+                          "filename"=>$HTTP_POST_FILES[$postfiles_basename]["name"],
+                          "filesize"=>$HTTP_POST_FILES[$postfiles_basename]["size"],
+                          "orgfilename"=>$HTTP_POST_FILES[$postfiles_basename]["name"]);
+        }                
         return $result;
-      }
-      else
-      {
-        // php3
-
-        // Var is set to 'none' by php if no file is uploaded..
-        if ($rec[$basename]=="none")
-        {
-          return Array("tmpfile"=>"","filename"=>"","filesize"=>0,"orgfilename"=>$rec[$basename."_orgfilename"]);
-        }
-
-        return Array("tmpfile"=>$rec[$basename],"filename"=>$rec[$basename."_name"],"filesize"=>$rec[$basename."_size"],"orgfilename"=>$rec[$basename."_name"]);
-      }    
+      }      
     }
     
     /**
