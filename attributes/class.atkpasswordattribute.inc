@@ -97,7 +97,16 @@ class atkPasswordAttribute extends atkAttribute
    */
   function value2db($rec)
   {
-    return addslashes(md5($rec[$this->fieldName()]["new"]));
+    if(strlen($rec[$this->fieldname()]["new"])>0)
+    {
+      // Use new password
+      return addslashes(md5($rec[$this->fieldName()]["new"]));
+    }
+    else
+    {
+      // Use old hash
+      return addslashes($rec[$this->fieldName()]["hash"]);
+    }
   }
 
   /**
