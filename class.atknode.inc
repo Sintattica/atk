@@ -1439,10 +1439,7 @@
       }
 
       if (hasFlag($flags, RL_MRA))
-      {
-        $result["mra"] = array_unique($result["mra"]);
-        sort($result["mra"]);
-      }
+        $result["mra"] = array_values(array_unique($result["mra"]));
 
       return $result;
     }
