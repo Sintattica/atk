@@ -39,7 +39,7 @@
   function colorMatrix($colHeight,$colWidth,$field,$extern=0,$userColors)
   {
     $webColors = array ("44","55","66","77","88","99","AA","BB","CC","DD","EE","FF"); // values to mix, websave 12 variants
-    $stdColors  = array("5B919D","cc33cc","cc9933","6699cc","cc6699","669933","ff9900","cccc99","663399","5dabdd","cafe00","ffcc33"); // standard favorite colors
+    $stdColors  = array("000000","A4358E","C79476","6699cc","cc6699","669933","ff9900","cccc99","663399","5dabdd","cafe00","ffcc33"); // standard favorite colors
     $nrColors    = count($webColors);
     $matrix .= '<table width="'.($nrColors*$colW).'" border="0" cellspacing="0" cellpadding="0"><tr height="5"><td></td></tr><tr><td>';
     $matrix .= "\n";
