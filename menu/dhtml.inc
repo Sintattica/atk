@@ -59,14 +59,21 @@
     $url    = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
     $enable = $g_menu[$atkmenutop][$i]["enable"];
 
-    if (is_array($enable))
+    // Check wether we have the rights and the item is not a root item
+    if (is_array($enable) && $atkmenutop != "main" && $name != "-")
     {
-     $enabled = false;
-     for ($j=0;$j<(count($enable)/2);$j++)
-     {
-      $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
-     }
-     $enable = $enabled;
+      $enabled = false;
+
+      // include every node and perform an allowed() action on it
+      // to see wether we have ther rights to perform the action
+      for ($j=0;$j<(count($enable)/2);$j++)
+      {
+        $action = $enable[(2*$j)+1];
+        
+        $instance = &getNode($enable[(2*$j)]);
+        $enabled |= $instance->allowed($action);
+      }
+      $enable = $enabled;
     }
 
     /* delimiter ? */

@@ -82,7 +82,7 @@ while (list ($name) = each ($g_menu))
   $atkmenutop = $name;
   $menubuttons = "";
   $submenubuttons = "";
-  
+
   // Create a submenu for each root menu item
   // When an item in this submenu points to a submenu of it's own
   // that menu will be created as well
@@ -90,20 +90,26 @@ while (list ($name) = each ($g_menu))
   {
     $name = $g_menu[$atkmenutop][$i]["name"];
     $url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
-    
+
     $enable = $g_menu[$atkmenutop][$i]["enable"];
-    
-    // Check wether we have the rights
-    if (is_array($enable))
+
+    // Check wether we have the rights and the item is not a root item
+    if (is_array($enable) && $atkmenutop != "main" && $name != "-")
     {
       $enabled = false;
+
+      // include every node and perform an allowed() action on it
+      // to see wether we have ther rights to perform the action
       for ($j=0;$j<(count($enable)/2);$j++)
       {
-        $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
+        $action = $enable[(2*$j)+1];
+        
+        $instance = &getNode($enable[(2*$j)]);
+        $enabled |= $instance->allowed($action);
       }
       $enable = $enabled;
     }
-    
+
     // Menu items with a URL become links
     if($g_menu[$atkmenutop][$i]["url"]!="")
     {
@@ -115,7 +121,7 @@ while (list ($name) = each ($g_menu))
       {
         $menu_icon = $theme->iconPath($atkmenutop."_".$name,"dropdown");
       }
-      
+
       // If we have the rights, add the menu items
       if ($enable)
       {
@@ -131,7 +137,7 @@ while (list ($name) = each ($g_menu))
         }
       }
     }
-    
+
     // Menu items without a URL become a new submenu
     elseif($atkmenutop != "main" && $name != "-")
     {
@@ -140,12 +146,12 @@ while (list ($name) = each ($g_menu))
       $subsubmenu[] = $name;
     }
   }
-  
+
   // If the current rootmenu has any menu buttons add it
   if ($menubuttons)
   {
     $menubuttons .= $submenubuttons;
-    
+
     // The menu item sets for each submenu
     $menubuttonsarray[] = $menubuttons;
     // The menu items that open a submenu
@@ -165,33 +171,34 @@ for ($i = 0; $i < count($menurootarray); $i++)
   if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main")
   {
     // Every menu item on the first level will be added to the menu root
-		$menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
-			
-		// Create menus that will open the submenuitems for the first level
-		echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
-		echo $menubuttonsarray[$i];
-		$plus = $plus + 100;
-	}
-	elseif($menurootarray[$i] != "main")
-	{
-	  // Create menus that will open submenu items on a lower level
-		echo ('startMenu("m'.$menurootarray[$i].'", true, 125, 0, 180, subSubM, "parent.main");');
-		echo $menubuttonsarray[$i];
-	}
+    $menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
+
+    // Create menus that will open the submenuitems for the first level
+    echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
+    echo $menubuttonsarray[$i];
+    $plus = $plus + 100;
+  }
+  elseif($menurootarray[$i] != "main")
+  {
+    // Create menus that will open submenu items on a lower level
+    echo ('startMenu("m'.$menurootarray[$i].'", true, 125, 0, 180, subSubM, "parent.main");');
+    echo $menubuttonsarray[$i];
+  }
 }
 
-  // Add the user preferences option to the menu root
-	if (is_allowed("users.userprefs", "edit"))
-	{
-	  $menuroot .= 'addItem("Instellingen","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
-	}
-	
-	// Add the logout option to the menu root
-	$menuroot .= 'addItem("Uitloggen","index.php?atklogout=1","",hBar,100);';
+// Add the user preferences option to the menu root
+$userpreferences = &getNode("users.userprefs");
+if ($userpreferences->allowed("edit"))
+{
+  $menuroot .= 'addItem("'.text("settings", "", "atk").'","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
+}
 
-	// Add the menu root its self
-	echo ($menuroot);
-	
+// Add the logout option to the menu root
+$menuroot .= 'addItem("'.text("logout","","atk").'","index.php?atklogout=1","",hBar,100);';
+
+// Add the menu root its self
+echo ($menuroot);
+
 	?>
 	
 	// The following code is for showing special effects in the menu
