@@ -11,6 +11,8 @@ Changes in ATK 5.0.7
   the options from being automatically translated [Boy]
 + Added $config_use_keyboard_handler with which you can turn
   the keyboardhandler off [Boy]
++ Added NF_NO_IMPORT, this will hide the import link 
+  in the admin screen [Boy]
 * Fixed deleteAllowed in oneToManyRelation, when the filter is not 
   on the destination node. [Boy,Harrie]
 * Fixed filtering and navigating after update/save for navigator [Boy]
@@ -25,7 +27,7 @@ Changes in ATK 5.0.7
   this only works for the 'normal' searchfields, extended search still
   has to be fixed [Harrie]
 * Fixed initial for manytoone, you can now set an initial for a manytoone
-  by passing a primary key value [Boy]
+  by passing a primary key value of the destination [Boy]
 
 Changes in ATK 5.0.6
 --------------------

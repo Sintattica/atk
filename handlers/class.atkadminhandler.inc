@@ -115,7 +115,7 @@
 
         $params["header"] = $this->invoke("adminHeader");      
         
-        $params["header"].= "<br><br>".$this->getHeaderLinks();                
+        if ($this->getHeaderLinks()) $params["header"].= "<br><br>".$this->getHeaderLinks();                
 
         // create index and navigation bar
         $navigator = &atknew("atk.utils.atknavigator");
@@ -184,7 +184,7 @@
     function getImportLink()
     {
       $link = "";
-      if ($this->m_node->allowed("import")&&!$this->m_node->hasFlag(NF_READONLY))
+      if ($this->m_node->allowed("import")&&!$this->m_node->hasFlag(NF_READONLY) &&!$this->m_node->hasFlag(NF_NO_IMPORT))
       {
         $link.= href(dispatch_url($this->m_node->atkNodeType(), "import"), atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
       }

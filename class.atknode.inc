@@ -51,6 +51,8 @@
 
   define("NF_LOCK",                32768); // lock records
   define("NF_ML",                  65536); // multilanguage support  
+  
+  define("NF_NO_IMPORT",          131072); // Quick way to disable the import feature
 
   define("NF_SPECIFIC_1",       33554432); // specific node flag 1
   define("NF_SPECIFIC_2",       67108864); // specific node flag 2
