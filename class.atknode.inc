@@ -324,8 +324,8 @@
      */
     var $m_statusbarDone = false;
 
-    /* search action, action that will be performed if only one record is found */
-    var $m_search_action = "";
+    /* search action(s), action that will be performed if only one record is found */
+    var $m_search_action;
 
     /* priority actions and min/max range for multi-record-priority actions */
     var $m_priority_actions = array();
@@ -1247,12 +1247,17 @@
 
       // check for search-action (if search returns only one record!)
       if (is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch']) > 0 &&
-          !empty($this->m_search_action) && count($recordset) == 1)
+          is_array($this->m_search_action) && count($recordset) == 1)
       {
-        $this->redirect(session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType().
-                                    '&atkaction='.$this->m_search_action.
-                                    '&atkselector='.rawurlencode($this->primaryKey($recordset[0])),
-                                    SESSION_REPLACE));
+        for ($i = 0, $_i = count($this->m_search_action); $i < $_i; $i++)
+          if ($this->allowed($this->m_search_action[$i]))
+          {
+            $this->redirect(session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType().
+                            '&atkaction='.$this->m_search_action[$i].
+                            '&atkselector='.rawurlencode($this->primaryKey($recordset[0])),
+                             SESSION_REPLACE));
+            break;
+          }
       }
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
@@ -3451,11 +3456,15 @@
     /**
      * Sets the search action. The search action is the action that will be performed
      * on the single record that is found after doing a certain search query.
-     * @param $action the action name
+     *
+     * NOTE: you can specify more then 1 action. If the user isn't allowed to execute
+     *       the 1st action, the 2nd action will be used, etc.
+     *
+     * @param ... the action name(s)
      */
-    function setSearchAction($action)
+    function setSearchAction()
     {
-      $this->m_search_action = $action;
+      $this->m_search_action = func_get_args();
     }
   }
 ?>
