@@ -332,9 +332,9 @@
       sessionStore('loginattempts',$loginattempts);
 
       atkdebug('LoginAttempts: '.$loginattempts);
+      $g_layout->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
       $g_layout->head(text('app_title'));
       $g_layout->login_top(text('login_form'));
-
       $g_layout->output('<form action="'.$PHP_SELF.'" method="post">');
       $g_layout->output('<input type="hidden" name="atkaction" value="login">');
       $g_layout->output('<input type="hidden" name="authorization" value="loginform">');
@@ -367,7 +367,9 @@
         $g_layout->output("<td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td>");
       }
       $g_layout->output('</tr></table>');
+      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
       $g_layout->ui_bottom();
+
     }
 
     function allowed($node, $action)
