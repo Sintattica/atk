@@ -53,6 +53,11 @@
   /**
    * The atkWysiwygAttribute class is an MS IE html edit control thingee.
    *
+   * Note: this attribute is based on a microsoft component which is
+   * limited in features, and only works in Internet Explorer.
+   * It is recommented to use atkFckAttribute instead, which is a much
+   * more feature-rich editor, which works in most popular browsers.
+   *
    * @author Lineke Willems <lineke@ibuildings.nl>   
    * @package atk
    * @subpackage attributes
