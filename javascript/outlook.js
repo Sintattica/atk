@@ -318,7 +318,7 @@ function b_addPanel(panel) {
 function b_writeStyle() {
   	
 	document.write('<STYLE TYPE="text/css">');
-  document.write('.button {width:300; text-align:center; font-family:arial; color:'+ol_menucolor+';');
+  document.write('.button {width:190; text-align:center; font-family:arial; color:'+ol_menucolor+';');
   document.write(' font-size:8pt; cursor:hand;');
   document.write(' height:22;');
   document.write('background-color:'+ol_background+'; background-image:url('+ol_pimage+')}');
@@ -486,16 +486,22 @@ var c=0;
           document.write(');"><BR>'+this.panels[i].lbl[j]+'</DIV>');
         }
         else {
-          document.write('<DIV id='+this.name+'_panel'+i+'_b'+j+' class=imgB ');
-          document.write('Style="position:absolute; left:0; width:'+this.width);
-          document.write('; top:'+mtop+'; text-align:center;">');
-          document.write('<img src='+this.panels[i].img[j]+' class=imgnob ');
+          document.write('<DIV id='+this.name+'_panel'+i+'_b'+j+' class=imgnob ');
           document.write('onmouseOver="this.className=\'imgbout\';" ');
           document.write('onmouseDown="this.className=\'imgbin\';" ');
           document.write('onmouseUp=\'this.className="imgbout";');
           document.write(this.panels[i].act[j]+';\' ');
-          document.write('onmouseOut="this.className=\'imgnob\';"><BR>');
-          document.write(this.panels[i].lbl[j]+'</DIV>');
+          document.write('onmouseOut="this.className=\'imgnob\';" ');
+          document.write('Style="position:absolute; left:0; width:'+this.width);
+          document.write('; top:'+mtop+'; text-align:center;">');
+          document.write('<img src='+this.panels[i].img[j]+' class=imgnob >');
+//          document.write('onmouseOver="this.className=\'imgbout\';" ');
+  //        document.write('onmouseDown="this.className=\'imgbin\';" ');
+  //        document.write('onmouseUp=\'this.className="imgbout";');
+ //         document.write(this.panels[i].act[j]+';\' ');
+//          document.write('onmouseOut="this.className=\'imgnob\';">'); //<br> weggehaald
+          document.write('<BR><FONT color=white>'+this.panels[i].lbl[j]+'</FONT></DIV>');
+//          document.write('</DIV>');
         }
         mtop=mtop+this.buttonspace;
       }
@@ -732,7 +738,7 @@ function createOutlookBar(name,x,y,width,height,bgcolor,pagecolor) {
   this.height=height;                     // bar height
   this.bgcolor=bgcolor;                   // bar background color
   this.pagecolor=pagecolor;               // page bgcolor (op5!)
-  this.buttonspace=80                     // distance of panel buttons
+  this.buttonspace=80                     // distance of panel buttons //org = 80
   this.panels=new Array()                 // OutlookBar panels
   this.addPanel=b_addPanel;               // add new panel to bar
   this.writeStyle=b_writeStyle;
