@@ -1219,7 +1219,7 @@
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete)
      */
-    function adminPage()
+    function adminPage($actions="")
     {
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
@@ -1261,27 +1261,31 @@
       $nav = $this->buildNavigation();
       if (!empty($nav)) $g_layout->output("$nav<br>");
       $g_layout->output('<br>');
-      $actions = array();
 
-      if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
+      if(!is_array($actions))
       {
-        $actions[]=href($PHP_SELF.'?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
-      }
-      else
-      {
-        // if you may not edit, maybe you are allowed to view..
-        if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
+        $actions = array();
+
+        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
         {
-          $actions[]=href($PHP_SELF.'?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
+          $actions[]=href($PHP_SELF.'?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
         }
-      }
-      if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
-      {
-        $actions[]=href($PHP_SELF.'?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
-      }
-      if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
-      {
-        $actions[]=href($PHP_SELF.'?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
+        else
+        {
+          // if you may not edit, maybe you are allowed to view..
+          if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
+          {
+            $actions[]=href($PHP_SELF.'?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
+          }
+        }
+        if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
+        {
+          $actions[]=href($PHP_SELF.'?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
+        }
+        if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
+        {
+          $actions[]=href($PHP_SELF.'?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
+        }
       }
 
       $g_layout->output($this->recordList($recordset, $actions));
