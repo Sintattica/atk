@@ -19,6 +19,7 @@ Changes in ATK 5.0.5
 * Changed some globals to proper functions (atkconfig & atktext) [Boy]
 * Moved Doctype to defaultconfig [Boy]
 + Login screen now also uses own CSS file (login.css) [Boy]
++ Added autoadjust param to atkTextAttribute [Boy]
 
 Changes in ATK 5.0.4
 --------------------

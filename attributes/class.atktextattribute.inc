@@ -29,16 +29,17 @@
     // number of rows of the edit box
     var $m_rows = 10;
     var $m_cols;
+    var $m_autoadjust;
 
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $size can be an array with cols and rows key for size or just the rows size
-     * @param $flags Flags for this attribute
+     * @param $name 			Name of the attribute
+     * @param $size 			Can be an array with cols and rows key for size or just the rows size
+     * @param $flags 			Flags for this attribute
+     * @param $autoadjust Wether to autoadjust the number of rows or not, defaults to false
      */
-    function atkTextAttribute($name,$size=0,$flags=0)
+    function atkTextAttribute($name,$size=0,$flags=0, $autoadjust=false)
     { 
-      
       // compatiblity with old versions
       if (func_num_args()==3)
       {
@@ -53,6 +54,7 @@
       {
         $flags = $size;
       }
+      $this->m_autoadjust = $autoadjust;
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
@@ -78,12 +80,21 @@
       $this->registerKeyListener($id, KB_CTRLCURSOR);  
       if ($rows =="" || $rows == 0) $rows = 10;
 	    // watch out, $maxsize isn't supported for a textarea.
-      $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
+	    
+	    if ($this->m_autoadjust)
+	    {
+	      // If the number of newlines in what we want to display is larger than 
+	    	// the rows, we increase the rows 
+	    	$data = count_chars(htmlspecialchars($record[$this->fieldName()]), 0);
+	    	if ($data[13]>$rows) $rows= $data[13];
+	    }
+      
+	    $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
 
- /**
+    /**
      * Add's fields to query
      * @param $query The SQL query
      * @param $tablename Tablename
@@ -108,7 +119,7 @@
       }
     }
     
- /**
+    /**
      * Add's slashes to the string for the database
      * @param $rec Array with values
      * @return String with slashes
@@ -121,7 +132,7 @@
         return addslashes($rec[$this->fieldName()]); //CLOB in oci9 don't need quotes to be escapedt
     }
     
-        /**
+    /**
      * Removes slashes from the string
      * @param $rec Array with values
      * @return String without slashes
