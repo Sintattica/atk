@@ -141,7 +141,7 @@
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
 
-   $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree");
+   $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress");
     
    $g_stickyurl = array();
 
@@ -595,8 +595,8 @@
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-      $g_layout->output($this->editForm("edit",$record,$forceList));
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
+      $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
       
       $g_layout->output('<br>');
       if ($atklevel>0) // if atklevel is 0 or less, we are at the bottom of the session stack, 
@@ -749,8 +749,7 @@
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
       global $g_layout, $txt_field_obligatory,$config_atkroot;      
-      
-
+                
       // if there are displayable obligatory fields, we display a message near the bottom.
       $has_oblies = false;
       
