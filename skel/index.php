@@ -1,6 +1,8 @@
 <?php
   $config_atkroot = "./";
   require_once($config_atkroot."atk/class.atknode.inc");
+
+  atksecure();
  
   $g_layout->output('<html>');
   $g_layout->head(text("app_title"));

@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.9  2001/05/23 07:57:57  ivo
+   * Updated the files in skel with the new atksecure() call.
+   *
    * Revision 4.8  2001/05/10 09:42:28  sandy
    * bugfix in menu.php (config menu delimiter) and for the clear posting
    *
@@ -52,6 +55,8 @@
   require_once($config_atkroot."atk/class.atknode.inc");
   require_once($config_atkroot."atk/atkmenutools.inc");
   include_once($config_atkroot."config.menu.inc");
+
+  atksecure();
 
   /* first add module menuitems */
   for ($i = 0; $i < count($g_modules); $i++)
