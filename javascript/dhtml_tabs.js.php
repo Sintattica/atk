@@ -26,14 +26,14 @@ function showTab(tab)
 	{
 	  parent.document.tab=Array();
 	}
-	
+
 	// If we are called without a name, we check if the parent has a stored tab for our page
 	// If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
 	if (!tab)
 	{
-	  if (parent.document.tab[document.location.href + document.location.search])
+	  if (parent.document.tab[document.location.href])
     {
-      tab = parent.document.tab[document.location.href + document.location.search];
+      tab = parent.document.tab[document.location.href];
     }
     else
     {
@@ -42,8 +42,8 @@ function showTab(tab)
   }
   
   // Then we store what tab we are going to visit in the parent
-	parent.document.tab[document.location.href + document.location.search] = tab;
-
+	parent.document.tab[document.location.href] = tab;
+	
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none
 	for (i = 0; i < tags.length; i++)
