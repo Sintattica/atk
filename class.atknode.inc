@@ -901,6 +901,7 @@
       {
         while(list($forcedvarname,$forcedvalue)=each($forceList))
         {
+          $attribname="";
           if ($forcedvarname!="")
           {
             if (strpos($forcedvarname,'.')>0)
@@ -915,9 +916,16 @@
               else
               {
                 // this is a filter on a field of another table (something we have a
-                // relationship with.
-                $defaults[$table][$field] = $forcedvalue;
-                $attribname = $table;
+                // relationship with.if(is_object($this->m_attribList[$table]))
+                if(is_object($this->m_attribList[$table]))
+                {
+                  $defaults[$table][$field] = $forcedvalue;
+                  $attribname = $table;
+                }
+                else
+                {
+                  // This is not a filter for this node.
+                }
               }
             }
             else
@@ -925,8 +933,12 @@
               $defaults[$forcedvarname]=$forcedvalue;
               $attribname = $forcedvarname;
             }
-            $p_attrib = &$this->m_attribList[$attribname];
-            if (!$p_attrib->hasFlag(AF_NO_FILTER)) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+            
+            if($attribname!="")
+            {
+              $p_attrib = &$this->m_attribList[$attribname];
+              if (!$p_attrib->hasFlag(AF_NO_FILTER)) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+            }
           }
         }
       }
