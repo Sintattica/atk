@@ -916,21 +916,21 @@
                   $attribname = $firstpart;                  
                 }
                 else
-                {
+                {                  
                   // This is not a filter for this node.
                 }
               }
             }
             else
-            {
+            {              
               $defaults[$forcedvarname]=$forcedvalue;
               $attribname = $forcedvarname;
             }
 
             if($attribname!="")
-            {
+            {              
               $p_attrib = &$this->m_attribList[$attribname];           
-              if (!$p_attrib->hasFlag(AF_NO_FILTER)) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+              if (is_object($p_attrib)&&(!$p_attrib->hasFlag(AF_NO_FILTER))) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
             }
           }
         }
@@ -1443,7 +1443,7 @@
      * Make browser of the user go to another page. This should be called before any call
      * to layout::outputFlush();
      */
-    function redirect($location="")
+    function redirect($location="", $record=array())
     {
       global $g_returnurl,$g_db;
 
@@ -1455,6 +1455,19 @@
       {
         $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,1);
       }
+      
+      if (count($record))
+      {
+        if ($this->m_postvars["atkpkret"]!="")
+        {
+        //foreach ($params as $key=>$value)
+        //{
+          $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));
+        //}
+        }
+      }
+      
+      // The actual redirect.
       if (atkconfig("debug")>=2)
       {
         atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
