@@ -20,49 +20,144 @@
    * Define some flags for nodes. Use the constructor of the atkNode
    * class to set the flags. (concatenate multiple flags with '|')
    */
-  define("NF_NO_ADD",                  1); // No new records may be added.
-  define("NF_NO_EDIT",                 2); // Records may not be edited
-  define("NF_NO_DELETE",               4); // Records may not be deleted
-  define("NF_EDITAFTERADD",            8); // Immediately after you add a new record,
-                                           // you get the editpage for that record.
-  define("NF_NO_SEARCH",              16); // Records may not be searched.
-  define("NF_NO_FILTER",              32); // Ignore addFilter filters..
-  define("NF_ADD_LINK",               64); // Doesn't show an add form on admin pages,
-                                           // but a link to the form.
-  define("NF_NO_VIEW",               128); // Records may not be viewed.
-  define("NF_COPY",                  256); // Records / trees may  be copied
-
-  define("NF_AUTOSELECT",            512); // If this flag is set and only one record is
-                                           // present on a selectpage, atk automatically
-                                           // selects it and moves on to the target.
-
-  define("NF_TRACK_CHANGES",        1024); // If set, atk stores the old values of
-                                           // a record as ["atkold"] in the $rec that
-                                           // gets passed to the postUpdate
-
-  define("NF_NO_SECURITY",          2048); // Quick way to disable accessright checking
-                                           // for an entire node. (Everybody may access
-                                           // this node
-
-  define("NF_NO_EXTENDED_SEARCH",   4096); // Extended search feature is turned off.
-
-  define("NF_MULTI_RECORD_ACTIONS", 8192); // Multi-selection of records is turned on.
-  define("NF_MRPA",                16384); // Multi-priority-selection of records is turned on.
-
-  define("NF_LOCK",                32768); // lock records
-  define("NF_ML",                  65536); // multilanguage support
-
-  define("NF_NO_IMPORT",          131072); // Quick way to disable the import feature
-
-  define("NF_SPECIFIC_1",       33554432); // specific node flag 1
-  define("NF_SPECIFIC_2",       67108864); // specific node flag 2
-  define("NF_SPECIFIC_3",      134217728); // specific node flag 3
-  define("NF_SPECIFIC_4",      268435456); // specific node flag 4
-  define("NF_SPECIFIC_5",      536870912); // specific node flag 5
-
-  define("NF_MRA",           NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
+  
+  /**
+   * No new records may be added
+   */
+  define("NF_NO_ADD",                  1);
+  
+  /**
+   * Records may not be edited
+   */
+  define("NF_NO_EDIT",                 2);
+  
+  /**
+   * Records may not be deleted
+   */
+  define("NF_NO_DELETE",               4);
+  
+  /**
+   * Immediately after you add a new record,
+   * you get the editpage for that record
+   */
+  define("NF_EDITAFTERADD",            8);
+                                           
+  /**
+   * Reocrds may not be searched
+   */
+  define("NF_NO_SEARCH",              16);
+  
+  /**
+   * Ignore addFilter filters
+   */
+  define("NF_NO_FILTER",              32);
+  
+  /**
+   * Doesn't show an add form on the admin page
+   * but a link to the form
+   */
+  define("NF_ADD_LINK",               64);
+  
+  /**
+   * Records may not be viewed
+   */
+  define("NF_NO_VIEW",               128);
+  
+  /**
+   * Records / trees may be copied
+   */
+  define("NF_COPY",                  256);
+  
+  /**
+   * If this flag is set and only one record is 
+   * present on a selectpage, atk automagically
+   * selects it and moves on to the target
+   */
+  define("NF_AUTOSELECT",            512);
+                                           
+  /**
+   * If set, atk stores the old values of
+   * a record as ["atkold"] in the $rec that
+   * gets passed to the postUpdate
+   */
+  define("NF_TRACK_CHANGES",        1024);
+                                           
+  /**
+   * Quick way to disable accessright checking
+   * for an entire node. (Everybody may access this node)
+   */
+  define("NF_NO_SECURITY",          2048);
+                                           
+  /**
+   * Extended search feature is turned off
+   */
+  define("NF_NO_EXTENDED_SEARCH",   4096);
+  
+  /**
+   * Multi-selection of records is turned on
+   */
+  define("NF_MULTI_RECORD_ACTIONS", 8192);
+  
+  /**
+   * Multi-priority-selection of records is turned on
+   */
+  define("NF_MRPA",                16384);
+  
+  /**
+   * Add locking support to node, if one user is editing a record,
+   * no one else may edit it.
+   */
+  define("NF_LOCK",                32768);
+  
+  /**
+   * Multi-language support
+   */
+  define("NF_ML",                  65536);
+  
+  /**
+   * Quick way to disable the import feature
+   */
+  define("NF_NO_IMPORT",          131072);
+  
+  /**
+   * Specific node flag 1
+   */
+  define("NF_SPECIFIC_1",       33554432);
+  
+  /**
+   * Specific node flag 2
+   */
+  define("NF_SPECIFIC_2",       67108864);
+  
+  /**
+   * Specific node flag 3
+   */
+  define("NF_SPECIFIC_3",      134217728);
+  
+  /**
+   * Specific node flag 4
+   */
+  define("NF_SPECIFIC_4",      268435456);
+  
+  /**
+   * Specific node flag 5
+   */
+  define("NF_SPECIFIC_5",      536870912);
+  
+  /**
+   * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
+   */
+  define("NF_MRA",           NF_MULTI_RECORD_ACTIONS);
+  
+  /**
+   * Alias for NF_ML flag (typed out)
+   */
   define("NF_MULTILANGUAGE", NF_ML);
-  define("NF_READONLY",      NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT); // aggregate flag to quickly create readonly nodes.
+  
+  /**
+   * Aggregate flag to quickly create readonly nodes
+   */
+  define("NF_READONLY",      NF_NO_ADD|NF_NO_DELETE|NF_NO_EDIT);
 
   /**
    * action status flags
@@ -71,8 +166,26 @@
    * This is done however, so the flags can be used as a mask in the setFeedback
    * function.
    */
+  
+  /**
+   * The action is cancelled
+   * 
+   * action status flag
+   */
   define("ACTION_CANCELLED", 1);
+  
+  /**
+   * The action failed to accomplish it's goal
+   * 
+   * action status flag
+   */
   define("ACTION_FAILED", 2);
+  
+  /**
+   * The action is a success
+   * 
+   * action status flag
+   */
   define("ACTION_SUCCESS", 4);
 
   // Global theme variable, must be declared before the includes
