@@ -144,6 +144,7 @@
      if($viewhtml) 
        $txt = htmlentities($txt);
      	
+     atkWriteLog($txt);
      if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()."] ".$txt;
   }
   
@@ -264,6 +265,26 @@
     return $ret;
   } // end function atk_get_trace
 
+  /**
+   * Writes info to the optional debug logfile. Please notice
+   * this feature will heavily decrease the performance and should
+   * therefore only be used for debugging and development purposes
+   * @param String $text text to write to the logfile
+   */
+  function atkWriteLog(&$text)
+  {
+    if (atkconfig("debug") > 0 && atkconfig("debuglog"))
+    {
+      $fp = @fopen(atkconfig("debuglog"),"a");
+      if ($fp)
+      {
+        fwrite($fp,"[".elapsed()."] ".$text."\n");
+        fclose($fp); 
+      }
+    }
+  }
+  
+  
   /**
    * Replaces the [vars] with the values from the language files
    * Please note that it is important, for performance reasons, 
