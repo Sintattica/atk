@@ -36,7 +36,7 @@
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
   {
     // Don't handle notices, and don't do anything if @ was u sed
-    if ($errtype==E_NOTICE || (version_compare(php_version(), "5.0.0")>=0 && $errtype==E_STRICT) || 
+    if ($errtype==E_NOTICE || (version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT) || 
         error_reporting()==0)
     {
       return;
