@@ -2074,7 +2074,6 @@
     function dispatch($postvars)
     {
       global $g_securityManager, $g_db, $g_sessionManager, $g_layout;            
-
       $this->m_postvars = $postvars;                          
       
       $this->m_action = $postvars['atkaction'];
@@ -3143,10 +3142,13 @@
      */ 
     function editingAfterAdd()
     {
-      global $g_sessionData, $atklevel;
+      global $g_sessionData, $atklevel,$g_sessionManager;
+      
+      $namespace = $g_sessionManager->m_namespace;           
       $res = ($this->m_action == "update"
-              && $g_sessionData["stack"][$atklevel-1]["atkaction"] == "add"
-              && $g_sessionData["stack"][$atklevel-1]["atknodetype"] == $this->m_type);  
+              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
+             && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == (empty($this->m_module) ? "" : $this->m_module.".").($this->m_type));  
+      atk_var_dump($g_sessionData);
       return $res;
     }
     
