@@ -324,25 +324,29 @@
      * Create the UI top
      * @param $title Title of the UI top
      */
-    function ui_top($heading)
+    function ui_top($title)
     {
-      $template = $this->getTemplate("block_top");
-
-      $template=str_replace('[HEADER]',$heading,$template);
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      $this->output($template);
+      $this->tpl("block_top", array("header"=>$title));
     }
-
-    /**
-     * Create the UI login box top
-     * @param $title Title of the UI top
-     */
-    function login_top($heading)
+    
+    function ret_tpl($tplname, $vars="", $fallbacktpl="")
     {
-      $template = $this->getTemplate("login_top");
-      $template=str_replace('[HEADER]',$heading,$template);
+      $template = $this->getTemplate($tplname, $fallbacktpl);
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      $this->output($template);
+      
+      if (is_array($vars))
+      {
+        foreach($vars as $key=>$value)
+        {
+          $template=str_replace('['.strtoupper($key).']',$value,$template);
+        }
+      }
+      return $template;  
+    }
+    
+    function tpl($tplname, $vars="", $fallbacktpl="")
+    {     
+      $this->output($this->ret_tpl($tplname, $vars, $fallbacktpl));
     }
 
     /**
@@ -350,9 +354,7 @@
      */
     function ui_bottom()
     {
-      $template=$this->getTemplate("block_bottom");
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      $this->output($template);
+      $this->tpl("block_bottom");
     }
 
     /**
@@ -361,10 +363,7 @@
      */
     function tabs_top($tabs)
     {
-      $template = $this->getTemplate("tabs_top");
-      $template = str_replace('[TABS]', $tabs, $template);
-      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      $this->output($template);
+      $this->tpl("tabs_stop", array("tabs"=>$tabs));      
     }
 
     /**
@@ -372,9 +371,7 @@
      */
     function tabs_bottom()
     {
-      $template = $this->getTemplate("tabs_bottom");
-      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      $this->output($template);
+      $this->tpl("tabs_bottom");
     }
 
     /**
@@ -384,26 +381,27 @@
      * @param $selected is this tab selected?
      */
     function ret_tab($title, $link, $selected=false)
-    {
-      $template = $this->getTemplate("tab_".($selected ? "selected" : "normal"));
-      $template = str_replace('[TITLE]', $title, $template);
-      $template = str_replace('[LINK]', $link, $template);
-      $template = str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      return $template;
+    {      
+      return $this->ret_tpl("tab_".($selected ? "selected" : "normal"), 
+                            array("title"=>$title,
+                                  "link"=>$link));
     }
 
     function data_top()
     {
       global $g_theme;
-      $template=$this->getTemplate("data_top");
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      if (!isset($g_theme["border"]))
+      $template=$this->ret_tpl("data_top");
+      
+      if ($template=="") 
       {
-        if ($template=="") $template='<table border="1" cellspacing="0" cellpadding="3">';
-      }
-      else
-      {
-        if ($template=="") $template='<table border="0" cellspacing="0" cellpadding="0" class="backtable"><tr><td><table border="0" cellspacing="'.$g_theme["border"].'" cellpadding="3">';
+        if (!isset($g_theme["border"]))
+        {
+          $template='<table border="1" cellspacing="0" cellpadding="3">';
+        }
+        else
+        {
+          $template='<table border="0" cellspacing="0" cellpadding="0" class="backtable"><tr><td><table border="0" cellspacing="'.$g_theme["border"].'" cellpadding="3">';
+        }
       }
       return $template;
     }
@@ -411,15 +409,18 @@
     function data_bottom()
     {
       global $g_theme;
-      $template=$this->getTemplate("data_bottom");
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      if (!isset($g_theme["border"]))
+      $template=$this->ret_tpl("data_bottom");
+      
+      if ($template=="") 
       {
-        if ($template=="") $template='</table>';
-      }
-      else
-      {
-        if ($template=="") $template='</table></td></tr></table>';
+        if (!isset($g_theme["border"]))
+        {
+          $template='</table>';
+        }
+        else
+        {
+          $template='</table></td></tr></table>';
+        }
       }
 
       return $template;
@@ -665,11 +666,16 @@
       return $form;
     }
 
-    function getTemplate($templatefile)
+    function getTemplate($templatefile, $fallback="")
     {
       if (file_exists($this->m_tpldir.$templatefile.".tmpl"))
       {
         return implode(file($this->m_tpldir.$templatefile.".tmpl"), "");
+      }
+      else
+      {
+        // Template not found, let's try fallback template
+        if ($fallback!="") return $this->getTemplate($fallback);
       }
       return "";
     }
