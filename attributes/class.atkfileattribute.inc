@@ -27,6 +27,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/07/02 15:28:45  ivo
+   * Fixed a bug in the 'remove currentfile' button.
+   *
    * Revision 4.7  2001/06/29 13:12:10  ivo
    * New feature: integrated contextsensitive help (contributed by Rene)
    *
@@ -127,8 +130,12 @@
      */
     function edit($record="", $fieldprefix="")
     {
-  
-      $result=$this->display($record);
+      global $del;
+      
+      if ($del[$this->fieldName()]!="on")
+      {
+        $result=$this->display($record);
+      }
 
       if(is_dir($this->m_dir))
       {
@@ -188,7 +195,7 @@
       }
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
       if($del[$this->fieldName()] == "on")
-      {
+      {    
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
 	      {
 	        unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
