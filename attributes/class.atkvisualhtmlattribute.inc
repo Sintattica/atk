@@ -48,7 +48,7 @@
         $g_layout->register_submitscript($nom_editor."_save();");
         $idi_edit = 'eng';
         $editor_height = 100;
-        $editor_width= 700;
+        $editor_width= 550;
         //$funcio_save= 'guardaho(codi);';
         //$action_submit = "sample_submit.php";
         $document_complet = 0;
