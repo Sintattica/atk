@@ -27,17 +27,17 @@ Changes in ATK 5.0.7
 * Fixed prev/next keyboard navigation in recordlists. [Yury]
 * Fixed a potential session hijacking vulnerability. [Sandy]
 * Improved themeability, now possible to style the menu and top frame
-  differently from the main and eachother, by using templates
-  and stylesheets [Boy]
+  differently from the main, by using templates and stylesheets. [Boy]
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
-  for normal/extended searching and sorting [Boy, Harrie]
-* Fixed navigating for select mode [Boy,Yuri]
-* atkQuery now checks for double joins [Boy,Harrie]
-* Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute [Boy]
+  for normal/extended searching and sorting. [Boy, Harrie]
+* Fixed navigating for select mode. [Boy,Yuri]
+* atkQuery now checks for double joins. [Boy,Harrie]
+* Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute. [Boy]
 * Made atkFuzzySearch attrib use multiselect attribute and use the
-  new flags by default [Boy]
+  new flags by default. [Boy]
 * Changed deprecated $txt_ global variables in mailreport() and the
-  atkdateattrib to atktext() calls [Boy]
+  atkdateattrib to atktext() calls. [Boy]
+* Updated Norwegian translation. [Olav]
 
 Changes in ATK 5.0.6
 --------------------
