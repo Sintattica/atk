@@ -131,7 +131,7 @@
      * @param $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record="", $fieldprefix="")
+    function edit(&$record, $fieldprefix="")
     {
       global $ATK_VARS;
 
