@@ -9,6 +9,11 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.3  2001/09/10 12:32:46  ivo
+   * Improved module support. Modules can now create modifiers for other nodes.
+   * Modules and external modules are now treated equally.
+   * Added ability to specify order of menuitems
+   *
    * Revision 4.2  2001/06/29 11:26:59  ivo
    * Patches to oracle support.
    *
@@ -65,6 +70,8 @@
     
     function edit($record)
     {
+      global $g_modules;  
+    
       /* get nodes */
       require_once("atk/atknodetools.inc");
       include_once("config.nodes.inc");
@@ -76,7 +83,7 @@
       $nodes = $GLOBALS["g_nodes"];
       if (count($nodes) > 0)
       {
-        if (count($GLOBALS["g_modules"])>0)
+        if (count($g_modules)>0)
         {
           // only show the header if there are more than only the main module.
           $result .= "<b>".text("app_title")."</b><br><br>";
@@ -101,16 +108,16 @@
       }
    
       /*** per module ***/
-      foreach ($GLOBALS["g_modules"] as $module)
+      foreach ($g_modules as $modname => $pathname)
       {
-        $mod_inst = new $module();
+        $mod_inst = new $modname();
         $nodes = $mod_inst->getNodes();
         if (count($nodes) > 0)
         {
-          $result .= "<br><b><u>".text("title_$module")."</u></b><br><br>";      
+          $result .= "<br><b><u>".text("title_$modname")."</u></b><br><br>";      
           while (list($node, $actionarr) = each($nodes))
           {
-            $checked_actions = $checked["$module.$node"];
+            $checked_actions = $checked["$modname.$node"];
             if (is_array($actionarr))
             {
               $result.="<b>".text(getNodeType($node))."</b><br>";

@@ -13,6 +13,11 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.16  2001/09/10 12:32:47  ivo
+   * Improved module support. Modules can now create modifiers for other nodes.
+   * Modules and external modules are now treated equally.
+   * Added ability to specify order of menuitems
+   *
    * Revision 4.15  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -85,9 +90,9 @@
   include_once($config_atkroot."config.menu.inc");
 
   /* first add module menuitems */
-  for ($i = 0; $i < count($g_modules); $i++)
+  foreach ($g_modules as $modname => $modpath)
   {
-    $module = new $g_modules[$i]();
+    $module = getModule($modname);
     menuitems($module->getMenuItems());
   }
 
@@ -101,8 +106,17 @@
   $g_layout->ui_top(text("menu_".$atkmenutop));
   $g_layout->output("<br>");
 
-  /* build menu */
+  /* build menu */    
+  
   $menu = "";  
+  
+  function menu_cmp($a,$b)
+  {
+    if ($a["order"] == $b["order"]) return 0;
+    return ($a["order"] < $b["order"]) ? -1 : 1;
+  }
+  usort($g_menu[$atkmenutop],"menu_cmp");   
+
   for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
   {
     $name = $g_menu[$atkmenutop][$i]["name"];
@@ -110,7 +124,7 @@
     $enable = $g_menu[$atkmenutop][$i]["enable"];
 
     /* delimiter ? */
-    if ($g_menu[$atkmenutop][$i] == "-") $menu .= "<br>";
+    if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
     
     /* submenu ? */
     else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$config_menu_delimiter;

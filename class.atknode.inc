@@ -52,6 +52,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.100  2001/09/10 12:32:46  ivo
+   * Improved module support. Modules can now create modifiers for other nodes.
+   * Modules and external modules are now treated equally.
+   * Added ability to specify order of menuitems
+   *
    * Revision 4.99  2001/09/07 07:21:32  ivo
    * Improved primarykey handling.
    *
@@ -199,6 +204,9 @@
   // Global menu
   $g_menu = array();    
   
+  // modifiers
+  $g_modifiers = array();
+  
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
@@ -260,28 +268,39 @@
   // Auto-register modules
   if (file_exists("$config_module_path/config.modules.inc"))
     include_once("$config_module_path/config.modules.inc");
-    
-  // Module specific language file
-  for ($i = 0; $i < sizeof($g_modules); $i++)
+          
+  foreach ($g_modules as $modname => $modpath)
   {
-    $filename = "$config_module_path/".$g_modules[$i]."/languages/$config_languagefile";
+    // Module specific language file
+    $filename = "$modpath/languages/$config_languagefile";
     if (file_exists($filename))
     {
       include_once($filename);
     }
-  }
-  
-  // Module attributes (do not move, needs database!)
-  for ($i = 0; $i < sizeof($g_modules); $i++)
-  {
-    $module = new $g_modules[$i]();
-    $attr_arr = $module->getAttributes();
-    for ($j = 0; $j < sizeof($attr_arr); $j++)
+    $filename = "$modpath/module.inc";
+
+    // The module itself
+    if (file_exists($filename))
     {
-      if (file_exists("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]))
-      include_once("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
+      include_once($filename);       
+      
+      $module = &getModule($modname);                              
+      
+      // Module attributes
+      $attr_arr = $module->getAttributes();
+      for ($i = 0; $i < sizeof($attr_arr); $i++)
+      {
+        if (file_exists($modpath."/".$attr_arr[$j]))
+        include_once($modpath."/".$attr_arr[$j]);
+      }     
+      
     }
-  }
+    else
+    {
+      atkerror("Couldn't find module.inc for module '$modname' in '$modpath'");
+    }
+
+  }  
   
   /*******************************************/  
 
@@ -305,6 +324,12 @@
   {
 
     /*** Member variables ***/
+    
+    /** 
+     * Nodes must be initialised using the init() function before they can be used.
+     * This member indicated whether the node has been initialised.
+     */
+    var $m_initialised = false;
 
     /**
      * This array will hold the data of records that are read from the database.
@@ -543,9 +568,7 @@
       
       $attribute->init();            
             
-      $this->m_attribList[$attribute->fieldName()]=&$attribute;
-      
-      $this->m_currentRec = "AA";    
+      $this->m_attribList[$attribute->fieldName()]=&$attribute;     
             
     }
 
@@ -629,47 +652,6 @@
       return $primKey;
     }
 
-    /**
-     * Fills the m_orgkey array
-     * 
-     */
-    //function setOrgKeyValue($rec)
-    //{      
-//      $nrOfElements = count($this->m_primaryKey);
-      //for ($i=0;$i<$nrOfElements;$i++)
-      //{
-//        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
-        //$this->m_orgkey[$i] = $p_attrib->value2db($rec);
-      //}
-      //atkdebug("SetOrgKeyValue");
-    //}
-
-    
-    /**
-     * Returns the key of the record currently being edited
-     * @return orgKey
-     */
-    //function orgKey()
-    //{      
-//      $origKey="";
-      //$nrOfElements = count($this->m_orgkey);
-      //for ($i=0;$i<$nrOfElements;$i++)
-      //{
-//        $origKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_orgkey[$i]."'";
-        //if ($i<($nrOfElements-1)) $origKey.=" AND ";
-      //}
-      //return $origKey;
-    //}
-
-    /**
-     * WATCH OUT, THIS FUNCTION ONLY RETURNS THE FIRST ORIGINAL KEY ATTRIB (so watch out
-     * when using this with classes that have multiple)
-     * @return Primary key field
-     */
-    //function orgKeyValue()
-    //{
-//      return $this->m_orgkey[0];
-    //}
 
    /**
     * Set default order for the class
@@ -693,41 +675,8 @@
      */
     function setTable($tablename,$seq="node")
     {
-      global $g_tableMeta, $g_db, $g_layout;
-
       $this->m_table      = $tablename;
-      $this->m_seq        = $seq;
-
-      if (!is_array($g_tableMeta[$tablename]))
-      {
-        // Get metainformation about the table
-        $tmparr = $g_db->metadata($tablename);
-
-        // Store the metadata in a more convenient format.
-        for ($i=0;$i<count($tmparr);$i++)
-        {
-          $this->m_tableMeta[$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
-          $this->m_tableMeta[$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
-          $this->m_tableMeta[$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];
-          $fieldname = $tmparr[$i]['name'];          
-        }
-
-        $g_tableMeta[$tablename] = $this->m_tableMeta;
-      }
-
-      $this->m_tableMeta = $g_tableMeta[$tablename];
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_attribList[$attribname];
-        
-        if (is_object($p_attrib))
-        {
-          $p_attrib->fetchMeta($this->m_tableMeta);
-          $p_attrib->m_size = min($this->m_tableMeta[$attribname]['len'], $g_layout->maxInputSize());
-          $p_attrib->m_searchsize = min($this->m_tableMeta[$attribname]['len'], $g_layout->searchSize());      
-          $p_attrib->m_maxsize = $this->m_tableMeta[$attribname]['len'];                     
-        }
-      }
+      $this->m_seq        = $seq;            
     }
     
     /**
@@ -1834,7 +1783,7 @@
       $totals = array();      
       if ($type=="0")
        {
-        $output = '<table border="0" cellspacing="0" cellpadding="4">';
+        $output = '<table border="1" cellspacing="0" cellpadding="4">';
         $empty = "&nbsp;";
        }        
       if ($type=="1")
@@ -2117,13 +2066,95 @@
     }
 
     /**
+     * This function initialises certain elements of the node. This must be called right
+     * after the constructor. The function has a check to prevent it from being executed
+     * twice
+     */
+    function init()
+    {
+      global $g_modifiers;  
+    
+      atkdebug($this->m_type."::init()");
+      // Check if initialisation is not already done.
+      if ($this->m_initialised == true) return;
+      
+      // We assign the $this reference to the attributes at this stage, since 
+      // it fails when we do it in the add() function.
+      // See also the comments in the add() function.               
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib->m_ownerInstance = &$this;
+      }
+      
+     
+      // See if there are modules active that modify this node..
+      for ($i=0;$i<count($g_modifiers[$this->m_type]);$i++)
+      {
+        $mod = getModule($g_modifiers[$this->m_type][$i]);
+        $modifiername = $this->m_type."_modifier";
+        if (method_exists($mod,$modifiername))
+        {
+          atkdebug("Applying modifier from module $modname to ".$this->m_type);
+          $mod->$modifiername(&$this);
+        }
+      }
+      
+      
+      // Read metainformation from the database.
+      $this->tableMeta();
+      
+      $this->m_initialised = true;
+    }
+    
+    /** 
+     * This function reads meta information from the database and initialises it's attributes
+     * with the value of it.
+     */
+    function tableMeta()
+    {
+      global $g_tableMeta, $g_db, $g_layout;
+
+      if (!is_array($g_tableMeta[$this->m_table]))
+      {
+        // Get metainformation about the table
+        $tmparr = $g_db->metadata($this->m_table);
+
+        // Store the metadata in a more convenient format.
+        for ($i=0;$i<count($tmparr);$i++)
+        {
+          $this->m_tableMeta[$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
+          $this->m_tableMeta[$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
+          $this->m_tableMeta[$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];
+          $fieldname = $tmparr[$i]['name'];          
+        }
+
+        $g_tableMeta[$this->m_table] = $this->m_tableMeta;
+      }
+
+      $this->m_tableMeta = $g_tableMeta[$this->m_table];
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        
+        if (is_object($p_attrib))
+        {
+          $p_attrib->fetchMeta($this->m_tableMeta);
+          $p_attrib->m_size = min($this->m_tableMeta[$attribname]['len'], $g_layout->maxInputSize());
+          $p_attrib->m_searchsize = min($this->m_tableMeta[$attribname]['len'], $g_layout->searchSize());      
+          $p_attrib->m_maxsize = $this->m_tableMeta[$attribname]['len'];                     
+        }
+      }
+    }
+
+    /**
      * The dispatcher. This functions looks at the atkaction from the postvars
      * and determines what should be done.
      * @param $postvars Posted vars
      */
     function dispatch($postvars)
     {
-      global $g_securityManager, $g_db, $g_sessionManager, $g_layout;
+      global $g_securityManager, $g_db, $g_sessionManager, $g_layout;            
 
       $this->m_postvars = $postvars;            
       
@@ -2136,21 +2167,7 @@
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
       }                  
-      
-      /** WORKAROUND
-          We assign the $this reference to the attributes at this stage, since it fails
-          when we do it in the add() function 
-          See also the comments in the add() function.
-          TODO: we need a cleaner api for nodes. currently, all initialisation is done
-          in the constructor. This can lead to errors. We need some init() function in which 
-          the initialisation is handled.
-       **/
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_attribList[$attribname];
-        $p_attrib->m_ownerInstance = &$this;
-      }
-      
+          
       // check for fake submit (session saving href thingee)
       if ($this->m_postvars["atkescape"]!="")
       {

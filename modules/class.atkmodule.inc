@@ -11,6 +11,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.5  2001/09/10 12:32:47  ivo
+ * Improved module support. Modules can now create modifiers for other nodes.
+ * Modules and external modules are now treated equally.
+ * Added ability to specify order of menuitems
+ *
  * Revision 1.4  2001/05/07 15:13:49  ivo
  * Put config_atkroot in all files.
  *
@@ -44,13 +49,17 @@
     
     /* admin links */
     var $m_admin_links = array();
+    
+    var $m_name;
 
     /**
      * Constructor. The module needs to register it's nodes
      * overhere, create it's menuitems etc.
      */
-    function atkModule()
-    {}
+    function atkModule($name)
+    {
+      $this->m_name = $name;
+    }
 
     /**
      * Will return an array of atknode names and their supported actions
@@ -134,10 +143,10 @@
      * @param $url the url the item points to
      * @param $enable enable this item or not
      */
-    function menuitem($name, $url="", $parent="main", $enable=1)
+    function menuitem($name, $url="", $parent="main", $enable=1, $order=0)
     {
-      if ($name == "-") $this->m_menu_items[$parent][] = "-";
-      else $this->m_menu_items[$parent][] = array("name" => $name, "url" => $url, "enable" => $enable);
+//      if ($name == "-") $this->m_menu_items[$parent][] = "-"; else
+      $this->m_menu_items[$parent][] = array("name" => $name, "url" => $url, "enable" => $enable, "order"=>$order);
     }
     
     /**
@@ -160,6 +169,12 @@
     function adminlink($name, $url, $enable=1)
     {
       if (!empty($name) && !empty($url)) $this->m_admin_links[$name] = $url;
+    }
+    
+    function modifies($node)
+    {
+      global $g_modifiers;
+      $g_modifiers[$node][] = $this->m_name;
     }
   }
 

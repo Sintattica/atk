@@ -12,6 +12,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.5  2001/09/10 12:32:46  ivo
+ * Improved module support. Modules can now create modifiers for other nodes.
+ * Modules and external modules are now treated equally.
+ * Added ability to specify order of menuitems
+ *
  * Revision 4.4  2001/05/02 12:44:21  ivo
  * multilevel session_back feature.
  * new relational features: maxRecords for oneToManyRelation, filter for
@@ -38,10 +43,10 @@
    * @param $url the url the item points to
    * @param $enable enable or disable
    */
-  function menuitem($name="", $url="", $parent="main", $enable=1)
+  function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
   {
-    if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-";
-    else $GLOBALS["g_menu"][$parent][] = array("name" => $name, "url" => $url, "enable" => $enable);
+//    if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-"; else
+    $GLOBALS["g_menu"][$parent][] = array("name" => $name, "url" => $url, "enable" => $enable, "order"=> $order);
     if (empty($url)) $GLOBALS["g_menu_parent"][$name] = $parent;
   }
 

@@ -10,6 +10,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.15  2001/09/10 12:32:47  ivo
+ * Improved module support. Modules can now create modifiers for other nodes.
+ * Modules and external modules are now treated equally.
+ * Added ability to specify order of menuitems
+ *
  * Revision 1.14  2001/09/05 12:17:05  sandy
  * bug fix for the external modules
  *
@@ -70,19 +75,16 @@
   // A repository of node instances..
   $g_nodeRepository = array();
   
+  // A repository of module instances..
+  $g_moduleRepository = array();
+  
   /**
    * Registers an ATK module
    */
-  function registerModule($module)
+  function registerModule($module, $path="")
   {
-    global $config_module_path;
-    
-    $filename = "$config_module_path/$module/module.inc";
-    if (file_exists($filename))
-    {
-      include_once($filename);
-      $GLOBALS["g_modules"][] = $module;
-    }
+    // call a function from atkconfigtools.
+    module($module,$path);
   }
     
   /**
@@ -132,6 +134,18 @@
     return $g_nodeRepository[$node];    
   }
   
+  function getModule($modname)
+  {
+    global $g_moduleRepository;
+    if (!is_object($g_moduleRepository[$modname]))
+    {
+      atkdebug("Constructing a new module - $modname");
+      $g_moduleRepository[$modname] = new $modname();        
+    } 
+    atkdebug("Returning module instance - $modname");
+    return $g_moduleRepository[$modname];    
+  }
+  
   /**
    * Construct a new node 
    * @param $node the node type
@@ -139,7 +153,7 @@
    */
   function newNode($node)
   {
-   global $config_module_path, $config_atkroot, $g_externalModules;
+    global $g_modules, $config_atkroot;
   
     /* module and type */
     $module = getNodeModule($node);
@@ -149,30 +163,31 @@
     /* filename */
     if (empty($module)) $file = $config_atkroot."class.$type.inc";  
     else 
-    {
-      // module can be an external module.. if it is, we use it's defined path.
-      if (is_array($g_externalModules)&&in_array($module, array_keys($g_externalModules)))
+    {    
+      if (is_array($g_modules)&&in_array($module, array_keys($g_modules)))
       {
-        $file = $g_externalModules[$module]."/class.$type.inc";
-      }
+        $file = $config_atkroot.$g_modules[$module]."/class.$type.inc";
+      }      
       else
       {
-        // standard module from the defined module path
-        $file = "$config_atkroot$config_module_path/$module/class.$type.inc";
+        atkerror("Couldn't find node '$node' in module '$module'");
       }
     }
   
     /* check for file */
     if (!file_exists($file))
     {
-      atkdebug("Cannot create node, because a required file ($file) does not exist!", "critical");
+      atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
       return NULL;
     }
 
     /* return object */
     include_once($file);
     
-    return new $type();
+    $node =  new $type();
+    // Nodes must be initialised.
+    $node->init();
+    return $node;
   }
 
   /**

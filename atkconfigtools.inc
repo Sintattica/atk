@@ -9,6 +9,11 @@
    * $Id$
    *
    $ $Log$
+   $ Revision 4.3  2001/09/10 12:32:46  ivo
+   $ Improved module support. Modules can now create modifiers for other nodes.
+   $ Modules and external modules are now treated equally.
+   $ Added ability to specify order of menuitems
+   $
    $ Revision 4.2  2001/08/30 15:28:34  ivo
    $ Added preliminary external module support.
    $
@@ -91,9 +96,10 @@
     }
   
     /* define an external module */  
-    function module($name, $path)
+    function module($name, $path="")
     {
-      global $g_externalModules;
-      $g_externalModules[$name] = $path;
+      global $g_modules;
+      if ($path=="") $path = atkconfig("module_path")."/".$name;    
+      $g_modules[$name] = $path;          
     }
 ?>
