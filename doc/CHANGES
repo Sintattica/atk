@@ -12,6 +12,8 @@ Changes in ATK 5.1.1
 + Added plain text search functionality to date- and timeattribute. [Ivo, Boy]
 + Added ability to detect handheld clients. [Boy]
 + atkDateAttribute now has a simplified gui on handheld devices. [Boy]
++ Added $config_onetomany_addlink_position which can be either
+  bottom (default) or top [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 

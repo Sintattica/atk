@@ -168,7 +168,6 @@
     {
       if ($this->createDestination())
       {
-      
         // If someone pressed 'save', no records are loaded from the db.
         // since we don't post all records in this relation like we do with
         // other attributes, we have to load them at 'edit' time.
@@ -176,7 +175,10 @@
         // all fields that we also get when we would be on an admin screen.
         $myrecords = $this->load(NULL, $record, "admin");
         $output.=$this->editHeader($record, $myrecords);
-     
+        
+        if (atkconfig("onetomany_addlink_position","bottom")=="top") 
+          $output.=$this->_addAddLink($myrecords, $record);
+          
         if (count($myrecords)!=0)
         {     
           $actions = array();
@@ -194,59 +196,71 @@
           $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
           $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;          
           $output.=$recordlist->render($this->m_destInstance, $myrecords, $actions, $flags, $this->m_refKey, "entryform");
+        }
+        
+        if (atkconfig("onetomanyaddlink_position","bottom")=="bottom") 
+          $output.=$this->_addAddLink($myrecords, $record);
           
-        }
-        if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
-        {
-          //$strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
-          //echo $record["atkprimkey"];
-          if ($this->destinationHasRelation())
-          {
-            // we need to set the filter of the record we are going to add. 
-            // The referential key must be set to the value of the current 
-            // primary key. 
-            for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
-            {             
-              $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];            
-              
-              $filterelems[] = $this->m_refKey[0].".".$this->m_ownerInstance->m_primaryKey[$i]."=".$primkeyattr->value2db($record);
-              
-            }            
-          }
-          else
-          {
-            for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
-            {
-              $filterelems[] = $this->m_refKey[$i]."=".$record[$this->m_ownerInstance->m_primaryKey[$i]];
-            }
-          }
-          $strfilter = implode(" AND ", $filterelems);
-          if ($this->m_destinationFilter!="")
-          {
-            $strfilter.=' AND '.$this->m_destinationFilter;
-          }
-          $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-          $key = "link_".$this->fieldName()."_add";
-                    
-          $label = text($key);
-          if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
-          {
-            $key = "link_".getNodeType($this->m_destination)."_add";
-            $label = text($key);
-            if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
-            {
-              $key = text(getNodeType($this->m_destination))." ".strtolower(text("add","","atk"));
-              $label = text($key);
-            }
-          } 
-          $output.= href($add_url,$label,SESSION_NESTED,true);
-        }
         $output.=$this->editFooter($record, $myrecords);
         $output.="<br>";
         $this->_fetchNavigationLinks($output);
         return $output;
       }
       return "";
+    }
+    
+    /**
+     * Internal function to get the add link for a atkOneToManyRelation
+     * @param Array $myrecords  The load of all attributes (see comment in edit() code)
+     * @param Array $record     The record that holds the value for this attribute.
+     * @return String  The link to add records to the onetomany
+     */
+    function _addAddLink($myrecords, $record)
+    {
+      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
+      {
+        if ($this->destinationHasRelation())
+        {
+          // we need to set the filter of the record we are going to add.
+          // The referential key must be set to the value of the current
+          // primary key.
+          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
+
+            $filterelems[] = $this->m_refKey[0].".".$this->m_ownerInstance->m_primaryKey[$i]."=".$primkeyattr->value2db($record);
+
+          }
+        }
+        else
+        {
+          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $filterelems[] = $this->m_refKey[$i]."=".$record[$this->m_ownerInstance->m_primaryKey[$i]];
+          }
+        }
+        $strfilter = implode(" AND ", $filterelems);
+        if ($this->m_destinationFilter!="")
+        {
+          $strfilter.=' AND '.$this->m_destinationFilter;
+        }
+        $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
+        $key = "link_".$this->fieldName()."_add";
+
+        $label = text($key);
+        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+        {
+          $key = "link_".getNodeType($this->m_destination)."_add";
+          $label = text($key);
+          if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+          {
+            $key = text(getNodeType($this->m_destination))." ".strtolower(text("add","","atk"));
+            $label = text($key);
+          }
+        }
+        $url = href($add_url,$label,SESSION_NESTED,true);
+      }
+      return $url;
     }
     
     /**
