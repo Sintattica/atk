@@ -3093,7 +3093,6 @@
 
         $storelist = array();
 
-        $update = FALSE;
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
@@ -3106,12 +3105,11 @@
             else
             {
               $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
-              $update = TRUE;
             }
           }
         }
 
-        if ($update)
+        if (count($query->m_fields) > 0)
         {
           $query->executeUpdate();
         }
