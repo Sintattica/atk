@@ -11,9 +11,18 @@ Changes in ATK 5.0.3
 * atkDateAttribute now no longer displays current date unless obligatory [Boy]
 * Fixed remaining bugs with tabs (bug #301) [Boy]
 * Improvements to atkLanguage [Boy]
-+ Autodetecting of themefiles, no longer have to fill them in manually [Boy]
-+ Pages by atkPage now have HTML4.01 Transitional DTD and ISO-8859-1 charset [Boy]
++ Pages by atkPage now have HTML4.01 Transitional DTD and 
+  characterset from languagefiles[Boy]
 * Small bugfix in atkFileExport, and added XML mime type [Sandy]
+* Small modifications to facilitate HTML 4.01 validation [Boy]
+* Improvements to atkTheme and atkThemeCompiler
+  * atkTheme now uses default icon if it can't find any [Boy]
+  * Added config variable that forces recompile of theme cache [Boy]
+  * Writing cache file now reports an error
+    instead of continuing endlessly if something is wrong [Boy]
+  + Autodetecting of themefiles, no longer have to fill them in manually [Boy]
+* DHTML dropdown handler now only shows what you are allowed to do [Boy]
+* Fix for bug with select pages when AF_LARGE is set (bug #302) [Boy]
 
 Changes in ATK 5.0.2
 --------------------
