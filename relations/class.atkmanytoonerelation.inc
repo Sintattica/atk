@@ -174,15 +174,15 @@
           }
           else
           {
-            $title = "&nbsp;"; // no record
+            $title = ""; // no record
           }
         }
 
         $result = $title; // default result is just the title.
  
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
-        {                            
-          if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+        {                                      
+          if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$title!="")
           {
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
           }
