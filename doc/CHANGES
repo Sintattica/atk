@@ -36,6 +36,7 @@ Changes in ATK 5.1.1
 * atkClassLoader now handles nonexistant classes gracefully. [Ivo]
 * Filter passed to autolink feature again and added support for newlyadded
   records [Yury]
+* Functional decomposition of importhandler [Boy]
 
 Changes in ATK 5.1.0
 --------------------

@@ -59,8 +59,21 @@
      */
     function doInit()
     {
+      $content.=$this->_getInitHtml();
+      $page = &$this->getPage();
+      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
+      return true;
+    }
+    
+    /**
+     * Gets the HTML for the initial mode of the importhandler
+     * @return String The HTML for the screen
+     */
+    function _getInitHtml()
+    {
+      global $HTTP_SERVER_VARS;
       $content = atktext("import_upload_explanation", "atk", $this->m_node->m_type);
-      $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
+      $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$HTTP_SERVER_VARS['REQUEST_URI'].'?'.SID.'"'.
                                   ' method="post">'.session_form();
       $content.= '<input type="hidden" name="phase" value="upload">';
       $content.= '<input type="file" name="csvfile">';
@@ -68,10 +81,7 @@
       $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
-
-      $page = &$this->getPage();
-      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
-      return true;
+      return $content;
     }
 
     /**
@@ -88,8 +98,9 @@
       else
       {
         // file uploaded
-        return $this->doAnalyze($fileid);
+        $output = $this->doAnalyze($fileid);
       }
+      return $output;
     }
 
     /**
@@ -138,7 +149,6 @@
 
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
       
-
       // Display sample
       $sample = '<br><br>'.atktext("import_sample").':<br><br><table class="recordlist">';
 
@@ -155,6 +165,68 @@
           for ($i=0, $_i=($columncount-count($col_map)); $i<$_i; $i++) $col_map[] = "-";
       }
 
+      $sample.= $this->_getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow);
+
+      $content.=$this->_getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure);
+
+      if(is_array($importerror))
+        $content.= "<b>".text($importerror['msg']).$importerror['spec']."</b>";
+
+      $content.= $sample;
+
+      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';      
+      if ($allField!="")
+      {
+        $attr = $this->getUsableAttribute($allField);
+        
+        if(is_object($attr))
+        {
+          $record = array();
+  
+          $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
+        }
+      }
+
+      $content.=$this->_getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier);
+      
+      $content.=$this->_getAnalyseFooter();
+
+      $page = &$this->getPage();
+      $theme = &atkTheme::getInstance();
+      $page->register_style($theme->stylePath("recordlist.css"));
+      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
+    }
+    
+    /**
+     * Returns the HTML header for the 'analyse' mode of the import handler
+     * @param String $fileid      The 'id' (name) of the file we are importing
+     * @param String $columncount The number of columns we have
+     * @param String $delimiter   The delimiter in the file
+     * @param String $enclosure   The enclosure in the file
+     * @return String The HTML header
+     */
+    function _getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure)
+    {
+      $content.= '<br><form name="entryform" enctype="multipart/form-data" action="'.$HTTP_SERVER_VARS['REQUEST_URI'].'"'.
+                                  ' method="post">'.session_form();
+      $content.= '<input type="hidden" name="phase" value="process">';
+      $content.= '<input type="hidden" name="fileid" value="'.$fileid.'">';
+      $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
+      $content.= text("delimiter").': <input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'">';
+      $content.= '&nbsp; '.text("enclosure").': <input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'">';
+      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br />';
+      return $content;
+    }
+    
+    /**
+     * Returns a sample of the analysis
+     * @param String $columncount  The number of columns we have
+     * @param String $col_map      A mapping of the column
+     * @param String $csv_data     The CSV data
+     * @param String $skipfirstrow Wether or not to skip the first row
+     */
+    function _getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow)
+    {
       // header
       $sample.= '<tr>';
       for ($j=1; $j<=$columncount; $j++)
@@ -229,35 +301,19 @@
         $sample.='</tr>';
       }
       $sample.= '</table><br><br>';
-
-
-      $content.= '<br><form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
-                                  ' method="post">'.session_form();
-      $content.= '<input type="hidden" name="phase" value="process">';
-      $content.= '<input type="hidden" name="fileid" value="'.$fileid.'">';
-      $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
-      $content.= text("delimiter").': <input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'">';
-      $content.= '&nbsp; '.text("enclosure").': <input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'">';
-      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br />';
-
-      if(is_array($importerror))
-        $content.= "<b>".text($importerror['msg']).$importerror['spec']."</b>";
-
-      $content.= $sample;
-
-      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';      
-      if ($allField!="")
-      {
-        $attr = $this->getUsableAttribute($allField);
-        
-        if(is_object($attr))
-        {
-          $record = array();
-  
-          $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
-        }
-      }
-
+      return $sample;
+    }
+    
+    /**
+     * Returns the extra options of the importhandler
+     * @param String $skipfirstrow      Wether or not to skip the first row
+     * @param String $doupdate          Wether or not to do an update
+     * @param String $updatekey1        The key to update on
+     * @param String $onfalseidentifier What to do on a false identifier
+     * @return String The HTML with the extra options
+     */
+    function _getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier)
+    {
       $content.= '<br /><table id="importoptions">';
       $content.= '  <tr>';
       $content.= '    <td>';
@@ -269,21 +325,24 @@
       $content.= '</td></tr><tr><td>';
       $content.= atktext("import_onfalseidentifier").'    </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
       
-      
       $content.= '    </td>';
       $content.= '  </tr>';
       $content.= '</table><br /><br />';
-      
+      return $content;
+    }
+    
+    /**
+     * Returns the footer of the analysis mode
+     * @return String The HTML footer of the analysis mode
+     */
+    function _getAnalyseFooter()
+    {
       $content.= ' <input type="submit" name="analyse" value="'.atktext("import_analyse").'">';
       $content.= ' <input type="submit" name="import" value="'.atktext("import_import").'"> ';
       $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
-
-      $page = &$this->getPage();
-      $theme = &atkTheme::getInstance();
-      $page->register_style($theme->stylePath("recordlist.css"));
-      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
+      return $content;
     }
 
     /**
@@ -302,7 +361,10 @@
     function fgetcsvfromarray ($arr, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
       $result = array();
-      foreach ($arr as $line) { $result[] = $this->fgetcsvfromline($line, $columncount, $delimiterChar, $enclosureChar); }
+      foreach ($arr as $line) 
+      { 
+        $result[] = $this->fgetcsvfromline($line, $columncount, $delimiterChar, $enclosureChar); 
+      }
       return $result;
     }
 
@@ -342,7 +404,6 @@
       if (!is_array($rows)||count($rows)==0) return 0;
       if ($delimiter == "") return 1;
       return (substr_count($rows[0], $delimiter)+1);
-
     }
 
     /**
