@@ -76,24 +76,34 @@
      */
     function getLinkPassword($linktable,$linkfield,$encryption="")
     {
+      //return "test";
+
       global $g_db;
       
       $linktable = "personData";
       $linkfield = "linkpass";
       
-      $user = &getUser();
+      $user = getUser();
       $username = $user['name'];
+      $password = $user['PASS'];
+
+      if($encryption)
+        $crypt = atkEncryption::getEncryption($encryption);
+      else
+        $crypt = $this->m_crypt;
   
       if($username == "administrator")
       {
         //if the administrator asks for a  password we generate one
         //because the administrator only makes the first person
-        return atkEncryption::getRandomString(6);
+        global $linkpass;
+        if(!$linkpass)
+          $linkpass = $crypt->getRandomKey($password);
+
+
       }
       else
       {
-        $password = $user['password'];
-      
         $query = "SELECT ".$linkfield." as pass FROM ".$linktable." WHERE ".atkconfig("auth_userfield")." = '".$username."'";
 
         $rec = $g_db->getrows($query);
@@ -101,16 +111,13 @@
           return $linkpass;
 
         $encryptedpass = array_pop($rec);
-        
-        if($encryption)
-          $crypt = &atkEncryption::getEncryption($encryption);
-        else
-          $crypt = $this->m_crypt;
-          
-        $linkpass = $crypt->decrypt($encryptedpass['pass'],$password);
+
+        $linkpass = $encryptedpass['pass'];
       }
-    
-      return $linkpass;
+      
+      
+
+      return $crypt->decryptKey($linkpass,$password);
     }
   
     /**
@@ -125,7 +132,7 @@
       {
         $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
         $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
-        $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $cryptedlink;
+        $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
       }
 
       return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
@@ -139,7 +146,12 @@
      */
     function load($db, $record, $mode)
     {
-      $link = $record[$this->fieldName()];
+      global $g_db;
+
+      $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE id=".$record['id'];
+      $result = $g_db->getrows($query);
+      $link = $result[0][$this->fieldName()];
+
       $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
       $record[$this->fieldName()] = $cryptedlink;
 
@@ -147,16 +159,15 @@
     }
   
     /**
-     * Creates a new user (?)
-     * @param string $user the name of the user to create
+     * For creating a new user put the linkpassword in the db
+     * @param string $id the id of the user to create
      * @param string $pass the password for the user
      */
-    function newUser($user,$pass)
+    function newUser($id,$pass)
     {
       global $g_db;
-      $linkpass = $this->m_crypt->encrypt($this->getLinkPassword($linktable,$linkfield),$pass);
-    
-      $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '$linkpass' WHERE $this->m_linkuserfield = '$user' LIMIT 1";
+      $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable,$this->m_linkfield),$pass);
+      $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id' LIMIT 1";
       $g_db->query($query);
     }
     

@@ -76,6 +76,31 @@
     }
     
     /**
+     * Decryptionmethod for a key. This implementation returns simple the input
+     * @param string key      The encrypted key
+     * @param string password The password to decrypt de key
+     * @return string         The decrypted key
+     */
+    function decryptKey($key,$pass)
+    {
+      // dummy implementation
+      return $key;
+    }
+    
+    /**
+     * Encryptionmethod for a key. This implementation returns simple the input
+     * @param string key      The decrypted key
+     * @param string password The password to encrypt de key
+     * @return string         The encrypted key
+     */
+    function encryptKey($key,$pass)
+    {
+      //dummy implementation
+      return $key;
+    }
+    
+    
+    /**
      * Creates a hash of a random number and returns the amount of characters you pass along (<=32)
      * or the entire (32 characters) string
      * @param int $length the amount of characters we want, can't be more than 32
@@ -90,6 +115,17 @@
     
       $begin = rand(0,32-$length);
       return substr($str,$begin,$length);
+    }
+    
+    /**
+     * Creates a random key for tableencryption
+     * The default implementation of this function returns a string with 6 random characters
+     * @param string pass   This implementation does nothing with this param
+     * @return string       A random key
+     */
+    function getRandomKey($pass)
+    {
+      return $this->getRandomString(6);
     }
   }
 ?>
