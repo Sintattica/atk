@@ -2468,7 +2468,38 @@
 
       $dbrecords = $this->m_db->getrows($querystring);
 
-      if(($mode=="edit" || $mode=="copy") && $this->hasFlag(NF_ML)) // do we have mlrecords?
+      if($mode=="copy" && $this->hasFlag(NF_ML)) // do we have mlrecords?
+      {
+        // When copying there could be more than one multilanguage record in the dbrecords array. 
+        // So we split this before sending it to the multilanguage splitter.
+        // This only happens in case of an atkonetomanyrelation.
+        $result = array();
+        $ids = array();
+        $indexes =array();
+        for ($i=0;$i<count($dbrecords);$i++)
+        {
+          if (!in_array($dbrecords[$i][$this->primaryKeyField()], $ids))
+          {
+            $j = count($result);
+            $result[$j][] = $dbrecords[$i];
+            $ids[] = $dbrecords[$i][$this->primaryKeyField()];
+            $indexes[] = $j;
+          }
+          else
+          {
+            $index = array_search($dbrecords[$i][$this->primaryKeyField()], $ids);
+            $result[$indexes[$index]][] = $dbrecords[$i];
+          }
+        }
+        // Combine the multilanguage records and put them in the dbrecords array.
+        $dbrecords = array();
+        for ($i=0;$i<count($result);$i++)
+        {
+          $mltool->combineMlRecordSet($this, $result[$i],$query); 
+          $dbrecords[$i] = $result[$i][0];
+        }
+      }
+      if($mode=="edit" && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
@@ -2614,7 +2645,7 @@
       }
 
       if (!$this->_storeAttributes($storelist["pre"], $record, $mode)) return false;
-
+      
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
@@ -2642,6 +2673,7 @@
         $mltool->updateMlRecords($this, $record,"add");
       }
 
+      
       if (!$this->_storeAttributes($storelist["post"], $record, $mode))
       {
         atkdebug("_storeAttributes failed..");
