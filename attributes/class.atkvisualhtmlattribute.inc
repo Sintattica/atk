@@ -126,16 +126,38 @@
      //       but the screen still shows the unreplaced value
 
      $content = $rec[$this->fieldName()];
-
      // remove <p>&nbsp;</p>
       if (strtolower(trim($content)) == "<p>&nbsp;</p>")
       {
        $content = "";
       }
 
-     // return content
-      return $content;
+     // no fonts allowed!
+     if (!$this->hasFlag(WW_FONT)) 
+      {
+        $syntax = array("<font[^>.]*>"=>" ",  
+                      "</font[^>.]*>"=>" ");
+       $content = $this->stripTags($content,$syntax);
+      }
+
+    return $content;
     }
-        
+
+    function hasFlag($flag)
+    {
+    return ($this->m_editflags&$flag)==$flag;
+    }
+
+
+    function stripTags($ostring, $syntax)
+    {
+      foreach ($syntax as $toreplace => $replaceby)
+      {
+        $htmlk = "(" . $toreplace . ")";   //construct the html key
+        $ostring = eregi_replace($toreplace,$replaceby,$ostring);
+      }
+     return $ostring;
+    }
+ 
   }
 ?>
