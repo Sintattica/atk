@@ -701,7 +701,7 @@
 
         ksort($replaces);
 
-        $regexpr = $format;
+        $regexpr = str_replace("-"," ",$format);
         $marge = 0; //this is the marge that the new string greater is than the old one
         foreach($replaces as $begin=>$replace){
           $newpart = $replace[0];
@@ -715,17 +715,30 @@
 
         $regexpr = "^$regexpr$";
 
-        if(ereg($regexpr,$stringvalue)){
+        $valueSeperators = array ("-","/","\.","\\\\","a");
 
+        //if the value has the format given by regexpr.
+        //also try to replace - by "/","." or "\""
+        foreach($valueSeperators as $valueSeperator)
+        {
+          $expr = str_replace(" ",$valueSeperator,$regexpr);
+          if(ereg($expr,$stringvalue))
+          {
+            $day    = substr($stringvalue,$dayBegin,$dayLength);
+            $month  = substr($stringvalue,$monthBegin,$monthLength);
+            $year   = substr($stringvalue,$yearBegin,$yearLength);
 
-          $day    = substr($stringvalue,$dayBegin,$dayLength);
-          $month  = substr($stringvalue,$monthBegin,$monthLength);
-          $year   = substr($stringvalue,$yearBegin,$yearLength);
-
-          return array('day'=>$day,'month'=>$month,'year'=>$year);
+            if($month > 12 && $day <= 12)
+            {
+              $month += $day;
+              $day = $month-$day;
+              $month -= $day;
+            }
+            return array('day'=>$day+1,'month'=>$month,'year'=>$year);
+          }
         }
       }
-      
+
       return array('day'=>0,'month'=>0,'year'=>0);
     }
   }
