@@ -168,4 +168,10 @@
   // Wether or not to use the keyboardhandler for attributes and the recordlist
   // Defaults to 1 (true), comment or set to null to remove keyboard handler
   $config_use_keyboard_handler = 1;
+  
+  // Use the given meta policy as the default meta policy
+  $config_meta_policy = "atk.meta.atkmetapolicy";
+  
+  // Use the given meta handler as the default meta handler
+  $config_meta_handler = "atk.meta.atkmetahandler";
 ?>

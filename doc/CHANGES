@@ -14,6 +14,17 @@ Changes in ATK 5.0.8
 + Added $config_securerelation_decrypterror where you can specify
   if you want to see decrypterrors (2) or get a mail when they occur (1)
   or just hide them all together (null) [Boy]
++ Introduction of the atkMetaNode node which uses table meta data to
+  automatically add attributes (of the right type) to the node. [Peter]
++ Added atkMetaPolicy class which can be extended to implement a
+  custom meta policy for use by the atkMetaNode. To specify another
+  default meta policy for you application use the $config_meta_policy
+  configuration variable. [Peter]
++ Added atkMetaHandler class which can be used to call a method
+  which initializes the ATK meta policy before it adds the attributes
+  to the node. Class can also be extended for even more control.
+  Default implementation can be overriden using the $config_meta_handler
+  configuration variable. [Peter]
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]
@@ -21,6 +32,16 @@ Changes in ATK 5.0.8
 * Searching in nodes with AF_LARGE fixed for secure relations [Boy] 
 * Moved searching in selectDb() and countDb() after adding of
   attributes to query [Boy]
+* atkDDL::create now has optional parameter for specifying the database
+  name instead of the globally configured database name. [Peter]
+* atkDB class contains meta data flags which can be used by subclasses
+  to return more detailed meta data. The flags are: MF_PRIMARY,
+  MF_UNIQUE, MF_NOT_NULL, MF_AUTO_INCREMENT. Subclasses should return
+  these flags in the "flags" field of the column meta data. [Peter]
+* atkPgSQLDB::metadata(...) now returns more detailed meta data,
+  including for each column the generic type ("gentype"), flags. [Peter]
+* atkMySQLDB::metadata(...) now returns more detailed meta data,
+  including for each column the generic type ("gentype"), flags. [Peter]  
 
 Changes in ATK 5.0.7
 --------------------

@@ -105,7 +105,7 @@
     function query($query, $offset=-1, $limit=-1)
     {
       /* limit? */
-      if ($offset >= 0 && $limit > 0)
+      if ($offset >= 0 && $limit >= 0)
         $query .= " LIMIT $limit OFFSET $offset";  
       atkdebug("atkpgsqldb.query(): ".$query);
 
@@ -251,7 +251,17 @@
         $query = "SELECT nextval('seq_".$sequence."') AS nextid";
     
         /* execute query */
-        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
+        $id = @pg_exec($this->m_link_id, $query);
+        
+        /* maybe the name should not have the default seq_ prefix */
+        if (empty($id))
+        {
+          /* get sequence number and increment */
+          $query = "SELECT nextval('".$sequence."') AS nextid";
+  
+          /* execute query */
+          $id = @pg_exec($this->m_link_id, $query);
+        }
     
         /* error? */
         if (empty($id))
@@ -284,41 +294,78 @@
      * @return array with meta data
      */
     function metadata($table, $full=false)
-    {  
-      $meta = array();    // Metadata array - return value
+    { 
+      atkimport("atk.db.atkddl");
+      $ddl = &atkDDL::create("pgsql");
+    
+      // Get meta data from system tables.
+      // See developer manual (www.postgresql.org)
+      // for system table specification.
+      $sql = 
+       "SELECT
+          a.attnum AS i,
+          a.attname AS name,
+          t.typname AS type,
+          (CASE WHEN LOWER(t.typname) = 'varchar' AND a.attlen = -1 THEN a.atttypmod - 4 ELSE a.attlen END) AS length,
+          (CASE WHEN a.attnotnull THEN 1 ELSE 0 END) AS is_not_null,
+          (
+            SELECT COUNT(1)
+            FROM pg_index i
+            WHERE i.indrelid = c.oid
+            AND i.indisprimary = true
+            AND a.attnum IN (
+              i.indkey[0], i.indkey[1], i.indkey[2],
+              i.indkey[3], i.indkey[4], i.indkey[5],
+              i.indkey[6], i.indkey[7], i.indkey[8]
+            )
+            LIMIT 1
+          ) AS is_primary,
+          (
+            SELECT COUNT(1) 
+            FROM pg_index i 
+            WHERE i.indrelid = c.oid 
+            AND i.indisunique = true 
+            AND i.indnatts = 1 
+            AND i.indkey[0] = a.attnum 
+            LIMIT 1
+          ) AS is_unique,
+          (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN 1 ELSE 0 END) AS is_auto_inc,
+          (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN SUBSTRING(ad.adsrc, '''(.*?)''') END) AS sequence
+        FROM pg_class c
+        JOIN pg_attribute a ON (a.attrelid = c.oid AND a.attnum > 0)
+        JOIN pg_type t ON (t.oid = a.atttypid)
+        LEFT JOIN pg_attrdef ad ON (ad.adrelid = c.oid AND ad.adnum = a.attnum)
+        WHERE c.relname = '$table'
+        ORDER BY a.attnum";
 
-      // See PostgreSQL developer manual (www.postgresql.org) for system table spec.
-      // Get catalog data from system tables.
-      $sql = 'SELECT a.attnum, a.attname, t.typname, a.attlen, a.atttypmod, a.attnotnull, 
-                     a.atthasdef 
-              FROM pg_class as c, pg_attribute a, pg_type t 
-              WHERE a.attnum > 0 and a.attrelid = c.oid and 
-                    c.relname = '."'$table'".' and 
-                    a.atttypid = t.oid order by a.attnum';
-
+      $meta = array();
       $rows = $this->getRows($sql);
 
-      // Store meta data
-      if ($full && count($rows) > 0)
-        $meta["num_fields"] = count($rows);
-      for ($i = 0; $i < count($rows); $i++) 
+      foreach ($rows as $i => $row)
       {
-        // Field Name
-        $meta[$i]['table'] = $table;
-        $meta[$i]['name'] = $rows[$i]['attname'];
-        $meta[$i]['type'] = $rows[$i]['typname'];
-        $meta[$i]['len']  = $rows[$i]['attlen'];
-
-        if ($meta[$i]['type']=='varchar'&&$meta[$i]['len']==-1)
-          $meta[$i]['len'] = $rows[$i]['atttypmod']-4;
-
-        if ($full) $meta["meta"][$result[$i]["name"]] = $i;
+        $meta[$i]['table']   = $table;
+        $meta[$i]['type']    = $row['type'];
+        $meta[$i]['gentype'] = $ddl->getGenericType($row['type']);
+        $meta[$i]['name']    = $row['name'];
+        $meta[$i]['len']     = $row['length'];
+        $meta[$i]['flags']   =
+          ($row['is_primary'] == 1 ? MF_PRIMARY : 0) |
+          ($row['is_unique'] == 1 ? MF_UNIQUE : 0) |
+          ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
+          ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
+        
+        if ($row['is_auto_inc'] == 1)
+          $meta[$i]['sequence'] = $row['sequence'];
+        
+        if ($full)
+          $meta["meta"][$row['name']] = &$meta[$i];
       }
- 
+      
+      if ($full)
+        $meta['num_fields'] = count($rows);
+
       return $meta;
     }
-
-    
 
     /**
      * Return the available table names

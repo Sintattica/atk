@@ -25,7 +25,14 @@
   define("DB_UNKNOWNDATABASE"   , 3);  
   define("DB_ACCESSDENIED_USER" , 4);
   define("DB_ACCESSDENIED_DB"   , 5);
-
+  
+  /**
+   * Meta flags.
+   */
+  define('MF_PRIMARY',        1);
+  define('MF_UNIQUE',         2);
+  define('MF_NOT_NULL',       4);
+  define('MF_AUTO_INCREMENT', 8);  
 
   /**
    * Abstract baseclass for ATK database drivers. 
@@ -536,14 +543,12 @@
     {
       if (!is_array($this->m_tableMeta[$table]))
       {
-        $tmparr = $this->metadata($table);
-        for ($i=0, $_i=count($tmparr); $i<$_i; $i++)
-        {
-          $this->m_tableMeta[$table][$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
-          $this->m_tableMeta[$table][$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
-          $this->m_tableMeta[$table][$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];          
-        }      
+        $meta = $this->metadata($table);
+        $this->m_tableMeta[$table] = array();
+        for ($i = 0, $_i = count($meta); $i < $_i; $i++)
+          $this->m_tableMeta[$table][$meta[$i]['name']] = &$meta[$i];
       }
+      
       return $this->m_tableMeta[$table];
     }
     

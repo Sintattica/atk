@@ -30,5 +30,7 @@
   
   // Atknode is required. Don't remove it.
   include_once($config_atkroot."atk/class.atknode.inc");
-   
+  
+  // This one may be removed, but why would you wanna do that? :)
+  include_once($config_atkroot."atk/class.atkmetanode.inc");  
 ?>
