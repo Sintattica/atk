@@ -108,7 +108,7 @@
           
           $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';         
           //include $config_atkroot."atk/attributes/wysiwyg/editor.php";
-          $result.= $this->renderEditor($record[$this->fieldname()], $viewselectbox);
+          $result.= $this->renderEditor($fieldprefix.$this->fieldname(),$record[$this->fieldname()], $viewselectbox);
         }
         else
         {          
@@ -159,7 +159,7 @@
      return $ostring;
     }
     
-    function renderEditor($current_value="", $viewselectbox)
+    function renderEditor($fieldname, $current_value="", $viewselectbox)
     {	
       global $HTTP_USER_AGENT, $insertat_editor, $navegador;
       
@@ -204,7 +204,7 @@
       // Contingut: (la funció contingut_html ja fa strip_body si cal)
       $result.= "\n var cont = get_html('".$this->m_editorname."');";
       // Posem el valor al input hidden:
-      $result.= "\n document.entryform.".$fieldprefix.$this->fieldname().".value = cont; ";
+      $result.= "\n document.entryform.".$fieldname.".value = cont; ";
       $result.= "\n return true;";			
       
       $result.= "\n } ";
