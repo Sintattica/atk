@@ -57,6 +57,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.116  2001/10/08 19:38:44  peter
+   * Small fix for previous commit. Parent field will now only be set obligatory
+   * when the user tries to add a new record. This makes it possible to edit the
+   * tree root records.
+   *
    * Revision 4.115  2001/10/08 16:26:50  peter
    * Added NF_TREE_NO_ROOT_ADD flag for atkTreeNode(). This makes it possible to
    * prevent the user from adding new root elements in a tree. Also added an
@@ -576,9 +581,6 @@
       // check for parent fieldname (treeview)
       if($attribute->hasFlag(AF_PARENT))
       {
-        /* if no root elements may be added to the tree, then every record needs to have a parent! */
-        if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) $attribute->m_flags |= AF_OBLIGATORY;
-        
         $this->m_parent = $attribute->fieldName();
       }
       
@@ -2655,7 +2657,11 @@
           }
         }
         
-        // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
+        // if no root elements may be added to the tree, then every record needs to have a parent! 
+        if ($p_attrib->hasFlag(AF_PARENT) && $this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_action == "save")
+          $p_attrib->m_flags |= AF_OBLIGATORY;
+        
+        // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)        
         if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
           triggerError(&$record, $attribname, 'error_obligatoryfield');
