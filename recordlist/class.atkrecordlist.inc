@@ -352,8 +352,7 @@
   
           foreach (array_keys($list["heading"]) as $key)
           {
-            if (empty($list["total"][$key])) $totalcols[] = array("content"=>"");
-            else $totalcols[] = array("content"=>$list["total"][$key]);
+            $totalcols[] = array("content"=>$list["total"][$key]);
           }
   
           if ($orientation == "right" || $orientation == "both") $totalcols[] = array("content"=>"");          
