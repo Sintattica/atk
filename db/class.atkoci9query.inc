@@ -35,7 +35,7 @@
       if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;
       
-      if ($fieldType == 'DATETIME' && $mode != 'add' && $mode != 'update')
+      if (strtoupper($fieldType) == 'DATETIME' && $mode != 'add' && $mode != 'update')
       {  
         $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;     
         $fieldname = "TO_CHAR(".$fieldname.",'YYYY-MM-DD HH24:MI:SS')";   
@@ -46,11 +46,11 @@
       
       $this->m_fields[] = $fieldname;
 
-      if ($fieldType == 'DATETIME' && ($mode == 'add' || $mode == 'update'))
+      if (strtoupper($fieldType) == 'DATETIME' && ($mode == 'add' || $mode == 'update'))
       {
         $value = "TO_TIMESTAMP('".$value."','YYYY-MM-DD HH24:MI:SS')";
       }
-      elseif ($fieldType == 'TEXT' && ($mode == 'add' || $mode == 'update'))
+      elseif (strtoupper($fieldType) == 'TEXT' && ($mode == 'add' || $mode == 'update'))
       {
         //binding needed for CLOB     
         if($value != "")
@@ -61,7 +61,7 @@
 
       $this->m_values[$fieldname] = $value;
 
-      if ($fieldaliasprefix!="" && !($fieldType == 'DATETIME' && $mode != 'add' && $mode != 'update'))
+      if ($fieldaliasprefix!="" && !(strtoupper($fieldType) == 'DATETIME' && $mode != 'add' && $mode != 'update'))
       {
         $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;
         $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
