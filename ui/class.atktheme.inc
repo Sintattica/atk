@@ -1,214 +1,242 @@
 <?php  
-/**
-* atkTheme class
-*/
-class atkTheme
-{
-  var $m_initialized = false;        //boolean, true if atkTheme object is initialised
-  
-  var $m_themedirname = "themes";    //directoryname where the themes can be found... this shouldn't change often
-  var $m_themefile = "themedef.inc"; //filename where themedefinitions are stored
-  
-  var $m_curtheme;                   //the current theme
-  var $m_curthemedir;                //gets the directory where the current theme can be found
-  
-  var $m_def = array();              //the current themedefinition
-  
   /**
-  * Function to get an Instance of the atkTheme class,
-  * ensures that there is never more than one instance (Singleton pattern)
-  * @return obj atkTheme instance
-  */
-  function &getInstance()
-  {
-    static $s_instance = NULL;
-    if ($s_instance == NULL)
-    {
-      $s_instance = new atkTheme();
-    }
-    return $s_instance;
-  }
-  
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage ui
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
   /**
-  * Constructor, initializes class and certain values
-  */
-  function atkTheme()
+   * Theme loader
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Boy Baukema <boy@ibuildings.nl>
+   * @package atk
+   * @subpackage ui
+   *
+   */   
+  class atkTheme
   {
-    atkdebug("Created a new atkTheme instance");
-    $this->m_curtheme = atkconfig("defaulttheme");
-    $this->getCurThemedir();
-    $this->initTheme();
-  }
-  
-  /**
-  * Initialiser for the atkTheme class
-  */
-  function initTheme()
-  {
-    if (!$this->m_initialized)
-    {
-      // Include layout.inc file (oldstyle, soon to be deprecated)
-      if (file_exists($this->m_curthemedir."layout.inc"))
-      {
-        global $g_theme;
-        include_once($this->m_curthemedir."layout.inc");
-      }
-      
-      $this->getCachedTheme();
-      $this->m_initialized = true;
-    }
-  }
-  
-  /*
-  * Checks wether the current theme is cached yet, if not it calls the compiler and compiles it
-  */
-  function getCachedTheme()
-  {
-    $this->getThemedef();
-    if(!$this->m_def)
-    {
-      atkdebug("Cached themedefinition was not found, compiling one");
-      $compiler = &atknew("atk.ui.atkthemecompiler");
-      $compiler->compile();
-      $this->getThemedef();
-    }
-  }
-  
-  /**
-  * Includes and loads the themedefinition
-  */
-  function getThemedef()
-  {
-    $filelocation = atkconfig("atktempdir").$this->m_themedirname."/".$this->m_curtheme;
+    var $m_initialized = false;        //boolean, true if atkTheme object is initialised
     
-    if (file_exists($filelocation))
-    {
-      include_once($filelocation);
-      $this->m_def = $theme;
-    }
-  }
-  
-  /**
-  * Gets the location of the themedefinition for the current theme
-  * @return void
-  */
-  function getCurThemedir()
-  {
-    $themedefs = array(
-    atkconfig("atkroot").$this->m_themedirname."/".$this->m_curtheme,
-    atkconfig("atkroot")."atk/".$this->m_themedirname."/".$this->m_curtheme,
-    atkconfig("atkroot")."atk/".$this->m_themedirname."/default",
-    );
+    var $m_themedirname = "themes";    //directoryname where the themes can be found... this shouldn't change often
+    var $m_themefile = "themedef.inc"; //filename where themedefinitions are stored
     
-    foreach ($themedefs as $themedef)
+    var $m_curtheme;                   //the current theme
+    var $m_curthemedir;                //gets the directory where the current theme can be found
+    
+    var $m_def = array();              //the current themedefinition
+    
+    /**
+     * Function to get an Instance of the atkTheme class,
+     * ensures that there is never more than one instance (Singleton pattern)
+     * @return obj atkTheme instance
+     */
+    function &getInstance()
     {
-      if (file_exists("$themedef/$themefile"))
+      static $s_instance = NULL;
+      if ($s_instance == NULL)
       {
-        $this->m_curthemedir = $themedef."/";
-        return;
+        $s_instance = new atkTheme();
       }
+      return $s_instance;
     }
-  }
-  
-  /**
-  * Gets an attribute from a stacked array from the themedefinitions
-  * @param string $name      the name of the stack to look in
-  * @param string $searchfor the item in the attribute to search for
-  * @return array returns array("dir"=>"directory where we found it","item"=>"the item") if found, void otherwise
-  */
-  function getStackedItem($name, $searchfor)
-  {
-    for($counter=0;$counter <= count($this->m_def[$name]);$counter++)
+    
+    /**
+     * Constructor, initializes class and certain values
+     * @access private
+     */
+    function atkTheme()
     {
-      if ($this->m_def[$name][$counter])
+      atkdebug("Created a new atkTheme instance");
+      $this->m_curtheme = atkconfig("defaulttheme");
+      $this->_setCurThemedir();
+      $this->_initTheme();
+    }
+    
+    /**
+     * Initialiser for the atkTheme class
+     * @access private
+     */
+    function _initTheme()
+    {
+      if (!$this->m_initialized)
       {
-        foreach($this->m_def[$name][$counter] as $from => $itemarray)
+        // Include layout.inc file (oldstyle, soon to be deprecated)
+        if (file_exists($this->m_curthemedir."layout.inc"))
         {
-          foreach($itemarray as $item)
+          global $g_theme;
+          include_once($this->m_curthemedir."layout.inc");
+        }
+        
+        $this->_getCachedTheme();
+        $this->m_initialized = true;
+      }
+    }
+    
+    /**
+     * Checks wether the current theme is cached yet, if not it calls the compiler and compiles it
+     * @access private
+     */
+    function _getCachedTheme()
+    {
+      $this->_loadThemedef();
+      if(!$this->m_def)
+      {
+        atkdebug("Cached themedefinition was not found, compiling one");
+        $compiler = &atknew("atk.ui.atkthemecompiler");
+        $compiler->compile();
+        $this->_loadThemedef();
+      }
+    }
+    
+    /**
+     * Includes and loads the themedefinition
+     * @access private
+     */
+    function _loadThemedef()
+    {
+      $filelocation = atkconfig("atktempdir").$this->m_themedirname."/".$this->m_curtheme;
+      
+      if (file_exists($filelocation))
+      {
+        include_once($filelocation);
+        $this->m_def = $theme;
+      }
+    }
+    
+    /**
+     * Gets the location of the themedefinition for the current theme
+     * @access private
+     */
+    function _setCurThemedir()
+    {
+      $themedefs = array(
+      atkconfig("atkroot").$this->m_themedirname."/".$this->m_curtheme,
+      atkconfig("atkroot")."atk/".$this->m_themedirname."/".$this->m_curtheme,
+      atkconfig("atkroot")."atk/".$this->m_themedirname."/default",
+      );
+      
+      foreach ($themedefs as $themedef)
+      {
+        if (file_exists("$themedef/$themefile"))
+        {
+          $this->m_curthemedir = $themedef."/";
+          return;
+        }
+      }
+    }
+    
+    /**
+     * Gets an attribute from a stacked array from the themedefinitions
+     * @access private
+     * @param string $name      the name of the stack to look in
+     * @param string $searchfor the item in the attribute to search for
+     * @return array returns array("dir"=>"directory where we found it","item"=>"the item") if found, void otherwise
+     */
+    function _getStackedItem($name, $searchfor)
+    {
+      for($counter=0;$counter <= count($this->m_def[$name]);$counter++)
+      {
+        if ($this->m_def[$name][$counter])
+        {
+          foreach($this->m_def[$name][$counter] as $from => $itemarray)
           {
-            if ($item == $searchfor)
+            foreach($itemarray as $item)
             {
-              return array("dir" => $from, "item" => $itemarray[$searchfor]);
+              if ($item == $searchfor)
+              {
+                return array("dir" => $from, "item" => $itemarray[$searchfor]);
+              }
             }
           }
         }
       }
+     atkdebug("Couldn't find $searchfor in stack: $name");
     }
-   atkdebug("Couldn't find $searchfor in stack: $name");
-  }
-  
-  /**
-  * Gets an attribute from the current themedefinition
-  * example: getAttribute("highlight");
-  * @param string $attrib the name of the attribute
-  * @param var the value of the attribute in the theme
-  */
-  function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
-  { 
-    if(is_array($this->m_def[$attribname]))
-    {
-      $attrib = $this->getStackedItem($attribname,$attribvalue);
-      if ($attrib)
-      {
-        return atkconfig("atkroot").$attrib["dir"].$returnpath;
-      }
-      return atkconfig("atkroot")."atk/themes/default/".$defaultreturnpath;
-    }
-    else
-    {
-      return $this->m_def[$attribname];
-    }
-  }
-  
-  /**
-  * Returns full path for themed template file, interface to the getAttribute function
-  * @param string $tpl the template name
-  * @return string the full path of the template file
-  */
-  function tplPath($tpl)
-  {
-    return $this->getAttribute("customtpls",$tpl, "/templates/".$tpl,"templates/".$tpl);
-  }
-  
-  /**
-  * Returns full path for themed image file, interface to the getAttribute function
-  * @param string $img the image name
-  * @return string the full path of the image file
-  */
-  function imgPath($img)
-  {
-    return $this->getAttribute("customimgs", $img, "/images/".$img, "images/".$img);
-  }
-  
-  /**
-  * Returns full path for themed stylefile file, interface to the getAttribute function
-  * @param string $style the name of the CSS file
-  * @return string the full path of the style file
-  */
-  function stylePath($style)
-  { 
-    return $this->getAttribute("customstyles", $style, "/styles/".$style,"styles/".$style);
-  }
-  
-  /**
-  * Returns full path for themed icon file, interface to the getAttribute function
-  * @param string $icon      the icon name (no extension)
-  * @param string $type      the icon type (example: "recordlist")
-  * @param string $extension the icon extension, defaults to .gif
-  * @return string the full path of the icon file
-  */
-  function iconPath($icon, $type, $extension=".gif")
-  {
-    return $this->getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension,"icons/$type/$icon".$extension);
-  }
     
-  /**
-  * Gets the directory of the current theme
-  * @return string full path of the current theme
-  */
-  function themeDir()
-  {
-    return $this->m_curthemedir;
+    /**
+     * Gets an attribute from the current themedefinition
+     * example: getAttribute("highlight");
+     * @param string $attrib the name of the attribute
+     * @param var the value of the attribute in the theme
+     */
+    function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
+    { 
+      if(is_array($this->m_def[$attribname]))
+      {
+        $attrib = $this->_getStackedItem($attribname,$attribvalue);
+        if ($attrib)
+        {
+          return atkconfig("atkroot").$attrib["dir"].$returnpath;
+        }
+        return atkconfig("atkroot")."atk/themes/default/".$defaultreturnpath;
+      }
+      else
+      {
+        return $this->m_def[$attribname];
+      }
+    }
+    
+    /**
+     * Returns full path for themed template file, interface to the getAttribute function
+     * @param string $tpl the template name
+     * @return string the full path of the template file
+     */
+    function tplPath($tpl)
+    {
+      return $this->getAttribute("customtpls",$tpl, "/templates/".$tpl,"templates/".$tpl);
+    }
+    
+    /**
+     * Returns full path for themed image file, interface to the getAttribute function
+     * @param string $img the image name
+     * @return string the full path of the image file
+     */
+    function imgPath($img)
+    {
+      return $this->getAttribute("customimgs", $img, "/images/".$img, "images/".$img);
+    }
+    
+    /**
+     * Returns full path for themed stylefile file, interface to the getAttribute function
+     * @param string $style the name of the CSS file
+     * @return string the full path of the style file
+     */
+    function stylePath($style)
+    { 
+      return $this->getAttribute("customstyles", $style, "/styles/".$style,"styles/".$style);
+    }
+    
+    /**
+     * Returns full path for themed icon file, interface to the getAttribute function
+     * @param string $icon      the icon name (no extension)
+     * @param string $type      the icon type (example: "recordlist")
+     * @param string $extension the icon extension, defaults to .gif
+     * @return string the full path of the icon file
+     */
+    function iconPath($icon, $type, $extension=".gif")
+    {
+      return $this->getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension,"icons/$type/$icon".$extension);
+    }
+      
+    /**
+     * Gets the directory of the current theme
+     * @return string full path of the current theme
+     */
+    function themeDir()
+    {
+      return $this->m_curthemedir;
+    }
   }
-}
 ?>
