@@ -6,6 +6,4 @@
   $theme["highlight"] = "#eeeeee";
   $theme["select"] = "#cccccc";
   
-  $theme["TreeIcon_dir"] = "icons/tree/";
-  $theme["ToolBarIcon_dir"] = "icons/toolbar/";
 ?>

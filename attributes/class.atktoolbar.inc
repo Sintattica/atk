@@ -25,21 +25,14 @@
     {
       global $config_atkroot, $g_theme;
       
-      if($g_theme["ToolbarIcon_dir"]!=""&&is_dir($config_atkroot."themes/".$g_theme["Name"]."/".$g_theme["ToolbarIcon_dir"]))
-      {
-        $iconpath = $config_atkroot."themes/".$g_theme["Name"]."/".$g_theme["ToolbarIcon_dir"]."/";
-      }
-      else
-      {
-        $iconpath = $config_atkroot."atk/themes/default/toolbar_icons/";
-      }
+      $theme = &atkTheme::getInstance();
 
       $page = &atkPage::getInstance();
       $page->register_script($config_atkroot."atk/javascript/newwindow.js");
       $page->register_script($config_atkroot."atk/javascript/class.atktoolbar.js");      
-      $res  = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="'.$iconpath.'bold.gif" border="0" alt="Vet"></a> ';
-      $res .= '<a href="javascript:modifySelection(\'<i>\',\'</i>\');"><img src="'.$iconpath.'italic.gif" border="0" alt="Schuin"></a> ';
-      $res .= '<a href="javascript:modifySelection(\'<u>\',\'</u>\');"><img src="'.$iconpath.'underline.gif" border="0" alt="Onderstreept"></a>';      
+      $res  = '<a href="javascript:modifySelection(\'<b>\',\'</b>\');"><img src="'.$theme->iconPath("bold","toolbar").'" border="0" alt="Vet"></a> ';
+      $res .= '<a href="javascript:modifySelection(\'<i>\',\'</i>\');"><img src="'.$theme->iconPath("italic","toolbar").'" border="0" alt="Schuin"></a> ';
+      $res .= '<a href="javascript:modifySelection(\'<u>\',\'</u>\');"><img src="'.$theme->iconPath("underline","toolbar").'" border="0" alt="Onderstreept"></a>';      
 
       // TODO/FIXME:This is platform specific code and should not be here
       // I think is still needed for older platform version (M1, M2) and RWS
