@@ -40,7 +40,6 @@
       {
         $lngs = atkconfig("supported_languages");
         for($i=0, $_i=count($lngs); $i<$_i; $i++) $lngs[$i]=strtoupper($lngs[$i]);
-        var_dump($lngs);
         return $lngs;
       }
     }
