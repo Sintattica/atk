@@ -189,7 +189,7 @@
      */    
     function fetchMeta($metadata)    
     {
-      global $config_language;
+      global $config_language,$g_layout;
       $attribname = $this->fieldName().'_'.$config_language[0];
       $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());      
