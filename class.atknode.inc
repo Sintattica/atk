@@ -328,6 +328,14 @@
                                "copy"=>"add",
                                "editcopy"=>"add",
                                "search"=>"admin");
+                               
+    /**
+     * The right to execute certain actions can be implied by the fact that you 
+     * have some other right. For example, if you have the right to edit a
+     * record, you may also view that record, and don't need explicit rights
+     * to view it. So the 'view' right is said to be 'implied' by the 'edit' right. 
+     */
+    var $m_securityImplied = array("view"=>"edit");
 
     /**
      * If a class is named 'project', then by default, if the system needs to know whether
@@ -1391,19 +1399,20 @@
       if(!is_array($actions))
       {
         $actions = array();
+        
+        // Changed: it used to be that you could only view if you didn't have
+        // edit right. This was changed because of Achievo bug #41 
+        // (http://www.achievo.org/bug/41)
+        if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
+        {
+          $actions["view"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
+        }
 
         if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
         {
           $actions["edit"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]';
-        }
-        else
-        {
-          // if you may not edit, maybe you are allowed to view..
-          if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
-          {
-            $actions["view"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
-          }
-        }
+        }        
+        
         if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
         {
           $actions["delete"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]';
@@ -3669,10 +3678,14 @@
       {
         $alias = $this->m_securityAlias;
       }
+      
+      // Resolve action
+      $action = $this->securityKey($action);
 
       return ($this->hasFlag(NF_NO_SECURITY)
-              ||in_array($this->securityKey($action), $this->m_unsecuredActions)
-              || $secMgr->allowed($alias,$this->securityKey($action)));
+              ||in_array($action, $this->m_unsecuredActions)
+              || $secMgr->allowed($alias,$action)
+              || ($this->m_securityImplied[$action]!="" && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
     }
 
     function setSecurityAlias($alias)
