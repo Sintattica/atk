@@ -57,10 +57,10 @@
     
     function edit($record)
     {
-      global $g_modules, $g_nodes;  
+      global $g_modules, $g_nodes, $config_atkroot;  
     
       /* get nodes */
-      require_once("atk/atknodetools.inc");
+      require_once($config_atkroot."atk/atknodetools.inc");
       include_once("config.nodes.inc");
   
       /* get permissions */
