@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.97  2001/09/06 11:25:35  ivo
+   * Made the popup for help pages a littlebit larger.
+   *
    * Revision 4.96  2001/09/05 22:03:35  sandy
    * - removed the mime type parameter, and replaced it with type (cvs/excel/...)
    *
@@ -3225,7 +3228,7 @@ atkdebug("Action add");
       {
        $name = text("help");
        $node = $this->m_type;
-       return atkPopup('help.php','node='.$node,$name,600,400,'yes','no');
+       return atkPopup('help.php','node='.$node,$name,650,650,'yes','no');
       }
     }
 
