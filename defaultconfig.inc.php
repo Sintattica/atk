@@ -59,6 +59,7 @@
   $config_menu_layout = "default";
   $config_top_frame = 0; // 0 = no   - 1 = yes
   $config_defaulttheme = "default";
+  $config_defaultlanguage = "nl";
 
   // Display a 'stack' of the user activities in the top right corner.
   $config_stacktrace = true;
