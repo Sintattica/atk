@@ -136,7 +136,7 @@
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
 
       // Display sample
-      $sample = '<br><br>'.atktext("import_samble").':<br><br><table class="recordlist">';
+      $sample = '<br><br>'.atktext("import_sample").':<br><br><table class="recordlist">';
 
       $col_map = $this->m_postvars["col_map"];
       if (!is_array($col_map))
@@ -208,14 +208,14 @@
       $sample.= '</table><br><br>';
 
 
-      $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
+      $content.= '<br><form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                                   ' method="post">'.session_form();
       $content.= '<input type="hidden" name="phase" value="process">';
       $content.= '<input type="hidden" name="fileid" value="'.$fileid.'">';
       $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
       $content.= text("delimiter").': <input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'">';
       $content.= '&nbsp; '.text("enclosure").': <input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'">';
-      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br><br>';
+      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br />';
 
       if(is_array($importerror))
         $content.= "<b>".text($importerror['msg']).$importerror['spec']."</b>";
