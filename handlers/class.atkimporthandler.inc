@@ -367,7 +367,7 @@
     }
 
     /**
-     * source: http://bu.orbitel.bg/fgetcsvfromline.php (dawa@did-it.com)
+     * source: http://bu.orbitel.bg/fgetcsvfromline.php (bu@orbitel.bg)
      * Gets the csvdata from one line
      * @param $line           One line from the csv-file
      * @param $columncount    Number of columns in the cvs-file
