@@ -35,7 +35,7 @@
     * @access private
     * @var string mode
     */
-    var $m_mode = "add";
+    var $m_mode = "";
 
     /**
     * constructor
@@ -104,10 +104,10 @@
 
       // check overrides
       if(count($ignoreList))
-        $this->m_ignoreList = $ignoreList;
+        $this->setIgnoreList($ignoreList);
 
       if($mode != "")
-        $this->m_mode = $mode;
+        $this->setMode($mode);
       
       // set the record
       $record = &$this->m_record;
