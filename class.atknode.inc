@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.108  2001/09/25 14:23:37  ivo
+   * Extended searchform is now directly callable from menu.
+   *
    * Revision 4.107  2001/09/18 07:15:27  ivo
    * Missing module.inc files is now a warning instead of an error.
    *
@@ -839,13 +842,26 @@
     
     function searchPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF;
+      global $g_layout, $PHP_SELF, $atklevel;
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
       $g_layout->output($this->statusbar());
       
       $g_layout->output('<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">');
-      $g_layout->output(session_form(SESSION_BACK));
+      
+      // usually, extended search is called from a page, and we go back to that page
+      // when the user presses search.
+      if ($atklevel>0)
+      {        
+        $g_layout->output(session_form(SESSION_BACK));
+      }
+      // but sometimes we directly call the searchpage. if that happens,
+      // we reload the adminpage with the searched items.
+      else
+      {  
+        $g_layout->output(session_form(SESSION_DEFAULT));
+        $g_layout->output('<input type="hidden" name="'.$fieldprefix.'atkaction" value="admin">');
+      }
       
       $g_layout->output($this->searchForm($record));
       $g_layout->output('<br><input type="submit" value="'.text('search').'">');
