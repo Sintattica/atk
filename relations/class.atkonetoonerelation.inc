@@ -162,8 +162,9 @@
      * Store values
      * @param $notused ??
      * @param $record Record
+     * @param $mode the store mode
      */
-    function store($notused, &$record)
+    function store($notused, &$record, $mode)
     {
       $this->createDestination();
 
@@ -178,7 +179,7 @@
         $this->m_destInstance->m_postvars = $vars;
         $this->m_destInstance->updateDb($vars);
       }
-      else if ($vars["mode"]=="add")
+      elseif ($vars["mode"]=="add" || $mode == "add")
       {
         atkdebug("Adding new one2one record");
         $this->m_destInstance->addDb($vars);
