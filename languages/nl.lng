@@ -113,6 +113,7 @@
   "import_allfield" => "Standaard waarde voor veld dat niet in de data zit",
   "import_analyse" => "Analyseer opnieuw",
   "import_detectedcolumns" => "Gedetecteerde aantal kolommen",
+  "import_doupdate"=>"Doe update i.p.v. toevoegen (gebruik om gegevens te updaten i.p.v. gegevens in te voeren)",
   "import_error_allfieldnocorrectdata" => "Het veld voor gebruik in ieder record bevat geen correcte invoer",
   "import_error_fieldisobligatory" => "Het volgende veld is verplicht en moet ingevuld zijn",
   "import_error_fieldsareobligatory" => "De volgende velden zijn verplicht en moeten ingevuld zijn",
@@ -121,13 +122,13 @@
   "import_field" => "Veld",
   "import_ignorecolumn" => "Negeer deze kolom",
   "import_import" => "Importeer",
+  "import_onfalseidentifier"=>"Voeg toe en ga verder indien er een onjuiste identifier is (2 records voor dezelfde key)",
+  "import_nonunique_identifier"=>"Niet unieke identifier gevonden in record waar de identifier '%s' is",
   "import_sample" => "Voorbeeld uit de csv-file",
   "import_skipfirstrow" => "Eerste regel overslaan? (titelrij)",
+  "import_update_key"=>"Identifier veld om op te updaten",
   "import_upload" => "Uploaden",
-  "import_upload_explanation" => "Upload een tekstbestand met data om te importeren in de database.
-                                  );
-                                  
-                                  ?>",
+  "import_upload_explanation" => "Upload een tekstbestand met data om te importeren in de database.",
   "invert_selection" => "Selectie omkeren",
   "january" => "januari",
   "july" => "juli",

@@ -2350,7 +2350,7 @@
       $mltool->addMlCondition($query,$this,$mode);
 
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
-
+            
       // First we check if we are about to search and set a few things
       // if we are
       if (!atkReadOptimizer())
@@ -2441,8 +2441,14 @@
             if ($value!="")
             {
               $p_attrib = &$this->m_attribList[$key];
+              
               if (is_object($p_attrib))
               {
+                if (is_array($value))
+                {
+                  $value = $value[$key];
+                }
+
                 if(is_array($searchmode))
                 {
                   $search = $searchmode[$key];
@@ -3202,11 +3208,11 @@
      * @param String $epxression The keyword to search for.
      * @return array Set of records matching the keyword.
      */
-    function searchDb($expression)
+    function searchDb($expression, $searchmethod="OR")
     {
       // Set default searchmethod to OR (put it in m_postvars, because selectDb
       // will use m_postvars to built it's search conditions).
-      $this->m_postvars['atksearchmethod'] = "OR";
+      $this->m_postvars['atksearchmethod'] = $searchmethod;
 
       // To perform the search, we fill atksearch, so selectDb automatically
       // searches. Because an atksearch variable may have already been set,

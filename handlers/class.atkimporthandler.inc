@@ -122,16 +122,19 @@
       global $g_sessionManager;
       $filename = $this->getTmpFileDestination($fileid);
 
-      $rows = $this->getSampleRows($filename);      
-      $delimiter = $g_sessionManager->pageVar("delimiter");
+      $rows =             $this->getSampleRows($filename);      
+      $delimiter =        $g_sessionManager->pageVar("delimiter");
       if ($delimiter=="") $delimiter = $this->estimateDelimiter($rows);
-      $enclosure = $g_sessionManager->pageVar("enclosure");
+      $enclosure =        $g_sessionManager->pageVar("enclosure");
       if ($enclosure=="") $enclosure = $this->estimateEnclosure($rows);
       
-      $allFieldValue = $g_sessionManager->pageVar("allFieldValue");
-      $allField = $g_sessionManager->pageVar("allField");
-      $skipfirstrow = $this->m_postvars['skipfirstrow'];
-      $columncount = $this->estimateColumnCount($rows, $delimiter);
+      $allField =           $g_sessionManager->pageVar("allField");
+      $skipfirstrow =       $this->m_postvars['skipfirstrow'];
+      $doupdate =           $this->m_postvars['doupdate'];
+      $updatekey1 =         $this->m_postvars['updatekey1'];
+      $onfalseidentifier =  $this->m_postvars['onfalseid'];
+     
+      $columncount =    $this->estimateColumnCount($rows, $delimiter);
 
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
       
@@ -236,8 +239,22 @@
         }
       }
 
-      $content.= '<br/>'.atktext("import_skipfirstrow").' <input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/><br/><br/>';
-        
+      $content.= '<br /><table id="importoptions">';
+      $content.= '  <tr>';
+      $content.= '    <td>';
+      $content.= atktext("import_skipfirstrow").' </td><td><input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/>';
+      $content.= '</td></tr><tr><td>';
+      $content.= atktext("import_doupdate").'    </td><td> <input type="checkbox" name="doupdate" value="1" '.($doupdate?"CHECKED":"").'/>';
+      $content.= '</td></tr><tr><td>';
+      $content.= atktext("import_update_key").' 1</td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",0).'</td>';
+      $content.= '</td></tr><tr><td>';
+      $content.= atktext("import_onfalseidentifier").'    </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
+      
+      
+      $content.= '    </td>';
+      $content.= '  </tr>';
+      $content.= '</table><br /><br />';
+      
       $content.= ' <input type="submit" name="analyse" value="'.atktext("import_analyse").'">';
       $content.= ' <input type="submit" name="import" value="'.atktext("import_import").'"> ';
       $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
@@ -371,8 +388,6 @@
           "/" => "\\/"
       );
 
-      $matches = array();
-
       $delimiterChar = strtr($delimiterChar, $regExpSpecialChars);
       $enclosureChar = strtr($enclosureChar, $regExpSpecialChars);
       
@@ -430,7 +445,6 @@
           }
         }
       }
-
       return $attrs;
     }
     
@@ -456,7 +470,8 @@
      * Checks whether the attribute is obligatory
      * @return boolean    The result of the check
      */
-    function isObligatory($attr){
+    function isObligatory($attr)
+    {
       return ($attr->hasFlag(AF_OBLIGATORY) && !$this->isHide($attr));
     }
     
@@ -464,7 +479,8 @@
      * Checks whether the attribute is hided by flag
      * @return boolean    The result of the check
      */
-    function isHide($attr){
+    function isHide($attr)
+    {
       return ($attr->hasFlag(AF_HIDE) || ($attr->hasFlag(AF_HIDE_ADD) && $attr->hasFlag(AF_HIDE_EDIT)));
     }
     
@@ -472,7 +488,8 @@
      * Checks whether the attribute has the flag AF_ONETOONE_INTEGRATE
      * @return boolean    The result of the check
      */
-    function integrateAttribute($attr){
+    function integrateAttribute($attr)
+    {
       return in_array(get_class($attr),array("atkonetoonerelation","atksecurerelation")) && $attr->hasFlag(AF_ONETOONE_INTEGRATE);
     }
     
@@ -480,13 +497,15 @@
      * Get al attributes from the import node that have the flag AF_ONETOONE_INTEGRATE
      * @return array  A list with all these attributes
      */
-    function getIntegratedAttributes(){
+    function getIntegratedAttributes()
+    {
       $attrs = array();
       foreach (array_keys($this->m_node->m_attribList) as $attribname)
       {
         $attrib = &$this->m_node->getAttribute($attribname);
 
-        if($this->integrateAttribute($attrib)){
+        if($this->integrateAttribute($attrib))
+        {
           $attrs[] = $attribname;
         }
       }
@@ -499,7 +518,8 @@
      * @param $attrname string  name of the attribute
      * @return mixed            false if not, relation name if yes
      */
-    function isRelationAttribute($attrname){
+    function isRelationAttribute($attrname)
+    {
       if(array_key_exists($attrname,$this->m_node->m_attribList))
         return false;
 
@@ -510,7 +530,6 @@
         if(array_key_exists($attrname,$relattr->m_destInstance->m_attribList))
           return $attr;
       }
-
       return false;
     }
 
@@ -541,7 +560,6 @@
         if(array_key_exists($name,$relattr->m_destInstance->m_attribList))
           return $relattr->m_destInstance->getAttribute($name);
       }
-
       return;
     }
     
@@ -555,9 +573,7 @@
     {
       $attr = $this->getUsableAttribute($attrname);
     
-      if(!is_object($attr)){
-        return;
-      }
+      if(!is_object($attr)) return;
     
       foreach($this->getIntegratedAttributes() as $intattr)
       {
@@ -566,14 +582,20 @@
       }
 
       if(!$this->isRelationAttribute($attrname))
+      {
         if(!$this->hasRelationAttribute($attrname))
+        {
           $record[$attrname] = $attr->parseStringValue($value);
-        else {
+        }
+        else 
+        {
           $attr->createDestination();
           $key = $attr->m_destInstance->m_primaryKey;
           $record[$attrname] = array($key[0]=>$attr->parseStringValue($value));
         }
-      else{
+      }
+      else
+      {
         $record[$this->isRelationAttribute($attrname)][$attrname] = $attr->parseStringValue($value);
       }
     }
@@ -583,9 +605,10 @@
      * @param index int         the number of the column
      * @param value string      the name of the attribute that is selected in the list (if empty then select the last one)
      * @param othername string  if set, use a other name for the dropdown, else use the name "col_map[index]"
+     * @param int emptycol      mode for empty column (0 = no empty column, 1= empty column, 2= an 'ignore this column' (default))
      * @return string           the html-code for the dropdownlist (<select>...</sekect>)
      */
-    function getAttributeSelector($index=0, $value="",$othername="")
+    function getAttributeSelector($index=0, $value="",$othername="", $emptycol=2)
     {
       if(!$othername)
         $res = '<select name="col_map['.$index.']">';
@@ -605,11 +628,12 @@
           $hasoneselected = true;
         }
 
-        $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type);
+        $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type)."\n";
         $j++;
       }
-
-      $res.= '<option value="-" '.(($value=="-"||!$hasoneselected)?"selected":"").' style="font-style: italic">'.atktext("import_ignorecolumn");
+     
+      if ($emptycol==2)      $res.= '<option value="-" '.(($value=="-"||!$hasoneselected)?"selected":"").' style="font-style: italic">'.atktext("import_ignorecolumn");
+      elseif ($emptycol==1)  $res.= '<option value="" '.((!$value||!$hasoneselected)?"selected":"").'>';
 
       $res.= '</select>';
       return $res;
@@ -680,16 +704,17 @@
      */
     function doImport()
     {
-      $col_map = $this->m_postvars["col_map"];
-      $fileid = $this->m_postvars["fileid"];
-      $file = $this->getTmpFileDestination($fileid);
-      $enclosure = $this->m_postvars["enclosure"];
-      $delimiter = $this->m_postvars["delimiter"];
-      $columncount = $this->m_postvars["columncount"];
-
+      $col_map =      $this->m_postvars["col_map"];
+      $fileid =       $this->m_postvars["fileid"];
+      $file =         $this->getTmpFileDestination($fileid);
+      $enclosure =    $this->m_postvars["enclosure"];
+      $delimiter =    $this->m_postvars["delimiter"];
+      $columncount =  $this->m_postvars["columncount"];
+      $allField =     $this->m_postvars["allField"];
+      $skipfirstrow = $this->m_postvars['skipfirstrow'];
+      
       //add the allField to the col_map array
-      //but only if a valid field is selected
-      $allField = $this->m_postvars["allField"];
+      //but only if a valid field is selected      
       if ($allField!="")
       {        
         $attr = $this->getUsableAttribute($allField);
@@ -707,22 +732,22 @@
         }
       }
 
-      $skipfirstrow = $this->m_postvars['skipfirstrow'];
-
       $initial_values = $this->m_node->initial_values();
 
       $importerror = "";
 
       $importerror = $this->checkImport($col_map,$initial_values);
       
-      if(is_array($importerror)){
+      if(is_array($importerror))
+      {
         $this->doAnalyze($this->m_postvars["fileid"],$importerror);
         return;
       }
       
       $importerror = $this->checkAllField($allField,$allFieldValue);
 
-      if(is_array($importerror)){
+      if(is_array($importerror))
+      {
         $this->doAnalyze($this->m_postvars["fileid"],$importerror);
         return;
       }
@@ -749,46 +774,38 @@
           if ($col_map[$i]!="-")
           {
             if($i != $_i-1 || $col_map[$i] != $allField)// column is mapped
+            {
               $value = $data[$i]; 
+            }
             else //this is the allField
+            {
               $value = $allFieldValue;
+            }
             $this->addToRecord($rec,$col_map[$i],trim($value));
             unset($value);
           }
         }
 
-        if (!$this->validate($rec)){
-          $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ","spec"=>text($rec['atkerror'][0]['attrib_name']));
-          break;
-        }
-        
-        if (!$this->add($rec))
-        {
-          //continue;
-          $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ","spec"=>text($rec['atkerror'][0]['attrib_name']));
-          break;
-        }
-        
+        $importerror = $this->validateAndAddRecord($rec);
+        if ($importerror) break;
         unset($rec);
         unset($line);
         unset($data);
-        
       }
 
-      if(is_array($importerror)){
+      if(is_array($importerror))
+      {
         $this->doAnalyze($this->m_postvars["fileid"],$importerror);
         return;
       }
       
       //return;
-      
       fclose($fp);
 
       // remove the csv file
       unlink($file);
 
       $this->m_node->redirect();
-
     }
     
     /**
@@ -803,13 +820,39 @@
       $this->m_node->preAdd($record);
 
       if(isset($record['atkerror']))
+      {
         return false;
+      }
 
       $this->m_node->addDb($record);
       
       if(isset($record['atkerror']))
+      {
         return false;
+      }
 
+      return true;
+    }
+    
+    /**
+     * Update a record in the db
+     * @param $record array   the record to update
+     */
+    function update(&$record)
+    {
+      $this->m_node->preUpdate($record);
+
+      if(isset($record['atkerror']))
+      {
+        return false;
+      }
+
+      $this->m_node->updateDb($record);
+      
+      if(isset($record['atkerror']))
+      {
+        return false;
+      }
       return true;
     }
     
@@ -819,11 +862,19 @@
      */
     function validate(&$record)
     {
-      $this->m_node->validate($record,"add");
+      if ($this->m_postvars['doupdate']) $mode = "update";
+      else $mode = "add";
+        
+      $this->m_node->validate($record,$mode);
+      
       if(isset($record['atkerror']))
+      {
         return false;
+      }
       else
+      {
         return true;
+      }
     }
     
     /**
@@ -852,8 +903,7 @@
       {        
         $msg = atktext((count($doubles)==1)?"import_error_fieldusedtwice":"import_error_fieldsusedtwice").": ";        
         return array("msg"=>$msg,"spec"=>implode(", ",$doubles));
-      }
-      
+      }      
     }
     
     function _getDuplicateColumns($array)
@@ -879,12 +929,108 @@
 
       if(!$result)
         if(in_array($field,$this->getObligatoryAttributes()))
+        {
           return array('msg' => atktext("import_error_allfieldnocorrectdata"));
+        }
         else
+        {
           $value = "";
+        }
 
       return;
     }
+    
+    function validateAndAddRecord(&$rec)
+    {
+      // Update variables
+      $doupdate   =     $this->m_postvars['doupdate'];
+      $updatekey1 =     $this->m_postvars['updatekey1'];
+      $onfalseidentifier = $this->m_postvars['onfalseid'];
+      
+      if (!$this->validate($rec))
+      {
+        $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ",
+        "spec"=>text($rec['atkerror'][0]['attrib_name']));
+      }
 
+      if ($doupdate) $prepareres = $this->prepareUpdateRecord($rec);
+
+      if ($prepareres==true)
+      {
+        if (!$this->update($rec))
+        {
+          //continue;
+          $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ",
+          "spec"=>text($rec['atkerror'][0]['attrib_name']));
+        }
+      }
+      else if (!$prepareres || $onfalseidentifier)
+      {
+        if (!$this->add($rec))
+        {
+          //continue;
+          $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ",
+          "spec"=>text($rec['atkerror'][0]['attrib_name']));
+        }
+      }
+      else
+      {
+        $importerror = array("msg"=>atktext("error_formdataerror"),
+        "spec"=>sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $updatekey1)));
+      }
+      return $importerror;
+    }
+    
+    /**
+     * Here we prepare our record for updating or return false,
+     * indicating that we need to insert the record instead of updating it
+     */
+    function prepareUpdateRecord(&$record)
+    {
+      global $g_sessionManager;
+      // The keys to update the record on
+      $updatekey1 =     $this->m_postvars['updatekey1'];
+      $updatekey1val =  $this->getValueFromRecord($record, $updatekey1);
+      $allField =       $g_sessionManager->pageVar("allField");
+      $allFieldValue =  $this->m_postvars[$allField];
+      
+      $this->m_node->m_postvars["atksearchmode"] = "exact";
+      if (!in_array($allFieldValue)) $this->m_node->m_fuzzyFilters[] = $allFieldValue;
+      
+      $dbrec = $this->m_node->searchDb(array($updatekey1=>$updatekey1val));
+      
+      if (count($dbrec)==1)
+      {
+        $record[$this->m_node->primaryKeyField()] = $dbrec[0][$this->m_node->primaryKeyField()];
+        $record['atkprimkey'] = $dbrec[0]['atkprimkey'];
+        return true;
+      }
+      return false;
+    }
+    
+    function getValueFromRecord($record, $fieldname)
+    {
+      $attr = $this->getUsableAttribute($fieldname);
+      if(!$this->isRelationAttribute($fieldname))
+      {
+        if(!$this->hasRelationAttribute($fieldname))
+        {
+          $value = $record[$fieldname];
+        }
+        else
+        {
+          if (is_object($attr) && $attr->createDestination())
+          {
+            $key = $attr->m_destInstance->m_primaryKey;
+            $value = $record[$fieldname][$key[0]];
+          }
+        }
+      }
+      else
+      {
+        $value = $record[$this->isRelationAttribute($fieldname)][$fieldname];
+      }
+      return $attr->value2db(array($fieldname=>$value));
+    }
   }
 ?>
