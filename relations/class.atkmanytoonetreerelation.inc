@@ -9,6 +9,8 @@
    * $Id$
    *
    */
+  userelation("atkManyToOneRelation");  
+   
   class atkManyToOneTreeRelation extends atkManyToOneRelation
   {
   
