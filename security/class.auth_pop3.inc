@@ -8,6 +8,9 @@
  * <b>Changes</b>:
  * $Id$
  * $Log$
+ * Revision 4.7  2001/07/24 08:04:25  ivo
+ * Prevented a php error message when pop3_auth_responses was not used.
+ *
  * Revision 4.6  2001/07/19 11:40:07  ivo
  * Updated authentication classes with an additional returncode for fatal
  * errors. Added a feature to pop3 authentication to handle server-specific
@@ -97,12 +100,15 @@ class auth_pop3 extends auth_interface
     $g_securityManager->log(1, "pop3auth response for user $user: ".trim($auth));        
     
     // search application specified pop3 responses.. 
-    foreach($g_pop3_responses as $substring => $message)
+    if (is_array($g_pop3_responses))
     {
-      if (stristr($auth, $substring)!=false)
+      foreach($g_pop3_responses as $substring => $message)
       {
-        $this->m_fatalError = $message;
-        return -1;
+        if (stristr($auth, $substring)!=false)
+        {
+          $this->m_fatalError = $message;
+          return -1;
+        }
       }
     }
 
