@@ -132,8 +132,6 @@
      */
     function load($db, $record, $mode)
     {
-      atkdebug("<H1>atkSecureRelation::load($db, $record, $mode)</H1>");
-      atk_var_dump($record, "Record for load");
       $link = $record[$this->fieldName()];
       $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
       $record[$this->fieldName()] = $cryptedlink;
