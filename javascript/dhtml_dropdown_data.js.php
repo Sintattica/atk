@@ -147,19 +147,15 @@ while (list ($name) = each ($g_menu))
     }
   }
 
-  // If the current rootmenu has any menu buttons add it
-  if ($menubuttons)
-  {
-    $menubuttons .= $submenubuttons;
+  $menubuttons .= $submenubuttons;
 
-    // The menu item sets for each submenu
-    $menubuttonsarray[] = $menubuttons;
-    // The menu items that open a submenu
-    $menurootarray[] = $atkmenutop;
-    // The names of menu items
-    $menutopname = addslashes (text("menu_".$atkmenutop,"menu"));
-    $menutopnamearray[] = $menutopname;
-  }
+  // The menu item sets for each submenu
+  $menubuttonsarray[] = $menubuttons;
+  // The menu items that open a submenu
+  $menurootarray[] = $atkmenutop;
+  // The names of menu items
+  $menutopname = addslashes (text("menu_".$atkmenutop,"menu"));
+  $menutopnamearray[] = $menutopname;
 }
 
 // Create a menuroot
