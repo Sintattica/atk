@@ -120,8 +120,15 @@
           $title = $this->m_destInstance->descriptor($recs[0]);
         }
         else
-        {
-          $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        {        
+          if(!$this->isEmpty($record))
+          {
+            $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+          }
+          else
+          {
+            $title = "&nbsp;"; // no record
+          }
         }
 
         $result = $title; // default result is just the title.
