@@ -32,10 +32,11 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $config_atkroot, $g_layout;
+      global $config_atkroot, $g_layout, $config_enable_ie_extensions;
       
       $browser = getBrowserInfo();
                               
+															
       if ($browser["family"]!="ie5up"||$config_enable_ie_extensions==false)
       {
         return atkTextAttribute::edit($record, $fieldprefix);
