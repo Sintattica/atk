@@ -1,7 +1,34 @@
 <?php
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   * @access private
+   *
+   * @copyright (c)2005 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
+  /**
+   * Include the class we are about to test.
+   */
   atkimport("atk.utils.atkdirectorytraverser");
   
+   /**
+   * Utilityclass
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   * @access private
+   */
   class simplevisitor
   {
     var $m_files = array();
@@ -18,6 +45,14 @@
     }
   }
 
+   /**
+   * Testcases for class atkdirectorytraverser.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   * @access private
+   */
   class test_atkDirectoryTraverser extends UnitTestCase
   {
     var $m_visitor = null;
