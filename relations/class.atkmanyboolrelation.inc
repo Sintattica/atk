@@ -62,9 +62,15 @@
       // first the selected records..
       for ($i=0;$i<count($record[$this->m_name]);$i++)
       {
-        $selectedPk[] = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->remoteKey()]);
-      }
 
+        if(is_array($record[$this->fieldName()][$i][$this->remoteKey()]))
+          $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->remoteKey()]);
+        else{
+          $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->m_name][$i][$this->remoteKey()]));
+        }
+        $selectedPk[] = $newselected;
+       }
+      
       // now select all records
       $recordset = $this->m_destInstance->selectDb();
 
@@ -114,16 +120,23 @@
      */
     function store($notused, $record, $mode)
     {
+      //atkerror(arrayToString($record));
+    
       $this->createLink();
       $this->createDestination();
       $rel = &$this->m_linkInstance;
-
+      
       // Find items that are checked.
       $checked = array();
       for ($i=0;$i<count($record[$this->fieldName()]);$i++)
       {
-        $checked[] = $record[$this->fieldName()][$i][$this->remoteKey()][$this->m_destInstance->primaryKeyField()];
+        if(is_array($record[$this->fieldName()][$i][$this->remoteKey()]))
+          $newchecked = $record[$this->fieldName()][$i][$this->remoteKey()][$this->m_destInstance->primaryKeyField()];
+        else
+          $newchecked = $record[$this->fieldName()][$i][$this->remoteKey()];
+
       }
+      
       if(count($checked) > 0)
         $filter = "NOT IN (".implode(",",$checked).",0)";
 
