@@ -309,7 +309,7 @@
       if(file_exists($file)) {return $this->_setLanguage($file, $module, $lng);}
       else 
       {
-        if (atkconfig("language_debugging")) atkdebug("atkLanguage: failed to get language file for module: $module with language: $lng"); 
+        if (atkconfig("language_debugging")) atkdebug("atkLanguage: failed to get language file for module: $module with language: $lng and with location: $file"); 
         return false;
       }
     }
