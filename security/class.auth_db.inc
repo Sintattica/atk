@@ -73,10 +73,23 @@
        {
          $level = $recs[0][atkconfig("auth_levelfield")];
        }
-       
+       // We might have more then one access level, so we loop the result.
+       if (count($recs)>1)
+       {
+         $access = array();
+         for ($i=0;$i<count($recs);$i++)
+         {
+           $access[] = $recs[$i][atkconfig("auth_accesslevelfield")];
+         }
+       }
+       else
+       {
+         $access = $recs[0][atkconfig("auth_accesslevelfield")];
+       }
 			 $userinfo = $recs[0];
 			 $userinfo["name"]=$user;
 			 $userinfo["level"]=$level;
+       $userinfo["access_level"]=$access;
        return $userinfo;
      }
      
@@ -88,7 +101,7 @@
                           
        $rights = $g_db->getrows($query);
        
-//       var_dump($rights);
+
        $result = Array();
        
        for ($i=0;$i<count($rights);$i++)

@@ -65,6 +65,7 @@ A:hover
   color: <?php echo $g_theme["TableFgColor"]; ?>;
   background-color: <?php echo $g_theme["TableBgColor"]; ?>;
 }
+
 .backtable
 {
   background-color: <?php echo $g_theme["BorderColor"]; ?>;
