@@ -9,26 +9,26 @@
    *
    */
    
-   class auth_mail extends auth_interface
+   class auth_imap extends auth_interface
    {
      function validateUser($user, $passwd)
      { 
        // if it's a virtual mail server add @<domain> to the username
-       if(atkconfig("authentication_mail_login_type") == "vmailmgr")
+       if(atkconfig("auth_mail_login_type") == "vmailmgr")
        {
-         $user = $user . "@" . atkconfig("authentication_mail_suffix");
+         $user = $user . "@" . atkconfig("auth_mail_suffix");
        }
  
-       if (atkconfig("authentication_mail_server")=="")
+       if (atkconfig("auth_mail_server")=="")
        {
          $this->m_fatalError = text("auth_no_server");
          return AUTH_ERROR;
        }
-       $mailauth = imap_open("{".atkconfig("authentication_mail_server")
-	 		     .":".atkconfig("authentication_mail_port")."}INBOX", $user , $passwd);
+       $mailauth = @imap_open("{".atkconfig("auth_mail_server")
+	 		                       .":".atkconfig("auth_mail_port")."}", $user , $passwd);
 
        // TODO/FIXME: return AUTH_ERROR when connection fails..
-       if ($mailauth == False) 
+       if ($mailauth == 0) 
        {
          return AUTH_MISMATCH;
        } 
