@@ -9,6 +9,7 @@ Changes in ATK 5.0.8
 + Added $config_debuglog for realtime writing debug to file [Harrie]
 + Added $config_language_debugging for special debugging of
   atkLanguages behaviour [Boy]
++ Added $config_smart_debug for dynamic debugging based on IP etc. [Peter]
 + Searching in nodes with AF_LARGE flag now is done with a textfield
   (substring search) instead of a selectbox [Yury,Harrie,Boy]
 + Added $config_securerelation_decrypterror where you can specify
@@ -27,16 +28,15 @@ Changes in ATK 5.0.8
   configuration variable. [Peter]
 + Added documentation to callback param and added "addSearchFilter" 
   to add a filter to the searchNodeInstance of the fuzzySearch 
-  attribute [Boy]
-+ Added $config_smart_debug for dynamic debugging based on IP etc. [Peter]
-+ Update functionality added to import handler [Boy]
-* AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
-* Fixed bug in securerelation (whould sometimes do it's queries on the
-  wrong table) [Harrie]
-* $config_language_basedir now defaults to "languages/" again [Thom,Boy]
-* Searching in nodes with AF_LARGE fixed for secure relations [Boy] 
-* Moved searching in selectDb() and countDb() after adding of
-  attributes to query [Boy]
+  attribute. [Boy]
++ The CSV import feature can now update existing records. [Boy]
+* AF_RELATION_AUTOLINK now also works with AF_LARGE for manytoone. [Boy]
+* Fixed bug in securerelation (would sometimes do its queries on the
+  wrong table). [Harrie]
+* $config_language_basedir now defaults to "languages/" again. [Thom,Boy]
+* Searching in nodes with AF_LARGE fixed for secure relations. [Boy] 
+* The search part in selectDb() and countDb() is now performed after adding
+  attributes to query. [Boy]
 * atkDDL::create now has optional parameter for specifying the database
   name instead of the globally configured database name. [Peter]
 * atkDB class contains meta data flags which can be used by subclasses
@@ -48,25 +48,23 @@ Changes in ATK 5.0.8
 * atkMySQLDB::metadata(...) now returns more detailed meta data,
   including for each column the generic type ("gentype"), flags. [Peter]  
 * Changed parseDate for date attribute to return the day in record
-  instead of day+1 [Harrie]
-* Fixed AF_NO_LABEL [Boy]
-* Changed mysql_pconnect() to mysql_connect() because too many ATK
-  apps would make for too many connections [Boy]
-* Removed the auto selection from atkRadioAttribute. Now nothing is
-  selected not even when it is obligatory [Wouter]
-* atkOneToOneRelation restores destination postvars 
-  after it is done updating [Boy]
-* Typo fix for dnsSearching in emailattrib [Andres]
-* Added primarykeyfield to searchfields in manytoone [Boy]
+  instead of day+1. [Harrie]
+* Fixed AF_NO_LABEL. [Boy]
+* Changed mysql_pconnect() to mysql_connect() because in many cases connection
+  persistence does not work as expected. [Boy]
+- Removed the auto selection from atkRadioAttribute. Now nothing is
+  selected not even when it is obligatory.[Wouter]
+* atkOneToOneRelation restores destination postvars after updating. [Boy]
+* Fixed dns lookup in atkEmailAttribute. [Andres]
+* Added primarykeyfield to searchfields in atkManyToOneRelation. [Boy]
 * Added protection in getSearchCondition against being called
-  with an array instead of a single value in atkattrib and boolattrib [Boy]
-* Improved searching on securerelations [Boy]
-* Ported translation for fsa_pleasemakeselection from atkFuzzySearchAttrib.
+  with an array instead of a single value in atkattrib and boolattrib. [Boy]
+* Improved searching on securerelations. [Boy]
+* Ported translation for fsa_pleasemakeselection from atkFuzzySearchAttribute
   from Achievo to ATK [Boy]
-* Removed redundant code and minor bugfixes on atktheme, edithandler,
-  emailattribute and atkattribute [Andres,Boy]
-* Made selectDb() able to handle with searching on an array [Boy]
-* Added searchmode param to searchDb() [Boy]
+* Removed redundant code and minor bugfixes on atkTheme, atkEditHandler,
+  atkEmailAttribute and atkAttribute [Andres,Boy]
+* Added searchmode param to atkNode's searchDb() method. [Boy]
 
 Changes in ATK 5.0.7
 --------------------
