@@ -929,6 +929,11 @@
     
     function searchCondition(&$query, $table, $value, $searchmode)
     {
+      $this->getSearchCondition($query, $table, $value, $searchmode);
+    }
+    
+    function getSearchCondition()
+    {
       if (is_array($value))
       {
         // we are a relation, so instead of hooking ourselves into the
@@ -954,7 +959,7 @@
             
               // we need to left join the destination table into the query
               // (don't worry ATK won't add it when it's already there)
-              $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+              $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
             }
             $p_attrib->searchCondition($query,$new_table,$val,$searchmode);
           }
@@ -997,7 +1002,7 @@
             
                 // we need to left join the destination table into the query
                 // (don't worry ATK won't add it when it's already there)
-                $query->addJoin($new_table,$new_table,($this->_getJoinCondition()),false);
+                $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
               }
               $p_attrib->searchCondition($query,$new_table,$value,$searchmode);
             }
@@ -1011,7 +1016,7 @@
      * Joins the relation's owner with the destination
      * @return  string  condition the condition that can be pasted into the query
      */
-    function _getJoinCondition()
+    function getJoinCondition(&$query, $tablename="",$fieldalias="")
     {     
       $condition = $this->m_ownerInstance->m_table . "." . $this->fieldName();
       $condition .= "=";

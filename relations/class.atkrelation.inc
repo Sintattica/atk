@@ -186,6 +186,17 @@
       }
       return $retArray;
     }
+    
+    /**
+     * Returns the condition (SQL) that should be used when we want to join a relation's
+     * owner node with the parent node.
+     * @return String SQL string for joining the owner with the destination. 
+     *                Defaults to false.
+     */
+    function getJoinCondition(&$query, $tablename="",$fieldalias="")
+    {
+      return false; 
+    }
   }
   
 ?>

@@ -41,6 +41,8 @@
     var $m_searcharray;
     var $m_linkpass;
     var $m_linkbackfield;
+    var $m_ownersearch;
+    var $m_destsearch;
 
     /**
      * Creates an atkSecureRelation, 
@@ -187,9 +189,8 @@
       global $g_db;
       if ($this->m_searching)
       {
-        if($this->m_searcharray != $this->m_ownerInstance->m_postvars["atksearch"]["data"])
+        if($this->m_searcharray != $this->m_ownerInstance->m_postvars["atksearch"]["data"] && is_array($this->m_searcharray))
         {
-
           $this->m_records = array();
           // perform query on destination node to retrieve all records.
           if ($this->createDestination())
@@ -270,12 +271,7 @@
       $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id' LIMIT 1";
       $g_db->query($query);
     }
-    
-    function searchCondition(&$query, $table, $value, $searchmode)
-    {
-      //dummy implementation, we handle our own search in the destination node.
-    }
-    
+        
     /**
      * Returns the condition which can be used when calling atkQuery's addJoin() method
      * Joins the relation's owner with the destination
@@ -318,6 +314,78 @@
       {
         return parent::loadType($mode, $searching);
       }
+    }    
+    
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      //dummy implementation, we handle our own search in the destination node.
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+      // Off course, the secure relation has to have a special search condition
+      // because searching on a 
+      
+      //if (!$this->m_ownersearch[$value]) $this->m_ownersearch[$value] = $this->m_ownerInstance->searchDb($value);
+      // search for the value in all the destination's descriptorFields
+
+      $searchConditions = array();
+      $descfields = $this->m_destInstance->descriptorFields();
+      
+      foreach($descfields as $descField)
+      {
+        if ($descField !== $prevdescfield && $descField !== $this->m_owner)
+        {
+          $p_attrib = &$this->m_destInstance->getAttribute($descField);
+          if (is_object($p_attrib))
+          {
+            if ($p_attrib->m_destInstance)
+            {
+              $itsTable = $p_attrib->m_destInstance->m_table;
+            }
+            else
+            {
+              $itsTable = $p_attrib->m_ownerInstance->m_table;
+            }
+
+            // checking for the getSearchCondition
+            // for backwards compatibility
+            if (method_exists($p_attrib,"getSearchCondition"))
+            {
+              $searchcondition = $p_attrib->getSearchCondition($query,$itsTable,$value,$searchmode);
+              if ($searchcondition)
+              {
+                $searchConditions[] = $searchcondition;
+              }
+            }
+            else
+            {
+              $p_attrib->searchCondition($query,$itsTable,$value,$searchmode);
+            }
+          }
+          $prevdescfield = $descField;
+        }
+      }
+      
+      if (!$this->m_destsearch[$value] && $this->createDestination()) 
+      {
+        $this->m_destsearch[$value] = $this->m_destInstance->selectDb(implode(" OR ",$searchConditions));
+      }
+      
+      foreach ($this->m_destsearch[$value] as $result)
+      {
+        $destresults[] = $this->m_crypt->decrypt($result[$this->m_linkbackfield],$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+      }
+      
+      if ($query->m_joinaliases[$this->m_ownerInstance->m_table."*".$this->m_ownerInstance->primaryKeyField()]) $table = $query->m_joinaliases[$this->m_ownerInstance->m_table."*".$this->m_ownerInstance->primaryKeyField()];
+      else $table = $this->m_ownerInstance->m_table;
+      if (!empty($destresults))
+        return $table.".".$this->m_ownerInstance->primaryKeyField()." IN (".implode(",",$destresults).")";
+    }
+    
+    function getJoinCondition(&$query, $tablename="",$fieldalias="")
+    {
+      // Dummy implementation... we can't join a secured relation
     }
   }
 ?>

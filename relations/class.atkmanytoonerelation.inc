@@ -72,8 +72,6 @@
      */
     var $m_joinFilter = ""; 
     
-    var $m_tablealias="";
-    
     
     /**
      * Constructor.
@@ -489,6 +487,12 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
+      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+      $query->addSearchCondition($searchcondition);
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
       if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
       {
         // We only support 'exact' matches. 
@@ -497,50 +501,63 @@
         if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
         {
           if (count($value)==1) // exactly one value
-            $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+            return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
           else // search for more values using IN()
-            $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
+            return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
         }
       }
       else
-      { 
+      {
         if ($this->createDestination())
         {
           $searchConditions = array();
-          $df = $this->m_destInstance->descriptorFields();
-          foreach($df as $descField)
+          $descfields = $this->m_destInstance->descriptorFields();
+         
+          foreach($descfields as $descField)
           {
-            $p_attrib = &$this->m_destInstance->getAttribute($descField);
-            if (is_object($p_attrib))
+            if ($descField !== $prevdescfield)
             {
-              if ($p_attrib->m_destInstance)
-                $itsTable = $p_attrib->m_destInstance->m_table;
-              else
-                $itsTable = $p_attrib->m_ownerInstance->m_table;
-              
-              if ($p_attrib)
+              $p_attrib = &$this->m_destInstance->getAttribute($descField);
+              if (is_object($p_attrib))
               {
-                $tmpJoinCondition = $p_attrib->getJoinCondition();
-                if ($tmpJoinCondition)
-                  $query->addJoin($itsTable,$itsTable,$tmpJoinCondition,false);
-              }
+                atk_var_dump($query, "<h1>query in manytoone getsearch, checking for:".$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()."</h1>");
+                if ($query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()])
+                {
+                  $itsTable = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
+                }
+                else if ($p_attrib->m_destInstance)
+                {
+                  $itsTable = $p_attrib->m_destInstance->m_table;
+                }
+                else
+                {
+                  $itsTable = $p_attrib->m_ownerInstance->m_table;
+                }
+
+                // checking for the getSearchCondition
+                // for backwards compatibility
+                if (method_exists($p_attrib,"getSearchCondition"))
+                {
+                  $searchcondition = $p_attrib->getSearchCondition($query,$itsTable,$value,$searchmode);
+                  if ($searchcondition)
+                  {
+                    $searchConditions[] = $searchcondition;
+                    atk_var_dump($searchcondition, "<h1>added searchcondition</h1>");
+                  }
+                }
+                else
+                {
+                  $p_attrib->searchCondition($query,$itsTable,$value,$searchmode);
+                }
                 
-              // if is here for backward compatibility 
-              if (method_exists($p_attrib,"getSearchCondition"))
-              {
-                $searchcondition = $p_attrib->getSearchCondition($query,$itsTable,$value,$searchmode);
-                if ($searchcondition) $searchConditions[] = $searchcondition;
               }
-              else
-              {
-                $p_attrib->searchCondition($query,$itsTable,$value,$searchmode);
-              }
+              $prevdescfield = $descField;
             }
           }
-          if ($searchConditions) 
-            $query->addSearchCondition(implode(" OR ",$searchConditions));
+          return implode(" OR ",$searchConditions);
         }
       }
+      return;
     }
 
     /**
@@ -556,17 +573,10 @@
       {
         if ($mode != "update" && $mode != "add")
         {              
-          if ($fieldaliasprefix)
-          {
-            $alias = $fieldaliasprefix . $this->m_destInstance->m_table;
-          }    
-          else
-          {
-            $alias = $this->m_destInstance->m_table; 
-          }
+          $alias = $fieldaliasprefix . $this->fieldName(); 
           $query->addJoin($this->m_destInstance->m_table, 
                           $alias,
-                          $this->getJoinCondition($tablename,$alias), 
+                          $this->getJoinCondition($query, $tablename, $alias),
                           $this->m_leftjoin);
           $this->m_destInstance->addToQuery($query, $alias, $level+1);
         }
@@ -583,8 +593,7 @@
               $fk = &$this->m_destInstance->getAttribute($this->m_destInstance->m_primaryKey[$i]);
               $query->addField($this->m_refKey[$i],$fk->value2db($rec[$this->fieldName()]),"","",!$this->hasFlag(AF_NO_QUOTES));
             }
-          }
-          
+          }    
         } 
       }
     }
@@ -639,27 +648,27 @@
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's
     * owner node with the parent node.
+    * @param String $tablename=""  the tablename on which
+    * @param String $fieldalias="" 
     * @return String SQL string for joining the owner with the destination.
     *                Returns false when impossible (f.e. attrib is not a relation).
     */
-    function getJoinCondition($tablename,$fieldalias="")
+    function getJoinCondition(&$query, $tablename="",$fieldalias="")
     {
       if (!$this->createDestination()) return false;
-  
-      if ($tablename!="") $realtablename=$tablename.".";
+
+      if ($tablename!="") $realtablename=$tablename;
+      else $realtablename = $this->m_ownerInstance->m_table;
       $joinconditions = array();
-      $this->m_tablealias = $fieldalias;
-      if ($this->m_tablealias)
-      {
-        $alias = $this->m_tablealias;
-      }
-      else
-      {
-        $alias = $realtablename; 
-      }
+      
+      if ($fieldalias) $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $fieldalias;
+      else $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $this->m_destInstance->m_table;
+      
+      $alias = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
+      
       for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
       {
-        $joinconditions[] = $realtablename.$this->m_refKey[$i].
+        $joinconditions[] = $realtablename.".".$this->m_refKey[$i].
         "=".
         $alias.".".$this->m_destInstance->m_primaryKey[$i];
       }
