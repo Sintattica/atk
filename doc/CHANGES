@@ -48,6 +48,8 @@ Changes in ATK 5.0.8
 * Changed parseDate for date attribute to return the day in record
   instead of day+1 [Harrie]
 * Fixed AF_NO_LABEL [Boy]
+* Changed mysql_pconnect() to mysql_connect() because too many ATK
+  apps would make for too many connections [Boy]
 
 Changes in ATK 5.0.7
 --------------------
