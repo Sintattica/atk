@@ -1,33 +1,89 @@
 <?php
-  /* flag(s) specific for atkOneToOneRelation */
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * flags specific for atkOneToOneRelation 
+   */
   define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
   define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.  
   define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4); // use lazy loading instead of query addition.
   
   /**
+   * @internal Include the base class.
+   */
+  userelation("atkrelation");
+  
+  /**
+   * Implementation of one-to-one relationships.
+   *
    * An atkOneToOneRelation defines a relation between two tables where there
    * is one record in the first table that belongs to one record in the
    * second table.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$
+   * When editing a one-to-one relation, the form for the destination record
+   * is embedded in the form of the master record. When using the flag
+   * AF_ONETOONE_INTEGRATE, this is done transparantly so the user does not
+   * even notice that the data he's editing comes from 2 separate tables.
    *
-   * $Id$
-   */
-   
-   userelation("atkrelation");
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage relations
+   *
+   */        
   class atkOneToOneRelation extends atkRelation
   {
-    /* The referential key in the target node */
+    /**
+     * The name of the referential key attribute in the target node.
+     * @access private
+     * @var String
+     */
     var $m_refKey="";
 
     /**
-     * Constructor
-     * @param $name attribute / relation name
-     * @param $destination the destination module/node
-     * @param $refKey the referential key in the target node
-     * @param $flags Flags for the relation
+     * Default Constructor
+     *
+     * The atkOneToOneRelation supports two configurations:
+     * - Master mode: The current node is considered the master, and the 
+     *                referential key pointing to the master record is in the
+     *                destination node.
+     * - Slave mode: The current node is considered the child, and the
+     *               referential key pointing to the master record is in the 
+     *               current node.
+     * The mode to use is detected automatically based on the value of the
+     * $refKey parameter.
+     *
+     * <b>Example:</b> 
+     * <code>
+     * $this->add(new atkOneToOneRelation("child", "mymod.childnode", "parent_id"));
+     * </code>
+     *
+     * @param String $name The unique name of the attribute. In slave mode, 
+     *                     this corresponds to the foreign key field in the
+     *                     database table. 
+     * @param String $destination the destination node (in module.nodename
+     *                            notation)
+     * @param String $refKey In master mode, this specifies the foreign key
+     *                       field from the destination node that points to
+     *                       the master record. In slave mode, this parameter
+     *                       should be empty.
+     * @param int $flags Attribute flags that influence this attributes'
+     *                   behavior.     
      */
     function atkOneToOneRelation($name, $destination, $refKey="", $flags=0)
     {
@@ -37,9 +93,16 @@
     }
 
     /**
-     * Returns a displayable string for this value.
-     * @param $record Record
-     * @return a displayable string
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * The atkOneToOneRelation displays all values from the destination
+     * records in "view" mode. In "list" mode, the record descriptor of the
+     * target record is displayed.
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     *                     for displaying in recordlists)
+     * @return String HTML String 
      */
     function display($record, $mode="list")
     {
@@ -83,23 +146,42 @@
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     * @param $record Record
-     * @return Piece of html code that can  be used in a form to edit this
-     * attribute
+     * attribute's value. 
+     *
+     * Because of the AF_INTEGRATE feature, the edit() method has a void
+     * implementation. The actual edit code is handled by addToEditArray().
      */
-    function edit($record="", $fieldprefix="")
-    {
-      /* dummy */
+    function edit()
+    {      
     }
 
     /**
-     * Function to add values to query
-     * @param $query
-     * @param $tablename Table name
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level Level
-     * @result A good query
+     * Adds this attribute to database queries. 
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
+     *
+     * Framework method. It should not be necessary to call this method 
+     * directly. This implementation performs a join to retrieve the 
+     * target records' data, unless AF_ONETOONE_LAZY is set, in which case
+     * loading is delayed and performed later using the load() method.
+     * For update and insert queries, this method does nothing. These are
+     * handled by the store() method.
+     *     
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:     
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.     
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {   
@@ -144,7 +226,23 @@
       }
     }
     
-    function load($g_db, $record, $mode)
+    /**
+     * Retrieve detail records from the database.
+     *
+     * Called by the framework to load the detail records.
+     *
+     * @param atkDb $db The database used by the node. (Usually equal to 
+     *                  $g_db)
+     * @param array $record The master record
+     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * 
+     * @return array Recordset containing detailrecords, or NULL if no detail
+     *               records are present. Note: when $mode is edit, this
+     *               method will always return NULL. This is a framework 
+     *               optimization because in edit pages, the records are
+     *               loaded on the fly.
+     */
+    function load($db, $record, $mode)
     {
       if ($this->createDestination())
       {              
@@ -167,6 +265,12 @@
       }
     }
     
+    /**
+     * Construct the filter statement for filters that are set for the
+     * destination node (m_destinationFilter).
+     * @access private
+     * @return String A where clause condition.
+     */
     function getDestinationFilterCondition()
     {
       $condition="";
@@ -184,8 +288,16 @@
       return $condition;
     }
 
-    /**
-     * Delete relational records..
+    /** 
+     * The delete method is called by the framework to inform the attribute
+     * that the master record is deleted.
+     *
+     * Note that the framework only calls the method when the
+     * AF_CASCADE_DELETE flag is set. When calling this method, the detail
+     * record belonging to the master record is deleted.
+     *
+     * @param array $record The record that is deleted.
+     * @return boolean true if cleanup was successful, false otherwise.
      */
     function delete($record)
     {
@@ -209,9 +321,16 @@
     }
 
     /**
-     * Converts DataBase value to normal value
-     * @param $rec Record
-     * @return decoded value
+     * Converts the internal attribute value to one that is understood by the
+     * database.
+     *
+     * For the regular atkAttribute, this means escaping things like
+     * quotes and slashes. Derived attributes may reimplement this for their
+     * own conversion. 
+     * This is the exact opposite of the db2value method.
+     * 
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
      */
     function db2value($rec)
     {
@@ -241,24 +360,53 @@
       return NULL;
     }
 
-    function fetchValue($rec)
+    /**
+     * Convert values from an HTML form posting to an internal value for 
+     * this attribute. 
+     *
+     * This implementation uses the destination node to fetch any field that
+     * belongs to the other side of the relation.
+     *
+     * @param array $postvars The array with html posted values ($_POST, for 
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
+    function fetchValue($postvars)
     {
       // we need to pass all values to the destination node, so it can
       // run it's fetchValue stuff over it..
       if ($this->createDestination())
       {
-        if ($rec[$this->fieldName()]!=NULL)
+        if ($postvars[$this->fieldName()]!=NULL)
         {
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
-            $rec[$this->fieldName()][$attribname] = $p_attrib->fetchValue($rec[$this->fieldName()]);
+            $postvars[$this->fieldName()][$attribname] = $p_attrib->fetchValue($postvars[$this->fieldName()]);
           }
-          return $rec[$this->fieldName()];
+          return $postvars[$this->fieldName()];
         }
       }
     }
     
+    /*
+     * Determine the storage type of this attribute.
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be stored in the main query (addToQuery) or whether the attribute
+     * has its own store() implementation. 
+     * For the atkOneToOneRelation, the results depends on whether the 
+     * relation is used in master or slave mode.
+     *
+     * Framework method. It should not be necesary to call this method 
+     * directly.
+     *
+     * @param String $mode The type of storage ("add" or "update")
+     *
+     * @return int Bitmask containing information about storage requirements.     
+     *             POSTSTORE  when in master mode.
+     *             PRESTORE|ADDTOQUERY when in slave mode.
+     */
     function storageType($mode)
     {      
       if ($this->m_refKey!="")
@@ -277,6 +425,24 @@
       }
     }
     
+      /*
+     * Determine the load type of this attribute. 
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be loaded in the main query (addToQuery) or whether the attribute 
+     * has its own load() implementation. 
+     * For the atkOneToOneRelation, this depends on the presence of the
+     * AF_ONETOONE_LAZY flag.
+     *
+     * Framework method. It should not be necesary to call this method 
+     * directly.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     *
+     * @return int Bitmask containing information about load requirements.
+     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
+     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     */
     function loadType($mode)
     {
       if ($this->hasFlag(AF_ONETOONE_LAZY))
@@ -290,12 +456,15 @@
     }
 
     /**
-     * Store values
-     * @param $notused ??
-     * @param $record Record
-     * @param $mode the store mode
+     * Store detail record in the database.
+     *          
+     * @param atkDb $db The database used by the node. (Usually equal to 
+     *                  $g_db)
+     * @param array $record The master record which has the detail records
+     *                      embedded.
+     * @return boolean true if store was successful, false otherwise. 
      */
-    function store($notused, &$record, $mode)
+    function store($db, &$record, $mode)
     {
       if ($this->createDestination())
       {
@@ -350,10 +519,16 @@
       }
     }
         
-   /**
-    * Check if destination node has a relation to this node, or a 'regular'
-    * atkattribute to store it's referential key.
-    */
+    /**
+     * Determine the type of the attribute on the other side.
+     *
+     * On the other side of a oneToOneRelation (in the destination node),
+     * there may be a regular atkAttribute for the referential key, or an
+     * atkOneToOneRelation pointing back at the source. This method discovers
+     * which of the 2 cases we are dealing with.
+     * @return boolean True if the attribute on the other side is a
+     *                 relation, false if not.
+     */
     function destinationHasRelation()
     {
       if ($this->createDestination())
@@ -373,12 +548,16 @@
       }
       return false;
     }
-
+    
     /**
-     * Returns a piece of html code that can be used in a form to display
-     * hidden values for this attribute.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its values. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                This attribute's value without showing it.
      */
     function hide($record="", $fieldprefix="")
     {
@@ -413,6 +592,11 @@
       return "";
     }
     
+    /**
+     * Put the attribute on one or more tabs.
+     * @param array $tabs An array of tabs on which the attribute should
+     *                    be displayed.
+     */
     function setTabs($tab)
     {      
       // normally, we would fill m_tabs with $tab
@@ -434,13 +618,20 @@
     }
 
     /**
-     * Adds the attribute's edit / hide HTML code to the edit array. This method
-     * is called by the node if it want the data needed to create an edit form.
-     * @param $mode     the edit mode ("add" or "edit")
-     * @param $arr      pointer to the edit array
-     * @param $defaults pointer to the default values array
-     * @param $error    pointer to the error array
-     * @param $prefix   the fieldprefix
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * an edit form. The method is an override of atkAttribute's method,
+     * because in the atkOneToOneRelation, we need to implement the 
+     * AF_ONETOONE_INTEGRATE feature.
+     * 
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {     
@@ -548,21 +739,29 @@
     }
 
     /**
-    * description
-    *
-    * @return void
-    */
+     * Check if a record has an empty value for this attribute.
+     * @param array $record The record that holds this attribute's value.
+     * @todo This method is not currently implemented properly and returns
+     *       false in all cases.
+     * @return boolean
+     */
     function isEmpty($record)
     {	      
       return false;
     }
 
-    /**
-     * Validate's values (forward to the destination node)
-     * @param &$record record that contains value to be validated
-     * @param $mode can be either "add" or "update"
-     * @return $record
-     */
+    /**    
+     * Checks if a value is valid. 
+     *
+     * For the atkOneToOneRelation, this method delegates the actual
+     * validation of values to the destination node.
+     *
+     * @param array $record The record that holds the value for this 
+     *                      attribute. If an error occurs, the error will  
+     *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
+     */     
     function validate(&$record, $mode)
     {      
       // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
@@ -575,6 +774,9 @@
       }
     }
     
+    /**
+     * @deprecated Use getDestinationFilterCondition() instead.
+     */
     function getFilter()
     {
       $filter = $this->m_destinationFilter;
@@ -595,8 +797,17 @@
     }
     
     /**
-     * Integrated onetoone relations must add all tabs that the destination
-     * node has, to the main screen.
+     * Get list of additional tabs.
+     * 
+     * Attributes can add new tabs to tabbed screens. This method will be
+     * called to retrieve the tabs. When AF_ONETOONE_INTEGRATE is set, the 
+     * atkOneToOneRelation adds tabs from the destination node to the tab 
+     * screen, so the attributes are seamlessly integrated but still on their
+     * own tabs.
+     *
+     * @param String $action The action for which additional tabs should be 
+     *                       loaded.
+     * @return array The list of tabs to add to the screen.
      */
     function getAdditionalTabs($action)
     {
@@ -614,8 +825,12 @@
       return parent::getAdditionalTabs($action);
     }
     
-    // A onetoone must show itself on a tab, if one of the destination attributes
-    // should be shown on that tab. 
+    /**
+     * Check if the attribute wants to be shown on a certain tab.
+     *
+     * @param String $tab The name of the tab to check.
+     * @return boolean
+     */
     function showOnTab($tab)
     {         
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
@@ -634,4 +849,5 @@
     }        
     
   }
+  
 ?>

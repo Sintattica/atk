@@ -1,28 +1,51 @@
 <?php
 
- /**
-   * Oracle 8.0.5 specific SQL functions.
-   * 
-   * @author Ivo Jansch (ivo@ibuildings.nl)
-   * @version $Revision$
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
    * $Id$
+   */
+
+  /**   
+   * @internal Include baseclass
+   */
+  require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
+  
+  /**
+   * SQL Builder for Oracle 8.0.5 databases. 
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage db
    *
    */
- 
-  require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
-
   class atkoci805query extends atkoci8query
   {
 
     /**
-      * oci805 overrides the default _addorderby method for the following reason:
-      * When doing order by and also setting a limit, atkoci8query will do a 
-      * subselect to just select the limit.
-      * Oracle 8.0.5 does not support order by in a subselect.
-      * Therefor, if both a limit and order by are set, we do a 'fake' order by
-      * by using group by.
-      */
+     * Add the list of order by fields to the SQL query.
+     *
+     * This oci805 driver overrides the default _addorderby method for the
+     * following reason:
+     * When doing order by and also setting a limit, the base atkoci8query
+     * will perform a subselect to apply the limit. However, Oracle 8.0.5 does
+     * not support order by in a subselect.
+     * Therefor, if both a limit and order by are set, we do a 'fake' order by
+     * by using group by.
+     *
+     * @access private
+     * @param String $query The SQL query that is being constructed.
+     */
     function _addOrderBy(&$query)
     {
       if (count($this->m_orderbys)>0 && $this->m_offset >= 0 && $this->m_limit > 0)

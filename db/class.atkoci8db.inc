@@ -1,27 +1,49 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**   
+   * @internal Include baseclass
+   */
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
-  //Oracle error's includen
+  
+  /** 
+   * @internal Include error translations
+   */
   include_once(atkconfig("atkroot")."atk/db/languages/oracle_".atkconfig('language').'.lng');
 
-  
   /**
-   * Handles database connectivity and database interaction
-   * with the Oracle database server. Portions of this class are
-   * based on the db_oci8.inc file of PHPLib.
+   * Driver for Oracle 8i databases.
    *
-   * @author Peter Verhage <peter@ibuildings.nl>
-   * @version $Revision$
-   *
-   * $Id$   
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage db
    *
    */
   class atkoci8db extends atkdb
   {    
+    /**
+     * @var String
+     * @access private
+     */
     var $m_type = "oci8";
     
     /**
-     * Base constructor
+     * Default constructor
      */
     function atkoci8db()
     {
@@ -32,8 +54,8 @@
     }
 
     /**
-     * Connect to the database
-     * @return connection status
+     * Connect to the database.
+     * @return int One of the generic DB_ connection statusses.
      */
     function connect()
     {      
@@ -64,9 +86,13 @@
       return DB_SUCCESS;
     }
     
-    /*
-          * Return atk database error
-          */
+    /**
+     * Get last error code.
+     *
+     * If an error occurred, this method can be called to retrieve
+     * the generic error code. 
+     * @return int One of the generic DB_* statusses.
+     */
     function getAtkDbErrno()
     {
       atkdebug("atkoci8db::getAtkDbErrno() -> ".$this->getDbErrno());
@@ -74,8 +100,10 @@
     }
   
     /**
-         *  return a atkError;
-         */
+     * Translate a driver specific error to a generic ATK db error code.
+     * @access private
+     * @return int One of the generic DB_* constants
+     */
     function _translateError($err)
     {
       $this->m_errno = $err['code'];
@@ -92,7 +120,7 @@
     }
 
     /**
-     * Disconnect from database
+     * Disconnect from database.
      */
     function disconnect()
     {
@@ -103,9 +131,9 @@
       }
     }
 
-    /*
-          * Commit all queries
-          */
+    /**
+     * Commit the current transaction.
+     */
     function commit()
     {
       if($this->m_link_id)
@@ -116,8 +144,8 @@
     }
 
     /*
-          * Rollback the queries
-          */
+     * Rollback the the current transaction.
+     */
     function rollback()
     {
       if($this->m_link_id)
@@ -128,10 +156,17 @@
     }
 
     /**
-     * Performs a query
-     * @param $query the query
-     * @param $offset offset in record list
-     * @param $limit maximum number of records
+     * Parse and execute a query.
+     *
+     * If the query is a select query, the rows can be retrieved using the
+     * next_record() method. 
+     *
+     * @param String $query The SQL query to execute
+     * @param int $offset Retrieve the results starting at the specified
+     *                    record number. Pass -1 or 0 to start at the first
+     *                    record.
+     * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
+     *                   retrieve all rows.
      */
     function query($query, $offset=-1, $limit=-1)
     {
@@ -186,8 +221,9 @@
     }
 
     /**
-     * Goto the next record in the result set
-     * @return result of going to the next record
+     * Retrieve the next record in the resultset.
+     * @return mixed An array containing the record, or 0 if there are no more
+     *               records to retrieve.
      */
     function next_record()
     {
@@ -228,10 +264,13 @@
     }
 
     /**
-     * Goto a certain position in result set.
-     * Not specifying a position will set the pointer
-     * at the beginning of the result set.
-     * @param $position the position
+     * Skip to a certain position in the result set for subsequent calls to
+     * next_record().     
+     *
+     * Calling seek() with no parameters places the pointer to the first
+     * record in the resultset.
+     * 
+     * @param int $position The number of the record to skip to. 
      */
     function seek($position=0)
     {
@@ -240,10 +279,13 @@
     }
 
     /**
-     * Lock a certain table in the database
-     * @param $table the table name
-     * @param $mode the type of locking
-     * @return result of locking
+     * Lock a table in the database.
+     *
+     * @param String $table The name of the table to lock.
+     * @param String $mode The lock type. Note that this driver only supports 
+     *                     "write".
+     *
+     * @return boolean True if succesful, false if not.
      */
     function lock($table, $mode="write")
     {
@@ -270,8 +312,13 @@
     }
 
     /**
-     * Unlock table(s) in the database
-     * @return result of unlocking
+     * Relieve all locks. 
+     *
+     * The oracle 8i driver has no way to unlock other than committing the
+     * current transaction. So be careful with calling this function; any
+     * outstanding transaction will be committed.
+     *
+     * @return boolean True if succesful, false if not.
      */
     function unlock()
     {
@@ -279,9 +326,12 @@
     }
 
     /**
-     * Evaluate the result; which rows were
-     * affected by the query.
-     * @return affected rows
+     * Retrieve the number of rows affected by the last query.
+     *
+     * After calling query() to perform an update statement, this method will
+     * return the number of rows that was updated.
+     *
+     * @return int The number of affected rows
      */
     function affected_rows()
     {
@@ -289,9 +339,12 @@
     }
 
     /**
-     * Evaluate the result; how many rows
-     * were affected by the query.
-     * @return number of affected rows
+     * Retrieve the number of rows in the resultset.
+     * 
+     * After calling query() to perform a select statement, this method will 
+     * return the number of rows in the resultset.
+     *
+     * @return int The number of rows in the resultset.
      */
     function num_rows()
     {
@@ -310,10 +363,21 @@
 
 
     /**
-     * Get the next sequence number
-     * of a certain sequence.
-     * @param $sequence the sequence name
-     * @return the next sequence id
+     * Get the next sequence number of a certain sequence.
+     *
+     * If the sequence does not exist, it is created automatically. For this
+     * to work, the database user should have the 'create sequence' privilege.
+     * The name of the sequence in the database is prefixed with "seq_".
+     *
+     * <b>Example</b>
+     * If the database contains a sequence named "seq_employees", the following
+     * call will retrieve the next value from the sequence:
+     * <code> 
+     *   $id = $g_db->nextid("employees");
+     * </code>
+     *
+     * @param $sequence The sequence name
+     * @return int The next sequence value
      */
     function nextid($sequence)
     {
@@ -356,9 +420,13 @@
 
     /**
      * Return the meta data of a certain table
-     * @param $table the table name
-     * @param $full all meta data or not
-     * @return array with meta data
+     *
+     * @param String $table The name of the table
+     * @param boolean $full If set to true, more metadata is retrieved than
+     *                      when set to false.
+     * @return array The retrieved metadata. See documentation for
+     *               atkDb::metadata() for information about the structure
+     *               of the returned array.
      */
     function metadata($table, $full=false)
     {
@@ -405,8 +473,9 @@
     }
 
     /**
-     * Return the available table names
-     * @return array with table names etc.
+     * Return a list of all table names in the current connection.
+     *
+     * @return array The array containing the names of the tables.
      */
     function table_names()
     {
@@ -427,11 +496,10 @@
     }
     
     /**
-     * This function checks the database for a table with 
-     * the provide name
+     * This function checks in the database if a table exists.     
      *
-     * @params $tableName the table to find
-     * @params returns true if found, false if not found
+     * @params String $tableName The name of the table to check.
+     * @return boolean True if the table exists, false if not.
      */  
     function tableExists($table)
     {      
@@ -441,13 +509,27 @@
       return ($found[0]['found']==0 ? false : true);
     }    
     
+    /** 
+     * Retrieve this drivers' specific SQL implementation of a now() function.
+     * @return String
+     */
     function func_now()
     {
       return "SYSDATE";
     }  
     
     /**
-      * get SUBSTRING() equivalent for the current database.
+      * Retrieve this drivers' specific SQL implementation of a substring
+      * function.
+      *
+      * Note that this function does not actually perform a substring
+      * operation. It just returns a piece of valid SQL code that can be used
+      * in a query.
+      *
+      * @param String $fieldname The name of the field to perform a substring
+      *                          operation on.
+      * @param int $startat The character at which to start.
+      * @param int $length The number of charachters to retrieve.
       */
     function func_substring($fieldname, $startat=0, $length=0)
     {
@@ -455,8 +537,9 @@
     }
     
     /**
-      * Returns the maximum length an identifier (tablename, columnname, etc) may have
-      *      
+      * Returns the maximum length an identifier (tablename, columnname, etc)
+      * for this driver may have.
+      * @return int
       */
     function maxIdentifierLength()
     {
@@ -464,7 +547,18 @@
     }
     
     /**
-     * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
+     * Escape a string for use in SQL queries.
+     *
+     * This driver's implementation escapes single quotes and optionally,
+     * wildcards. Wildcards should be escaped if they appear as regular 
+     * characters inside a string. When actually searching for wildcards, 
+     * those wildcards should not be escaped.
+     * 
+     * @param String $string The string to escape.
+     * @param boolean $wildcard Set to true to convert wildcard chars ('%'). 
+     *                          False will leave them unescaped.
+     * @return String A SQL compatible version of the input string.
+     
      */
     function escapeSQL($string, $wildcard=false)
     {    
@@ -472,7 +566,6 @@
       if ($wildcard == true) $result = str_replace("%","%%",$result);
       return $result;
     }
-
     
   }
 

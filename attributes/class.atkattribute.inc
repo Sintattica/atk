@@ -256,7 +256,7 @@
 
     /**
      * Check if a record has an empty value for this attribute.
-     * @param array $record The record that h olds this attribute's value.
+     * @param array $record The record that holds this attribute's value.
      * @return boolean
      */
     function isEmpty($record)
@@ -339,6 +339,7 @@
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)
+     *
      * @param array $record The record that holds the value for this attribute
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
@@ -639,10 +640,15 @@
      * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
      * methods to prepare a value for display.
      *
-     * @param @array $record The record that holds the value for this attribute
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     *                     for displaying in recordlists). The regular
+     *                     atkAttribute does not use this parameter, but
+     *                     derived attributes may use it to distinguish
+     *                     between the two display modes.
      * @return String HTML String 
      */
-    function display($record)
+    function display($record, $mode="")
     {
       // the next if-statement is a workaround for derived attributes which do
       // not override the display() method properly. This will not give them a 
@@ -665,6 +671,8 @@
      * @param array $record The record that holds the value for this 
      *                      attribute. If an error occurs, the error will  
      *                      be stored in the 'atkerror' field of the record.
+     * @param String $mode The mode for which should be validated ("add" or
+     *                     "update")
      */     
     function validate(&$record, $mode)
     {
@@ -715,9 +723,7 @@
      * the AF_CASCADE_DELETE flag.
      *
      * @param array $record The record that is deleted.
-     * @return boolean true if cleanup was successful, false otherwise. If the
-     *                 database driver supports it, the entire transaction is
-     *                 rolled back when this method returns false.
+     * @return boolean true if cleanup was successful, false otherwise. 
      */
     function delete($record)
     {

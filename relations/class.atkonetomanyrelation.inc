@@ -1,36 +1,77 @@
 <?php
   /**
-   * Can be used to create on to many relations ('1 library has N books').
-   * A common term for this type of relation is a master-detail relationship.
-   * The detailrecords can be edited inline.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
    
+  /**
+   * @internal Include base class.
+   */   
   userelation("atkrelation");
+  
+  /**
+   * Implementation of one-to-many relationships.
+   * 
+   * Can be used to create one to many relations ('1 library has N books').
+   * A common term for this type of relation is a master-detail relationship.
+   * The detailrecords can be edited inline.  
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage relations
+   *
+   */
   class atkOneToManyRelation extends atkRelation
-  {
-    /*** Member variables ***/
-
+  {    
     /**
-     * The referential key in the target node
+     * List of keys from the destination node that refer to the master record.
+     * @access private
+     * @var array 
      */
     var $m_refKey=array();
 
     /**
-     * The maximum number of records that you may have a relation with..
+     * The maximum number of detail records. If the number of detail records
+     * exceeds this maximum, the link for adding new details disappears.
+     * @var int
      */
     var $m_maxRecords = 0;
 
     /**
-     * Constructor
-     * @param $name ?
-     * @param $destination ?
-     * @param $flags Flags for the relation
+     * Default constructor.
+     *
+     * <b>Example: </b> Suppose a department has many employees. To edit the 
+     * list of employees in a department, this relationship can be built like
+     * this, in the department node:
+     * <code>
+     * $this->add(new atkOneToManyRelation("employees", "mymod.employee", "department_id"));
+     * </code>
+     *
+     * @param String $name The unique name of this relation within a node.
+     *                     In contrast with moth other attributes, the name
+     *                     does not correspond to a database field. (Because
+     *                     in one2many relations, the databasefield that
+     *                     stores the link, is in the destination node and not
+     *                     in the owner node).     
+     * @param String $destination The node to which the relationship is made
+     *                            (in module.nodename notation).
+     * @param mixed $refKey For regular oneToMany relationships, $refKey is 
+     *                      name of the referential key in the destination
+     *                      node. In the case of multi-foreign key
+     *                      relationships, $refKey can be an array of fields.
+     * @param int $flags Attribute flags that influence this attributes'
+     *                   behavior.     
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
@@ -49,10 +90,16 @@
     }
 
     /**
-     * Returns a displayable string for this value.
-     * @param $record record
-     * @param $mode display mode (list or view)
-     * @return a displayable string
+     * Returns a displayable string for this value, to be used in HTML pages.
+     *
+     * The atkOneToManyRelation displays a list of detail records in "view" 
+     * mode, in the form of a readonly recordlist. In "list" mode, a plain
+     * list of detail record descriptors is displayed.
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     *                     for displaying in recordlists)
+     * @return String HTML String 
      */
     function display($record, $mode="list")
     {      
@@ -95,9 +142,15 @@
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value.
-     * @param $record Record
-     * @return Piece of html code that can  be used in a form to edit this
+     * attribute's value. 
+     *
+     * The atkOneToManyRelation's edit method returns a recordlist in which 
+     * detail records can be removed, added and edited.
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode for editing this attribute
      */
     function edit($record="", $fieldprefix="")
     {
@@ -186,36 +239,56 @@
     }
     
     /**
-          * This function can be implemented in derived classes to add extra information
-          * (text, links, whatever) to the top of the attribute, right before the recordlist
-          *
-          * @param $record The master record that is being edited.
-          * @param $childrecords The childrecords in this master/detail relationship.
-          */
+     * Retrieve header for the recordlist.
+     * 
+     * The regular atkOneToManyRelation has no implementation for this method, 
+     * but it may be overridden in derived classes to add extra information 
+     * (text, links, whatever) to the top of the attribute, right before the
+     * recordlist. This is similar to the adminHeader() method in atkNode.
+     *
+     * @param array $record The master record that is being edited.
+     * @param array $childrecords The childrecords in this master/detail
+     *                            relationship.
+     * @return String a String to be added to the header of the recordlist.
+     */
     function editHeader($record=NULL, $childrecords=NULL)
     {
       return "";
     }
     
     /**
-          * This function can be implemented in derived classes to add extra information
-          * (text, links, whatever) to the bottom of the attribute, right after the add link.
-          *
-          * @param $record The master record that is being edited.
-          * @param $childrecords The childrecords in this master/detail relationship.
-          */
+     * Retrieve footer for the recordlist.
+     * 
+     * The regular atkOneToManyRelation has no implementation for this method, 
+     * but it may be overridden in derived classes to add extra information 
+     * (text, links, whatever) to the bottom of the attribute, just after the
+     * recordlist. This is similar to the adminFooter() method in atkNode.
+     *
+     * @param array $record The master record that is being edited.
+     * @param array $childrecords The childrecords in this master/detail
+     *                            relationship.
+     * @return String a String to be added at the bottom of the recordlist.
+     */
     function editFooter($record=NULL, $childrecords=NULL)
     {
       return "";
     }
 
     /**
-     * load values
-     * @param $db pointer to the database
-     * @param $record Record
-     * @param $mode Mode for loading (admin, select, copy, etc)
-
-     * @return ??
+     * Retrieve detail records from the database.
+     *
+     * Called by the framework to load the detail records.
+     *
+     * @param atkDb $db The database used by the node. (Usually equal to 
+     *                  $g_db)
+     * @param array $record The master record
+     * @param String $mode The mode for loading (admin, select, copy, etc)
+     * 
+     * @return array Recordset containing detailrecords, or NULL if no detail
+     *               records are present. Note: when $mode is edit, this
+     *               method will always return NULL. This is a framework 
+     *               optimization because in edit pages, the records are
+     *               loaded on the fly.
      */
     function load($db, $record, $mode="")
     {
@@ -264,8 +337,16 @@
     }
 
 
-  /**
-     * delete relational records..
+    /** 
+     * The delete method is called by the framework to inform the attribute
+     * that the master record is deleted.
+     *
+     * Note that the framework only calls the method when the
+     * AF_CASCADE_DELETE flag is set. When calling this method, all detail
+     * records belonging to the master record are deleted.
+     *
+     * @param array $record The record that is deleted.
+     * @return boolean true if cleanup was successful, false otherwise.
      */
     function delete($record)
     {
@@ -289,19 +370,20 @@
 
 
     /**
-     * Store values only when it's an array and not empty
+     * Store detail records in the database.
+     *     
      * For onetomanyrelation, this function does not have much use, since it
-     * stores records using it's 'add link'. But the copyDb function however
-     * might use this.
-     * To prevent double storage when clicking the "save" button on a form
-     * we only store something when in add mode. In 'normal' add forms, we
-     * don't have a oneToManyRelation, so this add is only called when
-     * doing 'abnormal' adds, like a copy function.
+     * stores records using its 'add link'. Thehe copyDb function however uses
+     * this method to clone detail records.
+     * If mode is anything other than "copy" this method does not do anything.
      *
-     * @param $notused ??
-     * @param $record Record
+     * @param atkDb $db The database used by the node. (Usually equal to 
+     *                  $g_db)
+     * @param array $record The master record which has the detail records
+     *                      embedded.
+     * @return boolean true if store was successful, false otherwise. 
      */
-    function store($notused, $record, $mode)
+    function store($db, $record, $mode)
     {
       if ($mode=="copy") // when copying, mode is "copy".
       {
@@ -343,24 +425,44 @@
       return true;
     }
     
-    function hide($record="", $fieldprefix="")
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form.
+     *
+     * Because the oneToMany has nothing to hide, we override the default
+     * hide() implementation with a dummy method.
+     *
+     * @return String An empty string.
+     */
+    function hide()
     {    
       //Nothing to hide..
       return "";
     }
     
     /**
-    * currently we cannot search one2many relations
-    */
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user.
+     *
+     * Because oneToManyRelations can not be searched directly from the master
+     * node, we override the default search() implementation with a dummy
+     * function.
+     * @return boolean false
+     */
     function search()
     {
       return FALSE;
     }
 
     /**
-    * Check if destination node has a relation to this node, or a 'regular'
-    * atkattribute to store it's referential key.
-    */
+     * Determine the type of the foreign key on the other side.
+     *
+     * On the other side of a oneToManyRelation (in the destination node),
+     * there may be a regular atkAttribute for the referential key, or an
+     * atkManyToOneRelation pointing back at the source. This method discovers
+     * which of the 2 cases we are dealing with.
+     * @return boolean True if the foreign key on the other side is a
+     *                 relation, false if not.
+     */
     function destinationHasRelation()
     {
       if ($this->createDestination())

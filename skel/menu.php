@@ -1,17 +1,27 @@
 <?php
   /**
-   * Builds a navigation menu for the ATK application. 
-   * Items for the main application can be added within the
-   * config.menu.inc file with the menuitem() method. Modules
-   * can register menuitems in their constructor. The menu
-   * has support for enabling/disabling items on a user profile base.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Peter Verhage <peter@ibuildings.nl>
-   * @author Ivo Jansch    <ivo@ibuildings.nl>
+   * This file is the skeleton menu loader, which you can copy to your
+   * application dir and modify if necessary. By default, it checks
+   * the menu settings and loads the proper menu.
+   *
+   * @package atk
+   * @subpackage skel
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
-   * $Id$   
-   */  
+   * $Id$
+   */
+   
   $config_atkroot = "./";
   include_once("atk.inc");    
 

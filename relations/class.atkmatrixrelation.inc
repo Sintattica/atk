@@ -1,17 +1,33 @@
 <?php
-  /* flag(s) specific for atkMatrixRelation */
-  define("AF_MATRIX_ACYCLIC",           AF_SPECIFIC_1); // checks if a matrix is acyclic
-
-  /*
-   * Unsupported and undocumented. Probably unusable.
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Martin Pruijssers
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
 
+  /** flag(s) specific for atkMatrixRelation */
+  define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
+
+  /**
+   * Many2Many relation that is represented by a clickable matrix.
+   *   
+   * @deprecated This relation is no longer maintained and unsupported.
+   *
+   * @author Martin Pruijssers
+   * @package atk
+   * @subpackage relations
+   *
+   */
   class atkMatrixRelation extends atkRelation
   {
    var $m_name1;
