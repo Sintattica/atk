@@ -510,7 +510,7 @@
           
           // Look for custom record actions.
           $recordactions = $actions;
-          $this->recordActions($this->m_tree[$cnt]["label"], $recordactions);    
+          $this->recordActions($this->m_tree[$cnt]["label"], $recordactions,$dummy);    
           
           foreach ($recordactions as $action_name => $action_url)
           {
