@@ -13,6 +13,11 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.10  2001/06/01 12:52:49  peter
+   * Fixed a bug in menu.php (atksecure() was called to late).
+   * Updated english language file month names (long names to short).
+   * Fixed bug in atknode selectPage() -> atktarget was not decoded.
+   *
    * Revision 4.9  2001/05/23 07:57:57  ivo
    * Updated the files in skel with the new atksecure() call.
    *
@@ -54,9 +59,11 @@
   $config_atkroot = "./";
   require_once($config_atkroot."atk/class.atknode.inc");
   require_once($config_atkroot."atk/atkmenutools.inc");
-  include_once($config_atkroot."config.menu.inc");
 
   atksecure();
+
+  /* get main menuitems */
+  include_once($config_atkroot."config.menu.inc");
 
   /* first add module menuitems */
   for ($i = 0; $i < count($g_modules); $i++)
@@ -92,7 +99,7 @@
       
     /* normal menu item */
     else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,false,'target="main"').$config_menu_delimiter;
-    else $menu .= text("title_$name").$config_menu_delimiter;    
+    else $menu .= text("menu_$name").$config_menu_delimiter;    
   }
   
   /* previous */

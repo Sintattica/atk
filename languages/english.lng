@@ -84,13 +84,13 @@
   $txt_november = "November";
   $txt_december = "December";
   
-  $txt_fri = "Fri";
-  $txt_sat = "Sat";
-  $txt_sun = "Sun";
-  $txt_mon = "Mon";
-  $txt_tue = "Tue";
-  $txt_wed = "Wed";
-  $txt_thu = "Thu";
+  $txt_sunday    = "Sun";
+  $txt_monday    = "Mon";
+  $txt_tuesday   = "Tue";
+  $txt_wednesday = "Wed";
+  $txt_thursday  = "Thu";
+  $txt_friday    = "Fri";
+  $txt_saturday  = "Sat";
   
-  $txt_menu_main = $txt_menu;  
+  $txt_menu_main = "Main menu";  
 ?>

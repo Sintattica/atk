@@ -87,6 +87,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.45  2001/06/01 12:52:49  peter
+   * Fixed a bug in menu.php (atksecure() was called to late).
+   * Updated english language file month names (long names to short).
+   * Fixed bug in atknode selectPage() -> atktarget was not decoded.
+   *
    * Revision 4.44  2001/05/30 07:05:43  ivo
    * Removed is_null funtion calls (because they require PHP4.0.4)
    * Moved session management initialisation code to a function.
@@ -897,7 +902,6 @@
     {
       global $g_layout;
       $g_layout->register_script("atk/javascript/formfocus.js");      
-      $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->stackTrace());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
@@ -920,7 +924,6 @@
     {
       global $g_layout;  
     
-      $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
       $g_layout->output($this->stackTrace());
 
@@ -982,7 +985,6 @@
     {
       global $g_layout;
       $g_layout->register_script("atk/javascript/formfocus.js");
-      $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
       $g_layout->output($this->stackTrace());
       
@@ -1267,8 +1269,6 @@
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
       $g_layout->output($this->stackTrace());
 
-      //$g_layout->output('<br>');
-      
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
       {
@@ -1704,7 +1704,7 @@
       {
         // There's only one record and the autoselect flag is set, so we 
         // automatically go to the target..
-        $target=stringparse($this->m_postvars['atktarget'],$recordset[0],true);
+        $target=stringparse(rawurldecode($this->m_postvars['atktarget']),$recordset[0],true);
         $this->redirect($target);
       }
       else
@@ -1720,7 +1720,6 @@
         if (!empty($nav)) $g_layout->output("$nav<br><br>");
         
         $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
-        var_dump($actions);
 
         $g_layout->output($this->recordList($recordset, $actions));
 
