@@ -2438,12 +2438,12 @@
       // See if there are modules active that modify all nodes with the same name
       // for example, modules modifying all classes in all modules with the
       // name 'bill'.
-      for ($i = 0, $_i = count($g_modifiers[$this->m_type]); $i < $_i; $i++)
-      {
+      for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
+      {      
         $modname = $g_modifiers[$this->atknodetype()][$i];
         $mod = getModule($modname);
         $modifiername = $this->m_type."_modifier";
-
+        
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->m_type);
