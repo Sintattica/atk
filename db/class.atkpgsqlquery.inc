@@ -37,6 +37,20 @@
         $query .= " LIMIT ".$this->m_limit." OFFSET ".$this->m_offset;
       }      
     }
-  }
 
+    /**
+     * Builds the SQL Select COUNT(*) query. This is different from select,
+     * because we do joins, like in a select, but we don't really select the
+     * fields.
+     *
+     * @param $distinct distinct rows?
+     *
+     * @result a SQL Select COUNT(*) Query
+     */
+    function buildCount($distinct = FALSE)
+    {
+      $query = "SELECT COUNT(*) AS count FROM (".$this->buildSelect($distinct).") x";
+      return $query;
+    }
+  }
 ?>

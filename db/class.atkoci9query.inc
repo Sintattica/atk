@@ -141,15 +141,8 @@
      */
      function buildCount($distinct = FALSE)
      {
-      $query = parent::buildCount($distinct);
-
-      //Because oracle doesn't accept aliases more than 30 characters
-      //we replace al aliases with new aliases
-      //bug 137
-      $result = $this->convertQuery($query);
-
-      return $result;
-
+      $query = "SELECT COUNT(*) AS count FROM (".$this->buildSelect($distinct).")";
+      return $query;
      }
 
  /**
