@@ -27,9 +27,9 @@ class atkPasswordAttribute extends atkAttribute
   {
     /* base class constructor */
       // compatiblity with old versions
-      
+
       if (func_num_args()==3) $this->m_generate=$generate;
-      else                   
+      else
       {
       $flags = $generate;
       $this->m_generate="false";
@@ -43,64 +43,63 @@ class atkPasswordAttribute extends atkAttribute
    * @param $record array with fields
    * @return piece of html code with a textarea
    */
-  function edit($record="")
+  function edit($record="", $fieldprefix="")
   {
-    global $ATK_VARS;    
-    
+    global $ATK_VARS;
+
     $action = $ATK_VARS["atkaction"];
-   
+
     /* insert */
     if ($action != 'edit' && $action != 'update')
     {
      if (!$this->m_generate)
      {
-      
+
       $result = text("password_new").':<br>'.
-                '<input type="password" name="'.$this->fieldName().'[new]"'.
+                '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".                          
-                
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
+
                 text("password_again").':<br>'.
-                '<input type="password" name="'.$this->fieldName().'[again]"'.
+                '<input type="password" name="'.,$fieldprefix.$this->fieldName().'[again]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";                                       
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
      }
      else
      {
       $password = makePassword();
-      $result = '<input type="hidden" name="'.$this->fieldName().'[again]"'.
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[again]"'.
                 ' value ="'.$password.'">'.
-                '<input type="text" name="'.$this->fieldName().'[new]"'.
+                '<input type="text" name="'.$fieldprefix.$this->fieldName().'[new]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\'password[again]\'].value=this.value">';                  
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
      }
     }
-    
+
     /* edit */
     else
     {
-    //var_dump($record[$this->fieldName()]["hash"]);
-      $result = '<input type="hidden" name="'.$this->fieldName().'[hash]"'.
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[hash]"'.
                 ' value="'.$record[$this->fieldName()]["hash"].'">';
 
 
       if (!$this->hasFlag(AF_PASSWORD_NOVALIDATE))
         $result .= text("password_current").':<br>'.
-                   '<input type="password" name="'.$this->fieldName().'[current]"'.
+                   '<input type="password" name="'.$fieldprefix.$this->fieldName().'[current]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
-                
+
       $result .= text("password_new").':<br>'.
-                 '<input type="password" name="'.$this->fieldName().'[new]"'.
+                 '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.
-                
+
                  text("password_again").':<br>'.
-                 '<input type="password" name="'.$this->fieldName().'[again]"'.
+                 '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';                                       
+                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
     }
-    
+
     return $result;
   }
 
@@ -150,13 +149,13 @@ class atkPasswordAttribute extends atkAttribute
    */
   function fetchValue($rec)
   {
-    global $ATK_VARS;    
+    global $ATK_VARS;
 
     $action = $ATK_VARS["atkaction"];
     //if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
     if (strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
       return $rec[$this->fieldName()];
-    else return array("hash" =>$rec[$this->fieldName()]["hash"], 
+    else return array("hash" =>$rec[$this->fieldName()]["hash"],
                       "new"=>$rec[$this->fieldName()]["new"],
                       "again"=>$rec[$this->fieldName()]["again"],
                       "current"=>$rec[$this->fieldname()]["current"]
@@ -164,7 +163,7 @@ class atkPasswordAttribute extends atkAttribute
   }
 
   /**
-   * Validates the supplied passwords 
+   * Validates the supplied passwords
    * @param &$record Record that contains value to be validated.
    *                 Errors are saved in this record
    * @param $mode can be either "add" or "update"
@@ -172,23 +171,23 @@ class atkPasswordAttribute extends atkAttribute
    */
   function validate($record, $mode)
   {
-    global $ATK_VARS;    
-    
+    global $ATK_VARS;
+
     $value = $record[$this->fieldName()];
 
     $action = $ATK_VARS["atkaction"];
 
-    if ($action == 'update' 
-        && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) 
-        && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) 
+    if ($action == 'update'
+        && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
+        && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
         && md5($value["current"]) != $value["hash"])
           triggerError($record, $this->fieldName(), 'error_password_incorrect');
-    
+
     //var_dump($value);
     if ($value["new"] != $value["again"])
       triggerError($record, $this->fieldName(), 'error_password_nomatch');
-  }  
-  
+  }
+
 
   /**
    * Returns a piece of html code that can be used in a form to display
@@ -198,10 +197,10 @@ class atkPasswordAttribute extends atkAttribute
    */
   function hide($record="")
   {
-    return "";             
-  }  
-  
-  /** 
+    return "";
+  }
+
+  /**
    * We don't display the password
    * @param $rec the record with display data
    * @return string with value to display
@@ -210,7 +209,7 @@ class atkPasswordAttribute extends atkAttribute
   {
     return text("password_hidden");
   }
-  
+
   function getSearchModes()
   {
       // exact match and substring search should be supported by any database.
@@ -240,5 +239,5 @@ class atkPasswordAttribute extends atkAttribute
        }
   return $out;
   }
- 
+
 ?>
