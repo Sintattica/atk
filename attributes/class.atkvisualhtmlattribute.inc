@@ -133,7 +133,7 @@
       }
 
      // no fonts allowed!
-     if (!$this->hasFlag(WW_FONT)) 
+     if (!$this->hasWWFlag(WW_FONT)) 
       {
         $syntax = array("<font[^>.]*>"=>" ",  
                       "</font[^>.]*>"=>" ");
@@ -143,7 +143,7 @@
     return $content;
     }
 
-    function hasFlag($flag)
+    function hasWWFlag($flag)
     {
     return ($this->m_editflags&$flag)==$flag;
     }
