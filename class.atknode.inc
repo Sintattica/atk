@@ -1080,7 +1080,7 @@
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
      */
-    function editArray($mode="add", $record, $forceList="", $suppressList="", $fieldprefix="")
+    function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="")
     {
       global $g_sessionData;
 
