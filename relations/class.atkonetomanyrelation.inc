@@ -1,6 +1,8 @@
 <?php
   /**
-   * Can be used to create '1 library has N books' relations.
+   * Can be used to create on to many relations ('1 library has N books').
+   * A common term for this type of relation is a master-detail relationship.
+   * The detailrecords can be edited inline.
    *
    * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
@@ -84,17 +86,16 @@
       global $PHP_SELF;
 
       $this->createDestination();
-
-      $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
-
-      $myrecords = $record[$this->fieldName()];
-
+      
       // If someone pressed 'save', no records are loaded from the db.
       // since we don't post all records in this relation like we do with
       // other attributes, we have to load them at 'edit' time.
-      // we pass 'select' as mode, since we show a recordlist, and we need
+      // we pass 'admin' as mode, since we show a recordlist, and we need
       // all fields that we also get when we would be on an admin screen.
-      $myrecords = $this->load($notused, $record, "admin");
+      $myrecords = $this->load(NULL, $record, "admin");
+
+      $output.=$this->editHeader($record, $myrecords);
+      $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
 
       if (count($myrecords)!=0)
       {
@@ -158,8 +159,34 @@
         }
         $output.="<tr><td>".href($add_url,$label,SESSION_NESTED,true)."</td></tr>";
       }
-      $output.="</table><br>";
+      $output.="</table>";
+      $output.=$this->editFooter($record, $myrecords);
+      $output.="<br>";
       return $output;
+    }
+    
+    /**
+          * This function can be implemented in derived classes to add extra information
+          * (text, links, whatever) to the top of the attribute, right before the recordlist
+          *
+          * @param $record The master record that is being edited.
+          * @param $childrecords The childrecords in this master/detail relationship.
+          */
+    function editHeader($record=NULL, $childrecords=NULL)
+    {
+      return "";
+    }
+    
+    /**
+          * This function can be implemented in derived classes to add extra information
+          * (text, links, whatever) to the bottom of the attribute, right after the add link.
+          *
+          * @param $record The master record that is being edited.
+          * @param $childrecords The childrecords in this master/detail relationship.
+          */
+    function editFooter($record=NULL, $childrecords=NULL)
+    {
+      return "";
     }
 
     /**
