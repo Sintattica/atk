@@ -177,5 +177,5 @@
   $txt_username = "Gebruikersnaam";
   $txt_password = "Wachtwoord";
   $txt_login = "Inloggen";
-  $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw software leverancier.";
+  $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw systeembeheerder.";
 ?>

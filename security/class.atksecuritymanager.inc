@@ -345,7 +345,7 @@
       $g_layout->output('<tr>');
       if($loginattempts>atkconfig('max_loginattempts'))
       {
-        $g_layout->output("<td class=table>".text('max_loginattempts_exceeded')."</td>");
+        $g_layout->output("<td class=table>".text('max_loginattempts_exceeded')."<br><br></td>");
       }
       else
       {
