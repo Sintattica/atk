@@ -1,77 +1,70 @@
 <?php
-
-  /** Define some flags for attributes. Use the constructor of the atkAttribute
-   * class to set the flags. (concatenate multiple flags with '|')
+  /**
+   * Attribute-/relationflags. The following flags can be used for attributes/relations.
+   * WARNING: flags may *not* exceed 2^31 (2147483648), because that's the integer limit
+   *          beyond which the bitwise operators won't work anymore!
    */
-  define("AF_UNIQUE"        ,  4); // The value of the attribute must be unique.
-  define("AF_OBLIGATORY"    ,  8); // A value must always be entered for the attribute.
-  define("AF_HIDE_LIST"     ,  1); // If this flag is set, the attribute will not show
-                                   // up in record lists (like adminpage and selectpage).
-  define("AF_HIDE_ADD"      ,  2); // The attribute will be hidden in add forms.
-                                   // (unless AF_OBLIGATORY is also set)
-  define("AF_NOLABEL"       , 16); // The attribute has no label in edit/add forms.
-  define("AF_BLANKLABEL"    , 32); // The attribute has a blank label in edit/add forms.
-  define("AF_CASCADE_DELETE", 64); // If this flag is set, then the delete function of
-                                   // the attributes is called when an owning node is
-                                   // deleted
-  define("AF_PRIMARY"       ,128|AF_OBLIGATORY); // Attribute is part of the primary key of a node.
-                                 // Primary key also needs to be obligatory...
-  define("AF_HIDE_EDIT"     ,256); // Attribute is not editable.
-  define("AF_AUTO_INCREMENT",512); // Attribute is autoincrement..
-  define("AF_AUTOINCREMENT",512);  // AF_AUTO_INCREMENT is often mistyped without undersore..
 
-  define("AF_NO_SORT"       ,1024);    // Attribute can not be sorted in recordlists.
-  define("AF_NOSORT"  ,AF_NO_SORT);  // AF_NOSORT has wrong naming convention but is still there
-                                     // for compatibility reasons.
-  define("AF_READONLY_ADD",2048);   // Attribute is readonly in add.
-  define("AF_SEARCHABLE"  ,4096); // Attribute is searchable in list views
+  /* "database-level" processing flags */
+  define("AF_OBLIGATORY",                           1); // value must be entered
+  define("AF_UNIQUE",                               2); // value must be unique
+  define("AF_PRIMARY",                4|AF_OBLIGATORY); // part of primary-key node
+  define("AF_AUTO_INCREMENT",                       8); // auto-increment field
+  define("AF_AUTOINCREMENT",        AF_AUTO_INCREMENT); // auto-increment flag is often mistyped
 
-  // flags specific for AtkFileAttribute
-  define("AF_FILE_NO_UPLOAD"     , 8192);   // Unable to upload files
-  define("AF_FILE_NO_SELECT"     , 16384);  // Unable to select files
-  define("AF_FILE_NO_DELETE"     , 32768);  // Unable to delete files
-  define("AF_FILE_NO_AUTOPREVIEW", 65536);  // Don't try to detect the file type (shows only filename)
-  define("AF_FILE_POPUP"         , 131072); // Show preview in popup instead of inline
+  /* hide flags */
+  define("AF_HIDE_LIST",                           16); // don't show in record lists
+  define("AF_HIDE_ADD",                            32); // don't show on add pages (unless obligatory)
+  define("AF_HIDE_EDIT" ,                          64); // don't show on edit pages
+  define("AF_HIDE_SELECT",                        128); // don't show on select pages.
+  define("AF_HIDE_VIEW"	 ,                        256); // don't show on view pages
+  define("AF_HIDE_SEARCH",                        512); // not searchable in extended search
+  define("AF_FORCE_LOAD",                        1024); // load always, even if not displayed anywhere
+  define("AF_HIDE",          AF_HIDE_EDIT|AF_HIDE_ADD|  // attribute is totally hidden
+                          AF_HIDE_LIST|AF_HIDE_SEARCH|
+                          AF_HIDE_VIEW|AF_HIDE_SELECT);
 
-  define("AF_POPUP"              , AF_FILE_POPUP); // Since other attributes could also use a popup
-                                                   // flag, there's now an AF_POPUP flag.
+  /* readonly flags */
+  define("AF_READONLY_ADD",                      2048); // readonly in add
+  define("AF_READONLY_EDIT",                     4096); // readonly when edited
+  define("AF_READONLY",              AF_READONLY_EDIT|
+                                      AF_READONLY_ADD); // always readonly
 
-  define("AF_NO_FILTER"          , 262144); // Ignore filters when selecting records (used in relations)
+  /* display-related processing flags */
+  define("AF_NO_LABEL",                          8192); // no label in forms
+  define("AF_NOLABEL",                    AF_NO_LABEL); // no label (mistyped)
+  define("AF_BLANK_LABEL",                      16384); // blank label in forms
+  define("AF_BLANKLABEL",              AF_BLANK_LABEL); // blank label (mistyped)
+  define("AF_NO_SORT",                          32768); // cannot be sorted in recordlists.
+  define("AF_NOSORT",                      AF_NO_SORT); // no-sort flag is often mistyped
+  define("AF_SEARCHABLE",                       65536); // Attribute is searchable in list views
+  define("AF_TOTAL",                           131072); // The attribute will have a 'total' column in lists.
+  define("AF_POPUP",                           262144); // if supported, use pop-up window
 
-  define("AF_HIDE_SELECT"        , 524288);  // Record wil not be shown in select pages.
-  define("AF_NO_QUOTES"          , 1048576); // No quotes are used when adding an attrib with
-                                             // this flag to the database.
-  define("AF_FORCE_LOAD"         , 2097152); // With this flag, an attribute is always loaded,
-                                             // even if it's not displayed anywhere.
-  define("AF_FILE_PHYSICAL_DELETE",4194304); // Removes the file physically
+  /* other processing flags */
+  define("AF_CASCADE_DELETE",                  524288); // delete function is called when owning node is deleted
+  define("AF_LARGE",                          1048576); // will have a large ammount of records (relation)
+  define("AF_NO_FILTER",                      2097152); // ignore filters when selecting records (relation)
+  define("AF_PARENT",                         4194304); // parent field for parent child relations (treeview)
+  define("AF_NO_QUOTES",                      8388608); // no quotes are used when adding to database
+  define("AF_MULTILANGUAGE",                 16777216); // multi-language field
+  define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
+                                     AF_AUTOINCREMENT);
 
-  // flags specific for AtkMatrixAttribute
-  define("AF_MATRIX_ACYCLIC"	 , 8388608); // Checks if a matrix is acyclic
+  /* flags specific for the atkFileAttribute */
+  define("AF_FILE_NO_UPLOAD",                33554432); // unable to upload files
+  define("AF_FILE_NO_SELECT",                67108864); // unable to select files
+  define("AF_FILE_NO_DELETE",               134217728); // unable to delete files
+  define("AF_FILE_NO_AUTOPREVIEW",          268435456); // don't try to detect the file type (shows only filename)
+  define("AF_FILE_PHYSICAL_DELETE",         536870912); // removes the file physically
+  define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline
 
-  // flags specific for AtkPasswordAttribute
-  define("AF_PASSWORD_NOVALIDATE", 16777216); // Disables password check when editing password field
+  /* flag specific for atkMatrixRelation */
+  define("AF_MATRIX_ACYCLIC",       AF_FILE_NO_UPLOAD); // checks if a matrix is acyclic
 
-  // multilangauge flag (internal use only!)
-  define("AF_MULTILANGUAGE", 33554432); // Notify's atknode that this attribute is multilanguagal
-
-  define("AF_TOTAL", 67108864);             // The attribute will have a 'total' column in lists.
-
-  define("AF_PARENT", 134217728);           // the parent field for parent child relations in a treeview
-  define("AF_LARGE", 268435456); // Attribute will have a large ammount of
-                                 // records.. (attribs can optimize accordingly)
-
-  define("AF_HIDE_SEARCH", 536870912); // Attribute is not searchable in extended search
-
-  define("AF_READONLY_EDIT", 1073741824); // Attribute is readonly when edited.
-
-  define("AF_HIDE",AF_HIDE_EDIT|AF_HIDE_ADD|AF_HIDE_LIST|AF_HIDE_SEARCH); // Attribute is totally hidden
-  define("AF_AUTOKEY", AF_PRIMARY|AF_HIDE|AF_AUTOINCREMENT); // short way of saying that an attribute
-                                                             // is an autoincremented primarykey that
-                                                             // is also hidden from the user.
-  define("AF_READONLY",AF_READONLY_EDIT|AF_READONLY_ADD); // Attribute is always readonly.
-
-  // FLAGS MAY NOT EXCEED 2^31 (2147483648), because that's the integer limit beyond which
-  // the bitwise operators won't work anymore.
+  /* flags specific for atkPasswordAttribute */
+  define("AF_PASSWORD_NOVALIDATE",  AF_FILE_NO_UPLOAD); // disables password check when editing password field
+  define("AF_PASSWORD_NO_VALIDATE", AF_FILE_NO_UPLOAD); // disables password check when editing password field
 
   /**
    * The atkAttribute class represents an attribute of an atkNode.
@@ -94,40 +87,7 @@
     var $m_name;
 
     /**
-     * The flags of the attribute
-     * Flags can be:
-     * AF_UNIQUE             The value of the attribute must be unique.
-     * AF_OBLIGATORY         A value must always be entered for the attribute.
-     * AF_HIDE_LIST          If this flag is set, the attribute will not show
-     *                       up in record lists (like adminpage and selectpage).
-     * AF_HIDE_ADD           The attribute will be hidden in add forms.
-     *                       (unless AF_OBLIGATORY is also set)
-     * AF_HIDE_SELECT        The attribute is hidden in select lists.
-     * AF_HIDE               Attribute is totally hidden
-     * AF_NOLABEL            The attribute has no label in edit/add forms.
-     * AF_BLANKLABEL         The attribute has a blank label in edit/add forms.
-     * AF_CASCADE_DELETE     If this flag is set, then the delete function of
-     *                       the attributes is called when an owning node is
-     *                       deleted
-     * AF_PRIMARY            Attribute is part of the primary key of a node.
-     * AF_HIDE_EDIT          Attribute is not editable.
-     * AF_AUTO_INCREMENT     Attribute is autoincrement..
-     * AF_NO_SORT            Attribute can't be sorted
-     * AF_READONLY           Attribute is readonly
-     * AF_SEARCHABLE         Attribute is searchable in list views
-     * AF_NO_FILTER          If the attribute uses records from another node,
-     *                       the other node will not be filtered.
-     * AF_NO_QUOTES          No quotes are used when adding an attrib with
-     *                       this flag to the database.
-     * AF_FORCE_LOAD         With this flag, an attribute is always loaded,
-     *                       even if it's not displayed anywhere.
-     * <BR>
-     * Flags specific for AtkFileAttribute
-     * AF_FILE_NO_UPLOAD        Unable to upload files
-     * AF_FILE_NO_SELECT        Unable to select files
-     * AF_FILE_NO_DELETE        Unable to delete files
-     * AF_FILE_NO_AUTOPREVIEW   Don't try to detect the file type (shows only filename)
-     * AF_FILE_POPUP            Show preview in popup instead of inline
+     * The attribute flags (see above)
      */
     var $m_flags = 0;
 

@@ -415,7 +415,7 @@
         }
       }
 
-      if ($attribute->hasFlag(AF_HIDE)&&!$attribute->hasFlag(AF_PRIMARY))
+      if ($attribute->hasFlag(AF_HIDE_VIEW)&&!$attribute->hasFlag(AF_PRIMARY))
       {
         if (!in_array($attribute->fieldName(),$this->m_viewExcludes))
         {
@@ -687,7 +687,7 @@
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
 
-        if (!$p_attrib->hasFlag(AF_HIDE) && ($this->m_attribIndexList[$i]["tabs"] == "*" || in_array($tab, $this->m_attribIndexList[$i]["tabs"])))
+        if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && ($this->m_attribIndexList[$i]["tabs"] == "*" || in_array($tab, $this->m_attribIndexList[$i]["tabs"])))
         {
           // fields that have not yet been initialised may be overriden in the url..
           $page.='<tr>';

@@ -12,9 +12,9 @@
  * $Id$
  *
  */
-  
+
   class atkModule
-  {    
+  {
     var $m_name;
 
     /**
@@ -33,7 +33,7 @@
      * @return array with atknode names
      */
     function getNodes()
-    {     
+    {
     }
 
     /**
@@ -42,19 +42,19 @@
      * @return array with attribute filenames
      */
     function getAttributes()
-    {     
+    {
     }
 
     /**
-     * This method returns an array with menu items that need to be available 
+     * This method returns an array with menu items that need to be available
      * in the main ATK menu. This function returns the array created with
      * the menuitem() method, and does not have to be extended!
      * @return array with menu items for this module
      */
     function getMenuItems()
-    {      
+    {
     }
-    
+
     /**
      * Function that adds a menuitem to the menu. This function can be called
      * from inside the getMenuItems() function, to register a menuitem.
@@ -84,40 +84,63 @@
     function getAdminLinks()
     {
     }
-    
-    /**
-     * Register an attribute for this module. This could come in handy
-     * if another module is and add-on for the attribute and makes use
-     * of the attributes that are already in the other module.
-     * @param $file the filename of the attribute class
-     */
-    function registerAttribute($file)
-    {
-      $this->m_attributes[] = $file;
-    }
-  
-    /**
-     * Creates a link to a preference page
-     * @param $name the preference link name
-     * @param $url the preference link url
-     * @param $enable enable this link or not
-     */
-    function preferencelink($name, $url, $enable=1)
-    {
-      if (!empty($name) && !empty($url)) $this->m_preference_links[$name] = $url;
-    }
-    
-    /**
-     * Creates a link to an admin page
-     * @param $name the admin link name
-     * @param $url the admin link url
-     * @param $enable enable this link or not
-     */
-    function adminlink($name, $url, $enable=1)
-    {
-      if (!empty($name) && !empty($url)) $this->m_admin_links[$name] = $url;
-    }          
-        
-  }
 
+    /**
+     * Construct a new node. A module can override this method for it's own nodes.
+     * @param $node the node type
+     * @return new node object
+     */
+    function &newNode($node)
+    {
+      global $g_modules, $config_atkroot, $g_overloaders;
+
+      /* overloader check */
+      if (!empty($g_overloaders[$node]))
+      {
+        atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
+
+        /* include original file, because overloaders extend the original class */
+        $file = nodeFile($node);
+
+        /* check for file */
+        if (!file_exists($file))
+        {
+          atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+          return NULL;
+        }
+
+        /* return object */
+        include_once($file);
+        $node = $g_overloaders[$node];
+      }
+
+      $file = nodeFile($node);
+      $type = getNodeType($node);
+      $module = getNodeModule($node);
+
+      /* check for file */
+      if (!file_exists($file))
+      {
+        if (function_exists("missing_class_handler"))
+        {
+          return missing_class_handler($node);
+        }
+        else
+        {
+          atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
+          return NULL;
+        }
+      }
+
+      /* include file */
+      include_once($file);
+
+      /* initialize node */
+      $node =  new $type();
+      $node->m_module = $module;
+      $node->init();
+
+      return $node;
+    }
+  }
 ?>

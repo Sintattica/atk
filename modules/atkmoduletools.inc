@@ -52,14 +52,14 @@
    *               if false, a new node is created.
    * @return the created instance
    */
-  function getNode($node)
+  function &getNode($node)
   {
     global $g_nodeRepository;
     if (!is_object($g_nodeRepository[$node]))
     {
       atkdebug("Constructing a new node - $node");
-      $g_nodeRepository[$node] = & newNode($node);        
-    } 
+      $g_nodeRepository[$node] = & newNode($node);
+    }
     else
     {
       atkdebug("Returning cached node instance - $node");
@@ -67,7 +67,7 @@
     return $g_nodeRepository[$node];
   }
 
-  function getModule($modname)
+  function &getModule($modname)
   {
     global $g_moduleRepository;
     if (!is_object($g_moduleRepository[$modname]))
@@ -76,7 +76,7 @@
       if (class_exists("mod_".$modname))
       {
         $realmodname = "mod_".$modname;
-        $mod = new $realmodname($modname);        
+        $mod = new $realmodname($modname);
       }
       else if (class_exists($modname))
       {
@@ -132,52 +132,11 @@
    * @param $node the node type
    * @return new node object
    */
-  function newNode($node)
+  function &newNode($node)
   {
-    global $g_modules, $config_atkroot, $g_overloaders;
-
-    if ($g_overloaders[$node]!="")
-    {
-      atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-      // include original file, because overloaders extend the original class.
-      $file = nodeFile($node);
-
-      /* check for file */
-      if (!file_exists($file))
-      {
-        atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
-        return NULL;
-      }
-      /* return object */
-      include_once($file);
-      $node = $g_overloaders[$node];
-    }
-
-    $file = nodeFile($node);
-    $type = getNodeType($node);
     $module = getNodeModule($node);
-  
-    /* check for file */
-    if (!file_exists($file))
-    {
-      if (function_exists("missing_class_handler"))
-      {
-        return missing_class_handler($node);
-      }
-      else
-      {
-        atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
-        return NULL;
-      }
-    }
-    /* return object */
-    include_once($file);
-
-    $node =  new $type();
-    $node->m_module = $module;
-    // Nodes must be initialised.
-    $node->init();
-    
+    $module_inst = &getModule(getNodeModule($node));
+    $node = &$module_inst->newNode($node);
     return $node;
   }
 
