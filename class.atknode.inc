@@ -1288,9 +1288,7 @@
       $fields = array();
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
-        $field = &$data["fields"][$i];
-        $this->debug($field["label"]."LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL".$field["error"]);
-        
+        $field = &$data["fields"][$i];                
         $tplfield = array();
 
         /* check for seperator */
@@ -3061,14 +3059,15 @@
         // todo: let Ivo this review
         // sometimes the atkerror field contains NULL, which results in an empty error,
         // (which is very difficult to detect)
-        if($record['atkerror'] == NULL)
-          $record['atkerror'] = "";
+//        if($record['atkerror'] == NULL)
+//          $record['atkerror'] = "";
 
-       $record['atkerror'] = "";
+//       $record['atkerror'] = "";
 
-        $error = count($record['atkerror']) > 0;
         if(!is_array($record['atkerror']))
           $record['atkerror'] = array();
+
+        $error = count($record['atkerror']) > 0;
 
         foreach (array_keys($record) as $key)
           $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
