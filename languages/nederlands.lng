@@ -184,6 +184,16 @@
   $txt_wysiwyg_fontface = "Lettertype";
   $txt_wysiwyg_fontsize = "Pt";
   
+  $txt_wysiwyg_insert_table = "Tabel invoegen";
+  $txt_wysiwyg_insert_row = "Rij invoegen";
+  $txt_wysiwyg_insert_col = "Kolom invoegen";
+  $txt_wysiwyg_insert_cell = "Cel invoegen";
+  $txt_wysiwyg_delete_row = "Rij verwijderen";
+  $txt_wysiwyg_delete_col = "Kolom verwijderen";
+  $txt_wysiwyg_delete_cell = "Cel verwijderen";
+  $txt_wysiwyg_merge_cell = "Cellen samenvoegen";
+  $txt_wysiwyg_split_cell = "Cellen splitsen";
+  
   $txt_lock_locked  = "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.";
 
   $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".

@@ -556,7 +556,7 @@
    k.writeln("           nc = document.info_table.NumCols.value") 
    k.writeln("           at = document.info_table.TableAttrs.value") 
    k.writeln("           ac = document.info_table.CellAttrs.value") 
-   k.writeln("           tit = document.info_table.Caption.value") 
+   k.writeln("           tit = ''") 
    k.writeln("           if( nf != parseInt(nf) || nf < 0 ){ ") 
    k.writeln("               nerr++") 
    k.writeln("               avis += '\\n\\n-The number of rows must be a positive integer.'") 
@@ -577,12 +577,11 @@
    k.writeln("         }</"+"script>") 
    k.writeln('</HEAD><BODY bgcolor=white ><center>') 
    k.writeln('<form name=info_table onsubmit="comprova_valors();" >'); 
-   k.writeln("<font color=black face=arial size=-1 ><b> Give values for the parameters and press OK:</b></font>") 
-   k.writeln('<TABLE CELLSPACING=10><TR><TD valign=absmiddle >Files:&nbsp;&nbsp;&nbsp;<INPUT TYPE=TEXT SIZE=3  maxlength=2 NAME=NumRows value='+NR+' ></TD>') 
-   k.writeln('<TD valign=absmiddle >Columnes:&nbsp;&nbsp;&nbsp;<INPUT TYPE=TEXT SIZE=3 maxlength=2 NAME=NumCols value='+NC+'></TD></TR>') 
-   k.writeln('<TR><TD>Atributs de la taula:</TD><TD valign=absmiddle ><INPUT TYPE=TEXT SIZE=20 NAME=TableAttrs maxlength=120 value='+TA+'></TD></TR>') 
-   k.writeln('<TR><TD>Atributs cel·la:</TD><TD><INPUT TYPE=TEXT SIZE=20 NAME=CellAttrs value='+CA+'></TD></TR>') 
-   k.writeln('<TR><TD>Títol de la taula:</TD><TD><INPUT TYPE=TEXT SIZE=20 NAME=Caption ></TD></TR></TABLE>') 
+   k.writeln("<font color=black face=arial size=-1 ><b> Vul de eigenschappen van de tabel in, en klik op \'OK\':</b></font>") 
+   k.writeln('<TABLE CELLSPACING=10><TR><TD valign=absmiddle >Aantal rijen:&nbsp;&nbsp;&nbsp;<INPUT TYPE=TEXT SIZE=3  maxlength=2 NAME=NumRows value='+NR+' ></TD>') 
+   k.writeln('<TD valign=absmiddle >Kolommen:&nbsp;&nbsp;&nbsp;<INPUT TYPE=TEXT SIZE=3 maxlength=2 NAME=NumCols value='+NC+'></TD></TR>') 
+   k.writeln('<TR><TD>Tabel-attributen (in htmlcodes, bijv. \'border=0\'):</TD><TD valign=absmiddle ><INPUT TYPE=TEXT SIZE=20 NAME=TableAttrs maxlength=120 value='+TA+'></TD></TR>') 
+   k.writeln('<TR><TD>Cel-attributen (in htmlcodes, bijv. \'bgcolor=#ff0000\'):</TD><TD><INPUT TYPE=TEXT SIZE=20 NAME=CellAttrs value='+CA+'></TD></TR>')    
    k.writeln('<TR><TD valign=absmiddle colspan=2 align=center ><INPUT TYPE=BUTTON NAME=OK VALUE=OK onclick="comprova_valors()" ></TD></TR></TABLE></form>') 
    k.writeln('</center></BODY></HTML>') 
    k.close() 
@@ -637,7 +636,7 @@
    //obj_editor.focus(); 
  } 
  
- function table_joincell() 
+ function table_mergecell() 
  { 
    obj_editor.ExecCommand(DECMD_MERGECELLS,OLECMDEXECOPT_DODEFAULT); 
    //obj_editor.focus(); 
