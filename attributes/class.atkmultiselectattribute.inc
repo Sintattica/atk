@@ -116,10 +116,29 @@
       return $result;
     }
     
+   
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      // Multiselect attribute has only 1 searchmode, and that is substring.
+      
+      if(is_array($value) && $value[0]!="" && count($value)>0)
+      {
+        return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+      }
     }
+    
+    function getSearchModes()
+    {
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      return array("substring");
+    }  
+    
+    
+    
 
   }
 ?>
