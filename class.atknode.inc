@@ -711,13 +711,25 @@
       global $g_layout;
       $g_layout->initGui();
 
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $this->m_action));
+      $g_layout->ui_top($this->actionTitle($this->m_action));
       $g_layout->output($this->statusbar());
       $g_layout->output ('<img src="'.atkconfig("atkroot").'atk/images/lock.gif"><br><br>'.text("lock_locked").'<br>');
 
       $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
                         '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
       $g_layout->ui_bottom();
+    }
+    
+    function actionTitle($action, $record="")
+    {
+      global $g_layout;
+      $res = $g_layout->title($this->m_module, $this->m_type, $action);
+      if ($record!="")
+      {
+        $descr = $this->descriptor($record);
+        if ($descr!="") $res.= "&nbsp; [".$descr."]";
+      }
+      return $res;
     }
 
     /**
@@ -728,7 +740,7 @@
       global $g_layout, $config_atkroot;
       $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
+      $g_layout->ui_top($this->actionTitle("edit", $record));
       $g_layout->output($this->statusbar($locked));
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
@@ -753,7 +765,7 @@
       global $g_layout;
       $g_layout->initGui();
 
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'view'));
+      $g_layout->ui_top($this->actionTitle('view', $record));
       $g_layout->output($this->statusbar());
 
       $page.=$g_layout->ret_table_simple();
@@ -840,7 +852,7 @@
       global $g_layout, $config_atkroot;
       $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, 'add'));
+      $g_layout->ui_top($this->actionTitle('add'));
       $g_layout->output($this->statusbar());
 
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
@@ -872,7 +884,7 @@
       global $g_layout, $config_atkroot;
       $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'search'));
+      $g_layout->ui_top($this->actionTitle('search'));
       $g_layout->output($this->statusbar());
 
       $g_layout->output('<form name="entryform" action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="post">');
@@ -1359,7 +1371,7 @@
           }
       }
 
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
+      $g_layout->ui_top($this->actionTitle('admin'));
       $g_layout->output($this->statusbar());
 
       $adminHeader = $this->adminHeader();
@@ -2341,7 +2353,7 @@
       }
       else
       {
-        $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'select'));
+        $g_layout->ui_top($this->actionTitle('select'));
         $g_layout->output($this->statusbar());
         $g_layout->output(text("title_select", $this->m_type).'<br>');
         $g_layout->output('<br>');
@@ -2372,14 +2384,38 @@
      */
     function confirmDelete($atkselector, $locked=FALSE)
     {
-      global $g_layout;
+      global $g_layout, $g_db;
       $g_layout->initGui();
 
       if (is_array($atkselector))
         $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
       else $atkselector_str = $atkselector;
+      
+      $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
+      $list = "";
+      if (count($recs)==1)
+      {
+        // 1 record to delete. Put it in the page title.
+        $record = $recs[0];      
+      }
+      else
+      {
+        // We delete more than one record. Show a list of records
+        // we're going to delete, if we can find a descriptor_def 
+        // function.
+        if (method_exists($this,"descriptor_def"))
+        {
+          $record = "";
+          $list = "<ul>";
+          for ($i=0, $_i=count($recs); $i<$_i; $i++)
+          {
+            $list.="<li> ".$this->descriptor($recs[0]);
+          }
+          $list.= "</ul>";
+        }
+      }
 
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
+      $g_layout->ui_top($this->actionTitle('delete', $record));
       $g_layout->output($this->statusbar($locked));
 
       $g_layout->output('<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">');
@@ -2389,10 +2425,16 @@
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector_str.'">');
 
       $g_layout->table_simple();
-
-      $g_layout->output('<tr>');
+      
+      if ($list!="")
+      {
+        $g_layout->output('<tr>');      
+        $g_layout->td($list);
+        $g_layout->output('</tr>');
+      }
+      $g_layout->output('<tr>');      
       $text = $this->confirmDeleteText($atkselector);
-      $g_layout->td(text($text), 'align="center"');
+      $g_layout->td($text, 'align="center"');
       $g_layout->output('</tr><tr>');
       $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
       $g_layout->output('</tr></table></form>');
@@ -2405,7 +2447,7 @@
     {
       $multi = FALSE;
       if (is_array($atkselector)) $multi = count($atkselector) > 1;
-      return text('confirm_delete'.($multi ? '_multi':''), $this->m_type);
+      return text('confirm_delete'.($multi ? '_multi':''), $this->m_type, $this->m_module);
     }
 
     // Small compare function for sorting attribs on order field
@@ -2813,7 +2855,7 @@
     {
       global $g_layout;
       $g_layout->initGui();
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
+      $g_layout->ui_top($this->actionTitle($action));
       $g_layout->output($this->statusbar());
 
       $g_layout->output(text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type));
