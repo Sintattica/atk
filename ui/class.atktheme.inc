@@ -152,7 +152,7 @@ class atkTheme
       $attrib = $this->getStackedItem($attribname,$attribvalue);
       if ($attrib)
       {
-        return $attrib["dir"].$returnpath;
+        return $this->atkroot."../".$attrib["dir"].$returnpath;
       }
       return $this->atkroot."atk/themes/default/".$defaultreturnpath;
     }
