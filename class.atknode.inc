@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.15  2001/05/02 13:09:48  ivo
+   * fix to editafteradd session handling.
+   *
    * Revision 4.14  2001/05/02 13:06:23  sandy
    * fixed the AF_CASCADE_DELETE flag
    * CV: ----------------------------------------------------------------------
@@ -1820,8 +1823,9 @@
             }
             break;
           case "update":
-            if ($this->hasFlag(NF_EDITAFTERADD))              
-            {          
+            if ($this->editingAfterAdd()) // If we're doing an edit, and we came from add
+                                          // we go 2 levels back (skip the add).
+            {                      
               $back = 2;              
             } 
             else
@@ -2574,6 +2578,16 @@
         }
       }
       return $form;*/
+    }
+    
+    function editingAfterAdd()
+    {
+      global $g_sessionData, $atklevel;
+      $res = ($this->m_action == "update"
+              && $g_sessionData["stack"][$atklevel-1]["atkaction"] == "add"
+              && $g_sessionData["stack"][$atklevel-1]["atknodetype"] == $this->m_type);
+      if ($res) echo "EDIT AFTER ADDDDDDDD!!!!!!!";
+      return $res;
     }
 
   }
