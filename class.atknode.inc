@@ -294,15 +294,6 @@
     var $m_cascadingAttribs = array();
 
     /**
-     * For speed, we keep a list of fields which are multilangual.
-     * We also want to know if there is a multilanguage select box.
-     */
-    var $m_listMlAdd = array();
-    var $m_listMlEdit = array();
-    var $m_hasMlSelectAdd = 0;
-    var $m_hasMlSelectEdit = 0;
-
-    /**
      * Actions are mapped to security units. For example, both actions "save" and "add"
      * require access "add". If an item is not in this list, it's treated 'as-is'.
      */
@@ -437,30 +428,7 @@
         {
           $this->m_viewExcludes[]=$attribute->fieldName();
         }
-      }
-
-      // Speed optimization, we remember which attributes are multilangual at add mode
-      if ($attribute->hasFlag(AF_MULTILANGUAGE)&&!$attribute->hasFlag(AF_HIDE_ADD))
-      {
-        if (!in_array($attribute->fieldName(),$this->m_listMlAdd))
-        {
-          $this->m_listMlAdd[]=$attribute->fieldName();
-        }
-      }
-
-      // Speed optimization, we remember which attributes are multilangual at add mode
-      if ($attribute->hasFlag(AF_MULTILANGUAGE)&&!$attribute->hasFlag(AF_HIDE_EDIT))
-      {
-        if (!in_array($attribute->fieldName(),$this->m_listMlEdit))
-        {
-          $this->m_listMlEdit[]=$attribute->fieldName();
-        }
-      }
-
-      // check for multilanguage attribute at add/edit mode
-      if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_ADD)) $this->m_hasMlSelectAdd = 1;
-      if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_hasMlSelectEdit = 1;
-
+      }            
 
       $attribute->init();
 
