@@ -60,9 +60,11 @@
         else
         {
           if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
-          $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+          if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+            $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+          else $actions = array();
           $this->m_destInstance->m_flags |= NF_NO_SEARCH;
-          $result = $this->m_destInstance->recordList($myrecords, $actions, false, array($this->m_refKey), false)."<br>";
+          $result = $this->m_destInstance->normalRecordList($myrecords, $actions, RL_EMBED, array($this->m_refKey))."<br>";
         }
       }
 
@@ -119,10 +121,10 @@
           $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
         }
 
-        // User may not search in embedded forms..
-        $this->m_destInstance->m_flags |= NF_NO_SEARCH;
-
-        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey), true);
+        $flags = RL_EMBED;
+        $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
+        $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;
+        $cell.=$this->m_destInstance->normalRecordList($myrecords, $actions, $flags, array($this->m_refKey), "entryform");
 
         $output.=$GLOBALS['g_layout']->ret_td($cell);
         $output.="</tr>";
@@ -144,7 +146,7 @@
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
         $key = "link_".$this->fieldName()."_add";
-        $label = text($key);        
+        $label = text($key);
         if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
         {
           $key = "link_".getNodeType($this->m_destination)."_add";

@@ -903,7 +903,7 @@
     else $include = $config_atkroot."atk/relations/class.".strtolower($relation).".inc";
     include_once($include);
   }
-  
+
   /**
    * Returns the (virtual) hostname of the server.
    */
@@ -924,5 +924,16 @@
   {
     static $unique = array();
     return ++$unique[$sequence];
+  }
+
+  /**
+   * Checks if the variable $var contains the given flag ($flag).
+   * @param $var the variable which might contain flags
+   * @param $flag the flag you want to check for
+   * @return result of check
+   */
+  function hasFlag($var, $flag)
+  {
+    return ($var & $flag) == $flag;
   }
 ?>

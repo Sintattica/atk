@@ -153,5 +153,5 @@
   $txt_deselect_all   = "Deselect all";
   $txt_select_invert  = "Invert selection";
   $txt_with_selected  = "With selected";
-  $txt_submit         = "Submit";
+  $txt_submit         = "Go";
 ?>

@@ -16,9 +16,9 @@ function updateSelection(name, form, type)
   if (typeof(list.length) == 'undefined') list = new Array(list);
   for (var i = 0; i < list.length; i++)
   {
-			if      ("all"    == type && !list[i].disabled)	list[i].checked = true;
-      else if ("none"   == type && !list[i].disabled)	list[i].checked = false;
-      else if ("invert" == type && !list[i].disabled)	list[i].checked = !list[i].checked;
+    if      ("all"    == type && !list[i].disabled)	list[i].checked = true;
+    else if ("none"   == type && !list[i].disabled)	list[i].checked = false;
+    else if ("invert" == type && !list[i].disabled)	list[i].checked = !list[i].checked;
   }
 }
 
@@ -71,12 +71,12 @@ function updateSelectable(name, form)
 function atkSubmitMRA(name, form, target)
 {
   /* some stuff we need to know */
-  var atknodetype = form.elements[name + '_atknodetype'].value;
   var index  = form.elements[name + '_atkaction'].selectedIndex;
-  var atkaction = form.elements[name + '_atkaction'][index].value;
+  if (typeof(index) == 'undefined') var atkaction = form.elements[name + '_atkaction'].value;
+  else var atkaction = form.elements[name + '_atkaction'][index].value;
 
   /* initial target URL */
-  target += 'atknodetype=' + atknodetype + '&atkaction=' + atkaction;
+  target += 'atkaction=' + atkaction;
 
   /* get selectors */
   var list = form.elements[name + '_atkselector[]'];
@@ -91,6 +91,51 @@ function atkSubmitMRA(name, form, target)
     if (!list[i].disabled && list[i].checked)
     {
       target += '&atkselector[]=' + list[i].value;
+      selectorLength++;
+    }
+
+  /* change atkescape value and submit form */
+  if (selectorLength > 0)
+  {
+    form.atkescape.value = target;
+    globalSubmit(form);
+    form.submit();
+  }
+}
+
+/**
+ * Because we allow embedded recordLists for 1:n relations we need a way to somehow
+ * distinguish between the submit of the edit form, and the submit of the multi-record action.
+ * This method uses the atkescape option to redirect the multi-record-priority action to a level higher
+ * on the session stack, which makes it possible to return to the edit form (saving updated values!)
+ * @param name unique recordlist name
+ * @param form reference to the form object
+ * @param target where do we escape to?
+ */
+function atkSubmitMRPA(name, form, target)
+{
+  /* some stuff we need to know */
+  var index  = form.elements[name + '_atkaction'].selectedIndex;
+  if (typeof(index) == 'undefined') var atkaction = form.elements[name + '_atkaction'].value;
+  else var atkaction = form.elements[name + '_atkaction'][index].value;
+
+  /* initial target URL */
+  target += 'atkaction=' + atkaction;
+
+  /* get selectors */
+  var list = form.elements[name + '_atkselector[]'];
+
+  /* no selectors?! impossible situation, bail out! */
+  if (index == 0 || typeof(list) == 'undefined') return;
+
+  /* add the selectors to the target URL */
+  var selectorLength = 0;
+  if (typeof(list.selectedIndex) != 'undefined') list = new Array(list);
+  for (var i = 0; i < list.length; i++)
+    if (list[i].selectedIndex != 0)
+    {
+      var priority = list[i][list[i].selectedIndex].value;
+      target += '&atkselector[' + list[i][0].value + ']=' + priority;
       selectorLength++;
     }
 
