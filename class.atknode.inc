@@ -3303,6 +3303,8 @@
 
       }
 
+      // new primary key
+      $record["atkprimkey"] = $this->primaryKey($record);
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
@@ -3426,7 +3428,8 @@
      */
     function preCopy(&$record)
     {
-      // Do nothing
+      // remove primarykey
+      unset($record["atkprimkey"]);
     }
 
     /**
