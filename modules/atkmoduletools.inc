@@ -270,8 +270,9 @@
    */
   function atkReadOptimizer($newvalue=NULL)
   {
-    static $s_optimized=false;
-    if ($newvalue!=NULL) // New value was set
+    static $s_optimized=false;    
+    
+    if (!($newvalue===NULL)) // New value was set
     {
       $oldvalue = $s_optimized;
       $s_optimized=$newvalue; 
