@@ -96,9 +96,9 @@
      *
      * @return the value of a config variable
      */
-    function atkconfig($tag)
+    function atkconfig($tag, $default="")
     {
-      return $GLOBALS["config_".$tag];
+      return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
     }
 
 ?>
