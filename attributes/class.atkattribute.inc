@@ -646,6 +646,18 @@
       return text($this->fieldName(),$this->m_ownerInstance->m_type, $this->m_ownerInstance->m_module);
     }
 
+    /**
+     * This function is used to check whether a attribute has a store function or not.
+     * It can be overridden to use the store function only in a certain mode.
+     */
+    function hasStore($mode)
+    {
+      if (method_exists($this,"store"))
+        return true;
+      else
+        return false;
+    }
+
   }
 
 ?>

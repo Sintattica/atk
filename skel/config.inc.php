@@ -1,6 +1,10 @@
 <?php
   // ATK Configuration file. 
   
+  // Unique application identifier
+  // Set this when using multiple applications within one website
+  $config_identifier = "atkapp";
+
   //----------------- DATABASE CONFIGURATION --------------------
 
   // Specify the type of database. 
@@ -155,6 +159,12 @@
   // $config_auth_ldap_host = "";
   // $config_auth_ldap_context = "";
   
+  // The application root
+  // if you're using urlrewrites within your httpd or htaccess configuration i think this should be '/'
+  // be careful with this setting because it could create a major securityhole.
+  // It is used to set the cookiepath when using PHP sessions.
+  $config_application_root = str_replace($_SERVER["DOCUMENT_ROOT"],"",dirname(__FILE__)."/");
+
   // Atk can write security events to a logfile. 
   // There are several values you can choose for $config_logging.
   // 0 - No logging

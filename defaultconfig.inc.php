@@ -2,6 +2,9 @@
   // the application identifier (used for sessions)
   $config_identifier   = "default";
 
+  // The application root
+  $config_application_root = "/";
+
   // set several default configuration options
   $config_databasehost = "localhost";
   $config_databasename = "";

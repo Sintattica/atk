@@ -664,6 +664,7 @@
       $body.= "\nPHP Version: ".phpversion()."\n\n";
 
       $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
+
       for($i=0, $_=count($g_debug_msg);$i<$_;$i++)
       {
         $lines[] = _wordwrap($g_debug_msg[$i]);
@@ -679,13 +680,25 @@
         }
       }
 
-      $request = getallheaders();
-      if (count($request)>0)
+      if (count($_GET)>0)
       {
-        $body.= "\n\nREQUEST INFORMATION\n".str_repeat("-",70)."\n";
-        foreach($request as $key=>$value)
+        $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
+        foreach ($_GET as $key=>$value)
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value)."\n";
+        }
+      }
+      
+      if (function_exists("getallheaders"))
+      {
+        $request = getallheaders();
+        if (count($request)>0)
+        {
+          $body.= "\n\nREQUEST INFORMATION\n".str_repeat("-",70)."\n";
+          foreach($request as $key=>$value)
+          {
+            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+          }
         }
       }
 
@@ -1077,6 +1090,40 @@
     
     /* return url */
     return $url;
+  }
+
+  /**
+   * Writes trace file to system tmp directory
+   * @param $msg message to display in the trace
+   */
+  function atkTrace($msg="")
+  {
+    global $HTTP_SERVER_VARS, $HTTP_SESSION_VARS, $HTTP_GET_VARS, $HTTP_COOKIE_VARS, $HTTP_POST_VARS;
+
+    $log = "\n".str_repeat("=", 5)."\n";
+    $log.= "Trace triggered: ".$msg."\n";
+    $log.= date("r")."\n";
+    $log.= $HTTP_SERVER_VARS["REMOTE_ADDR"]."\n";
+    $log.= $HTTP_SERVER_VARS["SCRIPT_URL"]."\n";
+    $log.= "\nSessioninfo: "."session_name(): ".session_name()." session_id(): ".session_id()." SID: ".SID." REQUEST: ".$_REQUEST[session_name()]." COOKIE: ".$_COOKIE[session_name()]."\n";
+    $log.= "\n\nHTTP_SERVER_VARS:\n";
+    $log.= var_export($HTTP_SERVER_VARS, true);
+    $log.= "\n\nHTTP_SESSION_VARS:\n";
+    $log.= var_export($HTTP_SESSION_VARS, true);
+    $log.= "\n\nHTTP_COOKIE_VARS:\n";
+    $log.= var_export($HTTP_COOKIE_VARS, true);
+    $log.= "\n\nHTTP_POST_VARS:\n";
+    $log.= var_export($HTTP_POST_VARS, true);
+    $log.= "\n\nHTTP_GET_VARS:\n";
+    $log.= var_export($HTTP_GET_VARS, true);
+
+    $log.= "\n\nSession file info:\n";
+    $log.= var_export(stat(session_save_path()."/sess_".session_id()), true);
+
+    $tmpfile = tempnam("/tmp",atkconfig("identifier")."_trace_");
+    $fp = fopen($tmpfile,"a");
+    fwrite($fp, $log);
+    fclose($fp);
   }
 
 ?>
