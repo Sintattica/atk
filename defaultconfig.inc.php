@@ -48,6 +48,9 @@
 
   // An administrator password that is empty will *DISABLE* administrator login!
   $config_administratorpassword = "";
+  
+  // A guest password that is empty will *DISABLE* guest login!
+  $config_guestpassword = "";
 
   // Module path (without trailing slash!)
   $config_module_path = "./modules";

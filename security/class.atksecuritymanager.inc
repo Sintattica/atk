@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.21  2001/09/12 11:25:12  ivo
+   * New feature: guest account (user that may login but do nothing)
+   *
    * Revision 4.20  2001/07/19 11:40:06  ivo
    * Updated authentication classes with an additional returncode for fatal
    * errors. Added a feature to pop3 authentication to handle server-specific
@@ -162,6 +165,7 @@
     {    
       global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $SERVER_NAME, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
+      global $config_guestpassword;
       $md5 = false; // PHP_AUTH_PW is plain text..            
 
       // first check if we want to logout
@@ -217,7 +221,14 @@
           atkdebug("Administrator (configfile) logged in");
           $authenticated = true;
         } 
-
+        // check guest user
+        else if ($config_guestpassword!=""&&$PHP_AUTH_USER=="guest"&&$PHP_AUTH_PW==$config_guestpassword)
+        {
+          $this->m_user = Array("name"=>"guest","level"=>0);
+          // for convenience, we also store the user as a global variable.                     
+          atkdebug("Guest (configfile) logged in");
+          $authenticated = true;
+        }
         // other users     
         else 
         {     
@@ -304,11 +315,17 @@
           
     function allowed($node, $action)
     {
+      // security disabled or user is superuser? (may do anything)
       if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
-      {
-        // No securityscheme, or user is superuser.
+      {        
         $allowed = true;
       }
+      // user is guest? (guests may do nothing)
+      else if (($this->hasLevel(0)) || (strtolower($this->m_user["name"])=="guest"))
+      {
+        $allowed = false;
+      }
+      // all other situations
       else
       {
        
@@ -356,12 +373,19 @@
     {
       global $config_security_attributes;
       
+      // No securityscheme, or user is superuser.
       if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
-      {
-        // No securityscheme, or user is superuser.
+      {        
         return true;
       }
-       
+      
+      // User is guest (may do nothing)
+      if (($this->hasLevel(0)) || (strtolower($this->m_user["name"])=="administrator")) 
+      {        
+        return false;
+      }
+      
+      // all other situations
       $required = $this->m_authorization->getAttribEntity($node, $attribute, $mode);
        
       if ($required==-1)
