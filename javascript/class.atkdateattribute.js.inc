@@ -32,9 +32,9 @@
 ?>
 
 /* javascript month names and weekdays */
-var m_months_long  = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_long[$i])."'".($i < 12 ? "," : ""); ?>);
-var m_months_short = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_short[$i])."'".($i < 12 ? "," : ""); ?>);
-var m_weekdays     = Array(<?php for ($i = 0; $i <= 6; $i++) echo "'".text($m_weekdays[$i])."'".($i < 6 ? "," : ""); ?>);
+var m_months_long  = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_long[$i],"","atk")."'".($i < 12 ? "," : ""); ?>);
+var m_months_short = Array(<?php for ($i = 1; $i <= 12; $i++) echo "'".text($m_months_short[$i],"","atk")."'".($i < 12 ? "," : ""); ?>);
+var m_weekdays     = Array(<?php for ($i = 0; $i <= 6; $i++) echo "'".text($m_weekdays[$i],"","atk")."'".($i < 6 ? "," : ""); ?>);
 
 /**
  * Returns the number of days in the month/year of the supplied date object
