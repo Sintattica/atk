@@ -640,7 +640,7 @@
       $g_layout->output('&nbsp;<input type="submit" name="atkcancel" value="'.text('cancel').'">&nbsp;');
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
-      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
+      //$g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
     }
     
     /**
