@@ -583,8 +583,8 @@
      */
     function editPage($record)
     {
-      global $g_layout, $atklevel, $PHP_SELF;
-      $g_layout->register_script("atk/javascript/formfocus.js");      
+      global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");      
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
@@ -679,8 +679,8 @@
      */
     function addPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF;
-      $g_layout->register_script("atk/javascript/formfocus.js");
+      global $g_layout, $PHP_SELF, $config_atkroot;
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
       $g_layout->output($this->statusbar());
       
@@ -702,8 +702,8 @@
     
     function searchPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF, $atklevel;
-      $g_layout->register_script("atk/javascript/formfocus.js");
+      global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
+      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
       $g_layout->output($this->statusbar());
       
@@ -743,13 +743,13 @@
      */
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout, $txt_field_obligatory;      
+      global $g_layout, $txt_field_obligatory,$config_atkroot;      
       
 
       // if there are displayable obligatory fields, we display a message near the bottom.
       $has_oblies = false;
       
-      $g_layout->register_script("atk/javascript/formsubmit.js");
+      $g_layout->register_script($config_atkroot."atk/javascript/formsubmit.js");
       
       if (($mode == 'add' && sizeof($this->m_listMlAdd) > 0 && !$this->m_hasMlSelectAdd) ||
          ($mode == 'edit' && sizeof($this->m_listMlEdit) > 0 && !$this->m_hasMlSelectEdit))
@@ -3151,7 +3151,7 @@
      */
     function statusbar()
     {
-      global $g_sessionManager, $g_layout;
+      global $g_sessionManager, $g_layout, $config_atkroot;
       if (!$this->m_statusbarDone)
       {
         $this->m_statusbarDone = true;                
@@ -3163,7 +3163,7 @@
         $helpurl = $this->helpUrl();
         if ($helpurl!="")
         {
-          $g_layout->register_script("atk/javascript/newwindow.js");      
+          $g_layout->register_script($config_atkroot."atk/javascript/newwindow.js");      
           $statusbar.= $g_layout->ret_td('<i><a href="'.$helpurl.'">'.text("help").'</a></i>','align="right"');
         }
         
