@@ -13,6 +13,10 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.14  2001/06/24 07:13:30  sandy
+   * - Updated the Skel directory with the new atksession function, so
+   * people can make a new admin module again from the skel dir.
+   *
    * Revision 4.13  2001/06/14 12:26:45  ivo
    * Submenu's are now opened with SESSION_DEFAULT instead of SESSION_NEW
    *
@@ -70,6 +74,7 @@
   require_once($config_atkroot."atk/class.atknode.inc");
   require_once($config_atkroot."atk/atkmenutools.inc");
 
+  atksession("admin");
   atksecure();
 
   /* get main menuitems */

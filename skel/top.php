@@ -2,6 +2,7 @@
   $config_atkroot = "./";
   require_once($config_atkroot."atk/class.atknode.inc"); 
 
+  atksession("admin");
   atksecure();
 
   $g_layout->output("<html>");
