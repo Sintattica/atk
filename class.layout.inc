@@ -59,8 +59,7 @@
         if($g_theme["Name"]=="") $g_theme["Name"] = $GLOBALS["config_defaulttheme"];
         if($g_theme["Name"]=="") $g_theme["Name"]="default";
         $this->initTheme();
-        $this->import_layout();
-        $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
+        $this->import_layout();        
         atkdebug("Initialized GUI");
         $initialized = true;
       }
@@ -74,6 +73,16 @@
     {
       global $g_theme;
       include_once($this->m_tpldir."layout.inc");
+      
+      // stylesheets
+      if ($g_theme["css_default"]!="")
+      {
+        $this->register_style($this->m_tpldir.$g_theme["css_default"]);
+      }
+      else
+      {
+        $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
+      }
     }
 
     /**
@@ -118,7 +127,7 @@
         // the pages, unless $nocache was set to true.
         if ($nocache)
         {
-	  atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
+	        atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
           header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
           header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
           header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
@@ -734,27 +743,26 @@
     function initTheme()
     {
       global $g_theme;
+      
+      // dirs
 
       // First check local theme directory
-      if(file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/layout.inc") &&
-         file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_top.tmpl") &&
-         file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_bottom.tmpl"))
+      $atkroot = atkconfig("atkroot");
+      if(file_exists($atkroot."themes/".$g_theme["Name"]))
       {
-        $this->m_tpldir = atkconfig("atkroot")."themes/".$g_theme["Name"]."/";
+        $this->m_tpldir = $atkroot."themes/".$g_theme["Name"]."/";
       }
       // else check atk themes directory
-      else if (file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/layout.inc") &&
-               file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/block_top.tmpl") &&
-               file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/block_bottom.tmpl"))
+      else if (file_exists($atkroot."atk/themes/".$g_theme["Name"]))
       {
-        $this->m_tpldir = atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/";
+        $this->m_tpldir = $atkroot."atk/themes/".$g_theme["Name"]."/";
       }
       // else fallback to default.
       else
       {
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
-        $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
-      }
+        $this->m_tpldir = $atkroot."atk/themes/default/";
+      }            
     }
 
     function getImgSrc($img)
