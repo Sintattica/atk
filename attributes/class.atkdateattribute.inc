@@ -266,7 +266,7 @@ atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
 					if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"></option>';					
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
-            $tmp_date = getdate(mktime(0,0,0, $j, $current["mday"], $current["year"]));          
+            $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));          
             $str_month = $this->formatDate($tmp_date, $str_format[$i]);
             $result .= '<option value="'.$j.'" '.($j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
           }
