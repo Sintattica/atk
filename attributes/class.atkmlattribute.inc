@@ -86,9 +86,10 @@
     {
       global $config_language;
 
-      reset($config_language);
-      while (list($i, $language) = each($config_language))
-        if (strlen($postvars[$this->fieldName()][$language]) == 0) return 1;
+      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      {
+        if (strlen($postvars[$this->fieldName()][$config_language[$i]]) == 0) return 1;
+      }
 
       return 0;
     }
@@ -134,10 +135,10 @@
     {
       global $config_language;
 
-      reset($config_language);
-      while (list($i, $language) = each($config_language))
-        $result[$language] = stripslashes($rec[$this->fieldName().'_'.$language]);
-
+      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      {      
+        $result[$config_language[$i]] = stripslashes($rec[$this->fieldName().'_'.$config_language[$i]]);
+      }
       return $result;
     }
 
@@ -150,10 +151,10 @@
     {
       global $config_language;
 
-      reset($config_language);
-      while (list($i, $language) = each($config_language))
-        $result[$language] = stripslashes($rec[$this->fieldName()][$language]);
-
+      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      {
+        $result[$config_language[$i]] = stripslashes($rec[$this->fieldName()][$config_language[$i]]);
+      }
       return $result;
     }
 
@@ -172,15 +173,17 @@
 
       if ($mode == "add" || $mode == "update")
       {
-        reset($config_language);
-        while (list($i, $language) = each($config_language))          
-          $query->addField($this->fieldName().'_'.$language,escapeSQL($rec[$this->fieldName()][$language]),"","",!$this->hasFlag(AF_NO_QUOTES));
+        for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+        {
+          $query->addField($this->fieldName().'_'.$config_language[$i],escapeSQL($rec[$this->fieldName()][$config_language[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
+        }
       }
       else
       {
-        reset($config_language);
-        while (list($i, $language) = each($config_language))
-          $query->addField($this->fieldName().'_'.$language,"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+        for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+        {
+          $query->addField($this->fieldName().'_'.$config_language[$i],"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+        }
       }      
     }
 
