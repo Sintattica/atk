@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/05/18 09:11:06  ivo
+   * Fixed a bug: the wrong column in recordlists was suppressed.
+   *
    * Revision 4.10  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -215,7 +218,7 @@
         // User may not search in embedded forms..        
         $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
         
-        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_owner));
+        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey));
       
         $output.=$GLOBALS['g_layout']->ret_td($cell);
         $output.="</tr>";
