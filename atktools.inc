@@ -449,7 +449,10 @@
   /**
    * Function atk_array_merge
    *
-   * Same as array_merge from php, but without duplicates..
+   * @desc Same as array_merge from php, but without duplicates..   
+   * @return Array The result of the merge between $array1 and $array2
+   * @param Array $array1 
+   * @param Array $array2  
    */
   function atk_array_merge($array1, $array2)
   {
