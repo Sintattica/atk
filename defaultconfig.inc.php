@@ -68,4 +68,7 @@
 
   // Whatever tabs are enabled or not
   $config_tabs = true;
+  
+  // include optimizer
+  $config_atk_optimized_includes = true;
 ?>
