@@ -1,11 +1,15 @@
+TABLE.recordlist
+{
+  border-collapse: collapse;
+}
+
 
 TABLE.recordlist TH,
 TABLE.recordlist TD,
 TABLE.recordlist A
 {
   font-family: Verdana,Helvetica,Arial;
-  font-size: 11px;  
-  text-align: left;     
+  font-size: 11px;    
   border-width: 1px;
 }
 
@@ -22,7 +26,7 @@ TABLE.recordlist TH
 {
   border-width: 1px;
   border-color: #000000;
-  border-style: solid;
+  border-style: solid;  
   padding: 3px;
   margin: 0px;
   
