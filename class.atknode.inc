@@ -17,7 +17,12 @@
   define("NF_TREE_NO_ROOT_DELETE",512); // No root elements can be deleted
   define("NF_TREE_NO_ROOT_COPY",1024); // No root elements can be copied
     
-  define("NF_AUTOSELECT",2048); // No root elements can be copied   
+  define("NF_AUTOSELECT",2048); // If this flag is set and only one record is 
+                                // present on a selectpage, atk automatically 
+                                // selects it and moves on to the target.
+  define("NF_TRACK_CHANGES",4096); // If set, atk stores the old values of 
+                                  // a record as ["atkold"] in the $rec that
+                                  // gets passed to the postUpdate
 
   /**
    * The atkNode class represents a piece of information that
@@ -87,6 +92,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.53  2001/06/12 15:05:16  ivo
+   * New feature: NF_TRACK_CHANGES nodeflag passes the original record
+   * to postUpdate.
+   *
    * Revision 4.52  2001/06/12 13:19:55  ivo
    * Added a <br> to the bottom of the treeview.
    * Removed save and close button when editpage is bottom of the stack.
@@ -2230,8 +2239,18 @@
 
       $query->addTable($this->m_table);
       
+      // The record that must be updated is indicated by 'atkorgkey'
+      // (not by atkselector, since the primary key might have 
+      // changed, so we use the atkorgkey, which is the value before
+      // any updated happended.)
       if ($this->m_postvars['atkorgkey']!="")
       {
+        // If we need to track changes, we first load the original values..
+        if ($this->hasFlag(NF_TRACK_CHANGES))
+        {
+          $recordset = $this->selectDb($this->m_postvars['atkorgkey']);
+          $record["atkorgrec"] = $recordset[0];
+        }      
       
         $query->addCondition($this->m_postvars['atkorgkey']);
 
