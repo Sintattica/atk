@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/04/25 08:44:04  sandy
+   * changed the order of the edit,delete functions (first edit, then delete)
+   *
    * Revision 4.2  2001/04/25 07:29:40  sandy
    * fixed a bug in the data javascript for multilanguage
    * added the stickyvars to the onetomany relations urls
@@ -177,14 +180,14 @@
         $returnurl=rawurlencode('dispatch.php?atknodetype='.$this->m_owner.'&atkaction=edit&atkselector='.rawurlencode($this->m_ownerInstance->primaryKey()));
         
         $actions = array();
-        if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
-        {
-          $actions[] = url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]&atkreturnurl='.$returnurl,text("delete"));
-        }
         if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
         {
           $actions[] = url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]&atkreturnurl='.$returnurl,text("edit"));
         }        
+        if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
+        {
+          $actions[] = url('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]&atkreturnurl='.$returnurl,text("delete"));
+        }
          
         $this->m_destInstance->m_records = $myrecords;
         
