@@ -259,10 +259,10 @@
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
-  	        //$str_actions .= href($url, text($name, $this->m_type), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
+  	        //$str_actions .= href($url, text($name, $this->m_node->m_type, $this->m_node->m_module), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
   	        $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
   	 
-  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($name, $this->m_type).'</a>&nbsp;';
+  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($name, $this->m_node->m_type, $this->m_node->m_module).'</a>&nbsp;';
   	      }
   
           /* actions (left) */
