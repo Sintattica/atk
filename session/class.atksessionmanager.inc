@@ -11,7 +11,7 @@
 
   $cookie_params = session_get_cookie_params();
   session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($_SERVER["SCRIPT_NAME"])));
-  session_start();    
+  session_start();        
 
   // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
   // You can use $session = &atkSessionManager::getSession() now, and you'll have a
@@ -90,7 +90,7 @@
           if ($value=="")
           {
             if ($_REQUEST[$var]!="")
-            {              
+            {                          
               $currentitem[$var] = $_REQUEST[$var];
             }
           }
@@ -209,7 +209,7 @@
         foreach(array_keys($_GET) as $var) 
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
-          {
+          {          
             $currentitem[$var] = $postvars[$var];
           }
         }
@@ -235,7 +235,8 @@
           $atklevel = count($stack);
         }
 
-        $currentitem = $stack[$atklevel];
+        $currentitem = $stack[$atklevel];              
+        
         if (!isset($currentitem)||$currentitem=="")
         {
           atkdebug("New level on session stack");
@@ -258,7 +259,7 @@
               }
             }
             $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
-          }
+          }                  
 
           // Posted vars always overwrite anything in the current session..
           foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
@@ -289,7 +290,7 @@
           }
 
           foreach($g_pageVars as $var)
-          {
+          {          
             if (isset($postvars[$var])&&count($postvars[$var])>0)
             {
               $currentitem[$var] = $postvars[$var];
@@ -297,16 +298,16 @@
           }
 
           // page vars must overwrite the current stack..
-          $stack[$atklevel] = $currentitem;
+          $stack[$atklevel] = $currentitem;                    
 
           // session vars need not be remembered..
           foreach($g_sessionVars as $var)
-          {
+          {          
             if (isset($postvars[$var])&&count($postvars[$var])>0)
             {
               $currentitem[$var] = $postvars[$var];
             }
-          }
+          }                    
 
         }
 
@@ -314,15 +315,19 @@
         {
           atkdebug("Session formdata present");
           // atkformdata will be present in postvars.. editForm() has to read them..
-        }
+        }                
 
         if (is_array($currentitem))
         {
           foreach($currentitem as $var => $value)
           {
-            $postvars[$var] = $value;
+            // don't override what was passed in the url.
+            if ($postvars[$var]=="")
+            {
+              $postvars[$var] = $value;            
+            }
           }
-        }
+        }        
       } // end if atkescape      
 
     }
