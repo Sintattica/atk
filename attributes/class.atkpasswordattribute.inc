@@ -11,6 +11,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.2  2001/06/26 14:42:09  ivo
+ * Passwordattribute was not session save, if you didn't change your password
+ * and followed a link and came back, your password would be set to a double
+ * hashed value.
+ *
  * Revision 4.1  2001/05/17 10:27:12  ivo
  * Fixes to session management, new AF_LARGE feature for manytoonerelation.
  * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -86,6 +91,7 @@ class atkPasswordAttribute extends atkAttribute
     /* edit */
     else
     {
+    //var_dump($record[$this->fieldName()]["hash"]);
       $result = '<input type="hidden" name="'.$this->fieldName().'[hash]"'.
                 ' value="'.$record[$this->fieldName()]["hash"].'">';
 
@@ -150,9 +156,12 @@ class atkPasswordAttribute extends atkAttribute
     global $ATK_VARS;    
 
     $action = $ATK_VARS["atkaction"];
-    if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
+    //if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
+    if (strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
       return $rec[$this->fieldName()];
-    else return array("hash" => md5($rec[$this->fieldName()]["new"]));
+    else return array("hash" => md5($rec[$this->fieldName()]["new"]), 
+                      "new"=>$rec[$this->fieldName()]["new"],
+                      "again"=>$rec[$this->fieldName()]["again"]);
   }
 
   /**
@@ -173,6 +182,7 @@ class atkPasswordAttribute extends atkAttribute
         !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && md5($value["current"]) != $value["hash"])
       return text("password_incorrect");
     
+    //var_dump($value);
     if ($value["new"] != $value["again"])
       return text("password_nomatch");
     
