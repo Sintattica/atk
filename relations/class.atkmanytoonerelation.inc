@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.18  2001/09/12 15:07:07  ivo
+   * Added an option to manytoonerelation to perform non-leftjoins.
+   *
    * Revision 4.17  2001/08/31 15:28:44  ivo
    * manytoonerelation now stores '0' instead of '' if no record is selected.
    *
@@ -105,6 +108,13 @@
    */
   class atkManyToOneRelation extends atkRelation
   {
+    var $m_leftjoin = true; // by default, we do a left join. this means that 
+                            // records that don't have a record in this 
+                            // relation, will be displayed anyway. NOTE: set 
+                            // this to false only if you know what you're 
+                            // doing. When in doubt, 'true' is usually the 
+                            // best option.
+  
     /**
      * Constructor
      * @param $name ?
@@ -385,7 +395,7 @@
           $this->createDestination();
           $this->m_destInstance->addToQuery($query, $this->fieldName(), $level+1);
 
-          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$realtablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], true);
+          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$realtablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], $this->m_leftjoin);
         }
         else
         {
