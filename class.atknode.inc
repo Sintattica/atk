@@ -95,6 +95,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.60  2001/06/22 12:09:23  ivo
+   * Fixed a bug in [pk] replacement in encoded actions..
+   *
    * Revision 4.59  2001/06/22 11:44:42  ivo
    * Workaround for IE4 'bug' that causes javascript to decode urlencoded
    * values that it shouldn't encode: atkurlencode and atkurldecode.
@@ -1565,9 +1568,12 @@
           for ($j=0;$j<count($actions);$j++)
           {
             //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
-            // experimental: [] tags could be encoded but we still parse them.. 
+            // experimental: [] tags could be encoded but we still parse them..           
             $action=str_replace("%5B","[",$actions[$j]);
             $action=str_replace("%5D","]",$action);
+            $action=str_replace("_#5B","[",$actions[$j]);
+            $action=str_replace("_#5D","]",$action);
+            
             $action=str_replace('[pk]',rawurlencode($pk),$action);
             $action=stringparse($action,$recordset[$i],true);
             $stractions.=$action.'&nbsp;';
