@@ -19,8 +19,6 @@ of such third party applications does not affect the ATK license in any way.
 Contact information
 -------------------
 Technical questions regarding ATK: Ivo Jansch <ivo@achievo.org>
-Questions regarding services that Ibuildings provides for ATK
-(like installation and configuration): Tom M. Schenkenberg <tom@achievo.org>
 
 The project homepage can be found at http://www.achievo.org/atk
 
@@ -53,7 +51,7 @@ disclaimer can be found in the doc/LICENSE file.
 
 Getting the latest release
 --------------------------
-The latest release of Achievo can always be found at 
+The latest release of Achievo ATK can always be found at 
 http://www.achievo.org/atk/download
 
 
