@@ -19,7 +19,7 @@
    */
   include_once($config_atkroot."atk/atktreetools.inc");
   
-  $g_count = 1;
+  global $g_maxlevel;
   $g_maxlevel = 0;
   
   class atkTreeNode extends atkNode
@@ -89,7 +89,7 @@
       //$this->m_tree[0]["label"]="&nbsp;"; 
 	    $this->m_tree[0]["id"]=''; 	    
 	    $this->m_tree[0]["isleaf"]=1; 
-                       
+
       $test = $this->Fill_tree($t->m_tree);
             
       $g_maxlevel=$g_maxlevel+2;            
@@ -125,24 +125,24 @@
      */
     function Fill_tree($tree="",$level=0)
     {
-      global $g_count,$g_maxlevel, $exp_index;
+      static $s_count = 1;
+      global $g_maxlevel, $exp_index;
       while (list($id,$objarr) = each($tree))
-      {
-        $this->m_tree[$g_count]["level"]=$level+1; 
-        
+
+      {        
+        $this->m_tree[$s_count]["level"]=$level+1; 		    
         // Store extra info in the record, so the recordActions override can make 
         // use of some extra info to determine whether or not to show certain actions.
         if (is_array($objarr->m_label)) $objarr->m_label["subcount"] = count($objarr->m_sub);
-        
-		    $this->m_tree[$g_count]["label"]=$objarr->m_label;
-        $this->m_tree[$g_count]["img"]=$objarr->m_img;         
-		    $this->m_tree[$g_count]["id"]=$objarr->m_id; 
-        $exp_index[$objarr->m_id] = $g_count;        		    
-		    $this->m_tree[$g_count]["isleaf"]=0; 
-		    if ($this->m_tree[$g_count]["level"] > $g_maxlevel) $g_maxlevel=$this->m_tree[$g_count]["level"];     
-        
-		    $g_count++;
-        if (count($objarr->m_sub)>0)
+        $this->m_tree[$s_count]["label"]=$objarr->m_label; 
+        $this->m_tree[$s_count]["img"]=$objarr->m_img;         
+		    $this->m_tree[$s_count]["id"]=$objarr->m_id; 
+        $exp_index[$objarr->m_id] = $s_count;        		    
+		    $this->m_tree[$s_count]["isleaf"]=0; 
+		    if ($this->m_tree[$s_count]["level"] > $g_maxlevel) $g_maxlevel=$this->m_tree[$s_count]["level"];           
+              
+		    $s_count++;
+        if (count($objarr->m_sub)>0)  
         {          
           $this->Fill_tree($objarr->m_sub, $level+1);
         }                      
