@@ -73,18 +73,18 @@
   
   $txt_until = "t/m";
     
-  $txt_january = "Januari";
-  $txt_february = "Februari";
-  $txt_march = "Maart";
-  $txt_april = "April";
-  $txt_may = "Mei";
-  $txt_june = "Juni";
-  $txt_july = "Juli";
-  $txt_august = "Augustus";
-  $txt_september = "September";
-  $txt_october = "Oktober";
-  $txt_november = "November";
-  $txt_december = "December";
+  $txt_january = "januari";
+  $txt_february = "februari";
+  $txt_march = "maart";
+  $txt_april = "april";
+  $txt_may = "mei";
+  $txt_june = "juni";
+  $txt_july = "juli";
+  $txt_august = "augustus";
+  $txt_september = "september";
+  $txt_october = "oktober";
+  $txt_november = "november";
+  $txt_december = "december";
   
   $txt_fri = "Vri";
   $txt_sat = "Zat";
