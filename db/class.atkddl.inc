@@ -175,8 +175,8 @@
           }
        
           $q.= ")";
+          return array($q); 
         }
-        return array($q); 
       }
       return "";
     }            
@@ -349,12 +349,15 @@
     function executeAlter()
     {
       global $g_db;
-      $queries = $this->buildAlter();      
+      $queries = $this->buildAlter();            
       if (count($queries)>0)
       {
         for ($i=0, $_i=count($queries); $i<$_i; $i++)
         {
-          $g_db->query($queries[$i]);
+          if ($queries[$i]!="")
+          {
+            $g_db->query($queries[$i]);
+          }
         }
         return true;
       }
