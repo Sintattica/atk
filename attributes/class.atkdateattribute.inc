@@ -366,7 +366,7 @@
       {
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("lang").".js");    
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("language").".js");    
         
         atkimport("atk.ui.atktheme");
         $theme = &atkTheme::getInstance();        
