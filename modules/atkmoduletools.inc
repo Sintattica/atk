@@ -257,7 +257,7 @@
         {
           if ($associative)
           {
-            $total[$modname] = $module->$function();
+            $total[$modname] = $res;
           }
           else
           {                          
