@@ -47,7 +47,7 @@
         {
           $sel = "";
         }
-        $result .= '<input type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]);
+        $result .= '<input type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'&nbsp; ';
       }
       $result.='</P>';
       return $result;
