@@ -623,7 +623,7 @@
           if ($field["obligatory"]) $editsrc.= $reqimg;
 
           /* tooltip */
-          $ttip = "txt_".$this->m_type."_".$field["name"]."_tooltip";
+          $ttip = "txt_".$node->m_type."_".$field["name"]."_tooltip";
           if ($GLOBALS[$ttip] != "")
           {
             $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
