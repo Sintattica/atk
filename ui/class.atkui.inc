@@ -161,8 +161,11 @@
     { 
       // Backwardscompatibility hack.. g_layout must be initGui'd
       global $g_layout;
-      $g_layout->initGui();
-      
+      if (is_object($g_layout))
+      {
+        $g_layout->initGui();
+      }
+
       // First clear any existing smarty var.
       $this->m_smarty->clear_all_assign();
       
