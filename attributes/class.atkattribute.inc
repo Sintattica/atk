@@ -1070,7 +1070,7 @@
     function getLabel($record = array())
     {
       $label = NULL;
-      if ($this->hasFlag(AF_NOLABEL)) $label = NULL;
+      if ($this->hasFlag(AF_NOLABEL)) return "AF_NO_LABEL";
       else if ($this->hasFlag(AF_BLANKLABEL)) $label = "";
       else 
       {

@@ -237,7 +237,7 @@
           }
           
           /* does the field have a label? */
-          if ($field["label"] !== NULL)
+          if ($field["label"]!=="AF_NO_LABEL")
           {
             if ($field["label"] == "") 
             {
@@ -251,6 +251,10 @@
                 $tplfield["error"] = $field["error"];
               }
             }            
+          }
+          else 
+          {
+          	$tplfield["label"]="AF_NO_LABEL";
           }
           
           /* html source */

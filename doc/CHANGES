@@ -44,6 +44,7 @@ Changes in ATK 5.0.8
   including for each column the generic type ("gentype"), flags. [Peter]  
 * Changed parseDate for date attribute to return the day in record
   instead of day+1 [Harrie]
+* Fixed AF_NO_LABEL [Boy]
 
 Changes in ATK 5.0.7
 --------------------
