@@ -114,24 +114,27 @@
     else return $result;
   }
   
-  /** 
-   * Function session_form
-   *
-   * Adds session information to a form
+  /**
+   * Calculate a new session level based on current level and
+   * a passed sessionstatus.
    */
-  function session_form($sessionstatus=SESSION_DEFAULT)
+  function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $atklevel, $g_stickyurl;
-    
+    global $atklevel;
     if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
     
-    $res = "";
+    $newlevel = -1;
     
     switch ($sessionstatus)
     {
       case SESSION_NEW:
       {
         $newlevel = -1; 
+        break;
+      }
+      case SESSION_REPLACE:
+      {
+        $newlevel = -2;
         break;
       }
       case SESSION_NESTED:
@@ -141,7 +144,7 @@
       }
       case SESSION_BACK:
       {
-        $newlevel = max(0,$atklevel-1);
+        $newlevel = max(0,$atklevel-$levelskip); 
         break;
       }
       default:
@@ -149,6 +152,21 @@
         $newlevel = $atklevel;
       }
     }
+    return $newlevel;
+  }
+  
+  /** 
+   * Function session_form
+   *
+   * Adds session information to a form
+   */
+  function session_form($sessionstatus=SESSION_DEFAULT)
+  {
+    global $g_stickyurl;        
+    
+    $res = "";
+        
+    $newlevel = session_level($sessionstatus);
     
     if ($newlevel!=0) 
     {
@@ -175,32 +193,9 @@
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $atklevel, $g_stickyurl;
-    
-    if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
-    
-    switch ($sessionstatus)
-    {
-      case SESSION_NEW:
-      {
-        $newlevel = -1; 
-        break;
-      }
-      case SESSION_NESTED:
-      {
-        $newlevel = $atklevel+1; 
-        break;
-      }
-      case SESSION_BACK:
-      {
-        $newlevel = max(0,$atklevel-$levelskip); 
-        break;
-      }
-      default:
-      {
-        $newlevel = $atklevel;
-      }
-    }
+    global $g_stickyurl;
+      
+    $newlevel = session_level($sessionstatus, $levelskip);
     
     if ($name=="") $name=$url;
     if (strpos($url,"?")>0) 

@@ -14,10 +14,11 @@
   session_start();
   session_register("g_sessionData");  
      
-  define(SESSION_DEFAULT,0);
-  define(SESSION_NEW,1);
-  define(SESSION_NESTED,2);
-  define(SESSION_BACK,3);
+  define(SESSION_DEFAULT,0); // stay at current stacklevel
+  define(SESSION_NEW,1);     // new stack
+  define(SESSION_NESTED,2);  // new item on current stack
+  define(SESSION_BACK,3);    // move one level down on stack
+  define(SESSION_REPLACE,4); // replace current stacklevel
 
   /* Workaround for a PHP4.0.4 bug */
   $atklevel = trim($atklevel);
@@ -147,6 +148,16 @@
         $stack = array();
         $atklevel = 0;
       }
+      else if ($atklevel==-2)
+      {
+        // Replace top level.
+        array_pop($stack);
+        
+        // Note that the atklevel is now -2. This is actually wrong. We are at 
+        // some level in the stack. We can determine the real level by 
+        // counting the stack.
+        $atklevel = count($stack);
+      }
     //echo '<hr>precurrentitemcheck<pre>';
     //var_dump($stack);
     //echo '</pre><hr>';
@@ -272,7 +283,7 @@
           
       if (is_array($currentitem["atkformdata"]))
       {
-        atkdebug("Restoring formdata from session");        
+        atkdebug("Session formdata present");
         // atkformdata will be present in postvars.. editForm() has to read them..
       }
     
@@ -287,7 +298,9 @@
         
       //echo "<hr>STACK: ";
       //var_dump($g_sessionData[$this->m_namespace]["stack"]);
-      //echo "<hr>Final stack:<pre>";var_dump($g_sessionData[$this->m_namespace]["stack"]);echo '</pre>';
+    //  echo "<hr>Final stack:<pre>";var_dump($g_sessionData[$this->m_namespace]["stack"]);echo '</pre>';
+  //    global $QUERY_STRING;
+//    echo $QUERY_STRING;
     
     }
     

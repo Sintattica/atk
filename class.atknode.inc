@@ -815,9 +815,17 @@
       // Form may have been saved in a session..
       //atk_var_dump($g_sessionData);
 
+      // atknorestore may be passed to force the sessiondata for the form
+      // to be removed.
+      //if ($this->m_postvars["atknorestore"]!="")
+      //{
+//        atkdebug("Removing stored sessiondata");
+        //$this->m_postvars["atkformdata"]="";
+      //}
+      //else 
       if ($this->m_postvars["atkformdata"]!="")
-      {
-        atkdebug("Session formdata present");
+      {        
+        atkdebug("Restoring formdata from session");        
         $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
         //atk_var_dump($g_sessionData);
@@ -2446,7 +2454,16 @@
 
     function action_copy()
     {
-      $this->copyDb($this->m_postvars['atkselector']);
+      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
+      if(count($recordset)>0)
+      {
+        $this->copyDb($recordset[0]);
+      }
+      else
+      {
+        atkdebug(" Geen records gevonden met Selector: $selector");
+      }
+    
       $this->redirect();
     }
 
@@ -2913,20 +2930,10 @@
         *
         *@param $selector The 'where' clause that indicates which records to select.
         */
-    function copyDb($selector)
-    {
-
-      $recordset = $this->selectDb($selector,"","","","","copy");
-
-      if(count($recordset)>0)
-      {
-        $this->preCopy($recordset[0]);
-        $this->addDb($recordset[0]);
-      }
-      else
-      {
-        atkdebug(" Geen records gevonden met Selector: $selector - $parent");
-      }
+    function copyDb($record)
+    {            
+      $this->preCopy($record);
+      $this->addDb($record);      
       return "";
     }
 
