@@ -7,6 +7,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/10/16 08:11:34  maurice
+   * Unsets AF_OBLIGATORY if set
+   *
    * Revision 4.4  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -52,6 +55,9 @@
      */
     function atkBoolAttribute($name, $flags=0)
     {
+      //Setting AF_OBLIGATORY has no use, so prevent setting it.
+      if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY) $flags &= (~ AF_OBLIGATORY);
+      
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
