@@ -3148,7 +3148,6 @@
       $res = ($this->m_action == "update"
               && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == (empty($this->m_module) ? "" : $this->m_module.".").($this->m_type));  
-      atk_var_dump($g_sessionData);
       return $res;
     }
     
