@@ -461,8 +461,8 @@
     }
     
     /**
-     * Returns the binairy representation of flags set in the attribute.
-     * @return $m_flags
+     * Returns the full set of flags of the attribute.
+     * @return int $m_flags The full set of flags
      */
     function getFlags()
     {      
