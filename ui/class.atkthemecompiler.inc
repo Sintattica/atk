@@ -95,6 +95,7 @@
         $from = substr($file, 0, $fromlength);
         
         $this->_checkForBase($theme, $from);      
+        $this->_checkForAutodetect($theme, $from);
         
         $this->_addThemedef($theme, $from);
       }
@@ -114,6 +115,55 @@
         array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->THEMEFILE);
       }
     }
+    
+    function _checkForAutodetect(&$theme, $from)
+    {      
+      foreach ($theme as $themename => $themedata)
+      {
+        if (!is_array($themedata))
+        {
+          if (substr($themedata, 0, 4) == "scan")
+          {
+            $directories = $this->_getAutodetectdirectories($themedata);
+            foreach ($directories as $dir)
+            {
+              $files = $this->_scanAutodetectdirectory($dir, $from);
+              $theme[$themename] = $files;
+            }
+          }
+        }
+      }
+    }
+    
+    function _getAutodetectdirectories($themedata)
+    {
+      $begindirs = strpos($themedata, "'");
+      $enddirs = strrpos($themedata, "'");
+      $dirnamelength = $enddirs - $begindirs;
+      $directories = substr($themedata, $begindirs+1, $dirnamelength-1);
+      $directories = explode(";", $directories);
+      foreach ($directories as $dirid => $directory)
+      {
+        if (substr($directory, 0, 1) !== "/") $directories[$dirid] = "/$directory";
+        if (substr($directory, -1, 1) !== "/") $directories[$dirid] .= "/";
+      }
+      return $directories;  
+    }
+    
+    function _scanAutodetectdirectory($directory, $from)
+    {
+      $handle=opendir(atkconfig("platformroot").$from.$directory);
+      while (($file = readdir($handle))!==false) 
+      {
+        if ($file != "." && $file != ".." && $file != "CVS") 
+        {
+          $detectedfiles[] = $file;
+        }
+      }
+	  closedir($handle); 
+      return $detectedfiles;
+    }
+    
     
     /**
      * This function adds themedefitems from initialisation to the central themedef
