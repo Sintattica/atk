@@ -51,7 +51,7 @@
 
   define("NF_LOCK",                32768); // lock records
   define("NF_ML",                  65536); // multilanguage support  
-   
+
   define("NF_SPECIFIC_1",       33554432); // specific node flag 1
   define("NF_SPECIFIC_2",       67108864); // specific node flag 2
   define("NF_SPECIFIC_3",      134217728); // specific node flag 3
@@ -829,7 +829,7 @@
       if ($seq=="") $seq = $tablename;
       $this->m_seq        = $seq;
       if ($db==NULL) $this->m_db = &$g_db;
-  	   else $this->m_db = &$db;
+       else $this->m_db = &$db;
     }
 
     /**
@@ -1205,14 +1205,14 @@
   
           /* sometimes a field is hidden although not specified by the field itself */
           $tabs = $this->m_attribIndexList[$r]["tabs"];
-					
-					$theme = &atkTheme::getInstance();
-					if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
-					
-					if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)						
-					{
-						$p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
-					}
+          
+          $theme = &atkTheme::getInstance();
+          if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
+          
+          if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)            
+          {
+            $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+          }
   
           /* we let the attribute add itself to the edit array */
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
@@ -1319,11 +1319,11 @@
       
       if (is_array($list))
       {
-				$newtab["total"] = count($list);
+        $newtab["total"] = count($list);
         foreach ($list as $t)
         {
           $newtab["title"] = text("tab_$t",$this->m_type);
-					$newtab["tab"] = $t;
+          $newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view") 
           {
@@ -2010,7 +2010,7 @@
      *                        unique in combination.
      */
     function addUniqueFieldset($fieldArr)
-    {	
+    {  
       sort($fieldArr);
       if(!in_array($fieldArr, $this->m_uniqueFieldSets))
         $this->m_uniqueFieldSets[] = $fieldArr;
@@ -2148,8 +2148,8 @@
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
       
       if(array_key_exists("atkfilter", $this->m_postvars))
-  	   $query->addCondition($this->m_postvars["atkfilter"]);
-  	   
+       $query->addCondition($this->m_postvars["atkfilter"]);
+       
       if (!$this->hasFlag(NF_NO_FILTER))
       {
         /* hard filters may be set */
@@ -3202,6 +3202,25 @@
     function getNumbering()
     {
       return $this->m_numbering;
-    }  
+    }
+
+    /**
+     * Set the security of $action the same as $mapped
+     * @param String $action The action that has to be mapped
+     * @param String $mapped The action on witch $action has to be mapped
+     */
+    function addSecurityMap($action, $mapped=0)
+    {
+      if($mapped != 0)
+        if(!is_array($action))
+          $this->m_securityMap[$action] = $mapped;
+        else
+          foreach $action as $value
+            $this->m_securityMap[$value] = $mapped;
+      else
+        if(is_array($action))
+          foreach $action as $key=>$value
+            $this->m_securityMap[$key] = $value;
+    }
   }
 ?>
