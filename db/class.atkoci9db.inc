@@ -22,6 +22,8 @@
     /* oci9 specific parameters */
     //var $m_ora_home = "/usr/local/oracle/8i/u01/app/oracle/product/8.1.5";
     var $m_ora_sid  = "CDB";
+    
+    var $m_bindresult = array();
 
     /**
      * Base constructor
@@ -98,14 +100,14 @@
      * @param $offset offset in record list
      * @param $limit maximum number of records
      */
-    function query($query, $offset=-1, $limit=-1, $bindVars=array())
+    function query($query, $offset=-1, $limit=-1, $bindLobs=array(), $bindVars=array())
     {
       /* limit? */
       if ($offset >= 0 && $limit > 0)
       {
         /* row id's start at 1! */
-	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (". 
-        $query.") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
+	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (".$query.
+                ") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
       }	
       
       /* connect to database */
@@ -115,14 +117,15 @@
       if ($this->m_query_id)
       {
         @OCIFreeStatement($this->m_query_id);
-        $this->m_query_id = 0;
+        $this->m_query_id = 0;    
+        $this->m_bindresult = array();
       }      
 
       /* query database */     
-      if (count($bindVars))
+      if (count($bindLobs))
       {      
         $i=0;
-        foreach($bindVars as $bind => $value)
+        foreach($bindLobs as $bind => $value)
         {          
           $clobVar = $bind.$i;
           $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);                  
@@ -131,25 +134,31 @@
         }
         $fieldNames = array();
         $bindNames = array();
-        $fieldNames = array_keys($bindVars);
+        $fieldNames = array_keys($bindLobs);
         foreach($fieldNames as $name) $bindNames[] = ":".$name;        
-        $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);
-        
-      }
+        $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);        
+      }      
+      
       $this->m_query_id = OCIParse($this->m_link_id, $query);
       if ($this->m_query_id) 
       {              
-        if (count($bindVars))
+        if (count($bindLobs))
         {        
           $i=0;
-          foreach($bindVars as $bind => $value)
+          foreach($bindLobs as $bind => $value)
           {          
             $clobVar = $bind.$i;
             OCIBindByName($this->m_query_id, $bind, &$$clobVar, -1, OCI_B_CLOB);
             $i++;          
-            atkdebug("Binding ".$bind);
+            atkdebug("Binding CLOB ".$bind);
           }          
         }    
+        
+        for ($i=0, $_i=count($bindVars);$i<$_i;$i++)   
+        {          
+          OCIBindByName($this->m_query_id, $bindVars[$i], $this->m_bindresult[$bindVars[$i]], 32);
+        }    
+        
         if (!OCIExecute($this->m_query_id,OCI_DEFAULT))
         {
           /* error in query */
@@ -160,23 +169,23 @@
         }
         else
         {        
-          if (count($bindVars))
+          if (count($bindLobs))
           {
             $i=0;
-            foreach($bindVars as $bind => $value)
+            foreach($bindLobs as $bind => $value)
             {      
               $clobVar = $bind.$i;                      
               if (!@$$clobVar->save($value))
                 atkerror("Error bind save: empty value");
               $i++;
             }
-          }
+          }          
           OCICommit($this->m_link_id);
         }
-        if (count($bindVars))
+        if (count($bindLobs))
         {
           $i=0;
-          foreach($bindVars as $bind => $value)
+          foreach($bindLobs as $bind => $value)
           {   
             $clobVar = $bind.$i;                                
             OCIFreeDesc($$clobVar);
