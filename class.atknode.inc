@@ -1339,9 +1339,9 @@
     function recordList($recordset, $actions, $sortable=true,$suppressList="", $sessionsave=false)
     {
       global $g_layout, $PHP_SELF,$g_theme;
-      $output = $g_layout->data_top();
-
-      $output.="<tr>";
+      $output = '<table border="0" cellspacing="0" cellpadding="0"><tr><td align="left">'.
+                $g_layout->data_top().
+                '<tr>';
 
       // stuff for the totals row..
       $totalisable = false;
@@ -1351,8 +1351,8 @@
 
       // Vertical orientation for td contents
       if (trim(atkconfig("recordlist_vorientation")) != "")
-        $vorientation = "valign='".atkconfig("recordlist_vorientation")."'";
-      else $vorientation = "valign='top'";
+        $vorientation = 'valign="'.atkconfig("recordlist_vorientation").'"';
+      else $vorientation = 'valign="top"';
 
       // We first are going to check which actions are defined for each record. We could do this in one
       // loop together with the printing of the row you might think... This is (unfortunately) not true
@@ -1523,7 +1523,8 @@
       if (($orientation=="right"||$orientation=="both") && (count($actions)>0||$searchable))
       {
         $output.=$g_layout->ret_td_datatitle();
-      }        $recordactions = $actions;
+      }
+      $recordactions = $actions;
 
       $output.="</tr>";
 
@@ -1623,11 +1624,6 @@
                  '    onmouseover="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$bgh.'\'"'.
                  '    onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.(empty($bgn)?'':$bgn).'\'">';
 
-        if ($orientation=="left"||$orientation=="both")
-        {
-          $output.=$actionCol;
-        }
-
         // multi-record-actions --> selection box
         if ($multi_record_actions)
         {
@@ -1645,6 +1641,11 @@
           }
         }
 
+        if ($orientation=="left"||$orientation=="both")
+        {
+          $output.=$actionCol;
+        }
+
         for($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
         {
           $attribname = $this->m_attribIndexList[$r]["name"];
@@ -1655,7 +1656,7 @@
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDEdata_bottom_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
@@ -1741,13 +1742,14 @@
         $output.=$totalRow;
       }
 
-      $output.=$g_layout->data_bottom();
+      $output.=$g_layout->data_bottom().'</td></tr>';
 
       // If it's possible to execute actions for multiple records, we display the actions in a drop-down box etc.
       // multi-record-actions --> selection box
       if ($multi_record_actions)
       {
-        $output .= '<table border="0" cellspacing="0" cellpadding="2">'.
+        $output .= '<tr><td align="left">'.
+                   '<table border="0" cellspacing="0" cellpadding="2">'.
                      '<tr>'.
                        '<td rowspan="2" valign="top">'.
                          '<img src="'.atkconfig("atkroot").'atk/images/arrow.gif" border="0">'.
@@ -1772,11 +1774,14 @@
                          '<input type="button" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.session_url($PHP_SELF, SESSION_NESTED).'\')">'.
                        '</td>'.
                      '</tr>'.
-                   '</table>';
+                   '</table>'.
+                   '</td></tr>';
 
         // we only close the form tag if necessary
         if (!$sessionsave) $output .= '</form>';
       }
+
+      $output .= '</table>';
 
       return $output;
     }
