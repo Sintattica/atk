@@ -8,12 +8,13 @@
    * $Id$
    *
    */
-  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");  
-   
+  include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
+  userelation("atkmanytomanyrelation");
+
   class atkManyBoolRelation extends atkManyToManyRelation
   {
- 
-    /** 
+
+    /**
     * Constructor
     * @param $name
     * @param $destination
@@ -23,8 +24,8 @@
     {
       $this->atkManyToManyRelation($name, $destination, $flags);
     }
-    
-    /** 
+
+    /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
      * @result piece of html code
@@ -32,17 +33,17 @@
     function edit($record="", $fieldprefix="")
     {
     //var_dump($record);
-      $this->createDestination();    
+      $this->createDestination();
 
       $selectedPk = array();
-      
+
       // first the selected records..
       for ($i=0;$i<count($record[$this->m_name]);$i++)
-      {        
+      {
         $selectedPk[] = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->remoteKey()]);
-      }     
+      }
 
-      // now select all records 
+      // now select all records
       $recordset = $this->m_destInstance->selectDb();
 
       for ($i=0;$i<count($recordset);$i++)
@@ -71,26 +72,26 @@
      * Stores the values in the database
      * @param $notused Not used
      * @param $record Current record
-     */    
+     */
     function store($notused, $record)
     {
-      $classname = $this->m_name;      
+      $classname = $this->m_name;
       $rel = &getNode($classname);
-            
+
       $this->createDestination();
-      
-      $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);     
-      
+
+      $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+
       for ($i=0;$i<count($record[$this->fieldName()]);$i++)
-      { 
+      {
         // magical stuff..
         $newrecord = array();
-        $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];        
-    
+        $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];
+
         $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-        
+
         $rel->addDb($newrecord);
       }
-    }   
+    }
 
   }
