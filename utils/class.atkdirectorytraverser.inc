@@ -6,7 +6,8 @@
    * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
-   * @package utils
+   * @package atk
+   * @subpackage utils
    *
    * @copyright (c)2005 Ivo Jansch   
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
