@@ -300,9 +300,11 @@
       atkdebug("Obsolete use of \$g_layout->ui_top()!");
       $this->m_saved = $this->m_atkoutput->m_content;
       $this->m_atkoutput->m_content = "";
-      atkimport("atk.ui.atksmarty");
-      $smarty = &atkSmarty::getInstance();
-      $smarty->assign("title", $title);      
+      //atkimport("atk.ui.atksmarty");
+      //$smarty = &atkSmarty::getInstance();
+      //$smarty->assign("title", $title);      
+      $this->m_lasttitle = $title;
+      
     }
 
     function ret_tpl($tplname, $vars="", $fallbacktpl="")
@@ -333,7 +335,8 @@
     function ui_bottom()
     {
       atkdebug("Obsolete use of \$g_layout->ui_bottom()!");
-      $rendered = $this->m_atkui->render("box.tpl", array("content"=>$this->m_atkoutput->m_content));
+      $rendered = $this->m_atkui->render("box.tpl", array("content"=>$this->m_atkoutput->m_content,
+                                                          "title"=>$this->m_lasttitle));
       $this->m_atkoutput->m_content = $this->m_saved;
       $this->m_saved = "";
       $this->output($rendered);
