@@ -1194,12 +1194,12 @@
       if ($curr > 1)
       {
         $newstart = $this->m_postvars['atkstartat'] - $limit;
-        $nav = href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
+        $nav = href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
       {
-        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=admin&atkstartat=".max(0, ($i-1) * $limit),"$i");
+        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".max(0, ($i-1) * $limit),"$i");
         if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
       }
 
