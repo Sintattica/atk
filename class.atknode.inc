@@ -1457,7 +1457,7 @@
       $flags |= (($this->m_action == "admin" || $sessionsave) && $this->hasFlag(NF_MRPA)) ? RL_MRPA : 0;
       $flags |= ($this->hasFlag(NF_NO_SEARCH) || $this->m_postvars["atkaction"] == "search") ? RL_NO_SEARCH : 0;
       $form  = ($sessionsave ? "entryform" : "");
-      return $this->normalRecordList($recordset, $actions, $flags, $suppress, $form);
+      return $this->normalRecordList($recordset, $actions, $flags, $suppressList, $form);
     }
 
     /**
