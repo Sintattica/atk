@@ -20,6 +20,7 @@
   define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
   define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
   define("AF_DATE_NO_CALENDAR",         AF_SPECIFIC_3); // Do not append the popup calendar.
+  define("AF_DATE_DISPLAY_DAY",         AF_SPECIFIC_4); // Show the day of the week in the display
   
   // Include adodb workarounds for <1970 dates on windows.
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
@@ -602,7 +603,11 @@
       $value = $record[$this->fieldName()];
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
       $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));      
-      if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
+      if (!empty($tmp_date))
+      {
+        if ($this->hasFlag(AF_DATE_DISPLAY_DAY)) return $this->formatDate($tmp_date, $this->m_date_format_view, 1);
+        else return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
+      }
       else return "&nbsp;";
     }
 
