@@ -178,6 +178,11 @@
       $class = $traceArr[$i]["class"];
       if($class)
         $class.=$classCall;
+      
+      if(!is_array($traceArr[$i]["args"]))
+        $traceArr[$i]["args"] = array();
+
+      $functionParamArr = array();
 
       foreach($traceArr[$i]["args"] as $val)
       {
