@@ -18,15 +18,12 @@
      *
      * @param String $str The "classname#method" to invoke.
      * @param Array  $params Any params to be passed to the invoked method.
-     *               The array is passed by reference to invokeFromString. It
-     *               is up to the invoked method whether to accept the
-     *               reference  (by redefining the '&') or a copy (default).
      *
      * @return false if the call failed. In all other cases, it returns the
      *               output of the invoked method. (be careful with methods
      *               that return false).
      */
-    function invokeFromString($str, &$params)
+    function invokeFromString($str, $params)
     {
       list($class, $method) = explode("#", $str);
       if ($class!="" && $method!="")
