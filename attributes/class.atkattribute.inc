@@ -304,7 +304,9 @@
         /* error? */
         $entry["error"] = FALSE;
         for ($i = 0; $i < count($error) && !$entry["error"]; $i++)
-          if ($error[$i]['attrib_name'] == $this->fieldName()) $entry["error"] = TRUE;
+          if ($error[$i]['attrib_name'] == $this->fieldName() ||
+             atk_in_array($this->fieldName(), $error[$i]['attrib_name']))
+             $entry["error"] = TRUE;
 
         /* readonly */
         if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
