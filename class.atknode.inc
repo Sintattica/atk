@@ -761,7 +761,7 @@
 
 
       if (count($this->m_tabListAdd) > 1) $g_layout->tabs_top($this->buildTabs());
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
       $g_layout->output($this->editForm("add",$record,$forceList));
       if (count($this->m_tabListAdd) > 1) $g_layout->tabs_bottom();
 
@@ -882,8 +882,19 @@
             if (strpos($forcedvarname,'.')>0)
             {
               list($table,$field) = split('\.',$forcedvarname);
-              $defaults[$table][$field] = $forcedvalue;
-              $attribname = $table;
+              if ($table==$this->m_table)
+              {
+                // this is a filter on the current table.
+                $defaults[$field] = $forcedvalue;
+                $attribname = $field;
+              }
+              else
+              {
+                // this is a filter on a field of another table (something we have a 
+                // relationship with.              
+                $defaults[$table][$field] = $forcedvalue;
+                $attribname = $table;
+              }              
             }
             else
             {
