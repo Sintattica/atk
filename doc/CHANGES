@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.1.1
+--------------------
+
 Changes in ATK 5.1.0
 --------------------
 + Added $config_debuglog for realtime writing debug to file [Harrie]
