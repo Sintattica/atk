@@ -8,6 +8,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/11 12:25:52  ivo
+   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
+   * appeared when the two were used in combination)
+   *
    * Revision 4.1  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -75,15 +79,16 @@
       $this->createDestination();
       
       if ($record[$this->fieldName()]!=NULL)
-      {
-        $myrecord = $record[$this->fieldName()];        
+      {      
+        $myrecord = $record[$this->fieldName()];
         $mode = "edit";        
       }
       else
       {      
         $mode = "add";
         
-      }                
+      }                     
+      
       $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
       $forceList = decodeKeyValueSet($this->m_destinationFilter);
       $forceList[$this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
@@ -148,14 +153,34 @@
     {
       // we need to pass all values to the destination node, so it can 
       // run it's db2value stuff over it.. 
-      $this->createDestination();
-          
-      foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+      $this->createDestination();           
+      
+      if ($rec[$this->fieldName()]!=NULL)
       {
-        $p_attrib = &$this->m_destInstance->m_attribList[$attribname];        
-        $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);          
-      }
-      if ($rec[$this->fieldName()]!=NULL) return $rec[$this->fieldName()];
+        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];        
+          $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
+        }
+        return $rec[$this->fieldName()];
+      }     
+    }
+    
+    function fetchValue($rec)
+    {
+      // we need to pass all values to the destination node, so it can 
+      // run it's fetchValue stuff over it.. 
+      $this->createDestination();           
+      
+      if ($rec[$this->fieldName()]!=NULL)
+      {
+        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];        
+          $rec[$this->fieldName()][$attribname] = $p_attrib->fetchValue($rec[$this->fieldName()]);
+        }
+        return $rec[$this->fieldName()];
+      }           
     }
 
     /**
@@ -167,20 +192,17 @@
     {
       $vars = $record[$this->fieldName()];
       
-      $this->createDestination();
-      
-      $this->m_destInstance->m_postvars = $vars;
-      $record = $this->m_destInstance->updateRecord();
+      $this->createDestination();      
           
       if ($vars["mode"]=="edit")
       {
         atkdebug("Updating existing one2one record");
-        $this->m_destInstance->updateDb($record);
+        $this->m_destInstance->updateDb($vars);
       }
       else if ($vars["mode"]=="add")
       {
         atkdebug("Adding new one2one record");       
-        $this->m_destInstance->addDb($record);
+        $this->m_destInstance->addDb($vars);
       }
       else
       {

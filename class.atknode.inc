@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.27  2001/05/11 12:25:52  ivo
+   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
+   * appeared when the two were used in combination)
+   *
    * Revision 4.26  2001/05/10 14:18:49  ivo
    * Fixed an includd_once typo.
    *
@@ -710,7 +714,7 @@
       $nrOfElements = count($this->m_primaryKey);
       for ($i=0;$i<$nrOfElements;$i++)
       {
-        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];
+        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
         $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
@@ -1037,7 +1041,6 @@
       }
       
       $form.='<input type="hidden" name="'.$fieldprefix.'atkorgkey" value="'.$pk.'">';
-
       if (is_array($forceList))
       {          
         while(list($forcedvarname,$forcedvalue)=each($forceList))
@@ -2021,13 +2024,14 @@
     /**
      * Parse the $postvars and fill the record with its data.
      */
-    function updateRecord()
+    function updateRecord($vars ="")
     {      
+      if ($vars=="") $vars = $this->m_postvars;
       $record = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($this->m_postvars);
+        $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
       return $record;
     }
@@ -2452,10 +2456,10 @@
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
           if (!is_object($p_attrib))
           {
-            atkdebug($p_attrib->m_name." is not an object?! Check your descriptor_def for non-existant fields");
+            atkdebug($usedFields[$i]." is not an object?! Check your descriptor_def for non-existant fields");
           }
           else
-          {
+          {        
             $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
           }
         }

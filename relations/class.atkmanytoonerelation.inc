@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/05/11 12:25:52  ivo
+   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
+   * appeared when the two were used in combination)
+   *
    * Revision 4.6  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -80,9 +84,9 @@
      * @return
      */
     function value2db($rec)
-    {
+    {    
       if (is_array($rec[$this->fieldName()]))
-      {
+      {     
         //list($key,$value) = each($rec[$this->fieldName()]); // we only support relations with a single pk.. (the first element)
         //return $value;
         // The above doesn't work.. we have to do the clean thing..
@@ -92,7 +96,7 @@
       }
       else
       {
-        // This never happens, does it?
+        // This never happens, does it?      
         return "";
       }
     }
@@ -117,9 +121,9 @@
       else
       {
         $field = $key;
-      }
+      }               
 
-      return Array($field=>$value);
+      return array($field=>$value);
     }
 
 
@@ -129,8 +133,15 @@
      * @return decoded value
      */
     function db2value($rec)
-    {    
-      return $rec[$this->fieldName()];
+    {          
+      $myrec = $rec[$this->fieldName()];
+      if (is_array($myrec)) return $myrec;
+      else
+      {        
+        // if the record is not an array, probably only the value of the primary key was loaded..
+        $this->createDestination();        
+        return array($this->m_destInstance->primaryKeyField() => $myrec);
+      }
     }
 
     /**
@@ -156,7 +167,7 @@
       $this->createDestination();
       $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
       
-      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);    
 
       $result = '<select name="'.$fieldprefix.$this->formName().'">';
 
@@ -233,13 +244,18 @@
     {
       if ($mode == "select")
       {
-        if ($tablename!="") $tablename.=".";
-        if ($level<2)
+        if ($tablename!="") $realtablename=$tablename.".";
+        if ($level<2)        
         {
           $this->createDestination();
           $this->m_destInstance->addToQuery($query, $this->fieldName(), $level+1);
 
-          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$tablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], true);
+          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$realtablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], true);
+        }
+        else
+        {
+          // only primary key..         
+          $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
         }
       }
 
