@@ -236,7 +236,8 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Record
+     * @param array  $record       The edit record
+     * @param String $fieldprefix  Prefix for the fieldname
      * @return Piece of html code that can  be used in a form to edit this
      */
     function edit(&$record, $fieldprefix="")
@@ -251,6 +252,9 @@
 
       if ($this->createDestination())
       {
+        $id = $fieldprefix.$this->fieldName();
+        $autolink = $this->getRelationAutolink($id, $filter);
+        
         if (!$this->hasFlag(AF_LARGE))
         {
           // normal dropdown..
@@ -262,23 +266,6 @@
             $this->m_destInstance->addFilter($filter);
           }
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-
-          $id = $fieldprefix.$this->fieldName();
-          $autolink = "";
-          if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
-          {
-            $page = &atkPage::getInstance();
-            $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
-            if ($this->m_destInstance->allowed("edit"))
-            {
-              $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
-              $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
-            }
-            if ($this->m_destInstance->allowed("add"))
-            {
-              $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
-            }
-          }          
 
           // autoselect if there is only one record (if obligatory is not set,
           // we don't autoselect, since user may wist to select 'none' instead
@@ -314,7 +301,6 @@
             $result.='</select>';
 
           }
-          $result.=$autolink;
         }
         else
         {
@@ -378,9 +364,36 @@
                            true);
           }
         }
+        $result.=$autolink;
         return $result;
       }
       return atkerror("Could not create destination for $this->m_destination!");
+    }
+
+    /**
+     * Creates and returns the auto edit/view links
+     * @param String $id          The field id
+     * @param String $filter      Filter that we want to apply on the destination node
+     * @return String The HTML code for the autolink links
+     */
+    function getRelationAutolink($id, $filter)
+    {
+      $autolink = "";
+      if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
+      {
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
+        if ($this->m_destInstance->allowed("edit"))
+        {
+          $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
+          $autolink = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".text('edit')."</a>";
+        }
+        if ($this->m_destInstance->allowed("add"))
+        {
+          $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+        }
+      }
+      return $autolink;
     }
 
     /**

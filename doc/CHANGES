@@ -7,6 +7,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changes in ATK 5.0.8
 --------------------
 + Added $config_debuglog for realtime writing debug to file [Harrie]
+* AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 
 Changes in ATK 5.0.7
 --------------------
