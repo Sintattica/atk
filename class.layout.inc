@@ -741,7 +741,7 @@
     }
     
     function theme_style($stylesheetname)
-    {
+    {    
       if (file_exists($this->m_tpldir."styles/$stylesheetname"))
       {
         $this->register_style($this->m_tpldir."styles/$stylesheetname");
@@ -749,7 +749,7 @@
       else
       {
         // Not found in current theme, fallback to default
-        $this->register_style(atkconfig("atkroot")."atk/themes/default/styles/$stylesheetname");
+        $this->register_style("atk/themes/default/styles/$stylesheetname");
       }
     }
 
