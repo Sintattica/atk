@@ -180,7 +180,7 @@
     function getImportLink()
     {
       $link = "";
-      if ($this->m_node->allowed("import"))
+      if ($this->m_node->allowed("import")&&!$this->m_node->hasFlag(NF_READONLY))
       {
         $link.= href(dispatch_url($this->m_node->atkNodeType(), "import"), atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
       }

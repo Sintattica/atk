@@ -192,18 +192,21 @@
       $replace = array();
       
       $pattern = array_keys($this->m_joinaliases);      
-      usort($pattern, "sortSearchPattern");
-    
-      for($i=0, $count=count($pattern);$i<$count;$i++)
+      if (count($pattern))
       {
-        $replace[$i] = "\\1".$this->m_joinaliases[$pattern[$i]]."\\2";
-        //$replace[$i+$count] = "\\1".$this->m_joinaliases[$pattern[$i]]."\\2";
-        //$pattern[$i] = "/([\s,\(=])".$pattern[$i]."(([\.])|(\s*[,])|(\s+))/";
-        $pattern[$i] = "/([\s,\(=])".$pattern[$i]."(([\.])|(\s*[,])|(\s+((WHERE)|(JOIN)|(ON))))/";
-        //$pattern[$i] = "/([,])".$pattern[$i]."(|(\s*[,])|(\s+))/";
-        //$pattern[$i+$count] = "/([\s\(=])".$pattern[$i]."(([\.])|(\s+WHERE))/i";
+        usort($pattern, "sortSearchPattern");
+    
+        for($i=0, $count=count($pattern);$i<$count;$i++)
+        {
+          $replace[$i] = "\\1".$this->m_joinaliases[$pattern[$i]]."\\2";
+          //$replace[$i+$count] = "\\1".$this->m_joinaliases[$pattern[$i]]."\\2";
+          //$pattern[$i] = "/([\s,\(=])".$pattern[$i]."(([\.])|(\s*[,])|(\s+))/";
+          $pattern[$i] = "/([\s,\(=])".$pattern[$i]."(([\.])|(\s*[,])|(\s+((WHERE)|(JOIN)|(ON))))/";
+          //$pattern[$i] = "/([,])".$pattern[$i]."(|(\s*[,])|(\s+))/";
+          //$pattern[$i+$count] = "/([\s\(=])".$pattern[$i]."(([\.])|(\s+WHERE))/i";
+        }
+        $str = preg_replace($pattern, $replace, $str);
       }
-      $str = preg_replace($pattern, $replace, $str);
       return $str;
     }
 
