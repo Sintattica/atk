@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.15  2001/05/30 07:05:43  ivo
+   * Removed is_null funtion calls (because they require PHP4.0.4)
+   * Moved session management initialisation code to a function.
+   *
    * Revision 1.14  2001/05/18 07:49:42  ivo
    * Fixes to sessionmanagement.
    *
@@ -293,6 +297,28 @@
     }
 
 
+  }
+  
+  /**
+    Calling this function will run atk session management. 
+    Call this function in every file that you want to use atk sessions.    
+  */
+  function atksession()
+  {
+    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager;
+    
+    if (count($HTTP_POST_VARS)>0)
+    {  
+      atkDataDecode(&$HTTP_POST_VARS);   
+      $ATK_VARS = $HTTP_POST_VARS;
+    }
+    else
+    {
+      atkDataDecode(&$HTTP_GET_VARS);   
+      $ATK_VARS = $HTTP_GET_VARS;
+    }
+   
+    $g_sessionManager->session_read(&$ATK_VARS);
   }
 
   $g_sessionManager = new atkSessionManager();

@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.44  2001/05/30 07:05:43  ivo
+   * Removed is_null funtion calls (because they require PHP4.0.4)
+   * Moved session management initialisation code to a function.
+   *
    * Revision 4.43  2001/05/23 09:46:28  ivo
    * SelectPage now also parses encoded action templates.
    *
@@ -2282,7 +2286,7 @@
           if ($value!="")
           {
             $p_attrib = &$this->m_attribList[$key];
-            if (!is_null($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
+            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
             else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
             $query->addCondition($condition);              
           }
@@ -2388,7 +2392,7 @@
           if ($value!="")
           {
             $p_attrib = &$this->m_attribList[$key];
-            if (!is_null($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
+            if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
             else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
             $query->addCondition($condition);              
           }

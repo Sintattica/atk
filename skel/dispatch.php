@@ -3,19 +3,7 @@
   $config_atkroot = "./";
   require_once($config_atkroot."atk/class.atknode.inc");
   
-  if (count($HTTP_POST_VARS)>0)
-  {  
-    atkDataDecode(&$HTTP_POST_VARS);   
-    $ATK_VARS = $HTTP_POST_VARS;
-  }
-  else
-  {
-    atkDataDecode(&$HTTP_GET_VARS);   
-    $ATK_VARS = $HTTP_GET_VARS;
-  }
-   
-  $g_sessionManager->session_read(&$ATK_VARS);
-
+  atksession();
   atksecure();
    
   // Create node
