@@ -126,7 +126,11 @@
   function atkerror($txt)
   {
     global $g_error_msg;
-    $g_error_msg[]="[".elapsed()."] ".$txt;    
+    $g_error_msg[]="[".elapsed()."] ".$txt;   
+    if(function_exists("debug_backtrace"))
+    {	
+      atk_var_dump(debug_backtrace(), "trace-route from the error:");
+    }
   }
 
    /**
