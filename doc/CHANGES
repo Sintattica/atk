@@ -23,9 +23,10 @@ Changes in ATK 5.1.1
   searchconditions are now grouped together. [Ivo, Boy]
 * atkSecureRelation passes along searchmode to its attributes. [Boy]
 * atkImportHandler can now handle relations better. [Boy]
-* Improved searching on atkOneToManys and atkManyToOnes [Boy]
+* Improved searching on atkOneToManys and atkManyToOnes. [Boy]
 * Made onetone check if there are errors before actually looping 
-  through them and removed deprecated call by reference [Martin L, Boy]
+  through them and removed deprecated call by reference. [MartinL, Boy]
+* Fixed bug in atkOneToOneRelation search.
 
 Changes in ATK 5.1.0
 --------------------
