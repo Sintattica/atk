@@ -169,7 +169,10 @@
         {                     
           $where[] = $decryptedlink;
         }
-        $query->addCondition($this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
+        
+        if ($tablename) $tablename .= ".";
+        
+        $query->addCondition($tablename.$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
       }
     }
   
