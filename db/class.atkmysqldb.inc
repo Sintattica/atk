@@ -354,7 +354,7 @@
           $result[$i]["gentype"] = $ddl->getGenericType($result[$i]['type']);
           $result[$i]["len"]     = @mysql_field_len($id, $i);
           $result[$i]["flags"]   = explode(' ', @mysql_field_flags($id, $i));
-          
+
           $result[$i]["flags"] =
             (in_array('primary_key',    $result[$i]["flags"]) ? MF_PRIMARY        : 0) |
             (in_array('unique_key',     $result[$i]["flags"]) ? MF_UNIQUE         : 0) |
@@ -364,6 +364,7 @@
           if ($full)
             $result["meta"][$result[$i]["name"]] = $i;
         }
+        
         /* free result */
         @mysql_free_result($id);
         atkdebug("Metadata for $table complete");

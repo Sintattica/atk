@@ -68,10 +68,12 @@
           return "decimal";        
         case "varchar":
         case "char":
+        case "string":
           return "string";          
         case "date":
           return "date";
         case "text":
+        case "blob":
           return "text";
         case "datetime":
           return "datetime";                
