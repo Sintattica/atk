@@ -165,21 +165,9 @@
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
-      $page = &atkPage::getInstance();
+      global $g_layout;
 
-      /* register javascript */
-      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
-      
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
-      {
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("lang").".js");
-        
-        atkimport("atk.ui.atktheme");
-        $theme = &atkTheme::getInstance();        
-        $page->register_style($theme->stylePath("atkdateattribute.css"));        
-      }
+      $this->_registerScripts();
       
       $fieldname = $fieldprefix.$this->fieldName().$postfix;
       
@@ -362,6 +350,28 @@
 
       /* return result */
       return $result;
+    }
+    
+    /**
+    * Registers the javascripts (and 1 stylesheet) for the atkDateAttribute
+    */
+    function _registerScripts()
+    {
+      $page = &atkPage::getInstance();
+
+      /* register javascript */
+      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
+      
+      if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
+      {
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("lang").".js");    
+        
+        atkimport("atk.ui.atktheme");
+        $theme = &atkTheme::getInstance();        
+        $page->register_style($theme->stylePath("atkdateattribute.css"));        
+      }
     }
 
     /**
