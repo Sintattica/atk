@@ -19,6 +19,24 @@
     var $m_url = "";
 
     /**
+     * Name mangle feature. If you set filename tpl, then uploaded files
+     * are renamed to what you set in the template. You can use
+     * fieldnames between brackets to have the filename determined by
+     * the record.
+     *
+     * This is useful in the following case:
+     * Say, you have a class for managing users. Each user has a photo associated
+     * with them. Now, if two users would upload 'gandalf.gif', then you would 
+     * have a naming conflicht and the picture of one user is overwritten with the
+     * one from the other user.
+     * If you set m_filenameTpl to "picture_[name]", then the file is renamed before
+     * it is stored. If the user's name is 'Ivo Jansch', and he uploads 'gandalf.gif', 
+     * then the file that is stored is picture_Ivo_Jansch.gif. This way, you have a
+     * unique filename per user.
+     */
+    var $m_filenameTpl = "";
+
+    /**
      * Constructor
      * @param $name Name of the attribute
      * @param $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
@@ -133,14 +151,14 @@
       if($del[$this->fieldName()] == "on")
       {    
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
-	{
-	  unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
-	}
+	      {
+	        unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
+	      }
         return '';
       }
       else
       {
-        $filename = str_replace(' ','_',$rec[$this->fieldName()]["filename"]);
+        $filename = $rec[$this->fieldName()]["filename"];
         if ($filename!="")
         {
           if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename) OR die("<br><br><center><b>Save failed!</b></center><br>"))
@@ -196,11 +214,12 @@
                           "orgfilename"=>$rec[$basename."_orgfilename"]);
         }
         else
-        {
+        {          
+          $realname = $this->_filenameMangle($rec, $HTTP_POST_FILES[$postfiles_basename]["name"]);
           $result = array("tmpfile"=>$HTTP_POST_FILES[$postfiles_basename]["tmp_name"],
-                          "filename"=>$HTTP_POST_FILES[$postfiles_basename]["name"],
+                          "filename"=>$realname,
                           "filesize"=>$HTTP_POST_FILES[$postfiles_basename]["size"],
-                          "orgfilename"=>$HTTP_POST_FILES[$postfiles_basename]["name"]);
+                          "orgfilename"=>$realname);
         }                      
         return $result;
       }      
@@ -290,6 +309,23 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact","substring","wildcard","regexp");
+    }
+
+    /**
+     * Determine the real filename of a file (based on m_filenameTpl).
+     */
+    function _filenameMangle($rec, $default)
+    {    
+      if ($this->m_filenameTpl == "")
+      {
+        $filename = $default;
+      }
+      else
+      {        
+        $ext = strtolower(substr($default, strrpos($default,'.')+1));
+        $filename = stringparse($this->m_filenameTpl, $rec).".".$ext;
+      }
+      return str_replace(' ','_',$filename);
     }
   }
 ?>
