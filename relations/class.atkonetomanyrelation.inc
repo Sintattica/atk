@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.15  2001/06/26 13:04:40  sandy
+   * fixed a bug for the copy function
+   *
    * Revision 4.14  2001/06/26 12:39:21  ivo
    * Adjusted link text (it contained a dot, making the link untranslatable)
    *
@@ -285,16 +288,20 @@
     
 
     /**
-     * Store values
+     * Store values only when it's an array and not empty
      * @param $notused ??
      * @param $record Record
      */
     function store($notused, $record)
-    {
-      if (is_array($record[$this->fieldName()]))
+    { 
+      $onetomanyrecs = $record[$this->fieldName()];
+      if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
       {
-        $this->createDestination();        
-        $this->m_destInstance->addDb($record[$this->fieldName()]);
+        $this->createDestination();
+        for ($i=0;$i<count($onetomanyrecs);$i++)
+        {
+          $this->m_destInstance->addDb($onetomanyrecs[$i]);
+        }
       }
     }
   }
