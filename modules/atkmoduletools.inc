@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.22  2001/09/28 10:29:33  ivo
+ * Modulehandling cleanup.
+ *
  * Revision 1.21  2001/09/26 13:24:00  ivo
  * New method: moduleExists, to check if a module exists.
  *
@@ -95,16 +98,7 @@
   $g_nodeRepository = array();
   
   // A repository of module instances..
-  $g_moduleRepository = array();
-  
-  /**
-   * Registers an ATK module
-   */
-  function registerModule($module, $path="")
-  {
-    // call a function from atkconfigtools.
-    module($module,$path);
-  }
+  $g_moduleRepository = array();    
     
   /**
    * Gets the node type of a node string

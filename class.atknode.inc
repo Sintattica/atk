@@ -53,6 +53,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.113  2001/09/28 10:29:32  ivo
+   * Modulehandling cleanup.
+   *
    * Revision 4.112  2001/09/27 14:12:19  sandy
    * filled the g_user with complete record
    *
@@ -249,6 +252,10 @@
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
+  // Auto-register modules
+  if (file_exists("$config_module_path/config.modules.inc"))
+    include_once("$config_module_path/config.modules.inc");
+
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
   require_once($config_atkroot."atk/class.layout.inc");
@@ -303,10 +310,6 @@
    $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree");
 
   /************* MODULE HANDLING *************/
-
-  // Auto-register modules
-  if (file_exists("$config_module_path/config.modules.inc"))
-    include_once("$config_module_path/config.modules.inc");
           
   foreach ($g_modules as $modname => $modpath)
   {

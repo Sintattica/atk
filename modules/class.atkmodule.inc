@@ -11,6 +11,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.8  2001/09/28 10:29:33  ivo
+ * Modulehandling cleanup.
+ *
  * Revision 1.7  2001/09/19 15:21:55  ivo
  * Improved API for module handling: modules may now be constructorless,
  * which prevents a lot of overhead.
@@ -41,22 +44,7 @@
  */
   
   class atkModule
-  {
-    /* module nodes */
-    var $m_nodes = array();
-    
-    /* module attributes */
-    var $m_attributes = array();
-    
-    /* module menu items */
-    var $m_menu_items = array();
-    
-    /* preference links */
-    var $m_preference_links = array();
-    
-    /* admin links */
-    var $m_admin_links = array();
-    
+  {    
     var $m_name;
 
     /**
@@ -75,8 +63,7 @@
      * @return array with atknode names
      */
     function getNodes()
-    {
-      return $this->m_nodes;
+    {     
     }
 
     /**
@@ -85,8 +72,7 @@
      * @return array with attribute filenames
      */
     function getAttributes()
-    {
-      return $this->m_attributes;
+    {     
     }
 
     /**
@@ -96,8 +82,7 @@
      * @return array with menu items for this module
      */
     function getMenuItems()
-    {
-      return $this->m_menu_items;
+    {      
     }
 
     /**
@@ -108,7 +93,6 @@
      */
     function getPreferenceLinks()
     {
-      return $this->m_preference_links;
     }
 
     /**
@@ -119,17 +103,6 @@
      */
     function getAdminLinks()
     {
-      return $this->m_admin_links;
-    }
-
-    /**
-     * Register a node for this module
-     * @param $node name of the node (without modulename!)
-     * @param $action array with actions that can be performed on the node
-     */
-    function registerNode($node, $action)
-    {
-      $this->m_nodes[$node] = $action;
     }
     
     /**
@@ -142,20 +115,7 @@
     {
       $this->m_attributes[] = $file;
     }
-
-    /**
-     * Creates a new (sub)menu item or a new submenu
-     * @param $name menu item or submenu name
-     * @param $parent parent menu name (default is main)
-     * @param $url the url the item points to
-     * @param $enable enable this item or not
-     */
-    function menuitem($name, $url="", $parent="main", $enable=1, $order=0)
-    {
-//      if ($name == "-") $this->m_menu_items[$parent][] = "-"; else
-      $this->m_menu_items[$parent][] = array("name" => $name, "url" => $url, "enable" => $enable, "order"=>$order);
-    }
-    
+  
     /**
      * Creates a link to a preference page
      * @param $name the preference link name
