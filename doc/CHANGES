@@ -15,6 +15,7 @@ Changes in ATK 5.0.1
 * Fixed default value of $config_application_root for win compatibility. [Ivo]
 * Updated API documentation. [Ivo]
 * Fixed small bug for the Multi Record Actions. [Sandy]
++ Added Polish language file. [Lech]
 
 Changes in ATK 5.0
 ------------------
