@@ -87,7 +87,12 @@
               
        return $entity;      
      }
-          
+
+     
+    function setPasswordAllowed()
+     {
+        return false;
+     }
    }
 
 ?>

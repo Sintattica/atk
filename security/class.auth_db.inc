@@ -203,6 +203,11 @@
 
      }
      
+     function setPasswordAllowed()
+     {
+        return true;
+     }
+     
    }
 
 ?>
