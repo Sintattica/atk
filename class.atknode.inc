@@ -3230,6 +3230,7 @@
 
     function action_editcopy()
     {
+      global $g_db;
       atkdebug("atknode::action_editcopy()");
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
 
