@@ -473,7 +473,10 @@
       global $g_layout;
 
       $attribname = $this->fieldName();
-      $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
+      // Maybe the size is set manual (setAttribSize)
+      atkdebug($this->m_size);
+      if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $g_layout->maxInputSize());
+      else $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());
       $this->m_maxsize = $metadata[$attribname]['len'];
 
@@ -515,6 +518,16 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact","substring","wildcard","regexp");
+    }
+
+    /**
+     * Set the size of the text box manual
+     *
+     * @param $size the size of the text box
+     */
+    function setAttribSize($size)
+    {
+      $this->m_size = $size;
     }
 
   }
