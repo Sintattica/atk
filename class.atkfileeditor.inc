@@ -193,6 +193,7 @@
         fclose($fp);
         atkdebug("Wrote ".$record['filename']);
       }
+      return true;
     }    
     
     function updateDb(&$record)
@@ -225,10 +226,12 @@
           atkdebug("Wrote ".$record['filename']);
           $record['atkprimkey'] = $record['filename'];
         }
+        return true;
       }
       else
       {
         atkdebug("NOT UPDATING! NO SELECTOR SET!");
+        return false;
       } 
     }
     
@@ -245,6 +248,7 @@
       {
         atkerror("Cannot unlink relative files. Possible hack attempt detected!");        
       }
+      return true;
     }
   }
     
