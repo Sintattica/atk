@@ -41,6 +41,36 @@
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
     }
+    
+    function display($record, $mode="")
+    {
+      $record[$this->fieldName()] = $this->_convertDecimalSeperatorToPoint($record[$this->fieldName()]);
+      return parent::display($record, $mode);
+    }
+    
+    /**
+     * Replace decimal seperator (from the language files "decimal_seperator") 
+     * by . so, for instance, the Dutch 99,95 would become 99.95
+     * @param Float $number The number that needs to be converted
+     * @return Float The converted number 
+     */
+    function _convertDecimalSeperatorToPoint($number)
+    {
+      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
+        return str_replace(atktext("decimal_seperator"),".",$number);
+    }
+    
+    /**
+     * Replace decimal seperator . by the one from the language files so, for instance, 
+     * 99.95 would be converted to the Dutch 99,95
+     * @param Float $number The number that needs to be converted
+     * @return Float The converted number 
+     */
+    function _convertDecimalSeperatorFromPoint($number)
+    {
+      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
+        return str_replace(atktext("decimal_seperator"),".",$number);
+    }
 
     /**
      * Validates if value is numeric
@@ -51,9 +81,7 @@
      */    
     function validate(&$record, $mode)
     {
-      // Replace decimal seperator by . so the Dutch 99,95 would become 99.95
-      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
-        $record[$this->fieldName()] = str_replace(atktext("decimal_seperator"),".",$record[$this->fieldName()]);
+      $record[$this->fieldName()] = $this->_convertDecimalSeperatorToPoint($record[$this->fieldName()]);
       
       if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
          triggerError($record, $this->fieldName(), 'error_notnumeric');
@@ -99,7 +127,7 @@
      * @return Piece of htmlcode
      */
     function edit($record="", $fieldprefix="")
-    {
+    {      
       $maxsize = $this->m_maxsize;
       if ($this->m_decimals>0)
       {
