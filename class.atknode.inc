@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.33  2001/05/17 10:27:12  ivo
+   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+   *
    * Revision 4.32  2001/05/17 08:06:33  ivo
    * Fixes to atkfileattribute and onetoonerelation.
    *
@@ -2673,7 +2677,7 @@
      * @param $varname can be a string, or an array of strings.
      * @param $global global or local stickyvar
      */
-    function addStickyVar($varname,$global=true)
+    /*function addStickyVar($varname,$global=true)
     {
       if (is_array($varname))
       {
@@ -2683,14 +2687,14 @@
       {
         $this->m_stickyVars[] = $varname;
       }   
-    }
+    }*/
   
    /**
     * This function gets the value of a sticky var. There are several scopes
     * in which the value could have been defined. They are searched in the 
     * order $this->m_postvars, $HTTP_GET_VARS, $HTTP_POST_VARS, $GLOBALS.
     */
-    function getStickyValue($key)
+/*    function getStickyValue($key)
     {
       global $HTTP_GET_VARS, $HTTP_POST_VARS;
       if ($this->m_postvars[$key]!="") return $this->m_postvars[$key];
@@ -2698,7 +2702,7 @@
       if ($HTTP_POST_VARS[$key]!="") return $HTTP_POST_VARS[$key];
       if ($GLOBALS[$key]!="") return $GLOBALS[$key];
       return "";
-    }      
+    }      */
     
     /**
      * Puts all sticky vars in hidden form elements.

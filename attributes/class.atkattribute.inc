@@ -26,7 +26,7 @@
                                      // for compatibility reasons.
   define("AF_READONLY"     ,2048);   // Attribute is readonly
 
-  define ("AF_SEARCHABLE"  ,4096);   // Attribute is searchable in list views
+  define("AF_SEARCHABLE"  ,4096);   // Attribute is searchable in list views
 
   // flags specific for AtkFileAttribute
   define("AF_FILE_NO_UPLOAD"     , 8192);   // Unable to upload files
@@ -59,7 +59,8 @@
   define("AF_TOTAL", 67108864);             // The attribute will have a 'total' column in lists. 
 
   define("AF_PARENT", 134217728);           // the parent field for parent child relations in a treeview
-
+  define("AF_LARGE", 268435456); // Attribute will have a large ammount of 
+                                 // records.. (attribs can optimize accordingly)
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
@@ -87,6 +88,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/05/17 10:27:12  ivo
+   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+   *
    * Revision 4.6  2001/05/16 09:05:06  ivo
    * Revision tag test
    *

@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.9  2001/05/17 10:27:12  ivo
+   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+   *
    * Revision 4.8  2001/05/16 06:52:25  ivo
    * removed php short-tags.
    *
@@ -90,9 +94,6 @@
     {    
       if (is_array($rec[$this->fieldName()]))
       {     
-        //list($key,$value) = each($rec[$this->fieldName()]); // we only support relations with a single pk.. (the first element)
-        //return $value;
-        // The above doesn't work.. we have to do the clean thing..
         $this->createDestination();
         $pkfield = $this->m_destInstance->m_primaryKey[0];
         return $rec[$this->fieldName()][$pkfield];
@@ -124,9 +125,9 @@
       else
       {
         $field = $key;
-      }               
+      }                           
 
-      return array($field=>$value);
+      return array($field=>$value);      
     }
 
 
@@ -167,26 +168,73 @@
      */
     function edit($record="", $fieldprefix="")
     {
+      global $atklevel, $ATK_VARS;  
+    
       $this->createDestination();
-      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      // Two variances.. one with a dropdownbox containing all records,
+      // and one with a dropdownbox that contains the last 10 used records, 
+      // with a link to a selector with all records. This second one is for 
+      // relations with large tables, so is only used when AF_LARGE is set.            
       
-      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);    
-
-      $result = '<select name="'.$fieldprefix.$this->formName().'">';
-
-      if ($this->hasFlag(AF_OBLIGATORY)==false)
+      if (!$this->hasFlag(AF_LARGE))      
       {
-        // Relation may be empty, so we must provide an empty selectable..
-        $result.= '<option value="0">'.text('select_none');
-      }
+        // normal dropdown..
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);           
+        
+        $result = '<select name="'.$fieldprefix.$this->formName().'">';
+            
+        $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
-      for ($i=0;$i<count($recordset);$i++)
-      {
-        $pk = $this->m_destInstance->primaryKey($recordset[$i]);
-        if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
-        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+        if ($this->hasFlag(AF_OBLIGATORY)==false)
+        {
+          // Relation may be empty, so we must provide an empty selectable..
+          $result.= '<option value="0">'.text('select_none');
+        }
+
+        for ($i=0;$i<count($recordset);$i++)
+        {
+          $pk = $this->m_destInstance->primaryKey($recordset[$i]);
+          if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
+          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+        }
+        $result.='</select>';
       }
-      $result.='</select>';
+      else
+      {
+        // Large mode
+        // TODO: Fill a dropdown box with recent records.. 
+        
+        $selname = $fieldprefix.$this->fieldName()."_newsel";
+        $remotekey = $this->m_destInstance->primaryKeyField();        
+      
+        if ($ATK_VARS[$selname]!="")
+        {
+          // new record selected..         
+          $record[$this->fieldName()][$remotekey] = $ATK_VARS[$selname];
+        }            
+        
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);           
+        
+        $result.=$this->hide($record, $fieldprefix);
+        
+        if ($record[$this->fieldName()][$remotekey]!="")
+        {        
+          $selrec = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        
+          $result.= $this->m_destInstance->descriptor($selrec[0])."&nbsp;&nbsp;";
+                        
+          // we use the current level to automatically return to this page 
+          // when we come from the select.. 
+          $atktarget = rawurlencode("dispatch.php?atklevel=".$atklevel."&".$selname."=[".$remotekey."]");
+          $result.= href("dispatch.php?atknodetype=".$this->m_destination.
+                                     "&atkaction=select&atktarget=".$atktarget,
+                         text("link_select_".getNodeType($this->m_destination)),
+                         SESSION_NESTED,
+                         true);
+                
+        }
+        var_dump($record[$this->fieldName()]);
+      }
       return $result;
     }
     

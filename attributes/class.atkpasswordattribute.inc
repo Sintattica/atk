@@ -11,6 +11,10 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.1  2001/05/17 10:27:12  ivo
+ * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+ * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+ *
  * Revision 4.0  2001/04/23 10:20:39  ivo
  * revision tags.
  *
@@ -61,10 +65,9 @@ class atkPasswordAttribute extends atkAttribute
    */
   function edit($record="")
   {
-    global $HTTP_GET_VARS;
-    global $HTTP_POST_VARS;
+    global $ATK_VARS;    
     
-    $action = sizeof($HTTP_GET_VARS) > 0 ? $HTTP_GET_VARS["atkaction"] : $HTTP_POST_VARS["atkaction"];
+    $action = $ATK_VARS["atkaction"];
    
     /* insert */
     if ($action != 'edit' && $action != 'update')
@@ -144,10 +147,9 @@ class atkPasswordAttribute extends atkAttribute
    */
   function fetchValue($rec)
   {
-    global $HTTP_GET_VARS;
-    global $HTTP_POST_VARS;
+    global $ATK_VARS;    
 
-    $action = sizeof($HTTP_GET_VARS) > 0 ? $HTTP_GET_VARS["atkaction"] : $HTTP_POST_VARS["atkaction"];
+    $action = $ATK_VARS["atkaction"];
     if ($action == 'update' && strlen($rec[$this->fieldName()]["new"]) == 0 && strlen($rec[$this->fieldName()]["again"]) == 0)
       return $rec[$this->fieldName()];
     else return array("hash" => md5($rec[$this->fieldName()]["new"]));
@@ -160,10 +162,9 @@ class atkPasswordAttribute extends atkAttribute
    */
   function validate($value)
   {
-    global $HTTP_GET_VARS;
-    global $HTTP_POST_VARS;
+    global $ATK_VARS;    
 
-    $action = sizeof($HTTP_GET_VARS) > 0 ? $HTTP_GET_VARS["atkaction"] : $HTTP_POST_VARS["atkaction"];
+    $action = $ATK_VARS["atkaction"];
 
 //    if ($action == 'save' && (strlen($value["new"]) == 0 || strlen($value["again"]) == 0))
 //      return text("password_invalid");

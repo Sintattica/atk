@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.12  2001/05/17 10:27:12  ivo
+   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+   *
    * Revision 1.11  2001/05/11 15:24:55  peter
    * Some updates for the module support and some other things...
    *
@@ -129,7 +133,7 @@
     
     function stackscope(&$postvars)
     {
-      global $g_sessionData, $atklevel, $g_sessionVars;
+      global $g_sessionData, $atklevel, $g_sessionVars, $HTTP_GET_VARS;
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
       atkdebug("ATKLEVEL: ".$atklevel);
             
@@ -198,13 +202,22 @@
               $atkformdata[$varname] = $postvars[$varname];
             }
           }
-          $currentitem["atkformdata"] = $atkformdata;          
+          $currentitem["atkformdata"] = $atkformdata;    
+          
+          // also remember getvars that were passed in the url
+          foreach(array_keys($HTTP_GET_VARS) as $var)
+          {       
+            if (isset($postvars[$var])&&$postvars[$var]!="")
+            {
+              $currentitem[$var] = $postvars[$var];
+            }
+          }
           
           // save it in the session stack..
           $stack[$atklevel] = $currentitem;       
         }
         
-        foreach($g_sessionVars as $var)
+        foreach($g_sessionVars as $var)                                                 
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {

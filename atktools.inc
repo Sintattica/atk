@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.7  2001/05/17 10:27:12  ivo
+  * Fixes to session management, new AF_LARGE feature for manytoonerelation.
+  * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
+  *
   * Revision 4.6  2001/05/14 10:20:19  ivo
   * Improved error reporting when database queries fail.
   * New feature: atk can now send a detailed error report by email.
@@ -256,7 +260,8 @@
     {
       $start = "?";
     }
-    if ($newlevel!=0) 
+    // atklevel is already set manually, we don't append it.. 
+    if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
     {
       $url.= $start."atklevel=".$newlevel."&".SID;
     }
