@@ -116,6 +116,8 @@
   $txt_auth_no_server = "No server specified. No authentication possible (please consult your system administrator).";
   $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";    
   
+  $txt_error_primarykey_exist = "A record with this key already exists";
+  
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Select a color";
 

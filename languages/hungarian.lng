@@ -97,6 +97,8 @@
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-1";
   
+  $txt_error_primarykey_exist = "A record with this key already exists";
+  
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Select a color";
     
