@@ -2331,6 +2331,10 @@
           atkdebug("Applying modifier from module $modname to ".$this->m_type);
           $mod->$modifiername($this);
         }
+        else
+        {
+          atkdebug("Modifier function for $modifiername not found!");
+        }
       }
       // See if there are modules active that modify this module.node..
       // for example, modules modifying 'finance.bill'
