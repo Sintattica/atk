@@ -18,7 +18,6 @@
   atkdebug("cookiepath: ".$cookiepath." session_name(): ".session_name()." session_id(): ".session_id()." SID: ".SID." REQUEST: ".$_REQUEST[session_name()]." COOKIE: ".$_COOKIE[session_name()]);  
 
   global $config_identifier;
-  if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
   if (empty($config_identifier)) $config_identifier = "default";
   
   // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
