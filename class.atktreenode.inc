@@ -135,7 +135,7 @@
     function Fill_tree($tree="", $level=0)
     {
       atkdebug("WARNING: use of deprecated function Fill_tree, use treeToArray instead");
-      return treeToArray($tree, $level);
+      return $this->treeToArray($tree, $level);
     }
     
     /**
