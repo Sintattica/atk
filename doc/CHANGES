@@ -23,6 +23,7 @@ Changes in ATK 5.0.4
 * atkViewHandler hides back button if going back is not an option. [Mark]
 * Fixed bugs in AF_LARGE flag. (bug #302, #330) [Yuri]
 * AF_RELATION_AUTOLINK checks edit/add permission when displaying links. [Ivo]
+* Fixed field/label alignment in outlook and default themes. [Ivo]
 
 Changes in ATK 5.0.3
 --------------------
