@@ -46,7 +46,7 @@
     var $m_seq_namefield = "seq_name";
     
     /* set to 1 for automatic freeing of results */    
-    var $m_auto_free = 0;
+    var $m_auto_free = 1;
     
     /* set to 1 to set debugging on */    
     var $m_debug = 0; 
