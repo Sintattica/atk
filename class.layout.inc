@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.6  2001/05/18 08:56:52  sandy
+  * small fix in theme load
+  *
   * Revision 4.5  2001/05/14 10:20:19  ivo
   * Improved error reporting when database queries fail.
   * New feature: atk can now send a detailed error report by email.
@@ -468,11 +471,11 @@
       global $g_theme;
                   
       // First check local theme directory
-      if(file_exists("themes/".$g_theme["Name"]."/layout.inc") &&
-         file_exists("themes/".$g_theme["Name"]."/block_top.tmpl") &&
-         file_exists("themes/".$g_theme["Name"]."/block_bottom.tmpl"))
+      if(file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/layout.inc") &&
+         file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_top.tmpl") &&
+         file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/block_bottom.tmpl"))
       {        
-        $this->m_tpldir = "themes/".$g_theme["Name"]."/";
+        $this->m_tpldir = atkconfig("atkroot")."themes/".$g_theme["Name"]."/";
       }
       // else check atk themes directory
       else if (file_exists(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/layout.inc") &&
