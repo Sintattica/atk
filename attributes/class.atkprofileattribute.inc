@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.6  2001/10/01 13:53:13  ivo
+   * Updated profileattribute to new module api.
+   *
    * Revision 4.5  2001/09/24 07:28:59  ivo
    * Fixed a bug with module handling in profile attribute.
    *
@@ -76,7 +79,7 @@
     
     function edit($record)
     {
-      global $g_modules;  
+      global $g_modules, $g_nodes;  
     
       /* get nodes */
       require_once("atk/atknodetools.inc");
@@ -86,7 +89,7 @@
       $checked = $record[$this->fieldName()];
       
       /***  main application ***/
-      $nodes = $GLOBALS["g_nodes"];
+      $nodes = $g_nodes["main"];
       if (count($nodes) > 0)
       {
         if (count($g_modules)>0)
@@ -108,7 +111,7 @@
               if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
               $result.='> '.text($action).'&nbsp;&nbsp;&nbsp;';
             }
-            $result.="<br><br>";
+            $result.="<br><br>\n";
           }
         }
       }
@@ -117,10 +120,12 @@
       foreach ($g_modules as $modname => $pathname)
       {
         $mod_inst = getModule($modname);
-        $nodes = $mod_inst->getNodes();
+        if (method_exists($mod_inst,"getNodes")) $mod_inst->getNodes();
+        
+        $nodes = $g_nodes[$modname];
         if (count($nodes) > 0)
-        {
-          $result .= "<br><b><u>".text("title_$modname")."</u></b><br><br>";      
+          {
+          $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>";      
           while (list($node, $actionarr) = each($nodes))
           {
             $checked_actions = $checked["$modname.$node"];
@@ -135,7 +140,7 @@
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
                 $result.='> '.text($action).'&nbsp;&nbsp;&nbsp;';
               }
-              $result.="<br><br>";
+              $result.="<br><br>\n";
             }
           }
         }
