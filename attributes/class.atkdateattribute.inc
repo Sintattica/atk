@@ -124,7 +124,7 @@
 
 
       /* register javascript */
-      $g_layout->register_script("include.php?file=atk/javascript/class.atkdateattribute.js.inc");
+      $g_layout->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
 
       /* base class constructor */
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // FIXME.. until the searchCondition() and
