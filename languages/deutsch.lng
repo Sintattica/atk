@@ -113,5 +113,7 @@
   $txt_search_wildcard = "Suche met Platzhaltern (*)";
   $txt_search_regexp = "Suche mit regulären Ausdrücken (Profi)";
   $txt_search_soundex = "Suche mit ähnlich klingenden Wörtern";
+  
+  $txt_search_mode = "Suchmodus";
 
 ?>

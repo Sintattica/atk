@@ -115,4 +115,6 @@
   $txt_search_regexp = "Zoek met een reguliere expressie (geavanceerd)";
   $txt_search_soundex = "Zoek naar een string die ongeveer hetzelfde klinkt";
   
+  $txt_search_mode = "Zoekmanier";
+  
 ?>
