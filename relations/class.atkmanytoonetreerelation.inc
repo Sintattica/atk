@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/04 11:37:42  sandy
+   * small bug fixes (split function, refresh, treeview,etc)
+   *
    * Revision 4.1  2001/05/01 12:32:54  sandy
    * removed the debug functions and created a new Tree relations
    *
@@ -69,7 +72,7 @@
       $this->createDestination();
       $tmp1=atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
       $tmp2=atk_array_merge($tmp1,array($this->m_destInstance->m_parent));
-      $this->m_destInstance->selectDb("","cat_id","","",$tmp2);
+      $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
       $current = createNode($this->m_destination); 
       $current->m_records[0] = $record[$this->fieldName()];
       
@@ -128,7 +131,6 @@
       {
        if($m_current == $this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") { $sel="SELECTED";$m_level=$level; } else { $sel=""; }
         $res.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat("-",(2*$level))." ".$objarr->m_label;
-        //echo "$res<br>\n";
         if (count($objarr->m_sub)>0 && $sel=="")
         {          
           $res.=$this->render($objarr->m_sub, $level+1);

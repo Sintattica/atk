@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/04 11:37:42  sandy
+   * small bug fixes (split function, refresh, treeview,etc)
+   *
    * Revision 4.3  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
    * new relational features: maxRecords for oneToManyRelation, filter for
@@ -135,8 +138,7 @@
     function display($record)
     {    
       $this->createDestination();
-      $this->m_destInstance->m_records[0]=$record[$this->fieldName()];
-      return $this->m_destInstance->descriptor();
+      return $this->m_destInstance->descriptor($record[$this->fieldName()]);
 /*
       if ($record[$this->fieldName()]!="")
       {

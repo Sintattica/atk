@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.18  2001/05/04 11:37:42  sandy
+   * small bug fixes (split function, refresh, treeview,etc)
+   *
    * Revision 4.17  2001/05/03 07:47:35  ivo
    * Stacktrace is now only displayed once per page..
    *
@@ -1261,7 +1264,6 @@
       // sort the list by that attribute.
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
-      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -1891,6 +1893,14 @@
       }
       else
       {
+        if ((strpos($location,'&')+1 == strlen($location))) 
+        { 
+          $location=substr($location,0,strlen($location)-1); 
+        }
+        if ((strpos($location,'?')+1 == strlen($location))) 
+        { 
+          $location=substr($location,0,strlen($location)-1); 
+        }
         header('Location: '.$location);
       }
     }

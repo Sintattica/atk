@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.3  2001/05/04 11:37:42  sandy
+  * small bug fixes (split function, refresh, treeview,etc)
+  *
   * Revision 4.2  2001/05/02 12:44:21  ivo
   * multilevel session_back feature.
   * new relational features: maxRecords for oneToManyRelation, filter for
@@ -307,7 +310,7 @@
    */
   function decodeKeyValuePair($pair)
   {
-    list($key,$value)=split("=",$pair);
+    list($key,$value)=split("==|!=|<>|>=|<=|=|<|>",$pair);
     return Array($key=>stripQuotes($value));    
   }
   
