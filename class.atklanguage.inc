@@ -125,19 +125,20 @@
      */
     function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false)
     {
-      if(is_numeric($string)) return $string;
       $atklanguage =& atkLanguage::getInstance();
       
-      $atklanguage->_preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
-      $finalstring = $atklanguage->_getStringName($string, $module, $node, $lng);
-      $atklanguage->_postTextChecks($finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext);
-      
+      if ($atklanguage->preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext))
+      {
+        $finalstring = $atklanguage->_getStringName($string, $module, $node, $lng);
+      }
+      $atklanguage->postTextChecks($finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext);
       return $finalstring;
     }
       
     
     /**
      * This function performs some checks on the variables that were passed with the text call
+     * if it fails this check and a false is returned atkLanguage will not continue with getting the string
      *
      * @access private
      * @param string &$string       the name of the string to return
@@ -146,9 +147,12 @@
      * @param string &$lng          ISO 639-1 language code, defaults to config variable
      * @param string $firstfallback the first module to check as part of the fallback
      * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
+     * @return bool                 if true then it will go on, if not it will not look up the string
      */
-    function _preTextChecks(&$string, &$module, &$node, &$lng, $firstfallback, $nodefaulttext)
+    function preTextChecks(&$string, &$module, &$node, &$lng, $firstfallback, $nodefaulttext)
     {
+      global $ATK_VARS;
+      
       if ($module)
       {
         $this->m_originalmodule = $module;
@@ -159,10 +163,15 @@
       {
         array_unshift($this->m_fallbackmodules, $firstfallback);
       }
-      
+            
       $module = "langoverrides";
       
+      if (!$lng && $ATK_VARS["lng"]) { $lng = $ATK_VARS["lng"]; } // we first check for a lng variable
       if (!$lng) { $lng = atkconfig("language", atkconfig("lang")); } // language is nicer, lang is backwardscompatible with iep2.
+      $lng = strtolower($lng); // language files should always be lowercase
+      
+      if(is_numeric($string)) return false;
+      return true;
     }
     
     /**
@@ -177,7 +186,7 @@
      * @param string $firstfallback the first module to check as part of the fallback
      * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
      */
-    function _postTextChecks(&$finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext)
+    function postTextChecks(&$finalstring, $string, $module, $node, $lng, $firstfallback, $nodefaulttext)
     {
       if (!$finalstring)
       {
@@ -190,6 +199,7 @@
           $finalstring = false;
         }
       }
+      return true;
     }
     
     /**
@@ -204,7 +214,7 @@
      */
     function _getStringName($string, &$module, $node, $lng)
     {
-  //    atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
+//      atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
       if ($this->_getLanguageFile($module,$lng))
       {
         $finalstring = $this->_getString($string, $node, $module, $lng);
@@ -285,7 +295,11 @@
         $file = moduleDir($module).$this->LANGDIR."/$lng.lng";
       }
       if(file_exists($file)) {return $this->_setLanguage($file, $module, $lng);}
-      else {return false;}
+      else 
+      {
+//        atkdebug("atkLanguage: failed to get language file for module: $module with language: $lng"); 
+        return false;
+      }
     }
     
     /**
@@ -329,36 +343,25 @@
      * @param string $string    the name which was given when the text function was called
      * @param string $module    the name of the module to which the text function belongs
      * @param string $node      the name of the node to which the text function belongs
-     * @param bool $checkmodule wether or not to check for module specific strings
      * @return var the true name by which the txt is called or false if we can't find any entry
      */
-    function _getString($string, $node, $module, $lng, $checkmodule=false)
-    {    
-      if ($checkmodule)
+    function _getString($string, $node, $module, $lng)
+    { 
+      if (atkconfig("atklangcheckmodule"))
       {
         if ($node)
         {
           $key = $node."_".$string;
-          if (empty($this->m_cachedlang[$module][$lng][$key]))
+          if (empty($this->m_cachedlang[$module][$lng][$key]) && atkconfig("atklangcheckmodule") == 2)
           {
-            $key = $module."_".$node."_".$string;
+            $key = $module."_".$string;
             if (empty($this->m_cachedlang[$module][$lng][$key]))
-            {
-              $node = "";
-              return $this->_getString($string, $node, $module, $lng);
-            }
+            { $key = $module."_".$node."_".$string; }
           }
-        }
-        else
-        {
-          $key = $module."_".$string;
-          if (empty($this->m_cachedlang[$module][$lng][$key]))
-          {
-            return $this->_getString($string, $node, $module, $lng,false);
-          }
-        }
+        }          
       }
-      else { $key = $string; }
+      if (!$key || !$this->m_cachedlang[$module][$lng][$key])
+      { $key = $string; }
       
       return (!empty($this->m_cachedlang[$module][$lng][$key])?$this->m_cachedlang[$module][$lng][$key]:false);
     }
