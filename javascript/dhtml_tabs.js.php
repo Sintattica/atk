@@ -15,12 +15,40 @@
    * $Id$
    */
 ?>
+
+// For backwards compatibility
+function get_object(name)
+{
+         if (document.getElementById)
+         {
+                 return document.getElementById(name);
+         }
+         else if (document.all)
+         {
+                 return document.all[name];
+         }
+         else if (document.layers)
+         {
+                 return document.layers[name];
+         }
+         return false;
+ }
    
 function showTab(tab)
 {  
 	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
-	var tabid = document.getElementById("atknodetype").value;
+	var tabidobj = get_object("atknodetype");
+	
+	// IE works with .value, while the Gecko engine uses .innerHTML
+	if (tabidobj.value) 
+	{ 
+	   var tabid = tabidobj.value;
+	}
+	else if (tabidobj.innerHTML)
+	{
+	  var tabid = tabidobj.innerHTML;
+	}
 	
 	// Next, check wether the parent tab array has been set
 	if (!parent.document.tab)

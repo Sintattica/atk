@@ -31,6 +31,8 @@ Changes in ATK 5.0.5
   and the DHTML tabbing uses this instead of the URL [Boy]
 + Added paging in atkOneToManyrelation (embedded recordlist) [Harrie]
 * You can now pass along your own filter to the atkNavigator [Boy]
+* Tab-remembering fixed for older browsers 
+  and for both IE and Gecko engine [Boy]
 
 Changes in ATK 5.0.4
 --------------------
