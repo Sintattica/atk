@@ -14,6 +14,8 @@
    * @version $Revision$
    * $Id$
    */
+
+   include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
    
   /**
    * The atkTextAttribute class represents an attribute of a node
@@ -25,9 +27,6 @@
    * @todo autadjust needs to be modified as not every character == 1 column,
    *       perhaps forcing every textattribute to use a non-proportional font?
    */  
-   
-  include(atkconfig("atkroot")."atk/atkbrowsertools.inc");
-  
   class atkTextAttribute extends atkAttribute
   {
     // number of rows of the edit box
@@ -171,7 +170,7 @@
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {    	
-    	$browser = new browserInfo; 
+  	$browser = new browserInfo; 
     	
     	for ($counter = 0, $linecharacters=0, $rowsrequired=1; 
     	     $counter<strlen($data); 
