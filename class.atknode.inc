@@ -687,7 +687,10 @@
       foreach(array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        $list = atk_array_merge($list, $p_attrib->getTabs($action));
+        if(is_object($p_attrib))
+        {
+          $list = atk_array_merge($list, $p_attrib->getTabs($action));
+        } else atkdebug("atknode::getTabs() Warning: $attribname is not een object!?");
       }
       return $list;
     }
