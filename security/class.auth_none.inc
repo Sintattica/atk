@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -41,17 +45,22 @@
      
      function getUser($user)
      {
-       return Array("name"=>"","level"=>-1);
+       return array("name"=>"","level"=>-1);
      }
      
      function getEntity($node,$action)
      {
-       return Array();
+       return array();
      }
      
      function getAttribEntity($node, $attrib, $mode)
      {
-       return Array();
+       return array();
+     }
+     
+     function canMd5()
+     {
+       return false;
      }
    }
 

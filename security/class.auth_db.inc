@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.4  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.3  2001/06/29 11:26:59  ivo
    * Patches to oracle support.
    *
@@ -148,6 +152,11 @@
        }
        
        return $result;
+     }
+     
+     function canMd5()
+     { 
+       return atkconfig("authentication_md5");
      }
    }
 

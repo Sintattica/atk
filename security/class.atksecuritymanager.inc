@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.18  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.17  2001/07/09 12:58:28  ivo
    * Small fixes to pop3 authentication.
    *
@@ -203,7 +207,7 @@
         // other users     
         else 
         {     
-          if (atkconfig("authentication_md5")&&!$md5)
+          if ($this->m_authentication->canMd5()&&!$md5)
           {
             $PHP_AUTH_PW = md5($PHP_AUTH_PW);
           }       

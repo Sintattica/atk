@@ -1,9 +1,9 @@
 <?php
 
   /**
-   * This class is the interface for all auth_ classes
-   *
-   * <b>Todo's</b>   : - everything
+   * This class is the interface for all auth_ classes. All new 
+   * authentication/authorization methods need to derive from this 
+   * class.   
    *
    * @author Ivo Jansch (ivo@achievo.com)
    *
@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.2  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.1  2001/05/21 13:38:18  ivo
    * Added a cookie that can remember your login if you close your browser.
    * (disabled by default, enable in your configfile if you need it)
@@ -35,26 +39,57 @@
 
   class auth_interface 
   {         
-    // Note: if config_authentication_md5 is set to true, the password will 
-    // be passed as an md5 string.
+    /**
+     * Authenticate a user. 
+     * Note: if the canMd5 function returns true, $passwd is passed as an md5 string.
+     */
     function validateUser($user, $passwd)
     {
       return false; // dummy implementation. should not be used.
     }
     
+    /** 
+     * This function returns information about a user in an associative
+     * array with the following elements:
+     * "name" -> the userid (should normally be the same as the $user 
+     *           variable that gets passed to it.
+     * "level" -> The level/group(s) to which this user belongs.
+     *
+     */
     function getUser($user)
     {
-      return Array("name"=>"","level"=>0); // dummy implementation, should not be used.
+      return array("name"=>$user,"level"=>0); // dummy implementation, should not be used.
     }
     
+    /**
+     * This function returns the level/group(s) that are allowed to perform
+     * the given action on a node.
+     */
     function getEntity($node, $action)
     {
-      return Array();
+      return array();
     }
     
+    /** 
+     * This function returns the level/group(s) that are allowed to 
+     * view/edit ($mode) a certain attribute of a given node.
+     */
     function getAttribEntity($node, $attrib, $mode)
     {
-      return Array();
+      return array();
+    }
+    
+    /**
+     * Does the authentication method support md5 encoding of passwords?
+     *
+     * This function should return: true if md5 is always used.
+     *                              false if md5 is not supported.
+     *                              atkconfig("authentication_md5") if it
+     *                              is configurable.
+     */ 
+    function canMd5()
+    {
+      return atkconfig("authentication_md5");
     }
   }
 

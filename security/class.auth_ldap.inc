@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 1.3  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 1.2  2001/05/21 13:38:18  ivo
    * Added a cookie that can remember your login if you close your browser.
    * (disabled by default, enable in your configfile if you need it)
@@ -59,6 +63,11 @@
      function getAttribEntity($node, $attrib, $mode)
      {
        return Array();
+     }
+     
+     function canMd5()
+     {
+       return atkconfig("authentication_md5"); // ?? Is this correct? can we store passwords as md5 in ldap?
      }
    }
 

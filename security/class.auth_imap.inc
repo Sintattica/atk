@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.2  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.1  2001/06/18 10:24:58  peter
    * Split POP3/IMAP authentication support (mainly a new POP3 auth class).
    * Authentication and authorization can now be done by different auth classes.
@@ -59,6 +63,11 @@
      function getAttribEntity($node, $attrib, $mode)
      {
        return Array();
+     }
+     
+     function canMd5()
+     {
+       return false;
      }
    }
 

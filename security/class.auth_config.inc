@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/07/09 15:40:46  ivo
+   * Authentication classes can now indicate whether they support md5 encoding
+   * of passwords.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -76,6 +80,11 @@
        $entity = $config_attribrestrict[$node][$attrib][$mode];
               
        return $entity;      
+     }
+     
+     function canMd5()
+     {
+       return atkconfig("authentication_md5");
      }
    }
 

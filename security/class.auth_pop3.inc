@@ -8,6 +8,10 @@
  * <b>Changes</b>:
  * $Id$
  * $Log$
+ * Revision 4.3  2001/07/09 15:40:46  ivo
+ * Authentication classes can now indicate whether they support md5 encoding
+ * of passwords.
+ *
  * Revision 4.2  2001/07/09 12:58:28  ivo
  * Small fixes to pop3 authentication.
  *
@@ -80,6 +84,15 @@ class auth_pop3 extends auth_interface
   function getAttribEntity($node, $attrib, $mode)
   {
     return array();
+  }
+  
+  /** 
+   * pop3 can't handle md5 passwords since they must be sent to the server
+   * as plain text.
+   */
+  function canMd5()
+  {
+    return false;
   }
 }
 ?>
