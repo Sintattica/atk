@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.37  2001/05/17 12:28:46  ivo
+   * Committed the wrong pageVars in previous commit.
+   *
    * Revision 4.36  2001/05/17 12:24:32  ivo
    * I'm stupid. Ofcourse atkselector is a sessionvar. just not a pagevar per
    * se.
@@ -459,7 +462,7 @@
       
    // session vars are valid until they are set to something else. if you go a session level higher,
    // the next level will still contain these vars (unless overriden in the url)
-   $g_sessionVars = array("atknodetype","atkfilter","atkaction");
+   $g_sessionVars = array("atknodetype","atkfilter","atkaction","atkselector");
    
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
