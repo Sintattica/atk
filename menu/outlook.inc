@@ -20,19 +20,7 @@ function menu_href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
   }
 ?>
 <HTML>
-<!--
- ---------------------------------------------------------------------------
- this script is copyright (c) 2001 by Michael Wallner!
- http://www.wallner-software.com
- mailto:dhtml@wallner-software.com
 
- you may use this script on web pages of your own
- you must not remove this copyright note!
-
- This script featured on Dynamic Drive (http://www.dynamicdrive.com)
- Visit http://www.dynamicdrive.com for full source to this script and more
- ---------------------------------------------------------------------------
--->
 <HEAD>
 <BASE TARGET="main">
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
@@ -113,7 +101,7 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
     }
       
     /* normal menu item */
-    else if ($enable) echo "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."../".$url."\"');\n";
+    else if ($enable) echo "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
     else 
     {
       //$menu .= text("menu_$name").$config_menu_delimiter;    
