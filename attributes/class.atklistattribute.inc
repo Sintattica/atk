@@ -16,7 +16,10 @@
    * $Id$
    */
    
-   define("AF_NO_TRANSLATION",             AF_SPECIFIC_1); // Do not translate the options
+   /** 
+    * Flags for the attribute
+    */
+   define("AF_NO_TRANSLATION", AF_SPECIFIC_1); // Do not translate the options
 
   /**
    * The atkListAttribute class represents an attribute of a node
