@@ -204,7 +204,7 @@
     }
 
     /**
-     * Adds a flag to the attribute
+     * Adds a flag to the attribute.
      * Note that adding flags at any time after the constructor might not 
      * always work. There are flags that are processed only at 
      * constructor time.
@@ -216,7 +216,8 @@
     }
 
     /**
-     * Removes a flag from the attribute
+     * Removes a flag from the attribute.
+     *
      * Note that removing flags at any time after the constructor might not
      * always work. There are flags that have already been processed at 
      * constructor time, so removing them will be futile.
@@ -229,6 +230,7 @@
 
     /**
      * Returns the name of the attribute. 
+     *
      * For most attributes, this corresponds to the name of the field in the
      * database. For some attributes though (like one2many relations), the
      * name is a mere identifier within a node. This method always returns
@@ -264,7 +266,9 @@
 
     /**
      * Converts the internal attribute value to one that is understood by the
-     * database. For the regular atkAttribute, this means escaping things like
+     * database.
+     *
+     * For the regular atkAttribute, this means escaping things like
      * quotes and slashes. Derived attributes may reimplement this for their
      * own conversion. 
      * This is the exact opposite of the db2value method.
@@ -279,6 +283,7 @@
 
     /**
      * Converts a database value to an internal value. 
+     *
      * For the regular atkAttribute, this means stripping slashes.
      * Derived attributes may reimplement this for their own conversion.
      * (In which case, the return type might be 'mixed')
@@ -296,6 +301,7 @@
     /**
      * Convert values from an HTML form posting to an internal value for 
      * this attribute. 
+     *
      * For the regular atkAttribute, this means getting the field with the
      * same name as the attribute from the html posting. 
      *
@@ -366,8 +372,9 @@
     }
 
     /**
-     * Adds the attribute's edit / hide HTML code to the edit array. This
-     * method is called by the node if it wants the data needed to create
+     * Adds the attribute's edit / hide HTML code to the edit array.
+     *
+     * This method is called by the node if it wants the data needed to create
      * an edit form.
      * 
      * This is a framework method, it should never be called directly.
@@ -430,6 +437,7 @@
     
     /**
      * Retrieve the html code for placing this attribute in an edit page.
+     *
      * The difference with the edit() method is that the edit() method just
      * generates the HTML code for editing the attribute, while the getEdit()
      * method is 'smart', and implements a hide/readonly policy based on
@@ -571,7 +579,9 @@
 
     /**
      * Returns a piece of html code that can be used to get search terms input
-     * from the user. The framework calls this method to display the searchbox
+     * from the user.
+     *
+     * The framework calls this method to display the searchbox
      * in the search bar of the recordlist, and to display a more extensive
      * search in the 'extended' search screen.
      * The regular atkAttributes returns a simple text input box for entering
@@ -625,6 +635,7 @@
 
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
+     *
      * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
      * methods to prepare a value for display.
      *
@@ -644,9 +655,10 @@
     }
 
     /**    
-     * Checks if a value is valid. The regular atkAttribute has no specific
-     * validation. Derived attributes may override this method to perform
-     * custom validation.
+     * Checks if a value is valid. 
+     *
+     * The regular atkAttribute has no specific validation. Derived attributes
+     * may override this method to perform custom validation.
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
@@ -659,9 +671,10 @@
     }
 
     /**
-     * Adds this attribute to database queries. Database queries (select,
-     * insert and update) are passed to this method so the attribute can
-     * 'hook' itself into the query.
+     * Adds this attribute to database queries. 
+     *
+     * Database queries (select, insert and update) are passed to this method
+     * so the attribute can 'hook' itself into the query.
      *
      * Framework method. It should not be necessary to call this method 
      * directly. Derived attributes that consist of more than a single simple
@@ -693,9 +706,11 @@
 
     /**
      * The delete method is called by the framework to inform the attribute
-     * that a record is deleted. The regular atkAttribute has no
-     * implementation for this method, but derived attributes may override
-     * this, to take care of cleanups, cascade deletes etc.
+     * that a record is deleted.
+     *
+     * The regular atkAttribute has no implementation for this method, but
+     * derived attributes may override this, to take care of cleanups, cascade
+     * deletes etc.
      * Note, that the framework only calls this method if the attribute has
      * the AF_CASCADE_DELETE flag.
      *
@@ -711,11 +726,13 @@
     }
 
     /**
-     * Calculate the sum of 2 records. This is called by the framework for the
-     * auto-totalling feature. Two records are passed, and a record is
-     * returned. The reason that the params are entire records instead of
-     * plain values, is that derived classes or custom attributes may need
-     * information from other attributes too.
+     * Calculate the sum of 2 records. 
+     *
+     * This is called by the framework for the auto-totalling feature. Two
+     * records are passed, and a record is returned. The reason that the
+     * params are entire records instead of plain values, is that derived
+     * classes or custom attributes may need information from other attributes
+     * too.
      * 
      * @param array $rec1 The first record
      * @param array $rec2 The second record
@@ -730,8 +747,10 @@
 
     /**
      * Fetch the metadata about this attrib from the table metadata, and
-     * process it. Lengths for the edit and searchboxes, and maximum lengths
-     * are retrieved from the table metadata by this method.
+     * process it. 
+     *
+     * Lengths for the edit and searchboxes, and maximum lengths are retrieved
+     * from the table metadata by this method.
      *
      * @param array $metadata The table metadata from the table for this
      *                        attribute.
@@ -758,6 +777,7 @@
 
     /**
      * This function is called right after the attribute is added to the node.
+     *
      * The regular atkAttribute has no implementation for this method, but
      * derived attributes may override this method to perform custom
      * initialization.
@@ -768,9 +788,10 @@
 
     /**
      * This function is called to compare if two records are considered equal
-     * by this attribute. The regular atkAttribute performs a simple string
-     * match; derived classes may override this method to perform more complex
-     * comparisons.
+     * by this attribute. 
+     *
+     * The regular atkAttribute performs a simple string match; derived
+     * classes may override this method to perform more complex comparisons.
      * 
      * @param array $recA The first record holding a value for this attribute.
      * @param array $recB The second record holding a value for the attribute.
@@ -785,6 +806,7 @@
     /**
      * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an updateDb call.
+     *
      * The regular atkAttribute returns false if AF_READONLY_EDIT or
      * AF_HIDE_EDIT are set, but derived attributes may override this
      * behavior.
@@ -801,6 +823,7 @@
     /**
      * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an addDb call.
+     *
      * The regular atkAttribute returns false if the value is empty, or if
      * AF_HIDE is set; true in other cases. Exception: when AF_AUTO_INCREMENT
      * is set, the method always returns true. Derived attributes may override
@@ -824,6 +847,7 @@
 
     /**
      * Retrieve the list of searchmodes supported by the attribute. 
+     *
      * Note that not all modes may be supported by the database driver.
      * Compare this list to the one returned by the databasedriver, to 
      * determine which searchmodes may be used.
@@ -951,6 +975,7 @@
     
     /**
      * Return the label of the attribute. 
+     *
      * The regular atkAttribute does not make use of the $record parameter; 
      * The label is based on the attribute name, but is automatically
      * translated. Derived attributes may override this behavior.
@@ -965,10 +990,11 @@
     }
     
     /** 
-     * Get the HTML label of the attribute. The difference with the label()
-     * method is that the label method always returns the HTML label, while
-     * the getLabel() method is 'smart', by taking the AF_NOLABEL and
-     * AF_BLANKLABEL flags into account.
+     * Get the HTML label of the attribute.
+     *
+     * The difference with the label() method is that the label method always
+     * returns the HTML label, while the getLabel() method is 'smart', by
+     * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
      * @return String The HTML compatible label for this attribute, or an 
@@ -989,6 +1015,7 @@
     /**
      * This function is used to check whether a attribute has a store function
      * or not.
+     *
      * It can be overridden to determine when to use store() and when not to 
      * use it.
      * @return boolean true if it has a store method or false if it hasn't.
@@ -1005,12 +1032,13 @@
     }
     
     /*
-     * Determine the storage type of this attribute. With this method, the
-     * attribute tells the framework whether it wants to be stored in the
-     * main query (addToQuery) or whether the attribute has its own
-     * store() implementation. The regular atkAttribute checks if a store()
-     * method is present, and returns POSTSTORE in this case, or ADDTOQUERY
-     * otherwise. Derived attributes may override this behavior.
+     * Determine the storage type of this attribute.
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be stored in the main query (addToQuery) or whether the attribute
+     * has its own store() implementation. The regular atkAttribute checks if
+     * a store() method is present, and returns POSTSTORE in this case, or
+     * ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
      * Framework method. It should not be necesary to call this method 
      * directly.
@@ -1040,12 +1068,13 @@
     }
     
     /*
-     * Determine the load type of this attribute. With this method, the
-     * attribute tells the framework whether it wants to be loaded in the
-     * main query (addToQuery) or whether the attribute has its own
-     * load() implementation. The regular atkAttribute checks if a load()
-     * method is present, and returns POSTLOAD in this case, or ADDTOQUERY
-     * otherwise. Derived attributes may override this behavior.
+     * Determine the load type of this attribute. 
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be loaded in the main query (addToQuery) or whether the attribute 
+     * has its own load() implementation. The regular atkAttribute checks if a
+     * load() method is present, and returns POSTLOAD in this case, or
+     * ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
      * Framework method. It should not be necesary to call this method 
      * directly.
@@ -1082,6 +1111,8 @@
     }
     
     /**
+     * Get list of additional tabs.
+     * 
      * Attributes can add new tabs to tabbed screens. This method will be
      * called to retrieve the tabs. The regular atkAttribute has no
      * implementation for this method. Derived attributes may override this.
@@ -1096,11 +1127,12 @@
     }
     
     /**
-     * Register keyboard navigation for this attribute. This method is called
-     * by the attribute itself to register the keyboard navigation, usually
-     * from its edit() method. The regular atkAttribute calls this method
-     * once for its default text input box. Derived classes may call this
-     * for any input box or control they have.
+     * Register keyboard navigation for this attribute.
+     *
+     * This method is called by the attribute itself to register the keyboard
+     * navigation, usually from its edit() method. The regular atkAttribute
+     * calls this method once for its default text input box. Derived classes
+     * may call this for any input box or control they have.
      *
      * @param String $id The unique HTML id of the form element to which
      *                   navigation is added.
