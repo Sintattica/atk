@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.9  2001/07/11 21:14:30  ivo
+  * Added a global atk version number.
+  *
   * Revision 4.8  2001/06/08 14:19:59  paul
   * datatable made themable
   *
@@ -211,11 +214,11 @@
      */
     function page($title="")
     {
-      $m_page = '<html>';
+      $m_page = "<html>\n";
       $m_page.= $this->ret_head($title);
       $m_page.= $this->ret_body();
       $m_page.= $this->m_content;
-      $m_page.= '</body></html>';
+      $m_page.= "\n</body>\n</html>\n";
       
       // hele pagina terug in de output schrijven..
       $this->m_content = $m_page;
@@ -291,13 +294,18 @@
      */
     function ret_head($title)
     {     
-      $res = '<head><title>'.$title.'</title>';
+      $res = "<head>\n  <title>$title</title>\n";
+      
+      // $Name$ is the CVS tag.
+      $version = atkversion();
+      if ("$Name$"!="") $version.=" ($Name$)";
+      $res.= '  <meta name="atkversion" value="'.$version.'">'."\n";
       
       for ($i = 0; $i < count($this->m_scripts); $i++) 
-        $res.='<script language="javascript" src="'.$this->m_scripts[$i].'"></script>';
+        $res.='  <script language="javascript" src="'.$this->m_scripts[$i].'"></script>'."\n";
       
       for ($i = 0; $i < count($this->m_stylesheets); $i++) 
-        $res.='<link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">';
+        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
       
       $res.="</head>\n";
       return $res;

@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.16  2001/07/11 21:14:30  ivo
+  * Added a global atk version number.
+  *
   * Revision 4.15  2001/07/09 15:41:09  ivo
   * Created an atk_in_array that does an is_array before it calls in_array.
   *
@@ -650,5 +653,14 @@
     if ($wildcard == true) $result = str_replace("%","%%",$result);
     return $result;
   }  
+   
+  /** 
+   * Return the atk version number.
+   */
+  function atkversion()
+  {
+    global $g_atkversion;
+    return $g_atkversion;
+  }
 
 ?>

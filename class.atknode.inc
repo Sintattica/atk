@@ -51,8 +51,8 @@
    *
    * $Id$
    * $Log$
-   * Revision 4.76  2001/07/11 20:41:10  ivo
-   * Oops.. forgot the totals row with the previous orientation checkin.
+   * Revision 4.77  2001/07/11 21:14:30  ivo
+   * Added a global atk version number.
    *
    * Revision 4.74  2001/07/04 10:50:27  ivo
    * Fix to help feature (help.php moved to skel)
@@ -143,6 +143,9 @@
    *
    * (older logs have been removed...)
    */
+   
+  // The atk version number. (REMEMBER: update this whenever a new atk release is tagged stable!)
+  $g_atkversion = "4.2";
 
   // Global theme variable, must be declared before the includes
   $g_theme = array();
