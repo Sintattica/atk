@@ -243,7 +243,7 @@
         $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
         $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
 
-        $output = $this->_getRecordListRecords($myrecords, $actions, (int)$flags, $embedprefix);
+        $output = $this->_getRecordListRecords($myrecords, $actions, $embedprefix);
 
         $this->m_destInstance->m_type =     $desttype;
         $this->m_destInstance->m_action =   $destaction;
@@ -262,7 +262,7 @@
      * @param String  $embedprefix  The prefix for embeded fields
      * @return String The generated recordlist
      */
-    function _getRecordListRecords($myrecords, $actions, $flags, $embedprefix="")
+    function _getRecordListRecords($myrecords, $actions, $embedprefix="")
     {
       $recordlist = &atknew("atk.recordlist.atkrecordlist");
       
@@ -394,8 +394,6 @@
      */
     function load($db, $record, $mode="")
     {
-      global $ATK_VARS;
-      
       if ($mode=="edit")
       {
         // when editing a record with a onetomanyrelation, we don't
@@ -452,7 +450,7 @@
      * @param	array	&$record The record to check
      * @return bool true if a destination record is present. False if not.
      */
-    function isEmpty(&$record)
+    function isEmpty($record)
     {    
       return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
     }
@@ -602,7 +600,8 @@
        {
          $query->addTable($this->m_destInstance->m_table);
          $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
-         $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+         $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+         $query->addSearchCondition($searchcondition);
        }
      }
      
@@ -613,7 +612,7 @@
        {
          foreach ($this->m_destInstance->descriptorFields() as $field)
          {
-           if (!in_array($usedfields))
+           if (!in_array($field, $usedfields))
            {
              $this->_callSearchConditionOnDestField($query, $this->m_destInstance->m_table, $value, $searchmode, $field);
              $usedfields[] = $field;
@@ -725,16 +724,17 @@
               // if the selector is on the destination, we pass it back
               if ($key ==  $destinationkey || $key == $this->m_refKey[$refkeycount])
               {
-                return $selector;
+                $ret = $selector;
               }
             }
             // otherwise we set it on the destination
-            return $destinationkey.$sqloperators[$counter].$value;
+            $ret = $destinationkey.$sqloperators[$counter].$value;
           }
         }
         // We never found a value, something is wrong with the filter
-        else return "";
+        $ret = "";
       }
+      return $ret;
     }
     
    /**
@@ -766,10 +766,14 @@
       {
         // if the filter is valid on the destination (highly unlikely) we just use it
         if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector'])) 
+        {
           $destfilter = $ATK_VARS['atkselector'];
+        }
         // if the filter is on the owner, we translate it back to the destination
         else if ($this->m_ownerInstance->validateFilter($ATK_VARS['atkselector']))
+        {
         	$destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
+        }
         // otherwise we just don't set a filter
       }
 

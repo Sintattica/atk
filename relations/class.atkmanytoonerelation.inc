@@ -257,18 +257,20 @@
       if ($this->createDestination())
       {
         $id = $fieldprefix.$this->fieldName();
+        if ($this->m_destinationFilter!="")
+        {
+          $parser = new atkStringParser($this->m_destinationFilter);
+          $filter = $parser->parse($record);
+          $this->m_destInstance->addFilter($filter);
+        }
+        
         $autolink = $this->getRelationAutolink($id, $filter);
         
         if (!$this->hasFlag(AF_LARGE))
         {
           // normal dropdown..
           $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-          if ($this->m_destinationFilter!="")
-          {
-            $parser = new atkStringParser($this->m_destinationFilter);
-            $filter = $parser->parse($record);
-            $this->m_destInstance->addFilter($filter);
-          }
+          
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
           // autoselect if there is only one record (if obligatory is not set,
@@ -303,7 +305,6 @@
               $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
             }
             $result.='</select>';
-
           }
         }
         else
@@ -530,6 +531,7 @@
         {
           $searchConditions = array();
           $descfields = array();
+          $prevdescfield = "";
           $descfields = $this->m_destInstance->descriptorFields();
           $this->addToQuery($query);
           
