@@ -185,7 +185,7 @@
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <META NAME="atkversion" CONTENT="'.$version.'">'."\n";
-      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">'."\n";         
+      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.text("charset","","atk").'">'."\n";         
       $this->addScripts($res);
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
