@@ -194,7 +194,9 @@
     /**
      * List of available tabs.
      */
-    var $m_tabList = array();
+    var $m_tabListAdd = array();
+    var $m_tabListEdit = array();
+    var $m_tabListView = array();
 
     /**
      * The type of node. (The constructor of a derived class passes its type
@@ -454,7 +456,12 @@
 
         // add new tab(s) to the tab list ("*" isn't a tab!)
         if (!is_array($tab) && $tab != "*") $tab = array($tab);
-        if ($tab != "*") $this->m_tabList = atk_array_merge($this->m_tabList, $tab);
+        if ($tab != "*")
+        {
+          if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabListAdd = atk_array_merge($this->m_tabListAdd, $tab);
+          if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabListEdit = atk_array_merge($this->m_tabListEdit, $tab);
+          if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT)) $this->m_tabListView = atk_array_merge($this->m_tabListView, $tab);
+        }
 
         $attribute->m_order = $order;
         $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tab,"order"=>$attribute->m_order);
@@ -584,9 +591,12 @@
      */
     function getActiveTab()
     {
-      if (!empty($this->m_postvars["atktab"]) && in_array($this->m_postvars["atktab"], $this->m_tabList)) $tab = $this->m_postvars["atktab"];
-      elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $this->m_tabList)) $tab = $this->m_default_tab;
-      else $tab = $this->m_tabList[0];
+      if ($this->m_action == "add") $list = &$this->m_tabListAdd;
+      elseif ($this->m_action == "edit") $list = &$this->m_tabListEdit;
+      else $list = &$this->m_tabListView;
+      if (!empty($this->m_postvars["atktab"]) && in_array($this->m_postvars["atktab"], $list)) $tab = $this->m_postvars["atktab"];
+      elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $list)) $tab = $this->m_default_tab;
+      else $tab = $list[0];
       return $tab;
     }
 
@@ -623,10 +633,10 @@
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
 
-      if (count($this->m_tabList) > 1) $g_layout->tabs_top($this->buildTabs());
+      if ($this->m_action == "edit" && count($this->m_tabListEdit) > 1) $g_layout->tabs_top($this->buildTabs());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
-      if (count($this->m_tabList) > 1) $g_layout->tabs_bottom();
+      if ($this->m_action == "edit" && count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
 
       //$g_layout->ui_bottom($g_layout->title($this->m_module, $this->m_type,"edit"));
 
@@ -707,9 +717,9 @@
       }
       $page.='</table>';
 
-      if (count($this->m_tabList) > 1) $g_layout->tabs_top($this->buildTabs());
+      if (count($this->m_tabListView) > 1) $g_layout->tabs_top($this->buildTabs());
       $g_layout->output($page);
-      if (count($this->m_tabList) > 1) $g_layout->tabs_bottom();
+      if (count($this->m_tabListView) > 1) $g_layout->tabs_bottom();
 
       $g_layout->output('<br><form method="get" action="'.session_url($PHP_SELF,SESSION_BACK).'">'.
                         '<input type="submit" value="'.text('back').'"></form>');
@@ -731,10 +741,10 @@
       $g_layout->output(session_form());
 
 
-      if (count($this->m_tabList) > 1) $g_layout->tabs_top($this->buildTabs());
+      if (count($this->m_tabListAdd) > 1) $g_layout->tabs_top($this->buildTabs());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("add",$record,$forceList));
-      if (count($this->m_tabList) > 1) $g_layout->tabs_bottom();
+      if (count($this->m_tabListAdd) > 1) $g_layout->tabs_bottom();
 
       $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('save').'&nbsp;">');
       if ($this->m_action=="add")
@@ -822,10 +832,10 @@
 //        atkdebug("Removing stored sessiondata");
         //$this->m_postvars["atkformdata"]="";
       //}
-      //else 
+      //else
       if ($this->m_postvars["atkformdata"]!="")
-      {        
-        atkdebug("Restoring formdata from session");        
+      {
+        atkdebug("Restoring formdata from session");
         $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
         //atk_var_dump($g_sessionData);
@@ -913,7 +923,9 @@
           {
             $index = $this->m_attribList[$data['attrib_name']]->m_index;
             $tabs  = $this->m_attribIndexList[$index]["tabs"];
-            if (count($this->m_tabList) > 1 && $tabs != "*" && !atk_in_array($tab, $tabs))
+            if (($this->m_action = "add" && count($this->m_tabListAdd) > 1 ||
+                 $this->m_action = "edit" && count($this->m_tabListEdit) > 1
+                ) && $tabs != "*" && !atk_in_array($tab, $tabs))
               $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0]),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             $errormsg.="<br>".text($data['attrib_name']).': '.$data['msg'].$error_tab;
@@ -1345,19 +1357,20 @@
       global $PHP_SELF, $ATK_VARS, $g_layout;
 
       $result = "";
-      if (count($this->m_tabList) > 0)
-      {
-        // which tab is currently selected
-        $tab = $this->getActiveTab();
 
-        // build navigator
-        foreach ($this->m_tabList as $t)
-        {
-          $title = text("tab_$t");
-          if ($ATK_VARS["atkaction"] == "view") $link = session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT);
-          else $link = "javascript:atkSubmit('".atkurlencode(session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT))."')";
-          $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
-        }
+      // which tab is currently selected
+      $tab = $this->getActiveTab();
+
+      // build navigator
+      if ($this->m_action == "add") $list = &$this->m_tabListAdd;
+      elseif ($this->m_action == "edit") $list = &$this->m_tabListEdit;
+      else $list = &$this->m_tabListView;
+      foreach ($list as $t)
+      {
+        $title = text("tab_$t");
+        if ($ATK_VARS["atkaction"] == "view") $link = session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT);
+        else $link = "javascript:atkSubmit('".atkurlencode(session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT))."')";
+        $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
       }
 
       return $result;
@@ -2244,17 +2257,17 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $p_attrib->m_ownerInstance = &$this;
-      }              
+      }
 
       // See if there are modules active that modify all nodes with the same name
-      // for example, modules modifying all classes in all modules with the 
+      // for example, modules modifying all classes in all modules with the
       // name 'bill'.
       for ($i=0;$i<count($g_modifiers[$this->m_type]);$i++)
       {
         $modname = $g_modifiers[$this->atknodetype()][$i];
         $mod = getModule($modname);
         $modifiername = $this->m_type."_modifier";
-        
+
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->m_type);
@@ -2268,13 +2281,13 @@
         $modname = $g_modifiers[$this->atknodetype()][$i];
         $mod = getModule($modname);
         $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
-        
+
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
           $mod->$modifiername(&$this);
         }
-      }      
+      }
 
       //atk_var_dump($this->m_attribIndexList);
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
@@ -2463,7 +2476,7 @@
       {
         atkdebug(" Geen records gevonden met Selector: $selector");
       }
-    
+
       $this->redirect();
     }
 
@@ -2931,9 +2944,9 @@
         *@param $selector The 'where' clause that indicates which records to select.
         */
     function copyDb($record)
-    {            
+    {
       $this->preCopy($record);
-      $this->addDb($record);      
+      $this->addDb($record);
       return "";
     }
 
@@ -3033,7 +3046,7 @@
       }
 
       if ($order!="") $query->addOrderBy($order);
-      $querystring = $query->buildSelect();      
+      $querystring = $query->buildSelect();
 
       if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
       else $dbrecords = $g_db->getrows($querystring);
