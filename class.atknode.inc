@@ -905,7 +905,7 @@
           {
             $index = $this->m_attribList[$data['attrib_name']]->m_index;
             $tabs  = $this->m_attribIndexList[$index]["tabs"];
-            if ($tabs != "*" && !in_array($tab, $tabs))
+            if ($tabs != "*" && !atk_in_array($tab, $tabs))
               $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0]),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             $errormsg.="<br>".text($data['attrib_name']).': '.$data['msg'].$error_tab;
