@@ -1,12 +1,5 @@
 <?php
 
-// Multiple Inclusion Protection
-if (!defined("CLASS_TEST_ATTRIBUTES_INC"))
-{
-define("CLASS_TEST_ATTRIBUTES_INC",1);
-// Multiple Inclusion Protection
-
-
   class test_attributes extends atkNode
   {
     function test_attributes()
@@ -52,7 +45,5 @@ define("CLASS_TEST_ATTRIBUTES_INC",1);
       return "[heading]";
     }
   }
-
-} // endif CLASS_GAMES_INC;
 
 ?>

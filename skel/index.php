@@ -1,5 +1,5 @@
 <?php
-  require "atk/class.atknode.inc";
+  require_once("atk/class.atknode.inc");
  
   $g_layout->output('<html>');
   $g_layout->head(text("app_title"));

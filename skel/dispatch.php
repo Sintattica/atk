@@ -1,6 +1,6 @@
 <?
   // Setup the system
-  require "atk/class.atknode.inc";
+  require_once("atk/class.atknode.inc");
   
   if (count($HTTP_POST_VARS)>0) $HTTP_GET_VARS = $HTTP_POST_VARS;
 

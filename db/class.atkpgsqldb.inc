@@ -1,11 +1,6 @@
 <?php
-/* Multiple inclusion protection */
-if (!defined("CLASS_ATKPGSQLDB_INC"))
-{
-  define("CLASS_ATKPGSQLDB_INC", 1);
-
-  /* include */
-  require("atk/db/class.atkdb.inc");
+  
+  require_once("atk/db/class.atkdb.inc");
 
   /**
    * Handles database connectivity and database interaction
@@ -16,6 +11,11 @@ if (!defined("CLASS_ATKPGSQLDB_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -323,4 +323,4 @@ if (!defined("CLASS_ATKPGSQLDB_INC"))
       if ($this->m_halt_on_error != "report") die();
     }
   }  
-} /* endif CLASS_ATKPGSQLDB_INC; */
+?>

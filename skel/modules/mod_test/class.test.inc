@@ -1,8 +1,5 @@
 <?php
 
-if(!defined("CLASS_TEST_INC"))
-{
-  define("CLASS_TEST_INC",1);
   class test extends atkNode
   {
     function test()
@@ -17,5 +14,5 @@ if(!defined("CLASS_TEST_INC"))
       $this->setTable("mod_test_type", "type");
     }
   }
-}
+
 ?>

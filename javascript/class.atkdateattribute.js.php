@@ -9,6 +9,11 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.5  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.4  2001/04/25 15:56:07  peter
    * fixed a minor bug concerning the day-of-week
    *
@@ -25,15 +30,15 @@
   
   /* change dir for includes */
   chdir("../../");
-  include "atk/defaultconfig.inc.php";
-  include "config.inc.php";
-  include "atk/atktools.inc";
-  include "atk/languages/".$config_languagefile;
+  include_once("atk/defaultconfig.inc.php");
+  include_once("config.inc.php");
+  include_once("atk/atktools.inc");
+  include_once("atk/languages/".$config_languagefile);
   
   /* application specific language file */
   if (file_exists("languages/".$config_languagefile))
   {
-    include "languages/".$config_languagefile;
+    include_once("languages/".$config_languagefile);
   }
 
   /* english month names and weekdays */

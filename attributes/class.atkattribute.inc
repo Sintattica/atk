@@ -87,6 +87,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.1  2001/04/25 08:46:08  ivo
    * Big optimisations: using references for attribute manipulation.
    *
@@ -406,20 +411,20 @@
 
   }
 
-  include "atk/attributes/class.atkboolattribute.inc";
-  include "atk/attributes/class.atknumberattribute.inc";
-  include "atk/attributes/class.atktextattribute.inc";
-  include "atk/attributes/class.atklimitedtextattribute.inc";
-  include "atk/attributes/class.atkhtmlattribute.inc";
-  include "atk/attributes/class.atklistattribute.inc";
-  include "atk/attributes/class.atkparserattribute.inc";
-  include "atk/attributes/class.atkdateattribute.inc";
-  include "atk/attributes/class.atkimgattribute.inc";
-  include "atk/attributes/class.atkfileattribute.inc";
-  include "atk/attributes/class.atktimeattribute.inc";
-  include "atk/attributes/class.atkmultiplefileattribute.inc";
-  include "atk/attributes/class.atkpasswordattribute.inc";
-  include "atk/attributes/class.atkdummyattribute.inc";
-  include "atk/attributes/class.atkmlselectorattribute.inc";
-  include "atk/attributes/class.atkmlattribute.inc";
+  include_once("atk/attributes/class.atkboolattribute.inc");
+  include_once("atk/attributes/class.atknumberattribute.inc");
+  include_once("atk/attributes/class.atktextattribute.inc");
+  include_once("atk/attributes/class.atklimitedtextattribute.inc");
+  include_once("atk/attributes/class.atkhtmlattribute.inc");
+  include_once("atk/attributes/class.atklistattribute.inc");
+  include_once("atk/attributes/class.atkparserattribute.inc");
+  include_once("atk/attributes/class.atkdateattribute.inc");
+  include_once("atk/attributes/class.atkimgattribute.inc");
+  include_once("atk/attributes/class.atkfileattribute.inc");
+  include_once("atk/attributes/class.atktimeattribute.inc");
+  include_once("atk/attributes/class.atkmultiplefileattribute.inc");
+  include_once("atk/attributes/class.atkpasswordattribute.inc");
+  include_once("atk/attributes/class.atkdummyattribute.inc");
+  include_once("atk/attributes/class.atkmlselectorattribute.inc");
+  include_once("atk/attributes/class.atkmlattribute.inc");
 ?>

@@ -10,6 +10,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.5  2001/05/01 09:49:49  ivo
+ * Replaced all require() and include() calls by require_once() and
+ * include_once() calls. The if(!DEFINED)... inclusion protection in files
+ * is now obsolete.
+ *
  * Revision 1.4  2001/05/01 09:15:51  ivo
  * Initial session based atk version.
  *
@@ -26,9 +31,6 @@
  * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
-if (!defined("ATKMODULETOOLS_INC"))
-{
-  define("ATKMODULETOOLS_INC", 1);
   
   /**
    * Registers an ATK module
@@ -40,7 +42,7 @@ if (!defined("ATKMODULETOOLS_INC"))
     $filename = "$config_module_path/$module/module.inc";
     if (file_exists($filename))
     {
-      include ($filename);
+      include_once($filename);
       $GLOBALS["g_modules"][] = $module;
     }
   }
@@ -95,8 +97,8 @@ if (!defined("ATKMODULETOOLS_INC"))
     }
 
     /* return object */
-    include $file;
+    include_once($file);
     return new $type();
   }
-}
+
 ?>

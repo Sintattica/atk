@@ -1,6 +1,6 @@
 <?php
   chdir("../");  
-  include "atk/class.atknode.inc";
+  include_once("atk/class.atknode.inc");
 ?>
 
 BODY

@@ -21,6 +21,11 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.2  2001/05/01 09:49:49  ivo
+  * Replaced all require() and include() calls by require_once() and
+  * include_once() calls. The if(!DEFINED)... inclusion protection in files
+  * is now obsolete.
+  *
   * Revision 4.1  2001/04/24 12:40:50  ivo
   * skel cleanup, typo fix in moduletools.
   *
@@ -86,11 +91,6 @@
   *
   */
 
-// Multiple inclusion protector
-if (!defined("CLASS_LAYOUT_INC"))
-{
-  define("CLASS_LAYOUT_INC",1);
-
   class layout
   {       
     /* 
@@ -138,7 +138,7 @@ if (!defined("CLASS_LAYOUT_INC"))
     function import_layout()
     {        
       global $g_theme;
-      include($this->m_tpldir."layout.inc");
+      include_once($this->m_tpldir."layout.inc");
     }
 
     /**
@@ -489,5 +489,4 @@ if (!defined("CLASS_LAYOUT_INC"))
   {    
     $g_layout = new layout();
   }  
-}
 ?>

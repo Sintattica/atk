@@ -3,6 +3,11 @@
 /**
 * $Id$
 * $Log$
+* Revision 4.1  2001/05/01 09:49:49  ivo
+* Replaced all require() and include() calls by require_once() and
+* include_once() calls. The if(!DEFINED)... inclusion protection in files
+* is now obsolete.
+*
 * Revision 4.0  2001/04/23 10:20:39  ivo
 * revision tags.
 *
@@ -14,13 +19,6 @@
 *
 */
 
-
-// Multiple Inclusion Protection
-if (!defined("CLASS_ATKMYSQLQUERY_INC"))
-{
-define("CLASS_ATKMYSQLQUERY_INC",1);
-// Multiple Inclusion Protection
-
  /**
  *  Class to handle specific MySQL command's
  *  @author Sandy Pleyte (sandy@ibuildings.net)
@@ -31,7 +29,5 @@ define("CLASS_ATKMYSQLQUERY_INC",1);
   {
      // no specifics yet
   }
-
-} // endif CLASS_ATKMYSQLQUERY_INC;
 
 ?>

@@ -1,10 +1,5 @@
 <?php
 
-// Multiple inclusion protector
-if (!defined("CLASS_ATKNODE_INC"))
-{
-  define("CLASS_ATKNODE_INC",1);
-
   // Define some flags for nodes. Use the constructor of the atkNode
   // class to set the flags. (concatenate multiple flags with '|')
 
@@ -92,6 +87,11 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.10  2001/05/01 09:15:51  ivo
    * Initial session based atk version.
    *
@@ -320,29 +320,29 @@ if (!defined("CLASS_ATKNODE_INC"))
   // Global menu
   $g_menu = array();
 
-  require "atk/atkconfigtools.inc";
-  require "atk/defaultconfig.inc.php";
+  require_once("atk/atkconfigtools.inc");
+  require_once("atk/defaultconfig.inc.php");
 
-  include "./config.inc.php";
-  require "atk/atktools.inc";
-  require "atk/class.layout.inc";
-  require ("atk/db/class.atk".$config_database."db.inc");
-  require "atk/db/class.atkquery.inc";  
-  require "atk/attributes/class.atkattribute.inc";
-  require "atk/relations/class.atkrelation.inc";
-  require "atk/security/class.atksecuritymanager.inc";
-  require "atk/session/class.atksessionmanager.inc";
-  require "atk/atkmenutools.inc";  
-  require "atk/modules/atkmoduletools.inc";
-  require "atk/modules/class.atkmodule.inc";
+  include_once("./config.inc.php");
+  require_once("atk/atktools.inc");
+  require_once("atk/class.layout.inc");
+  require_once("atk/db/class.atk".$config_database."db.inc");
+  require_once("atk/db/class.atkquery.inc");
+  require_once("atk/attributes/class.atkattribute.inc");
+  require_once("atk/relations/class.atkrelation.inc");
+  require_once("atk/security/class.atksecuritymanager.inc");
+  require_once("atk/session/class.atksessionmanager.inc");
+  require_once("atk/atkmenutools.inc");  
+  require_once("atk/modules/atkmoduletools.inc");
+  require_once("atk/modules/class.atkmodule.inc");
 
   // Default language file
-  require "atk/languages/".$config_languagefile;
+  require_once("atk/languages/".$config_languagefile);
 
   // Application specific language file
   if (file_exists("languages/".$config_languagefile))
   {
-    include "languages/".$config_languagefile;
+    include_once("languages/".$config_languagefile);
   }
 
   // Global database..
@@ -373,7 +373,7 @@ if (!defined("CLASS_ATKNODE_INC"))
 
   // Auto-register modules
   if (file_exists("$config_module_path/config.modules.inc"))
-    include "$config_module_path/config.modules.inc";
+    include_once("$config_module_path/config.modules.inc");
   
   // Module specific language file
   for ($i = 0; $i < sizeof($g_modules); $i++)
@@ -381,7 +381,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     $filename = "$config_module_path/".$g_modules[$i]."/languages/$config_languagefile";
     if (file_exists($filename))
     {
-      include ($filename);
+      include_once($filename);
     }
   }
   
@@ -393,7 +393,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     for ($j = 0; $j < sizeof($attr_arr); $j++)
     {
       if (file_exists("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]))
-      include ("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
+      includd_once("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
     }
   }
   
@@ -2555,9 +2555,6 @@ if (!defined("CLASS_ATKNODE_INC"))
 
   }
   
-  require "atk/class.atktreenode.inc";
-
-
-} // endif multiple inclusion protector
+  require_once("atk/class.atktreenode.inc");
 
 ?>

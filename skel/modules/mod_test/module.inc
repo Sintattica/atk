@@ -1,13 +1,10 @@
 <?php
 
-require "atk/modules/class.atkmodule.inc";
+  require_once("atk/modules/class.atkmodule.inc");
 
-/**
- * Example module.
- */
-if(!defined("CLASS_MOD_TEST_INC"))
-{
-  define("CLASS_MOD_TEST_INC",1);
+  /**
+   * Example module.
+   */
 
   class mod_test extends atkModule
   {
@@ -22,6 +19,5 @@ if(!defined("CLASS_MOD_TEST_INC"))
       $this->menuitem("test_admin", dispatch_url("mod_test.test", "admin"), "mod_test", 1);
     }
   }
-}
 
 ?>

@@ -1,9 +1,5 @@
 <?php
 
-// Multiple inclusion protector
-if (!defined("CLASS_ATKTREENODE_INC"))
-{
-  define("CLASS_ATKTREENODE_INC",1);
   /**
     * Extension on the atkNode class. Here you will find all 
     * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
@@ -17,6 +13,11 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     *
     * $Id$
     * $Log$
+    * Revision 4.5  2001/05/01 09:49:49  ivo
+    * Replaced all require() and include() calls by require_once() and
+    * include_once() calls. The if(!DEFINED)... inclusion protection in files
+    * is now obsolete.
+    *
     * Revision 4.4  2001/05/01 09:15:51  ivo
     * Initial session based atk version.
     *
@@ -36,7 +37,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     * Added atk4 to repository.
     *
     */
-  include "atk/atktreetools.inc"; 
+  include_once("atk/atktreetools.inc");
   
   $g_limit = 10;
   $g_start = 0;
@@ -141,7 +142,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     
 
     /**
-         * Recursive funtion whitch fills an array with all the items of the tree. 
+         * Recursive funtion which fills an array with all the items of the tree. 
          * @param $tree Tree
          * @param $level Level
          */
@@ -554,6 +555,6 @@ if (!defined("CLASS_ATKTREENODE_INC"))
       // todo: instead of delete, set the deleted flag.
     }
   }
-}
+
  
 ?>

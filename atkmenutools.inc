@@ -1,6 +1,6 @@
 <?php
 
-require "atk/modules/atkmoduletools.inc";
+//  require_once("atk/modules/atkmoduletools.inc");
 
 /**
  * Atk Menu Tools
@@ -12,6 +12,11 @@ require "atk/modules/atkmoduletools.inc";
  *
  * $Id$
  * $Log$
+ * Revision 4.3  2001/05/01 09:49:49  ivo
+ * Replaced all require() and include() calls by require_once() and
+ * include_once() calls. The if(!DEFINED)... inclusion protection in files
+ * is now obsolete.
+ *
  * Revision 4.2  2001/04/24 13:51:50  ivo
  * Fixed some small bugs, and updated the language files, improved the menu.
  *
@@ -20,9 +25,6 @@ require "atk/modules/atkmoduletools.inc";
  * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
-if (!defined("ATKMENUTOOLS_INC"))
-{
-  define("ATKMENUTOOLS_INC", 1);
 
   /**
    * Creates a new (sub)menu item or a new submenu
@@ -82,5 +84,5 @@ if (!defined("ATKMENUTOOLS_INC"))
     if (!is_object($g_securityManager)) return 1;
     else return $g_securityManager->allowed($node, $action);
   }
-}
+
 ?>

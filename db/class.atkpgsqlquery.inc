@@ -1,8 +1,4 @@
 <?php
-/* multiple inclusion protection */
-if (!defined("CLASS_ATKPGSQLQUERY_INC"))
-{
-  define("CLASS_ATKPGSQLQUERY_INC", 1);
 
   /**
    * Class to handle specific PostgreSQL commands
@@ -40,5 +36,5 @@ if (!defined("CLASS_ATKPGSQLQUERY_INC"))
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
     }
   }
-} /* endif CLASS_ATKPGSQLQUERY_INC; */
+
 ?>

@@ -16,6 +16,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.2  2001/04/25 08:46:08  ivo
    * Big optimisations: using references for attribute manipulation.
    *
@@ -101,11 +106,9 @@
 
   }
 
- 
-
-  include "atk/relations/class.atkmanytoonerelation.inc";
-  include "atk/relations/class.atkmanytomanyrelation.inc";  
-  include "atk/relations/class.atkmanyboolrelation.inc";    
-  include "atk/relations/class.atkonetomanyrelation.inc";    
-  include "atk/relations/class.atkmatrixrelation.inc";
+  include_once("atk/relations/class.atkmanytoonerelation.inc");
+  include_once("atk/relations/class.atkmanytomanyrelation.inc");
+  include_once("atk/relations/class.atkmanyboolrelation.inc");
+  include_once("atk/relations/class.atkonetomanyrelation.inc");
+  include_once("atk/relations/class.atkmatrixrelation.inc");
 ?>

@@ -1,8 +1,4 @@
 <?php
-// Multiple inclusion protector
-if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
-{
-  define("CLASS_ATKSECURITYMANAGER_INC",1);
 
   /**
    * This class manages security in atk.
@@ -15,6 +11,11 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
    *    
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/01 09:49:49  ivo
+   * Replaced all require() and include() calls by require_once() and
+   * include_once() calls. The if(!DEFINED)... inclusion protection in files
+   * is now obsolete.
+   *
    * Revision 4.1  2001/04/24 13:51:50  ivo
    * Fixed some small bugs, and updated the language files, improved the menu.
    *
@@ -48,12 +49,12 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
    *
    */
    
-   require "atk/security/class.auth_interface.inc";
+   require_once("atk/security/class.auth_interface.inc");
    
    if ($config_authentication == "") $config_authentication_type = "none";
    if ($config_securityscheme == "") $config_securityscheme = "none";
    
-   include "atk/security/class.auth_".$config_authentication.".inc";   
+   include_once("atk/security/class.auth_".$config_authentication.".inc");
    
    class atkSecurityManager
    {
@@ -211,5 +212,5 @@ if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
    
    // The one and only security manager.   
    $g_securityManager = new atkSecurityManager($config_authentication, $config_securityscheme);
-}
+
 ?>
