@@ -11,7 +11,7 @@ function frameAdjust() {
 	var adjust = 0;
 	if (parent.document.getElementById('middleframe').cols=='0,10,*')
 	{
-		adjust = 245;
+		adjust = 275;
 	}
 	else
 	{
@@ -21,9 +21,9 @@ function frameAdjust() {
 }
 
 // Menu styles die gebruik maken van de gegevens in de css file
-var hBar = new ItemStyle(100, 0, '', 0, 3, '#D6DDF7', '#D6DDF7', 'rootText', 'rootText', '', 'itemBorderBlank', null, null, 'hand', 'default');
-var subM = new ItemStyle(25, 0, '&gt;', -15, 3, '#D6DDF7', '#400080', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
-var subSubM = new ItemStyle(25, 0, '&gt;', -15, 3, '#D6DDF7', '#400080', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
+var hBar = new ItemStyle(23, 0, '', 0, 3, '#FF0000', '#FF0000', 'rootText', 'rootText', '', 'itemBorderBlank', null, null, 'hand', 'default');
+var subM = new ItemStyle(23, 0, '&gt;', -10, 2, '#999999', '#AAAAAA', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
+var subSubM = new ItemStyle(65, 0, '&gt;', 0, 2, '#CCCCCC', '#DDDDDD', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
 
 // Aanmaken van een nieuw DHTML menu
 var pMenu = new PopupMenu("pMenu");
@@ -79,12 +79,12 @@ with (pMenu) {
 				if(file_exists($menu_icon))
 				{
 					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
 				}
 				else
 				{
 					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/unknown.gif\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/unknown.gif\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
 				}
 			}
 			
@@ -92,7 +92,7 @@ with (pMenu) {
 			elseif($atkmenutop != "main" && $name != "-")
 			{
 				$menuname = addslashes (text("menu_".$name));
-				$submenubuttons .= 'addItem("&nbsp;<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/folder.gif\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$config_atkroot.'icons/dropdown/folder.gif\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
 				$subsubmenu[] = $name;
 			}
 		}
@@ -109,7 +109,7 @@ with (pMenu) {
 	}
 	
 	// Het aanmaken van de menuroot
-	$menuroot .= 'startMenu("root", false, "253", "28", 20, hBar, "parent.menu", true);';
+	$menuroot .= 'startMenu("root", false, "285", "86", 21, hBar, "parent.menu", true);';
 	$menuroot .= "\n";
 
 	for ($i = 0; $i < count($menurootarray); $i++)
@@ -117,26 +117,26 @@ with (pMenu) {
 		if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main")
 		{
 			// Elk menu item op het eerste niveau wordt aan de menu root toegevoegd
-			$menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,75);';
+			$menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
 			
 			// Het aanmaken van de menus die de submenuitems van het eerste niveau moeten gaan openen
-			echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",130, subM, "parent.main");');
+			echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
 			echo $menubuttonsarray[$i];
-			$plus = $plus + 75;
+			$plus = $plus + 100;
 		}
 		elseif($menurootarray[$i] != "main")
 		{
 			// Het aanmaken van de menus die de submenu items op lagere niveaus moeten gaan openen
-			echo ('startMenu("m'.$menurootarray[$i].'", true, 125, -2, 130, subSubM, "parent.main");');
+			echo ('startMenu("m'.$menurootarray[$i].'", true, 125, 0, 180, subSubM, "parent.main");');
 			echo $menubuttonsarray[$i];
 		}
 	}
 
 	// Toevoegen van de instellingen optie aan de menu root
-	$menuroot .= 'addItem("Instellingen","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,75);';
+	$menuroot .= 'addItem("Instellingen","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
 	
 	// Toevoegen van de logout optie aan de menu root
-	$menuroot .= 'addItem("Uitloggen","index.php?atklogout=1","",hBar,75);';
+	$menuroot .= 'addItem("Uitloggen","index.php?atklogout=1","",hBar,100);';
 
 	// Toevoegen van de menu root zelf
 	echo ($menuroot);

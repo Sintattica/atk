@@ -98,7 +98,7 @@
     
     function iconPath($icon,$type)
     {
-      if (atk_in_array($icon, $this->m_def["$type_icons"]))
+      if (atk_in_array($icon, $this->m_def[$type."_icons"]))
       {
         return $this->themeDir()."icons/$type/$icon.gif";
       }

@@ -415,8 +415,8 @@
         $tplvars["username"] = text("username");
         $tplvars["password"] = text("password");
         $tplvars["userfield"] = $userField;
-        $tplvars["passwordfield"] = '<input type="password" size="15" name="auth_pw" value="">';
-        $tplvars["submitbutton"] = '<input type="submit" value="'.text('login').'">';
+        $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="">';
+        $tplvars["submitbutton"] = '<input class="loginform" type="submit" value="'.text('login').'">';
         $tplvars["title"] = text('login_form');
         
         if ($lastresponse == AUTH_LOCKED)
