@@ -58,10 +58,13 @@
   }
 
   /**
-  * Function halt
-  * Halts on critical errors and also on warnings if specified in the config file.
-  *
-  */
+   * Function halt
+   * Halts on critical errors and also on warnings if specified in the config file.
+   * @param string $msg   The message to be displayed
+   * @param string $level The level of the error, 
+   *                      ("critical"|"warning" (default))
+   * @return bool false if something goes horribly wrong
+   */
   function halt($msg,$level="warning")
   {
     if ($level == $GLOBALS['config_halt_on_error']||$level == "critical")
@@ -91,16 +94,32 @@
     return false;
   }
 
+  /**
+   * Gets the microtime
+   * @return int the microtime
+   */
   function getmicrotime()
   {
     list($usec, $sec) = explode(" ",microtime());
     return ((float)$usec + (float)$sec);
   }
 
-  function elapsed()
+  /**
+   * Handy function that displays the time since it was last called
+   *
+   * You use it as follows:
+   * first you set the time once by using elapsed()
+   * (or elapsed(true) if you want to be sure you reset the time)
+   * and echo() or atkdebug() elapsed() every time you want to know
+   * how much time has gone by.
+   *
+   * @param bool $reset if true it will reset the time
+   * @return string elapsed or current time in microseconds
+   */
+  function elapsed($reset = false)
   {
     static $offset="";
-    if ($offset=="")
+    if ($offset=="" || $reset)
     {
       $offset = getmicrotime();
       return "@".strftime("%H:%M:%S")."h";
@@ -113,11 +132,12 @@
   }
 
   /**
-    * Function atkdebug
-    *
-    * Adds the debug txt to the debug log
-    * @param bool viewhtml: make viewable in html
-    */
+   * Function atkdebug
+   *
+   * Adds the debug txt to the debug log
+   * @param txt the text to send to the log
+   * @param bool viewhtml: make viewable in html
+   */
   function atkdebug($txt, $viewhtml=false)
   {
      global $g_debug_msg;
@@ -133,6 +153,8 @@
    * off.
    *
    * If errorreporting by email is turned on, the errormessages are also mailed
+   *
+   * @param string $txt the text to display
    */
   function atkerror($txt)
   {
@@ -146,13 +168,11 @@
   }
 
   /**
-  * this function returns a trace-route from all functions where-through the code
-  * has been executed
-  *
-  * @param string format (html|plaintext)
-  *
-  * @return string content(html | plaintext)
-  */
+   * Returns a trace-route from all functions where-through the code
+   * has been executed
+   * @param string format (html|plaintext)
+   * @return string content(html | plaintext)
+   */
   function atk_get_trace($format="html")
   {	
     if(!function_exists("debug_backtrace"))
@@ -245,17 +265,19 @@
   } // end function atk_get_trace
 
   /**
-  * Replaces the [vars] with the values from the language files
-  * Please note that it is important, for performance reasons, 
-  * that you pass along the module where the language files can be found
-  * @param String $string        the name of the string to return
-  * @param String $module        module in which the language file should be looked for, defaults to core module with fallback to ATK
-  * @param String $node          the node to which the string belongs
-  * @param String $lng           ISO 639-1 language code, defaults to config variable
-  * @param String $firstfallback the first module to check as part of the fallback
-  * @param boolean $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
-  * @return String the string from the languagefile  
-  */
+   * Replaces the [vars] with the values from the language files
+   * Please note that it is important, for performance reasons, 
+   * that you pass along the module where the language files can be found
+   * @param String $string          the name of the string to return
+   * @param String $module          module in which the language file should be looked for, 
+   *                                defaults to core module with fallback to ATK
+   * @param String $node            the node to which the string belongs
+   * @param String $lng             ISO 639-1 language code, defaults to config variable
+   * @param String $firstfallback   the first module to check as part of the fallback
+   * @param boolean $nodefaulttext  if true, then it doesn't return a default text 
+   *                                when it can't find a translation
+   * @return String the string from the languagefile  
+   */
   function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
     atkimport("atk.atklanguage");
@@ -265,6 +287,12 @@
   /**
    * Calculate a new session level based on current level and
    * a passed sessionstatus.
+   * @param var $sessionstatus the session flags 
+   *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *             SESSION_NESTED|SESSION_BACK)
+   * @param int $levelskip how many levels to skip when we use SESSION_BACK, 
+   *            default 1
+   * @return int the new session level
    */
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
@@ -306,6 +334,10 @@
    * Function session_form
    *
    * Adds session information to a form
+   * @param var $sessionstatus the session flags 
+   *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *             SESSION_NESTED|SESSION_BACK)
+   * @return string the HTML formcode with the session info
    */
   function session_form($sessionstatus=SESSION_DEFAULT)
   {
@@ -337,11 +369,18 @@
         $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'">';
       }
     }
-
     return $res;
-
   }
 
+  /**
+   * Gets the session vars
+   * @param var $sessionstatus the session flags 
+   *                           (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *                            SESSION_NESTED|SESSION_BACK)
+   * @param int $levelskip      the amount of levels to skip if we go back
+   * @param string $url         the URL
+   * @return array the vars of the session
+   */
   function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
   {
     global $g_stickyurl;
@@ -369,13 +408,20 @@
         $vars.=$g_stickyurl[$i]."=".$value;
       }
     }
-     return $vars;
+    return $vars;
   }
 
   /**
    * Function session_url
    *
-   *  Makes a session-aware url thingee...
+   * Makes a session-aware URL.
+   *
+   * @param string $url         the url to make session-aware
+   * @param var $sessionstatus  the session flags 
+   *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *                             SESSION_NESTED|SESSION_BACK)
+   * @param int $levelskip      the amount of levels to skip if we go back
+   * @return string the session aware URL
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
@@ -400,11 +446,19 @@
   /**
    * Function href
    *
-   * Makes a session-aware href thingee...
-   *
+   * Makes a session-aware href url.
    * When using hrefs in the editform, you can set saveform to true. This will save your
    * form variables in the session and restore them whenever you come back.
    *
+   * @param string $url         the url to make session aware
+   * @param string $name        the name to display
+   * @param var $sessionstatus  the session flags 
+   *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *                             SESSION_NESTED|SESSION_BACK)
+   * @param bool $saveform      wether or not to save the form
+   * @param string $extraprops  extra props you can add in the link such as 
+   *                            'onChange="doSomething()"'
+   * @return string the HTML link for the session aware URI
    */
   function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
   {
@@ -430,12 +484,10 @@
 
 
   /**
-   * Function atk_array_merge
-   *
-   * @desc Same as array_merge from php, but without duplicates..   
+   * Same as array_merge from php, but without duplicates..   
+   * @param Array $array1 the first array
+   * @param Array $array2 the second array
    * @return Array The result of the merge between $array1 and $array2
-   * @param Array $array1 
-   * @param Array $array2  
    */
   function atk_array_merge($array1, $array2)
   {
@@ -463,9 +515,10 @@
    * an is_array on the haystack first, just to make sure the user
    * doesn't get an error message.
    *
-   * @param mixed $needle   The value to search for.
-   * @param array $haystack The array to search.
-   * @param boolean $strict If true, type must match.
+   * @param mixed   $needle   The value to search for.
+   * @param Array   $haystack The array to search.
+   * @param boolean $strict   If true, type must match.
+   * @return bool wether or not the value is in the array
    */
   function atk_in_array($needle, $haystack, $strict=false)
   {
@@ -473,10 +526,14 @@
   }
 
   /**
-    * Function dataSetContains
-    *
-    * checks if a value is in a Array
-    */
+   * Function dataSetContains
+   *
+   * Checks if a value is in a Array
+   * @param array $set  the array
+   * @param var $key    the key in the array as in $array[$key]
+   * @param var $value  the value we are looking for
+   * @return bool wether or not the value is in the array
+   */
   function dataSetContains($set, $key, $value)
   {
     for ($i=0;$i<count($set);$i++)
@@ -487,10 +544,10 @@
   }
 
   /**
-   * Function stripQuotes
-   *
-   * strips ' or  " from the begin and end of a string (only if they are
+   * Strips ' or  " from the begin and end of a string (only if they are
    * on both sides, e.g. foo' remains foo' but 'bar' becomes bar.
+   * @param string $string the string we need to strip
+   * @return string the stripped string
    */
   function stripQuotes($string)
   {
@@ -500,9 +557,9 @@
   }
 
   /**
-   * Function decodeKeyValuePair
-   *
-   * translates a string like id='3' into Array("id"=>3)
+   * Translates a string like id='3' into Array("id"=>3)
+   * @param string $pair the string which is to be decoded
+   * @return array the decoded array
    */
   function decodeKeyValuePair($pair)
   {
@@ -511,10 +568,10 @@
   }
 
   /**
-    * Function decodeKeyValueSet
-    *
-    * translates a string like id='3 AND name='joe'' into Array("id"=>3,"name"=>"joe")
-    */
+   * Translates a string like id='3 AND name='joe'' into Array("id"=>3,"name"=>"joe")
+   * @param string $set the string to decode
+   * @return array the decoded array
+   */
   function decodeKeyValueSet($set)
   {
     $result = array();
@@ -530,10 +587,10 @@
 
 
   /**
-    * Function encodeKeyValueSet
-    *
-    * translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''
-    */
+   * Translates Array("id"=>3,"name"=>"joe") into a string like id='3 AND name='joe''
+   * @param array $set the array to be encoded
+   * @return string the encoded string
+   */
   function encodeKeyValueSet($set)
   {
     reset($set);
@@ -546,8 +603,9 @@
   }
 
   /**
-   * same as strip_slashes from php, but if the passed value is an array,
-   * all elements of the array are stripped.
+   * Same as strip_slashes from php, but if the passed value is an array,
+   * all elements of the array are stripped. Recursive function.
+   * @param var &$var the value/array to strip the slashes of
    */
   function atk_stripslashes(&$var)
   {
@@ -567,13 +625,12 @@
 
 
   /**
-    * function atkDataDecode
-    *
-    * performs stripslashes on all vars and translates:
-    *                 something_AMDAE_other[] into something[][other]
-    *                 something_AE_other into something[other]
-    *                 (and a_AE_b_AE_c into a[b][c] and so on...
-    */
+   * Performs stripslashes on all vars and translates:
+   *                 something_AMDAE_other[] into something[][other]
+   *                 something_AE_other into something[other]
+   *                 (and a_AE_b_AE_c into a[b][c] and so on...
+   * @param array &$vars the array to be stripped and translated
+   */
   function atkDataDecode(&$vars)
   {
     foreach (array_keys($vars) as $varname)
@@ -621,12 +678,14 @@
   }
 
   /**
-   * Weird function. $dest is an associative array, that may contain stuff
-   * like $dest["a_AE_c_AE_b"] = 3.
+   * Weird function. $dest is an associative array, that may contain 
+   * stuff like $dest["a_AE_c_AE_b"] = 3.
    * Now if you run this function like this:
-   * AE_decode($dest, "a_AE_c_AE_b");
+   *  AE_decode($dest, "a_AE_c_AE_b");
    * then $dest will contain a decoded array:
-   * echo $dest["a"]["b"]["c"]; <- this will display 3
+   *  echo $dest["a"]["b"]["c"]; <- this will display 3
+   * @param array &$dest  the array to put the decoded var in
+   * @param string $var   the var to decode
    */
   function AE_decode(&$dest, $var)
   {
@@ -639,9 +698,8 @@
   }
 
   /**
-   * Function stringfields
-   *
-   * Get the [ ] Fields out of a String
+   * Get the [ ] Fields out of a String, deprecated, 
+   * please use the atkStringParser class
    */
   function stringfields($string)
   {
@@ -670,10 +728,8 @@
   }
 
   /**
-    * Function stringparse
-    *
-    * Parse strings
-    */
+   * Parse strings, deprecated, please use the atkStringParser class
+   */
   function stringparse($string, $data,$encode=false)
   {
     atkdebug("Warning: deprecated use of stringparse(). Use atkStringParser class instead");
@@ -711,6 +767,10 @@
    * prefix. Pass false as second parameter, and you won't get a prefix. (Note
    * that you can't atkurldecode that string anymore, so only use this on
    * substrings of already encoded strings)
+   *
+   * @param string $string  the url to encode
+   * @param bool $pref      wether or not to use a prefix, default true
+   * @return string the encoded url
    */
   function atkurlencode($string, $pref=true)
   {
@@ -737,7 +797,9 @@
   }
 
   /**
-   * wrap lines
+   * Wrap lines, add a newline after 100 characters
+   * @param string $line the line to add new lines in
+   * @return string the line with newlines
    */
   function _wordwrap($line)
   {
@@ -745,7 +807,7 @@
   }
 
   /**
-   * Sent a detailed error report to the maintainer.
+   * Send a detailed error report to the maintainer.
    */
   function mailreport()
   {
@@ -878,7 +940,11 @@
 
 
   /**
-   * wrapper for escapeSQL function
+   * Wrapper for escapeSQL function
+   * @param String $string The string to escape.
+   * @param boolean $wildcard Set to true to convert wildcard chars ('%'). 
+   *                          False (default) will leave them unescaped.
+   * @return String A SQL compatible version of the input string. 
    */
   function escapeSQL($string, $wildcard=false)
   {
@@ -888,6 +954,7 @@
 
   /**
    * Return the atk version number.
+   * @return string the version number of ATK
    */
   function atkversion()
   {
@@ -897,6 +964,14 @@
 
   /**
    * Returns a url to open a popup window
+   * @param string $target  the target of the popup 
+   * @param string $params  extra params to pass along
+   * @param string $winName the name of the window
+   * @param int $width      the width of the popup
+   * @param int $height     the height of the popup
+   * @param string $scroll  allow scrolling? (no (default)|yes)
+   * @param string $resize  allow resizing? (no (default)|yes)
+   * return string the url for the popup window
    */
   function atkPopup($target,$params,$winName,$width,$height,$scroll='no',$resize='no')
   {
@@ -907,12 +982,11 @@
   /**
    * Adds new element to error array en $record. When
    * $msg is empty the multilange error string is used.
-   * params $rec var in which to add element to error array
-   *        $attrib attributename || an array with attribute names 
-   *        $err multilanguage error string
-   *        $msg optinal error string
+   * @param array &$rec var in which to add element to error array
+   * @param var$attrib attributename or an array with attribute names 
+   * @param string $err multilanguage error string
+   * @param string $msg optinal error string
    */
-
   function triggerError(&$rec, $attrib, $err, $msg="", $tab="")
   {
     global $lng;
@@ -923,10 +997,10 @@
 
 
   /**
-  * Adds var_export function to PHP versions older then PHP4.2
-  * for documentation about var_export() see
-  * http://www.php.net/manual/en/function.var-export.php
-  */
+   * Adds var_export function to PHP versions older then PHP4.2
+   * for documentation about var_export() see
+   * http://www.php.net/manual/en/function.var-export.php
+   */
   if(!function_exists("var_export"))
   {
     function var_export($a)
@@ -1054,15 +1128,16 @@
 		{
       echo $data;
     }
-
     exit;
   }
 
   /**
    * This function writes a binary file to the browser for download.
-   * $file is the local filename (the file you want to open on the serverside)
-   * $filename is the name the file will get when the user downloads it.
-   * $mimetype is the mimetype of the file
+   * @param string $file     the local filename (the file you want to open 
+   *                         on the serverside)
+   * @param string $filename the name the file will get when the user downloads it.
+   * @param string $mimetype the mimetype of the file
+   * @return bool wether or not the export worked
    */
   function exportFile($file, $filename,$mimetype="")
   {
@@ -1104,10 +1179,10 @@
   function usefilter($filter)     { atkuse("filter"   , $filter);    }
 
   /**
-  * use an atk class (attribute, relation or filter)
-  *
-  * @return void
-  */
+   * Use an atk class (attribute, relation or filter)
+   * @param string $type the type of the class (attribute|relation|filter)
+   * @param string $name the name of the class
+   */
   function atkuse($type, $name)
   {	
     global $config_atkroot;
@@ -1120,6 +1195,7 @@
 
   /**
    * Returns the (virtual) hostname of the server.
+   * @return string the hostname of the server
    */
   function atkHost()
   {    
@@ -1129,8 +1205,8 @@
   /**
    * Returns the next unique ID for the given sequence.
    * NOTE: ID's are only unique for the script execution!
-   * @param $sequence the sequence name
-   * @return next unique ID for the given sequence
+   * @param string $sequence the sequence name
+   * @return int next unique ID for the given sequence
    */
   function getUniqueID($sequence)
   {
@@ -1140,9 +1216,9 @@
 
   /**
    * Checks if the variable $var contains the given flag ($flag).
-   * @param $var the variable which might contain flags
-   * @param $flag the flag you want to check for
-   * @return result of check
+   * @param string $var the variable which might contain flags
+   * @param var $flag the flag you want to check for
+   * @return bool result of check
    */
   function hasFlag($var, $flag)
   {
@@ -1151,7 +1227,8 @@
   
   /**
    * Makes an url from the target var and all postvars
-   * @param $target the path of the file to open
+   * @param string $target the path of the file to open
+   * @param string the url with the postvars
    */  
   function makeUrlFromPostvars($target)
   {
@@ -1167,12 +1244,11 @@
       return $url;
     }
     return "";
-    
   }
   
-    /**
-   * Makes an string with hidden input fields
-   * containing all posted vars
+  /**
+   * Makes an string with hidden input fields containing all posted vars
+   * @paray array $excludes array with the vars to exclude, default empty
    */  
   function makeHiddenPostvars($excludes=array())
   {
@@ -1192,7 +1268,8 @@
   
   /** 
    * Returns a string representation of an action status.
-   * @param $status Must be one of ACTION_FAILED, ACTION_SUCCESS or ACTION_CANCELLED.
+   * @param var $status status of the action 
+   *                    (ACTION_FAILED|ACTION_SUCCESS|ACTION_CANCELLED)
    */
   function atkActionStatus($status)
   {
@@ -1207,10 +1284,10 @@
   /**
    * Generate a dispatch menu URL for use with nodes
    * and their specific actions.
-   * @param $node the (module.)node name
-   * @param $action the atk action the link will perform
-   * param $params: A key/value array with extra options for the url
-   * @return url for the node with the action
+   * @param string $node the (module.)node name
+   * @param string $action the atk action the link will perform
+   * @param string $params: A key/value array with extra options for the url
+   * @return string url for the node with the action
    */
   function dispatch_url($node, $action, $params="")
   {
@@ -1230,7 +1307,7 @@
 
   /**
    * Writes trace file to system tmp directory
-   * @param $msg message to display in the trace
+   * @param string $msg message to display in the trace
    */
   function atkTrace($msg="")
   {
@@ -1261,7 +1338,16 @@
     fwrite($fp, $log);
     fclose($fp);
   }
-  
+
+  /**
+   * Creates a session aware button
+   * @param string $text       the text to display on the button 
+   * @param string $url        the url to use for the button
+   * @param var $sessionstatus the session flags 
+   *              (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+   *               SESSION_NESTED|SESSION_BACK)
+   * @param bool $embeded      wether or not it's an embedded button
+   */
   function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT, $embedded=true)
   {
     global $g_layout;
@@ -1285,14 +1371,21 @@
   }
   
   /**
-  * Imports a file
-  * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
-  * @param bool   $failsafe      Determines wether a class is included or made required. Defaults to true.
-  */
-  function atkimport($fullclassname, $failsafe=true)
+   * Imports a file
+   * @param string $fullclassname Name of class in atkformat (map1.map2.classfile)
+   * @param bool   $failsafe      Determines wether a class is included 
+   *                                or made required. Defaults to true.
+   * @param bool   $path          Wether or not it is NOT an ATK classname 
+   *                                 ("map.class"), if true it will interpret classname
+   *                                 as: "map/class.classname.inc", default false.
+   */
+  function atkimport($fullclassname, $failsafe=true, $path = false)
   {
-    $filename = getClassPath($fullclassname);
-    
+    if (!$path) 
+      $filename = getClassPath($fullclassname);
+    else 
+      $filename = $fullclassname;
+        
     if ($failsafe)
       require_once($filename);
     else
@@ -1300,12 +1393,12 @@
   }
   
   /**
-  * Converts an ATK classname ("map1.map2.classname")
-  * to a pathname ("/map1/map2/class.classname.inc")
-  * @param string $fullclassname  ATK classname to be converted
-  * @param bool $class            is the file a class? defaults to true
-  * @return string converted filename
-  */
+   * Converts an ATK classname ("map1.map2.classname")
+   * to a pathname ("/map1/map2/class.classname.inc")
+   * @param string $fullclassname  ATK classname to be converted
+   * @param bool $class            is the file a class? defaults to true
+   * @return string converted filename
+   */
   function getClassPath($fullclassname, $class = true)
   {
     $elems = explode(".", strtolower($fullclassname));
@@ -1326,12 +1419,12 @@
   }
     
   /**
-  * Converts a pathname ("/map1/map2/class.classname.inc")
-  * to an ATK classname ("map1.map2.classname")
-  * @param string $classpath pathname to be converted
-  * @param bool $class       is the file a class? defaults to true
-  * @return string converted filename
-  */
+   * Converts a pathname ("/map1/map2/class.classname.inc")
+   * to an ATK classname ("map1.map2.classname")
+   * @param string $classpath pathname to be converted
+   * @param bool $class       is the file a class? defaults to true
+   * @return string converted filename
+   */
   function getClassName($classpath, $class=true)
   {
     $elems = explode("/", strtolower($classpath));
@@ -1358,7 +1451,12 @@
     
     return $classname;
   }
-  
+
+  /**
+   * Returns a new instance of a class
+   * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+   * @return obj instance of the class
+   */
   function &atknew($fullclassname)
   {
     atkimport($fullclassname, true);
@@ -1378,12 +1476,12 @@
   }
 
   /**
-  * @desc Compares two assosiative multi dimensonal array's
-  * if arrays differ, differences are returned otherwise it returns false
-  * @param array $array1 original array
-  * @param array $array2 new array
-  * @return boolean
-  */
+   * Compares two assosiative multi dimensonal array's
+   * if arrays differ, differences are returned otherwise it returns false
+   * @param array $array1 original array
+   * @param array $array2 new array
+   * @return boolean wether or not the arrays differ
+   */
   function atkArrayCompare($array1, $array2)
   {
     foreach($array1 as $key => $value)
