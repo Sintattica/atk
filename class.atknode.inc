@@ -491,8 +491,8 @@
      * @param $attribute the attribute you want to add
      */
     function addAttribute($attribute)
-    {
-      $this->add(&$attribute);
+    {      
+      $this->add($attribute);
     }
 
     /**
@@ -830,7 +830,7 @@
       if ($this->m_postvars["atkformdata"]!="")
       {
         atkdebug("Restoring formdata from session");
-        $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
+        $this->modifyRecord($defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
         $g_sessionData["default"]["stack"][atkStackID()][atkLevel()]["atkformdata"]="";
       }
@@ -906,8 +906,9 @@
       $tab = $this->getActiveTab();
       for ($r = 0; $r < count($this->m_attribIndexList); $r++)
       {
-        $field = array("name" => $this->m_attribIndexList[$r]["name"]);
-        $p_attrib = &$this->m_attribList[$field["name"]];
+        $attribname = $this->m_attribIndexList[$r]["name"];
+        $field = array("name" => $attribname);
+        $p_attrib = &$this->m_attribList[$attribname];
 
         /* fields that have not yet been initialised may be overriden in the url */
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
@@ -917,14 +918,15 @@
 
         /* sometimes a field is hidden although not specified by the field itself */
         $tabs = $this->m_attribIndexList[$r]["tabs"];
+      
         if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
             ($tabs != "*" && !in_array($tab, $tabs)))
-        {
+        {      
           $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
         }
 
         /* we let the attribute add itself to the edit array */
-        $p_attrib->addToEditArray($mode, &$result, &$defaults, &$record['atkerror'], $fieldprefix);
+        $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
       }
 
       /* check for errors */
@@ -951,7 +953,7 @@
 
       /* get data, transform into form, return */
       $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
-      $form = $g_layout->ret_editForm(&$data, &$this);
+      $form = $g_layout->ret_editForm($data, $this);
       return $form;
     }
 
@@ -1519,7 +1521,7 @@
         
         if (method_exists($this, $method))
         {
-          $bgn = $this->$method(&$recordset[$i], $i);
+          $bgn = $this->$method($recordset[$i], $i);
           if (is_array($bgn))
           {
             $bgh = $bgn[1];
@@ -2122,7 +2124,7 @@
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->m_type);
-          $mod->$modifiername(&$this);
+          $mod->$modifiername($this);
         }
       }
       // See if there are modules active that modify this module.node..
@@ -2136,7 +2138,7 @@
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
-          $mod->$modifiername(&$this);
+          $mod->$modifiername($this);
         }
       }
 
@@ -2452,6 +2454,7 @@
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
+      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2545,7 +2548,7 @@
              &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
             )
           {
-            triggerError(&$record, $attribname, 'error_primarykey_exists');
+            triggerError($record, $attribname, 'error_primarykey_exists');
           }
         }
 
@@ -2556,14 +2559,14 @@
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
         if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
-          triggerError(&$record, $attribname, 'error_obligatoryfield');
+          triggerError($record, $attribname, 'error_obligatoryfield');
         }
         // if flag is primary
         else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
                  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
-          triggerError(&$record, $attribname, 'error_uniquefield');
+          triggerError($record, $attribname, 'error_uniquefield');
         }
 
         else
@@ -2575,11 +2578,11 @@
 
             if (method_exists($this,$funcname))
             {
-              $this->$funcname(&$record, $mode);
+              $this->$funcname($record, $mode);
             }
             else
             {
-              $p_attrib->validate(&$record, $mode);
+              $p_attrib->validate($record, $mode);
             }
           }
         }
@@ -2961,7 +2964,7 @@
      */
     function addDb(&$record)
     {
-		 //var_dump($record);
+//		 var_dump($record);
       global $g_db;
 
       $name = "atk".atkconfig("database")."query";
