@@ -4,10 +4,9 @@
   include_once("atk.inc");
 
   atksession("beheer");
-  atksecure();
   atklock();
 
-  if($ATK_VARS["atknodetype"]=="")
+  if($ATK_VARS["atknodetype"]=="" || !session_is_registered("login"))
   {
     // no nodetype passed, or session expired
     $g_layout->ui_top(text("title_session_expired"));
@@ -17,6 +16,8 @@
   }
   else
   {
+    atksecure();
+
     // Create node
     $obj = &getNode($ATK_VARS["atknodetype"]);
 
