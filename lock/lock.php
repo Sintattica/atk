@@ -16,12 +16,8 @@ $lock = &atkLock::getInstance();
 /* extend lock lease */
 if ($lock->extend($id))
 {
-  header("Content-type: image/png");
-  $image = imagecreate(1, 1);
-  $color = imagecolorallocate($image, 255, 255, 255);
-  imagefill($image, 0, 0, $color);
-  imagepng($image);
-  imagedestroy($image);
+  header("Content-type: image/gif");
+  readfile(atkconfig("atkroot").'atk/images/dummy.gif');
 }
 
 /* not found header */
