@@ -6,7 +6,6 @@
     {
       $page = &$this->getPage();    
       
-      atkdebug("actionedit calling selectDb()");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
       if ($this->m_node->hasFlag(NF_LOCK))
       {
@@ -168,7 +167,6 @@
         $tplfield = array();
 				        
 				$tplfield["tab"] = $field["tabs"][0]; // $this->getTab($field_name);
-				atkdebug("We gaan $field_name tonen op de tab ".$tplfield["tab"]);
 				
 				// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
 				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
