@@ -121,6 +121,7 @@
   "import_ignorecolumn" => "Ignore this column",
   "import_import" => "Import",
   "import_upload" => "Upload",
+  "import_upload_explanation"=> "Upload a textfile with data to import into the database.",
   "import_passfirstrecord" => "Skip first line? (header row)",
   "import_sample" => "Sample from csv-file",
   "invert_selection" => "Invert selection",
