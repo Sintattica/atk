@@ -33,9 +33,16 @@
     function getLanguages(&$node)
     {
       if(method_exists($node,"getLanguages"))
+      {
         return $node->getLanguages();
+      }
       else
-        return strtoupper(atkconfig("supported_languages"));
+      {
+        $lngs = atkconfig("supported_languages");
+        for($i=0, $_i=count($lngs); $i<$_i; $i++) $lngs[$i]=strtoupper($lngs[$i]);
+        var_dump($lngs);
+        return $lngs;
+      }
     }
     
     function updateLngField(&$node,&$record)
@@ -83,7 +90,7 @@
       }
       
            
-      $languages = $this->getLanguages($node);
+      $languages = $this->getLanguages($node);      
       $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
 
       $autoincrementflags=Array();            
