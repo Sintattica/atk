@@ -36,7 +36,7 @@
                   "order"=> $order,
                   "module"=> $module);
         
-    if ($s_dupelookup[$parent][$name]!="")
+    if ($s_dupelookup[$parent][$name]!=""&&$name!="-")
     {
       $g_menu[$parent][$s_dupelookup[$parent][$name]] = $item;
     }
