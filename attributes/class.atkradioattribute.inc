@@ -119,11 +119,6 @@
         {
           $sel = "";
         }
-        if($record[$this->fieldName()]=="" && $i==0 && $this->hasFlag(AF_OBLIGATORY))
-        {
-          $sel = "checked";
-        }
-        
 
         $labelID = $fieldprefix.$this->formName()."_".$this->m_values[$i];
         if($this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
