@@ -198,6 +198,27 @@
   {
 
     /*** Member variables ***/
+    
+        
+    /**
+    * reference to the class which is used to validate atknodes
+    * the validator is overridable by changing this variabele
+    *
+    * @access private
+    * @var vartype varname
+    */
+    var $m_validate_class = "atk.atknodevalidator";
+
+    /**
+    * unique field sets of a certain node
+    * doesn't contain the unique fields which have been set by flag AF_UNIQUE
+    * use uniqueFieldSet() to add sets of unique fields
+    *
+    * @access private
+    * @var vartype varname
+    */
+    var $m_uniqueFieldSets = array();
+
 
     /**
      * Nodes must be initialised using the init() function before they can be used.
@@ -1204,7 +1225,6 @@
         $error_title = '<b>'.text('error_formdataerror').'</b>';
         $errormsg = "";
 
-        $pk_err = array();        
         foreach ($data["error"] as $error)
         {
           if ($error['err'] == "error_primarykey_exists")
@@ -1214,15 +1234,33 @@
           else
           {
             $type = (empty($error["node"]) ? $this->m_type : $error["node"]);
-            $index = $this->m_attribList[$error['attrib_name']]->m_index;
+            
+            if(is_array($error['attrib_name']))
+              $attrib_name = $error['attrib_name'][0];
+            else
+              $attrib_name = $error['attrib_name'];
+
+            $index = $this->m_attribList[$attrib_name]->m_index;
             $tabs  = $this->m_attribIndexList[$index]["tabs"];
             if (count($this->m_tabList[$this->m_action]) > 1
                  && $tabs != "*" && !atk_in_array($tab, $tabs))
               $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             
-            $errors[] = array("msg"=>$error['msg'].$error_tab,
-                              "label"=>text($error['attrib_name'], $type));
+            if(!is_array($error['attrib_name']))
+            {	
+              $label = text($error['attrib_name'], $type);
+            }
+            else
+            {
+              $label = array();
+              foreach($error['attrib_name'] as $attrib)
+                $label[] = text($attrib, $type);
+
+                $label= implode(", ", $label);
+            }
+                
+            $errors[] = array("msg"=>$error['msg'].$error_tab, "label"=>$label);
           }
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
@@ -1232,7 +1270,6 @@
             $pk_err_msg .= text($pk_err_attrib[$i]);
             if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
           }
-//          $form.=$this->ret_td($error_title.$pk_err_msg.$errormsg.'<br><br>','colspan="2"');
           $errors[] = array("label"=>text("error_primarykey_exists"),
                             "msg"=>$pk_err_msg);
         }        
@@ -1283,8 +1320,10 @@
             else
             {
               $tplfield["label"] =  $field["label"];
-              if ($field["error"]) 
+              if ($field["error"]) // TODO KEES
               {
+                $this->debug("BLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL".$field["error"]);
+                $field["error"] .= "34rdsfsdfds";
                 $tplfield["error"] = $field["error"];
               }
             }            
@@ -3507,104 +3546,32 @@
 
     /**
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
+     * @param KeyVal record
+     * @param string mode (add | update)
+     * @param KeyVal ignoreLisdt
      */
     function validate(&$record, $mode, $ignoreList=array())
     {
-      global $g_db;
-      atkdebug("validate()");
+      $validateObj = &atkNew($this->m_validate_class);
 
-      // First we check if the values for the attributes are correct
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        if (!atk_in_array($attribname, $ignoreList))
-        {
-          $p_attrib = &$this->m_attribList[$attribname];
+      $validateObj->setNode($this);
+      $validateObj->setRecord($record);
+      $validateObj->setIgnoreList($ignoreList);
 
-          if (!( $p_attrib->isEmpty($record)))
-          {
-            $funcname = $p_attrib->m_name."_validate";
-            if (method_exists($this,$funcname))
-            {
-              $this->$funcname($record, $mode);
-            }
-            else
-            {
-              $p_attrib->validate($record, $mode);
-            }
-          }
-        }
-      }
-      if(count($record['atkerror']) > 0) return false;
-
-      // After the values check, we check the Flags.
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        if (!atk_in_array($attribname, $ignoreList))
-        {
-          $p_attrib = &$this->m_attribList[$attribname];
-
-          if(count($record['atkerror']) > 0) return false;
-          //Validate if ne
-          if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
-          {
-          //  $atkorgkey = $this->orgKey();
-            $atkorgkey = $record["atkprimkey"];
-            if(($atkorgkey == '' // no orgkey, so adding this record
-                || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
-               &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
-              )
-            {
-              triggerError($record, $attribname, 'error_primarykey_exists', '', $this->m_type);
-            }
-          }
-
-          // if no root elements may be added to the tree, then every record needs to have a parent!
-          if ($p_attrib->hasFlag(AF_PARENT) && $this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_action == "save")
-            $p_attrib->m_flags |= AF_OBLIGATORY;
-
-          // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-          if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
-          {
-            triggerError($record, $attribname, 'error_obligatoryfield', '', $this->m_type);
-          }
-          // if flag is primary
-          else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
-                   count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($record[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
-                  )
-          {
-            triggerError($record, $attribname, 'error_uniquefield', '', $this->m_type);
-          }
-          else
-          {
-            //don't validate empty fields
-            if (!( $p_attrib->isEmpty($record)))
-            {
-              $funcname = $p_attrib->m_name."_validate";
-
-              if (method_exists($this,$funcname))
-              {
-                $this->$funcname($record, $mode);
-              }
-              else
-              {
-                $p_attrib->validate($record, $mode);
-              }
-            }
-          }
-        }
-      }
-
-      for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
-        $record["atkerror"][$i]["node"] = $this->m_type;
-    }
+      return $validateObj->validate();
+    } // end function validate
 
     /**
-    * add a unique field set which will be checked by the validate function
+    * add a unique field set that will be checked within add and update actions
     *
+    * @param array fieldArr
     * @return void
     */
     function addUniqueFieldset($fieldArr)
     {	
+      sort($fieldArr);
+      if(!in_array($fieldArr, $this->m_uniqueFieldSets))
+        $this->m_uniqueFieldSets[] = $fieldArr;
     }
 
     /**

@@ -810,7 +810,7 @@
    * Adds new element to error array en $record. When
    * $msg is empty the multilange error string is used.
    * params $rec var in which to add element to error array
-   *        $attrib attributename
+   *        $attrib attributename || an array with attribute names 
    *        $err multilanguage error string
    *        $msg optinal error string
    */
@@ -818,6 +818,7 @@
   function triggerError(&$rec, $attrib, $err, $msg="")
   {
     if($msg=="")  $msg = text($err);
+
     $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
   }
 
