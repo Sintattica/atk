@@ -10,16 +10,19 @@
    */
 
   $cookie_params = session_get_cookie_params();
-  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($HTTP_SERVER_VARS["SCRIPT_NAME"])));
+  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($_SERVER["SCRIPT_NAME"])));
   session_start();    
-  
-  session_register("g_sessionDataAll");    
 
-  global $config_identifier;
-  if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
+  // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
+  // You can use $session = &atkSessionManager::getSession() now, and you'll have a
+  // session enabled, multi-app array in which you can store whatever you like.
+  // There are old applications however that still use $g_sessionData, so I'll 
+  // leave it in place for now.
+  
+  global $config_identifier;  
   if (empty($config_identifier)) $config_identifier = "default";
 
-  $g_sessionData = &$g_sessionDataAll[$config_identifier];
+  $g_sessionData = &$_SESSION[$config_identifier];
 
   define(SESSION_DEFAULT,0); // stay at current stacklevel
   define(SESSION_NEW,1);     // new stack
@@ -28,9 +31,9 @@
   define(SESSION_REPLACE,4); // replace current stacklevel
 
   /* Workaround for a PHP4.0.4 bug */
-  $atklevel = trim($HTTP_REQUEST_VARS["atklevel"]);
-  $atkprevlevel = trim($HTTP_REQUEST_VARS["atkprevlevel"]);
-  $atkstackid = trim($HTTP_REQUEST_VARS["atkstackid"]);    
+  $atklevel = trim($_REQUEST["atklevel"]);
+  $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
+  $atkstackid = trim($_REQUEST["atkstackid"]);    
 
   class atkSessionManager
   {
@@ -162,7 +165,7 @@
 
     function stackscope(&$postvars)
     {
-      global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars, $HTTP_GET_VARS;
+      global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars;
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
@@ -200,7 +203,7 @@
         $currentitem["atkformdata"] = $atkformdata;
 
         // also remember getvars that were passed in the url
-        foreach(array_keys($HTTP_GET_VARS) as $var)
+        foreach(array_keys($_REQUEST) as $var)
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
@@ -383,6 +386,11 @@
         return;
       }
     }
+    
+  function &getSession()
+  {
+    return $_SESSION[atkconfig("identifier")];
+  }
 
 
   }
@@ -393,14 +401,13 @@
   */
   function atksession($namespace = "default", $usestack=true)
   {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
+    global $ATK_VARS, $g_sessionManager, $g_layout;
     global $atkprevlevel;
 
     $g_sessionManager = new atkSessionManager($namespace, $usestack);
 
-    $HTTP_REQUEST_VARS = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
-    atkDataDecode($HTTP_REQUEST_VARS);
-    $ATK_VARS = $HTTP_REQUEST_VARS;   
+    atkDataDecode($_REQUEST);
+    $ATK_VARS = $_REQUEST;   
         
     $g_sessionManager->session_read($ATK_VARS);
     
@@ -454,5 +461,6 @@
     global $g_sessionManager;
     return $g_sessionManager->getValue($var, $namespace);
   }
+    
 
 ?>

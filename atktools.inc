@@ -642,12 +642,12 @@
    */
   function mailreport()
   {
-    global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS;
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $txt_app_title, $g_sessionManager, $g_sessionData, $g_user;
+    global $config_mailreport, $g_error_msg, $g_debug_msg;
+    global $txt_app_title, $g_sessionManager, $g_sessionData, $g_user;
 
     if ($config_mailreport!="") // only if enabled..
     {
-      $subject = "[".$HTTP_SERVER_VARS["SERVER_NAME"]."] $txt_app_title error";
+      $subject = "[".$_SERVER["SERVER_NAME"]."] $txt_app_title error";
       $from = $txt_app_title;
 
       $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
@@ -658,16 +658,16 @@
       $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
       $body.= implode("\n",$g_debug_msg);
 
-      $body.= "\n\nHTTP_GET_VARS\n".str_repeat("-",70)."\n";
-      foreach ($HTTP_GET_VARS as $key=>$value)
+      $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
+      foreach ($_GET as $key=>$value)
       {
         $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
       }
 
-      if (count($HTTP_POST_VARS)>0)
+      if (count($_POST)>0)
       {
-        $body.= "\n\nHTTP_POST_VARS\n".str_repeat("-",70)."\n";
-        foreach ($HTTP_POST_VARS as $key=>$value)
+        $body.= "\n\n_POST\n".str_repeat("-",70)."\n";
+        foreach ($_POST as $key=>$value)
         { 
           $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
         }
@@ -730,7 +730,7 @@
 
       $body.= "\n\nSERVER INFORMATION\n".str_repeat("-",70)."\n";
 
-      foreach ($HTTP_SERVER_VARS as $key=>$value)
+      foreach ($_SERVER as $key=>$value)
       {
         $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = $value\n";
       }
@@ -957,10 +957,8 @@
    * Returns the (virtual) hostname of the server.
    */
   function atkHost()
-  {
-    // todo: make this php 4.2 compatible (check version and use $_SERVER if possible.
-    global $HTTP_SERVER_VARS;
-    return ($HTTP_SERVER_VARS["HTTP_HOST"]!=""?$HTTP_SERVER_VARS["HTTP_HOST"]:$HTTP_SERVER_VARS["SERVER_NAME"]);
+  {    
+    return ($_SERVER["HTTP_HOST"]!=""?$_SERVER["HTTP_HOST"]:$_SERVER["SERVER_NAME"]);
   }
 
   /**

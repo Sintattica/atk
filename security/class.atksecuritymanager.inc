@@ -103,8 +103,10 @@
      
     function authenticate()
     {    
-      global $HTTP_SERVER_VARS, $g_sessionManager, $HTTP_COOKIE_VARS, $ATK_VARS;
+      global $g_sessionManager, $ATK_VARS;
       global $g_layout;      
+      
+      $session = &atkSessionManager::getSession();
       
       $response=AUTH_UNVERIFIED;
       
@@ -115,25 +117,25 @@
       }
       else // HTTP login
       {
-        $auth_user = $HTTP_SERVER_VARS["PHP_AUTH_USER"];
-        $auth_pw = $HTTP_SERVER_VARS["PHP_AUTH_PW"];
+        $auth_user = $_SERVER["PHP_AUTH_USER"];
+        $auth_pw = $_SERVER["PHP_AUTH_PW"];
       }      
 
       $md5 = false; // PHP_AUTH_PW is plain text..            
       // first check if we want to logout
-      if (isset($ATK_VARS["atklogout"]) && !session_is_registered("relogin"))
+      if (isset($ATK_VARS["atklogout"]) && $session["relogin"]!=1)
       {        
         session_destroy();
         $cookie_params = session_get_cookie_params();
-        session_set_cookie_params($cookie_params["lifetime"], dirname($HTTP_SERVER_VARS["SCRIPT_NAME"]));
+        session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
         session_start();
-        session_register("relogin");
+        $session["relogin"]=1;
 
         // destroy cookie
         if (atkconfig("authentication_cookie") && $auth_user!="administrator")
         {
           $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
-          if (!empty($HTTP_COOKIE_VARS[$cookiename])) setcookie($cookiename, "", 0);
+          if (!empty($_COOKIE[$cookiename])) setcookie($cookiename, "", 0);
         }
         if($ATK_VARS["atklogout"]>1)
         {
@@ -143,14 +145,14 @@
       } 
  
       // do we need to login?
-      else if (!session_is_registered("login"))
+      else if ($session["login"]!=1)
       {         
         // authenticated?
         $authenticated = false;
 
         // sometimes we manually have to set the PHP_AUTH vars 
-        if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", $HTTP_SERVER_VARS["HTTP_AUTHORIZATION"]))
-        list($auth_user, $auth_pw) = explode(":", base64_decode(substr($HTTP_SERVER_VARS["HTTP_AUTHORIZATION"], 6)));
+        if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"]))
+        list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
 
         // check previous sessions.. 
         if (atkconfig("authentication_cookie"))
@@ -158,7 +160,7 @@
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
           $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));          
-          list($enc, $user, $passwd) = split("\.",base64_decode($HTTP_COOKIE_VARS[$cookiename]));          
+          list($enc, $user, $passwd) = split("\.",base64_decode($_COOKIE[$cookiename]));          
                      
           // for security reasons administrator will never be cookied..
           if ($auth_user=="" && $user!="" && $user!="administrator")
@@ -276,7 +278,7 @@
             }
           }
           // we are logged in 
-          if ($authenticated) session_register("login");
+          if ($authenticated) $session["login"]=1;
         }        
       }      
       else
@@ -287,7 +289,7 @@
         $session_auth = $g_sessionManager->getValue("authentication", "globals");          
                 
         if (atkconfig("authentication_session") && 
-            session_is_registered("login") && 
+            $session["login"]==1 && 
             $session_auth["authenticated"]==1 && 
             !empty($session_auth["user"]))
         {
@@ -308,7 +310,7 @@
         return false;
       }      
       // still not logged in?! 
-      if (!session_is_registered("login"))
+      if ($session["login"]!=1)
       {
         if(atkconfig("auth_loginform"))
         {
@@ -329,7 +331,7 @@
       else if (isset($ATK_VARS["atklogout"])) header("Location: ".$_SERVER["PHP_SELF"]."?");
 
       // we keep the relogin state until the atklogout variable isn't set anymore
-      else if (!isset($ATK_VARS["atklogout"]) && session_is_registered("relogin")) session_unregister("relogin");
+      else if (!isset($ATK_VARS["atklogout"]) && $session["relogin"]==1) $session["relogin"]=0;
 
       // return
       // g_user always lowercase                  
@@ -345,7 +347,7 @@
           
     function loginForm($defaultname, $lastresponse)
     {
-      global $g_layout, $HTTP_POST_VARS;
+      global $g_layout;
 
       $loginattempts = sessionLoad('loginattempts');            
       if($loginattempts=="") $loginattempts = 0;
@@ -601,15 +603,14 @@
     }
      
     function log($level, $message)
-    {
-      global $HTTP_SERVER_VARS;
+    {      
     
       if (atkconfig("logging")>0 && atkconfig("logging")>=$level)
       {
         $fp = @fopen(atkconfig("logfile"),"a");
         if ($fp)
         {
-          $logstamp = "[".date("d-m-Y H:i:s")."] [".$HTTP_SERVER_VARS["REMOTE_ADDR"]."] ".$this->m_user["name"]." | ";
+          $logstamp = "[".date("d-m-Y H:i:s")."] [".$_SERVER["REMOTE_ADDR"]."] ".$this->m_user["name"]." | ";
           @fwrite($fp, $logstamp.$message."\n");
           @fclose($fp);
         }
@@ -646,10 +647,11 @@
   function getUser()
   {
     global $g_sessionManager;
+    $session = &atkSessionManager::getSession();
     $user = "";    
     $session_auth = $g_sessionManager->getValue("authentication", "globals");          
     if (atkconfig("authentication_session") && 
-        session_is_registered("login") && 
+        $session["login"]==1 && 
         $session_auth["authenticated"]==1 && 
         !empty($session_auth["user"]))
     {

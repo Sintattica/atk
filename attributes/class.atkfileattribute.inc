@@ -203,12 +203,12 @@
      */
     function fetchValue($rec)
     {    
-      global $HTTP_POST_FILES,$select,$del;          
+      global $select,$del;          
       
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
       $basename = $this->fieldName();      
-      if (is_array($HTTP_POST_FILES)||($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))) // php4
+      if (is_array($_FILES)||($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))) // php4
       {   
         // if no new file has been uploaded..    
         if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
@@ -220,7 +220,7 @@
                           "orgfilename"=>'');
         
         }
-        elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none"||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="")
+        elseif (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         { 
           $result = array("tmpfile"=>"",
                           "filename"=>"",
@@ -229,10 +229,10 @@
         }
         else
         {    
-          $realname = $this->_filenameMangle($rec, $HTTP_POST_FILES[$postfiles_basename]["name"]);
-          $result = array("tmpfile"=>$HTTP_POST_FILES[$postfiles_basename]["tmp_name"],
+          $realname = $this->_filenameMangle($rec, $_FILES[$postfiles_basename]["name"]);
+          $result = array("tmpfile"=>$_FILES[$postfiles_basename]["tmp_name"],
                           "filename"=>$realname,
-                          "filesize"=>$HTTP_POST_FILES[$postfiles_basename]["size"],
+                          "filesize"=>$_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$realname);
         }                      
         return $result;
@@ -244,12 +244,11 @@
      * @returns true if no image was uploaded
      */    
     function isEmpty($postvars)
-    {
-      global $HTTP_POST_FILES;
-      if (is_array($HTTP_POST_FILES))
+    {      
+      if (is_array($_FILES))
       {
         // php4
-        return ($HTTP_POST_FILES[$this->fieldName()]["tmp_name"]=="none");
+        return ($_FILES[$this->fieldName()]["tmp_name"]=="none");
       }
       else
       {

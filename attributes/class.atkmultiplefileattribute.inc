@@ -98,12 +98,11 @@
     function value2db($rec)
     {
       $select = "select_".$this->fieldName();
-      global $$select;
-      global $HTTP_POST_VARS;
+      global $$select;    
 
-      if(!$this->isEmpty($HTTP_POST_VARS))
+      if(!$this->isEmpty($_POST))
       {
-        $file = $this->fetchValue($HTTP_POST_VARS);
+        $file = $this->fetchValue($_POST);
         $file[filename] = str_replace(' ','_',$file["filename"]);
         if($file[filename]!="")
         {

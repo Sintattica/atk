@@ -95,7 +95,7 @@ class atkDbLock extends atkLock
    */
   function lock($selector, $table)
   {
-    global $g_db, $HTTP_SERVER_VARS, $g_layout, $g_sessionManager;
+    global $g_db, $g_layout, $g_sessionManager;
     $success = FALSE;
 
     /* first check if we haven't locked the item already */
@@ -140,7 +140,7 @@ class atkDbLock extends atkLock
       $query->addField("lock_table", escapeSQL($table));
       $query->addField("lock_record", escapeSQL($selector));
       $query->addField("user_id", escapeSQL($user));
-      $query->addField("user_ip", escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"]));
+      $query->addField("user_ip", escapeSQL($_SERVER["REMOTE_ADDR"]));
       $query->addField("lock_stamp", $g_db->func_now(), "", "", FALSE);
       if (atkconfig("database") != 'oci8' && atkconfig("database") != 'oci9')
         $query->addField("lock_lease", $g_db->func_now()." + INTERVAL 60 SECOND", "", "", FALSE);
@@ -178,7 +178,7 @@ class atkDbLock extends atkLock
    */
   function unlock($selector, $table)
   {
-    global $g_db, $HTTP_SERVER_VARS;
+    global $g_db;
 
     $user = getUser();
     if (is_array($user))
@@ -198,7 +198,7 @@ class atkDbLock extends atkLock
         "lock_table = '".escapeSQL($table)."' AND ".
         "lock_record = '".escapeSQL($selector)."' AND ".
         "user_id = '".escapeSQL($user)."' AND ".
-        "user_ip = '".escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"])."' AND ".
+        "user_ip = '".escapeSQL($_SERVER["REMOTE_ADDR"])."' AND ".
         "session_id = '".escapeSQL(session_id())."'".
       ") OR (".
         "lock_lease <= ".$g_db->func_now().
@@ -220,7 +220,7 @@ class atkDbLock extends atkLock
    */
   function extend($identifier)
   {
-    global $g_db, $HTTP_SERVER_VARS, $ATK_VARS;
+    global $g_db, $ATK_VARS;
 
     if (!empty($ATK_VARS["stack"])) $atkstackid = $ATK_VARS["stack"];
     else $atkstackid = atkStackID();
@@ -241,7 +241,7 @@ class atkDbLock extends atkLock
     $query->addTable("db_lock");
     $query->addCondition("lock_id = ".(int)$identifier);
     $query->addCondition("user_id = '".escapeSQL($user)."'");
-    $query->addCondition("user_ip = '".escapeSQL($HTTP_SERVER_VARS["REMOTE_ADDR"])."'");
+    $query->addCondition("user_ip = '".escapeSQL($_SERVER["REMOTE_ADDR"])."'");
     $query->addCondition("session_id = '".escapeSQL(session_id())."'");
     $query->addCondition("lock_lease >= ".$g_db->func_now());
     $query->executeUpdate();

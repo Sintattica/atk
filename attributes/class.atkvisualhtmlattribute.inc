@@ -162,11 +162,11 @@
     
     function renderEditor($fieldname, $current_value="", $viewselectbox)
     {	
-      global $HTTP_USER_AGENT, $insertat_editor, $navegador;
+      global $insertat_editor, $navegador;
       
       $this->m_urlpath = atkconfig("atkroot")."atk/attributes/wysiwyg/";
       
-      if( strstr($HTTP_USER_AGENT,'IE')!= false || strstr($HTTP_USER_AGENT,'MS')!= false || strstr($HTTP_USER_AGENT,'EXPLORER')!= false )
+      if( strstr($_SERVER["HTTP_USER_AGENT"],'IE')!= false || strstr($_SERVER["HTTP_USER_AGENT"],'MS')!= false || strstr($_SERVER["HTTP_USER_AGENT"],'EXPLORER')!= false )
       {
         $navegador = "IE";
       }

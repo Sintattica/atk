@@ -29,13 +29,12 @@
 
    // constructor function
     function browserInfo($ua="")
-    {
-     global $HTTP_USER_AGENT;
+    {     
 
      // set ua 
       if (trim($ua) == "")
       {
-       $this->ua = $HTTP_USER_AGENT;
+       $this->ua = $_SERVER["HTTP_USER_AGENT"];
       }
       else
       {
