@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.13  2001/05/17 12:09:11  ivo
+   * Improvements to session mangement: search values and page numbers are
+   * now remembered if you come back to the admin page.
+   *
    * Revision 1.12  2001/05/17 10:27:12  ivo
    * Fixes to session management, new AF_LARGE feature for manytoonerelation.
    * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -133,7 +137,7 @@
     
     function stackscope(&$postvars)
     {
-      global $g_sessionData, $atklevel, $g_sessionVars, $HTTP_GET_VARS;
+      global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars, $HTTP_GET_VARS;
       if (!isset($atklevel)||$atklevel=="") $atklevel=0;
       atkdebug("ATKLEVEL: ".$atklevel);
             
@@ -154,11 +158,15 @@
         // new level.. always based on the previous level        
         //$newstackitem = array();
         $currentitem = $stack[count($stack)-1];
-        // but we never keep formdata from other pages..
-        $currentitem["atkformdata"]="";
+        
+        // and page vars are cleared because they are no longer valid in an upper level..
+        foreach($g_pageVars as $var)
+        {
+          $currentitem[$var]="";
+        }
                 
         // Posted vars always overwrite anything in the current session..
-        foreach($g_sessionVars as $var)
+        foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
@@ -216,14 +224,27 @@
           // save it in the session stack..
           $stack[$atklevel] = $currentitem;       
         }
-        
-        foreach($g_sessionVars as $var)                                                 
-        {
-          if (isset($postvars[$var])&&$postvars[$var]!="")
+        else
+        {        
+          foreach($g_pageVars as $var)                                                         
           {
-            $currentitem[$var] = $postvars[$var];
+            if (isset($postvars[$var])&&count($postvars[$var])>0)
+            {
+              $currentitem[$var] = $postvars[$var];
+            }
+          }          
+          // page vars must overwrite the current stack..
+          $stack[$atklevel] = $currentitem;       
+          
+          // session vars need not be remembered.. 
+          foreach($g_sessionVars as $var)                                                         
+          {
+            if (isset($postvars[$var])&&count($postvars[$var])>0)
+            {
+              $currentitem[$var] = $postvars[$var];
+            }
           }
-        }
+        }      
       }              
           
       if (is_array($currentitem["atkformdata"]))
@@ -238,8 +259,9 @@
       }  
 //      var_dump($postvars);
         
-      //echo "<hr>";
+      //echo "<hr>STACK: ";
       //var_dump($g_sessionData["stack"]);
+      //echo "<hr>";
     }
     
     function stackTrace()

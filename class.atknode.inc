@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.34  2001/05/17 12:09:11  ivo
+   * Improvements to session mangement: search values and page numbers are
+   * now remembered if you come back to the admin page.
+   *
    * Revision 4.33  2001/05/17 10:27:12  ivo
    * Fixes to session management, new AF_LARGE feature for manytoonerelation.
    * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -445,8 +449,14 @@
    * Sticky vars.. sticky vars.. it's not your fault!
    */
    //$g_stickyVars = array("atknodetype","atktarget","atkfilter","atkaction");
+      
+   // session vars are valid until they are set to something else. if you go a session level higher,
+   // the next level will still contain these vars (unless overriden in the url)
+   $g_sessionVars = array("atknodetype","atkfilter","atkaction");
    
-   $g_sessionVars = array("atknodetype","atktarget","atkfilter","atkaction","atkselector");
+   // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
+   // visible until you return.
+   $g_pageVars = array("atkselector","atksearch","atkorderby","atkstartat","atktarget","atkformdata");
 
   /************* MODULE HANDLING *************/
 
@@ -1206,7 +1216,7 @@
       // maximum number of bookmarks to pages.
       $max_bm = 10;
 
-      if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) return "";
+      if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) return "";          
 
       $pages = ceil($count / $limit);
       $curr  = ($this->m_postvars['atkstartat'] / $limit) + 1;
