@@ -625,7 +625,18 @@
      */
     function dbFieldSize()
     {
-      return $this->m_maxsize;
+      if ($this->m_maxsize!=0) return $this->m_maxsize;
+      else
+      {
+        if ($this->dbFieldType()=="number")
+        {
+          return "10"; // default for numbers.
+        }
+        else
+        {
+          return "100"; // default for strings.
+        }
+      }
     }
 
   }
