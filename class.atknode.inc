@@ -3187,14 +3187,19 @@
     function validateFilter($filter)
     {
       list($relation, $field) = explode('.', $filter);
+      
       if ($field != "")
       {
         if (in_array($relation, array_keys($this->m_attribList))) return $filter;
       }
       else
       {
-        list($relation_new, $dummy) = explode('=', $relation);
-        if (in_array($relation_new, array_keys($this->m_attribList))) return $filter;
+      	$sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
+      	foreach ($sqloperators as $sqloperator)
+      	{
+          list($relation_new, $dummy) = explode($sqloperator, $relation);
+        	if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
+      	}
       }
       return "";
     }    

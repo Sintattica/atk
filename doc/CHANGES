@@ -35,6 +35,7 @@ Changes in ATK 5.0.5
   and for both IE and Gecko engine [Boy]
 * Fixed bug that would cause the navigator to fail and generate SQL errors 
   when AF_LARGE is set and an atkfilter is passed along [Boy,Yuri]
+* ValidateFilter now recognizes all SQL operators instead of just '=' [Boy]
 
 Changes in ATK 5.0.4
 --------------------
