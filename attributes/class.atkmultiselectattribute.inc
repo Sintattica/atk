@@ -49,6 +49,16 @@
       }
       return substr($string,0,-1); // last | is stripped
     }
+    
+    function display($record)
+    {
+       $values = explode('|',$record[$this->fieldName()]);
+       for ($i=0;$i<count($values);$i++)
+       {
+         $res[] = text($this->m_lookup[$values[$i]]);
+       }
+       return implode(', ',$res);
+    }
 
   /**
      * Returns a piece of html code that can be used in a form to edit this
@@ -79,5 +89,11 @@
     
       return $result;
     }
+    
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      return $query->addCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value)));
+    }
+
   }
 ?>
