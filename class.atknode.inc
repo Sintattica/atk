@@ -465,6 +465,7 @@
         $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
+            
     }
 
     /**
@@ -643,7 +644,7 @@
      * Creates an edit page
      */
     function editPage($record)
-    {
+    {            
       global $g_layout, $PHP_SELF,$config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
@@ -2296,7 +2297,7 @@
       }
 
       //atk_var_dump($this->m_attribIndexList);
-      usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
+      $this->attribSort();
       //atk_var_dump($this->m_attribIndexList);
       $this->m_initialised = true;
     }
@@ -2353,30 +2354,24 @@
       }
 
       // check for fake submit (session saving href thingee)
-      if ($this->m_postvars["atkescape"]!="")
+      if ($this->allowed($this->m_action))
       {
-        $this->redirect(atkurldecode($this->m_postvars["atkescape"]));
+        $g_securityManager->logAction($this->m_type, $this->m_action);
+        $this->callHandler($this->m_action);
       }
       else
       {
-        if ($this->allowed($this->m_action))
-        {
-          $g_securityManager->logAction($this->m_type, $this->m_action);
-          $this->callHandler($this->m_action);
-        }
-        else
-        {
-            $g_layout->output("Sorry, you don't have permission to perform this action");
-        }
-
-        if ($fullpage)
-        {
-          $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']));
-        }
-
-        // This is the end of all things for this page..
-        // so we clean up some resources..
+          $g_layout->output("Sorry, you don't have permission to perform this action");
       }
+
+      if ($fullpage)
+      {
+        $g_layout->page(text('app_shorttitle')." - ".$g_layout->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']));
+      }
+
+      // This is the end of all things for this page..
+      // so we clean up some resources..
+
       $g_db->disconnect();
       atkdebug("disconnected from the database");
     }
@@ -3474,6 +3469,16 @@
     function setSearchAction()
     {
       $this->m_search_action = func_get_args();
+    }
+    
+    /**
+     * This function resorts the attribIndexList. This is necessary if you add 
+     * attributes *after* init() is already called, and you set an order for those
+     * attributes.
+     */
+    function attribSort()
+    {
+      usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
     }
   }
 ?>

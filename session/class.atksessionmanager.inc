@@ -385,7 +385,7 @@
   */
   function atksession($namespace = "default")
   {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager;
+    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
 
     $g_sessionManager = new atkSessionManager($namespace);
 
@@ -401,6 +401,14 @@
     }
 
     $g_sessionManager->session_read($ATK_VARS);
+    
+    // Escape check
+    if ($ATK_VARS["atkescape"]!="")
+    {
+      atkNode::redirect(atkurldecode($ATK_VARS["atkescape"]));
+      $g_layout->outputFlush();
+      exit;
+    }  
   }
 
   function sessionStore($var, $value)
