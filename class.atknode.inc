@@ -3613,6 +3613,7 @@
      */
     function updateDb(&$record)
     {
+      atkdebug("UPDATEDB CALLL!!!");
       global $g_db;
 
       $name = "atk".atkconfig("database")."query";
@@ -3675,7 +3676,13 @@
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
         // has been saved.
-        return $this->postUpdate($record);
+        $return =  $this->postUpdate($record);
+        if(!isSet($return))
+        {
+          atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!</font>");
+          $return = true;
+        }
+        return $return;
       }
       else
       {
@@ -4076,7 +4083,17 @@
 
         // Now we call a postAdd function, that can be used to do some processing after the record
         // has been saved.
-        if ($exectrigger) return $this->postAdd($record, $mode);
+        if ($exectrigger) {
+          $return = $this->postAdd($record, $mode);
+          if(!isSet($return))
+          {
+            atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
+            $return = true;
+          }
+
+          return $return;
+
+        }
         return true;
       }
       
@@ -4120,7 +4137,14 @@
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
-          if (!$this->postDel($recordset[$i]))
+          $return = $this->postDel($recordset[$i]);
+          if(!isSet($return))
+          {
+            atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postDel doesn't return anything, it should return a boolean!</font>");
+            $return = true;
+          }
+
+          if (!$return)
           {
             // error.
             return false;
