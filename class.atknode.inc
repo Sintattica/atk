@@ -326,7 +326,8 @@
      */
     var $m_statusbarDone = false;
 
-
+    /* search action, action that will be performed if only one record is found */
+    var $m_search_action = "";
 
     /*** Public functions ***/
 
@@ -485,7 +486,7 @@
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
     }
-    
+
     /**
      * Completely remove an attribute.
      */
@@ -494,17 +495,17 @@
       if (is_object($this->m_attribList[$attribname]))
       {
         $listindex = $this->m_attribList[$attribname]->m_index;
-        
+
         unset($this->m_attribList[$attribname]);
         for ($i=0, $_i=count($this->m_listExcludes); $i<$_i; $i++)
-        { 
+        {
           if ($this->m_listExcludes[$i] == $attribname) unset($this->m_listExcludes[$i]);
         }
         for ($i=0, $_i=count($this->m_viewExcludes); $i<$_i; $i++)
-        { 
+        {
           if ($this->m_viewExcludes[$i] == $attribname) unset($this->m_viewExcludes[$i]);
         }
-        
+
         unset($this->m_attribIndexList[$listindex]);
       }
     }
@@ -784,7 +785,7 @@
 
 
       if (count($this->m_tabListAdd) > 1) $g_layout->tabs_top($this->buildTabs());
-      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);      
+      $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("add",$record,$forceList));
       if (count($this->m_tabListAdd) > 1) $g_layout->tabs_bottom();
 
@@ -913,11 +914,11 @@
               }
               else
               {
-                // this is a filter on a field of another table (something we have a 
-                // relationship with.              
+                // this is a filter on a field of another table (something we have a
+                // relationship with.
                 $defaults[$table][$field] = $forcedvalue;
                 $attribname = $table;
-              }              
+              }
             }
             else
             {
@@ -1240,15 +1241,6 @@
     {
       global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
-      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
-      $g_layout->output($this->statusbar());
-
-      $adminHeader = $this->adminHeader();
-      if ($adminHeader!="")
-      {
-        $g_layout->output($adminHeader."<br><br>");
-      }
-
       // When there's a lot of data, records will be spread across multiple
       // pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
@@ -1261,6 +1253,25 @@
                                    $this->m_listExcludes,
                                    "",
                                    "admin");
+
+      // check for search-action (if search returns only one record!)
+      if (is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch']) > 0 &&
+          !empty($this->m_search_action) && count($recordset) == 1)
+      {
+        $this->redirect(session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType().
+                                    '&atkaction='.$this->m_search_action.
+                                    '&atkselector='.rawurlencode($this->primaryKey($recordset[0])),
+                                    SESSION_REPLACE));
+      }
+
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'admin'));
+      $g_layout->output($this->statusbar());
+
+      $adminHeader = $this->adminHeader();
+      if ($adminHeader!="")
+      {
+        $g_layout->output($adminHeader."<br><br>");
+      }
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
@@ -1638,7 +1649,7 @@
         {
           $attribname = $this->m_attribIndexList[$r]["name"];
           $p_attrib = &$this->m_attribList[$attribname];
-          
+
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -3422,6 +3433,16 @@
         if (method_exists($this, $function)) $this->$function();
         else atkdebug("dispatcher error: no action defined for '".$action."'");
       }
+    }
+
+    /**
+     * Sets the search action. The search action is the action that will be performed
+     * on the single record that is found after doing a certain search query.
+     * @param $action the action name
+     */
+    function setSearchAction($action)
+    {
+      $this->m_search_action = $action;
     }
   }
 ?>

@@ -142,12 +142,24 @@
      * @params $record Array with 3 fields (year, month, day)
      * @return Piece a of HTML Code
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
+      /* text mode? */
+      if ($this->hasFlag(AF_DATE_STRING))
+      {
+        $value = &$record[$this->fieldName()];
+
+        if (is_array($value)) $value = date("Y-m-d", mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
+        elseif ($this->hasFlag(AF_OBLIGATORY)) $value = date("Y-m-d");
+        else $value = "";
+
+        return '<input type="text" name="'.$fieldprefix.$this->formName().'" value="'.$value.'" size="10">';
+      }
+
       /* this field */
       $field = $record[$this->fieldName()];
       $str_format = $this->m_date_format_edit;
-;
+
       /* currently selected date */
       $current = 0;
       if (isset($record[$this->fieldName()]))
@@ -359,6 +371,7 @@
     function fetchValue($postvars)
     {
       if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
+      elseif (empty($postvars[$this->formName()])) return "";
       else return $this->dateArray(date("Ymd", strtotime($postvars[$this->formName()])));
     }
 
