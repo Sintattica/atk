@@ -151,7 +151,7 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
+        $result.= '<option value="'.atktext($this->m_values[$i]).'" '.$sel.'>'.$this->m_options[$i];
       }
       $result.='</select>';
       return $result;
@@ -261,15 +261,23 @@
       $this->addOnChangeHandler("if (".implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
     
-    
+    /**
+     * Sets the selected listitem
+     * @param string $selected the listitem you want to have selected
+     */
     function setSelected($selected)
     {
       $this->m_selected = $selected;
     }
     
+    /**
+     * Gets the selected listattribute
+     * @return string the selected listitem
+     */
     function getSelected()
     {
       return $this->m_selected;
     }
   }
+
 ?>
