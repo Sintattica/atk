@@ -11,6 +11,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/07 12:36:26  ivo
+   * Atknode now reads records atomic.
+   * Removed some debug echo's from the db classes.
+   *
    * Revision 4.2  2001/05/14 10:20:19  ivo
    * Improved error reporting when database queries fail.
    * New feature: atk can now send a detailed error report by email.
@@ -80,8 +84,7 @@
      */
     function disconnect()
     {
-      if ($this->m_debug)
-        echo "Debug: Disconnecting from database...<br>\n";
+      atkdebug("Disconnecting from database...");
       OCILogoff($this->m_link_id);
     }
 
@@ -101,11 +104,7 @@
       {
         @OCIFreeStatement($this->m_query_id);
         $this->m_query_id = 0;
-      }
-
-      /* debug */
-      if ($this->m_debug)
-        echo "Debug: query = $query<br>\n";
+      }      
 
       /* query database */
       $this->m_query_id = OCIParse($this->m_link_id, $query);
@@ -161,13 +160,6 @@
           $this->m_errno = 0;
           $this->m_error = "";
           $this->disconnect();
-        }
-
-        /* other error */
-        else
-        {
-          if($this->m_debug)
-            echo "<br>Error: " , $this->m_error;
         }
 
         return 0;

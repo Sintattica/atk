@@ -5,6 +5,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/07 12:36:26  ivo
+   * Atknode now reads records atomic.
+   * Removed some debug echo's from the db classes.
+   *
    * Revision 4.3  2001/05/18 07:49:28  ivo
    * Made nextid() feature of mysqldb a bit more flexible.
    *
@@ -308,11 +312,11 @@
      * @param $query the query
      * @return array with rows
      */
-    function getrows($query)
+    function getrows($query, $offset=-1, $limit=-1)
     {
       $result = array();
 
-      $this->query($query);    
+      $this->query($query, $offset, $limit);    
       while ($this->next_record())
         $result[] = $this->m_record;
       

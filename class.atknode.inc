@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.48  2001/06/07 12:36:26  ivo
+   * Atknode now reads records atomic.
+   * Removed some debug echo's from the db classes.
+   *
    * Revision 4.47  2001/06/07 09:26:16  ivo
    * removed a whitespace (how do these things keep getting in again :()
    *
@@ -2437,21 +2441,20 @@
       if ($order!="") $querystring.=" ORDER BY ".$order;
       atkdebug("selectDb() - query: ".$querystring);      
       
-      if (is_array($limit) && count($limit) == 2) $g_db->query($querystring, $limit["offset"], $limit["limit"]);
-      else $g_db->query($querystring);
+      if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
+      else $dbrecords = $g_db->getrows($querystring);
       
       $recordset = array();
 
-      while ($g_db->next_record())
+      for ($i=0;$i<count($dbrecords);$i++)
       {        
-        $therecord = array();
-        $dbrecord = $g_db->m_record;                        
-        $query->deAlias($dbrecord); // dereference aliases..                
-        atkDataDecode($dbrecord);                
+        $therecord = array();        
+        $query->deAlias($dbrecords[$i]); // dereference aliases..                
+        atkDataDecode($dbrecords[$i]);                
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          $therecord[$attribname] = $p_attrib->db2value($dbrecord);                    
+          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
                 
         $recordset[] = $therecord;

@@ -11,6 +11,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/06/07 12:36:26  ivo
+   * Atknode now reads records atomic.
+   * Removed some debug echo's from the db classes.
+   *
    * Revision 4.4  2001/05/18 07:49:28  ivo
    * Made nextid() feature of mysqldb a bit more flexible.
    *
@@ -95,8 +99,7 @@
      */
     function disconnect()
     {
-      if ($this->m_debug) 
-        echo "Debug: Disconnecting from database...<br>\n";
+      atkdebug("Disconnecting from database...");
     }
 
     /**
@@ -119,11 +122,7 @@
       {
         @mysql_free_result($this->m_query_id);
         $this->m_query_id = 0;
-      }
-
-      /* debug */
-      if ($this->m_debug)
-        echo "Debug: query = $query<br>\n";
+      }      
         
       /* query database */
       $this->m_query_id = @mysql_query($query, $this->m_link_id);
@@ -257,8 +256,7 @@
       if ($this->lock($this->m_seq_table))
       {
         /* get sequence number (locked) and increment */
-        $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";
-        atkdebug($query);
+        $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";       
       
         $id = @mysql_query($query, $this->m_link_id);
         $result = @mysql_fetch_array($id);
@@ -266,8 +264,7 @@
         /* no current value, make one */
         if (!is_array($result))
         {
-          $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";
-          atkdebug($query);
+          $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";       
           $id = @mysql_query($query, $this->m_link_id);
           $this->unlock();          
           return 1;
@@ -278,7 +275,7 @@
         {
           $nextid = $result[$this->m_seq_field] + 1;
           $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
-          atkdebug($query);
+          
           $id = @mysql_query($query, $this->m_link_id);
           $this->unlock();
           return $nextid;
