@@ -261,7 +261,6 @@
         {
           $parser = new atkStringParser($this->m_destinationFilter);
           $filter = $parser->parse($record);
-          $this->m_destInstance->addFilter($filter);
         }
         
         $autolink = $this->getRelationAutolink($id, $filter);
@@ -270,6 +269,7 @@
         {
           // normal dropdown..
           $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+          $this->m_destInstance->addFilter($filter);
           
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
@@ -313,6 +313,9 @@
           // TODO: Fill a dropdown box with recent records..
           $selname = $fieldprefix.$this->fieldName()."_newsel";        
 
+          $id = $fieldprefix.$this->fieldName();
+          $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
+          
           if ($ATK_VARS[$selname]!="") 
           // new record selected
           {          
@@ -321,6 +324,12 @@
             $destrecord = $recset[0];          
             $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
           }
+          elseif ($newlyadded!="")
+          {
+            $recset = $this->m_destInstance->selectDb($newlyadded,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+            $destrecord = $recset[0];          
+            $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
+		      }
           elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey)) 
           // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)                                                                
           {
@@ -352,8 +361,6 @@
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
           if ($this->m_destinationFilter!="")
           {
-            $parser = new atkStringParser($this->m_destinationFilter);
-            $filter = $parser->parse($record);
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
                            text("link_select_".getNodeType($this->m_destination)),
@@ -414,10 +421,18 @@
         $currentPk = "";
         if (count($record[$this->fieldName()]))
         {
-          $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+          if(is_array($record[$this->fieldName()]))
+          {
+            $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+          }
+          else
+          {
+            $newrecord=array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()]);
+            $currentPk = $this->m_destInstance->primaryKey($newrecord);
+          }
         }
-        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
-                  '" value="'.$currentPk.'">';
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
+      '" value="'.$currentPk.'">';
         return $result;
       }
       return "";
