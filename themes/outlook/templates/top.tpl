@@ -3,12 +3,11 @@
     <td width="100%">
       <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#00309C">
         <tr width="100%">
-          <td width="12" align=left bgcolor="#D5E8F4" background="./atk/themes/outlook/images/left.gif">&nbsp;</td>
-          <td height=22 bgcolor="#0073CE" background="./atk/themes/outlook/images/dark_back.gif" valign="middle" align="left" nowrap>
-
-            <B><small style="color:#ffffff;font-size:9pt"><img src="./atk/themes/outlook/images/publixheader.gif" border=0>&nbsp;{$title}</small></B>
+          <td width="12" align=left bgcolor="#D5E8F4" background="{$themedir}images/left.gif">&nbsp;</td>
+          <td height=22 bgcolor="#0073CE" background="{$themedir}images/dark_back.gif" valign="middle" align="left" nowrap>
+            <B><small style="color:#ffffff;font-size:9pt"><img src="{$themedir}images/publixheader.gif" border=0>&nbsp;{$title}</small></B>
           </td>
-          <td width="12" align="right" bgcolor="#D5E8F4" background="./atk/themes/outlook/images/right.gif">&nbsp;</td>
+          <td width="12" align="right" bgcolor="#D5E8F4" background="{$themedir}images/right.gif">&nbsp;</td>
         </tr>
       </table>
       <table width="100%" border="0" cellpadding="2" cellspacing="2" bgcolor="#00309C">
@@ -28,6 +27,5 @@
       </table>
    </td>
  </tr>
-
 </table>
 <br>
