@@ -22,6 +22,7 @@
   include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkemailattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");  
+  include_once($config_atkroot."atk/attributes/class.atkvisualhtmlattribute.inc");  
   include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkparserattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");  
