@@ -1547,7 +1547,8 @@
         $descriptordef = $this->descriptor_def();
 
         // parse fields from descriptordef
-        $fields = stringfields($descriptordef);
+        atkimport("atk.utils.atkstringparser");
+        $fields = atkStringParser::getFields($descriptordef);
 
         // There might be fields that have a '.' in them. These fields are
         // a concatenation of an attributename (probably a relation), and a subfield
