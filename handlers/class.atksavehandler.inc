@@ -31,7 +31,8 @@
         {
           $this->m_action="add";
           $page = &$this->getPage();
-          $page->addContent($this->m_node->addPage($record));
+          $addhandler = &$this->m_node->getHandler("add");
+          $page->addContent($addhandler->invoke("addPage", $record));
         }
         else
         {
