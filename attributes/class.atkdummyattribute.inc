@@ -5,7 +5,9 @@
    * Use the flag AF_NOLABEL if you want to start at the begin of the line.
    * 
    * @author	 : Sandy Pleyte <sandy@ibuildings.nl>
-   * @version	 : 0.1
+   * @version	 : $Revision$
+   *
+   * $Id$
    *
    */
 

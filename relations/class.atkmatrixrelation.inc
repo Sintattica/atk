@@ -1,4 +1,13 @@
 <?php
+  /*
+   * Unsupported and undocumented. Probably unusable.
+   *
+   * @author Martin Pruijssers
+   * @version $Revision$
+   *
+   * $Id$
+   *
+   */
 
   class atkMatrixRelation extends atkRelation
   {

@@ -4,58 +4,11 @@
    * This class builds queries. Sometimes databases require specific, non
    * ansi compliant SQL. The code for this should go into classes
    * that extend this class.
+   *
    * @author Ivo Jansch (ivo@achievo.com)
-   * @version 0.5
+   * @version $Revision$
    *
-   * @changes:
-   *
-   * 0.5        - fixed a bug in the quotes feature from 0.4 (Ivo)
-   * 0.4        - addField has a new parameter that indicates whether to use
-   *              quotes ('') in insert/update queries (Ivo)
-   * 0.3        - Oracle support (atkoci8query) (Sandy)
-   * 0.2        - short aliases for fieldnames in query (oracle can't handle
-   *              long ones) (Ivo)
    * $Id$
-   * $Log$
-   * Revision 4.5  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.4  2001/07/10 09:17:01  ivo
-   * Fixed a bug with non-left joins in mysql.
-   *
-   * Revision 4.3  2001/06/12 12:25:35  ivo
-   * New feature: 'group by' for queries.
-   *
-   * Revision 4.2  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.1  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:11  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.4  2001/04/05 11:02:50  ivo
-   * Readded some of the removed code from previous revision, because
-   * the code was necessary when using where clauses on joined tables.
-   *
-   * Revision 1.3  2001/04/05 10:46:42  ivo
-   * Optimized the record count feature. (Removed buildCount and a lot of
-   * duplicate code)
-   *
-   * Revision 1.2  2001/04/05 10:19:07  peter
-   * new way of navigation through the record list
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:58  sandy
-   * Achievo Tool Kit
    *
    */
 

@@ -1,22 +1,11 @@
 <?php
   /**
-   * The atkWysiwygAttribute class is an MS IE html edit control thingee
+   * The atkVisualHtmlAttribute class is an MS IE html edit control thingee
    *
-   * @author Ivo Jansch (ivo@achievo.com)
-   * @version 1.1
+   * @author Ivo Jansch <ivo@achievo.com>
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.3  2001/10/25 15:15:30  ivo
-   * Fixed visual html attribute for use in onetoonerelations.
-   *
-   * Revision 4.2  2001/10/22 14:36:06  ivo
-   * Made visual htmlattribute browser aware (automatically defaults to standard
-   * textAttribute if not IE5+) and added visualhtmlattrib to skel.
-   *
-   * Revision 4.1  2001/10/22 13:07:48  ivo
-   * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
-   * features have been disabled because they don't seem to work.
+   * $Id$   
    *
    */
    

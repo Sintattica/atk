@@ -1,22 +1,13 @@
 <?php
 /*
-*Tree tools
-*
-* $Id$
-* $Log$
-* Revision 4.2  2001/06/19 11:42:35  ivo
-* New feature in treeview: leaf icon can now be userdefined.
-*
-* Revision 4.1  2001/05/01 12:32:54  sandy
-* removed the debug functions and created a new Tree relations
-*
-* Revision 4.0  2001/04/23 10:19:38  ivo
-* Revision number update
-*
-* Revision 1.1.1.1  2001/04/23 10:17:07  ivo
-* Added atk4 to repository.
-*
-*/
+ * Functions for building trees in PHP.
+ * 
+ * @author Ivo Jansch <ivo@ibuildings.nl>
+ * @version $Revision$
+ *
+ * $Id$
+ * 
+ */
 
 
 

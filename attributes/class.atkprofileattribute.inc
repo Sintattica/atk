@@ -5,34 +5,9 @@
    * profile or usergroup records.
    *
    * @author Ivo Jansch (ivo@ibuildings.nl)
+   * @version $Revision$
    *
    * $Id$
-   *
-   * $Log$
-   * Revision 4.7  2001/10/01 15:27:15  ivo
-   * Updated profileattrib to new module api.
-   *
-   * Revision 4.6  2001/10/01 13:53:13  ivo
-   * Updated profileattribute to new module api.
-   *
-   * Revision 4.5  2001/09/24 07:28:59  ivo
-   * Fixed a bug with module handling in profile attribute.
-   *
-   * Revision 4.4  2001/09/11 11:17:45  ivo
-   * atkprofileattribute now works correctly with modules.
-   *
-   * Revision 4.3  2001/09/10 12:32:46  ivo
-   * Improved module support. Modules can now create modifiers for other nodes.
-   * Modules and external modules are now treated equally.
-   * Added ability to specify order of menuitems
-   *
-   * Revision 4.2  2001/06/29 11:26:59  ivo
-   * Patches to oracle support.
-   *
-   * Revision 4.1  2001/06/18 10:05:51  ivo
-   * New attribute: atkProfileAttribute, for editing security profiles.
-   * New node flag: NF_NO_SECURITY
-   *   
    *
    */
 

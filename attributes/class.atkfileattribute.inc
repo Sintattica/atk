@@ -1,80 +1,13 @@
 <?php
   /**
-   * With this you can upload, select and remove files in a given directory
-   * <br>
-   * <b>Changes:</b>
-   *       1.1       01-11-2000  Sandy Pleyte (sandy@ibuildings.nl)
-   *                -  Added 2 attribute Flags, AF_FILE_NO_AUTOPREVIEW (shows
-   *                     only filename) and AF_FILE_POPUP (create's like to popup window)
-   *                    Extention of files can be longer then 3 now
-   *                    Converts spaces to underscore's in the filename (for Netscape)
-   *       1.2       10-11-2000 Ivo Jansch (ivo@ibuildings.nl)
-   *                -  atkFileAttribute is now PHP4 compatible.
-   *       1.3       04-01-2001 Sandy Pleyte (sandy@ibuildings.nl)
-   *                -  $dir Can be a string with the Directory with images/files or 
-   *                     an array with a Directory and a Display Url
-   *                - Fixed the remove file checkbox, doesn't dissapear anymore when there is no orginal filename.
-   *                - Updated the Display function with 2 new array's, one for Preview Popup Types, and
-   *                  an Image array with known  image types of php to calculate the window size.
-   *               - Text moved to the language file
-   *       1.4      09-01-2001 Sandy pleyte (sandy@ibuildings.nl)
-   *               - AF_FILE_PHYSICAL_DELETE attribute flags    
+   * With this you can upload, select and remove files in a given directory   
    *
-   * <b>Todo</b>        : Code clean up ( del variable)
+   * <b>Todo</b>        : Code clean up (del variable)
    *
-   * @author Martin Roest (martin@ibuildings.net)
-   * @version 1.4
+   * @author Martin Roest <martin@ibuildings.net>
+   * @version $Revision$
    *
    * $Id$
-   * $Log$
-   * Revision 4.8  2001/07/02 15:28:45  ivo
-   * Fixed a bug in the 'remove currentfile' button.
-   *
-   * Revision 4.7  2001/06/29 13:12:10  ivo
-   * New feature: integrated contextsensitive help (contributed by Rene)
-   *
-   * Revision 4.6  2001/06/27 13:07:05  sandy
-   * Only do a sort when there al files in the directory (you can't sort an
-   * empty array =) )
-   *
-   * Revision 4.5  2001/06/21 11:39:26  martin
-   * fixed url in display value. images are now opened in a new window
-   *
-   * Revision 4.4  2001/06/15 13:53:17  ivo
-   * Fixed bug in fileattribute: form reposts went wrong when using
-   * data from a session.
-   *
-   * Revision 4.3  2001/06/11 14:12:53  martin
-   * Yeah! finally the search function on files is finished. If you use the fileattrib
-   * use the AF_SEARCHABLE flag to activate the search function!! :)
-   *
-   * Revision 4.2  2001/05/17 08:06:33  ivo
-   * Fixes to atkfileattribute and onetoonerelation.
-   *
-   * Revision 4.1  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:08  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.3  2001/02/22 22:46:17  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.2  2001/01/10 23:24:44  ivo
-   * Fixed wrong filename for javascript files (must be .php3 instead of .php).
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:57  sandy
-   * Achievo Tool Kit
    *     
    */
   class atkFileAttribute extends atkAttribute

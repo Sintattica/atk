@@ -16,45 +16,7 @@
    * @version $Revision$
    *
    * $Id$
-   *
-   * $Log$
-   * Revision 4.10  2001/09/28 08:49:39  peter
-   * Added workaround for a bug in old Mozilla 0.9.x releases (and Netscape 6)
-   *
-   * Revision 4.9  2001/07/24 08:05:48  ivo
-   * config.inc.php was included without including atkconfigtools.inc. This lead
-   * to php errors in the javascript when functions from atkconfigtools.inc are
-   * used.
-   *
-   * Revision 4.8  2001/07/15 17:03:59  ivo
-   * New feature: Alphabetical index on top of recordlists.
-   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
-   * Fixed some bugs in extended search.
-   *
-   * Revision 4.7  2001/06/28 17:54:44  peter
-   * Some typo's, added a note which explains the new behaviour when selecting
-   * a day that is out of reach for the currently selected month.
-   *
-   * Revision 4.6  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.5  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.4  2001/04/25 15:56:07  peter
-   * fixed a minor bug concerning the day-of-week
-   *
-   * Revision 4.3  2001/04/25 07:29:40  sandy
-   * fixed a bug in the date javascript for multilanguage
-   * added the stickyvars to the onetomany relations urls
-   *
-   * Revision 4.2  2001/04/24 18:23:35  peter
-   * Complete rewrite of the dateattribute javascript. This version fixes
-   * a bug with the day-of-week added in the previous commit. The file has
-   * been totally rewritten to be more clear and understandable so other
-   * people can also fix bugs in this script. ;)
+   *   
    */
   
   /* change dir for includes */

@@ -7,29 +7,9 @@
    *
    * @author Peter Verhage (peter@ibuildings.nl)
    * @see atkTextAttribute
+   * @version $Revision$
    *
    * $Id$
-   * $Log$
-   * Revision 4.3  2001/08/16 07:17:49  ivo
-   * Replaced htmlentities with htmlspecialchars for some attributes.
-   * (people with different charactersets experience problems with
-   * htmlentities)
-   *
-   * Revision 4.2  2001/06/01 14:59:33  ivo
-   * Better metadata reading for postgresql.
-   * Fixed a bug with input sizes in textarea.
-   *
-   * Revision 4.1  2001/04/25 08:46:08  ivo
-   * Big optimisations: using references for attribute manipulation.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:09  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.1  2001/02/22 22:43:14  peter
-   * initial release of the multilanguage attributes
    *
    */
   class atkMlTextAttribute extends atkMlAttribute

@@ -2,57 +2,10 @@
   /**
    * This class does authentication through a set of tables in a db
    *
-   * <b>Todo's</b>   : - everything
-   *
    * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
    *
-   * <b>Changes</b>:
-   *    
    * $Id$
-   * $Log$
-   * Revision 4.6  2001/09/27 14:12:19  sandy
-   * filled the g_user with complete record
-   *
-   * Revision 4.5  2001/07/19 11:40:07  ivo
-   * Updated authentication classes with an additional returncode for fatal
-   * errors. Added a feature to pop3 authentication to handle server-specific
-   * response codes.
-   *
-   * Revision 4.4  2001/07/09 15:40:46  ivo
-   * Authentication classes can now indicate whether they support md5 encoding
-   * of passwords.
-   *
-   * Revision 4.3  2001/06/29 11:26:59  ivo
-   * Patches to oracle support.
-   *
-   * Revision 4.2  2001/06/12 12:24:23  ivo
-   * New feature: users can now have more then one group in db authentication.
-   *
-   * Revision 4.1  2001/05/21 13:38:18  ivo
-   * Added a cookie that can remember your login if you close your browser.
-   * (disabled by default, enable in your configfile if you need it)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:14  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.5  2001/04/02 08:22:58  ivo
-   * Improved groupbased attribute security.
-   *
-   * Revision 1.4  2001/03/16 07:52:00  ivo
-   * Improved group-based security.
-   *
-   * Revision 1.3  2001/03/15 14:31:50  ivo
-   * changed userdb and accessdb options to usertable and accesstable.
-   *
-   * Revision 1.2  2001/03/14 16:16:30  sandy
-   * database name and userid field is configurable
-   *
-   * Revision 1.1  2001/02/15 16:20:24  ivo
-   * Major new feature: security.
-   *
    *
    */
    

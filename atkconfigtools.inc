@@ -1,42 +1,12 @@
 <?php
   /**
-   * Atk Config Tools
    *
    * A collection of functions to use in configfiles..
    *
-   * Author: Ivo Jansch <ivo@ibuildings.nl>
+   * @author Ivo Jansch <ivo@ibuildings.nl>
+   * @version $Revision$
    *
    * $Id$
-   *
-   $ $Log$
-   $ Revision 4.4  2001/09/26 13:23:34  ivo
-   $ fixed bug: atkconfigtools depended on undefined functions.
-   $
-   $ Revision 4.3  2001/09/10 12:32:46  ivo
-   $ Improved module support. Modules can now create modifiers for other nodes.
-   $ Modules and external modules are now treated equally.
-   $ Added ability to specify order of menuitems
-   $
-   $ Revision 4.2  2001/08/30 15:28:34  ivo
-   $ Added preliminary external module support.
-   $
-   $ Revision 4.1  2001/07/19 11:40:06  ivo
-   $ Updated authentication classes with an additional returncode for fatal
-   $ errors. Added a feature to pop3 authentication to handle server-specific
-   $ response codes.
-   $
-   $ Revision 4.0  2001/04/23 10:19:38  ivo
-   $ Revision number update
-   $
-   $ Revision 1.1.1.1  2001/04/23 10:17:02  ivo
-   $ Added atk4 to repository.
-   $
-   * Revision 1.2  2001/02/22 22:49:26  peter
-   * added the language() method
-   *
-   * Revision 1.1  2001/02/15 16:20:24  ivo
-   * Major new feature: security.
-   *
    *
    */
 

@@ -2,48 +2,11 @@
   /**
    * The atkBoolAttribute class represents an attribute of a node
    * that can either be true or false.
-   * @author Ivo Jansch (ivo@achievo.com)
-   * @version 0.5
    *
-   * $Id$
-   * $Log$
-   * Revision 4.5  2001/10/16 08:11:34  maurice
-   * Unsets AF_OBLIGATORY if set
+   * @author Ivo Jansch <ivo@achievo.com>
+   * @version $Revision$
    *
-   * Revision 4.4  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.3  2001/06/24 15:09:52  sandy
-   * Ooops, forgot to remove the debug code....
-   *
-   * Revision 4.2  2001/06/24 15:00:52  sandy
-   * - Fixed the atkbool search function, it will now show a listbox
-   * with 3 choices (search all, yes, no).
-   *
-   * Revision 4.1  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:07  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.2  2001/02/22 22:46:17  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:56  sandy
-   * Achievo Tool Kit
+   * $Id$   
    *
    */
   class atkBoolAttribute extends atkAttribute

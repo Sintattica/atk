@@ -1,46 +1,11 @@
 <?php
   /**
-   * The atkDurationAttribute is an attribute for entering a time value.
+   * The atkDurationAttribute is an attribute for entering a length of time.
+   *
    * @author  Ivo Jansch <ivo@achievo.com>
-   * @version 0.1
+   * @version $Revision$
    *
    * $Id$
-   * $Log$
-   * Revision 4.2  2001/08/24 09:59:39  maurice
-   * Corrected class name from atkTimAttribute to atkDurationAttribute
-   *
-   * Revision 4.1  2001/08/16 15:17:13  wim
-   * Changed original atktimeattrib to atkduration
-   * and added our new timattrib which is used inour scheduler.
-   *
-   * Revision 4.1  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.4  2001/03/14 15:21:54  ivo
-   * New feature: AF_TOTAL flag for attributes. This results in a total row
-   * at the bottom of the record list.
-   *
-   * Revision 1.3  2001/03/14 10:22:28  ivo
-   * Attributes now have a hide() function to do their own input=hidden implementation.
-   *
-   * Revision 1.2  2001/02/22 22:46:18  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:58  sandy
-   * Achievo Tool Kit
    *
    */
   class atkDurationAttribute extends atkAttribute

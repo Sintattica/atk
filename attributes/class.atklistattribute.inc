@@ -3,54 +3,11 @@
   /**
    * The atkListAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined values.
+   *
    * @author Ivo Jansch (ivo@achievo.com)
-   * @version 1.3
+   * @version $Revision$ 
    *
-   * <b>@changes</b>
-   *
-   *  1.3   - fixed bug where listattrib would select item with value 0 if
-   *          current value was "" (0=="" gives true in php for some 
-   *          reason. (Ivo)
-   *  1.2   - solved bug when no value array was specified (Ivo)
-   *  1.1   - added an array to store values. options and values can now 
-   *          differ (Ivo)
-   *
-   * $Id$
-   * $Log$
-   * Revision 4.3  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.2  2001/05/22 08:36:50  peter
-   * Added the searchCondition method which will be used by atkNode to create
-   * a proper search condition for the attribute.
-   *
-   * Revision 4.1  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:08  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.3  2001/03/28 09:53:36  ivo
-   * valueArray will now be ignored if it's an empty array.
-   *
-   * Revision 1.2  2001/02/22 22:46:18  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:58  sandy
-   * Achievo Tool Kit
+   * $Id$   
    *
    */
   class atkListAttribute extends atkAttribute

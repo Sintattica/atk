@@ -1,4 +1,15 @@
 <?php
+  /**
+   * The atkToolbar displays a set of buttons that can be used
+   * to manipulate text in textboxes (bold, italic, underline).
+   *
+   * This attribute only works in Internet Explorer 4 and up.
+   *
+   * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
+   *
+   * $Id$
+   */
   
   // atkToolbar is based on dummyattribute.
   include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");

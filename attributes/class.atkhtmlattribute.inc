@@ -6,7 +6,7 @@
    * function. For this attribute, the value is
    * rendered as-is, which means you can use html
    * codes in the text.
-   * <br>
+   *
    * <b>Remarks:</b>
    *   There might me times where you want the user to be able to
    *   use html tags, but you don't want to give him the
@@ -15,25 +15,9 @@
    *   it to do a newline-to-br conversion.
    *
    * @author Ivo Jansch (ivo@achievo.com)
-   * @version 0.6
-   *
-   * <b>Changes</b>:
-   * 
-   * 0.6    - value of the textarea is now htmltag safe (htmlentities) (Ivo)
-   * 
-   * $Id$
-   * $Log$
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:08  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.2  2001/02/22 22:46:17  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:57  sandy
-   * Achievo Tool Kit
+   * @version $Revision$
+   *   
+   * $Id$   
    *
    */
   class atkHtmlAttribute extends atkTextAttribute

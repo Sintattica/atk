@@ -5,40 +5,9 @@
    * second table.
    *
    * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.7  2001/10/26 10:16:15  ivo
-   * Fixed bug in primary key handling of onetoonerelation.
-   *
-   * Revision 4.6  2001/09/07 07:21:32  ivo
-   * Improved primarykey handling.
-   *
-   * Revision 4.5  2001/05/17 08:06:33  ivo
-   * Fixes to atkfileattribute and onetoonerelation.
-   *
-   * Revision 4.4  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.3  2001/05/11 14:59:56  ivo
-   * Fixed serious bug in onetoone relation that could overwrite records in a
-   * table..
-   *
-   * Revision 4.2  2001/05/11 12:25:52  ivo
-   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
-   * appeared when the two were used in combination)
-   *
-   * Revision 4.1  2001/05/10 08:31:01  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
+   * $Id$   
    *
    */
    

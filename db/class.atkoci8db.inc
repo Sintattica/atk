@@ -8,44 +8,9 @@
    * based on the db_oci8.inc file of PHPLib.
    *
    * @author Peter Verhage <peter@ibuildings.nl>
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.7  2001/07/10 08:36:31  ivo
-   * Put seq_ in front of the sequence name again (compatibility problems)
-   *
-   * Revision 4.6  2001/06/29 13:35:01  ivo
-   * pgsqldb and oci8db no longer assume sequence names to begin with 'seq_'
-   *
-   * Revision 4.5  2001/06/29 11:26:59  ivo
-   * Patches to oracle support.
-   *
-   * Revision 4.4  2001/06/27 15:25:43  peter
-   * A lot of fixes to the oci8 support, including better outer joins, and
-   * limitting queries! Fields now have an asterix behind them if they are
-   * required. Some other small enhancements.
-   *
-   * Revision 4.3  2001/06/07 12:36:26  ivo
-   * Atknode now reads records atomic.
-   * Removed some debug echo's from the db classes.
-   *
-   * Revision 4.2  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.1  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:11  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.1  2001/03/21 11:00:20  peter
-   * new database management classes
+   * $Id$   
    *
    */
   class atkoci8db extends atkdb

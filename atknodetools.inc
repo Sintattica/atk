@@ -1,7 +1,6 @@
 <?php
 
 /**
- * Atk Node Tools
  *
  * A collection of functions for managing nodes
  *
@@ -9,22 +8,6 @@
  * @version $Revision$
  *
  * $Id$
- * $Log$
- * Revision 4.4  2001/10/01 13:56:06  ivo
- * New feature: securityAliases for nodes.
- * Updates to module api.
- *
- * Revision 4.3  2001/05/11 15:24:54  peter
- * Some updates for the module support and some other things...
- *
- * Revision 4.2  2001/05/01 09:49:49  ivo
- * Replaced all require() and include() calls by require_once() and
- * include_once() calls. The if(!DEFINED)... inclusion protection in files
- * is now obsolete.
- *
- * Revision 4.1  2001/04/23 13:21:22  peter
- * Introduction of module support. An ATK application can now have zero
- * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
 

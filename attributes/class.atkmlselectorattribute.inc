@@ -4,20 +4,9 @@
  * attribute, which makes it possible to select languages in a multilanguage form.
  *
  * @author Peter Verhage (peter@ibuildings.nl)
+ * @version $Revision$
  *
  * $Id$
- * $Log$
- * Revision 4.0  2001/04/23 10:20:39  ivo
- * revision tags.
- *
- * Revision 1.1.1.1  2001/04/23 10:17:09  ivo
- * Added atk4 to repository.
- *
- * Revision 1.2  2001/03/14 12:23:23  peter
- * added hide method, to reflect Ivo's changes
- *
- * Revision 1.1  2001/02/22 22:43:14  peter
- * initial release of the multilanguage attributes
  *
  */
 class atkMlSelectorAttribute extends atkAttribute

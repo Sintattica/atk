@@ -3,52 +3,10 @@
   /**
    * Handles database connectivity and database interaction.
    *
+   * @author Peter Verhage <peter@achievo.com>
+   * @version $Revision$
+   *
    * $Id$
-   * $Log$
-   * Revision 4.7  2001/07/15 17:03:59  ivo
-   * New feature: Alphabetical index on top of recordlists.
-   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
-   * Fixed some bugs in extended search.
-   *
-   * Revision 4.6  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.5  2001/07/03 16:38:52  ivo
-   * new variable: m_affected_rows (only for mysql for now)
-   *
-   * Revision 4.4  2001/06/07 12:36:26  ivo
-   * Atknode now reads records atomic.
-   * Removed some debug echo's from the db classes.
-   *
-   * Revision 4.3  2001/05/18 07:49:28  ivo
-   * Made nextid() feature of mysqldb a bit more flexible.
-   *
-   * Revision 4.2  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.1  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.3  2001/04/05 10:19:07  peter
-   * new way of navigation through the record list
-   *
-   * Revision 1.2  2001/03/30 10:05:56  ivo
-   * Added a function for retrieving error messages.
-   *
-   * Revision 1.1  2001/03/21 11:00:20  peter
-   * new database management classes
    *
    */ 
   class atkdb

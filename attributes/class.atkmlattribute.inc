@@ -3,49 +3,9 @@
    * The atkMlAttribute class represents an multilanguage attribute of an atkNode.
    *
    * @author Peter Verhage (peter@ibuildings.nl)
+   * @version $Revision$
    *
    * $Id$
-   * $Log$
-   * Revision 4.7  2001/10/22 13:07:48  ivo
-   * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
-   * features have been disabled because they don't seem to work.
-   *
-   * Revision 4.6  2001/08/16 07:17:49  ivo
-   * Replaced htmlentities with htmlspecialchars for some attributes.
-   * (people with different charactersets experience problems with
-   * htmlentities)
-   *
-   * Revision 4.5  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.4  2001/06/29 11:26:59  ivo
-   * Patches to oracle support.
-   *
-   * Revision 4.3  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.2  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.1  2001/04/25 08:46:08  ivo
-   * Big optimisations: using references for attribute manipulation.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:09  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.2  2001/03/14 12:23:23  peter
-   * added hide method, to reflect Ivo's changes
-   *
-   * Revision 1.1  2001/02/22 22:43:14  peter
-   * initial release of the multilanguage attributes
    *
    */
   class atkMlAttribute extends atkAttribute

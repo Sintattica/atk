@@ -8,59 +8,9 @@
    * based on the db_mysql.inc file of PHPLib.
    *
    * @author Peter Verhage <peter@ibuildings.nl>
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.8  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.7  2001/07/03 16:38:52  ivo
-   * new variable: m_affected_rows (only for mysql for now)
-   *
-   * Revision 4.6  2001/06/27 15:25:42  peter
-   * A lot of fixes to the oci8 support, including better outer joins, and
-   * limitting queries! Fields now have an asterix behind them if they are
-   * required. Some other small enhancements.
-   *
-   * Revision 4.5  2001/06/07 12:36:26  ivo
-   * Atknode now reads records atomic.
-   * Removed some debug echo's from the db classes.
-   *
-   * Revision 4.4  2001/05/18 07:49:28  ivo
-   * Made nextid() feature of mysqldb a bit more flexible.
-   *
-   * Revision 4.3  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.2  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.1  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.4  2001/04/19 08:49:01  ivo
-   * Fixed bug when sequences are created: first id is now 1 instead of 0
-   *
-   * Revision 1.3  2001/04/05 09:33:40  ivo
-   * *** empty log message ***
-   *
-   * Revision 1.2  2001/03/21 13:13:47  ivo
-   * Fixed a bug with sequences introduced one revision earlier.
-   *
-   * Revision 1.1  2001/03/21 11:00:20  peter
-   * new database management classes
+   * $Id$   
    *
    */ 
   class atkmysqldb extends atkdb

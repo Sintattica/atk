@@ -1,13 +1,17 @@
 <?php   
-/* colorpicker.php
-*
-*  @Author : Rene Bakx (rene@ibuildings.nl)
-*  @Version: $
-*
-* descr.  :  Show the colorpicker and returns the value to the the text field
-*  input   :  $form.field     -> name of the form and field from wich the picker is called
-*  call     : help.php?form=[form.field]
-*/
+
+ /* colorpicker.php
+  *
+  * descr.  : Show the colorpicker and returns the value to the the text field
+  * input   : $form.field     -> name of the form and field from wich the picker is called
+  * call    : colorpicker.php?form=[form.field]
+  *
+  * @author : Rene Bakx (rene@ibuildings.nl)
+  * @version: $Revision$
+  *
+  * $Id$
+  *
+  */
 
   include("atk.inc");  
   

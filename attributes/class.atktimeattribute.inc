@@ -1,9 +1,13 @@
 <?
-
   /**
    * The atkTimeAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined time values.
-   * @author Wim Kosten (wimachievo.com)
+   *
+   * @author Wim Kosten (wim@achievo.com)
+   * @version $Revision$
+   *
+   * $Id$
+   *
    */
   class atkTimeAttribute extends atkAttribute
   {

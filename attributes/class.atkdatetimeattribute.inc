@@ -1,9 +1,14 @@
 <?
 
   /**
-   * The atkTimeAttribute class represents an attribute of a node
-   * that has a selectbox to select from predefined time values.
-   * @author Wim Kosten (wimachievo.com)
+   * The atkDateTimeAttribute class can be used for date and time entry.
+   * It corresponds to a DATETIME field in the database.   
+   *
+   * @author Sandy Pleyte <sandy@achievo.com>
+   * @version $Revision$
+   *
+   * $Id$
+   *
    */
   class atkDateTimeAttribute extends atkAttribute
   {

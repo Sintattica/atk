@@ -1,3 +1,4 @@
+ 
 function NewWindow(mypage, myname, w, h, scroll, resize) {
   var winl =  10;
   var wint =  10;

@@ -1,9 +1,6 @@
 <?php
 
-//  require_once("atk/modules/atkmoduletools.inc");
-
 /**
- * Atk Menu Tools
  *
  * A collection of functions for creating ATK menu's.
  *
@@ -11,28 +8,6 @@
  * @version $Revision$
  *
  * $Id$
- * $Log$
- * Revision 4.5  2001/09/10 12:32:46  ivo
- * Improved module support. Modules can now create modifiers for other nodes.
- * Modules and external modules are now treated equally.
- * Added ability to specify order of menuitems
- *
- * Revision 4.4  2001/05/02 12:44:21  ivo
- * multilevel session_back feature.
- * new relational features: maxRecords for oneToManyRelation, filter for
- * onetomanyrelation.
- *
- * Revision 4.3  2001/05/01 09:49:49  ivo
- * Replaced all require() and include() calls by require_once() and
- * include_once() calls. The if(!DEFINED)... inclusion protection in files
- * is now obsolete.
- *
- * Revision 4.2  2001/04/24 13:51:50  ivo
- * Fixed some small bugs, and updated the language files, improved the menu.
- *
- * Revision 4.1  2001/04/23 13:21:22  peter
- * Introduction of module support. An ATK application can now have zero
- * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
 

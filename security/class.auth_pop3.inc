@@ -5,33 +5,7 @@
  * @author Peter Verhage <peter@ibuildings.nl>
  * @version $Revision$
  * 
- * <b>Changes</b>:
- * $Id$
- * $Log$
- * Revision 4.7  2001/07/24 08:04:25  ivo
- * Prevented a php error message when pop3_auth_responses was not used.
- *
- * Revision 4.6  2001/07/19 11:40:07  ivo
- * Updated authentication classes with an additional returncode for fatal
- * errors. Added a feature to pop3 authentication to handle server-specific
- * response codes.
- *
- * Revision 4.5  2001/07/10 12:45:47  ivo
- * Support for per-user pop3 servers.
- *
- * Revision 4.4  2001/07/09 15:50:57  ivo
- * Forgot a space in the log.
- *
- * Revision 4.3  2001/07/09 15:40:46  ivo
- * Authentication classes can now indicate whether they support md5 encoding
- * of passwords.
- *
- * Revision 4.2  2001/07/09 12:58:28  ivo
- * Small fixes to pop3 authentication.
- *
- * Revision 4.1  2001/06/18 10:24:58  peter
- * Split POP3/IMAP authentication support (mainly a new POP3 auth class).
- * Authentication and authorization can now be done by different auth classes.
+ * $Id$ 
  *
  */
 class auth_pop3 extends auth_interface

@@ -4,12 +4,9 @@
    * data to a file, instead of the database.
    *
    * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.1  2001/05/14 10:17:54  ivo
-   * Added new atkfilewriter attribute.
-   *   
+   * $Id$      
    *
    */
   class atkFileWriterAttribute extends atkTextAttribute

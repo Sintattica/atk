@@ -1,127 +1,15 @@
 <?php
 
  /**
-  * Atk Tools
   *
-  * A collection of functions which are used in ATK
+  * A collection of functions for general use in ATK
   * 
-  * Author: Ivo Jansch <ivo@ibuildings.nl>
+  * @author Ivo Jansch <ivo@ibuildings.nl>
+  * @version $Revision$
   *
   * $Id$
-  * $Log$
-  * Revision 4.23  2001/10/15 09:07:19  maurice
-  * Added function atk_var_dump. Displays an array as a list in de debug
-  * section.
   *
-  * Revision 4.22  2001/10/10 11:33:49  ivo
-  * Added stickyurl feature.
-  *
-  * Revision 4.21  2001/10/09 10:01:35  ivo
-  * Improved the elapsed function.
-  *
-  * Revision 4.20  2001/10/09 09:48:13  ivo
-  * Added 4 decimal accurate elapsed time to debugmessages.
-  *
-  * Revision 4.19  2001/09/26 12:05:51  maurice
-  * Code optimalisations for error handling
-  *
-  * Revision 4.18  2001/09/07 09:50:45  ivo
-  * Added session debug information to the error reporter.
-  *
-  * Revision 4.17  2001/07/27 13:16:14  sandy
-  * advanced colorpicker attrib + new popup system
-  *
-  * Revision 4.16  2001/07/11 21:14:30  ivo
-  * Added a global atk version number.
-  *
-  * Revision 4.15  2001/07/09 15:41:09  ivo
-  * Created an atk_in_array that does an is_array before it calls in_array.
-  *
-  * Revision 4.14  2001/07/01 10:09:52  ivo
-  * Replaced the clickheretoadd_prefix/postfix string by link_<nodetype>_add.
-  * If you upgrade, please verify your language files!
-  *
-  * Revision 4.13  2001/06/29 11:26:59  ivo
-  * Patches to oracle support.
-  *
-  * Revision 4.12  2001/06/22 15:34:44  ivo
-  * Dirty hack to atkurlencode [pk]'s once they have been replaced.
-  * TODO: clean up!
-  *
-  * Revision 4.11  2001/06/22 14:42:25  ivo
-  * Better errorreport template.
-  *
-  * Revision 4.10  2001/06/22 11:44:42  ivo
-  * Workaround for IE4 'bug' that causes javascript to decode urlencoded
-  * values that it shouldn't encode: atkurlencode and atkurldecode.
-  *
-  * Revision 4.9  2001/06/12 13:55:59  ivo
-  * If no string can be found in the language file, the default one generated
-  * by atk is now more usable. (strips title_ etc.) (contributed by Tom)
-  *
-  * Revision 4.8  2001/05/21 15:18:26  ivo
-  * Made securitymanager cookie and session based. Authentication now only
-  * executes once per session.
-  *
-  * Revision 4.7  2001/05/17 10:27:12  ivo
-  * Fixes to session management, new AF_LARGE feature for manytoonerelation.
-  * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
-  *
-  * Revision 4.6  2001/05/14 10:20:19  ivo
-  * Improved error reporting when database queries fail.
-  * New feature: atk can now send a detailed error report by email.
-  *
-  * Revision 4.5  2001/05/11 09:03:12  ivo
-  * fixed an internetexplorer single/doublequote javascript issue.
-  *
-  * Revision 4.4  2001/05/10 08:31:00  ivo
-  * Major upgrade. Changes:
-  * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-  *   singletons by default, and nodefunctions pass around recordsets.
-  * + Session management for forms. If you now leave a page through a click on
-  *   a link, the session remembers everything from your form and restores it
-  *   when you return.
-  * + New relation: oneToOneRelation
-  * + Reimplemented the embedded editForm feature (forms inside forms)
-  *
-  * Revision 4.3  2001/05/04 11:37:42  sandy
-  * small bug fixes (split function, refresh, treeview,etc)
-  *
-  * Revision 4.2  2001/05/02 12:44:21  ivo
-  * multilevel session_back feature.
-  * new relational features: maxRecords for oneToManyRelation, filter for
-  * onetomanyrelation.
-  *
-  * Revision 4.1  2001/05/01 09:15:51  ivo
-  * Initial session based atk version.
-  *
-  * Revision 4.0  2001/04/23 10:19:38  ivo
-  * Revision number update
-  *
-  * Revision 1.1.1.1  2001/04/23 10:17:02  ivo
-  * Added atk4 to repository.
-  *
-  * Revision 1.5  2001/03/30 15:08:13  ivo
-  * Improved the stringparser: It can now parse associative arrays.
-  *
-  * Revision 1.4  2001/03/14 10:22:27  ivo
-  * Attributes now have a hide() function to do their own input=hidden implementation.
-  *
-  * Revision 1.3  2001/02/23 11:17:30  sandy
-  * - Updated the layout class with new template engine
-  * - New Dummy attribute
-  * - New skel directory
-  * - and some small new config vars
-  *
-  * Revision 1.2  2001/02/15 16:20:24  ivo
-  * Major new feature: security.
-  *
-  * Revision 1.1.1.1  2001/01/10 13:57:53  sandy
-  * Achievo Tool Kit
-  *
-  */
-
- 
+  */ 
 
   /**
   * Function halt

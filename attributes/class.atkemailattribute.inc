@@ -3,37 +3,12 @@
   /**
    * The atkEmailAttribute class represents an attribute to handle email addresses.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch <ivo@achievo.com>
    *
    * @version $Revision$
    *
    * $Id$
-   *
-   * $Log$
-   * Revision 4.7  2001/10/09 12:44:09  maurice
-   * Changed MX record check to DNS check
-   *
-   * Revision 4.6  2001/09/26 12:05:52  maurice
-   * Code optimalisations for error handling
-   *
-   * Revision 4.5  2001/09/26 07:05:13  maurice
-   * New error handling. Errors are saved in $record variable
-   *
-   * Revision 4.4  2001/08/27 07:38:58  ivo
-   * changed validate() api: atk now passes record to the function instead of
-   * just one value. Also added a mode parameter that indicates whether we
-   * are in add or update mode.
-   *
-   * Revision 4.3  2001/07/04 10:47:51  maurice
-   * Added parameter in constructor to switch DNS search on or off.
-   *
-   * Revision 4.2  2001/07/03 15:52:31  maurice
-   * The validate function checks string and checks DNS for valid host
-   *
-   * Revision 4.1  2001/06/07 21:06:54  ivo
-   * Added atkemailattribute
-   *
-   *
+   *   
    */
   class atkEmailAttribute extends atkAttribute
   {    

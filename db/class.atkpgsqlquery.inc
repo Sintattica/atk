@@ -2,8 +2,12 @@
 
   /**
    * Class to handle specific PostgreSQL commands
+   *
    * @author Peter Verhage (peter@ibuildings.nl)
-   * @version 0.1
+   * @version $Revision$
+   *
+   * $Id$
+   *
    */
   class atkpgsqlquery extends atkquery
   {

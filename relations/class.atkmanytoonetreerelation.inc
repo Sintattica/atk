@@ -1,58 +1,12 @@
 <?php
   /**
-   * A N:1 relation between two classes.
-   * For example, projects all have one coordinator, but one
-   * coordinator can have multiple projects. So in the project
-   * class, there's a ManyToOneRelation to a coordinator.
+   * A special many to one relation, where the destination of the relation
+   * is a tree structure. 
    *
-   * @author Ivo Jansch <ivo@achievo.com>
-   * @version 0.8
-   *
-   * <b>Changed</b>
-   *
-   * 0.8 :   - Fixed the 0.7 fix, it didn't work for PHP3. (Ivo)
-   * 0.7 :   - Fix a bug when atkManyToOneRelation was used as a primary key. (Ivo)
-   *
+   * @author Sandy Pleyte <sandy@achievo.com>
+   * @version $Revision$
+   *   
    * $Id$
-   * $Log$
-   * Revision 4.4  2001/06/20 14:33:51  ivo
-   * ManyToOneRelation now supports templated destinationfilters.
-   *
-   * Revision 4.3  2001/05/10 08:31:01  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.2  2001/05/04 11:37:42  sandy
-   * small bug fixes (split function, refresh, treeview,etc)
-   *
-   * Revision 4.1  2001/05/01 12:32:54  sandy
-   * removed the debug functions and created a new Tree relations
-   *
-   * Revision 4.1  2001/04/23 13:21:22  peter
-   * Introduction of module support. An ATK application can now have zero
-   * or more modules which can, but don't have to, contain ATK nodes.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:13  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.3  2001/04/04 09:01:49  ivo
-   * AF_READONLY now also affects add forms.
-   * Implemented hide() method for manytoonerelation.
-   *
-   * Revision 1.2  2001/02/22 22:47:16  peter
-   * changed search/edit API, some clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:58:00  sandy
-   * Achievo Tool Kit
    *
    */
   class atkManyToOneTreeRelation extends atkManyToOneRelation

@@ -5,13 +5,13 @@
    * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
    * from wich the user can select a color or enter the hexcode in a textfield
    * 
-   * 
    * flags: AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
-   * <br>
-   * @author Rene Bakx (rene@ibuildings.nl)
+   * 
+   * @author Rene Bakx <rene@ibuildings.nl>
+   * @version $Revision$
    *
-   */
-  /** Global function, used in both this class and the popup version! */
+   * $Id$
+   */  
 
   /**
     * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color

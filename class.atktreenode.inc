@@ -9,109 +9,12 @@
     *      $this->atkTreeNode("nodeclass",NF_TREE|NF_COPY); 
     *
     * }
-    * @author Martin Roest  (martin@ibuildings.nl) and Sandy Pleyte (sandy@achievo.com)
+    *
+    * @author Martin Roest (martin@ibuildings.nl) 
+    *         Sandy Pleyte (sandy@achievo.com)
+    * @version $Revision$
     *
     * $Id$
-    * $Log$
-    * Revision 4.25  2001/10/08 16:26:50  peter
-    * Added NF_TREE_NO_ROOT_ADD flag for atkTreeNode(). This makes it possible to
-    * prevent the user from adding new root elements in a tree. Also added an
-    * isEmpty() method for the atkRelation() class because the atkAttribute()
-    * isEmpty() does not work properly in case of relationships.
-    *
-    * Revision 4.24  2001/08/01 12:38:59  martin
-    * added nowrap to some td's because of the ugly word wrap
-    *
-    * Revision 4.23  2001/07/18 16:07:45  ivo
-    * Replaced dispatch.php by PHP_SELF
-    *
-    * Revision 4.22  2001/07/13 12:58:46  sandy
-    * Small bugfix for the Tree, it now shows a correct tree in NS6
-    *
-    * Revision 4.21  2001/07/03 06:55:41  ivo
-    * Treenode still refered to stacktrace() which should now be statusbar()
-    *
-    * Revision 4.20  2001/06/29 11:26:59  ivo
-    * Patches to oracle support.
-    *
-    * Revision 4.19  2001/06/25 15:14:16  sandy
-    * when there are no tree items, it won't show a leaf icon anymore
-    *
-    * Revision 4.18  2001/06/25 13:31:07  sandy
-    * - Added 2 new tree icons to the CVS. And fixed the atktreenode. Now it
-    * will also show a + (or -) symbol when the folder is at the end of a tree.
-    * Don't forget to copy the new icons to your own theme when you upgrade atk.
-    *
-    * Revision 4.17  2001/06/19 11:42:35  ivo
-    * New feature in treeview: leaf icon can now be userdefined.
-    *
-    * Revision 4.16  2001/06/12 13:19:55  ivo
-    * Added a <br> to the bottom of the treeview.
-    * Removed save and close button when editpage is bottom of the stack.
-    *
-    * Revision 4.15  2001/06/12 12:26:54  ivo
-    * Fix to treenode: if no icondir is set, it takes the default.
-    * Fix to atknode: display a '<br'> if no navigation is active.
-    *
-    * Revision 4.14  2001/06/11 13:18:36  sandy
-    * - fixed a small bug in the copy tree function
-    *
-    * Revision 4.13  2001/06/08 14:33:30  ivo
-    * Optimisations to atktreenode.
-    * Smaller imp of row color alternationi feature.
-    *
-    * Revision 4.12  2001/05/18 07:49:42  ivo
-    * Fixes to sessionmanagement.
-    *
-    * Revision 4.11  2001/05/17 12:39:37  ivo
-    * Made atktreenode session aware (if you come back from an edit, your tree
-    * state is restored)
-    *
-    * Revision 4.10  2001/05/10 08:31:00  ivo
-    * Major upgrade. Changes:
-    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-    *   singletons by default, and nodefunctions pass around recordsets.
-    * + Session management for forms. If you now leave a page through a click on
-    *   a link, the session remembers everything from your form and restores it
-    *   when you return.
-    * + New relation: oneToOneRelation
-    * + Reimplemented the embedded editForm feature (forms inside forms)
-    *
-    * Revision 4.9  2001/05/07 15:13:49  ivo
-    * Put config_atkroot in all files.
-    *
-    * Revision 4.8  2001/05/02 13:06:23  sandy
-    * fixed the AF_CASCADE_DELETE flag
-    * CV: ----------------------------------------------------------------------
-    *
-    * Revision 4.7  2001/05/01 13:43:57  ivo
-    * New session features: stackVars and globalVars..
-    *
-    * Revision 4.6  2001/05/01 12:32:54  sandy
-    * removed the debug functions and created a new Tree relations
-    *
-    * Revision 4.5  2001/05/01 09:49:49  ivo
-    * Replaced all require() and include() calls by require_once() and
-    * include_once() calls. The if(!DEFINED)... inclusion protection in files
-    * is now obsolete.
-    *
-    * Revision 4.4  2001/05/01 09:15:51  ivo
-    * Initial session based atk version.
-    *
-    * Revision 4.3  2001/04/24 09:06:09  sandy
-    * first level of the tree always visible, and fixed the NF_TREE flags.
-    *
-    * Revision 4.2  2001/04/23 13:10:48  sandy
-    * small bugfix in the tree class
-    *
-    * Revision 4.1  2001/04/23 12:32:57  sandy
-    * Made the TreeIcons themeable, updated the Themes howto, and removed some debugging code in the atktreenode.
-    *
-    * Revision 4.0  2001/04/23 10:19:38  ivo
-    * Revision number update
-    *
-    * Revision 1.1.1.1  2001/04/23 10:17:06  ivo
-    * Added atk4 to repository.
     *
     */
   include_once($config_atkroot."atk/atktreetools.inc");

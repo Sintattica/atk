@@ -3,92 +3,9 @@
    * Tools for session management
    *
    * @author Ivo Jansch (ivo@achievo.com)
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 1.23  2001/10/08 11:40:11  ivo
-   * Added 2 new functions to session API: sessionLoad and sessionStore.
-   *
-   * Revision 1.22  2001/07/25 10:33:45  maurice
-   * Created a workaround for a bug in php4.0.4
-   *
-   * Revision 1.21  2001/07/18 16:10:18  ivo
-   * New feature: atkToolbar. Works in IE4 (or newer) only.
-   *
-   * Revision 1.20  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 1.19  2001/06/19 19:29:20  ivo
-   * pagevar funktie toegevoegd
-   *
-   * Revision 1.18  2001/06/19 12:58:09  peter
-   * Session cookie parameters changed so the session cookie will not only
-   * be domain based but also domain/path based!
-   *
-   * Revision 1.17  2001/06/19 11:41:14  ivo
-   * Global vars can now be namespace-global or completely global.
-   *
-   * Revision 1.16  2001/06/14 13:48:10  ivo
-   * New cool feature: namespaces for sessionmanagement.
-   *
-   * Revision 1.15  2001/05/30 07:05:43  ivo
-   * Removed is_null funtion calls (because they require PHP4.0.4)
-   * Moved session management initialisation code to a function.
-   *
-   * Revision 1.14  2001/05/18 07:49:42  ivo
-   * Fixes to sessionmanagement.
-   *
-   * Revision 1.13  2001/05/17 12:09:11  ivo
-   * Improvements to session mangement: search values and page numbers are
-   * now remembered if you come back to the admin page.
-   *
-   * Revision 1.12  2001/05/17 10:27:12  ivo
-   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
-   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
-   *
-   * Revision 1.11  2001/05/11 15:24:55  peter
-   * Some updates for the module support and some other things...
-   *
-   * Revision 1.10  2001/05/10 09:42:28  sandy
-   * bugfix in menu.php (config menu delimiter) and for the clear posting
-   *
-   * Revision 1.9  2001/05/10 08:31:01  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 1.8  2001/05/02 15:01:23  ivo
-   * Added a maximum (4) to the stacktrace.
-   *
-   * Revision 1.7  2001/05/02 14:55:46  ivo
-   * New cool feature: stacktrace in the topright screen (navigate through
-   * pages you visited before)
-   *
-   * Revision 1.6  2001/05/02 14:21:51  sandy
-   * new keyword in the session manager (clean)
-   *
-   * Revision 1.5  2001/05/02 12:44:21  ivo
-   * multilevel session_back feature.
-   * new relational features: maxRecords for oneToManyRelation, filter for
-   * onetomanyrelation.
-   *
-   * Revision 1.4  2001/05/01 13:48:22  ivo
-   * removed some debugcode.
-   *
-   * Revision 1.2  2001/05/01 12:17:02  ivo
-   * bugfix
-   *
-   * Revision 1.1  2001/05/01 12:13:19  ivo
-   * Added the sessionmanager.
-   *
+   * $Id$   
    *
    */        
       

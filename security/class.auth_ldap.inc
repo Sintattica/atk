@@ -1,31 +1,11 @@
 <?php
   /**
-   * This class does authentication through a set of tables in a db
-   *
-   * <b>Todo's</b>   : - everything
+   * This class does authentication through an ldap server.
    *
    * @author Sandy Pleyte (sandy@achievo.com)
+   * @version $Revision$
    *
-   * <b>Changes</b>:
-   *    
    * $Id$
-   * $Log$
-   * Revision 1.4  2001/07/19 11:40:07  ivo
-   * Updated authentication classes with an additional returncode for fatal
-   * errors. Added a feature to pop3 authentication to handle server-specific
-   * response codes.
-   *
-   * Revision 1.3  2001/07/09 15:40:46  ivo
-   * Authentication classes can now indicate whether they support md5 encoding
-   * of passwords.
-   *
-   * Revision 1.2  2001/05/21 13:38:18  ivo
-   * Added a cookie that can remember your login if you close your browser.
-   * (disabled by default, enable in your configfile if you need it)
-   *
-   * Revision 1.1  2001/05/21 13:09:56  sandy
-   * added 2 validation classes, 1 for mail (POP3 / IMAP) and 1 for LDAP
-   * both are untested at this moment.
    *
    */
    

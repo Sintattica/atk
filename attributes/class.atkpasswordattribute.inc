@@ -7,60 +7,10 @@
  * AF_PASSWORD_NOVALIDATE flag, in which case the password just gets
  * overwritten without any check.
  *
- * @author Peter Verhage (peter@ibuildings.nl)
+ * @author Peter Verhage (peter@achievo.com)
+ * @version $Revision$
  *
  * $Id$
- * $Log$
- * Revision 4.6  2001/09/26 12:05:52  maurice
- * Code optimalisations for error handling
- *
- * Revision 4.5  2001/09/26 07:05:13  maurice
- * New error handling. Errors are saved in $record variable
- *
- * Revision 4.4  2001/08/27 07:38:58  ivo
- * changed validate() api: atk now passes record to the function instead of
- * just one value. Also added a mode parameter that indicates whether we
- * are in add or update mode.
- *
- * Revision 4.3  2001/07/15 17:42:39  ivo
- * Disabled extended search for passwordattribute.
- *
- * Revision 4.2  2001/06/26 14:42:09  ivo
- * Passwordattribute was not session save, if you didn't change your password
- * and followed a link and came back, your password would be set to a double
- * hashed value.
- *
- * Revision 4.1  2001/05/17 10:27:12  ivo
- * Fixes to session management, new AF_LARGE feature for manytoonerelation.
- * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
- *
- * Revision 4.0  2001/04/23 10:20:39  ivo
- * revision tags.
- *
- * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
- * Added atk4 to repository.
- *
- * Revision 1.9  2001/03/16 08:47:56  ivo
- * Had to disable invalid password check because it went wrong when
- * AF_HIDE_ADD was set for a password attribute.
- *
- * Revision 1.8  2001/03/15 19:01:07  peter
- * forgot about the AF_PASSWORD_NOVALIDATE flag, fixed update bug with empty passwords
- *
- * Revision 1.7  2001/03/15 18:29:58  peter
- * fixed issue with empty password at update
- *
- * Revision 1.6  2001/03/14 16:16:30  sandy
- * database name and userid field is configurable
- *
- * Revision 1.5  2001/03/14 12:23:23  peter
- * added hide method, to reflect Ivo's changes
- *
- * Revision 1.4  2001/02/22 22:46:18  peter
- * changed edit/search API, new member vars, clean-up of code
- *
- * Revision 1.3  2001/02/16 17:53:40  peter
- * fixed some minor bug that prevented a user from updating a password field more then once
  *
  */
 class atkPasswordAttribute extends atkAttribute

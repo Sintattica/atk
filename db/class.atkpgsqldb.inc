@@ -8,53 +8,9 @@
    * based on the db_pgql.inc file of PHPLib.
    *
    * @author Peter Verhage <peter@ibuildings.nl>
+   * @version $Revision$
    *
-   * $Id$
-   * $Log$
-   * Revision 4.8  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.7  2001/07/10 08:36:31  ivo
-   * Put seq_ in front of the sequence name again (compatibility problems)
-   *
-   * Revision 4.6  2001/06/29 13:35:01  ivo
-   * pgsqldb and oci8db no longer assume sequence names to begin with 'seq_'
-   *
-   * Revision 4.5  2001/06/27 15:25:43  peter
-   * A lot of fixes to the oci8 support, including better outer joins, and
-   * limitting queries! Fields now have an asterix behind them if they are
-   * required. Some other small enhancements.
-   *
-   * Revision 4.4  2001/06/07 09:19:25  ivo
-   * m_error now gets filled when a pgsql query fails (contrib by rene)
-   *
-   * Revision 4.3  2001/06/01 14:59:33  ivo
-   * Better metadata reading for postgresql.
-   * Fixed a bug with input sizes in textarea.
-   *
-   * Revision 4.2  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.1  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:11  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.1  2001/04/06 11:27:47  peter
-   * Added PostgreSQL support (really this time!), please note this version
-   * is not ready for use in a production environment because of missing
-   * support for outer joins. Support will follow as soon as version
-   * 7.1 or higher of the PostgreSQL database has been released!
+   * $Id$   
    *
    */ 
   class atkpgsqldb extends atkdb

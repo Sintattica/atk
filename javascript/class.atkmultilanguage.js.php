@@ -1,58 +1,48 @@
-/**
- * Multilanguage Form Script
- * -------------------------
- *
- * Description:
- * This file contains two javascript functions which can handle form input in multiple languages.
- * To make use of these functions you have to create hidden form fields for every field in every language,
- * with a name ending with "[shortname for the language]", e.g. "fieldname[nl]". Ofcourse you
- * have to create a normal form field to "get" the user input, you have to name this field "fieldname[multilanguage]".
- * Put also a select box for the languages with option values which will be the shortname for the language(s),
- * e.g."<option value="nl">...</option>. And last but not least you have to add a hidden field named
- * multilanguage_current with the value of the first selected language.
- *
- * Note:
- * You can still use other fields in the form which aren't multilanguage. As long as the names don't
- * end with "[multilanguage]"! Also note that
- *
- * Special thanks to Sandy Pleyte (sandy@ibuildings.nl) and Wim Costan (wim@ibuildings.nl) whom created the original
- * multilanguage form script on which this script is based. In fact this script is a generalization of their work.
- *
- * Example:
- * <form action="./" method="get" onSubmit="submitSave(this)">
- *   <input type="hidden" name="multilanguage_current" value="en">
- *   <input type="hidden" name="name[en]" value="">
- *   <input type="hidden" name="name[de] value="">
- *   <input type="hidden" name="name[fr] value="">
- *   <input type="hidden" name="name[nl]" value="">
- *   <select onChange="changeLanguage(this)">
- *     <option value="en">English</option>
- *     <option value="de">German</option>
- *     <option value="fr">French</option>
- *     <option value="nl">Dutch</option>
- *   </select>
- *   <input name="name[multilanguage]" type="text">
- *   <input type="submit">
- * </form>
- *
- * @author Peter Verhage <peter@ibuildings.nl>
- *
- * $Id$
- * $Log$
- * Revision 4.1  2001/10/22 13:07:48  ivo
- * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
- * features have been disabled because they don't seem to work.
- *
- * Revision 4.0  2001/04/23 10:20:39  ivo
- * revision tags.
- *
- * Revision 1.1.1.1  2001/04/23 10:17:12  ivo
- * Added atk4 to repository.
- *
- * Revision 1.1  2001/02/22 22:42:19  peter
- * initial release of the multilanguage script
- *
- */
+<?php
+  /**
+   * Multilanguage Form Script
+   * -------------------------
+   *
+   * Description:
+   * This file contains two javascript functions which can handle form input in multiple languages.
+   * To make use of these functions you have to create hidden form fields for every field in every language,
+   * with a name ending with "[shortname for the language]", e.g. "fieldname[nl]". Ofcourse you
+   * have to create a normal form field to "get" the user input, you have to name this field "fieldname[multilanguage]".
+   * Put also a select box for the languages with option values which will be the shortname for the language(s),
+   * e.g."<option value="nl">...</option>. And last but not least you have to add a hidden field named
+   * multilanguage_current with the value of the first selected language.
+   *
+   * Note:
+   * You can still use other fields in the form which aren't multilanguage. As long as the names don't
+   * end with "[multilanguage]"! Also note that
+   *
+   * Special thanks to Sandy Pleyte (sandy@ibuildings.nl) and Wim Costan (wim@ibuildings.nl) whom created the original
+   * multilanguage form script on which this script is based. In fact this script is a generalization of their work.
+   *
+   * Example:
+   * <form action="./" method="get" onSubmit="submitSave(this)">
+   *   <input type="hidden" name="multilanguage_current" value="en">
+   *   <input type="hidden" name="name[en]" value="">
+   *   <input type="hidden" name="name[de] value="">
+   *   <input type="hidden" name="name[fr] value="">
+   *   <input type="hidden" name="name[nl]" value="">
+   *   <select onChange="changeLanguage(this)">
+   *     <option value="en">English</option>
+   *     <option value="de">German</option>
+   *     <option value="fr">French</option>
+   *     <option value="nl">Dutch</option>
+   *   </select>
+   *   <input name="name[multilanguage]" type="text">
+   *   <input type="submit">
+   * </form>
+   *
+   * @author Peter Verhage <peter@ibuildings.nl>
+   * @version $Revision$
+   *
+   * $Id$
+   *
+  */
+?>
 
   /**
    * Makes sure all the data gets saved before

@@ -2,33 +2,12 @@
   /**
    * This is an extend of the famous atkfileattribute :). Now its possible to insert one or more
    * files in one database field
-   * <br>
-   * <b>Changes:</b>
-   *        0.1      - initial import! (martin)    
-   *
-   * <b>Todo</b>     : deleting files from HD
-   *                    
    *
    * @author Martin Roest (martin@ibuildings.nl)
-   * @version 0.1 
+   * @version $Revision$
    *
    * $Id$
-   * $Log$
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:09  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.7  2001/02/22 22:46:18  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.6  2001/02/07 21:27:28  martin
-   * fixed tiny dinske in display value
-   *
-   * Revision 1.5  2001/02/07 21:22:12  martin
-   * *** empty log message ***
-   *    
+   *   
    */
   class atkMultipleFileAttribute extends atkFileAttribute
   {

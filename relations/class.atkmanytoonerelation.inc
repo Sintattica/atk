@@ -5,111 +5,13 @@
    * coordinator can have multiple projects. So in the project
    * class, there's a ManyToOneRelation to a coordinator.
    *
+   * This relation essentially creates a dropdown box, from which 
+   * you can select from a set of records.
+   *
    * @author Ivo Jansch <ivo@achievo.com>
-   * @version 0.8
-   *
-   * <b>Changed</b>
-   *
-   * 0.8 :   - Fixed the 0.7 fix, it didn't work for PHP3. (Ivo)
-   * 0.7 :   - Fix a bug when atkManyToOneRelation was used as a primary key. (Ivo)
-   *
-   * $Id$
-   * $Log$
-   * Revision 4.20  2001/09/26 12:05:52  maurice
-   * Code optimalisations for error handling
-   *
-   * Revision 4.19  2001/09/26 07:05:13  maurice
-   * New error handling. Errors are saved in $record variable
-   *
-   * Revision 4.18  2001/09/12 15:07:07  ivo
-   * Added an option to manytoonerelation to perform non-leftjoins.
-   *
-   * Revision 4.17  2001/08/31 15:28:44  ivo
-   * manytoonerelation now stores '0' instead of '' if no record is selected.
-   *
-   * Revision 4.16  2001/08/27 07:38:58  ivo
-   * changed validate() api: atk now passes record to the function instead of
-   * just one value. Also added a mode parameter that indicates whether we
-   * are in add or update mode.
-   *
-   * Revision 4.15  2001/08/16 08:37:11  ivo
-   * Added an equal() function to atkAttribute, to compare two values.
-   *
-   * Revision 4.14  2001/07/15 16:37:19  ivo
-   * New atk.inc includefile in skel.
-   * New feature: extended search.
-   * Fixed a bug in session management; style.php and other files that get
-   * loaded between two dispatches could corrupt a session.
-   *
-   * Revision 4.13  2001/06/27 15:25:43  peter
-   * A lot of fixes to the oci8 support, including better outer joins, and
-   * limitting queries! Fields now have an asterix behind them if they are
-   * required. Some other small enhancements.
-   *
-   * Revision 4.12  2001/06/20 14:33:51  ivo
-   * ManyToOneRelation now supports templated destinationfilters.
-   *
-   * Revision 4.11  2001/05/22 08:38:40  peter
-   * Added searchCondition method for this relation, note this method
-   * should be extended to create a search condition for the descriptor fields!
-   *
-   * Revision 4.10  2001/05/18 07:49:42  ivo
-   * Fixes to sessionmanagement.
-   *
-   * Revision 4.9  2001/05/17 10:27:12  ivo
-   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
-   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
-   *
-   * Revision 4.8  2001/05/16 06:52:25  ivo
-   * removed php short-tags.
-   *
-   * Revision 4.7  2001/05/11 12:25:52  ivo
-   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
-   * appeared when the two were used in combination)
-   *
-   * Revision 4.6  2001/05/10 08:31:01  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.5  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.4  2001/05/04 11:37:42  sandy
-   * small bug fixes (split function, refresh, treeview,etc)
-   *
-   * Revision 4.3  2001/05/02 12:44:21  ivo
-   * multilevel session_back feature.
-   * new relational features: maxRecords for oneToManyRelation, filter for
-   * onetomanyrelation.
-   *
-   * Revision 4.2  2001/05/01 12:32:54  sandy
-   * removed the debug functions and created a new Tree relations
-   *
-   * Revision 4.1  2001/04/23 13:21:22  peter
-   * Introduction of module support. An ATK application can now have zero
-   * or more modules which can, but don't have to, contain ATK nodes.
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:13  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.3  2001/04/04 09:01:49  ivo
-   * AF_READONLY now also affects add forms.
-   * Implemented hide() method for manytoonerelation.
-   *
-   * Revision 1.2  2001/02/22 22:47:16  peter
-   * changed search/edit API, some clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:58:00  sandy
-   * Achievo Tool Kit
+   * @version $Revision$
+   *   
+   * $Id$   
    *
    */
   class atkManyToOneRelation extends atkRelation

@@ -10,40 +10,6 @@
  * @version $Revision$
  *
  * $Id$
- * $Log$
- * Revision 1.9  2001/10/01 13:56:06  ivo
- * New feature: securityAliases for nodes.
- * Updates to module api.
- *
- * Revision 1.8  2001/09/28 10:29:33  ivo
- * Modulehandling cleanup.
- *
- * Revision 1.7  2001/09/19 15:21:55  ivo
- * Improved API for module handling: modules may now be constructorless,
- * which prevents a lot of overhead.
- *
- * Revision 1.6  2001/09/12 09:04:58  ivo
- * Bugfixes to module modifiers that corrupted atknodes.
- *
- * Revision 1.5  2001/09/10 12:32:47  ivo
- * Improved module support. Modules can now create modifiers for other nodes.
- * Modules and external modules are now treated equally.
- * Added ability to specify order of menuitems
- *
- * Revision 1.4  2001/05/07 15:13:49  ivo
- * Put config_atkroot in all files.
- *
- * Revision 1.3  2001/05/01 09:49:49  ivo
- * Replaced all require() and include() calls by require_once() and
- * include_once() calls. The if(!DEFINED)... inclusion protection in files
- * is now obsolete.
- *
- * Revision 1.2  2001/04/24 13:51:50  ivo
- * Fixed some small bugs, and updated the language files, improved the menu.
- *
- * Revision 1.1  2001/04/23 13:21:22  peter
- * Introduction of module support. An ATK application can now have zero
- * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
   
