@@ -326,6 +326,14 @@
       //Nothing to hide..
       return "";
     }
+    
+    /**
+    * currently we cannot search one2many relations
+    */
+    function search()
+    {
+      return FALSE;
+    }
 
     /**
     * Check if destination node has a relation to this node, or a 'regular'
