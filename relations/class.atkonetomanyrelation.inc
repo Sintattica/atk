@@ -153,7 +153,7 @@
             // we need to set the filter of the record we are going to add. The referential key must
             // be set to the value of the current primary key. However, the current primary key
             // contains the table name and a dot. So we strip that.
-            list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
+            list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"],2);
             $strfilter = $this->m_refKey.".".$refkeyvalue;
           }
           else
