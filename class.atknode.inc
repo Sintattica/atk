@@ -3354,7 +3354,7 @@
     function action_feedback()
     {
       $page = &$this->getPage();
-      $output = $this->feedbackPage($this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"]);
+      $output = $this->feedbackPage($this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"], $this->m_postvars["atkfbmessage"]);
       $page->addContent($this->renderActionPage("feedback", $output));
     }
 
@@ -3365,7 +3365,7 @@
       $this->addStyle("style.css");
 
       $params["content"] = text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type).
-                           ' '.$message;
+                           ' <br>'.$message;
 
       if (atkLevel()>0)
       {      
