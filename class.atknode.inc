@@ -1340,14 +1340,14 @@
      */
     function adminPage($actions="")
     {
-      global $g_layout, $atksearch, $config_atkroot;
+      global $g_layout, $config_atkroot;
       $g_layout->initGui();
 
       // When there's a lot of data, records will be spread across multiple
       // pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
 
-      if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="" || isset($this->m_postvars["atksearch"])) $this->m_postvars['atkstartat']=0;
 
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],
                                    $this->m_postvars['atkorderby'],
@@ -2340,11 +2340,11 @@
      */
     function selectPage()
     {
-      global $g_layout, $atksearch;
+      global $g_layout;
       $g_layout->initGui();
       // When there's a lot of data, records will be spread across multiple pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
-      if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="" || isset($this->m_postvars["atksearch"])) $this->m_postvars['atkstartat']=0;
 
       $filter = $this->validateFilter($this->m_postvars["atkfilter"]);
 
@@ -3364,8 +3364,8 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = $this->m_postvars['atksearch'];
-        if (is_array($searchArray) && count($searchArray)>0)
+        $searchArray = $this->m_postvars['atksearch'];        
+        if (is_array($searchArray) && count($searchArray)>0)      
         {
           $searchmode = $this->m_postvars["atksearchmode"];
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
@@ -3962,10 +3962,14 @@
      */
     function searchDb($expression)
     {
-
       // Set default searchmethod to OR (put it in m_postvars, because selectDb
       // will use m_postvars to built it's search conditions).
       $this->m_postvars['atksearchmethod'] = "OR";
+      
+      // To perform the search, we fill atksearch, so selectDb automatically
+      // searches. Because an atksearch variable may have already been set,
+      // we save it to restore it after the query.
+      $orgsearch = $this->m_postvars['atksearch'];
 
       // Built whereclause.
       foreach (array_keys($this->m_attribList) as $attribname)
@@ -3978,25 +3982,13 @@
         }
       }
 
-      // We search in admin mode, se we are certain that all fields are added.
-      $recs = $this->selectDb($where, $this->m_defaultOrder, "", "", "", "admin");
-      $res = array();
-      for ($i=0, $_i=count($recs); $i<$_i; $i++)
-      {
-// disabled rights check. It's not searchDb's responsibility to check this, but
-// the code that calls this. 
-    //    if ($this->allowed("view", $recs[$i]))
-//        {
-          $item = $recs[$i];
-          $item ["title"] = $this->descriptor($recs[$i]);
-          $item ["url"] = dispatch_url($this->atkNodeType(),
-                                             "view",
-                                             array("atkselector"=>$this->primaryKey($recs[$i]))
-                                            );
-          $res[] = $item;
-  //      }
-      }
-      return $res;
+      // We load records in admin mode, se we are certain that all fields are added.
+      $recs = $this->selectDb($where, $this->m_defaultOrder, "", $this->m_listExcludes, "", "admin");
+      
+      // Restore original atksearch
+      $this->m_postvars['atksearch'] = $orgsearch;
+      
+      return $recs;
     }
 
     function feedbackUrl($action, $status)
