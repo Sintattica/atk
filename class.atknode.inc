@@ -2347,6 +2347,20 @@
 
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = $this->m_postvars['atksearch'];
+        if (is_array($searchArray) && count($searchArray)>0)
+        {
+          $searching = true;
+          $searchmode = $this->m_postvars["atksearchmode"];
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        }
+      }
+
       if (!$this->hasFlag(NF_NO_FILTER))
       {
         /* hard filters may be set */
@@ -2416,12 +2430,8 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = $this->m_postvars['atksearch'];
         if (is_array($searchArray) && count($searchArray)>0)
-        {
-          $searching = true;
-          $searchmode = $this->m_postvars["atksearchmode"];
-          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        {        
           while (list($key,$value) = each($searchArray))
           {
             if ($value!="")

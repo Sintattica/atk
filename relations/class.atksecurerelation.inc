@@ -38,7 +38,7 @@
     var $m_searching = false;
     var $m_keylookup = array();
     var $m_records = array();
-    var $m_searcharray;
+    var $m_searcharray=array();
     var $m_linkpass;
     var $m_linkbackfield;
     var $m_ownersearch;
@@ -189,7 +189,8 @@
       global $g_db;
       if ($this->m_searching)
       {
-        if($this->m_searcharray != $this->m_ownerInstance->m_postvars["atksearch"]["data"] && is_array($this->m_searcharray))
+        if($this->m_searcharray !== $this->m_ownerInstance->m_postvars["atksearch"]["data"] 
+           && is_array($this->m_searcharray))
         {
           $this->m_records = array();
           // perform query on destination node to retrieve all records.
