@@ -61,7 +61,11 @@
     {
       if($rec[$this->fieldName()]==""&&!$this->hasFlag(AF_OBLIGATORY))
         return "NULL";
-      return (int) $rec[$this->fieldName()];
+
+      if($this->m_decimals>0)
+        return (float) $rec[$this->fieldName()];
+      else
+        return (int) $rec[$this->fieldName()];
     }
 
     function getSearchModes()
