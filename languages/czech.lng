@@ -102,7 +102,7 @@
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-2"; // 'central european' charset for czech..
     
-  $txt_field_obligatory = "Fields marked with '*' are required.";
+  $txt_field_obligatory = "This field is a required field";
   
   $txt_help = "Help";
   

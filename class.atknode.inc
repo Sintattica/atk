@@ -874,9 +874,8 @@
       }      
       
       // load images
-      $reqimg     = $g_layout->getImgSrc("required_field.gif");    
-      $tipimg     = $g_layout->getImgSrc("help.gif");
-      $notipimg   = $g_layout->getImgSrc("nohelp.gif");
+      $reqimg     = '<img align="top" onMouseOver="javascript:window.status=\''.addslashes(text("field_obligatory")).'\';" src="'.$g_layout->getImgSrc("required_field.gif").'" border="0" alt="'.text("field_obligatory").'">&nbsp;';    
+      $tipimg     = $g_layout->getImgSrc("help.gif");      
   
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
@@ -923,18 +922,7 @@
                 $form.=$g_layout->ret_td('&nbsp;');
               }
               else 
-              { 
-	              // Tooltip
-                $ttip = "txt_".$this->m_type."_".$p_attrib->fieldName()."_tooltip";
-                if ($GLOBALS[$ttip] != "")
-                { 
-                  $toolTip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'">&nbsp;';
-                }
-                else
-                {
-                  $toolTip = '<img align="top" src="'.$notipimg.'" border="0">&nbsp;';
-                }                                                                 
-                
+              {                      
                 $found = FALSE;
                 for ($i=0; $i < count($record['atkerror']);$i++)
                 {
@@ -942,11 +930,11 @@
                 }
                 if($found)
                 {
-                  $form.=$g_layout->ret_td('<div class="error">'.$toolTipTag.text($p_attrib->fieldName()).': </div>', 'valign="top"');
+                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
                 }
                 else
                 {
-                  $form.=$g_layout->ret_td($toolTipTag.text($p_attrib->fieldName()).': ','valign="top"');
+                  $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
                 }
               }
             }
@@ -974,11 +962,20 @@
               else
               {                        
                 $editsrc = $p_attrib->edit($defaults, $fieldprefix);
-              }
+              }       
+              
+                    // Obligatory indicator
               if ($p_attrib->hasFlag(AF_OBLIGATORY))
               {
-                $editsrc .= '<img align="top" src="'.$reqimg.'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
-              }              
+                $editsrc.= $reqimg;
+              }   
+              // Tooltip
+              $ttip = "txt_".$this->m_type."_".$p_attrib->fieldName()."_tooltip";
+              if ($GLOBALS[$ttip] != "")
+              { 
+                $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
+              }
+        
             }                        
 
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    

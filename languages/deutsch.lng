@@ -101,7 +101,7 @@
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-1";
     
-  $txt_field_obligatory = "Mit '*' markierte Felder m&uuml;ssen ausgef&uuml;llt werden.";
+  $txt_field_obligatory = "This field is a required field";
   
   $txt_help = "Hilfe";
   
