@@ -339,6 +339,22 @@
       }
       return NULL;
     }
+    
+    /**
+     * Override isEmpty function - in a oneToMany relation we should check if the
+     * relation contains any records. When there aren't any, the relation is empty,
+     * otherwise it isn't
+     *
+     * @param	array	&$record The record to check
+     * @return bool true if a destination record is present. False if not.
+     */
+    function isEmpty(&$record)
+    {
+    	if ($this->hasFlag(AF_OBLIGATORY))
+	    	return empty($this->load(null,$record));
+	    else
+	    	return parent::isEmpty($record);
+    }
 
 
     /** 
