@@ -608,6 +608,10 @@
        $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
        $g_db->query($query);
          
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        $this->postDel($recordset[$i]);
+      }
       
       return $recordset;
       // todo: instead of delete, set the deleted flag.
@@ -648,7 +652,8 @@
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
       
       $g_db->query($query);
-      // todo: instead of delete, set the deleted flag.
+
+      
     }
   }
 
