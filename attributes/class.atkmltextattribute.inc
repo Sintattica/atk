@@ -12,6 +12,9 @@
    * $Id$
    *
    */
+ 
+  useattrib("atkmlattribute");
+   
   class atkMlTextAttribute extends atkMlAttribute
   {
     /**
