@@ -96,7 +96,8 @@
     {
       $this->m_namespace = $namespace;
       $this->m_usestack = $usestack;
-      session_regenerate_id();
+      // added in 5.3 but not working
+      // session_regenerate_id();
       atkdebug("creating sessionManager (namespace: $namespace)");
     }
 
@@ -668,15 +669,17 @@
     return $atklevel;
   }  
     
+  // Below added in 5.3 but not working right!!
+  
   // Function created by timo at frenay dot net taken from: 
   // http://nl.php.net/manual/en/function.session-regenerate-id.php
   
-  if (!function_exists('session_regenerate_id')) 
-  {
+  //if (!function_exists('session_regenerate_id')) 
+  //{
     /**
      * Generates a php combined lcg
      * @return float php combined lcg
-     */
+     *
     function php_combined_lcg() 
     {
       $tv = gettimeofday();
@@ -705,7 +708,7 @@
      * Changes the currect session id into a new one
      * this is done for session hijacking
      * return bool true
-     */
+     *
     function session_regenerate_id() 
     {
       $tv = gettimeofday();
@@ -716,5 +719,6 @@
       return TRUE;
     }
   }
+  */
 
 ?>
