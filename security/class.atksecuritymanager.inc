@@ -459,58 +459,65 @@
 
     function allowed($node, $action)
     {
-      // security disabled or user is superuser? (may do anything)
-      if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
-      {        
-        $allowed = true;
-      }
-      // user is guest? (guests may do nothing)
-      else if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="guest"))
+      static $_cache = array();
+      
+      if (!isset($_cache[$node][$action]))
       {
-        $allowed = false;
-      }
-      // all other situations
-      else
-      {
-       
-        $required = $this->m_authorization->getEntity($node, $action);       
-       
-        if (count($required)==0)
-        {
-          // No access restrictions found.. 
-          // so either nobody or anybody can perform this
-          // operation, depending on the configuration.
-          $allowed = !atkconfig("restrictive");
+        // security disabled or user is superuser? (may do anything)
+        if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator")) 
+        {        
+          $allowed = true;
         }
+        // user is guest? (guests may do nothing)
+        else if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="guest"))
+        {
+          $allowed = false;
+        }
+        // all other situations
         else
         {
-          if ($this->m_scheme=="level")
+         
+          $required = $this->m_authorization->getEntity($node, $action);       
+         
+          if (count($required)==0)
           {
-            // in level based security, only one level is specified for each node/action combination.
-            $allowed = ($this->m_user["level"] >= $required[0]);
+            // No access restrictions found.. 
+            // so either nobody or anybody can perform this
+            // operation, depending on the configuration.
+            $allowed = !atkconfig("restrictive");
           }
-          else if ($this->m_scheme=="group")
-          {           
-            // user may have more then one level
-            if (is_array($this->m_user["level"]))
-            {
-              $allowed = (count(array_intersect($this->m_user["level"], $required))>0);
-            }
-            else
-            {
-              // user has only one level
-              $allowed = in_array($this->m_user["level"], $required);          
-            }
-            
-          }
-          else // unknown scheme??
+          else
           {
-            $allowed = false;
+            if ($this->m_scheme=="level")
+            {
+              // in level based security, only one level is specified for each node/action combination.
+              $allowed = ($this->m_user["level"] >= $required[0]);
+            }
+            else if ($this->m_scheme=="group")
+            {           
+              // user may have more then one level
+              if (is_array($this->m_user["level"]))
+              {
+                $allowed = (count(array_intersect($this->m_user["level"], $required))>0);
+              }
+              else
+              {
+                // user has only one level
+                $allowed = in_array($this->m_user["level"], $required);          
+              }
+              
+            }
+            else // unknown scheme??
+            {
+              $allowed = false;
+            }
           }
-        }
-      }            
-      return $allowed;
-     
+        }  
+        
+        $_cache[$node][$action] = $allowed;
+      }        
+      
+      return $_cache[$node][$action];
     }
         
     function attribAllowed($node, $attribute, $mode)
