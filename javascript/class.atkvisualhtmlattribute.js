@@ -290,7 +290,7 @@
 	   texto = strip_body(texto); 
    } 
    return texto 
- } 
+ }   
  
  function set_html(nom_editor,contingut) { 
  var obj_ed = eval("document." + nom_editor); 
@@ -427,6 +427,17 @@
    return true; 
  } 
  
+ function replacer()
+ {
+   // TODO: create cool own generic extension.
+   alert('mijn eigen nieuwe replacer funktie');
+   var content = obj_editor.DocumentHTML;
+   
+   var selection = obj_editor.DOM.selection.createRange();
+   alert(selection.text);
+   selection.text = 'ivo'; 
+ }
+ 
  function doc_bgcolor_set(hexa_color) 
  { 
    var content = obj_editor.DocumentHTML;
@@ -529,7 +540,7 @@
    var NC = pVar.NumCols; 
    var TA = pVar.TableAttrs; 
    var CA = pVar.CellAttrs; 
-   var funct = 'opener.inserta_table' 
+   var funct = 'opener.insert_table' 
    var par_tab, k, tc 
    par_tab=window.open("","param_tables","screenX=80,screenY=80,width=400,height=215") 
    par_tab.document.open() 

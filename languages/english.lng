@@ -161,4 +161,7 @@
   $txt_password = "Password";
   $txt_login = "Login";
   $txt_max_loginattempts_exceeded = "Your username and password do not match.<br>Please contact your system administrator";
+  
+  $txt_wysiwyg_fontface = "Font";
+  $txt_wysiwyg_fontsize = "Pt";
 ?>
