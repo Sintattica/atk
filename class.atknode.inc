@@ -2382,7 +2382,7 @@
      * to delete the record.
      * @param $atkselector Selected record you want to delete
      */
-    function confirmDelete($atkselector, $locked=FALSE)
+    function confirmDelete($atkselector, $locked=FALSE, $action="delete")
     {
       global $g_layout, $g_db;
       $g_layout->initGui();
@@ -2409,23 +2409,23 @@
           $list = "<ul>";
           for ($i=0, $_i=count($recs); $i<$_i; $i++)
           {
-            $list.="<li> ".$this->descriptor($recs[0]);
+            $list.="<li> ".$this->descriptor($recs[$i]);
           }
           $list.= "</ul>";
         }
       }
 
-      $g_layout->ui_top($this->actionTitle('delete', $record));
+      $g_layout->ui_top($this->actionTitle($action, $record));
       $g_layout->output($this->statusbar($locked));
 
       $g_layout->output('<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">');
       $g_layout->output(session_form());
-      $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
+      $g_layout->output('<input type="hidden" name="atkaction" value="'.$action.'">');
       $g_layout->output('<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">');
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector_str.'">');
 
       $g_layout->table_simple();
-      
+
       if ($list!="")
       {
         $g_layout->output('<tr>');      
@@ -2433,12 +2433,13 @@
         $g_layout->output('</tr>');
       }
       $g_layout->output('<tr>');      
-      $text = $this->confirmDeleteText($atkselector);
-      $g_layout->td($text, 'align="center"');
-      $g_layout->output('</tr><tr>');
-      $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
-      $g_layout->output('</tr></table></form>');
 
+      $text = $this->confirmDeleteText($atkselector);
+      
+      $g_layout->td("<br>$text", 'align="center"');
+      $g_layout->output('</tr><tr>');
+      $g_layout->td('<br><input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
+      $g_layout->output('</tr></table></form>');
       $g_layout->ui_bottom();
     }
 
@@ -2447,7 +2448,8 @@
     {
       $multi = FALSE;
       if (is_array($atkselector)) $multi = count($atkselector) > 1;
-      return text('confirm_delete'.($multi ? '_multi':''), $this->m_type, $this->m_module);
+      $result = text('confirm_delete'.($multi ? '_multi':''), $this->m_type, $this->m_module);
+      return $result;
     }
 
     // Small compare function for sorting attribs on order field
@@ -2858,11 +2860,11 @@
       $g_layout->ui_top($this->actionTitle($action));
       $g_layout->output($this->statusbar());
 
-      $g_layout->output(text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type));
+      $g_layout->output("<br>".text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type)."<br>");
 
       if (atkLevel()>0)
       {
-        $g_layout->output('<br><br><form method="get">'.session_form(SESSION_BACK).
+        $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
                           '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
       }
 
