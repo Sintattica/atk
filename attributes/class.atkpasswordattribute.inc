@@ -72,7 +72,7 @@ class atkPasswordAttribute extends atkAttribute
                 ' value ="'.$password.'">'.
                 '<input type="text" name="'.$this->fieldName().'[new]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
-                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')." value ='".$password."'>";                  
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\'password[again]\'].value=this.value">';                  
      }
     }
     
