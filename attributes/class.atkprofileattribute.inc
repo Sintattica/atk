@@ -118,6 +118,9 @@
       /*** per module ***/
       foreach ($g_modules as $modname)
       {
+        $mod_inst = &getModule($modname);
+        if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
+
         $nodes = $g_nodes[$modname];
 
         if (count($nodes) > 0)
