@@ -155,13 +155,13 @@
       else   $this->m_date_format_view = "F j Y";
 
       /* max / min date (only valid when obligatory) */
-	    //if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
-			//{
+      //if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
+      //{
         if ($min === 0) $this->m_date_min = 0;
         else $this->m_date_min = strtotime($min);
         if ($max === 0) $this->m_date_max = 0;
         else $this->m_date_max = strtotime($max);
-			//}
+      //}
 
       /* base class constructor */
       $this->atkAttribute($name, $flags); 
@@ -422,8 +422,8 @@
      */
     function search($record="", $extended=false)
     {    
-      if (!$extended) return "&nbsp;"; // Only search on dates in extended mode.  	 
-  	  // Set default values to null.
+      if (!$extended) return "&nbsp;"; // Only search on dates in extended mode.     
+      // Set default values to null.
       $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
 
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
@@ -548,7 +548,7 @@
       }
 
       /* allright, if not obligatory, and we have come all this way, we'll bail out */
-			if (!$this->hasFlag(AF_OBLIGATORY)) return;
+      if (!$this->hasFlag(AF_OBLIGATORY)) return;
       else
       {
         if($value["year"]=='' || $value['month']==0 || $value['day']==0)
@@ -599,7 +599,7 @@
      */
     function display($record)
     {
-      $value = $record[$this->fieldName()];      
+      $value = $record[$this->fieldName()];
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
       $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));      
       if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
@@ -663,6 +663,70 @@
                                       ".implode("\n", $this->m_onchangecode)."
                                     }\n");
       }
+    }
+    
+    /**
+     * Convert a String representation into an internal value.
+     *
+     * This implementation converts datestring to a array with day,mont and year seperated
+     *
+     * @param String $stringvalue The value to parse.
+     * @return Internal value for a date
+     */
+    function parseStringValue($stringvalue)
+    {
+      $formats = array("dd-mm-yyyy","dd-mm-yy","d-mm-yyyy","dd-m-yyyy","d-m-yyyy","yyyy-mm-dd","yyyy-mm-d","yyyy-m-dd","yyyy-m-d");
+
+      return $this->parseDate($stringvalue,$formats);
+    }
+    
+    function parseDate($stringvalue, $formats){
+      //looking in witch format the stringvalue match and then get the data
+      foreach($formats as $format){
+        //make vars to know te position of the d,m and y symbols
+        $dayBegin = strpos($format,'d');
+        $dayLength = 0; while(substr($format,$dayBegin+$dayLength,1) == 'd') $dayLength++;
+
+        $monthBegin = strpos($format,'m');
+        $monthLength = 0; while(substr($format,$monthBegin+$monthLength,1) == 'm') $monthLength++;
+
+        $yearBegin = strpos($format,'y');
+        $yearLength = 0; while(substr($format,$yearBegin+$yearLength,1) == 'y') $yearLength++;
+
+        //analyze the formate and make a regular expression
+        $replaces = array();
+        $replaces[$dayBegin] = array("[0-9]{".$dayLength."}",$dayLength);
+        $replaces[$monthBegin] = array("[0-9]{".$monthLength."}",$monthLength);
+        $replaces[$yearBegin] = array("[0-9]{".$yearLength."}",$yearLength);
+
+        ksort($replaces);
+
+        $regexpr = $format;
+        $marge = 0; //this is the marge that the new string greater is than the old one
+        foreach($replaces as $begin=>$replace){
+          $newpart = $replace[0];
+          $length = $replace[1];
+          $newbegin = $begin + $marge;
+
+          $regexpr = substr($regexpr,0,$newbegin).$newpart.substr($regexpr,$newbegin+$length);
+
+          $marge = strlen($regexpr) - strlen($format);
+        }
+
+        $regexpr = "^$regexpr$";
+
+        if(ereg($regexpr,$stringvalue)){
+
+
+          $day    = substr($stringvalue,$dayBegin,$dayLength);
+          $month  = substr($stringvalue,$monthBegin,$monthLength);
+          $year   = substr($stringvalue,$yearBegin,$yearLength);
+
+          return array('day'=>$day,'month'=>$month,'year'=>$year);
+        }
+      }
+      
+      return array('day'=>0,'month'=>0,'year'=>0);
     }
   }
 ?>
