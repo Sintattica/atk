@@ -216,9 +216,10 @@
         /* ROWS */
         /********/
         
-        $records = array();    
+        $records = array();
+        $keys = array_keys($actions);    
         $actionloader = "rl_a['".$listName."'] = new Array();";
-        $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED)."';";
+        $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED,1,$actions[$keys['0']])."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
         
         if (is_array($navigation["next"]) && $navigation["next"]["url"]!="") 
