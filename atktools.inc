@@ -127,10 +127,87 @@
   {
     global $g_error_msg;
     $g_error_msg[]="[".elapsed()."] ".$txt;   
+
     if(function_exists("debug_backtrace"))
     {	
-      atk_var_dump(debug_backtrace(), "trace-route from the error:");
+      atkdebug("atk_get_trace:".atk_get_trace());
     }
+  }
+
+  /**
+  * @param string format (html|plaintext)
+  *
+  * @return void
+  */
+  function atk_get_trace($format="html")
+  {	
+    if(!function_exists("debug_backtrace"))
+      return "Incorrect php-version for atk_get_trace()";
+
+    $traceArr = debug_backtrace();
+
+    // remove call of atk_get_trace
+    array_shift($traceArr);
+
+    if($format=="html")
+    {
+      $ret = "<br><font face=\"Verdana\" size=-2>";
+      $spacer = "&nbsp;";
+      $break = "<br/>\n";
+      $classCall = "-&gt;";
+    }
+    else
+    {
+      $spacer = " ";
+      $break = "\n";
+      $classCall = "->";
+
+    }
+    for($i=0; $i < count($traceArr); $i++)
+    {
+      $theSpacer = str_repeat($spacer, ($i*2)+3)."|";
+
+      $file = $traceArr[$i]["file"];
+      $line = $traceArr[$i]["line"];
+
+      
+      $function = $traceArr[$i]["function"];
+      $class = $traceArr[$i]["class"];
+      if($class)
+        $class.=$classCall;
+
+      $tmpArr = $traceArr[$i]["args"];
+
+      $functionParamArr = array();
+
+      foreach($tmpArr as $val)
+      {
+        if(is_array($val) && count($val))
+          $val = "list(".implode(", ", $val).")";
+
+        if(strlen($val))
+        {	
+          if(strlen($val) > 100)
+            $val = substr($val, 0, 97)."...";
+            
+          $functionParamArr[] = $theSpacer."&nbsp;&nbsp;'".$val."'";
+        }
+      }
+
+      $functionParams = implode(",".$break."\n", $functionParamArr);
+
+      if(strlen($functionParams))
+        $functionParams= $break."\n".$functionParams.$break.$theSpacer;
+      
+      $ret .= str_repeat("&nbsp;", ($i*2))." |-|".$file." on line ".$line.$break.
+                                $theSpacer.$class.$function." with params:(".
+                                $functionParams.")".$break;
+    }  // end foreach
+
+    if($format=="html")
+      $ret .="</font>";
+
+    return $ret;
   }
 
    /**
