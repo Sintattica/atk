@@ -1105,13 +1105,10 @@
         $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
 
         /* nodes can define edit_values */
-        if (method_exists($this, "edit_values"))
+        $overrides = $this->edit_values($defaults);
+        foreach ($overrides as $varname=>$value)
         {
-          $overrides = $this->edit_values($defaults);
-          foreach ($overrides as $varname=>$value)
-          {
-            $defaults[$varname]=$value;
-          }
+          $defaults[$varname]=$value;
         }
       }
 
@@ -1121,13 +1118,10 @@
         $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
 
         /* nodes can define initial values, if they don't already have values. */
-        if (method_exists($this,"initial_values"))
+        $overrides = $this->initial_values();
+        foreach ($overrides as $varname=>$value)
         {
-          $overrides = $this->initial_values();
-          foreach ($overrides as $varname=>$value)
-          {
-            if ($defaults[$varname]=="") $defaults[$varname]=$value;
-          }
+          if ($defaults[$varname]=="") $defaults[$varname]=$value;
         }
       }
 
@@ -1229,6 +1223,40 @@
       /* return the result array */
       return $result;
     }
+
+    /**
+     * Retrieve the initial values for a new record.
+     *
+     * The system calls this method to create a new record. By default
+     * this method returns an empty record, but derived nodes may override 
+     * this method to perform record initialization.
+     *
+     * @return array Array containing an initial value per attribute.
+     *               Only attributes that are initialized appear in the
+     *               array.
+     */
+    function initial_values()
+    {
+      return array();
+    }
+
+    /**
+     * Retrieve new values for an existing record.
+     *
+     * The system calls this method to override the values of a record
+     * before editing the record. 
+     * The default implementation does not do anything to the record, but 
+     * derived classes may override this method to make modifications to.
+     * the record. 
+     *
+     * @param array $record The record that is about to be edited.
+     * @return array The manipulated record.
+     */
+    function edit_values($record)
+    {
+      return $record;
+    }
+
   
     /**
      * Get the template to use for a certain action.

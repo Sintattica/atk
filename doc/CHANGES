@@ -7,6 +7,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changes in ATK 5.0.5
 --------------------
 + Added atkFormatAttribute for editing formatted values. [Ivo]
++ Added edit_values() and initial_values() methods to atkNode class. [Ivo]
 * Fixed alignment of fieldlabels and error messages. [Ivo]
 * Fix in NF_ML, when having optional relationships. [Lineke,Ivo]
 * Fixed removal of leading spaces from values by removing a php4.0.4pl1
