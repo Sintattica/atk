@@ -13,7 +13,6 @@
   
   atksession();
   atksecure();  
-  require "theme.inc";
   
  // builds matrix
    $colHeight = "9"; // height of each color element

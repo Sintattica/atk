@@ -10,6 +10,9 @@
 *
 * $Id$
 * $Log$
+* Revision 1.2  2001/08/02 08:37:27  sandy
+* New hover function for the color picker, and removed theme.inc
+*
 * Revision 1.1  2001/07/27 13:16:14  sandy
 * advanced colorpicker attrib + new popup system
 *
@@ -33,7 +36,6 @@
   
   atksession();
   atksecure();  
-  require "theme.inc";
 
 //  Renders the help screen
   $language = strtok(atkconfig("languagefile"),".");

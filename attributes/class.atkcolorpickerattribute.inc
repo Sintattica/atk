@@ -16,7 +16,7 @@
   /**
     * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color
    */
-   function drawTD($field,$color,$colHeight,$colWidth,$extern=0)
+  function drawTD($field,$color,$colHeight,$colWidth,$extern=0)
    {
     $row .="<td width='".$colWidth."' bgcolor='$color'>";
     if ($extern !=0)
@@ -28,7 +28,7 @@
       $row .='<A href ="javascript:picker';
     }
     $row .="('".$field."','".$color."')";
-    $row .='"><IMG SRC="atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' ></a></td>';
+    $row .='" title="color: '.$color.'"><IMG SRC="atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' ></a></td>';
     $row .= "\n";
     return $row;
    }
