@@ -36,7 +36,7 @@
     function atkOpenSSLEncryption()
     {
       $this->m_config_default = array();
-      $this->m_config_nokey = array_merge($this->m_config_default,array('encrypt_key'=>false));
+      $this->m_config_nokey   = array_merge($this->m_config_default,array('encrypt_key'=>false));
     }
 
 
@@ -50,18 +50,11 @@
     function encrypt($input, $key)
     {
       $keys = $this->getKeys($key);
-    
-      $key = openssl_get_publickey($keys['public']);
+      $key  = openssl_get_publickey($keys['public']);
 
-      if(!$key){
-        atkerror("atkOpenSSLEncryption::encrypt << not a valid key passed");
-        return "";
-      }
-
-      openssl_public_encrypt($input,$encrypted,$key);
+      if($key)  openssl_public_encrypt($input,$encrypted,$key);
+      else      atkerror("atkOpenSSLEncryption::encrypt << not a valid key passed");
       
-      //atkerror("encrypt $input with ".$keys['public']." to $encrypted");
-
       return $this->stripbackslashes($encrypted);
     }
 
@@ -73,20 +66,16 @@
      */
     function decrypt($input, $key)
     {
-      $input = $this->addbackslashes($input);
+      $input  = $this->addbackslashes($input);
+      $keys   = $this->getKeys($key);
+      $key    = openssl_get_privatekey($keys['private']);
 
-      $keys = $this->getKeys($key);
-
-      $key = openssl_get_privatekey($keys['private']);
-
-      if(!$key){
-        atkerror("atkOpenSSLEncryption::decrypt << not a valid key passed");
-        return "";
+      if($key)  atkerror("atkOpenSSLEncryption::decrypt << not a valid key passed");
+      else      
+      {
+        echo "decrypt for: input:$input, decrypted: $decrypted, key: $key";
+        openssl_private_decrypt($input,$decrypted,$key);
       }
-      
-      openssl_private_decrypt($input,$decrypted,$key);
-      
-      //atkerror("decrypt $input with ".$keys['public']." to $decrypted");
 
       return $decrypted;
     }
@@ -101,10 +90,8 @@
      */
     function copyPrivateKey($key,$privkeypass,$newprivkeypass)
     {
-      if($privkeypass != "")
-        $priv = openssl_get_privatekey($key,$privkeypass);
-      else
-        $priv = openssl_get_privatekey($key);
+      if($privkeypass != "") $priv = openssl_get_privatekey($key,$privkeypass);
+      else                   $priv = openssl_get_privatekey($key);
         
       if($priv && $newprivkeypass!="")
         openssl_pkey_export($priv,$newprivatekey,$newprivkeypass,$this->m_config_default);
@@ -123,21 +110,24 @@
     function getNewKeys($privkeypass)
     {
       $dn = array(
-       "countryName" => "NL",
-       "stateOrProvinceName" => "Zeeland",
-       "localityName" => "Vlissingen",
-       "organizationName" => "Ibuildings.nl",
+       "countryName"            => "NL",
+       "stateOrProvinceName"    => "Zeeland",
+       "localityName"           => "Vlissingen",
+       "organizationName"       => "Ibuildings.nl",
        "organizationalUnitName" => "IBS-Vlissingen",
-       "commonName" => "Mark Baaijens",
-       "emailAddress" => "mark@ibuildings.nl"
+       "commonName"             => "Ivo Jansch",
+       "emailAddress"           => "ivo@ibuildings.nl"
       );
 
       //generate a private key
       $privkey = openssl_pkey_new($this->m_config_default);
+      
       //generate a certificate signing request
       $csr = openssl_csr_new($dn,$privkey,$this->m_config_default);
+      
       //This creates a self-signed cert that is valid for 365 days
       $sscert = openssl_csr_sign($csr,null,$privkey,365,$this->m_config_default);
+      
       //now we store the public key, private key and the certificate in variables
       //private key is encrypted with privkeypass
       $result = array();
@@ -201,8 +191,8 @@
       //-----BEGIN CERTIFICATE-----...-----END CERTIFICATE-----
       if(($begin = strpos($key,"-----BEGIN CERTIFICATE-----")) != false)
       {
-        $keys['private'] = substr($key,0,$begin);
-        $keys['public'] = substr($key,$begin,strlen($key)-$begin);
+        $keys['private']  = substr($key,0,$begin);
+        $keys['public']   = substr($key,$begin,strlen($key)-$begin);
         return $keys;
       }
     }
@@ -239,10 +229,6 @@
     {
       $value = str_replace($this->m_backslashreplacestring,"\\",$value);
       return $value;
-    }
-    
-    
-    
-    
+    }    
   }
 ?>
