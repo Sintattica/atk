@@ -734,7 +734,8 @@
                                    ' method="post" onsubmit="return globalSubmit(this)">');
 
       /* if we are on an admin page we would like to stay on the admin page after adding a new record */
-      if ($this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
+      /* NOTE: temporarily disabled! Needs to be fixed! */
+      if (FALSE && $this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
       else $g_layout->output(session_form());
 
 
@@ -3194,6 +3195,7 @@
     {
       global $g_sessionData, $atklevel,$g_sessionManager;
       $namespace = $g_sessionManager->m_namespace;
+
       $res = ($this->m_action == "update"
               && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
               && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == $this->atknodetype());
