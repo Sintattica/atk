@@ -6,23 +6,23 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.0.4
 --------------------
-* in atkManyToOneRelation you can change the 'none'-string for a node [Mark]
-+ new attribute atkCurrencyAttribute to display money values. [Mark]
-+ new function addSecurityMap in atkNode to map actions for same security. [Mark]
-* atkViewHandlers shows no back button if there is no going back possible. [Mark]
-* atkLanguage now also supports empty values in language files. [Boy]
-+ atkEncryption and atkBase64Encryption introduced [Mark]
-+ Added 'Privacy Enhancing Technologies' (PET) by ways of an 
-  atkSecureRelation. [Mark]
-* atkManyToManyRelation sets the ref and local key upon construction [Mark]
-+ Added setNumbering() to atkNode, setting this will number the fields [Boy]
-* showTab is now called from tabs template in Outlook theme, 
-  ensuring the tab always being set [Boy]
-+ Added renderTop function which gets top.tpl if it exists, 
-  or otherwise defaults to box.tpl [Boy]
-+ Added menu_align config variable [Boy]
+* atkManyToOneRelation's 'none' string can be customized per node. [Mark]
++ Added atkCurrencyAttribute to display currency values. [Mark]
++ Added addSecurityMap() to atkNode to map privileges to other rights. [Mark]
++ Added encryption utilities (atkEncryption and atkBase64Encryption). [Mark]
++ Added atkSecureRelation for 'Privacy Enhancing Technologies' (PET). [Mark]
++ Added setNumbering() to atkNode, for numbering fields in the gui. [Boy]
++ Added onChange() handler functionality to atkDateAttribute. [Boy]
++ Added renderTop function which renders top.tpl if it exists, or box.tpl
+  if not (custom topframe template). [Boy]
 + Added set- and getSelected functionality to atkListAttribute [Boy]
-* Fixed 2 bugs with the AF_LARGE flag (bug #302, #330) [Yuri]
++ Alignment of menu options can be configured with $config_menu_align. [Boy]
++ Added 'details' edit functionality to atkManyBoolRelation. [Ivo]
+* atkManyToOneRelation's 'none' string can be customized per node. [Mark]
+* atkLanguage now also supports empty values in language files. [Boy]
+* Fixed setting the correct initial tab. [Boy]
+* atkViewHandler hides back button if going back is not an option. [Mark]
+* Fixed bugs in AF_LARGE flag. (bug #302, #330) [Yuri]
 
 Changes in ATK 5.0.3
 --------------------
