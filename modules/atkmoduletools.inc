@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.16  2001/09/12 09:04:58  ivo
+ * Bugfixes to module modifiers that corrupted atknodes.
+ *
  * Revision 1.15  2001/09/10 12:32:47  ivo
  * Improved module support. Modules can now create modifiers for other nodes.
  * Modules and external modules are now treated equally.
@@ -137,13 +140,14 @@
   function getModule($modname)
   {
     global $g_moduleRepository;
-    if (!is_object($g_moduleRepository[$modname]))
-    {
-      atkdebug("Constructing a new module - $modname");
-      $g_moduleRepository[$modname] = new $modname();        
-    } 
-    atkdebug("Returning module instance - $modname");
-    return $g_moduleRepository[$modname];    
+    //if (!is_object($g_moduleRepository[$modname]))
+    //{  
+//      atkdebug("Constructing a new module - $modname");
+      //$g_moduleRepository[$modname] = new $modname();        
+    //}     
+    //atkdebug("Returning module instance - $modname");
+    //return $g_moduleRepository[$modname];    
+    return new $modname();
   }
   
   /**

@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.101  2001/09/12 09:04:58  ivo
+   * Bugfixes to module modifiers that corrupted atknodes.
+   *
    * Revision 4.100  2001/09/10 12:32:46  ivo
    * Improved module support. Modules can now create modifiers for other nodes.
    * Modules and external modules are now treated equally.
@@ -282,18 +285,13 @@
     // The module itself
     if (file_exists($filename))
     {
-      include_once($filename);       
-      
-      $module = &getModule($modname);                              
-      
-      // Module attributes
-      $attr_arr = $module->getAttributes();
-      for ($i = 0; $i < sizeof($attr_arr); $i++)
+      // the include file may specify modifiers.
+      $modifiers = array();
+      include_once($filename);        
+      for ($i=0;$i<count($modifiers);$i++)
       {
-        if (file_exists($modpath."/".$attr_arr[$j]))
-        include_once($modpath."/".$attr_arr[$j]);
-      }     
-      
+        $g_modifiers[$modifiers[$i]][] = $modname;
+      }
     }
     else
     {
@@ -2156,7 +2154,7 @@
     {
       global $g_securityManager, $g_db, $g_sessionManager, $g_layout;            
 
-      $this->m_postvars = $postvars;            
+      $this->m_postvars = $postvars;                          
       
       $this->m_action = $postvars['atkaction'];
       
@@ -2175,7 +2173,7 @@
         $this->redirect(atkurldecode($this->m_postvars["atkescape"]));
       }
       else
-      {            
+      {                
         if ($this->allowed($this->m_action))
         {
           $g_securityManager->logAction($this->m_type, $this->m_action);
@@ -3133,7 +3131,7 @@
      * Lookup the security 'key' for an action
      */ 
     function securityKey($action)
-    {
+    {    
       if ($this->m_securityMap[$action]=="") return $action;
       return $this->m_securityMap[$action];
     }

@@ -11,6 +11,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.6  2001/09/12 09:04:58  ivo
+ * Bugfixes to module modifiers that corrupted atknodes.
+ *
  * Revision 1.5  2001/09/10 12:32:47  ivo
  * Improved module support. Modules can now create modifiers for other nodes.
  * Modules and external modules are now treated equally.
@@ -170,12 +173,7 @@
     {
       if (!empty($name) && !empty($url)) $this->m_admin_links[$name] = $url;
     }
-    
-    function modifies($node)
-    {
-      global $g_modifiers;
-      $g_modifiers[$node][] = $this->m_name;
-    }
+        
   }
 
 ?>
