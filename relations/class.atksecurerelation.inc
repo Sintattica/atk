@@ -180,6 +180,33 @@
               $link = $records[$i][$this->m_linkbackfield];                              
               $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
 
+              /* Temporary dirty hack */
+              if (!$decryptedlink) {
+                atkdebug("Unable to decrypt link: ".$link.", trying to fix.");
+                
+                $destKey = $records[$i][$this->m_destInstance->primaryKeyField()];
+
+                //try to fix it (problem with slashes)
+                $query = "SELECT ".$this->m_linkbackfield." FROM ".$this->m_destInstance->m_table." WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
+                $result = $g_db->getrows($query);
+                $link_better = $result[0][$this->m_linkbackfield];
+                $decryptedlink = $this->m_crypt->decrypt($link_better,$linkpass);
+                
+                if($decryptedlink) {
+                  //change in the database
+                  $link_better = $this->m_crypt->stripbackslashes($link_better);
+                  $query = "UPDATE ".$this->m_destInstance->m_table." SET ".$this->m_linkbackfield."='".addslashes($link_better)."' WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
+                  $g_db->query($query);
+                  atkdebug("Fixed!");
+                }
+                else {
+                  atkdebug("Still unable to decrypt link: ".$link_better.", for id=".$destKey);
+                }
+              }
+              /* end of temporary dirty hack */
+              
+              
+
               if(!$decryptedlink)
                 atkdebug("Unable to decrypt link: ".$link);
               else
