@@ -23,6 +23,16 @@
     }
 
     /**
+    * return possible languages
+    */
+    function getLanguages()
+    {
+      global $config_language;
+      atkdebug("atkmlattribute::getlanguages() ".(is_array($config_language)?implode(",",$config_language):""));
+      return $config_language;
+    }
+    
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value (one box which can be used for all the languages).
      * @param $record array with values
@@ -30,34 +40,34 @@
      */
     function edit($record="")
     {
-      global $config_language;
-      
       /* register javascript */
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
       $page->register_submitscript('submitSave(form);');
 
+      $languages = $this->getLanguages();
+      
       /* hidden values */
-      for ($i = 1; $i < sizeof($config_language); $i++)
+      for ($i = 1; $i < sizeof($languages); $i++)
       {
-        $result .= '<input type="hidden" name="'.$this->formName().'['.$config_language[$i].']"'.
-                   ' value="'.htmlspecialchars($record[$this->fieldName()][$config_language[$i]]).'" >';
+        $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
+                   ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[$i]]).'" >';
       }
 
       /* default language */
-      $result .= text('language_'.$config_language[0]).':<br>'.
-                 '<input type="text" name="'.$this->formName().'['.$config_language[0].']"'.
-                 ' value="'.htmlspecialchars($record[$this->fieldName()][$config_language[0]]).'"'.
+      $result .= text('language_'.$languages[0]).': '.
+                 '<input type="text" name="'.$this->formName().'['.$languages[0].']"'.
+                 ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[0]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'><br><br>';
+                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 
       
       /* first language of other languages */
-      $result .= text((count($config_language)==2 ? $config_language[1] : "multilanguage_choice").'').':<br>'.
-                 '<input type="text" name="'.$this->formName().'['.(count($config_language)==2 ? $config_language[1] : "multilanguage").']"'.
-                 ' value="'.htmlspecialchars($record[$this->fieldName()][$config_language[1]]).'"'.
+      $result .= text((count($languages)==2 ? $languages[1] : "multilanguage_choice").'').': '.
+                 '<input type="text" name="'.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
+                 ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[1]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'><br><br>';
+                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
       return $result;
     }
@@ -70,10 +80,9 @@
      */
     function search($record="")
     {
-      global $config_language;
-      
-      $result= '<input type="text" name="atksearch['.$this->formName().'_'.$config_language[0].']"'.
-               ' value="'.$record[$this->fieldName().'_'.$config_language[0]].'"'.
+      $languages = $this->getLanguages();
+      $result= '<input type="text" name="atksearch['.$this->formName().'_'.$languages[0].']"'.
+               ' value="'.$record[$this->fieldName().'_'.$languages[0]].'"'.
                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
@@ -86,11 +95,10 @@
      */
     function isEmpty($postvars)
     {
-      global $config_language;
-
-      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      $languages = $this->getLanguages();
+      for ($i=0,$_i=count($languages);$i<$_i;$i++)
       {
-        if (strlen($postvars[$this->fieldName()][$config_language[$i]]) == 0) return 1;
+        if (strlen($postvars[$this->fieldName()][$languages[$i]]) == 0) return 1;
       }
 
       return 0;
@@ -104,8 +112,8 @@
      */
     function display($record)
     {
-      global $config_language;
-      return nl2br(htmlspecialchars($record[$this->fieldName()][$config_language[0]]));
+      $languages = $this->getLanguages();
+      return nl2br(htmlspecialchars($record[$this->fieldName()][$languages[0]]));
     }
 
     /**
@@ -116,13 +124,12 @@
      */
     function hide($record="")
     {
-      global $config_language;    
-    
+      $languages = $this->getLanguages();
       /* hidden values */
-      for ($i = 0; $i < sizeof($config_language); $i++)
+      for ($i = 0; $i < sizeof($languages); $i++)
       {
-        $result .= '<input type="hidden" name="'.$this->formName().'['.$config_language[$i].']"'.
-                   ' value="'.htmlspecialchars($record[$this->fieldName()][$config_language[$i]]).'">';
+        $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
+                   ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[$i]]).'">';
       }
     
       return $result;             
@@ -135,11 +142,10 @@
      */
     function db2value($rec)
     {
-      global $config_language;
-
-      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      $languages = $this->getLanguages();
+      for ($i=0,$_i=count($languages);$i<$_i;$i++)
       {      
-        $result[$config_language[$i]] = stripslashes($rec[$this->fieldName().'_'.$config_language[$i]]);
+        $result[$languages[$i]] = stripslashes($rec[$this->fieldName().'_'.$languages[$i]]);
       }
       return $result;
     }
@@ -151,11 +157,10 @@
      */
     function fetchValue($rec)
     {
-      global $config_language;
-
-      for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+      $languages = $this->getLanguages();
+      for ($i=0,$_i=count($languages);$i<$_i;$i++)
       {
-        $result[$config_language[$i]] = stripslashes($rec[$this->fieldName()][$config_language[$i]]);
+        $result[$languages[$i]] = stripslashes($rec[$this->fieldName()][$languages[$i]]);
       }
       return $result;
     }
@@ -171,22 +176,25 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
-      global $config_language;
-
-      if ($mode == "add" || $mode == "update")
+      $languages = $this->getLanguages();
+      if(!$this->m_ownerInstance->hasFlag(NF_ML))
       {
-        for ($i=0,$_i=count($config_language);$i<$_i;$i++)
+        $languages = $this->getLanguages();
+        if ($mode == "add" || $mode == "update")
         {
-          $query->addField($this->fieldName().'_'.$config_language[$i],escapeSQL($rec[$this->fieldName()][$config_language[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
+          for ($i=0,$_i=count($languages);$i<$_i;$i++)
+          {
+            $query->addField($this->fieldName().'_'.$languages[$i],escapeSQL($rec[$this->fieldName()][$languages[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
+          }   
+        }
+        else
+        {
+          for ($i=0,$_i=count($languages);$i<$_i;$i++)
+          {
+            $query->addField($this->fieldName().'_'.$languages[$i],"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
+          }
         }
       }
-      else
-      {
-        for ($i=0,$_i=count($config_language);$i<$_i;$i++)
-        {
-          $query->addField($this->fieldName().'_'.$config_language[$i],"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
-        }
-      }      
     }
 
     /**
@@ -194,8 +202,8 @@
      */    
     function fetchMeta($metadata)    
     {
-      global $config_language;
-      $attribname = $this->fieldName().'_'.$config_language[0];
+      $languages = $this->getLanguages();
+      $attribname = $this->fieldName().'_'.$languages[0];
       $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], 20);
       $this->m_maxsize = $metadata[$attribname]['len'];                           

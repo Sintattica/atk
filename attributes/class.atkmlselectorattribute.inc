@@ -9,7 +9,10 @@
  * $Id$
  *
  */
-class atkMlSelectorAttribute extends atkAttribute
+ 
+useattrib("atkmlattribute");
+
+class atkMlSelectorAttribute extends atkMlAttribute
 {
   /**
    * Returns the language selector
@@ -17,21 +20,21 @@ class atkMlSelectorAttribute extends atkAttribute
    */
   function getSelector()
   {
-    global $config_language;
+    $languages = $this->getLanguages();
 
     /* check config */
-    if (!is_array($config_language) || sizeof($config_language) == 0)
+    if (!is_array($languages) || sizeof($languages) == 0)
       return text("multilanguage_error_config");
 
     /* first selected other language */
-    $result = '<input type="hidden" name="multilanguage_current" value="'.$config_language[1].'">';
+    $result = '<input type="hidden" name="multilanguage_current" value="'.$languages[1].'">';
 
     /* build selection list */
     $result .= '<select onchange="changeLanguage(this)">';
 
     /* options */
-    for ($i = 1; $i < sizeof($config_language); $i++)
-      $result .= '<option value="'.$config_language[$i].'">'.text('language_'.$config_language[$i]).'</option>';
+    for ($i = 1; $i < sizeof($languages); $i++)
+      $result .= '<option value="'.$languages[$i].'">'.text('language_'.$languages[$i]).'</option>';
 
     /* close */
     $result .= '</select>';
@@ -47,7 +50,7 @@ class atkMlSelectorAttribute extends atkAttribute
   {
     global $config_atkroot;
     /* base class constructor */
-    $this->atkAttribute("multilanguage_select", $flags|AF_HIDE_LIST);    
+    $this->atkMlAttribute("multilanguage_select", $flags|AF_HIDE_LIST);    
   }
 
   /**
@@ -104,6 +107,6 @@ class atkMlSelectorAttribute extends atkAttribute
   function dbFieldType()
   {
     return "";
-  ]
+  }
 }
 ?>
