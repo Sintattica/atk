@@ -24,6 +24,7 @@ Changes in ATK 5.0.5
   flag to the atkOneToManyRelation [Boy]
 * Fix for bug that would cause obligatory atkdateattributes to be empty 
   instead of assuming the current date [Boy]
++ Added AF_DUMMY_LABELING, which causes dummy attribs to be labeled [Boy]
 
 Changes in ATK 5.0.4
 --------------------

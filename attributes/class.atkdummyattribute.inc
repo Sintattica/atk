@@ -15,7 +15,8 @@
    * @version $Revision$
    * $Id$
    */
-
+   define("AF_DUMMY_LABELING",              AF_SPECIFIC_1); // make the dummy label it's fields
+   
   /**
    * With the atkDummyAttribute class you can place comments between other
    * attributes.
@@ -39,7 +40,9 @@
      */
     function atkDummyAttribute($name, $text="", $flags=0)
     {
-      $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
+    	if (hasFlag($flags, AF_DUMMY_LABELING)) $flags=$flags|AF_HIDE_SEARCH;
+    	else $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
+    	
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
     }
