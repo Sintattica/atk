@@ -52,6 +52,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.82  2001/07/18 12:10:10  ivo
+   * New flags: AF_READONLY_ADD and AF_READONLY_EDIT (AF_READONLY automatically
+   * selects both flags)
+   *
    * Revision 4.81  2001/07/17 09:51:31  ivo
    * Replaced all dispatch.php occurrences with $PHP_SELF.
    *
@@ -925,8 +929,11 @@
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
             }            
-            	                    
-            if ($p_attrib->hasFlag(AF_READONLY))
+            	                                
+            if (($mode=="edit"&&$p_attrib->hasFlag(AF_READONLY_EDIT))
+              ||
+              ($mode=="add"&&$p_attrib->hasFlag(AF_READONLY_ADD))
+             )
             {
               // readonly, display value..              
               $editsrc=$p_attrib->hide($defaults, $fieldprefix);
@@ -939,7 +946,7 @@
               $funcname = $p_attrib->m_name."_edit";
               
               if (method_exists($this,$funcname))
-              {
+              {            
                 $editsrc = $this->$funcname($defaults, $fieldprefix);
               }
               else
@@ -2192,7 +2199,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          if ($p_attrib->hasFlag(AF_READONLY)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
+          if ($p_attrib->hasFlag(AF_READONLY_EDIT)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
  	        {
             if (method_exists($p_attrib,"store"))
             {

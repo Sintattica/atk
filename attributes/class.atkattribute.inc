@@ -22,9 +22,8 @@
 
   define("AF_NO_SORT"       ,1024);    // Attribute can not be sorted in recordlists.
   define("AF_NOSORT"  ,AF_NO_SORT);  // AF_NOSORT has wrong naming convention but is still there
-                                     // for compatibility reasons.
-  define("AF_READONLY"     ,2048);   // Attribute is readonly
-  
+                                     // for compatibility reasons.    
+  define("AF_READONLY_ADD",2048);   // Attribute is readonly in add.
   define("AF_SEARCHABLE"  ,4096); // Attribute is searchable in list views 
   
   // flags specific for AtkFileAttribute
@@ -63,10 +62,13 @@
   
   define("AF_HIDE_SEARCH", 536870912); // Attribute is not searchable in extended search  
   
+  define("AF_READONLY_EDIT", 1073741824); // Attribute is readonly when edited.   
+  
   define("AF_HIDE",AF_HIDE_EDIT|AF_HIDE_ADD|AF_HIDE_LIST|AF_HIDE_SEARCH); // Attribute is totally hidden
   define("AF_AUTOKEY", AF_PRIMARY|AF_HIDE|AF_AUTOINCREMENT); // short way of saying that an attribute
                                                              // is an autoincremented primarykey that
                                                              // is also hidden from the user.
+  define("AF_READONLY",AF_READONLY_EDIT|AF_READONLY_ADD); // Attribute is always readonly.
                                        
   // FLAGS MAY NOT EXCEED 2^31 (2147483648), because that's the integer limit beyond which
   // the bitwise operators won't work anymore.
@@ -98,6 +100,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.17  2001/07/18 12:10:10  ivo
+   * New flags: AF_READONLY_ADD and AF_READONLY_EDIT (AF_READONLY automatically
+   * selects both flags)
+   *
    * Revision 4.16  2001/07/15 17:03:59  ivo
    * New feature: Alphabetical index on top of recordlists.
    * (use e.g. $this->setIndex("name"); in your class constructor to activate)
