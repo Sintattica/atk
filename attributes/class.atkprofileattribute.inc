@@ -1,7 +1,7 @@
 <?php
   /**
    * The atkProfileAttribute is an attribute to edit a security profile.
-   * The best way to use it is inside the class where you edit your 
+   * The best way to use it is inside the class where you edit your
    * profile or usergroup records.
    *
    * @author Ivo Jansch (ivo@ibuildings.nl)
@@ -18,31 +18,31 @@
     {
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH);
     }
-    
+
     function load($db, $record)
-    {      
-      $query = "SELECT * 
-                FROM ".atkconfig("auth_accesstable")." 
+    {
+      $query = "SELECT *
+                FROM ".atkconfig("auth_accesstable")."
                 WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       $result = Array();
       $rows = $db->getrows($query);
       for ($i=0;$i<count($rows);$i++)
-      {     
+      {
         $result[$rows[$i]["node"]][] = $rows[$i]["action"];
       }
       return $result;
     }
-    
+
     function store($db, $record, $mode)
     {
-      $delquery = "DELETE FROM ".atkconfig("auth_accesstable")." 
+      $delquery = "DELETE FROM ".atkconfig("auth_accesstable")."
                    WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       $db->query($delquery);
-      
+
       $checked = $record[$this->fieldName()];
-                  
+
       while (list($node, $actions)=each($checked))
       {
         for ($i=0;$i<count($actions);$i++)
@@ -54,17 +54,22 @@
         }
       }
     }
-    
+
     function edit($record)
     {
-      global $g_modules, $g_nodes, $config_atkroot, $g_layout;  
-      
+      global $g_modules, $g_nodes, $config_atkroot, $g_layout;
+
       $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-    
+
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
       include_once("config.nodes.inc");
-      
+      foreach ($g_modules as $modname)
+      {
+        $mod_inst = &getModule($modname);
+        if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
+      }
+
       $result.='<div align="right">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
                     text("check_all").
@@ -72,10 +77,10 @@
                     text("check_none").
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     text("invert_selection").'</a>]</div>';
-  
+
       /* get permissions */
       $checked = $record[$this->fieldName()];
-      
+
       /***  main application ***/
       $nodes = $g_nodes["main"];
       if (count($nodes) > 0)
@@ -109,18 +114,15 @@
           }
         }
       }
-   
+
       /*** per module ***/
-      foreach ($g_modules as $modname => $pathname)
+      foreach ($g_modules as $modname)
       {
-        $mod_inst = getModule($modname);
-        if (method_exists($mod_inst,"getNodes")) $mod_inst->getNodes();
-        
         $nodes = $g_nodes[$modname];
-        
+
         if (count($nodes) > 0)
         {
-          $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>";      
+          $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>";
           while (list($node, $actionarr) = each($nodes))
           {
             $checked_actions = $checked["$modname.$node"];
@@ -134,11 +136,11 @@
                 if (substr($action,0,1)=="*") $action=substr($action,1);
                 $result.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
-                
+
                 $label = text("permission_".$modname."_".$nodename."_".$action); // module/node specific text
                 if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
-                {              
-                  $label = text("permission_".$nodename."_".$action); // node specific text                
+                {
+                  $label = text("permission_".$nodename."_".$action); // node specific text
                   if (strtolower(substr($label,0,10))=="permission")
                   {
                     $label = text($action, $node); // generic action text.
@@ -153,7 +155,7 @@
       }
       return $result;
     }
-    
+
     function fetchValue($postvars)
     {
       $checkboxes = $postvars[$this->fieldName()];
@@ -162,7 +164,7 @@
       {
         $elems = split("\.",$checkboxes[$i]);
         if (count($elems)==3)
-        {          
+        {
           $node = $elems[0].".".$elems[1];
           $action = $elems[2];
         }
@@ -176,11 +178,11 @@
           // never happens..
           atkdebug("profileattribute encountered incomplete combination");
         }
-        $actions[$node][] = $action;            
+        $actions[$node][] = $action;
       }
       return $actions;
     }
-    
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -191,7 +193,7 @@
       return array();
     }
 
-    
+
   }
-  
+
 ?>
