@@ -154,7 +154,7 @@
       $modifiers = array();
       $overloaders = array();
       include_once($filename);
-      for ($i=0;$i<count($modifiers);$i++)
+      for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
       {
         $g_modifiers[$modifiers[$i]][] = $modname;
       }
@@ -686,7 +686,7 @@
       // For all attributes we use the display() function to display the
       // attributes current value. This may be overridden by supplying
       // an <attributename>_display function in the derived classes.
-      for($i=0;$i<count($this->m_attribIndexList);$i++)
+      for($i = 0, $_i = count($this->m_attribIndexList); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
 
@@ -907,7 +907,7 @@
        * edit() method by supplying an <attributename>_edit function in the derived classes.
        */
       $tab = $this->getActiveTab();
-      for ($r = 0; $r < count($this->m_attribIndexList); $r++)
+      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
         $field = array("name" => $attribname);
@@ -976,7 +976,7 @@
 
       /* suppress all */
       $suppressList = array();
-      for ($r = 0; $r < count($this->m_attribIndexList); $r++)
+      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
         $suppressList[] = $this->m_attribIndexList[$r]["name"];
 
       /* get data, transform into "form", return */
@@ -1060,7 +1060,7 @@
           else
           {
             $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
-            for ($i=0;$i<count($searchModes);$i++)
+            for ($i = 0, $_i = count($searchModes); $i < $_i; $i++)
             {
               // if supported, we select the 'like' searchmode by default
               $selected="";
@@ -1314,7 +1314,7 @@
       // because for the multi-record actions we would like to know if there aren't any defined, because
       // then we don't have to output! all the multi-record selection stuff.
       $multiActionsAll = array();
-      for ($i = 0; $i < count($recordset); $i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $recordActions = $actions;
         $multiActions  = (!$this->hasFlag(NF_NO_DELETE) ? array("delete") : array());
@@ -1342,7 +1342,7 @@
       // sort the list by that attribute.
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
-      for($i=0;$i<count($this->m_attribIndexList);$i++)
+      for($i = 0, $_i = count($this->m_attribIndexList); $i < $_i; $i++)
       {
         $attribname = $this->m_attribIndexList[$i]["name"];
         $p_attrib = &$this->m_attribList[$attribname];
@@ -1427,7 +1427,7 @@
         }
 
         // Second loop.. this time for the search fields.
-        for($i=0;$i<count($this->m_attribIndexList);$i++)
+        for($i = 0, $_i = count($this->m_attribIndexList); $i < $_i; $i++)
         {
           $attribname = $this->m_attribIndexList[$i]["name"];
           $p_attrib = &$this->m_attribList[$attribname];
@@ -1505,7 +1505,7 @@
       }
 
       // output rows
-      for ($i=0;$i<count($recordset);$i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         // Actions passed to the function.
         $actionCol="";
@@ -1600,7 +1600,7 @@
           }
         }
 
-        for($r=0;$r<(count($this->m_attribIndexList));$r++)
+        for($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
         {
           $attribname = $this->m_attribIndexList[$r]["name"];
           $p_attrib = &$this->m_attribList[$attribname];
@@ -1659,7 +1659,7 @@
         }
 
         // Third loop.. this time for the totals row.
-        for($i=0;$i<count($this->m_attribIndexList);$i++)
+        for($i = 0, $_i = count($this->m_attribIndexList); $i < $_i; $i++)
         {
           $attribname = $this->m_attribIndexList[$i]["name"];
           $p_attrib = &$this->m_attribList[$attribname];
@@ -1781,7 +1781,7 @@
 
       $output.="</tr>";
 
-      for ($i=0;$i<count($recordset);$i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $output.='<tr>';
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -1934,7 +1934,7 @@
 
       $output.=$eol;
 
-      for ($i=0;$i<count($recordset);$i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $output.=$sol;
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -2218,7 +2218,7 @@
       // See if there are modules active that modify all nodes with the same name
       // for example, modules modifying all classes in all modules with the
       // name 'bill'.
-      for ($i=0;$i<count($g_modifiers[$this->m_type]);$i++)
+      for ($i = 0, $_i = count($g_modifiers[$this->m_type]); $i < $_i; $i++)
       {
         $modname = $g_modifiers[$this->atknodetype()][$i];
         $mod = getModule($modname);
@@ -2232,7 +2232,7 @@
       }
       // See if there are modules active that modify this module.node..
       // for example, modules modifying 'finance.bill'
-      for ($i=0;$i<count($g_modifiers[$this->atknodetype()]);$i++)
+      for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
       {
         $modname = $g_modifiers[$this->atknodetype()][$i];
         $mod = getModule($modname);
@@ -2447,7 +2447,7 @@
       else
       {
         $recordset = $this->selectDb("","","","","","xml");
-        for ($i=0;$i<count($recordset);$i++)
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
           $this->xml($recordset[$i]);
         }
@@ -2744,7 +2744,7 @@
         $g_db->query($querystring);
 
         // also store special storage attributes.
-        for ($i=0;$i<count($storelist);$i++)
+        for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
         {
           $p_attrib = &$this->m_attribList[$storelist[$i]];
           $p_attrib->store($g_db, $record,"update");
@@ -2787,7 +2787,7 @@
         }
 
         /* fuzzy filters may be set */
-        for ($i=0;$i<count($this->m_fuzzyFilters);$i++)
+        for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
         {
           $query->addCondition($this->m_fuzzyFilters[$i]);
         }
@@ -2900,7 +2900,7 @@
         }
 
         /* fuzzy filters may be set */
-        for ($i=0;$i<count($this->m_fuzzyFilters);$i++)
+        for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
         {
           $query->addCondition($this->m_fuzzyFilters[$i]);
         }
@@ -2971,7 +2971,7 @@
 //      $this->setOrgKeyValue($dbrecords[0]);
 
       $recordset = array();
-      for ($i=0;$i<count($dbrecords);$i++)
+      for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
       {
         $therecord = array();
         $query->deAlias($dbrecords[$i]); // dereference aliases..
@@ -2996,9 +2996,9 @@
 
       // also load special storage attributes.
 
-      for ($i=0;$i<count($recordset);$i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
-        for ($j=0;$j<count($loadlist);$j++)
+        for ($j = 0, $_j = count($loadlist); $j < $_j; $j++)
         {
           $p_attrib = &$this->m_attribList[$loadlist[$j]];
 
@@ -3037,7 +3037,7 @@
         $usedFields = atk_array_merge($this->descriptorFields(),$this->m_primaryKey);
       }
 
-      for ($i=0;$i<count($usedFields);$i++)
+      for ($i = 0, $_i = count($usedFields); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$usedFields[$i]];
         if (method_exists($p_attrib,"load"))
@@ -3091,8 +3091,7 @@
         }
       }
 
-
-      for($i=0;$i<count($querylist);$i++)
+      for ($i = 0, $_i = count($querylist); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$querylist[$i]];
         if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
@@ -3107,7 +3106,7 @@
       $g_db->query($querystring);
 
       // also store special storage attributes.
-      for ($i=0;$i<count($storelist);$i++)
+      for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$storelist[$i]];
 
@@ -3136,9 +3135,9 @@
       $recordset = $this->selectDb($selector,"","","","","delete");
       if (count($this->m_cascadingAttribs)>0)
       {
-        for ($i=0;$i<count($recordset);$i++)
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
-          for ($j=0;$j<count($this->m_cascadingAttribs);$j++)
+          for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j++)
           {
             $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];
             $p_attrib->delete($recordset[$i]);
@@ -3150,7 +3149,7 @@
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
 
-      for ($i=0;$i<count($recordset);$i++)
+      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $this->postDel($recordset[$i]);
       }
