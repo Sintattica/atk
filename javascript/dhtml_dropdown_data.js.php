@@ -1,28 +1,30 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage javascript
-   *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision$
-   * $Id$
-   */
-  
-  /** @internal includes and defines */
-	$config_platformroot = "../../";
-	$config_atkroot = "../../";
-	include_once("../../atk.inc");
-	include_once($config_atkroot."atk/menu/general.inc");
+/**
+* This file is part of the Achievo ATK distribution.
+* Detailed copyright and licensing information can be found
+* in the doc/COPYRIGHT and doc/LICENSE files which should be
+* included in the distribution.
+*
+* @package atk
+* @subpackage javascript
+*
+* @copyright (c)2000-2004 Ibuildings.nl BV
+* @license http://www.achievo.org/atk/licensing ATK Open Source License
+*
+* @version $Revision$
+* $Id$
+*/
+
+/** @internal includes and defines */
+$config_platformroot = "../../";
+$config_atkroot = "../../";
+include_once($config_atkroot."atk.inc");
+include_once($config_atkroot."atk/menu/general.inc");
+atksession("admin");
+atksecure();
 ?>
 
-// Functie voor het bijstellen van de submenu posities bij het verbergen van de tree-frame
+// Function for realigning the submenu position when hiding the tree-frame
 
 function frameAdjust() {
 	var adjust = 0;
@@ -37,128 +39,157 @@ function frameAdjust() {
 	return adjust;
 }
 
-// Menu styles die gebruik maken van de gegevens in de css file
+// Menu styles that use data in the CSS file
 var hBar = new ItemStyle(23, 0, '', 0, 3, '#FF0000', '#FF0000', 'rootText', 'rootText', '', 'itemBorderBlank', null, null, 'hand', 'default');
 var subM = new ItemStyle(23, 0, '&gt;', -10, 2, '#999999', '#AAAAAA', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
 var subSubM = new ItemStyle(65, 0, '&gt;', 0, 2, '#CCCCCC', '#DDDDDD', 'menuLowText', 'menuHighText', 'itemBorder', 'itemBorder', null, null, 'hand', 'default');
 
-// Aanmaken van een nieuw DHTML menu
+// Creating a new DHTML file
 var pMenu = new PopupMenu("pMenu");
 	
-// Vullen van het menu
+// Filling the menu with data
 with (pMenu) {
 
 <?php
-	// Functie voor het sorteren van de menu items
-	function menu_cmp($a,$b)
+/**
+* Function for sorting the menu items,
+* it does so by comparing the order of $a to that of $b
+* @param array $a the first item that has to be compared
+* @param array $b the second item that has to be compared
+* @return integer 0 if both items are equal, -1 if $a is below $b and 1 if $a is above $b
+*/
+function menu_cmp($a,$b)
+{
+  if ($a["order"] == $b["order"]) return 0;
+  return ($a["order"] < $b["order"]) ? -1 : 1;
+}
+
+usort($g_menu[$atkmenutop],"menu_cmp");
+
+atkimport("atk.ui.atktheme");
+$theme = &atkTheme::getInstance();
+
+// Menu variables
+$menuroot = "";
+$menurootarray = array();
+$menutopnamearray = array();
+$menubuttonsarray = array();
+$subsubmenu = array();
+$plus = 0;
+
+while (list ($name) = each ($g_menu))
+{
+  $atkmenutop = $name;
+  $menubuttons = "";
+  $submenubuttons = "";
+  
+  // Create a submenu for each root menu item
+  // When an item in this submenu points to a submenu of it's own
+  // that menu will be created as well
+  for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
+  {
+    $name = $g_menu[$atkmenutop][$i]["name"];
+    $url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
+    
+    $enable = $g_menu[$atkmenutop][$i]["enable"];
+    
+    // Check wether we have the rights
+    if (is_array($enable))
+    {
+      $enabled = false;
+      for ($j=0;$j<(count($enable)/2);$j++)
+      {
+        $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
+      }
+      $enable = $enabled;
+    }
+    
+    // Menu items with a URL become links
+    if($g_menu[$atkmenutop][$i]["url"]!="")
+    {
+      if ($g_menu[$atkmenutop][$i]["module"]!="")
+      {
+        $menu_icon = $g_modules[$g_menu[$atkmenutop][$i]["module"]]."icons/dropdown/".$atkmenutop."_".$name.".gif";
+      }
+      else
+      {
+        $menu_icon = $theme->iconPath($atkmenutop."_".$name,"dropdown");
+      }
+      
+      // If we have the rights, add the menu items
+      if ($enable)
+      {
+        if(file_exists($menu_icon))
+        {
+          $menuname = addslashes (text("menu_".$name));
+          $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+        }
+        else
+        {
+          $menuname = addslashes (text("menu_".$name));
+          $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("unknown","dropdown").'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+        }
+      }
+    }
+    
+    // Menu items without a URL become a new submenu
+    elseif($atkmenutop != "main" && $name != "-")
+    {
+      $menuname = addslashes (text("menu_".$name));
+      $submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+      $subsubmenu[] = $name;
+    }
+  }
+  
+  // If the current rootmenu has any menu buttons add it
+  if ($menubuttons)
+  {
+    $menubuttons .= $submenubuttons;
+    
+    // The menu item sets for each submenu
+    $menubuttonsarray[] = $menubuttons;
+    // The menu items that open a submenu
+    $menurootarray[] = $atkmenutop;
+    // The names of menu items
+    $menutopname = addslashes (text("menu_".$atkmenutop,"menu"));
+    $menutopnamearray[] = $menutopname;
+  }
+}
+
+// Create a menuroot
+$menuroot .= 'startMenu("root", false, "285", "86", 21, hBar, "parent.menu", true);';
+$menuroot .= "\n";
+
+for ($i = 0; $i < count($menurootarray); $i++)
+{
+  if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main")
+  {
+    // Every menu item on the first level will be added to the menu root
+		$menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
+			
+		// Create menus that will open the submenuitems for the first level
+		echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
+		echo $menubuttonsarray[$i];
+		$plus = $plus + 100;
+	}
+	elseif($menurootarray[$i] != "main")
 	{
-		if ($a["order"] == $b["order"]) return 0;
-		return ($a["order"] < $b["order"]) ? -1 : 1;
+	  // Create menus that will open submenu items on a lower level
+		echo ('startMenu("m'.$menurootarray[$i].'", true, 125, 0, 180, subSubM, "parent.main");');
+		echo $menubuttonsarray[$i];
 	}
-	
-	usort($g_menu[$atkmenutop],"menu_cmp");
-	
-	atkimport("atk.ui.atktheme");
-	$theme = &atkTheme::getInstance();
+}
 
-	// Menu variabelen
-	$menuroot = "";
-	$menurootarray = array();
-	$menutopnamearray = array(); 
-	$menubuttonsarray = array();
-	$subsubmenu = array(); 
-	$plus = 0;
-	
-	while (list ($name) = each ($g_menu))
+  // Add the user preferences option to the menu root
+	if (is_allowed("users.userprefs", "edit"))
 	{
-		$atkmenutop = $name;
-		$menubuttons = "";
-		$submenubuttons = "";
-		
-		$name = $g_menu[$atkmenutop][$i]["name"];
-		
-		// Voor elke root menu item het submenu aanmaken
-		// Wanneer een item in dit submenu zelf ook naar een submenu verwijst wordt ook dit menu hier gewoon aangemaakt
-		for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
-		{
-			$name = $g_menu[$atkmenutop][$i]["name"];
-			$url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
-			
-			// De menu items met een url worden links
-			if($g_menu[$atkmenutop][$i]["url"]!="")
-			{
-				if ($g_menu[$atkmenutop][$i]["module"]!="")
-				{
-					$menu_icon = $g_modules[$g_menu[$atkmenutop][$i]["module"]]."icons/dropdown/".$atkmenutop."_".$name.".gif";
-				}
-				else
-				{
-					$menu_icon = $theme->iconPath($atkmenutop."_".$name,"dropdown");
-				}
-								
-				if(file_exists($menu_icon))
-				{
-					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
-				}
-				else
-				{
-					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("unknown","dropdown").'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
-				}
-			}
-			
-			// De menu items zonder url openen zelf een nieuw submenu
-			elseif($atkmenutop != "main" && $name != "-")
-			{
-				$menuname = addslashes (text("menu_".$name));
-				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
-				$subsubmenu[] = $name;
-			}
-		}
-		
-		$menubuttons .= $submenubuttons;
-		
-		// De menu item sets voor elk submenu
-		$menubuttonsarray[] = $menubuttons;
-		// De menu items welke een submenu openen
-		$menurootarray[] = $atkmenutop;
-		// De namen van de menu items 
-		$menutopname = addslashes (text("menu_".$atkmenutop,"menu"));
-		$menutopnamearray[] = $menutopname;
+	  $menuroot .= 'addItem("Instellingen","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
 	}
 	
-	// Het aanmaken van de menuroot
-	$menuroot .= 'startMenu("root", false, "285", "86", 21, hBar, "parent.menu", true);';
-	$menuroot .= "\n";
-
-	for ($i = 0; $i < count($menurootarray); $i++)
-	{	
-		if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main")
-		{
-			// Elk menu item op het eerste niveau wordt aan de menu root toegevoegd
-			$menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
-			
-			// Het aanmaken van de menus die de submenuitems van het eerste niveau moeten gaan openen
-			echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
-			echo $menubuttonsarray[$i];
-			$plus = $plus + 100;
-		}
-		elseif($menurootarray[$i] != "main")
-		{
-			// Het aanmaken van de menus die de submenu items op lagere niveaus moeten gaan openen
-			echo ('startMenu("m'.$menurootarray[$i].'", true, 125, 0, 180, subSubM, "parent.main");');
-			echo $menubuttonsarray[$i];
-		}
-	}
-
-	// Toevoegen van de instellingen optie aan de menu root
-	$menuroot .= 'addItem("Instellingen","dispatch.php?atknodetype=users.userprefs&atkaction=edit","parent.main",hBar,100);';
-	
-	// Toevoegen van de logout optie aan de menu root
+	// Add the logout option to the menu root
 	$menuroot .= 'addItem("Uitloggen","index.php?atklogout=1","",hBar,100);';
 
-	// Toevoegen van de menu root zelf
+	// Add the menu root its self
 	echo ($menuroot);
 	
 	?>
@@ -300,5 +331,4 @@ with (pMenu) {
   pm.ehHide = pm.hideMenu;
   pm.hideMenu = new Function('mN','this.elementHide(mN, false)');
  }
-
 }
