@@ -465,7 +465,7 @@
         $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
-            
+
     }
 
     /**
@@ -644,7 +644,7 @@
      * Creates an edit page
      */
     function editPage($record)
-    {            
+    {
       global $g_layout, $PHP_SELF,$config_atkroot;
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
@@ -1039,23 +1039,23 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $attribSearchModes = $p_attrib->getSearchModes();
-                
+
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {
-        
-          // We must perform an array_values over array_intersect, to maintain a 
+
+          // We must perform an array_values over array_intersect, to maintain a
           // correct numeric array index (array_intersect mangles those)
           $searchModes = array_values(array_intersect($dbSearchModes,$attribSearchModes));
-          
+
           if (count($searchModes)>0) // Don't display this attribute if it doesn't support searching.
           {
-          
+
             $form.='<tr>';
-  
+
             // Keep track of the number of td's we have to fill with the edit thingee..
             // This depends on AF_NOLABEL for example.
             $tdcount = 1;
-  
+
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
             if ($p_attrib->hasFlag(AF_NOLABEL)==false)
@@ -1073,10 +1073,10 @@
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
             }
-  
-  
+
+
             $funcname = $p_attrib->m_name."_search";
-  
+
             if (method_exists($this,$funcname))
             {
               $editsrc = $this->$funcname($defaults, $fieldprefix);
@@ -1085,14 +1085,14 @@
             {
               $editsrc = $p_attrib->search($defaults, true); // second param indicates extended search.
             }
-  
-  
+
+
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
             if(count($searchModes)==1)
             {
               $sel = '<input type="hidden" name="atksearchmode['.$p_attrib->m_name.']" value="'.$searchModes[0].'">'.text("search_".$searchModes[0]);
             }
-            else 
+            else
             {
               $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
               while (list($key, $searchMode) = each($searchModes))
@@ -2397,7 +2397,12 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "update");
-        if (count($record['atkerror'])>0)
+
+        $error = count($record['atkerror']) > 0;
+        foreach (array_keys($record) as $key)
+          $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
+
+        if ($error)
         {
           $this->m_action="edit";
           $this->editPage($record);
@@ -2435,7 +2440,12 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "add");
-        if (count($record['atkerror'])>0)
+
+        $error = count($record['atkerror']) > 0;
+        foreach (array_keys($record) as $key)
+          $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
+
+        if ($error)
         {
           $this->m_action="add";
           $this->addPage($record);
@@ -2690,63 +2700,70 @@
     /**
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
      */
-    function validate(&$record, $mode)
+    function validate(&$record, $mode, $ignoreList=array())
     {
       global $g_db;
       atkdebug("validate()");
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
-        $p_attrib = &$this->m_attribList[$attribname];
-        //Validate if ne
-        if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
+        if (!atk_in_array($attribname, $ignoreList))
         {
-        //  $atkorgkey = $this->orgKey();
-          $atkorgkey = $record["atkprimkey"];
-          if(($atkorgkey == '' // no orgkey, so adding this record
-              || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
-             &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
-            )
+          $p_attrib = &$this->m_attribList[$attribname];
+
+          //Validate if ne
+          if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
           {
-            triggerError($record, $attribname, 'error_primarykey_exists');
-          }
-        }
-
-        // if no root elements may be added to the tree, then every record needs to have a parent!
-        if ($p_attrib->hasFlag(AF_PARENT) && $this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_action == "save")
-          $p_attrib->m_flags |= AF_OBLIGATORY;
-
-        // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-        if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
-        {
-          triggerError($record, $attribname, 'error_obligatoryfield');
-        }
-        // if flag is primary
-        else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
-                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
-                )
-        {
-          triggerError($record, $attribname, 'error_uniquefield');
-        }
-
-        else
-        {
-          //don't validate empty fields
-          if (!( $p_attrib->isEmpty($record)))
-          {
-            $funcname = $p_attrib->m_name."_validate";
-
-            if (method_exists($this,$funcname))
+          //  $atkorgkey = $this->orgKey();
+            $atkorgkey = $record["atkprimkey"];
+            if(($atkorgkey == '' // no orgkey, so adding this record
+                || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
+               &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
+              )
             {
-              $this->$funcname($record, $mode);
+              triggerError($record, $attribname, 'error_primarykey_exists', '', $this->m_type);
             }
-            else
+          }
+
+          // if no root elements may be added to the tree, then every record needs to have a parent!
+          if ($p_attrib->hasFlag(AF_PARENT) && $this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_action == "save")
+            $p_attrib->m_flags |= AF_OBLIGATORY;
+
+          // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
+          if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
+          {
+            triggerError($record, $attribname, 'error_obligatoryfield', '', $this->m_type);
+          }
+          // if flag is primary
+          else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
+                   count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
+                  )
+          {
+            triggerError($record, $attribname, 'error_uniquefield', '', $this->m_type);
+          }
+
+          else
+          {
+            //don't validate empty fields
+            if (!( $p_attrib->isEmpty($record)))
             {
-              $p_attrib->validate($record, $mode);
+              $funcname = $p_attrib->m_name."_validate";
+
+              if (method_exists($this,$funcname))
+              {
+                $this->$funcname($record, $mode);
+              }
+              else
+              {
+                $p_attrib->validate($record, $mode);
+              }
             }
           }
         }
       }
+
+      for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
+        $record["atkerror"][$i]["node"] = $this->m_type;
     }
 
     /**
@@ -3092,11 +3109,15 @@
       else
       {
         $usedFields = atk_array_merge($this->descriptorFields(),$this->m_primaryKey);
+        foreach (array_keys($this->m_attribList) as $name)
+          if ($this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD)) $usedFields[] = $name;
+        $usedFields = array_unique($usedFields);
       }
 
       for ($i = 0, $_i = count($usedFields); $i < $_i; $i++)
       {
-        $p_attrib = &$this->m_attribList[$usedFields[$i]];
+        list($attribname) = explode(".", $usedFields[$i]);
+        $p_attrib = &$this->m_attribList[$attribname];
         if (method_exists($p_attrib,"load"))
         {
           //$loadlist[]=$attribname;
@@ -3470,9 +3491,9 @@
     {
       $this->m_search_action = func_get_args();
     }
-    
+
     /**
-     * This function resorts the attribIndexList. This is necessary if you add 
+     * This function resorts the attribIndexList. This is necessary if you add
      * attributes *after* init() is already called, and you set an order for those
      * attributes.
      */

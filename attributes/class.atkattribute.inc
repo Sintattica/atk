@@ -82,6 +82,10 @@
   /* flag(s) specific for atkManyToOneRelation */
   define("AF_RELATION_AUTOLINK",        AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
 
+  /* flag(s) specific for atkOneToOneRelation */
+  define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
+  define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
+
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that

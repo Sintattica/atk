@@ -559,6 +559,7 @@
           }
           else
           {
+            $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
             $index = $node->m_attribList[$error['attrib_name']]->m_index;
             $tabs  = $node->m_attribIndexList[$index]["tabs"];
             if (($node->m_action == "add" && count($node->m_tabListAdd) > 1 ||
@@ -566,7 +567,7 @@
                  $tabs != "*" && !atk_in_array($tab, $tabs))
               $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
-            $errormsg.="<br>".text($error['attrib_name'], $node->m_type).': '.$error['msg'].$error_tab;
+            $errormsg.="<br>".text($error['attrib_name'], $type).': '.$error['msg'].$error_tab;
           }
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
