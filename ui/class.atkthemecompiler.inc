@@ -346,10 +346,10 @@
         {
           return;
         }
-        touch($file);
+        if (!touch($file)){echo(text("cannot make file", "", "atk").$file.text("check rights to", "", "atk").$this->m_cachedir.$this->THEMEDIRNAME); exit;};
         return $this->_checkLocation();
       }
-      mkdir($this->m_cachedir.$this->THEMEDIRNAME);
+      if (!mkdir($this->m_cachedir.$this->THEMEDIRNAME)){echo(text("cannot create directory", "", "atk").$this->m_cachedir.$this->THEMEDIRNAME." ".text("check rights to", "", "atk").$this->m_cachedir);exit;}
       return $this->_checkLocation();
     }
   }
