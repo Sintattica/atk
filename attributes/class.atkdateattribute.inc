@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/05/11 07:15:56  peter
+   * Forgot the new fieldprefix in previous commits.
+   *
    * Revision 4.6  2001/05/10 21:39:56  peter
    * Added some new last minute improvements for validation.
    *
@@ -272,7 +275,7 @@
       /* small date selections */
       if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25)
       {
-        $result = '<select name="'.$this->fieldName().'">';
+        $result = '<select name="'.$fieldprefix.$this->fieldName().'">';
         for ($i = $str_min; $i <= $str_max; $i++)
         { 
           $tmp_date = getdate(mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));          
@@ -286,7 +289,7 @@
       for($i = 0; $i < strlen($str_format); $i++)
       {
         /* javascript method */
-        $str_script = "AdjustDate(this.form, '".$this->fieldName()."', '$str_format', $str_min, $str_max);";
+        $str_script = "AdjustDate(this.form, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max);";
         
         /* year input box */ 
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
@@ -294,7 +297,7 @@
           /* date must be within 25 years */
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= 25)
           {
-            $result .= '<select name="'.$this->fieldName().'[year]" onChange="'.$str_script.'">';
+            $result .= '<select name="'.$fieldprefix.$this->fieldName().'[year]" onChange="'.$str_script.'">';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
               $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));          
@@ -305,13 +308,13 @@
           }
 
           /* normal input box */
-          else  $result .= '<input type="text" name="'.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.$current["year"].'">';
+          else  $result .= '<input type="text" name="'.$fieldprefix.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.$current["year"].'">';
         }
         
         /* day input box */
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
-          $result .= '<select name="'.$this->fieldName().'[day]" onChange="'.$str_script.'">';
+          $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$str_script.'">';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
@@ -324,7 +327,7 @@
         /* month input box */
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
-          $result .= '<select name="'.$this->fieldName().'[month]" onChange="'.$str_script.'">';
+          $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$str_script.'">';
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $j, $current["mday"], $current["year"]));          
@@ -465,11 +468,11 @@
       
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
-        return text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view);
+        return text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0);
         
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
-        return text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view);
+        return text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0);
         
       /* no problem */
       return "";
@@ -483,7 +486,7 @@
     function display($record)
     {
       $value = $record[$this->fieldName()];
-      $tmp_date = getdate(mktime(0,0,0, $value["month"], $value["day"], $value["year"]));
+      $tmp_date = getdate(mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
       return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
     }
   }
