@@ -23,7 +23,7 @@ for (var iln = 0; iln < len; iln++)
 var isNetscape = (ver.charAt(iln+1).toUpperCase() != "C");
 
 var keyListeners = new Array();
-if (!document.getElementById('<%=getFocusElement%>').focus())
+if (!document.getElementById('<%=getFocusElement%>') || !document.getElementById('<%=getFocusElement%>').focus())
 {
   var focussedListener = -1;
 }
