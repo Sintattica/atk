@@ -21,6 +21,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.14  2001/10/09 12:19:31  rene
+  * made the $config_atkroot more global, so it's easier to include from a
+  * NON atk directory
+  *
   * Revision 4.13  2001/09/13 12:27:44  ivo
   * Moved no-cache headers etc. to outputFlush() function.
   *
@@ -323,7 +327,7 @@
     function ret_head($title)
     {     
       $res = "<head>\n  <title>$title</title>\n";
-      
+      global $config_atkroot;
       // $Name$ is the CVS tag.
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
@@ -333,7 +337,7 @@
         $res.='  <script language="javascript" src="'.$this->m_scripts[$i].'"></script>'."\n";
       
       for ($i = 0; $i < count($this->m_stylesheets); $i++) 
-        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
+        $res.='  <link href="'.$config_atkroot.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
       
       $res.="</head>\n";
       return $res;
