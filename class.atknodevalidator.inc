@@ -171,23 +171,6 @@
           {
             triggerError($record, $attribname, 'error_uniquefield', '', $this->m_nodeObj->m_type);
           }
-          else
-          {
-            //don't validate empty fields
-            if (!( $p_attrib->isEmpty($record)))
-            {
-              $funcname = $p_attrib->m_name."_validate";
-
-              if (method_exists($this->m_nodeObj, $funcname))
-              {
-                $this->m_nodeObj->$funcname($record, $this->m_mode);
-              }
-              else
-              {
-                $p_attrib->validate($record, $this->m_mode);
-              }
-            }
-          }
         }
       }
       
