@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/05/22 08:38:40  peter
+   * Added searchCondition method for this relation, note this method
+   * should be extended to create a search condition for the descriptor fields!
+   *
    * Revision 4.10  2001/05/18 07:49:42  ivo
    * Fixes to sessionmanagement.
    *
@@ -285,6 +289,35 @@
       return $result;
     }
 
+    /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition($table, $value)
+    {
+      return $table.".".$this->fieldName()." = '".$value."'";
+      
+      // *** THIS DOES NOT WORK AT THE MOMENT BECAUSE OF THE WAY ATK CREATES JOINS!!! *** 
+      //$descriptor = $this->m_destInstance->descriptorFields();
+      //$desc_size = count($descriptor);
+      
+      /* no descriptor fields */
+      //if ($desc_size == 0) return $table.".".$this->fieldName()." = '".$value."'";
+
+      /* build condition based on descriptor fields */
+      //$condition = "(";
+      //for ($i = 0; $i < $desc_size; $i++)
+      //{
+      //  $p_attrib = &$this->m_destInstance->m_attribList[$descriptor[$i]];
+      //  $condition .= $p_attrib->searchCondition(&$this->m_destInstance->m_table, $value).($i < $desc_size-1 ? " OR " : "");
+      //}
+      //$condition .= ")";
+     
+      /* return search condition */
+      //return $condition;
+    }
 
     /**
      * Function to add values to query
