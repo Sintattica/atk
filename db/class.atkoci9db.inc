@@ -446,6 +446,11 @@
       $found = $g_db->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
       return ($found[0]['found']==0 ? false : true);
     }    
+    
+    function func_now()
+    {
+      return "SYSDATE";
+    }
   }
 
 ?>

@@ -344,6 +344,11 @@
       return $result;
     }
     
+    function func_now()
+    {
+      return "SYSDATE";
+    }
+    
   }
 
 ?>

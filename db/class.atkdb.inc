@@ -338,6 +338,17 @@
       }
       return $this->m_tableMeta[$table];
     }
+    
+    /**
+      * get NOW() or SYSDATE() equivalent for the current database
+      *
+      * Every database has it's own implementation to get the current date
+      *
+      */
+    function func_now()
+    {
+      return "NOW()";
+    }
   }  
 
 ?>
