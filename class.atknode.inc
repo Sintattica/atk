@@ -532,7 +532,7 @@
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
-    }
+    }      
 
     /**
      * Completely remove an attribute.
@@ -559,6 +559,16 @@
 
         unset($this->m_attribIndexList[$listindex]);
       }
+    }
+    
+    /**
+     * Get an attribute by name.
+     * @param String $name The name of the attribute to retrieve.
+     * @return atkAttribute The attribute.
+     */
+    function &getAttribute($name)
+    {
+      return $this->m_attribList[$name];
     }
     
     /**
