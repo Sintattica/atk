@@ -331,7 +331,7 @@
      * @param bool $checkmodule wether or not to check for module specific strings
      * @return var the true name by which the txt is called or false if we can't find any entry
      */
-    function _getString($string, $node, $module, $lng, $checkmodule=true)
+    function _getString($string, $node, $module, $lng, $checkmodule=false)
     {    
       if ($checkmodule)
       {
