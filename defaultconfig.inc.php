@@ -137,7 +137,7 @@
   $config_tplcachelifetime = 3600; // default one hour
   $config_tplcompiledir = $config_atktempdir."compiled/tpl/";
   $config_tplcachedir = $config_atktempdir."tplcache/";
-  
+  $config_tplcompilecheck = "true"; // check templates to see if they changed
 
   // files that are allowed to be included by the include wrapper script
   // NOTE: this has nothing to do with useattrib and userelation etc.!
