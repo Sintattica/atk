@@ -210,20 +210,26 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      // We only support 'exact' matches.
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	// We only support 'exact' matches.
       // But you can select more than one value, which we search using the IN() statement,
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
         if (count($value)==1) // exactly one value
         {
-          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+          $searchcondition = $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
         }
         else // search for more values using IN()
         {
-          $query->addSearchCondition($table.".".$this->fieldName()." IN ('".implode("','",$value)."')");
+          $searchcondition = $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
         }
       }
+      return $searchcondition;
     }
 
     function getSearchModes()

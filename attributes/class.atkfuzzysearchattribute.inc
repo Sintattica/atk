@@ -388,6 +388,7 @@
     function search() {}
     function getSearchModes() {}
     function searchCondition() {}
+    function getSearchCondition() {}
     function fetchMeta() {}
     function dbFieldSize() {}
     function dbFieldType() {}

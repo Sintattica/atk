@@ -80,7 +80,12 @@
 
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
         $field = $table.".".$this->fieldName();
         if (count($value)==1) // exactly one value
@@ -90,9 +95,10 @@
         else // search for more values using IN()
         {
         	$mask = "(".implode("|",$value).")";
-        	$query->addSearchCondition($field."&".$mask."=".$mask);
+        	$searchcondition = $field."&".$mask."=".$mask;
         }
       }
+      return $searchcondition;
     }
 
     function getSearchModes()

@@ -163,7 +163,12 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {  
-      if (!is_array($value))
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	if (!is_array($value))
       {        
         $slash = strpos($value, "/"); // Support for 'from/to' searches.
         $str = $value;
@@ -183,7 +188,7 @@
       if ($searchmode!="between") 
       {        
         // Use default handler, and use only the first field.
-        return parent::searchCondition($query, $table, $value["from"], $searchmode);
+        return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else
       {       
@@ -195,18 +200,18 @@
             // User entered fields in wrong order. Let's fix that.
             $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
           }
-          $query->addSearchCondition($query->betweenCondition($fieldname,escapeSQL($value["from"]), escapeSQL($value["to"]))); 
+          $searchcondition = $query->betweenCondition($fieldname,escapeSQL($value["from"]), escapeSQL($value["to"])); 
         }
         else if ($value["from"]!="" && $value["to"]=="")
         {
-          $query->addSearchCondition($query->greaterthanequalCondition($fieldname, $value["from"]));
+          $searchcondition = $query->greaterthanequalCondition($fieldname, $value["from"]);
         }
         else if ($value["from"]=="" && $value["to"]!="")
         {
-          $query->addSearchCondition($query->lessthanequalCondition($fieldname, $value["to"]));
+          $searchcondition = $query->lessthanequalCondition($fieldname, $value["to"]);
         }
       }
+      return $searchcondition;
     }
-      
   }
 ?>

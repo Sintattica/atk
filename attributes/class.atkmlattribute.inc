@@ -311,14 +311,19 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      //TODO: support for multilanguages nodes wich have multiple records per occurance
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	//TODO: support for multilanguages nodes wich have multiple records per occurance
       $languages = $this->getLanguages();
       if(!$this->isMlNode())
       {
         $func = $searchmode."Condition";
         if (method_exists($query,$func))
         {
-          $query->addSearchCondition($query->$func($table.".".$this->fieldName()."_".$languages[0],escapeSQL($value)));
+          $searchcondition = $query->$func($table.".".$this->fieldName()."_".$languages[0],escapeSQL($value));
         }
         else
         {
@@ -326,8 +331,8 @@
         }
       }
       else atkdebug("ERROR: atkmlattribute::searchCondition() unsupported action!!!");
+      return $searchcondition;
     }
- 
   }
   
 ?>

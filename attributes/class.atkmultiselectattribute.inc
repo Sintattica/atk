@@ -155,22 +155,28 @@
     
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      // Multiselect attribute has only 1 searchmode, and that is substring.
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	// Multiselect attribute has only 1 searchmode, and that is substring.
       
       if(is_array($value) && $value[0]!="" && count($value)>0)
       {
         if (count($value)==1)
         {
-          return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value[0])));
+          $searchcondition = $query->substringCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
         }
         else
         {
           foreach($value as $str)
           {
-            $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($str)));
+            $searchcondition = $query->substringCondition($table.".".$this->fieldName(),escapeSQL($str));
           }
         }
       }
+      return $searchcondition;
     }
     
     function getSearchModes()

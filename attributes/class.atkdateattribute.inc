@@ -437,7 +437,12 @@
 
     function searchCondition(&$query, $table, $value, $searchmode)
     {  
-      global $g_db;      
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+    	global $g_db;      
       // We only support searchmode 'between' for now.
       
       $fromval = $this->value2db(array($this->fieldName()=>$value["from"]));
@@ -451,27 +456,27 @@
           // User entered dates in wrong order. Let's put them in the right order.
           $tmp=$fromval; $fromval=$toval; $toval=$tmp;
         } 
-        $query->addSearchCondition(
+        $searchcondition =
                    $query->betweenCondition(
                       $field, 
                       $fromval, 
-                      $toval));  
+                      $toval);  
       }
       else if ($fromval!="NULL" && $toval=="NULL")
       {
-        $query->addSearchCondition(
+        $searchcondition =
                    $query->greaterthanequalCondition(
                       $field,
-                      $fromval));
+                      $fromval);
       }
       else if ($fromval=="NULL" && $toval!="NULL")
       {
-        $query->addSearchCondition(
+        $searchcondition =
                    $query->lessthanequalCondition(
                       $field,
-                      $toval));
+                      $toval);
       }
-      
+      return $searchcondition;
     }
 
     /**
