@@ -134,7 +134,7 @@
           $res.='<br>dbg: '.implode("<br>\ndbg: ",$g_debug_msg);
         }
       }
-      header("Content-Length: ".strlen($res));
+//      header("Content-Length: ".strlen($res));
       echo $res;
     }
 
