@@ -94,7 +94,7 @@
       if (!empty($g_overloaders[$node]))
       {
         atkdebug("Using overloader '".$g_overloaders[$node]."' for class '".$node."'");
-        return getNode($g_overloaders[$node]);
+        return getNode($g_overloaders[$node], FALSE);
       }
 
       /* no overloader */
@@ -143,9 +143,8 @@
 
       /* initialize node and return */
       $type = getNodeType($node);
-      $node =  new $type();
+      $node = new $type();
       $node->m_module = $module;
-      $node->init();
       return $node;
     }
   }

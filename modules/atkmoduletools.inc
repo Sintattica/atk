@@ -48,17 +48,16 @@
   /**
    * Get an instance of a node. If an instance doesn't exist, it is created.
    * @param $node the node string
-   * @param $reuse if set to true, the node instance is treated as singleton.
-   *               if false, a new node is created.
+   * @param $init initialize the node?
    * @return the created instance
    */
-  function &getNode($node)
+  function &getNode($node, $init=TRUE)
   {
     global $g_nodeRepository;
     if (!is_object($g_nodeRepository[$node]))
     {
       atkdebug("Constructing a new node - $node");
-      $g_nodeRepository[$node] = & newNode($node);
+      $g_nodeRepository[$node] = &newNode($node, $init);
     }
     else
     {
@@ -130,17 +129,19 @@
   /**
    * Construct a new node
    * @param $node the node type
+   * @param $init initialize the node?
    * @return new node object
    */
-  function &newNode($node)
+  function &newNode($node, $init=TRUE)
   {
     $module = getNodeModule($node);
     $module_inst = &getModule(getNodeModule($node));
     $node = &$module_inst->newNode($node);
+    if ($init && $node != NULL) $node->init();
     return $node;
   }
-  
-  /** 
+
+  /**
    * Return the physical directory of a module..
    */
   function moduleDir($module)
