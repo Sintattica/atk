@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.9  2001/06/12 13:55:59  ivo
+  * If no string can be found in the language file, the default one generated
+  * by atk is now more usable. (strips title_ etc.) (contributed by Tom)
+  *
   * Revision 4.8  2001/05/21 15:18:26  ivo
   * Made securitymanager cookie and session based. Authentication now only
   * executes once per session.
@@ -175,7 +179,7 @@
   function text($var)
   {
     $result =  $GLOBALS["txt_".$var];
-    if ($result=="") return str_replace('_',' ',$var);
+    if ($result=="") return ucfirst(str_replace("_"," ",str_replace('title_','',$var)));
     else return $result;
   }
   
