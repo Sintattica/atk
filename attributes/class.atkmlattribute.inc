@@ -7,11 +7,14 @@
    *
    * $Id$
    *
-   */
+   */      
+   
   class atkMlAttribute extends atkAttribute
   {
     var $m_language = "";
     var $m_languageattribute = TRUE;
+    var $m_edited = false;    
+    var $m_languages = array();
     
     /**
      * Constructor
@@ -57,12 +60,13 @@
      */
     function edit($record="",$fieldprefix="")
     {
+      $this->m_edited = true;
       /* register javascript */
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
-      $page->register_submitscript('submitSave(form);');
 
       $languages = $this->getLanguages();
+      $this->m_languages = $languages; // cache.
       
       /* hidden values */
       for ($i = 1; $i < sizeof($languages); $i++)
@@ -72,21 +76,34 @@
       }
 
       /* default language */
-      $result .= text('language_'.$languages[0]).': '.
-                 '<input type="text" name="'.$fieldprefix.$this->formName().'['.$languages[0].']"'.
+      $result .= '<input type="text" name="'.$fieldprefix.$this->formName().'['.$languages[0].']"'.
                  ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[0]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-
-      
-      /* first language of other languages */
-      $result .= text((count($languages)==2 ? $languages[1] : "multilanguage_choice").'').': '.
-                 '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
-                 ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[1]]).'"'.
-                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';      
 
       return $result;
+    }
+    
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+            
+      if ($this->m_edited) // if we edited this attrib, we also need to add the 
+      {
+        $entry = array("name" => $this->m_name."_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+
+        /* label? */        
+        $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.text("language_".strtolower($this->m_languages[1])).'</label>)';
+              
+        /* first language of other languages */
+        $entry["html"] = '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $this->m_languages[1] : "multilanguage").']"'.
+                   ' value="'.htmlspecialchars($defaults[$this->fieldName()][$this->m_languages[1]]).'"'.
+                   ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
+                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';          
+  
+        $arr["fields"][] = $entry;      
+        $this->m_edited = false;
+      }
     }
 
     /**
@@ -154,8 +171,7 @@
       {
         $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
                    ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[$i]]).'">';
-      }
-    
+      }      
       return $result;             
     }
 
@@ -228,7 +244,7 @@
      * @param $tablename tablename
      * @param $fieldaliasprefix field alias prefix
      * @param $level ?
-     * @param $mode select/add/edit mode
+     * @param String $mode select/add/edit mode
      * @return new SQL query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)

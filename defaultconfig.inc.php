@@ -60,6 +60,8 @@
   $config_top_frame = 0; // 0 = no   - 1 = yes
   $config_defaulttheme = "default";
   $config_defaultlanguage = "nl";
+  $config_multilanguage_linked = true; // True: one language switch attributes automatically switches all others on screen.
+                                       // False: each language switch attributes operates only on it's own node
 
   // Display a 'stack' of the user activities in the top right corner.
   $config_stacktrace = true;

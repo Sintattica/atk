@@ -20,7 +20,7 @@
    * multilanguage form script on which this script is based. In fact this script is a generalization of their work.
    *
    * Example:
-   * <form action="./" method="get" onSubmit="submitSave(this)">
+   * <form action="./" method="get" onSubmit="mlPreSubmit(this)">
    *   <input type="hidden" name="multilanguage_current" value="en">
    *   <input type="hidden" name="name[en]" value="">
    *   <input type="hidden" name="name[de] value="">
@@ -37,6 +37,7 @@
    * </form>
    *
    * @author Peter Verhage <peter@ibuildings.nl>
+   * @author Ivo Jansch <ivo@ibuildings.nl>
    * @version $Revision$
    *
    * $Id$
@@ -49,62 +50,103 @@
    * the form gets submitted.
    * @param frm the form object
    */
-  function submitSave(frm)
-  {
-    for (var i = 0; i < frm.elements.length; i++)
+  function mlPreSubmit(prefix, frm)
+  {    
+    var curhid = document.getElementById(prefix+'_current');
+    var oldlang = curhid.value;
+    
+    // Search for all non-hidden formelements that end with 'multilanguage'.
+    // The value from these must be transfered to their corresponding hidden element
+    // before submit.
+    for (var i=0; i<frm.elements.length; i++)
     {
-      var current = frm.elements["multilanguage_current"].value;
       var element = frm.elements[i];
-
-      if (element.type != "hidden" && element.name.lastIndexOf("[multilanguage]") == element.name.length - "[multilanguage]".length)
+      
+      if (element.name.substr(0,prefix.length)==prefix)
       {
-        if (frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"] != null &&
-            frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].type == "hidden")
+        // This element belongs to us..
+        var endpos = element.name.lastIndexOf("[multilanguage]");
+        
+        if (element.name.substr(endpos)=="[multilanguage]")
         {
-          frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].value = element.value;
+          // And this element is a multilanguage hidden dingske.
+          var basename = element.name.substr(0, endpos);
+          var hiddenCurrentEl = frm.elements[basename+'['+oldlang+']'];
+          hiddenCurrentEl.value = element.value;       
         }
       }
     }
+    
     return true;
   }
 
   /**
    * Saves the current data if another language is chosen,
    * and loads the data of the new language into the form fields.
-   * @field the change language select box object
+   * @param switchfield the change language select box object
+   * @param prefix      
    */
-  function changeLanguage(field)
+  function changeLanguage(switchfield, prefix, all)
   {
-    var frm = field.form;
-    var current = frm.elements["multilanguage_current"].value;
-
-    for (var i = 0; i < frm.elements.length; i++)
+    var frm = switchfield.form;
+    
+    var curhid = document.getElementById(prefix+'_current');
+    var oldlang = curhid.value;      
+    var newlang = switchfield.options[switchfield.selectedIndex].value;
+    
+    if (oldlang!=newlang)
     {
-      var element = frm.elements[i];
-      if (element.type != "hidden" && element.name.lastIndexOf("[multilanguage]") == element.name.length - "[multilanguage]".length)
-      {
-        if (frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"] != null &&
-            frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].type == "hidden")
-        {
-          frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].value = element.value;
-        }
-      }
-    }
 
-    current = field.options[field.selectedIndex].value;
-    frm.elements["multilanguage_current"].value = current;
-
-    for (var i = 0; i < frm.elements.length; i++)
-    {
-      var element = frm.elements[i];
-      if (element.type != "hidden" && element.name.lastIndexOf("[multilanguage]") > 0)
+      for (var i = 0; i < frm.elements.length; i++)
       {
-        if (frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"] != null &&
-            frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].type == "hidden")
+        var element = frm.elements[i];
+        
+        if (element.name.substr(0,prefix.length)==prefix||all)
         {
-          element.value = frm.elements[element.name.substr(0, element.name.lastIndexOf("[multilanguage]")) + "[" + current + "]"].value;
+          // This element belongs to us..
+          var endpos = element.name.lastIndexOf("[multilanguage]");
+          if (element.name.substr(endpos)=="[multilanguage]")
+          {
+          //alert(element.name);
+            // And this element is a multilanguage hidden dingske.
+            // So we must put it's current value in the hidden field that belongs to it
+            // And set it's value to the hidden field of the new language.
+            var basename = element.name.substr(0, endpos);
+            var hiddenCurrentEl = frm.elements[basename+'['+oldlang+']'];
+            var hiddenNewEl = frm.elements[basename+'['+newlang+']'];
+            hiddenCurrentEl.value = element.value;
+            element.value = hiddenNewEl.value;
+            //alert('taal: '+element.value);
+            
+            var label = document.getElementById(basename+'_label');            
+            label.innerHTML=str_languages[newlang];
+          }     
+          else 
+          {
+            // This might be a switchfield.
+            // We need to switch all switchfields if prefix=="*".
+            if (all)
+            {          
+              var endpos = element.name.lastIndexOf("_lgswitch");
+         //        alert(element.name);              
+              if (element.name.substr(endpos)=="_lgswitch" && element.name!=switchfield.name) // not the current one
+              {              
+                element.selectedIndex = switchfield.selectedIndex;
+                
+                // We also need to set the hidden _current element of all switches that we change, to the new language.
+                var elcurhid = document.getElementById(element.name.substr(0,endpos)+'_current');
+                elcurhid.value = newlang;
+              }
+            }
+          }
         }
-      }
-    }
+        
+      }  
+      
+      
+      
+      curhid.value = newlang; // remember which language is currently active
+   }
+                   
     return true;
   }

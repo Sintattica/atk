@@ -304,39 +304,64 @@
       {
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
-        /* label? */
-        if     ($this->hasFlag(AF_NOLABEL))    $entry["label"] = NULL;
-        elseif ($this->hasFlag(AF_BLANKLABEL)) $entry["label"] = "";
-        else   $entry["label"] = $this->label($defaults);
+        /* label? */        
+        $entry["label"] = $this->getLabel($defaults);
 
         /* error? */
-        $entry["error"] = FALSE;
-        for ($i = 0; $i < count($error) && !$entry["error"]; $i++)
-          if ($error[$i]['attrib_name'] == $this->fieldName() ||
-             atk_in_array($this->fieldName(), $error[$i]['attrib_name']))
-             $entry["error"] = TRUE;
+        $entry["error"] = $this->getError($error);
 
-        /* readonly */
-        if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
-        {
-          $entry["html"] = $this->hide($defaults, $fieldprefix);
-          $funcname = $this->m_name."_display";
-          if (method_exists($this->m_ownerInstance, $funcname))
-            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, "view");
-          else $entry["html"] .= $this->display($defaults, "view");
-        }
-
-        /* normal */
-        else
-        {
-          $funcname = $this->m_name."_edit";
-          if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $funcname))
-            $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
-          else $entry["html"] .= $this->edit($defaults, $fieldprefix, $mode);
-        }
+        /* the actual edit contents */
+        $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
 
         $arr["fields"][] = $entry;
       }
+    }
+    
+    function getEdit($mode, &$defaults, $fieldprefix)
+    {
+      /* readonly */
+      $result = "";
+      if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+      {
+        $result.= $this->hide($defaults, $fieldprefix);
+        $funcname = $this->m_name."_display";
+        if (method_exists($this->m_ownerInstance, $funcname))
+        {
+          $result.= $this->m_ownerInstance->$funcname($defaults, "view");
+        }
+        else 
+        {
+          $result.= $this->display($defaults, "view");
+        }
+      }
+      /* normal */
+      else
+      {
+        $funcname = $this->m_name."_edit";
+        // The check for 'action' is a workaround for a weird php bug, which chokes on funcnames with 'action' in them.
+        if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $funcname))
+        {
+          $result .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
+        }
+        else 
+        {
+          $result .= $this->edit($defaults, $fieldprefix, $mode);
+        }
+      }
+      return $result;
+    }
+    
+    function getError($errors)
+    {      
+      for ($i = 0; $i < count($errors) && !$error; $i++)
+      {
+        if ($errors[$i]['attrib_name'] == $this->fieldName() ||
+            atk_in_array($this->fieldName(), $errors[$i]['attrib_name']))
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     /**
@@ -699,9 +724,20 @@
      * Return the label of the field.
      */
     function label($record = array())
-    {    
+    {          
       return text($this->fieldName(),$this->m_ownerInstance->m_type, 
                   $this->m_ownerInstance->m_module);
+    }
+    
+    function getLabel($record = array())
+    {
+      $label = NULL;
+      if ($this->hasFlag(AF_NOLABEL)) $label = NULL;
+      else if ($this->hasFlag(AF_BLANKLABEL)) $label = "";
+      else 
+      {
+        return $this->label($record);
+      }
     }
 
     /**

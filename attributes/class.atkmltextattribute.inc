@@ -17,6 +17,7 @@
    
   class atkMlTextAttribute extends atkMlAttribute
   {
+    
     /**
      * Constructor
      * @param $name name of the attribute
@@ -35,11 +36,13 @@
      */
     function edit($record="", $prefix="")
     {
+      $this->m_edited=true;
       $languages = $this->getLanguages();
+      $this->m_languages = $languages;
       /* register javascript */
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
-      $page->register_submitscript('submitSave(form);');
+      //$page->register_submitscript('submitSave(form);');
 
       $this->m_size = $this->maxInputSize();      
 
@@ -51,20 +54,33 @@
       }
 
       /* default language */
-      $result .= text('language_'.$languages[0]).':<br>'.
-               '<textarea name="'.$prefix.$this->formName().'['.$languages[0].']"'.
+      $result.= '<textarea name="'.$prefix.$this->formName().'['.$languages[0].']"'.
                ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
                htmlspecialchars($record[$this->fieldName()][$languages[0]]).
-               '</textarea><br><br>';
-
-      /* first language of other languages */
-      $result .= text((count($languages)==2 ? $languages[1] : "multilanguage_choice")).':<br>'.
-               '<textarea name="'.$prefix.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
-               ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
-               htmlspecialchars($record[$this->fieldName()][$languages[1]]).
-               '</textarea><br><br>';
+               '</textarea>';      
 
       return $result;
+    }
+    
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      atkAttribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+            
+      if ($this->m_edited) // if we edited this attrib, we also need to add the 
+      {
+        $entry = array("name" => $this->m_name."_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
+
+        /* label? */        
+        $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.text("language_".strtolower($this->m_languages[1])).'</label>)';
+              
+        /* first language of other languages */
+        $entry["html"] = '<textarea name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $this->m_languages[1] : "multilanguage").']"'.
+                   ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').' >'.htmlspecialchars($defaults[$this->fieldName()][$this->m_languages[1]]).
+                   '</textarea>';          
+  
+        $arr["fields"][] = $entry;      
+        $this->m_edited = false;
+      }
     }
   }
 ?>
