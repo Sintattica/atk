@@ -376,6 +376,13 @@
       $delimiterChar = strtr($delimiterChar, $regExpSpecialChars);
       $enclosureChar = strtr($enclosureChar, $regExpSpecialChars);
       
+      // if we haven't got an enclosure char, the only thing we can do is
+      // splitting it using the delimiterChar - no further action needed
+      if (!$enclosureChar)
+      {
+        return explode($delimiterChar,$line);
+      }
+      
       // Some exports don't enclose empty or numeric fields with the enclosureChar. Let's fix
       // that first so we can use one preg_split statement that works in those cases too.      
       // loop until all occurrences are replaced. Contains an infinite loop prevention.
