@@ -979,7 +979,7 @@
 
       if ($has_oblies && !empty($txt_field_obligatory))
       {
-        $form.= '<span style="font-size:8pt">'.text("field_obligatory").'</span><br>';
+        $form.= '<br><span style="font-size:8pt">'.text("field_obligatory").'</span><br>';
       }
       
       return $form;
