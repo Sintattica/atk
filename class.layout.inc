@@ -697,10 +697,10 @@
           /* does the field have a label? */
           if ($field["label"] !== NULL)
           {
-            if ($field["label"] == "") $form .= $this->ret_td('&nbsp;');
-            elseif ($field["error"]) $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
-            elseif (get_class($field["attribute"]) == "atkboolattribute")
-              $form .= $this->ret_td('<label for="'.$field["name"].'">'.$field["label"].'</label>: ', 'valign="top"');
+            if ($field["label"] == "") 
+              $form .= $this->ret_td('&nbsp;');
+            elseif ($field["error"]) 
+              $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
             else 
               $form .= $this->ret_td($field["label"].': ','valign="top"');
           }
