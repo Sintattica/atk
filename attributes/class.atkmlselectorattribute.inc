@@ -14,6 +14,8 @@ useattrib("atkmlattribute");
 
 class atkMlSelectorAttribute extends atkMlAttribute
 {
+  var $m_mlselectorattribute = true;
+  
   /**
    * Returns the language selector
    * @return html select box ready for displaying
@@ -66,7 +68,7 @@ class atkMlSelectorAttribute extends atkMlAttribute
     global $config_atkroot;
     /* base class constructor */
     $this->atkMlAttribute("multilanguage_select", $flags|AF_HIDE_LIST);
-    $this->m_mlattribute=FALSE; // just a selector and not a real attribute    
+    $this->m_mlattribute=FALSE; // just a selector and not a real mlattribute    
   }
 
   /**
@@ -93,16 +95,6 @@ class atkMlSelectorAttribute extends atkMlAttribute
     return $this->getSelector();
   }
   
-  //function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-  //{
-//    static $s_done=false;
-  //  if (!$s_done)
-    //{
-//      $s_done=true;
-      //return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
-    //}
-  //}
-
   /**
    * Returns a piece of html code that can be used in a form to display
    * hidden values for this attribute.

@@ -25,7 +25,7 @@
       // Reuse the atkAddHandler for the addPage.
       $handler = atknew("atk.handlers.atkaddhandler");
       $handler->setNode($this->m_node);
-      return $handler->addPage();
+      return $handler->invoke("addPage");
     }
     
     /**
