@@ -2500,7 +2500,10 @@
       }
       else
       {
-          $g_layout->output("Sorry, you don't have permission to perform this action");
+        $g_layout->initGui();
+        $g_layout->ui_top(text('access_denied'));
+        $g_layout->output("<br><br>".text("error_node_action_access_denied", $this->m_type)."<br><br><br>");
+        $g_layout->ui_bottom();
       }
 
       if ($fullpage)

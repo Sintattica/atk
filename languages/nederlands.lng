@@ -213,4 +213,7 @@
   $txt_feedback = "Bevestiging";
   
   $txt_error_date_invalid = "Ongeldige datum";
+  
+  $txt_access_denied = "Toegang geweigerd";
+  $txt_error_node_action_access_denied = "Sorry, u heeft geen toestemming om deze bewerking uit te voeren.";
 ?>
