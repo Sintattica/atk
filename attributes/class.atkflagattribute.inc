@@ -80,13 +80,29 @@
 
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      // not implemented
+      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      {
+        $field = $table.".".$this->fieldName();
+        if (count($value)==1) // exactly one value
+        {
+          $query->addSearchCondition($field." & ".$value[0]);
+        }
+        else // search for more values using IN()
+        {
+        	$mask = "(".implode("|",$value).")";
+        	$query->addSearchCondition($field."&".$mask."=".$mask);
+        }
+      }
     }
-  
+
     function getSearchModes()
     {
-      // currently you can't search the flag attribute       
-    }  
-  }
-
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      return array("exact");
+    }
+}
 ?>
