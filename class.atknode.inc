@@ -1703,7 +1703,7 @@
 
         $str_actions = "";
         foreach ($list["rows"][$i]["actions"] as $name => $url)
-          $str_actions .= href($url, text($name), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
+          $str_actions .= href($url, text($name, $this->m_type), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
 
         /* actions (left) */
         if ($orientation == "left" || $orientation == "both")
