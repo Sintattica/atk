@@ -103,7 +103,7 @@
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
-  
+
   /**
    * Sticky vars are variables that are passed in each url, or each form post.
    * There are a few default sticky vars, but nodes can add their own sticky vars
@@ -253,7 +253,7 @@
     /**
      * Default tab being displayed in add/edit mode.
      */
-    var $m_default_tab = "";
+    var $m_default_tab = "default";
 
     /**
      * Record filters
@@ -351,7 +351,7 @@
       if (!($tab === NULL) && is_int($tab))
       {
         $order = $tab;
-        $tab = "default";
+        $tab = $this->m_default_tab;
       }
 
       // If no tab is specified or tabs are disabled, we use the current default tab
@@ -1633,11 +1633,11 @@
             $action=str_replace("%5D","]",$action);
 
             $action=str_replace("_1"."5B","[",$action);
-            $action=str_replace("_1"."5D","]",$action);          
-                                    
+            $action=str_replace("_1"."5D","]",$action);
+
             if ($atkencoded)
             {
-              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk), false),$action);            
+              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk), false),$action);
             }
             else
             {
@@ -2152,7 +2152,7 @@
       {
         // There's only one record and the autoselect flag is set, so we
         // automatically go to the target.
-        $target = stringparse(rawurldecode(atkurldecode($this->m_postvars['atktarget'])),$recordset[0], true);	
+        $target = stringparse(rawurldecode(atkurldecode($this->m_postvars['atktarget'])),$recordset[0], true);
         $this->redirect($target);
       }
       else
@@ -2168,7 +2168,7 @@
         $nav = $this->buildNavigation("select");
         if (!empty($nav)) $g_layout->output("$nav<br>");
         $g_layout->output('<br>');
-	
+
         $actions=array(href(atkurldecode($this->m_postvars['atktarget']),text('select'),SESSION_NESTED));
 
         $g_layout->output($this->recordList($recordset, $actions));
@@ -2224,7 +2224,7 @@
      */
     function init()
     {
-      global $g_modifiers;          
+      global $g_modifiers;
 
       // Check if initialisation is not already done.
       if ($this->m_initialised == true) return;
@@ -2534,8 +2534,8 @@
           }
         }
 
-      }      
-              
+      }
+
       if (atkconfig("debug")>=2)
       {
         atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
