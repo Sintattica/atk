@@ -32,6 +32,17 @@
      */
     function action_import()
     {
+      global $ATK_VARS;
+    
+      //need to keep the postdata after a AF_LARGE selection in the allfield
+      if(!isset($this->m_postvars["phase"]) && isset($ATK_VARS['atkformdata']))
+        foreach($ATK_VARS['atkformdata'] as $key=>$value)
+          $this->m_postvars[$key] = $value;
+
+      //need to keep the selected item after an importerror
+      if(!isset($ATK_VARS[$ATK_VARS['allField']."_newsel"]))
+        $ATK_VARS[$ATK_VARS['allField']."_newsel"] = $ATK_VARS[$ATK_VARS['allField']];
+
       $phase = ($this->m_postvars["phase"]!=""?$this->m_postvars["phase"]:"init");
 
       switch ($phase)
@@ -43,6 +54,9 @@
       return true;
     }
 
+    /**
+     * This function shows a form to upload a .csv
+     */
     function doInit()
     {
       $content = atktext("import_upload_explanation", "atk", $this->m_node->m_type);
@@ -50,8 +64,8 @@
                                   ' method="post">'.session_form();
       $content.= '<input type="hidden" name="phase" value="upload">';
       $content.= '<input type="file" name="csvfile">';
-      $content.= '<br><br><input type="submit" value="Uploaden"> ';
-      $content.= atkButton("Terug", "", SESSION_BACK, true);
+      $content.= '<br><br><input type="submit" value="'.atktext("import_loadup","atk").'"> ';
+      $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
 
@@ -61,6 +75,9 @@
       return true;
     }
 
+    /**
+     * This function takes care of uploaded file
+     */
     function doUpload()
     {
       $fileid = uniqid("file_");
@@ -76,6 +93,10 @@
       }
     }
 
+    /**
+     * This function checks if there is enough information to import the date
+     * else it wil shows a form to set how the file wil be imported
+     */
     function doProcess()
     {
       $filename = $this->getTmpFileDestination($this->m_postvars["fileid"]);
@@ -90,6 +111,13 @@
       }
     }
 
+    /**
+     * This function shows a form where the user can choose the mapping of the column,
+     * an allfield and if the first record must be past over
+     *
+     * @param $fileid      string  the id of the uploaded file
+     * @param $importerror string  if there is an importerror to show
+     */
     function doAnalyze($fileid,$importerror="")
     {
       global $g_sessionManager;
@@ -108,7 +136,7 @@
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
 
       // Display sample
-      $sample = '<br><br>Gegevens sample uit de csv-file:<br><br><table class="recordlist">';
+      $sample = '<br><br>'.atktext("import_samble").':<br><br><table class="recordlist">';
 
       $col_map = $this->m_postvars["col_map"];
       if (!is_array($col_map))
@@ -128,7 +156,7 @@
       for ($j=1; $j<=$columncount; $j++)
       {
         $sample.='<th>';
-        $sample.='kolom '.$j;
+        $sample.=atktext("column").' '.$j;
         $sample.='</th>';
       }
       $sample.= '</tr>';
@@ -187,24 +215,27 @@
       $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
       $content.= text("delimiter").': <input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'">';
       $content.= '&nbsp; '.text("enclosure").': <input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'">';
-      $content.= '<br><br>Gedetecteerde aantal kolommen: '.$columncount.'<br><br>';
+      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br><br>';
 
       if(is_array($importerror))
         $content.= "<b>".text($importerror['msg']).$importerror['spec']."</b>";
 
       $content.= $sample;
 
-      $content.= 'Veld voor gebruik in iedere record: <br/>Veld: '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';
-      $content.= 'Waarde: <input type="text" size="50" name="allFieldValue" value="'.htmlentities($allFieldValue).'"><br/>';
+      $content.= atktext("import_allfield").': <br/>'.atktext("field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';
       $attr = $this->getUsableAttribute($allField);
-      if(is_object($attr) && $attr->display($attr->parseStringValue($allFieldValue)))
-        $content.= 'Resultaat: <i>'.$attr->display($attr->parseStringValue($allFieldValue)).'</i><br/>';
+      
+      if(is_object($attr)){
+        $record = array();
 
-      $content.= '<br/>Het eerste record overslaan? <input type="checkbox" name="passOverFirstRecord" value="1" '.($passOverFirstRecord?"CHECKED":"").'/><br/><br/>';
+        $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
+      }
+
+      $content.= '<br/>'.atktext("import_passfirstrecord").' <input type="checkbox" name="passOverFirstRecord" value="1" '.($passOverFirstRecord?"CHECKED":"").'/><br/><br/>';
         
-      $content.= ' <input type="submit" name="analyse" value="Analyseer opnieuw">';
-      $content.= ' <input type="submit" name="import" value="Importeer"> ';
-      $content.= atkButton("Terug", "", SESSION_BACK, true);
+      $content.= ' <input type="submit" name="analyse" value="'.atktext("import_analyse").'">';
+      $content.= ' <input type="submit" name="import" value="'.atktext("import_import").'"> ';
+      $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
 
@@ -214,11 +245,19 @@
       $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
     }
 
+    /**
+     * Get the destination of the uploaded csv-file
+     * @param $fileid string  The id of the file
+     * @return string         The path of the file
+     */
     function getTmpFileDestination($fileid)
     {
       return atkconfig("atktempdir")."csv_import_$fileid.csv";
     }
 
+    /**
+     * Get data from each line
+     */
     function fgetcsvfromarray ($arr, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
       $result = array();
@@ -226,6 +265,11 @@
       return $result;
     }
 
+    /**
+     * Gets the char which is used for enclosure in the csv-file
+     * @param $rows     The rows from the csv-file
+     * @return char     The enclosure
+     */
     function estimateDelimiter($rows)
     {
       if (!is_array($rows)||count($rows)==0) return ",";
@@ -234,6 +278,11 @@
       if (strpos($rows[0], ":")!==false) return ":";
     }
 
+    /**
+     * Gets the char which is used for enclosure in the csv-file
+     * @param $rows     The rows from the csv-file
+     * @return char     The enclosure
+     */
     function estimateEnclosure($rows)
     {
       if (!is_array($rows)||count($rows)==0) return '"';
@@ -241,6 +290,11 @@
       return '"';
     }
 
+    /**
+     * Counts the number of columns in the first row
+     * @param $rows     The rows from the csv-file
+     * @return integer  The number of columns
+     */
     function estimateColumnCount($rows, $delimiter)
     {
       if (!is_array($rows)||count($rows)==0) return 0;
@@ -248,6 +302,11 @@
 
     }
 
+    /**
+     * Get the first 5 lines from the csv-file
+     * @param          The path to the csv-file
+     * @return array   The 5 lines
+     */
     function getSampleRows($file)
     {
       $result = array();
@@ -264,7 +323,15 @@
       return $result;
     }
 
-    // source: http://bu.orbitel.bg/fgetcsvfromline.php (dawa@did-it.com)
+    /**
+     * source: http://bu.orbitel.bg/fgetcsvfromline.php (dawa@did-it.com)
+     * Gets the csvdata from one line
+     * @param $line           One line from the csv-file
+     * @param $columncount    Number of columns in the cvs-file
+     * @param $delimiterChar  The char which seperate the fields
+     * @param $enclosureChar  The char which is in front and after each field
+     * @return array          The fields
+     */
     function fgetcsvfromline ($line, $columncount, $delimiterChar = ',', $enclosureChar = '"')
     {
       $regExpSpecialChars = array (
@@ -309,6 +376,11 @@
       return FALSE;
     }
 
+    /**
+     * Gives all the attributes that can be used for the import
+     * @param $obligatoryOnly     if false then give all attributes, if true then give only the obligatory ones
+     * @return array              the attributes
+     */
     function getUsableAttributes($obligatoryOnly=false)
     {
       $attrs = array();
@@ -344,23 +416,43 @@
       return $attrs;
     }
     
+    /**
+     * Gives all obligatory attributes
+     * same as getUsableAttributes with parameter true
+     */
     function getObligatoryAttributes()
     {
       return $this->getUsableAttributes(true);
     }
     
+    /**
+     * Checks whether the attribute is obligatory
+     * @return boolean    The result of the check
+     */
     function isObligatory($attr){
       return ($attr->hasFlag(AF_OBLIGATORY) && !$this->isHide($attr));
     }
     
+    /**
+     * Checks whether the attribute is hided by flag
+     * @return boolean    The result of the check
+     */
     function isHide($attr){
       return ($attr->hasFlag(AF_HIDE) || ($attr->hasFlag(AF_HIDE_ADD) && $attr->hasFlag(AF_HIDE_EDIT)));
     }
     
+    /**
+     * Checks whether the attribute has the flag AF_ONETOONE_INTEGRATE
+     * @return boolean    The result of the check
+     */
     function integrateAttribute($attr){
       return in_array(get_class($attr),array("atkonetoonerelation","atksecurerelation")) && $attr->hasFlag(AF_ONETOONE_INTEGRATE);
     }
     
+    /**
+     * Get al attributes from the import node that have the flag AF_ONETOONE_INTEGRATE
+     * @return array  A list with all these attributes
+     */
     function getIntegratedAttributes(){
       $attrs = array();
       foreach (array_keys($this->m_node->m_attribList) as $attribname)
@@ -375,6 +467,11 @@
       return $attrs;
     }
     
+    /**
+     * Check whether the attribute is part of a relation
+     * @param $attrname string  name of the attribute
+     * @return mixed            false if not, relation name if yes
+     */
     function isRelationAttribute($attrname){
       if(array_key_exists($attrname,$this->m_node->m_attribList))
         return false;
@@ -390,6 +487,20 @@
       return false;
     }
 
+    /**
+     * Check whether the attribute has a relation (only manytoonerelations)
+     * @param $attrname string  name of the attribute
+     * @return boolean          result of the check
+     */
+    function hasRelationAttribute($attrname){
+      return in_array(get_class($this->getUsableAttribute($attrname)),array("atkmanytoonerelation","atkmanytoonetreerelation"));
+    }
+
+    /**
+     * Get the real attribute (instance) bij his name
+     * @param $name string    name of the attribute
+     * @return object         instance of the attribute
+     */
     function getUsableAttribute($name){
       if(array_key_exists($name,$this->m_node->m_attribList))
         return $this->m_node->getAttribute($name);
@@ -405,6 +516,12 @@
       return;
     }
     
+    /**
+     * Add one value to the record
+     * @param $record array     the record wich will be changed
+     * @param $attrname string  the name of the attribute
+     * @param $value string     the value of that attribute
+     */
     function addToRecord(&$record,$attrname,$value){
       $attr = $this->getUsableAttribute($attrname);
     
@@ -419,19 +536,31 @@
       }
 
       if(!$this->isRelationAttribute($attrname))
-        $record[$attrname] = $attr->parseStringValue($value);
+        if(!$this->hasRelationAttribute($attrname))
+          $record[$attrname] = $attr->parseStringValue($value);
+        else {
+          $attr->createDestination();
+          $key = $attr->m_destInstance->m_primaryKey;
+          $record[$attrname] = array($key[0]=>$attr->parseStringValue($value));
+        }
       else{
-      
         $record[$this->isRelationAttribute($attrname)][$attrname] = $attr->parseStringValue($value);
       }
     }
 
+    /**
+     * Returns a dropdownlist with all possible field in the importnode
+     * @param index int         the number of the column
+     * @param value string      the name of the attribute that is selected in the list (if empty then select the last one)
+     * @param othername string  if set, use a other name for the dropdown, else use the name "col_map[index]"
+     * @return string           the html-code for the dropdownlist (<select>...</sekect>)
+     */
     function getAttributeSelector($index=0, $value="",$othername="")
     {
       if(!$othername)
         $res = '<select name="col_map['.$index.']">';
       else
-        $res = '<select name="'.$othername.'">';
+        $res = '<select name="'.$othername.'" onchange="entryform.submit()">';
 
       $j=0;
       $hasoneselected = false;
@@ -450,14 +579,16 @@
         $j++;
       }
 
-      $res.= '<option value="-" '.(($value=="-"||!$hasoneselected)?"selected":"").' style="font-style: italic">Ignore this column';
+      $res.= '<option value="-" '.(($value=="-"||!$hasoneselected)?"selected":"").' style="font-style: italic">'.atktext("import_ignorecolumn");
 
       $res.= '</select>';
       return $res;
     }
     
-    //the same als the php function array_search, but now much better.
-    //This function is not case sensitive
+    /**
+     * the same als the php function array_search, but now much better.
+     * This function is not case sensitive
+     */
     function inArray($array,$value)
     {
       foreach($array as $key=>$item)
@@ -513,6 +644,10 @@
       return $result;
     }
 
+    /**
+     * the real import function
+     * import the uploaded csv file for real
+     */
     function doImport()
     {
       $col_map = $this->m_postvars["col_map"];
@@ -521,12 +656,23 @@
       $enclosure = $this->m_postvars["enclosure"];
       $delimiter = $this->m_postvars["delimiter"];
       $columncount = $this->m_postvars["columncount"];
-      $allField = $this->m_postvars["allField"];
-      $allFieldValue = $this->m_postvars["allFieldValue"];
-      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
 
       //add the allField to the col_map array
-      $col_map[] = $allField;
+      //but only if a valid field is selected
+      $allField = $this->m_postvars["allField"];
+
+      $attr = $this->getUsableAttribute($allField);
+      if($attr)
+        $col_map[] = $allField;
+      
+      //get the value from the postvars
+      $allFieldValue = $this->m_postvars[$allField];
+      if(strstr($allFieldValue,"=")){
+        $allFieldValue = substr(strstr($allFieldValue,"="),2);
+        $allFieldValue = substr($allFieldValue,0,strlen($allFieldValue)-1);
+      }
+
+      $passOverFirstRecord = $this->m_postvars['passOverFirstRecord'];
 
       $initial_values = $this->m_node->initial_values();
 
@@ -586,6 +732,8 @@
         return;
       }
       
+      //return;
+      
       fclose($fp);
 
       // remove the csv file
@@ -595,6 +743,10 @@
 
     }
     
+    /**
+     * add a valid record to the db
+     * @param $record array   the record
+     */
     function add($record)
     {
       //atkerror(arrayToString($record));
@@ -613,6 +765,10 @@
       return true;
     }
     
+    /**
+     * check whether the record if valide to import
+     * @param $record array   the record
+     */
     function validate(&$record)
     {
       $this->m_node->validate($record,"add");
@@ -622,6 +778,14 @@
         return true;
     }
     
+    /**
+     * Checks the import by the col_map and the initial_values
+     * Check if all obligatory fields are used in the col_map or the initial_values
+     * Check if there are no fields used twice
+     * @param $col_map        The use of the fields for the columns in the csv
+     * @param $initial_values The initial_values of the importnode
+     * @return boolean        If the check passed or not (true or false)
+     */
     function checkImport($col_map,$initial_values)
     {
       //get the unused obligatory fields
@@ -630,9 +794,9 @@
       
       if(count($unused) > 0){
         if(count($unused) == 1)
-          $msg = "Het volgende veld moet verplicht gebruikt worden: ";
+          $msg = atktext("import_error_fieldisobligatory");
         else
-          $msg = "De volgende velden moeten verplicht gebruikt worden: ";
+          $msg = atktext("import_error_fieldsareobligatory");
 
         foreach($unused as $field)
         {
@@ -655,9 +819,9 @@
       if(count($doubles) > 0)
       {
         if(count($doubles) == 1)
-          $msg = "Het volgende veld is twee maal gebruikt: ";
+          $msg = atktext("import_error_fieldusedtwice");
         else
-          $msg = "De volgende velden zijn twee maal gebruikt: ";
+          $msg = atktext("import_error_fieldsusedtwice");
 
         foreach($doubles as $field)
         {
@@ -673,11 +837,14 @@
     function checkAllField($field, &$value)
     {
       $attr = $this->getUsableAttribute($field);
+      if(!$attr)
+        return;
+        
       $result = $attr->display($attr->parseStringValue($value));
-      
+
       if(!$result)
         if(in_array($field,$this->getObligatoryAttributes()))
-          return array('msg' => "Het veld voor gebruik in iedere record bevat geen correcte invoer.");
+          return array('msg' => atktext("import_error_allfieldnocorrectdata"));
         else
           $value = "";
 
