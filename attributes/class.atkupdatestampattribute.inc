@@ -14,7 +14,10 @@
    * $Id$
    *
    */
-  class atkUpdateStampAttribute extends atkAttribute
+   
+  useattrib('atkDateTimeAttribute');
+  
+  class atkUpdateStampAttribute extends atkDateTimeAttribute
   {
     //Var is need for save without close. In this case the record
     // is not updated therefor we have to save the value    
@@ -27,7 +30,8 @@
      */
     function atkUpdateStampAttribute($name, $flags=0)
     {
-      $this->atkAttribute($name,$flags|AF_READONLY|AF_HIDE_ADD); // base class constructor
+      //$this->atkAttribute($name,$flags|AF_READONLY|AF_HIDE_ADD); // base class constructor
+      $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags|AF_READONLY|AF_HIDE_ADD);
     }
 
     function value2db($rec)
@@ -39,7 +43,7 @@
 
     function display($rec)
     {
-      $stamp = ($this->m_stamp != "" ? $this->m_stamp : $rec[$this->fieldname()]);
+      $stamp = ($this->m_stamp != "" ? $this->m_stamp : parent::value2db($rec));
       return $stamp;
     }
 
@@ -48,6 +52,7 @@
       // no matter what, we always save a new value.
       return true;
     }
+    
 
     /**
      * Returns a piece of html code that can be used in a form to display
