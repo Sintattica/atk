@@ -154,7 +154,7 @@
                &&  count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
               )
             {
-              triggerError($record, $attribname, 'error_primarykey_exists', '', $this->m_nodeObj->m_type);
+              triggerError($record, $attribname, 'error_primarykey_exists', '', $p_attrib->m_tabs[0]);
             }
           }
 
@@ -165,14 +165,14 @@
           // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
           if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
           {
-            triggerError($record, $attribname, 'error_obligatoryfield', '', $this->m_nodeObj->m_type);
+            triggerError($record, $attribname, 'error_obligatoryfield', '', $p_attrib->m_tabs[0]);
           }
           // if flag is primary
           else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
                    count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".escapeSQL($this->m_nodeObj->m_postvars[$this->m_nodeObj->m_attribList[$attribname]->fieldName()])."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
                   )
           {
-            triggerError($record, $attribname, 'error_uniquefield', '', $this->m_nodeObj->m_type);
+            triggerError($record, $attribname, 'error_uniquefield', '', $p_attrib->m_tabs[0]);
           }
         }
       }
@@ -230,7 +230,6 @@
           )        
         {	
           triggerError($record, $uniqueFieldSet, 'error_uniquefieldset', '', $this->m_nodeObj->m_type);
-          atk_var_dump($record[$field], "jdsklfjdsflkdsjf lsdkfjsldk fds");
         }// end if count(rows)
       } // end foreach uniqueFieldSet
     } // end function validate_uniqueFieldSets
