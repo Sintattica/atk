@@ -153,9 +153,25 @@
       { 
         if($this->getErrorType()=="system")
         {        
-          atkdebug("atkdb::halt() on system error");
-          if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
-          halt($this->getErrorMsg(),$level);
+          if($this->getAtkDbErrno() == DB_UNKNOWNDATABASE)
+	  {
+            if (!getUser())
+	    {
+              return $this->m_error;
+	    }
+	    else
+	    {
+	      atkdebug("atkdb::halt() on system error");
+              if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
+              halt($this->getErrorMsg(),$level);
+	    }
+          }
+          else
+          {
+	    atkdebug("atkdb::halt() on system error");
+            if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
+            halt($this->getErrorMsg(),$level);
+          }
         }
         else
         {

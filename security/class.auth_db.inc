@@ -32,7 +32,23 @@
          return AUTH_LOCKED;
        }
 
-       return ((count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd)?AUTH_SUCCESS:AUTH_MISMATCH);
+       if (count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd)
+       {
+	       return AUTH_SUCCESS;
+       }
+       else
+       {
+	       if(!$g_db->getErrorMsg())
+	       {
+		       atkdebug("returning mismatch");
+		       return AUTH_MISMATCH;
+	       }
+	       else
+	       {
+		       atkdebug("returning error");
+		       return AUTH_ERROR;
+	       }
+       }
      }
 
      function canMd5()
@@ -187,7 +203,12 @@
        return $userlist;
 
      }
-
+     
+     function getError()
+     {
+       global $g_db;
+       return $g_db->getErrorMsg();
+     }
    }
 
 ?>

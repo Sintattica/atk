@@ -416,6 +416,11 @@
         {
           $output.='<tr><td colspan=2 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
         }
+	else if($lastresponse == AUTH_ERROR)
+        {
+	  $errormsg = $this->m_authorization->getError();
+          $output.='<tr><td colspan=2 class=error>'.$errormsg.'<br><br></td></tr>';
+        }
 
         // generate the form
         $output.="<tr><td valign=top class=table>".text('username').":</td><td>".$userField."</td></tr>";   
