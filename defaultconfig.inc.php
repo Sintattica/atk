@@ -83,6 +83,10 @@
   // include optimizer
   $config_atk_optimized_includes = true;
 
+  // Backwardscompatibility setting. Set this to MYSQL_BOTH if your 
+  // software relies on numerical indexes (WHICH IS A BAD IDEA!!)
+  $config_mysqlfetchmode = MYSQL_ASSOC; 
+
   // files that are allowed to be included by the include wrapper script
   // NOTE: this has nothing to do with useattrib and userelation etc.!
   $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php");

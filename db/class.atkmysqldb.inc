@@ -109,8 +109,9 @@
      */
     function next_record()
     {
-      /* goto next record */
-      $this->m_record = @mysql_fetch_array($this->m_query_id); // , MYSQL_ASSOC);
+      /* goto next record */      
+      
+      $this->m_record = @mysql_fetch_array($this->m_query_id, atkconfig("mysqlfetchmode"));
       $this->m_row++;
       $this->m_errno = mysql_errno();
       $this->m_error = mysql_error();
