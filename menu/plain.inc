@@ -101,12 +101,13 @@
   }      
   
   $page->register_style($theme->stylePath("style.css"));
+  $page->register_style($theme->stylePath("menu.css"));
   $box = $ui->renderBox(array("title"=>text("menu_".$atkmenutop),
-                                            "content"=>$menu));
+                                         "content"=>$menu),"menu");
  
   $page->addContent($box);
 			
-	$string = $page->render("Menu", true);
+  $string = $page->render("Menu", true);
   $output = &atkOutput::getInstance();
   $output->output($string);
   $output->outputFlush();

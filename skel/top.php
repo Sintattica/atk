@@ -44,18 +44,21 @@
   $loggedin = text("logged_in_as", "", "atk").": <b>".$g_user["name"]."</b>";  
   $content = '<br>'.$loggedin.' &nbsp; <a href="app.php?atklogout=1" target="_top">'.ucfirst(atktext("logout")).' </a>&nbsp;';
 
-  $top = $ui->renderTop(array("content"=> $content,
-  							  "logintext" => atktext("logged_in_as"),
+  $top = $ui->render(array("content"=> $content,
+  			      "logintext" => atktext("logged_in_as"),
                               "logouttext" => ucfirst(text("logout", "", "atk")),
                               "logoutlink" => "",
                               "logouttarget"=>"_top",
                               "centerpiece"=>$centerpiece,
                               "searchpiece"=>$searchpiece,
                               "title" => atktext("app_title"),
-  							  "user"   => $g_user["name"]));
+  			      "user"   => $g_user["name"]),
+                              "top");
  
   $page->addContent($top);
 
   $output->output($page->render(atktext('app_title'), true));
   
   $output->outputFlush();
+
+?>

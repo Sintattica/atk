@@ -18,6 +18,9 @@ Changes in ATK 5.0.7
   when a NULL value for a record is passed to editArray() [Boy]
 * Fixed prev/next keyboard navigation in recordlists. [Yury]
 * Fixed a potential session hijacking vulnerability. [Sandy]
+* Improved themeability, now possible to style the menu and top frame
+  differently from the main and eachother, by using templates
+  and stylesheets [Boy]
 
 Changes in ATK 5.0.6
 --------------------
