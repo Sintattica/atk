@@ -18,7 +18,6 @@ class auth_pop3 extends auth_interface
    */
   function validateUser($user, $passwd)
   {     
-    global $g_securityManager; // we need the securitymanager for logging.
     global $g_db, $g_pop3_responses; 
     
     /* if it's a virtual mail server add @<domain> to the username */
@@ -43,9 +42,11 @@ class auth_pop3 extends auth_interface
       $server = $res[0]["auth_server"];      
     }
     
+    $secMgr = &atkGetSecurityManager();
+    
     if ($server=="")
     {
-      $g_securityManager->log(1,"pop3auth error: No server specified");
+      $secMgr->log(1,"pop3auth error: No server specified");
       atkdebug("pop3auth error: No server specified");
       $this->m_fatalError = text("auth_no_server");
       return AUTH_ERROR;
@@ -56,7 +57,7 @@ class auth_pop3 extends auth_interface
     $link_id = fsockopen($server, $port, $errno, $errstr, 30);
     if (!$link_id) 
     {
-      $g_securityManager->log(1,"pop3auth serverconnect error $server: $errstr");
+      $secMgr->log(1,"pop3auth serverconnect error $server: $errstr");
       atkdebug("Error connecting to server $server: $errstr");
       $this->m_fatalError = text("auth_unable_to_connect");
       return AUTH_ERROR;
@@ -71,7 +72,7 @@ class auth_pop3 extends auth_interface
     fputs($link_id, "QUIT\r\n");    
     fclose($link_id);    
     
-    $g_securityManager->log(1, "pop3auth response for user $user: ".trim($auth));        
+    $secMgr->log(1, "pop3auth response for user $user: ".trim($auth));        
     
     // search application specified pop3 responses.. 
     if (is_array($g_pop3_responses))

@@ -622,17 +622,17 @@
   /* 
     Calling this function will invoke the login process. Call this function in 
     every file that you want to have secured.
-    (This is actually a small wrapper for $g_securityManager->authenticate(), 
+    (This is actually a small wrapper for $securityManager->authenticate(), 
     so you can quickly secure an application.
    */
   function atksecure()
   {
-    global $g_securityManager;
+    $securityMgr = &atkGetSecurityManager();
     
-    if (!$g_securityManager->authenticate())
+    if (!$securityMgr->authenticate())
     {
       echo '<b>'.text("login_failed").'</b>';      
-      echo '<br><br>'.$g_securityManager->m_fatalError;
+      echo '<br><br>'.$securityMgr->m_fatalError;
       exit;
     }
   }      
@@ -656,8 +656,20 @@
     }    
     return $user;
   }
-   
-  // The one and only security manager.   
-  $g_securityManager = new atkSecurityManager($config_authentication, $config_authorization, $config_securityscheme);
+  
+  function &atkGetSecurityManager()
+  {
+    global $g_securityManager; // WORKAROUND: we use a global var since many 
+                               // atk apps rely on a global variable being present.
+                               // In ATK5 we must create a clean singleton with
+                               // a static instance.
+    if (!is_object($g_securityManager))
+    {
+      // The one and only security manager.   
+      $g_securityManager = new atkSecurityManager(atkconfig("authentication"), atkconfig("authorization"), atkconfig("securityscheme"));   
+    }
+    return $g_securityManager;
+  }
+     
 
 ?>

@@ -250,4 +250,37 @@
     return $total;
   }
   
+  /**
+   * Get/set the status of the readoptimizer.
+   * If you need the dataread-functionality of atkNode but don't need
+   * the ui stuff, or the data write stuff, you can turn on the read
+   * optimizer, so nodes load faster.
+   * If you call this function without parameters (or NULL as param)
+   * the optimizer value is not changed, and the function will just
+   * return the current setting.
+   * If you do specify a parameter, the function will return the
+   * OLD setting (so you might reset it to the old value after you're
+   * finished with the current node.
+   *
+   * @param $newvalue New value of the readoptimizer. true turns the
+   *                  optimizer on. Falls turns it off.
+   * @return boolean The old value of the optimizer setting, if a new
+   *                 setting was passed OR
+   *                 The current value if no new setting was passed.
+   */
+  function atkReadOptimizer($newvalue=NULL)
+  {
+    static $s_optimized=false;
+    if ($newvalue!=NULL) // New value was set
+    {
+      $oldvalue = $s_optimized;
+      $s_optimized=$newvalue; 
+      return $oldvalue;
+    }
+    else
+    {
+      return $s_optimized; // Return current value.
+    }        
+  }
+  
 ?>

@@ -84,9 +84,9 @@
    */
   function is_allowed($node, $action)
   {
-    $g_securityManager = $GLOBALS["g_securityManager"];
-    if (!is_object($g_securityManager)) return 1;
-    else return $g_securityManager->allowed($node, $action);
+    $secMgr = &atkGetSecurityManager();
+    if (!is_object($secMgr)) return 1;
+    else return $secMgr->allowed($node, $action);
   }
 
 ?>

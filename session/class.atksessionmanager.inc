@@ -38,16 +38,22 @@
 
     var $m_escapemode = false; // are we escaping?
 
-    function atkSessionManager($namespace)
+    var $m_usestack = true; // should we use a session stack?
+
+    function atkSessionManager($namespace, $usestack=true)
     {
       $this->m_namespace = $namespace;
+      $this->m_usestack = $usestack;
       atkdebug("creating sessionManager (namespace: $namespace)");
     }
 
     function session_read(&$postvars)
     {
       $this->globalscope($postvars);
-      $this->stackscope($postvars);
+      if ($this->m_usestack)
+      {
+        $this->stackscope($postvars);
+      }
     }
 
     function globalVar($var, $value="", $no_namespace=false)
@@ -385,11 +391,11 @@
     Calling this function will run atk session management.
     Call this function in every file that you want to use atk sessions.
   */
-  function atksession($namespace = "default")
+  function atksession($namespace = "default", $usestack=true)
   {
     global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
 
-    $g_sessionManager = new atkSessionManager($namespace);
+    $g_sessionManager = new atkSessionManager($namespace, $usestack);
 
     $HTTP_REQUEST_VARS = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
     atkDataDecode($HTTP_REQUEST_VARS);

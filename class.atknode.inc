@@ -38,7 +38,7 @@
   define("NF_MRPA",                 131072); // Multi-priority-selection of records is turned on.
 
   define("NF_LOCK",                 262144); // lock records
-
+  
   /* recordlist flags */
   define("RL_NO_SORT",                         1); // recordlist is not sortable
   define("RL_NO_SEARCH",                       2); // recordlist is not searchable
@@ -396,8 +396,7 @@
      * @param $order override the attribute order
      */
     function add($attribute,$tab=NULL,$order=0)
-    {
-      global $g_securityManager;
+    {      
       static $attrib_order = 100;
       static $attrib_index = 0;
       $attribute->m_owner = $this->m_type;
@@ -406,15 +405,56 @@
       // Because tabs will probably be used more than the order override option
       // the API for this method now favours the $tab argument. For backwards
       // compatibility we still support the old API ($attribute,$order=0).
-      if (!($tab === NULL) && is_int($tab))
+      if (!atkReadOptimizer())
       {
-        $order = $tab;
-        $tab = $this->m_default_tab;
-      }
+        if (!($tab === NULL) && is_int($tab))
+        {
+          $order = $tab;
+          $tab = $this->m_default_tab;
+        }
+        // If no tab is specified or tabs are disabled, we use the current default tab
+        // (specified with the setDefaultTab method, or "default" otherwise)
+        elseif ($tab === NULL || strlen($tab) == 0 || !atkconfig("tabs")) $tab = $this->m_default_tab;
+        
+        $secMgr = &atkGetSecurityManager();
+        if (!$secMgr->attribAllowed($this->m_type, $attribute->m_name, "edit"))
+        {
+          $attribute->m_flags |= AF_READONLY;
 
-      // If no tab is specified or tabs are disabled, we use the current default tab
-      // (specified with the setDefaultTab method, or "default" otherwise)
-      elseif ($tab === NULL || strlen($tab) == 0 || !atkconfig("tabs")) $tab = $this->m_default_tab;
+          if (!$secMgr->attribAllowed($this->m_type, $attribute->m_name, "view"))
+          {
+            $attribute->m_flags |= AF_HIDE;
+          }
+        }
+        
+        // check for parent fieldname (treeview)
+        if($attribute->hasFlag(AF_PARENT))
+        {
+          $this->m_parent = $attribute->fieldName();
+        }
+
+        // check for cascading delete flag
+        if ($attribute->hasFlag(AF_CASCADE_DELETE))
+        {
+          $this->m_cascadingAttribs[]=$attribute->fieldName();
+        }
+
+        if ($attribute->hasFlag(AF_HIDE_LIST)&&!$attribute->hasFlag(AF_PRIMARY))
+        {
+          if (!in_array($attribute->fieldName(),$this->m_listExcludes))
+          {
+            $this->m_listExcludes[]=$attribute->fieldName();
+          }
+        }
+
+        if ($attribute->hasFlag(AF_HIDE_VIEW)&&!$attribute->hasFlag(AF_PRIMARY))
+        {
+          if (!in_array($attribute->fieldName(),$this->m_viewExcludes))
+          {
+            $this->m_viewExcludes[]=$attribute->fieldName();
+          }
+        }
+      }
 
       // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
       // constructor, m_ownerInstance ends up being a copy of $this, rather than
@@ -422,16 +462,7 @@
       // handles the constructor.
       // To work around this, we reassign the this pointer to the attributes as
       // soon as possible AFTER the constructor. (the dispatcher function)
-      $attribute->m_ownerInstance = &$this;
-      if (!$g_securityManager->attribAllowed($this->m_type, $attribute->m_name, "edit"))
-      {
-        $attribute->m_flags |= AF_READONLY;
-
-        if (!$g_securityManager->attribAllowed($this->m_type, $attribute->m_name, "view"))
-        {
-          $attribute->m_flags |= AF_HIDE;
-        }
-      }
+      $attribute->m_ownerInstance = &$this;            
 
       if ($attribute->hasFlag(AF_PRIMARY))
       {
@@ -439,35 +470,7 @@
         {
           $this->m_primaryKey[] = $attribute->fieldName();
         }
-      }
-
-      // check for parent fieldname (treeview)
-      if($attribute->hasFlag(AF_PARENT))
-      {
-        $this->m_parent = $attribute->fieldName();
-      }
-
-      // check for cascading delete flag
-      if ($attribute->hasFlag(AF_CASCADE_DELETE))
-      {
-        $this->m_cascadingAttribs[]=$attribute->fieldName();
-      }
-
-      if ($attribute->hasFlag(AF_HIDE_LIST)&&!$attribute->hasFlag(AF_PRIMARY))
-      {
-        if (!in_array($attribute->fieldName(),$this->m_listExcludes))
-        {
-          $this->m_listExcludes[]=$attribute->fieldName();
-        }
-      }
-
-      if ($attribute->hasFlag(AF_HIDE_VIEW)&&!$attribute->hasFlag(AF_PRIMARY))
-      {
-        if (!in_array($attribute->fieldName(),$this->m_viewExcludes))
-        {
-          $this->m_viewExcludes[]=$attribute->fieldName();
-        }
-      }
+      }      
 
       $attribute->init();
 
@@ -489,13 +492,16 @@
           $attrib_order+=100;
         }
 
-        // add new tab(s) to the tab list ("*" isn't a tab!)
-        if (!is_array($tab) && $tab != "*") $tab = array($tab);
-        if ($tab != "*")
+        if (!atkReadOptimizer())
         {
-          if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabListAdd = atk_array_merge($this->m_tabListAdd, $tab);
-          if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabListEdit = atk_array_merge($this->m_tabListEdit, $tab);
-          if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabListView = atk_array_merge($this->m_tabListView, $tab);
+          // add new tab(s) to the tab list ("*" isn't a tab!)        
+          if (!is_array($tab) && $tab != "*") $tab = array($tab);
+          if ($tab != "*")
+          {
+            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabListAdd = atk_array_merge($this->m_tabListAdd, $tab);
+            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabListEdit = atk_array_merge($this->m_tabListEdit, $tab);
+            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabListView = atk_array_merge($this->m_tabListView, $tab);
+          }
         }
 
         $attribute->m_order = $order;
@@ -1297,7 +1303,7 @@
      */
     function adminPage($actions="")
     {
-      global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
+      global $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
       // When there's a lot of data, records will be spread across multiple
       // pages.
@@ -2436,7 +2442,7 @@
      */
     function dispatch($postvars, $fullpage=true)
     {
-      global $g_securityManager, $g_db, $g_sessionManager, $g_layout;
+      global $g_db, $g_sessionManager, $g_layout;
       $this->m_postvars = $postvars;
 
       $this->m_action = $postvars['atkaction'];
@@ -2452,7 +2458,8 @@
       // check for fake submit (session saving href thingee)
       if ($this->allowed($this->m_action))
       {
-        $g_securityManager->logAction($this->m_type, $this->m_action);
+        $secMgr = &atkGetSecurityManager(); 
+        $secMgr->logAction($this->m_type, $this->m_action);
         $this->callHandler($this->m_action);
       }
       else
@@ -3188,40 +3195,43 @@
         }
       }
 
-      /* there may be search criteria, which we also filter */
-      $searchArray = $this->m_postvars['atksearch'];
-      if (is_array($searchArray) && count($searchArray)>0)
+      if (!atkReadOptimizer())
       {
-        $searchmode = $this->m_postvars["atksearchmode"];
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-        while (list($key,$value) = each($searchArray))
+        /* there may be search criteria, which we also filter */
+        $searchArray = $this->m_postvars['atksearch'];
+        if (is_array($searchArray) && count($searchArray)>0)
         {
-          if ($value!="")
+          $searchmode = $this->m_postvars["atksearchmode"];
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+          while (list($key,$value) = each($searchArray))
           {
-            $p_attrib = &$this->m_attribList[$key];
-            if (is_object($p_attrib))
+            if ($value!="")
             {
-              if(is_array($searchmode))
+              $p_attrib = &$this->m_attribList[$key];
+              if (is_object($p_attrib))
               {
-                $search = $searchmode[$key];
-                if ($search=="") $search = atkconfig("search_defaultmode");
-                $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+                if(is_array($searchmode))
+                {
+                  $search = $searchmode[$key];
+                  if ($search=="") $search = atkconfig("search_defaultmode");
+                  $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+                }
+                else
+                {
+                  $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+                }
               }
               else
-              {
-                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              {            
+                $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+                $query->addSearchCondition($condition);
               }
-            }
-            else
-            {            
-              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-              $query->addSearchCondition($condition);
             }
           }
         }
       }
 
-     foreach (array_keys($this->m_attribList) as $attribname)
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
         if (
@@ -3591,7 +3601,7 @@
 
     function allowed($action)
     {
-      global $g_securityManager;
+      $secMgr = &atkGetSecurityManager();
       if (empty($this->m_securityAlias))
       {
         $alias = $this->atknodetype();
@@ -3603,7 +3613,7 @@
 
       return ($this->hasFlag(NF_NO_SECURITY)
               ||in_array($this->securityKey($action), $this->m_unsecuredActions)
-              || $g_securityManager->allowed($alias,$this->securityKey($action)));
+              || $secMgr->allowed($alias,$this->securityKey($action)));
     }
 
     function setSecurityAlias($alias)
