@@ -77,7 +77,7 @@
       atkdebug("Entering treeview page.");
       //$this->addStickyVar($p);
       
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes,"", "admin");
 
       $t = new tree;
       for($i=0;$i<count($recordset);$i++)
@@ -89,11 +89,10 @@
       $this->m_tree[0]["label"]="&nbsp;"; 
 	    $this->m_tree[0]["id"]=''; 	    
 	    $this->m_tree[0]["isleaf"]=1; 
-      
+                       
       $test = $this->Fill_tree($t->m_tree);
-      $g_maxlevel=$g_maxlevel+2;
-      
-      //var_dump($this->m_tree);
+            
+      $g_maxlevel=$g_maxlevel+2;            
 
       $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".(($g_maxlevel*30)+300).">\n");
 
@@ -165,14 +164,14 @@
       $img_end_minus= $icon_path."tree_end_minus.gif";
 	    $img_leaf     = $icon_path."tree_leaf.gif"; 
 	    $img_spc      = $icon_path."tree_space.gif"; 
-  
+       
       $res="";
       $lastlevel=0;
      // echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
       if ($this->m_tree[0]["expand"] !=1 && $this->m_tree[0]["colapse"] !=1) // normal operation
       {
        for ($i=0; $i<count($this->m_tree); $i++) 
-	     { 
+	     {    
         if($this->m_tree[$i]["level"]<2)
         {
           if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
@@ -495,7 +494,7 @@
           */
     function copyDb($selector)
     {
-      $recordset = $this->selectDb($selector);
+      $recordset = $this->selectDb($selector,"","","","","copy");
       
       if(count($recordset)>0)
       { 
@@ -521,7 +520,7 @@
         */
     function copyChildren($selector, $parent="")
     {
-      $recordset = $this->selectDb($selector);
+      $recordset = $this->selectDb($selector,"","","","","copy");
       
       if(count($recordset)>0)
       {                
@@ -553,7 +552,7 @@
     {
       global $g_db;
       atkdebug("Retrieve record");
-      $recordset = $this->selectDb($selector);
+      $recordset = $this->selectDb($selector,"","","","","delete");
       for ($i=0;$i<count($recordset);$i++)
       {
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -569,7 +568,7 @@
       if ($this->m_parent!="")
       {
         atkdebug("Check for child records");
-        $children = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+        $children = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent,"","","","","delete");
       
         if(count($children)>0)
         {
@@ -596,7 +595,7 @@
     {
       global $g_db;
       atkdebug("Check for child records of the Child");
-      $recordset = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      $recordset = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent,"","","","","delete");
       for ($i=0;$i<count($recordset);$i++)
       {
         foreach (array_keys($this->m_attribList) as $attribname)
