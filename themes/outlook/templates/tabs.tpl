@@ -1,4 +1,4 @@
-<script language="JavaScript">
+<script language="JavaScript" type="text/javascript">
 var tabs = new Array();
 {section name=i loop=$tabs}tabs[tabs.length] = "{$tabs[i].tab}"; {/section}
 
@@ -11,7 +11,6 @@ var tabSelectedBackgroundImage = "{$themedir}images/tab_back_s.gif";
 
 var tabColor = "#FFFFFF";
 var tabSelectedColor = "#000000";
-
 </script>
 
 <table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="98%" align="center" valign="top">
@@ -74,3 +73,7 @@ var tabSelectedColor = "#000000";
     </td>
   </tr>
 </table>
+
+<script language="JavaScript" type="text/javascript">
+showTab();
+</script>
