@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/06/14 12:25:38  ivo
+   * fixed bug: onetomanyrelation ignored NF_NO_ADD flag.
+   *
    * Revision 4.11  2001/05/18 09:11:06  ivo
    * Fixed a bug: the wrong column in recordlists was suppressed.
    *
@@ -224,7 +227,7 @@
         $output.="</tr>";
       }
 
-      if ($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))
+      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
         if ($this->m_destinationFilter!="")
