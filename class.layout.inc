@@ -224,7 +224,7 @@
           {
             // if no specific text available for this node,
             // generate a generic title
-            return text($nodetype)." - ".text($action);
+            return text($nodetype, $module)." - ".text($action);
           }
         }
       }
