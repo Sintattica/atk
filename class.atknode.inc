@@ -753,7 +753,6 @@
                                    ' method="post" onsubmit="return globalSubmit(this)">');
 
       /* if we are on an admin page we would like to stay on the admin page after adding a new record */
-      /* NOTE: temporarily disabled! Needs to be fixed! */
       if ($this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
       else $g_layout->output(session_form());
 
@@ -1171,7 +1170,7 @@
      */
     function buildTabs()
     {
-      global $PHP_SELF, $ATK_VARS, $g_layout;
+      global $PHP_SELF, $g_layout;
 
       $result = "";
 
@@ -1185,8 +1184,9 @@
       foreach ($list as $t)
       {
         $title = text("tab_$t",$this->m_type);
-        if ($ATK_VARS["atkaction"] == "view") $link = session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT);
-        else $link = "javascript:atkSubmit('".atkurlencode(session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT))."')";
+        $url = $PHP_SELF."?atknodetype=".(empty($this->m_module) ? "" : $this->m_module.".").$this->m_type."&atkaction=".$this->m_action."&atktab=".$t;
+        if ($this->m_action == "view") $link = session_url($url, SESSION_DEFAULT);
+        else $link = "javascript:atkSubmit('".atkurlencode(session_url($url, SESSION_DEFAULT))."')";
         $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
       }
 
