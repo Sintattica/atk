@@ -83,12 +83,12 @@
      * @param path the module path
      * @param flags the module flags (see above)
      */
-    function module($name, $path="", $flags="")
+    function module($name, $path="", $flags=0)
     {
       global $g_modules, $config_module_path, $g_moduleflags;
       if ($path=="") $path = $config_module_path."/".$name."/";
       $g_modules[$name] = $path;
-      if ($flags!="") $g_moduleflags[$name] = $flags;
+      if ($flags>0) $g_moduleflags[$name] = $flags;
     }
 
     /**
