@@ -324,6 +324,7 @@
     var $m_securityMap = array("save"=>"add",
                                "update"=>"edit",
                                "copy"=>"add",
+                               "editcopy"=>"add",
                                "search"=>"admin");
 
     /**
@@ -2659,10 +2660,28 @@
       }
       else
       {
-        atkdebug(" Geen records gevonden met Selector: $selector");
+        atkdebug("Geen records gevonden met selector: $selector");
       }
 
       $this->redirect();
+    }
+    
+    function action_editcopy()
+    {
+      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
+      
+      if(count($recordset) > 0)
+      {
+        $this->copyDb($recordset[0]);
+        $location = session_url(dispatch_url($this->atknodetype(), "edit", array("atkselector" => $this->primaryKey($recordset[0]))), SESSION_REPLACE);
+        $this->redirect($location);
+      }
+
+      else
+      {
+        atkdebug("Geen records gevonden met selector: $selector");
+        $this->redirect();        
+      }
     }
 
     function action_xml()
@@ -2742,7 +2761,7 @@
                           '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
       }
       
-      $g_layout->output('<br><br>');   
+      $g_layout->output('<br>');   
       
       $g_layout->ui_bottom();
     }
@@ -3161,7 +3180,7 @@
         *
         *@param $selector The 'where' clause that indicates which records to select.
         */
-    function copyDb($record)
+    function copyDb(&$record)
     {
       $this->preCopy($record);
       $this->addDb($record);

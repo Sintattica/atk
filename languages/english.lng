@@ -21,6 +21,7 @@
   $txt_delete = "Delete";
   $txt_add = "Add";
   $txt_copy = "Copy";
+  $txt_editcopy = "Edit copy";
   $txt_admin = "Administration";
   $txt_search = "Search";
   $txt_search_all = "Search all";
