@@ -485,6 +485,29 @@
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
     }
+    
+    /**
+     * Completely remove an attribute.
+     */
+    function remove($attribname)
+    {
+      if (is_object($this->m_attribList[$attribname]))
+      {
+        $listindex = $this->m_attribList[$attribname]->m_index;
+        
+        unset($this->m_attribList[$attribname]);
+        for ($i=0, $_i=count($this->m_listExcludes); $i<$_i; $i++)
+        { 
+          if ($this->m_listExcludes[$i] == $attribname) unset($this->m_listExcludes[$i]);
+        }
+        for ($i=0, $_i=count($this->m_viewExcludes); $i<$_i; $i++)
+        { 
+          if ($this->m_viewExcludes[$i] == $attribname) unset($this->m_viewExcludes[$i]);
+        }
+        
+        unset($this->m_attribIndexList[$listindex]);
+      }
+    }
 
     /**
      * Add an atkAttribute to the node ($attribute should be an object of type
@@ -1615,7 +1638,7 @@
         {
           $attribname = $this->m_attribIndexList[$r]["name"];
           $p_attrib = &$this->m_attribList[$attribname];
-          //echo $r."/".(count($this->m_attribIndexList)-1)." - ".$this->m_attribIndexList[$r]["name"]."<br>";
+          
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
