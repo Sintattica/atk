@@ -22,10 +22,11 @@
    */  
 
   /** @internal includes and defines etc. */
-	$config_platformroot = "../";
-	$config_atkroot = "../";
-	include_once("../atk.inc");
-	include_once($config_atkroot."atk/menu/general.inc");
+      global $g_menu, $atkmenutop, $g_menu_parent;
+	//$config_platformroot = "../";
+	//$config_atkroot = "../";
+	include_once(atkconfig("atkroot")."atk.inc");
+	include_once(atkconfig("atkroot")."atk/menu/general.inc");
 	
 	atkimport("atk.ui.atkpage");
 	$page = &atkPage::getInstance();
@@ -66,26 +67,22 @@
 	');
 	
 	$theme = &atkTheme::getInstance();
-	
-	// dit zorgt ervoor dat theme variables ook beschikbaar zijn in javascript en dus outlookmenu
+	atk_var_dump($theme);
+	// this vars are here for theme support
 	$page->register_scriptcode("
-		this.ol_themename       = '".$g_theme['Description']."';
-		this.ol_pimage     = '".$config_atkroot."atk/themes//images/".$g_theme['ol_pimage']."';
-		this.ol_menucolor  = '".$g_theme['ol_menucolor']."';
-		this.ol_wincolor   = '".$g_theme['ol_wincolor']."'; 
-		this.ol_background = '".$g_theme['ol_background']."';
-		this.ol_arrowup    = '".$theme->iconPath("arrowup", "outlook")."';
-		this.ol_arrowdown  = '".$theme->iconPath("arrowdown", "outlook")."';
+		this.ol_themename       = '".$theme->m_curtheme."';
+		this.ol_pimage     = '".$theme->imgPath("dark_black.gif")."';
+		this.ol_menucolor  = '".$theme->getAttribute('ol_menucolor')."';
+		this.ol_wincolor   = '".$theme->getAttribute('ol_wincolor')."'; 
+		this.ol_background = '".$theme->getAttribute('ol_background')."';
+		this.ol_arrowup    = '".$theme->imgPath("arrowup.gif")."';
+		this.ol_arrowdown  = '".$theme->imgPath("arrowdown.gif")."';
 	");
 	
 	$page->register_script($config_atkroot."atk/javascript/crossbrowser.js");
 	$page->register_script($config_atkroot."atk/javascript/outlook.js");
 	
 	$menucode = "
-		// ---------------------------------------------------------------------------
-		// Example of howto: use OutlookBar
-		// ---------------------------------------------------------------------------
-		
 		//create OutlookBar
 		var o = new createOutlookBar('Bar',0,0,screenSize.width,screenSize.height,ol_background,'white') // OutlookBar
 		var p
@@ -145,7 +142,7 @@
 					}
 					else
 					{
-						$panelbuttons .= "p.addButton('".$theme->iconPath('empty', "outlook")."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
+						$panelbuttons .= "p.addButton('".$theme->imgPath('empty.gif')."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
 					}
 				}
 			}
@@ -156,7 +153,7 @@
 	
 		}
 		//    echo "alert('$panelbuttons')";
-		// als panelbuttons is leeg dan zijn er dus geen onderliggende items en hoeft ook het panel niet getoonde te worden
+		// When there no panelbuttons, don't show the panel
 		if ($panelbuttons!="")
 		{
 			$menucode .= "p = new createPanel('".addslashes($atkmenutop)."','".addslashes(text("menu_".$atkmenutop))."');\n";  
@@ -200,9 +197,8 @@ $page->register_scriptcode($menucode);
 
 // need an onResize event to redraw outlookbar after pagesize changes!
 // OP5 does not support onResize event! use setTimeout every 100ms
-$page->body('onLoad="resize_op5();" onResize="myOnResize();"');
 
-$string = $page->render("Menu", true);
+$string = $page->render("Menu",HTML_ALL,'onLoad="resize_op5();" onResize="myOnResize();"');
 $output = &atkOutput::getInstance();
 $output->output($string);
 $output->outputFlush();
