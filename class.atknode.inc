@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.69  2001/06/29 13:57:20  ivo
+   * Bugfix in selectPage [pk] parser.
+   *
    * Revision 4.68  2001/06/29 13:12:10  ivo
    * New feature: integrated contextsensitive help (contributed by Rene)
    *
@@ -1228,7 +1231,7 @@
             }            
             $action=str_replace("%5B","[",$actions[$j]);
             $action=str_replace("%5D","]",$action);
-            $action=str_replace("_#5B","[",$actions[$j]);
+            $action=str_replace("_#5B","[",$action);
             $action=str_replace("_#5D","]",$action);
             
             if ($atkencoded)
