@@ -9,6 +9,9 @@
    * $Id$
    *
    $ $Log$
+   $ Revision 4.4  2001/09/26 13:23:34  ivo
+   $ fixed bug: atkconfigtools depended on undefined functions.
+   $
    $ Revision 4.3  2001/09/10 12:32:46  ivo
    $ Improved module support. Modules can now create modifiers for other nodes.
    $ Modules and external modules are now treated equally.
@@ -98,8 +101,8 @@
     /* define an external module */  
     function module($name, $path="")
     {
-      global $g_modules;
-      if ($path=="") $path = atkconfig("module_path")."/".$name;    
+      global $g_modules, $config_module_path;
+      if ($path=="") $path = $config_module_path."/".$name;    
       $g_modules[$name] = $path;          
     }
 ?>
