@@ -22,6 +22,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/04/25 07:29:40  sandy
+   * fixed a bug in the data javascript for multilanguage
+   * added the stickyvars to the onetomany relations urls
+   *
    * Revision 4.1  2001/04/23 14:20:12  peter
    * Day now includes day-of-the-week name
    *
@@ -306,7 +310,7 @@
               while (list ($key, $j) = each ($days))
               {
                 $dayofw = date("w", mktime(0, 0, 0, $set_month, $set_day, $set_year));
-                $daystr = $this->m_weekdays[$dayofw] . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
+                $daystr = text($this->m_weekdays[$dayofw]) . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
                 $result .= '<option value="'.$j.'" '.($j == $set_day ? "selected" : "").'>'.$daystr.'</option>';
               }
               $result .= '</select>';
@@ -361,7 +365,7 @@
             while (list ($key, $j) = each ($days))
             {
               $dayofw = date("w", mktime(0, 0, 0, $set_month, $j, $set_year));
-              $daystr = $this->m_weekdays[$dayofw] . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
+              $daystr = text($this->m_weekdays[$dayofw]) . " " . ($format[$i] == "d" && $j < 10 ? sprintf("%02d", $j) : sprintf("%2d", $j));
               $result .= '<option value="'.$j.'" '.($j == $set_day ? "selected" : "").'>'.$daystr.'</option>';
             }
             $result .= '</select>';

@@ -8,6 +8,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/04/25 07:29:40  sandy
+   * fixed a bug in the data javascript for multilanguage
+   * added the stickyvars to the onetomany relations urls
+   *
    * Revision 4.2  2001/04/24 18:23:35  peter
    * Complete rewrite of the dateattribute javascript. This version fixes
    * a bug with the day-of-week added in the previous commit. The file has
@@ -22,6 +26,12 @@
   include "config.inc.php";
   include "atk/atktools.inc";
   include "atk/languages/".$config_languagefile;
+  // Application specific language file
+  if (file_exists("languages/".$config_languagefile))
+  {
+    include "languages/".$config_languagefile;
+  }
+
 
   /* english month names and weekdays */
   $m_months_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");

@@ -92,6 +92,10 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/04/25 07:29:40  sandy
+   * fixed a bug in the data javascript for multilanguage
+   * added the stickyvars to the onetomany relations urls
+   *
    * Revision 4.5  2001/04/24 13:51:50  ivo
    * Fixed some small bugs, and updated the language files, improved the menu.
    *
@@ -498,7 +502,7 @@ if (!defined("CLASS_ATKNODE_INC"))
      * Actions are mapped to security units. For example, both actions "save" and "add"
      * require access "add". If an item is not in this list, it's treated 'as-is'.
      */
-    var $m_securityMap = Array("save"=>"add",
+    var $m_securityMap = array("save"=>"add",
                                "update"=>"edit",
                                "copy"=>"add");
                                
@@ -508,7 +512,7 @@ if (!defined("CLASS_ATKNODE_INC"))
      * TODO: This may not be correct. We have to find a way to bind the 
      * select action to the action that follows after the select.
      */
-    var $m_unsecuredActions = Array("select");
+    var $m_unsecuredActions = array("select");
                                
     /** 
      * Sticky vars are variables that are passed in each url, or each form post.
@@ -520,7 +524,7 @@ if (!defined("CLASS_ATKNODE_INC"))
      * Sticky vars.. sticky vars.. what are they feeding you.... 
      * Sticky vars.. sticky vars.. it's not your fault!
      */
-    var $m_stickyVars = Array("atknodetype","atkreturnurl","atktarget","atkfilter");
+    var $m_stickyVars = array("atknodetype","atkreturnurl","atktarget","atkfilter");
 
     /*** Public functions ***/
 
@@ -2552,9 +2556,10 @@ if (!defined("CLASS_ATKNODE_INC"))
     
     /**
      * Register a new sticky var
-     * $varname can be a string, or an array of strings.
+     * @param $varname can be a string, or an array of strings.
+     * @param $global global or local stickyvar
      */
-    function addStickyVar($varname)
+    function addStickyVar($varname,$global=true)
     {
       if (is_array($varname))
       {

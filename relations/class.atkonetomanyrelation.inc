@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/04/25 07:29:40  sandy
+   * fixed a bug in the data javascript for multilanguage
+   * added the stickyvars to the onetomany relations urls
+   *
    * Revision 4.1  2001/04/24 13:51:50  ivo
    * Fixed some small bugs, and updated the language files, improved the menu.
    *
@@ -195,7 +199,7 @@
 
       //$returnurl = rawurlencode('dispatch.php?atknodetype='.$this->m_owner.'&atkaction=edit&atkselector='.$this->m_ownerInstance->primaryKey());
       $returnurl = rawurlencode($this->m_ownerInstance->stickyUrl('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->m_ownerInstance->primaryKey())));
-      $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkreturnurl='.$returnurl."&atkfilter=".rawurlencode($this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      $add_url = $this->m_ownerInstance->stickyUrl('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkreturnurl='.$returnurl."&atkfilter=".rawurlencode($this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()]));
       $output.="<tr><td><a href='".$add_url."'>".text("link_".$this->m_destination."_add")."</a></td></tr>";      
       $output.="</table><br>";
       return $output;
