@@ -53,7 +53,7 @@
      * @param obj 	&$node   instance of the node we create the navigation bar for
      * @param string $mode   the mode we are in, defaults to ""
      * @param string $filter a filter for the destination node
-     * @return a HTML string for navigating through records
+     * @return string a HTML string for navigating through records
      */
     function getNavigationUrls(&$node, $mode="", $filter="")
     {	 
