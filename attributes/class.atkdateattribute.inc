@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/10 21:39:56  peter
+   * Added some new last minute improvements for validation.
+   *
    * Revision 4.5  2001/05/10 21:13:50  peter
    * Total rewrite of date attribute, fixed some previous unknown bugs,
    * added server-side validation, made attribute more "stable".
@@ -143,6 +146,19 @@
     }
 
     /**
+     * Converts a date string (YYYMMDD) to an
+     * array with 3 fields (day, month, year).
+     * @param date the date string
+     * @return array with 3 fields (day, month, year)
+     */
+    function dateArray($date)
+    {
+      return array("day" => substr($date, 6, 2),
+                   "month" => substr($date, 4, 2),
+                   "year" => substr($date, 0, 4));
+    }
+
+    /**
      * Default Constructor, sets up the atkDateAttribute
      * The API of this method has changed, but is has been made
      * backwards compatible with existing modules!
@@ -202,16 +218,21 @@
       $current = 0;
       if (is_array($field) && checkdate($field["month"], $field["day"], $field["year"])) 
         $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
+      else
+      {
+        $date = $this->dateArray($field);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+      }
 
       /* minimum date */
       $minimum = 0;
       $str_min = $this->m_date_min;
       if (strlen($str_min) == 8)
       {
-        $d = substr($str_min, 6, 2);
-        $m = substr($str_min, 4, 2);        
-        $y = substr($str_min, 0, 4); 
-        if (checkdate($m, $d, $y)) $minimum = mktime(0, 0, 0, $m, $d, $y);
+        $date = $this->dateArray($str_min);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $minimum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_min = 0;
       }
 
@@ -220,10 +241,9 @@
       $str_max = $this->m_date_max;
       if (strlen($str_max) == 8)
       {
-        $d = substr($str_max, 6, 2);
-        $m = substr($str_max, 4, 2);        
-        $y = substr($str_max, 0, 4);                
-        if (checkdate($m, $d, $y)) $maximum = mktime(0, 0, 0, $m, $d, $y);
+        $date = $this->dateArray($str_max);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $maximum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_max = 0;        
       }
 
@@ -256,7 +276,7 @@
         for ($i = $str_min; $i <= $str_max; $i++)
         { 
           $tmp_date = getdate(mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));          
-          $result .= '<option value="'.$i.'">'.$this->formatDate($tmp_date, $str_format).'</option>';
+          $result .= '<option value="'.$i.'"'.($tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format).'</option>';
         }
         $result .= '</select>';
         return $result;
@@ -362,21 +382,14 @@
     {
       $is_date = $this->m_tableMeta['type'] == 'date';
             
-      if(is_array($rec[$this->fieldName()]))
-      {
-        $year = $rec[$this->fieldName()]["year"];
-        $month = $rec[$this->fieldName()]["month"].($is_date ? "-" :"");
-        $day = $rec[$this->fieldName()]["day"];
-      }
-      else
-      {
-        $year = substr($rec[$this->fieldName()], 0, 4);
-        $month = substr($rec[$this->fieldName()], 4, 2);
-        $day = substr($rec[$this->fieldName()], 6, 2);
-      }
+      if (!is_array($rec[$this->fieldName()]))
+        $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
+        
+      $year = $rec[$this->fieldName()]["year"];
+      $month = $rec[$this->fieldName()]["month"];
+      $day = $rec[$this->fieldName()]["day"];
 
       if (strlen($year) == 0) return "";
-
       $separator = ($is_date ? "-" :"");
       $result = $year.$separator.sprintf("%02d",$month).$separator.sprintf("%02d",$day);
       return $result;
@@ -406,15 +419,6 @@
       $result = $postvars[$this->formName()];
       return $result;
     }
-
-    /**
-     * Check if the attribute is empty
-     * @return true if it's empty
-     */
-    function isEmpty($postvars)
-    {
-      return (!is_array($postvars[$this->fieldName()]));
-    }
     
     /**
      * Validate the attribute it's value
@@ -427,17 +431,24 @@
       $current = 0;
       if (is_array($value) && checkdate($value["month"], $value["day"], $value["year"])) 
         $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
-      else return text("error_date_invalid");
+      else
+      {
+        $date = $this->dateArray($value);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+      }
+
+      /* check date */
+      if (empty($current)) return text("error_date_invalid");
 
       /* minimum date */
       $minimum = 0;
       $str_min = $this->m_date_min;
       if (strlen($str_min) == 8)
       {
-        $d = substr($str_min, 6, 2);
-        $m = substr($str_min, 4, 2);        
-        $y = substr($str_min, 0, 4);                
-        if (checkdate($m, $d, $y)) $minimum = mktime(0, 0, 0, $m, $d, $y);
+        $date = $this->dateArray($str_min);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $minimum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_min = 0;
       }
 
@@ -446,12 +457,11 @@
       $str_max = $this->m_date_max;
       if (strlen($str_max) == 8)
       {
-        $d = substr($str_max, 6, 2);
-        $m = substr($str_max, 4, 2);        
-        $y = substr($str_max, 0, 4);                
-        if (checkdate($m, $d, $y)) $maximum = mktime(0, 0, 0, $m, $d, $y);
+        $date = $this->dateArray($str_max);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $maximum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_max = 0;        
-      }
+      }      
       
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
