@@ -24,13 +24,6 @@
   include_once($config_atkroot."atk/defaultconfig.inc.php");
   include_once($config_atkroot."config.inc.php");
   include_once($config_atkroot."atk/atktools.inc");
-  include_once($config_atkroot."atk/languages/".$config_languagefile);
-  
-  /* application specific language file */
-  if (file_exists($config_atkroot."languages/".$config_languagefile))
-  {
-    include_once($config_atkroot."languages/".$config_languagefile);
-  }
 
   /* english month names and weekdays */
   $m_months_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
