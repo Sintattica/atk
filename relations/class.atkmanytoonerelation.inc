@@ -346,12 +346,24 @@
           // we use the current level to automatically return to this page
           // when we come from the select..
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
-
-          $result.= href("dispatch.php?atknodetype=".$this->m_destination.
-                                    "&atkaction=select&atktarget=".$atktarget,
-                         text("link_select_".getNodeType($this->m_destination)),
-                         SESSION_NESTED,
-                         true);
+          if ($this->m_destinationFilter!="")
+          {
+          	$parser = new atkStringParser($this->m_destinationFilter);
+            $filter = $parser->parse($record);
+	          $result.= href("dispatch.php?atknodetype=".$this->m_destination.
+                           "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
+                           text("link_select_".getNodeType($this->m_destination)),
+                           SESSION_NESTED,
+                           true);
+				  }
+				  else
+				  {
+            $result.= href("dispatch.php?atknodetype=".$this->m_destination.
+                           "&atkaction=select&atktarget=".$atktarget,
+                           text("link_select_".getNodeType($this->m_destination)),
+                           SESSION_NESTED,
+                           true);
+				  }
         }
         return $result;
       }
