@@ -635,7 +635,8 @@
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      for($i=0;$i<count($this->m_attribIndexList);$i++)
+      //for($i=0;$i<count($this->m_attribIndexList);$i++)
+      for($i=0;$i<=count($this->m_attribIndexList);$i++)
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
         
@@ -888,7 +889,7 @@
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      for($r=0;$r<count($this->m_attribIndexList)-1;$r++)
+      for($r=0;$r<count($this->m_attribIndexList);$r++)
       { 
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$r]["name"]];
         // fields that have not yet been initialised may be overriden in the url..
@@ -1271,7 +1272,7 @@
       // sort the list by that attribute.
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
-      for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
+      for($i=0;$i<count($this->m_attribIndexList);$i++)
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
         //$p_attrib = &$this->m_attribList[$attribname];
@@ -1347,7 +1348,7 @@
         }
 
         // Second loop.. this time for the search fields.
-        for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
+        for($i=0;$i<count($this->m_attribIndexList);$i++)
         {
           $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
@@ -1457,7 +1458,7 @@
           $output.=$actionCol;
         }
 
-        for($r=0;$r<(count($this->m_attribIndexList)-1);$r++)
+        for($r=0;$r<(count($this->m_attribIndexList));$r++)
         {
           $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$r]["name"]];
           //echo $r."/".(count($this->m_attribIndexList)-1)." - ".$this->m_attribIndexList[$r]["name"]."<br>";
@@ -1515,7 +1516,7 @@
         }
         
         // Third loop.. this time for the totals row.
-        for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
+        for($i=0;$i<count($this->m_attribIndexList);$i++)
         {
          $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
@@ -2658,7 +2659,16 @@
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) 
             {
-              $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              if(is_array($searchmode))
+              {
+                $search = $searchmode[$key];
+                if ($search=="") $search = atkconfig("search_defaultmode");
+                $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+              }
+              else
+              {
+                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              }
             }
             else 
             {
@@ -2772,7 +2782,16 @@
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) 
             {
-              $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              if(is_array($seachmode))
+              {
+                $search = $searchmode[$key];
+                if ($search=="") $search = atkconfig("search_defaultmode");
+                $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+              }
+              else
+              {
+                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              }
             }
             else 
             {
