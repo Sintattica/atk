@@ -411,6 +411,23 @@
       }
       return "";
     }
+    
+    function setTabs($tab)
+    {      
+      // normally, we would fill m_tabs with $tab
+      parent::setTabs($tab);
+      
+      // but we also need to pass this on to our destinstance.
+      $this->createDestination();
+      foreach(array_keys($this->m_destInstance->m_attribList) as $attrname)
+      {
+        $p_attrib = &$this->m_destInstance->m_attribList[$attrname];
+        if (count($p_attrib->m_tabs)==1&&$p_attrib->m_tabs[0]=="default")
+        {
+          $p_attrib->setTabs($tab);
+        }
+      }
+    }
 
     /**
      * Adds the attribute's edit / hide HTML code to the edit array. This method
@@ -422,7 +439,7 @@
      * @param $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {
+    {     
       /* hide */
       if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -511,15 +528,15 @@
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* seperator and name */
-              $arr["fields"][] = "-";
-              $arr["fields"][] = "<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>";
+              $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+              $arr["fields"][] = array("line"=>"<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
             }              
             $arr["fields"] = array_merge($arr["fields"], $a["fields"]);            
             
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* seperator */
-              $arr["fields"][] = "-";
+              $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
             }
           }
         }
@@ -577,19 +594,26 @@
      * Integrated onetoone relations must add all tabs that the destination
      * node has, to the main screen.
      */
-    function getTabs($action)
+    function getAdditionalTabs($action)
     {
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
-        return $this->m_destInstance->getTabs($action);
+        $detailtabs = $this->m_destInstance->getTabs($action);
+        if (count($detailtabs)==1 && $detailtabs[0]=="default")
+        {
+          // All elements in the relation are on the default tab. That means we should
+          // inherit the tab from the onetoonerelation itself.
+          return parent::getAdditionalTabs($action);
+        }
+        return $detailtabs;
       }
-      return parent::getTabs($action);
+      return parent::getAdditionalTabs($action);
     }
     
     // A onetoone must show itself on a tab, if one of the destination attributes
     // should be shown on that tab. 
     function showOnTab($tab)
-    {
+    {         
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
@@ -597,11 +621,13 @@
           $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
           if ($p_attrib->showOnTab($tab)) return true; // If we have one match, we can return true.
         }
-        return false;
+        // None of the destionation attributes wants to be displayed on the tab.
+        // If the entire onetoone itself is on that tab however, we should put all attribs on 
+        // this tab.
+        return parent::showOnTab($tab);
       }
-      
       return parent::showOnTab($tab);      
-    }
+    }        
     
   }
 ?>

@@ -222,6 +222,11 @@
     var $m_tabList = array();
     
     /**
+     * Keep track of tabs per attribute.
+     */
+    var $m_attributeTabs = array();
+    
+    /**
      * The type of node. (The constructor of a derived class passes its type
      * to the atkNode class.
      */
@@ -395,6 +400,7 @@
      */
     function atkNode($type, $flags=0)
     {
+      atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
       $this->m_flags = $flags;            
     }
@@ -524,7 +530,7 @@
           // add new tab(s) to the tab list ("*" isn't a tab!)
           if (!is_array($tab) && $tab != "*") $tab = array($tab);
           if ($tab != "*")
-          {
+          {            
             if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = atk_array_merge($this->m_tabList["add"], $tab);
             if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = atk_array_merge($this->m_tabList["edit"], $tab);
             if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = atk_array_merge($this->m_tabList["view"], $tab);
@@ -534,11 +540,11 @@
         $attribute->m_order = $order;
         $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tab,"order"=>$attribute->m_order);
         $attribute->m_index = $attrib_index;        
-        $attribute->m_tabs = $tab;
+        //$attribute->m_tabs = $tab;
+        $this->m_attributeTabs[$attribute->fieldname()] = $tab;
         $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
-      
       if(is_subclass_of($attribute,"atkrelation"))
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
@@ -697,9 +703,9 @@
         $p_attrib = &$this->m_attribList[$attribname];
         if(is_object($p_attrib))
         {
-          $list = atk_array_merge($list, $p_attrib->getTabs($action));
-        } else atkdebug("atknode::getTabs() Warning: $attribname is not een object!?");
-      }
+          $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
+        } else atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
+      }      
       return $list;
     }
 
@@ -1257,6 +1263,7 @@
      */
     function init()
     {
+      atkdebug("init for ".$this->m_type);
       global $g_modifiers;
 
       // Check if initialisation is not already done.
@@ -1269,6 +1276,9 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $p_attrib->m_ownerInstance = &$this;
+        
+        // tabje truken
+        $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
       }
 
       // See if there are modules active that modify all nodes with the same name
@@ -1313,7 +1323,8 @@
         $this->m_lock = &atkLock::getInstance();
       }
       
-      $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
+      $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));      
+      
 
       $this->m_initialised = true;
     }

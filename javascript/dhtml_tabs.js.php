@@ -1,9 +1,9 @@
 function showTab(tab)
 {
 	// Eerst de class namen van alle elementen verkrijgen
-	for (i = 0; i < document.getElementsByTagName("td").length; i++)
+	for (i = 0; i < document.getElementsByTagName("tr").length; i++)
 	{
-		var tabclass = document.getElementsByTagName("td").item(i).className;
+		var tabclass = document.getElementsByTagName("tr").item(i).className;
 		
 		// Dan de namen van alle tabs verkrijgen
 		for(j = 0; j < tabs.length; j++)
@@ -11,7 +11,7 @@ function showTab(tab)
 			// De elementen die op alle tabs voorkomen altijd weergeven
 			if (tabclass == "alltabs")
 			{
-				document.getElementsByTagName("td").item(i).style.display="block";
+				document.getElementsByTagName("tr").item(i).style.display="";
 			}
 			
 			// De overige elementen...
@@ -23,12 +23,12 @@ function showTab(tab)
 					// Van deze elementen kijken welke bij de tab horen die moet worden weergegeven en deze weergeven
 					if(tabclass.indexOf(tab) != -1)
 					{
-						document.getElementsByTagName("td").item(i).style.display="block";
+						document.getElementsByTagName("tr").item(i).style.display="";
 					}
 					// Van deze elementen kijken welke bij de tab horen die niet moet worden weergegeven en deze verbergen					
 					else
 					{
-						document.getElementsByTagName("td").item(i).style.display="none";				
+						document.getElementsByTagName("tr").item(i).style.display="none";				
 					}
 				}
 			}

@@ -80,7 +80,7 @@
      */
     function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="")
     {      
-      $node = &$this->m_node;      
+      $node = &$this->m_node;            
       
       /* get data, transform into form, return */            
       $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);                 
@@ -113,8 +113,7 @@
             $p_attrib = &$node->m_attribList[$attrib_name];
 
             $index = $p_attrib->m_index;
-            $tabs  = $node->m_attribIndexList[$index]["tabs"];
-            
+            $tabs  = $node->m_attribIndexList[$index]["tabs"];            
             if (count($node->getTabs($node->m_action)) > 1
                  && $p_attrib->showOnTab($tab))
               $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
@@ -164,64 +163,27 @@
       {
         $field = &$data["fields"][$i];
 				
-				$field_name = $field['name'];
-				
-				// elementen die bij een selectie van tabs horen
-				$tabnumber = count($field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs);
-				if($tabnumber > 1)
-				{
-					$tab_name = "tab_";
-					for($j = 0; $j < $tabnumber; $j++)
-					{
-						$tab_name .= $field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs[$j];
-						$tab_name .= ".";
-					}
-					// staat het element op de initieel geselecteerde tab?
-					if (strstr($tab_name,$tab)){ $initial_on_tab = "yes"; } else { $initial_on_tab = "no"; }
-				}
-				
-				// elementen die bij 1 of alle tabs horen
-				else
-				{
-					$tab_name = $field["attribute"]->m_ownerInstance->m_attribList[$field_name]->m_tabs[0];
-					
-					// Van deze elementen kijken welke bij de tab horen die moet worden weergegeven
-					if (strstr($tab_name,$tab)){ $initial_on_tab = "yes"; } else { $initial_on_tab = "no"; }	
-					
-					// elementen die bij alle tabs horen
-					if ($tab_name == "*")
-					{
-						$tab_name = "alltabs";
-						$initial_on_tab = "yes";
-					}
-					elseif (empty($tab_name))
-					{
-						$tab_name = "tab_default";
-					}
-					else
-					{				
-						$tab_name = "tab_" . $tab_name;
-					}
-				}
+				$field_name = $field['name'];								
 				
         $tplfield = array();
-				
-				$tplfield["tab"] = $tab_name;
-				$tplfield["initial_on_tab"] = $initial_on_tab;
+				        
+				$tplfield["tab"] = $field["tabs"][0]; // $this->getTab($field_name);
+				atkdebug("We gaan $field_name tonen op de tab ".$tplfield["tab"]);
+				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
 
 				/* check for seperator */
-        if (!is_array($field) && $field == "-" && $i > 0 && $data["fields"][$i-1] != "-")
+        if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
         {
           $tplfield["line"] = "<hr>"; 
         }
         /* double seperator, ignore */
-        elseif (!is_array($field) && $field == "-")
+        elseif ($field["html"] == "-")
         {
         }        
-        /* only HTML */
-        elseif (!is_array($field))
+        /* only full HTML */
+        elseif ($field["line"]!="")
         {
-          $tplfield["line"] = $field;
+          $tplfield["line"] = $field["line"];
         }
         /* edit field */
         else
@@ -286,6 +248,7 @@
 			return $result;
             
     }
+    
   }
 
 ?>

@@ -151,7 +151,6 @@
       $this->m_name = $name;
       $this->m_flags = (double)$flags;
       $this->setAttribSize($size);      
-      
       atkimport("atk.keyboard.atkkeyboard");
     }
 
@@ -318,12 +317,27 @@
         /* error? */
         $entry["error"] = $this->getError($error);
 
+        // on which tab?
+        $entry["tabs"] = $this->m_tabs;     
+
         /* the actual edit contents */
         $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
 
         $arr["fields"][] = $entry;
       }
     }
+    
+    function setTabs($tabs)
+    {      
+      if ($tabs==NULL)
+      {
+        $this->m_tabs = array("default");
+      }
+      else
+      {
+        $this->m_tabs = $tabs;
+      }
+    }        
     
     function getEdit($mode, &$defaults, $fieldprefix)
     {
@@ -812,7 +826,7 @@
      * Attributes can add tabs to tabbed screens. This method will be called to retrieve
      * the tabs.
      */
-    function getTabs($action)
+    function getAdditionalTabs($action)
     {
       return array();
     }

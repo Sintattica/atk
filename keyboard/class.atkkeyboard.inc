@@ -14,7 +14,8 @@
     
   class atkKeyboard
   {
-    var $m_dummy=""; // WORKAROUND: in php (4.3.1 at least) at least one member var must exist, to make it possible to create singletons.
+    // WORKAROUND: in php (4.3.1 at least) at least one member var must exist, to make it possible to create singletons.
+    var $m_dummy=""; 
     
     function &getInstance()
     {
@@ -26,12 +27,7 @@
       }
       
       return $s_kb;
-    }
-    
-    function atkKeyboard()
-    {
-      //lalala
-    }
+    }        
     
     function addFormElementHandler($id, $navkeys)
     {      
@@ -65,5 +61,4 @@
       $page->register_loadscript("kb_addListener(new $handlertype(".implode(",",$params)."));");
     }
   }
-
 ?>

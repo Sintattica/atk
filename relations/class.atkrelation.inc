@@ -51,7 +51,8 @@
     {
       if ($this->m_destInstance == "")
       {
-        $this->m_destInstance = &newNode($this->m_destination);
+       // $this->m_destInstance = &newNode($this->m_destination);
+        $this->m_destInstance = &getNode($this->m_destination);
 
         // Validate if destination was created succesfully
         if (!is_object($this->m_destInstance))
