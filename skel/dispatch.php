@@ -1,18 +1,23 @@
 <?
   // Setup the system
   require "atk/class.atknode.inc";
+  
+  if (count($HTTP_POST_VARS)>0) $HTTP_GET_VARS = $HTTP_POST_VARS;
 
-  // Create node
-  $obj = createNode($atknodetype); 
+   atkDataDecode(&$HTTP_GET_VARS);
+   $g_sessionManager->session_read(&$HTTP_GET_VARS);
+   
+   // Create node
+   $obj = createNode($HTTP_GET_VARS["atknodetype"]); 
 
-  if (count($HTTP_GET_VARS)>0)
-  {
-    $obj->dispatch($HTTP_GET_VARS);
-  }
-  else
-  {
-    $obj->dispatch($HTTP_POST_VARS);
-  }
+   if (is_object($obj))
+   {
+     $obj->dispatch($HTTP_GET_VARS);     
+   }
+   else
+   {
+     atkdebug("No object created!!?!");
+   }
 
   $g_layout->outputFlush();
 ?>
