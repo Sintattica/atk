@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.102  2001/09/12 15:08:35  ivo
+   * Removed a double selectDb that crept in the code 10 revisions back.
+   *
    * Revision 4.101  2001/09/12 09:04:58  ivo
    * Bugfixes to module modifiers that corrupted atknodes.
    *
@@ -2353,7 +2356,6 @@
     function action_edit()
     {
       $recordset = $this->selectDb($this->m_postvars['atkselector']);      
-      $recordset = $this->selectDb($this->m_postvars['atkselector']);      
       
       $this->editPage($recordset[0]);
     }
@@ -2794,8 +2796,8 @@
      * @param $limit Limit (Not supported for Oracle databases yet)
      */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="")
-    {
-      global $g_db;
+    {      
+      global $g_db;      
       
       $this->m_records = array();
       $selectlist = array();
