@@ -709,8 +709,6 @@
           else $tdcount++;
 
           /* html source */
-          atk_var_dump(array_keys($field), "veld[html]!");
-          atkdebug(get_class($field["attribute"])."attribute!");
           $editsrc = $field["html"];
 
           /* obligatory indicator */
