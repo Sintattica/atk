@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.22  2001/07/25 10:33:45  maurice
+   * Created a workaround for a bug in php4.0.4
+   *
    * Revision 1.21  2001/07/18 16:10:18  ivo
    * New feature: atkToolbar. Works in IE4 (or newer) only.
    *
@@ -91,12 +94,14 @@
   session_start();
   session_register("g_sessionData");  
      
-//  echo "<hr>beginstack:<pre>";var_dump($g_sessionData["default"]["stack"]);echo '</pre>';
   define(SESSION_DEFAULT,0);
   define(SESSION_NEW,1);
   define(SESSION_NESTED,2);
   define(SESSION_BACK,3);
-  
+
+  /* Workaround for a PHP4.0.4 bug */
+  $atklevel = trim($atklevel);
+
   class atkSessionManager
   {
     var $m_namespace; 
@@ -200,7 +205,6 @@
         $postvars[$var] = $value;
       }                             
           
-      //var_dump($g_sessionData[$this->m_namespace]["globals"]);
     }
     
     function stackscope(&$postvars)
@@ -222,7 +226,6 @@
     //echo '</pre><hr>';
       
       $currentitem = $stack[$atklevel];
-                
       if (!isset($currentitem)||$currentitem=="")
       {    
         atkdebug("New level on session stack");
