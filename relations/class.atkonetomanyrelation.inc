@@ -351,9 +351,14 @@
     function isEmpty(&$record)
     {
     	if ($this->hasFlag(AF_OBLIGATORY))
-	    	return empty($this->load(null,$record));
+    	{
+	    	$loaded = $this->load(null,$record);
+	    	return empty($loaded);
+    	}
 	    else
+	    {
 	    	return parent::isEmpty($record);
+	    }
     }
 
 
