@@ -130,8 +130,10 @@
      */
     function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
-      global $txt_date_format_edit, $txt_date_format_view, $config_atkroot;
-
+      $txt_date_format_edit = atktext("date_format_edit","","","","",true);
+      $txt_date_format_view = atktext("date_format_view","","","","",true);
+      $config_atkroot = atkconfig("atkroot");
+      
       /* *** API SUPPORT HACK ***
        * Because of backwards compatability and because of the number
        * of arguments this method has we also support the old API: ($name, $flags=0).

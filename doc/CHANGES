@@ -36,6 +36,8 @@ Changes in ATK 5.0.7
 * Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute [Boy]
 * Made atkFuzzySearch attrib use multiselect attribute and use the
   new flags by default [Boy]
+* Changed deprecated $txt_ global variables in mailreport() and the
+  atkdateattrib to atktext() calls [Boy]
 
 Changes in ATK 5.0.6
 --------------------

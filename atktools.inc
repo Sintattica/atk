@@ -833,8 +833,9 @@
    */
   function mailreport()
   {
-    global $config_mailreport, $g_error_msg, $g_debug_msg;
-    global $txt_app_title, $g_sessionManager, $g_sessionData, $g_user;
+    global $g_error_msg, $g_debug_msg, $g_sessionManager, $g_sessionData, $g_user;
+    $config_mailreport = atkconfig("mailreport");
+    $txt_app_title = atktext("app_title");
 
     if ($config_mailreport!="") // only if enabled..
     {
