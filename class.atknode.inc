@@ -106,6 +106,11 @@
   {
     include_once($config_atkroot."languages/".$config_languagefile);
   }
+  // Application specific language file
+  if (file_exists("languages/".$config_languagefile))
+  {
+    include_once("languages/".$config_languagefile);
+  }
 
   // Global database..
   $atkdb = "atk".$config_database."db";
