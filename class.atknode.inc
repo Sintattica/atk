@@ -2784,6 +2784,7 @@
 
     function action_copy()
     {
+      atkdebug("atknode::action_copy()");
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
       if(count($recordset)>0)
       {
@@ -2799,6 +2800,7 @@
 
     function action_editcopy()
     {
+      atkdebug("atknode::action_editcopy()");
       $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
 
       if(count($recordset) > 0)
@@ -3550,6 +3552,8 @@
     {
       global $g_db;
 
+      atkdebug("atkNode::addDb() start ".$this->m_type." mode: ".$mode);
+
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
@@ -3561,7 +3565,7 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if ($p_attrib->needsInsert($record))
+        if ($mode != "add" || $p_attrib->needsInsert($record))
         {
           if ($p_attrib->hasStore($mode))
           {
@@ -3604,6 +3608,7 @@
       if ($exectrigger) $this->postAdd($record, $mode);
 
       atkdebug($g_db->m_error);
+      atkdebug("atkNode::addDb() stop ".$this->m_type." mode:".$mode);
     }
 
     /**
