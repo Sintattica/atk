@@ -18,9 +18,7 @@
    
   /**
    * The atkNumberAttribute can be used for numeric values.
-   *
-   * @todo If decimals are set, than input should be rounded
-   *       to the correct number of decimals.   
+   *   
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
@@ -63,7 +61,7 @@
         return "NULL";
 
       if($this->m_decimals>0)
-        return (float) $rec[$this->fieldName()];
+        return round((float) $rec[$this->fieldName()], $this->m_decimals);
       else
         return (int) $rec[$this->fieldName()];
     }
