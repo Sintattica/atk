@@ -15,7 +15,7 @@
     var $m_endTime = 23;
     var $m_steps = array("0","30");
     var $m_default = array();
-    
+
     /**
      * Constructor
      * @param $name        Name of the attribute
@@ -27,7 +27,6 @@
      */
     function atkTimeAttribute($name, $beginTime, $endTime, $steps, $default="", $flags=0)
     {
-		  
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_beginTime = $beginTime;
       $this->m_endTime   = $endTime;
@@ -43,22 +42,19 @@
      * @return text string of $record
      */
     function display($record)
-    {   
-		  
+    {
 	  	$value = $record[$this->fieldName()];
-			atkdebug("TIJD: ".$value);
       $tmp_time = $value["hours"].":".$value["minutes"].":".$value["seconds"];
 			if (!empty($tmp_time)) return $tmp_time;
   		else return "";
-      
     }
 
     function fetchValue($postvars)
     {
       $result = $postvars[$this->formName()];
       return $result;
-    } 
-		
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -72,10 +68,10 @@
 			//echo "<br>Action: ".$this->m_ownerInstance->m_postvars["atkaction"];
 			//var_dump($this->m_ownerInstance->m_postvars);
       $field = $record[$this->fieldName()];
-			
+
       // set vars for hour / minutes dropdowns
       $m_hourBox = "<select name=\"".$fieldprefix.$this->fieldName()."[hours]\">\n";
-      $m_minBox  = "<select name=\"".$fieldprefix.$this->fieldName()."[minutes]\">\n";    
+      $m_minBox  = "<select name=\"".$fieldprefix.$this->fieldName()."[minutes]\">\n";
 
       // set default values for both boxes
       // depends upon atkaction
@@ -90,7 +86,7 @@
         $m_defHour = $field["hours"];
         $m_defMin  = $field["minutes"];
       }
-       
+
       // generate hour dropdown
       for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
       {
@@ -108,13 +104,13 @@
       // generate minute dropdown
       for ($i=0;$i<=count($this->m_steps)-1;$i++)
       {
-			 
+
        if ($this->m_steps[$i] == $m_defMin)
        {
         $sel = " selected";
        }
        else
-       {   
+       {
         $sel = "";
        }
 
@@ -132,42 +128,42 @@
 
     function value2db($rec)
     {
-		 
+
 		 $hours = $rec[$this->fieldName()]["hours"];
      $minutes = $rec[$this->fieldName()]["minutes"];
      $seconds = $rec[$this->fieldName()]["seconds"];
 
      if (empty($hours) || empty($minutes) || empty($seconds)) return "";
      $separator = ":";
-		 
+
 		 $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
-		 
+
      return $result;
     }
-    
+
 		/**
      * Convert database value to time array
      * @param $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
     function db2value($rec)
-    { 		    
+    {
       if (strlen($rec[$this->fieldName()]) == 0 ) return "";
       return array("hours"=>substr($rec[$this->fieldName()], 0, 2),
                    "minutes"=>substr($rec[$this->fieldName()], 3, 2),
                    "seconds"=>substr($rec[$this->fieldName()], 6, 2));
     }
-		
+
     /**
-     * Returns a piece of html code that can be used in a form to search values   
+     * Returns a piece of html code that can be used in a form to search values
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
     function search($record="")
-    {      
+    {
      return "";
     }
-    
+
      function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -177,7 +173,7 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
- 
-    
+
+
   }
 ?>
