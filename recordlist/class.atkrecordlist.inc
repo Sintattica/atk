@@ -272,11 +272,11 @@
 							
 							if(file_exists($icon))
 							{
-								$link = '<img width="16" height="16" border="0" src="'.$icon.'" alt="'.$name.'">';
+								$link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.$name.'">';
 							}
 							else
 							{
-								$link = '<img width="16" height="16" border="0" src="'.$icon_path.'default.gif'.'" alt="'.$name.'">';
+								$link = '<img width="16" height="16" border="0" src="'.$icon_path.'default.gif'.'" title="'.$name.'">';
 							}
 						}
 						
