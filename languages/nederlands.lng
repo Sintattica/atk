@@ -203,4 +203,5 @@
   $txt_feedback_delete = "Het item is verwijderd.";
   $txt_feedback_save = "Het item is toegevoegd.";
   $txt_feedback_update = "De wijzigingen zijn opgeslagen.";
+  $txt_feedback = "Bevestiging";
 ?>

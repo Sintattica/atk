@@ -170,5 +170,6 @@
   $txt_feedback_delete = "The item has been deleted.";
   $txt_feedback_save = "The item has been added.";
   $txt_feedback_update = "The modifications have been saved.";
+  $txt_feedback = "Feedback";
   
 ?>
