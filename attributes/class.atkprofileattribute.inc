@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.4  2001/09/11 11:17:45  ivo
+   * atkprofileattribute now works correctly with modules.
+   *
    * Revision 4.3  2001/09/10 12:32:46  ivo
    * Improved module support. Modules can now create modifiers for other nodes.
    * Modules and external modules are now treated equally.
@@ -125,7 +128,7 @@
               {
                 $action = $actionarr[$i];
                 if (substr($action,0,1)=="*") $action=substr($action,1);
-                $result.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
+                $result.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
                 $result.='> '.text($action).'&nbsp;&nbsp;&nbsp;';
               }
@@ -143,8 +146,23 @@
       $actions = Array();
       for($i=0;$i<count($checkboxes);$i++)
       {
-        list($mod, $action) = split("\.",$checkboxes[$i]);
-        $actions[$mod][] = $action;            
+        $elems = split("\.",$checkboxes[$i]);
+        if (count($elems)==3)
+        {          
+          $node = $elems[0].".".$elems[1];
+          $action = $elems[2];
+        }
+        else if (count($elems)==2)
+        {
+          $node = $elems[0];
+          $action = $elems[1];
+        }
+        else
+        {
+          // never happens..
+          atkdebug("profileattribute encountered incomplete combination");
+        }
+        $actions[$node][] = $action;            
       }
       return $actions;
     }
