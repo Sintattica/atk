@@ -32,7 +32,7 @@
   $config_auth_accesstable = "access";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";
-  $config_auth_accountdisablefield = "locked";
+  $config_auth_accountdisablefield = "";
   $config_auth_levelfield = "entity";
   $config_auth_mail_port = "110"; // default pop3 port
   $config_auth_mail_virtual = false; // no vmail.
