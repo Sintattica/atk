@@ -708,4 +708,123 @@
     $dump .= "</ul>";
     return $dump;
   }
+  
+  /**
+   * This function writes data to the browser for download.
+   * $data is the data to download.   
+   * $filename is the name the file will get when the user downloads it.
+   * $compression can be "zip", "gzip" or "bzip", which causes the data
+   *              to be compressed before transmission.
+   */
+  function exportData($data, $filename, $compression="")
+  {   
+    $browser = getBrowserInfo();
+    if (eregi("ie", $browser["browser"]))
+    {
+      $mime = "application/octetstream";
+      $disp = 'inline';
+    }
+    else if (eregi("opera",$browser["browser"]))
+    {
+      $mime = "application/octetstream";
+      $disp = 'attachment';
+    }
+    else
+    {
+      $mime = "application/octet-stream";
+      $disp = 'attachment';
+    }
+    
+    if($compression=="bzip")
+		{
+		  $mime='application/x-bzip';
+		 $filename.= ".bz2";
+		}
+		else if($compression=="gzip")
+		{
+		  $mime_type='application/x-gzip';
+		  $filename.= ".gz";
+		}
+    else if($compression=="zip")
+		{
+		  $mime_type='application/x-zip';
+		  $filename.= ".zip";
+		}
+		      
+    header('Content-Type: '. $mime);    
+    header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+		
+		// 1. as a bzipped file
+	  if($compression=="bzip")
+		{
+		  if (@function_exists('bzcompress')) 
+			{
+        echo bzcompress($data);
+      } 
+		}
+		// 2. as a gzipped file
+		else if ($compression == 'gzip') 
+		{
+      if (@function_exists('gzencode')) 
+			{        
+        echo gzencode($data);
+      }
+    }
+    else if ($compression == 'zip') 
+		{
+      if (@function_exists('gzcompress')) 
+			{        
+        echo gzcompress($data);
+      }
+    }
+    // 3. on screen
+    else 
+		{
+      echo $data;
+    }
+		
+    exit;
+  }
+  
+  /**
+   * This function writes a binary file to the browser for download.
+   * $file is the local filename (the file you want to open on the serverside)
+   * $filename is the name the file will get when the user downloads it.
+   */
+  function exportFile($file, $filename)
+  {   
+    $browser = getBrowserInfo();
+    if (eregi("ie", $browser["browser"]))
+    {
+      $mime = "application/octetstream";
+      $disp = 'inline';
+    }
+    else if (eregi("opera",$browser["browser"]))
+    {
+      $mime = "application/octetstream";
+      $disp = 'attachment';
+    }
+    else
+    {
+      $mime = "application/octet-stream";
+      $disp = 'attachment';
+    }
+    
+    //$mime = "		          
+		
+    $fp = @fopen($file,"rb");
+    if ($fp!=NULL)
+    {
+      header('Content-Type: '. $mime);    
+      header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+      header('Pragma: no-cache');
+      header('Expires: 0');
+		  fpassthru($fp);    
+      fclose($fp);  
+      return true;
+    }
+    return false;
+  }
 ?>
