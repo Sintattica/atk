@@ -104,7 +104,7 @@
          if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
          else $res[$i] = array("title"=>$i,
                                "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".
-                                                  $action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".$ATK_VARS['atkselector']."&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
+                                                  $action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".rawurldecode($ATK_VARS['atkselector'])."&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
       }
 
       if ($curr < $pages)
