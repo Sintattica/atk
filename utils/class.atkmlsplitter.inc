@@ -37,7 +37,8 @@
     {
       atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
       $excludelist = array();
-      
+      $relations = array();
+             
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
@@ -49,7 +50,9 @@
           if(is_a($node->m_attribList[$attribname],"atkManyToOneRelation")||
              is_a($node->m_attribList[$attribname],"atkOneToOneRelation"))
           {
-            $p_attrib = &$node->m_attribList[$attribname];
+          	$relations[$attribname] = $node->m_attribList[$attribname];
+            
+          	$p_attrib = &$node->m_attribList[$attribname];
             $p_attrib->createDestination();
             $attribvalue=$p_attrib->m_destInstance->m_attribList[$p_attrib->m_destInstance->primaryKeyField()]->value2db($record[$attribname]);
             $record[$p_attrib->fieldName()]=$attribvalue;
@@ -59,6 +62,7 @@
         }
       }
       
+           
       $languages = $this->getLanguages($node);
       $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
 
@@ -69,8 +73,8 @@
         if($node->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
         $node->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
         $autoincrementflags[]=$primkey;
-      }
-      
+      }      
+       
       foreach($languages as $language)
       {
         if($atklngrecordmodes[$language]["mode"]=="updatelngfield")
@@ -88,6 +92,7 @@
           }
         }
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
+        
         if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
         switch($mode)
         {
@@ -104,7 +109,14 @@
         // restore the attrib flags
         $node->m_attribList[$primkey]->addFlag(AF_AUTO_INCREMENT);
       }
-      sessionStore("atklng_".$node->m_type,NULL); // deleting modes
+      
+      foreach($relations as $attribname=>$relation)
+      { 
+      	// restore the relations
+      	$node->m_attribList[$attribname]=$relation;
+      }
+      
+      sessionStore("atklng_".$node->m_type,NULL); // deleting modes      
     }
     
     /**
