@@ -152,7 +152,7 @@
         // check superuser       
         if ($config_administratorpassword!=""&&$PHP_AUTH_USER=="administrator"&&$PHP_AUTH_PW==$config_administratorpassword)
         {
-          $this->m_user = Array("name"=>"administrator","level"=>-1);
+          $this->m_user = Array("name"=>"administrator","level"=>-1, "access_level"=>9999999);
           // for convenience, we also store the user as a global variable.                     
           atkdebug("Administrator (configfile) logged in");
           $authenticated = true;
@@ -160,7 +160,7 @@
         // check guest user
         else if ($config_guestpassword!=""&&$PHP_AUTH_USER=="guest"&&$PHP_AUTH_PW==$config_guestpassword)
         {
-          $this->m_user = Array("name"=>"guest","level"=>-2);
+          $this->m_user = Array("name"=>"guest","level"=>-2, "access_level"=>0);
           // for convenience, we also store the user as a global variable.                     
           atkdebug("Guest (configfile) logged in");
           $authenticated = true;
