@@ -81,7 +81,7 @@
           // if action is admin, we don't show the cancelbutton..
           $params["buttons"][] ='<input type="submit" class="btn_cancel" name="atkcancel" value="'.text('cancel').'">';
         }
-        $params["formend"] = '</form><SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
+        $params["formend"] = '</form><SCRIPT type="text/javascript" language="JavaScript">placeFocus()</SCRIPT>';
         
         $output = $ui->renderAction("add", $params);
               

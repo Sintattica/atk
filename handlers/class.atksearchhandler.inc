@@ -83,7 +83,7 @@
 
         $params["content"] = $this->invoke("searchForm", $record);
         $params["buttons"][] = '<input type="submit" class="btn_search" value="'.text('search').'">';
-        $params["formend"] = '</form><SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';      
+        $params["formend"] = '</form><SCRIPT type="text/javascript" LANGUAGE="JavaScript">placeFocus()</SCRIPT>';      
       
         $output = $ui->renderAction("search", $params);
               
