@@ -64,7 +64,7 @@
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
       include_once("config.nodes.inc");
-      foreach ($g_modules as $modname)
+      foreach ($g_modules as $modname => $pathname)
       {
         $mod_inst = &getModule($modname);
         if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
@@ -116,11 +116,8 @@
       }
 
       /*** per module ***/
-      foreach ($g_modules as $modname)
+      foreach ($g_modules as $modname => $pathname)
       {
-        $mod_inst = &getModule($modname);
-        if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
-
         $nodes = $g_nodes[$modname];
 
         if (count($nodes) > 0)
