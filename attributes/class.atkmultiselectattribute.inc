@@ -91,7 +91,7 @@
        return implode(', ',$res);
     }
 
-  /**
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
@@ -99,23 +99,28 @@
      */
     function edit($record="", $fieldprefix="")
     {
-    global $g_layout,$config_atkroot;
-    $rows = $this->m_rows;
-    $modRows =$rows-1;
-    $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-     // todo: configurable rows
-     if (count($this->m_values)>4)
-     {
-       $result.='<div align="left"><font size="-2">
-                 [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
-                      text("check_all").
-               '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
-                      text("check_none").
-               '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
-                      text("invert_selection").'</a>]</font></div>';
-     } 
-     $result .="\n<table><tr>\n";  
-     $explode = explode("|",$record[$this->fieldName()]);
+      global $g_layout,$config_atkroot;
+      $rows = $this->m_rows;
+      $modRows =$rows-1;
+      $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
+      // todo: configurable rows
+      if (count($this->m_values)>4)
+      {
+        $result.='<div align="left"><font size="-2">
+                  [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                       text("check_all").
+                  '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                       text("check_none").
+                  '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                       text("invert_selection").'</a>]</font></div>';
+      } 
+      $result .="\n<table><tr>\n";  
+      $explode = array();
+      if (!empty($record[$this->fieldName()]))
+      {
+         $explode = explode("|",$record[$this->fieldName()]);
+      }
+            
       for ($i=0;$i<count($this->m_values);$i++)
       {
         if (in_array($this->m_values[$i],$explode))
