@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.40  2001/05/18 09:14:27  ivo
+   * atkaction is now a sessionvar instead of pagevar.
+   *
    * Revision 4.39  2001/05/18 07:49:42  ivo
    * Fixes to sessionmanagement.
    *
@@ -468,12 +471,12 @@
       
    // session vars are valid until they are set to something else. if you go a session level higher,
    // the next level will still contain these vars (unless overriden in the url)
-   $g_sessionVars = array("atknodetype","atkfilter","atkselector");
+   $g_sessionVars = array("atknodetype","atkfilter","atkselector","atkaction");
    
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
 
-   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree","atkaction");
+   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree");
 
   /************* MODULE HANDLING *************/
 
