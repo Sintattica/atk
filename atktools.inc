@@ -609,7 +609,7 @@
   function mailreport()
   {
     global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS;
-    global $HTTP_GET_VARS, $HTTP_POST_VARS, $txt_app_title, $g_sessionManager, $g_sessionData;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $txt_app_title, $g_sessionManager, $g_sessionData, $g_user;
 
     if ($config_mailreport!="") // only if enabled..
     {
@@ -646,6 +646,16 @@
           $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
         }
       }
+      
+      $body.= "\n\nCurrent User:\n".str_repeat("-",70)."\n";
+      if (is_array($g_user) && count($g_user))
+      {      
+        foreach($g_user as $key => $value)
+        {
+          $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+        }
+      }
+      else $body.= "Not known\n";
 
       if (is_object($g_sessionManager))
       {
@@ -657,12 +667,12 @@
           $body.="\nStack level $i:\n";
           $item = $stack[$i];
           if (is_array($stack[$i]))
-	  {
-	    foreach ($item as $key=>$value)
-            {
+	       {
+            foreach ($item as $key=>$value)
+            {              
               $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
             }
-	  }
+          }
         }
         $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
         if(count($ns_globals)>0)
