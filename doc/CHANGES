@@ -40,7 +40,12 @@ Changes in ATK 5.0.3
 * Updated atktools documentation. [Boy]
 * Fixed typo in a flag that caused a wrong count query. (bug #307) [Nicola]
 * Fixed bug in the atkmanytoonerelation. (bug #308) [Ruiz]
-* Fixed bug in saving float values (atknumberattribute). [Martin]
+* Fixed bug in saving float values (atknumberattribute) [Martin]
+* Bugfix in the mlsplitter The default language of an attribute wasn't
+  restored to its original value. When using multiple attributes of the
+  same type this could lead to not updating the attribute correctly. [Martin]
+* Bugfix in the onetoonerelation. Changed the behaviour of the addtoquery.
+  When empty the refkey is now always updated. [Martin]
 
 Changes in ATK 5.0.2
 --------------------
