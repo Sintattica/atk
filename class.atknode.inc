@@ -101,16 +101,9 @@
     include_once("languages/".$config_languagefile);
   }
 
-  // Global database..
-  $atkdb = "atk".$config_database."db";
-  $g_db = new $atkdb();
-
-  $g_db->m_database = $config_databasename;
-  $g_db->m_user     = $config_databaseuser;
-  $g_db->m_password = $config_databasepassword;
-  $g_db->m_host     = $config_databasehost;
-  $g_db->m_debug    = 0;
-
+  // Create database object.
+  include_once($config_atkroot."atk/include/db.inc");
+  
   /**
    * Sticky vars are variables that are passed in each url, or each form post.
    * There are a few default sticky vars, but nodes can add their own sticky vars
