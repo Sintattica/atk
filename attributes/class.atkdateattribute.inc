@@ -34,6 +34,8 @@
      */
     function formatDate($date, $format, $weekday=1)
     {
+      static $langcache = array();
+            
       /* format month */
       $format = str_replace("M", "%-%",   $format);
       $format = str_replace("F", "%=%",   $format);
@@ -47,14 +49,24 @@
 
       /* get date string */
       $str_date = adodb_date($format, $date[0]);
-
+      
+      $month = $date['month'];
+      $shortmonth = substr(strtolower($date["month"]), 0, 3);
+      
+      /* store the text calls */
+      if(!$langcache[$month])
+      {
+        $langcache[$month]= text(strtolower($month),"","atk");
+      }
+      
+      if(!$langcache[$shortmonth])
+      {
+        $langcache[$shortmonth] = text($shortmonth,"","atk");
+      }
+      
       /* replace month/week name */
-      static $month;
-      if (!$month) $month = text(strtolower($date["month"]),"","atk");
-      static $shortmonth;
-      if (!$shortmonth) $shortmonth = text(substr(strtolower($date["month"]), 0, 3),"","atk");
-      $str_date = str_replace("%-%", $shortmonth, $str_date);
-      $str_date = str_replace("%=%", $month, $str_date);
+      $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
+      $str_date = str_replace("%=%", $langcache[$month], $str_date);
       if ($weekday) $str_date = str_replace("%*%", text(strtolower($date["weekday"]),"","atk"), $str_date);
 
       /* return string */
@@ -153,7 +165,6 @@
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
-      global $config_lang;
       $page = &atkPage::getInstance();
 
       /* register javascript */
@@ -163,7 +174,7 @@
       {
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-$config_lang.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("lang").".js");
         
         atkimport("atk.ui.atktheme");
         $theme = &atkTheme::getInstance();        
@@ -601,7 +612,6 @@
     function dbFieldType()
     {    
       return "date";
-    }
-    
+    }  
   }
 ?>
