@@ -3215,11 +3215,11 @@
         if(!is_array($action))
           $this->m_securityMap[$action] = $mapped;
         else
-          foreach $action as $value
+          foreach ($action as $value)
             $this->m_securityMap[$value] = $mapped;
       else
         if(is_array($action))
-          foreach $action as $key=>$value
+          foreach ($action as $key=>$value)
             $this->m_securityMap[$key] = $value;
     }
   }
