@@ -1184,7 +1184,7 @@
       foreach ($list as $t)
       {
         $title = text("tab_$t",$this->m_type);
-        $url = $PHP_SELF."?atknodetype=".(empty($this->m_module) ? "" : $this->m_module.".").$this->m_type."&atkaction=".$this->m_action."&atktab=".$t;
+        $url = $PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
         if ($this->m_action == "view") $link = session_url($url, SESSION_DEFAULT);
         else $link = "javascript:atkSubmit('".atkurlencode(session_url($url, SESSION_DEFAULT))."')";
         $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
