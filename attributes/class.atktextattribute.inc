@@ -11,13 +11,19 @@
    */
   class atkTextAttribute extends atkAttribute
   {
+    // number of rows of the edit box
+    var $m_rows;
     /**
      * Constructor
      * @param $name Name of the attribute
      * @param $flags Flags for this attribute
      */
-    function atkTextAttribute($name, $flags=0)
-    {
+    function atkTextAttribute($name,$rows,$flags=0)
+ { 
+      
+      // compatiblity with old versions
+      if (func_num_args()==3) $this->m_rows=$rows;
+      else                    $flags = $rows;
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
@@ -30,9 +36,10 @@
     function edit($record="", $fieldprefix="")
     {
       global $g_layout;
- 	    // todo: configurable rows
+      $rows = $this->m_rows;
+      if ($rows =="") $rows = 10;
 	    // watch out, $maxsize isn't supported for a textarea.
-      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="10" cols="'.$g_layout->maxInputSize().'" wrap="virtual"'.               
+      $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="'.$rows.'" cols="'.$g_layout->maxInputSize().'" wrap="virtual"'.               
                '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
