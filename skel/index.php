@@ -23,6 +23,9 @@
    * $Id$
    */
 
+  /**
+   * @internal includes
+   */
   $config_atkroot = "./";  
   include_once("atk.inc");
 

@@ -1,8 +1,34 @@
 <?php
-  // ATK Configuration file. 
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * This file is the skeleton config file, which you can copy
+   * to your application dir and modify if necessary. It contains
+   * many default settings that you may adjust to the needs of
+   * your application. If you don't want endusers to modify a 
+   * setting, it is good practice to move them to a separate
+   * atkconf.inc file, which you include near the bottom of this 
+   * configfile.
+   *
+   * @package atk
+   * @subpackage skel
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */  
   
-  // Unique application identifier
-  // Set this when using multiple applications within one website
+  /**
+   * Unique application identifier
+   */
   $config_identifier = "atkapp";
 
   //----------------- DATABASE CONFIGURATION --------------------
