@@ -142,4 +142,10 @@
 
   // fullscreen mode (IE only)
   $config_fullscreen = false;
+  
+  // Module/node checking for strings in atkLanguage (if you don't know, don't change)
+  // comment out to disable checking for module of node
+  // 1 to check just for node
+  // 2 to check for module and node
+  $config_atklangcheckmodule = 2;
 ?>
