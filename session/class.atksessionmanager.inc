@@ -12,7 +12,11 @@
   $cookie_params = session_get_cookie_params();
   session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($SCRIPT_NAME)));
   session_start();
-  session_register("g_sessionData");
+  session_register("g_sessionDataAll");
+
+  global $g_sessionDataAll, $g_sessionData, $config_identifier;
+  if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
+  $g_sessionData = &$g_sessionDataAll[$config_identifier];
 
   define(SESSION_DEFAULT,0); // stay at current stacklevel
   define(SESSION_NEW,1);     // new stack
@@ -354,7 +358,7 @@
         // is different. Let's fork the stack.
         atkdebug("Multiple windows detected: levelstack forked (atkprevlevel=$atkprevlevel, real: $prevlevelfromstack)");
         $newid = atkStackID(true);
-        
+
         // We must also make this stack 'ok' with the atkprevlevel.
         // (there may be more levels on the stack than we should have, because
         // we forked from another window which might already be at a higher
@@ -364,9 +368,9 @@
         {
           atkdebug("popped an item out of the forked stack");
           array_pop($stack);
-        }        
-        
-        $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;        
+        }
+
+        $g_sessionData[$this->m_namespace]["stack"][$newid] = $stack;
         return;
       }
     }

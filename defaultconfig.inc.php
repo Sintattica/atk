@@ -1,4 +1,6 @@
 <?php
+  // the application identifier (used for sessions)
+  $config_identifier   = "default";
 
   // set several default configuration options
   $config_databasehost = "localhost";
@@ -71,7 +73,7 @@
 
   // Whatever tabs are enabled or not
   $config_tabs = true;
-  
+
   // include optimizer
   $config_atk_optimized_includes = true;
 ?>
