@@ -57,6 +57,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.119  2001/10/11 11:59:57  ivo
+   * Added init.sql file to create db_sequence table, and set default sequence
+   * to tablename instead of 'node' (finally!)
+   *
    * Revision 4.118  2001/10/10 11:33:49  ivo
    * Added stickyurl feature.
    *
@@ -738,9 +742,10 @@
      * @param $tablename The Tablename
      * @param $seq sequence
      */
-    function setTable($tablename,$seq="node")
+    function setTable($tablename,$seq="")
     {
       $this->m_table      = $tablename;
+      if ($seq=="") $seq = $tablename;
       $this->m_seq        = $seq;            
     }
     
