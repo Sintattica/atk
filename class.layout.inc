@@ -363,7 +363,7 @@
      */
     function tabs_top($tabs)
     {
-      $this->tpl("tabs_stop", array("tabs"=>$tabs));      
+      $this->tpl("tabs_top", array("tabs"=>$tabs));      
     }
 
     /**
