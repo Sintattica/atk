@@ -7,7 +7,7 @@
    * included in the distribution.
    *
    * @package atk
-   * @subpackage handlers
+   * @subpackage utils
    *
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
@@ -22,7 +22,8 @@
    * @author Wim Kosten <wim@ibuildings.nl>
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk   
-   * @todo Move this class to the utils subpackage.
+   * @subpackage utils
+   * @todo Move this class to the utils subpackage dir.
    */     
   class browserInfo
   {

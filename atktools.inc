@@ -6,8 +6,7 @@
    * in the doc/COPYRIGHT and doc/LICENSE files which should be 
    * included in the distribution.
    *
-   * @package atk
-   * @subpackage handlers
+   * @package atk   
    *
    * This file contains a set of general-purpose utility functions.
    * @todo Move all these functions to relevant classes.
