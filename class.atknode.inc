@@ -735,7 +735,7 @@
 
       /* if we are on an admin page we would like to stay on the admin page after adding a new record */
       /* NOTE: temporarily disabled! Needs to be fixed! */
-      if (FALSE && $this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
+      if ($this->m_action == "admin") $g_layout->output(session_form(SESSION_NESTED));
       else $g_layout->output(session_form());
 
 
@@ -2236,7 +2236,7 @@
           $location="";
           if ($this->hasFlag(NF_EDITAFTERADD))
           {
-            $location = session_url($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
+            $location = session_url($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)), SESSION_REPLACE);
           }
           $this->redirect($location);
         }
@@ -2338,44 +2338,12 @@
       global $g_returnurl, $PHP_SELF;
 
       atkdebug("atknode::redirect()");
-      $back = 0;
 
       if ($g_returnurl!="") $location = $g_returnurl;
 
       if ($location=="")
       {
-        // The page we redirect to is depending on the action we are doing.
-        switch ($this->m_action)
-        {
-          case "update":
-            if ($this->editingAfterAdd()) // If we're doing an edit, and we came from add
-                                          // we go 2 levels back (skip the add).
-            {
-              $back = 2;
-            }
-            else
-            {
-              $back = 1;
-            }
-            break;
-
-          default:
-            $back = 1;
-            break;
-        }
-
-        if ($back>0)
-        {
-          $location = session_url($PHP_SELF,SESSION_BACK,$back);
-        }
-        else
-        {
-          if ($location=="")
-          {
-            $location = session_url($PHP_SELF,SESSION_DEFAULT);
-          }
-        }
-
+        $location = session_url($PHP_SELF,SESSION_BACK,1);
       }
 
       if (atkconfig("debug")>=2)
@@ -2384,7 +2352,6 @@
       }
       else
       {
-
         atkdebug('redirecting to: '.$location);
 
         if (substr($location,-1)=="&")
@@ -3185,22 +3152,6 @@
      */
     function stickyForm()
     {
-    }
-
-    /**
-     * Dirty function to see if the current edit form is following an add screen
-     * that had NF_EDITAFTERADD set..
-     */
-    function editingAfterAdd()
-    {
-      global $g_sessionData, $atklevel,$g_sessionManager;
-      $namespace = $g_sessionManager->m_namespace;
-
-      $res = ($this->m_action == "update"
-              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
-              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == $this->atknodetype());
-
-      return $res;
     }
 
     /**
