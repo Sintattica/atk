@@ -178,6 +178,7 @@
       $img_end_plus = $icon_path."tree_end_plus.gif";
       $img_end_minus= $icon_path."tree_end_minus.gif";
 	    $img_leaf     = $icon_path."tree_leaf.gif"; 
+      $img_leaflink = $icon_path."tree_leaf_link.gif"; 
 	    $img_spc      = $icon_path."tree_space.gif"; 
        
       $res="";
