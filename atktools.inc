@@ -1221,8 +1221,15 @@
    * @return string the hostname of the server
    */
   function atkHost()
-  {    
-    return ($_SERVER["HTTP_HOST"]!=""?$_SERVER["HTTP_HOST"]:$_SERVER["SERVER_NAME"]);
+  {
+    $atkHost = $_SERVER["HTTP_HOST"]!=""?$_SERVER["HTTP_HOST"]:$_SERVER["SERVER_NAME"];
+
+    // if we're running on our cluster environment
+    // we seem to have a specific portid within the HTTP_HOST
+    // If so, remove it from the hostname
+
+    $dummy = explode(":", $atkHost);
+    return $dummy[0];
   }
 
   /**
