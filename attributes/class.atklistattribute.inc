@@ -15,17 +15,19 @@
     /**
      * Array with options for Listbox
      */
-    var $m_options = Array();
+    var $m_options = array();
 
     /**
      * Array with values for Listbox
      */
-    var $m_values = Array();
+    var $m_values = array();
 
     /**
      * Array for fast lookup of what value belongs to what option.
      */
-    var $m_lookup = Array();
+    var $m_lookup = array();
+    
+    var $m_onchangecode = array();
 
     /**
      * Constructor.
@@ -99,9 +101,17 @@
     function edit($record="", $fieldprefix="")
     {
       // todo: configurable rows
-      $id = $fieldprefix.$this->fieldName();
+      $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
-      $result = '<select id="'.$id.'" name="'.$id.'">';
+      
+      $onchange='';
+      if (count($this->m_onchangecode))
+      {
+        $onchange = 'onChange="'.$id.'_onChange(this);"';
+        $this->renderChangeHandler($fieldprefix);
+      }
+      
+      $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.'>';
       
       if(!$this->hasFlag(AF_OBLIGATORY))
       {
@@ -194,6 +204,38 @@
     {
       // Fieldtype was determined in the constructor.
       return $this->m_dbfieldtype;
+    }
+    
+    /** 
+     * Add a javascript onchange event handler.
+     * @param $jscode A block of valid javascript code.
+     */
+    function addOnChangeHandler($jscode)
+    {
+      $this->m_onchangecode[] = $jscode;
+    }
+    
+    function renderChangeHandler($fieldprefix)
+    {
+      if (count($this->m_onchangecode))
+      {
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_scriptcode("function ".$this->getHtmlId($fieldprefix)."_onChange(el)
+                                    {
+                                      newvalue = el.options[el.selectedIndex].value;
+                                      ".implode("\n", $this->m_onchangecode)."
+                                    }\n");
+      }
+    }
+    
+    function setAutoHide($attrib, $valuearr)
+    {
+      $conditions = array();
+      foreach ($valuearr as $value)
+      {
+        $conditions[] = "newvalue=='$value'";
+      }
+      $this->addOnChangeHandler("if (".implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
 
   }
