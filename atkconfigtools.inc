@@ -75,4 +75,15 @@
       if ($path=="") $path = $config_module_path."/".$name."/";    
       $g_modules[$name] = $path;          
     }
+    
+    /**
+           * Function atkconfig
+           *
+           * Return the value of a config variable
+           */
+    function atkconfig($tag)
+    {
+      return $GLOBALS["config_".$tag];
+    }
+
 ?>

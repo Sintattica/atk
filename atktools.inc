@@ -128,16 +128,6 @@
     $g_error_msg[]="[".elapsed()."] ".$txt;    
   }
 
-  /**
-   * Function atkconfig
-   *
-   * Return the value of a config variable
-   */
-  function atkconfig($tag)
-  {
-    return $GLOBALS["config_".$tag];
-  }
-
    /**
    * Function Text
    *
