@@ -603,7 +603,7 @@
         atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
         $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);         	
       }
-      return "";
+      return true;
     }
     
     /**
