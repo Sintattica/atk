@@ -73,7 +73,10 @@
       {
         $currentitem[$var] = $value;
       }
-      $currentitem["defined_stackvars"][] = $var;
+      if (!is_array($currentitem["defined_stackvars"])||!in_array($var, $currentitem["defined_stackvars"]))
+      {
+        $currentitem["defined_stackvars"][] = $var;
+      }
       // We always return the current value..
       return $currentitem[$var];
       
@@ -96,7 +99,10 @@
       {
         $currentitem[$var] = $value;
       }
-      $currentitem["defined_pagevars"][] = $var;
+      if (!is_array($currentitem["defined_pagevars"])||!in_array($var, $currentitem["defined_pagevars"]))
+      {
+        $currentitem["defined_pagevars"][] = $var;
+      }
       // We always return the current value..
       return $currentitem[$var];      
     }        
