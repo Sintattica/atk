@@ -385,16 +385,16 @@
     
     if (count($HTTP_POST_VARS)>0)
     {  
-      atkDataDecode(&$HTTP_POST_VARS);   
+      atkDataDecode($HTTP_POST_VARS);   
       $ATK_VARS = $HTTP_POST_VARS;
     }
     else
     {
-      atkDataDecode(&$HTTP_GET_VARS);   
+      atkDataDecode($HTTP_GET_VARS);   
       $ATK_VARS = $HTTP_GET_VARS;
     }
    
-    $g_sessionManager->session_read(&$ATK_VARS);
+    $g_sessionManager->session_read($ATK_VARS);
   }  
   
   function sessionStore($var, $value)

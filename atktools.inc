@@ -425,7 +425,7 @@
     {
       foreach (array_keys($var) as $key)
       {
-        atk_stripslashes(&$var[$key]);
+        atk_stripslashes($var[$key]);
       }
     }
     else
@@ -451,9 +451,9 @@
       $value = &$vars[$varname];
       // We must strip all slashes from the input, since php puts slashes
       // in front of quotes that are passed by the url. (magic_quotes_gpc)
-      atk_stripslashes(&$value);
+      atk_stripslashes($value);
 
-      AE_decode(&$vars, $varname);
+      AE_decode($vars, $varname);
 
       if (strpos(strtoupper($varname),'_AMDAE_')>0) // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                                     // at the beginning of the string.. but since that's not a valid

@@ -271,7 +271,7 @@
       }
 
       /* get nextid */
-      OCIFetchInto($m_query_id, &$result);
+      OCIFetchInto($m_query_id, $result);
 
       /* return id */
       return $result[0];

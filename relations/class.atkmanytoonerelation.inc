@@ -305,7 +305,7 @@
       //for ($i = 0; $i < $desc_size; $i++)
       //{
       //  $p_attrib = &$this->m_destInstance->m_attribList[$descriptor[$i]];
-      //  $condition .= $p_attrib->searchCondition(&$this->m_destInstance->m_table, $value).($i < $desc_size-1 ? " OR " : "");
+      //  $condition .= $p_attrib->searchCondition($this->m_destInstance->m_table, $value).($i < $desc_size-1 ? " OR " : "");
       //}
       //$condition .= ")";
      

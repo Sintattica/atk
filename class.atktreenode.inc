@@ -556,7 +556,7 @@
         {  
           $recordset[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);                    
           $oldrec = $recordset[$i];
-          $this->addDb(&$recordset[$i]);
+          $this->addDb($recordset[$i]);
           
           atkdebug("Child Record added");
           $newparent=$recordset[$i][$this->m_primaryKey[0]];

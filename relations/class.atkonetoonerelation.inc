@@ -169,7 +169,7 @@
       else if ($vars["mode"]=="add")
       {
         atkdebug("Adding new one2one record");
-        $this->m_destInstance->addDb(&$vars);
+        $this->m_destInstance->addDb($vars);
       }
       else
       {
@@ -246,7 +246,7 @@
         if (method_exists($this->m_ownerInstance, $this->m_name."_edit") ||
             $this->edit($defaults, $fieldprefix, $mode) !== NULL)
         {
-          atkAttribute::addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix);
+          atkAttribute::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
         }
 
         /* how we handle 1:1 relations normally */
