@@ -1,0 +1,26 @@
+/*
+
+ Some styles used by the "Cascading Popup Menus" script.
+ Consult a CSS reference (a good one is www.ncdesign.org) for syntax and tweaking ideas.
+ You can delete the ones you're not using in your ItemStyles, or add more if you want.
+
+*/
+
+
+/*
+ Font settings -- change your font, colour, alignment etc.
+ Insert 'font-weight: bold;' or 'font-style: italic;' without quotes if you want.
+*/
+.lowText { text-decoration: none; color: #000000; font: 10px Arial, Helvetica; text-align: left }
+.highText { text-align: center; text-decoration: none; color: #FFFFFF; font: 10px Arial, Helvetica; text-align: left }
+
+/* Borders used by some items */
+.itemBorder { border: 1px solid #666666 }
+.itemBorderBlank { border: 1px solid #CCCCDD }
+
+/* The "button" demo menu styles, as used by the "File-Reopen" menu */
+.buttonText { text-decoration: none; color: #FFCC99; font: Bold 12px Arial, Helvetica }
+.buttonHover { text-decoration: none; color: #99CCFF; font: Bold 12px Arial, Helvetica; padding: 1px }
+.buttonBorder { border: 1px outset #339966 }
+.buttonBorderOver { border: 1px inset #CC9966 }
+
