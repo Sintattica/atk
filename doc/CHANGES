@@ -16,7 +16,8 @@ Changes in ATK 5.0.7
 * Fixed filtering and navigating after update/save for navigator [Boy]
 * Fixed bug that would produce php error with NF_EDITAFTERADD 
   when a NULL value for a record is passed to editArray() [Boy]
-* Fixed a security bug for session hijacking. [Sandy]
+* Fixed prev/next keyboard navigation in recordlists. [Yury]
+* Fixed a potential session hijacking vulnerability. [Sandy]
 
 Changes in ATK 5.0.6
 --------------------
@@ -57,14 +58,14 @@ Changes in ATK 5.0.5
   instead of assuming the current date [Boy]
 * Fixed DHTML tab functionality (last tab is now remembered). (bug #301) [Boy]
 * Fixed SQL errors in atkNavigator when when AF_LARGE is set and an atkfilter
-  is used [Boy,Yuri]
+  is used [Boy,Yury]
 * Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
 * Fixed the outlook menu. (bug #352) [Sandy]
 * Fixed the help popup. (bug #347) [Thom]
 * Fixed help link in default view template. (bug #353) [Thom]
 * Fixed bug in editing empty choices in an atkManyToOneRelation. [Sandy]
 * Fixed a call-time-pass-by-reference. [Ivo]
-* Fixed a reference copy bug. (bug #350) [Yuri]
+* Fixed a reference copy bug. (bug #350) [Yury]
 * atkOneToOne's AF_ONETOONE_INTEGRATE integrates columns in recordlists. 
   (bug #346) [Ivo]
 * <attribute>_display overrides get passed the right $mode. (bug #339) [Ivo]
@@ -90,7 +91,7 @@ Changes in ATK 5.0.4
 * atkLanguage now also supports empty values in language files. [Boy]
 * Fixed setting the correct initial tab. [Boy]
 * atkViewHandler hides back button if going back is not an option. [Mark]
-* Fixed bugs in AF_LARGE flag. (bug #302, #330) [Yuri]
+* Fixed bugs in AF_LARGE flag. (bug #302, #330) [Yury]
 * AF_RELATION_AUTOLINK checks edit/add permission when displaying links. [Ivo]
 * Fixed field/label alignment in outlook and default themes. [Ivo]
 * Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
@@ -133,7 +134,7 @@ Changes in ATK 5.0.3
 
 Changes in ATK 5.0.2
 --------------------
-* Fixed missing db_sequence entries in demo install.sql file. [Yuri]
+* Fixed missing db_sequence entries in demo install.sql file. [Yury]
 * Fixed several bugs in dhtml tabs. (bug #301) [Boy]
 * Fixed NF_LOCK images. [Boy]
 * Fixed bug in atkFileAttribute's AF_FILE_PHYSICAL_DELETE. [Ivo]
