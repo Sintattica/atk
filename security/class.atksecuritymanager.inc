@@ -569,13 +569,27 @@
      */
     function hasLevel($level)
     {
-      if (is_array($this->m_user["level"]))
+      if (is_array($level))
       {
-        return in_array($level, $this->m_user["level"]);
+        if (is_array($this->m_user["level"]))
+        {
+          return (count(array_intersect($this->m_user["level"], $level)) >= 1);
+        }
+        else
+        {
+          return in_array($this->m_user["level"], $level);
+        }     
       }
       else
       {
-        return $this->m_user["level"]==$level;
+        if (is_array($this->m_user["level"]))
+        {
+          return in_array($level, $this->m_user["level"]);
+        }
+        else
+        {
+          return $this->m_user["level"]==$level;
+        }
       }
     }
      
