@@ -27,6 +27,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/06/27 13:07:05  sandy
+   * Only do a sort when there al files in the directory (you can't sort an
+   * empty array =) )
+   *
    * Revision 4.5  2001/06/21 11:39:26  martin
    * fixed url in display value. images are now opened in a new window
    *
@@ -131,6 +135,7 @@
           if(is_file($this->m_dir.$item)) $file_arr[] = $item;
         }
         $d->close();
+        if(count($file_arr)>0) natcasesort($file_arr);
       }
       else
       {
@@ -151,10 +156,9 @@
       {
         $result .= "<select name=\"select[".$fieldprefix.$this->fieldName()."]\">";
         $result .= "<option value=\"\">Selectie";                    // Zorg voor een default met waarde NULL
-
-        for($i=0;$i<count($file_arr);$i++)
+        while (list ($key, $val) = each ($file_arr))
         {
-          if(is_file($this->m_dir.$file_arr[$i])) $result .= "<option value=\"".$file_arr[$i].$sel."\">".$file_arr[$i];
+          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val.$sel."\">".$val;
         }
         if(count($file_arr) > 0) $result .= "</select>";
       }
