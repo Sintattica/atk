@@ -32,8 +32,9 @@
      */
     function action_import()
     {
-      global $organizationFilter;
-      atkerror($organizationFilter);
+      // Debug info (?)
+      //global $organizationFilter;
+      //atkerror($organizationFilter);
 
       $phase = ($this->m_postvars["phase"]!=""?$this->m_postvars["phase"]:"init");
 
