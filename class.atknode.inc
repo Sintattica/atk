@@ -611,10 +611,10 @@
                        // which means that 'saveandclose' doesn't close anyway, so we leave out
                        // the 'saveandclose' button.
       {
-        $g_layout->output('<input type="submit" value="'.text('saveandclose').'">');
+        $g_layout->output('&nbsp;<input type="submit" value="'.text('saveandclose').'">&nbsp;');
       }
-      $g_layout->output('<input type="submit" name="atknoclose" value="'.text('save').'">');
-      $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
+      $g_layout->output('&nbsp;<input type="submit" name="atknoclose" value="'.text('save').'">&nbsp;');
+      $g_layout->output('&nbsp;<input type="submit" name="atkcancel" value="'.text('cancel').'">&nbsp;');
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
@@ -703,11 +703,11 @@
       $g_layout->output(session_form());                                   
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("add",$record,$forceList));
-      $g_layout->output('<br><input type="submit" value="'.text('save').'">');
+      $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('save').'&nbsp;">');
       if ($this->m_action=="add")
       {
         // if action is admin, we don't show the cancelbutton..
-        $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
+        $g_layout->output('&nbsp;<input type="submit" name="atkcancel" value="'.text('cancel').'">&nbsp;');
       }
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
@@ -738,7 +738,7 @@
       }
       
       $g_layout->output($this->searchForm($record));
-      $g_layout->output('<br><input type="submit" value="'.text('search').'">');
+      $g_layout->output('<br>&nsbp;<input type="submit" value="'.text('search').'">&nbsp;');
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
@@ -1993,7 +1993,7 @@
       $g_layout->output('</tr>');
       $g_layout->td(text('confirm_delete'));
       $g_layout->output('<tr>');
-      $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
+      $g_layout->td('&nbsp;<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
       $g_layout->output('</tr></table></form>');
 
       $g_layout->ui_bottom();
