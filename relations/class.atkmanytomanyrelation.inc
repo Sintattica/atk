@@ -135,8 +135,9 @@
       if ($this->createLink())
       {
         $rel = &$this->m_linkInstance;
-        $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+        return $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
       }
+      return false;
     }
 
   }

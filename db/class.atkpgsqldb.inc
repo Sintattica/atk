@@ -1,6 +1,8 @@
 <?php
   
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
+  //PostgreSQL error's includen
+  include_once(atkconfig("atkroot")."atk/db/languages/postgresql_".atkconfig('languagefile'));
 
   /**
    * Handles database connectivity and database interaction
@@ -108,11 +110,14 @@
         $this->m_query_id = @pg_exec($this->m_link_id, $query) or $this->halt("Invalid SQL query: $query");
         $this->m_row = 0;
         $this->m_error = pg_errormessage();
-
-        /* return query id */
-        return $this->m_query_id;
+        
+        if ($this->m_query_id)
+        {
+          /* return query id */
+          return true;
+        }
       }
-      return 0;
+      return false;
     }
 
     /**

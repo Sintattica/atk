@@ -1,4 +1,4 @@
-<?
+<?php
 // Fem funció contextual que varia el codi del PropertyAccessor en funció de si es Explorer o Netscape: retorna string amb PropertyAccessor.Get(...) si és Netscape o bé directament Object.property si és Explorer:
 function PropAcce_string($situ,$nomeditor,$property,$value){
 	global $navegador;

@@ -136,7 +136,7 @@
       $rel = &getNode($classname);
       atkdebug("O2O DELETE for $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
-      $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      return $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }
 
     /**
@@ -213,16 +213,17 @@
           // we put the vars in the postvars, because there is information
           // like atkorgkey in it that is vital.
           $this->m_destInstance->m_postvars = $vars;
-          $this->m_destInstance->updateDb($vars);
+          return $this->m_destInstance->updateDb($vars);
         }
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
           atkdebug("Adding new one2one record");
-          $this->m_destInstance->addDb($vars, true, $mode);
+          return $this->m_destInstance->addDb($vars, true, $mode);
         }
         else
         {
           atkdebug("Nothing to store in one2one record");
+          return true;
         }
       }
     }

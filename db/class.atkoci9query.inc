@@ -207,7 +207,7 @@
       global $g_db;
       
       $query = $this->buildUpdate();
-      $g_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $g_db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
  /**
@@ -218,7 +218,7 @@
       global $g_db;
       
       $query = $this->buildInsert();
-      $g_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $g_db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
 

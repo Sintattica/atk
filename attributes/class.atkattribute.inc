@@ -280,6 +280,9 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
+      atkdebug("AtkAttribute.addToEditArray:: entered with $mode, attrib".$this->m_name);
+
+
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -477,10 +480,12 @@
     /**
      * delete is only of interest for special attributes like relations, or file attributes.
      * @param $record record that has to be delete
+     * @return true if successful, false otherwise
      */
     function delete($record)
     {
       // delete is only of interest for special attributes like relations, or file attributes.
+      return true;
     }
 
     /**
@@ -495,17 +500,16 @@
      * Fetch the metadata about this attrib from the table metadata
      */
     function fetchMeta($metadata)
-    {
-      global $g_layout;
+    {      
 
       $attribname = $this->fieldName();
       // Only use meta info if size is not already set manual. (constructor or setAttribSize)
       // If both are set, use the smallest value.
-      if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $g_layout->maxInputSize());
-      else $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
+      if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $this->maxInputSize());
+      else $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
       
-      if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], $g_layout->searchSize());
-      else $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchsize());   
+      if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], 20);
+      else $this->m_searchsize = min($metadata[$attribname]['len'], 20);   
       
       if ($this->m_maxsize > 0) $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
       else $this->m_maxsize = $metadata[$attribname]['len'];
@@ -700,7 +704,16 @@
       else
         return false;
     }
-
+    
+    /**
+     * Determine the maximum length an input field may be.
+     */
+    function maxInputSize()
+    {
+      $configsize = atkconfig("max_input_size");
+      return ($configsize==""?70:$configsize);
+    }
+            
   }
 
 ?>

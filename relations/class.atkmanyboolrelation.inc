@@ -78,18 +78,24 @@
       $this->createLink();
       $rel = &$this->m_linkInstance;
 
-      $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
-
-      for ($i=0;$i<count($record[$this->fieldName()]);$i++)
+      if (is_object($rel) && $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]))
       {
-        // magical stuff..
-        $newrecord = array();
-        $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];
-
-        $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-
-        $rel->addDb($newrecord, true, $mode);
+        for ($i=0;$i<count($record[$this->fieldName()]);$i++)
+        {
+          // magical stuff..
+          $newrecord = array();
+          $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];
+  
+          $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+  
+          if (!$rel->addDb($newrecord, true, $mode))
+          {
+            return false;
+          }
+        }
+        return true;
       }
+      return false;
     }
 
   }

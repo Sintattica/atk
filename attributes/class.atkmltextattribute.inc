@@ -35,13 +35,14 @@
      */
     function edit($record="")
     {
-      global $config_language, $g_layout;
+      global $config_language;
       
       /* register javascript */
-      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
-      $g_layout->register_submitscript('submitSave(form);');
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
+      $page->register_submitscript('submitSave(form);');
 
-      $this->m_size = $g_layout->maxInputSize();      
+      $this->m_size = $this->maxInputSize();      
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)

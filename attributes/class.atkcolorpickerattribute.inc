@@ -143,8 +143,6 @@
       // save named colors like 'white' etc.
       $this->atkAttribute($name, $flags, 10);     
 
-      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/newwindow.js");      
-      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/colorpicker.js");            
       $this->m_userColors = $userColors;
     }
 
@@ -162,6 +160,10 @@
     function edit($record="", $fieldprefix="")
     {
       global $config_atkroot;
+      
+      $page = &atkPage::getInstance();
+      $page->register_script($config_atkroot."atk/javascript/newwindow.js");      
+      $page->register_script($config_atkroot."atk/javascript/colorpicker.js");            
 
       $colHeight  = "11";
       $colWidth   = "11";

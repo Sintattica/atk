@@ -25,21 +25,41 @@
                             // this to false only if you know what you're
                             // doing. When in doubt, 'true' is usually the
                             // best option.
+                            
+    var $m_refKey = array(); // The array of referential key fields.
                
     /**
      * Constructor
-     * @param $name ?
-     * @param $destination ?
+     * @param $name The name of the attribute. This is the name of the field that is the referential key
+     *              to the destination. 
+     *              For relations with more than one field in the foreign key, you should pass an array
+     *              of referential key fields. The order of the fields must match the order of the
+     *              primary key attributes in the destination node.
+     * @param $destination The node we have a relationship with.
      * @param $flags Flags for the relation
      */
     function atkManyToOneRelation($name, $destination, $flags=0)
     {
-      $this->atkRelation($name, $destination, $flags);
+      if (is_array($name))
+      {
+        $this->m_refKey = $name;
+        
+        // ATK can't handle an array as name, so we initialize the
+        // underlying attribute with the first name of the referential
+        // keys.
+        // Languagefiles, overrides, etc should use this first name to 
+        // override the relation.
+        $this->atkRelation($name[0], $destination, $flags);
+      }
+      else
+      {
+        $this->m_refKey[] = $name;
+        $this->atkRelation($name, $destination, $flags);
+      }
     }
 
     /**
-     * Convert value to DataBase value
-     * todo: watch out.. pk may not be the first element..
+     * Convert value to DataBase value     
      * @param $rec
      * @return
      */
@@ -47,16 +67,21 @@
     {
       if ($this->isEmpty($rec))
       {
+      atkdebug($this->fieldName()." IS EMPTY!");
         return NULL;
       }
       else
       {
-        if (is_array($rec[$this->fieldName()]))
+        if ($this->createDestination())
         {
-          if ($this->createDestination())
-          {
+          if (is_array($rec[$this->fieldName()]))
+          {                 
             $pkfield = $this->m_destInstance->m_primaryKey[0];
-            return $rec[$this->fieldName()][$pkfield];
+            return $rec[$this->fieldName()][$pkfield];           
+          }
+          else
+          {
+            return $rec[$this->fieldName()];           
           }
         }
       }
@@ -70,23 +95,31 @@
      * @return decoded value
      */
     function fetchValue($rec)
-    {
-      // We must put the result of decodeKey into a variable first,
-      // because PHP3 can't handle each() with a non-constant expression.
-      $tmp = decodeKeyValuePair($rec[$this->fieldName()]);
-      list($key,$value) = each($tmp);
-
-      // Tablename must be stripped out because it is in the way..
-      if (strpos($key,'.')>0)
-      {
-        $field = substr($key,strpos($key,'.')+1);
-      }
-      else
-      {
-        $field = $key;
-      }
-
-      return array($field=>$value);
+    {      
+      if ($rec[$this->fieldName()]!="")
+      {      
+        // Split the primary key of the selected record into its 
+        // referential key elements.
+        $keyelements = decodeKeyValueSet($rec[$this->fieldName()]);
+      
+        $result = array();
+      
+        foreach ($keyelements as $key=>$value)
+        {
+          // Tablename must be stripped out because it is in the way..
+          if (strpos($key,'.')>0)
+          {
+            $field = substr($key,strpos($key,'.')+1);
+          }
+          else
+          {
+            $field = $key;
+          }
+          $result[$field] = $value;
+        }        
+        return $result;
+      }            
+      return NULL;
     }
 
 
@@ -96,16 +129,17 @@
      * @return decoded value
      */
     function db2value($rec)
-    {
+    {    
       $myrec = $rec[$this->fieldName()];
             
       if (is_array($myrec)) return $myrec;
       else
       {
-        // if the record is not an array, probably only the value of the primary key was loaded..
+        // if the record is not an array, probably only the value of the primary key was loaded.
+        // This workaround only works for single-field primary keys.
         if ($this->createDestination())
           return array($this->m_destInstance->primaryKeyField() => $myrec);
-      }
+      }      
     }
 
     /**
@@ -115,8 +149,9 @@
      */
     function display($record)
     {      
-      if ($this->createDestination())
-      {
+      if ($this->createDestination())      
+      {        
+      
         if (count($record[$this->fieldName()])==1)
         {
           // The record consist of only one field, which is the primary key.
@@ -141,18 +176,8 @@
         $result = $title; // default result is just the title.
  
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
-        {
-          /* FOLLOWING LINES ARE INTENTIONALLY DISABLED, in display mode 
-            (when we're viewing something that is readonly) we should not 
-            allow editing the destination record:            
-          if ($this->m_destInstance->allowed("edit")&&!$this->m_destInstance->hasFlag(NF_NO_EDIT))
-          {
-            $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
-          }
-          else */
-          
-          // if we are allowed to edit, we're cerrtainly allowed to view.
-          if (($this->m_destInstance->allowed("view")||$this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+        {                            
+          if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
           {
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
           }
@@ -203,8 +228,8 @@
           $autolink = "";
           if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
           {
-            global $g_layout;
-            $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
+            $page = &atkPage::getInstance();
+            $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
             $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
 
             $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
@@ -214,7 +239,7 @@
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField().'=">'.text('select_none');
+            $result.= '<option value="">'.text('select_none');
           }
 
           for ($i=0;$i<count($recordset);$i++)
@@ -233,40 +258,52 @@
         // Large mode
         // TODO: Fill a dropdown box with recent records..
 
-        $selname = $fieldprefix.$this->fieldName()."_newsel";
-        $remotekey = $this->m_destInstance->primaryKeyField();
+        $selname = $fieldprefix.$this->fieldName()."_newsel";        
 
-        if ($ATK_VARS[$selname]!="")
-        {
-          // new record selected..
-          $record[$this->fieldName()][$remotekey] = $ATK_VARS[$selname];
+        if ($ATK_VARS[$selname]!="") 
+        // new record selected
+        {          
+          // $ATK_VARS[$selname] contains full primary key of selected record.
+          $recset = $this->m_destInstance->selectDb($ATK_VARS[$selname],"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          $destrecord = $recset[0];          
+          $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
         }
-
-        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-
+        elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey)) 
+        // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)                                                                
+        {
+          $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+          $recset = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          $destrecord = $recset[0];          
+          $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
+        }
+        elseif (is_array($record[$this->fieldName()]) && !$this->isEmpty($record)) 
+        // complete old record present
+        {        
+          $destrecord = $record[$this->fieldName()];        
+        }
+        else 
+        // no record yet, empty value.
+        {          
+          $destrecord = array();
+        }
+        
+ 
+        if (count($destrecord))
+        {          
+          $result.= $this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";            
+        }                
+        
         $result.=$this->hide($record, $fieldprefix);
-
-        if ($record[$this->fieldName()][$remotekey]!="")
-        {
-          // TODO FIXME: this selectDb isn't always necessary. In regular edit mode (no new
-          // record selected), the record is already present in $record, so this selectDb
-          // is not necessary.
-          $selrec = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-
-          $result.= $this->m_destInstance->descriptor($selrec[0])."&nbsp;&nbsp;";
-        }
 
         // we use the current level to automatically return to this page
         // when we come from the select..
-        $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[".$remotekey."]");
+        $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
 
         $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                                    "&atkaction=select&atktarget=".$atktarget,
                        text("link_select_".getNodeType($this->m_destination)),
                        SESSION_NESTED,
                        true);
-
-        //var_dump($record[$this->fieldName()]);
       }
       return $result;
     }
@@ -280,8 +317,12 @@
     function hide($record="", $fieldprefix="")
     {
       if ($this->createDestination())
-      {
-        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      {              
+        $currentPk = "";
+        if (count($record[$this->fieldName()]))
+        {
+          $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+        }
         $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
                   '" value="'.$currentPk.'">';
         return $result;
@@ -364,19 +405,41 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if ($mode != "update" && $mode != "add")
+      if ($this->createDestination())
       {
-        if ($tablename!="") $realtablename=$tablename.".";
-        if ($this->createDestination())
-        {          
-          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$realtablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], $this->m_leftjoin);
-          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1);          
+        if ($mode != "update" && $mode != "add")
+        {
+          if ($tablename!="") $realtablename=$tablename.".";
+                  
+          $joinconditions = array();
+          $alias = $fieldaliasprefix.$this->fieldName();
+          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $joinconditions[] = $realtablename.$this->m_refKey[$i].
+                                "=".
+                                $alias.".".$this->m_destInstance->m_primaryKey[$i];
+          }
+          $query->addJoin($this->m_destInstance->m_table, 
+                          $alias,
+                          implode(" AND ",$joinconditions), 
+                          $this->m_leftjoin);
+          $this->m_destInstance->addToQuery($query, $alias, $level+1);              
         }
+        else
+        {
+          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            if ($rec[$this->fieldName()]==NULL)
+            {            
+              $query->addField($this->m_refKey[$i],"NULL","","",false); 
+            }
+            else
+            {                
+              $query->addField($this->m_refKey[$i],$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[$i]],"","",!$this->hasFlag(AF_NO_QUOTES));
+            }
+          }
+        } 
       }
-      else
-      {
-        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
-      } 
     }
 
 
@@ -425,6 +488,7 @@
       }
       return 0;
     }
+    
   }
 
 ?>

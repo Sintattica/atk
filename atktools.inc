@@ -66,7 +66,8 @@
         // critical
         $level_color="#ff0000";
       }
-
+      global $g_debug_msg;
+      print implode("<br>", $g_debug_msg);
       echo "<html>";
       echo '<body bgcolor="#ffffff" color="#000000">';
       echo "<font color=\"$level_color\"><b>$level</b></font>: $msg<br>\n";
@@ -1171,5 +1172,52 @@
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     return '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
   }
+  
+  function atkimport($fullclassname, $failsafe=true)
+  {
+    $elems = explode(".", strtolower($fullclassname));
+    $last = &$elems[count($elems)-1];
+    $last = "class.".$last.".inc";
+    
+    $filename = atkconfig("atkroot").implode("/", $elems);
+    
+    if ($failsafe)
+    {
+      require_once($filename);
+    }
+    else
+    {
+      include_once($filename);
+    }
+  }
+  
+  function &atknew($fullclassname)
+  {
+    atkimport($fullclassname, true);
+    
+    $elems = explode(".", strtolower($fullclassname));
+    $classname = $elems[count($elems)-1];
+    
+    if (class_exists($classname))
+    {      
+      return new $classname;
+    }
+    else
+    {
+      atkerror("Class $fullclassname not found.");
+      return NULL;
+    }
+  }
+
+  /**
+  * TODO: DELETE THIS FUNCTION!!!
+  *
+  * @return void
+  */
+  function kdb($m)
+  {	
+    atkdebug("<font color=green><b>$m</b></font>");
+  }
+
 
 ?>

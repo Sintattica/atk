@@ -48,12 +48,8 @@
      */
     function action_admin()
     {
-      if ((!$this->hasFlag(NF_NO_ADD) && $this->allowed("add")) && !$this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_TREE_NO_ROOT_ADD))
-      {
-        $this->addPage();
-      }
-      
-      $this->adminPage();                    
+      if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) $this->m_flags|=NF_NO_ADD;
+      return parent::action_admin();
     }
     
     function buildTree()

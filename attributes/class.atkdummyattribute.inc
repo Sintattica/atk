@@ -63,6 +63,7 @@
     */
     function store($a, $b)
     {
+      return true;
     }
 
     /**

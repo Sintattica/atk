@@ -175,4 +175,10 @@
   $txt_access_denied = "Access denied";
   $txt_error_node_action_access_denied = "Sorry, you do not have permission to perform this action.";
   
+  // General Database error's
+  $txt_db_unknown_host = "Can't find host '%s'";
+  $txt_db_unknown_database = "Can't connect to database '%s'";
+  $txt_db_access_denied_user = "User'%s' can't connect with database '%s'";
+  $txt_db_access_denied_database = "User '%s' has no rights for database '%s'";
+  
 ?>

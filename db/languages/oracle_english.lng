@@ -1,0 +1,13 @@
+<?php
+// Language file for the oracle error's
+
+$txt_db_1    = "Unique constraint violated";
+$txt_db_904  = "Invalid column name";
+$txt_db_1400 = "Cannot insert NULL";
+$txt_db_1438 = "Value larger than specified precision allows for column";
+$txt_db_2290 = "Check constraint violated";
+$txt_db_2291 = "Integrity constraint violated - parent key not found";
+$txt_db_2292 = "Integrity constraint violated - child record found";
+$txt_db_2293 = "Cannot validate - check constraint violated";
+
+?>

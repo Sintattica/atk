@@ -26,11 +26,11 @@
   // leave it in place for now.
   $g_sessionData = &$_SESSION[$config_identifier];
 
-  define(SESSION_DEFAULT,0); // stay at current stacklevel
-  define(SESSION_NEW,1);     // new stack
-  define(SESSION_NESTED,2);  // new item on current stack
-  define(SESSION_BACK,3);    // move one level down on stack
-  define(SESSION_REPLACE,4); // replace current stacklevel
+  define("SESSION_DEFAULT",0); // stay at current stacklevel
+  define("SESSION_NEW",1);     // new stack
+  define("SESSION_NESTED",2);  // new item on current stack
+  define("SESSION_BACK",3);    // move one level down on stack
+  define("SESSION_REPLACE",4); // replace current stacklevel
   
   $atklevel = trim($_REQUEST["atklevel"]);
   $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
@@ -336,8 +336,11 @@
 
     function stackTrace()
     {
-      global $g_sessionData, $g_layout;
-      $res = "";
+      global $g_sessionData;
+      
+      $ui = &atknew("atk.ui.atkui");   
+      
+      $res = array();
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
 
       // we only show the last 4 elements of the stack
@@ -347,14 +350,15 @@
       {
         $mod = getNodeModule($stack[$i]["atknodetype"]);
         $node = getNodeType($stack[$i]["atknodetype"]);
-        $title = text($g_layout->title($mod, $node, $stack[$i]["atkaction"]));
+        $title = text($ui->title($mod, $node, $stack[$i]["atkaction"]));
         if ($i<count($stack)-1)
         {
-          $res.='<a href="'.session_url('dispatch.php?atklevel='.$i).'">'.$title.'</a> | ';
+          $res[]=array("url"=>session_url('dispatch.php?atklevel='.$i),
+                       "title"=>$title);
         }
         else
         {
-          $res.=$title;
+          $res[]=array("url"=>"", "title"=>$title);
         }
       }
       return $res;
@@ -411,7 +415,7 @@
   */
   function atksession($namespace = "default", $usestack=true)
   {
-    global $ATK_VARS, $g_sessionManager, $g_layout;
+    global $ATK_VARS, $g_sessionManager;
     global $atkprevlevel;
 
     $g_sessionManager = new atkSessionManager($namespace, $usestack);
@@ -425,7 +429,9 @@
     if ($ATK_VARS["atkescape"]!="")
     {
       atkNode::redirect(atkurldecode($ATK_VARS["atkescape"]));
-      $g_layout->outputFlush();
+
+      $output = &atkOutput::getInstance();
+      $output->outputFlush();
       exit;
     }      
     // Back check
@@ -433,7 +439,8 @@
     {
       // When we go back, we go one level deeper than the level we came from.
       atkNode::redirect(session_url($_SERVER["PHP_SELF"]."?atklevel=".($atkprevlevel-1)));
-      $g_layout->outputFlush();
+      $output = &atkOutput::getInstance();
+      $output->outputFlush();
       exit;
     }
 

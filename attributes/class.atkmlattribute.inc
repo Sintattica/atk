@@ -30,11 +30,12 @@
      */
     function edit($record="")
     {
-      global $config_language, $g_layout;
+      global $config_language;
       
       /* register javascript */
-      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
-      $g_layout->register_submitscript('submitSave(form);');
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
+      $page->register_submitscript('submitSave(form);');
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)
@@ -69,7 +70,7 @@
      */
     function search($record="")
     {
-      global $config_language, $g_layout;
+      global $config_language;
       
       $result= '<input type="text" name="atksearch['.$this->formName().'_'.$config_language[0].']"'.
                ' value="'.$record[$this->fieldName().'_'.$config_language[0]].'"'.
@@ -193,10 +194,10 @@
      */    
     function fetchMeta($metadata)    
     {
-      global $config_language,$g_layout;
+      global $config_language;
       $attribname = $this->fieldName().'_'.$config_language[0];
-      $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
-      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());      
+      $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
+      $this->m_searchsize = min($metadata[$attribname]['len'], 20);
       $this->m_maxsize = $metadata[$attribname]['len'];                           
     }
   }

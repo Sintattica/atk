@@ -26,18 +26,23 @@
   $data = '<div align="left">';
   $data .= implode("<br>",file($file));
   $data .='</div>';
-  $g_layout->output("<html>");
-  $g_layout->head("Help: ".$txt_app_shorttitle);
-  $g_layout->body();
-  $g_layout->output("<br>");
-  $g_layout->ui_top($title);
-  $g_layout->output ($data);
-  $g_layout->ui_bottom();
-  $g_layout->output("<br>");
-  $g_layout->output('<div align="right"><a href="javascript:window.close();">'.text("close").'</a></div');
-  $g_layout->output("</body>");
-  $g_layout->output("</html>");
-  $g_layout->outputFlush();
+    
+  $page = &atknew("atk.ui.atkpage");  
+  $ui = &atknew("atk.ui.atkui");  
+  $theme = &atkTheme::getInstance();
+  $output = &atkOutput::getInstance();
+  
+  $page->register_style($theme->stylePath("style.css"));
+  
+  $output.= $ui->renderBox(array("title"=>$title,
+                                 "content"=>$data));
+  $output.='<br><div align="right"><a href="javascript:window.close();">'.text("close").'</a></div>';
+  
+  $page->addContent($output);
+
+  $output->output($page->render(text('txt_app_title').' - '.text('help'), true));
+  
+  $output->outputFlush();
 
 ?>
 

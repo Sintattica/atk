@@ -77,7 +77,7 @@
      */
     function edit($record="", $fieldprefix="")
     {      
-      global $config_atkroot, $g_layout, $config_enable_ie_extensions;
+      global $config_atkroot, $config_enable_ie_extensions;
       global $atkwwview, $PHP_SELF;
       
       //var_dump($record);
@@ -101,10 +101,11 @@
       
         if ($wwview!="plain")
         {
-          $g_layout->register_script($config_atkroot."atk/javascript/newwindow.js");              
-          $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
+          $page = &atkPage::getInstance();
+          $page->register_script($config_atkroot."atk/javascript/newwindow.js");              
+          $page->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
           $this->m_editorname = $fieldprefix.$this->fieldname()."_editor";
-          $g_layout->register_submitscript($this->m_editorname."_save();");          
+          $page->register_submitscript($this->m_editorname."_save();");          
           
           
           $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';         

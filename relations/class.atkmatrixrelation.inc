@@ -239,6 +239,7 @@
             $db->query($query);            
          }
       }
+      return true;
     }
 
   }

@@ -143,17 +143,20 @@
      */
     function edit($record="", $fieldprefix="", $mode="")
     {
-      global $g_layout;
+      $page = &atkPage::getInstance();
       
       /* register javascript */
-      $g_layout->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
+      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
       
       if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
       {
-        $g_layout->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
-        $g_layout->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $g_layout->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-nl.js");
-        $g_layout->theme_style("atkdateattribute.css");         
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-nl.js");
+        
+        atkimport("atk.ui.atktheme");
+        $theme = &atkTheme::getInstance();        
+        $page->register_style($theme->stylePath("atkdateattribute.css"));        
       }
       
       $fieldname = $fieldprefix.$this->fieldName();

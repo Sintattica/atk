@@ -4,6 +4,7 @@
 
   // The application root
   $config_application_root = "/";
+  if ($config_atkroot == "") $config_atkroot = "./";
 
   // set several default configuration options
   $config_databasehost = "localhost";
@@ -83,17 +84,29 @@
   $config_enable_ie_extensions = false;
 
   // Whatever tabs are enabled or not
-  $config_tabs = true;
-
-  // include optimizer
-  $config_atk_optimized_includes = true;
+  $config_tabs = true;  
 
   // Backwardscompatibility setting. Set this to MYSQL_BOTH if your
   // software relies on numerical indexes (WHICH IS A BAD IDEA!!)
   $config_mysqlfetchmode = MYSQL_ASSOC;
+  
+  $config_atktempdir = $config_atkroot."atktmp/";
+  
+  
+  // Template engine configuration
+  $config_tplroot = $config_atkroot; // By default all templates are described by their relative
+                                     // path, relative to the applications' root dir.
+  $config_tplcaching = false;
+  $config_tplcachelifetime = 3600; // default one hour
+  $config_tplcompiledir = $config_atktempdir."compiled/tpl/";
+  $config_tplcachedir = $config_atktempdir."tplcache/";
+  
 
   // files that are allowed to be included by the include wrapper script
   // NOTE: this has nothing to do with useattrib and userelation etc.!
   $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php", "atk/javascript/class.atkdateattribute.js.inc",
                                                "atk/popups/help.inc", "atk/popups/colorpicker.inc");
+
+  // fullscreen mode (IE only)
+  $config_fullscreen = false;
 ?>

@@ -1,115 +1,37 @@
 <?php
   $config_atkroot = "./";  
   include_once("atk.inc");
-  atksession();
-  atksecure();
- 
-  $g_layout->output('<html>');
-  $g_layout->head(text("app_title"));
-  
-  if(strtolower($config_menu_pos) == "top")
+
+  if (atkconfig("fullscreen"))
   {
-    if($config_top_frame==1)
-    {
-       $g_layout->output('
-        <frameset rows="70,*" frameborder="0" border="0">
-          <frame name="top" scrolling="no" noresize src="top.php" marginwidth="0" marginheight="0">
-       ');    
-    }
-    $g_layout->output('
-               <frameset rows="100,*" frameborder="0" border="0">
-                  <frame name="menu" scrolling="no"   noresize src="menu.php"   marginwidth="0" marginheight="0">
-                  <frame name="main" scrolling="auto" noresize src="welcome.php" marginwidth="0" marginheight="0">
-    ');
-    if($config_top_frame==1) { $g_layout->output('</frameset>'); }
-    $g_layout->output('
-                   <noframes>
-                    <body bgcolor="#CCCCCC" text="#000000">
-                      <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
-                    </body>
-                  </noframes>
-               </frameset>
-               </html>
-                   ');
-  }
-  if(strtolower($config_menu_pos) == "bottom")
-  {
-    if($config_top_frame==1)
-    {
-       $g_layout->output('
-        <frameset rows="70,*" frameborder="0" border="0">
-          <frame name="top" scrolling="no" noresize src="top.php" marginwidth="0" marginheight="0">
-       ');    
-    }
-    $g_layout->output('
-               <frameset rows="*,100" frameborder="0" border="0">
-                  <frame name="main" scrolling="auto" noresize src="welcome.php" marginwidth="0" marginheight="0">
-                  <frame name="menu" scrolling="no"   noresize src="menu.php"   marginwidth="0" marginheight="0">
-    ');
-    if($config_top_frame==1) { $g_layout->output('</frameset>'); }
+    // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen. 
+    atksession();
+    atksecure();
     
-    $g_layout->output('
-                   <noframes>
-                    <body bgcolor="#CCCCCC" text="#000000">
-                      <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
-                    </body>
-                  </noframes>
-               </frameset>
-               </html>
-                   ');
+    $page = &atknew("atk.ui.atkpage");  
+    $ui = &atknew("atk.ui.atkui");  
+    $theme = &atkTheme::getInstance();
+    $output = &atkOutput::getInstance();
+  
+    $page->register_style($theme->stylePath("style.css"));
+    $page->register_script(atkconfig("atkroot")."atk/javascript/launcher.js");
+    
+    $content = '<script language="javascript">atkLaunchApp(); </script>';
+    $content.= '<br><br><a href="#" onClick="atkLaunchApp()">'.text('app_reopen').'</a> &nbsp; '.
+                      '<a href="#" onClick="window.close()">'.text('app_close').'</a><br><br>';  
+    
+    $box = $ui->renderBox(array("title"=>text("app_launcher"),
+                                              "content"=>$content));
+ 
+    $page->addContent($box);
+    $output->output($page->render(text('app_launcher'), true));
+  
+    $output->outputFlush();      
   }
-  elseif(strtolower($config_menu_pos) == "left")
+  else
   {
-    if($config_top_frame==1)
-    {
-       $g_layout->output('
-        <frameset rows="70,*" frameborder="0" border="0">
-          <frame name="top" scrolling="no" noresize src="top.php" marginwidth="0" marginheight="0">
-       ');    
-    }
-    $g_layout->output('
-      <frameset cols="190,*" frameborder="0" border="0">
-        <frame name="menu" scrolling="no" noresize src="menu.php" marginwidth="0" marginheight="0">
-        <frame name="main" scrolling="auto" noresize src="welcome.php" marginwidth="0" marginheight="0">
-    ');
-    if($config_top_frame==1) { $g_layout->output('</frameset>'); }
-
-    $g_layout->output('
-        <noframes>
-          <body bgcolor="#CCCCCC" text="#000000">
-            <p>Your browser doesnt support frames, but this is required to run <?php echo $txt_app_title; ?></p>
-          </body>
-        </noframes>
-      </frameset>
-      </html>
-       ');
+    // Regular mode. app.php can be included directly.
+    include "app.php";
   }
-  elseif(strtolower($config_menu_pos)=="right")
-  {
-    if($config_top_frame==1)
-    {
-       $g_layout->output('
-        <frameset rows="70,*" frameborder="0" border="0">
-          <frame name="top" scrolling="no" noresize src="top.php" marginwidth="0" marginheight="0">
-       ');    
-    }
-    $g_layout->output('
-      <frameset cols="*,190" frameborder="0" border="0">
-        <frame name="main" scrolling="auto" noresize src="welcome.php" marginwidth="0" marginheight="0">
-        <frame name="menu" scrolling="no" noresize src="menu.php" marginwidth="0" marginheight="0">
-    ');
-    if($config_top_frame==1) { $g_layout->output('</frameset>'); }
-
-    $g_layout->output('
-        <noframes>
-          <body bgcolor="#CCCCCC" text="#000000">
-            <p>Your browser doesnt support frames, but this is required to run '.$txt_app_title.'.</p>
-          </body>
-        </noframes>
-      </frameset>
-      </html>
-       ');
-  }
-
-  $g_layout->outputFlush();
+  
 ?>

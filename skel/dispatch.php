@@ -10,11 +10,20 @@
   if($ATK_VARS["atknodetype"]=="" || $session["login"]!=1)
   {
     // no nodetype passed, or session expired
-    $g_layout->initGui();
-    $g_layout->ui_top(text("title_session_expired"));
-    $g_layout->output("<br><br>".text("explain_session_expired")."<br><br><br><br>");
-    $g_layout->ui_bottom();
-    $g_layout->page(text("title_session_expired"));
+    
+    $page = &atknew("atk.ui.atkpage");  
+    $ui = &atknew("atk.ui.atkui");  
+    $theme = &atkTheme::getInstance();
+    $output = &atkOutput::getInstance();
+  
+    $page->register_style($theme->stylePath("style.css"));
+  
+    $box = $ui->renderBox(array("title"=>text("title_session_expired"),
+                                "content"=>"<br><br>".text("explain_session_expired")."<br><br><br><br>"));
+ 
+    $page->addContent($box);
+
+    $output->output($page->render(text("title_session_expired"), true));              
   }
   else
   {
@@ -34,5 +43,6 @@
       atkdebug("No object created!!?!");
     }
   }
-  $g_layout->outputFlush();
+  $output = &atkOutput::getInstance();
+  $output->outputFlush();
 ?>

@@ -223,5 +223,15 @@
 
   $txt_date_format_edit = "j F Y";
   $txt_date_format_view = "j F Y";
+  
+  // General Database error's
+  $txt_db_unknown_host = "Kan de host '%s' niet vinden";
+  $txt_db_unknown_database = "Kan niet connecten met database '%s'";
+  $txt_db_access_denied_user = "Gebruiker '%s' kan niet connecten met de database '%s'";
+  $txt_db_access_denied_database = "Gebruiker '%s' heeft geen rechten voor de database '%s'";
+
+  $txt_app_launcher = "ATK Applicatie Starter";
+  $txt_app_reopen   = "Opnieuw starten";
+  $txt_app_close    = "Afsluiten";
 
 ?>

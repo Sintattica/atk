@@ -17,8 +17,8 @@
   class atkMultiSelectAttribute extends atkListAttribute
   {    
    
-  // number of cols
-  var $m_cols;
+    // number of cols
+    var $m_cols;
 
     /**
      * Constructor
@@ -100,11 +100,12 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $g_layout,$config_atkroot;
+      global $config_atkroot;
       $cols = $this->m_cols;
       $modcols =$cols-1;
-      $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-      // todo: configurable cols
+      $page = &atkPage::getInstance();
+      $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");      
+
       if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
       {
         $result.='<div align="left"><font size="-2">

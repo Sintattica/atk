@@ -55,6 +55,9 @@
     
     /* set to 1 to set debugging on */    
     var $m_debug = 0; 
+    
+    var $m_user_error = array();
+    var $m_critical_error = array();
 
     /**
      * Get the current link id
@@ -65,25 +68,98 @@
       return $this->m_link_id;
     }
     
-    /**
-     * Get the last error message
-     */
-    function getError()
-    {      
-      if ($this->m_error!="" || $this->m_errno!=0)
+    function getErrorType()
+    {
+      if(in_array($this->m_errno,$this->m_user_error))
       {
-        return $this->m_error." (errno: ".$this->m_errno.")"; 
+        return "user";   
       }
-      return "";
+      return "system";
     }
     
-    function halt($message)
+    /*
+          * Get atk database error
+          */
+    function getAtkDbErrno()
     {
+      atkdebug("atkdb::getAtkDbErrno() -> ".$this->getDbErrno());
+      return $this->_translateError();
+    }
+    
+    /*
+          * Get real database error number
+          */
+    function getDbErrno()
+    {
+      atkdebug("atkdb::getDbErrno() -> ".$this->m_errno);
+      return $this->m_errno;
+    }
+
+    /*
+          * Get real database error 
+          */
+    function getDbError()
+    {
+      atkdebug("atkdb::getDbError() -> ".$this->m_error);
+      return $this->m_error;
+    }
+    
+    /*
+          * Set user error number for your own applications.
+          * When the user gets this error, it will show the feedback screen
+          */
+    function setUserError($errno)
+    {
+      atkdebug("atkdb::setUserError() -> ".$errno);
+      $this->m_user_error[]=$errno;
+    }
+    
+    /*
+          * Get the translated error message
+          */
+    function getErrorMsg()
+    {
+      atkdebug("atkdb::getErrorMsg()");
+      $errno = $this->getAtkDbErrNo(); 
+      atkdebug("atkdb::getErrorMsg() -> Get msg for AtkDberror: ".$errno); 
+      if($errno==DB_UNKNOWNERROR)
+      {
+        $tmp = text('db_'.$this->getDbErrno());
+        if($tmp==$this->m_errno) { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$tmp; }
+        atkerror($this->m_error);
+        return $this->m_error;
+      }
+      else
+      {
+        $tmp_error='';
+        switch ($errno)
+        {
+          case DB_ACCESSDENIED_DB: $tmp_error = sprintf(text("db_access_denied_database"),$this->m_user,$this->m_database);
+                                break;
+          case DB_ACCESSDENIED_USER: $tmp_error = sprintf(text("db_access_denied_user"),$this->m_user,$this->m_database);
+                                     break;
+          case DB_UNKNOWNDATABASE: $tmp_error = sprintf(text("db_unknown_database"),$this->m_database);
+                                   break;
+          case DB_UNKNOWNHOST: $tmp_error = sprintf(text("db_unknown_host"),$this->m_host);
+                               break;
+        }
+        $this->m_error = $tmp_error;
+        atkerror($this->m_error);
+        return $this->m_error;
+      }
+    }
+    
+    function halt()
+    {
+      atkdebug("atkdb::halt()");
       if ($this->m_haltonerror)
-      {      
-        $dbmsg = $this->getError();
-        if ($dbmsg!="") atkerror($dbmsg);
-        halt($message);
+      { 
+        if($this->getErrorType()=="system")
+        {        
+          atkdebug("atkdb::halt() -> System error");
+          if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
+          halt($this->getErrorMsg(),$level);
+        }
       }
     }
 
@@ -129,15 +205,29 @@
     }
 
     /**
+     * Commit
+     */
+    function commit()
+    {
+    }
+
+    /**
+     * Rollback
+     */
+    function rollback()
+    {
+    }
+
+    /**
      * Performs a query
      * @param $query the query
      * @param $offset offset in record list
      * @param $limit maximum number of records
-     * @return the query identifier
+     * @return true if successful
      */
     function query($query, $offset=-1, $limit=-1)
     {
-      return $this->m_query_id;    
+      return true;    
     }
 
     /**

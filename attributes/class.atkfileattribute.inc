@@ -278,9 +278,10 @@
       {
         if(!@unlink($this->m_dir.$record[$this->fieldName()]["orgfilename"]))
 	      {
-	        return text("cannot_remove_file");
+	        return false;
 	      }
       }
+      return true;
     }
 
 
@@ -290,8 +291,7 @@
      * @return Filename or Nothing
      */
     function display($record)
-    {
-      global $g_layout; 
+    {      
             
       $filename    = $record[$this->fieldName()]["orgfilename"];
       atkdebug($this->fieldname()." - File: $filename");
@@ -316,7 +316,8 @@
             {
               $imagehw=Array("0"=>"640","1"=>"480");
             }
-            $g_layout->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
+            $page = &atkPage::getInstance();
+            $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
             return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0]+50).'\',\''.($imagehw[1]+50).'\',\'yes\');return false;">'.$filename.'</a>';
           }
           return '<img src="'.$this->m_url.$filename.'" alt="'.$filename.'">';

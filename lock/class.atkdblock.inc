@@ -16,7 +16,7 @@ class atkDbLock extends atkLock
    */
   function atkDbLock()
   {
-    global $g_layout, $ATK_VARS;
+    global $ATK_VARS;
 
     $atklockList = $this->loadLockList();
     if (!is_array($atklockList)) $atklockList = array();
@@ -60,8 +60,9 @@ class atkDbLock extends atkLock
 
     if ($this->m_id > 0)
     {
-      $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");    
-      $g_layout->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");    
+      $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
     }
   }
 
@@ -95,7 +96,7 @@ class atkDbLock extends atkLock
    */
   function lock($selector, $table)
   {
-    global $g_db, $g_layout, $g_sessionManager;
+    global $g_db, $g_sessionManager;
     $success = FALSE;
 
     /* first check if we haven't locked the item already */
@@ -127,8 +128,9 @@ class atkDbLock extends atkLock
       if ($this->m_id <= 0)
       {
         $this->m_id = $g_db->nextid("db_lock");
-        $g_layout->register_script(atkconfig("atkroot")."atk/javascript/xml.js");            
-        $g_layout->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");            
+        $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
       }
 
       $user = getUser();

@@ -1,4 +1,4 @@
-<?
+<?php
   // USAGE:
   //
   // Just set the following in your config.inc.php 
@@ -63,39 +63,37 @@
   }   
 
   // add options tab containing logout
-   $tabs   .= '   rows[1]['.$tab.'] = "Opties"'."\n";
-   $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.text("logout").'</a></div>'."\n";  
-?>
-<HTML>
-<HEAD>
- <TITLE>menu</TITLE>
- <link href="../../platform/atk/style.php" rel="stylesheet" type="text/css">
- <LINK REL="stylesheet" HREF="tabs.css">
- <script language="JavaScript">
-  var tabSelectMode = "<? echo $config_tabselectMode ?>";
- </script>
- <script language="JavaScript" src="<? echo $config_atkroot; ?>atk/javascript/atk_tabs.js" type="text/javascript"></script>
- <script language="JavaScript">
-   var rows     = new Array;
-   var num_rows = 1;
-   var top      = 0;
-   var left     = 10;
-   var width    = "100%";
-   var tab_off  = "#198DE9";
-   var tab_on   = "#EEEEE0";
+  $tabs   .= '   rows[1]['.$tab.'] = "Opties"'."\n";
+  $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.text("logout").'</a></div>'."\n";  
+   
+  $page->register_style($theme->stylePath("style.css"));
+  $page->register_style($theme->stylePath("dhtmlmenu.css"));
+  $page->register_script(atkconfig("atkroot")."atk/javascript/atk_tabs.js");
+   
+  $code = 'var tabSelectMode = "'.$config_tabselectMode.'";'."\n";
+ 
+  $code.= 'var rows     = new Array();
+           var num_rows = 1;
+           var top      = 0;
+           var left     = 10;
+           var width    = "100%";
+           var tab_off  = "#198DE9";
+           var tab_on   = "#EEEEE0";
 
-   rows[1]      = new Array;
- <? echo $tabs; ?>
- </script>
- <script language="javascript"> generateTabs(); </script>
-</HEAD>
-<BODY>
- <? echo $divs ?>
- <script language="JavaScript">
-  if (DOM) { currShow=document.getElementById('T11');}
-  else if (IE) { currShow=document.all['T11'];}
-  else if (NS4) { currShow=document.layers["T11"];};
-  changeCont("11", "tab11");
- </script>
-</BODY>
-</HTML>
+           rows[1]      = new Array;';
+  $code.="\n".$tabs."\n";
+  
+  $code.="\n".'generateTabs();'."\n";
+    
+  $page->register_scriptcode($code);  
+
+  $page->addContent($divs);
+   
+  $page->addContent('<script language="JavaScript">
+                        if (DOM) { currShow=document.getElementById(\'T11\');}
+                        else if (IE) { currShow=document.all[\'T11\'];}
+                        else if (NS4) { currShow=document.layers[\'T11\'];}'."\n".
+                       'changeCont("11", "tab11");'."\n</script>");
+   
+
+?>

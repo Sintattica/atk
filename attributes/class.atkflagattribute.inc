@@ -25,7 +25,6 @@
       $this->atkMultiSelectAttribute($name, $optionArray, $valueArray, $cols, $flags, $size);
       $this->m_dbfieldtype = "number";
     }
-
     function value2db($rec)
     {
       //atkdebug("atkFlagAttribute::value2db()");
@@ -70,14 +69,8 @@
   
     function getSearchModes()
     {
-      // currently you can't search the flag attribute
-    
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      // return array("exact");
+      // currently you can't search the flag attribute       
     }  
   }
+
 ?>

@@ -57,9 +57,9 @@ class atkMlSelectorAttribute extends atkAttribute
    */
   function edit($record="")
   {
-    /* register javascript */
-    global $g_layout;
-    $g_layout->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
+    /* register javascript */    
+    $page = &atkPage::getInstance();
+    $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmultilanguage.js.php");
     return $this->getSelector();
   }
 
@@ -88,7 +88,9 @@ class atkMlSelectorAttribute extends atkAttribute
    * No function, but is necessary
    */
   function store($a, $b)
-  {}
+  {
+    return true;
+  }
 
   /**
    * No function, but is necessary

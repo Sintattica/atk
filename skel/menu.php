@@ -13,6 +13,18 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.23  2003/08/08 08:37:27  ivo
+   * + Merge of Cendris features:
+   *   + Cursor navigation for editforms (by Ludo)
+   *   + Fullscreen support (by Ludo)
+   *   + Multi-foreign key relations
+   *   + Commit/Rollback support in DB abstraction layer (by Sandy)
+   *   + Better db error handling (by Sandy and me)
+   * + Merge of Rockhopper features:
+   *   + Smarty 2 template engine
+   *   + New output and theme engines
+   *   + New atkimport() and atknew() api for creating objects
+   *
    * Revision 4.22  2003/02/16 09:01:42  ivo
    * The atk skel was out of date. I made it up 2 par with latest state of
    * atk.
@@ -31,10 +43,19 @@
 
   atksession();
   atksecure();
+  
+  $output = &atkOutput::getInstance();
+  $page = &atknew("atk.ui.atkpage");
+  $theme = &atkTheme::getInstance();  
+
 
   /* general menu stuff */
   include_once($config_atkroot."atk/menu/general.inc");  
 
   /* load menu layout */
   include_once($config_atkroot."atk/menu/".$config_menu_layout.".inc");
+  
+  $output->output($page->render(text('app_shorttitle'), true));  
+  $output->outputFlush();
+
 ?>

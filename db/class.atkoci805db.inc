@@ -21,9 +21,9 @@
      */
     function atkoci805db()
     {
-      /* do nothing */
-    }                        
-    
+       return $this->atkoci8db();
+    }    
+
   }
 
 ?>

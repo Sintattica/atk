@@ -1,18 +1,19 @@
 <?php
   $config_atkroot = "./";
   include_once("atk.inc");
-  $g_layout->initGui();
-  $g_layout->output("<html>");
-  $g_layout->head($txt_app_title);
-  $g_layout->body();
-  $g_layout->ui_top($txt_app_shorttitle);
-
-  $g_layout->output ("<br><br>$txt_app_description<br><br>");
-
-  $g_layout->ui_bottom();
-  $g_layout->output("</body>");
-  $g_layout->output("</html>");
   
-  $g_layout->outputFlush();
+  $page = &atknew("atk.ui.atkpage");  
+  $ui = &atknew("atk.ui.atkui");  
+  $theme = &atkTheme::getInstance();
+  $output = &atkOutput::getInstance();
+  
+  $page->register_style($theme->stylePath("style.css"));
+  $box = $ui->renderBox(array("title"=>text("app_shorttitle"),
+                                            "content"=>"<br><br>".text("app_description")."<br><br>"));
+ 
+  $page->addContent($box);
+  $output->output($page->render(text('app_shorttitle'), true));
+  
+  $output->outputFlush();  
 
 ?>

@@ -1,12 +1,27 @@
 <?php
+
   $config_atkroot = "./";
   include_once("atk.inc"); 
-  $g_layout->initGui();
-  $g_layout->output("<html>");
-  $g_layout->head($txt_app_title);
-  $g_layout->body();
-  $g_layout->ui_top("Top Frame");
-  $g_layout->output("<br> This is  your first top frame<br>&nbsp;");
-  $g_layout->ui_bottom();
-  $g_layout->outputFlush();
+
+  atksession();
+  atksecure();   
+  
+  $page = &atknew("atk.ui.atkpage");  
+  $ui = &atknew("atk.ui.atkui");  
+  $theme = &atkTheme::getInstance();
+  $output = &atkOutput::getInstance();
+  
+  $page->register_style($theme->stylePath("style.css"));
+  
+  $loggedin = "Ingelogde gebruiker: <b>".$g_user["name"]."</b>";  
+  $content = '<br>'.$loggedin.' &nbsp; <a href="app.php?atklogout=1" target="_top">Uitloggen</a><br>&nbsp;';
+  
+  $box = $ui->renderBox(array("title"=>text("topframe"),
+                                            "content"=>$content));
+ 
+  $page->addContent($box);
+
+  $output->output($page->render(text('txt_app_title'), true));
+  
+  $output->outputFlush();
 ?>

@@ -1,7 +1,10 @@
 <?php
 
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
+  //Oracle error's includen
+  include_once(atkconfig("atkroot")."atk/db/languages/oracle_".atkconfig('languagefile'));
 
+  
   /**
    * Handles database connectivity and database interaction
    * with the Oracle database server. Portions of this class are
@@ -15,12 +18,16 @@
    */
   class atkoci8db extends atkdb
   {    
+  
     /**
      * Base constructor
      */
     function atkoci8db()
     {
-      /* do nothing */
+      // set the user error's
+      $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);   
+      // set critical error's      
+      $this->m_critical_error = array(600,904,1017,12154);
     }
     
     /**
@@ -97,38 +104,91 @@
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = OCIplogon($this->m_user, $this->m_password, $this->m_database);
+        $this->m_link_id = @OCIplogon($this->m_user, $this->m_password, $this->m_database);
         if (!$this->m_link_id)
         {
-          $this->halt("connect using ".$this->m_user." / ***** on ".$this->m_database." failed.");
-          $err = OCIError(); // can't pass link_id because it is null if connect failed.
-          return $this->_translateError($err['code']);
+          $error = OCIError(); // can't pass link_id because it is null if connect failed.
+          atkdebug("CONNECT ERROR");
+          $this->halt($this->_translateError($error));
         }
 
         /* set default date format for Oracle */ 
         $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
         $myresult = OCIExecute($nls);
+        $error = OCIError($this->m_link_id);
+        if ($error["code"]!="")
+        {
+          $this->halt("Invalid SQL: $query"); 
+          return $this->_translateError($error);
+        }
 
       }
       return DB_SUCCESS;
     }
     
-    /**
-     * TODO FIXME: I don't know what errormessges oracle gives,
-     * so this function only returns DB_UNKNOWNERROR for now.
-     */
-    function _translateError($error)
+    /*
+          * Return atk database error
+          */
+    function getAtkDbErrno()
     {
-      return DB_UNKNOWNERROR;
+      atkdebug("atkoci8db::getAtkDbErrno() -> ".$this->getDbErrno());
+      return $this->_translateError(array('code'=>$this->getDbErrno(),'error'=>$this->getDbError()));
     }
+  
+    /**
+         *  return a atkError;
+         */
+    function _translateError($err)
+    {
+      $this->m_errno = $err['code'];
+      $this->m_error = $err['message'];
+      atkdebug('atkoci8db::_translateError() -> DB Error code: '.$err['code']);
+      switch ($this->m_errno)
+      {
+        case     0: return DB_SUCCESS;
+        case  1017: return DB_ACCESSDENIED_USER;
+        case 12154: return DB_UNKNOWNDATABASE;
+        default: 
+                    return DB_UNKNOWNERROR;
+      }
+    }
+
+    
 
     /**
      * Disconnect from database
      */
     function disconnect()
     {
-      atkdebug("Disconnecting from database...");
-      OCILogoff($this->m_link_id);
+      if($this->m_link_id)
+      {
+        atkdebug("Disconnecting from database...");
+        OCILogoff($this->m_link_id);
+      }
+    }
+
+    /*
+          * Commit all queries
+          */
+    function commit()
+    {
+      if($this->m_link_id)
+      {
+        atkdebug("OCICommit");
+        OCICommit($this->m_link_id);
+      }    
+    }
+
+    /*
+          * Rollback the queries
+          */
+    function rollback()
+    {
+      if($this->m_link_id)
+      {
+        atkdebug("OCIRollback");
+        OCIRollback($this->m_link_id);
+      }
     }
 
     /**
@@ -158,34 +218,35 @@
         {
           @OCIFreeStatement($this->m_query_id);
           $this->m_query_id = 0;
-        }      
+        }                    
 
         /* query database */
         $execresult = false;
-        $this->m_query_id = @OCIParse($this->m_link_id, $query);
+        $this->m_query_id = @OCIParse($this->m_link_id, $query);              
+        
         if ($this->m_query_id) 
-        {
-          if(!@OCIExecute($this->m_query_id,OCI_COMMIT_ON_SUCCESS))
-          {
+        {                
+          if(!@OCIExecute($this->m_query_id,OCI_DEFAULT))
+          {         
             $error = OCIError($this->m_query_id);
-            $this->m_errno = $error["code"];
-            $this->m_error = $error["message"];          
-            $this->halt("Invalid SQL: $query");
-          }
+            atkerror("Invalid SQL: $query");    
+            $this->halt($this->_translateError($error));
+            return false;
+          }          
         }
         else
-        {
+        {        
           /* error in query */          
           $error = OCIError($this->m_link_id);
-          $this->m_errno = $error["code"];
-          $this->m_error = $error["message"];          
-          $this->halt("Invalid SQL: $query");    
+          atkerror("Invalid SQL: $query");    
+          $this->halt($this->_translateError($error));          
+          return false;
         }
         $this->m_row = 0;        
-        /* return query id */
-        return $this->m_query_id;
+        /* return query id */                        
+        return true;
       }
-      return 0;
+      return false;
     }
 
     /**

@@ -16,17 +16,9 @@
    */  
 
   /* output html */
-  $g_layout->initGui();
-  $g_layout->output("<html>");
-  $g_layout->head($txt_app_title);
-  $g_layout->body();
-  $g_layout->output("<div align='center'>"); 
-  $g_layout->ui_top(text("menu_".$atkmenutop));
-  $g_layout->output("<br>");
-
-  /* build menu */    
+  $menu = "<div align='center'>"; 
   
-  $menu = "";  
+  /* build menu */    
   
   function menu_cmp($a,$b)
   {
@@ -86,12 +78,12 @@
     $parent = $g_menu_parent[$atkmenutop];
     $menu .= $config_menu_delimiter;
     $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_DEFAULT).'<br>';  
-  }
-
-  /* bottom */
-  $g_layout->output($menu);
-  $g_layout->output("<br><br>");
-  $g_layout->ui_bottom();
-  $g_layout->output("</div></html>"); 
-  $g_layout->outputFlush();
+  }      
+  
+  $page->register_style($theme->stylePath("style.css"));
+  $box = $ui->renderBox(array("title"=>text("menu_".$atkmenutop),
+                                            "content"=>$menu));
+ 
+  $page->addContent($box);
+  
 ?>

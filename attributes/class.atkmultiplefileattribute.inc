@@ -129,9 +129,7 @@
      * @return Filename or Nothing
      */
     function display($record)
-    {    
-      global $g_layout;  
-    
+    {              
       $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
       $prev_type = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
@@ -152,7 +150,8 @@
               $imagehw=Array("0"=>"640","1"=>"480");
              }
              
-             $g_layout->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
+             $page = &atkPage::getInstance();
+             $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
              $r .=  '<a href="'.$this->m_url.$files[$i].'" alt="'.$files[$i].'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0]+50).'\',\''.($imagehw[1]+50).'\',\'yes\');return false;">'.$files[$i].'</a><br>';
           }
           else

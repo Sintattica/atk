@@ -103,8 +103,7 @@
      
     function authenticate()
     {    
-      global $g_sessionManager, $ATK_VARS;
-      global $g_layout;      
+      global $g_sessionManager, $ATK_VARS;      
       
       $session = &atkSessionManager::getSession();
       
@@ -315,7 +314,8 @@
         if(atkconfig("auth_loginform"))
         {
           $this->loginForm($auth_user, $response);
-          $g_layout->outputFlush();
+          $output = &atkOutput::getInstance();
+          $output->outputFlush();
           exit();
         }
         else
@@ -365,8 +365,7 @@
     }
           
     function loginForm($defaultname, $lastresponse)
-    {
-      global $g_layout;
+    {      
 
       $loginattempts = sessionLoad('loginattempts');            
       if($loginattempts=="") $loginattempts = 0;
@@ -383,24 +382,20 @@
       sessionStore('loginattempts',$loginattempts);      
 
       atkdebug('LoginAttempts: '.$loginattempts);
-      $g_layout->initGui();
-      $g_layout->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
-      $g_layout->head(text('app_title'));
-      $g_layout->output('<br><br><div align="center">');
-      $g_layout->tpl("login_top", array("header"=>text('login_form')), "block_top");
-      $g_layout->output('<form action="'.$_SERVER["PHP_SELF"].'" method="post">');
-      $g_layout->output(makeHiddenPostVars(array("atklogout", "loginattempts")));          
+      
+      $page = &atknew("atk.ui.atkpage");            
+      $ui = &atknew("atk.ui.atkui");
 
-      $g_layout->output('<br><br><table border=0 cellspacing=0 cellpadding=0 align=left>');
-      $g_layout->output('<tr><td class=table>');
-
-      $g_layout->table_simple();      
+      $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");      
+            
+      $output.='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
+      $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));       
+      $output.='<br><br><table border=0 cellspacing=2 cellpadding=0 align=center>';                     
 
       // max_loginattempts of 0 means no maximum.
       if(atkconfig('max_loginattempts')>0 && $loginattempts>atkconfig('max_loginattempts'))
-      {
-        //$g_layout->output("<script language='javascript'>window.alert('".text("max_loginattempts_exceeded")."')</script>");
-        $g_layout->output("<tr><td class=table>".text('auth_max_loginattempts_exceeded')."<br><br></td></tr>");
+      {        
+        $output.="<tr><td class=table>".text('auth_max_loginattempts_exceeded')."<br><br></td></tr>";
       }      
       else
       {
@@ -410,30 +405,29 @@
         
         if ($lastresponse == AUTH_LOCKED)
         {        
-          $g_layout->output("<tr><td colspan=2 class=error>".text('auth_account_locked')."<br><br></td></tr>");          
+          $output.="<tr><td colspan=2 class=error>".text('auth_account_locked')."<br><br></td></tr>";
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
-//          $g_layout->output("<script language='javascript'>window.alert('".text("login_failed")."')</script>");          
-          $g_layout->output('<tr><td colspan=2 class=error>'.text('auth_mismatch').'<br><br></td></tr>');
+          $output.='<tr><td colspan=2 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
         }
 
         // generate the form
-        $g_layout->output("<tr><td valign=top class=table>".text('username').":</td><td>".$userField."</td></tr>");   
-        $g_layout->output("<tr><td colspan=2 class=table height=6></td></tr>");
-        $g_layout->output("<tr><td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=auth_pw value=''></td></tr>");
-        $g_layout->output("<tr><td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>");      
+        $output.="<tr><td valign=top class=table>".text('username').":</td><td>".$userField."</td></tr>";   
+        $output.="<tr><td colspan=2 class=table height=6></td></tr>";
+        $output.="<tr><td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
+        $output.="<tr><td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";      
                        
       }
       
-      $g_layout->output('</table></td>');       
-      $g_layout->output('</table>');
-      $g_layout->output('</form>');
+      $output.='</table></form>';
 
-      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
-      $g_layout->tpl("login_bottom", "", "block_bottom");
-      $g_layout->output('</div><br><br>');
-
+      $output.='<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
+      
+      $page->addContent($ui->render("login.tpl", array("title"=>text('login_form'),
+                                                       "content"=>$output)));       
+      $o = &atkOutput::getInstance();
+      $o->output($page->render(text("login_form")));
     }
 
 

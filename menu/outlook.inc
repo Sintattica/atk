@@ -37,19 +37,19 @@ function menu_href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
 <!-- dit zorgt ervoor dat theme variables ook beschikbaar zijn in javascript en dus outlookmenu -->
 <script language="JavaScript" type="text/javascript">
 
-this.ol_themename       = '<?echo $g_theme["Description"];?>';
-this.ol_pimage     = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/".$g_theme["ol_pimage"];?>';
-this.ol_menucolor  = '<? echo $g_theme["ol_menucolor"];?>';
-this.ol_wincolor   = '<? echo $g_theme["ol_wincolor"];?>'; 
-this.ol_background = '<? echo $g_theme["ol_background"];?>';
-this.ol_arrowup    = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowup.gif";?>';
-this.ol_arrowdown  = '<? echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowdown.gif";?>';
+this.ol_themename       = '<?php echo $g_theme["Description"];?>';
+this.ol_pimage     = '<?php echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/".$g_theme["ol_pimage"];?>';
+this.ol_menucolor  = '<?php echo $g_theme["ol_menucolor"];?>';
+this.ol_wincolor   = '<?php echo $g_theme["ol_wincolor"];?>'; 
+this.ol_background = '<?php echo $g_theme["ol_background"];?>';
+this.ol_arrowup    = '<?php echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowup.gif";?>';
+this.ol_arrowdown  = '<?php echo $config_atkroot."atk/themes/".$g_theme["Name"]."/images/arrowdown.gif";?>';
 
 
 </script>
-<script language="JavaScript" src="<? echo $config_atkroot; ?>atk/javascript/crossbrowser.js" type="text/javascript">
+<script language="JavaScript" src="<?php echo $config_atkroot; ?>atk/javascript/crossbrowser.js" type="text/javascript">
 </script>
-<script language="JavaScript" src="<? echo $config_atkroot; ?>atk/javascript/outlook.js" type="text/javascript">
+<script language="JavaScript" src="<?php echo $config_atkroot; ?>atk/javascript/outlook.js" type="text/javascript">
 
 </script>
 

@@ -51,16 +51,18 @@
    $layout .= "</tr>";
    $layout .= "</table>";
    $layout .= "</form>";
-   $style     = $config_atkroot."atk/style.php";
-
+  
   //  Display's the picker in the current ATK style-template
-   $g_layout->output("<html>");
-   $g_layout->head(text("colorpicker"));
-   $g_layout->output('<script language="javascript" src="'.$config_atkroot.'atk/javascript/colorpicker.js"></script>');
-   $g_layout->output('<link href="'.$style.'" rel="stylesheet" type="text/css">');
-   $g_layout->body();
-   $g_layout->output ("<div align='center'>".$layout."</div>");
-   $g_layout->output("</body>");
-   $g_layout->output("</html>");
-   $g_layout->outputFlush();
+  $page = &atknew("atk.ui.atkpage");  
+  $ui = &atknew("atk.ui.atkui");  
+  $theme = &atkTheme::getInstance();
+  $output = &atkOutput::getInstance();
+  
+  $page->register_style($theme->stylePath("style.css"));
+  $page->register_script(atkconfig("atkroot")."atk/javascript/colorpicker.js");
+  $page->addContent($layout);
+  $output->output($page->render(text('colorpicker'), true));
+  
+  $output->outputFlush();
+
 ?>

@@ -122,7 +122,7 @@ function atkLockUnlock()
   atkLock.isLocked = false;
   if (typeof(document.images['_lock_']) != 'undefined')
     document.images['_lock_'].src='<?php echo atkconfig("atkroot");?>atk/images/lock_expired.gif';
-  alert('<?=addslashes($message)?>');
+  alert('<?php echo addslashes($message); ?>');
 }
 
-atkLockInit('<?=$id?>');
+atkLockInit('<?php echo $id; ?>');

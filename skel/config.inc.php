@@ -65,6 +65,10 @@
   // appear to the left or right of the records. If you are crazy, you 
   // might try the option "both".
   $config_recordlist_orientation = "right";
+
+  // If the users are using IE, then the application can be run in fullscreen
+  // mode. Set the next variable to true to enable this:
+  $config_fullscreen = false;
   
   //----------------- SECURITY CONFIGURATION --------------------
 

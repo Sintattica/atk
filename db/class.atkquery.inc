@@ -381,7 +381,7 @@
       global $g_db;
       
       $query = $this->buildUpdate();
-      $g_db->query($query);      
+      return $g_db->query($query);      
     }
 
  /**
@@ -392,7 +392,7 @@
       global $g_db;
       
       $query = $this->buildInsert(true);
-      $g_db->query($query);      
+      return $g_db->query($query);      
     }
 
     /**
