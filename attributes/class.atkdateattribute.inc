@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.2  2001/04/25 07:29:40  sandy
    * fixed a bug in the data javascript for multilanguage
    * added the stickyvars to the onetomany relations urls
@@ -428,7 +431,7 @@
      */
     function value2db($rec)
     {
-      $is_date = $this->m_tableMeta[$this->fieldName()]['type'] == 'date';
+      $is_date = $this->m_tableMeta['type'] == 'date';
             
       if(is_array($rec[$this->fieldName()]))
       {
@@ -459,7 +462,7 @@
      */
     function db2value($rec)
     {
-      $is_date = $this->m_tableMeta[$this->fieldName()]['type'] == 'date';
+      $is_date = $this->m_tableMeta['type'] == 'date';
 
       if (strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
       

@@ -62,8 +62,7 @@
     {             
     
    $checkedArray = $record[$this->fieldName()];
-   
-   $this->createOwner();
+      
    $pkfield = $this->m_ownerInstance->m_primaryKey[0];
        
    $this->m_destination = $this->m_destination1; 
@@ -180,16 +179,14 @@
     function delete_before_store($db, $record)
     {
     if ($this->m_fk1=="" && $this->m_fk2!="") // manybool 
-    { 
-      $this->createOwner();
+    {       
       $pkfield = $this->m_ownerInstance->m_primaryKey[0];
      
       $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name2.' = '.$record[$pkfield];
       $db->query($query);
       
     } else {
-    
-      $this->createOwner();
+          
       $pkfield = $this->m_ownerInstance->m_primaryKey[0];
 
       $this->m_destination = $this->m_destination1;

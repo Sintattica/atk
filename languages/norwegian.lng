@@ -92,5 +92,7 @@
   $txt_tue = "tir";
   $txt_wed = "ons";
   $txt_thu = "tor";
+  
+  $txt_menu_main = $txt_menu;
 
 ?>

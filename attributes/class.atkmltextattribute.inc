@@ -10,6 +10,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -42,8 +45,8 @@
     {
       global $config_language, $g_layout;
 
-      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len']);
-      $this->m_maxsize = $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len'];    
+      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta['len']);
+      $this->m_maxsize = $this->m_tableMeta['len'];    
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)

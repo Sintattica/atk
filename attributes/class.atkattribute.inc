@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -189,6 +192,11 @@
      * The owner of the attribute (set by atknode)
      */
     var $m_owner = "";
+    
+    /**
+     * Owner Instance
+     */
+    var $m_ownerInstance="";
 
     /**
      * The size, searchsize and maxsize of the attribute's field.
@@ -386,6 +394,14 @@
     function sum($rec1, $rec2)
     {
       return Array($this->fieldName()=>($rec1[$this->fieldName()]+$rec2[$this->fieldName()]));
+    }
+    
+    /**
+     * Fetch the metadata about this attrib from the table metadata
+     */    
+    function fetchMeta($metadata)
+    {
+      $this->m_tableMeta = $metadata[$this->m_name];
     }
 
   }

@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.3  2001/04/25 08:44:04  sandy
    * changed the order of the edit,delete functions (first edit, then delete)
    *
@@ -142,15 +145,14 @@
     {
       $GLOBALS['g_layout']->debug("edit called for ".$this->fieldName());
 
-      $this->createDestination();
-      $this->createOwner();
+      $this->createDestination();      
 
       $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
       
       $myrecords = $record[$this->fieldName()];
 
       $this->m_ownerInstance->m_records[0] = $record;
-      
+                  
       if (count($myrecords)==0)
       {
         // If someone pressed 'save', no records are loaded from the db.
@@ -218,13 +220,12 @@
     {
       $GLOBALS['g_layout']->debug("load called for ".$this->m_name);
       $this->createDestination();
-
-      $this->createOwner();
+      
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
       
       $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";      
       $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);
-      //var_dump($this->m_destInstance->m_records);
+      
       return $this->m_destInstance->m_records;
     }
 

@@ -16,6 +16,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.1  2001/04/23 13:21:22  peter
    * Introduction of module support. An ATK application can now have zero
    * or more modules which can, but don't have to, contain ATK nodes.
@@ -53,12 +56,6 @@
     var $m_destInstance="";
     
    /**
-    * Owner Instance
-    */
-    var $m_ownerInstance="";
-
-
-   /**
     * Constructor
     * @param $name ?
     * @param $destination ?
@@ -85,21 +82,6 @@
       }
     }
     
-    /**
-    * create an instance of the same class as the owner.. (normally, an attribute
-    * would have a pointer to its owner, but since php lacks pointers, we have to
-    * do it like this)
-    */
-    function createOwner()
-    {
-      $classname = $this->m_owner;
-      include "class.".$classname.".inc";      
-      if ($this->m_ownerInstance == "")
-      {
-        $this->m_ownerInstance = new $classname();
-      }
-    }   
-
     /**
     * Return a displayable string for this value.
     * @return a displayable string for this value.

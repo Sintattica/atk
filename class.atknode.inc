@@ -92,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.6  2001/04/25 07:29:40  sandy
    * fixed a bug in the data javascript for multilanguage
    * added the stickyvars to the onetomany relations urls
@@ -551,11 +554,12 @@ if (!defined("CLASS_ATKNODE_INC"))
      * atkAttribute or one of its derivatives)
      * @param $attribute the attribute you want to add
      */
-    function addAttribute($attribute)
+    function addAttribute(&$attribute)
     {
       global $g_securityManager;
 
       $attribute->m_owner = $this->m_type;
+      $attribute->m_ownerInstance = &$this;
 
       if (!$g_securityManager->attribAllowed($this->m_type, $attribute->m_name, "edit"))
       {
@@ -568,7 +572,7 @@ if (!defined("CLASS_ATKNODE_INC"))
       }      
       
 
-      $this->m_attribList[$attribute->fieldName()]=$attribute;
+      $this->m_attribList[$attribute->fieldName()]=&$attribute;
 
       if ($attribute->hasFlag(AF_PRIMARY))
       {
@@ -630,8 +634,8 @@ if (!defined("CLASS_ATKNODE_INC"))
       for ($i=0;$i<$nrOfElements;$i++)
       {
 //        $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_records[$this->m_currentRec][$this->m_primaryKey[$i]]."'";
-        $tmpattrib = $this->m_attribList[$this->m_primaryKey[$i]];
-        $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$tmpattrib->value2db($rec)."'";
+        $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];
+        $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
      // $this->debug("Primary key: ".$primKey);
@@ -673,13 +677,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     function setOrder($fields)
     {
       $this->debug('atkNode::setOrder('.$fields.')');
-/*      $fields_exp = explode(',',$fields);
-       for($z=0;$z<count($fields_exp);$z++)
-       {
-         if($z>0) { $this->$m_default_order.=","; }
-         $this->$m_default_order.=$fields_exp[$z];
-       }
-*/
+
       $this->m_default_order = $fields;
     }
 
@@ -709,29 +707,23 @@ if (!defined("CLASS_ATKNODE_INC"))
           $this->m_tableMeta[$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
           $this->m_tableMeta[$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];
           $this->m_tableMeta[$tmparr[$i]['name']]['flags'] = $tmparr[$i]['flags'];
-          $fieldname = $tmparr[$i]['name'];
-          $tmpattrib = $this->m_attribList[$fieldname];
-          if (!is_object($tmpattrib))
-          {
-            $this->debug("addTable - Table field not in class ".$this->m_type." : $fieldname");
-          }
+          $fieldname = $tmparr[$i]['name'];          
         }
 
         $g_tableMeta[$tablename] = $this->m_tableMeta;
       }
 
       $this->m_tableMeta = $g_tableMeta[$tablename];
-      for (reset($this->m_attribList); list($i, $tmpattrib) = each($this->m_attribList);)
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        if (is_object($tmpattrib))
+        $p_attrib = &$this->m_attribList[$attribname];
+        
+        if (is_object($p_attrib))
         {
-          $tmpattrib->m_tableMeta = $this->m_tableMeta;
-          $tmpattrib->m_size = min($this->m_tableMeta[$fieldname]['len'], $g_layout->maxInputSize());
-          $tmpattrib->m_searchsize = min($this->m_tableMeta[$fieldname]['len'], $g_layout->searchSize());      
-          $tmpattrib->m_maxsize = $this->m_tableMeta[$fieldname]['len']; 
-          
-          // Copy it back (stupid lack of pointers)
-          $this->m_attribList[$tmpattrib->fieldName()] = $tmpattrib;
+          $p_attrib->fetchMeta($this->m_tableMeta);
+          $p_attrib->m_size = min($this->m_tableMeta[$attribname]['len'], $g_layout->maxInputSize());
+          $p_attrib->m_searchsize = min($this->m_tableMeta[$attribname]['len'], $g_layout->searchSize());      
+          $p_attrib->m_maxsize = $this->m_tableMeta[$attribname]['len'];                     
         }
       }
     }
@@ -819,10 +811,11 @@ if (!defined("CLASS_ATKNODE_INC"))
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        if (!$tmpattrib->hasFlag(AF_HIDE))
+        $p_attrib = &$this->m_attribList[$attribname];
+        
+        if (!$p_attrib->hasFlag(AF_HIDE))
         {
           // fields that have not yet been initialised may be overriden in the url..
           $page.='<tr>';
@@ -833,15 +826,15 @@ if (!defined("CLASS_ATKNODE_INC"))
 
           // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
           // For each attribute, a txt_<attributename> must be provided in the language files.
-          if ($tmpattrib->hasFlag(AF_NOLABEL)==false)
+          if ($p_attrib->hasFlag(AF_NOLABEL)==false)
           {
-            if ($tmpattrib->hasFlag(AF_BLANKLABEL))
+            if ($p_attrib->hasFlag(AF_BLANKLABEL))
             {
               $page.=$g_layout->ret_td('&nbsp;');
             }          
             else
             {
-              $page.=$g_layout->ret_td(text($tmpattrib->fieldName()).': ','valign="top"');
+              $page.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
             }
           }
           else
@@ -849,7 +842,7 @@ if (!defined("CLASS_ATKNODE_INC"))
             $tdcount++; // If there's no label, the other td's have to be filled up.
           }
         	         
-          $editsrc=$tmpattrib->display($this->m_records[$this->m_currentRec]);
+          $editsrc=$p_attrib->display($this->m_records[$this->m_currentRec]);
                         
           $page.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
           $page.='</tr>';
@@ -906,9 +899,7 @@ if (!defined("CLASS_ATKNODE_INC"))
          ($mode == 'edit' && sizeof($this->m_listMlEdit) > 0 && !$this->m_hasMlSelectEdit))
       {
         $selector = new atkMlSelectorAttribute();
-        $attribList[$selector->fieldName()] = $selector;
-        for(reset($this->m_attribList); list($fieldname, $attribute) = each($this->m_attribList); $attribList[$fieldname] = $attribute);
-        $this->m_attribList = $attribList;
+        array_unshift($this->m_attribList, $selector);
       }
 
       $form.=$this->stickyForm();
@@ -968,12 +959,12 @@ if (!defined("CLASS_ATKNODE_INC"))
               $defaults[$forcedvarname]=$forcedvalue;
               $attribname = $forcedvarname;
             }        
-            $tmpattrib = $this->m_attribList[$attribname];
-            $tmpattrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
-            $this->m_attribList[$attribname] = $tmpattrib;
+            $p_attrib = &$this->m_attribList[$attribname];            
+            $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+            
           }
         }
-      }
+      }      
 
       $form.=$GLOBALS['g_layout']->ret_table_simple();
 
@@ -995,29 +986,29 @@ if (!defined("CLASS_ATKNODE_INC"))
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];
         // fields that have not yet been initialised may be overriden in the url..
-        if ($defaults[$tmpattrib->fieldName()]=="" && $this->m_postvars[$tmpattrib->fieldName()]!="")
+        if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
-          $defaults[$tmpattrib->fieldName()] = $this->m_postvars[$tmpattrib->fieldName()];
+          $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
         }
 
         if (is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList))
         {
-          $form.=$tmpattrib->hide($defaults);
+          $form.=$p_attrib->hide($defaults);
         }
         else
         {
-          if (($mode=="edit"&&$tmpattrib->hasFlag(AF_HIDE_EDIT))
+          if (($mode=="edit"&&$p_attrib->hasFlag(AF_HIDE_EDIT))
               ||
-              ($mode=="add"&&$tmpattrib->hasFlag(AF_HIDE_ADD))
+              ($mode=="add"&&$p_attrib->hasFlag(AF_HIDE_ADD))
              )
           {
-            if ($mode=="edit" || ($mode=="add" && !$tmpattrib->isEmpty($defaults))) // when adding, there's nothing to hide..
+            if ($mode=="edit" || ($mode=="add" && !$p_attrib->isEmpty($defaults))) // when adding, there's nothing to hide..
             {
-              $form.=$tmpattrib->hide($defaults);
+              $form.=$p_attrib->hide($defaults);
             }
           }
           else
@@ -1030,49 +1021,43 @@ if (!defined("CLASS_ATKNODE_INC"))
 
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
-            if ($tmpattrib->hasFlag(AF_NOLABEL)==false)
+            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
             {
-              if ($tmpattrib->hasFlag(AF_BLANKLABEL))
+              if ($p_attrib->hasFlag(AF_BLANKLABEL))
               {
                 $form.=$GLOBALS['g_layout']->ret_td('&nbsp;');
               }
               else if ($this->m_errors[$attribname]!="")
               {
-                $form.=$GLOBALS['g_layout']->ret_td('<div class="error">'.text($tmpattrib->fieldName()).': </div>', 'valign="top"');
+                $form.=$GLOBALS['g_layout']->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
               }
               else
               {
-                $form.=$GLOBALS['g_layout']->ret_td(text($tmpattrib->fieldName()).': ','valign="top"');
+                $form.=$GLOBALS['g_layout']->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
               }
             }
             else
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
             }
-            	         
-           // if ($tmpattrib->hasFlag(AF_READONLY)&&$mode=="edit")
-            if ($tmpattrib->hasFlag(AF_READONLY))
+            	                    
+            if ($p_attrib->hasFlag(AF_READONLY))
 	          {
               // readonly, display value..
-	            $editsrc=$tmpattrib->hide($defaults);
-              $editsrc.=$tmpattrib->display($defaults);
+	            $editsrc=$p_attrib->hide($defaults);
+              $editsrc.=$p_attrib->display($defaults);
             }
 	          else
             {
-              $funcname = $tmpattrib->m_name."_edit";
+              $funcname = $p_attrib->m_name."_edit";
               
               if (method_exists($this,$funcname))
               {
                 $editsrc = $this->$funcname($defaults);
               }
               else
-              {
-                // attributes have their own editfunctions.
-                $tmpattrib->m_searchsize=min($g_layout->searchSize(),$this->m_tableMeta[$tmpattrib->fieldname()]['len']);
-                $tmpattrib->m_size=min($g_layout->maxInputSize(),$this->m_tableMeta[$tmpattrib->fieldname()]['len']);
-		            $tmpattrib->m_maxsize=$this->m_tableMeta[$tmpattrib->fieldname()]['len'];
-		
-                $editsrc = $tmpattrib->edit($defaults);
+              {                		
+                $editsrc = $p_attrib->edit($defaults);
               }
 	          }
             
@@ -1234,33 +1219,34 @@ if (!defined("CLASS_ATKNODE_INC"))
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
       
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];
+        
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
         if (
-            ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+            ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
             &&
             (
-              ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+              ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
               ||($this->m_action!="select")
             )
             &&$musthide==false
            )
         {
           $newvars = $this->m_postvars;
-          $newvars['atkorderby']=$this->m_table.".".$tmpattrib->fieldName();
+          $newvars['atkorderby']=$this->m_table.".".$p_attrib->fieldName();
 
-          if ($sortable && !$tmpattrib->hasFlag(AF_NOSORT))
+          if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = url($this->stickyUrl('dispatch.php'.arrayToUrlVars($newvars)),text($tmpattrib->fieldName()));
+            $tmp = url($this->stickyUrl('dispatch.php'.arrayToUrlVars($newvars)),text($p_attrib->fieldName()));
           }
-          else $tmp = text($tmpattrib->fieldName());
+          else $tmp = text($p_attrib->fieldName());
 
           $output.=$GLOBALS['g_layout']->ret_td_datatitle($tmp);
           
           // the totalisable check..
-          if ($tmpattrib->hasFlag(AF_TOTAL))
+          if ($p_attrib->hasFlag(AF_TOTAL))
           {
             $totalisable = true;
           }
@@ -1282,27 +1268,25 @@ if (!defined("CLASS_ATKNODE_INC"))
         $searchable = false;
 
         // Second loop.. this time for the search fields.
-        reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
+          $p_attrib = &$this->m_attribList[$attribname];
+        
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
              )
           {
-            if ($tmpattrib->hasFlag(AF_SEARCHABLE))
+            if ($p_attrib->hasFlag(AF_SEARCHABLE))
             {
-              $searchable = true;
-              $tmpattrib->m_searchsize=min($GLOBALS['g_layout']->searchSize(),$this->m_tableMeta[$tmpattrib->fieldname()]['len']);
-              $tmpattrib->m_size=min($GLOBALS['g_layout']->maxInputSize(),$this->m_tableMeta[$tmpattrib->fieldname()]['len']);
-              $tmpattrib->m_maxsize=$this->m_tableMeta[$tmpattrib->fieldname()]['len'];
-              $searchRow.=$GLOBALS['g_layout']->ret_td_datatitle($tmpattrib->search($this->m_postvars['atksearch']));
+              $searchable = true;              
+              $searchRow.=$GLOBALS['g_layout']->ret_td_datatitle($p_attrib->search($this->m_postvars['atksearch']));
             }
             else
             {
@@ -1331,15 +1315,15 @@ if (!defined("CLASS_ATKNODE_INC"))
       for ($this->m_currentRec=0;$this->m_currentRec<count($this->m_records);$this->m_currentRec++)
       {
         $output.='<tr>';
-        reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
+          $p_attrib = &$this->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
@@ -1347,7 +1331,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           {
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute.
-            $funcname = $tmpattrib->m_name."_display";
+            $funcname = $p_attrib->m_name."_display";
 
             if (method_exists($this,$funcname))
             {
@@ -1357,13 +1341,13 @@ if (!defined("CLASS_ATKNODE_INC"))
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$GLOBALS['g_layout']->ret_td($tmpattrib->display($this->m_records[$this->m_currentRec]));
+              $output.=$GLOBALS['g_layout']->ret_td($p_attrib->display($this->m_records[$this->m_currentRec]));
             }
             
             // Calculate totals..
-            if ($tmpattrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totals[$attribname] = $tmpattrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
+              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
             }
           }
         }
@@ -1399,23 +1383,23 @@ if (!defined("CLASS_ATKNODE_INC"))
         $totalRow = '<tr>';
         
         // Third loop.. this time for the totals row.
-        reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
+          $p_attrib = &$this->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
              )
           {
-            if ($tmpattrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL))
             {                            
-              $totalRow.=$GLOBALS['g_layout']->ret_td_datatitle($tmpattrib->display($totals[$attribname]));
+              $totalRow.=$GLOBALS['g_layout']->ret_td_datatitle($p_attrib->display($totals[$attribname]));
             }
             else
             {
@@ -1458,24 +1442,24 @@ if (!defined("CLASS_ATKNODE_INC"))
       // display a headerrow with titles. 
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
         if (
-            ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+            ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
             &&
             (
-              ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+              ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
               ||($this->m_action!="select")
             )
             &&$musthide==false
            )
         {
-          $output.='<td><b>'.text($tmpattrib->fieldName()).'</b></td>';
+          $output.='<td><b>'.text($p_attrib->fieldName()).'</b></td>';
           
           // the totalisable check..
-          if ($tmpattrib->hasFlag(AF_TOTAL))
+          if ($p_attrib->hasFlag(AF_TOTAL))
           {
             $totalisable = true;
           }
@@ -1488,15 +1472,15 @@ if (!defined("CLASS_ATKNODE_INC"))
       for ($this->m_currentRec=0;$this->m_currentRec<count($this->m_records);$this->m_currentRec++)
       {        
         $output.='<tr>';
-        reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
+          $p_attrib = &$this->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
@@ -1504,7 +1488,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           {
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute.
-            $funcname = $tmpattrib->m_name."_display";
+            $funcname = $p_attrib->m_name."_display";
 
             if (method_exists($this,$funcname))
             {
@@ -1514,14 +1498,14 @@ if (!defined("CLASS_ATKNODE_INC"))
             {
               // otherwise, the display function of the particular attribute
               // is called.              
-              $value=$tmpattrib->display($this->m_records[$this->m_currentRec]);
+              $value=$p_attrib->display($this->m_records[$this->m_currentRec]);
             }
             $output.='<td>'.($value==""?"&nbsp;":$value).'</td>';
             
             // Calculate totals..
-            if ($tmpattrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totals[$attribname] = $tmpattrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
+              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
             }
           }
         }
@@ -1535,23 +1519,23 @@ if (!defined("CLASS_ATKNODE_INC"))
         $totalRow = '<tr>';
         
         // Third loop.. this time for the totals row.
-        reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
+          $p_attrib = &$this->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($tmpattrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($tmpattrib->hasFlag(AF_HIDE_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
              )
           {
-            if ($tmpattrib->hasFlag(AF_TOTAL))
+            if ($p_attrib->hasFlag(AF_TOTAL))
             {                            
-              $totalRow.='<td><b>'.$tmpattrib->display($totals[$attribname]).'</b></td>';
+              $totalRow.='<td><b>'.$p_attrib->display($totals[$attribname]).'</b></td>';
             }
             else
             {
@@ -1854,12 +1838,12 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       $xml = "<".$this->m_type." ";
 
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        if ($this->m_records[$this->m_currentRec][$tmpattrib->fieldName()]!="")
+        $p_attrib = &$this->m_attribList[$attribname];
+        if ($this->m_records[$this->m_currentRec][$p_attrib->fieldName()]!="")
         {
-          $xml.=$attribname.'="'.$this->m_records[$this->m_currentRec][$tmpattrib->fieldName()].'" ';
+          $xml.=$attribname.'="'.$this->m_records[$this->m_currentRec][$p_attrib->fieldName()].'" ';
         }
       }
       $xml.='/>';
@@ -1879,11 +1863,10 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function updateRecord()
     {
-      reset($this->m_attribList);
-
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        $this->m_records[$this->m_currentRec][$tmpattrib->fieldName()]=$tmpattrib->fetchValue($this->m_postvars);
+        $p_attrib = &$this->m_attribList[$attribname];
+        $this->m_records[$this->m_currentRec][$p_attrib->fieldName()]=$p_attrib->fetchValue($this->m_postvars);
       }
     }
 
@@ -1908,10 +1891,9 @@ if (!defined("CLASS_ATKNODE_INC"))
       }
       else
       {
-        // default descriptor.. (default is first attribute of a node)
-        reset($this->m_attribList);
-        list($attribname, $tmpattrib)=each($this->m_attribList);
-        $fields[]=$tmpattrib->m_name;
+        // default descriptor.. (default is first attribute of a node)       
+        $keys = array_keys($this->m_attribList);
+        $fields[0]=$keys[0];
       }
 
       return $fields;
@@ -1950,10 +1932,8 @@ if (!defined("CLASS_ATKNODE_INC"))
       else
       {
         // default descriptor.. (default is first attribute of a node)
-        reset($this->m_attribList);
-        list($attribname, $tmpattrib)=each($this->m_attribList);
-    //    $this->debug("default descriptor attrib: ".$attribname);
-        return $rec[$tmpattrib->fieldName()];
+        $keys = array_keys($this->m_attribList);            
+        return $rec[$keys[0]];
       }
     }
 
@@ -1964,23 +1944,23 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_db;
       $this->debug("validate()");
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-        if ($tmpattrib->hasFlag(AF_OBLIGATORY) && !$tmpattrib->hasFlag(AF_AUTO_INCREMENT) && $tmpattrib->isEmpty($this->m_postvars))
+        if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($this->m_postvars))
         {
           $this->m_errors[$attribname] = text('error_obligatoryfield');
         }
-        else if ($tmpattrib->hasFlag(AF_UNIQUE) &&
-                 count($g_db->getrows("SELECT ".$tmpattrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".$this->m_postvars[$attribname]."' AND NOT (".$this->primaryKey().")"))>0
+        else if ($p_attrib->hasFlag(AF_UNIQUE) &&
+                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".$this->m_postvars[$attribname]."' AND NOT (".$this->primaryKey().")"))>0
                 )
         {
           $this->m_errors[$attribname] = text('error_uniquefield');
         }
         else
         {
-          $funcname = $tmpattrib->m_name."_validate";
+          $funcname = $p_attrib->m_name."_validate";
 
           if (method_exists($this,$funcname))
           {
@@ -1989,7 +1969,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           }
           else
           {
-            $error = $tmpattrib->validate($this->m_postvars[$attribname]);
+            $error = $p_attrib->validate($this->m_postvars[$attribname]);
             if ($error!="") $this->m_errors[$attribname] = $error;
           }
         }
@@ -2013,18 +1993,18 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       $storelist = Array();
 
-      reset($this->m_attribList);
-      for ($i=0;list($attribname,$tmpattrib)=each($this->m_attribList);$i++)
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        if ($tmpattrib->hasFlag(AF_READONLY)==false && $tmpattrib->hasFlag(AF_HIDE_EDIT)==false)
+        $p_attrib = &$this->m_attribList[$attribname];        
+        if ($p_attrib->hasFlag(AF_READONLY)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
  	      {
-          if (method_exists($tmpattrib,"store"))
+          if (method_exists($p_attrib,"store"))
           {
             $storelist[]=$attribname;
           }
           else
           {
-            $tmpattrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"edit"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"edit"); // start at level 1
           }
 	      }
       }
@@ -2038,8 +2018,8 @@ if (!defined("CLASS_ATKNODE_INC"))
       // also store special storage attributes.
       for ($i=0;$i<count($storelist);$i++)
       {
-        $tmpattrib = $this->m_attribList[$storelist[$i]];
-        $tmpattrib->store($g_db, $this->m_records[$this->m_currentRec],"update");
+        $p_attrib = &$this->m_attribList[$storelist[$i]];
+        $p_attrib->store($g_db, $this->m_records[$this->m_currentRec],"update");
       }
 
       // Now we call a postUpdate function, that can be used to do some processing after the record
@@ -2103,25 +2083,25 @@ if (!defined("CLASS_ATKNODE_INC"))
         }
       }
 
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];
         if (
              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
                 || (!is_array($excludeList) && !is_array($includeList))
-                || ($tmpattrib->hasFlag(AF_FORCE_LOAD))
+                || ($p_attrib->hasFlag(AF_FORCE_LOAD))
               )
            )
         {
-          if (method_exists($tmpattrib,"load"))
+          if (method_exists($p_attrib,"load"))
           {
             $loadlist[]=$attribname;
           }
           else
           {
-            $tmpattrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
           }
         }
         else
@@ -2211,25 +2191,25 @@ if (!defined("CLASS_ATKNODE_INC"))
         }
       }
 
-      reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
+        $p_attrib = &$this->m_attribList[$attribname];        
         if (
              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
                 || (!is_array($excludeList) && !is_array($includeList))
-                || ($tmpattrib->hasFlag(AF_FORCE_LOAD))
+                || ($p_attrib->hasFlag(AF_FORCE_LOAD))
               )
            )
         {
-          if (method_exists($tmpattrib,"load"))
+          if (method_exists($p_attrib,"load"))
           {
             $loadlist[]=$attribname;
           }
           else
           {
-            $tmpattrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
           }
         }
         else
@@ -2256,9 +2236,10 @@ if (!defined("CLASS_ATKNODE_INC"))
         $query->deAlias($dbrecord); // dereference aliases..
         atkDataDecode($dbrecord);
         reset($this->m_attribList);
-        while(list($attribname,$tmpattrib)=each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
-          $therecord[$attribname] = $tmpattrib->db2value($dbrecord);
+          $p_attrib = &$this->m_attribList[$attribname];        
+          $therecord[$attribname] = $p_attrib->db2value($dbrecord);
         }
         $this->m_records[] = $therecord;
       }
@@ -2268,8 +2249,8 @@ if (!defined("CLASS_ATKNODE_INC"))
       {
         for ($j=0;$j<count($this->m_records);$j++)
         {
-          $tmpattrib = $this->m_attribList[$loadlist[$i]];
-          $this->m_records[$j][$loadlist[$i]] = $tmpattrib->load($g_db, $this->m_records[$j]);
+          $p_attrib = &$this->m_attribList[$loadlist[$i]];
+          $this->m_records[$j][$loadlist[$i]] = $p_attrib->load($g_db, $this->m_records[$j]);
         }
       }
     }
@@ -2280,8 +2261,6 @@ if (!defined("CLASS_ATKNODE_INC"))
     */
     function addToQuery(&$query, $alias="", $level=0)
     {
-//      $query->addTable($this->m_table,$alias);
-
       $usefieldalias = false;
 
       if ($alias=="")
@@ -2297,8 +2276,8 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       for ($i=0;$i<count($usedFields);$i++)
       {
-        $tmpattrib = $this->m_attribList[$usedFields[$i]];
-        if (method_exists($tmpattrib,"load"))
+        $p_attrib = &$this->m_attribList[$usedFields[$i]];
+        if (method_exists($p_attrib,"load"))
         {
           //$loadlist[]=$attribname;
           // for now.. do nothing..
@@ -2306,24 +2285,10 @@ if (!defined("CLASS_ATKNODE_INC"))
         else
         {
           if ($usefieldalias) $fieldaliasprefix = $alias."_AMDAE_";
-          $tmpattrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
+          $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
         }
       }
 
-      /*reset($this->m_attribList);
-      while(list($attribname,$tmpattrib)=each($this->m_attribList))
-      {
-        if (method_exists($tmpattrib,"load"))
-        {
-          //$loadlist[]=$attribname;
-          // for now.. do nothing..
-        }
-        else
-        {
-          if ($usefieldalias) $fieldaliasprefix = $alias."_AMDAE_";
-          $tmpattrib->addToQuery($query,$alias, $fieldaliasprefix,$level+1);
-        }
-      }*/
     }
 
     /**
@@ -2378,10 +2343,10 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       $query->addTable($this->m_table);
 
-      reset($this->m_attribList);
-      for ($i=0;list($attribname,$tmpattrib)=each($this->m_attribList);$i++)
+      foreach (array_keys($this->m_attribList) as $attribname)
       {
-        if (method_exists($tmpattrib,"store"))
+        $p_attrib = &$this->m_attribList[$attribname];        
+        if (method_exists($p_attrib,"store"))
         {
           $storelist[]=$attribname;
         }
@@ -2392,24 +2357,26 @@ if (!defined("CLASS_ATKNODE_INC"))
       }
 
 
-
       for($i=0;$i<count($querylist);$i++)
       {
-        $tmpattrib = $this->m_attribList[$querylist[$i]];
-        if ($tmpattrib->hasFlag(AF_AUTO_INCREMENT))
+        $p_attrib = &$this->m_attribList[$querylist[$i]];
+        if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
-          $this->m_records[$this->m_currentRec][$tmpattrib->fieldName()]=$g_db->nextid($this->m_seq);     
+          $this->m_records[$this->m_currentRec][$p_attrib->fieldName()]=$g_db->nextid($this->m_seq);     
         }
 
-        $tmpattrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"add"); // start at level 1
+        $p_attrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"add"); // start at level 1
       }
+                 
 
       // also store special storage attributes.
+      reset($this->m_attribList);
       for ($i=0;$i<count($storelist);$i++)
-      {
-        $tmpattrib = $this->m_attribList[$storelist[$i]];
-        $tmpattrib->store($g_db, $this->m_records[$this->m_currentRec],"add");
-       //        var_dump($this->m_records);
+      {            
+        $p_attrib = &$this->m_attribList[$storelist[$i]];
+      
+        $p_attrib->store($g_db, $this->m_records[$this->m_currentRec],"add");
+       
       }
 
       $querystring = $query->buildInsert();
@@ -2436,12 +2403,12 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       for ($i=0;$i<count($this->m_records);$i++)
       {
-        reset ($this->m_attribList);
-        while (list($attribname,$tmpattrib) = each($this->m_attribList))
+        foreach (array_keys($this->m_attribList) as $attribname)
         {
-          if ($tmpattrib->hasFlag(AF_CASCADE_DELETE))
+          $p_attrib = &$this->m_attribList[$attribname];
+          if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
           {
-            $tmpattrib->delete($this->m_records[$i]);
+            $p_attrib->delete($this->m_records[$i]);
           }
         }
 

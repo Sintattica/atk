@@ -10,6 +10,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -108,9 +111,7 @@
     {
       $classname = $this->m_name;
       include "class.".$classname.".inc";
-      $rel = new $classname();
-
-      $this->createOwner();
+      $rel = new $classname();      
 
       $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
       return $rel->m_records;
@@ -123,8 +124,7 @@
     {
       $classname = $this->m_name;
       include "class.".$classname.".inc";
-      $rel = new $classname();
-      $this->createOwner();
+      $rel = new $classname();      
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }

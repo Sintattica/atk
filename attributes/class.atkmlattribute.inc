@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/25 08:46:08  ivo
+   * Big optimisations: using references for attribute manipulation.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -45,8 +48,8 @@
     {
       global $config_language, $g_layout;
 
-      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len']);
-      $this->m_maxsize = $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len'];    
+      $this->m_size = min($g_layout->maxInputSize(), $this->m_tableMeta['len']);
+      $this->m_maxsize = $this->m_tableMeta['len'];    
 
       /* hidden values */
       for ($i = 1; $i < sizeof($config_language); $i++)
@@ -82,8 +85,8 @@
     {
       global $config_language, $g_layout;
       
-      $this->m_searchsize = min($g_layout->searchSize(), $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len']);
-      $this->m_maxsize = $this->m_tableMeta[$this->fieldName().'_'.$config_language[0]]['len'];      
+      $this->m_searchsize = min($g_layout->searchSize(), $this->m_tableMeta['len']);
+      $this->m_maxsize = $this->m_tableMeta['len'];      
 
       $result= '<input type="text" name="atksearch['.$this->formName().'_'.$config_language[0].']"'.
                ' value="'.$record[$this->fieldName().'_'.$config_language[0]].'"'.
@@ -198,6 +201,14 @@
         while (list($i, $language) = each($config_language))
           $query->addField($this->fieldName().'_'.$language,addslashes($rec[$this->fieldName()][$language]),"","",!$this->hasFlag(AF_NO_QUOTES));
       }
+    }
+
+    /**
+     * Fetch the metadata about this attrib from the table metadata
+     */    
+    function fetchMeta($metadata)    
+    {
+      $this->m_tableMeta = $metadata[$this->fieldName().'_'.$config_language[0]];
     }
   }
   

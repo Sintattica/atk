@@ -93,4 +93,6 @@
   $txt_wed = "Woe";
   $txt_thu = "Don";
   
+  $txt_menu_main = $txt_menu;
+  
 ?>

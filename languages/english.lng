@@ -91,5 +91,6 @@
   $txt_tue = "Tue";
   $txt_wed = "Wed";
   $txt_thu = "Thu";
-    
+  
+  $txt_menu_main = $txt_menu;  
 ?>

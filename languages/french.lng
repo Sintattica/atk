@@ -40,4 +40,6 @@
   $txt_title_delete = "Confirm delete";
   
   $txt_select_none = "None";
+  
+  $txt_menu_main = $txt_menu;
 ?>
