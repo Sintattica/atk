@@ -293,7 +293,13 @@
             }
           }
         }
-      }
+      }      
+    }
+    
+    function hide($record="", $fieldprefix="")
+    {    
+      //Nothing to hide..
+      return "";
     }
   }
 ?>
