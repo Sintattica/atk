@@ -2,7 +2,8 @@
 
 global $HTTP_USER_AGENT;
 
-$url_path_editor = "atk/attributes/wysiwyg/";
+
+$url_path_editor = $config_atkroot."atk/attributes/wysiwyg/";
 
 // Mirem quin navegador es fa servir:
 if( strstr($HTTP_USER_AGENT,'IE')!= false || strstr($HTTP_USER_AGENT,'MS')!= false || strstr($HTTP_USER_AGENT,'EXPLORER')!= false ){
