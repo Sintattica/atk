@@ -94,11 +94,10 @@ class atkTheme
   */
   function getCurThemedir()
   {
-    global $config_atkroot;
     $themedefs = array(
-    $config_atkroot.$this->m_themedirname."/".$this->m_curtheme,
-    $config_atkroot."atk/".$this->m_themedirname."/".$this->m_curtheme,
-    $config_atkroot."atk/".$this->m_themedirname."/default",
+    atkconfig("atkroot").$this->m_themedirname."/".$this->m_curtheme,
+    atkconfig("atkroot")."atk/".$this->m_themedirname."/".$this->m_curtheme,
+    atkconfig("atkroot")."atk/".$this->m_themedirname."/default",
     );
     
     foreach ($themedefs as $themedef)
@@ -145,22 +144,18 @@ class atkTheme
   * @param var the value of the attribute in the theme
   */
   function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
-  {
-    global $config_atkroot;
-    
+  {    
     if(is_array($this->m_def[$attribname]))
     {
       $attrib = $this->getStackedItem($attribname,$attribvalue);
       if ($attrib)
       {
-        return $config_atkroot."../".$attrib["dir"].$returnpath;
+        return atkconfig("atkroot").$attrib["dir"].$returnpath;
       }
-      return $config_atkroot."atk/themes/default/".$defaultreturnpath;
+      return atkconfig("atkroot")."atk/themes/default/".$defaultreturnpath;
     }
     else
     {
-      //atkdebug("<H1>getattribute called with $attribname</H1>");
-      //atk_var_dump($this->m_def);
       return $this->m_def[$attribname];
     }
   }

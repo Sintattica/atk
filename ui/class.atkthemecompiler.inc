@@ -9,14 +9,12 @@ class atkThemeCompiler extends atkTheme
   var $m_themedefs; // stack with all (fallback) directories to check for themefiles
   var $indentation; // indentation for the cache file
   var $m_cachedir;  // directory where we make a template directory and store the cachefile
-  var $atkroot;     // root of atk application
   
   /**
   * Constructor, initialises several values
   */
   function atkThemeCompiler()
   {
-    $this->atkroot = atkconfig("atkroot");
     $this->m_cachedir = atkconfig("atktempdir");
     $this->m_curtheme = atkconfig("defaulttheme");
     $this->fillThemedefs();
@@ -29,18 +27,17 @@ class atkThemeCompiler extends atkTheme
   {
     global $g_modules;
     
-    $this->m_themedefs[] = $this->atkroot.$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-    $this->m_themedefs[] = $this->atkroot.$this->m_themedirname."/default/".$this->m_themefile;    
+    $this->m_themedefs[] = $this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
+    $this->m_themedefs[] = $this->m_themedirname."/default/".$this->m_themefile;    
     
     foreach ($g_modules as $modname => $modpath)
     {
-      $this->m_themedefs[] = $this->atkroot."modules/".$modname."/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-      $this->m_themedefs[] = $this->atkroot."modules/".$modname."/".$this->m_themedirname."/default/".$this->m_themefile;
+      $this->m_themedefs[] = "modules/".$modname."/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
+      $this->m_themedefs[] = "modules/".$modname."/".$this->m_themedirname."/default/".$this->m_themefile;
     }
     
-    $this->m_themedefs[] = $this->atkroot."atk/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-    $this->m_themedefs[] = $this->atkroot."atk/".$this->m_themedirname."/default/".$this->m_themefile;    
-    atk_var_dump($this->m_themedefs);
+    $this->m_themedefs[] = "atk/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
+    $this->m_themedefs[] = "atk/".$this->m_themedirname."/default/".$this->m_themefile;    
   }
       
   /**
@@ -51,10 +48,10 @@ class atkThemeCompiler extends atkTheme
   {
     $file = array_shift($this->m_themedefs);
     
-    if (file_exists($file))
+    if (file_exists(atkconfig("atkroot").$file))
     {
-      include($file);
-      
+      include(atkconfig("atkroot").$file);
+      atkdebug("Found $file, going to compile it");
       $fromlength = strrpos($file, "/");
       $from = substr($file, 0, $fromlength);
       
@@ -75,7 +72,7 @@ class atkThemeCompiler extends atkTheme
   {
     if ($theme["base"])
     {
-      array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->m_themefile);
+      array_unshift($this->m_themedefs, atkconfig("atkroot")."$from/../".$theme["base"]."/".$this->m_themefile);
       return $this->getThemedef();
     }
   }
