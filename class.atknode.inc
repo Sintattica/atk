@@ -677,6 +677,29 @@
     }
 
     /**
+     * Returns the form buttons for a certain page.
+     */
+    function getFormButtons($mode)
+    {
+      $result = "";
+
+      // edit mode
+      if ($mode == "edit")
+      {
+        // if atklevel is 0 or less, we are at the bottom of the session stack,
+        // which means that 'saveandclose' doesn't close anyway, so we leave out
+        // the 'saveandclose' button. Unless, a feedback screen is configured.
+        if (atkLevel() >0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
+          $result = '&nbsp;<input type="submit" value="'.text('saveandclose').'">&nbsp;';
+          
+        $result .= '&nbsp;<input type="submit" name="atknoclose" value="'.text('save').'">&nbsp;'.
+                   '&nbsp;<input type="submit" name="atkcancel" value="'.text('cancel').'">&nbsp;';
+      }
+      
+      return $result;
+    }
+
+    /**
      * Creates a *locked* page
      */
     function lockPage()
@@ -713,18 +736,8 @@
       $g_layout->output($this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']));
       if (count($this->m_tabListEdit) > 1) $g_layout->tabs_bottom();
 
-      //$g_layout->ui_bottom($g_layout->title($this->m_module, $this->m_type,"edit"));
-
       $g_layout->output('<br>');
-      // if atklevel is 0 or less, we are at the bottom of the session stack,
-                       // which means that 'saveandclose' doesn't close anyway, so we leave out
-                       // the 'saveandclose' button. Unless, a feedback screen is configured.
-      if (atkLevel()>0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
-      {
-        $g_layout->output('&nbsp;<input type="submit" value="'.text('saveandclose').'">&nbsp;');
-      }
-      $g_layout->output('&nbsp;<input type="submit" name="atknoclose" value="'.text('save').'">&nbsp;');
-      $g_layout->output('&nbsp;<input type="submit" name="atkcancel" value="'.text('cancel').'">&nbsp;');
+      $g_layout->output($this->getFormButtons("edit"));
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
     }
