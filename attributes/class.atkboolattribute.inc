@@ -95,9 +95,14 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }     
     
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+      if (is_array($value)) $value = $value[$this->fieldName()];
+      if ($value) return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+    }
 
     /**
      * Returns a displayable string for this value.

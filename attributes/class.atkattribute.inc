@@ -666,8 +666,12 @@
      */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
+      // If we are accidentally mistaken for a relation and passed an array
+      // we only take our own attribute value from the array
+      if (is_array($value)) $value = $value[$this->fieldName()];
+      
       $func = $searchmode."Condition";
-      if (method_exists($query,$func))
+      if (method_exists($query,$func) && $value)
       {
         return $query->$func($table.".".$this->fieldName(),escapeSQL($value));
       }
@@ -1327,7 +1331,6 @@
 
       // add $field to fields array
       $fields[] = $field;
-
     }
   }
 ?>

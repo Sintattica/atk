@@ -55,10 +55,15 @@ Changes in ATK 5.0.8
   selected not even when it is obligatory [Wouter]
 * atkOneToOneRelation restores destination postvars 
   after it is done updating [Boy]
+* Typo fix for dnsSearching in emailattrib [Andres]
+* Added primarykeyfield to searchfields in manytoone [Boy]
+* Added protection in getSearchCondition against being called
+  with an array instead of a single value in atkattrib and boolattrib [Boy]
+* Improved searching on securerelations [Boy]
 * Ported translation for fsa_pleasemakeselection from atkFuzzySearchAttrib.
-	from Achievo to ATK [Boy]
+  from Achievo to ATK [Boy]
 * Removed redundant code and minor bugfixes on atktheme, edithandler,
-	emailattribute and atkattribute [Andres,Boy]
+  emailattribute and atkattribute [Andres,Boy]
 
 Changes in ATK 5.0.7
 --------------------

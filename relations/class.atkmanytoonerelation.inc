@@ -506,7 +506,7 @@
     }
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
-    {
+    {      
       if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
       {
         // We only support 'exact' matches. 
@@ -525,8 +525,10 @@
         if ($this->createDestination())
         {
           $searchConditions = array();
+          $descfields = array();
           $descfields = $this->m_destInstance->descriptorFields();
-         
+          $descfields[] = $this->m_destInstance->primaryKeyField();
+          
           foreach($descfields as $descField)
           {
             if ($descField !== $prevdescfield)

@@ -188,7 +188,7 @@
       global $g_db;
       if ($this->m_searching)
       {
-        if($this->m_searcharray !== $this->m_ownerInstance->m_postvars["atksearch"]["data"] 
+        if($this->m_searcharray !== $this->m_ownerInstance->m_postvars["atksearch"][$this->fieldName()] 
            && is_array($this->m_searcharray))
         {
           $this->m_records = array();
@@ -201,9 +201,19 @@
             if(count(array_unique(array_values($this->m_searcharray))) == 1)
               $this->m_destInstance->m_postvars['atksearchmethod'] = "OR";
 
-            $this->m_destInstance->m_postvars["atksearch"] = $this->m_searcharray;
+             $oldsearcharray = $this->m_searcharray;
+            // check wether mentioned fields are actually in the node
+            foreach ($this->m_searcharray as $searchfield => $searchvalue)
+            {
+              if (!is_object($this->m_destInstance->m_attribList[$searchfield]))
+                unset($this->m_searcharray[$searchfield]);
+            }            
+            $this->m_destInstance->m_postvars["atksearch"] =        $this->m_searcharray;
+            $this->m_destInstance->m_postvars["atksearchmode"] =    $this->m_ownerInstance->m_postvars["atksearchmode"];
+            $this->m_destInstance->m_postvars["atksearchmethod"] =  $this->m_ownerInstance->m_postvars["atksearchmethod"];
+            
             $records = $this->m_destInstance->selectDb();
-
+            $this->m_searcharray = $oldsearcharray;
             $errorconfig = atkconfig("securerelation_decrypterror", null);
 
             // create lookup table for easy reference.
