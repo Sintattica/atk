@@ -81,7 +81,7 @@
       }
       else
       {
-        $this->register_style((file_exists("./style.php") ? "." : "atk").'/style.php');
+        $this->register_style((file_exists(atkconfig("atkroot")."./style.php") ? "." : atkconfig("atkroot")."atk").'/style.php');
       }
     }
 
@@ -317,7 +317,7 @@
              </script>\n";
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
-        $res.='  <link href="'.$config_atkroot.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
+        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
 
       $res.="</head>\n";
       return $res;
@@ -741,7 +741,7 @@
     }
     
     function theme_style($stylesheetname)
-    {    
+    {        
       if (file_exists($this->m_tpldir."styles/$stylesheetname"))
       {
         $this->register_style($this->m_tpldir."styles/$stylesheetname");
