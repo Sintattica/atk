@@ -93,6 +93,14 @@
   $txt_wed = "Mit";
   $txt_thu = "Don";
   
+  $txt_friday = "Freitag";
+  $txt_saturday = "Samstag";
+  $txt_sunday = "Sonntag";
+  $txt_monday = "Montag";
+  $txt_tuesday = "Dienstag";
+  $txt_wednesday = "Mittwoch";
+  $txt_thursday = "Donnerstag";
+  
   $txt_menu_main = "Hauptmen&uuml;";
   $txt_back_to = "Zur&uuml;ck zum";
   
@@ -115,7 +123,7 @@
   
   $txt_search_mode = "Suchmodus";
   
-  $txt_login_failed = "Anmelding fehlgeschlagen";
+  $txt_login_failed = "Anmeldung fehlgeschlagen";
   $txt_auth_no_server = "Kein Server angegeben. Keine Authentifizierung m&ouml;glich (bitte wenden Sie sich an Ihren Systemverwalter).";
   $txt_auth_unable_to_connect = "Verbindung zum Authentifizierungsserver konnte nicht hergestellt werden (bitte wenden Sie sich an Ihren Systemverwalter).";
   
