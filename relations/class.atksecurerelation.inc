@@ -57,7 +57,7 @@
      */
     function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $flags=0)
     {
-      $this->m_crypt = &atkEncryption::getEncryption();
+      $this->m_crypt = &atkEncryption::getEncryption("base64");
     
       $this->m_linktable = $linktable;
       $this->m_linkfield = $linkfield;
@@ -75,7 +75,7 @@
     function getLinkPassword($linktable,$linkfield)
     {
       global $g_db;
-      atkdebug("atkSecureRelation::getLinkPassword($linktable, $linkfield)");
+      
       $user = &getUser();
       $username = $user['name'];
   
@@ -94,12 +94,11 @@
           return $linkpass;
 
         $encryptedpass = array_pop($rec);
-        //atkerror($encryptedpass['pass']." ");
+        
         $crypt = &atkEncryption::getEncryption("base64");
         $linkpass = $crypt->decrypt($encryptedpass['pass'],$password);
       }
     
-      //atkerror("linkpass: ".$linkpass);
       return $linkpass;
     }
   
@@ -110,11 +109,11 @@
      * For more documentation see the atkOneToOneRelation
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
-    {
-      if($mode=="add" || $mode == "update")
+    {      
+      if(is_array($rec))
       {
         $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
-        $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linkfield,$this->m_linktable));
+        $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
         $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $cryptedlink;
       }
 
@@ -130,7 +129,7 @@
     function load($db, $record, $mode)
     {
       $link = $record[$this->fieldName()];
-      $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linkfield,$this->m_linktable));
+      $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
       $record[$this->fieldName()] = $cryptedlink;
 
       return parent::load($db, $record, $mode);
