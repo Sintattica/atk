@@ -306,7 +306,7 @@
      * This is the exact opposite of the value2db method.
      *
      * @param array $rec The database record that holds this attribute's value
-     * @return String The internal value
+     * @return mixed The internal value
      */
     function db2value($rec)
     {
@@ -1190,6 +1190,24 @@
     function deleteAllowed()
     {
       return true;
+    }
+    
+    /**
+     * Convert a String representation into an internal value.
+     *
+     * Used by CSV imports and the like, to convert string values to internal
+     * values. This is somewhat similar to db2value, but this method should,
+     * when derived in other attributes, act 'smart' and treat the 
+     * value as a user string.
+     * The default implementation returns the string unmodified, but derived
+     * classes may override this method to alter that behaviour.
+     *
+     * @param String $stringvalue The value to parse.
+     * @return mixed Internal value
+     */
+    function parseStringValue($stringvalue)
+    {
+      return $stringvalue;
     }
             
   }

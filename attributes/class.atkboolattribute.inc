@@ -134,6 +134,21 @@
       $label_txt = parent::label($record);
       return '<label for="'.$this->m_name.'">'.$label_txt.'</label>';
     }
+    
+    /**
+     * Convert a String representation into an internal value.
+     *
+     * This implementation converts 'y/j/yes/on/true/1/*' to 1
+     * All other values are converted to 0
+     *
+     * @param String $stringvalue The value to parse.
+     * @return boolean Internal value
+     */
+    function parseStringValue($stringvalue)
+    {
+      if (in_array(strtolower($stringvalue), array("y","j","yes","on","true","1","*"))) return 1;
+      return 0;
+    }
 
     
   }

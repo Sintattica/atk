@@ -107,7 +107,12 @@
       // Display sample
       $sample = '<br><br>Sample of data from csv file:<br><br><table class="recordlist">';
       
-      $col_map = $this->m_postvars["col_map"];      
+      $col_map = $this->m_postvars["col_map"];  
+      if (!is_array($col_map))
+      {
+        // init colmap
+        $col_map = $this->getUsableAttributes();
+      }
       
       // header
       $sample.= '<tr>';
@@ -135,10 +140,23 @@
         $line = $csv_data[$i];
                 
         $sample.='<tr class="row'.(($i%2)+1).'">';
-        for ($j=1; $j<=$columncount; $j++)
+        for ($j=0; $j<$columncount; $j++)
         {
           $sample.='<td>';
-          $sample.=$line[$j];
+          if ($col_map[$j]!="" && $col_map[$j]!="-")
+          {
+            $attr = &$this->m_node->getAttribute($col_map[$j]);
+            $sample.=$attr->display(array($col_map[$j]=>$attr->parseStringValue(trim($line[$j+1]))));
+          }
+          else if ($col_map[$j]=="-")
+          {
+            // ignoring.
+            $sample.='<div style="color: #777777">'.trim($line[$j+1]).'</div>';
+          }
+          else
+          {
+            $sample.=trim($line[$j+1]);
+          }
           $sample.='</td>';
         }
         $sample.='</tr>';
@@ -263,27 +281,39 @@
       return FALSE;
     }
     
-    function getAttributeSelector($index=0, $value="")
+    function getUsableAttributes()
     {
-      $res = '<select name="col_map['.$index.']">';
-      
-      $j=0;      
+      $attrs = array();
       foreach (array_keys($this->m_node->m_attribList) as $attribname)
       {
         $attrib = &$this->m_node->getAttribute($attribname);
         if ($attrib->storageType("add")==ADDTOQUERY && !$attrib->hasFlag(AF_AUTOINCREMENT))
         {
-          $selected = "";
-          if (($value=="" && $index==$j) || ($value!="" && $value==$attribname))
-          {
-            // select the next.
-            $selected="selected";
-          }
-          
-          $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type);
-          $j++;
+          $attrs[] = $attribname;
         }        
       }
+      return $attrs;
+    }
+    
+    function getAttributeSelector($index=0, $value="")
+    {
+      $res = '<select name="col_map['.$index.']">';
+      
+      $j=0;      
+      $attrs = $this->getUsableAttributes();
+      foreach ($attrs as $attribname)
+      {               
+        $selected = "";
+        if (($value=="" && $index==$j) || ($value!="" && $value==$attribname))
+        {
+          // select the next.
+          $selected="selected";
+        }
+          
+        $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type);
+        $j++;
+      }        
+      
       $res.= '<option value="-" '.($value=="-"?"selected":"").' style="font-style: italic">Ignore this column';
       
       $res.= '</select>';
@@ -310,7 +340,9 @@
           if ($col_map[$i]!="-")
           {
             // column is mapped
-            $rec[$col_map[$i]] = $data[$i+1];
+            $attr = &$this->m_node->getAttribute($col_map[$i]);
+            
+            $rec[$col_map[$i]] = $attr->parseStringValue(trim($data[$i+1]));
           }
         }
         
