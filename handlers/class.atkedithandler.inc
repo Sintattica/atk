@@ -266,10 +266,11 @@
 
           /* tooltip */
           $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip", "atk", "", "", "", true);
+          atkdebug("<h1>Checking for tooltip: "."txt_".$node->m_type."_".$field["name"]."_tooltip</h1>");
           
           if ($ttip)
           {
-            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.addslashes($ttip).'\')" onMouseOver="javascript:window.status=\''.addslashes($ttip).'\';">';
+            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.addslashes($ttip).'\')" onMouseOver="javascript:window.status=\''. preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">';
             $tplfield["tooltip"] = $tooltip;
             $editsrc.=$tooltip."&nbsp;";
           }
