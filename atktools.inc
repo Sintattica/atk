@@ -220,6 +220,8 @@
 
   function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
   {
+    global $g_stickyurl;
+    
     $newlevel = session_level($sessionstatus, $levelskip);
     $vars="";
    // atklevel is already set manually, we don't append it..
