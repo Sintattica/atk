@@ -16,7 +16,7 @@
   {
     function atkProfileAttribute($name, $flags=0)
     {
-      $this->atkAttribute($name, $flags|AF_HIDE_SEARCH);
+      $this->atkAttribute($name, $flags|AF_HIDE_SEARCH|AF_HIDE_LIST);
     }
 
     function load($db, $record)
