@@ -55,8 +55,11 @@
 
     function fetchValue($postvars)
     {
-      $result = $postvars[$this->formName()];
-      return $result;
+      $result = $postvars[$this->fieldName()];
+      if(is_array($result))
+        return $result;
+      else
+        return "";
     }
 
     /**
@@ -156,10 +159,17 @@
      */
     function db2value($rec)
     {
-      if (strlen($rec[$this->fieldName()]) == 0 ) return "";
-      return array("hours"=>substr($rec[$this->fieldName()], 0, 2),
+      if (strlen($rec[$this->fieldName()]) == 0 )
+      {
+        $retval=NULL;
+      }
+      else 
+      {
+         $retval = array("hours"=>substr($rec[$this->fieldName()], 0, 2),
                    "minutes"=>substr($rec[$this->fieldName()], 3, 2),
                    "seconds"=>substr($rec[$this->fieldName()], 6, 2));
+      }
+      return $retval;     
     }
 
     /**
@@ -224,5 +234,24 @@
       return "time";
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to display
+     * hidden values for this attribute.
+     * @param $record Array with values
+     * @return Piece of htmlcode
+     */
+    function hide($record="", $fieldprefix)
+    {
+      $field = $record[$this->fieldName()];
+
+      if (is_array($field))
+        foreach ($field as $key => $value)
+          $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$key.']" '.'value="'.$value.'">';
+
+      else
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
+
+      return $result;
+    }
   }
 ?>
