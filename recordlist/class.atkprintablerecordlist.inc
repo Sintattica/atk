@@ -2,7 +2,7 @@
 
   atkimport("atk.recordlist.atkrecordlist");
   
-  class atkPrintableRecordList extends atkRecordlist 
+  class atkPrintableRecordList extends atkRecordList 
   {
     
     /**
