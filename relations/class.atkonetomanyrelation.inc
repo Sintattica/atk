@@ -59,7 +59,6 @@
       
       if (!is_array($myrecords))
       {
-        atkdebug("Lazy loading of records.");
         $myrecords = $this->load(NULL, $record, "admin");
       }
       
@@ -172,8 +171,6 @@
               $label = text($key);
           }
           } 
-          atkdebug("ADD_URL::::".$add_url);
-          atkdebug("STRFILTER:".$strfilter);
           $output.= href($add_url,$label,SESSION_NESTED,true);
         }
         
@@ -218,8 +215,6 @@
      */
     function load($db, $record, $mode="")
     {
-      atkdebug("load called for ".$this->m_name." (mode $mode)");
-
       if ($mode=="edit")
       {
         // when editing a record with a onetomanyrelation, we don't

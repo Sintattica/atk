@@ -3612,8 +3612,7 @@
      */
     function updateDb(&$record)
     {
-      global $g_db;
-      static $s_mlRecordUpdate=false;
+      global $g_db;      
       
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
@@ -3660,13 +3659,13 @@
 
         if (count($query->m_fields) && !$query->executeUpdate()) return false;        
         
-        if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;
-
-        if($this->hasFlag(NF_ML)&&$s_mlRecordUpdate==false)
+        if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
-          $s_mlRecordUpdate=true;
+          $record["atkmlsplit"]=1;
           $this->updateMlRecords($record,"update");
         }
+        
+        if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;        
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
         // has been saved.
@@ -3779,28 +3778,30 @@
               )
            )
         {
-          if (method_exists($p_attrib,"load"))
-          {
-            $loadlist[]=$attribname;
-          }
-          else
-          {
-            if(!$this->hasFlag(NF_ML))
-            {
-              $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
-            }
-            else if($this->m_primaryKey[0] == $p_attrib->fieldName())
-            {
-              $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
-            }
-          }
+          $loadmode = $p_attrib->loadType($mode);          
+          if (hasFlag($loadmode, ADDTOQUERY)) $loadlist["query"][]=$attribname;
+          
         }
-      }
+      }            
 
+      for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
+      {
+        $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
+        if(!$this->hasFlag(NF_ML))
+        {
+          $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+        }
+        else if($this->m_primaryKey[0] == $p_attrib->fieldName())
+        {
+          $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
+        }
+      }            
+   
 
       $querystring = $query->buildCount($this->hasFlag(N_ML));
       //$g_db->query($querystring);
-      $result = $g_db->getrows($querystring);
+      $result = $g_db->getrows($querystring);          
+      
       return $result[0]["count"];
     }
 
@@ -3843,8 +3844,7 @@
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
-      
-      if($this->hasFlag(NF_ML) && $mode!="edit")
+      if($this->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
       {
         $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
       }
@@ -3901,6 +3901,7 @@
           }
         }
       }
+      $loadlist = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -3913,11 +3914,12 @@
               )
            )
         {
-          if (method_exists($p_attrib,"load"))
+          $loadmode = $p_attrib->loadType($mode);        
+          if (hasFlag($loadmode, POSTLOAD))
           {
             $loadlist[]=$attribname;
           }
-          else
+          if (hasFlag($loadmode, ADDTOQUERY))
           {
             $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
           }
@@ -3942,7 +3944,7 @@
 
       $dbrecords = $g_db->getrows($querystring);
       
-      if($mode=="edit" && count($dbrecords)>1) // do we have mlrecords?
+      if(($mode=="edit" || $mode=="copy") && count($dbrecords)>1) // do we have mlrecords?
       {
         $this->combineMlRecordSet($dbrecords,$query);
       }
@@ -4156,13 +4158,9 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        if (method_exists($p_attrib,"load"))
-        {
-          //$loadlist[]=$attribname;
-          // for now.. do nothing..
-        }
-        else
-        {
+        $loadmode = $p_attrib->loadType($mode);
+        if (hasFlag($loadmode, ADDTOQUERY))
+        {        
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
           if (!is_object($p_attrib))
           {
@@ -4187,7 +4185,6 @@
     function addDb(&$record, $exectrigger=true, $mode="add")
     {
       global $g_db;
-      static $s_mlRecordAdd=false;
 
       atkdebug("atkNode::addDb() start ".$this->m_type." mode: ".$mode);
 
@@ -4231,9 +4228,9 @@
       // new primary key
       $record["atkprimkey"] = $this->primaryKey($record);
         
-      if($this->hasFlag(NF_ML)&&$s_mlRecordAdd==false)
+      if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
-        $s_mlRecordAdd=true;
+        $record["atkmlsplit"]=1;
         $this->updateMlRecords($record,"add");
       }
 

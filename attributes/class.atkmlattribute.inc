@@ -208,7 +208,8 @@
     {
       if($this->isMlNode())
       {
-        return parent::fetchValue($rec);
+        $res = parent::fetchValue($rec);
+        return $res;
       }
       else
       {

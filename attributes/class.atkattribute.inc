@@ -68,7 +68,9 @@
    */
   define("NOSTORE"   ,0);
   define("PRESTORE"  ,1);
-  define("POSTSTORE" ,2);  
+  define("PRELOAD",   1);
+  define("POSTSTORE" ,2);
+  define("POSTLOAD", 2);  
   define("ADDTOQUERY",4);  
 
   /**
@@ -738,6 +740,15 @@
       // Default backwardscompatible behaviour:
       if (method_exists($this,"store"))
         return POSTSTORE;
+      else
+        return ADDTOQUERY;
+    }
+    
+    function loadType($mode)
+    {
+      // Default backwardscompatible behaviour:
+      if (method_exists($this,"load"))      
+        return POSTLOAD;
       else
         return ADDTOQUERY;
     }

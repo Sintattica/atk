@@ -3,6 +3,7 @@
   define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
   define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.  
+  define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4); // use lazy loading instead of query addition.
   
   /**
    * An atkOneToOneRelation defines a relation between two tables where there
@@ -29,7 +30,7 @@
     function atkOneToOneRelation($name, $destination, $refKey="", $flags=0)
     {
       if ($flags & AF_ONETOONE_ADD != AF_ONETOONE_ADD) $flags |= AF_NO_ADD;
-      $this->atkRelation($name, $destination, $flags);
+      $this->atkRelation($name, $destination, $flags|AF_ONETOONE_LAZY);
       $this->m_refKey = $refKey;
     }
 
@@ -98,14 +99,20 @@
      * @result A good query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
-    {
+    {   
       if ($this->createDestination())
       {
         if ($mode!= "update" && $mode!="add")
         {
-          if ($tablename!="") $tablename.=".";
-  
+          if ($this->hasFlag(AF_ONETOONE_LAZY))
+          {
+            if ($this->m_refKey=="")
+            {
+              return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+            }
+          }
           
+          if ($tablename!="") $tablename.=".";  
          
           if ($this->m_refKey!="")
           {
@@ -118,8 +125,7 @@
             $condition = $tablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0];
           }
           $condition.= $this->getDestinationFilterCondition();
-          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
-  
+          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);  
           // we pass true as the last param to addToQuery, because we need all fields..
           $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
   	     
@@ -132,6 +138,29 @@
         {       
           $query->addField($this->fieldName(),$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],"","",!$this->hasFlag(AF_NO_QUOTES));
         }
+      }
+    }
+    
+    function load($g_db, $record, $mode)
+    {
+      if ($this->createDestination())
+      {              
+        if ($this->m_refKey=="")
+        {
+          // Foreign key in owner          
+          //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];        
+          $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0].
+                      "='".$record[$this->fieldName()]."'";
+        }
+        else
+        {          
+          // Foreign key in destination
+          $condition = $this->m_destInstance->m_table.'.'.$this->m_refKey."=".
+                          $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+        }
+        $fields = atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
+        $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
+        return $recs[0];
       }
     }
     
@@ -184,6 +213,11 @@
     {
       // we need to pass all values to the destination node, so it can
       // run it's db2value stuff over it..
+      if ($this->hasFlag(AF_ONETOONE_LAZY)&&$this->m_refKey=="")
+      {
+        return parent::db2value($rec);
+      }
+
       if ($this->createDestination())
       {
         $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
@@ -222,7 +256,7 @@
     }
     
     function storageType($mode)
-    {
+    {      
       if ($this->m_refKey!="")
       {
         // foreign key is in destination node, so we must store the
@@ -236,6 +270,18 @@
         // when we store the master record. To store the latter,
         // we must also perform an addToQuery.
         return PRESTORE|ADDTOQUERY;
+      }
+    }
+    
+    function loadType($mode)
+    {
+      if ($this->hasFlag(AF_ONETOONE_LAZY))
+      {
+        return POSTLOAD|ADDTOQUERY;
+      }
+      else
+      {
+        return ADDTOQUERY;
       }
     }
 
@@ -281,7 +327,7 @@
         }
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
-          atkdebug("Adding new one2one record");
+          atkdebug("Adding new one2one record for mode $mode");
           $result = $this->m_destInstance->addDb($vars, true, $mode);
           
           if ($this->m_refKey=="")
