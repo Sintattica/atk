@@ -149,11 +149,7 @@
                 $html.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
 
-                $label = text("permission_$node_$action");
-                if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
-                {
-                  $label = text($action, $node); // generic action text.
-                }
+                $label = $this->permissionName($action, $node);                
                 $html.='> '.$label.'&nbsp;&nbsp;&nbsp;';
               }
               else
@@ -210,15 +206,7 @@
                   $html.='<input  type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
                   if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
 
-                  $label = text("permission_".$modname."_".$nodename."_".$action); // module/node specific text
-                  if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
-                  {
-                    $label = text("permission_".$nodename."_".$action); // node specific text
-                    if (strtolower(substr($label,0,10))=="permission")
-                    {
-                      $label = text($action, $node); // generic action text.
-                    }
-                  }
+                  $label = $this->permissionName($action, $node, $modname);
                   $html.='> '.$label.'&nbsp;&nbsp;&nbsp;';
                 }
                 else
@@ -252,6 +240,19 @@
         }
       }
       return $result;
+    }
+    
+    /**
+     * Return the translated name of a permission.
+     */
+    function permissionName($action, $nodename="", $modulename="")
+    {
+      $label = text("permission_".$action, $nodename, $modulename); // module/node specific text
+      if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
+      {
+        $label = text($action, $node, $modulename); // generic action text.        
+      }
+      return $label;
     }
 
     function fetchValue($postvars)
