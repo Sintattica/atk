@@ -3977,12 +3977,13 @@
       {
         if ($this->allowed("view", $recs[$i]))
         {
-          $res[] = array("title"=>$this->descriptor($recs[$i]),
-                         "url"=>dispatch_url($this->atkNodeType(),
+          $item = $recs[$i];
+          $item ["title"] = $this->descriptor($recs[$i]);
+          $item ["url"] = dispatch_url($this->atkNodeType(),
                                              "view",
                                              array("atkselector"=>$this->primaryKey($recs[$i]))
-                                            )
-                        );
+                                            );
+          $res[] = $item;
         }
       }
       return $res;
