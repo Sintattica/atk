@@ -42,7 +42,7 @@
   
   //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
   $loggedin = text("logged_in_as", "", "atk").": <b>".$g_user["name"]."</b>";  
-  $content = '<br>'.$loggedin.' &nbsp; <a href="app.php?atklogout=1" target="_top">'.ucfirst(atktext("logout")).' </a>&nbsp;';
+  $content = '<br>'.$loggedin.' &nbsp; <a href="app.php?atklogout=1" target="_top">'.ucfirst(atktext("logout")).' </a>&nbsp;<br/><br/>';
 
   $top = $ui->renderBox(array("content"=> $content,
   			      "logintext" => atktext("logged_in_as"),
