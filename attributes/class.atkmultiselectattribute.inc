@@ -101,6 +101,7 @@
     function edit($record="", $fieldprefix="")
     {
       global $config_atkroot;
+      $this->m_record = $record;
       $cols = $this->m_cols;
       $modcols =$cols-1;
       $page = &atkPage::getInstance();
@@ -120,14 +121,7 @@
             
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        if (is_array($record[$this->fieldName()]) && in_array($this->m_values[$i],$record[$this->fieldName()]))
-        {
-          $sel = "checked"; 
-        }
-        else
-        {
-          $sel = "";
-        }
+        ($this->issetOption($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
         $result .= '<td class="table" valign="top"><input type="checkbox" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";
         
@@ -137,6 +131,14 @@
       return $result;
     }
     
+    function issetOption($value,$valueArray)
+    {
+      if(is_array($valueArray))
+      {
+        return (in_array($value,$valueArray));
+      }
+      return false;
+    }
    
     function searchCondition(&$query, $table, $value, $searchmode)
     {
