@@ -51,8 +51,8 @@
 		this.ol_menucolor  = '".$g_theme['ol_menucolor']."';
 		this.ol_wincolor   = '".$g_theme['ol_wincolor']."'; 
 		this.ol_background = '".$g_theme['ol_background']."';
-		this.ol_arrowup    = '".substr($theme->iconPath("arrowup.gif", "outlook"),0,-4)."';
-		this.ol_arrowdown  = '".substr($theme->iconPath("arrowdown.gif", "outlook"),0,-4)."';
+		this.ol_arrowup    = '".$theme->iconPath("arrowup", "outlook")."';
+		this.ol_arrowdown  = '".$theme->iconPath("arrowdown", "outlook")."';
 	");
 	
 	$page->register_script($config_atkroot."atk/javascript/crossbrowser.js");
@@ -114,7 +114,7 @@
 					}
 					else
 					{					  
-						$menu_icon = substr($theme->iconPath($atkmenutop.'_'.$name.'.gif', "outlook"),0,-4);
+						$menu_icon = $theme->iconPath($atkmenutop.'_'.$name, "outlook");
 					}
 					if(file_exists($menu_icon))
 					{
@@ -122,7 +122,7 @@
 					}
 					else
 					{
-						$panelbuttons .= "p.addButton('".substr($theme->iconPath('empty.gif', "outlook"),0,-4)."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
+						$panelbuttons .= "p.addButton('".$theme->iconPath('empty', "outlook")."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
 					}
 				}
 			}
