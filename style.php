@@ -57,6 +57,12 @@ A:hover
   color: <?php echo $g_theme["TableHeaderFgColor"]; ?>;
 }
 
+.error
+{
+  font-weight: bold;
+  color: red
+}
+
 .table
 {
   font-family: <?php echo $g_theme["TableFontFamily"]; ?>;
