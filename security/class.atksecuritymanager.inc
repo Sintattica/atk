@@ -475,7 +475,7 @@
       
       $output.='</table></form>';
 
-      $output.='<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
+      $output.='<SCRIPT type="text/javascript">placeFocus()</SCRIPT>';
       
       $tplvars["content"]=$output;
       $page->addContent($ui->render("login.tpl", $tplvars));       
