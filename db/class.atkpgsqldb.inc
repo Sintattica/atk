@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/07 09:19:25  ivo
+   * m_error now gets filled when a pgsql query fails (contrib by rene)
+   *
    * Revision 4.3  2001/06/01 14:59:33  ivo
    * Better metadata reading for postgresql.
    * Fixed a bug with input sizes in textarea.
@@ -115,6 +118,7 @@
       /* query database */
       $this->m_query_id = @pg_exec($this->m_link_id, $query) or $this->halt("Invalid SQL query: $query");
       $this->m_row = 0;
+      $this->m_error = pg_errormessage();
 
       /* return query id */
       return $this->m_query_id;
