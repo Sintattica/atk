@@ -239,17 +239,19 @@
   * Replaces the [vars] with the values from the language files
   * Please note that it is important, for performance reasons, 
   * that you pass along the module where the language files can be found
-  * @param string $string the name of the value
-  * @param string $node   the node associated with the value
-  * @param string $module the module where the languagefiles 
-  * @param string $lng    the language of the string to be returned, defaults to the config value
-  * @param bool   $nodefaulttext wether we shouldn't return a default string, defaults to false
+  * @param string $string        the name of the string to return
+  * @param string $module        module in which the language file should be looked for, defaults to core module with fallback to ATK
+  * @param string $node          the node to which the string belongs
+  * @param string $lng           ISO 639-1 language code, defaults to config variable
+  * @param string $firstfallback the first module to check as part of the fallback
+  * @param bool $nodefaulttext   if true, then it doesn't returns false when it can't find a translation
+  * @return string the string from the languagefile
   * @return var the converted string or false
   */
-  function text($string, $node="", $module="", $lng="", $nodefaulttext=false)
+  function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
     atkimport("atk.atklanguage");
-    return atkLanguage::text($string, $module, $node, $lng, $nodefaulttext);
+    return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
   }
 
   /**
