@@ -12,6 +12,10 @@
    * @version $Revision$
    *
    * $Id$   
+   * $Log$
+   * Revision 4.20  2001/11/19 14:51:52  peter
+   * Fixed bug in menu.php (did not include the general menu stuff).
+   * $config_menu_layout can now be anything and defaults to... "default".
    *
    */  
   include_once("atk.inc");  
@@ -21,14 +25,10 @@
 
   /* get main menuitems */
   include_once("config.menu.inc");
-  
-  if ($config_menu_layout=="outlook")
-  {
-    include_once($config_atkroot."atk/menu/outlook.inc");
-  }
-  else
-  {
-    include_once($config_atkroot."atk/menu/default.inc");
-  }
-  
+
+  /* general menu stuff */
+  include_once($config_atkroot."atk/menu/general.inc");  
+
+  /* load menu layout */
+  include_once($config_atkroot."atk/menu/".$config_menu_layout.".inc");
 ?>

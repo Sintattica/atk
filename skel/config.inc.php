@@ -49,6 +49,7 @@
   // puts between menu items).
   $config_menu_pos = "left"; 
   $config_menu_delimiter = "<br>";
+  $config_menu_layout = "default";
   
   // If you have a menu at either left or right, you can add an
   // extra topframe by setting the following option to 1.

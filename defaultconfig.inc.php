@@ -40,6 +40,7 @@
   // Layout config
   $config_menu_delimiter = "<br>";
   $config_menu_pos = "left";
+  $config_menu_layout = "default";
   $config_top_frame = 0; // 0 = no   - 1 = yes
   $config_defaulttheme = "default";
  
