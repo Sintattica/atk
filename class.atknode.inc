@@ -1,5 +1,5 @@
 <?php    
-
+ 
   // Define some flags for nodes. Use the constructor of the atkNode
   // class to set the flags. (concatenate multiple flags with '|')
 
@@ -215,6 +215,7 @@
      * or one of its derivatives.
      */
     var $m_attribList = array();
+    var $m_attribIndexList = array();
 
     /**
      * The list of relations with other nodes. These should be of the class
@@ -370,10 +371,10 @@
      * atkAttribute or one of its derivatives)
      * @param $attribute the attribute you want to add
      */
-    function add($attribute)
+    function add($attribute,$order=0)
     {
       global $g_securityManager;
-
+      static $attrib_order = 100;
       $attribute->m_owner = $this->m_type;
       
       // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
@@ -438,9 +439,20 @@
       if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_hasMlSelectEdit = 1;
       
       $attribute->init();            
-            
+
+      $exist=false;
+      if(is_object($this->m_attribList[$attribute->fieldName()])) $exist=true;
+      if(!$exist) 
+      {
+        if($order==0)
+        {
+          $order=$attrib_order;
+          $attrib_order+=100;
+        }
+        $attribute->m_order = $order;
+        $this->m_attribIndexList[]=array("name"=>$attribute->fieldName(),"order"=>$attribute->m_order);
+      }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;     
-            
     }
 
     /**
@@ -623,9 +635,9 @@
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      foreach (array_keys($this->m_attribList) as $attribname)
+      for($i=0;$i<count($this->m_attribIndexList);$i++)
       {
-        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
         
         if (!$p_attrib->hasFlag(AF_HIDE))
         {
@@ -647,7 +659,7 @@
             else
             {
               
-              $page.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+              $page.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
             }
           }
           else
@@ -876,11 +888,10 @@
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {      
-        $p_attrib = &$this->m_attribList[$attribname];
+      for($r=0;$r<count($this->m_attribIndexList)-1;$r++)
+      { 
+        $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$r]["name"]];
         // fields that have not yet been initialised may be overriden in the url..
-
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
@@ -926,11 +937,11 @@
                 }
                 if($found)
                 {
-                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
+                  $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName(),$this->m_type).': </div>', 'valign="top"');
                 }
                 else
                 {
-                  $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+                  $form.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
                 }
               }
             }
@@ -1025,7 +1036,10 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {      
         $p_attrib = &$this->m_attribList[$attribname];
-        
+      //for($i=0;$i<count($this->m_attribIndexList);$i++)
+      //{
+      //  $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
+  
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {        
           $form.='<tr>';
@@ -1044,7 +1058,7 @@
             }            
             else
             {
-              $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+              $form.=$g_layout->ret_td(text($p_attrib->fieldName(),$this->m_type).': ','valign="top"');
             }
           }
           else
@@ -1257,10 +1271,10 @@
       // sort the list by that attribute.
       // Since we are looping the attriblist anyway, we also check if there
       // are totalisable collumns.
-      foreach (array_keys($this->m_attribList) as $attribname)
+      for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
       {
-        $p_attrib = &$this->m_attribList[$attribname];
-        
+        $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
+        //$p_attrib = &$this->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
         if (
             ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -1281,9 +1295,9 @@
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = href($PHP_SELF.'?atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName()));
+            $tmp = href($PHP_SELF.'?atkorderby='.rawurlencode($neworder),text($p_attrib->fieldName(),$this->m_type));
           }
-          else $tmp = text($p_attrib->fieldName());
+          else $tmp = text($p_attrib->fieldName(),$this->m_type);
 
           $headerRow.=$g_layout->ret_td_datatitle($tmp);
           
@@ -1309,9 +1323,8 @@
         $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="get">';
         $searchRow.= session_form();
         
-        $searchmode = $this->m_postvars["atksearchmode"];
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-        
+        $searchmode = $this->m_postvars["atksearchmode"];        
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");      
         $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
         $searchable = false;
         
@@ -1334,10 +1347,9 @@
         }
 
         // Second loop.. this time for the search fields.
-        foreach (array_keys($this->m_attribList) as $attribname)
+        for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
         {
-          $p_attrib = &$this->m_attribList[$attribname];
-        
+          $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -1444,10 +1456,11 @@
         {
           $output.=$actionCol;
         }
-        
-        foreach (array_keys($this->m_attribList) as $attribname)
+
+        for($r=0;$r<(count($this->m_attribIndexList)-1);$r++)
         {
-          $p_attrib = &$this->m_attribList[$attribname];
+          $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$r]["name"]];
+          //echo $r."/".(count($this->m_attribIndexList)-1)." - ".$this->m_attribIndexList[$r]["name"]."<br>";
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -1502,9 +1515,9 @@
         }
         
         // Third loop.. this time for the totals row.
-        foreach (array_keys($this->m_attribList) as $attribname)
+        for($i=0;$i<count($this->m_attribIndexList)-1;$i++)
         {
-          $p_attrib = &$this->m_attribList[$attribname];
+         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
@@ -1576,7 +1589,7 @@
             &&$musthide==false
            )
         {
-          $output.='<td><b>'.text($p_attrib->fieldName()).'</b></td>';
+          $output.='<td><b>'.text($p_attrib->fieldName(),$this->m_type).'</b></td>';
           
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))
@@ -1642,7 +1655,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
@@ -1729,7 +1742,7 @@
             &&$musthide==false
            )
         {
-          $output.=$sof.text($p_attrib->fieldName()).$eof;
+          $output.=$sof.text($p_attrib->fieldName(),$this->m_type).$eof;
           
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))
@@ -1795,7 +1808,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
@@ -1985,6 +1998,13 @@
       $g_layout->ui_bottom();
     }
 
+    // Small compare function for sorting attribs on order field
+    function attrib_cmp($a,$b)
+    {
+      if ($a["order"] == $b["order"]) return 0;
+      return ($a["order"] < $b["order"]) ? -1 : 1;
+    }     
+
     /**
      * This function initialises certain elements of the node. This must be called right
      * after the constructor. The function has a check to prevent it from being executed
@@ -2021,7 +2041,9 @@
         
       // Read metainformation from the database.
       $this->tableMeta();
-      
+      //atk_var_dump($this->m_attribIndexList);
+      usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
+      //atk_var_dump($this->m_attribIndexList);
       $this->m_initialised = true;
     }
     
@@ -2054,7 +2076,6 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        
         if (is_object($p_attrib))
         {
           $p_attrib->fetchMeta($this->m_tableMeta);
@@ -2742,7 +2763,7 @@
       if (is_array($searchArray) && count($searchArray)>0)
       {      
         $searchmode = $this->m_postvars["atksearchmode"];
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");        
         
         while (list($key,$value) = each($searchArray))
         {
@@ -2764,7 +2785,7 @@
 
 
 
-      foreach (array_keys($this->m_attribList) as $attribname)
+     foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];        
         if (

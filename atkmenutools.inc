@@ -19,7 +19,13 @@
    * @param $enable enable or disable
    */
   function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
-  {
+  { 
+    static $order_value=100;
+    if($order==0) 
+    {
+      $order=$order_value;
+      $order_value+=100;
+    }
 //    if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-"; else
     $GLOBALS["g_menu"][$parent][] = array("name" => $name, "url" => $url, "enable" => $enable, "order"=> $order);
     if (empty($url)) $GLOBALS["g_menu_parent"][$name] = $parent;

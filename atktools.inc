@@ -105,9 +105,10 @@
    *
    * Replaces the txt_[vars] with the values from the language files
    */
-  function text($var)
+  function text($var,$node="")
   {
-    $result =  $GLOBALS["txt_".$var];
+    if($node!="") $result = $GLOBALS["txt_".$node."_".$var];
+    if($result=="") $result =  $GLOBALS["txt_".$var];
     if ($result=="") return ucfirst(str_replace("_"," ",str_replace('title_','',$var)));
     else return $result;
   }

@@ -154,6 +154,11 @@
     var $m_tableMeta = "";
 
     /**
+       * Order of the attribute
+        */
+    var $m_order = 0;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>

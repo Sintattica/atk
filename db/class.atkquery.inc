@@ -295,7 +295,14 @@
      */ 
     function exactCondition($field, $value)
     {
-      return "UPPER(".$field.")=UPPER('".$value."')";
+      if($value[0]=='!') 
+      {
+        return "UPPER(".$field.")!=UPPER('".substr($value,1,strlen($value))."')";
+      }
+      else
+      {
+        return "UPPER(".$field.")=UPPER('".$value."')";
+      }
     }
     
     /**
@@ -303,7 +310,14 @@
      */ 
     function substringCondition($field, $value)
     {
-      return "UPPER(".$field.") LIKE UPPER('%".$value."%')";
+      if($value[0]=='!')
+      {
+        return "UPPER(".$field.") NOT LIKE UPPER('%".substr($value,1,strlen($value))."%')";
+      }
+      else
+      {
+        return "UPPER(".$field.") LIKE UPPER('%".$value."%')";
+      }
     }
     
     /**
@@ -311,7 +325,14 @@
      */ 
     function wildcardCondition($field, $value)
     {
-      return "UPPER(".$field.") LIKE UPPER('".str_replace("*","%",$value)."')";
+      if($value[0]=='!')
+      {
+        return "UPPER(".$field.") NOT LIKE UPPER('".str_replace("*","%",substr($value,1,strlen($value)))."')";
+      }
+      else
+      {
+        return "UPPER(".$field.") LIKE UPPER('".str_replace("*","%",$value)."')";
+      }
     }
     
   }

@@ -142,7 +142,16 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      return $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      if ($searchmode=="substring") $searchmode="exact";
+      $func = $searchmode."Condition";
+      if (method_exists($query,$func))
+      {
+        $query->addCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
+      }
+      else
+      {
+        atkdebug("Database doesn't support searchmode '$searchmode', ignoring condition.");
+      }
     }    
   }
 ?>

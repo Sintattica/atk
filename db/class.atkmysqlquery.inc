@@ -15,17 +15,31 @@
     /**
      * Generate a searchcondition that does a regular expression match.
      */ 
-    function regexpCondition($field, $value)
+    function regexpCondition($field, $value,$inverse=false)
     {
-      return $field." REGEXP '$value'";
+      if($value[0]=='!') 
+      {
+        return $field." NOT REGEXP '".substr($value,1,strlen($value))."'";
+      }
+      else
+      {
+        return $field." REGEXP '$value'";
+      }
     }
     
     /**
      * Generate a searchcondition that does a soundex match of two strings.
      */ 
-    function soundexCondition($field, $value)
+    function soundexCondition($field, $value,$inverse=false)
     {
-      return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
+      if($value[0]=='!') 
+      {
+        return "soundex($field) NOT like concat('%',substring(soundex('".substr($value,1,strlen($value))."') from 2),'%')";
+      }
+      else
+      {
+        return "soundex($field) like concat('%',substring(soundex('$value') from 2),'%')";
+      }
     }
   }
 
