@@ -90,8 +90,8 @@
       $this->m_groupbys = array();
       $this->m_searchmethod = "";
 
-      // start at 'A'.
-      $this->m_generatedAlias = "A";
+      // start at 'a'.
+      $this->m_generatedAlias = "a";
 
       $this->m_aliasLookup = array();
     }
@@ -396,13 +396,9 @@
     {
       foreach ($record as $name => $value)
       {
-        if(substr($name,0,3)=="al_")
-        {
-          $name = substr($name,0,3).strtoupper(substr($name,3));
-        }
         if ($this->m_aliasLookup[$name]!="")
         {
-          $record[$this->m_aliasLookup[$name]]=$value;
+          $record[$this->m_aliasLookup[strtolower($name)]]=$value;
           unset($record[strtolower($name)]);
         }
       }
