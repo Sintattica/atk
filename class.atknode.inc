@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.24  2001/05/10 09:42:28  sandy
+   * bugfix in menu.php (config menu delimiter) and for the clear posting
+   *
    * Revision 4.23  2001/05/10 09:16:47  ivo
    * Fix to formsession.
    *
@@ -1061,7 +1064,8 @@
 
         $form.=$g_layout->ret_td($errormsg,'colspan="2"');
         $form.='</tr>';
-      }      
+      } 
+            
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
@@ -1069,7 +1073,7 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         // fields that have not yet been initialised may be overriden in the url..
-
+        
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];

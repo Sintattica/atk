@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.8  2001/05/10 09:42:28  sandy
+   * bugfix in menu.php (config menu delimiter) and for the clear posting
+   *
    * Revision 4.7  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -76,15 +79,15 @@
     $enable = $g_menu[$atkmenutop][$i]["enable"];
 
     /* delimiter ? */
-    if ($g_menu[$atkmenutop][$i] == "-") $menu .= $config_menu_delimiter;
+    if ($g_menu[$atkmenutop][$i] == "-") $menu .= "<br>";
     
     /* submenu ? */
-    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_NEW).'<br>';
-    else if (empty($url) && !$enable) $menu .= text("menu_$name").'<br>';
+    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_NEW).$config_menu_delimiter;
+    else if (empty($url) && !$enable) $menu .=text("menu_$name").$config_menu_delimiter;
       
     /* normal menu item */
-    else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,false,'target="main"').'<br>';
-    else $menu .= text("title_$name").'<br>';    
+    else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,false,'target="main"').$config_menu_delimiter;
+    else $menu .= text("title_$name").$config_menu_delimiter;    
   }
   
   /* previous */

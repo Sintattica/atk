@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.10  2001/05/10 09:42:28  sandy
+   * bugfix in menu.php (config menu delimiter) and for the clear posting
+   *
    * Revision 1.9  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -139,28 +142,27 @@
       $currentitem = $stack[$atklevel];
                 
       if (!isset($currentitem)||$currentitem=="")
-      {
+      {    
         atkdebug("New level on session stack");
         // new level.. always based on the previous level        
         //$newstackitem = array();
         $currentitem = $stack[count($stack)-1];
         // but we never keep formdata from other pages..
         $currentitem["atkformdata"]="";
-        
+                
         // Posted vars always overwrite anything in the current session..
         foreach($g_sessionVars as $var)
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
             if ($postvars[$var]=="clear")
-            {
+            {                    
               $currentitem[$var] = "";
             }
             else
             {
               $currentitem[$var] = $postvars[$var];
-            }
-            
+            }            
           }
         }
               
@@ -198,22 +200,22 @@
           // save it in the session stack..
           $stack[$atklevel] = $currentitem;       
         }
-      }  
         
-      foreach($g_sessionVars as $var)
-      {
-        if (isset($postvars[$var])&&$postvars[$var]!="")
+        foreach($g_sessionVars as $var)
         {
-          $currentitem[$var] = $postvars[$var];
+          if (isset($postvars[$var])&&$postvars[$var]!="")
+          {
+            $currentitem[$var] = $postvars[$var];
+          }
         }
-      }
+      }              
           
       if (is_array($currentitem["atkformdata"]))
       {
         atkdebug("Restoring formdata from session");        
         // atkformdata will be present in postvars.. editForm() has to read them..
       }
-         
+    
       foreach($currentitem as $var => $value)
       {
         $postvars[$var] = $value;
