@@ -225,7 +225,8 @@
               $this->m_user = $this->m_authorization->getUser($auth_user);
               $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
               // for convenience, we also store the user as a global variable.             
-              atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
+              (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
+              atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
               $authenticated = true;
   
               // Remember that we are logged in..
