@@ -2309,16 +2309,7 @@
         if ($this->allowed($this->m_action))
         {
           $g_securityManager->logAction($this->m_type, $this->m_action);
-
-          $funcname="action_".$this->m_action;
-          if (method_exists($this,$funcname))
-          {
-            $this->$funcname();
-          }
-          else
-          {
-            atkdebug("dispatcher error: no action defined for '".$this->m_postvars['atkaction']."'");
-          }
+          $this->callHandler($this->m_action);
         }
         else
         {
@@ -3254,18 +3245,18 @@
     {
       // Do nothing
     }
-    
+
     /**
-     * Function that is called right before a copied record is stored to 
-     * the database. 
+     * Function that is called right before a copied record is stored to
+     * the database.
      * This function does nothing, but it can be overriden in your derived
-     * classes if you want to do some processing on a record before it is 
-     * being copied. For example, suppose you have a field 'title' in a 
+     * classes if you want to do some processing on a record before it is
+     * being copied. For example, suppose you have a field 'title' in a
      * record. You could change the contents to 'Copy of ..', so the user can
      * distinguish between the original and the copy.
      *
      * @param &$record A reference to the copied record. You can change the
-     *                 contents of the record. It is not necessary to return 
+     *                 contents of the record. It is not necessary to return
      *                 the record.
      */
     function preCopy(&$record)
@@ -3405,6 +3396,36 @@
       }
     }
 
-  }
+    /**
+     * If there is a known registered handler method for the specified action
+     * we call this handler method instead of the normal node action method.
+     * @param $action the node action
+     */
+    function callHandler($action)
+    {
+      $handler = getNodeHandler(get_class($this), $action);
 
+      // handler object / method
+      if ($handler != NULL && is_array($handler) && method_exists($handler["object"], $handler["method"]))
+      {
+        atkdebug("Calling (external) handler object method for node action: $action");
+        $handler["object"]->$handler["method"]($this, $action);
+      }
+
+      // handler function
+      elseif ($handler != NULL && function_exists($handler))
+      {
+        atkdebug("Calling (external) handler function for node action: $action");
+        $handler($this, $action);
+      }
+
+      // no (valid) handler
+      else
+      {
+        $function = "action_$action";
+        if (method_exists($this, $function)) $this->$function();
+        else atkdebug("dispatcher error: no action defined for '".$action."'");
+      }
+    }
+  }
 ?>
