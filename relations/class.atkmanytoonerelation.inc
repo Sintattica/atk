@@ -270,7 +270,6 @@
           $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
           $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
         }          
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
 
         // autoselect if there is only one record (if obligatory is not set,
         // we don't autoselect, since user may wist to select 'none' instead
@@ -282,6 +281,7 @@
         }
         else
         {
+          $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
           $result.= '<select id="'.$id.'" name="'.$id.'">';
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
