@@ -1509,8 +1509,19 @@
           }
         }
 
-        // We alternate the color for even and non-even rows.
-        $output.='<tr class="row'.(($i%2==0)?1:2).'" onmouseover="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$g_theme["RowMouseOver"].'\'" onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \'\'">';
+        // special rowColor method makes it possible to change the row color based on the record data
+        $method = "rowColor";
+        if (method_exists($this, $method))
+        {
+          $bgn = $this->$method(&$recordlist[$i], $i, FALSE);
+          $bgh = $this->$method(&$recordlist[$i], $i, TRUE);
+        }
+        if (empty($bgh)) $bgh = $g_theme["RowMouseOver"];
+
+        // alternate colors of rows
+        $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
+                 '    onmouseover="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$bgh.'\'"'.
+                 '    onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$bgn.'\'">';
 
         if ($orientation=="left"||$orientation=="both")
         {
