@@ -258,7 +258,7 @@
   
           $str_actions = "";
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
-					$icons = atkconfig("recordlist_icons");
+					$icons = atkconfig("recordlist_icons", true);
 					
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
@@ -267,10 +267,14 @@
 						
 						$link = $name;
 						
-						if($icons == "true")
+						if($icons == true)
 						{
 							$icon = $theme->iconPath($name,"recordlist");
   						$link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.text($name,$this->m_node->m_type).'">';
+						}
+						else
+						{
+						  $link = text($name);
 						}
   	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.$link.'</a>&nbsp;';
   	      }
