@@ -10,19 +10,27 @@
   define("KB_UPDOWN", KB_UP|KB_DOWN);
   define("KB_LEFTRIGHT", KB_LEFT|KB_RIGHT);
   define("KB_CURSOR", KB_UPDOWN|KB_LEFTRIGHT);
-  define("KB_CTRLCURSOR", 16);  
-
+  define("KB_CTRLCURSOR", 16);      
+    
   class atkKeyboard
   {
+    var $m_dummy=""; // WORKAROUND: in php (4.3.1 at least) at least one member var must exist, to make it possible to create singletons.
+    
     function &getInstance()
     {
-      static $s_kb = NULL;
+      static $s_kb;
       if ($s_kb == NULL)
       {
         atkdebug("Creating atkKeyboard instance");
         $s_kb = new atkKeyboard();
       }
+      
       return $s_kb;
+    }
+    
+    function atkKeyboard()
+    {
+      //lalala
     }
     
     function addFormElementHandler($id, $navkeys)
