@@ -762,7 +762,7 @@
       // For all attributes we use the display() function to display the
       // attributes current value. This may be overridden by supplying
       // an <attributename>_display function in the derived classes.
-      for($i = 0, $_i = count($this->m_attribIndexList); $i < $_i; $i++)
+      foreach (array_keys($this->m_attribIndexList) as $i)
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
 
@@ -1008,7 +1008,7 @@
        * edit() method by supplying an <attributename>_edit function in the derived classes.
        */
       $tab = $this->getActiveTab();
-      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
+      foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
         $field = array("name" => $attribname);
@@ -1077,7 +1077,7 @@
 
       /* suppress all */
       $suppressList = array();
-      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
+      foreach (array_keys($this->m_attribIndexList) as $r)
         $suppressList[] = $this->m_attribIndexList[$r]["name"];
 
       /* get data, transform into "form", return */
@@ -1443,7 +1443,7 @@
 
       /* get the heading and search columns */
       if (!hasFlag($flags, RL_NO_SEARCH)) $this->setAttribSizes();
-      for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
+      foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $name = $this->m_attribIndexList[$r]["name"];
         if (!in_array($name, $suppress))
@@ -1498,7 +1498,7 @@
         }
 
         /* columns */
-        for ($r = 0, $_r = count($this->m_attribIndexList); $r < $_r; $r++)
+        foreach (array_keys($this->m_attribIndexList) as $r)
         {
           $name = $this->m_attribIndexList[$r]["name"];
           if (!in_array($name, $suppress))
