@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.24  2003/08/19 15:48:30  martin
+   * [Ivo] Added ui instance to menu.php
+   *
    * Revision 4.23  2003/08/08 08:37:27  ivo
    * + Merge of Cendris features:
    *   + Cursor navigation for editforms (by Ludo)
@@ -47,6 +50,7 @@
   $output = &atkOutput::getInstance();
   $page = &atknew("atk.ui.atkpage");
   $theme = &atkTheme::getInstance();  
+  $ui = &atknew("atk.ui.atkui");
 
 
   /* general menu stuff */
