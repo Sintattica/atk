@@ -136,7 +136,8 @@
       $rel = &getNode($classname);
       atkdebug("O2O DELETE for $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
-      return $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      return $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".
+                          $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
     }
 
     /**
@@ -196,16 +197,18 @@
       if ($this->createDestination())
       {
         $vars = &$record[$this->fieldName()];
-
+        
         if ($this->destinationHasRelation())
         {
-          $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+          $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];          
         }
         else
         {
-          //if the a onetoonerelation has no relation on the other side the m_refKey is not an array
-          $vars[$this->m_refKey] = $record[$this->m_ownerInstance->primaryKeyField()];
+          //if the a onetoonerelation has no relation on the other side the m_refKey is not an array          
+          // experimental, will the next line always work?
+          $vars[$this->m_refKey] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
         }
+        
           
         if ($vars["mode"]=="edit")
         {
@@ -236,7 +239,7 @@
     {
       if ($this->createDestination())
       {
-        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];
+        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];        
         if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
       }
       return false;
