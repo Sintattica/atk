@@ -23,7 +23,7 @@
   $config_security_attributes = false;
 
   $config_auth_usertable   = "user";
-  $config_auth_leveltable  = "user";
+  $config_auth_leveltable  = ""; // defaults to usertable
   $config_auth_accesstable = "access";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";  

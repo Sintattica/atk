@@ -10,6 +10,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.2  2001/07/19 11:40:06  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 4.1  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -38,9 +43,13 @@
      {       
        global $config_user;
                    
-       $valid = ($user!="" && $config_user[$user]["password"]==$passwd);
-       
-       return $valid;   
+       if ($user!="" && $config_user[$user]["password"]==$passwd) return 1;       
+       return 0;   
+     }
+     
+     function canMd5()
+     {
+       return atkconfig("authentication_md5");
      }
       
      function getUser($user)
@@ -81,11 +90,7 @@
               
        return $entity;      
      }
-     
-     function canMd5()
-     {
-       return atkconfig("authentication_md5");
-     }
+          
    }
 
 ?>

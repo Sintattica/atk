@@ -10,6 +10,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 1.4  2001/07/19 11:40:07  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 1.3  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -46,25 +51,10 @@
       	  if (ldap_bind($ldap,$userDN, $passwd)) return True;
         }
 
-        // dn not found or password wrong
-       return False; 
+        // dn not found or password wrong TODO/FIXME: return -1 if dn not found
+       return 0;
      }
-     
-     function getUser($user)
-     {
-       return Array("name"=>"","level"=>-1);
-     }
-     
-     function getEntity($node, $action)
-     {
-       return Array();
-     }
-     
-     function getAttribEntity($node, $attrib, $mode)
-     {
-       return Array();
-     }
-     
+                         
      function canMd5()
      {
        return atkconfig("authentication_md5"); // ?? Is this correct? can we store passwords as md5 in ldap?

@@ -2,13 +2,18 @@
   /**
    * Atk Config Tools
    *
-   * A collection of functions to make
+   * A collection of functions to use in configfiles..
    *
    * Author: Ivo Jansch <ivo@ibuildings.nl>
    *
    * $Id$
    *
    $ $Log$
+   $ Revision 4.1  2001/07/19 11:40:06  ivo
+   $ Updated authentication classes with an additional returncode for fatal
+   $ errors. Added a feature to pop3 authentication to handle server-specific
+   $ response codes.
+   $
    $ Revision 4.0  2001/04/23 10:19:38  ivo
    $ Revision number update
    $
@@ -66,5 +71,19 @@
     function language($language)
     {
       $GLOBALS["config_language"][] = $language;
+    }
+    
+    /**
+     * This function is only of use when using pop3 as 
+     * authentication method.
+     * Some pop3 servers give specific error messages that may be
+     * of interest to the user. If you use this function (in the 
+     * config file), and atk encounters the specified substring
+     * in a server response, the specified message is displayed.
+     */
+    function auth_pop3_response($substring, $message)
+    {
+      global $g_pop3_responses;
+      $g_pop3_responses[$substring] = $message;
     }
 ?>

@@ -10,6 +10,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.3  2001/07/19 11:40:07  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 4.2  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -38,32 +43,26 @@
          $user = $user . "@" . atkconfig("authentication_mail_suffix");
        }
  
+      if (atkconfig("authentication_mail_server")=="")
+      {
+        $this->m_fatalError = text("auth_no_server");
+        return -1;
+      }
       $mailauth = imap_open("{".atkconfig("authentication_mail_server")
 			     .":".atkconfig("authentication_mail_port")."}INBOX", $user , $passwd);
 
-      if ($mailauth == False) {
-        return False;
-      } else {
+      // TODO/FIXME: return -1 when connection fails..
+      if ($mailauth == False) 
+      {
+        return 0;
+      } 
+      else
+      {
         imap_close($mailauth);
-        return True;
+        return 1;
       }    
        
-     }
-     
-     function getUser($user)
-     {
-       return Array("name"=>"","level"=>-1);
-     }
-     
-     function getEntity($node, $action)
-     {
-       return Array();
-     }
-     
-     function getAttribEntity($node, $attrib, $mode)
-     {
-       return Array();
-     }
+     }          
      
      function canMd5()
      {

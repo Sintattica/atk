@@ -11,6 +11,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.20  2001/07/19 11:40:06  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 4.19  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -123,8 +128,11 @@
     var $m_authorization = 0; 
     var $m_scheme = "none";
     var $m_user = 0;
-        
-     
+    
+    // If login really fails (no relogin box, but an errormessage), the 
+    // error message that caused the fatal error is put in this variable.
+    var $m_fatalError = "";
+             
     // constructor
     function atkSecurityManager($authentication_type="none", $authorization_type="none", $securityscheme="none")
     {       
@@ -216,8 +224,9 @@
           if ($this->m_authentication->canMd5()&&!$md5)
           {
             $PHP_AUTH_PW = md5($PHP_AUTH_PW);
-          }       
-          if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
+          }  
+          $response = $this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW);
+          if($response==1) // succesful login
           {   
             // We store the username + securitylevel of the logged in user. 
             $this->m_user = $this->m_authorization->getUser($PHP_AUTH_USER);
@@ -234,6 +243,17 @@
               setcookie($cookiename,base64_encode($PHP_AUTH_USER.".".$PHP_AUTH_PW), time()+60*(atkconfig("authentication_cookie_expire")));
             }
           }
+          else
+          {
+            // login was incorrect. Either the supplied username/password combination is 
+            // incorrect (we just try again) or there was an error (we display an error 
+            // message)
+            if ($response==-1)
+            {
+              $this->m_fatalError = $this->m_authentication->m_fatalError;
+            }
+            $authenticated = false;            
+          }
         }
 
         // we are logged in 
@@ -245,13 +265,22 @@
       {
     //    $session_auth = $ATK_VARS["authentication"];    
         $session_auth = $g_sessionManager->getValue("authentication", true);          
-        if (atkconfig("authentication_session") && session_is_registered("login") && !empty($session_auth["authenticated"]) && !empty($session_auth["user"]))
+        if (atkconfig("authentication_session") && 
+            session_is_registered("login") && 
+            $session_auth["authenticated"]==1 && 
+            !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];
           atkdebug("Using session for authentication");
         }
       }
 
+      // if there was an error, drop out.
+      if ($this->m_fatalError!="") 
+      {        
+        return false;
+      }
+      
       // still not logged in?! 
       if (!session_is_registered("login"))
       {
@@ -414,8 +443,8 @@
     
     if (!$g_securityManager->authenticate())
     {
-      echo text("login_failed");
-      atkdebug("login failed");
+      echo '<b>'.text("login_failed").'</b>';      
+      echo '<br><br>'.$g_securityManager->m_fatalError;
       exit;
     }
   }      

@@ -11,6 +11,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.3  2001/07/19 11:40:07  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 4.2  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -38,15 +43,51 @@
    */
 
   class auth_interface 
-  {         
+  { 
+    /**
+     * If authentication fails due to an error, instead of a wrong 
+     * username/password combination, this variable must be filled
+     * with an explanation of the reason for the error.
+     */ 
+    var $m_fatalError;
+     
     /**
      * Authenticate a user. 
+     *
+     * Allowed return values: 1 - Authentication succesful
+     *                        0 - Authentication failed, wrong user/password 
+     *                            combination
+     *                       -1 - Authentication failed due to some error
+     *                            which cannot be solved by just trying again
+     *                            If you return this value, you *must* also 
+     *                            fill the m_fatalError variable.
+     *
      * Note: if the canMd5 function returns true, $passwd is passed as an md5 string.
      */
     function validateUser($user, $passwd)
-    {
-      return false; // dummy implementation. should not be used.
+    {      
+      return -1; // dummy implementation. should not be used.
     }
+    
+    /**
+     * Does the authentication method support md5 encoding of passwords?
+     *
+     * This function should return: true if md5 is always used.
+     *                              false if md5 is not supported.
+     *                              atkconfig("authentication_md5") if it
+     *                              is configurable.
+     */ 
+    function canMd5()
+    {
+      return atkconfig("authentication_md5");
+    }
+    
+    /** 
+     * THE FOLLOWING FUNCTIONS MUST ONLY BE IMPLEMENTED IF YOUR AUTH CLASS
+     * CAN DO AUTHORISATION. IF YOU DON'T IMPLEMENT THEM, AND IN YOUR APPLICATION
+     * YOU USE YOUR CLASS BOTH FOR AUTHENTICATION AND AUTHORISATION, EVERY USER
+     * HAS EQUAL RIGHTS AND IS TREATED AS ADMINISTRATOR.
+     */
     
     /** 
      * This function returns information about a user in an associative
@@ -58,7 +99,7 @@
      */
     function getUser($user)
     {
-      return array("name"=>$user,"level"=>0); // dummy implementation, should not be used.
+      return array("name"=>$user,"level"=>-1); // dummy implementation, should not be used.
     }
     
     /**
@@ -77,20 +118,8 @@
     function getAttribEntity($node, $attrib, $mode)
     {
       return array();
-    }
-    
-    /**
-     * Does the authentication method support md5 encoding of passwords?
-     *
-     * This function should return: true if md5 is always used.
-     *                              false if md5 is not supported.
-     *                              atkconfig("authentication_md5") if it
-     *                              is configurable.
-     */ 
-    function canMd5()
-    {
-      return atkconfig("authentication_md5");
-    }
+    }    
+        
   }
 
 ?>

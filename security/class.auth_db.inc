@@ -10,6 +10,11 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.5  2001/07/19 11:40:07  ivo
+   * Updated authentication classes with an additional returncode for fatal
+   * errors. Added a feature to pop3 authentication to handle server-specific
+   * response codes.
+   *
    * Revision 4.4  2001/07/09 15:40:46  ivo
    * Authentication classes can now indicate whether they support md5 encoding
    * of passwords.
@@ -57,10 +62,13 @@
        $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
        
        $recs = $g_db->getrows($query);              
-          
-       $valid = (count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd);      
-
-       return $valid;          
+                 
+       return (count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd);       
+     }
+     
+     function canMd5()
+     { 
+       return atkconfig("authentication_md5");
      }
      
      function getUser($user)
@@ -70,8 +78,8 @@
        $usertable = atkconfig("auth_usertable");
        $leveltable = atkconfig("auth_leveltable");
        $userfield = atkconfig("auth_userfield");
-       
-       if ($usertable==$leveltable)
+                     
+       if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
          // This means one user can only have one level.
@@ -154,10 +162,6 @@
        return $result;
      }
      
-     function canMd5()
-     { 
-       return atkconfig("authentication_md5");
-     }
    }
 
 ?>

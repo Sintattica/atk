@@ -114,6 +114,10 @@
   $txt_search_regexp = "Search with a regular expression (advanced)";
   $txt_search_soundex = "Search for a string that sounds similar";
 
-  $txt_search_mode = "Searchmode";    
+  $txt_search_mode = "Searchmode";  
+  
+  $txt_login_failed = "Login failed";
+  $txt_auth_no_server = "No server specified. No authentication possible (please consult your system administrator).";
+  $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";  
   
 ?>

@@ -125,4 +125,8 @@
   
   $txt_search_mode = "Zoekmanier";
   
+  $txt_login_failed = "Inloggen mislukt";
+  $txt_auth_no_server = "Geen server opgegeven. Geen authenticatie mogelijk (raadpleeg uw systeembeheerder).";
+  $txt_auth_unable_to_connect = "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).";  
+  
 ?>

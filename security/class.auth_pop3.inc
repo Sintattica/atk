@@ -8,6 +8,11 @@
  * <b>Changes</b>:
  * $Id$
  * $Log$
+ * Revision 4.6  2001/07/19 11:40:07  ivo
+ * Updated authentication classes with an additional returncode for fatal
+ * errors. Added a feature to pop3 authentication to handle server-specific
+ * response codes.
+ *
  * Revision 4.5  2001/07/10 12:45:47  ivo
  * Support for per-user pop3 servers.
  *
@@ -35,8 +40,9 @@ class auth_pop3 extends auth_interface
    * @return login true / false
    */
   function validateUser($user, $passwd)
-  { 
-    global $g_securityManager, $g_db; // used for logging..
+  {     
+    global $g_securityManager; // we need the securitymanager for logging.
+    global $g_db, $g_pop3_responses; 
     
     /* if it's a virtual mail server add @<domain> to the username */
     if(atkconfig("auth_mail_virtual") == true)
@@ -52,14 +58,20 @@ class auth_pop3 extends auth_interface
       $res = $g_db->getrows("SELECT auth_server 
                              FROM ".atkconfig("auth_usertable")." 
                             WHERE ".atkconfig("auth_userfield")."='".$user."'");
-      $server = $res[0]["auth_server"];
+      if (count($res)==0)
+      {
+        // User not found. 
+        return 0;
+      }
+      $server = $res[0]["auth_server"];      
     }
     
     if ($server=="")
     {
       $g_securityManager->log(1,"pop3auth error: No server specified");
       atkdebug("pop3auth error: No server specified");
-      return false;
+      $this->m_fatalError = text("auth_no_server");
+      return -1;
     }
  
     /* connect */
@@ -69,7 +81,8 @@ class auth_pop3 extends auth_interface
     {
       $g_securityManager->log(1,"pop3auth serverconnect error $server: $errstr");
       atkdebug("Error connecting to server $server: $errstr");
-      return false;
+      $this->m_fatalError = text("auth_unable_to_connect");
+      return -1;
     }
 
     /* authenticate */
@@ -81,36 +94,22 @@ class auth_pop3 extends auth_interface
     fputs($link_id, "QUIT\r\n");    
     fclose($link_id);    
     
-    $g_securityManager->log(1, "pop3auth response for user $user: ".trim($auth));
+    $g_securityManager->log(1, "pop3auth response for user $user: ".trim($auth));        
+    
+    // search application specified pop3 responses.. 
+    foreach($g_pop3_responses as $substring => $message)
+    {
+      if (stristr($auth, $substring)!=false)
+      {
+        $this->m_fatalError = $message;
+        return -1;
+      }
+    }
 
     /* login ok? */
-    if (!stristr($auth, "ERR")) return true;
-    else return false;
-  }
-  
-  /**
-   * Dummy method...
-   */   
-  function getUser($user)
-  {
-    return array("name"=>"","level"=>-1);
-  }
-  
-  /**
-   * Dummy method...
-   */   
-  function getEntity($node, $action)
-  {
-    return array();
-  }
-  
-  /** 
-   * Dummy method...
-   */   
-  function getAttribEntity($node, $attrib, $mode)
-  {
-    return array();
-  }
+    if (!stristr($auth, "ERR")) return 1;
+    else return 0;
+  }    
   
   /** 
    * pop3 can't handle md5 passwords since they must be sent to the server
@@ -121,4 +120,5 @@ class auth_pop3 extends auth_interface
     return false;
   }
 }
+
 ?>
