@@ -3353,10 +3353,17 @@
 
       if ($order!="") $query->addOrderBy($order);      
 
-      if (is_array($limit) && count($limit) == 2)
+      if (is_array($limit)) 
       {
-        $query->setLimit($limit["offset"], $limit["limit"]);
+        if (count($limit) == 2)
+        {
+          $query->setLimit($limit["offset"], $limit["limit"]);
+        }
       }      
+      else if (!empty($limit))
+      {
+        $query->setLimit(0, $limit);
+      }
       
       $querystring = $query->buildSelect();   
       
