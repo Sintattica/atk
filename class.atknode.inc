@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.96  2001/09/05 22:03:35  sandy
+   * - removed the mime type parameter, and replaced it with type (cvs/excel/...)
+   *
    * Revision 4.95  2001/09/05 21:05:31  sandy
    * - Added new parameter to SpecialRecordList and Export2file for compression.
    * It can now send gzip/bzip compressed files (if it's support in PHP)
@@ -1958,7 +1961,7 @@
       if ($type=="1")
       {
 
-        $this->export2File($output,"achievo","text/x-csv","csv",$compression);
+        $this->export2File($output,"achievo","csv","csv",$compression);
       }
     }
 
@@ -1967,13 +1970,33 @@
     *@param  $data  -- the content
 		*@param $fileName -- bestandsnaam
     *@param  $ext   -- extension of the file
-		*@param  $mime_type  -- the mimetype
+		*@param  $type  -- the type (cvs / excel)
 		*@param $compression -- Compression technique (bzip / gzip)
     * used by specialRecordist();
     */
     
-   function export2File($data, $fileName, $mime_type, $ext, $compression="")
+   function export2File($data, $fileName, $type, $ext, $compression="")
    {
+
+    if($compression=="bzip")
+		{
+		  $mime_type='application/x-bzip';
+			$ext = "bz2";
+		}
+		elseif($compression=="gzip")
+		{
+		  $mime_type='application/x-gzip';
+			$ext = "gz";
+		}
+		elseif($type=="csv"||$type="excel")
+		{
+		  $mime_type='text/x-csv';
+			$ext = "csv";
+		}
+		else
+		{
+		  $mime_type='application/octetstream';
+		}
 
     header('Content-Type: '. $mime_type);
     header('Content-Disposition: filename="'.$fileName.'.'.$ext.'"');
