@@ -2762,7 +2762,7 @@
 
       if (atkLevel()>0)
       {
-        $g_layout->output('<br><br><form method="get" action="'.session_url($PHP_SELF, SESSION_BACK).'">'.
+        $g_layout->output('<br><br><form method="get">'.session_form(SESSION_BACK).
                           '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
       }
 

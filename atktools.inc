@@ -204,6 +204,8 @@
     {
       $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
     }
+    
+    $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'">';
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
