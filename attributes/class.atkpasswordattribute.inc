@@ -145,10 +145,6 @@ class atkPasswordAttribute extends atkAttribute
 
     $action = $ATK_VARS["atkaction"];
 
-//    if ($action == 'save' && (strlen($value["new"]) == 0 || strlen($value["again"]) == 0))
-//      return text("password_invalid");
-    atkdebug("Current : ".md5($value["current"])."(".$value["current"].")");
-    atkdebug("Original: ".$value["hash"]);
     if ($action == 'update' 
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) 
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE) 
