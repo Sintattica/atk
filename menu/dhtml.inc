@@ -42,7 +42,13 @@
     {            
      if($g_menu[$atkmenutop][$i]["url"]!="")
      {    
-      $tabContent .= "<a target='main' class='tablink' href='$url'>".text("menu_$name")."</a>&nbsp;";
+      $tabContent .= "<a target='main' class='tablink' href='$url'>".text("menu_$name")."</a>";
+
+      if ($i < count($g_menu[$atkmenutop])-1)
+      {
+       $tabContent .= "&nbsp;|&nbsp;";
+      }
+
       $items++;
      }
     }
