@@ -116,6 +116,7 @@
   "import_error_allfieldnocorrectdata" => "Het veld voor gebruik in iedere record bevat geen correcte invoer.",
   "import_error_fieldisobligatory" => "Het volgende veld moet verplicht gebruikt worden: ",
   "import_error_fieldsareobligatory" => "De volgende velden moeten verplicht gebruikt worden: ",
+  "import_field" => "Veld",
   "import_ignorecolumn" => "Negeer deze kolom",
   "import_import" => "Importeer",
   "import_loadup" => "Uploaden",
