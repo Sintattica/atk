@@ -599,10 +599,13 @@
         {
           $body.="\nStack level $i:\n";
           $item = $stack[$i];          
-          foreach ($item as $key=>$value)          
-          {
-            $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
-          }   
+          if (is_array($stack[$i]))
+	  {
+	    foreach ($item as $key=>$value)          
+            {
+              $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+            } 
+	  }
         }        
         $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
         if(count($ns_globals)>0)
