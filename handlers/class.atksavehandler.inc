@@ -64,7 +64,7 @@
             {
               $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record);
             }
-            $this->m_node->redirect($location);
+            $this->m_node->redirect($location, $record);
           }
         }
       }
