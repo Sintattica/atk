@@ -3,12 +3,25 @@
    * Advanced javascript for the dateattribute which tries
    * to limit the user's input to only valid date entries.
    *
+   * Note: after the rewrite a few months ago, some new behaviour
+   * was created without really knowing it. The old javascript code changed
+   * the day to the last day in the month if you choose a date in a valid
+   * month, in a valid year, with an invalid day. The new code circulates
+   * to the next month if you choose a day that's out of reach for the
+   * selected month. E.g. old attribute; 30-02-2001 -> 28-02-2001, new
+   * attribute; 30-02-2001 -> 02-03-2001! This is not a bug, just different
+   * behaviour!
+   *
    * @author Peter Verhage <peter@ibuildings.nl>
    * @version $Revision$
    *
    * $Id$
    *
    * $Log$
+   * Revision 4.7  2001/06/28 17:54:44  peter
+   * Some typo's, added a note which explains the new behaviour when selecting
+   * a day that is out of reach for the currently selected month.
+   *
    * Revision 4.6  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -99,7 +112,7 @@ function AdjustDate(frm, arr, format, str_min, str_max)
   /* check if valid date attribute inputs */
   if (input["d"] == null || input["m"] == null || input["y"] == null) return;
   
-  /* current selected data */
+  /* currently selected date */
   current = Array();
   current["d"] = parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
   current["m"] = parseInt(input["m"].options[input["m"].selectedIndex].value, 10);  
