@@ -63,7 +63,8 @@
   $config_search_defaultmode = "substring";
 
   // Whether the action links in a recordlist appear left or right
-  $config_recordlist_orientation = "right";
+  $config_recordlist_orientation  = "right";
+  $config_recordlist_vorientation = "middle";
 
   $config_enable_ie_extensions = false;
 
