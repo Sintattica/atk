@@ -45,6 +45,7 @@
   $txt_error_obligatoryfield = "Dit veld is verplicht";
   $txt_error_formdataerror = "Opslaan mislukt om de volgende reden: ";
   $txt_error_uniquefield = "De waarde voor dit veld moet uniek zijn";
+  $txt_error_uniquefieldset = "De waarden voor de combinaties tussen deze velden moeten uniek zijn";
   $txt_error_tab = "zie";
 
   $txt_confirm_delete        = "Weet u zeker dat u dit item wilt verwijderen?";

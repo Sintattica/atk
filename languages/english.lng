@@ -42,6 +42,7 @@
   $txt_error_obligatoryfield = "This field is required";
   $txt_error_formdataerror = "Save failed due to the following reason: ";
   $txt_error_uniquefield = "The value for this field must be unique";
+  $txt_error_uniquefieldset = "The values for the combination of this fields must be unique";
   $txt_error_tab = "see";
 
   $txt_confirm_delete = "Are you sure you want to delete this item?";
