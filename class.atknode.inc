@@ -738,7 +738,7 @@
       }
       
       $g_layout->output($this->searchForm($record));
-      $g_layout->output('<br>&nsbp;<input type="submit" value="'.text('search').'">&nbsp;');
+      $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('search').'">&nbsp;');
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
       $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
