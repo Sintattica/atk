@@ -75,7 +75,7 @@
         
         $params["content"] = $node->tabulate("add", $form);                
                     
-        $params["buttons"][] = '<input type="submit" class="btn_save" value="'.text('save').'&nbsp;">';
+        $params["buttons"][] = '<input type="submit" class="btn_save" value="'.text('save').'">';
         if ($node->m_action=="add")
         {
           // if action is admin, we don't show the cancelbutton..
