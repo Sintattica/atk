@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.20  2001/10/09 09:48:13  ivo
+  * Added 4 decimal accurate elapsed time to debugmessages.
+  *
   * Revision 4.19  2001/09/26 12:05:51  maurice
   * Code optimalisations for error handling
   *
@@ -140,7 +143,29 @@
     }
     return false;
   }
-   
+  
+  function getmicrotime()
+  {
+    list($usec, $sec) = explode(" ",microtime()); 
+    return ((float)$usec + (float)$sec); 
+  }
+  
+  function elapsed()
+  { 
+    static $offset="";
+    if ($offset=="") 
+    {
+      $offset = getmicrotime();
+      $elapsed = 0;
+    }
+    else
+    {
+      $elapsed = getmicrotime()-$offset;
+    }
+    return sprintf("%02.05f",$elapsed);
+  }
+
+
 
   /**
     * Function atkdebug
@@ -150,7 +175,8 @@
   function atkdebug($txt)
   {
      global $g_debug_msg;
-     $g_debug_msg[]=$txt;
+  
+     $g_debug_msg[]="[".elapsed()."s] ".$txt;
   }
   
   /**
