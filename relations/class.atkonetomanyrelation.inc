@@ -357,16 +357,8 @@
      * @return bool true if a destination record is present. False if not.
      */
     function isEmpty(&$record)
-    {
-    	if ($this->hasFlag(AF_OBLIGATORY))
-    	{
-	    	$loaded = $this->load(null,$record);
-	    	return empty($loaded);
-    	}
-	    else
-	    {
-	    	return parent::isEmpty($record);
-	    }
+    {    
+	    return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
     }
 
 
