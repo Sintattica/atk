@@ -150,7 +150,7 @@
 
   // multi-record actions selection
   $txt_select_all     = "Select all";
-  $txt_select_none    = "Deselect all";
+  $txt_deselect_all   = "Deselect all";
   $txt_select_invert  = "Invert selection";
   $txt_with_selected  = "With selected";
   $txt_submit         = "Submit";

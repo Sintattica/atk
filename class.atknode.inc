@@ -34,6 +34,7 @@
   define("NF_NO_EXTENDED_SEARCH", 32768); // Extended search feature is turned off.
 
   define("NF_MULTI_RECORD_ACTIONS",  65536); // Multi-selection of records is turned on.
+  define("NF_MRA", NF_MULTI_RECORD_ACTIONS); // Shortcut for the multi-record actions flag.
 
 
   /**
@@ -1709,8 +1710,8 @@
                        $g_layout->ret_td
                        (
                          '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.text("select_all").'</a> / '.
-                         '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.text("select_none").'</a> / '.
-                          '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.text("select_invert").'</a>',
+                         '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.text("deselect_all").'</a> / '.
+                         '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.text("select_invert").'</a>',
                          'align="center"'
                        ).
                      '</tr>'.
