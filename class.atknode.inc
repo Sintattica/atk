@@ -2236,20 +2236,37 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $p_attrib->m_ownerInstance = &$this;
-      }
+      }              
 
-
-      // See if there are modules active that modify this node..
+      // See if there are modules active that modify all nodes with the same name
+      // for example, modules modifying all classes in all modules with the 
+      // name 'bill'.
       for ($i=0;$i<count($g_modifiers[$this->m_type]);$i++)
       {
-        $mod = getModule($g_modifiers[$this->m_type][$i]);
+        $modname = $g_modifiers[$this->atknodetype()][$i];
+        $mod = getModule($modname);
         $modifiername = $this->m_type."_modifier";
+        
         if (method_exists($mod,$modifiername))
         {
           atkdebug("Applying modifier from module $modname to ".$this->m_type);
           $mod->$modifiername(&$this);
         }
       }
+      // See if there are modules active that modify this module.node..
+      // for example, modules modifying 'finance.bill'
+      for ($i=0;$i<count($g_modifiers[$this->atknodetype()]);$i++)
+      {
+        $modname = $g_modifiers[$this->atknodetype()][$i];
+        $mod = getModule($modname);
+        $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
+        
+        if (method_exists($mod,$modifiername))
+        {
+          atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
+          $mod->$modifiername(&$this);
+        }
+      }      
 
       //atk_var_dump($this->m_attribIndexList);
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
@@ -2985,8 +3002,6 @@
         }
       }
 
-
-
      foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -3010,8 +3025,8 @@
         }
       }
 
-      $querystring = $query->buildSelect();
-      if ($order!="") $querystring.=" ORDER BY ".$order;
+      if ($order!="") $query->addOrderBy($order);
+      $querystring = $query->buildSelect();      
 
       if (is_array($limit) && count($limit) == 2) $dbrecords = $g_db->getrows($querystring, $limit["offset"], $limit["limit"]);
       else $dbrecords = $g_db->getrows($querystring);

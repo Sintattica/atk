@@ -56,6 +56,11 @@
     var $m_groupbys;
     
     /**
+     * Array with order by statements
+     */
+    var $m_orderbys;
+    
+    /**
     * Array with generated aliasses
     * Oracle has a problem when aliases are too long 
     */
@@ -66,20 +71,22 @@
     */
     function atkquery()
     {
-      $this->m_fields = Array();
-      $this->m_tables = Array();
-      $this->m_conditions = Array();
-      $this->m_searchconditions = Array();
-      $this->m_aliases = Array();
-      $this->m_values = Array();
-      $this->m_fieldaliases = Array();
-      $this->m_joins = Array();
+      $this->m_fields = array();
+      $this->m_tables = array();
+      $this->m_conditions = array();
+      $this->m_searchconditions = array();
+      $this->m_aliases = array();
+      $this->m_values = array();
+      $this->m_fieldaliases = array();
+      $this->m_joins = array();
+      $this->m_orderbys = array();
+      $this->m_groupbys = array();
       $this->m_searchmethod = "";
       
       // start at 'A'.
       $this->m_generatedAlias = "A";
       
-      $this->m_aliasLookup = Array();
+      $this->m_aliasLookup = array();
     }
 
     /**
@@ -148,6 +155,11 @@
     function addGroupBy($element)
     {
       $this->m_groupbys[] = $element;
+    }
+    
+    function addOrderBy($element)
+    {
+      $this->m_orderbys[] = $element;
     }
 
     /**
@@ -218,6 +230,12 @@
       {
         $result.= " GROUP BY ".implode(", ",$this->m_groupbys);
       }
+      
+      if (count($this->m_orderbys)>0)
+      {
+        $result.= " ORDER BY ".implode(", ",$this->m_orderbys);
+      }
+      
       return $result;
     }
     
