@@ -5,6 +5,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/07/15 17:03:59  ivo
+   * New feature: Alphabetical index on top of recordlists.
+   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
+   * Fixed some bugs in extended search.
+   *
    * Revision 4.6  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -346,6 +351,8 @@
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
       return array("exact","substring", "wildcard");
     }
   }  

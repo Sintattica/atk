@@ -52,6 +52,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.79  2001/07/15 17:03:59  ivo
+   * New feature: Alphabetical index on top of recordlists.
+   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
+   * Fixed some bugs in extended search.
+   *
    * Revision 4.78  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -108,46 +113,7 @@
    * Revision 4.61  2001/06/22 15:34:44  ivo
    * Dirty hack to atkurlencode [pk]'s once they have been replaced.
    * TODO: clean up!
-   *
-   * Revision 4.60  2001/06/22 12:09:23  ivo
-   * Fixed a bug in [pk] replacement in encoded actions..
-   *
-   * Revision 4.59  2001/06/22 11:44:42  ivo
-   * Workaround for IE4 'bug' that causes javascript to decode urlencoded
-   * values that it shouldn't encode: atkurlencode and atkurldecode.
-   *
-   * Revision 4.58  2001/06/19 14:00:01  ivo
-   * searchform posts to phpself instead of dispatch.php
-   *
-   * Revision 4.57  2001/06/19 09:04:32  peter
-   * viewPage(...) allows you now to override a attribute's display method
-   *
-   * Revision 4.56  2001/06/18 10:05:51  ivo
-   * New attribute: atkProfileAttribute, for editing security profiles.
-   * New node flag: NF_NO_SECURITY
-   *
-   * Revision 4.55  2001/06/14 12:30:21  ivo
-   * Moved postDel to inside deleteDb, instead of in action_delete.
-   *
-   * Revision 4.54  2001/06/13 10:40:11  martin
-   * Dirty evil hack :)
-   *
-   * Revision 4.53  2001/06/12 15:05:16  ivo
-   * New feature: NF_TRACK_CHANGES nodeflag passes the original record
-   * to postUpdate.
-   *
-   * Revision 4.52  2001/06/12 13:19:55  ivo
-   * Added a <br> to the bottom of the treeview.
-   * Removed save and close button when editpage is bottom of the stack.
-   *
-   * Revision 4.51  2001/06/12 12:26:54  ivo
-   * Fix to treenode: if no icondir is set, it takes the default.
-   * Fix to atknode: display a '<br'> if no navigation is active.
-   *
-   * Revision 4.50  2001/06/08 14:33:30  ivo
-   * Optimisations to atktreenode.
-   * Smaller imp of row color alternationi feature.
-   *
+   *   
    * (older logs have been removed...)
    */
    
@@ -348,6 +314,12 @@
      * Node flags
      */
     var $m_flags;
+    
+    /*
+     * If set, we create an alphabetical index on top of the recordlist in adminpages,
+     * based on the tablefield indicated by m_index.
+     */
+    var $m_index = "";
 
     /**
      * parent Attribute flag (treeview)
@@ -604,6 +576,16 @@
           $p_attrib->m_maxsize = $this->m_tableMeta[$attribname]['len'];                     
         }
       }
+    }
+    
+    /**
+     * Create an alphabetical index in admin and selectpages, based on the 
+     * specified attribute. Ofcourse, the indexed field must be a string type.
+     * @param attribname The name of the attribute on which to create an index.
+     */
+    function setIndex($attribname)
+    {
+      $this->m_index = $attribname;
     }
 
     /**
@@ -1126,6 +1108,41 @@
 
       return $nav;
     }
+    
+    /**
+     * Creates an alphabetical index, for quick lookup of records.
+     * @param selected The letter that is currently selected. (Can be
+     *                 a string; this function only takes the first char
+     *                 of the parameter.
+     */
+    function buildIndex($selected="")
+    {
+      global $PHP_SELF;
+   
+      // TODO: show only those letters that are present in the database.
+      // e.g. don't show the letter Q if there aren't any records starting
+      // with a Q.
+      // for now, we use all letters:
+      $available_letters = array('A','B','C','D','E','F','G','H','I','J','K','L','M',
+                                 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+      
+      $count = count($available_letters);
+      for ($i=0;$i<$count;$i++) 
+      { 
+        $char = $available_letters[$i];        
+        if ($selected[0]==$char) $label="<b>$char</b>";                  
+        else $label=$char;
+        
+        // We use wildcard search for the index. Should be supported by any database.
+        $nav.=href("dispatch.php?atksearch[".$this->m_index."]=".$char."*&atksearchmode=wildcard",$label);
+        
+        // uncomment the following line if 26 letters seems to become too wide.
+        //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else 
+        if ($i!=$count-1) $nav.=" ";
+      }      
+      
+      return $nav;
+    }
 
 
     /**
@@ -1159,7 +1176,8 @@
         $g_layout->output(href($addurl,text("link_".getNodeType($this->m_type)."_add"),SESSION_NESTED).'<br><br>');
       }
 
-      // create navigation bar
+      // create navigation bar      
+      if ($this->m_index != "") $g_layout->output($this->buildIndex($recordset[0][$this->m_index]).'<br><br>');
       $nav = $this->buildNavigation();
       if (!empty($nav)) $g_layout->output("$nav<br>");
       $g_layout->output('<br>');
@@ -1271,7 +1289,17 @@
         $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
         $searchable = false;
         
-        $actioncol = $g_layout->ret_td_datatitle('<input type="submit" value="'.text("search").'">');  
+        $searchBtn = '<input type="submit" value="'.text("search").'">';        
+        if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
+        {
+          $searchBtn.='<br>'.href($PHP_SELF."?atkaction=search&atksearchmode=".$searchmode,"(".text("search_extended").")",SESSION_NESTED);
+          //$searchBtn.='<form action="'.$PHP_SELF.'?'.SID.'" method="get">'.
+            //          session_form(SESSION_NESTED).
+              //        '<input type="hidden" name="atkaction" value="search">'.
+                //      '<input type="submit" value="'.text("ext").'"></form>';
+        }
+        $actioncol = $g_layout->ret_td_datatitle($searchBtn);       
+
         $actioncol.= '<input type="hidden" name="atkaction" value="'.$this->m_action.'">'; 
         
         if ($orientation=="left"||$orientation=="both")
@@ -1305,21 +1333,8 @@
               $searchRow.=$g_layout->ret_td_datatitle();
             }
           }
-        }
-        $searchBtn = '<input type="submit" value="'.text("search").'">';
-                
-        if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
-        {
-          $searchBtn.='<br>'.href($PHP_SELF."?atkaction=search&atksearchmode=".$searchmode,"(".text("search_extended").")",SESSION_NESTED);
-          //$searchBtn.='<form action="'.$PHP_SELF.'?'.SID.'" method="get">'.
-            //          session_form(SESSION_NESTED).
-              //        '<input type="hidden" name="atkaction" value="search">'.
-                //      '<input type="submit" value="'.text("ext").'"></form>';
-        }
-        
-        $searchRow.=$g_layout->ret_td_datatitle($searchBtn);
-        $searchRow.='<input type="hidden" name="atkaction" value="'.$this->m_action.'">';
-        
+        }      
+                       
         if ($orientation=="right"||$orientation=="both")
         {
           $searchRow.=$actioncol;

@@ -18,6 +18,11 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.8  2001/07/15 17:03:59  ivo
+   * New feature: Alphabetical index on top of recordlists.
+   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
+   * Fixed some bugs in extended search.
+   *
    * Revision 4.7  2001/06/28 17:54:44  peter
    * Some typo's, added a note which explains the new behaviour when selecting
    * a day that is out of reach for the currently selected month.
@@ -83,16 +88,25 @@ function getDays(date)
 
 /**
  * Checks/changes the date input boxes for a certain date field on the form.
- * @frm pointer to the form which contains the date input boxes
- * @arr name of the input boxes (without [day] etc.)
- * @format a valid date format string (like in PHP)
- * @str_min the minimum valid date
- * @str_max the maximum valid date
+ * @param el pointer to the form element which initiated the call to this method
+ * @param arr name of the input boxes (without [day] etc.)
+ * @param format a valid date format string (like in PHP)
+ * @param str_min the minimum valid date
+ * @param str_max the maximum valid date
+ * @param obligatory is the date field obligatory
  */
-function AdjustDate(frm, arr, format, str_min, str_max)
+function AdjustDate(el, arr, format, str_min, str_max, obligatory)
 {
   var format_month, format_day, array_months;
+	var frm = el.form;
 
+  /* check obligatory */
+	if (!obligatory && (str_min != "0" || str_max != "0"))
+	{
+	  str_min = 0;
+		str_max = 0;
+	}
+  
   /* check month format */
   if      (format.indexOf("F") >= 0) array_months = m_months_long;
   else if (format.indexOf("M") >= 0) array_months = m_months_short;
@@ -100,7 +114,7 @@ function AdjustDate(frm, arr, format, str_min, str_max)
   else                               format_month = "n";  
   
   /* check day format */
-  if (format.indexOf("d")) format_day = "d";
+  if (format.indexOf("d") >= 0) format_day = "d";
   else format_day = "j";
 
   /* current date attribute inputs */
@@ -117,6 +131,27 @@ function AdjustDate(frm, arr, format, str_min, str_max)
   current["d"] = parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
   current["m"] = parseInt(input["m"].options[input["m"].selectedIndex].value, 10);  
   current["y"] = parseInt(input["y"].type == "select-one" ? input["y"].options[input["y"].selectedIndex].value : input["y"].value, 10);    
+  if (current["y"].toString() == "NaN") current["y"] = 0;
+
+  /* we just changed one of the fields to null */
+	if (!obligatory && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == ""))) 
+	{
+    for (i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;	
+    input["d"].options[0] = new Option("", 0);
+    for (i = 1; i <= 31; i++) input["d"].options[input["d"].options.length] = new Option(("d" == format_day) ? (i < 10 ? "0" : "") + i : i, i);    
+	  input["m"].options[0].selected = true;		
+		input["y"].value = "";
+		return;
+	}
+	
+  /* we just changed one of the fields from null to something */
+	else if (!obligatory && (current["d"] == 0 || current["y"] == 0 || current["m"] == 0))
+	{
+	  today = new Date();
+	  if (current["d"] == 0) current["d"] = today.getDate();
+	  if (current["m"] == 0) current["m"] = today.getMonth() + 1;		
+	  if (current["y"] == 0) current["y"] = today.getFullYear();	
+	}
 
   /* minimum date */
   minimum = Array();
@@ -173,35 +208,34 @@ function AdjustDate(frm, arr, format, str_min, str_max)
 
   /* clean day input, and build new one */
   for(i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;
+  if (!obligatory) input["d"].options[0] = new Option("", 0);
   for(i = current["d_min"]; i <= current["d_max"]; i++) 
   {
-    date_tmp = new Date(current["y"], current["m"]-1, i);
-    str_day  = m_weekdays[date_tmp.getDay()] + " ";    
-    if ("d" == format_day) str_day += (i < 10 ? "0" : "") + i;
-    else str_day += i;
-    input["d"].options[i-current["d_min"]] = new Option(str_day, i);    
-    if (i == current["d"]) input["d"].options[i-current["d_min"]].selected = true;
+    date = new Date(current["y"], current["m"]-1, i);
+    value = m_weekdays[date.getDay()] + " " + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
+    input["d"].options[input["d"].options.length] = new Option(value, i);    
+    if (i == current["d"]) input["d"].options[input["d"].options.length-1].selected = true;
   }
   
   /* clean month input, and build new one */
   for(i = input["m"].options.length; i >= 0; i--) input["m"].options[i] = null;
+  if (!obligatory) input["m"].options[0] = new Option("", 0);	
   for(i = current["m_min"]; i <= current["m_max"]; i++)
   {
-    if ("m" == format_month) str_month = (i < 10 ? "0" : "") + i;
-    else if ("n" == format_month) str_month = i;
-    else str_month = array_months[i-1];
-    input["m"].options[i-current["m_min"]] = new Option(str_month, i);
-    if (i == current["m"]) input["m"].options[i-current["m_min"]].selected = true;    
+    value = ("m" == format_month) ? (i < 10 ? "0" : "") + i : ("n" == format_month) ? i : array_months[i-1];
+    input["m"].options[input["m"].options.length] = new Option(value, i);
+    if (i == current["m"]) input["m"].options[input["m"].options.length-1].selected = true;    
   }
   
   /* clean year input, and build new one */
   if(input["y"].type == "select-one")
   {
     for(i = input["y"].options.length; i >= 0; i--) input["y"].options[i] = null;
+    if (!obligatory) input["y"].options[0] = new Option("", 0);			
     for(i = current["y_min"]; i <= current["y_max"]; i++)
     {
-      input["y"].options[i-current["y_min"]] = new Option(i, i);
-      if (i == current["y"]) input["y"].options[i-current["y_min"]].selected = true;    
+      input["y"].options[input["y"].options.length] = new Option(i, i);
+      if (i == current["y"]) input["y"].options[input["y"].options.length-1].selected = true;    
     }
   }
   else input["y"].value = current["y"];

@@ -15,6 +15,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.17  2001/07/15 17:03:59  ivo
+   * New feature: Alphabetical index on top of recordlists.
+   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
+   * Fixed some bugs in extended search.
+   *
    * Revision 4.16  2001/06/27 14:27:09  sandy
    * bug fix for the copy function
    *
@@ -158,7 +163,8 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
-      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD); // 1toM Relations are NEVER edited when adding a rec.
+      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_HIDE_SEARCH); // 1toM Relations are NEVER edited when adding a rec.
+                                                                                 // and for now, we cannot search them.
       $this->m_refKey = $refKey;
     }
 

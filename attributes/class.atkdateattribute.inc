@@ -22,6 +22,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/07/15 17:03:59  ivo
+   * New feature: Alphabetical index on top of recordlists.
+   * (use e.g. $this->setIndex("name"); in your class constructor to activate)
+   * Fixed some bugs in extended search.
+   *
    * Revision 4.10  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -218,9 +223,17 @@
       else if (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
       else   $this->m_date_format_view = "F j Y";
 
-      /* max / min date */
-      $this->m_date_min = $min;
-      $this->m_date_max = $max;
+      /* max / min date (only valid when obligatory) */
+			if ($flags & AF_OBLIGATORY == AF_OBLIGATORY)
+			{
+        $this->m_date_min = $min;
+        $this->m_date_max = $max;
+			}
+			else
+			{
+        $this->m_date_min = 0;
+        $this->m_date_max = 0;
+			}
 
       /* register javascript */
       $GLOBALS['g_layout']->register_script("atk/javascript/class.atkdateattribute.js.php");
@@ -315,7 +328,7 @@
       for($i = 0; $i < strlen($str_format); $i++)
       {
         /* javascript method */
-        $str_script = "AdjustDate(this.form, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max);";
+        $str_script = "AdjustDate(this, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max, ".($this->hasFlag(AF_OBLIGATORY) ? "true" : "false").");";
         
         /* year input box */ 
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
@@ -341,6 +354,7 @@
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$str_script.'">';
+					if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"></option>';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
@@ -354,6 +368,7 @@
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$str_script.'">';
+					if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"></option>';					
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $j, $current["mday"], $current["year"]));          
@@ -440,7 +455,7 @@
       $month = $rec[$this->fieldName()]["month"];
       $day = $rec[$this->fieldName()]["day"];
 
-      if (strlen($year) == 0) return "";
+      if (empty($year) || empty($month) || empty($day)) return "";
       $separator = ($is_date ? "-" :"");
       $result = $year.$separator.sprintf("%02d",$month).$separator.sprintf("%02d",$day);
       return $result;
@@ -478,19 +493,19 @@
      */
     function validate($value)
     {
+		  /* array or no array */
+		  if (is_array($value)) $date = $this->dateArray($value);
+		
+		  /* if not obligatory and one of the fields is null then the date will be saved as null */
+			if (!$this->hasFlag(AF_OBLIGATORY) && (empty($year) || empty($month) || empty($day))) return "";
+		
       /* currently selected date */
-      $current = 0;
-      if (is_array($value) && checkdate($value["month"], $value["day"], $value["year"])) 
-        $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
-      else
-      {
-        $date = $this->dateArray($value);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
-          $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
-      }
+			if (checkdate($value["month"], $value["day"], $value["year"])) 
+			  $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
+      else return text("error_date_invalid");
 
-      /* check date */
-      if (empty($current)) return text("error_date_invalid");
+      /* allright, if not obligatory, and we have come all this way, we'll bail out */
+			if (!$this->hasFlag(AF_OBLIGATORY)) return "";
 
       /* minimum date */
       $minimum = 0;
@@ -535,7 +550,8 @@
     {
       $value = $record[$this->fieldName()];
       $tmp_date = getdate(mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-      return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
+			if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
+			else return "";
     }
   }
 ?>
