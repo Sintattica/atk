@@ -74,7 +74,7 @@
      * @param string $linkfield the field where we find the encrypted linkpass
      * @return string           the password for the link
      */
-    function getLinkPassword($linktable,$linkfield,$encryption="base64")
+    function getLinkPassword($linktable,$linkfield,$encryption="")
     {
       global $g_db;
       
@@ -102,7 +102,11 @@
 
         $encryptedpass = array_pop($rec);
         
-        $crypt = &atkEncryption::getEncryption("base64");
+        if($encryption)
+          $crypt = &atkEncryption::getEncryption($encryption);
+        else
+          $crypt = $this->m_crypt;
+          
         $linkpass = $crypt->decrypt($encryptedpass['pass'],$password);
       }
     
