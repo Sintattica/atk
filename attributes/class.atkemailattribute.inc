@@ -10,6 +10,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.3  2001/07/04 10:47:51  maurice
+   * Added parameter in constructor to switch DNS search on or off.
+   *
    * Revision 4.2  2001/07/03 15:52:31  maurice
    * The validate function checks string and checks DNS for valid host
    *
@@ -22,16 +25,26 @@
   {    
 
     /**
+     * Bool to set DNS search in validate function
+     */
+
+    var $m_dnsSearch = false;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>
      *        $this->addAttribute(new atkEmailAttribute("email",AF_OBLIGATORY));
      * @param $name Name of the attribute
+     * @param $search Search DNS for MX records in validate function
      * @param $flags Flags for the attribute
      */
-    function atkEmailAttribute($name, $flags = 0)
+    function atkEmailAttribute($name, $search = false, $flags = 0)
     {
+      $this->$m_dnsSearch = $search;
+      atkdebug("dnsSearch ".$this->$m_dnsSearch);
       $this->atkAttribute($name, $flags);
+
     }
 
     /**
@@ -56,10 +69,14 @@
       }
       else
       {
-        //now check if domain exists, searches DNS for MX records
-        if (!( getmxrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
+        atkdebug("dnsSearch ".$this->$m_dnsSearch);
+        if ($this->$m_dnsSearch)
         {
-	  return text("invalid_email");        
+          //now check if domain exists, searches DNS for MX records
+          if (!( getmxrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
+          {
+            return text("invalid_email");        
+          }
         }       
       } 
     }
