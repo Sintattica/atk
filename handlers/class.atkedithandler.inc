@@ -266,7 +266,6 @@
 
           /* tooltip */
           $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip", "atk", "", "", "", true);
-          atkdebug("<h1>Checking for tooltip: "."txt_".$node->m_type."_".$field["name"]."_tooltip</h1>");
           
           if ($ttip)
           {
@@ -296,7 +295,7 @@
       
       $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);            
       
-			return $result;       
+	  return $result;       
     } 
     
     /**
