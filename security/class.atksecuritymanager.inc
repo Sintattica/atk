@@ -366,7 +366,7 @@
       $g_layout->output('<br><br><div align="center">');
       $g_layout->tpl("login_top", array("header"=>text('login_form')), "block_top");
       $g_layout->output('<form action="'.$PHP_SELF.'" method="post">');
-
+      $g_layout->output(makeHiddenPostVars());
       $g_layout->output('<br><br><table border=0 cellspacing=0 cellpadding=0 align=left>');
       $g_layout->output('<tr><td class=table>');
 

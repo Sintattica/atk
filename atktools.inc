@@ -936,4 +936,45 @@
   {
     return ($var & $flag) == $flag;
   }
+  
+  /**
+   * Makes an url from the target var and all postvars
+   * @param $target the path of the file to open
+   */  
+  function makeUrlFromPostvars($target)
+  {
+    global $ATK_VARS;
+    
+    if(count($ATK_VARS ))
+    {
+      $url = $target."?";
+      foreach ($ATK_VARS as $key => $val)
+      {
+        $url .= $key."=".rawurlencode($val)."&";
+      }
+      return $url;
+    }
+    return "";
+    
+  }
+  
+    /**
+   * Makes an string with hidden input fields
+   * containing all posted vars
+   */  
+  function makeHiddenPostvars()
+  {
+    global $ATK_VARS;
+    
+    if(count($ATK_VARS ))
+    {
+      foreach ($ATK_VARS as $key => $val)
+      {
+        $str .= "<input type='hidden' name=\"$key\" value=\"".$val."\">\n";
+      }
+      return $str;
+    }
+    return "";
+  }
+
 ?>
