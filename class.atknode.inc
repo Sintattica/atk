@@ -1656,7 +1656,7 @@
               ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
               &&
               (
-                ($p_attrib->hasFlag(AF_HIDEdata_bottom_SELECT)==false)
+                ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
                 ||($this->m_action!="select")
               )
               &&$musthide==false
