@@ -76,13 +76,13 @@
      * @access private
      * @var array
      */
-		var $m_stylecode = array();
+    var $m_stylecode = array();
 		
-		/**
-		 * The content to put on the page.
-		 * @access private
-		 * @var String
-		 */
+    /**
+     * The content to put on the page.
+     * @access private
+     * @var String
+     */
     var $m_content = "";
     
     /**
@@ -166,10 +166,10 @@
      * @param String $code The Cascading Style Sheet code fragment to place in
      *                     the header.
      */
-		function register_stylecode($code)
-		{
-      if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
-		}
+     function register_stylecode($code)
+     {
+       if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
+     }
     
     /**
      * Generate the HTML header (<head></head>) statement for the page,
@@ -184,15 +184,15 @@
       // $Name$ is the CVS tag.
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
-      $res.= '  <meta name="atkversion" value="'.$version.'">'."\n";
-               
+      $res.= '  <META NAME="atkversion" CONTENT="'.$version.'">'."\n";
+      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1">'."\n";         
       $this->addScripts($res);
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
         $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
 				
-			for ($i = 0; $i < count($this->m_stylecode); $i++)
-			$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
+      for ($i = 0; $i < count($this->m_stylecode); $i++)
+	$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
 
       $res.="</head>\n";
       return $res;
@@ -206,32 +206,32 @@
     {
       for ($i = 0; $i < count($this->m_scriptfiles); $i++)
       {
-        $res.='  <script language="javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+        $res.='  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
       }
 
-      $res.="<script language=\"javascript\">\n
-               function globalSubmit(form)
-               {
-                 var retval = true;\n";
+      $res.="  <script type=\"text/javascript\">
+  function globalSubmit(form)
+  {
+     var retval = true;\n";
       
       for ($i=0, $_i = count($this->m_submitscripts); $i<$_i; $i++)
       {
-        $res.="retval = ".$this->m_submitscripts[$i]."\n";
-        $res.="if (retval!=true) return false;\n";
+        $res.="    retval = ".$this->m_submitscripts[$i]."\n";
+        $res.="    if (retval!=true) return false;\n";
       }
       
-      $res.="return retval;
-               }\n";
+      $res.="    return retval;
+   }\n";
       
       if (count($this->m_loadscripts))
       {
-        $res.="function globalLoad()
-               {\n";
+        $res.="  function globalLoad()
+  {\n";
         for ($i=0, $_i=count($this->m_loadscripts); $i<$_i; $i++)
         {
           $res.= $this->m_loadscripts[$i]."\n";
         }
-        $res.= " }\n";
+        $res.="  }\n";
       }
       
       // javascript code.   
@@ -240,7 +240,7 @@
         $res.= $this->m_scriptcode[$i]."\n";
       }
       
-      $res.= "</script>\n";
+      $res.= "  </script>\n\n";
     }
     
     
@@ -284,7 +284,9 @@
      */
     function render($title, $body=true)
     {      
-      $page = "<html>\n";
+      $page.= '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">';
+      $page.= "\n<html>\n";
       $page.= $this->head($title);
       if ($body) $page.= $this->body();
       $page.= $this->m_content."\n";
