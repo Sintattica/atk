@@ -15,6 +15,10 @@
    * $Id$
    */
 
+
+   /**
+    * include
+    */
    include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
    
   /**
@@ -36,11 +40,10 @@
 
     /**
      * Constructor
-     * @param $name 			Name of the attribute
-     * @param $size 			Can be an array with cols and rows key for size and an autoadjust
-     											value or just the rows size
-     * @param $flags 			Flags for this attribute
-     * @param $autoadjust Wether to autoadjust the number of rows or not, defaults to false
+     * @param $name  Name of the attribute
+     * @param $size  Can be an array with cols and rows key for size and 
+     *               an autoadjust value or just the rows size
+     * @param $flags Flags for this attribute
      */
     function atkTextAttribute($name,$size=0,$flags=0)
     { 
