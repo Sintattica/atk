@@ -714,11 +714,12 @@
                  $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
               }
             }
+            
             $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
 
             /* errors and hidden fields */
-            $error = array_merge($error, $a["error"]);
-            $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+            if (is_array($a["error"]) && !empty($a["error"])) $error = array_merge($error, $a["error"]);
+              $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
 
             /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
@@ -972,7 +973,7 @@
             // attribute not found in destination, so it should
             // be in the owner (this is the case when extra fields
             // are in the relation
-            $p_attrib(&$this->m_ownerInstance->m_attribList[$key]);
+            $p_attrib($this->m_ownerInstance->m_attribList[$key]);
             if (is_object($p_attrib))
             {
               $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
