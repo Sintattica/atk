@@ -1,5 +1,8 @@
 <?
 
+  include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
+
   /**
    * The atkDateTimeAttribute class can be used for date and time entry.
    * It corresponds to a DATETIME field in the database.   
@@ -12,7 +15,8 @@
    */
   class atkDateTimeAttribute extends atkAttribute
   {
-    
+    var $m_time = "";
+    var $m_date = "";
     
     /**
      * Constructor
@@ -23,15 +27,15 @@
      */
     function atkDateTimeAttribute($name, $default_date="",$default_time="",$flags=0)
     {
-		  $m_default_steps = array();
+		  $default_steps = array();
 			for($i=0;$i<60;$i++)
 			{
-			  $m_default_steps[$i] = $i;
+			  $default_steps[$i] = $i;
 			}
 			if($default_date=="") { $default_date = ""; }
 			if($default_time=="") { $default_time = date("H:i"); }
 			
-		  $this->m_time = new atkTimeattribute($name,0,23,$m_default_steps,$default_time);
+		  $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time);
 			$this->m_date = new atkDateattribute($name,$default_date);
       $this->atkAttribute($name,$flags); // base class constructor
     }
