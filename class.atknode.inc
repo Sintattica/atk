@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.80  2001/07/15 18:10:54  ivo
+   * alphabetical index now also available in selectPage.
+   *
    * Revision 4.79  2001/07/15 17:03:59  ivo
    * New feature: Alphabetical index on top of recordlists.
    * (use e.g. $this->setIndex("name"); in your class constructor to activate)
@@ -1674,6 +1677,8 @@
         $g_layout->output($this->statusbar());      
         $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
+        
+        if ($this->m_index != "") $g_layout->output($this->buildIndex($recordset[0][$this->m_index]).'<br><br>');
         
         // create navigation bar
         $nav = $this->buildNavigation();

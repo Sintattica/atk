@@ -112,6 +112,6 @@
   $txt_search_substring = "Suche nach Unterword";
   $txt_search_wildcard = "Suche met Platzhaltern (*)";
   $txt_search_regexp = "Suche mit regulären Ausdrücken (Profi)";
-  $txt_search_soundex = "Suche nach Wörtern met ähnlichen Klang";
+  $txt_search_soundex = "Suche mit ähnlich klingenden Wörtern";
 
 ?>
