@@ -126,7 +126,6 @@
                                       "&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart.
                                       "&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
       }
-atk_var_dump($res, "<h1>RES</h1>");
       return $res;
     }
 
