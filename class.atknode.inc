@@ -348,7 +348,7 @@
      * TODO: This may not be correct. We have to find a way to bind the
      * select action to the action that follows after the select.
      */
-    var $m_unsecuredActions = array("select");
+    var $m_unsecuredActions = array("select", "feedback");
 
     /*
      *
