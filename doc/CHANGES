@@ -7,6 +7,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Note: The CHANGES file has not been accurately updated until the release of
 ATK 5.0. The changes below are rough feature indications.
 
+Changes in ATK 5.0.1
+--------------------
+
 Changes in ATK 5.0
 ------------------
 + Added keyboard navigation. [Ivo]
