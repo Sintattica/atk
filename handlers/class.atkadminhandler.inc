@@ -114,22 +114,8 @@
         }                
 
         $params["header"] = $this->invoke("adminHeader");      
-
-        if ($node->hasFlag(NF_ADD_LINK) && !$node->hasFlag(NF_NO_ADD) && $node->allowed("add"))
-        {
-          $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$node->atknodetype().'&atkaction=add';
-          if ($GLOBALS["txt_link_".getNodeType($node->m_type)."_add"]!="")
-          {
-            // specific text
-            $label = text("link_".getNodeType($node->m_type)."_add");
-          }
-          else
-          {
-            // generic text
-            $label = text(getNodeType($node->m_type))." ".text("add","","atk");
-          }
-          $params["header"].="<br><br>".href($addurl,$label,SESSION_NESTED);
-        }
+        
+        $params["header"].= "<br><br>".$this->getHeaderLinks();                
 
         // create index and navigation bar
         $navigator = &atknew("atk.utils.atknavigator");
@@ -149,7 +135,7 @@
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
         $flags = ($node->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node->hasFlag(NF_LOCK) ? RL_LOCK : 0);
         $params["list"] = $recordlist->render($node, $recordset, $actions, $flags, $navigation);
- 
+                 
         $params["footer"] = $this->invoke("adminFooter");
         
         $output = $ui->renderList("admin", $params);   
@@ -189,6 +175,46 @@
     function adminFooter()
     {
       return "";
+    }
+    
+    function getImportLink()
+    {
+      $link = "";
+      if ($this->m_node->allowed("import"))
+      {
+        $link.= href(dispatch_url($this->m_node->atkNodeType(), "import"), atktext("import", "atk", $this->m_node->m_type), SESSION_NESTED);
+      }
+      return $link;
+    }
+    
+    function getAddLink()
+    {
+      if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
+      {
+        $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
+        if ($GLOBALS["txt_link_".getNodeType($this->m_node->m_type)."_add"]!="")
+        {
+          // specific text
+          $label = text("link_".getNodeType($this->m_node->m_type)."_add");
+        }
+        else
+        {
+          // generic text
+          $label = text(getNodeType($node->m_type))." ".text("add","","atk");
+        }
+        return href($addurl,$label,SESSION_NESTED);
+      }
+      return "";
+    }
+    
+    function getHeaderLinks()
+    {
+      $links = array();
+      $addlink = $this->getAddLink();
+      if ($addlink!="") $links[] = $addlink;
+      $importlink = $this->getImportLink();
+      if ($importlink!="") $links[] = $importlink;
+      return implode(" | ", $links);
     }
   }
 
