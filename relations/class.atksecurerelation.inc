@@ -186,12 +186,14 @@
     function load($db, $record, $mode)
     {     
       global $g_db;
+      
       if ($this->m_searching)
       {
         if($this->m_searcharray !== $this->m_ownerInstance->m_postvars["atksearch"][$this->fieldName()] 
            && is_array($this->m_searcharray))
         {
           $this->m_records = array();
+          $this->m_keylookup= array();
           // perform query on destination node to retrieve all records.
           if ($this->createDestination())
           {
@@ -218,6 +220,7 @@
 
             // create lookup table for easy reference.
             $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
+            
             for ($i=0, $_i=count($records); $i<$_i; $i++)
             {
               $link = $records[$i][$this->m_linkbackfield];     
@@ -257,6 +260,7 @@
         $link = $result[0][$this->fieldName()];
   
         $cryptedlink = $this->m_crypt->decrypt($link,$this->m_linkpass);
+        
         if ($cryptedlink)
         {
           $record[$this->fieldName()] = $cryptedlink;
@@ -267,8 +271,9 @@
           //so we backup de refkey, make in empty and put it back after loading the record.
           $backup_refkey = $this->m_refKey;
           $this->m_refKey = "";
-          return parent::load($db, $record, $mode);
+          $load = parent::load($db, $record, $mode);
           $this->m_refKey = $backup_refkey;
+          return $load;
         }
         else 
         {
