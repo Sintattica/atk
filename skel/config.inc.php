@@ -65,6 +65,9 @@
   // appear to the left or right of the records. If you are crazy, you 
   // might try the option "both".
   $config_recordlist_orientation = "right";
+  
+  // Show icons in the recordlist or text? 
+  $config_recordlist_icons = true;
 
   // If the users are using IE, then the application can be run in fullscreen
   // mode. Set the next variable to true to enable this:
