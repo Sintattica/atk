@@ -826,14 +826,26 @@
         }
 
       }
-      $page.='</table>';
+      $page.='</table>';          
 
       if (count($this->m_tabListView) > 1) $g_layout->tabs_top($this->buildTabs());
       $g_layout->output($page);
       if (count($this->m_tabListView) > 1) $g_layout->tabs_bottom();
 
-      $g_layout->output('<br><form method="get">'.session_form(SESSION_BACK).
-                        '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
+      $buttons = '<br><form method="get">'.session_form(SESSION_NESTED).
+                        '&nbsp;<input type="submit" name="atkback" value="&lt;&lt; '.text('back').'">&nbsp;';
+                        
+      // if appropriate, display an edit button.
+      if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
+      {        
+        $buttons.= '<input type="hidden" name="atkaction" value="edit">'.
+                   '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
+                   '&nbsp;<input type="submit" value="'.text('edit').'">&nbsp;';
+      }      
+    
+      $buttons.= '</form>';
+      
+      $g_layout->output($buttons."<br>");
 
       $g_layout->ui_bottom();
     }
@@ -2481,7 +2493,7 @@
       global $g_db, $g_sessionManager, $g_layout;
       $this->m_postvars = $postvars;
 
-      $this->m_action = $postvars['atkaction'];
+      $this->m_action = $postvars['atkaction'];          
 
       /** DIRTY HACK
           if action is something else than edit, we clear the atkformdata sessionstuff **/

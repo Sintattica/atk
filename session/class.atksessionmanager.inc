@@ -394,13 +394,14 @@
   function atksession($namespace = "default", $usestack=true)
   {
     global $HTTP_POST_VARS, $HTTP_GET_VARS, $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
+    global $atkprevlevel;
 
     $g_sessionManager = new atkSessionManager($namespace, $usestack);
 
     $HTTP_REQUEST_VARS = array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
     atkDataDecode($HTTP_REQUEST_VARS);
     $ATK_VARS = $HTTP_REQUEST_VARS;   
-
+        
     $g_sessionManager->session_read($ATK_VARS);
     
     // Escape check
@@ -409,7 +410,16 @@
       atkNode::redirect(atkurldecode($ATK_VARS["atkescape"]));
       $g_layout->outputFlush();
       exit;
-    }  
+    }      
+    // Back check
+    else if ($ATK_VARS["atkback"]!="")
+    {
+      // When we go back, we go one level deeper than the level we came from.
+      atkNode::redirect(session_url($_SERVER["PHP_SELF"]."?atklevel=".($atkprevlevel-1)));
+      $g_layout->outputFlush();
+      exit;
+    }
+
   }
 
   function sessionStore($var, $value)
