@@ -9,6 +9,9 @@
    * $Id$      
    *
    */
+
+  useattrib("atkTextAttribute");
+
   class atkFileWriterAttribute extends atkTextAttribute
   {
     var $m_filename;

@@ -830,4 +830,16 @@
     }
     return false;
   }
+  
+  function useattrib($attribute)
+  {
+    global $config_atkroot;
+    include_once($config_atkroot."atk/attributes/class.".strtolower($attribute).".inc");
+  }
+  
+  function userelation($relation)
+  {
+    global $config_atkroot;
+    include_once($config_atkroot."atk/relations/class.".strtolower($relation).".inc");
+  }
 ?>

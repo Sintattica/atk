@@ -16,6 +16,8 @@
    * $Id$
    *
    */
+   
+  useattrib("atktextattribute");
 
   class atkFileEditor extends atkNode
   {
