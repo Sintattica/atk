@@ -235,48 +235,21 @@
     return $ret;
   } // end function atk_get_trace
 
-   /**
-   * Function Text
-   *
-   * Replaces the txt_[vars] with the values from the language files
-   */
-  function text($var, $node="",$module="")
+  /**
+  * Replaces the [vars] with the values from the language files
+  * Please note that it is important, for performance reasons, 
+  * that you pass along the module where the language files can be found
+  * @param string $string the name of the value
+  * @param string $node   the node associated with the value
+  * @param string $module the module where the languagefiles 
+  * @param string $lng    the language of the string to be returned, defaults to the config value
+  * @param bool   $nodefaulttext wether we shouldn't return a default string, defaults to false
+  * @return var the converted string or false
+  */
+  function text($string, $node="", $module="", $lng="", $nodefaulttext=false)
   {
-    if ($module=="")
-    {
-      // Module is empty, we can only look for a node specific text.      
-      if ($node=="")
-      {
-        // Node is empty too, we can only use the generic string.        
-        $key = "txt_".$var;
-      }
-      else
-      {
-        // Node is not empty. We try to find a node specific string first. If that doesn't exist,
-        // we return the generic string.
-        $key = "txt_".$node."_".$var;        
-        if (empty($GLOBALS[$key]))
-        {
-          // No node specific string. We should use the generic string.          
-          $key = "txt_".$var;          
-        }        
-      }
-    }
-    else
-    {
-      // Module is set. We try to find a module specific string first.
-      // If that doesn't exist, we fall back.
-      // NOTE: we don't support passing a module but not a node. You pass
-      // both or none at all.
-      $key = "txt_".$module."_".$node."_".$var;
-      if (empty($GLOBALS[$key]))
-      {
-        // No module specific string found. We return the non-module
-        // specific fallback string.
-        return text($var, $node);
-      }      
-    }            
-    return (!empty($GLOBALS[$key])?$GLOBALS[$key]:ucfirst(str_replace("_"," ",str_replace('title_','',$var))));
+    atkimport("atk.atklanguage");
+    return atkLanguage::text($string, $module, $node, $lng, $nodefaulttext);
   }
 
   /**
@@ -932,7 +905,8 @@
 
   function triggerError(&$rec, $attrib, $err, $msg="")
   {
-    if($msg=="")  $msg = text($err);
+    global $lng;
+    if($msg=="")  $msg = text($err,"","atk",$lng);
 
     $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
   }
@@ -1306,10 +1280,11 @@
   /**
   * Converts an ATK classname ("map1.map2.classname")
   * to a pathname ("/map1/map2/class.classname.inc")
-  * @param string $fullclassname ATK classname to be converted
+  * @param string $fullclassname  ATK classname to be converted
+  * @param bool $class            is the file a class? defaults to true
   * @return string converted filename
   */
-  function getClassPath($fullclassname)
+  function getClassPath($fullclassname, $class = true)
   {
     $elems = explode(".", strtolower($fullclassname));
     if($elems["0"] == "module")
@@ -1321,7 +1296,7 @@
      $prefix = atkconfig("atkroot");
 
     $last = &$elems[count($elems)-1];
-    $last = "class.".$last.".inc";
+    if ($class) {$last = "class.".$last.".inc";}
     
     $filename = $prefix.implode("/", $elems);
     	
@@ -1332,9 +1307,10 @@
   * Converts a pathname ("/map1/map2/class.classname.inc")
   * to an ATK classname ("map1.map2.classname")
   * @param string $classpath pathname to be converted
+  * @param bool $class       is the file a class? defaults to true
   * @return string converted filename
   */
-  function getClassName($classpath)
+  function getClassName($classpath, $class=true)
   {
     $elems = explode("/", strtolower($classpath));
     for($counter=0; $counter<=count($elems);$counter++)
@@ -1344,8 +1320,16 @@
   	    array_shift($elems);
       }
     }
-    $last = &$elems[count($elems)-1];
-    $last = substr($last, 6, -4);
+    
+    if($class) 
+    {
+      $last = &$elems[count($elems)-1];
+      $last = substr($last, 6, -4);
+    }
+    else 
+    {
+      $last = &$elems[count($elems)-2].$elems[count($elems)-1];
+    }
     
     $first = array_shift($elems);
     $classname = $first. implode(".", $elems);
