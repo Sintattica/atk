@@ -220,11 +220,15 @@ class atkLanguage
     {
       if ($node)
       {
-        $key = $module."_".$node."_".$string;
+        $key = $node."_".$string;
         if (empty($this->m_cachedlang[$module][$lng][$key]))
         {
-          $node = "";
-          return $this->_getString($string, $node, $module, $lng);
+          $key = $module."_".$node."_".$string;
+          if (empty($this->m_cachedlang[$module][$lng][$key]))
+          {
+            $node = "";
+            return $this->_getString($string, $node, $module, $lng);
+          }
         }
       }
       else
