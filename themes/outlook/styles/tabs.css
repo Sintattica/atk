@@ -1,0 +1,15 @@
+.activetab
+{
+  cursor: hand; 
+  color : #000; 
+  background: #EEEEE0;
+  display: block;
+}
+
+.passivetab
+{  
+  cursor: pointer; 
+  color : #FFF;
+  background: #2B98F7;
+  display: none;
+}
