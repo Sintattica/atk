@@ -130,10 +130,10 @@
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
         $addurl = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
-        if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
+        if (atktext("txt_link_".getNodeType($this->m_type)."_add","atk","","","",true)!="")
         {
           // specific text
-          $label = text("link_".getNodeType($this->m_type)."_add");
+          $label = atktext("link_".getNodeType($this->m_type)."_add");
         }
         else
         {

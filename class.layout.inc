@@ -87,7 +87,7 @@
       if (!$initialized)
       {
         global $g_theme;
-        if($g_theme["Name"]=="") $g_theme["Name"] = $GLOBALS["config_defaulttheme"];
+        if($g_theme["Name"]=="") $g_theme["Name"] = atkconfig("defaulttheme");
         if($g_theme["Name"]=="") $g_theme["Name"]="default";
         $this->initTheme();
         $this->import_layout();             
@@ -711,10 +711,10 @@
           if ($field["obligatory"]) $editsrc.= $reqimg;
 
           /* tooltip */
-          $ttip = "txt_".$node->m_type."_".$field["name"]."_tooltip";
-          if ($GLOBALS[$ttip] != "")
+          $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip","atk","","","",true);
+          if ($ttip != "")
           {
-            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascript:alert(\''.addslashes($GLOBALS[$ttip]).'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
+            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.addslashes($ttip).'\')" onMouseOver="javascript:window.status=\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">&nbsp;';
           }
 
           $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');

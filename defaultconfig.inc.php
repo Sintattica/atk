@@ -84,6 +84,8 @@
   $config_halt_on_error = "critical";
 
   // Layout config
+  $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">';
   $config_menu_delimiter = "<br>";
   $config_menu_pos = "left";
   $config_menu_layout = "default";
