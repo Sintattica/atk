@@ -2210,7 +2210,7 @@
           $outputparamKeyVal["filename"] = "achievo";
 
         $exporter = &atknew("atk.utils.atkfileexport");
-        $exporter->export2File($output, $outputparamKeyVal["filename"],"csv","csv",$compression);
+        $exporter->export($output, $outputparamKeyVal["filename"],"csv","csv",$compression);
       }
     }
 
