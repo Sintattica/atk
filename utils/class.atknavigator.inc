@@ -43,7 +43,6 @@
 				$links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, $embedded);
   	  }
   	  return implode("&nbsp;|&nbsp;", $links);
-  	 
   	}
   	
     /**
@@ -53,7 +52,7 @@
      * on the owner as the navigator is used on a relation
      * @param obj 	&$node   instance of the node we create the navigation bar for
      * @param string $mode   the mode we are in, defaults to ""
-     * @param string $filter a filter for the node
+     * @param string $filter a filter for the destination node
      * @return a HTML string for navigating through records
      */
     function getNavigationUrls(&$node, $mode="", $filter="")
@@ -89,24 +88,29 @@
         $begpg = max(1,$pages - $max_bm + 1);
       }
 
+      // When we are editing a page and make an update, if afterwards we navigate
+      // through something we're not updating any more so we set the action to edit
+      if ($node->m_action == "update" || $node->m_action=="save") $action ="edit";
+      else $action = $node->m_action;
+      
       if ($curr > 1)
       {
         $newstart = $node->m_postvars['atkstartat'] - $limit;
-        $res['previous'] = array(	"title"=>text("previous"), "url"=>session_url($_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart));
+        $res['previous'] = array(	"title"=>text("previous"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
       }
-
+      
       for ($i = $begpg; $i <= $endpg; $i++)
       {
          if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
          else $res[$i] = array("title"=>$i,
-                               "url"=>session_url($_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".
-                                                  $node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".$node->m_postvars["atkfilter"]));
+                               "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".
+                                                  $action."&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit)."&atkselector=".$ATK_VARS['atkselector']);
       }
 
       if ($curr < $pages)
       {
         $newstart = $node->m_postvars['atkstartat'] + $limit;
-        $res['next'] = array("title"=>text("next"), "url"=>session_url($_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart));
+        $res['next'] = array("title"=>text("next"), "url"=>$_SERVER["PHP_SELF"]."?atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$node->m_action."&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
       }
 
       return $res;

@@ -586,18 +586,17 @@
       // If we have a selector, we need to make sure the navigator filters on this
       if ($ATK_VARS['atkselector'])
       {
-        $atkselector = explode(".", $ATK_VARS['atkselector']);
-        
-        // if the filter is on the destination (highly unlikely) we just use it
-        if ($atkselector[0]==$this->m_destination) $filter = $ATK_VARS['atkselector'];
+        // if the filter is valid on the destination (highly unlikely) we just use it
+        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector'])) $destfilter = $ATK_VARS['atkselector'];
         // if the filter is on the owner, we translate it back to the destination
-        else if ($atkselector[0]==$this->m_owner)
+        else if ($this->m_ownerInstance->validateFilter($ATK_VARS['atkselector']))
         {
-        	$atkselector = explode("=",$atkselector[1]);
-      	  $filter = $this->m_refKey[0]."=".$atkselector[1];
+        	$destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
         }
         // otherwise we just don't set a filter
       }
+      // However a destinationFilter takes precedense over all other filters
+      if ($this->m_destinationFilter) $destfilter = $this->m_destinationFilter;
 
       // the type of the temporary node has to be the type of the owner
       if ($destNode->m_type == $this->m_destInstance->m_type)
@@ -605,7 +604,7 @@
 
       // create a navigator and let it create the navigation links using the temporary node
       $navigator  = &atknew("atk.utils.atknavigator");
-      $navigation = $navigator->getNavigationUrls($destNode,"admin", $filter);
+      $navigation = $navigator->getNavigationUrls($destNode,"admin", $destfilter);
       $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation, true);
 
       // add the navigation to the top and bottom of the page
