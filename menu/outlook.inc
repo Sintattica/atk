@@ -76,7 +76,7 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
     $name = $g_menu[$atkmenutop][$i]["name"];
     $url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
     $enable = $g_menu[$atkmenutop][$i]["enable"];
-    
+
     if (is_array($enable))
     {
       $enabled = false;
@@ -101,11 +101,18 @@ this.ol_background = '<? echo $g_theme["ol_background"];?>';
     }
       
     /* normal menu item */
-    else if ($enable) echo "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
-    else 
+    else if ($enable) 
+		{
+		if($g_menu[$atkmenutop][$i]["url"]!="")
+		 {
+  		echo "p.addButton('".$config_atkroot."icons/".$atkmenutop."_".$name.".gif','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+		 }
+    }
+		else 
     {
       //$menu .= text("menu_$name").$config_menu_delimiter;    
     }
+
   }
   echo "o.addPanel(p);\n";
   }
