@@ -8,6 +8,8 @@
   define("RL_MRPA",                           16); // multi-record-priority-actions enabled
   define("RL_LOCK",                           32); // records can be locked
 
+  atkimport("atk.utils.atkstringparser");
+
   class atkRecordList
   {    
     var $m_node=NULL;    
@@ -490,7 +492,8 @@
             if ($atkencoded) $url = str_replace('[pk]', atkurlencode(rawurlencode($row["selector"]), false), $url);
             else $url = str_replace('[pk]', rawurlencode($row["selector"]), $url);
 
-            $url = stringparse($url, $row["record"], true);
+            $parser = new atkStringParser($url);
+            $url = $parser->parse($row["record"],true);
             $row["actions"][$name] = $url;
           }
           else
