@@ -902,7 +902,9 @@
         $g_layout->output(session_form(SESSION_DEFAULT));
         $g_layout->output('<input type="hidden" name="'.$fieldprefix.'atkaction" value="admin">');
       }
-      $form.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
+      $vars ='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
+      $vars.='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
+      $g_layout->output($vars);
 
       $g_layout->output($this->searchForm($record));
       $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('search').'">&nbsp;');
@@ -1197,8 +1199,10 @@
               while (list($key, $searchMode) = each($searchModes))
               {
                 // if supported, we select the 'like' searchmode by default
-                $selected="";
-                if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchMode||($this->m_postvars["atksearchmode"][$p_attrib->m_name]==""&&$searchMode=="substring")) $selected="selected";
+                $selected=""; 
+                if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchMode||
+                    ((!is_array($this->m_postvars["atksearchmode"]) || $this->m_postvars["atksearchmode"][$p_attrib->m_name]=="")&&
+                     $searchMode=="substring")) $selected="selected";
                 $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.text("search_".$searchMode);
               }
               $sel.= '</select>';
@@ -1347,7 +1351,7 @@
       // pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
 
-      if ($this->m_postvars['atkstartat']=="" || isset($this->m_postvars["atksearch"])) $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],
                                    $this->m_postvars['atkorderby'],
@@ -1717,7 +1721,8 @@
                      session_form().
                        '<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_action.'">'.
-                       '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+                       '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">'.
+                       '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search
 
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA)) $output .= $g_layout->ret_td_datatitle();
           if (hasFlag($flags, RL_LOCK)) $output .= $g_layout->ret_td_datatitle();
@@ -2344,7 +2349,7 @@
       $g_layout->initGui();
       // When there's a lot of data, records will be spread across multiple pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
-      if ($this->m_postvars['atkstartat']=="" || isset($this->m_postvars["atksearch"])) $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
       $filter = $this->validateFilter($this->m_postvars["atkfilter"]);
 
