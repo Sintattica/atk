@@ -1,0 +1,29 @@
+Achievo Copyright and Licensing
+===============================
+
+ATK is copyright (c)2000-2004 Ibuildings.nl BV, Vlissingen, Netherlands and
+copyright (c)2000-2004  Ivo Jansch, Vlissingen, Netherlands.
+
+ATK is distributed with an  open source license, which can be found in the
+doc/LICENSE file. Commercial licenses can be bought through Ibuildings.nl.
+See the LICENSE files for details.
+
+The license covers all source files in the ATK distribution, with the
+exception of the following third party software parts, which remain licensed
+under their respective licenses.
+
+Third party software
+====================
+ATK uses the Smarty template engine by Ispi. The Smarty template engine 
+(http://smarty.php.net) is Copyright (c) 2001-2003 Ispi and made available
+under the Library General Public License (LGPL).
+
+ATK uses the DHTML Calendar Widget by Mihai Bazon. The DHTML Calendar Widget
+(http://dynarch.com/mishoo/calendar.epl) is Copyright (c) 2002—2004 Mihai
+Bazon and made available under the Library General Public License (LGPL). 
+
+ATK uses modified versions of PHPLIB's database abstraction classes for
+database access. PHPLIB (http://phplib.netuse.de) is Copyright (c) 1998,1999 
+SH Online Dienst GmbH and made available under the Library General Public 
+License (LGPL). 
+
