@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.13  2001/09/13 12:27:44  ivo
+  * Moved no-cache headers etc. to outputFlush() function.
+  *
   * Revision 4.12  2001/09/12 09:02:22  ivo
   * Added functions tr_top and tr_bottom.
   *
@@ -207,6 +210,19 @@
       }
       else
       {
+        // echo some headers first..
+  
+        // Since atk pages are always dynamic, we have to prevent that some browsers cache
+        // the pages
+        header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+        header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+        header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
+        header ("Pragma: no-cache");                          // HTTP/1.0
+  
+        // Set the content type.
+        header ("Content-Type: text/html; charset=".text('charset')); // The character set (defined
+                                                                      // in the language files
+                                                                
         echo $this->m_content;
         if (count($g_error_msg)>0)
         {

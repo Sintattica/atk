@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.104  2001/09/13 12:27:44  ivo
+   * Moved no-cache headers etc. to outputFlush() function.
+   *
    * Revision 4.103  2001/09/13 11:41:00  ivo
    * Removed primary key check for attributes that are auto_increment.
    *
@@ -309,19 +312,7 @@
   /*******************************************/  
 
   // At some places we need a random number generator, so we seed the generator here.
-  srand ((double) microtime() * 1000000);
-
-  // Since atk pages are always dynamic, we have to prevent that some browsers cache
-  // the pages
-  header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-  header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-  header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
-  header ("Pragma: no-cache");                          // HTTP/1.0
-  
-  // Set the content type.
-  header ("Content-Type: text/html; charset=".text('charset')); // The character set (defined
-                                                                // in the language files
-                                                                
+  srand ((double) microtime() * 1000000);                                                              
 
   // The atk node class
   class atkNode
