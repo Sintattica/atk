@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.7  2001/10/01 15:27:15  ivo
+   * Updated profileattrib to new module api.
+   *
    * Revision 4.6  2001/10/01 13:53:13  ivo
    * Updated profileattribute to new module api.
    *
@@ -123,6 +126,7 @@
         if (method_exists($mod_inst,"getNodes")) $mod_inst->getNodes();
         
         $nodes = $g_nodes[$modname];
+        
         if (count($nodes) > 0)
           {
           $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>";      
