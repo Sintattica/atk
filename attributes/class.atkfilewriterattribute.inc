@@ -32,7 +32,7 @@
       $this->atkTextAttribute($name,$flags); // base class constructor
     }
 
-    function store($db, $record, $mode)
+    function value2db($record)
     {
       // Note1 : regardless of mode (update or add), we always overwrite the 
       // file with the current contents.
@@ -56,9 +56,10 @@
         fclose($fp);
         atkdebug("[".$this->fieldName()."] succesfully wrote $filename..");
       }      
+      return $contents;
     }
     
-    function load($db, $record)
+    function db2value($record)
     {
       // determine filename.
       $filename = stringparse($this->m_filename, $record);
@@ -66,12 +67,21 @@
       if (!file_exists($filename))
       {
         atkdebug("[".$this->fieldName()."] warning: $filename doesn't exist");
+        return $record[$this->fieldName()];
       }
       else
       {
-        $contents = implode("",file($filename));
-        atkdebug("[".$this->fieldName()."] succesfully read $filename");
-        return $contents;
+        if ($record[$this->fieldName()]=="")
+        {
+          // db is empty. if file contains stuff, use that.          
+          $contents = implode("",file($filename));
+          atkdebug("[".$this->fieldName()."] succesfully read $filename");
+          return $contents;
+        }
+        else
+        {
+          return $record[$this->fieldName()];
+        }
       }      
     }
   }
