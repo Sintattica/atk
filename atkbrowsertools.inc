@@ -1,31 +1,45 @@
 <?php
+
   /**
-   * A collection of functions for browser detection
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Wim Kosten <wim@ibuildings.nl>
-   *         Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
    */
 
+  /**
+   * Utility for browser detection.
+   *
+   * @author Wim Kosten <wim@ibuildings.nl>
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk   
+   * @todo Move this class to the utils subpackage.
+   */     
   class browserInfo
   {
-   var $ua           = "";
-   var $full_version = "";
-   var $browser      = "unknown";
-   var $major        = 0;
-   var $minor        = 0;
-   var $os           = "";
-   var $platform     = "";
-   var $short        = "";
-   var $brName       = "";
-   var $osName       = "";
-   var $hasGui       = 0;
-   var $spider       = 0;
-   var $family       = "";
-   var $gecko        = 0;
+    var $ua           = "";
+    var $full_version = "";
+    var $browser      = "unknown";
+    var $major        = 0;
+    var $minor        = 0;
+    var $os           = "";
+    var $platform     = "";
+    var $short        = "";
+    var $brName       = "";
+    var $osName       = "";
+    var $hasGui       = 0;
+    var $spider       = 0;
+    var $family       = "";
+    var $gecko        = 0;
 
    // constructor function
     function browserInfo($ua="")

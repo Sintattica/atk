@@ -1,16 +1,26 @@
 <?php
 
- /**
-  *
-  * A collection of functions for general use in ATK
-  *
-  * @author Ivo Jansch <ivo@ibuildings.nl>
-  * @version $Revision$
-  *
-  * $Id$
-  *
-  */
-
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * This file contains a set of general-purpose utility functions.
+   * @todo Move all these functions to relevant classes.
+   * @todo Document all of the functions
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
   /**
    * Function atkErrorHandler
    * This function catches PHP parse errors etc, and passes

@@ -1,15 +1,22 @@
 <?php
 
-/**
- *
- * A collection of functions for managing nodes
- *
- * @author Peter C. Verhage <peter@ibuildings.nl>
- * @version $Revision$
- *
- * $Id$
- *
- */
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk   
+   *
+   * Contains a set of functions for general node manipulation.
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
 
   /**
    * Register a node in the main application

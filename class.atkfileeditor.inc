@@ -1,4 +1,25 @@
 <?php  
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * @internal used attribute
+   */    
+  useattrib("atktextattribute");
+
   /**
    * File editing node.
    *
@@ -6,19 +27,18 @@
    * interaction, but that can be used to edit files in a directory on the 
    * server.
    *
-   * Note: This class does not support postAdd, postUpdate and postDelete hooks.
-   *       Other overrides may or me not be supported, but this has not been
-   *       tested.
+   * Note: This class does not support postAdd, postUpdate and postDelete
+   * hooks. Other overrides may or me not be supported, but this has not been
+   * tested.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
-   * @version $Revision$
+   * Derived classes need not add attributes. The only thing to specify in
+   * derived classes is the baseclass constructor, which can be configured
+   * with parameters. (See constuctor documentation)
    *
-   * $Id$
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk   
    *
    */
-   
-  useattrib("atktextattribute");
-
   class atkFileEditor extends atkNode
   {
     var $m_dir;
@@ -29,23 +49,24 @@
      *
      * This function is called when a new atkFileEditor is instantiated.
      *
-     * @param   dir   The directory that the fileeditor lists. If you
-     *                want to enable addition of new files, make sure
-     *                that the webserver has write access to this dir.
-     *                Only regular files (not subdirs or special files)
-     *                are listed.
-     * @param   filter  A regular expression that is used to filter which
-     *                  files will be shown. Example: '.txt$' lists only
-     *                  txt files in the directory.
-     *                  Note: This parameter is also used to validate the
-     *                  filename of newly created files. This means, you 
-     *                  cannot create a new file called test.css if your
-     *                  filter param is set to '.tpl$';
-     *                  Note 2: Watch out when using $ in your regular 
-     *                  expression; PHP parses this, so use single quotes
-     *                  or escape the dollarsign with \.
-     * @param   flags   The node flags. See atkNode for a list of possible 
-     *                  flags.
+     * @param String $name The name of the node.
+     * @param String $dir The directory that the fileeditor lists. If you
+     *                    want to enable addition of new files, make sure
+     *                    that the webserver has write access to this dir.
+     *                    Only regular files (not subdirs or special files)
+     *                    are listed.
+     * @param String $filter A regular expression that is used to filter which
+     *                       files will be shown. Example: '.txt$' lists only
+     *                       txt files in the directory.
+     *                       Note: This parameter is also used to validate the
+     *                       filename of newly created files. This means, you 
+     *                       cannot create a new file called test.css if your
+     *                       filter param is set to '.tpl$';
+     *                       Note 2: Watch out when using $ in your regular 
+     *                       expression; PHP parses this, so use single quotes
+     *                       or escape the dollarsign with \.
+     * @param int $flags The node flags. See atkNode for a list of possible 
+     *                   flags.
      */
     function atkFileEditor($name, $dir="", $filter="", $flags=0)
     {

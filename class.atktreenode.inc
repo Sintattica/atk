@@ -1,21 +1,22 @@
 <?php
 
   /**
-   * Extension on the atkNode class. Here you will find all 
-   * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
-   * instead of atkNode. Example:
-   * class classname extends atkTreeNode
-   * {
-   *      $this->atkTreeNode("nodeclass",NF_TREE|NF_COPY); 
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * }
+   * @package atk
    *
-   * @author Martin Roest <martin@ibuildings.nl>
-   *         Sandy Pleyte <sandy@achievo.org>
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
+   */     
+
+  /** 
+   * @internal includes..
    */
   include_once(atkconfig("atkroot")."atk/atktreetools.inc");
   
@@ -26,6 +27,25 @@
   global $g_maxlevel;
   $g_maxlevel = 0;
   
+  /**
+   * Extension on the atkNode class. Here you will find all 
+   * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
+   * instead of atkNode. 
+   * <b>Example:</b>
+   * <code>
+   * class classname extends atkTreeNode
+   * {
+   *      $this->atkTreeNode("nodeclass"); 
+   *
+   * }
+   * </code>
+   * @todo Documentation is outdated, and this class has not been ported yet
+   *       to ATK5's new action handler mechanism, so it may not work.
+   *
+   * @author Martin Roest <martin@ibuildings.nl>
+   * @author Sandy Pleyte <sandy@achievo.org>   
+   * @package atk  
+   */
   class atkTreeNode extends atkNode
   {  
     var $m_tree = array(); 

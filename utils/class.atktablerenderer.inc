@@ -1,5 +1,24 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * Some defines
+   */
   define("TBL_HEADER", 1);    // Should the first row of the table be rendered as a header?
   define("TBL_FOOTER", 2);    // Should the last row of the table be rendered as a footer?
   define("TBL_ALTERNATE", 4); // Should each row alternate in color? If you want to use this 
@@ -15,13 +34,11 @@
    *
    * The current implementation cannot handle merged cells (rowspan/colspan).
    * If you need this, you should render the table manually.
-   *
+   * 
    * @author Ivo Jansch <ivo@achievo.org>
-   * @version $Revision$
+   * @package atk
+   * @subpackage utils
    *
-   * $Id$
-   *
-   * @copyright 2004 Ivo Jansch
    */
   class atkTableRenderer
   {            
@@ -87,6 +104,12 @@
     
     /**
      * Render a table.
+     *
+     * <b>Example:</b>
+     * <code>
+     *  $tbl = &atknew("atk.utils.atktablerenderer");
+     *  $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
+     * </code>
      * 
      * @param array  $data   A multidimensional array containing the rows and 
      *                       columns with data. The first dimension represents
@@ -108,9 +131,7 @@
      *                       - TBL_DATA: Alias for TBL_HEADER|TBL_ALTERNATE.
      * @param string $style  The style to render the table in (without .css
      *                       extension).
-     *
-     * @example $tbl = &atknew("atk.utils.atktablerenderer");
-     *          $tbl->render($data, TBL_HEADER|TBL_ALTERNATE, "recordlist");
+     * @return String The rendered table.
      */
     function render($data, $flags=0, $style="")
     {
@@ -165,6 +186,9 @@
       return $output;
     }
     
+    /**
+     * @access private
+     */
     function _getMaxCols($data)
     {
       $max = 0;
@@ -183,16 +207,25 @@
       $page->register_style($theme->stylePath($style.".css"));
     }
     
+    /**
+     * @access private
+     */
     function _start($style)
     {
       return "<table".($style!=""?' class="'.$style.'"':'').">";
     }        
     
+    /**
+     * @access private
+     */
     function _end($style)
     {
       return "</table>";
     }
     
+    /**
+     * @access private
+     */
     function _alignmentStr($alignment)
     {      
       switch ($alignment)
