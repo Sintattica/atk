@@ -38,6 +38,7 @@
     var $m_date_max;
     var $m_date_format_edit;
     var $m_date_format_view;
+    var $m_onchangecode = array();
 
     /**
      * Format date according to a format string
@@ -289,6 +290,12 @@
         
         /* javascript method */
         $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
+        
+        if (count($this->m_onchangecode))
+        {
+          $this->renderChangeHandler($fieldprefix);
+          $str_script .= $this->getHtmlId($fieldprefix).'_onChange(this);"';
+        }
 
         /* year input box */
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
@@ -636,5 +643,26 @@
     {    
       return "date";
     }  
+    
+        /** 
+     * Add a javascript onchange event handler.
+     * @param $jscode A block of valid javascript code.
+     */
+    function addOnChangeHandler($jscode)
+    {
+      $this->m_onchangecode[] = $jscode;
+    }
+    
+    function renderChangeHandler($fieldprefix)
+    {
+      if (count($this->m_onchangecode))
+      {
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_scriptcode("function ".$this->getHtmlId($fieldprefix)."_onChange(el)
+                                    {
+                                      ".implode("\n", $this->m_onchangecode)."
+                                    }\n");
+      }
+    }
   }
 ?>
