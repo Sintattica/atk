@@ -75,7 +75,7 @@
   /* flag(s) specific for atkPasswordAttribute */
   define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
   define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
-  
+
   /* flag(s) specific for atkManyToOneRelation */
   define("AF_RELATION_AUTOLINK",        AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
 
@@ -289,7 +289,7 @@
         else
         {
           $funcname = $this->m_name."_edit";
-          if (method_exists($this->m_ownerInstance, $funcname))
+          if ($this->m_name != "action" && method_exists($this->m_ownerInstance, $funcname))
             $entry["html"] .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
           else $entry["html"] .= $this->edit($defaults, $fieldprefix, $mode);
         }
