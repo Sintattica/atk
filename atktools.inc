@@ -135,9 +135,12 @@
   }
 
   /**
+  * this function returns a trace-route from all functions where-through the code
+  * has been executed
+  *
   * @param string format (html|plaintext)
   *
-  * @return void
+  * @return string content(html | plaintext)
   */
   function atk_get_trace($format="html")
   {	
@@ -145,7 +148,7 @@
       return "Incorrect php-version for atk_get_trace()";
 
     $traceArr = debug_backtrace();
-
+    
     // remove call of atk_get_trace
     array_shift($traceArr);
 
@@ -176,23 +179,32 @@
       if($class)
         $class.=$classCall;
 
-      $tmpArr = $traceArr[$i]["args"];
-
-      $functionParamArr = array();
-
-      foreach($tmpArr as $val)
+      foreach($traceArr[$i]["args"] as $val)
       {
         if(is_array($val) && count($val))
-          $val = "list(".implode(", ", $val).")";
+        {
+          $valArr = array();         
+          foreach($val as $name=>$value)
+          {
+            if(is_numeric($name))
+              $valArr[] = $name;
+            else
+            {
+              $valArr[] = $name."=".$value;
+            }
+
+          }
+          $val = "array(".implode(", ", $valArr).")";
+        }
 
         if(strlen($val))
         {	
-          if(strlen($val) > 100)
-            $val = substr($val, 0, 97)."...";
+          if(strlen($val) > 120)
+            $val = substr($val, 0, 117)."...";
             
-          $functionParamArr[] = $theSpacer."&nbsp;&nbsp;'".$val."'";
+          $functionParamArr[] = $theSpacer.$spacer.$spacer.$val."";
         }
-      }
+      }// end foreach(function-arg arr)
 
       $functionParams = implode(",".$break."\n", $functionParamArr);
 
@@ -200,15 +212,15 @@
         $functionParams= $break."\n".$functionParams.$break.$theSpacer;
       
       $ret .= str_repeat("&nbsp;", ($i*2))." |-|".$file." on line ".$line.$break.
-                                $theSpacer.$class.$function." with params:(".
+                                $theSpacer.$class.$function."() with params:(".
                                 $functionParams.")".$break;
-    }  // end foreach
+    }  // end foreach (tracepoint)
 
     if($format=="html")
       $ret .="</font>";
 
     return $ret;
-  }
+  } // end function atk_get_trace
 
    /**
    * Function Text
