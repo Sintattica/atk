@@ -68,8 +68,11 @@
         case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query. 
         case 1045: return DB_ACCESSDENIED_USER;
         case 1049: return DB_UNKNOWNDATABASE;
+        case 2002: return DB_UNKNOWNHOST; // Same as 2005, but for local connection.
         case 2005: return DB_UNKNOWNHOST;
-        default: return DB_UNKNOWNERROR;
+        default: 
+          atkdebug("Unknown error: $errno (".mysql_error().")");
+          return DB_UNKNOWNERROR;
       }
     }
 
