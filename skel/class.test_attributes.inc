@@ -31,7 +31,7 @@
 
     function initial_values()
     {
-       return Array("repostamp"=>"now()","timestamp"=>date("YmdGis"),"birthstamp"=>"now()");
+       return Array("timestamp"=>date("YmdGis"));
     }
 
     function edit_values($record)
