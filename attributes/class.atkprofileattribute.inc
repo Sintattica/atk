@@ -97,7 +97,13 @@
               if (substr($action,0,1)=="*") $action=substr($action,1);
               $result.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$node.".".$action.'" ';
               if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
-              $result.='> '.text($action).'&nbsp;&nbsp;&nbsp;';
+
+              $label = text("permission_$node_$action");
+              if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
+              {
+                $label = text($action, $node); // generic action text.
+              }
+              $result.='> '.$label.'&nbsp;&nbsp;&nbsp;';
             }
             $result.="<br><br>\n";
           }
@@ -113,21 +119,32 @@
         $nodes = $g_nodes[$modname];
         
         if (count($nodes) > 0)
-          {
+        {
           $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>";      
           while (list($node, $actionarr) = each($nodes))
           {
             $checked_actions = $checked["$modname.$node"];
             if (is_array($actionarr))
             {
-              $result.="<b>".text(getNodeType($node))."</b><br>";
+              $nodename = getNodeType($node);
+              $result.="<b>".text($nodename)."</b><br>";
               for ($i=0;$i<count($actionarr);$i++)
               {
                 $action = $actionarr[$i];
                 if (substr($action,0,1)=="*") $action=substr($action,1);
                 $result.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $result.=" checked";
-                $result.='> '.text($action).'&nbsp;&nbsp;&nbsp;';
+                
+                $label = text("permission_".$modname."_".$nodename."_".$action); // module/node specific text
+                if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
+                {              
+                  $label = text("permission_".$nodename."_".$action); // node specific text                
+                  if (strtolower(substr($label,0,10))=="permission")
+                  {
+                    $label = text($action, $node); // generic action text.
+                  }
+                }
+                $result.='> '.$label.'&nbsp;&nbsp;&nbsp;';
               }
               $result.="<br><br>\n";
             }
