@@ -3,9 +3,9 @@ ATK Readme
 
 Copyright and Licensing
 -----------------------
-ATK and all related material is (c)2000-2004 ibuildings.nl and Ivo Jansch.
+ATK and all related material is (c)2000-2004 Ibuildings.nl and Ivo Jansch.
 ATK is distributed under an open source license (based on the sleepycat 
-license) and commercial licenses can be obtained from ibuildings.nl. See
+license) and commercial licenses can be obtained from Ibuildings. See
 doc/LICENSE file for details.
 
 The sleepycat license, and this the license governing ATK, is considered 
@@ -19,7 +19,7 @@ of such third party applications does not affect the ATK license in any way.
 Contact information
 -------------------
 Technical questions regarding ATK: Ivo Jansch <ivo@achievo.org>
-Questions regarding services that ibuildings.nl provides for ATK
+Questions regarding services that Ibuildings provides for ATK
 (like installation and configuration): Tom M. Schenkenberg <tom@achievo.org>
 
 The project homepage can be found at http://www.achievo.org/atk
@@ -43,7 +43,7 @@ for more information.
 
 Disclaimer
 ----------
-This product is provided AS-IS. ibuildings.nl and any other party involved 
+This product is provided AS-IS. Ibuildings and any other party involved 
 do not warrant any functionality of the product and deny all responsibility 
 in case of failure of the product or any damage following directly or 
 indirectly from use of this product. The official (and more detailed)
