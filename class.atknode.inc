@@ -1699,6 +1699,9 @@
       if ($totalisable)
       {
         $totalRow = '<tr>';
+        
+        // multi-record-actions --> empty cell
+        if ($multi_record_actions) $totalRow .= $g_layout->ret_td_datatitle();
 
         // one empty title which comes below the 'edit/delete/...' column
         if (($orientation=="left"||$orientation=="both")&&(count($actions)>0||$searchable))
