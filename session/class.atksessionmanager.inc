@@ -10,13 +10,17 @@
    */
 
   $cookie_params = session_get_cookie_params();
-  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($SCRIPT_NAME)));
+  session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
   session_start();
-  session_register("g_sessionDataAll");
+//  session_register("g_sessionDataAll");
+  session_register("g_sessionData");
 
-  global $g_sessionDataAll, $g_sessionData, $config_identifier;
-  if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
-  $g_sessionData = &$g_sessionDataAll[$config_identifier];
+//  global $g_sessionDataAll, $g_sessionData, $config_identifier;
+//  if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
+//  var_dump($g_sessionDataAll);
+//  if (empty($config_identifier)) $config_identifier = "default";
+//  $g_sessionData = &$g_sessionDataAll[$config_identifier];
+//  var_dump($g_sessionData);
 
   define(SESSION_DEFAULT,0); // stay at current stacklevel
   define(SESSION_NEW,1);     // new stack
