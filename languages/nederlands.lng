@@ -220,4 +220,6 @@
 
   $txt_export = "Exporteren";
 
+  $txt_date_format_edit = "l j F Y";
+  $txt_date_format_view = "l j F Y";
 ?>
