@@ -133,6 +133,7 @@
 
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Select a color";
+  $txt_error_invalid_color = "Invalid color code";
 
   $txt_check_all = "Select all";
   $txt_check_none = "Select none";
