@@ -215,13 +215,16 @@
                         AND T.table_name=UPPER('$table')
                     ORDER BY T.column_id");
 
+      atkimport("atk.db.atkddl");
+      $ddl = atkDDL::create();
+
       /* result */
       $result = array();
       for ($i = 0; $this->next_record(); $i++)
       {
         $result[$i]["table"]  = $this->m_record["table_name"];
         $result[$i]["name"]   = strtolower($this->m_record["column_name"]);
-        $result[$i]["type"]   = $this->getGenericType($this->m_record["data_type"]);
+        $result[$i]["type"]   = $ddl->getGenericType($this->m_record["data_type"]);
         $result[$i]["len"]    = $this->m_record["data_length"];                
 
         if ($this->m_record["index_name"]) $result[$i]["flags"] = "INDEX ";

@@ -84,11 +84,11 @@
                                      "default"=>$default);      
     }
     
-    /**
+   /**
      * Convert an ATK generic datatype to a database specific type.
      * 
      * This function will be overrided by the database specific subclasses of
-     * atkDDL.
+     * atkDb.
      * Note: in all derived subclasses, the following types *must* be 
      * supported: number, decimal, string, date, text, datetime, time, 
      * boolean.
@@ -98,8 +98,21 @@
      * @param $generictype  The datatype to convert.
      */
     function getType($generictype)
-    {
-      return "";
+    {      
+      return ""; // in case we have an unsupported type.      
+    }
+    
+    /**
+     * Convert an database specific type to an ATK generic datatype.
+     * 
+     * This function will be overrided by the database specific subclasses of
+     * atkDb.     
+     * 
+     * @param $type  The database specific datatype to convert.
+     */
+    function getGenericType($type)
+    {      
+      return ""; // in case we have an unsupported type.      
     }
     
     /**

@@ -1,18 +1,17 @@
 <?php
 
   /**
-   * MySQL specific implementations of the aktDDL utility class.
+   * Oracle8i specific implementations of the aktDDL utility class.
    *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @version $Revistion$
+   * @author Martin Roest <martin@ibuildings.nl>
    *
    * $Id$
    */
 
-  class atkmysqlddl extends atkDDL
+  class atkoci8ddl extends atkDDL
   {
     
-    function atkmysqlddl()
+    function atkoci8ddl()
     {
     }
     
@@ -21,43 +20,49 @@
       switch ($generictype)
       {
         case "number": 
-          return "INT";
+          return "NUMBER";
         case "decimal":
-          return "DECIMAL";
+          return "FLOAT";
         case "string":
-          return "VARCHAR";          
+          return "VARCHAR2";          
         case "date":
           return "DATE";
         case "text":
-          return "TEXT";
+          return "CLOB";
         case "datetime":
-          return "DATETIME";
+          return "DATE";
         case "time":
-          return "TIME";          
+          return "DATE";          
         case "boolean":        
           return "NUMBER(1,0)"; // size is added fixed. (because a boolean has no size of its own)          
       }
       return ""; // in case we have an unsupported type.      
     }
-    
+
+    /**
+     * Convert an database specific type to an ATK generic datatype.
+     * 
+     * This function will be overrided by the database specific subclasses of
+     * atkDb.     
+     * 
+     * @param $type  The database specific datatype to convert.
+     */
     function getGenericType($type)
-    {
+    {      
       $type = strtolower($type);
       switch($type)
       {
-        case "int": 
-          return "number";
-        case "float":
-          return "decimal";        
-        case "varchar":
+        case "number": 
+          return "number";        
         case "char":
+        case "varchar2":
           return "string";          
         case "date":
           return "date";
-        case "text":
+        case "clob":
           return "text";
-        case "datetime":
-          return "datetime";                
+        case "date":
+          return "date";                
       }
       return ""; // in case we have an unsupported type.      
     }
