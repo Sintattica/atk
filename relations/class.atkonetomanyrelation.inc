@@ -234,9 +234,9 @@
           } 
           $output.= href($add_url,$label,SESSION_NESTED,true);
         }
-        
         $output.=$this->editFooter($record, $myrecords);
         $output.="<br>";
+        $this->_fetchNavigationLinks($output);
         return $output;
       }
       return "";
@@ -332,7 +332,7 @@
             // we probably need everything
             $excludes = "";
           }
-          $recordset = $this->m_destInstance->selectDb($where,"","",$excludes,"",$mode);
+          $recordset = $this->m_destInstance->selectDb($where,"",$this->_fetchLimitArray(),$excludes,"",$mode);
 
           return $recordset;
         }
@@ -497,6 +497,92 @@
         else return;
     	}
     	return true;
+    }
+    
+   /**
+    * Retrieves navigation links (prev/pagenumbers/next) and puts it
+    * on the top and the bottom of the output string
+    *
+    * @params string &$output Pointer to the output string
+    */
+    function _fetchNavigationLinks(&$output)
+    {
+      global $ATK_VARS;
+
+      // create temporary node and set the right parameters
+      $destNode = &getnode($this->m_destination);
+
+      $limitArray = $this->_fetchLimitArray();
+      $destNode->m_postvars["atklimit"]     = $limitArray["limit"];
+      $destNode->m_postvars["atkstartat"]   = $limitArray["offset"];
+      $destNode->m_postvars["limitPostfix"] = $this->fieldName();
+      $destNode->m_action                   = $ATK_VARS["atkaction"];
+      
+      // If we have a selector, we need to make sure the navigator filters on this
+      if ($ATK_VARS['atkselector'])
+      {
+        $atkselector = explode(".", $ATK_VARS['atkselector']);
+        
+        // if the filter is on the destination (highly unlikely) we just use it
+        if ($atkselector[0]==$this->m_destination) $filter = $ATK_VARS['atkselector'];
+        // if the filter is on the owner, we translate it back to the destination
+        else if ($atkselector[0]==$this->m_owner)
+        {
+        	$atkselector = explode("=",$atkselector[1]);
+      	  $filter = $this->m_refKey[0]."=".$atkselector[1];
+        }
+        // otherwise we just don't set a filter
+      }
+
+      // the type of the temporary node has to be the type of the owner
+      if ($destNode->m_type == $this->m_destInstance->m_type)
+          $destNode->m_type  = $this->m_owner;
+
+      // create a navigator and let it create the navigation links using the temporary node
+      $navigator  = &atknew("atk.utils.atknavigator");
+      $navigation = $navigator->getNavigationUrls($destNode,"admin", $filter);
+      $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation);
+
+      // add the navigation to the top and bottom of the page
+      $output = $navstr . "<br />" . $output . "<br />" . $navstr . "<br /><br />";
+  	}
+
+   /**
+    * Returns an array to pass as limit parameter to the selectdb function
+    *
+    * @return array an array to pass to the selectdb function
+    */
+    function _fetchLimitArray()
+    {
+      global $ATK_VARS;
+
+      // limitVarPostfix was introduced to make a difference when
+      // there is more than one item with pagenumbers on the page
+      $postfix = $this->fieldName();
+
+      $retArray = array();
+
+      if ($ATK_VARS["atkstartat" . $postfix] == "" )
+      {
+        $retArray["offset"] = 0;
+      }
+      else
+      {
+        $retArray["offset"] = $ATK_VARS["atkstartat" . $postfix];
+      }
+
+      // If we didn't pass along our own limit (atklimit var with postfix)
+      // we'll use the recordsperpage config value and if THAT fails,
+      // we use 25
+      if ($ATK_VARS["atklimit" . $postfix] == "")
+      {
+        $retArray["limit"] = atkconfig("recordsperpage", 25);
+      }
+      else
+      {
+        $retArray["limit"] = $ATK_VARS["atklimit" . $postfix];
+      }
+      return $retArray;
     }
   }
 ?>

@@ -30,6 +30,8 @@ Changes in ATK 5.0.5
 + Added register_hiddenvars() to atkPage [Boy]
 * Fixed tabbing, atkNode now passes along the nodetype as a hidden var 
   and the DHTML tabbing uses this instead of the URL [Boy]
++ Added paging in atkOneToManyrelation (embedded recordlist) [Harrie]
+* You can now pass along your own filter to the atkNavigator [Boy]
 
 Changes in ATK 5.0.4
 --------------------
