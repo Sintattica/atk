@@ -22,7 +22,7 @@ class atkPasswordAttribute extends atkAttribute
 {
   /* generate? */
   var $m_generate;
-
+  var $m_validaterecordupdated;
   /**
    * Constructor
    * @param $name Name of the attribute
@@ -152,12 +152,11 @@ class atkPasswordAttribute extends atkAttribute
   function validate(&$record, $mode)
   {
     $error = FALSE;
-    $value = $record[$this->fieldName()];
 
     if ($mode == 'update'
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
-        && md5($value["current"]) != $value["hash"])
+        && $value["current"] != $value["hash"])
     {
       $error = TRUE;
       triggerError($record, $this->fieldName(), 'error_password_incorrect');
@@ -177,7 +176,8 @@ class atkPasswordAttribute extends atkAttribute
 
     /* new password? */
     if (!$error && strlen($value["new"]) > 0)
-      $record[$this->fieldName()]["hash"] = md5($record[$this->fieldName()]["new"]);
+    $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
+    $this->$m_validaterecordupdated=1;
   }
 
   /**
@@ -239,6 +239,26 @@ class atkPasswordAttribute extends atkAttribute
       $out .= $vowels[mt_rand()%count($vowels)];
     }
     return $out;
+  }
+  
+  /**
+  * Overwriting the fetchValue to ensure all passwords are hashed
+  */    
+  function fetchValue($rec)
+  {
+    if ($rec[$this->fieldName()]["current"])
+    {
+      $rec[$this->fieldName()]["current"] = md5($rec[$this->fieldName()]["current"]);
+    }
+    if ($rec[$this->fieldName()]["new"])
+    {
+      $rec[$this->fieldName()]["new"] = md5($rec[$this->fieldName()]["new"]);
+    }
+    if ($rec[$this->fieldName()]["again"])
+    {
+      $rec[$this->fieldName()]["again"] = md5($rec[$this->fieldName()]["again"]);
+    }
+    return $rec[$this->fieldName()];
   }
 }
 ?>
