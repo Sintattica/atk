@@ -28,35 +28,49 @@
     }
   
     /**
-     * Connect to the database
-     * @param $database the database name
-     * @param $host database hostname
-     * @param $user database username
-     * @param $password database password
-     * @return link identifier
-     */
-    function connect($database="", $host="", $user="", $password="")
-    {
-      /* defaults ? */
-      if (empty($database)) $database = $this->m_database;
-      if (empty($host))     $host = $this->m_host;
-      if (empty($user))     $user = $this->m_user;
-      if (empty($password)) $password = $this->m_password;      
-      
-      /* connection string */
-                             $connection_str  = "dbname=$database";
-      if (!empty($host))     $connection_str .= " host=$host";
-      if (!empty($user))     $connection_str .= " user=$user";
-      if (!empty($password)) $connection_str .= " password=$password";
-      
-      /* establish connection */
+     * Connect to the database     
+     * @return connection identifier
+     */    
+    function connect()
+    { 
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = @pg_pconnect($connection_str) or $this->halt("connect using $database, $host, $user, ***** failed.");
+        /* connection string */
+        $connection_str  = "dbname=".$this->m_database;
+        if (!empty($this->m_host))     $connection_str .= " host=".$this->m_host;
+        if (!empty($this->m_user))     $connection_str .= " user=".$this->m_user;
+        if (!empty($this->m_password)) $connection_str .= " password=".$this->m_password;
+      
+        /* establish connection */              
+        $this->m_link_id = @pg_pconnect($connection_str);
+        if (!$this->m_link_id)
+        {
+          $this->halt("connect using ".$this->m_database.", ".$this->m_host.", ".$this->m_user.", ***** failed.");
+          
+          // We can't use pg_result_error, since we need a resource
+          // for that function, and if pg_pconnect fails, we don't even have
+          // a resource yet.
+          if (function_exists("pg_last_error")) // only available since PHP 4.2.0.
+          {
+            return $this->_translateError(pg_last_error());
+          }
+          else
+          {
+            return DB_UNKNOWNERROR;
+          }
+        }
       }
-
       /* return link identifier */
-      return $this->m_link_id;
+      return DB_SUCCESS;
+    }
+    
+    /**
+     * TODO FIXME: I don't know what errormessges postgresql gives,
+     * so this function only returns DB_UNKNOWNERROR for now.
+     */
+    function _translateError($error)
+    {
+      return DB_UNKNOWNERROR;
     }
 
     /**
@@ -64,7 +78,8 @@
      * link, so this won't be necessary!
      */
     function disconnect()
-    {}
+    {
+    }
 
     /**
      * Performs a query
@@ -80,22 +95,24 @@
       atkdebug("atkpgsqldb.query(): ".$query);
 
       /* connect to database */
-      $this->connect();
-
-      /* free old results */
-      if (!empty($this->m_query_id))
+      if ($this->connect()==DB_SUCCESS)
       {
-        @pg_freeresult($this->m_query_id);
-        $this->m_query_id = 0;
-      }
+        /* free old results */
+        if (!empty($this->m_query_id))
+        {
+          @pg_freeresult($this->m_query_id);
+          $this->m_query_id = 0;
+        }
         
-      /* query database */
-      $this->m_query_id = @pg_exec($this->m_link_id, $query) or $this->halt("Invalid SQL query: $query");
-      $this->m_row = 0;
-      $this->m_error = pg_errormessage();
+        /* query database */
+        $this->m_query_id = @pg_exec($this->m_link_id, $query) or $this->halt("Invalid SQL query: $query");
+        $this->m_row = 0;
+        $this->m_error = pg_errormessage();
 
-      /* return query id */
-      return $this->m_query_id;
+        /* return query id */
+        return $this->m_query_id;
+      }
+      return 0;
     }
 
     /**
@@ -140,15 +157,17 @@
     function lock($table, $mode="write")
     {
       /* connect first */
-      $this->connect();
-  
-      /* lock */
-      if ($mode == "write")
-        $result = @pg_exec($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
-      else $result = 1;
+      if ($this->connect()==DB_SUCCESS)
+      {
+        /* lock */
+        if ($mode == "write")
+          $result = @pg_exec($this->m_link_id, "lock table $table") or $this->halt("cannot lock table $table");
+        else $result = 1;
 
-      /* return result */
-      return $result;
+        /* return result */
+        return $result;
+      }
+      return 0;
     }
   
     /**
@@ -158,13 +177,15 @@
     function unlock()
     {
       /* connect first */
-      $this->connect();
-
-      /* unlock */
-      $result = @pg_exec($this->m_link_id, "commit") or $this->halt("cannot unlock tables");
+      if ($this->connect()==DB_SUCCESS)
+      {
+        /* unlock */
+        $result = @pg_exec($this->m_link_id, "commit") or $this->halt("cannot unlock tables");
       
-      /* return result */
-      return $result;
+        /* return result */
+        return $result;
+      }
+      return 0;
     }
 
     /**
@@ -206,27 +227,29 @@
     function nextid($sequence)
     {
       /* connect first */
-      $this->connect();
-
-      /* get sequence number and increment */
-      $query = "SELECT nextval('seq_".$sequence."') AS nextid";
-    
-      /* execute query */
-      $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
-    
-      /* error? */
-      if (empty($id))
+      if ($this->connect()==DB_SUCCESS)
       {
-        /* create sequence */
-        $query = 'CREATE SEQUENCE "seq_'.$sequence.'"';
-        $id = @pg_exec($this->m_link_id, $query);
-
-        /* try again */
+        /* get sequence number and increment */
         $query = "SELECT nextval('seq_".$sequence."') AS nextid";
+    
+        /* execute query */
         $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
+    
+        /* error? */
+        if (empty($id))
+        {
+          /* create sequence */
+          $query = 'CREATE SEQUENCE "seq_'.$sequence.'"';
+          $id = @pg_exec($this->m_link_id, $query);
+
+          /* try again */
+          $query = "SELECT nextval('seq_".$sequence."') AS nextid";
+          $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
         
-        /* empty? */
-        if (empty($id)) return 0;
+          /* empty? */
+          if (empty($id)) return 0;
+        }
+        return 0;
       }
 
       /* get nextid */

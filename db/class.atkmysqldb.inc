@@ -15,6 +15,14 @@
    */ 
   class atkmysqldb extends atkdb
   {    
+  
+    /* sequence table */
+    var $m_seq_table = "db_sequence";  
+    // the field in the seq_table that contains the counter..
+    var $m_seq_field = "nextid";
+    // the field in the seq_table that countains the name of the sequence..
+    var $m_seq_namefield = "seq_name";
+    
      
     /**
      * Base constructor 
@@ -25,34 +33,44 @@
     }
   
     /**
-     * Connect to the database
-     * @param $database the database name
-     * @param $host database hostname
-     * @param $user database username
-     * @param $password database password
-     * @return link identifier
+     * Connect to the database     
+     * @return connection status
      */
-    function connect($database="", $host="", $user="", $password="")
-    {
-      /* defaults ? */
-      if (empty($database)) $database = $this->m_database;
-      if (empty($host)) $host = $this->m_host;
-      if (empty($user)) $user = $this->m_user;
-      if (empty($password)) $password = $this->m_password;      
-      
+    function connect()
+    {          
       /* establish connection */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = mysql_pconnect($host, $user, $password);
-        if (!$this->m_link_id) $this->halt("connect using $host, $user, ***** failed.");
+        $this->m_link_id = @mysql_pconnect($this->m_host, $this->m_user, $this->m_password);
+        if (!$this->m_link_id) 
+        {
+          $this->halt("connect using ".$this->m_host.", ".$this->m_user.", ***** failed.");
+          return $this->_translateError(mysql_errno());
+        }
       }
 
       /* select database */
-      if (!@mysql_select_db($database, $this->m_link_id))
-        $this->halt("cannot use database $database.");
+      if (!@mysql_select_db($this->m_database, $this->m_link_id))
+      {
+        $this->halt("cannot use database ".$this->m_database.".");
+        return $this->_translateError(mysql_errno());
+      }
         
       /* return link identifier */
-      return $this->m_link_id;
+      return DB_SUCCESS;
+    }
+    
+    function _translateError($errno)
+    {      
+      switch ($errno)
+      {
+        case    0: return DB_SUCCESS;
+        case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query. 
+        case 1045: return DB_ACCESSDENIED_USER;
+        case 1049: return DB_UNKNOWNDATABASE;
+        case 2005: return DB_UNKNOWNHOST;
+        default: return DB_UNKNOWNERROR;
+      }
     }
 
     /**
@@ -77,30 +95,32 @@
       atkdebug("atkmysqldb.query(): ".$query);
 
       /* connect to database */
-      $this->connect();
-
-      /* free old results */
-      if ($this->m_query_id)
+      if ($this->connect()==DB_SUCCESS)
       {
-        @mysql_free_result($this->m_query_id);
-        $this->m_query_id = 0;
-      }      
+        /* free old results */
+        if ($this->m_query_id)
+        {
+          @mysql_free_result($this->m_query_id);
+          $this->m_query_id = 0;
+        }      
         
-      $this->m_affected_rows = 0;
+        $this->m_affected_rows = 0;
       
-      /* query database */
-      $this->m_query_id = @mysql_query($query, $this->m_link_id);
-      $this->m_row = 0;
-      $this->m_errno = mysql_errno();
-      $this->m_error = mysql_error();
-      $this->m_affected_rows = mysql_affected_rows();
+        /* query database */
+        $this->m_query_id = @mysql_query($query, $this->m_link_id);
+        $this->m_row = 0;
+        $this->m_errno = mysql_errno();
+        $this->m_error = mysql_error();
+        $this->m_affected_rows = mysql_affected_rows();
     
-      /* invalid query */
-      if (!$this->m_query_id)
-        $this->halt("Invalid SQL: $query");
+        /* invalid query */
+        if (!$this->m_query_id)
+          $this->halt("Invalid SQL: $query");
         
-      /* return query id */
-      return $this->m_query_id;
+        /* return query id */
+        return $this->m_query_id;
+      }
+      return 0;
     }
 
     /**
@@ -150,14 +170,16 @@
     function lock($table, $mode="write")
     {
       /* connect first */
-      $this->connect();
-    
-      /* lock */
-      $result = @mysql_query("lock tables $table $mode", $this->m_link_id);
-      if (!$result) $this->halt("$mode lock on $table failed.");
+      if ($this->connect()==DB_SUCCESS)
+      {    
+        /* lock */
+        $result = @mysql_query("lock tables $table $mode", $this->m_link_id);
+        if (!$result) $this->halt("$mode lock on $table failed.");
       
-      /* return result */
-      return $result;
+        /* return result */
+        return $result;
+      }
+      return 0;
     }
   
     /**
@@ -167,14 +189,16 @@
     function unlock()
     {
       /* connect first */
-      $this->connect();
-
-      /* unlock */
-      $result = @mysql_query("unlock tables");
-      if (!$result) $this->halt("unlock tables failed.");
+      if ($this->connect()==DB_SUCCESS)
+      {
+        /* unlock */
+        $result = @mysql_query("unlock tables");
+        if (!$result) $this->halt("unlock tables failed.");
       
-      /* return result */
-      return $result;
+        /* return result */
+        return $result;
+      }
+      return 0;
     }
 
     /**
@@ -216,36 +240,38 @@
     function nextid($sequence)
     {
       /* first connect */
-      $this->connect();
-    
-      /* lock sequence table */
-      if ($this->lock($this->m_seq_table))
-      {
-        /* get sequence number (locked) and increment */
-        $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";       
-      
-        $id = @mysql_query($query, $this->m_link_id);
-        $result = @mysql_fetch_array($id);
-      
-        /* no current value, make one */
-        if (!is_array($result))
+      if ($this->connect()==DB_SUCCESS)
+      {    
+        /* lock sequence table */
+        if ($this->lock($this->m_seq_table))
         {
-          $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";       
-          $id = @mysql_query($query, $this->m_link_id);
-          $this->unlock();          
-          return 1;
-        }
+          /* get sequence number (locked) and increment */
+          $query = "SELECT ".$this->m_seq_field." FROM ".$this->m_seq_table." WHERE ".$this->m_seq_namefield." = '$sequence'";       
         
-        /* enter next value */
-        else
-        {
-          $nextid = $result[$this->m_seq_field] + 1;
-          $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
-          
           $id = @mysql_query($query, $this->m_link_id);
-          $this->unlock();
-          return $nextid;
+          $result = @mysql_fetch_array($id);
+      
+          /* no current value, make one */
+          if (!is_array($result))
+          {
+            $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";       
+            $id = @mysql_query($query, $this->m_link_id);
+            $this->unlock();          
+            return 1;
+          }
+        
+          /* enter next value */
+          else
+          {
+            $nextid = $result[$this->m_seq_field] + 1;
+            $query = "UPDATE ".$this->m_seq_table." SET ".$this->m_seq_field." = '$nextid' WHERE ".$this->m_seq_namefield." = '$sequence'";
+          
+            $id = @mysql_query($query, $this->m_link_id);
+            $this->unlock();
+            return $nextid;
+          }
         }
+        return 0;
       }
       
       /* cannot lock */
@@ -264,32 +290,34 @@
     function metadata($table, $full=false)
     {
       /* first connect */
-      $this->connect();
-      
-      /* list fields */
-      atkdebug("Retrieving metadata for $table");
-      $id = @mysql_list_fields($this->m_database, $table);
-      if (!$id) atkdebug("Metadata query failed.");
+      if ($this->connect()==DB_SUCCESS)
+      {      
+        /* list fields */
+        atkdebug("Retrieving metadata for $table");
+        $id = @mysql_list_fields($this->m_database, $table);
+        if (!$id) atkdebug("Metadata query failed.");
+ 
+        /* count fields */
+        $count = @mysql_num_fields($id);
 
-      /* count fields */
-      $count = @mysql_num_fields($id);
-
-      /* get meta data */
-      $result = array();      
-      if ($full) $result["num_fields"] = $count;
-      for ($i=0; $i<$count; $i++)
-      {
-        $result[$i]["table"] = @mysql_field_table($id, $i);
-        $result[$i]["name"]  = @mysql_field_name($id, $i);
-        $result[$i]["type"]  = @mysql_field_type($id, $i);
-        $result[$i]["len"]   = @mysql_field_len($id, $i);
-        $result[$i]["flags"] = @mysql_field_flags($id, $i);
-        if ($full) $result["meta"][$result[$i]["name"]] = $i;
+        /* get meta data */
+        $result = array();      
+        if ($full) $result["num_fields"] = $count;
+        for ($i=0; $i<$count; $i++)
+        {
+          $result[$i]["table"] = @mysql_field_table($id, $i);
+          $result[$i]["name"]  = @mysql_field_name($id, $i);
+          $result[$i]["type"]  = @mysql_field_type($id, $i);
+          $result[$i]["len"]   = @mysql_field_len($id, $i);
+          $result[$i]["flags"] = @mysql_field_flags($id, $i);
+          if ($full) $result["meta"][$result[$i]["name"]] = $i;
+        }
+        /* free result */
+        @mysql_free_result($id);
+        atkdebug("Metadata for $table complete");
+        return $result;
       }
-      /* free result */
-      @mysql_free_result($id);
-      atkdebug("Metadata for $table complete");
-      return $result;
+      return array();
     }
 
     /**

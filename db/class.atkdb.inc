@@ -1,6 +1,17 @@
 <?php
 
   /**
+   * Some defines used for connection statusses, generic error messages, etc.
+   */
+  define("DB_SUCCESS"           , 0);
+  define("DB_UNKNOWNERROR"      , 1);
+  define("DB_UNKNOWNHOST"       , 2);
+  define("DB_UNKNOWNDATABASE"   , 3);  
+  define("DB_ACCESSDENIED_USER" , 4);
+  define("DB_ACCESSDENIED_DB"   , 5);
+
+
+  /**
    * Handles database connectivity and database interaction.
    *
    * @author Peter Verhage <peter@achievo.org>
@@ -24,6 +35,7 @@
     /*  current error number and error text */
     var $m_errno = 0;
     var $m_error = "";
+    var $m_haltonerror = true;
     
     /** 
      * number of affected rows after an update/delete/insert query 
@@ -38,13 +50,6 @@
     var $m_link_id  = 0;
     var $m_query_id = 0;
 
-    /* sequence table */
-    var $m_seq_table = "db_sequence";  
-    // the field in the seq_table that contains the counter..
-    var $m_seq_field = "nextid";
-    // the field in the seq_table that countains the name of the sequence..
-    var $m_seq_namefield = "seq_name";
-    
     /* set to 1 for automatic freeing of results */    
     var $m_auto_free = 1;
     
@@ -74,9 +79,12 @@
     
     function halt($message)
     {
-      $dbmsg = $this->getError();
-      if ($dbmsg!="") atkerror($dbmsg);
-      halt($message);
+      if ($this->m_haltonerror)
+      {      
+        $dbmsg = $this->getError();
+        if ($dbmsg!="") atkerror($dbmsg);
+        halt($message);
+      }
     }
 
     /**
@@ -87,18 +95,30 @@
     {
       return $this->m_query_id;
     }
-
+    
     /**
-     * Connect to the database
-     * @param $database the database name
-     * @param $host database hostname
-     * @param $user database username
-     * @param $password database password
+     * Connect to the database     
      * @return connection identifier
      */
-    function connect($database="", $host="", $user="", $password="")
+    function connect()
     {
       return $this->m_link_id;
+    }
+
+    
+    /**
+     * If possible, derived db-classes should implement this 
+     * function, which can be used to translate database
+     * specific errornumbers/errormessages to standardized
+     * ATK db error statusses.
+     *
+     * If a class does not override this function, the default
+     * implementation will return DB_UNKNOWNERROR for any 
+     * error that occurs. 
+     */
+    function _translateError($errno)
+    {      
+      return DB_UNKNOWNERROR;     
     }
 
     /**
@@ -243,33 +263,33 @@
 
     /**
      * Return the meta data of a certain table
+     *
+     * depending on $full, metadata returns the following values:
+     *  -full is false (default):
+     *   $result[]:
+     *     [0]["table"]  table name
+     *     [0]["name"]   field name
+     *     [0]["type"]   field type
+     *     [0]["len"]    field length
+     *     [0]["flags"]  field flags
+     * 
+     *  -full is true:
+     *   $result[]:
+     *     ["num_fields"] number of metadata records
+     *     [0]["table"]  table name
+     *     [0]["name"]   field name
+     *     [0]["type"]   field type
+     *     [0]["len"]    field length
+     *     [0]["flags"]  field flags
+     *     ["meta"][field name] index of field named "field name"
+     *     The last one is used, if you have a field name, but no index.
+     *
      * @param $table the table name
      * @param $full all meta data or not
-     * @return array with meta data
+     * @return array with meta data    
      */
     function metadata($table, $full=false)
-    {
-      /*
-        depending on $full, metadata returns the following values:
-        full is false (default):
-        $result[]:
-          [0]["table"]  table name
-          [0]["name"]   field name
-          [0]["type"]   field type
-          [0]["len"]    field length
-          [0]["flags"]  field flags
-     
-        full is true:
-        $result[]:
-          ["num_fields"] number of metadata records
-          [0]["table"]  table name
-          [0]["name"]   field name
-          [0]["type"]   field type
-          [0]["len"]    field length
-          [0]["flags"]  field flags
-          ["meta"][field name] index of field named "field name"
-          The last one is used, if you have a field name, but no index.
-      */
+    {            
     
       return array();
     }   
@@ -292,12 +312,18 @@
      */  
     function tableExists($tableName)
     {
-      return FALSE;
+      return false;
     } 
   
     /**
      * Get all rows that are the result
      * of a certain specified query
+     *
+     * Note: This is not an efficient way to retrieve
+     * records, as this will load all records into one
+     * array into memory. If you retrieve a lot of records,
+     * you might hit the memory_limit and your script will die.
+     *
      * @param $query the query
      * @return array with rows
      */
@@ -329,7 +355,7 @@
       if (!is_array($this->m_tableMeta[$table]))
       {
         $tmparr = $this->metadata($table);
-        for ($i=0;$i<count($tmparr);$i++)
+        for ($i=0, $_i=count($tmparr); $i<$_i; $i++)
         {
           $this->m_tableMeta[$table][$tmparr[$i]['name']]['type'] = $tmparr[$i]['type'];
           $this->m_tableMeta[$table][$tmparr[$i]['name']]['len'] = $tmparr[$i]['len'];

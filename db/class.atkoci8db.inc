@@ -14,15 +14,7 @@
    *
    */
   class atkoci8db extends atkdb
-  {
-    /* identification */
-    var $m_type     = "oci8";
-    var $m_revision = '$Revision$';
-
-    /* oci8 specific parameters */
-    var $m_ora_home = "/usr/local/oracle/8i/u01/app/oracle/product/8.1.5";
-    var $m_ora_sid  = "CDB";
-
+  {    
     /**
      * Base constructor
      */
@@ -33,33 +25,36 @@
 
     /**
      * Connect to the database
-     * @param $database the database name
-     * @param $host database hostname
-     * @param $user database username
-     * @param $password database password
-     * @return link identifier
+     * @return connection status
      */
-    function connect($database="", $host="", $user="", $password="")
-    {
-      /* defaults ? */
-      if (empty($database)) $database = $this->m_database;
-      if (empty($host)) $host = $this->m_host;
-      if (empty($user)) $user = $this->m_user;
-      if (empty($password)) $password = $this->m_password;
-
+    function connect()
+    {      
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = OCIplogon($user, $password, $database);
-        if (!$this->m_link_id) $this->halt("connect using $user / ***** on $database failed.");
+        $this->m_link_id = OCIplogon($this->m_user, $this->m_password, $this->m_database);
+        if (!$this->m_link_id)
+        {
+          $this->halt("connect using ".$this->m_user." / ***** on ".$this->m_database." failed.");
+          $err = OCIError(); // can't pass link_id because it is null if connect failed.
+          return $this->_translateError($err['code']);
+        }
+
+        /* set default date format for Oracle */ 
+        $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
+        $myresult = OCIExecute($nls);
+
       }
-
-      /* set default date format for Oracle */ 
-      $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
-      $myresult = OCIExecute($nls);
-
-      /* return link identifier */
-      return $this->m_link_id;
+      return DB_SUCCESS;
+    }
+    
+    /**
+     * TODO FIXME: I don't know what errormessges oracle gives,
+     * so this function only returns DB_UNKNOWNERROR for now.
+     */
+    function _translateError($error)
+    {
+      return DB_UNKNOWNERROR;
     }
 
     /**
@@ -91,31 +86,33 @@
       atkdebug("atkoci8db.query(): ".$query);
 
       /* connect to database */
-      $this->connect();
-
-      /* free old results */
-      if ($this->m_query_id)
+      if ($this->connect()==DB_SUCCESS)
       {
-        @OCIFreeStatement($this->m_query_id);
-        $this->m_query_id = 0;
-      }      
+        /* free old results */
+        if ($this->m_query_id)
+        {
+          @OCIFreeStatement($this->m_query_id);
+          $this->m_query_id = 0;
+        }      
 
-      /* query database */
-      $this->m_query_id = @OCIParse($this->m_link_id, $query);
-      if ($this->m_query_id) @OCIExecute($this->m_query_id,OCI_COMMIT_ON_SUCCESS);
-      $this->m_row = 0;
+        /* query database */
+        $this->m_query_id = @OCIParse($this->m_link_id, $query);
+        if ($this->m_query_id) @OCIExecute($this->m_query_id,OCI_COMMIT_ON_SUCCESS);
+        $this->m_row = 0;
 
-      /* error in query */
-      if (!$this->m_query_id)
-      {
-        $error = OCIError($this->m_link_id);
-        $this->m_errno = $error["code"];
-        $this->m_error = $error["message"];
-        $this->halt("Invalid SQL: $query");
+        /* error in query */
+        if (!$this->m_query_id)
+        {
+          $error = OCIError($this->m_link_id);
+          $this->m_errno = $error["code"];
+          $this->m_error = $error["message"];
+          $this->halt("Invalid SQL: $query");
+        }
+
+        /* return query id */
+        return $this->m_query_id;
       }
-
-      /* return query id */
-      return $this->m_query_id;
+      return 0;
     }
 
     /**
@@ -181,18 +178,25 @@
     function lock($table, $mode="write")
     {
       /* connect first */
-      $this->connect();
-
-      /* lock */
-      if ($mode == "write")
+      if ($this->connect()==DB_SUCCESS)
       {
-        $m_query_id = OCIParse($this->m_link_id, "lock table $table in row exclusive mode");
-        $result = @OCIExecute($m_query_id);
-        if (!$result) $this->halt("$mode lock on $table failed.");
-      }
 
-      /* return result */
-      return 1;
+        /* lock */
+        if ($mode == "write")
+        {
+          $m_query_id = OCIParse($this->m_link_id, "lock table $table in row exclusive mode");
+          $result = @OCIExecute($m_query_id);
+          if (!$result) 
+          {
+            $this->halt("$mode lock on $table failed.");
+            return 0;
+          }
+        }
+
+        /* return result */
+        return 1;
+      }
+      return 0;
     }
 
     /**
@@ -244,38 +248,40 @@
     function nextid($sequence)
     {
       /* connect first */
-      $this->connect();
-
-      /* get sequence number and increment */
-      $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
-
-      /* execute query */
-      $m_query_id = OCIParse($this->m_link_id, $query);
-      $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
-
-      /* error? */
-      if (empty($id))
+      if ($this->connect()==DB_SUCCESS)
       {
-        /* create sequence */
-        $query = "CREATE SEQUENCE seq_".$sequence." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
-        $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
-        
-        /* try again */
+
+        /* get sequence number and increment */
         $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+  
+        /* execute query */
         $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
-        
-        /* empty? */
-        if (empty($id)) return 0;
+        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
+  
+        /* error? */
+        if (empty($id))
+        {
+          /* create sequence */
+          $query = "CREATE SEQUENCE seq_".$sequence." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
+          $m_query_id = OCIParse($this->m_link_id, $query);
+          $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
+          
+          /* try again */
+          $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+          $m_query_id = OCIParse($this->m_link_id, $query);
+          $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
+          
+          /* empty? */
+          if (empty($id)) return 0;
+        }
+  
+        /* get nextid */
+        OCIFetchInto($m_query_id, $result);
+  
+        /* return id */
+        return $result[0];
       }
-
-      /* get nextid */
-      OCIFetchInto($m_query_id, $result);
-
-      /* return id */
-      return $result[0];
-
+      return 0;
     }
 
     /**
@@ -287,13 +293,16 @@
     function metadata($table, $full=false)
     {
       /* query for data */
-      $this->query("SELECT T.table_name,T.column_name,T.data_type,".
-                   "T.data_length,T.data_precision,T.data_scale,T.nullable,".
-                   "T.char_col_decl_length,I.index_name".
-                   " FROM ALL_TAB_COLUMNS T,ALL_IND_COLUMNS I".
-                   " WHERE T.column_name=I.column_name (+)".
-                   " AND T.table_name=I.table_name".
-                   " AND T.table_name=UPPER('$table') ORDER BY T.column_id");
+      $this->query("SELECT 
+                      T.table_name,T.column_name,T.data_type,
+                      T.data_length,T.data_precision,T.data_scale,T.nullable,
+                      T.char_col_decl_length,I.index_name
+                   FROM ALL_TAB_COLUMNS T,ALL_IND_COLUMNS I
+                   WHERE 
+                     T.column_name=I.column_name (+)
+                     AND T.table_name=I.table_name
+                     AND T.table_name=UPPER('$table') 
+                   ORDER BY T.column_id");
 
       /* result */
       $result = array();
@@ -344,10 +353,25 @@
       return $result;
     }
     
+    /**
+     * This function checks the database for a table with 
+     * the provide name
+     *
+     * @params $tableName the table to find
+     * @params returns true if found, false if not found
+     */  
+    function tableExists($table)
+    {      
+      global $g_db;
+      
+      $found = $g_db->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
+      return ($found[0]['found']==0 ? false : true);
+    }    
+    
     function func_now()
     {
       return "SYSDATE";
-    }
+    }  
     
     /**
       * Returns the maximum length an identifier (tablename, columnname, etc) may have

@@ -1,28 +1,22 @@
 <?php
 
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
+  require_once(atkconfig("atkroot")."atk/db/class.atkoci8db.inc");
 
   /**
    * Handles database connectivity and database interaction
-   * with the Oracle database server. Portions of this class are
-   * based on the db_oci8.inc file of PHPLib.
+   * with the Oracle 9i database server. 
    *
-   * @author Peter Verhage <peter@ibuildings.nl>
+   * This class is based on oci8db, but makes use of some
+   * featurss that where introduced in Oracle 9i
+   *
+   * @author Maurice Maas <maurice@ibuildings.nl>
    * @version $Revision$
    *
    * $Id$   
    *
    */
   class atkoci9db extends atkdb
-  {
-    /* identification */
-    var $m_type     = "oci9";
-    var $m_revision = '$Revision$';
-
-    /* oci9 specific parameters */
-    //var $m_ora_home = "/usr/local/oracle/8i/u01/app/oracle/product/8.1.5";
-    var $m_ora_sid  = "CDB";
-    
+  {        
     var $m_bindresult = array();
 
     /**
@@ -30,7 +24,7 @@
      */
     function atkoci9db()
     {
-      /* do nothing */
+      return $this->atkoci8db();
     }
 
     /**
@@ -41,58 +35,48 @@
      * @param $password database password
      * @return link identifier
      */
-    function connect($database="", $host="", $user="", $password="")
-    {
-      /* defaults ? */
-      if (empty($database)) $database = $this->m_database;
-      if (empty($host)) $host = $this->m_host;
-      if (empty($user)) $user = $this->m_user;
-      if (empty($password)) $password = $this->m_password;
-
+    function connect()
+    {              
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = OCIplogon($user, $password, $database);
-        if (!$this->m_link_id) $this->halt("connect using $user / ***** on $database failed.");
+        $this->m_link_id = OCIplogon($this->m_user, $this->m_password, $this->m_database);
+        if (!$this->m_link_id) 
+        {
+          $this->halt("connect using ".$this->m_user." / ***** on ".$this->m_database." failed.");     
+          $err = OCIError();
+          return $this->_translateError($err["code"]);
+        }
+  
+        /* set default date format for Oracle */ 
+        $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
+        $myresult = OCIExecute($nls);
+        $error = OCIError($this->m_link_id);
+        if ($err["code"]!="")
+        {
+          $this->m_errno = $err["code"];
+          $this->m_error = $err["message"];
+          $this->halt("Invalid SQL: $query"); 
+          return $this->_translateError($err["code"]);
+        }
+        
+        /* set default timestamp format for Oracle */ 
+        // This should work, because it works in sqlplus
+        // Is this a PHP bug
+        // Workarround: see class.atkoci9query.inc and class.atkdatetimeattribute.inc
+        $nls = OCIParse($this->m_link_id, "alter session set nls_timestamp_format='YYYY-MM-DD HH24:MI:SS'");
+        $myresult = OCIExecute($nls);
+        $err = OCIError($this->m_link_id);
+        if ($err["code"]!="")
+        {
+          $this->m_errno = $err["code"];
+          $this->m_error = $err["message"];
+          $this->halt("Invalid SQL: $query"); 
+          return $this->_translateError($err["code"]);
+        }
       }
-
-      /* set default date format for Oracle */ 
-      $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
-      $myresult = OCIExecute($nls);
-      $error = OCIError($this->m_link_id);
-      if ($error["code"]!="")
-      {
-        $this->m_errno = $error["code"];
-        $this->m_error = $error["message"];
-        $this->halt("Invalid SQL: $query"); 
-      }
-      
-      /* set default timestamp format for Oracle */ 
-      // This should work, because it works in sqlplus
-      // Is this a PHP bug
-      // Workarround: see class.atkoci9query.inc and class.atkdatetimeattribute.inc
-      $nls = OCIParse($this->m_link_id, "alter session set nls_timestamp_format='YYYY-MM-DD HH24:MI:SS'");
-      $myresult = OCIExecute($nls);
-      $error = OCIError($this->m_link_id);
-      if ($error["code"]!="")
-      {
-        $this->m_errno = $error["code"];
-        $this->m_error = $error["message"];
-        $this->halt("Invalid SQL: $query"); 
-      }
-
-      /* return link identifier */
-      return $this->m_link_id;
-    }
-
-    /**
-     * Disconnect from database
-     */
-    function disconnect()
-    {
-      atkdebug("Disconnecting from database...");
-      OCILogoff($this->m_link_id);
-    }
+      return DB_SUCCESS;
+    }  
 
     /**
      * Performs a query
@@ -111,55 +95,91 @@
       }	
       
       /* connect to database */
-      $this->connect();
-
-      /* free old results */
-      if ($this->m_query_id)
+      if ($this->connect()==DB_SUCCESS)
       {
-        @OCIFreeStatement($this->m_query_id);
-        $this->m_query_id = 0;    
-        $this->m_bindresult = array();
-      }      
+        /* free old results */
+        if ($this->m_query_id)
+        {
+          @OCIFreeStatement($this->m_query_id);
+          $this->m_query_id = 0;    
+          $this->m_bindresult = array();
+        }      
 
-      /* query database */     
-      if (count($bindLobs))
-      {      
-        $i=0;
-        foreach($bindLobs as $bind => $value)
-        {          
-          $clobVar = $bind.$i;
-          $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);                  
-          $i++;          
-          atkdebug("NewDescriptor for ".$bind);
-        }
-        $fieldNames = array();
-        $bindNames = array();
-        $fieldNames = array_keys($bindLobs);
-        foreach($fieldNames as $name) $bindNames[] = ":".$name;        
-        $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);        
-      }      
-      
-      $this->m_query_id = OCIParse($this->m_link_id, $query);
-      if ($this->m_query_id) 
-      {              
+        /* query database */     
         if (count($bindLobs))
-        {        
+        {      
           $i=0;
           foreach($bindLobs as $bind => $value)
           {          
             $clobVar = $bind.$i;
-            OCIBindByName($this->m_query_id, $bind, &$$clobVar, -1, OCI_B_CLOB);
+            $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);                  
             $i++;          
-            atkdebug("Binding CLOB ".$bind);
-          }          
-        }    
+            atkdebug("NewDescriptor for ".$bind);
+          }
+          $fieldNames = array();
+          $bindNames = array();
+          $fieldNames = array_keys($bindLobs);
+          foreach($fieldNames as $name) $bindNames[] = ":".$name;        
+          $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);        
+        }      
+      
+        $this->m_query_id = OCIParse($this->m_link_id, $query);
+        if ($this->m_query_id) 
+        {              
+          if (count($bindLobs))
+          {        
+            $i=0;
+            foreach($bindLobs as $bind => $value)
+            {          
+              $clobVar = $bind.$i;
+              OCIBindByName($this->m_query_id, $bind, &$$clobVar, -1, OCI_B_CLOB);
+              $i++;          
+              atkdebug("Binding CLOB ".$bind);
+            }          
+          }    
         
-        for ($i=0, $_i=count($bindVars);$i<$_i;$i++)   
-        {          
-          OCIBindByName($this->m_query_id, $bindVars[$i], $this->m_bindresult[$bindVars[$i]], 32);
-        }    
+          for ($i=0, $_i=count($bindVars);$i<$_i;$i++)   
+          {          
+            OCIBindByName($this->m_query_id, $bindVars[$i], $this->m_bindresult[$bindVars[$i]], 32);
+          }    
         
-        if (!OCIExecute($this->m_query_id,OCI_DEFAULT))
+          if (!OCIExecute($this->m_query_id,OCI_DEFAULT))
+          {
+            /* error in query */
+            $error = OCIError($this->m_query_id);
+            $this->m_errno = $error["code"];
+            $this->m_error = $error["message"];
+            $this->halt("Invalid SQL: $query"); 
+          }
+          else
+          {        
+            if (count($bindLobs))
+            {
+              $i=0;
+              foreach($bindLobs as $bind => $value)
+              {      
+                $clobVar = $bind.$i;                      
+                if (!@$$clobVar->save($value))
+                  atkerror("Error bind save: empty value");
+                $i++;
+              }
+            }          
+            OCICommit($this->m_link_id);
+          }
+          if (count($bindLobs))
+          {
+            $i=0;
+            foreach($bindLobs as $bind => $value)
+            {   
+              $clobVar = $bind.$i;                                
+              OCIFreeDesc($$clobVar);
+              $i++;
+            }
+
+          }
+          $this->m_row = 0;
+        }
+        else
         {
           /* error in query */
           $error = OCIError($this->m_query_id);
@@ -167,209 +187,15 @@
           $this->m_error = $error["message"];
           $this->halt("Invalid SQL: $query"); 
         }
-        else
-        {        
-          if (count($bindLobs))
-          {
-            $i=0;
-            foreach($bindLobs as $bind => $value)
-            {      
-              $clobVar = $bind.$i;                      
-              if (!@$$clobVar->save($value))
-                atkerror("Error bind save: empty value");
-              $i++;
-            }
-          }          
-          OCICommit($this->m_link_id);
-        }
-        if (count($bindLobs))
-        {
-          $i=0;
-          foreach($bindLobs as $bind => $value)
-          {   
-            $clobVar = $bind.$i;                                
-            OCIFreeDesc($$clobVar);
-            $i++;
-          }
-
-        }
-        $this->m_row = 0;
+    
+        /* query */
+        atkdebug("atkoci9db.query(): ".$query);
+      
+        /* return query id */
+        return $this->m_query_id;
       }
-      else
-      {
-        /* error in query */
-        $error = OCIError($this->m_query_id);
-        $this->m_errno = $error["code"];
-        $this->m_error = $error["message"];
-        $this->halt("Invalid SQL: $query"); 
-      }
-
-      /* query */
-      atkdebug("atkoci9db.query(): ".$query);
-
-      /* return query id */
-      return $this->m_query_id;
-    }
-
-    /**
-     * Goto the next record in the result set
-     * @return result of going to the next record
-     */
-    function next_record()
-    {
-      /* goto next record */
-      $this->m_record = array();
-
-      /* get record data */
-      if (@OCIFetchInto($this->m_query_id, $result, OCI_ASSOC|OCI_RETURN_NULLS|OCI_RETURN_LOBS))
-      {
-        for ($i = 1; $i <= OCINumcols($this->m_query_id); $i++)
-        {
-          $column = strtoupper(OCIColumnname($this->m_query_id, $i));
-          $column_return = strtolower($column);
-          $this->m_record[$column_return] = $result[$column];
-        }
-        $m_row++;
-
-        return 1;
-      }
-
-      /* error */
-      else
-      {
-        $error = OCIError($this->m_link_id);
-        $this->m_errno = $error["code"];
-        $this->m_error = $error["message"];
-
-        /* no more records, no problem */
-        if(1403 == $this->m_errno) 
-        { 
-          $this->m_errno = 0;
-          $this->m_error = "";
-          $this->disconnect();
-        }
-
-        return 0;
-      }
-    }
-
-    /**
-     * Goto a certain position in result set.
-     * Not specifying a position will set the pointer
-     * at the beginning of the result set.
-     * @param $position the position
-     */
-    function seek($position=0)
-    {
-      if ($this->num_rows() > $position) $this->m_row = $position;
-      else $this->halt("seek($position) failed: result has ".$this->num_rows()." rows");
-    }
-
-    /**
-     * Lock a certain table in the database
-     * @param $table the table name
-     * @param $mode the type of locking
-     * @return result of locking
-     */
-    function lock($table, $mode="write")
-    {
-      /* connect first */
-      $this->connect();
-
-      /* lock */
-      if ($mode == "write")
-      {
-        $m_query_id = OCIParse($this->m_link_id, "lock table $table in row exclusive mode");
-        $result = @OCIExecute($m_query_id);
-        if (!$result) $this->halt("$mode lock on $table failed.");
-      }
-
-      /* return result */
-      return 1;
-    }
-
-    /**
-     * Unlock table(s) in the database
-     * @return result of unlocking
-     */
-    function unlock()
-    {
-      return $this->query("commit");
-    }
-
-    /**
-     * Evaluate the result; which rows were
-     * affected by the query.
-     * @return affected rows
-     */
-    function affected_rows()
-    {
-      return $this->num_rows();
-    }
-
-    /**
-     * Evaluate the result; how many rows
-     * were affected by the query.
-     * @return number of affected rows
-     */
-    function num_rows()
-    {
-      return @OCIRowCount($this->m_query_id);
-    }
-
-    /**
-     * Evaluatie the result; how many fields
-     * where affected by the query.
-     * @return number of affected fields
-     */
-    function num_fields()
-    {
-      return @OCINumCols($this->m_query_idD);
-    }
-
-
-    /**
-     * Get the next sequence number
-     * of a certain sequence.
-     * @param $sequence the sequence name
-     * @return the next sequence id
-     */
-    function nextid($sequence)
-    {
-      /* connect first */
-      $this->connect();
-
-      /* get sequence number and increment */
-      $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
-
-      /* execute query */
-      $m_query_id = OCIParse($this->m_link_id, $query);
-      $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
-
-      /* error? */
-      if (empty($id))
-      {
-        /* create sequence */
-        $query = "CREATE SEQUENCE seq_".$sequence." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
-        $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
-        
-        /* try again */
-        $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
-        $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
-        
-        /* empty? */
-        if (empty($id)) return 0;
-      }
-
-      /* get nextid */
-      OCIFetchInto($m_query_id, $result);
-
-      /* return id */
-      return $result[0];
-
-    }
+      return 0;
+    }    
 
     /**
      * Return the meta data of a certain table
@@ -417,58 +243,8 @@
 
       /* return */
       return $result;
-    }
-
-    /**
-     * Return the available table names
-     * @return array with table names etc.
-     */
-    function table_names()
-    {
-      /* query */
-      $this->query("SELECT table_name, tablespace_name FROM user_tables");
-
-      /* get table names */
-      $result = array();
-      for ($i=0; $this->next_record(); $i++)
-      {
-        $result[$i]["table_name"]      = $this->m_record["table_name"];
-        $result[$i]["tablespace_name"] = $this->m_record["tablespace_name"];
-        $result[$i]["database"]        = $this->m_database;
-      }
-
-      /* return result */
-      return $result;
-    }
-
-/**
-       * This function checks the database for a table with 
-       * the provide name
-       *
-       * @params $tableName the table to find
-       * @params returns true if found, false if not found
-       */  
-    function tableExists($table)
-    {      
-      global $g_db;
-      
-      $found = $g_db->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
-      return ($found[0]['found']==0 ? false : true);
     }    
-    
-    function func_now()
-    {
-      return "SYSDATE";
-    }
-    
-    /**
-      * Returns the maximum length an identifier (tablename, columnname, etc) may have
-      *      
-      */
-    function maxIdentifierLength()
-    {
-      return 30;
-    }
+        
   }
 
 ?>
