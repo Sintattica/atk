@@ -23,6 +23,9 @@
   define("NF_TRACK_CHANGES",4096); // If set, atk stores the old values of 
                                   // a record as ["atkold"] in the $rec that
                                   // gets passed to the postUpdate
+  define("NF_NO_SECURITY",8192);  // Quick way to disable accessright checking
+                                  // for an entire node. (Everybody may access
+                                  // this node
 
   /**
    * The atkNode class represents a piece of information that
@@ -92,6 +95,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.56  2001/06/18 10:05:51  ivo
+   * New attribute: atkProfileAttribute, for editing security profiles.
+   * New node flag: NF_NO_SECURITY
+   *
    * Revision 4.55  2001/06/14 12:30:21  ivo
    * Moved postDel to inside deleteDb, instead of in action_delete.
    *
@@ -2746,7 +2753,8 @@
     {
       global $g_securityManager;
 
-      return (in_array($this->securityKey($action), $this->m_unsecuredActions)
+      return ($this->hasFlag(NF_NO_SECURITY)
+              ||in_array($this->securityKey($action), $this->m_unsecuredActions)
               || $g_securityManager->allowed((empty($this->m_module) ? "" : $this->m_module.".").$this->m_type,$this->securityKey($action)));
     }
     

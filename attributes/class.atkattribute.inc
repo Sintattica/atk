@@ -88,6 +88,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.10  2001/06/18 10:05:51  ivo
+   * New attribute: atkProfileAttribute, for editing security profiles.
+   * New node flag: NF_NO_SECURITY
+   *
    * Revision 4.9  2001/06/07 21:06:54  ivo
    * Added atkemailattribute
    *
@@ -478,5 +482,6 @@
   include_once($config_atkroot."atk/attributes/class.atkmlselectorattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmlattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkfilewriterattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atkprofileattribute.inc");
   
 ?>
