@@ -41,7 +41,7 @@
     function atkTextAttribute($name,$size=0,$flags=0, $autoadjust=false)
     { 
       // compatiblity with old versions
-      if (func_num_args()==3)
+      if (func_num_args()==3 || func_num_args()==4)
       {
          if(is_array($size))
          {
