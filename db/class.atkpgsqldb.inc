@@ -212,15 +212,15 @@
       $query = "SELECT nextval('seq_".$sequence."') AS nextid";
     
       /* execute query */
-      $id = @pg_exec($this->m_link_id, $query);
+      $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
     
       /* error? */
       if (empty($id))
       {
         /* create sequence */
-        $query = "CREATE SEQUENCE 'seq_".$sequence."'";
-        $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");        
-        
+        $query = 'CREATE SEQUENCE "seq_'.$sequence.'"';
+        $id = @pg_exec($this->m_link_id, $query);
+
         /* try again */
         $query = "SELECT nextval('seq_".$sequence."') AS nextid";
         $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
