@@ -190,8 +190,8 @@
       $action_submit = '';
       }
       
-      $editor_height = 200;
-      $editor_width= 550;
+      $editor_height = 350;
+      $editor_width= 630;
             
       
       $result.=  "<script language=javascript >";
