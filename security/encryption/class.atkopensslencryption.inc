@@ -28,6 +28,7 @@
   {
     var $m_config_default;
     var $m_config_nokey;
+    var $m_backslashreplacestring = "*bs*";
 
     /**
      * The constructor of this class makes two configurations which are used by other functions
@@ -61,7 +62,7 @@
       
       //atkerror("encrypt $input with ".$keys['public']." to $encrypted");
 
-      return $encrypted;
+      return $this->stripbackslashes($encrypted);
     }
 
     /**
@@ -72,6 +73,8 @@
      */
     function decrypt($input, $key)
     {
+      $input = $this->addbackslashes($input);
+
       $keys = $this->getKeys($key);
 
       $key = openssl_get_privatekey($keys['private']);
@@ -213,6 +216,32 @@
     {
       return $keys['private'].$keys['public'];
     }
+    
+    /**
+     * Change every backslash in the backslashreplacestring
+     *
+     * @param string $value   The original string
+     * @return string         The original string, with for every backslash the backslashreplacestring
+     **/
+    function stripbackslashes($value)
+    {
+      $value = str_replace("\\",$this->m_backslashreplacestring,$value);
+      return $value;
+    }
+    
+    /**
+     * Change every backslashreplacestring in a backslash
+     *
+     * @param string $value   The original string
+     * @return string         The original string, with for every backslashreplacestring a backslash
+     **/
+    function addbackslashes($value)
+    {
+      $value = str_replace($this->m_backslashreplacestring,"\\",$value);
+      return $value;
+    }
+    
+    
     
     
   }

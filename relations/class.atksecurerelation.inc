@@ -173,20 +173,49 @@
             $this->m_destInstance->m_postvars["atksearch"] = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
             $records = $this->m_destInstance->selectDb();
            
-            // create lookup table for easy reference.            
+            // create lookup table for easy reference.
             $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);           
             for ($i=0, $_i=count($records); $i<$_i; $i++)
             {
               $link = $records[$i][$this->m_linkbackfield];                              
               $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
+
+              /* Temporary dirty hack */
+              if (!$decryptedlink) {
+                atkdebug("Unable to decrypt link: ".$link.", trying to fix.");
+                
+                $destKey = $records[$i][$this->m_destInstance->primaryKeyField()];
+
+                //try to fix it (problem with slashes)
+                $query = "SELECT ".$this->m_linkbackfield." FROM ".$this->m_destInstance->m_table." WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
+                $result = $g_db->getrows($query);
+                $link_better = $result[0][$this->m_linkbackfield];
+                $decryptedlink = $this->m_crypt->decrypt($link_better,$linkpass);
+                
+                if($decryptedlink) {
+                  //change in the database
+                  $link_better = $this->m_crypt->stripbackslashes($link_better);
+                  $query = "UPDATE ".$this->m_destInstance->m_table." SET ".$this->m_refKey."='".addslashes($link_better)."' WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
+                  $g_db->query($query);
+                  atkdebug("Fixed!");
+                }
+                else {
+                  atkdebug("Still unable to decrypt link: ".$link_better.", for id=".$destKey);
+                }
+              }
+              /* end of temporary dirty hack */
               
-              if (!$decryptedlink) atkdebug("Unable to decrypt link: ".$link);
+              
+
+              if(!$decryptedlink)
+                atkdebug("Unable to decrypt link: ".$link);
               else
               {
                 $this->m_keylookup[$decryptedlink] = $i;
                 $this->m_records[] = $records[$i];     
               }
             }
+
             return $this->m_records;
           }
         }
@@ -216,6 +245,11 @@
         $this->m_refKey = $backup_refkey;
       }
     }
+
+    function analyseFailures($failures) {
+      //atkerror(arrayToString($failures));
+    }
+  
   
     /**
      * For creating a new user put the linkpassword in the db

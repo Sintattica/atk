@@ -127,5 +127,29 @@
     {
       return $this->getRandomString(6);
     }
+    
+    /**
+     * For use of strimslashes function
+     * This implementation does nothing
+     *
+     * @param string $value   The original string
+     * @return string         The original string
+     **/
+    function stripbackslashes($value)
+    {
+      return $value;
+    }
+
+    /**
+     * For use of strimslashes function
+     * This implementation does nothing
+     *
+     * @param string $value   The original string
+     * @return string         The original string
+     **/
+    function addbackslashes($value)
+    {
+      return $value;
+    }
   }
 ?>
