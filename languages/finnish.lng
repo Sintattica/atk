@@ -127,5 +127,11 @@
   $txt_check_all = "Select all";
   $txt_check_none = "Select none";
   $txt_invert_selection = "Invert selection";
+  
+  // Strings for atkFileEditor
+  $txt_file_exists = "A file with this name already exists";
+  $txt_filename_invalid = "This filename is invalid";
+  $txt_filename = "Filename";
+  $txt_filecontent = "Content";  
     
 ?>

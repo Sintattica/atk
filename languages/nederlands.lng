@@ -145,4 +145,10 @@
   $txt_check_none = "Niets selecteren";
   $txt_invert_selection = "Selectie omkeren";
   
+  // Strings for atkFileEditor
+  $txt_file_exists = "Er bestaat al een bestand met deze naam";
+  $txt_filename_invalid = "Deze bestandsnaam is niet geldig";
+  $txt_filename = "Bestandsnaam";
+  $txt_filecontent = "Inhoud";
+  
 ?>
