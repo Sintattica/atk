@@ -134,5 +134,28 @@
   
   $txt_title_session_expired = "Session expired";
   $txt_explain_session_expired = "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.";
+  
+  // visual html editor
+  $txt_ww_sourcemode = "Source mode";
+  $txt_ww_visualmode = "Visual mode";
+
+  // multi-record actions selection
+  $txt_select_all     = "Select all";
+  $txt_deselect_all   = "Deselect all";
+  $txt_select_invert  = "Invert selection";
+  $txt_with_selected  = "With selected";
+  $txt_submit         = "Go";
+
+  // Login form
+  $txt_login_form = "Login";
+  $txt_username = "Username";
+  $txt_password = "Password";
+  $txt_login = "Login";
+  $txt_auth_max_loginattempts_exceeded = "Too many retries. Login has been disabled. Please contact your system administrator.";
+  $txt_auth_mismatch = "Username and/or password are incorrect. Please try again.";
+  $txt_auth_account_locked = "This account has been locked. Try a different account if possible, or contact your system administrator.";
+  
+  $txt_wysiwyg_fontface = "Font";
+  $txt_wysiwyg_fontsize = "Pt";
 
 ?>

@@ -177,15 +177,16 @@
   $txt_username = "Gebruikersnaam";
   $txt_password = "Wachtwoord";
   $txt_login = "Inloggen";
-  $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw systeembeheerder.";
-  $txt_account_locked = "Uw account is vergrendeld. Neem contact op met uw systeembeheerder om uw account te ontgrendelen.";
-
+  $txt_auth_max_loginattempts_exceeded = "Teveel pogingen. Inloggen is geblokkeerd. Neem contact op met uw systeembeheerder.";
+  $txt_auth_mismatch = "Gebruikernaam en/of wachtwoord zijn niet juist. Probeert u het opnieuw.";
+  $txt_auth_account_locked = "Dit account is vergrendeld. Probeer indien mogelijk een ander account, of neem contact op met uw systeembeheerder.";
+                    
+  $txt_wysiwyg_fontface = "Lettertype";
+  $txt_wysiwyg_fontsize = "Pt";
+  
   $txt_lock_locked  = "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.";
 
   $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".
                       "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
                       "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
-                      
-  $txt_wysiwyg_fontface = "Lettertype";
-  $txt_wysiwyg_fontsize = "Pt";
 ?>

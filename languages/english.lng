@@ -121,7 +121,7 @@
 
   $txt_login_failed = "Login failed";
   $txt_auth_no_server = "No server specified. No authentication possible (please consult your system administrator).";
-  $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";
+  $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";  
 
   $txt_error_primarykey_exists = "A record with this key already exists";
   $txt_error_invalid_email = "Invalid e-mail address";
@@ -160,8 +160,11 @@
   $txt_username = "Username";
   $txt_password = "Password";
   $txt_login = "Login";
-  $txt_max_loginattempts_exceeded = "Your username and password do not match.<br>Please contact your system administrator";
+  $txt_auth_max_loginattempts_exceeded = "Too many retries. Login has been disabled. Please contact your system administrator.";
+  $txt_auth_mismatch = "Username and/or password are incorrect. Please try again.";
+  $txt_auth_account_locked = "This account has been locked. Try a different account if possible, or contact your system administrator.";
   
   $txt_wysiwyg_fontface = "Font";
   $txt_wysiwyg_fontsize = "Pt";
+  
 ?>
