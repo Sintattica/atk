@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/23 13:21:22  peter
+   * Introduction of module support. An ATK application can now have zero
+   * or more modules which can, but don't have to, contain ATK nodes.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -156,8 +160,7 @@
       $this->createDestination();
       $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
-      $classname = $this->m_destination;
-      $current = new $classname();
+      $current = createNode($this->m_destination); 
       $current->m_records[0] = $record[$this->fieldName()];
 
       $currentPk = $current->primaryKey();

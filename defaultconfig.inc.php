@@ -39,4 +39,6 @@
   // An administrator password that is empty will *DISABLE* administrator login!
   $config_administratorpassword = "";
 
+  // Module path (without trailing slash!)
+  $config_module_path = "./modules"
 ?>

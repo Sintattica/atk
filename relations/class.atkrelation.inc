@@ -16,6 +16,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/23 13:21:22  peter
+   * Introduction of module support. An ATK application can now have zero
+   * or more modules which can, but don't have to, contain ATK nodes.
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -64,8 +68,9 @@
     {
       $this->atkAttribute($name, $flags);
       $this->m_destination = $destination;
-// the next line would be efficient, but leads to stack overflows.. :(
-    //  $this->createDestination();
+      
+      // the next line would be efficient, but leads to stack overflows.. :(
+      // $this->createDestination();
     }
 
     /**
@@ -73,11 +78,9 @@
     */
     function createDestination()
     {
-      $classname = $this->m_destination;
-      include "class.".$classname.".inc";      
       if ($this->m_destInstance == "")
       {
-        $this->m_destInstance = new $classname();
+        $this->m_destInstance = createNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
       }
     }

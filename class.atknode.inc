@@ -91,6 +91,10 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/04/23 13:21:22  peter
+   * Introduction of module support. An ATK application can now have zero
+   * or more modules which can, but don't have to, contain ATK nodes.
+   *
    * Revision 4.0  2001/04/23 10:19:38  ivo
    * Revision number update
    *
@@ -275,15 +279,23 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    */
 
-   // Global theme variable, must be declared before the includes
-   $g_theme = array();
+  // Global theme variable, must be declared before the includes
+  $g_theme = array();
 
-   // Global array to store meta-information about tables, so we don't have to read them from the db for each class instance.
-   $g_tableMeta = Array();
+  // Global array to store meta-information about tables, so we don't have to read them from the db for each class instance.
+  $g_tableMeta = Array();
 
-   // Global debug msg
-   $g_debug_msg = "";
- 
+  // Global debug msg
+  $g_debug_msg = "";
+
+  // Global node list
+  $g_nodes = array();
+
+  // Global module list
+  $g_modules = array();
+  
+  // Global menu
+  $g_menu = array();
 
   require "atk/atkconfigtools.inc";
   require "atk/defaultconfig.inc.php";
@@ -295,6 +307,9 @@ if (!defined("CLASS_ATKNODE_INC"))
   require "atk/attributes/class.atkattribute.inc";
   require "atk/relations/class.atkrelation.inc";
   require "atk/security/class.atksecuritymanager.inc";
+  require "atk/atkmenutools.inc";  
+  require "atk/modules/atkmoduletools.inc";
+  require "atk/modules/class.atkmodule.inc";
 
   // Default language file
   require "atk/languages/".$config_languagefile;
@@ -314,6 +329,31 @@ if (!defined("CLASS_ATKNODE_INC"))
   $g_db->m_password = $config_databasepassword;
   $g_db->m_host     = $config_databasehost;
   $g_db->m_debug    = 0;
+
+  /************* MODULE HANDLING *************/
+
+  // Auto-register modules
+  if (file_exists("$config_module_path/config.modules.inc"))
+    include "$config_module_path/config.modules.inc";
+  
+  // Module specific language file
+  for ($i = 0; $i < sizeof($g_modules); $i++)
+    if (file_exists("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile"))
+      require ("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile");
+  
+  // Module attributes (do not move, needs database!)
+  for ($i = 0; $i < sizeof($g_modules); $i++)
+  {
+    $module = new $g_modules[$i]();
+    $attr_arr = $module->getAttributes();
+    for ($j = 0; $j < sizeof($attr_arr); $j++)
+    {
+      if (file_exists("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]))
+      require ("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
+    }
+  }
+  
+  /*******************************************/
 
   // Login
   if (!$g_securityManager->authenticate())
@@ -674,6 +714,34 @@ if (!defined("CLASS_ATKNODE_INC"))
           $this->m_attribList[$tmpattrib->fieldName()] = $tmpattrib;
         }
       }
+    }
+
+    /**
+     * Sets the module name a certain node is part off.
+     * @param $module the module name
+     */
+    function setModule($module)
+    {
+      $this->m_module = $module;
+    }
+
+    /**
+     * Get the relative path for this node
+     * (this does *not* include the trailing slash!)
+     */
+    function getPath()
+    {
+      global $config_module_path;
+      
+      /* path for module */
+      if (!empty($this->m_module))
+      {
+        $path = "$config_module_path/".$this->m_module;
+        return $path;
+      }
+      
+      /* default path */
+      return "./";
     }
 
     /**

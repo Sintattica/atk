@@ -2,8 +2,8 @@
   // Setup the system
   require "atk/class.atknode.inc";
 
-  require "class.".$atknodetype.".inc";
-  $obj = new $atknodetype();
+  // Create node
+  $obj = createNode($atknodetype); 
 
   if (count($HTTP_GET_VARS)>0)
   {
@@ -15,6 +15,4 @@
   }
 
   $g_layout->outputFlush();
-
 ?>
-
