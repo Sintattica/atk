@@ -89,6 +89,11 @@
      * 
      * This function will be overrided by the database specific subclasses of
      * atkDDL.
+     * Note: in all derived subclasses, the following types *must* be 
+     * supported: number, decimal, string, date, text, datetime, time, 
+     * boolean.
+     * If the database does not have a proper field type, consider using
+     * a varchar or number to store the value.
      * 
      * @param $generictype  The datatype to convert.
      */
@@ -137,6 +142,44 @@
       }
       return "";
     }
+    
+    /**
+     * Build one or more ALTER TABLE queries and return them as an array of
+     * strings.
+     *
+     * The default implementation assumes that multiple fields can be added
+     * with one single ALTER TABLE statement. If a database needs to be
+     * supported which doesn't have this ability, then an override for this 
+     * function should be implemented in the appropriate atk<database>ddl 
+     * class.
+     *
+     * @return An array of ALTER TABLE queries.
+     */
+    function buildAlter()
+    {  
+      if ($this->m_table!="")
+      {
+        $fields = $this->buildFields();  
+    
+        if ($fields!="")
+        {
+          $q = "ALTER TABLE ".$this->m_table." ADD\n (";
+        
+          $q.= $fields;
+          
+          $constraints = $this->buildConstraints();
+          
+          if ($constraints!="")
+          {       
+            $q.= ",\n".$constraints;
+          }
+       
+          $q.= ")";
+        }
+        return array($q); 
+      }
+      return "";
+    }            
     
     /**
      * Generate a string for a field, to be used inside a CREATE TABLE
@@ -228,6 +271,7 @@
         case "date":
         case "text":
         case "datetime":
+        case "time":
         case "boolean":
           return false; 
           break;
@@ -244,7 +288,7 @@
       $strfields = array();
       foreach ($this->m_fields as $fieldname => $fieldconfig)
       {
-        if ($fieldname!="" && $fieldconfig["type"]!="")
+        if ($fieldname!="" && $fieldconfig["type"]!="" && $this->getType($fieldconfig["type"])!="")
         {
           $strfields[] = $this->buildField($fieldname, $fieldconfig["type"], $fieldconfig["size"], $fieldconfig["flags"], $fieldconfig["default"]);
         }
@@ -273,8 +317,7 @@
      * Build and execute the CREATE TABLE query. 
      *
      * @return true  if the table was created successfully
-     *         false if anything went wrong, or if no
-     *               table could be created.
+     *         false if anything went wrong, or if no table could be created.
      */
     function executeCreate()
     {
@@ -283,6 +326,36 @@
       if ($query!="")
       {
         $g_db->query($query);        
+        return true;
+      }
+      else
+      {
+        atkdebug("atkddl::executeCreate: nothing to do!");
+      }
+      return false;
+    }
+    
+    /**
+     * Build and execute ALTER TABLE queries. 
+     *
+     * Note that more than one query might be performed, depending on the
+     * number of fields added, and the database capabilities (some databases
+     * are capable of adding several fields in one ALTER TABLE query, others
+     * aren't and need to perform multiple queries).
+     *
+     * @return true  if the table was altered successfully
+     *         false if anything went wrong, or if no table could be altered.
+     */
+    function executeAlter()
+    {
+      global $g_db;
+      $queries = $this->buildAlter();      
+      if (count($queries)>0)
+      {
+        for ($i=0, $_i=count($queries); $i<$_i; $i++)
+        {
+          $g_db->query($queries[$i]);
+        }
         return true;
       }
       else
