@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.14  2001/09/05 12:17:05  sandy
+ * bug fix for the external modules
+ *
  * Revision 1.13  2001/08/30 15:28:35  ivo
  * Added preliminary external module support.
  *
@@ -148,7 +151,7 @@
     else 
     {
       // module can be an external module.. if it is, we use it's defined path.
-      if (in_array($module, array_keys($g_externalModules)))
+      if (is_array($g_externalModules)&&in_array($module, array_keys($g_externalModules)))
       {
         $file = $g_externalModules[$module]."/class.$type.inc";
       }
