@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.17  2001/06/19 11:41:14  ivo
+   * Global vars can now be namespace-global or completely global.
+   *
    * Revision 1.16  2001/06/14 13:48:10  ivo
    * New cool feature: namespaces for sessionmanagement.
    *
@@ -90,20 +93,23 @@
       $this->globalscope($postvars);           
       $this->stackscope($postvars);
     }
-    
-    function globalVar($var, $value="")
+        
+    function globalVar($var, $value="", $no_namespace=false)
     {
       global $g_sessionData;
       
       if ($value=="") $value = $GLOBALS[$var];
       
-      $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
+      if ($no_namespace) $g_sessionData["globals"][$var] = $value;
+      else $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
+      
     }
     
-    function getValue($var)
+    function getValue($var, $no_namespace=false)
     {
       global $g_sessionData;
-      return $g_sessionData[$this->m_namespace]["globals"][$var];
+      if ($no_namespace) return $g_sessionData["globals"][$var];
+      else return $g_sessionData[$this->m_namespace]["globals"][$var];
     }
     
     function stackVar($var, $value="")
