@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.18  2001/09/07 09:50:45  ivo
+  * Added session debug information to the error reporter.
+  *
   * Revision 4.17  2001/07/27 13:16:14  sandy
   * advanced colorpicker attrib + new popup system
   *
@@ -606,7 +609,9 @@
    */
   function mailreport()
   {
-    global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS, $HTTP_GET_VARS, $txt_app_title;
+    global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS;
+    global $HTTP_GET_VARS, $txt_app_title, $g_sessionManager, $g_sessionData;
+    
     if ($config_mailreport!="") // only if enabled..
     {
       $subject = "[".$HTTP_SERVER_VARS["SERVER_NAME"]."] $txt_app_title error";
@@ -634,6 +639,40 @@
           $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
         }
       }                  
+    
+      if (is_object($g_sessionManager))
+      {
+        $body.= "\n\nATK SESSION\n".str_repeat("-",70);
+        $body.= "\nNamespace: ".$g_sessionManager->m_namespace."\n";
+        $stack = $g_sessionData[$g_sessionManager->m_namespace]["stack"];
+        for($i=0;$i<count($stack);$i++)
+        {
+          $body.="\nStack level $i:\n";
+          $item = $stack[$i];          
+          foreach ($item as $key=>$value)          
+          {
+            $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+          }   
+        }        
+        $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
+        if(count($ns_globals)>0)
+        {
+          $body.="\nNamespace globals:\n";        
+          foreach ($ns_globals as $key=>$value)          
+          {
+            $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+          }   
+        }
+        $globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
+        if (count($globals)>0)
+        {
+          $body.="\nGlobals:\n";        
+          foreach ($globals as $key=>$value)          
+          {
+            $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
+          }   
+        }
+      }
       
       $body.= "\n\nSERVER INFORMATION\n".str_repeat("-",70)."\n";
       
