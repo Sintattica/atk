@@ -58,7 +58,7 @@
 
   // add options tab containing logout
    $tabs   .= '   rows[1]['.$tab.'] = "Opties"'."\n";
-   $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="?atklogout=1">'.text("logout").'</a></div>'."\n";  
+   $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.text("logout").'</a></div>'."\n";  
 ?>
 <HTML>
 <HEAD>
