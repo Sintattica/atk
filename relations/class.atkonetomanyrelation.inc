@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.16  2001/06/27 14:27:09  sandy
+   * bug fix for the copy function
+   *
    * Revision 4.15  2001/06/26 13:04:40  sandy
    * fixed a bug for the copy function
    *
@@ -289,18 +292,34 @@
 
     /**
      * Store values only when it's an array and not empty
+     * For onetomanyrelation, this function does not have much use, since it 
+     * stores records using it's 'add link'. But the copyDb function however
+     * might use this.
+     * To prevent double storage when clicking the "save" button on a form
+     * we only store something when in add mode. In 'normal' add forms, we 
+     * don't have a oneToManyRelation, so this add is only called when 
+     * doing 'abnormal' adds, like a copy function.
+     *
      * @param $notused ??
      * @param $record Record
      */
-    function store($notused, $record)
+    function store($notused, $record, $mode)
     { 
-      $onetomanyrecs = $record[$this->fieldName()];
-      if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
+      if ($mode=="add") // when copying, mode is "add".
       {
-        $this->createDestination();
-        for ($i=0;$i<count($onetomanyrecs);$i++)
+        $onetomanyrecs = $record[$this->fieldName()];
+        if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
         {
-          $this->m_destInstance->addDb($onetomanyrecs[$i]);
+          $this->createDestination();
+          for ($i=0;$i<count($onetomanyrecs);$i++)
+          {
+            // the referential key of the onetomanyrecs could be wrong, if we 
+            // are called for example from a copy function. So just in case, 
+            // we reset the correct key.
+            $onetomanyrecs[$i][$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+          
+            $this->m_destInstance->addDb($onetomanyrecs[$i]);
+          }
         }
       }
     }
