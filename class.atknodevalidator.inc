@@ -10,7 +10,7 @@
   * @copyright Ibuildings.nl BV
   * @package atk
   */
-  class atkNodeValidator extends atkNode
+  class atkNodeValidator 
   {
 
     /**
@@ -122,7 +122,7 @@
           if (!( $p_attrib->isEmpty($record)))
           {
             $funcname = $p_attrib->m_name."_validate";
-            if (method_exists($this,$funcname))
+            if (method_exists($this->m_nodeObj, $funcname))
             {
               $this->m_nodeObj->$funcname($record, $this->m_mode);
             }
@@ -180,7 +180,7 @@
             {
               $funcname = $p_attrib->m_name."_validate";
 
-              if (method_exists($this,$funcname))
+              if (method_exists($this->m_nodeObj, $funcname))
               {
                 $this->m_nodeObj->$funcname($record, $this->m_mode);
               }
