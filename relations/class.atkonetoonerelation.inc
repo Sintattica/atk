@@ -8,6 +8,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/10/26 10:16:15  ivo
+   * Fixed bug in primary key handling of onetoonerelation.
+   *
    * Revision 4.6  2001/09/07 07:21:32  ivo
    * Improved primarykey handling.
    *
@@ -104,6 +107,7 @@
         else
         {
           $mode = "edit";
+          $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
         }
       }
       else
