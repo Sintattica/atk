@@ -189,7 +189,9 @@ class atkPasswordAttribute extends atkAttribute
    */
   function hide($record="")
   {
-    return "";
+    $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[hash]"'.
+              ' value="'.$record[$this->fieldName()]["hash"].'">';
+    return $result;
   }
 
   /**
