@@ -22,6 +22,8 @@ Changes in ATK 5.0.5
 + Added autoadjust feature to atkTextAttribute [Boy]
 + Added deleteAllowed method to all attributes and a AF_RESTRICTED_DELETE
   flag to the atkOneToManyRelation [Boy]
+* Fix for bug that would cause obligatory atkdateattributes to be empty 
+  instead of assuming the current date [Boy]
 
 Changes in ATK 5.0.4
 --------------------
