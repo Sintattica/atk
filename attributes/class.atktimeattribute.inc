@@ -1,4 +1,4 @@
-<?
+<?php
   /**
    * The atkTimeAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined time values.

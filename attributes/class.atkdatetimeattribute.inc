@@ -1,4 +1,4 @@
-<?
+<?php
 
   include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");

@@ -1,4 +1,4 @@
-<?
+<?php
   // NOTE:
   // $config_atkroot should be specified in the mainprogram
   // which uses this include file
