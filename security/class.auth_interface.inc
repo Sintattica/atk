@@ -103,14 +103,6 @@
       return array();
     }
     
-    /**
-     * This function returns an errormessage as a string
-     */
-    function getError()
-    {
-      return array();
-    }
-        
   }
 
 ?>
