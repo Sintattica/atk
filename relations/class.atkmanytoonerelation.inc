@@ -335,5 +335,4 @@
     }
   }
 
-  include $config_atkroot."atk/relations/class.atkmanytoonetreerelation.inc";
 ?>
