@@ -228,7 +228,7 @@
 
   }
 
-  function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+  function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
   {
     $newlevel = session_level($sessionstatus, $levelskip);
     $vars="";
@@ -264,9 +264,8 @@
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
     global $g_stickyurl;
-
     if ($name=="") $name=$url;
-    if (strpos($url,"?")>0)
+    if (strpos($url,"?")!==false)
     {
       $start = "&";
     }
@@ -277,7 +276,7 @@
 
     $url.=$start;
 
-    $url.=session_vars($sessionstatus, $levelskip);
+    $url.=session_vars($sessionstatus, $levelskip, $url);
    
     return $url;
   }
