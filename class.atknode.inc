@@ -1549,9 +1549,6 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $p_attrib->m_ownerInstance = &$this;
-        
-        // tabje truken
-        $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
       }
 
       // See if there are modules active that modify all nodes with the same name
@@ -1588,7 +1585,14 @@
           $mod->$modifiername($this);
         }
       }
-
+      
+      // We set the tabs for the attributes
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib->setTabs($this->m_attributeTabs[$attribname]);
+      }
+      
       $this->attribSort();
 
       if ($this->hasFlag(NF_LOCK))
