@@ -108,6 +108,7 @@
   "fri" => "Vri",
   "friday" => "vrijdag",
   "help" => "Help",
+  "import" => "Importeer gegevens",
   "import_allfield" => "Veld voor gebruik in iedere record",
   "import_analyse" => "Analyseer opnieuw",
   "import_detectedcolumns" => "Gedetecteerde aantal kolommen",
