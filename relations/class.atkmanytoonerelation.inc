@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.17  2001/08/31 15:28:44  ivo
+   * manytoonerelation now stores '0' instead of '' if no record is selected.
+   *
    * Revision 4.16  2001/08/27 07:38:58  ivo
    * changed validate() api: atk now passes record to the function instead of
    * just one value. Also added a mode parameter that indicates whether we
@@ -230,7 +233,7 @@
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="0">'.text('select_none');
+            $result.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField().'=0">'.text('select_none');
           }
 
           for ($i=0;$i<count($recordset);$i++)
