@@ -358,7 +358,7 @@
     function ret_tpl($tplname, $vars="", $fallbacktpl="")
     {
       $template = $this->getTemplate($tplname, $fallbacktpl);
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."images",$template);
 
       if (is_array($vars))
       {
@@ -738,6 +738,19 @@
         if ($fallback!="") return $this->getTemplate($fallback);
       }
       return "";
+    }
+    
+    function theme_style($stylesheetname)
+    {
+      if (file_exists($this->m_tpldir."styles/$stylesheetname"))
+      {
+        $this->register_style($this->m_tpldir."styles/$stylesheetname");
+      }
+      else
+      {
+        // Not found in current theme, fallback to default
+        $this->register_style(atkconfig("atkroot")."atk/themes/default/styles/$stylesheetname");
+      }
     }
 
     function initTheme()
