@@ -44,6 +44,7 @@
   $g_theme["TableFontSize"] = "10"; // Font size in pt.
   $g_theme["TableFontWeight"] = "none"; // FontWeight (bold)
   $g_theme["TableFgColor"] = "#000000"; // Table font color;
+  $g_theme["TableBgColor"] = "#FFFFFF"; // Table font color;
 
   //Display settings  
   $g_theme["border"] = "1";
