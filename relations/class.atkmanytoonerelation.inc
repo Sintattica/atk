@@ -225,6 +225,7 @@
         }
         else
         {
+          $id = $fieldprefix.$this->fieldName();
           $autolink = "";
           if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
           {
@@ -233,9 +234,8 @@
             $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
 
             $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
-            $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
-          }
-          $id = $fieldprefix.$this->fieldName();
+            $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+          }          
           $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
           $result.= '<select id="'.$id.'" name="'.$id.'">';
           if ($this->hasFlag(AF_OBLIGATORY)==false)
@@ -243,11 +243,14 @@
             // Relation may be empty, so we must provide an empty selectable..
             $result.= '<option value="">'.text('select_none');
           }
+          
+          // Newly added check
+          $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
 
           for ($i=0;$i<count($recordset);$i++)
           {
             $pk = $this->m_destInstance->primaryKey($recordset[$i]);
-            if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
+            if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
             $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
           }
           $result.='</select>';
