@@ -51,8 +51,8 @@
    *
    * $Id$
    * $Log$
-   * Revision 4.75  2001/07/11 20:38:28  ivo
-   * You can now have the edit/delete links to the left of the recordlist.
+   * Revision 4.76  2001/07/11 20:41:10  ivo
+   * Oops.. forgot the totals row with the previous orientation checkin.
    *
    * Revision 4.74  2001/07/04 10:50:27  ivo
    * Fix to help feature (help.php moved to skel)
@@ -1315,6 +1315,12 @@
       {
         $totalRow = '<tr>';
         
+        // one empty title which comes below the 'edit/delete/...' column
+        if (($orientation=="left"||$orientation=="both")&&(count($actions)>0||$searchable))
+        {  
+          $totalRow.=$g_layout->ret_td_datatitle();
+        }
+        
         // Third loop.. this time for the totals row.
         foreach (array_keys($this->m_attribList) as $attribname)
         {
@@ -1342,7 +1348,7 @@
         }     
       
         // one empty title which comes below the 'edit/delete/...' column
-        if (count($actions)>0||$searchable)
+        if (($orientation=="right"||$orientation=="both")&&(count($actions)>0||$searchable))
         {  
           $totalRow.=$g_layout->ret_td_datatitle();
         }
