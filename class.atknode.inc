@@ -3584,9 +3584,7 @@
      */
     function updateDb(&$record)
     {
-      ("UPDATEDB CALLL!!!");
       global $g_db;
-
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
