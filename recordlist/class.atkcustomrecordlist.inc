@@ -29,7 +29,8 @@
    */
   class atkCustomRecordList extends atkRecordList 
   {    
-
+  	var $m_exportcsv = true;
+  	
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
      * @param $recordset $suppresslist
@@ -201,9 +202,21 @@
         if (!array_key_exists("filename", $outputparamKeyVal))
           $outputparamKeyVal["filename"] = "achievo";
 
-        $exporter = &atknew("atk.utils.atkfileexport");        
-        $exporter->export($output, $outputparamKeyVal["filename"],"csv","csv",$compression);        
+        if ($this->m_exportcsv)
+        {
+          $exporter = &atknew("atk.utils.atkfileexport");        
+          $exporter->export($output, $outputparamKeyVal["filename"],"csv","csv",$compression);        
+        }
+        else 
+        {
+        	return $output;
+        }
       }
+    }
+        
+    function setExportingCSVToFile($export = false)
+    {
+    	if (is_bool($export)) $this->m_exportcsv = $export;
     }
   }
 
