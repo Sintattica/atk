@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.2  2001/04/23 15:59:07  peter
+   * Removed something that didn't belong there...
+   *
    * Revision 4.1  2001/04/23 13:21:22  peter
    * Introduction of module support. An ATK application can now have zero
    * or more modules which can, but don't have to, contain ATK nodes.
@@ -21,7 +24,6 @@
   require "atk/class.atknode.inc"; 
   require "atk/atkmenutools.inc";  
   include "config.menu.inc";
-  include "theme.inc";
 
   /* first add module menuitems */
   for ($i = 0; $i < count($g_modules); $i++)
