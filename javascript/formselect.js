@@ -109,6 +109,15 @@ function atkSubmitMRA(name, form, target)
       target += '&atkselector[]=' + list[i].value;
       selectorLength++;
     }
+    
+   // custom list
+   for (var i=0; i< form.elements.length; i++)
+   {    
+    if (form.elements[i].name.substring(0,7)=="custom_")
+    {
+       target += "&"+form.elements[i].name+'='+form.elements[i].value; 
+     }
+   }
 
   /* change atkescape value and submit form */
   if (selectorLength > 0)
