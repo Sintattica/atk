@@ -107,7 +107,23 @@
     {    
       $this->createDestination();
 
-      return $this->m_destInstance->descriptor($record[$this->fieldName()]);
+      $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+      
+      $result = $title; // default result is just the title.            
+      
+      if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
+      {
+        if ($this->m_destInstance->allowed("edit")&&!$this->m_destInstance->hasFlag(NF_NO_EDIT))
+        {
+          $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
+        }
+        else if ($this->m_destInstance->allowed("view")&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+        {        
+          $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
+        }
+      }
+      
+      return $result;
     }
 
     /**
@@ -133,7 +149,8 @@
 
         if ($this->m_destinationFilter!="")
         {
-          $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+          $filter = stringparse($this->m_destinationFilter,$record);
+          $this->m_destInstance->addFilter($filter);
         }
         $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         
@@ -146,8 +163,18 @@
           $result.= $this->hide(array($this->fieldName()=>$recordset[0]), $fieldprefix);          
         }
         else
-        {
-          $result = '<select name="'.$fieldprefix.$this->formName().'">';
+        {       
+          $autolink = "";
+          if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
+          {            
+            global $g_layout;
+            $g_layout->register_script("atk/javascript/class.atkmanytoonerelation.js.php");
+            $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
+      
+            $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
+            $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+          }
+          $result.= '<select name="'.$fieldprefix.$this->formName().'">';
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
             // Relation may be empty, so we must provide an empty selectable..
@@ -161,6 +188,8 @@
             $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
           }
           $result.='</select>';
+          
+          $result.=$autolink;
         }
       }
       else

@@ -75,6 +75,9 @@
   /* flag(s) specific for atkPasswordAttribute */
   define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
   define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
+  
+  /* flag(s) specific for atkManyToOneRelation */
+  define("AF_RELATION_AUTOLINK",        AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
 
   /**
    * The atkAttribute class represents an attribute of an atkNode.
