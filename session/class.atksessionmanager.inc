@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.6  2001/05/02 14:21:51  sandy
+   * new keyword in the session manager (clean)
+   *
    * Revision 1.5  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
    * new relational features: maxRecords for oneToManyRelation, filter for
@@ -109,7 +112,6 @@
             
       $stack = &$g_sessionData["stack"];            
             
-           
       if ($atklevel==-1||!is_array($stack))
       {
         atkdebug("Cleaning stack");
@@ -131,7 +133,15 @@
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
-            $currentitem[$var] = $postvars[$var];
+            if ($postvars[$var]=="clear")
+            {
+              $currentitem[$var] = "";
+            }
+            else
+            {
+              $currentitem[$var] = $postvars[$var];
+            }
+            
           }
         }
               
