@@ -41,6 +41,7 @@ Changes in ATK 5.0.7
 * Bugfixes and codecleanups in CSV import feature (bug #406). [Ivo]
 * Upgraded the adodb-time library, for better date supoprt. [Harrie]
 * Updated Norwegian translation. [Olav]
+* Improved importhandler to support more CSV formats [Ivo,Harrie]
 
 Changes in ATK 5.0.6
 --------------------
