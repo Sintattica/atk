@@ -241,20 +241,6 @@
       return false;
     }
 
-   /**
-    * Check if destination node has a relation to this node, or a 'regular'
-    * atkattribute to store it's referential key.
-    */
-    function destinationHasRelation()
-    {
-      if ($this->createDestination())
-      {
-        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];
-        if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
-      }
-      return false;
-    }
-
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
