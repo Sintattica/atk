@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.14  2001/06/26 11:27:21  ivo
+   * Administrator user didn't properly log in. Fixed that.
+   *
    * Revision 4.13  2001/06/19 12:58:09  peter
    * Session cookie parameters changed so the session cookie will not only
    * be domain based but also domain/path based!
@@ -183,7 +186,7 @@
         if ($config_administratorpassword!=""&&$PHP_AUTH_USER=="administrator"&&$PHP_AUTH_PW==$config_administratorpassword)
         {
           $this->m_user = Array("name"=>"administrator","level"=>-1);
-          // for convenience, we also store the user as a global variable.             
+          // for convenience, we also store the user as a global variable.                     
           atkdebug("Administrator (configfile) logged in");
           $authenticated = true;
         } 
@@ -204,7 +207,7 @@
             $authenticated = true;
 
             // Remember that we are logged in..
-            $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
+            //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
 
             // write cookie
             if (atkconfig("authentication_cookie")&&$PHP_AUTH_USER!="administrator")
@@ -222,7 +225,7 @@
       else
       {
     //    $session_auth = $ATK_VARS["authentication"];
-      $session_auth = $g_sessionManager->getValue("authentication", true);  
+        $session_auth = $g_sessionManager->getValue("authentication", true);  
         if (atkconfig("authentication_session") && session_is_registered("login") && !empty($session_auth["authenticated"]) && !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];
@@ -247,6 +250,7 @@
 
       // return
       $GLOBALS["g_user"] = $this->m_user;
+      $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
       return true;
     }     
           
