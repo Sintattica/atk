@@ -100,6 +100,19 @@
                                      "",
                                      "admin");
 
+        //if the startat var is to big to get results back
+        if(count($recordset) == 0 && $node->m_postvars['atkstartat'] != 0)
+        {
+          $node->m_postvars['atkstartat'] = 0;
+          $recordset = $node->selectDb($node->m_postvars['atkfilter'],
+                                     $node->m_postvars['atkorderby'],
+                                     array("offset" => $node->m_postvars['atkstartat'], "limit" => $node->m_postvars['atklimit']),
+                                     $node->m_listExcludes,
+                                     "",
+                                     "admin");
+        }
+        
+
         // check for search-action (if search returns only one record!)
         if (is_array($node->m_postvars['atksearch']) && count($node->m_postvars['atksearch']) > 0 &&
             is_array($node->m_search_action) && count($recordset) == 1)
@@ -127,7 +140,7 @@
         }        
         
         $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
-  	 
+     
         if ($navigation)
         {
           if ($params["index"]) $params["index"].="<br />";
