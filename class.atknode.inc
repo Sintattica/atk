@@ -1530,7 +1530,7 @@
         // alternate colors of rows
         $output.='<tr class="row'.(($i%2==0)?1:2).'" '.(empty($bgn) ? '' : 'style="background-color:'.$bgn.'" ').
                  '    onmouseover="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$bgh.'\'"'.
-                 '    onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$bgn.'\'">';
+                 '    onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.(empty($bgn)?'':$bgn).'\'">';
 
         if ($orientation=="left"||$orientation=="both")
         {
