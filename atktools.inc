@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.11  2001/06/22 14:42:25  ivo
+  * Better errorreport template.
+  *
   * Revision 4.10  2001/06/22 11:44:42  ivo
   * Workaround for IE4 'bug' that causes javascript to decode urlencoded
   * values that it shouldn't encode: atkurlencode and atkurldecode.
@@ -574,7 +577,7 @@
     global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS, $HTTP_GET_VARS, $txt_app_title;
     if ($config_mailreport!="") // only if enabled..
     {
-      $subject = "Error report from $txt_app_title";
+      $subject = "[".$HTTP_SERVER_VARS["SERVER_NAME"]."] $txt_app_title error";
       $from = $txt_app_title;
       
       $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
