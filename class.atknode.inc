@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.87  2001/07/30 18:38:10  sandy
+   * Fixed a bug in the record list, when there are no actions defined.
+   *
    * Revision 4.86  2001/07/27 13:16:14  sandy
    * advanced colorpicker attrib + new popup system
    *
@@ -1375,7 +1378,8 @@
       for ($i=0;$i<count($recordset);$i++)
       {  
         // the functionality list:        
-        // TODO: pick some cool little icons instead of text        
+        // TODO: pick some cool little icons instead of text
+        $actionCol="";        
         if (count($actions)>0)
         {       
           $stractions = "";
