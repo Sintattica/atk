@@ -10,6 +10,9 @@
 *
 * $Id$
 * $Log$
+* Revision 1.1  2001/07/04 10:51:07  ivo
+* help file moved to skel
+*
 * Revision 4.2  2001/06/29 13:15:12  ivo
 * Added cvs headers to file.
 *
