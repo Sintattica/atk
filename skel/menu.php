@@ -13,6 +13,10 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.17  2001/09/12 09:01:50  ivo
+   * Added the menu authorisation optimisation that was already in the rws menu
+   * to the standard atk skel.
+   *
    * Revision 4.16  2001/09/10 12:32:47  ivo
    * Improved module support. Modules can now create modifiers for other nodes.
    * Modules and external modules are now treated equally.
@@ -122,6 +126,16 @@
     $name = $g_menu[$atkmenutop][$i]["name"];
     $url = $g_menu[$atkmenutop][$i]["url"];
     $enable = $g_menu[$atkmenutop][$i]["enable"];
+    
+    if (is_array($enable))
+    {
+      $enabled = false;
+      for ($j=0;$j<(count($enable)/2);$j++)
+      {
+        $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
+      }
+      $enable = $enabled;
+    }
 
     /* delimiter ? */
     if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
