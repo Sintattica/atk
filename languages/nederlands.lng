@@ -199,4 +199,8 @@
   $txt_lock_expired = "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben, ".
                       "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar ".
                       "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toegeëigend!";
+                      
+  $txt_feedback_delete = "Het item is verwijderd.";
+  $txt_feedback_save = "Het item is toegevoegd.";
+  $txt_feedback_update = "De wijzigingen zijn opgeslagen.";
 ?>

@@ -356,6 +356,9 @@
 
     /* the lock instance */
     var $m_lock = NULL;
+    
+    /* List of actions that should give feedback */
+    var $m_feedback = array();
 
     /*** Public functions ***/
 
@@ -2576,7 +2579,8 @@
       {
         // Confirmation page was displayed and 'yes' was clicked
         $recordset = $this->deleteDb($this->m_postvars['atkselector']);
-        $this->redirect();
+        $location = (in_array("delete", $this->m_feedback)?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>"delete")),SESSION_REPLACE):"");        
+        $this->redirect($location);
       }
       elseif (empty($this->m_postvars['cancel']))
       {
@@ -2679,6 +2683,46 @@
     function action_select()
     {
       $this->selectPage();
+    }      
+    
+    function action_feedback()
+    {
+      $this->feedbackPage($this->m_postvars["atkfbaction"]);      
+    }
+    
+    function feedbackPage($action)
+    {
+      global $g_layout;      
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
+      $g_layout->output($this->statusbar());
+      
+      $g_layout->output(text('feedback_'.$action, $this->m_type));
+
+      if (atkLevel()>0)
+      {
+        $g_layout->output('<br><br><form method="get">'.session_form(SESSION_BACK).
+                          '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
+      }
+      
+      $g_layout->output('<br><br>');   
+      
+      $g_layout->ui_bottom();
+    }
+    
+    /**
+     * Use this function to enable feedback for one or more actions.
+     * You can either pass one action or an array of actions.
+     */
+    function setFeedback($action)
+    {
+      if (is_array($action))
+      {      
+        $this->m_feedback = array_merge($this->m_feedback, $actions);
+      }
+      else
+      {
+        $this->m_feedback[] = $action;
+      }
     }
 
     /**
