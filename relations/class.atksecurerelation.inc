@@ -291,7 +291,7 @@
     {
       global $g_db;
       $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable,$this->m_linkfield),$pass);
-      $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id' LIMIT 1";
+      $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id'";
       $g_db->query($query);
     }
         
