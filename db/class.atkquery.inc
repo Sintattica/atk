@@ -65,6 +65,11 @@
      * Array with order by statements
      */
     var $m_orderbys;
+    
+    /**
+     * Do we need to perform a DISTINCT query?
+     */
+    var $m_distinct=false;    
 
     /**
     * Array with generated aliasses
@@ -171,15 +176,16 @@
     }
 
     /**
-    * Add condition to condition Array
-    * @param $condition Condition
-    */
+     * Add condition to condition Array
+     * @param $condition Condition
+     */
     function addCondition($condition)
     {
       if ($condition!="") $this->m_conditions[] = $condition;
     }
+        
 
-  /**
+   /**
     * Add search condition to search condition Array
     * @param $condition Condition
     */
@@ -187,15 +193,25 @@
     {
       if ($condition!="") $this->m_searchconditions[] = $condition;
     }
+    
+    /**
+     * Set the 'distinct' mode for the query.
+     * If set to true, a 'SELECT DISTINCT' will be performed. If set to false,
+     * a regular 'SELECT' will be performed.
+     */
+    function setDistinct($distinct)
+    {
+      $this->m_distinct = $distinct;
+    }
 
     /**
-    * Builds the SQL Select query
-    * @result a SQL Select Query
-    * @param $distinct distinct records?
-    */
+     * Builds the SQL Select query
+     * @result a SQL Select Query
+     * @param $distinct distinct records?
+     */
     function buildSelect($distinct = FALSE)
     {
-      $result = "SELECT ".($distinct ? "DISTINCT ": "");
+      $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
         $result.= $this->m_fields[$i];
@@ -340,7 +356,7 @@
     {
       global $g_db;
       
-      $query = $this->buildInsert();
+      $query = $this->buildInsert(true);
       $g_db->query($query);      
     }
 
