@@ -167,11 +167,11 @@
 				
         $tplfield = array();
 				        
-				$tplfield["tab"] = $field["tabs"][0]; // $this->getTab($field_name);
+				$tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":$field["tabs"][0]); // $this->getTab($field_name);
 				
 				// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
 				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
+				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
 								
 				// ar_ stands voor 'attribrow'.
 				$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
