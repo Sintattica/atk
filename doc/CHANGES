@@ -33,7 +33,7 @@ Changes in ATK 5.0.7
   differently from the main, by using templates and stylesheets. [Boy]
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
   for normal/extended searching and sorting. [Boy, Harrie]
-* Fixed navigating for select mode. [Boy,Yuri]
+* Fixed navigating for select mode. [Boy, Yury]
 * Fixed bug in NF_ML functionality for 'copy' action. [Lineke]
 * atkQuery now checks for double joins. [Boy,Harrie]
 * Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute. [Boy]
@@ -84,7 +84,7 @@ Changes in ATK 5.0.5
   instead of assuming the current date [Boy]
 * Fixed DHTML tab functionality (last tab is now remembered). (bug #301) [Boy]
 * Fixed SQL errors in atkNavigator when when AF_LARGE is set and an atkfilter
-  is used [Boy,Yury]
+  is used [Boy, Yury]
 * Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
 * Fixed the outlook menu. (bug #352) [Sandy]
 * Fixed the help popup. (bug #347) [Thom]
