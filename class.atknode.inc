@@ -1405,7 +1405,7 @@
         $row = &$result["rows"][$i];
 
         /* actions / mra */
-        $this->recordActions(&$row["record"], &$row["actions"], &$row["mra"]);
+        $this->recordActions($row["record"], $row["actions"], $row["mra"]);
         $result["mra"] = array_merge($result["mra"], $row["mra"]);
         foreach($row["actions"] as $name => $url)
         {
@@ -3308,7 +3308,7 @@
      *                  as key, and an url as value.
      *
      */
-    function recordActions($record, &$actions)
+    function recordActions($record, &$actions, &$mraactions)
     {
       // Do nothing.
     }
