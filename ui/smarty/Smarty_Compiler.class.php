@@ -771,6 +771,7 @@ class Smarty_Compiler extends Smarty {
         $this->_add_plugin('function', $tag_command);
 
         $_cacheable_state = $this->_push_cacheable_state('function', $tag_command);
+        
         $attrs = $this->_parse_attrs($tag_args);
         $arg_list = $this->_compile_arg_list('function', $tag_command, $attrs, $_cache_attrs='');
 
@@ -783,7 +784,6 @@ class Smarty_Compiler extends Smarty {
             $output =  '<?php ' . $_cacheable_state . $_cache_attrs . 'echo ' . $output . ';'
                 . $this->_pop_cacheable_state('function', $tag_command) . "?>" . $this->_additional_newline;
         }
-
         return true;
     }
 
@@ -1470,7 +1470,6 @@ class Smarty_Compiler extends Smarty {
      */
     function _parse_attrs($tag_args)
     {
-
         /* Tokenize tag attributes. */
         preg_match_all('/(?:' . $this->_obj_call_regexp . '|' . $this->_qstr_regexp . ' | (?>[^"\'=\s]+)
                          )+ |
@@ -1490,7 +1489,7 @@ class Smarty_Compiler extends Smarty {
                 case 0:
                     /* If the token is a valid identifier, we set attribute name and go to state 1. */
                     // SANDY HACK, the regular expression is changed, org was: !^\w+$!
-                    if (preg_match('!^(?>\w|/)\w*$!', $token)) {
+                    if (preg_match('!^(?>\w|/|\$.)\w*$!', $token)) {
                         $attr_name = $token;
                         $state = 1;
                     } else
