@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.36  2001/05/17 12:24:32  ivo
+   * I'm stupid. Ofcourse atkselector is a sessionvar. just not a pagevar per
+   * se.
+   *
    * Revision 4.35  2001/05/17 12:20:36  ivo
    * removed atkselector from sessionvars.. it's not a session var!
    *
@@ -459,7 +463,8 @@
    
    // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
    // visible until you return.
-   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata");
+
+   $g_pageVars = array("atksearch","atkorderby","atkstartat","atktarget","atkformdata","atktree");
 
   /************* MODULE HANDLING *************/
 
