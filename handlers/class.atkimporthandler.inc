@@ -704,6 +704,7 @@
         //large import are a problem for the maximum execution time, so we want to set for each
         //loop of the for-loop an maximum execution time
         set_time_limit(30);
+        //echo memory_get_usage()."<br/>";
       
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
         
@@ -719,6 +720,7 @@
               $value = $allFieldValue;
 
             $this->addToRecord($rec,$col_map[$i],trim($value));
+            unset($value);
           }
         }
 
@@ -733,6 +735,11 @@
           $importerror = array("msg"=>$rec['atkerror'][0]['msg'].": ","spec"=>text($rec['atkerror'][0]['attrib_name']));
           break;
         }
+        
+        unset($rec);
+        unset($line);
+        unset($data);
+        
       }
 
       if(is_array($importerror)){
@@ -755,7 +762,7 @@
      * add a valid record to the db
      * @param $record array   the record
      */
-    function add($record)
+    function add(&$record)
     {
       //atkerror(arrayToString($record));
       //return false;
