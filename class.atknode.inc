@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.103  2001/09/13 11:41:00  ivo
+   * Removed primary key check for attributes that are auto_increment.
+   *
    * Revision 4.102  2001/09/12 15:08:35  ivo
    * Removed a double selectDb that crept in the code 10 revisions back.
    *
@@ -2555,10 +2558,10 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         //Validate if ne
-        if ($p_attrib->hasFlag(AF_PRIMARY))
+        if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
         //  $atkorgkey = $this->orgKey();
-          $atkorgkey = $record["atkprimkey"];
+          $atkorgkey = $record["atkprimkey"];       
           if(($atkorgkey == '' // no orgkey, so adding this record
               || $atkorgkey != $this->primaryKey($record)) // key has changed, so check is necessary
              &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
