@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.19  2001/06/25 15:14:16  sandy
+    * when there are no tree items, it won't show a leaf icon anymore
+    *
     * Revision 4.18  2001/06/25 13:31:07  sandy
     * - Added 2 new tree icons to the CVS. And fixed the atktreenode. Now it
     * will also show a + (or -) symbol when the folder is at the end of a tree.
@@ -204,6 +207,9 @@
     function GraphTreeRender()
     {
       global $g_maxlevel,$g_layout,$g_theme, $exp_index;
+   
+      if(count($this->m_tree)==1) return "";  
+   
       if($g_theme["TreeIcon_dir"]!=""&&is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
         $icon_path ="themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
@@ -226,6 +232,7 @@
   
       $res="";
       $lastlevel=0;
+      
       for ($i=0; $i<count($this->m_tree); $i++) 
 	    { 
         if($this->m_tree[$i]["level"]<2)
