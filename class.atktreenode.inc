@@ -524,18 +524,20 @@
         }
       }   
       $parent = $recordset[0][$this->m_primaryKey[0]];
-      atkdebug("Check for child records");
-      $children = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
-      
-      if(count($children)>0)
+      if ($this->m_parent!="")
       {
-        atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
-        $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
-      }
-      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-
-      $g_db->query($query);
+        atkdebug("Check for child records");
+        $children = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
       
+        if(count($children)>0)
+        {
+          atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
+          $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
+        }
+        $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
+ 
+        $g_db->query($query);
+      }   
       
       return $recordset;
       // todo: instead of delete, set the deleted flag.
