@@ -89,5 +89,5 @@
 
   // files that are allowed to be included by the include wrapper script
   // NOTE: this has nothing to do with useattrib and userelation etc.!
-  $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php");
+  $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php", "atk/javascript/class.atkdateattribute.js.php");
 ?>
