@@ -1410,29 +1410,7 @@
 
       if(!is_array($actions))
       {
-        $actions = array();
-        
-        // Changed: it used to be that you could only view if you didn't have
-        // edit right. This was changed because of Achievo bug #41 
-        // (http://www.achievo.org/bug/41)
-        if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
-        {
-          $actions["view"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
-        }
-
-        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
-        {
-          $actions["edit"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]';
-        }        
-        
-        if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
-        {
-          $actions["delete"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]';
-        }
-        if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
-        {
-          $actions["copy"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]';
-        }
+        $actions = $this->defaultActions("admin");
       }
 
       $flags = ($this->hasFlag(NF_MRA) ? RL_MRA : 0) | ($this->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($this->hasFlag(NF_LOCK) ? RL_LOCK : 0);
@@ -1448,6 +1426,69 @@
       }
 
       $g_layout->ui_bottom();
+    }
+    
+    /**
+     * return an array with the default actions for a certain mode.
+     *
+     * @param $mode The mode for which you want a list of actions.
+     *              Currently available modes for this method: 
+     *               - "admin" (for actions in adminscreens)
+     *               - "relation" (for the list of actions when 
+     *                 displaying a recordlist in a onetomany-relation)
+     *               - "view" (for actions when viewing only)
+     *              Note: the default implementation of defaultActions
+     *              makes no difference between "relation" and "admin" and 
+     *              will return the same actions for both, but you might want 
+     *              to override this behaviour in derived classes.
+     * @param $params An array of extra parameters to add to all the action 
+     *                urls. You can use this to pass things like an atkfilter 
+     *                for example. The array should be key/value based.
+     *                
+     * @example defaultActions("admin") will return a list of actions
+     *          that can be performed on records of this node in an
+     *          admin screen.
+     */
+    function defaultActions($mode, $params=array())
+    {
+      $actions = array();
+      $postfix = "";
+      
+      if (count($params)>0)
+      {
+        foreach ($params as $key=>$value)
+        {
+          $postfix.= "&$key=".rawurlencode($value);
+        }
+      }
+        
+      // Changed: it used to be that you could only view if you didn't have
+      // edit right. This was changed because of Achievo bug #41 
+      // (http://www.achievo.org/bug/41)
+      $actionbase = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkselector=[pk]'.$postfix;
+      if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
+      {
+        $actions["view"] = $actionbase.'&atkaction=view';
+      }
+
+      if ($mode!="view")
+      {
+        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
+        {
+          $actions["edit"] = $actionbase.'&atkaction=edit';
+        }        
+      
+        if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
+        {
+          $actions["delete"] = $actionbase.'&atkaction=delete';
+        }
+        if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
+        {
+          $actions["copy"] = $actionbase.'&atkaction=copy';
+        }
+      }
+      
+      return $actions;
     }
 
     /**

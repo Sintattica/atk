@@ -104,10 +104,16 @@
           $cell="";
 
           $actions = array();
+          $params = array();
+          
           if ($this->m_destinationFilter!="")
           {
-            $strfilter = '&atkfilter='.rawurlencode($this->m_destinationFilter);
+            $params["atkfilter"]=$this->m_destinationFilter;
           }
+          
+          /* The next lines of code have been replaced by a call to 
+             m_destInstance->defaultActions. 
+             
           if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
           {
           $actions["edit"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
@@ -120,7 +126,8 @@
           if($this->m_destInstance->hasFlag(NF_COPY))
           {
             $actions["copy"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
-          }
+          }*/
+          $actions = $this->m_destInstance->defaultActions("relation", $params);   
 
           $flags = RL_EMBED;
           $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
