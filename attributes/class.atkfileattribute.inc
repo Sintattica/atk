@@ -187,7 +187,7 @@
      */
     function fetchValue($rec)
     {    
-      global $HTTP_POST_FILES,$select,$del;
+      global $HTTP_POST_FILES,$select,$del;          
       
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
@@ -197,7 +197,6 @@
         // if no new file has been uploaded..    
         if($select[$this->fieldName()] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
         {
-
           ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$select[$this->fieldName()];
           $result = array("tmpfile"=>"",
                           "filename"=>$filename,
@@ -207,14 +206,13 @@
         }
         elseif (count($HTTP_POST_FILES)==0||$HTTP_POST_FILES[$postfiles_basename]["tmp_name"]=="none")
         { 
-      
           $result = array("tmpfile"=>"",
                           "filename"=>"",
                           "filesize"=>0,
                           "orgfilename"=>$rec[$basename."_orgfilename"]);
         }
         else
-        {          
+        {    
           $realname = $this->_filenameMangle($rec, $HTTP_POST_FILES[$postfiles_basename]["name"]);
           $result = array("tmpfile"=>$HTTP_POST_FILES[$postfiles_basename]["tmp_name"],
                           "filename"=>$realname,
@@ -267,7 +265,7 @@
      */
     function display($record)
     {
-      $filename    = $record[$this->fieldName()]["filename"];
+      $filename    = $record[$this->fieldName()]["orgfilename"];
 
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
