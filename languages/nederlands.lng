@@ -221,7 +221,7 @@
   $txt_export = "Exporteren";
   $txt_error_fileexists = "Bestand bestaat al op de server. Verander de naam van het bestand";
 
-  $txt_date_format_edit = "l j F Y";
-  $txt_date_format_view = "l j F Y";
+  $txt_date_format_edit = "j F Y";
+  $txt_date_format_view = "j F Y";
 
 ?>
