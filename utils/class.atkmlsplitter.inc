@@ -130,6 +130,16 @@
         }
         $record["atkprimkey"]=$oldprimkey;
       }
+
+      foreach($node->m_attribList as $attribname=>$attrib)
+      {
+        // restore the default language
+        if($node->m_attribList[$attribname]->m_mlattribute)
+        {
+          $node->m_attribList[$attribname]->m_language=$node->m_defaultlanguage;
+        }
+      }
+
       foreach($autoincrementflags as $primkey)
       {
         // restore the attrib flags
