@@ -51,19 +51,19 @@
    * @param $init initialize the node?
    * @return the created instance
    */
-  function &getNode($node, $init=TRUE)
+  function &getNode($node, $init=TRUE, $cache_id="default")
   {
     global $g_nodeRepository;
-    if (!is_object($g_nodeRepository[$node]))
+    if (!is_object($g_nodeRepository[$cache_id][$node]))
     {
       atkdebug("Constructing a new node - $node");
-      $g_nodeRepository[$node] = &newNode($node, $init);
+      $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
     }
     else
     {
       atkdebug("Returning cached node instance - $node");
     }
-    return $g_nodeRepository[$node];
+    return $g_nodeRepository[$cache_id][$node];
   }
 
   function &getModule($modname)
