@@ -251,7 +251,7 @@
       /* readonly */
       elseif (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
-        parent::addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix);
+        parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
       }
 
       /* edit */
