@@ -199,14 +199,18 @@
     
     /**
      * Gets an attribute from the current themedefinition
-     * example: getAttribute("highlight");
+     * example: getAttribute("images", "teknoman.jpg", "/images");
      * @param string $attrib            the name of the attribute
      * @param var $attribvalue          the value of the attribute in the theme
-     * @param string $returnpath        the path where the attribute can be found (like /templates/)
-     * @param string $defaultreturnpath the path where the attribute can be found in the default ATK theme
+     * @param string $returnpath        the path where the attribute can be found (like /templates/), always begins with a /
+     * @param string $defaultreturnpath the path where the attribute can be found in the default ATK theme, will default to the normal returnpath
      */
-    function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
+    function _getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
     { 
+      global $PHP_SELF;
+      
+      if (!$defaultreturnpath) $defaultreturnpath = $returnpath;
+      
       if(is_array($this->m_def[$attribname]))
       {
         $attrib = $this->_getStackedItem($attribname,$attribvalue);
@@ -223,37 +227,49 @@
     }
     
     /**
-     * Returns full path for themed template file, interface to the getAttribute function
+     * Returns the value for themevalue
+     * Example: getAttribute("highlight");
+     *          returns "#eeeeee"
+     * @param string $attribname the name of the attribute in the themedefinition
+     * @return var the value of the attribute in the themedefinition
+     */
+    function getAttribute($attribname)
+    {
+      return $this->_getAttribute($attribname);
+    }
+    
+    /**
+     * Returns full path for themed template file, interface to the _getAttribute function
      * @param string $tpl the template name
      * @return string the full path of the template file
      */
     function tplPath($tpl)
     {
-      return $this->getAttribute("customtpls",$tpl, "/templates/".$tpl,"templates/".$tpl);
+      return $this->_getAttribute("customtpls",$tpl, "/templates/".$tpl);
     }
     
     /**
-     * Returns full path for themed image file, interface to the getAttribute function
+     * Returns full path for themed image file, interface to the _getAttribute function
      * @param string $img the image name
      * @return string the full path of the image file
      */
     function imgPath($img)
     {
-      return $this->getAttribute("customimgs", $img, "/images/".$img, "images/".$img);
+      return $this->_getAttribute("customimgs", $img, "/images/".$img);
     }
     
     /**
-     * Returns full path for themed stylefile file, interface to the getAttribute function
+     * Returns full path for themed stylefile file, interface to the _getAttribute function
      * @param string $style the name of the CSS file
      * @return string the full path of the style file
      */
     function stylePath($style)
     { 
-      return $this->getAttribute("customstyles", $style, "/styles/".$style,"styles/".$style);
+      return $this->_getAttribute("customstyles", $style, "/styles/".$style);
     }
     
     /**
-     * Returns full path for themed icon file, interface to the getAttribute function
+     * Returns full path for themed icon file, interface to the _getAttribute function
      * @param string $icon      the icon name (no extension)
      * @param string $type      the icon type (example: "recordlist")
      * @param string $extension the icon extension, defaults to .gif
@@ -261,7 +277,7 @@
      */
     function iconPath($icon, $type, $extension=".gif")
     {
-      return $this->getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension,"icons/$type/$icon".$extension);
+      return $this->_getAttribute($type."_icons", $icon.$extension, "/icons/$type/$icon".$extension);
     }
       
     /**
