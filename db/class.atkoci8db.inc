@@ -18,7 +18,8 @@
    */
   class atkoci8db extends atkdb
   {    
-  
+    var $m_type = "oci8";
+    
     /**
      * Base constructor
      */

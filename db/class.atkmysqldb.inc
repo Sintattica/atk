@@ -25,6 +25,8 @@
     // the field in the seq_table that countains the name of the sequence..
     var $m_seq_namefield = "seq_name";
     
+    var $m_type = "mysql";
+    
      
     /**
      * Base constructor 

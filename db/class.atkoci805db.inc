@@ -16,6 +16,8 @@
    */
   class atkoci805db extends atkoci8db
   {    
+    var $m_type = "oci805";
+    
     /**
      * Base constructor
      */

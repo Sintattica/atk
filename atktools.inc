@@ -1126,6 +1126,9 @@
   function userelation($relation)
   {
     global $config_atkroot;
+    
+    // Include base class. 
+    require_once($config_atkroot."atk/relations/class.atkrelation.inc");    
     $a = explode(".", $relation);
     if (count($a) == 2)
       $include = $config_atkroot."modules/".strtolower($a[0])."/relations/class.".strtolower($a[1]).".inc";

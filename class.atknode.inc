@@ -83,10 +83,7 @@
    *
    * $Id$
    *
-   */
-
-  // The atk version number. (REMEMBER: update this whenever a new atk release is tagged stable!)
-  $g_atkversion = "4.2";
+   */  
 
   // Global theme variable, must be declared before the includes
   $g_theme = array();
@@ -124,16 +121,13 @@
   //error_reporting(E_ALL);
 
   require_once($config_atkroot."atk/ui/class.atkoutput.inc");
-  require_once($config_atkroot."atk/class.layout.inc");
-  require_once($config_atkroot."atk/utils/adodb-time.inc.php");
-  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
-  require_once($config_atkroot."atk/db/class.atkquery.inc");
-  require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
-  require_once($config_atkroot."atk/relations/class.atkrelation.inc");
+  require_once($config_atkroot."atk/class.layout.inc");  
+  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");  
+  require_once($config_atkroot."atk/attributes/class.atkattribute.inc");  
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
-  require_once($config_atkroot."atk/modules/class.atkmodule.inc");
+  require_once($config_atkroot."atk/modules/class.atkmodule.inc");  
   require_once($config_atkroot."atk/lock/class.atklock.inc");
 
   // Default language file
@@ -147,15 +141,6 @@
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
-
-   // session vars are valid until they are set to something else. if you go a session level higher,
-   // the next level will still contain these vars (unless overriden in the url)
-   $g_sessionVars = array("atknodetype","atkfilter","atkselector","atkaction");
-
-   // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
-   // visible until you return.
-
-   $g_pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress","atktab");
 
    $g_stickyurl = array();
 
@@ -286,6 +271,11 @@
      * The action that we are currently performing.
      */
     var $m_action;
+    
+    /**
+     * The active action handler.
+     */
+    var $m_handler = NULL;
 
     /**
      * This array is used to store error in the input data. The array is an
@@ -830,47 +820,7 @@
         if ($descr!="") $res.= "&nbsp; [".$descr."]";
       }
       return $res;
-    }
-
-    /**
-     * Creates an edit page
-     */
-    function editPage($record, $locked=FALSE)
-    {        
-      $page = &$this->getPage();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
-      $page->register_loadscript("init_nav();");
-      $this->addStyle("style.css");
-      
-      $params = $this->getDefaultActionParams($locked);
-
-      $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
-                                   ' method="post" onsubmit="return globalSubmit(this)">'.
-                                   session_form();
-      
-      $ui = &$this->getUi();
-      
-      if (is_object($ui))
-      {
-      
-        $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-        $form =$this->editForm("edit",$record,$forceList,$this->m_postvars['atksuppress']);
-
-        $params["content"] = $this->tabulate("edit", $form);
-        
-        $params["buttons"] = $this->getFormButtons("edit", $record);
-        
-        $output = $ui->renderAction("edit", $params);
-              
-        return $ui->renderBox(array("title"=>$ui->title($this->m_module, $this->m_type,'edit'),
-                                      "content"=>$output));        
-      }
-      else
-      {
-        atkerror("Failed to create ui object");
-      }      
-    }        
+    }     
     
     function tabulate($action, $content)
     {
@@ -893,200 +843,8 @@
       $params["lockstatus"] = $this->getLockStatusIcon($locked);
       $params["formend"] = '</form>';
       return $params;
-    }
-
-    /**
-     * Creates an view (=readonly) page
-     */
-    function viewPage($record)
-    {      
-      $ui = &$this->getUi();
-      $this->addStyle("style.css");
-      
-      if (is_object($ui))
-      {
-        $params = $this->getDefaultActionParams();        
-        
-        $fields = array();          
-  
-        // get active tab
-        $tab = $this->getActiveTab();
-  
-        // For all attributes we use the display() function to display the
-        // attributes current value. This may be overridden by supplying
-        // an <attributename>_display function in the derived classes.
-        foreach (array_keys($this->m_attribIndexList) as $i)
-        {
-          $tplfield = array();
-          $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
-  
-          if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && $p_attrib->showOnTab($tab))
-          {          
-            // An <attributename>_display function may be provided in a derived
-            // class to display an attribute. If it exists we will use that method
-            // else we will just use the attribute's display method.
-            $funcname = $p_attrib->m_name."_display";
-            if (method_exists($this, $funcname)) $editsrc = $this->$funcname($record, "view");
-            else $editsrc=$p_attrib->display($record, "view");
-  
-            $tplfield["full"] = $editsrc;
-            $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-             
-            // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-            // For each attribute, a txt_<attributename> must be provided in the language files.
-            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
-            {
-              if ($p_attrib->hasFlag(AF_BLANKLABEL))
-              {
-                $tplfield["label"] = "";
-              }
-              else
-              {
-  
-                $tplfield["label"] = $p_attrib->label($record);
-              }
-            }
-            else
-            {
-              // Make the rest fill up the entire line
-              $tplfield["label"] = "";
-              $tplfield["line"] = $tplfield["full"];
-            }
-            
-            $fields[] = $tplfield;
-            
-          }          
-  
-        }  
-        
-        $innerform = $ui->render($this->getTemplate("view", $record, $tab), array("fields"=>$fields));
-        
-        $params["content"] = $this->tabulate("view", $innerform);        
-  
-        $params["formstart"] = '<form method="get">'.session_form(SESSION_NESTED);
-        $params["buttons"][] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.text('back').'">';
-                          
-        // if appropriate, display an edit button.
-        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit", $record))
-        {        
-          $params["buttons"][] = '<input type="hidden" name="atkaction" value="edit">'.
-                     '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
-                     '<input type="submit" class="btn" value="'.text('edit').'">';
-        }      
-      
-        $params["formend"] = '</form>';                
-        
-        $output = $ui->renderAction("view", $params);
-        
-        $total = $ui->renderBox(array("title"=>$ui->title($this->m_module, $this->m_type,'view'),
-                                      "content"=>$output));
-        return $total;
-      }
-      else
-      {
-        atkerror("ui object error");
-      }
-    }
-
-    /**
-     * Creates an add page
-     */
-    function addPage($record=NULL)
-    {            
-      $page = &$this->getPage();
-            
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
-      $page->register_loadscript("init_nav();");
-      $this->addStyle("style.css");
-      
-      $params = $this->getDefaultActionParams();
-
-      $formstart ='<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
-                     ' method="post" onsubmit="return globalSubmit(this)">';
-
-      /* if we are on an admin page we would like to stay on the admin page after adding a new record */
-      if ($this->m_action == "admin") $formstart.=session_form(SESSION_NESTED);
-      else $formstart.=session_form();
-      
-      $params["formstart"] = $formstart;
-      
-      $ui = &$this->getUi();
-      if (is_object($ui))
-      {        
-        $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-        $form = $this->editForm("add",$record,$forceList);                      
-        
-        $params["content"] = $this->tabulate("add", $form);                
-                    
-        $params["buttons"][] = '<input type="submit" class="btn_save" value="'.text('save').'&nbsp;">';
-        if ($this->m_action=="add")
-        {
-          // if action is admin, we don't show the cancelbutton..
-          $params["buttons"][] ='<input type="submit" class="btn_cancel" name="atkcancel" value="'.text('cancel').'">';
-        }
-        $params["formend"] = '</form><SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
-        
-        $output = $ui->renderAction("add", $params);
-              
-        $total = $ui->renderBox(array("title"=>$this->actionTitle('add'),
-                                      "content"=>$output));
-        
-        return $total;               
-      }      
-      else
-      {
-        atkerror("ui object failure");
-      }
-    }
-
-    function searchPage($record=NULL)
-    {         
-      $this->addStyle("style.css");      
-      
-      $page = &$this->getPage();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
-      $page->register_loadscript("init_nav();");
-      $ui = &$this->getUi();
-      if (is_object($ui))
-      {        
-        $params = array();
-        $params["formstart"] = '<form name="entryform" action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="post">';
-
-        // usually, extended search is called from a page, and we go back to that page
-        // when the user presses search.
-        if (atkLevel()>0)
-        {
-          $params["formstart"].=session_form(SESSION_BACK);
-        }
-        // but sometimes we directly call the searchpage. if that happens,
-        // we reload the adminpage with the searched items.
-        else
-        {
-          $params["formstart"].=session_form(SESSION_DEFAULT);
-          $params["formstart"].='<input type="hidden" name="atkaction" value="admin">';
-        }
-        $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';        
-        $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
-
-        $params["content"] = $this->searchForm($record);
-        $params["buttons"][] = '<input type="submit" class="btn_search" value="'.text('search').'">';
-        $params["formend"] = '</form><SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>';      
-      
-        $output = $ui->renderAction("search", $params);
-              
-        $total = $ui->renderBox(array("title"=>$this->actionTitle('search'),
-                                      "content"=>$output));
-        
-        return $total;               
-      }      
-      else
-      {
-        atkerror("ui object failure");
-      }
-    }
-
+    }        
+    
     /**
      * Function outputs an array with edit fields. For each field the array
      * contains the name, edit HTML code etc. ( name, html, obligatory, error, label }
@@ -1456,111 +1214,7 @@
       $data = $this->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
       foreach ($data["hide"] as $hide) $form .= $hide;
       return $form;
-    }
-
-    /**
-     * Function outputs a form that the user can use to search records.
-     */
-    function searchForm($record = NULL)
-    {
-      global $g_db;
-      
-      $ui = &$this->getUi();
-      
-      if (is_object($ui))
-      {
-        $this->setAttribSizes();
-  
-        $defaults = $record;
-  
-        $dbSearchModes = $g_db->getSearchModes();
-        $params = array();
-        $params['searchmode_title'] = text("search_mode");
-        $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" value="AND" checked>'.text("search_and");
-        $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" value="OR">'.text("search_or");      
-        $params["fields"] = array();                
-  
-        foreach (array_keys($this->m_attribList) as $attribname)
-        {
-          $p_attrib = &$this->m_attribList[$attribname];
-          $attribSearchModes = $p_attrib->getSearchModes();        
-  
-          if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
-          {
-            $field = array();
-            // We must perform an array_values over array_intersect, to maintain a
-            // correct numeric array index (array_intersect mangles those)
-            $searchModes = array_values(array_intersect($dbSearchModes,$attribSearchModes));
-  
-            if (count($searchModes)>0) // Don't display this attribute if it doesn't support searching.
-            {
-            
-              $funcname = $p_attrib->m_name."_search";
-  
-              if (method_exists($this,$funcname))
-              {
-                $field["widget"] = $this->$funcname($defaults, $fieldprefix);
-              }
-              else
-              {
-                $field["widget"] = $p_attrib->search($defaults, true); // second param indicates extended search.
-              }
-              
-              $field["full"] = $field["widget"]; // lateron, we might add more to full
-              
-              if(count($searchModes)==1)
-              {
-                $field["searchmode"] = '<input type="hidden" name="atksearchmode['.$p_attrib->m_name.']" value="'.$searchModes[0].'">'.text("search_".$searchModes[0]);
-              }
-              else
-              {
-                $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
-                foreach (array_values($searchModes) as $searchMode)
-                {
-                  // if supported, we select the 'like' searchmode by default
-                  $selected="";
-                  if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchMode||
-                      ((!is_array($this->m_postvars["atksearchmode"]) || $this->m_postvars["atksearchmode"][$p_attrib->m_name]=="")&&
-                       $searchMode=="substring")) $selected="selected";
-
-                  $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.text("search_".$searchMode);
-                }
-                $sel.= '</select>';
-                $field["searchmode"] = $sel;
-              }                        
-            
-              // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-              // For each attribute, a txt_<attributename> must be provided in the language files.
-              if ($p_attrib->hasFlag(AF_NOLABEL)==false)
-              {
-                if ($p_attrib->hasFlag(AF_BLANKLABEL))
-                {
-                  $field['label'] = "";
-                }
-                else
-                {
-                  $field['label'] = $p_attrib->label($record);
-                }
-              }
-              else
-              {
-                $field['line'] = $field['widget'];
-              }
-              $params["fields"][] = $field;
-              
-            }            
-          }                
-        }
-                
-        return $ui->render($this->getTemplate("search", $record), $params);
-
-      }    
-      else
-      {
-        atkerror("ui object error");
-      }
-      
-    }
+    }    
 
     /**
      * Creates a navigation bar, for browsing through the record pages
@@ -1691,93 +1345,7 @@
         }
       }
       return $result;
-    }
-
-    /**
-     * Admin page displays records and the actions that can be performed on
-     * them (edit, delete)
-     */
-    function adminPage($actions="")
-    {     
-      $this->addStyle("style.css");
-      
-      $ui = &$this->getUi();
-      if (is_object($ui))
-      {        
-        $params = array();
-
-        // When there's a lot of data, records will be spread across multiple
-        // pages.
-        if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
-        if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
-
-        $recordset = $this->selectDb($this->m_postvars['atkfilter'],
-                                     $this->m_postvars['atkorderby'],
-                                     array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),
-                                     $this->m_listExcludes,
-                                     "",
-                                     "admin");
-
-        // check for search-action (if search returns only one record!)
-        if (is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch']) > 0 &&
-            is_array($this->m_search_action) && count($recordset) == 1)
-        {
-          for ($i = 0, $_i = count($this->m_search_action); $i < $_i; $i++)
-            if ($this->allowed($this->m_search_action[$i], $recordset[$i]))
-            {
-              $this->redirect(session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atkNodeType().
-                              '&atkaction='.$this->m_search_action[$i].
-                              '&atkselector='.rawurlencode($this->primaryKey($recordset[0])),
-                               SESSION_REPLACE));
-              break;
-            }
-        }                
-
-        $params["header"] = $this->adminHeader();      
-
-        if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
-        {
-          $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=add';
-          if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
-          {
-            // specific text
-            $label = text("link_".getNodeType($this->m_type)."_add");
-          }
-          else
-          {
-            // generic text
-            $label = text(getNodeType($this->m_type))." ".text("add");
-          }
-          $params["header"].="<br><br>".href($addurl,$label,SESSION_NESTED);
-        }
-
-        // create index and navigation bar
-        if ($this->m_index != "") 
-        {
-          $params["index"] = $this->buildIndex($recordset[0][$this->m_index]);
-        }
-        $params["navbar"] = $this->buildNavigation("admin");
-        
-        if(!is_array($actions))
-        {
-          $actions = $this->defaultActions("admin");
-        }
-
-        $flags = ($this->hasFlag(NF_MRA) ? RL_MRA : 0) | ($this->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($this->hasFlag(NF_LOCK) ? RL_LOCK : 0);
-        $params["list"] = $this->normalRecordList($recordset, $actions, $flags);
- 
-        $params["footer"] = $this->adminFooter();                            
-        
-        $output = $ui->renderList("admin", $params);   
-      
-        return $ui->renderBox(array("title"=>$this->actionTitle('admin'),
-                                    "content"=>$output));
-      }                 
-      else
-      {
-        atkerror("Failed to create ui object");
-      }      
-    }
+    }    
 
     /**
      * return an array with the default actions for a certain mode.
@@ -2713,60 +2281,6 @@
     exit;
    }
 
-
-    /**
-     * Select page displays records and gives the user the ability to select a record
-     */
-    function selectPage()
-    {
-      
-      // When there's a lot of data, records will be spread across multiple pages.
-      if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
-      if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
-
-      $filter = $this->validateFilter($this->m_postvars["atkfilter"]);          
-
-      $recordset = $this->selectDb($filter,
-                                   $this->m_postvars['atkorderby'],
-                                   array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),
-                                   $this->m_listExcludes,
-                                   "",
-                                   "select");
-
-      if (count($recordset)==1 && $this->hasFlag(NF_AUTOSELECT))
-      {
-        // There's only one record and the autoselect flag is set, so we
-        // automatically go to the target.
-        $target = stringparse(rawurldecode(atkurldecode($this->m_postvars['atktarget'])),$recordset[0], true);
-        $this->redirect(session_url($target, SESSION_NESTED));
-        return "";
-      }
-      else
-      {        
-        $ui = &$this->getUi();
-        
-        $params["header"] = text("title_select", $this->m_type);
-
-        if ($this->m_index != "") 
-        {
-          $params["index"] = $this->buildIndex($recordset[0][$this->m_index]);
-        }
-
-        // create navigation bar
-        $params["navbar"] = $this->buildNavigation("select");        
-
-        $actions["select"]=atkurldecode($this->m_postvars['atktarget']);
-
-        $params["list"] = $this->normalRecordList($recordset, $actions);
-        
-        $output = $ui->renderList("select", $params);
-        
-        return $ui->renderBox(array("title"=>$this->actionTitle('select'),
-                                    "content"=>$output));         
-      }
-
-    }
-
     /**
      * Function outputs a page in which the user is asked if he really wants
      * to perform a certain action.
@@ -2907,7 +2421,9 @@
       $this->attribSort();
 
       if ($this->hasFlag(NF_LOCK))
+      {        
         $this->m_lock = &atkLock::getInstance();
+      }
       
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
@@ -2990,361 +2506,16 @@
       atkdebug("disconnected from the database");
     }
 
-    /*** The node actions ***/
-
-    function action_view()
-    {
-      atkdebug("Action view");
-      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","",$this->m_viewExcludes,"","view");
-      
-      $page = &$this->getPage();
-      
-      $page->addContent($this->renderActionPage("admin", $this->viewPage($recordset[0])));
-    }
-
-    function action_add()
-    {
-      atkdebug("Action add");
-      $page = &$this->getPage();
-      $page->addContent($this->renderActionPage("add", $this->addPage()));
-    }
-
-    function action_update()
-    {
-      global $g_db;
-      
-      $record = $this->updateRecord();
-
-      if ($this->m_postvars['atkcancel']=="")
-      {      
-
-        // just before we validate the record we call the preUpdate() to check if the record needs to be modified
-        $this->preUpdate($record);
-
-        $this->validate($record, "update");
-
-        $error = count($record['atkerror']) > 0;
-        foreach (array_keys($record) as $key)
-          $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
-
-        if ($error)
-        {
-          $this->m_action="edit";
-          $page = &$this->getPage();
-          $page->addContent($this->editPage($record));
-        }
-        else
-        {
-          if(!$this->updateDb($record))
-          {
-            $g_db->rollback();
-            if($g_db->getErrorType()=="user")
-            {
-              triggerError($record, 'Error', $g_db->getErrorMsg(), '', '');
-              $this->m_action="edit";
-              $this->editPage($record);
-            }
-            else
-            {
-              $location = $this->feedbackUrl("update",ACTION_FAILED, $record, $g_db->getErrorMsg());
-              $this->redirect($location);
-            }
-          }
-          else
-          {
-            $g_db->commit();
-            
-            if ($this->m_postvars['atknoclose']=="")
-            {
-              // 'save and close' was clicked
-              $location = $this->feedbackUrl("update", ACTION_SUCCESS, $record, "");
-              $this->redirect($location);
-            }
-            else
-            {
-              // 'save' was clicked
-              $this->m_action="edit";
-              //update succesful, pk value might be changed so update m_orgkey
-              $record["atkprimkey"] = $this->primaryKey($record);
-
-              $locked = FALSE;
-              if ($this->hasFlag(NF_LOCK))
-              {
-                $page = &$this->getPage();
-                $page->addContent($this->lockPage());
-                return;
-              }
-
-              //$this->setOrgKeyValue($record);
-              $this->editPage($record, $locked);
-              $page = &$this->getPage();
-              $page->addContent($this->editPage($record, $locked));
-            }
-
-          }
-        }
-      }
-      else
-      {
-        // Cancel was pressed
-        $location = $this->feedbackUrl("update", ACTION_CANCELLED, $record);
-        $this->redirect($location);
-      }
-    }
-
-    function action_save()
-    {      
-      global $g_db;
-      
-      $record = $this->updateRecord();   
-      
-      if ($this->m_postvars['atkcancel']=="")
-      {      
-
-        // just before we validate the record we call the preAdd() to check if the record needs to be modified
-        $this->preAdd($record);
-
-        $this->validate($record, "add");
-
-
-        if(!is_array($record['atkerror']))
-          $record['atkerror'] = array();
-
-        $error = count($record['atkerror']) > 0;
-
-        foreach (array_keys($record) as $key)
-        {
-          $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
-        }
-
-        if ($error)
-        {
-          $this->m_action="add";
-          $page = &$this->getPage();
-          $page->addContent($this->addPage($record));
-        }
-        else
-        {
-          if(!$this->addDb($record, true, "add"))
-          {
-            $g_db->rollback();
-            if($g_db->getErrorType()=="user")
-            {
-              triggerError($record, 'Error', $g_db->getErrorMsg(), '', '');
-              $this->m_action="add";
-              $this->addPage($record);
-            }
-            else
-            {
-              $location = $this->feedbackUrl("save", ACTION_FAILED, $record, $g_db->getErrorMsg());
-              $this->redirect($location);
-            }
-          }
-          else
-          {
-            $g_db->commit();
-            
-            $location="";
-            if ($this->hasFlag(NF_EDITAFTERADD))
-            {
-              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)), SESSION_REPLACE);
-            }
-            else
-            {
-              $location = $this->feedbackUrl("save", ACTION_SUCCESS, $record);
-            }
-            $this->redirect($location);
-          }
-        }
-      }
-      else
-      {
-        // Cancel was pressed
-        $location = $this->feedbackUrl("save", ACTION_CANCELLED, $record);
-        $this->redirect($location);
-      }
-    }
-    
+    /*** The node actions ***/        
+       
     function genericPage($title, $content)
     {
        $ui = &$this->getUi();
        $this->addStyle("style.css");
        return $this->renderActionPage($title, $ui->renderBox(array("title"=>$title,
                                                                    "content"=>$content)));
-    }
-
-    function action_delete()
-    {    
-      if (!empty($this->m_postvars['confirm']))
-      {
-        global $g_db;
-        // Confirmation page was displayed and 'yes' was clicked
-        if($this->deleteDb($this->m_postvars['atkselector']))
-        {
-          $g_db->commit();
-          $location = $this->feedbackUrl("delete", ACTION_SUCCESS);
-          $this->redirect($location);
-        }
-        else
-        {
-          $g_db->rollback();
-          $location = $this->feedbackUrl("delete",ACTION_FAILED,$g_db->getErrorMsg());
-          $this->redirect($location);
-        }
-      }
-      elseif (empty($this->m_postvars['cancel']))
-      {
-        $locked = FALSE;
-        if ($this->hasFlag(NF_LOCK))
-        {
-          $locked = TRUE;
-          if (is_array($this->m_postvars['atkselector']))
-          {
-            foreach ($this->m_postvars['atkselector'] as $selector)
-             if (!$this->m_lock->lock($selector, $this->m_table)) $locked = FALSE;
-          }
-          elseif (!$this->m_lock->lock($this->m_postvars['atkselector'], $this->m_table)) $locked = FALSE;
-
-          if (!$locked)
-          {          
-            $page = &$this->getPage();
-            $page->addContent($this->lockPage());
-            return;
-          }
-        }
-
-        // Confirmation page was not displayed
-        $page = &$this->getPage();        
-        $page->addContent($this->confirmAction($this->m_postvars['atkselector'], "delete", $locked, TRUE));        
-      }
-      else
-      {
-        // Confirmation page was displayed and 'no' was clicked
-        $location = $this->feedbackUrl("delete", ACTION_CANCELLED);
-        $this->redirect($location);
-      }      
-    }
-
-    function action_copy()
-    {
-      global $g_db;
-
-      atkdebug("atknode::action_copy()");
-      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
-      if(count($recordset)>0)
-      {
-        if(!$this->copyDb($recordset[0]))
-        {
-          atkdebug("atknode::action_copy() -> Error");
-          $g_db->rollback();
-          $location = $this->feedbackUrl("save", ACTION_FAILED, $recordset[0], $g_db->getErrorMsg());
-          atkdebug("atknode::action_copy() -> Redirect");
-          $this->redirect($location);
-        }
-        else
-        {
-          $g_db->commit();
-        }
-      }
-      
-      $this->redirect();
-    }
-
-    function action_editcopy()
-    {
-      global $g_db;
-      atkdebug("atknode::action_editcopy()");
-      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","copy");
-
-      if(count($recordset) > 0)
-      {
-        if(!$this->copyDb($recordset[0]))
-        {
-          $g_db->rollback();
-          $location = $this->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $g_db->getErrorMsg());
-          $this->redirect($location);
-        }
-        else
-        {
-          $g_db->commit();
-          $location = session_url(dispatch_url($this->atknodetype(), "edit", array("atkselector" => $this->primaryKey($recordset[0]))), SESSION_REPLACE);
-          $this->redirect($location);
-        }
-      }
-
-      else
-      {
-        atkdebug("Geen records gevonden met selector: $selector");
-        $this->redirect();
-      }
-    }
-
-    function action_xml()
-    {
-      if ($this->m_postvars['atkselector']!="")
-      {
-        $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","xml");
-        $this->xml($recordset[0]);
-      }
-      else
-      {
-        $recordset = $this->selectDb("","","","","","xml");
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
-        {
-          $this->xml($recordset[$i]);
-        }
-      }
-    }
-
-    function action_admin()
-    {
-      $page = &$this->getPage();
-      
-      $res = array();
-      if ($this->hasFlag(NF_NO_ADD)==false&&$this->allowed("add"))
-      {
-        if (!$this->hasFlag(NF_ADD_LINK)) // otherwise, in adminPage, an add link will be added.
-        {
-          $res[]=$this->addPage();
-        }
-      }
-      $res[]= $this->adminPage();          
-                        
-      $page->addContent($this->renderActionPage("admin", $res));
-            
-    }
-
-    function action_search()
-    {
-      $page = &$this->getPage();
-      $page->addcontent($this->renderActionPage("search", $this->searchPage($this->m_postvars["atksearch"])));
-    }
-
-    function action_edit()
-    {
-      $page = &$this->getPage();    
-      
-      atkdebug("actionedit calling selectDb()");
-      $recordset = $this->selectDb($this->m_postvars['atkselector'],"","","","","edit");
-      if ($this->hasFlag(NF_LOCK))
-      {
-        if ($this->m_lock->lock($this->primaryKey($recordset[0]), $this->m_table)) 
-        {
-          $res = $this->editPage($recordset[0], true);
-        }
-        else
-        {
-          $res = $this->lockPage();
-        }
-      }  
-      else
-      {
-        $res = $this->editPage($recordset[0], false);
-      }
-            
-      $page->addContent($this->renderActionPage("edit", $res));
-    }
-    
+    }                    
+   
     function renderActionPage($action, $blocks=array())
     {
       if(!is_array($blocks))
@@ -3357,47 +2528,7 @@
       // todo: overridable action templates
       return $ui->render("actionpage.tpl", array("blocks"=>$blocks,
                                                  "title"=>$ui->title($this->m_module, $this->m_type, $action)));
-    }
-
-    function action_select()
-    {      
-      $output = $this->selectPage();
-      if ($output!="")
-      {
-        $page =  &$this->getPage();
-        $page->addContent($this->renderActionPage("select", $output));
-      }
-    }
-
-    function action_feedback()
-    {
-      $page = &$this->getPage();
-      $output = $this->feedbackPage($this->m_postvars["atkfbaction"], $this->m_postvars["atkactionstatus"], $this->m_postvars["atkfbmessage"]);
-      $page->addContent($this->renderActionPage("feedback", $output));
-    }
-
-    function feedbackPage($action, $actionstatus, $message="")
-    {
-      $ui = &$this->getUi();            
-      
-      $this->addStyle("style.css");
-
-      $params["content"] = text('feedback_'.$action.'_'.atkActionStatus($actionstatus), $this->m_type).
-                           ' <br>'.$message;
-
-      if (atkLevel()>0)
-      {      
-        $params["formstart"] = '<form method="get">'.session_form(SESSION_BACK);
-        $params["buttons"][] = '<input type="submit" class="btn_cancel" value="&lt;&lt; '.text('back').'">';
-        $params["formend"] = '</form>';
-      }
-      
-      $output = $ui->renderAction($action, $params);
-              
-      return $ui->renderBox(array("title"=>$this->actionTitle($action),
-                                  "content"=>$output)); 
-    
-    }
+    }        
 
     /**
      * Use this function to enable feedback for one or more actions.
@@ -3473,33 +2604,6 @@
         }
 
         header('Location: '.$location);
-      }
-    }
-
-    /**
-     * Parse xml tags
-     */
-    function xml($record)
-    {
-      $xml = "<".$this->m_type." ";
-
-      foreach (array_keys($this->m_attribList) as $attribname)
-      {
-        $p_attrib = &$this->m_attribList[$attribname];
-        if ($record[$p_attrib->fieldName()]!="")
-        {
-          $xml.=$attribname.'="'.$record[$p_attrib->fieldName()].'" ';
-        }
-      }
-      $xml.='/>';
-
-      if ($this->m_postvars['tohtml']==1)
-      {
-        return htmlspecialchars($xml).'<br>';
-      }
-      else
-      {
-        return $xml;
       }
     }
 
@@ -3634,8 +2738,7 @@
     {
       global $g_db;      
       
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
 
       $query->addTable($this->m_table);
       
@@ -3731,8 +2834,7 @@
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
       global $g_db;
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -3859,8 +2961,7 @@
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -4207,8 +3308,7 @@
 
       atkdebug("atkNode::addDb() start ".$this->m_type." mode: ".$mode);
 
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
 
       $storelist = array();      
 
@@ -4438,25 +3538,7 @@
     {
       // Do nothing.
     }
-
-    /**
-     * Function that is called when creating an adminPage. Developers can override
-     * this function in their classes and return a string.
-     */
-    function adminHeader()
-    {
-      return "";
-    }
-
-   /**
-     * Function that is called when creating an adminPage. Developers can override
-     * this function in their classes and return a string.
-     */
-    function adminFooter()
-    {
-      return "";
-    }
-
+    
 
     /**
      * Lookup the security 'key' for an action
@@ -4644,17 +3726,27 @@
       // handler function
       if ($handler != NULL && function_exists($handler))
       {
-        atkdebug("Calling (external) handler function for '".$action."'");
+        atkdebug("Calling external handler function for '".$action."'");
         $handler($this, $action);
       }
 
       // no (valid) handler
       else
       {
-        $function = "action_$action";
-        if (method_exists($this, $function)) $this->$function();
-        else atkdebug("dispatcher error: no action defined for '".$action."'");
+        $this->m_handler = &$this->getHandler($action);
+        $this->m_handler->handle($this, $action, $this->m_postvars);        
       }
+    }
+    
+    /** 
+     * Get a handler object for a certain action.
+     */ 
+    function &getHandler($action)
+    {
+      atkimport("atk.handlers.atkactionhandler");
+      $handler = &atkActionHandler::getDefaultHandler($action);
+      $handler->setNode($this);
+      return $handler;
     }
 
     /**

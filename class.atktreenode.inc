@@ -49,7 +49,7 @@
     function action_admin()
     {
       if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) $this->m_flags|=NF_NO_ADD;
-      return parent::action_admin();
+      return $this->m_handler->action_admin();
     }
     
     function buildTree()

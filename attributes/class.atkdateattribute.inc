@@ -4,6 +4,9 @@
   define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
   define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
   define("AF_DATE_NO_CALENDAR",         AF_SPECIFIC_3); // Do not append the popup calendar.
+  
+  // Include adodb workarounds for <1970 dates on windows.
+  require_once($config_atkroot."atk/utils/adodb-time.inc.php");
 
   /**
    * The atkDateAttribute class offers an advanced date widget for date fields.

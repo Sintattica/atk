@@ -166,7 +166,15 @@
 
     function stackscope(&$postvars)
     {
-      global $g_sessionData, $atklevel, $g_sessionVars, $g_pageVars;
+      global $g_sessionData, $atklevel;
+      
+      // session vars are valid until they are set to something else. if you go a session level higher,
+      // the next level will still contain these vars (unless overriden in the url)
+      $sessionVars = array("atknodetype","atkfilter","atkselector","atkaction");
+      
+      // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
+      // visible until you return.
+      $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress","atktab");
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
@@ -253,7 +261,7 @@
           {
             foreach($copieditem as $key=>$value)
             {
-              if(in_array($key,$g_sessionVars)||
+              if(in_array($key, $sessionVars)||
                  (is_array($copieditem["defined_stackvars"])
                   &&in_array($key,$copieditem["defined_stackvars"])))
               {
@@ -264,7 +272,7 @@
           }                  
 
           // Posted vars always overwrite anything in the current session..
-          foreach(array_merge($g_pageVars, $g_sessionVars) as $var)
+          foreach(array_merge($pageVars, $sessionVars) as $var)
           {
             if (isset($postvars[$var])&&$postvars[$var]!="")
             {
@@ -291,7 +299,7 @@
             array_pop($stack);
           }
 
-          foreach($g_pageVars as $var)
+          foreach($pageVars as $var)
           {          
             if (isset($postvars[$var])&&count($postvars[$var])>0)
             {
@@ -303,7 +311,7 @@
           $stack[$atklevel] = $currentitem;                    
 
           // session vars need not be remembered..
-          foreach($g_sessionVars as $var)
+          foreach ($sessionVars as $var)
           {          
             if (isset($postvars[$var])&&count($postvars[$var])>0)
             {

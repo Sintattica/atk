@@ -18,8 +18,7 @@
   class atkpgsqldb extends atkdb
   {
     /* identification */
-    var $m_type = "pgsql";
-    var $m_revision = '$Revision$';
+    var $m_type = "pgsql";  
   
     /**
      * Base constructor 

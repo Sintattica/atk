@@ -19,6 +19,8 @@
   {        
     var $m_bindresult = array();
 
+    var $m_type = "oci9";
+    
     /**
      * Base constructor
      */
