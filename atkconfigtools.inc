@@ -72,7 +72,7 @@
     function module($name, $path="")
     {
       global $g_modules, $config_module_path;
-      if ($path=="") $path = $config_module_path."/".$name;    
+      if ($path=="") $path = $config_module_path."/".$name."/";    
       $g_modules[$name] = $path;          
     }
 ?>
