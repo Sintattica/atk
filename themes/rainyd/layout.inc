@@ -12,12 +12,12 @@
   
   // Font settings
   $g_theme["FontFamily"] = "Verdana,Arial,Helvetica"; // Font
-  $g_theme["FontSize"] = "12"; // Font size in pt.
+  $g_theme["FontSize"] = "10"; // Font size in pt.
   $g_theme["FontWeight"] = "none"; 
   
   // Font settings for a block
   $g_theme["BlockFontFamily"] = "Verdana,Arial,Helvetica"; // Font
-  $g_theme["BlockFontSize"] = "12"; // Font size in pt.
+  $g_theme["BlockFontSize"] = "10"; // Font size in pt.
   $g_theme["BlockFontWeight"] = "none"; // FontWeight (bold) 
   
   // Body settings
@@ -33,7 +33,7 @@
 
   // Table header settings
   $g_theme["TableHeaderFontFamily"] = "Helvetica,Arial"; // Font
-  $g_theme["TableHeaderFontSize"] = "12"; // Font size in pt.
+  $g_theme["TableHeaderFontSize"] = "11"; // Font size in pt.
   $g_theme["TableHeaderFontWeight"] = "Bold"; // FontWeight (bold) 
   $g_theme["TableHeaderBgColor"] = "#aaaaaa"; // Table bgcolor;
   $g_theme["TableHeaderFgColor"] = "#000000"; // Table font color;
@@ -41,7 +41,7 @@
 
   // Table settings
   $g_theme["TableFontFamily"] = "Arial,Helvetica"; // Font
-  $g_theme["TableFontSize"] = "12"; // Font size in pt.
+  $g_theme["TableFontSize"] = "10"; // Font size in pt.
   $g_theme["TableFontWeight"] = "none"; // FontWeight (bold)
   $g_theme["TableFgColor"] = "#000000"; // Table font color;
 
