@@ -55,5 +55,7 @@
   // Automatic error reporting is turned off by default.
   $config_mailreport = "";
   
+  // Whether the action links in a recordlist appear left or right 
+  $config_recordlist_orientation = "right";
 
 ?>

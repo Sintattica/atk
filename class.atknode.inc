@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.75  2001/07/11 20:38:28  ivo
+   * You can now have the edit/delete links to the left of the recordlist.
+   *
    * Revision 4.74  2001/07/04 10:50:27  ivo
    * Fix to help feature (help.php moved to skel)
    *
@@ -1084,11 +1087,13 @@
       global $g_layout, $PHP_SELF;
       $output = $g_layout->data_top();
 
-      $output.="<tr>";
+      $output.="<tr>";      
    
       // stuff for the totals row..
       $totalisable = false;
       $totals = array();      
+      
+      $orientation = atkconfig("recordlist_orientation");
 
       // display a headerrow with titles. each attributetitle is clickable to
       // sort the list by that attribute.
@@ -1117,7 +1122,7 @@
           }
           else $tmp = text($p_attrib->fieldName());
 
-          $output.=$g_layout->ret_td_datatitle($tmp);
+          $headerRow.=$g_layout->ret_td_datatitle($tmp);
           
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))
@@ -1140,6 +1145,14 @@
         $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="get">';
         $searchRow.= session_form();
         $searchable = false;
+        
+        $actioncol = $g_layout->ret_td_datatitle('<input type="submit" value="'.text("search").'">');  
+        $actioncol.= '<input type="hidden" name="atkaction" value="'.$this->m_action.'">'; 
+        
+        if ($orientation=="left"||$orientation=="both")
+        {
+          $searchRow.=$actioncol;
+        }
 
         // Second loop.. this time for the search fields.
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -1168,16 +1181,26 @@
             }
           }
         }
-
-        $searchRow.=$g_layout->ret_td_datatitle('<input type="submit" value="'.text("search").'">');
-        $searchRow.='<input type="hidden" name="atkaction" value="'.$this->m_action.'">';
+        
+        if ($orientation=="right"||$orientation=="both")
+        {
+          $searchRow.=$actioncol;
+        }
         //$searchRow.=$this->stickyForm();
         $searchRow.="</form></tr>";
 
       }
+      
+      // one empty title which comes on top of the 'edit/delete/...' column
+      if (($orientation=="left"||$orientation=="both") && (count($actions)>0||$searchable))
+      {
+        $output.=$g_layout->ret_td_datatitle();
+      }
+      
+      $output.=$headerRow;
 
       // one empty title which comes on top of the 'edit/delete/...' column
-      if (count($actions)>0||$searchable)
+      if (($orientation=="right"||$orientation=="both") && (count($actions)>0||$searchable))
       {
         $output.=$g_layout->ret_td_datatitle();
       }
@@ -1189,8 +1212,58 @@
       
       for ($i=0;$i<count($recordset);$i++)
       {  
+        // the functionality list:        
+        // TODO: pick some cool little icons instead of text        
+        if (count($actions)>0)
+        {       
+          $stractions = "";
+          $pk = $this->primaryKey($recordset[$i]);
+	  
+          for ($j=0;$j<count($actions);$j++)
+          {
+            //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
+            // experimental: [] tags could be encoded but we still parse them..           
+            
+            // dirty hack:
+            $atkencoded = false;
+            if (strpos($actions[$i],"_#")>0)
+            {
+              // normal value.. 
+              $atkencoded = true;
+            }            
+            $action=str_replace("%5B","[",$actions[$j]);
+            $action=str_replace("%5D","]",$action);
+            $action=str_replace("_#5B","[",$action);
+            $action=str_replace("_#5D","]",$action);
+            
+            if ($atkencoded)
+            {
+              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk)),$action);            
+            }
+            else
+            {
+              $action=str_replace('[pk]',rawurlencode($pk),$action);
+            }
+            $action=stringparse($action,$recordset[$i],true);
+            $stractions.=$action.'&nbsp;';
+          }
+          $actionCol=$g_layout->ret_td($stractions);
+        }
+        else
+        {
+          if ($searchable)
+          {
+            $actionCol.=$g_layout->ret_td("&nbsp;");
+          }
+        }
+        
         // We alternate the color for even and non-even rows.        
         $output.='<tr class="row'.(($i%2==0)?1:2).'">';
+        
+        if ($orientation=="left"||$orientation=="both")
+        {
+          $output.=$actionCol;
+        }
         
         foreach (array_keys($this->m_attribList) as $attribname)
         {
@@ -1228,49 +1301,10 @@
             }
           }
         }
-        // the functionality list:        
-        // TODO: pick some cool little icons instead of text        
-        if (count($actions)>0)
-        {       
-          $stractions = "";
-          $pk = $this->primaryKey($recordset[$i]);
-	  
-          for ($j=0;$j<count($actions);$j++)
-          {
-            //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
-            // experimental: [] tags could be encoded but we still parse them..           
-            
-            // dirty hack:
-            $atkencoded = false;
-            if (strpos($actions[$i],"_#")>0)
-            {
-              // normal value.. 
-              $atkencoded = true;
-            }            
-            $action=str_replace("%5B","[",$actions[$j]);
-            $action=str_replace("%5D","]",$action);
-            $action=str_replace("_#5B","[",$action);
-            $action=str_replace("_#5D","]",$action);
-            
-            if ($atkencoded)
-            {
-              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk)),$action);            
-            }
-            else
-            {
-              $action=str_replace('[pk]',rawurlencode($pk),$action);
-            }
-            $action=stringparse($action,$recordset[$i],true);
-            $stractions.=$action.'&nbsp;';
-          }
-          $output.=$g_layout->ret_td($stractions);
-        }
-        else
+        
+        if ($orientation=="right"||$orientation=="both")
         {
-          if ($searchable)
-          {
-            $output.=$g_layout->ret_td("&nbsp;");
-          }
+          $output.=$actionCol;
         }
 
         $output.='</tr>';
