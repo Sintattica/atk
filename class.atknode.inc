@@ -92,6 +92,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.54  2001/06/13 10:40:11  martin
+   * Dirty evil hack :)
+   *
    * Revision 4.53  2001/06/12 15:05:16  ivo
    * New feature: NF_TRACK_CHANGES nodeflag passes the original record
    * to postUpdate.
@@ -2020,8 +2023,12 @@
      */
     function redirect($location="")
     {
+      global $g_returnurl;
+      
       atkdebug("atknode::redirect()");
       $back = 0;
+      
+      if ($g_returnurl!="") $location = $g_returnurl;
       
       if ($location=="")
       {      
