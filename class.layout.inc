@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.8  2001/06/08 14:19:59  paul
+  * datatable made themable
+  *
   * Revision 4.7  2001/05/22 15:22:39  peter
   * Different small enhancements fixes...
   *
@@ -348,17 +351,35 @@
     
     function data_top()
     {
+   global $g_theme;
       $template=$this->getTemplate("data_top");      
-      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);      
-      if ($template=="") $template='<table border="1" cellspacing="1" cellpadding="3">';
+      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      if (!isset($g_theme["border"]))
+         {  
+         if ($template=="") $template='<table border="1" cellspacing="0" cellpadding="3">';
+         }
+      else
+         {
+           if ($template=="") $template='<table border="0" cellspacing="0" cellpadding="0" class="backtable"><tr><td><table border="0" cellspacing="'.$g_theme["border"].'" cellpadding="3">';
+         }
       return $template;
     }
        
     function data_bottom()
     {      
+       global $g_theme;
       $template=$this->getTemplate("data_bottom");      
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);      
-      if ($template=="") $template='</table>';
+      if (!isset($g_theme["border"]))
+         {
+          if ($template=="") $template='</table>';
+         }
+      else
+         {
+         if ($template=="") $template='</table></td></tr></table>';
+         }
+
+
       return $template;
     }
  

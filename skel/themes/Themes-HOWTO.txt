@@ -28,7 +28,9 @@ ATK itself has the following default themes:
 - moronic
 - newsforge
 - papered
+- rainyd
 - slash
+
 
 If you want to create your own theme, you have to create it in 
 your application /themes directory. DON'T change the ATK themes.
@@ -100,7 +102,15 @@ example of a layout file with comments:
   $g_theme["TableFgColor"] = "#000000";           // Table font color;
   
   $g_theme["TreeIcon_dir"] = "tree_icons";   // Directory name where the tree icons are stored
+  
+  // display settings 
+  $g_theme["border"] = "1";              // borderwidth of the data table
+  $g_theme["BorderColor"] = "#000000";   // bordercolor
+  $g_theme["RowColor1"] ="#ffffff";      // datarow backgroundcolor 
+  $g_theme["RowColor2"] = "#eeeeee";     // datarow backgroundcolor 
 
+
+  
 ?>
 
 

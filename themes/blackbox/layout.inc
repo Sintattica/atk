@@ -42,5 +42,12 @@
   $g_theme["TableFontWeight"] = "none"; // FontWeight (bold) 
   $g_theme["TableFgColor"] = "#000000"; // Table font color;
 
+  // display settings 
+  $g_theme["border"] = "1";
+  $g_theme["BorderColor"] = "#000000";
+  $g_theme["RowColor1"] ="#BCC2CE";
+  $g_theme["RowColor2"] = "#707888";
+
+
 
 ?>

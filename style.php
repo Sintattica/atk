@@ -64,3 +64,25 @@ A:hover
   color: <?php echo $g_theme["TableFgColor"]; ?>;
   background-color: <?php echo $g_theme["TableBgColor"]; ?>;
 }
+.backtable
+{
+  background-color: <?php echo $g_theme["BorderColor"]; ?>;
+}
+
+.row1
+{
+<?php
+ if (isset($g_theme["RowColor1"]))
+{ ?>
+  background-color: <?php echo $g_theme["RowColor1"]; ?>;
+  <?php }?>
+}
+.row2
+{
+<?php
+ if (isset($g_theme["RowColor2"]))
+{?>
+  background-color: <?php echo $g_theme["RowColor2"]; ?>;
+<?}?>
+}
+

@@ -4,7 +4,7 @@
   $g_theme["Author"] = "Sandy Pleyte"; // Author name
   $g_theme["Author_email"] = "sandy@ibuildings.nl";  // Author e-mail
   $g_theme["Description"] = "Default";  // Theme description
-  $g_theme["Version"] = "1.0";  // version number
+  $g_theme["Version"] = "1.5";  // version number
   
   // some picture urls
   $g_theme["BgURL"] = "";    // Background url
@@ -45,5 +45,12 @@
 
   // Tree settings
   $g_theme["TreeIcon_dir"] = "tree_icons";
+
+  // display settings 
+  $g_theme["border"] = "1";
+  $g_theme["BorderColor"] = "#000000";
+  $g_theme["RowColor1"] ="#ffffff";
+  $g_theme["RowColor2"] = "#eeeeee";
+
 
 ?>

@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.49  2001/06/08 14:19:59  paul
+   * datatable made themable
+   *
    * Revision 4.48  2001/06/07 12:36:26  ivo
    * Atknode now reads records atomic.
    * Removed some debug echo's from the db classes.
@@ -971,6 +974,7 @@
             }          
             else
             {
+              
               $page.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
             }
           }
@@ -1453,10 +1457,22 @@
       $output.="</tr>";
 
       if ($searchable) $output.=$searchRow;           
-
+      
+      $bg_c=0; // bgcolor counter
+      
       for ($i=0;$i<count($recordset);$i++)
       {
-        $output.='<tr>';
+       if ($bg_c==0)
+        {
+        $output.='<tr class="row1">';
+        $bg_c=1;
+        }
+       else 
+        {
+        $output.='<tr class="row2">';
+        $bg_c=0;
+        }
+        
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
@@ -1483,7 +1499,7 @@
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]));
+              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]),'');
             }
             
             // Calculate totals..
@@ -1576,7 +1592,7 @@
      */
     function printableRecordList($recordset, $suppressList="")
     {
-      $output='<table border="1" cellspacing="0" cellpadding="4">';
+      $output='<table border="0" cellspacing="0" cellpadding="4">';
 
       $output.="<tr>";
    
