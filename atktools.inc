@@ -1254,14 +1254,26 @@
     fclose($fp);
   }
   
-  function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT)
+  function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT, $embedded=true)
   {
     global $g_layout;
     $g_layout->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
     static $cnt=0;    
     
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
-    return '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
+    $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
+    
+    if (!$embedded)
+    {
+      $res = '<form name="entryform">';
+      $res.= session_form();
+      $res.= $button.'</form>';
+      return $res;
+    }
+    else
+    {
+      return $button;
+    }       
   }
   
   /**
