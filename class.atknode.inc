@@ -1829,7 +1829,7 @@
         }
         else if($this->m_primaryKey[0] == $p_attrib->fieldName())
         {
-          $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
+          $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
         }
       }            
    
@@ -1883,7 +1883,7 @@
       $query->addCondition($selector);
       if($this->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
       {
-        $query->addCondition("UPPER(".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
+        $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
       }
       
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];

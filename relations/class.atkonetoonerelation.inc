@@ -419,12 +419,15 @@
       
       // but we also need to pass this on to our destinstance.
       $this->createDestination();
-      foreach(array_keys($this->m_destInstance->m_attribList) as $attrname)
+      if(is_array($this->m_destInstance->m_attribList))
       {
-        $p_attrib = &$this->m_destInstance->m_attribList[$attrname];
-        if (count($p_attrib->m_tabs)==1&&$p_attrib->m_tabs[0]=="default")
+        foreach(array_keys($this->m_destInstance->m_attribList) as $attrname)
         {
-          $p_attrib->setTabs($tab);
+          $p_attrib = &$this->m_destInstance->m_attribList[$attrname];
+          if (count($p_attrib->m_tabs)==1&&$p_attrib->m_tabs[0]=="default")
+          {
+            $p_attrib->setTabs($tab);
+          }
         }
       }
     }
