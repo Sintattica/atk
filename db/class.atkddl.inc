@@ -55,9 +55,9 @@
      * method will determine the database type (mysql, oci, etc) and 
      * instantiate the correct DDL class.
      */
-    function &create()
+    function &create($database=NULL)
     {
-      $database = atkconfig("database");
+      $database = $database === NULL ? atkconfig("database") : $database;
       
       $filename = atkconfig("atkroot")."atk/db/class.atk".$database."ddl.inc";
       if (file_exists($filename))
