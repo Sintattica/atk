@@ -22,19 +22,30 @@
    */
   function menuitem($name="", $url="", $parent="main", $enable=1, $order=0, $module="")
   { 
-    static $order_value=100;
+    global $g_menu, $g_menu_parent;
+    static $order_value=100, $s_dupelookup;
     if($order==0) 
     {
       $order=$order_value;
       $order_value+=100;
     }
-//    if ($name == "-") $GLOBALS["g_menu"][$parent][] = "-"; else
-    $GLOBALS["g_menu"][$parent][] = array("name" => $name, 
-                                          "url" => $url, 
-                                          "enable" => $enable, 
-                                          "order"=> $order,
-                                          "module"=> $module);
-    if (empty($url)) $GLOBALS["g_menu_parent"][$name] = $parent;
+    
+    $item = array("name" => $name, 
+                  "url" => $url, 
+                  "enable" => $enable, 
+                  "order"=> $order,
+                  "module"=> $module);
+        
+    if ($s_dupelookup[$parent][$name]!="")
+    {
+      $g_menu[$parent][$s_dupelookup[$parent][$name]] = $item;
+    }
+    else
+    {    
+      $s_dupelookup[$parent][$name] = count($g_menu[$parent]);
+      $g_menu[$parent][] = $item;
+    }
+    if (empty($url)) $g_menu_parent[$name] = $parent;
   }
 
   /**
