@@ -62,7 +62,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "Das eingegebene Passwort ist kein g&uuml;ltiges Passwort.";
   $txt_password_incorrect = "Das eingegebene Passwort war nicht richtig!";
-  $txt_password_nomatch = "Die eingegebenen Passw&ouml;rter stimmen nicht &uuml;berein.";
+  $txt_error_password_nomatch = "Die eingegebenen Passw&ouml;rter stimmen nicht &uuml;berein.";
 
   // multilanguage text
   $txt_multilanguage_select = "Sprache ausw&auml;hlen:";

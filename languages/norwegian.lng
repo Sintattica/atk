@@ -62,7 +62,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "Det oppgitte passordet er ikke gyldig.";
   $txt_password_incorrect = "Passordet du oppga var ikke korrekt!";
-  $txt_password_nomatch = "De oppgitte passordene er ikke like.";
+  $txt_error_password_nomatch = "De oppgitte passordene er ikke like.";
 
   // multilanguage text
   $txt_multilanguage_select = "Velg et språk:";

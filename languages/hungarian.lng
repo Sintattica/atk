@@ -63,7 +63,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "A megadott jelszó nem valós.";
   $txt_password_incorrect = "Hibás jelszót adott meg!";
-  $txt_password_nomatch = "A beírt jelszavak nem egyeznek.";
+  $txt_error_password_nomatch = "A beírt jelszavak nem egyeznek.";
 
   // multilanguage text
   $txt_multilanguage_select = "Válasszon Nyelvet:";

@@ -62,7 +62,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "Antamasi salasana ei ole kelvollinen.";
   $txt_password_incorrect = "Antamasi salasana on v‰‰r‰!";
-  $txt_password_nomatch = "Salasanat eiv‰t t‰sm‰‰.";
+  $txt_error_password_nomatch = "Salasanat eiv‰t t‰sm‰‰.";
 
   // multilanguage text
   $txt_multilanguage_select = "Valitse kieli:";

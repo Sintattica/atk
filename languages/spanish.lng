@@ -61,7 +61,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "La contraseña proporcionada no es válida.";
   $txt_password_incorrect = "¡La contraseña que Ud. ingresó no es correcta!";
-  $txt_password_nomatch = "Las contraseñas proporcionadas no coinciden.";
+  $txt_error_password_nomatch = "Las contraseñas proporcionadas no coinciden.";
 
   // multilanguage text
   $txt_multilanguage_select = "Seleccione un idioma:";

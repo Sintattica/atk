@@ -62,7 +62,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "Nové hesle má nesprávný formát";
   $txt_password_incorrect = "Nesprávné heslo!";
-  $txt_password_nomatch = "Poskytnuté heslo neodpovídá";
+  $txt_error_password_nomatch = "Poskytnuté heslo neodpovídá";
 
   // multilanguage text
   $txt_multilanguage_select = "Vyberte jazyk";
