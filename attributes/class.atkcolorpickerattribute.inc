@@ -210,16 +210,7 @@
       return $result;
     }
     
-    function getSearchModes()
-    {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array();
-    }
-    
+
     function dbFieldType()
     { 
       return "string";
