@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/05/01 12:08:38  ivo
+   * Small bug in EDITAFTERADD flag.
+   *
    * Revision 4.11  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -1799,8 +1802,7 @@
         {
           case "save":
             if ($this->hasFlag(NF_EDITAFTERADD))              
-            {
-              // todo: FIXME
+            {          
               $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey()),SESSION_NESTED);
             } 
             else
@@ -1819,7 +1821,10 @@
         }     
         else
         {
-          $location = session_url("dispatch.php",SESSION_DEFAULT);
+          if ($location=="")
+          {
+            $location = session_url("dispatch.php",SESSION_DEFAULT);
+          }
         }
 
       }
