@@ -889,7 +889,7 @@
     global $config_atkroot;
     $a = explode(".", $attribute);
     if (count($a) == 2)
-      $include = $config_atkroot."modules/".strtolower($a[0])."/attributes/class.".strtolower($a[1]).".inc";
+      $include = moduleDir(strtolower($a[0]))."/attributes/class.".strtolower($a[1]).".inc";
     else $include = $config_atkroot."atk/attributes/class.".strtolower($attribute).".inc";
     include_once($include);
   }
