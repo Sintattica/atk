@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.15  2001/08/16 08:37:11  ivo
+   * Added an equal() function to atkAttribute, to compare two values.
+   *
    * Revision 4.14  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -395,6 +398,15 @@
     {
       return "";
     }
+    
+    function equal($recA, $recB)
+    {
+      $this->createDestination();
+      return ($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
+              ==
+              $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+    }
   }
+  
   include $config_atkroot."atk/relations/class.atkmanytoonetreerelation.inc";
 ?>

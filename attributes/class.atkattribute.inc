@@ -100,6 +100,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.19  2001/08/16 08:37:11  ivo
+   * Added an equal() function to atkAttribute, to compare two values.
+   *
    * Revision 4.18  2001/08/16 07:17:49  ivo
    * Replaced htmlentities with htmlspecialchars for some attributes.
    * (people with different charactersets experience problems with
@@ -498,7 +501,7 @@
      */
     function sum($rec1, $rec2)
     {
-      return Array($this->fieldName()=>($rec1[$this->fieldName()]+$rec2[$this->fieldName()]));
+      return array($this->fieldName()=>($rec1[$this->fieldName()]+$rec2[$this->fieldName()]));
     }
     
     /**
@@ -515,6 +518,15 @@
      */
     function init()
     {
+    }
+    
+    /**
+     * This function is called to compare two values.
+     *
+     */
+    function equal($recA, $recB)
+    {
+      return ($recA[$this->fieldName()] == $recB[$this->fieldName()]);
     }
 
   }
