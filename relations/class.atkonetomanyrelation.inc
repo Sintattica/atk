@@ -15,6 +15,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.9  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.8  2001/05/02 14:55:46  ivo
    * New cool feature: stacktrace in the topright screen (navigate through
    * pages you visited before)
@@ -141,14 +151,12 @@
       
       $this->createDestination();
       
-      $this->m_destInstance->m_records = $myrecords;
-
       if (count($myrecords)!=0)
       {
         $result = "<ul>";
-        for ($this->m_destInstance->m_currentRec = 0; $this->m_destInstance->m_currentRec < count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+        for ($i = 0; $i < count($myrecords);$i++)
         {
-          $result.="<li>".$this->m_destInstance->descriptor();
+          $result.="<li>".$this->m_destInstance->descriptor($myrecords[$i]);
         }
         $result.="</ul>";
       }
@@ -162,7 +170,7 @@
      * @param $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       $GLOBALS['g_layout']->debug("edit called for ".$this->fieldName());
 
@@ -171,8 +179,6 @@
       $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
       
       $myrecords = $record[$this->fieldName()];
-
-      $this->m_ownerInstance->m_records[0] = $record;
                   
       if (count($myrecords)==0)
       {
@@ -180,23 +186,11 @@
         // since we don't post all records in this relation like we do with
         // other attributes, we have to load them at 'edit' time.
         $keyfield = $this->m_ownerInstance->primaryKeyField();
-        $myrecords = $this->load($notused, Array($keyfield=>$record[$keyfield]));
+        $myrecords = $this->load($notused, array($keyfield=>$record[$keyfield]));
       }
       
       if (count($myrecords)!=0)
       {
-        // I *HATE* the fact that PHP does not support pointers.
-        // How am I supposed to know that we were originally in edit mode of the
-        // owner when this edit function is called? I just assume this now.
-        // I could know it if I would pass like *everything* to this
-        // attribute. But a simple pointer to the owner object would be enough.
-        //
-        // Sometimes, PHP sucks.
-        // This is such a time.
-        //
-        // So the next line will only make sense if nobody does anything unexpected.
-        //
-        // So I also need the owner instance (which would also be a pointer if php supported it)
         $output.="<tr>";
         $cell="";                       
         
@@ -207,19 +201,17 @@
         }
         if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
         {
-          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter,text("edit"),SESSION_NESTED);
+          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter,text("edit"),SESSION_NESTED,true);
         }        
         if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
         {
-          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter,text("delete"),SESSION_NESTED);
-        }
-         
-        $this->m_destInstance->m_records = $myrecords;
+          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter,text("delete"),SESSION_NESTED,true);
+        }                 
         
         // User may not search in embedded forms..        
         $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
         
-        $cell.=$this->m_destInstance->recordList($actions,false,Array($this->m_owner));
+        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_owner));
       
         $output.=$GLOBALS['g_layout']->ret_td($cell);
         $output.="</tr>";
@@ -233,7 +225,7 @@
           $strfilter.=' AND '.$this->m_destinationFilter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $output.="<tr><td>".href($add_url,text("link_".$this->m_destination."_add"),SESSION_NESTED)."</td></tr>";      
+        $output.="<tr><td>".href($add_url,text("link_".$this->m_destination."_add"),SESSION_NESTED,true)."</td></tr>";      
       }
       $output.="</table><br>";
       return $output;
@@ -252,12 +244,11 @@
       
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
       
-      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";      
-      $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);
+      $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+      $recordset = $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);
       
-      return $this->m_destInstance->m_records;
+      return $recordset;
     }
-
 
 
   /** 
@@ -266,13 +257,12 @@
     function delete($record)
     {
       $classname = $this->m_destination;      
-      $rel = createNode($classname);      
+      $rel = getNode($classname);      
       atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
       $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }
-
-
+    
 
     /**
      * Store values
@@ -283,10 +273,8 @@
     {
       if (is_array($record[$this->fieldName()]))
       {
-        $this->createDestination();
-
-        $this->m_destInstance->m_records = Array($record[$this->fieldName()]);
-        $this->m_destInstance->addDb();
+        $this->createDestination();        
+        $this->m_destInstance->addDb($record[$this->fieldName()]);
       }
     }
   }

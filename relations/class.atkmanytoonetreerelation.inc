@@ -15,6 +15,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.2  2001/05/04 11:37:42  sandy
    * small bug fixes (split function, refresh, treeview,etc)
    *
@@ -57,7 +67,7 @@
      */
     function atkTreeManyToOneRelation($name, $destination, $flags=0)
     {
-      $this->atkRelation($name, $destination, $flags);
+      $this->atkManyToOneRelation($name, $destination, $flags);
     }
 
     /**
@@ -66,25 +76,23 @@
      * @param $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       global $m_current;
       $this->createDestination();
       $tmp1=atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
       $tmp2=atk_array_merge($tmp1,array($this->m_destInstance->m_parent));
-      $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
-      $current = createNode($this->m_destination); 
-      $current->m_records[0] = $record[$this->fieldName()];
-      
-      $m_current = $current->primaryKey();
-      $result = '<select name="'.$this->formName().'">';
+      $recordset = $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
+            
+      $m_current = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      $result = '<select name="'.$fieldprefix.$this->formName().'">';
 
       if ($this->hasFlag(AF_OBLIGATORY)==false)
       {
         // Relation may be empty, so we must provide an empty selectable..
         $result.= '<option value="0">'.text('select_none');
       }
-      $result.=$this->createdd();
+      $result.=$this->createdd($recordset);
       $result.='</select>';
       return $result;
     }
@@ -99,25 +107,27 @@
     function search($record="")
     {
       $this->createDestination();
-      $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
       $result = '<select name="atksearch['.$this->fieldName().']">';
 
       $pkfield = $this->m_destInstance->primaryKeyField();
 
       $result.= '<option value="">'.text('search_all');
-      $result.=$this->createdd();
+      $result.=$this->createdd($recordset);
       $result.='</select>';
       return $result;
     }
 
-    function createdd()
+    function createdd($recordset)
     {
       $t = new tree;
-      for($i=0;$i<count($this->m_destInstance->m_records);$i++)
+      for($i=0;$i<count($recordset);$i++)
       {
-        $group=$this->m_destInstance->m_records[$i];
-        $t->addNode($this->m_destInstance->m_records[$i][$this->m_destInstance->m_primaryKey[0]],$this->m_destInstance->descriptor($group),$this->m_destInstance->m_records[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
+        $group=$recordset[$i];
+        $t->addNode($recordset[$i][$this->m_destInstance->m_primaryKey[0]],
+                    $this->m_destInstance->descriptor($group),
+                    $recordset[$i][$this->m_destInstance->m_parent][$this->m_destInstance->m_primaryKey[0]]);
       }
       $tmp = $this->render($t->m_tree);
       return $tmp;

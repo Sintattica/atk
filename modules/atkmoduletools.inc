@@ -10,6 +10,16 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.8  2001/05/10 08:31:01  ivo
+ * Major upgrade. Changes:
+ * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+ *   singletons by default, and nodefunctions pass around recordsets.
+ * + Session management for forms. If you now leave a page through a click on
+ *   a link, the session remembers everything from your form and restores it
+ *   when you return.
+ * + New relation: oneToOneRelation
+ * + Reimplemented the embedded editForm feature (forms inside forms)
+ *
  * Revision 1.7  2001/05/07 15:13:49  ivo
  * Put config_atkroot in all files.
  *
@@ -37,6 +47,9 @@
  * or more modules which can, but don't have to, contain ATK nodes.
  *
  */
+ 
+  // A repository of node instances..
+  $g_nodeRepository = array();
   
   /**
    * Registers an ATK module
@@ -78,13 +91,27 @@
   }
   
   /**
-   * Creates an instance of a node
+   * Get an instance of a node. If an instance doesn't exist, it is created.
    * @param $node the node string
+   * @param $reuse if set to true, the node instance is treated as singleton. 
+   *               if false, a new node is created.
    * @return the created instance
    */
-  function createNode($node)
+  function getNode($node)
+  {      
+    global $g_nodeRepository;
+    if (!is_object($g_nodeRepository[$node]))
+    {
+      atkdebug("Constructing a new node - $node");
+      $g_nodeRepository[$node] = newNode($node);      
+    } 
+    atkdebug("Returning node instance - $node");
+    return $g_nodeRepository[$node];    
+  }
+  
+  function newNode($node)
   {
-    global $config_module_path, $config_atkroot;
+   global $config_module_path, $config_atkroot;
   
     /* module and type */
     $module = getNodeModule($node);
@@ -104,6 +131,7 @@
 
     /* return object */
     include_once($file);
+    
     return new $type();
   }
 

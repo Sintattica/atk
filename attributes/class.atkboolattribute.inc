@@ -7,6 +7,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -38,11 +48,11 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       $checked = "";
       if ($record[$this->fieldName()]>0) $checked="checked";
-      return '<input type="checkbox" name="'.$this->formName().'" value="1" '.$checked.'>';
+      return '<input type="checkbox" name="'.$fieldprefix.$this->formName().'" value="1" '.$checked.'>';
     }
     
 

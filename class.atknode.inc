@@ -87,6 +87,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.22  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.21  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -457,11 +467,13 @@
 
     /**
      * This array will hold the data of records that are read from the database.
+     * NOTE: USE OF THIS VARIABLE IS OBSOLETE
      */
     var $m_records = array();
 
     /**
      * Pointer to the current record.
+     * NOTE: USE OF THIS VARIABLE IS OBSOLETE
      */
     var $m_currentRec = 0;
 
@@ -497,12 +509,7 @@
     /**
      * Array containing the metadata of the table (with fieldname, type and length)
      */
-    var $m_tableMeta = array();
-
-    /**
-     * Boolean that indicates whether a record is currently loaded from the database.
-     */
-    var $m_recordLoaded = 0;
+    var $m_tableMeta = array();    
 
     /**
      * The postvars (or getvars) that are passed to a page will be passed
@@ -598,8 +605,7 @@
 
       atkdebug('atkNode::atkNode('.$type.')');
       $this->m_type = $type;
-      $this->m_flags = $flags;
-      $this->m_recordLoaded = 0;
+      $this->m_flags = $flags;      
     }
 
     /**
@@ -607,7 +613,7 @@
      * atkAttribute or one of its derivatives)
      * @param $attribute the attribute you want to add
      */
-    function addAttribute(&$attribute)
+    function addAttribute($attribute)
     {
       global $g_securityManager;
 
@@ -622,10 +628,7 @@
         {
           $attribute->m_flags |= AF_HIDE;
         }
-      }      
-      
-
-      $this->m_attribList[$attribute->fieldName()]=&$attribute;
+      }                  
 
       if ($attribute->hasFlag(AF_PRIMARY))
       {
@@ -670,6 +673,10 @@
       // check for multilanguage attribute at add/edit mode
       if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_ADD)) $this->m_hasMlSelectAdd = 1;
       if ($attribute->fieldName() == 'multilanguage_select' && !$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_hasMlSelectEdit = 1;
+      
+      $attribute->init();            
+      
+      $this->m_attribList[$attribute->fieldName()]=&$attribute;
     }
 
     /**
@@ -685,14 +692,12 @@
      * Returns the primary key
      * @return Primary Key
      */
-    function primaryKey($rec="")
-    {
-      if (!is_array($rec)) $rec = $this->m_records[$this->m_currentRec];
+    function primaryKey($rec)
+    {      
       $primKey="";
       $nrOfElements = count($this->m_primaryKey);
       for ($i=0;$i<$nrOfElements;$i++)
       {
-//        $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$this->m_records[$this->m_currentRec][$this->m_primaryKey[$i]]."'";
         $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];
         $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
@@ -838,10 +843,10 @@
     /**
      * Creates an edit page
      */
-    function editPage()
+    function editPage($record)
     {
       global $g_layout;
-      $g_layout->register_script("atk/javascript/formfocus.js");
+      $g_layout->register_script("atk/javascript/formfocus.js");      
       $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->stackTrace());
@@ -849,7 +854,7 @@
                                    ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-      $g_layout->output($this->editForm("edit",$forceList));
+      $g_layout->output($this->editForm("edit",$record,$forceList));
       $g_layout->output('<br><input type="submit" value="'.text('saveandclose').'">');
       $g_layout->output('<input type="submit" name="atknoclose" value="'.text('save').'">');
       $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
@@ -861,7 +866,7 @@
     /**
      * Creates an view (=readonly) page
      */
-    function viewPage()
+    function viewPage($record)
     {
       global $g_layout;  
     
@@ -905,7 +910,7 @@
             $tdcount++; // If there's no label, the other td's have to be filled up.
           }
         	         
-          $editsrc=$p_attrib->display($this->m_records[$this->m_currentRec]);
+          $editsrc=$p_attrib->display($record);
                         
           $page.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
           $page.='</tr>';
@@ -923,7 +928,7 @@
     /**
      * Creates an add page
      */
-    function addPage()
+    function addPage($record=NULL)
     {
       global $g_layout;
       $g_layout->register_script("atk/javascript/formfocus.js");
@@ -935,7 +940,7 @@
                                    ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());                                   
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-      $g_layout->output($this->editForm("add",$forceList));
+      $g_layout->output($this->editForm("add",$record,$forceList));
       $g_layout->output('<br><input type="submit" value="'.text('save').'">');
       $g_layout->output('</form>');
       $g_layout->ui_bottom();
@@ -943,16 +948,21 @@
     }
 
     /**
-     * Function outputs a form in which the current record can be edited.
-     * or, if there is no current record, defaults from the postvars will be read.
-     * @param $mode Mode of the form
-     * @param $forcelist ?
-     * @param $suppresslist ?
+     * Function outputs a form in which a record can be edited.
+     * or, if there is no record, defaults from the postvars will be 
+     * read.
+     * @param $mode Mode of the form ("edit" or "add")
+     * @param $forcelist A key-value array used to preset certain fields to 
+     *                   a certain value
+     * @param $suppresslist An array of fields that you want to hide.
+     * @param $fieldprefix If set, each form element is prefixed with the 
+     *                     specified prefix (used in embedded forms)
      */
-    function editForm($mode="add",$forceList="",$suppressList="")
+    function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout;
+      global $g_layout;      
       
+      $g_layout->register_script("atk/javascript/formsubmit.js");
       
       if (($mode == 'add' && sizeof($this->m_listMlAdd) > 0 && !$this->m_hasMlSelectAdd) ||
          ($mode == 'edit' && sizeof($this->m_listMlEdit) > 0 && !$this->m_hasMlSelectEdit))
@@ -963,15 +973,25 @@
 
 //      $form.=$this->stickyForm();
 
-      $defaults = $this->m_records[$this->m_currentRec];
-
-      $pk = $this->primaryKey();
-
-      if ($this->m_action=="edit")
+      $defaults = $record;
+      
+      // Form may have been saved in a session..
+      if ($this->m_postvars["atkformdata"]!="")
       {
-        $form.='<input type="hidden" name="atkaction" value="update">';
-        $form.='<input type="hidden" name="atkselector" value="'.rawurlencode($pk).'">';
-        //$defaults = $this->m_records[$this->m_currentRec];
+        atkdebug("Session formdata present");
+        $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);    
+      }
+
+      $pk = $this->primaryKey($record);
+      
+      // hidden value that is used by the atkSubmit javascript function as a means
+      // of posting extra data when submitting.. 
+      $form.='<input type="hidden" name="'.$fieldprefix.'atkescape">';
+
+      if ($mode=="edit")
+      {
+        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
+        $form.='<input type="hidden" name="'.$fieldprefix.'atkselector" value="'.rawurlencode($pk).'">';        
 
         // Nodes can define edit_values
         if (method_exists($this,"edit_values"))
@@ -985,7 +1005,7 @@
       }
       else
       {
-        $form.='<input type="hidden" name="atkaction" value="save">';
+        $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
 //        $defaults = $this->m_postvars;
 
         // Nodes can define initial values, if they don't already have values.
@@ -999,17 +1019,17 @@
         }
       }
       
-      $form.='<input type="hidden" name="atkorgkey" value="'.$pk.'">';
+      $form.='<input type="hidden" name="'.$fieldprefix.'atkorgkey" value="'.$pk.'">';
 
       if (is_array($forceList))
-      {
+      {          
         while(list($forcedvarname,$forcedvalue)=each($forceList))
-        {
+        {      
           if ($forcedvarname!="")
           {
             if (strpos($forcedvarname,'.')>0)
             {
-              list($table,$field) = split('\.',$forcedvarname);
+              list($table,$field) = split('\.',$forcedvarname);            
               $defaults[$table][$field] = $forcedvalue;
               $attribname = $table;
             }
@@ -1019,11 +1039,10 @@
               $attribname = $forcedvarname;
             }        
             $p_attrib = &$this->m_attribList[$attribname];            
-            $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
-            
+            $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;          
           }
-        }
-      }      
+        }                          
+      }                 
 
       $form.=$g_layout->ret_table_simple();
 
@@ -1031,17 +1050,15 @@
       {
         $form.='<tr>';
         $errormsg = '<b>'.text('error_formdataerror').'</b>';
-
-        reset($this->m_errors);
-        while(list($attribname,$msg)=each($this->m_errors))
+        
+        foreach ($this->m_errors as $attribname => $msg)
         {
           $errormsg.='<br>'.text($attribname).': '.$msg;
         }
 
         $form.=$g_layout->ret_td($errormsg,'colspan="2"');
         $form.='</tr>';
-      }
-
+      }      
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
@@ -1049,6 +1066,7 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         // fields that have not yet been initialised may be overriden in the url..
+
         if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
         {
           $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
@@ -1056,7 +1074,7 @@
 
         if (is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList))
         {
-          $form.=$p_attrib->hide($defaults);
+          $form.=$p_attrib->hide($defaults, $fieldprefix);
         }
         else
         {
@@ -1067,7 +1085,7 @@
           {
             if ($mode=="edit" || ($mode=="add" && !$p_attrib->isEmpty($defaults))) // when adding, there's nothing to hide..
             {
-              $form.=$p_attrib->hide($defaults);
+              $form.=$p_attrib->hide($defaults, $fieldprefix);
             }
           }
           else
@@ -1098,33 +1116,34 @@
             else
             {
               $tdcount++; // If there's no label, the other td's have to be filled up.
-            }
+            }            
             	                    
             if ($p_attrib->hasFlag(AF_READONLY))
 	          {
-              // readonly, display value..
-	            $editsrc=$p_attrib->hide($defaults);
+              // readonly, display value..              
+	            $editsrc=$p_attrib->hide($defaults, $fieldprefix);
               $editsrc.=$p_attrib->display($defaults);
+                              
             }
 	          else
-            {
+            {            
               $funcname = $p_attrib->m_name."_edit";
               
               if (method_exists($this,$funcname))
               {
-                $editsrc = $this->$funcname($defaults);
+                $editsrc = $this->$funcname($defaults, $fieldprefix);
               }
               else
-              {                		
-                $editsrc = $p_attrib->edit($defaults);
+              {                             
+                $editsrc = $p_attrib->edit($defaults, $fieldprefix);
               }
 	          }
             
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
           }
-        }
-      }
+        }        
+      }      
       $form.='</table>';
       return $form;
     }
@@ -1208,7 +1227,7 @@
 
       if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
-      $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
@@ -1243,7 +1262,7 @@
         $actions[]=href('dispatch.php?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
       }
 
-      $g_layout->output($this->recordList($actions));
+      $g_layout->output($this->recordList($recordset, $actions));
 
       if (!empty($nav)) $g_layout->output('<br>'.$nav);
       $g_layout->output('<br><br>');
@@ -1258,7 +1277,7 @@
      * @param $sortable
      * @param $suppresslist
      */
-    function recordList($actions,$sortable=true,$suppressList="")
+    function recordList($recordset, $actions,$sortable=true,$suppressList="")
     {
       global $g_layout;
       $output = $g_layout->data_top();
@@ -1363,9 +1382,9 @@
 
       $output.="</tr>";
 
-      if ($searchable) $output.=$searchRow;
+      if ($searchable) $output.=$searchRow;           
 
-      for ($this->m_currentRec=0;$this->m_currentRec<count($this->m_records);$this->m_currentRec++)
+      for ($i=0;$i<count($recordset);$i++)
       {
         $output.='<tr>';
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -1388,33 +1407,32 @@
 
             if (method_exists($this,$funcname))
             {
-              $output.=$g_layout->ret_td($this->$funcname($this->m_records[$this->m_currentRec]));
+              $output.=$g_layout->ret_td($this->$funcname($recordset[$i]));
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$g_layout->ret_td($p_attrib->display($this->m_records[$this->m_currentRec]));
+              $output.=$g_layout->ret_td($p_attrib->display($recordset[$i]));
             }
             
             // Calculate totals..
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
+              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
             }
           }
         }
         // the functionality list:        
         // TODO: pick some cool little icons instead of text        
         if (count($actions)>0)
-        {
-          reset($actions);
+        {       
           $stractions = "";
-          $pk = $this->primaryKey();
+          $pk = $this->primaryKey($recordset[$i]);
           for ($j=0;$j<count($actions);$j++)
           {
             $action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
-            $action=stringparse($action,$this->m_records[$this->m_currentRec],true);
+            $action=stringparse($action,$recordset[$i],true);
             $stractions.=$action.'&nbsp;';
           }
           $output.=$g_layout->ret_td($stractions);
@@ -1482,7 +1500,7 @@
      * Creates printableRecordlist
      * @param $suppresslist
      */
-    function printableRecordList($suppressList="")
+    function printableRecordList($recordset, $suppressList="")
     {
       $output='<table border="1" cellspacing="0" cellpadding="4">';
 
@@ -1522,7 +1540,7 @@
       
       $output.="</tr>";    
 
-      for ($this->m_currentRec=0;$this->m_currentRec<count($this->m_records);$this->m_currentRec++)
+      for ($i=0;$i<count($recordset);$i++)
       {        
         $output.='<tr>';
         foreach (array_keys($this->m_attribList) as $attribname)
@@ -1545,20 +1563,20 @@
 
             if (method_exists($this,$funcname))
             {
-              $value=$this->$funcname($this->m_records[$this->m_currentRec]);
+              $value=$this->$funcname($recordset[$i]);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.              
-              $value=$p_attrib->display($this->m_records[$this->m_currentRec]);
+              $value=$p_attrib->display($recordset[$i]);
             }
             $output.='<td>'.($value==""?"&nbsp;":$value).'</td>';
             
             // Calculate totals..
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $this->m_records[$this->m_currentRec]);
+              $totals[$attribname] = $p_attrib->sum($totals[$attribname], $recordset[$i]);
             }
           }
         }
@@ -1622,13 +1640,13 @@
 
       if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
-      $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
       
-      if (count($this->m_records)==1 && $this->hasFlag(NF_AUTOSELECT))
+      if (count($recordset)==1 && $this->hasFlag(NF_AUTOSELECT))
       {
         // There's only one record and the autoselect flag is set, so we 
         // automatically go to the target..
-        $target=stringparse($this->m_postvars['atktarget'],$this->m_records[0],true);
+        $target=stringparse($this->m_postvars['atktarget'],$recordset[0],true);
         $this->redirect($target);
       }
       else
@@ -1645,7 +1663,7 @@
 
         $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
 
-        $g_layout->output($this->recordList($actions));
+        $g_layout->output($this->recordList($recordset, $actions));
 
         if (!empty($nav)) $g_layout->output('<br>'.$nav.'<br>');
         $g_layout->output('<br>');
@@ -1700,145 +1718,174 @@
       
       $this->m_action = $postvars['atkaction'];
       
-      if ($this->allowed($this->m_action))
+      // check for fake submit (session saving href thingee)
+      if ($this->m_postvars["atkescape"]!="")
       {
-        $g_securityManager->logAction($this->m_type, $this->m_action);
-
-        $funcname="action_".$this->m_action;
-        if (method_exists($this,$funcname))
+        $this->redirect($this->m_postvars["atkescape"]);
+      }
+      else
+      {            
+        if ($this->allowed($this->m_action))
         {
-          $this->$funcname();
+          $g_securityManager->logAction($this->m_type, $this->m_action);
+ 
+          $funcname="action_".$this->m_action;
+          if (method_exists($this,$funcname))
+          {
+            $this->$funcname();
+          } 
+          else
+          {
+            atkdebug("dispatcher error: no action defined for '".$this->m_postvars['atkaction']."'");
+          }
         }
         else
         {
-          switch ($this->m_postvars['atkaction'])
+          $g_layout->output("Sorry, you don't have permission to perform this action");
+        }      
+      
+        $g_layout->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
+      
+        // This is the end of all things for this page..
+        // so we clean up some resources..
+      }
+      $g_db->disconnect();
+      atkdebug("disconnected from the database");
+    }
+    
+    /*** The node actions ***/
+    
+    function action_view()
+    {
+      $recordset = $this->selectDb($this->m_postvars['atkselector']);
+      $this->viewPage($recordset[0]);
+    }
+      
+    function action_add()
+    {
+      $this->addPage();
+    }
+     
+    function action_update()
+    {
+      if ($this->m_postvars['atkcancel']=="")
+      {
+        $record = $this->updateRecord();
+        $this->validate($record);
+        if (count($this->m_errors)>0)
+        {
+          $this->m_action="edit";
+          $this->editPage($record);
+        }
+        else
+        {
+          $this->updateDb($record);
+          if ($this->m_postvars['atknoclose']=="")
           {
-            case "edit":
-              $this->selectDb($this->m_postvars['atkselector']);
-              $this->editPage();
-              break;
-            case "view":
-              $this->selectDb($this->m_postvars['atkselector']);
-              $this->viewPage();
-              break;              
-            case "add":
-              $this->addPage();
-              break;
-            case "update":
-              if ($this->m_postvars['atkcancel']=="")
-              {
-                $this->updateRecord();
-                $this->validate();
-                if (count($this->m_errors)>0)
-                {
-                  $this->m_action="edit";
-                  $this->editPage();
-                }
-                else
-                {
-                  $this->updateDb();
-                  if ($this->m_postvars['atknoclose']=="")
-                  {
-                    // 'save and close' was clicked
-                    $this->redirect();
-                  }
-                  else
-                  {
-                    // 'save' was clicked
-                    $this->m_action="edit";
-                    $this->editPage();
-                  }
-                }
-              }
-              else
-              {
-                // Cancel was pressed
-                $this->redirect();
-              }
-              break;
-            case "save":
-              $this->updateRecord();
-              $this->validate();
-              if (count($this->m_errors)>0)
-              {
-                $this->addPage();
-              }
-              else
-              {
-                $this->addDb();
-                $this->redirect();
-              }
-              break;
-            case "delete":
-              if ($this->m_postvars['confirm']==text('yes'))
-              {
-                // Confirmation page was displayed and 'yes' was clicked
-                $this->deleteDb($this->m_postvars['atkselector']);
-                $this->postDel($this->currentRec());
-                $this->redirect();
-              }
-              else if ($this->m_postvars['cancel']!=text('no'))
-              {
-                // Confirmation page was not displayed
-                $this->confirmDelete($this->m_postvars['atkselector']);
-              }
-              else
-              {
-                // Confirmation page was displayed and 'no' was clicked
-                $this->redirect();
-              }
-              break;
-            case "copy":
-              $this->copyDb($this->m_postvars['atkselector']);
-              $this->redirect();
-            case "admin":
-              if ($this->hasFlag(NF_NO_ADD)==false&&$this->allowed("add"))
-              {
-                if (!$this->hasFlag(NF_ADD_LINK)) // otherwise, in adminPage, an add link will be added.
-                {
-                  $this->addPage();
-                }
-              }
-              $this->adminPage();
-              
-              break;
-            case "select":
-              $this->selectPage();
-              break;
-            case "xml":
-              if ($this->m_postvars['atkselector']!="")
-              {
-                 $this->selectDb($this->m_postvars['atkselector']);
-                $this->xml();
-              }
-              else
-              {
-                $this->selectDb();
-                for ($this->m_currentRec=0;$this->m_currentRec<count($this->m_records);$this->m_currentRec++)
-                {
-                  $this->xml();
-                }
-              }
-              break;
-            default:
-              atkdebug("dispatcher error: no action defined for '".$this->m_postvars['atkaction']."'");
-              break;
-            // TODO: also, admin should not always have an 'addform' and 'adminPage'. This could be
-            // customised.
+            // 'save and close' was clicked
+            $this->redirect();
+          }
+          else
+          {
+            // 'save' was clicked
+            $this->m_action="edit";
+            $this->editPage($record);
           }
         }
       }
       else
       {
-        $g_layout->output("Sorry, you don't have permission to perform this action");
-      }      
-      
-      $g_layout->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
-      
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $g_db->disconnect();
-      atkdebug("disconnected from the database");
+        // Cancel was pressed
+        $this->redirect();
+      }
+    }
+    
+    function action_save()
+    {
+      $record = $this->updateRecord();
+      $this->validate($record);
+      if (count($this->m_errors)>0)
+      {
+        $this->addPage($record);
+      }
+      else
+      {
+        $this->addDb($record);
+        
+        $location="";
+        if ($this->hasFlag(NF_EDITAFTERADD))              
+        {          
+           $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
+        }         
+        $this->redirect($location);
+      }
+    }
+    
+    function action_delete()
+    {
+      if ($this->m_postvars['confirm']==text('yes'))
+      {
+        // Confirmation page was displayed and 'yes' was clicked
+        $recordset = $this->deleteDb($this->m_postvars['atkselector']);                
+        $this->postDel($recordset[0]);
+        $this->redirect();
+      }
+      else if ($this->m_postvars['cancel']!=text('no'))
+      {
+        // Confirmation page was not displayed
+        $this->confirmDelete($this->m_postvars['atkselector']);
+      }
+      else
+      {
+        // Confirmation page was displayed and 'no' was clicked
+        $this->redirect();
+      }
+    }
+    
+    function action_copy()
+    {
+      $this->copyDb($this->m_postvars['atkselector']);
+      $this->redirect();
+    }
+    
+    function action_xml()
+    {
+      if ($this->m_postvars['atkselector']!="")
+      {
+        $recordset = $this->selectDb($this->m_postvars['atkselector']);
+        $this->xml($recordset[0]);
+      }
+      else
+      {
+        $recordset = $this->selectDb();
+        for ($i=0;$i<count($recordset);$i++)
+        {
+          $this->xml($recordset[$i]);
+        }
+      }
+    }
+    
+    function action_admin()
+    {
+      if ($this->hasFlag(NF_NO_ADD)==false&&$this->allowed("add"))
+      {
+        if (!$this->hasFlag(NF_ADD_LINK)) // otherwise, in adminPage, an add link will be added.
+        {
+          $this->addPage();
+        }
+      }
+      $this->adminPage();                    
+    }
+    
+    function action_edit()
+    {
+      $recordset = $this->selectDb($this->m_postvars['atkselector']);
+      $this->editPage($recordset[0]);
+    }
+    
+    function action_select()
+    {
+      $this->selectPage();
     }
 
     /**
@@ -1854,17 +1901,7 @@
       {      
         // The page we redirect to is depending on the action we are doing.
         switch ($this->m_action)
-        {
-          case "save":
-            if ($this->hasFlag(NF_EDITAFTERADD))              
-            {          
-              $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey()),SESSION_NESTED);
-            } 
-            else
-            {
-              $back = 1;
-            }
-            break;
+        {          
           case "update":
             if ($this->editingAfterAdd()) // If we're doing an edit, and we came from add
                                           // we go 2 levels back (skip the add).
@@ -1893,8 +1930,7 @@
           }
         }
 
-      }
-      
+      }      
   
       if (atkconfig("debug")>=2)
       {
@@ -1902,14 +1938,18 @@
       }
       else
       {
-        if ((strpos($location,'&')+1 == strlen($location))) 
+
+        atkdebug('redirecting to: '.$location);
+        
+        if (substr($location,-1)=="&")
         { 
-          $location=substr($location,0,strlen($location)-1); 
+          $location=substr($location,0,-1); 
         }
-        if ((strpos($location,'?')+1 == strlen($location))) 
+        if (substr($location,-1)=="?")        
         { 
-          $location=substr($location,0,strlen($location)-1); 
+          $location=substr($location,0,-1); 
         }
+
         header('Location: '.$location);
       }
     }
@@ -1917,7 +1957,7 @@
     /**
      * Parse xml tags
      */
-    function xml()
+    function xml($record)
     {
       global $g_layout;  
     
@@ -1926,9 +1966,9 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if ($this->m_records[$this->m_currentRec][$p_attrib->fieldName()]!="")
+        if ($record[$p_attrib->fieldName()]!="")
         {
-          $xml.=$attribname.'="'.$this->m_records[$this->m_currentRec][$p_attrib->fieldName()].'" ';
+          $xml.=$attribname.'="'.$record[$p_attrib->fieldName()].'" ';
         }
       }
       $xml.='/>';
@@ -1947,13 +1987,28 @@
      * Parse the $postvars and fill the record with its data.
      */
     function updateRecord()
-    {
+    {      
+      $record = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        $this->m_records[$this->m_currentRec][$p_attrib->fieldName()]=$p_attrib->fetchValue($this->m_postvars);
+        $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($this->m_postvars);
       }
+      return $record;
     }
+    
+    /**
+     * Update a record with a set of postvars/sessionvars
+     */
+    function modifyRecord(&$record, $vars)
+    {            
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
+      }      
+    }
+    
 
     /**
      * Search for descriptors of the fields
@@ -1984,30 +2039,13 @@
       return $fields;
 
     }
-
-    /**
-     * Check if there's a record which has $fieldname = $value
-     * todo: check multiple fields at the same time
-     * @return Boolean true or false
-     */
-    function contains($fieldname,$value)
-    {
-      for ($i=0;$i<count($this->m_records);$i++)
-      {
-        if ($this->m_records[$i][$fieldname]==$value) return true;
-        // todo: attributes may have their own way of comparing values..
-      }
-      return false;
-    }
-
+    
     /**
      * Search for descriptor in custom descriptor definition, else first attribute of a node
      * @return descriptor
      */
     function descriptor($rec="")
-    {
-      if (!is_array($rec)) $rec = $this->m_records[$this->m_currentRec];
-    
+    {        
       // See if node has a custom descriptor definition.
       if (method_exists($this,"descriptor_def"))
       {
@@ -2025,7 +2063,7 @@
     /**
      * Validates obligatory fields (but not the auto_increment ones, because they don't have a value yet)
      */
-    function validate()
+    function validate($record)
     {
       global $g_db;
       atkdebug("validate()");
@@ -2033,12 +2071,12 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
-        if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($this->m_postvars))
+        if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
           $this->m_errors[$attribname] = text('error_obligatoryfield');
         }
         else if ($p_attrib->hasFlag(AF_UNIQUE) &&
-                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".$this->m_postvars[$attribname]."' AND NOT (".$this->primaryKey().")"))>0
+                 count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".$this->m_postvars[$attribname]."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
           $this->m_errors[$attribname] = text('error_uniquefield');
@@ -2049,12 +2087,12 @@
 
           if (method_exists($this,$funcname))
           {
-            $error = $this->$funcname($this->m_postvars[$attribname]);
+            $error = $this->$funcname($record[$attribname]);
             if ($error!="") $this->m_errors[$attribname] = $error;
           }
           else
           {
-            $error = $p_attrib->validate($this->m_postvars[$attribname]);
+            $error = $p_attrib->validate($record[$attribname]);
             if ($error!="") $this->m_errors[$attribname] = $error;
           }
         }
@@ -2062,10 +2100,10 @@
     }
 
     /**
-     * Write the current record to the database (if it doesn't exist already,
-     * use addDb()).
+     * Update a record in the database 
+     * Note: for new records use addDb()).
      */
-    function updateDb()
+    function updateDb($record)
     {
       global $g_db;
 
@@ -2073,7 +2111,7 @@
       $query = new $name();
 
       $query->addTable($this->m_table);
-      //$query->addCondition($this->primaryKey());
+      
       $query->addCondition($this->m_postvars['atkorgkey']);
 
       $storelist = array();
@@ -2089,7 +2127,7 @@
           }
           else
           {
-            $p_attrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"edit"); // start at level 1
+            $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"edit"); // start at level 1
           }
 	      }
       }
@@ -2104,12 +2142,12 @@
       for ($i=0;$i<count($storelist);$i++)
       {
         $p_attrib = &$this->m_attribList[$storelist[$i]];
-        $p_attrib->store($g_db, $this->m_records[$this->m_currentRec],"update");
+        $p_attrib->store($g_db, $record,"update");
       }
 
       // Now we call a postUpdate function, that can be used to do some processing after the record
       // has been saved.
-      $this->postUpdate($this->currentRec());
+      $this->postUpdate($record);
 
     }
 
@@ -2141,9 +2179,8 @@
 
       if (!$this->hasFlag(NF_NO_FILTER))
       {
-        /* hard filters may be set */
-        reset($this->m_filters);
-        while(list($key,$value)=each($this->m_filters))
+        /* hard filters may be set */        
+        foreach ($this->m_filters as $key => $value)
         {
           $query->addCondition($key."='".$value."'");
         }
@@ -2206,11 +2243,11 @@
     function copyDb($selector)
     {
       
-      $this->selectDb($selector);
-      $tmprecs = $this->m_records;
-      if(count($tmprecs)>0)
+      $recordset = $this->selectDb($selector);
+      
+      if(count($recordset)>0)
       {      
-        $this->addDb();
+        $this->addDb($recordset[0]);
       }
       else
       {
@@ -2245,9 +2282,8 @@
 
       if (!$this->hasFlag(NF_NO_FILTER))
       {
-        /* hard filters may be set */
-        reset($this->m_filters);
-        while(list($key,$value)=each($this->m_filters))
+        /* hard filters may be set */        
+        foreach($this->m_filters as $key => $value)
         {
           $query->addCondition($key."='".$value."'");
         }
@@ -2297,46 +2333,53 @@
 
       $querystring = $query->buildSelect();
       if ($order!="") $querystring.=" ORDER BY ".$order;
-      atkdebug("selectDb() - query: ".$querystring);
-
-      $this->recordLoaded = 1;
-
-      //$this->m_records = $this->m_db->getrows($querystring);
-
+      atkdebug("selectDb() - query: ".$querystring);      
+      
       if (is_array($limit) && count($limit) == 2) $g_db->query($querystring, $limit["offset"], $limit["limit"]);
       else $g_db->query($querystring);
+      
+      $recordset = array();
 
       while ($g_db->next_record())
       {        
         $therecord = array();
-        $dbrecord = $g_db->m_record;        
-        $query->deAlias($dbrecord); // dereference aliases..
-        atkDataDecode($dbrecord);
-        reset($this->m_attribList);
+        $dbrecord = $g_db->m_record;                        
+        $query->deAlias($dbrecord); // dereference aliases..                
+        atkDataDecode($dbrecord);                
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          $therecord[$attribname] = $p_attrib->db2value($dbrecord);
+          $therecord[$attribname] = $p_attrib->db2value($dbrecord);          
         }
-        $this->m_records[] = $therecord;
-      }
+                
+        $recordset[] = $therecord;
+      }      
 
       // also load special storage attributes.
       for ($i=0;$i<count($loadlist);$i++)
       {
-        for ($j=0;$j<count($this->m_records);$j++)
+        for ($j=0;$j<count($recordset);$j++)
         {
           $p_attrib = &$this->m_attribList[$loadlist[$i]];
-          $this->m_records[$j][$loadlist[$i]] = $p_attrib->load($g_db, $this->m_records[$j]);
+          $recordset[$j][$loadlist[$i]] = $p_attrib->load($g_db, $recordset[$j]);
         }
       }
+      
+      // The $this->m_records is here for compatibility reasons.
+      // USE OF M_RECORDS IS OBSOLETE!!!!!!!!!
+      // new usage of selectDb: $recordset = $this->selectDb(...);
+      // use the returned recordset instead of $this->m_records;
+      $this->m_records = $recordset;
+      $this->m_currentRec = 0;
+      
+      return $recordset;
     }
 
 
    /**
     * Add this node to a query. (mostly used when you have to join two nodes in a relation.
     */
-    function addToQuery(&$query, $alias="", $level=0)
+    function addToQuery(&$query, $alias="", $level=0, $allfields=false)
     {
       $usefieldalias = false;
 
@@ -2349,7 +2392,17 @@
         $usefieldalias = true;
       }
 
-      $usedFields = atk_array_merge($this->descriptorFields(),$this->m_primaryKey);
+      // If allfields is set, we load the entire record.. otherwise, we only 
+      // load the important fields (descriptor and primary key fields)
+      // this is mainly used by onetoonerelation.
+      if ($allfields)
+      {
+        $usedFields = array_keys($this->m_attribList);
+      }
+      else
+      {
+        $usedFields = atk_array_merge($this->descriptorFields(),$this->m_primaryKey);
+      }
 
       for ($i=0;$i<count($usedFields);$i++)
       {
@@ -2361,7 +2414,7 @@
         }
         else
         {
-          if ($usefieldalias) $fieldaliasprefix = $alias."_AMDAE_";
+          if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
           if (!is_object($p_attrib))
           {
             atkdebug($p_attrib->m_name." is not an object?! Check your descriptor_def for non-existant fields");
@@ -2373,49 +2426,13 @@
         }
       }
 
-    }
-
-    /**
-     * Return the current record as an array.
-     */
-    function currentRec()
-    {
-      return $this->m_records[$this->m_currentRec];
-    }
-
-    /**
-     * Advance the pointer to the next record.
-     * If you want to loop all records, first call resetRec();
-     * example:
-     * $this->resetRec();
-     * while ($this->nextRec())
-     * {
-     *    var_dump($this->currentRec());
-     * }
-     */
-    function nextRec()
-    {
-      if ($this->m_currentRec >= (count($this->m_records)-1))
-      {
-        return false;
-      }
-      $this->m_currentRec++;
-      return true;
-    }
-
-    /**
-     * Set the currentRecord to -1, which means that the next call to
-     * nextRec will set the pointer to the first record.
-     */
-    function resetRec()
-    {
-      $this->m_currentRec = -1;
-    }
+    }    
 
     /**
      * Save the current record to the database.
+     * Note: the passed record is changed: it may contain new values for auto_increment fields.
      */
-    function addDb()
+    function addDb(&$record)
     {
       global $g_db;
       
@@ -2446,20 +2463,19 @@
         $p_attrib = &$this->m_attribList[$querylist[$i]];
         if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
-          $this->m_records[$this->m_currentRec][$p_attrib->fieldName()]=$g_db->nextid($this->m_seq);     
+          $record[$p_attrib->fieldName()]=$g_db->nextid($this->m_seq);     
         }
 
-        $p_attrib->addToQuery($query,$this->m_table,"",$this->m_records[$this->m_currentRec],1,"add"); // start at level 1
+        $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
       }
                  
 
-      // also store special storage attributes.
-      reset($this->m_attribList);
+      // also store special storage attributes.      
       for ($i=0;$i<count($storelist);$i++)
       {            
         $p_attrib = &$this->m_attribList[$storelist[$i]];
       
-        $p_attrib->store($g_db, $this->m_records[$this->m_currentRec],"add");
+        $p_attrib->store($g_db, $record,"add");
        
       }
 
@@ -2469,7 +2485,7 @@
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
-      $this->postAdd($this->m_records[$this->m_currentRec]);
+      $this->postAdd($record);
 
       atkdebug($g_db->m_error);
     }
@@ -2478,21 +2494,21 @@
      * delete record from the database.
      * todo: instead of delete, set the deleted flag.
      * @param $selector Selector
+     * @returns the records that were deleted
      */
     function deleteDb($selector)
     {
       global $g_db;
       
+      $recordset = $this->selectDb($selector);
       if (count($this->m_cascadingAttribs)>0)
-      {
-        $this->selectDb($selector);
-
-        for ($i=0;$i<count($this->m_records);$i++)
+      {        
+        for ($i=0;$i<count($recordset);$i++)
         {
           for ($j=0;$j<count($this->m_cascadingAttribs);$j++)
           {
             $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];            
-            $p_attrib->delete($this->m_records[$i]);
+            $p_attrib->delete($recordset[$i]);
           }
         }
       }
@@ -2501,6 +2517,8 @@
       atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
+      
+      return $recordset;
     }
 
     /**
@@ -2653,7 +2671,7 @@
         return '<div align="right">'.$g_sessionManager->stackTrace().'</div><br>';   
       }
       return "";
-    }
+    }      
 
   }
   

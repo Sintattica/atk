@@ -87,6 +87,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.3  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -304,11 +314,13 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with values
+     * @param $fieldprefix The attribute must use this to prefix its form elements (used for
+     *                     embedded forms)
      * @return Piece of htmlcode
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
-      $result = '<input type="text" name="'.$this->formName().
+      $result = '<input type="text" name="'.$fieldprefix.$this->formName().
                 '" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
@@ -322,9 +334,9 @@
      * @param $record Array with values
      * @return Piece of htmlcode
      */
-    function hide($record="")
+    function hide($record="", $fieldprefix="")
     {
-      $result = '<input type="hidden" name="'.$this->formName().
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
                 '" value="'.$record[$this->fieldName()].'">';
       return $result;             
     }
@@ -411,18 +423,24 @@
     {
       $this->m_tableMeta = $metadata[$this->m_name];
     }
+    
+    /**
+     * This function is called right after the attribute is added to the node.
+     * Attributes may do special initialisation here..
+     */
+    function init()
+    {
+    }
 
   }
 
   include_once($config_atkroot."atk/attributes/class.atkboolattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atklimitedtextattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");  
   include_once($config_atkroot."atk/attributes/class.atkhtmlattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkparserattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atkimgattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");  
   include_once($config_atkroot."atk/attributes/class.atkfileattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmultiplefileattribute.inc");
@@ -430,4 +448,5 @@
   include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmlselectorattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkmlattribute.inc");
+  
 ?>

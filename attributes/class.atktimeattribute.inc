@@ -6,6 +6,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -67,16 +77,16 @@
      * @params $record 
      * @return Piece a of HTML Code
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {  
       if ($this->m_maxtime_min>=60)
       {
-        $result.= '<select name="'.$this->formName().'[hours]">';
+        $result.= '<select name="'.$fieldprefix.$this->formName().'[hours]">';
         for ($h=0;$h<=$this->m_maxtime_min/60;)
         { 
           $result .= '<option value="'.$h.'" ';         
           if ($record[$this->fieldName()]['hours']==$h) $result.= "selected";
-          $result .='>'.$h.' '.text('hours');;
+          $result .='>'.$h.' '.text('hours');
           if ($this->m_resolution_min<=60)
           {
             $h++;
@@ -91,7 +101,7 @@
       
       if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
       {
-        $result.= '<select name="'.$this->formName().'[minutes]">';
+        $result.= '<select name="'.$fieldprefix.$this->formName().'[minutes]">';
         for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
         { 
           $result .= '<option value="'.$m.'" ';
@@ -112,10 +122,10 @@
       return $result;
     }
     
-    function hide($record="")
+    function hide($record="", $fieldprefix="")
     {
-      $result = '<input type="hidden" name="'.$this->formName().'[hours]" value="'.$record[$this->fieldName()]["hours"].'">';
-      $result.= '<input type="hidden" name="'.$this->formName().'[minutes]" value="'.$record[$this->fieldName()]["minutes"].'">';
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'[hours]" value="'.$record[$this->fieldName()]["hours"].'">';
+      $result.= '<input type="hidden" name="'.$fieldprefix.$this->formName().'[minutes]" value="'.$record[$this->fieldName()]["minutes"].'">';
       return $result;
     }
     

@@ -10,6 +10,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.3  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -76,18 +86,19 @@
     {
       $this->createDestination();
       
+      $recordset = array();
+      
       for ($i=0;$i<count($record[$this->m_name]);$i++)
       {
-        $this->m_destInstance->m_records[] = $record[$this->m_name][$i][$this->remoteKey()];
+        $recordset[] = $record[$this->m_name][$i][$this->remoteKey()];
       }
 
       if (count($record[$this->m_name])!=0)
       {
         $result = "<ul>";
-        $this->m_destInstance->resetRec();
-        while ($this->m_destInstance->nextRec())
+        for ($i=0;$i<count($recordset);$i++)
         {
-          $result.="<li>".$this->m_destInstance->descriptor();
+          $result.="<li>".$this->m_destInstance->descriptor($recordset[$i]);
         }
         $result.="</ul>";
       }
@@ -98,7 +109,7 @@
     /**
     * Dummy function
     */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
     }
 
@@ -118,10 +129,9 @@
     function load($notused, $record)
     {
       $classname = $this->m_name;      
-      $rel = createNode($classname()); 
-
-      $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
-      return $rel->m_records;
+      $rel = getNode($classname); 
+      
+      return $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }
     
     /** 
@@ -130,7 +140,7 @@
     function delete($record)
     {
       $classname = $this->m_name;      
-      $rel = createNode($classname);
+      $rel = getNode($classname);
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }

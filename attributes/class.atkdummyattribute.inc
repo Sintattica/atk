@@ -31,7 +31,7 @@
     * @param $record Array with fields
     * @return Parsed string
     */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       return $this->m_text;
     }

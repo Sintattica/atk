@@ -27,6 +27,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.1  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.0  2001/04/23 10:20:39  ivo
    * revision tags.
    *
@@ -94,7 +104,7 @@
      * @param $maxsize Not used
      * @return piece of html code with a browsebox
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       $result=$this->display($record);
 
@@ -115,14 +125,14 @@
       if ($result!="")
       {
         $result.="<br>";
-        $result.='<input type="hidden" name="'.$this->fieldName().'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
+        $result.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
       }
 
-      if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) $result .= '<input type="file" name="'.$this->fieldName().'">';
+      if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) $result .= '<input type="file" name="'.$fieldprefix.$this->fieldName().'">';
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
-        $result .= "<select name=\"select[".$this->fieldName()."]\">";
+        $result .= "<select name=\"select[".$fieldprefix.$this->fieldName()."]\">";
         $result .= "<option value=\"\">Selectie";                    // Zorg voor een default met waarde NULL
 
         for($i=0;$i<count($file_arr);$i++)
@@ -133,7 +143,7 @@
       }
       if(!$this->hasFlag(AF_FILE_NO_DELETE) && $GLOBALS['atkaction']=="edit" && $record[$this->fieldname()]['orgfilename']!='')
       {      
-       $result .= '<br><input type="checkbox" name="del['.$this->fieldName().']">&nbsp;'.text("remove_current_file");
+       $result .= '<br><input type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
       }
       return $result;
     }

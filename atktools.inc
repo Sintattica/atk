@@ -9,6 +9,16 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.4  2001/05/10 08:31:00  ivo
+  * Major upgrade. Changes:
+  * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+  *   singletons by default, and nodefunctions pass around recordsets.
+  * + Session management for forms. If you now leave a page through a click on
+  *   a link, the session remembers everything from your form and restores it
+  *   when you return.
+  * + New relation: oneToOneRelation
+  * + Reimplemented the embedded editForm feature (forms inside forms)
+  *
   * Revision 4.3  2001/05/04 11:37:42  sandy
   * small bug fixes (split function, refresh, treeview,etc)
   *
@@ -109,7 +119,7 @@
     *
     * Creates an Url String
     */
-  function arrayToUrlVars($array, $leadchar="?", $prefix="")
+/*  function arrayToUrlVars($array, $leadchar="?", $prefix="")
   {
     $str = "";
     if (count($array>0))
@@ -129,7 +139,7 @@
       }
     }
     return $str; 
-  }
+  }*/
 
 
    /**
@@ -243,11 +253,24 @@
   /**
    * Function href
    *
-   *  Makes a session-aware href thingee...
+   * Makes a session-aware href thingee...
+   *
+   * When using hrefs in the editform, you can set saveform to true. This will save your
+   * form variables in the session and restore them whenever you come back.
+   *   
    */
-  function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
+  function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
   {    
-    return '<a href="'.session_url($url,$sessionstatus).'" '.$extraprops.'>'.$name.'</a>';
+    if ($saveform)
+    {
+      $str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
+    }
+    else
+    {
+      $str = session_url($url,$sessionstatus);
+    }
+       
+    return '<a href="'.$str.'" '.$extraprops.'>'.$name.'</a>';
   }
 
   
@@ -311,7 +334,7 @@
   function decodeKeyValuePair($pair)
   {
     list($key,$value)=split("==|!=|<>|>=|<=|=|<|>",$pair);
-    return Array($key=>stripQuotes($value));    
+    return array($key=>stripQuotes($value));    
   }
   
   /**
@@ -321,7 +344,7 @@
     */
   function decodeKeyValueSet($set)
   {
-    $result = Array();
+    $result = array();
     $items=split(" AND ",$set);
     for ($i=0;$i<count($items);$i++)
     {
@@ -348,22 +371,47 @@
     }    
     return implode(" AND ",$items);    
   }  
+  
+  /**
+   * same as strip_slashes from php, but if the passed value is an array, 
+   * all elements of the array are stripped.
+   */
+  function atk_stripslashes(&$var)
+  {
+    if (is_array($var))
+    {
+      foreach (array_keys($var) as $key)
+      {
+        atk_stripslashes(&$var[$key]);
+      }
+    }
+    else
+    {
+      // ltrim is a workaround for a php4.0.4pl1 bug
+      $var = ltrim(stripslashes($var));
+    }  
+  }
 
 
   /**
     * function atkDataDecode
     *
-    * translate: something_AMDAE_other[] into something[][other]
-    * something_AMDAE_other into something[other]
-    * something_BMDAE_other['test'] into something[other]['test']  
+    * performs stripslashes on all vars
+    *
+    * and translates: something_AMDAE_other[] into something[][other]
+    *                 something_AE_other into something[other]
+    *                 (and a_AE_b_AE_c into a[b][c] and so on...
     */
   function atkDataDecode(&$vars)
-  {
-    reset($vars);
-    while(list($varname,$value)=each($vars))
+  {  
+    foreach (array_keys($vars) as $varname)
     {
-      // if (!is_array($value)) $vars[$varname]=stripslashes(rawurldecode($value)); // it's a mistery to me why this stripslashes is necessary...
-      if (!is_array($value)) $vars[$varname]=stripslashes($value); // it's a mistery to me why this stripslashes is necessary...
+      $value = &$vars[$varname];
+      // We must strip all slashes from the input, since php puts slashes 
+      // in front of quotes that are passed by the url. (magic_quotes_gpc)
+      atk_stripslashes(&$value);    
+
+      AE_decode(&$vars, $varname);                
           
       if (strpos(strtoupper($varname),'_AMDAE_')>0) // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                                     // at the beginning of the string.. but since that's not a valid
@@ -377,19 +425,15 @@
           for ($i=0;$i<count($value);$i++)
           {
             $vars[strtolower($dimension1)][$i][strtolower($dimension2)] = $value[$i];
-          }/*
-          // Multidimensional thing
-          while (list($key,$val) = each($value))
-          {
-            $vars[strtolower($dimension1)][$key][strtolower($dimension2)] = $val;
-          }*/
+          }
         }
         else
         {
           $vars[strtolower($dimension1)][strtolower($dimension2)] = $value;
         }
       }
-      elseif (strpos(strtoupper($varname),'_BMDAE_')>0) // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
+      
+/*    elseif (strpos(strtoupper($varname),'_BMDAE_')>0) // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
                                     // at the beginning of the string.. but since that's not a valid
                                     // encoded var, we do nothing with it.
       {
@@ -400,15 +444,52 @@
         {          
           $vars[strtolower($dimension1)][strtolower($dimension2)][$key] = $val;
         }
+      }*/
+    }          
+  }
+  
+  /**
+   * Weird function. $dest is an associative array, that may contain stuff 
+   * like $dest["a_AE_c_AE_b"] = 3.
+   * Now if you run this function like this:
+   * AE_decode($dest, "a_AE_c_AE_b");
+   * then $dest will contain a decoded array:
+   * echo $dest["a"]["b"]["c"]; <- this will display 3
+   *
+   * Note, this may be implemented more efficiently.
+   */      
+  function AE_decode(&$dest, $var)
+  {                  
+    $items = split("_AE_",$var);
+            
+    if (count($items)>1)
+    {          
+      $result = $dest[$var];
+      
+      for ($i=count($items)-1;$i>0;$i--)
+      {     
+        $tmp = $result;
+        $result = array();
+        $result[$items[$i]] = $tmp;
+      }            
+      if (is_array($dest[$items[0]]))
+      {
+        // the decoded var already exists! so we add the value to the already
+        // existing variable.
+        $dest[$items[0]][$items[1]] = $result[$items[1]];
       }
-    }        
+      else
+      {
+        $dest[$items[0]] = $result;
+      }
+    }          
   }
 
   /**
-    * Function stringfields
-    *
-    * Get the [ ] Fields out of a String
-    */
+   * Function stringfields
+   *
+   * Get the [ ] Fields out of a String
+   */
   function stringfields($string)
   { 
     $tmp = "";

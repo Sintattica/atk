@@ -13,6 +13,16 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.7  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.6  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -73,7 +83,7 @@
     else if (empty($url) && !$enable) $menu .= text("menu_$name").'<br>';
       
     /* normal menu item */
-    else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,'target="main"').'<br>';
+    else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,false,'target="main"').'<br>';
     else $menu .= text("title_$name").'<br>';    
   }
   

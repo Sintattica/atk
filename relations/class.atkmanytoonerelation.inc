@@ -15,6 +15,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.5  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -119,17 +129,7 @@
      * @return decoded value
      */
     function db2value($rec)
-    {
-    /*
-      $this->createDestination();
-
-//      for ($i=0;$i<count($this->m_destInstance->m_primaryKey);$i++)
-//      {
-        // TODO: there's a BIG error in this (multiple primarykey shit)
-        $res.=$this->m_destInstance->m_primaryKey[0]."='".$rec[$this->fieldName()]."'";
-
-//      }
-      return $res;*/
+    {    
       return $rec[$this->fieldName()];
     }
 
@@ -141,25 +141,8 @@
     function display($record)
     {    
       $this->createDestination();
+
       return $this->m_destInstance->descriptor($record[$this->fieldName()]);
-/*
-      if ($record[$this->fieldName()]!="")
-      {
-        $this->createDestination();
-
-        //$searchFor = stringparse($this->m_destInstance->primaryKeyTpl(),$record);
-
-        //$this->m_destInstance->selectDb($searchFor);
-
-        $this->m_destInstance->selectDb($record[$this->fieldName()]);
-
-        //return $record["coordinator_name"];
-
-        if (count($this->m_destInstance->m_records)>0) return $this->m_destInstance->descriptor();
-      }
-      return "";
-      */
-
     }
 
     /**
@@ -168,17 +151,14 @@
      * @param $record Record
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       $this->createDestination();
-      $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      
+      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
 
-      $current = createNode($this->m_destination); 
-      $current->m_records[0] = $record[$this->fieldName()];
-
-      $currentPk = $current->primaryKey();
-
-      $result = '<select name="'.$this->formName().'">';
+      $result = '<select name="'.$fieldprefix.$this->formName().'">';
 
       if ($this->hasFlag(AF_OBLIGATORY)==false)
       {
@@ -186,11 +166,11 @@
         $result.= '<option value="0">'.text('select_none');
       }
 
-      for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+      for ($i=0;$i<count($recordset);$i++)
       {
-        $pk = $this->m_destInstance->primaryKey();
+        $pk = $this->m_destInstance->primaryKey($recordset[$i]);
         if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
-        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor();
+        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
       }
       $result.='</select>';
       return $result;
@@ -202,12 +182,11 @@
      * @param $record Array with values
      * @return Piece of htmlcode
      */
-    function hide($record="")
+    function hide($record="", $fieldprefix="")
     {      
-      $this->createDestination();      
-      $this->m_destInstance->m_records[0] = $record[$this->fieldName()];
-      $currentPk = $this->m_destInstance->primaryKey();
-      $result = '<input type="hidden" name="'.$this->formName().
+      $this->createDestination();            
+      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
                 '" value="'.$currentPk.'">';
       return $result;             
     }
@@ -223,7 +202,7 @@
     function search($record="")
     {
       $this->createDestination();
-      $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
       $result = '<select name="atksearch['.$this->fieldName().']">';
 
@@ -231,11 +210,11 @@
 
       $result.= '<option value="">'.text('search_all');
 
-      for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+      for ($i=0;$i<count($recordset);$i++)
       {
-        $pk = $this->m_destInstance->m_records[$this->m_destInstance->m_currentRec][$pkfield];
+        $pk = $recordset[$i][$pkfield];
         if ($record[$this->fieldName()]==$pk) $sel = "selected"; else $sel = "";
-        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor();
+        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
       }
       $result.='</select>';
       return $result;
@@ -259,10 +238,8 @@
         {
           $this->createDestination();
           $this->m_destInstance->addToQuery($query, $this->fieldName(), $level+1);
-          // note that we currently only support relations that are build of a singular primary key....
-          //$query->addCondition($tablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0]);
+
           $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$tablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], true);
-          //$query->addField($tablename.$this->fieldName());
         }
       }
 

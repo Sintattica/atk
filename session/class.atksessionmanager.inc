@@ -6,6 +6,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.9  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 1.8  2001/05/02 15:01:23  ivo
    * Added a maximum (4) to the stacktrace.
    *
@@ -48,7 +58,7 @@
     }
     
     function session_read(&$postvars)
-    {
+    {      
       $this->globalscope($postvars);           
       $this->stackscope($postvars);
     }
@@ -82,7 +92,7 @@
       // We always return the current value..
       return $currentitem[$var];
       
-    }
+    }        
     
     function globalscope(&$postvars)
     {
@@ -134,6 +144,8 @@
         // new level.. always based on the previous level        
         //$newstackitem = array();
         $currentitem = $stack[count($stack)-1];
+        // but we never keep formdata from other pages..
+        $currentitem["atkformdata"]="";
         
         // Posted vars always overwrite anything in the current session..
         foreach($g_sessionVars as $var)
@@ -165,20 +177,48 @@
           array_pop($stack);
         }
         // Posted vars always overwrite anything in the current session..
-        foreach($g_sessionVars as $var)
+        // unless we are escaping.. 
+        // if atkescape is set, we store the entire form in the stack        
+        $escaped = false;
+        if ($postvars["atkescape"]!="")
         {
-          if (isset($postvars[$var])&&$postvars[$var]!="")
+          atkdebug("Saving formdata in session");
+          $escaped = true;
+          $atkformdata = array();
+          foreach(array_keys($postvars) as $varname)
           {
-            $currentitem[$var] = $postvars[$var];
+            // only save formdata itself, hence no $atk.. variables
+            if (substr($varname,0,3)!="atk")
+            {
+              $atkformdata[$varname] = $postvars[$varname];
+            }
           }
+          $currentitem["atkformdata"] = $atkformdata;          
+          
+          // save it in the session stack..
+          $stack[$atklevel] = $currentitem;       
+        }
+      }  
+        
+      foreach($g_sessionVars as $var)
+      {
+        if (isset($postvars[$var])&&$postvars[$var]!="")
+        {
+          $currentitem[$var] = $postvars[$var];
         }
       }
-                
+          
+      if (is_array($currentitem["atkformdata"]))
+      {
+        atkdebug("Restoring formdata from session");        
+        // atkformdata will be present in postvars.. editForm() has to read them..
+      }
          
       foreach($currentitem as $var => $value)
       {
         $postvars[$var] = $value;
-      }                             
+      }  
+//      var_dump($postvars);
         
       //echo "<hr>";
       //var_dump($g_sessionData["stack"]);

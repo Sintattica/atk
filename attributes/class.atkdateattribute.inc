@@ -22,6 +22,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/10 08:31:00  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.3  2001/04/25 08:46:08  ivo
    * Big optimisations: using references for attribute manipulation.
    *
@@ -238,7 +248,7 @@
      * @params $record Array with 3 fields (year, month, day)
      * @return Piece a of HTML Code
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
       $min    = $this->date_min;
       $max    = $this->date_max;
@@ -273,7 +283,7 @@
         // selections with just a few days
         if ($max - $min <= 25)
         {
-          $result = '<select name="'.$this->fieldName().'">';
+          $result = '<select name="'.$fieldprefix.$this->fieldName().'">';
           for ($i = $min; $i <= $max; $i++) $result .= '<option value="'.$i.'">'.$this->formatdate($i, $format).'</option>';
           $result .= '</select>';
         }
@@ -283,7 +293,7 @@
           for($i = 0; $i < strlen($format); $i++)
           {
             // script
-            $jscript = "AdjustDate(this.form, '".$this->fieldName()."', '".$format."', $min, $max);";
+            $jscript = "AdjustDate(this.form, '".$fieldprefix.$this->fieldName()."', '".$format."', $min, $max);";
 
             // year
             if ($format[$i] == "y" || $format[$i] == "Y")
@@ -295,20 +305,20 @@
               // less then or 25 years
               if($year_max - $year_min <= 25)
               {
-                $result .= '<select name="'.$this->fieldName().'[year]" onChange="'.$jscript.'">';
+                $result .= '<select name="'.$fieldprefix.$this->fieldName().'[year]" onChange="'.$jscript.'">';
                 for($j = $year_min; $j <= $year_max; $j++) $result .= '<option value="'.$j.'" '.($j == $set_date ? "selected" : "").'>'.$this->formatdate($j."0000", $format[$i]).'</option>';
                 $result .= '</select>';
               }
 
               // else input box (always years in 4 digits!)
-              else $result .= '<input type="text" name="'.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$jscript.'" value="'.$set_date.'">';
+              else $result .= '<input type="text" name="'.$fieldprefix.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$jscript.'" value="'.$set_date.'">';
             }
 
             // day
             elseif ($format[$i] == "j" || $format[$i] == "d")
             {
               // selection box
-              $result .= '<select name="'.$this->fieldName().'[day]" onChange="'.$jscript.'">';
+              $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$jscript.'">';
               $days = $this->getDays($set_month, $set_year, $min, $max);
               while (list ($key, $j) = each ($days))
               {
@@ -323,7 +333,7 @@
             elseif($format[$i] == "m" || $format[$i] == "n" || $format[$i] == "M" || $format[$i] == "F")
             {
               // select
-              $result .= '<select name="'.$this->fieldName().'[month]" onChange="'.$jscript.'">';
+              $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$jscript.'">';
 
               // options
 	            $months = $this->getMonths($set_year, $min, $max);
@@ -357,13 +367,13 @@
           // year
           if($format[$i] == "y" || $format[$i] == "Y")
           {
-            $result .= '<input type="text" name="'.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$jscript.'" value="'.$set_year.'">';
+            $result .= '<input type="text" name="'.$fieldprefix.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$jscript.'" value="'.$set_year.'">';
           }
 
           // day
           elseif($format[$i] == "j" || $format[$i] == "d")
           {
-            $result .= '<select name="'.$this->fieldName().'[day]" onChange="'.$jscript.'">';
+            $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$jscript.'">';
             $days = $this->getDays($set_month, $set_year, $min, $max);
             while (list ($key, $j) = each ($days))
             {
@@ -377,7 +387,7 @@
           // month
           elseif($format[$i] == "m" || $format[$i] == "n" || $format[$i] == "M" || $format[$i] == "F")
           {
-            $result .= '<select name="'.$this->fieldName().'[month]" onChange="'.$jscript.'">';
+            $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$jscript.'">';
             $months = $this->getMonths($set_year, $min, $max);
             while (list ($key, $j) = each ($months))
             {
@@ -402,15 +412,21 @@
      * @param $record Array with values
      * @return Piece of htmlcode
      */
-    function hide($record="")
+    function hide($record="", $fieldprefix)
     {
       $field = $record[$this->fieldName()];
 
       if (is_array($field))
-        for (reset($field); list($key, $value) = each($field);)
-          $result .= '<input type="hidden" name="'.$this->formName().'['.$key.']" '.'value="'.$value.'">';
-      else  $result = '<input type="hidden" name="'.$this->formName().'" value="'.$field.'">';
-
+      {
+        foreach ($field as $key => $value) 
+        {
+          $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$key.']" '.'value="'.$value.'">';
+        }
+      }
+      else  
+      {
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
+      }
       return $result;             
     }
 

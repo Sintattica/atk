@@ -10,6 +10,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.3  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -59,7 +69,7 @@
      * @param $record Current record
      * @result piece of html code
      */
-    function edit($record="")
+    function edit($record="", $fieldprefix="")
     {
     //var_dump($record);
       $this->createDestination();    
@@ -68,18 +78,17 @@
       
       // first the selected records..
       for ($i=0;$i<count($record[$this->m_name]);$i++)
-      {
-        $this->m_destInstance->m_records[0] = $record[$this->m_name][$i][$this->remoteKey()];
-        $selectedPk[] = $this->m_destInstance->primaryKey();
+      {        
+        $selectedPk[] = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->remoteKey()]);
       }     
 
       // now select all records 
-      $this->m_destInstance->selectDb();
+      $recordset = $this->m_destInstance->selectDb();
 
-      for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+      for ($i=0;$i<count($recordset);$i++)
       {
 
-        if (in_array($this->m_destInstance->primaryKey(),$selectedPk))
+        if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
         {
           $sel = "checked";
         }
@@ -87,7 +96,13 @@
         {
           $sel = "";
         }
-        $result.= '<input type="checkbox" name="'.$this->fieldName().'_AMDAE_'.$this->remoteKey().'[]" value="'.$this->m_destInstance->m_records[$this->m_destInstance->m_currentRec][$this->m_destInstance->primaryKeyField()].'" '.$sel.'>'.$this->m_destInstance->descriptor().'<br>'."\n";
+        $result.= '<input type="checkbox" name="'.
+                       $fieldprefix.$this->fieldName().
+                       '_AMDAE_'.$this->remoteKey().
+                       '[]" value="'.
+                       $recordset[$i][$this->m_destInstance->primaryKeyField()].
+                       '" '.$sel.'>'.
+                       $this->m_destInstance->descriptor($recordset[$i]).'<br>'."\n";
       }
       return $result;
     }
@@ -100,7 +115,7 @@
     function store($notused, $record)
     {
       $classname = $this->m_name;      
-      $rel = createNode($classname);
+      $rel = getNode($classname);
             
       $this->createDestination();
       
@@ -109,12 +124,12 @@
       for ($i=0;$i<count($record[$this->fieldName()]);$i++)
       { 
         // magical stuff..
-        
-        $rel->m_records[0][$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];        
+        $newrecord = array();
+        $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];        
     
-        $rel->m_records[0][$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+        $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
         
-        $rel->addDb();
+        $rel->addDb($newrecord);
       }
     }   
 

@@ -9,7 +9,7 @@
    $g_sessionManager->session_read(&$HTTP_GET_VARS);
    
    // Create node
-   $obj = createNode($HTTP_GET_VARS["atknodetype"]); 
+   $obj = getNode($HTTP_GET_VARS["atknodetype"]); 
 
    if (is_object($obj))
    {

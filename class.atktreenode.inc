@@ -13,6 +13,16 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.10  2001/05/10 08:31:00  ivo
+    * Major upgrade. Changes:
+    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+    *   singletons by default, and nodefunctions pass around recordsets.
+    * + Session management for forms. If you now leave a page through a click on
+    *   a link, the session remembers everything from your form and restores it
+    *   when you return.
+    * + New relation: oneToOneRelation
+    * + Reimplemented the embedded editForm feature (forms inside forms)
+    *
     * Revision 4.9  2001/05/07 15:13:49  ivo
     * Put config_atkroot in all files.
     *
@@ -96,13 +106,13 @@
       atkdebug("Entering treeview page.");
       $this->addStickyVar($p);
       
-      $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
+      $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
 
       $t = new tree;
-      for($i=0;$i<count($this->m_records);$i++)
+      for($i=0;$i<count($recordset);$i++)
       {
-        $group=$this->m_records[$i];
-        $t->addNode($this->m_records[$i][$this->m_primaryKey[0]],$this->descriptor($group),$this->m_records[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+        $group=$recordset[$i];
+        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
       }
       $this->m_tree[$g_teller][0]=0; 
       $this->m_tree[$g_teller][1]="&nbsp;"; 
@@ -433,15 +443,15 @@
           */
     function copyDb($selector)
     {
-      $this->selectDb($selector);
-      $tmprecs = $this->m_records;
-      if(count($tmprecs)>0)
+      $recordset = $this->selectDb($selector);
+      
+      if(count($recordset)>0)
       {      
-        $this->addDb();
+        $this->addDb($recordset[0]);
         atkdebug("copyDb - Main Record added");
-        $newparent=$this->m_records[$this->m_currentRec][$this->m_primaryKey[0]];
-        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$tmprecs[0][$this->m_primaryKey[0]].','.$newparent.')');
-        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$tmprecs[0][$this->m_primaryKey[0]], $newparent);
+        $newparent=$recordset[0][$this->m_primaryKey[0]];
+        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$recordset[0][$this->m_primaryKey[0]].','.$newparent.')');
+        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[0][$this->m_primaryKey[0]], $newparent);
       }
       else
       {
@@ -451,29 +461,27 @@
     }
     
     /**
-        * This is a recursive function to copy the childeren from a parent.
+        * This is a recursive function to copy the children from a parent.
         *
         * @param $selector Selector
         * @param $parent Parent ID
         */
     function copyChildren($selector, $parent="")
     {
-      $this->selectDb($selector);
-      $tmprecs = $this->m_records;
-      if(count($tmprecs)>0)
-      {        
-        atkdebug("Loop ".count($tmprecs)." Childrecords - current ".$this->m_currentRec." - New parent id = $parent");
-        for($i=0;$i<count($tmprecs);$i++)
+      $recordset = $this->selectDb($selector);
+      
+      if(count($recordset)>0)
+      {                
+        for($i=0;$i<count($recordset);$i++)
         {  
-          $tmprecs[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);
-          $this->m_currentRec = 0;
-          $this->m_records[0] = $tmprecs[$i];
-          $this->addDb();
-          $newrec = $this->m_records[0];
+          $recordset[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);                    
+          $oldrec = $recordset[$i];
+          $this->addDb(&$recordset[$i]);
+          
           atkdebug("Child Record added");
-          $newparent=$newrec[$this->m_primaryKey[0]];
-          atkdebug('CopyChildren('.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]].','.$newparent.')');
-          $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]], $newparent);
+          $newparent=$recordset[$i][$this->m_primaryKey[0]];
+          atkdebug('CopyChildren('.$this->m_parent.'='.$oldrec[$this->m_primaryKey[0]].','.$newparent.')');
+          $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldrec[$this->m_primaryKey[0]], $newparent);
         }
       }
       else
@@ -492,31 +500,33 @@
     {
       global $g_db;
       atkdebug("Retrieve record");
-      $this->selectDb($selector);
-      for ($i=0;$i<count($this->m_records);$i++)
+      $recordset = $this->selectDb($selector);
+      for ($i=0;$i<count($recordset);$i++)
       {
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
           {
-            $p_attrib->delete($this->m_records[$i]);
+            $p_attrib->delete($recordset[$i]);
           }
         }
       }   
-      $tmpparentrecs = $this->m_records;
-      $parent = $tmpparentrecs[0][$this->m_primaryKey[0]];
+      $parent = $recordset[0][$this->m_primaryKey[0]];
       atkdebug("Check for child records");
-      $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
-      $tmprecs = $this->m_records;
-      if(count($tmprecs)>0)
+      $children = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      
+      if(count($children)>0)
       {
-        atkdebug('DeleteChilderen('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
-        $this->deleteChilderen($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
+        atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
+        $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
       atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
+      
+      
+      return $recordset;
       // todo: instead of delete, set the deleted flag.
     }
     
@@ -526,34 +536,34 @@
          * @Param $selector Selector
          * @Param $parent Parent
          */
-    function deleteChilderen($selector,$parent)
+    function deleteChildren($selector,$parent)
     {
       global $g_db;
       atkdebug("Check for child records of the Child");
-      $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
-      for ($i=0;$i<count($this->m_records);$i++)
+      $recordset = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      for ($i=0;$i<count($recordset);$i++)
       {
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
           {
-            $p_attrib->delete($this->m_records[$i]);
+            $p_attrib->delete($recordset[$i]);
           }
         }
       }   
-      $tmprecs = $this->m_records;
-      if(count($tmprecs)>0)
+      
+      if(count($recordset)>0)
       {
-        for($i=0;$i<count($tmprecs);$i++)
+        for($i=0;$i<count($recordset);$i++)
         {
-          $parent = $tmprecs[$i][$this->m_primaryKey[0]];
-          atkdebug('DeleteChilderen('.$this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]].','.$parent.')');
-          $this->deleteChilderen($this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]],$parent);
+          $parent = $recordset[$i][$this->m_primaryKey[0]];
+          atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]].','.$parent.')');
+          $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]],$parent);
         }
       }
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      atkdebug("deleteChilderen - query: ".$query);
+      atkdebug("deleteChildren - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
     }

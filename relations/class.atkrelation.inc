@@ -16,6 +16,16 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/10 08:31:01  ivo
+   * Major upgrade. Changes:
+   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
+   *   singletons by default, and nodefunctions pass around recordsets.
+   * + Session management for forms. If you now leave a page through a click on
+   *   a link, the session remembers everything from your form and restores it
+   *   when you return.
+   * + New relation: oneToOneRelation
+   * + Reimplemented the embedded editForm feature (forms inside forms)
+   *
    * Revision 4.5  2001/05/07 15:13:49  ivo
    * Put config_atkroot in all files.
    *
@@ -93,7 +103,7 @@
     {
       if ($this->m_destInstance == "")
       {
-        $this->m_destInstance = createNode($this->m_destination);
+        $this->m_destInstance = getNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
         if ($this->m_destinationFilter!="")
         {
@@ -125,5 +135,7 @@
   include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
   include_once($config_atkroot."atk/relations/class.atkmanyboolrelation.inc");
   include_once($config_atkroot."atk/relations/class.atkonetomanyrelation.inc");
-  include_once($config_atkroot."atk/relations/class.atkmatrixrelation.inc");
+  //include_once($config_atkroot."atk/relations/class.atkmatrixrelation.inc");
+  include_once($config_atkroot."atk/relations/class.atkonetoonerelation.inc");
+
 ?>

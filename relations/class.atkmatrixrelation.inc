@@ -61,102 +61,108 @@
     function edit($record="")
     {             
     
-   $checkedArray = $record[$this->fieldName()];
+      $checkedArray = $record[$this->fieldName()];
       
-   $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+      $pkfield = $this->m_ownerInstance->m_primaryKey[0];
        
-   $this->m_destination = $this->m_destination1; 
-   $this->m_destInstance="";
-   $this->createDestination();
+      $this->m_destination = $this->m_destination1; 
+      $this->m_destInstance="";
+      $this->createDestination();
    
-   if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
+      if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
 
-   $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      $recordset = $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
  
-   for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
-   {
-     $matrix_fields_row[$this->m_destInstance->m_currentRec] = $this->m_destInstance->descriptor();
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        $matrix_fields_row[$i] = $this->m_destInstance->descriptor($recordset[$i]);
           
-     $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
-     $matrix_values_row[$this->m_destInstance->m_currentRec] = $primaryKeyValue[1];
-   }
+        $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+        $matrix_values_row[$i] = $primaryKeyValue[1];
+      }
 
-   $this->m_destination = $this->m_destination2; 
-   $this->m_destInstance="";
-   $this->createDestination();
+      $this->m_destination = $this->m_destination2; 
+      $this->m_destInstance="";
+      $this->createDestination();
    
-   if ($this->m_fk2!="") $where=$this->m_fk2."=".$record[$pkfield]; else $where="";
+      if ($this->m_fk2!="") $where=$this->m_fk2."=".$record[$pkfield]; else $where="";
 
-   $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+      $recordset = $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
-   for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
-   {
-     $matrix_fields_col[$this->m_destInstance->m_currentRec] = $this->m_destInstance->descriptor();
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        $matrix_fields_col[$i] = $this->m_destInstance->descriptor($recordset[$i]);
           
-     $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
-     $matrix_values_col[$this->m_destInstance->m_currentRec] = $primaryKeyValue[1];
-   }
-
-
-   if (count($matrix_fields_col)>1 && count($matrix_fields_row)>1) {      //matrix
-
-   $form = '<table border=1><tr><td>&nbsp;</td>';
-   for ($i=0;$i<count($matrix_fields_col);$i++) {
-      $form .= '<td align="center" valign="top" bgcolor="#cccccc"><b><div style="line-height: 10px">';
-      $text = $matrix_fields_col[$i];
-      for ($j=0;$j<strlen($text);$j++) {
-         $form .= $text[$j].'<br>';   
+        $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+        $matrix_values_col[$i] = $primaryKeyValue[1];
       }
-      $form .= '</div></b><br></td>';
-   }
-   $form .= '</tr>';
 
-   $counter=0;
-   for ($i=0;$i<count($matrix_fields_row);$i++) {
-      $form .= '<tr><td bgcolor="#cccccc"><b>';
-      $form .= '&nbsp;'.$matrix_fields_row[$i].'&nbsp;';  
-      $form .= '</b></td>';
-      for ($j=0;$j<count($matrix_fields_col);$j++) {
-         $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
-         if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
+
+      if (count($matrix_fields_col)>1 && count($matrix_fields_row)>1) 
+      {      //matrix
+
+        $form = '<table border=1><tr><td>&nbsp;</td>';
+        for ($i=0;$i<count($matrix_fields_col);$i++) 
+        {
+          $form .= '<td align="center" valign="top" bgcolor="#cccccc"><b><div style="line-height: 10px">';
+          $text = $matrix_fields_col[$i];
+          for ($j=0;$j<strlen($text);$j++) 
+          {
+            $form .= $text[$j].'<br>';   
+          }
+          $form .= '</div></b><br></td>';
+        }
+        $form .= '</tr>';
+
+        $counter=0;
+        for ($i=0;$i<count($matrix_fields_row);$i++) 
+        {
+          $form .= '<tr><td bgcolor="#cccccc"><b>';
+          $form .= '&nbsp;'.$matrix_fields_row[$i].'&nbsp;';  
+          $form .= '</b></td>';
+          for ($j=0;$j<count($matrix_fields_col);$j++) 
+          {
+            $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
+            if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
          
-         $form .= '<td align="center">&nbsp;';   
-         $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
-         $form .= '&nbsp;</td>';
+            $form .= '<td align="center">&nbsp;';   
+            $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
+            $form .= '&nbsp;</td>';
+          }
+          $form .= '</tr>';
+        }
+        $form .= '</table><br>';
+
+      } 
+      elseif (count($matrix_fields_row)>1) 
+      { //many bool
+        $form = '<table border=0 cellspacing=0 cellpadding=0>';
+   
+        $counter=0;
+        for ($i=0;$i<count($matrix_fields_row);$i++) 
+        {
+          $form .= '<tr>';
+          for ($j=0;$j<count($matrix_fields_col);$j++) 
+          {
+            $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
+            if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
+           
+            $form .= '<td align="center">&nbsp;';   
+            $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
+            $form .= '&nbsp;</td>';
+            $form .= '<td>'.$matrix_fields_row[$i].'</td>';
+          }
+          $form .= '</tr>';
+        }
+        $form .= '</table><br>';  
+      } 
+      else 
+      {   //one or none bool  
+        $form = '';   
       }
-      $form .= '</tr>';
-   }
-   $form .= '</table><br>';
-
-   } elseif (count($matrix_fields_row)>1) {                              //many bool
-   
-   $form = '<table border=0 cellspacing=0 cellpadding=0>';
-   
-   $counter=0;
-   for ($i=0;$i<count($matrix_fields_row);$i++) {
-      $form .= '<tr>';
-      for ($j=0;$j<count($matrix_fields_col);$j++) {
-         $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
-         if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
-         
-         $form .= '<td align="center">&nbsp;';   
-         $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
-         $form .= '&nbsp;</td>';
-         $form .= '<td>'.$matrix_fields_row[$i].'</td>';
-      }
-      $form .= '</tr>';
-   }
-   $form .= '</table><br>';
-  
-   } else {                                                              //one or none bool
-   
-   $form = '';
-   
-   }
-
-   return $form;
-
-   }
+ 
+      return $form;
+  }
  
     
     // check if the input is acyclic when flag is set     
@@ -178,33 +184,34 @@
 
     function delete_before_store($db, $record)
     {
-    if ($this->m_fk1=="" && $this->m_fk2!="") // manybool 
-    {       
-      $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+      if ($this->m_fk1=="" && $this->m_fk2!="") // manybool 
+      {       
+        $pkfield = $this->m_ownerInstance->m_primaryKey[0];
      
-      $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name2.' = '.$record[$pkfield];
-      $db->query($query);
+        $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name2.' = '.$record[$pkfield];
+        $db->query($query);
       
-    } else {
-          
-      $pkfield = $this->m_ownerInstance->m_primaryKey[0];
-
-      $this->m_destination = $this->m_destination1;
-      $this->m_destInstance="";
-      $this->createDestination();
-      
-      if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
-      
-      $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
- 
-      for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+      } 
+      else 
       {
-         $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
-         $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name1.' = '.$primaryKeyValue[1];
-         $db->query($query);
-      }    
-    
-    }
+          
+        $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+
+        $this->m_destination = $this->m_destination1;
+        $this->m_destInstance="";
+        $this->createDestination();
+      
+        if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
+      
+        $recordset = $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+ 
+        for ($i=0;$i<count($recordset);$i++)
+        {
+          $primaryKeyValue = split("'",$this->m_destInstance->primaryKey($recordset[$i]));
+          $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name1.' = '.$primaryKeyValue[1];
+          $db->query($query);
+        }    
+      }
     }
 
     function store($db, $record)
