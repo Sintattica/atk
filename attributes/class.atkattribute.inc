@@ -22,10 +22,10 @@
 
   define("AF_NO_SORT"       ,1024);    // Attribute can not be sorted in recordlists.
   define("AF_NOSORT"  ,AF_NO_SORT);  // AF_NOSORT has wrong naming convention but is still there
-                                     // for compatibility reasons.    
+                                     // for compatibility reasons.
   define("AF_READONLY_ADD",2048);   // Attribute is readonly in add.
-  define("AF_SEARCHABLE"  ,4096); // Attribute is searchable in list views 
-  
+  define("AF_SEARCHABLE"  ,4096); // Attribute is searchable in list views
+
   // flags specific for AtkFileAttribute
   define("AF_FILE_NO_UPLOAD"     , 8192);   // Unable to upload files
   define("AF_FILE_NO_SELECT"     , 16384);  // Unable to select files
@@ -54,26 +54,26 @@
   // multilangauge flag (internal use only!)
   define("AF_MULTILANGUAGE", 33554432); // Notify's atknode that this attribute is multilanguagal
 
-  define("AF_TOTAL", 67108864);             // The attribute will have a 'total' column in lists. 
+  define("AF_TOTAL", 67108864);             // The attribute will have a 'total' column in lists.
 
   define("AF_PARENT", 134217728);           // the parent field for parent child relations in a treeview
-  define("AF_LARGE", 268435456); // Attribute will have a large ammount of 
+  define("AF_LARGE", 268435456); // Attribute will have a large ammount of
                                  // records.. (attribs can optimize accordingly)
-  
-  define("AF_HIDE_SEARCH", 536870912); // Attribute is not searchable in extended search  
-  
-  define("AF_READONLY_EDIT", 1073741824); // Attribute is readonly when edited.   
-  
+
+  define("AF_HIDE_SEARCH", 536870912); // Attribute is not searchable in extended search
+
+  define("AF_READONLY_EDIT", 1073741824); // Attribute is readonly when edited.
+
   define("AF_HIDE",AF_HIDE_EDIT|AF_HIDE_ADD|AF_HIDE_LIST|AF_HIDE_SEARCH); // Attribute is totally hidden
   define("AF_AUTOKEY", AF_PRIMARY|AF_HIDE|AF_AUTOINCREMENT); // short way of saying that an attribute
                                                              // is an autoincremented primarykey that
                                                              // is also hidden from the user.
   define("AF_READONLY",AF_READONLY_EDIT|AF_READONLY_ADD); // Attribute is always readonly.
-                                       
+
   // FLAGS MAY NOT EXCEED 2^31 (2147483648), because that's the integer limit beyond which
   // the bitwise operators won't work anymore.
-                                                             
-  /**  
+
+  /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
    * control its behaviour, like whether an atkAttribute
@@ -135,7 +135,7 @@
      * The owner of the attribute (set by atknode)
      */
     var $m_owner = "";
-    
+
     /**
      * Owner Instance
      */
@@ -251,10 +251,10 @@
                 '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-              
+
       return $result;
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
@@ -264,8 +264,8 @@
     function hide($record="", $fieldprefix="")
     {
       $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
-                '" value="'.$record[$this->fieldName()].'">';
-      return $result;             
+                '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+      return $result;
     }
 
     /**
@@ -278,9 +278,9 @@
     {
       $result= '<input type="text" name="atksearch['.$this->formName().']" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';                      
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
-    }        
+    }
 
     /**
      * Creates an search condition for a given search value
@@ -289,7 +289,7 @@
      * @return a piece of the SQL where clause
      */
     function searchCondition(&$query, $table, $value, $searchmode)
-    {      
+    {
       $func = $searchmode."Condition";
       if (method_exists($query,$func))
       {
@@ -341,10 +341,10 @@
      * @return New SQL Query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
-    {      
+    {
       if ($mode == "add" || $mode == "update")
         $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
-      else 
+      else
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
     }
 
@@ -356,7 +356,7 @@
     {
       // delete is only of interest for special attributes like relations, or file attributes.
     }
-    
+
     /**
      * returns a record which is the sum of two records
      */
@@ -364,21 +364,21 @@
     {
       return array($this->fieldName()=>($rec1[$this->fieldName()]+$rec2[$this->fieldName()]));
     }
-    
+
     /**
      * Fetch the metadata about this attrib from the table metadata
-     */    
+     */
     function fetchMeta($metadata)
     {
       global $g_layout;
-      
+
       $attribname = $this->fieldName();
       $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
-      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());      
-      $this->m_maxsize = $metadata[$attribname]['len'];                     
-      
+      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());
+      $this->m_maxsize = $metadata[$attribname]['len'];
+
     }
-    
+
     /**
      * This function is called right after the attribute is added to the node.
      * Attributes may do special initialisation here..
@@ -386,7 +386,7 @@
     function init()
     {
     }
-    
+
     /**
      * This function is called to compare two values.
      *
@@ -398,13 +398,13 @@
 
     /**
      * This function is called by atkNode to determine if a field
-     * needs to be saved to the database in an updateDb call. 
-     *     
+     * needs to be saved to the database in an updateDb call.
+     *
      * @param $record The record that is about to be saved.
      */
     function needsUpdate($record)
-    {      
-      return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));     
+    {
+      return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));
     }
 
     function getSearchModes()
@@ -418,5 +418,5 @@
     }
 
   }
-  
+
 ?>
