@@ -27,6 +27,8 @@
    * @subpackage handlers
    *
    */
+  atkimport("atk.handlers.atkactionhandler");
+   
   class atkAdminHandler extends atkActionHandler
   {
     /**
