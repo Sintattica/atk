@@ -180,7 +180,7 @@
 //      if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
 //      {
         $this->mergeMlRecords(&$node,&$recordset);
-/*
+        /*
       }
       else if(!$node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
       {
@@ -278,7 +278,8 @@
       {
         if($node->m_attribList[$attribname]->m_mlattribute) $lngattribs[$attribname] = &$node->m_attribList[$attribname];
       }
-      $ml_record[0]=$recordset[0]; // assume this is the record with the default language
+      $i = $this->searchRecordDefaultLanguage($recordset, $node->m_defaultlanguage);
+      $ml_record[0]=$recordset[$i]; // assume this is the record with the default language
       $ml_record[0]["atklngrecordmodes"]=Array();
       for($i=0, $max=count($recordset);$i<$max;$i++)
       {
@@ -294,6 +295,15 @@
         $ml_record[0][$lngattribname]=$value;
       }
       $recordset=$ml_record;
+    }
+    
+    function searchRecordDefaultLanguage($recordset, $defaultlanguage)
+    {
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        if ($recordset[$i]["lng"] == $defaultlanguage) return $i;
+      }
+      return 0;
     }
   }
 ?>
