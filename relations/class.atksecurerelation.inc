@@ -157,7 +157,9 @@
      * For more documentation see the atkOneToOneRelation
      */
     function load($db, $record, $mode)
-    {          
+    {     
+      global $g_db;
+           
       if ($this->m_searching)
       {
         if (count($this->m_records)==0) // lookup not yet created, first loading stage (preload)
@@ -191,10 +193,8 @@
         }
       }
       else 
-      {
-        global $g_db;
-  
-        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE $this->m_ownerInstance->primaryKeyField()=".$record[$this->m_ownerInstance->primaryKeyField()];
+      { 
+        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->primaryKeyField()."= '".$record[$this->m_ownerInstance->primaryKeyField()]."'";
         $result = $g_db->getrows($query);
         $link = $result[0][$this->fieldName()];
   
