@@ -95,6 +95,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.63  2001/06/26 07:36:52  martin
+   * number of posts to dispatch.php changed to phpself.
+   *
    * Revision 4.62  2001/06/23 22:52:35  martin
    * changed hardcoded dispatch.php to $PHP_SELF in navigationbar
    *
@@ -973,11 +976,11 @@
      */
     function editPage($record)
     {
-      global $g_layout, $atklevel;
+      global $g_layout, $atklevel, $PHP_SELF;
       $g_layout->register_script("atk/javascript/formfocus.js");      
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->stackTrace());
-      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
@@ -1351,7 +1354,7 @@
      */
     function adminPage()
     {
-      global $g_securityManager, $g_layout;
+      global $g_securityManager, $g_layout, $PHP_SELF;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
       $g_layout->output($this->stackTrace());
@@ -1372,7 +1375,7 @@
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
-        $addurl = 'dispatch.php?atkaction=add';
+        $addurl = $PHP_SELF.'?atkaction=add';
         $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
       }
 
@@ -1384,23 +1387,23 @@
 
       if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
       {
-        $actions[]=href('dispatch.php?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
+        $actions[]=href($PHP_SELF.'?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
       }
       else
       {
         // if you may not edit, maybe you are allowed to view..
         if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
         {
-          $actions[]=href('dispatch.php?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
+          $actions[]=href($PHP_SELF.'?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
         }
       }
       if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
       {
-        $actions[]=href('dispatch.php?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
+        $actions[]=href($PHP_SELF.'?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
       }
       if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
       {
-        $actions[]=href('dispatch.php?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
+        $actions[]=href($PHP_SELF.'?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
       }
 
       $g_layout->output($this->recordList($recordset, $actions));
@@ -1452,7 +1455,7 @@
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = href('dispatch.php?atkorderby='.$neworder,text($p_attrib->fieldName()));
+            $tmp = href($PHP_SELF.'?atkorderby='.$neworder,text($p_attrib->fieldName()));
           }
           else $tmp = text($p_attrib->fieldName());
 
@@ -1978,6 +1981,8 @@
     
     function action_save()
     {
+      global $PHP_SELF;
+
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
@@ -1993,7 +1998,7 @@
           $location="";
           if ($this->hasFlag(NF_EDITAFTERADD))              
           {          
-            $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
+            $location = session_url($PHP_SELF.'?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
           }         
           $this->redirect($location);
         }
