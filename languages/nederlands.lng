@@ -43,13 +43,13 @@
 
   $txt_select_none = "Geen";
   
-  $txt_clickheretoadd_prefix = "Klik hier om een nieuwe ";
+  $txt_clickheretoadd_prefix = "Klik hier om een nieuw ";
   $txt_clickheretoadd_postfix = " toe te voegen.";
   
   // Teksten voor file attribute
   $txt_no_valid_directory = "Geen geldige directory opgegeven";
   $txt_remove_current_file = "Verwijder huidige bestand";
-  $txtfile_not_exist = "Bestand bestaat niet";
+  $txt_file_not_exist = "Bestand bestaat niet";
   $txt_cannot_remove_file = "Kan bestand niet verwijderen!";
 
   // specific password attribute text
