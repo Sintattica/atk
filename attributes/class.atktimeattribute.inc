@@ -1,207 +1,164 @@
-<?php
+<?
+
   /**
-   * The atkTimeAttribute is an attribute for entering a time value.
-   * @author  Ivo Jansch <ivo@achievo.com>
-   * @version 0.1
-   *
-   * $Id$
-   * $Log$
-   * Revision 4.1  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.0  2001/04/23 10:20:39  ivo
-   * revision tags.
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:10  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.4  2001/03/14 15:21:54  ivo
-   * New feature: AF_TOTAL flag for attributes. This results in a total row
-   * at the bottom of the record list.
-   *
-   * Revision 1.3  2001/03/14 10:22:28  ivo
-   * Attributes now have a hide() function to do their own input=hidden implementation.
-   *
-   * Revision 1.2  2001/02/22 22:46:18  peter
-   * changed edit/search API, new member vars, clean-up of code
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:58  sandy
-   * Achievo Tool Kit
-   *
+   * The atkTimeAttribute class represents an attribute of a node
+   * that has a selectbox to select from predefined time values.
+   * @author Wim Kosten (wimachievo.com)
    */
   class atkTimeAttribute extends atkAttribute
-  {    
-    /** member vars **/
-    var $m_resolution_min;
-    var $m_maxtime_min;
-    
-  
+  {
     /**
-     * Default Constructor, sets up atkAttribute 
-     *
-     * @param $name
-     * @param $resolution
-     * @param $maxtime
-     * @param $flags
-     * @see atkAttribute
+     * Array with options for Listbox  
      */
-    function atkTimeAttribute($name, $resolution="1m", $maxtime="10h", $flags=0)
+    var $m_options = Array();
+    
+    /**
+     * Array with values for Listbox  
+     */    
+    var $m_values = Array();
+
+    /**
+     * Array for fast lookup of what value belongs to what option.
+     */
+    var $m_lookup = Array();
+
+    /**
+     * Constructor
+     * @param $name        Name of the attribute
+     * @param $beginTime   Time to start with (eg 8)
+     * @param $endTime     Time to end with (eg 24)
+     * @param $steps       Array containing possible minute values (eg array("00","15","30","45"))
+     * @param $flags Flags for this attribute
+     */
+    function atkTimeAttribute($name, $beginTime, $endTime, $steps, $default="", $flags=0)
     {
       $this->atkAttribute($name,$flags); // base class constructor
-      $hms = substr($resolution,-1);
-      $resolution = substr($resolution,0,-1);
-
-      if (strtoupper($hms)=="H") $factor = 60;
-      else $factor=1;      
-     
-      $this->m_resolution_min = $resolution*$factor;
-      
-      $hms = substr($maxtime,-1);
-      $maxtime = substr($maxtime,0,-1);
-      if (strtoupper($hms)=="H") $factor = 60;
-      else $factor=1;      
-      
-      $this->m_maxtime_min = $maxtime*$factor;
+      $this->m_beginTime = $beginTime;
+      $this->m_endTime   = $endTime;
+      $this->m_steps     = $steps;
+      $this->m_default   = $default;
     }
 
-    /**   
-     * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value. (hours, minutes and seconds will be a dropdownbox)
-     * @params $record 
-     * @return Piece a of HTML Code
-     */
-    function edit($record="", $fieldprefix="")
-    {  
-      if ($this->m_maxtime_min>=60)
-      {
-        $result.= '<select name="'.$fieldprefix.$this->formName().'[hours]">';
-        for ($h=0;$h<=$this->m_maxtime_min/60;)
-        { 
-          $result .= '<option value="'.$h.'" ';         
-          if ($record[$this->fieldName()]['hours']==$h) $result.= "selected";
-          $result .='>'.$h.' '.text('hours');
-          if ($this->m_resolution_min<=60)
-          {
-            $h++;
-          }
-          else
-          {
-            $h = floor($h+$this->m_resolution_min/60);
-          }
-        }
-      }
-      $result.='</select>';
-      
-      if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
-      {
-        $result.= '<select name="'.$fieldprefix.$this->formName().'[minutes]">';
-        for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
-        { 
-          $result .= '<option value="'.$m.'" ';
-          if ($record[$this->fieldName()]['minutes']==$m) $result.= "selected";
-          $result.='>'.$m.' '.text('minutes');
-          if ($this->m_resolution_min<=1)
-          {
-            $m++;
-          }
-          else
-          {
-            $m = $m+$this->m_resolution_min;
-          }
-        }
-      }
-      $result.='</select>';   
-      
-      return $result;
-    }
-    
-    function hide($record="", $fieldprefix="")
-    {
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'[hours]" value="'.$record[$this->fieldName()]["hours"].'">';
-      $result.= '<input type="hidden" name="'.$fieldprefix.$this->formName().'[minutes]" value="'.$record[$this->fieldName()]["minutes"].'">';
-      return $result;
-    }
-    
-    /**   
-     * Returns a piece of html code that can be used in a form to search values.    
-     * @params $record Array of records, with for each record 2 fields (hours, minutes)
-     * @return Piece a of HTML Code
-     */
-    function search($record="")
-    {
-      return "&nbsp;"; // currently not searchable.
-    }
-    
-    
 
     /**
-     * Convert Time Array to minutes
-     * @param $rec Array with 2 fields (hours, minutes)
-     * @return integer indicating the number of minutes
-     */
-    function value2db($rec)
-    {
-        return $rec[$this->fieldName()]["hours"]*60+$rec[$this->fieldName()]["minutes"];
-    }
-
-    /**
-     * Convert time to Array
-     * @param $rec contains the time in minute format
-     * @return Array with 2 fields (hours, minutes)
-     */
-    function db2value($rec)
-    {
-      $hours = floor($rec[$this->fieldName()]/60);
-      return Array("hours"=>$hours,
-                   "minutes"=>$rec[$this->fieldName()]-($hours*60)
-                   );
-    }
-
-    /**
-     * Function display's the time
-     * @param $record Array with time
-     * @return String with YYYY-MM-DD
+     * Display's text version of Record
+     * @param $record
+     * @return text string of $record
      */
     function display($record)
-    {
-      $value=$record[$this->fieldName()];
-
-      return sprintf("%02d",$value["hours"]).":".sprintf("%02d",$value["minutes"]);
+    {     
+      return text($this->m_lookup[$record[$this->fieldName()]]);
     }
-    
+
+
     /**
-     * Check if the attribute is empty
-     * @return true if it's empty
+     * Returns a piece of html code that can be used in a form to edit this
+     * attribute's value.
+     * @param $record Array with fields
+     * @return piece of html code with a checkbox
      */
-    function isEmpty($postvars)
+    function edit($record="", $fieldprefix="")
     {
-      return ($postvars[$this->fieldName()]["hours"]==0&&$postvars[$this->fieldName()]["minutes"]==0);
-    }
-    
-    function sum($rec1, $rec2)
-    {                  
-      if (!is_array($rec1))
-      {   
-        $a=Array("hours"=>0,"minutes"=>0);       
+     global $atkaction;
+
+      // set vars for hour / minutes dropdowns
+       $m_hourBox = "<select name='".$this->fieldName()."_hours'>\n";
+       $m_minBox  = "<select name='".$this->fieldName()."_mins'>\n";    
+
+      // set default values for both boxes
+      // depends upon atkaction
+      // if edit, use $default param, else use time in $record
+       if ($atkaction == "add")
+       {
+        $m_defHour = substr($this->m_default,0,2);
+        $m_defMin  = substr($this->m_default,3,2);
+       }
+       else
+       {
+        $m_defHour = substr($record[$this->fieldName()],0,2);
+        $m_defMin  = substr($record[$this->fieldName()],3,2);
+       }
+
+       echo $m_defHour.":".$m_defMin;
+
+
+      // generate hour dropdown
+      for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
+      {
+       if ($i<10)
+       {
+        $h = "0".$i;
+       }
+       else
+       {
+        $h = $i;
+       }
+
+       if ($h == $m_defHour)
+       {
+        $sel = "selected";
+       }
+       else
+       {
+        $sel = "";
+       }
+
+       $m_hourBox .= "<option value='$h' $sel>$h</option>\n";
       }
-      else
-      {        
-        $a = $rec1[$this->fieldName()];
-      }      
-      
-      $b = $rec2[$this->fieldName()];              
-      
-      $total = ($a["hours"]*60)+$a["minutes"]+($b["hours"]*60)+$b["minutes"];      
-         
-      return Array($this->fieldName()=>Array("hours"=>(floor($total/60)),"minutes"=>$total%60));
+
+      // generate minute dropdown
+      for ($i=0;$i<=count($this->m_steps)-1;$i++)
+      {
+       if ($this->m_steps[$i] == $m_defMin)
+       {
+        $sel = "selected";
+       }
+       else
+       {   
+        $sel = "";
+       }
+
+       $m_minBox .= "<option value='".$this->m_steps[$i]."' $sel>".$this->m_steps[$i]."</option>\n";
+      }
+
+      // close dropdown structures
+      $m_hourBox .= "</select>\n";
+      $m_minBox  .= "</select>\n";
+
+      // assemble display version
+      return $m_hourBox."&nbsp;".$m_minBox;
     }
 
+
+    function value2db($rec)
+    {
+     global $HTTP_POST_VARS;
+
+     $is_time = $this->m_tableMeta['type'] == 'time';
+     $a       = $this->fieldName()."_hours";    
+     $b       = $this->fieldName()."_mins";
+
+     if ($is_time)
+     {
+      $c = ":00";
+     }
+     else
+     {
+      $c = "";
+     }
+        
+     return $HTTP_POST_VARS[$a].":".$HTTP_POST_VARS[$b].$c;
+    }
+       
+    /**
+     * Returns a piece of html code that can be used in a form to search values   
+     * @param $record Array with fields
+     * @return piece of html code with a checkbox
+     */
+    function search($record="")
+    {      
+     return "";
+    }
+    
   }
 ?>
