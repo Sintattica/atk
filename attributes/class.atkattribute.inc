@@ -233,9 +233,15 @@
      */
     function hide($record="", $fieldprefix="")
     {
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
-                '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
-      return $result;
+      // the next if-statement is a workaround for derived attributes which do
+      // not override the hide() method properly. This will not give them a 
+      // working hide() functionality but at least it will not give error messages.
+      if (!is_array($record[$this->fieldName()])) 
+      {
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
+                  '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+        return $result;
+      }
     }
 
     /**
@@ -401,8 +407,14 @@
      */
     function display($record)
     {
-      // default behaviour is that we display a value 'as is'.
-      return nl2br(htmlspecialchars($record[$this->fieldName()]));
+      // the next if-statement is a workaround for derived attributes which do
+      // not override the hide() method properly. This will not give them a 
+      // working hide() functionality but at least it will not give error messages.
+      if (!is_array($record[$this->fieldName()])) 
+      {
+        // default behaviour is that we display a value 'as is'.
+        return nl2br(htmlspecialchars($record[$this->fieldName()]));
+      }
     }
 
     /**
