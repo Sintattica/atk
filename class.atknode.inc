@@ -2279,14 +2279,6 @@
     {
       global $g_layout, $PHP_SELF;
 
-      // multi-record?
-      $multi = FALSE;
-      if (is_array($atkselector))
-      {
-        $multi = count($atkselector) > 1;
-        $atkselector = '('. implode($atkselector, ') OR (').')';
-      }
-
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar($locked));
 
@@ -2299,12 +2291,25 @@
       $g_layout->table_simple();
 
       $g_layout->output('<tr>');
-      $g_layout->td(text('confirm_delete'.($multi ? '_multi' : '')), 'align="center"');
+      $text = $this->confirmDeleteText($atkselector);
+      $g_layout->td(text($text), 'align="center"');
       $g_layout->output('</tr><tr>');
       $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
       $g_layout->output('</tr></table></form>');
 
       $g_layout->ui_bottom();
+    }
+
+    // function to show delete confirmation message 
+    function confirmDeleteText($atkselector="")
+    {
+      $multi = FALSE;
+      if (is_array($atkselector))
+      {
+        $multi = count($atkselector) > 1;
+        $atkselector = '('. implode($atkselector, ') OR (').')';
+      }
+      return text('confirm_delete'.($multi ? '_multi':''));
     }
 
     // Small compare function for sorting attribs on order field
@@ -2595,7 +2600,7 @@
         }
 
         // Confirmation page was not displayed
-        $this->confirmDelete($this->m_postvars['atkselector'], $locked);
+        $this->confirmDelete($this->m_postvars['atkselector'], $locked, $this->m_postvars["indexWarning"]);
       }
       else
       {
