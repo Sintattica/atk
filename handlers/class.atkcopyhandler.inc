@@ -2,7 +2,12 @@
 
   class atkCopyHandler extends atkActionHandler 
   {
-    function action_copy()
+    function action_copy($redirect=true)
+    {
+      $this->invoke("nodeCopy");
+    }
+    
+    function nodeCopy()
     {
       atkdebug("atkCopyHandler::action_copy()");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","copy");
@@ -18,10 +23,9 @@
         }
         else
         {
-          $this->node->m_db->commit();
+          $this->m_node->m_db->commit();
         }
       }
-      
       $this->m_node->redirect();
     }
   }
