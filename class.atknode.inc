@@ -1024,7 +1024,7 @@
       }
             
       /* extra submission data */
-      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
+      //$result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
 
@@ -1746,8 +1746,7 @@
         {
           if (empty($formName)) $formName = $listName;
           $output .= '<form name="'.$formName.'" method="post">'.
-                     session_form(SESSION_NESTED).
-                     '<input type="hidden" name="atkescape" value="">'.
+                     session_form(SESSION_NESTED).                     
                      '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
                      '<input type="hidden" name="atkaction" value="'.$this->m_action.'">';
         }

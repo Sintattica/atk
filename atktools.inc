@@ -237,6 +237,7 @@
     }
     
     $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'">';
+    $res .= '<input type="hidden" name="atkescape" value="">';
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
@@ -1123,6 +1124,16 @@
     $fp = fopen($tmpfile,"a");
     fwrite($fp, $log);
     fclose($fp);
+  }
+  
+  function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT)
+  {
+    global $g_layout;
+    $g_layout->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
+    static $cnt=0;    
+    
+    $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
+    return '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
   }
 
 ?>
