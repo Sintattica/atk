@@ -3155,6 +3155,17 @@
     }
 
     /**
+     * Dirty function to see if the current edit form is following an add screen
+     * that had NF_EDITAFTERADD set...
+     * DEPRECATED
+     */
+    function editingAfterAdd()
+    {
+      atkdebug("WARNING: use of deprecated function 'editingAfterAdd()'!");
+      return FALSE;
+    }
+
+    /**
      * Display a statusbar with a stacktrace and a help button.
      */
     function statusbar()
