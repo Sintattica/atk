@@ -3139,7 +3139,7 @@
               }
             }
             else
-            {
+            {            
               $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
               $query->addSearchCondition($condition);
             }
@@ -3666,6 +3666,45 @@
     function attribSort()
     {
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
+    }
+    
+    /**
+     * Search all records for the occurance of a certain expression.
+     *
+     * This function searches in all fields that are not AF_HIDE_SEARCH for 
+     * a certain expression.
+     */
+    function searchDb($expression)
+    {      
+      
+      // Set default searchmethod to OR (put it in m_postvars, because selectDb
+      // will use m_postvars to built it's search conditions).
+      $this->m_postvars['atksearchmethod'] = "OR";
+      
+      // Built whereclause.   
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        // Only search in fields that aren't explicitly hidden from search
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH)) 
+        {
+           $this->m_postvars['atksearch'][$attribname]=$expression;
+        }
+      }
+      
+      // We search in admin mode, se we are certain that all fields are added.
+      $recs = $this->selectDb($where, $this->m_defaultOrder, "", "", "", "admin");
+      $res = array();
+      for ($i=0, $_i=count($recs); $i<$_i; $i++)
+      {
+        $res[] = array("title"=>$this->descriptor($recs[$i]), 
+                       "url"=>dispatch_url($this->atkNodeType(), 
+                                           "view", 
+                                           array("atkselector"=>$this->primaryKey($recs[$i]))
+                                          )
+                      );
+      }
+      return $res;
     }
   }
 ?>
