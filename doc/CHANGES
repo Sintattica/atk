@@ -17,6 +17,7 @@ Changes in ATK 5.0.4
 + Added renderTop function which gets top.tpl if it exists, 
   or otherwise defaults to box.tpl [Boy]
 + Added menu_align config variable [Boy]
++ Added set- and getSelected functionality to atkListAttribute [Boy]
 
 Changes in ATK 5.0.3
 --------------------

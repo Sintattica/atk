@@ -42,7 +42,15 @@
      */
     var $m_lookup = array();
     
+    /**
+     * Array for onchange code
+     */
     var $m_onchangecode = array();
+    
+    /**
+     * Attribute that is to be selected
+     */
+    var $m_selected;
 
     /**
      * Constructor.
@@ -106,7 +114,7 @@
     {
       return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
     }
-
+    
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -135,7 +143,7 @@
       
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
+        if ($this->m_values[$i] == $this->m_selected || $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
         {
           $sel = "selected";
         }
@@ -143,7 +151,7 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
       }
       $result.='</select>';
       return $result;
@@ -252,6 +260,16 @@
       }
       $this->addOnChangeHandler("if (".implode('||', $conditions).") hideAttrib('$attrib'); else showAttrib('$attrib');");
     }
-
+    
+    
+    function setSelected($selected)
+    {
+      $this->m_selected = $selected;
+    }
+    
+    function getSelected()
+    {
+      return $this->m_selected;
+    }
   }
 ?>
