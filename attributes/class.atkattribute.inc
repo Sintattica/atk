@@ -663,6 +663,22 @@
     }
 
     /**
+  	* Returns a displayable string for this value, without html
+  	* @param $record
+  	* @return String ready for displaying
+  	*/
+  	function display_plain($record)
+  	{
+  	  // the next if-statement is a workaround for derived attributes which do
+  	  // not override the display_plain() method.
+  	  if (!is_array($record[$this->fieldName()]))
+  	  {
+  	  // default behaviour is that we display a value 'as is'.
+  	  return $record[$this->fieldName()];
+  	  }
+  	}
+    
+    /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
