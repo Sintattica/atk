@@ -157,6 +157,8 @@
        * Order of the attribute
         */
     var $m_order = 0;
+    // just a var for keeping a index
+    var $m_index = 0;
 
     /**
      * Constructor

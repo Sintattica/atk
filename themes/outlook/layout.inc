@@ -52,6 +52,7 @@
   $g_theme["BorderColor"] = "#00309c";
   $g_theme["RowColor1"] ="#ffffff";
   $g_theme["RowColor2"] = "#D5E7F4";
+  $g_theme["RowMouseOver"] = "#ccffcc";
 
 	//new : outlookbar settings
 	$g_theme["ol_pimage"] = "button_back.gif";   //in themes dir.

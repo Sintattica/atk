@@ -50,4 +50,5 @@
   $g_theme["BorderColor"] = "#000000";
   $g_theme["RowColor1"] ="#ffffff";
   $g_theme["RowColor2"] = "#eeeeee";
+  $g_theme["RowMouseOver"] = "#ccffcc";
 ?>

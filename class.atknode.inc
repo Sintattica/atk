@@ -375,6 +375,7 @@
     {
       global $g_securityManager;
       static $attrib_order = 100;
+      static $attrib_index = 0;
       $attribute->m_owner = $this->m_type;
       
       // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
@@ -396,7 +397,10 @@
 
       if ($attribute->hasFlag(AF_PRIMARY))
       {
-        $this->m_primaryKey[] = $attribute->fieldName();
+        if (!in_array($attribute->fieldName(),$this->m_primaryKey))
+        {
+          $this->m_primaryKey[] = $attribute->fieldName();
+        }
       }
 
       // check for parent fieldname (treeview)
@@ -419,19 +423,28 @@
 
       if ($attribute->hasFlag(AF_HIDE_LIST)&&!$attribute->hasFlag(AF_PRIMARY))
       {
-        $this->m_listExcludes[]=$attribute->fieldName();
+        if (!in_array($attribute->fieldName(),$this->m_listExcludes))
+        {
+          $this->m_listExcludes[]=$attribute->fieldName();
+        }
       }
 
       // Speed optimization, we remember which attributes are multilangual at add mode
       if ($attribute->hasFlag(AF_MULTILANGUAGE)&&!$attribute->hasFlag(AF_HIDE_ADD))
       {
-        $this->m_listMlAdd[]=$attribute->fieldName();
+        if (!in_array($attribute->fieldName(),$this->m_listMlAdd))
+        {
+          $this->m_listMlAdd[]=$attribute->fieldName();
+        }
       }
 
       // Speed optimization, we remember which attributes are multilangual at add mode
       if ($attribute->hasFlag(AF_MULTILANGUAGE)&&!$attribute->hasFlag(AF_HIDE_EDIT))
       {
-        $this->m_listMlEdit[]=$attribute->fieldName();
+        if (!in_array($attribute->fieldName(),$this->m_listMlEdit))
+        {
+          $this->m_listMlEdit[]=$attribute->fieldName();
+        }
       }
 
       // check for multilanguage attribute at add/edit mode
@@ -441,7 +454,15 @@
       $attribute->init();            
 
       $exist=false;
-      if(is_object($this->m_attribList[$attribute->fieldName()])) $exist=true;
+      if(is_object($this->m_attribList[$attribute->fieldName()]))
+      {
+        $exist=true;
+        // if order is set, overwrite it with new order, last order will count
+        if($order!=0) 
+        {
+          $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]["order"]=$order;
+        }
+      }
       if(!$exist) 
       {
         if($order==0)
@@ -450,7 +471,9 @@
           $attrib_order+=100;
         }
         $attribute->m_order = $order;
-        $this->m_attribIndexList[]=array("name"=>$attribute->fieldName(),"order"=>$attribute->m_order);
+        $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"order"=>$attribute->m_order);
+        $attribute->m_index = $attrib_index;
+        $attrib_index++;
       }
       $this->m_attribList[$attribute->fieldName()]=&$attribute;     
     }
@@ -496,7 +519,7 @@
     function primaryKey($rec)
     {      
       $primKey="";
-      $nrOfElements = count($this->m_primaryKey);
+      $nrOfElements = count($this->m_primaryKey);      
       for ($i=0;$i<$nrOfElements;$i++)
       {
         $p_attrib = &$this->m_attribList[$this->m_primaryKey[$i]];      
@@ -597,7 +620,7 @@
     function editPage($record)
     {
       global $g_layout, $atklevel, $PHP_SELF,$config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");      
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->statusbar());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
@@ -694,7 +717,7 @@
     function addPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
       $g_layout->output($this->statusbar());
       
@@ -717,7 +740,7 @@
     function searchPage($record=NULL)
     {
       global $g_layout, $PHP_SELF, $atklevel, $config_atkroot;
-      $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
+      //$g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top(text('title_'.$this->m_type.'_search'));
       $g_layout->output($this->statusbar());
       
@@ -757,7 +780,7 @@
      */
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout, $config_atkroot;      
+      global $g_layout, $config_atkroot,$g_sessionData,$atklevel;      
                 
       // if there are displayable obligatory fields, we display a message near the bottom.      
       
@@ -775,10 +798,15 @@
       $defaults = $record;
       
       // Form may have been saved in a session..
+      atk_var_dump($g_sessionData);
+      
       if ($this->m_postvars["atkformdata"]!="")
       {
         atkdebug("Session formdata present");
-        $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);    
+        $this->modifyRecord(&$defaults, $this->m_postvars["atkformdata"]);
+        $this->m_postvars["atkformdata"]="";
+        //atk_var_dump($g_sessionData);
+        $g_sessionData["default"]["stack"][$atklevel]["atkformdata"]="";
       }
 
       $pk = $this->primaryKey($record);
@@ -1213,7 +1241,7 @@
      */
     function adminPage()
     {
-      global $g_securityManager, $g_layout, $PHP_SELF, $atksearch;
+      global $g_securityManager, $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
       $g_layout->output($this->statusbar());
@@ -1283,7 +1311,7 @@
      */
     function recordList($recordset, $actions,$sortable=true,$suppressList="")
     {
-      global $g_layout, $PHP_SELF;
+      global $g_layout, $PHP_SELF,$g_theme;
       $output = $g_layout->data_top();
 
       $output.="<tr>";      
@@ -1445,7 +1473,7 @@
         if (count($actions)>0)
         {       
           $stractions = "";
-          $pk = $this->primaryKey($recordset[$i]);
+          $pk = $this->primaryKey($recordset[$i]);          
 	  
           for ($j=0;$j<count($actions);$j++)
           {
@@ -1486,8 +1514,8 @@
         }
         
         // We alternate the color for even and non-even rows.        
-        $output.='<tr class="row'.(($i%2==0)?1:2).'">';
-        
+        $output.='<tr class="row'.(($i%2==0)?1:2).'" onmouseover="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \''.$g_theme["RowMouseOver"].'\'" onmouseout="if (typeof(this.style) != \'undefined\') this.style.backgroundColor = \'\'">';
+
         if ($orientation=="left"||$orientation=="both")
         {
           $output.=$actionCol;

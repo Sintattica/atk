@@ -122,6 +122,11 @@
           $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
           if (!empty($HTTP_COOKIE_VARS[$cookiename])) setcookie($cookiename, "", 0);
         }
+        if($atklogout>1)
+        {
+          header("Location: logout.php");
+          exit;
+        }
       } 
       
       // do we need to login?
@@ -232,7 +237,8 @@
             !empty($session_auth["user"]))
         {
           $this->m_user = $session_auth["user"];
-          atkdebug("Using session for authentication");
+          atkdebug("Using session for authentication / user = ".$this->m_user["name"]);
+          atk_var_dump($this->m_user);
         }
       }
 
@@ -258,6 +264,8 @@
       else if (!isset($atklogout) && session_is_registered("relogin")) session_unregister("relogin");
 
       // return
+      // g_user always lowercase
+      $this->m_user["name"] =  strtolower($this->m_user["name"]);
       $GLOBALS["g_user"] = $this->m_user;
       $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
       return true;

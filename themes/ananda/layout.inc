@@ -47,6 +47,6 @@
   $g_theme["BorderColor"] = "#827A74";
   $g_theme["RowColor1"] ="#EBE6D9";
   $g_theme["RowColor2"] = "#ffffff";
-
+  $g_theme["RowMouseOver"] = "#ccffcc";
 
 ?>
