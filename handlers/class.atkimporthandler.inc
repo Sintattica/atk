@@ -188,9 +188,28 @@
           {            
             $attr = &$this->getUsableAttribute($col_map[$j]);
             $newval = $attr->parseStringValue(trim($line[$j]));
-            $sample.=$attr->display(array($col_map[$j]=>$newval));
+            
+            if (method_exists($attr, "createDestination"))
+            {
+              $attr->createDestination();
+              
+              // If we can create a destination, then we can be reasonably sure it's a relation
+              // and importing in a relation is a different matter altogether
+              $searchresults = $attr->m_destInstance->searchDb($newval);
+              if (count($searchresults)==1)
+              {
+                $atkval = array($col_map[$j]=>array($attr->m_destInstance->primaryKeyField()=>$searchresults[0][$attr->m_destInstance->primaryKeyField()]));
+              }              
+            }
+            else 
+            {
+              $atkval = array($col_map[$j]=>$newval);
+            }          
+            $display = $attr->display($atkval);
+            if ($display) $sample.= $display;
+            else $sample.= atktext($attr->m_name);
 
-            if ((string)$newval!=(string)$line[$j])
+            if ((string)$newval!==(string)$line[$j])
             {
               // Also display raw value so we can verify
               $sample.= ' <i style="color: #777777">('.trim($line[$j]).")</i>";
@@ -781,7 +800,32 @@
             {
               $value = $allFieldValue;
             }
-            $this->addToRecord($rec,$col_map[$i],trim($value));
+            
+            $attr = $this->getUsableAttribute($col_map[$i]);
+
+            if (method_exists($attr, "createDestination") && $attr->createDestination() && $col_map[$i]!==$allField)
+            {
+              $relationselect = $attr->m_destInstance->selectDb($attr->m_destInstance->m_table.".".$attr->m_destInstance->primaryKeyField().' = \''.$value."'");
+              if (count($relationselect)==0 || count($relationselect)>1)
+              {
+                $searchresults = $attr->m_destInstance->searchDb($value);
+                if (count($searchresults)==1)
+                {
+                  $value = array($attr->m_destInstance->primaryKeyField()=>$searchresults[0][$attr->m_destInstance->primaryKeyField()]);
+                }
+                else
+                {
+                  $importerror = array("msg"=>atktext("error_formdataerror"),
+                  "spec"=>sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $updatekey1)));
+                }
+              }
+            }
+            else 
+            {
+              $value = trim($value);
+            }
+            
+            $this->addToRecord($rec,$col_map[$i],$value);
             unset($value);
           }
         }

@@ -23,6 +23,7 @@ Changes in ATK 5.1.1
   and searchconditions are grouped together [Ivo,Boy]
 * SecureRelation passes along searchmode 
   to it's attributes [Boy]
+* atkImportHandler can now handle relations better [Boy]
 
 Changes in ATK 5.1.0
 --------------------

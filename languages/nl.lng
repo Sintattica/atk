@@ -227,6 +227,8 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
+  
+  "import_relation_value_failed" => "Van het veld '%s' is op regel %s de waarde '%s' ingevoerd, maar dit is geen unieke waarde voor deze relatie",
 );
 
 ?>
