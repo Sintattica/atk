@@ -58,7 +58,7 @@
           }
         }
       }
-      return false;
+      return true;
     }
 
     function hide($record="", $fieldprefix="")
