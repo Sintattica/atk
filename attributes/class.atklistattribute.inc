@@ -151,7 +151,7 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.atktext($this->m_values[$i]).'" '.$sel.'>'.$this->m_options[$i];
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
       }
       $result.='</select>';
       return $result;
