@@ -51,20 +51,30 @@
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
 
-  /* flags specific for the atkFileAttribute */
-  define("AF_FILE_NO_UPLOAD",                33554432); // unable to upload files
-  define("AF_FILE_NO_SELECT",                67108864); // unable to select files
-  define("AF_FILE_NO_DELETE",               134217728); // unable to delete files
-  define("AF_FILE_NO_AUTOPREVIEW",          268435456); // don't try to detect the file type (shows only filename)
-  define("AF_FILE_PHYSICAL_DELETE",         536870912); // removes the file physically
+  /* flag (values) that can be used for attribute specific flags
+   * NOTE: Attribute specific flags aren't good behaviour, but for compatability reasons
+   *       we support them anyway. New attributes should never use specific flags!
+   */
+  define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1
+  define("AF_SPECIFIC_2",                    67108864); // specific attribute flag 2
+  define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
+  define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
+  define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5
+
+  /* flag(s) specific for the atkFileAttribute */
+  define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1); // unable to upload files
+  define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2); // unable to select files
+  define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3); // unable to delete files
+  define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4); // don't try to detect the file type (shows only filename)
+  define("AF_FILE_PHYSICAL_DELETE",     AF_SPECIFIC_5); // removes the file physically
   define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline
 
-  /* flag specific for atkMatrixRelation */
-  define("AF_MATRIX_ACYCLIC",       AF_FILE_NO_UPLOAD); // checks if a matrix is acyclic
+  /* flag(s) specific for atkMatrixRelation */
+  define("AF_MATRIX_ACYCLIC",           AF_SPECIFIC_1); // checks if a matrix is acyclic
 
-  /* flags specific for atkPasswordAttribute */
-  define("AF_PASSWORD_NOVALIDATE",  AF_FILE_NO_UPLOAD); // disables password check when editing password field
-  define("AF_PASSWORD_NO_VALIDATE", AF_FILE_NO_UPLOAD); // disables password check when editing password field
+  /* flag(s) specific for atkPasswordAttribute */
+  define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
+  define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
 
   /**
    * The atkAttribute class represents an attribute of an atkNode.
