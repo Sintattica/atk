@@ -33,50 +33,52 @@
         // attributes current value. This may be overridden by supplying
         // an <attributename>_display function in the derived classes.
         foreach (array_keys($node->m_attribIndexList) as $i)
-        {				
+        {		        		
           $tplfield = array();
           $p_attrib = &$node->m_attribList[$node->m_attribIndexList[$i]["name"]];
+          if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
+          {
 					
-					$field_name = $node->m_attribIndexList[$i]["name"];
+            $field_name = $node->m_attribIndexList[$i]["name"];
 									
-					$tplfield["tab"] = $p_attrib->m_tabs[0];
-					$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
+            $tplfield["tab"] = $p_attrib->m_tabs[0];
+            $tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
 				 
-          // An <attributename>_display function may be provided in a derived
-          // class to display an attribute. If it exists we will use that method
-          // else we will just use the attribute's display method.
-          $funcname = $p_attrib->m_name."_display";
-          if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
-          else $editsrc=$p_attrib->display($record, "view");
-					
-          $tplfield["full"] = $editsrc;
-          $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-          $tplfield["rowid"] = "attribrow_".$field_name; // The id of the containing row
-             
-          // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-          // For each attribute, a txt_<attributename> must be provided in the language files.
-          if ($p_attrib->hasFlag(AF_NOLABEL)==false)
-          {
-            if ($p_attrib->hasFlag(AF_BLANKLABEL))
+            // An <attributename>_display function may be provided in a derived
+            // class to display an attribute. If it exists we will use that method
+            // else we will just use the attribute's display method.
+            $funcname = $p_attrib->m_name."_display";
+            if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
+            else $editsrc=$p_attrib->display($record, "view");
+  					
+            $tplfield["full"] = $editsrc;
+            $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
+            $tplfield["rowid"] = "attribrow_".$field_name; // The id of the containing row
+               
+            // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
+            // For each attribute, a txt_<attributename> must be provided in the language files.
+            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
             {
+              if ($p_attrib->hasFlag(AF_BLANKLABEL))
+              {
+                $tplfield["label"] = "";
+              }
+              else
+              {
+                $tplfield["label"] = $p_attrib->label($record);
+              }
+            }
+  					else
+            {
+              // Make the rest fill up the entire line
               $tplfield["label"] = "";
+              $tplfield["line"] = $tplfield["full"];
             }
-            else
-            {
-              $tplfield["label"] = $p_attrib->label($record);
-            }
-          }
-					else
-          {
-            // Make the rest fill up the entire line
-            $tplfield["label"] = "";
-            $tplfield["line"] = $tplfield["full"];
-          }
-          
-          $fields[] = $tplfield;
             
-        }  
-        
+            $fields[] = $tplfield;
+              
+          }  
+        }
         $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
 				
         $params["activeTab"] = $tab;
