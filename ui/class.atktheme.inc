@@ -27,15 +27,47 @@
    */   
   class atkTheme
   {
-    var $m_initialized = false;        //boolean, true if atkTheme object is initialised
+   /**
+    * Flag for initialisation of atkTheme object
+    * @var bool
+    * @access private
+    */
+    var $m_initialized = false;
     
-    var $m_themedirname = "themes";    //directoryname where the themes can be found... this shouldn't change often
-    var $m_themefile = "themedef.inc"; //filename where themedefinitions are stored
+    /**
+    * Constant with the directoryname where the themes can be found
+    * @var string
+    * @access public
+    */
+    var $THEMEDIRNAME = "themes";   
     
-    var $m_curtheme;                   //the current theme
-    var $m_curthemedir;                //gets the directory where the current theme can be found
+    /**
+    * Constant with the filename where themedefinitions are stored
+    * @var string
+    * @access public
+    */
+    var $THEMEFILE = "themedef.inc";
     
-    var $m_def = array();              //the current themedefinition
+    /**
+    * Variable containing the name of the current theme
+    * @var string
+    * @access private
+    */
+    var $m_curtheme;
+    
+    /**
+    * Directoryname where the current theme can be found
+    * @var string
+    * @access private
+    */
+    var $m_curthemedir;
+    
+    /**
+    * Array with the entire current themedefinition
+    * @var array
+    * @access private
+    */
+    var $m_def = array();
     
     /**
      * Function to get an Instance of the atkTheme class,
@@ -101,12 +133,12 @@
     }
     
     /**
-     * Includes and loads the themedefinition
+     * Includes and loads the current themedefinition
      * @access private
      */
     function _loadThemedef()
     {
-      $filelocation = atkconfig("atktempdir").$this->m_themedirname."/".$this->m_curtheme;
+      $filelocation = atkconfig("atktempdir").$this->THEMEDIRNAME."/".$this->m_curtheme;
       
       if (file_exists($filelocation))
       {
@@ -122,9 +154,9 @@
     function _setCurThemedir()
     {
       $themedefs = array(
-      atkconfig("atkroot").$this->m_themedirname."/".$this->m_curtheme,
-      atkconfig("atkroot")."atk/".$this->m_themedirname."/".$this->m_curtheme,
-      atkconfig("atkroot")."atk/".$this->m_themedirname."/default",
+      atkconfig("atkroot").$this->THEMEDIRNAME."/".$this->m_curtheme,
+      atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/".$this->m_curtheme,
+      atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/default",
       );
       
       foreach ($themedefs as $themedef)
@@ -138,7 +170,7 @@
     }
     
     /**
-     * Gets an attribute from a stacked array from the themedefinitions
+     * Gets an attribute from the stacked array with all the themedefinitions
      * @access private
      * @param string $name      the name of the stack to look in
      * @param string $searchfor the item in the attribute to search for
@@ -168,8 +200,10 @@
     /**
      * Gets an attribute from the current themedefinition
      * example: getAttribute("highlight");
-     * @param string $attrib the name of the attribute
-     * @param var the value of the attribute in the theme
+     * @param string $attrib            the name of the attribute
+     * @param var $attribvalue          the value of the attribute in the theme
+     * @param string $returnpath        the path where the attribute can be found (like /templates/)
+     * @param string $defaultreturnpath the path where the attribute can be found in the default ATK theme
      */
     function getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
     { 

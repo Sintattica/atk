@@ -6,9 +6,26 @@
 */
 class atkThemeCompiler extends atkTheme
 {
-  var $m_themedefs; // stack with all (fallback) directories to check for themefiles
-  var $indentation; // indentation for the cache file
-  var $m_cachedir;  // directory where we make a template directory and store the cachefile
+ /**
+  * Stack with all (fallback) directories to check for themefiles
+  * @var array
+  * @access private
+  */
+  var $m_themedefs; 
+
+ /**
+  * String with the indentation to use for the cache file
+  * @var string
+  * @access private
+  */
+  var $indentation;
+
+ /**
+  * Directory where we make a template directory and store the cachefile
+  * @var bool
+  * @access private
+  */
+  var $m_cachedir;
   
   /**
   * Constructor, initialises several values
@@ -17,27 +34,27 @@ class atkThemeCompiler extends atkTheme
   {
     $this->m_cachedir = atkconfig("atktempdir");
     $this->m_curtheme = atkconfig("defaulttheme");
-    $this->fillThemedefs();
+    $this->_fillThemedefs();
   }
   
   /**
   * Fills a stack with all fallback locations for themedefinitions
   */
-  function fillThemedefs()
+  function _fillThemedefs()
   {
     global $g_modules;
     
-    $this->m_themedefs[] = $this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-    $this->m_themedefs[] = $this->m_themedirname."/default/".$this->m_themefile;    
+    $this->m_themedefs[] = $this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+    $this->m_themedefs[] = $this->THEMEDIRNAME."/default/".$this->THEMEFILE;    
     
     foreach ($g_modules as $modname => $modpath)
     {
-      $this->m_themedefs[] = "modules/".$modname."/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-      $this->m_themedefs[] = "modules/".$modname."/".$this->m_themedirname."/default/".$this->m_themefile;
+      $this->m_themedefs[] = "modules/".$modname."/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+      $this->m_themedefs[] = "modules/".$modname."/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
     }
     
-    $this->m_themedefs[] = "atk/".$this->m_themedirname."/".$this->m_curtheme."/".$this->m_themefile;
-    $this->m_themedefs[] = "atk/".$this->m_themedirname."/default/".$this->m_themefile;    
+    $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+    $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;    
   }
       
   /**
@@ -54,9 +71,9 @@ class atkThemeCompiler extends atkTheme
       $fromlength = strrpos($file, "/");
       $from = substr($file, 0, $fromlength);
       
-      $this->checkForBase($theme, $from);      
+      $this->_checkForBase($theme, $from);      
       
-      $this->addThemedef($theme, $from);
+      $this->_addThemedef($theme, $from);
     }
     if ($this->m_themedefs[0]) { $this->getThemedef();}
   }
@@ -67,11 +84,11 @@ class atkThemeCompiler extends atkTheme
   * @param string $from the directory of the current themedefinition
   * @return void
   */
-  function checkForBase($theme, $from)
+  function _checkForBase($theme, $from)
   {
     if ($theme["base"])
     {
-      array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->m_themefile);
+      array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->THEMEFILE);
     }
   }
   
@@ -81,7 +98,7 @@ class atkThemeCompiler extends atkTheme
   * @param array $themedef
   * @param string $from
   */
-  function addThemedef($themedef, $from)
+  function _addThemedef($themedef, $from)
   {
     foreach ($themedef as $themedefitemname => $themedefitem)
     {
@@ -107,18 +124,18 @@ class atkThemeCompiler extends atkTheme
   {
     $this->getThemedef();
     
-    $compiled = $this->compileThemedef();
-    $this->checkLocation();
-    $this->writeCache($compiled);
+    $compiled = $this->_compileThemedef();
+    $this->_checkLocation();
+    $this->_writeCache($compiled);
   }
   
   /**
   * Writes the cache to a file
   * @param string $compiled the cache
   */
-  function writeCache($compiled)
+  function _writeCache($compiled)
   {
-    $filename = $this->m_cachedir.$this->m_themedirname."/".$this->m_curtheme;
+    $filename = $this->m_cachedir.$this->THEMEDIRNAME."/".$this->m_curtheme;
     
     if($filepointer = fopen($filename,"w"))
     {
@@ -132,7 +149,7 @@ class atkThemeCompiler extends atkTheme
   * it makes the compiled cachefile easier to read for humans
   * @return string the indentation, a string with spaces
   */
-  function getIndentation()
+  function _getIndentation()
   {
     $dent = "";
     for ($counter = 0; $counter <= $this->indentation; $counter++)
@@ -146,15 +163,15 @@ class atkThemeCompiler extends atkTheme
   * Transforms the themedefinition to a php file compatible format
   * @return string the compiled themedefinition
   */
-  function compileThemedef()
+  function _compileThemedef()
   {
-    $this->compileBegin($file);
+    $this->_compileBegin($file);
     
     foreach ($this->m_def as $themedefitemname => $themedefitem)
     {
-      $this->compileItem($themedefitemname, $themedefitem, $file);
+      $this->_compileItem($themedefitemname, $themedefitem, $file);
     }
-    $this->compileEnd($file);
+    $this->_compileEnd($file);
     return $file;
   }
   
@@ -162,11 +179,11 @@ class atkThemeCompiler extends atkTheme
   * Adds a beginning to the compiling file
   * @param string &$file the compiled cache so far
   */
-  function compileBegin(&$file)
+  function _compileBegin(&$file)
   {
     $file.="<"."?php\n";
     $this->indentation += 2;
-    $file.=$this->getIndentation()."\$theme = array(\n";
+    $file.=$this->_getIndentation()."\$theme = array(\n";
   }
   
   /**
@@ -175,15 +192,15 @@ class atkThemeCompiler extends atkTheme
   * @param var $themedefitem        the value of the item
   * @param string &$file            the compiled cache so far
   */
-  function compileItem($themedefitemname, $themedefitem, &$file)
+  function _compileItem($themedefitemname, $themedefitem, &$file)
   {
     if (!is_array($themedefitem))
     {
-      $file.=$this->getIndentation().'"'.$themedefitemname.'" => "'.$themedefitem."\",\n";
+      $file.=$this->_getIndentation().'"'.$themedefitemname.'" => "'.$themedefitem."\",\n";
     }
     else
     {
-      $this->compileArray($themedefitem, $themedefitemname, $file);
+      $this->_compileArray($themedefitem, $themedefitemname, $file);
     }
   }
   
@@ -193,27 +210,27 @@ class atkThemeCompiler extends atkTheme
   * @param string $arrayname the item name
   * @param string &$file     the compiled cache so far
   */
-  function compileArray($array, $arrayname, &$file)
+  function _compileArray($array, $arrayname, &$file)
   {
-    $file.=$this->getIndentation().'"'.$arrayname."\" => array(\n";
+    $file.=$this->_getIndentation().'"'.$arrayname."\" => array(\n";
     
     foreach ($array as $themedefitemname => $themedefitem)
     {
       $this->indentation += 2;
-      $this->compileItem($themedefitemname, $themedefitem, $file);
+      $this->_compileItem($themedefitemname, $themedefitem, $file);
       $this->indentation -= 2;
     }
     
-    $file .= $this->getIndentation()."),\n";
+    $file .= $this->_getIndentation()."),\n";
   }
   
   /**
   * Adds an ending to the compiling file
   * @param string &$file the compiled cache so far
   */
-  function compileEnd(&$file)
+  function _compileEnd(&$file)
   {
-    $file .= $this->getIndentation().");\n";
+    $file .= $this->_getIndentation().");\n";
     $this->indentation -= 2;
     $file .= "?".">";
   }
@@ -226,9 +243,9 @@ class atkThemeCompiler extends atkTheme
   * but we should have the rights anyway.
   * @return void
   */
-  function checkLocation()
+  function _checkLocation()
   {
-    $dir = $this->m_cachedir.$this->m_themedirname;
+    $dir = $this->m_cachedir.$this->THEMEDIRNAME;
     $file = $dir."/".$this->m_curtheme;
     
     if (is_dir($dir))
@@ -238,10 +255,10 @@ class atkThemeCompiler extends atkTheme
         return;
       }
       touch($file);
-      return $this->checkLocation();
+      return $this->_checkLocation();
     }
-    mkdir($this->m_cachedir.$this->m_themedirname);
-    return $this->checkLocation();
+    mkdir($this->m_cachedir.$this->THEMEDIRNAME);
+    return $this->_checkLocation();
   }
 }
 ?>
