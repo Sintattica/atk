@@ -1,19 +1,36 @@
 <?php
-/**
- * The meta module.
- *
- * To enable this module just add the following line
- * in the config.modules.inc file:
- *
- *   module("meta", atkconfig("atkroot")."/atk/meta");
- *
- * If you are not logged in as administrator you might have to
- * do so to get access to the module and/or give yourself
- * the proper access rights.
- * 
- * @author Peter C. Verhage <peter@achievo.org>
- * @version $Revision$
- */
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage meta
+   *
+   * @copyright (c)2004-2005 Peter C. Verhage
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * The meta module.
+   *
+   * To enable this module just add the following line
+   * in the config.modules.inc file:
+   *
+   *   module("meta", atkconfig("atkroot")."/atk/meta");
+   *
+   * If you are not logged in as administrator you might have to
+   * do so to get access to the module and/or give yourself
+   * the proper access rights.
+   * 
+   * @author Peter C. Verhage <peter@achievo.org>
+   * @package atk
+   * @subpackage meta
+   */
 class mod_meta extends atkModule
 {
   /**
