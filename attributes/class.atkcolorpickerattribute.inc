@@ -174,7 +174,12 @@
     function atkColorPickerAttribute($name ,$userColors="", $flags = 0)
     {
       global $config_atkroot;
-      $this->atkAttribute($name, $flags);
+      
+      // Call baseclass constructor. We set 10 as default size. An html 
+      // colorvalue (#ffffaa) is 7 chars, but with 10 chars, we can also
+      // save named colors like 'white' etc.
+      $this->atkAttribute($name, $flags, 10);
+      
       $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/newwindow.js");      
       $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/colorpicker.js");            
       $this->m_userColors = $userColors;
@@ -222,8 +227,7 @@
       }
       return $result;
     }
-   }
-   
+    
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -233,5 +237,12 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array();
     }
+    
+    function dbFieldType()
+    { 
+      return "string";
+    }
+    
+  } 
   
 ?>

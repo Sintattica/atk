@@ -22,10 +22,9 @@
      * @param $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      * @param $flags Flags for this attribute
      */
-    function atkMultipleFileAttribute($name, $dir, $flags=0)
-    {
-      global $config_atkroot;
-      $this->atkAttribute($name,$flags|AF_CASCADE_DELETE); // base class constructor
+    function atkMultipleFileAttribute($name, $dir, $flags=0, $size=0)
+    {            
+      $this->atkFileAttribute($name,$flags|AF_CASCADE_DELETE, $size); // base class constructor
       if(is_array($dir))
       {
         $this->m_dir = $this->AddSlash($dir[0]);
@@ -35,9 +34,7 @@
       {
         $this->m_dir = $this->AddSlash($dir);
         $this->m_url = $this->AddSlash($dir);
-      }
-      
-      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkfileattribute.js.php");
+      }            
     }
 
     /**
@@ -50,18 +47,6 @@
     {
       if($del == "") $del = $this->m_delimiter; 
       return explode($del, $str);
-    }
-
-    /**
-     * This is done for PHP3 and PHP4 version conflicts
-     * @param $needle (see php manual)
-     * @param $haystack (see php manual)
-     * @return in case of a match returns true
-     */
-    function in_array($needle,$haystack) 
-    { 
-      for($i=0;$i<count($haystack) && $haystack[$i] !=$needle;$i++); 
-      return ($i!=count($haystack)); 
     }
 
     /**
@@ -146,7 +131,9 @@
      * @return Filename or Nothing
      */
     function display($record)
-    {
+    {    
+      global $g_layout;  
+    
       $files = explode($this->m_delimiter, $record[$this->fieldName()][orgfilename]);
       $prev_type = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
@@ -166,6 +153,8 @@
              {
               $imagehw=Array("0"=>"640","1"=>"480");
              }
+             
+             $g_layout->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
              $r .=  '<a href="'.$this->m_url.$files[$i].'" alt="'.$files[$i].'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0]+50).'\',\''.($imagehw[1]+50).'\',\'yes\');return false;">'.$files[$i].'</a><br>';
           }
           else
@@ -179,6 +168,11 @@
         }
       }
       return $r;
+    }
+    
+    function dbFieldType()
+    {
+      return "string";
     }
   }
 ?>

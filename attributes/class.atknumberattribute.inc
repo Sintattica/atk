@@ -2,7 +2,10 @@
   /**
    * The atkNumberAttribute can be used for numeric values.
    *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * TODO: If decimals are set, than input should be rounded
+   *       to the correct number of decimals.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
    * @version $Revision$
    *
    * $Id$   
@@ -10,14 +13,20 @@
    */
   class atkNumberAttribute extends atkAttribute
   {
+    var $m_decimals=0; // The number of decimals of the number. 
+  
     /**
      * Constructor
-     * @param $name Name of the attribute
+     * @param $name  Name of the attribute
      * @param $flags Flags for this attribute
+     * @param $size  The size(s) for this attribute
+     * @param $decimals The number of decimals to use. 
+     *               
      */
-    function atkNumberAttribute($name, $flags=0)
+    function atkNumberAttribute($name, $flags=0, $size=0, $decimals=0)
     {
-      $this->atkAttribute($name,$flags); // base class constructor
+      $this->atkAttribute($name,$flags, $size); // base class constructor
+      $this->m_decimals = $decimals;
     }
 
     /**
@@ -44,6 +53,14 @@
       return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
   
+    function dbFieldType()
+    {
+      return "number";
+    }
     
+    function dbFieldSize()
+    {
+      return $this->m_maxsize.($this->m_decimals>0?".".$this->m_decimals:"");
+    }    
   }
 ?>

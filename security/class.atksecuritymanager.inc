@@ -326,7 +326,7 @@
       }
 
       // we are authenticated, but atklogout is still active, let's get rid of it!
-      else if (isset($ATK_VARS["atklogout"])) header("Location: $PHP_SELF"."?");
+      else if (isset($ATK_VARS["atklogout"])) header("Location: ".$_SERVER["PHP_SELF"]."?");
 
       // we keep the relogin state until the atklogout variable isn't set anymore
       else if (!isset($ATK_VARS["atklogout"]) && session_is_registered("relogin")) session_unregister("relogin");
@@ -345,7 +345,7 @@
           
     function loginForm($defaultname, $lastresponse)
     {
-      global $g_layout,$PHP_SELF, $HTTP_POST_VARS;
+      global $g_layout, $HTTP_POST_VARS;
 
       $loginattempts = sessionLoad('loginattempts');            
       if($loginattempts=="") $loginattempts = 0;
@@ -367,7 +367,7 @@
       $g_layout->head(text('app_title'));
       $g_layout->output('<br><br><div align="center">');
       $g_layout->tpl("login_top", array("header"=>text('login_form')), "block_top");
-      $g_layout->output('<form action="'.$PHP_SELF.'" method="post">');
+      $g_layout->output('<form action="'.$_SERVER["PHP_SELF"].'" method="post">');
       $g_layout->output(makeHiddenPostVars(array("atklogout", "loginattempts")));     
       
       $g_layout->output('<br><br><table border=0 cellspacing=0 cellpadding=0 align=left>');

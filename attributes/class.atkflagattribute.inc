@@ -30,9 +30,13 @@
      * @param $optionArray Array with options
      * @param $valueArray Array with flags
      */
-    function atkFlagAttribute($name, $optionArray, $valueArray="", $flags=0)
+    function atkFlagAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
     {
-      $this->atkAttribute($name,$flags); // base class constructor
+      // For flags, we use a default size of 10. (PHP can only handle 32 bit flags,
+      // so 10 positions is enough to store the bits of a PHP flag set).
+      if ($size==0) $size=10;
+      
+      $this->atkAttribute($name,$flags, $size); // base class constructor
       $this->m_options = $optionArray;
       $this->m_values = $valueArray;
     }
@@ -85,6 +89,11 @@
           $rolestring .= text($this->m_options[$j])." ";
       }
       return $rolestring;
+    }
+    
+    function dbFieldType()
+    {
+      return "number";
     }
   }
 

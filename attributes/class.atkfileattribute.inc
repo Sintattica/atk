@@ -1,15 +1,24 @@
 <?php
+  /* flag(s) specific for the atkFileAttribute */
+  define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1); // unable to upload files
+  define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2); // unable to select files
+  define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3); // unable to delete files
+  define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4); // don't try to detect the file type (shows only filename)
+  define("AF_FILE_PHYSICAL_DELETE",     AF_SPECIFIC_5); // removes the file physically
+  define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline  
+
   /**
    * With this you can upload, select and remove files in a given directory   
    *
-   * <b>Todo</b>        : Code clean up (del variable)
+   * TODO: - Code clean up (del variable is dirty)
+   *       - Support for storing the file itself in the db instead of on disk.
    *
    * @author Martin Roest <martin@ibuildings.net>
    * @version $Revision$
    *
    * $Id$
    *     
-   */
+   */        
   class atkFileAttribute extends atkAttribute
   {
     /** 
@@ -42,10 +51,13 @@
      * @param $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
      * @param $flags Flags for this attribute
      */
-    function atkFileAttribute($name, $dir, $flags=0)
-    {
-      global $config_atkroot;
-      $this->atkAttribute($name,$flags|AF_CASCADE_DELETE); // base class constructor
+    function atkFileAttribute($name, $dir, $flags=0, $size=0)
+    {          
+      // We use 255 as default filename size if no size specified.
+      if ($size==0) $size = 255;
+      
+      // Call base class constructor. 
+      $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size); 
       if(is_array($dir))
       {
         $this->m_dir = $this->AddSlash($dir[0]);
@@ -55,8 +67,7 @@
       {
         $this->m_dir = $this->AddSlash($dir);
 	      $this->m_url = $this->AddSlash($dir);
-      }
-      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/newwindow.js");
+      }      
     }
 
 
@@ -82,7 +93,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $del,$atkaction;
+      global $del,$atkaction, $g_layout;        
       
       if ($del[$this->fieldName()]!="on")
       {
@@ -270,6 +281,8 @@
      */
     function display($record)
     {
+      global $g_layout; 
+            
       $filename    = $record[$this->fieldName()]["orgfilename"];
 
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
@@ -293,6 +306,7 @@
             {
               $imagehw=Array("0"=>"640","1"=>"480");
             }
+            $g_layout->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
             return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0]+50).'\',\''.($imagehw[1]+50).'\',\'yes\');return false;">'.$filename.'</a>';
           }
           return '<img src="'.$this->m_url.$filename.'" alt="'.$filename.'">';
@@ -349,6 +363,11 @@
         $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
 
       return $result;
+    }
+    
+    function dbFieldType()
+    {
+      return "string";
     }
 
   }

@@ -599,7 +599,7 @@
      */
     function ret_editForm(&$data, &$node)
     {
-      global $config_atkroot, $PHP_SELF;
+      global $config_atkroot;
 
       /* javascript */
       $this->register_script($config_atkroot."atk/javascript/formsubmit.js");
@@ -631,7 +631,7 @@
             if (($node->m_action == "add" && count($node->m_tabListAdd) > 1 ||
                  $node->m_action == "edit" && count($node->m_tabListEdit) > 1) &&
                  $tabs != "*" && !atk_in_array($tab, $tabs))
-              $error_tab = ' ('.text("error_tab").' '.href("$PHP_SELF?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
+              $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             $errormsg.="<br>".text($error['attrib_name'], $type).': '.$error['msg'].$error_tab;
           }

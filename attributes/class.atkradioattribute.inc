@@ -24,9 +24,9 @@
      * @param $valueArray Array with values. If you don't use this parameter, 
      *                    values are assumed to be the same as the options.
      */
-    function atkRadioAttribute($name, $optionArray, $valueArray="", $flags=0)
+    function atkRadioAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
     {            
-      $this->atkListAttribute($name, $optionArray, $valueArray, $flags); // base class constructor      
+      $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
     }    
 
     /**

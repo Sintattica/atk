@@ -19,9 +19,10 @@
     function atkBoolAttribute($name, $flags=0)
     {
       //Setting AF_OBLIGATORY has no use, so prevent setting it.
-      if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY) $flags &= (~ AF_OBLIGATORY);
-      
-      $this->atkAttribute($name,$flags); // base class constructor
+      if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY) $flags &= (~ AF_OBLIGATORY);          
+            
+     // Call base class constructor. Size of boolean value is always 1.
+      $this->atkAttribute($name,$flags, 1); 
     }
 
     /**
@@ -102,7 +103,11 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
-    
+
+    function dbFieldType()
+    {
+      return "number";
+    }
     
   }
 ?>

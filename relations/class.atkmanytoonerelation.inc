@@ -1,4 +1,8 @@
 <?php
+
+  /* flag(s) specific for atkManyToOneRelation */
+  define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
+  
   /**
    * A N:1 relation between two classes.
    * For example, projects all have one coordinator, but one
@@ -363,6 +367,30 @@
              // be equal (can be "", NULL or 0.
       }
       return false;
+    }
+    
+    function dbFieldType()
+    {
+      // The type of field that we need to store the foreign key, is equal to 
+      // the type of field of the primary key of the node we have a 
+      // relationship with.
+      if ($this->createDestination())
+      {
+        return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
+      }
+      return "";
+    }
+    
+    function dbFieldSize()
+    {
+      // The size of the field we need to store the foreign key, is equal to 
+      // the size of the field of the primary key of the node we have a 
+      // relationship with.
+      if ($this->createDestination())
+      {
+        return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
+      }
+      return 0;
     }
   }
 

@@ -81,5 +81,10 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array();
     }
+    
+    function dbFieldType()
+    {
+      return "";
+    }
   }
 ?>

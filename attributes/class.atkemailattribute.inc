@@ -28,10 +28,10 @@
      * @param $search Search DNS for MX records in validate function
      * @param $flags Flags for the attribute
      */
-    function atkEmailAttribute($name, $search = false, $flags = 0)
+    function atkEmailAttribute($name, $search = false, $flags = 0, $size=0)
     {
       $this->$m_dnsSearch = $search;
-      $this->atkAttribute($name, $flags);
+      $this->atkAttribute($name, $flags, $size);
 
     }
 
@@ -70,6 +70,11 @@
           }
         }       
       } 
+    }
+    
+    function dbFieldType()
+    {
+      return "string";
     }
     
   }

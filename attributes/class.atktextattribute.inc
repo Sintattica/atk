@@ -113,7 +113,9 @@
         return $rec[$this->fieldName()];
     }
 
-
-
+    function dbFieldType()
+    {
+      return "text";
+    }
   }
 ?>

@@ -1,4 +1,9 @@
 <?php
+
+  /* flag(s) specific for atkDateAttribute */
+  define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
+  define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
+
   /**
    * The atkDateAttribute class offers an advanced date widget for date fields.
    * @author  Peter C. Verhage <peter@achievo.org>
@@ -7,7 +12,7 @@
    * @version $Revision$
    *
    * $Id$
-   */
+   */       
   class atkDateAttribute extends atkAttribute
   {
     var $m_date_min;
@@ -515,6 +520,11 @@
       {
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
       }
+    }
+    
+    function dbFieldType()
+    {    
+      return "date";
     }
   }
 ?>

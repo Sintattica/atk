@@ -28,44 +28,52 @@
     var $m_lookup = Array();
 
     /**
-     * Constructor
-     * @param $name Name of the attribute
-     * @param $flags Flags for this attribute
+     * Constructor.
+     *
+     * Warning: very old versions of this attribute supported passing the
+     * parameters in a different order: $name, $flags, $optionArray.
+     * This order used to be supported even when the new order was 
+     * implemented, but it has now been removed. Keep this in mind
+     * when upgrading from a very old ATK version (pre ATK4).
+     *
+     * @param $name Name of the attribute     
      * @param $optionArray Array with options
      * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
+     * @param $flags Flags for this attribute
+     * @param $size  Size of the attribute.
      */
-    function atkListAttribute($name, $optionArray, $valueArray="", $flags=0)
-    {
-
-      // API CHANGE HACK
-      // This function used to have the parameters: ($name, $flags=0, $optionArray,
-      // $valueArray="")
-      // It was changed so atkListAttribute is more like the other attributes.
-      // However, to remain backward compatible with modules based on the old api
-      // we detect if the parameters are in the wrong order, and if so, switch 'm.
-      if (is_int($optionArray))
-      {
-        // Old api use detected...
-        $tmp = $flags;
-        $flags = $optionArray;
-        $optionArray = $valueArray;
-        $valueArray = $tmp;
+    function atkListAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
+    {            
+      if (!is_array($valueArray) || count($valueArray)==0)
+      {      
+        $valueArray = $optionArray;
       }
-
-      $this->atkAttribute($name,$flags); // base class constructor
+      
+      // If all values are numeric, we can use a numeric field to store the selected
+      // value.
+      $this->m_dbfieldtype = "number";
+      for ($i=0, $_i=count($valueArray); $i<$_i && $this->m_dbfieldtype=="number"; $i++)
+      {  
+        if (!is_numeric($valueArray[$i])) $this->m_dbfieldtype="string";
+        // if one of the values is not a number, the fieldtype must be string, and
+        // the loop is stopped.
+      }
+      
+      // If no size is specified, the max size we have is equal to the biggest value.
+      if ($size==0)
+      {
+        for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
+        {  
+          $size = max($size, strlen($valueArray[$i]));          
+        }
+      }
+      
+      $this->atkAttribute($name, $flags, $size); // base class constructor
       $this->m_options = $optionArray;
 
-      if (is_array($valueArray) && count($valueArray)>0)
-      {
-        $this->m_values = $valueArray;
-      }
-      else
-      {
-        $this->m_values = $optionArray;
-      }
 
-      for ($i=0;$i<count($optionArray);$i++)
+      for ($i=0, $_i=count($optionArray); $i<$_i; $i++)
       {
         $this->m_lookup[$this->m_values[$i]] = $optionArray[$i];
       }
@@ -172,6 +180,12 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
+    }
+    
+    function dbFieldType()
+    {
+      // Fieldtype was determined in the constructor.
+      return $this->m_dbfieldtype;
     }
 
   }

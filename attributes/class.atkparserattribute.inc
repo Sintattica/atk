@@ -67,5 +67,13 @@
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
     }
+    
+    /**
+     * Dummy imp
+     */
+    function dbFieldType()
+    {
+      return "";
+    }
   }
 ?>

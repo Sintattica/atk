@@ -84,7 +84,6 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $PHP_SELF;
 
       if ($this->createDestination())
       {
@@ -111,16 +110,16 @@
           }
           if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
           {
-          $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
+          $actions["edit"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
           }
 
           if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
           {
-            $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
+            $actions["delete"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
           }
           if($this->m_destInstance->hasFlag(NF_COPY))
           {
-            $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
+            $actions["copy"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
           }
 
           $flags = RL_EMBED;

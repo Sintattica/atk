@@ -15,11 +15,11 @@
      * @param $name name of the attribute
      * @param $flags flags for the attribute
      */
-    function atkMlAttribute($name, $flags = 0)
+    function atkMlAttribute($name, $flags = 0, $size = 0)
     {
       global $config_atkroot;
       /* base class constructor */
-      $this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY));
+      $this->atkAttribute($name, ($flags|AF_MULTILANGUAGE|(AF_PRIMARY^AF_OBLIGATORY))^(AF_PRIMARY^AF_OBLIGATORY), $size);
     }
 
     /**

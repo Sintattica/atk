@@ -52,40 +52,15 @@
                                      AF_AUTOINCREMENT);
 
   /* flag (values) that can be used for attribute specific flags
-   * NOTE: Attribute specific flags aren't good behaviour, but for compatability reasons
-   *       we support them anyway. New attributes should never use specific flags!
+   * NOTE: Attribute specific flags aren't good behaviour, but for 
+   * compatibility reasons we support them anyway. Newly derived attributes 
+   * should not use these specific flags, but work with extra parameters.
    */
   define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1
   define("AF_SPECIFIC_2",                    67108864); // specific attribute flag 2
   define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
   define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
-  define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5
-
-  /* flag(s) specific for the atkFileAttribute */
-  define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1); // unable to upload files
-  define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2); // unable to select files
-  define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3); // unable to delete files
-  define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4); // don't try to detect the file type (shows only filename)
-  define("AF_FILE_PHYSICAL_DELETE",     AF_SPECIFIC_5); // removes the file physically
-  define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline
-
-  /* flag(s) specific for atkMatrixRelation */
-  define("AF_MATRIX_ACYCLIC",           AF_SPECIFIC_1); // checks if a matrix is acyclic
-
-  /* flag(s) specific for atkPasswordAttribute */
-  define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
-  define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
-
-  /* flag(s) specific for atkDateAttribute */
-  define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
-  define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
-
-  /* flag(s) specific for atkManyToOneRelation */
-  define("AF_RELATION_AUTOLINK",        AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
-
-  /* flag(s) specific for atkOneToOneRelation */
-  define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
-  define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
+  define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5  
 
   /**
    * The atkAttribute class represents an attribute of an atkNode.
@@ -128,10 +103,12 @@
     var $m_size = 0;
     var $m_searchsize = 0;
     var $m_maxsize = 0;
+    
+    var $m_dbfieldtype = "";
 
     /**
-       * Order of the attribute
-        */
+     * Order of the attribute
+     */
     var $m_order = 0;
     // just a var for keeping a index
     var $m_index = 0;
@@ -140,14 +117,26 @@
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->addAttribute(new atkAttribute("naam",AF_OBLIGATORY));
-     * @param $name Name of the attribute
+     *        $this->addAttribute(new atkAttribute("name",AF_OBLIGATORY, 30));
+     *
+     * @param $name  Name of the attribute
      * @param $flags Flags for the attribute
+     * @param $size  The size(s) of the attribute. See the $size parameter
+     *               of the setAttribSize() method for more information
+     *               on the possible values of this parameter.
+     *
+     * @Note: If you want to use the db/ddl utility class to 
+     *        automatically generate the table, the $size parameter must be 
+     *        set, for it will use the size specified here to determine the 
+     *        field length. (Derived classes might have reasonable default
+     *        values, but the standard atkAttribute doesn't.)
+     *     
      */
-    function atkAttribute($name, $flags = 0)
+    function atkAttribute($name, $flags = 0, $size = 0)
     {
       $this->m_name = $name;
       $this->m_flags = (double)$flags;
+      $this->setAttribSize($size);      
     }
 
     /**
@@ -318,7 +307,7 @@
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
-      global $PHP_SELF, $g_sessionManager;
+      global $g_sessionManager;
 
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
@@ -329,7 +318,7 @@
           $order = $this->m_ownerInstance->m_table.".".$this->fieldName();
           if ($atkorderby == $order) $order .= " DESC";
           $arr["heading"][$fieldprefix.$this->fieldName()]["url"] =
-            session_url($PHP_SELF.'?atknodetype='.$this->m_ownerInstance->atkNodeType().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
+            session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_ownerInstance->atkNodeType().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
@@ -473,11 +462,20 @@
       global $g_layout;
 
       $attribname = $this->fieldName();
-      // Maybe the size is set manual (setAttribSize)
+      // Only use meta info if size is not already set manual. (constructor or setAttribSize)
+      // If both are set, use the smallest value.
       if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $g_layout->maxInputSize());
       else $this->m_size = min($metadata[$attribname]['len'], $g_layout->maxInputSize());
-      $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchSize());
-      $this->m_maxsize = $metadata[$attribname]['len'];
+      
+      if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], $g_layout->searchSize());
+      else $this->m_searchsize = min($metadata[$attribname]['len'], $g_layout->searchsize());   
+      
+      if ($this->m_maxsize > 0) $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
+      else $this->m_maxsize = $metadata[$attribname]['len'];
+      
+      // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
+      // set accordingly. Currently the metadata contains database specific types, so this
+      // feature is not yet implemented, until metadata contains generic field types.
 
     }
 
@@ -520,13 +518,102 @@
     }
 
     /**
-     * Set the size of the text box manual
+     * Set the size(s) of the attribute
+     *     
+     * @param $size The maximum number of characters that can be entered.
+     *        If not specified, or set to 0, the max. size is automatically 
+     *        retrieved from the table metadata.      
      *
-     * @param $size the size of the text box
+     *        By default, the size of the edit box is the same as the maximum 
+     *        number of chars that can be entered (as long as it fits on 
+     *        screen). You can however pass an array of 2 or 3 numbers instead 
+     *        of a single number. In this case, the array is interpreted as 
+     *        follows:
+     *        - $size[0] - The maximum size that can be entered
+     *        - $size[1] - The size of the input box in add/edit forms
+     *        - $size[2] - The size of the search box
+     *
+     *        If $size[2] is not specified, $size[1] will be used instead. 
+     *        If $size[1] is not specified, or the passed value is not an 
+     *        array, all 3 sizes will default to the first value.     
+     *
+     * @note  The sizes that are actually used depend both on the specified 
+     *        size and the size of the field in the database. Usually, these 
+     *        are the same. In the case they differ, the smallest of the 2 
+     *        will be used.
      */
     function setAttribSize($size)
     {
-      $this->m_size = $size;
+      if (is_array($size) && count($size)>0)
+      {
+        if (!empty($size[2]))
+        {
+          $this->m_searchsize = $size[2]; 
+        }
+        else
+        {
+          $this->m_searchsize = (empty($size[1])?$size[0]:$size[1]);
+        }
+        $this->m_size = (empty($size[1])?$size[0]:$size[1]);
+        $this->m_maxsize = $size[0];        
+      }
+      else
+      {
+        if ($size>0)
+        {
+          $this->m_maxsize = $this->m_size = $this->m_searchsize = $size;
+        }
+      }
+    }
+    
+    /**
+     * Return the database field type of the attribute.
+     * 
+     * Note that the type returned is a 'generic' type. Each database
+     * vendor might have his own types, therefor, the type should be
+     * converted to a database specific type using $g_db->fieldType().
+     *
+     * If the type was read from the table metadata, that value will 
+     * be used. Else, the attribute will analyze its flags to guess 
+     * what type it should be. If AF_AUTO_INCREMENT is set, the field
+     * is probaly "number". If not, it's probably "string".
+     *
+     * @return The 'generic' type of the database field for this
+     *         attribute. 
+     *
+     * Note: Derived attributes should override this method if they 
+     *       use other field types than string or number. If the 
+     *       derived attribute is one that can not be stored in the
+     *       database, an empty string should be returned.
+     */
+    function dbFieldType()
+    {
+      if ($this->m_dbfieldtype=="")      
+      {        
+        $this->m_dbfieldtype = ($this->hasFlag(AF_AUTO_INCREMENT)?"number":"string");       
+      }
+      return $this->m_dbfieldtype;
+    }
+    
+    /**
+     * Return the size of the field in the database.
+     *
+     * If 0 is returned, the size is unknown. In this case, the
+     * return value should not be used to create table columns. 
+     *
+     * Ofcourse, the size does not make sense for every field type. 
+     * So only interpret the result if a size has meaning for
+     * the field type of this attribute. (For example, if the 
+     * database field is of type 'date', the size has no meaning)
+     * 
+     * Note that derived attributes might set a dot separated size, 
+     * for example to store decimal numbers. The number after the dot
+     * should be interpreted as the number of decimals.
+     *
+     */
+    function dbFieldSize()
+    {
+      return $this->m_maxsize;
     }
 
   }

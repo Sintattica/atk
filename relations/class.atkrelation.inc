@@ -113,7 +113,16 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
-
+    
+    /**
+     * Since most relations do not store anything in a field, the default
+     * fieldtype for relations is "". Exceptions (like the many2oone relation,
+     * which stores a foreign key) can implement their own dbFieldType().
+     */
+    function dbFieldType()
+    {
+      return "";
+    }
 
   }
 ?>

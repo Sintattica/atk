@@ -1,4 +1,8 @@
 <?php
+  /* flag(s) specific for atkOneToOneRelation */
+  define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
+  define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
+
   /**
    * An atkOneToOneRelation defines a relation between two tables where there
    * is one record in the first table that belongs to one record in the

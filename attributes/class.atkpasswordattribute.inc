@@ -1,4 +1,9 @@
 <?php
+
+  /* flag(s) specific for atkPasswordAttribute */
+  define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
+  define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field  
+  
 /**
  * The atkPasswordAttribute class represents an attribute of a node
  * that is a password field. It automatically encrypts passwords
@@ -24,16 +29,16 @@ class atkPasswordAttribute extends atkAttribute
    * @param $generate Generate password (boolean)
    * @param $flags Flags for this attribute
    */
-  function atkPasswordAttribute($name, $generate, $flags=0)
+  function atkPasswordAttribute($name, $generate, $flags=0, $size=0)
   {
     /* compatiblity with old versions */
-    if (func_num_args() == 3) $this->m_generate = $generate;
+    if (func_num_args() >= 3) $this->m_generate = $generate;
     else
     {
       $flags = $generate;
       $this->m_generate = FALSE;
     }
-    $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
+    $this->atkAttribute($name, $flags|AF_HIDE_SEARCH, $size); // you can't search by password.
   }
 
   /**

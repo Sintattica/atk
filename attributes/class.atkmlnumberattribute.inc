@@ -19,9 +19,9 @@
      * @param $name name of the attribute
      * @param $flags flags for this attribute
      */
-    function atkMlNumberAttribute($name, $flags=0)
+    function atkMlNumberAttribute($name, $flags=0, $size=0)
     {
-	    $this->atkMlAttribute($name, $flags); // base class constructor
+	    $this->atkMlAttribute($name, $flags, $size); // base class constructor
     }
 
     /**

@@ -193,7 +193,11 @@
       return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
     
-    
+    function dbFieldType()
+    {
+      // TODO FIXME: Is this correct? Or does the datetimeattribute currently only support varchar fields?
+      return "datetime";
+    }
     
     
   }

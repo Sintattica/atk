@@ -215,7 +215,10 @@
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
     }
 
- 
+    function dbFieldType()
+    {
+      return "time";
+    }
 
 
   }

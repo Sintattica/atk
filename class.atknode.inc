@@ -107,7 +107,7 @@
   // Another workaround. We use PHP_SELF a lot. Withour register_globals=On, we
   // need to make it global ourselves. Todo: replace EVERY reference to
   // PHP_SELF with _SERVER["PHP_SELF"] eventually.
-  $PHP_SELF = $HTTP_SERVER_VARS["PHP_SELF"];
+  $PHP_SELF = $_SERVER["PHP_SELF"];
 
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
@@ -722,13 +722,13 @@
      */
     function editPage($record, $locked=FALSE)
     {
-      global $g_layout, $PHP_SELF,$config_atkroot;
+      global $g_layout, $config_atkroot;
       $g_layout->initGui();
 
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,"edit"));
       $g_layout->output($this->statusbar($locked));
-      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
       $g_layout->output(session_form());
 
@@ -748,7 +748,7 @@
      */
     function viewPage($record)
     {
-      global $g_layout, $PHP_SELF;
+      global $g_layout;
       $g_layout->initGui();
 
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'view'));
@@ -823,13 +823,13 @@
      */
     function addPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF, $config_atkroot;
+      global $g_layout, $config_atkroot;
       $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, 'add'));
       $g_layout->output($this->statusbar());
 
-      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$PHP_SELF.'?'.SID.'"'.
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">');
 
       /* if we are on an admin page we would like to stay on the admin page after adding a new record */
@@ -855,13 +855,13 @@
 
     function searchPage($record=NULL)
     {
-      global $g_layout, $PHP_SELF, $config_atkroot;
+      global $g_layout, $config_atkroot;
       $g_layout->initGui();
       $g_layout->register_script($config_atkroot."atk/javascript/formfocus.js");
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'search'));
       $g_layout->output($this->statusbar());
 
-      $g_layout->output('<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">');
+      $g_layout->output('<form name="entryform" action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="post">');
 
       // usually, extended search is called from a page, and we go back to that page
       // when the user presses search.
@@ -1196,7 +1196,6 @@
      */
     function buildNavigation($mode="")
     {
-      global $PHP_SELF;
       $limit = (int)$this->m_postvars['atklimit'];
 
       $filter = $this->validateFilter($this->m_postvars["atkfilter"]);
@@ -1228,19 +1227,19 @@
       if ($curr > 1)
       {
         $newstart = $this->m_postvars['atkstartat'] - $limit;
-        $nav = href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
+        $nav = href($_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
       {
-        $nav .= ($i == $curr) ? "<b>$i</b>" : href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".max(0, ($i-1) * $limit),"$i");
+        $nav .= ($i == $curr) ? "<b>$i</b>" : href($_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atkstartat=".max(0, ($i-1) * $limit),"$i");
         if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
       }
 
       if ($curr < $pages)
       {
         $newstart = $this->m_postvars['atkstartat'] + $limit;;
-        $nav .= "&nbsp;|&nbsp;".href($PHP_SELF.'?atkstartat='.$newstart,text('next'));
+        $nav .= "&nbsp;|&nbsp;".href($_SERVER["PHP_SELF"].'?atkstartat='.$newstart,text('next'));
       }
 
       return $nav;
@@ -1254,7 +1253,6 @@
      */
     function buildIndex($selected="")
     {
-      global $PHP_SELF;
 
       // TODO: show only those letters that are present in the database.
       // e.g. don't show the letter Q if there aren't any records starting
@@ -1271,7 +1269,7 @@
 
         // We use wildcard search for the index. Should be supported by any database.
 
-        $nav.=href($PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
+        $nav.=href($_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
@@ -1287,7 +1285,7 @@
      */
     function buildTabs()
     {
-      global $PHP_SELF, $g_layout;
+      global $g_layout;
 
       $result = "";
 
@@ -1301,7 +1299,7 @@
       foreach ($list as $t)
       {
         $title = text("tab_$t",$this->m_type);
-        $url = $PHP_SELF."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
+        $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
         if ($this->m_action == "view") $link = session_url($url, SESSION_DEFAULT);
         else $link = "javascript:atkSubmit('".atkurlencode(session_url($url, SESSION_DEFAULT))."')";
         $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
@@ -1316,7 +1314,7 @@
      */
     function adminPage($actions="")
     {
-      global $g_layout, $PHP_SELF, $atksearch,$config_atkroot;
+      global $g_layout, $atksearch, $config_atkroot;
       $g_layout->initGui();
 
       // When there's a lot of data, records will be spread across multiple
@@ -1339,7 +1337,7 @@
         for ($i = 0, $_i = count($this->m_search_action); $i < $_i; $i++)
           if ($this->allowed($this->m_search_action[$i]))
           {
-            $this->redirect(session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType().
+            $this->redirect(session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atkNodeType().
                             '&atkaction='.$this->m_search_action[$i].
                             '&atkselector='.rawurlencode($this->primaryKey($recordset[0])),
                              SESSION_REPLACE));
@@ -1358,7 +1356,7 @@
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
-        $addurl = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=add';
+        $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=add';
         if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
         {
           // specific text
@@ -1384,23 +1382,23 @@
 
         if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
         {
-          $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]';
+          $actions["edit"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]';
         }
         else
         {
           // if you may not edit, maybe you are allowed to view..
           if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
           {
-            $actions["view"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
+            $actions["view"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
           }
         }
         if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
         {
-          $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]';
+          $actions["delete"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]';
         }
         if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
         {
-          $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]';
+          $actions["copy"] = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]';
         }
       }
 
@@ -1569,7 +1567,7 @@
      */
     function normalRecordList($recordset, $actions, $flags=0, $suppressList="", $formName="")
     {
-      global $g_layout, $PHP_SELF, $g_theme;
+      global $g_layout, $g_theme;
 
       /* retrieve list array */
       $list = $this->listArray($recordset, $flags, "", $actions, $suppressList);
@@ -1630,12 +1628,12 @@
 
         $button = '<input type="submit" value="'.text("search").'">';
         if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
-          $button .= '<br>'.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=search&atksearchmode=".
+          $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->atknodetype()."&atkaction=search&atksearchmode=".
                                              $searchmode,"(".text("search_extended").")",SESSION_NESTED);
 
         $output .= '<tr>'.
                      '<a name="searchform"></a>'.
-                     '<form action="'.$PHP_SELF.'?'.SID.'" method="get">'.
+                     '<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.
                      session_form().
                        '<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_action.'">'.
@@ -1791,7 +1789,7 @@
       /*************************************************/
       if (hasFlag($flags, RL_MRPA))
       {
-        $target = session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType(), SESSION_NESTED);
+        $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atkNodeType(), SESSION_NESTED);
 
         $output .= '<tr><td align="left">'.
                    '<table border="0" cellspacing="0" cellpadding="2">'.
@@ -1834,7 +1832,7 @@
       /****************************************/
       elseif (hasFlag($flags, RL_MRA))
       {
-        $target = session_url($PHP_SELF.'?atknodetype='.$this->atkNodeType(), SESSION_NESTED);
+        $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atkNodeType(), SESSION_NESTED);
 
         $output .= '<tr><td align="left">'.
                    '<table border="0" cellspacing="0" cellpadding="2">'.
@@ -2314,7 +2312,7 @@
      */
     function confirmDelete($atkselector, $locked=FALSE)
     {
-      global $g_layout, $PHP_SELF;
+      global $g_layout;
       $g_layout->initGui();
 
       if (is_array($atkselector))
@@ -2324,7 +2322,7 @@
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar($locked));
 
-      $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
+      $g_layout->output('<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">');
       $g_layout->output(session_form());
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
       $g_layout->output('<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">');
@@ -2573,7 +2571,6 @@
 
     function action_save()
     {
-      global $PHP_SELF;
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
@@ -2599,7 +2596,7 @@
           $location="";
           if ($this->hasFlag(NF_EDITAFTERADD))
           {
-            $location = session_url($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)), SESSION_REPLACE);
+            $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)), SESSION_REPLACE);
           }
           else
           {
@@ -2753,7 +2750,7 @@
 
     function feedbackPage($action, $actionstatus)
     {
-      global $g_layout, $PHP_SELF;
+      global $g_layout;
       $g_layout->initGui();
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
       $g_layout->output($this->statusbar());
@@ -2804,7 +2801,7 @@
      */
     function redirect($location="")
     {
-      global $g_returnurl, $PHP_SELF;
+      global $g_returnurl;
 
       atkdebug("atknode::redirect()");
 
@@ -2812,7 +2809,7 @@
 
       if ($location=="")
       {
-        $location = session_url($PHP_SELF,SESSION_BACK,1);
+        $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,1);
       }
 
       if (atkconfig("debug")>=2)

@@ -24,9 +24,9 @@
      * @param $flags
      * @see atkAttribute
      */
-    function atkDurationAttribute($name, $resolution="1m", $maxtime="10h", $flags=0)
+    function atkDurationAttribute($name, $resolution="1m", $maxtime="10h", $flags=0, $size=0)
     {
-      $this->atkAttribute($name,$flags); // base class constructor
+      $this->atkAttribute($name,$flags, $size); // base class constructor
       $hms = substr($resolution,-1);
       $resolution = substr($resolution,0,-1);
 
@@ -183,6 +183,11 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
+    }
+    
+    function dbFieldType()
+    {
+      return "number";
     }
   }
 ?>
