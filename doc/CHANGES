@@ -6,24 +6,18 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.1.1
 --------------------
-+ Added support for turning CSV file-exporting off 
-  in customRecordList [Boy]
-+ Added ability to add custom HTML to MRA form [Ivo,Boy]
-+ Made datetochar date format configurable [Boy]
-+ Added ability to perform plain text search on date attribute [Ivo,Boy]
-  and time attribute 
-+ Made time and date attributes autocomplete their searchvalues [Boy]
-+ Added ability to detect wether or not the user is using 
-  a handheld device [Boy]
-+ atkDateAttribute now displays itsself as simpel as possible 
-  when it detects a handheld device [Boy]
++ Added support for turning CSV file-exporting off in customRecordList. [Boy]
++ Added ability to add custom HTML to MRA form. [Ivo, Boy]
++ Made datetochar() date format configurable. [Boy]
++ Added plain text search functionality to date- and timeattribute. [Ivo, Boy]
++ Added ability to detect handheld clients. [Boy]
++ atkDateAttribute now has a simplified gui on handheld devices. [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
-* ManyToOne no longer default searches on primary key 
-  and searchconditions are grouped together [Ivo,Boy]
-* SecureRelation passes along searchmode 
-  to it's attributes [Boy]
-* atkImportHandler can now handle relations better [Boy]
+* atkManyToOneRelation no longer searches on primary key values and 
+  searchconditions are now grouped together. [Ivo, Boy]
+* atkSecureRelation passes along searchmode to its attributes. [Boy]
+* atkImportHandler can now handle relations better. [Boy]
 
 Changes in ATK 5.1.0
 --------------------
