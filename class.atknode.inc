@@ -86,6 +86,8 @@
   $g_modules = array();
   // Global menu
   $g_menu = array();
+  // Global moduleflags per module
+  $g_moduleflags = array();
 
   // modifiers
   $g_modifiers = array();
@@ -447,6 +449,16 @@
           }
         }
       }
+
+      else
+      {
+        // when the read optimizer is enabled there is no active tab
+        // we circument this by putting all attributes on all tabs
+        if (!($tab === NULL) && is_int($tab))
+          $order = $tab;
+        $tab = "*";
+      }
+
 
       // NOTE: THIS SHOULD WORK. BUT, since add() is called from inside the $this
       // constructor, m_ownerInstance ends up being a copy of $this, rather than
@@ -1024,7 +1036,7 @@
         $tabs = $this->m_attribIndexList[$r]["tabs"];
 
         if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) ||
-            ($tabs != "*" && !in_array($tab, $tabs)))
+            ($tabs != "*" && !atk_in_array($tab, $tabs)))
         {
           $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
         }

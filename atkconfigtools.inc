@@ -10,6 +10,14 @@
    *
    */
 
+    /* module flags */
+    define("MF_NOMENU",                          1); // don't use the menuitems from this module
+    define("MF_NORIGHTS",                        2); // don't use the rights of this module
+    define("MF_SPECIFIC_1",                      4);
+    define("MF_SPECIFIC_2",                      8);
+    define("MF_SPECIFIC_3",                     16);
+    define("MF_REFERENCE",   MF_NOMENU|MF_NORIGHTS); // use this module only as a reference
+
     /**
      * Function user
      *
@@ -53,12 +61,12 @@
     {
       $GLOBALS["config_language"][] = $language;
     }
-    
+
     /**
-     * This function is only of use when using pop3 as 
+     * This function is only of use when using pop3 as
      * authentication method.
      * Some pop3 servers give specific error messages that may be
-     * of interest to the user. If you use this function (in the 
+     * of interest to the user. If you use this function (in the
      * config file), and atk encounters the specified substring
      * in a server response, the specified message is displayed.
      */
@@ -67,20 +75,27 @@
       global $g_pop3_responses;
       $g_pop3_responses[$substring] = $message;
     }
-  
-    /* define an external module */  
-    function module($name, $path="")
-    {
-      global $g_modules, $config_module_path;
-      if ($path=="") $path = $config_module_path."/".$name."/";    
-      $g_modules[$name] = $path;          
-    }
-    
+
     /**
-           * Function atkconfig
-           *
-           * Return the value of a config variable
-           */
+     * Define an external module.
+     *
+     * @param name the module name
+     * @param path the module path
+     * @param flags the module flags (see above)
+     */
+    function module($name, $path="", $flags="")
+    {
+      global $g_modules, $config_module_path, $g_moduleflags;
+      if ($path=="") $path = $config_module_path."/".$name."/";
+      $g_modules[$name] = $path;
+      if ($flags!="") $g_moduleflags[$name] = $flags;
+    }
+
+    /**
+     * Function atkconfig
+     *
+     * @return the value of a config variable
+     */
     function atkconfig($tag)
     {
       return $GLOBALS["config_".$tag];

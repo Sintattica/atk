@@ -77,11 +77,11 @@
 
     function edit($record)
     {
-      global $g_modules, $g_nodes, $config_atkroot, $g_layout;
+      global $g_modules, $g_nodes, $config_atkroot, $g_layout, $g_moduleflags;
       global $g_user, $g_db;
 
       $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
-      
+
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
 
@@ -91,8 +91,11 @@
       }
       foreach ($g_modules as $modname => $pathname)
       {
-        $mod_inst = &getModule($modname);
-        if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
+        if (!hasFlag($g_moduleflags[$modname], MF_NORIGHTS))
+        {
+          $mod_inst = &getModule($modname);
+          if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();
+        }
       }
 
       $result.='<div align="right">
@@ -102,7 +105,7 @@
                     text("check_none").
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     text("invert_selection").'</a>]</div>';
-                    
+
       /* get permissions group*/
       $checked = $record[$this->fieldName()];
 
@@ -130,22 +133,22 @@
           $checked_actions = $checked[$node];
           $active_actions = $active[$node];
           if (is_array($actionarr))
-          {            
+          {
             $html="";
             $showNode = false;
             for ($i=0;$i<count($actionarr);$i++)
             {
-              $action = $actionarr[$i]; 
-              if (substr($action,0,1)=="*") $action=substr($action,1);             
-              
+              $action = $actionarr[$i];
+              if (substr($action,0,1)=="*") $action=substr($action,1);
+
               if ((is_array($active_actions) && in_array($action, $active_actions)) || $g_user['name']=='administrator')
-              {              
+              {
                 $boxActive = true;
                 $showModule = true;
                 //'.($disable ? "DISABLED " : "").'
                 $html.='<input type="checkbox" name="'.$this->formName().'[]" value="'.$node.".".$action.'" ';
                 if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
-  
+
                 $label = text("permission_$node_$action");
                 if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
                 {
@@ -162,8 +165,8 @@
                 }
               }
             }
-            
-            if($boxActive)  
+
+            if($boxActive)
             {
               $mainHtml .="<b>".text(getNodeType($node))."</b><br>";
               $mainHtml.=$html;
@@ -184,7 +187,7 @@
         $nodes = $g_nodes[$modname];
         $mainHtml="";
         if (count($nodes) > 0)
-        {        
+        {
           $showModule=false;
           foreach($nodes as $node => $actionarr)
           {
@@ -192,21 +195,21 @@
             $active_actions = $active["$modname.$node"];
             if (is_array($actionarr))
             {
-              $nodename = getNodeType($node);              
+              $nodename = getNodeType($node);
               $html="";
               $boxActive=false;
               for ($i=0;$i<count($actionarr);$i++)
-              {                
+              {
                 $action = $actionarr[$i];
-                if (substr($action,0,1)=="*") $action=substr($action,1);                
+                if (substr($action,0,1)=="*") $action=substr($action,1);
 
                 if ((is_array($active_actions) && in_array($action, $active_actions)) || $g_user['name']=='administrator')
-                {                                  
+                {
                   $showModule=true;
                   $boxActive=true;
                   $html.='<input  type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
                   if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
-                  
+
                   $label = text("permission_".$modname."_".$nodename."_".$action); // module/node specific text
                   if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
                   {
@@ -227,25 +230,25 @@
                   }
                 }
               }
-              if($boxActive)  
+              if($boxActive)
               {
                 $mainHtml .="<b>".text(getNodeType($nodename))."</b><br>";
                 $mainHtml .=$html;
                 $mainHtml .="<br><br>\n";
               }
-              else 
+              else
               {
                 $mainHtml.=$html;
               }
             }
-          }          
+          }
           if ($showModule)
           {
             // only show the header if there are more than only the main module.
             $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>".$mainHtml;
-          } 
+          }
           else    $result .= $mainHtml;
-          
+
         }
       }
       return $result;
