@@ -51,6 +51,11 @@
      * Attribute that is to be selected
      */
     var $m_selected;
+    
+    /**
+     * Value that is used when list is empty, normally empty
+     */
+     var $m_emptyvalue;
 
     /**
      * Constructor.
@@ -138,7 +143,7 @@
       
       if(!$this->hasFlag(AF_OBLIGATORY))
       {
-        $result.= '<option value="">'.text('list_null_value', $this->m_ownerInstance->m_type);   
+        $result.= '<option value="'.$this->m_emptyvalue.'">'.text('list_null_value', $this->m_ownerInstance->m_type);   
       }
       
       for ($i=0;$i<count($this->m_values);$i++)
@@ -277,6 +282,26 @@
     function getSelected()
     {
       return $this->m_selected;
+    }
+    
+    /**
+     * Sets the value for the empty entry in the list attribute
+     * In normal cases you would just leave this empty, but certain cases
+     * might demand you set a value.
+     * @param string $value the value we set for empty value
+     */
+    function setEmptyValue($value)
+    {
+      $this->m_emptyvalue = $value;
+    }
+    
+    /**
+     * Gets the value for the empty entry in the list attribute
+     * @return string 
+     */
+    function getEmptyValue()
+    {
+      return $this->m_emptyvalue;
     }
   }
 
