@@ -14,7 +14,7 @@
    {
      function validateUser($user, $passwd)
      {
-       return 1;
+       return AUTH_SUCCESS;
      }          
      
      function canMd5()

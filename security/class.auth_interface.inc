@@ -24,19 +24,22 @@
     /**
      * Authenticate a user. 
      *
-     * Allowed return values: 1 - Authentication succesful
-     *                        0 - Authentication failed, wrong user/password 
-     *                            combination
-     *                       -1 - Authentication failed due to some error
-     *                            which cannot be solved by just trying again
-     *                            If you return this value, you *must* also 
-     *                            fill the m_fatalError variable.
+     * Allowed return values: AUTH_SUCCESS - Authentication succesful
+     *                        AUTH_MISMATCH - Authentication failed, wrong 
+     *                                        user/password combination
+     *                        AUTH_LOCKED - Account is locked, can not login
+     *                                      with current username.
+     *                        AUTH_ERROR - Authentication failed due to some 
+     *                                     error which cannot be solved by 
+     *                                     just trying again. If you return 
+     *                                     this value, you *must* also 
+     *                                     fill the m_fatalError variable.
      *
      * Note: if the canMd5 function returns true, $passwd is passed as an md5 string.
      */
     function validateUser($user, $passwd)
     {      
-      return -1; // dummy implementation. should not be used.
+      return AUTH_ERROR; // dummy implementation. should not be used.
     }
     
     /**
@@ -89,6 +92,16 @@
     {
       return array();
     }    
+    
+    /**
+     * This function returns the list of users that may login.
+     * Format is: array of record, each record is associative array with
+     * a userid and a username field.
+     */
+    function getUserList()
+    {
+      return array();
+    }
         
   }
 

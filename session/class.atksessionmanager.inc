@@ -10,13 +10,15 @@
    */
 
   $cookie_params = session_get_cookie_params();
-  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($SCRIPT_NAME)));
-  session_start();
-  session_register("g_sessionDataAll");
+  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($HTTP_SERVER_VARS["SCRIPT_NAME"])));
+  session_start();    
+  
+  session_register("g_sessionDataAll");    
 
   global $config_identifier;
   if (!is_array($g_sessionDataAll)) $g_sessionDataAll = array();
   if (empty($config_identifier)) $config_identifier = "default";
+
   $g_sessionData = &$g_sessionDataAll[$config_identifier];
 
   define(SESSION_DEFAULT,0); // stay at current stacklevel
@@ -26,9 +28,9 @@
   define(SESSION_REPLACE,4); // replace current stacklevel
 
   /* Workaround for a PHP4.0.4 bug */
-  $atklevel = trim($atklevel);
-  $atkprevlevel = trim($atkprevlevel);
-  $atkstackid = trim($atkstackid);
+  $atklevel = trim($HTTP_REQUEST_VARS["atklevel"]);
+  $atkprevlevel = trim($HTTP_REQUEST_VARS["atkprevlevel"]);
+  $atkstackid = trim($HTTP_REQUEST_VARS["atkstackid"]);    
 
   class atkSessionManager
   {
@@ -52,16 +54,16 @@
     {
       global $g_sessionData;
 
-      if ($value=="") $value = $GLOBALS[$var];
+      if ($value=="") $value = $GLOBALS[$var];      
 
       if ($no_namespace) $g_sessionData["globals"][$var] = $value;
       else $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
-
+            
     }
 
     function getValue($var, $namespace="")
     {
-      global $g_sessionData;
+      global $g_sessionData;            
       if ($namespace=="globals") return $g_sessionData["globals"][$var];
       else if ($namespace!="") return $g_sessionData[$namespace]["globals"][$var];
       return $g_sessionData[$this->m_namespace]["globals"][$var];
@@ -385,20 +387,12 @@
   */
   function atksession($namespace = "default")
   {
-    global $HTTP_POST_VARS, $HTTP_GET_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
+    global $HTTP_REQUEST_VARS, $ATK_VARS, $g_sessionManager, $g_layout;
 
     $g_sessionManager = new atkSessionManager($namespace);
 
-    if (count($HTTP_POST_VARS)>0)
-    {
-      atkDataDecode($HTTP_POST_VARS);
-      $ATK_VARS = $HTTP_POST_VARS;
-    }
-    else
-    {
-      atkDataDecode($HTTP_GET_VARS);
-      $ATK_VARS = $HTTP_GET_VARS;
-    }
+    atkDataDecode($HTTP_REQUEST_VARS);
+    $ATK_VARS = $HTTP_REQUEST_VARS;    
 
     $g_sessionManager->session_read($ATK_VARS);
     
@@ -413,7 +407,7 @@
 
   function sessionStore($var, $value)
   {
-    global $g_sessionManager;
+    global $g_sessionManager;    
     $g_sessionManager->globalVar($var, $value);
   }
 

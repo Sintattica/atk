@@ -15,8 +15,8 @@
      {       
        global $config_user;
                    
-       if ($user!="" && $config_user[$user]["password"]==$passwd) return 1;       
-       return 0;   
+       if ($user!="" && $config_user[$user]["password"]==$passwd) return AUTH_SUCCESS;
+       return AUTH_MISMATCH;
      }
      
      function canMd5()

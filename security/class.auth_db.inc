@@ -24,12 +24,11 @@
        }
        $recs = $g_db->getrows($query);              
        if ($recs[0][atkconfig("auth_accountdisablefield")]==1)
-       {
-         sessionStore('accountLocked', true);
-         return false;
+       {         
+         return AUTH_LOCKED;
        }
        
-       return (count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd);       
+       return ((count($recs)>0 && $user!="" && $recs[0][atkconfig("auth_passwordfield")]==$passwd)?AUTH_SUCCESS:AUTH_MISMATCH);
      }
      
      function canMd5()
@@ -149,6 +148,26 @@
        }
        
        return $result;
+     }
+     
+     function getUserList()
+     {
+       global $g_db;
+       $query = "SELECT * FROM ".atkconfig("auth_usertable");
+       
+       $accountdisablefield = atkconfig("auth_accountdisablefield");
+       if ($accountdisablefield!="") $query.= " WHERE $accountdisablefield = 0";
+       
+       $recs = $g_db->getrows($query);
+       
+       $userlist = array();     
+       for ($i=0, $_i=count($recs); $i<$_i; $i++)
+       {                
+         $userlist[] = array("userid"=>$recs[$i][atkconfig("auth_userfield")], 
+                             "username"=>stringparse(atkconfig("auth_userdescriptor"), $recs[$i]));
+       }       
+       return $userlist;
+       
      }
      
    }

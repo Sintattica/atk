@@ -38,7 +38,7 @@ class auth_pop3 extends auth_interface
       if (count($res)==0)
       {
         // User not found. 
-        return 0;
+        return AUTH_MISMATCH;
       }
       $server = $res[0]["auth_server"];      
     }
@@ -48,7 +48,7 @@ class auth_pop3 extends auth_interface
       $g_securityManager->log(1,"pop3auth error: No server specified");
       atkdebug("pop3auth error: No server specified");
       $this->m_fatalError = text("auth_no_server");
-      return -1;
+      return AUTH_ERROR;
     }
  
     /* connect */
@@ -59,7 +59,7 @@ class auth_pop3 extends auth_interface
       $g_securityManager->log(1,"pop3auth serverconnect error $server: $errstr");
       atkdebug("Error connecting to server $server: $errstr");
       $this->m_fatalError = text("auth_unable_to_connect");
-      return -1;
+      return AUTH_ERROR;
     }
 
     /* authenticate */
@@ -81,14 +81,14 @@ class auth_pop3 extends auth_interface
         if (stristr($auth, $substring)!=false)
         {
           $this->m_fatalError = $message;
-          return -1;
+          return AUTH_ERROR;
         }
       }
     }
 
     /* login ok? */
-    if (!stristr($auth, "ERR")) return 1;
-    else return 0;
+    if (!stristr($auth, "ERR")) return AUTH_SUCCESS;
+    else return AUTH_MISMATCH;
   }    
   
   /** 

@@ -79,6 +79,24 @@
   // modifiers
   $g_modifiers = array();
   $g_overloaders = array();
+  
+  // Sometimes variables come in via a POST request, sometimes via GET.
+  // We don't actually care which one it is.
+  // In Php 4.1.0 we can use the $_REQUEST array. However, sometimes we 
+  // run in older PHP's, so we create our own $HTTP_REQUEST_VARS.
+  if (count($HTTP_POST_VARS)>0)
+  {     
+    $HTTP_REQUEST_VARS = $HTTP_POST_VARS;
+  }
+  else
+  {    
+    $HTTP_REQUEST_VARS = $HTTP_GET_VARS;
+  }
+   
+  // Another workaround. We use PHP_SELF a lot. Withour register_globals=On, we 
+  // need to make it global ourselves. Todo: replace EVERY reference to 
+  // PHP_SELF with _SERVER["PHP_SELF"] eventually.
+  $PHP_SELF = $HTTP_SERVER_VARS["PHP_SELF"];
 
   require_once($config_atkroot."atk/atkconfigtools.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
@@ -2322,7 +2340,7 @@
       // name 'bill'.
       for ($i = 0, $_i = count($g_modifiers[$this->m_type]); $i < $_i; $i++)
       {
-        $modname = $g_modifiers[$this->atknodetype()][$i];
+        $modname = $g_modifiers[$this->atknodetype()][$i];        
         $mod = getModule($modname);
         $modifiername = $this->m_type."_modifier";
 
@@ -2341,6 +2359,7 @@
       for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
       {
         $modname = $g_modifiers[$this->atknodetype()][$i];
+        
         $mod = getModule($modname);
         $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
 

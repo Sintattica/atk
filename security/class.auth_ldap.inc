@@ -28,11 +28,11 @@
 	        // this gets around systems that are anonymous search enabled 
           if (empty($passwd)) $passwd = crypt(microtime()); 
       	  // try to bind as the user with user suplied password
-      	  if (ldap_bind($ldap,$userDN, $passwd)) return True;
+      	  if (ldap_bind($ldap,$userDN, $passwd)) return AUTH_SUCCESS;
         }
 
         // dn not found or password wrong TODO/FIXME: return -1 if dn not found
-       return 0;
+       return AUTH_MISMATCH;
      }
                          
      function canMd5()

@@ -36,7 +36,9 @@
   $config_auth_levelfield = "entity";
   $config_auth_mail_port = "110"; // default pop3 port
   $config_auth_mail_virtual = false; // no vmail.
-  $config_max_loginattempts = 5;
+  $config_max_loginattempts = 5; // 0 = no maximum.
+  $config_auth_dropdown = false;
+  $config_auth_userdescriptor = "[".$config_auth_userfield."]";
 
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";
