@@ -11,6 +11,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.3  2001/07/15 17:42:39  ivo
+ * Disabled extended search for passwordattribute.
+ *
  * Revision 4.2  2001/06/26 14:42:09  ivo
  * Passwordattribute was not session save, if you didn't change your password
  * and followed a link and came back, your password would be set to a double
@@ -59,7 +62,7 @@ class atkPasswordAttribute extends atkAttribute
   function atkPasswordAttribute($name, $flags=0)
   {
     /* base class constructor */
-    $this->atkAttribute($name, $flags);
+    $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
   }
 
   /**
