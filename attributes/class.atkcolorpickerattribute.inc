@@ -203,11 +203,12 @@
              $userCol = implode("|",$temp);
              }
       
-        
-             $result = '<input type="text" name="'.$fieldprefix.$this->formName().
+             $curColor = $record[$this->fieldName()];
+             $result = '<table><tr><td><input type="text" name="'.$fieldprefix.$this->formName().
                           '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
                             ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                            ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                            ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>
+                            </td><td bgcolor="'.$curColor.'">&nbsp;</td></tr></table>';
 
       if ($this->hasFlag(AF_POPUP))
       {
