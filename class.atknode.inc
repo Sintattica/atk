@@ -952,7 +952,6 @@
         $attribname = $this->m_attribIndexList[$r]["name"];
         $field = array("name" => $attribname);
         $p_attrib = &$this->m_attribList[$attribname];
-//echo $attribname."<br>";
         if ($p_attrib!=NULL)
         {
           /* fields that have not yet been initialised may be overriden in the url */

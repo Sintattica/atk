@@ -38,11 +38,17 @@
      */    
     function validate(&$record, $mode)
     {
-      if (!is_numeric($record[$this->fieldName()])) 
+      if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
          triggerError($record, $this->fieldName(), 'error_notnumeric');
- 
     }
     
+    function value2db($rec)
+    {
+      if($rec[$this->fieldName()]==""&&!$this->hasFlag(AF_OBLIGATORY))
+        return NULL;
+      return (int) $rec[$this->fieldName()];
+    }
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -61,8 +67,8 @@
     function dbFieldSize()
     {
       return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
-    }    
-    
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -81,7 +87,7 @@
       $id = $fieldprefix.$this->fieldName();      
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result = '<input type="text" id="'.$id.'" name="'.$id.
-                '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
+                '" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').'>';
 
