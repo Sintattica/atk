@@ -194,7 +194,7 @@
       }
       else
       {
-        $icon_path =$config_atkroot."atk/themes/default/tree_icons/";
+        $icon_path =$config_atkroot."atk/themes/default/icons/tree/";
       }
       $img_expand   = $icon_path."tree_expand.gif"; 
 	    $img_collapse = $icon_path."tree_collapse.gif"; 

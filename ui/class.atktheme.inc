@@ -96,6 +96,15 @@
       return atkconfig("atkroot")."atk/themes/default/styles/".$style;
     }
     
+    function iconPath($icon,$type)
+    {
+      if (atk_in_array($icon, $this->m_def["$type_icons"]))
+      {
+        return $this->themeDir()."icons/$type/$icon.gif";
+      }
+      return atkconfig("atkroot")."atk/themes/default/icons/$type/$icon.gif";
+    }
+    
     function themeDir()
     {
       return $this->m_themedir;

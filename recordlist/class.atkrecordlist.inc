@@ -267,20 +267,10 @@
 						
 						if($icons == "true")
 						{
-							$icon_path = atkconfig("atkroot")."icons/record/";
-							$icon = $icon_path.$name.".gif";
-							
-							if(file_exists($icon))
-							{
-								$link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.$name.'">';
-							}
-							else
-							{
-								$link = '<img width="16" height="16" border="0" src="'.$icon_path.'default.gif'.'" title="'.$name.'">';
-							}
+							$icon = $theme->iconPath($name,"recordlist");
+  						$link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.text($name,$this->m_node->m_type).'">';
 						}
-						
-  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($link, $this->m_node->m_type, $this->m_node->m_module).'</a>&nbsp;';
+  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.$link.'</a>&nbsp;';
   	      }
   
           /* actions (left) */
