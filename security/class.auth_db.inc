@@ -11,6 +11,8 @@
 
    class auth_db extends auth_interface
    {
+     var $m_rightscache = array();  
+   
      function validateUser($user, $passwd)
      {
        global $g_db;
@@ -117,16 +119,23 @@
      {
        global $g_db;
 
-       $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node' AND action IN ('$action','*') ORDER BY action DESC";
+       if (count($this->m_rightscache[$node])==0)
+       {
+         $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node'";
 
-       $rights = $g_db->getrows($query);
-
+         $this->m_rightscache[$node] = $g_db->getrows($query);
+       }
 
        $result = Array();
+       
+       $rights = $this->m_rightscache[$node];
 
-       for ($i=0;$i<count($rights);$i++)
+       for ($i=0, $_i=count($rights); $i<$_i; $i++)
        {
-         $result[] = $rights[$i][atkconfig("auth_levelfield")];
+         if ($rights[$i]['action'] == $action)
+         {
+           $result[] = $rights[$i][atkconfig("auth_levelfield")];
+         }
        }
 
        return $result;
