@@ -51,8 +51,8 @@
     {
       if ($this->m_destInstance == "")
       {
-       // $this->m_destInstance = &newNode($this->m_destination);
-        $this->m_destInstance = &getNode($this->m_destination);
+        $cache_id = $this->m_owner.".".$this->m_name;
+        $this->m_destInstance = &getNode($this->m_destination, $cache_id);
 
         // Validate if destination was created succesfully
         if (!is_object($this->m_destInstance))
