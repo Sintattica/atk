@@ -785,6 +785,7 @@
 		      
     header('Content-Type: '. $mime);    
     header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+    if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: no-cache');
     header('Expires: 0');
 		
@@ -824,8 +825,9 @@
    * This function writes a binary file to the browser for download.
    * $file is the local filename (the file you want to open on the serverside)
    * $filename is the name the file will get when the user downloads it.
+   * $mimetype is the mimetype of the file
    */
-  function exportFile($file, $filename)
+  function exportFile($file, $filename,$mimetype="")
   {   
     include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
     $browser = getBrowserInfo();
@@ -837,21 +839,21 @@
     else if (eregi("opera",$browser["browser"]))
     {
       $mime = "application/octetstream";
-      $disp = 'attachment';
+      $disp = 'inline';
     }
     else
     {
       $mime = "application/octet-stream";
       $disp = 'attachment';
     }
-    
-    //$mime = "		          
+    if($mimetype!="") $mime=$mimetype;
 		
     $fp = @fopen($file,"rb");
     if ($fp!=NULL)
     {
       header('Content-Type: '. $mime);    
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
+      if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
       header('Pragma: no-cache');
       header('Expires: 0');
 		  fpassthru($fp);          
