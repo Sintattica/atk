@@ -1077,23 +1077,26 @@
     /**
      * return an array with the default actions for a certain mode.
      *
-     * @param $mode The mode for which you want a list of actions.
-     *              Currently available modes for this method:
-     *               - "admin" (for actions in adminscreens)
-     *               - "relation" (for the list of actions when
-     *                 displaying a recordlist in a onetomany-relation)
-     *               - "view" (for actions when viewing only)
-     *              Note: the default implementation of defaultActions
-     *              makes no difference between "relation" and "admin" and
-     *              will return the same actions for both, but you might want
-     *              to override this behaviour in derived classes.
-     * @param $params An array of extra parameters to add to all the action
-     *                urls. You can use this to pass things like an atkfilter
-     *                for example. The array should be key/value based.
+     * <b>Example</b>
+     * <code> defaultActions("admin") </code>
+     * This will return a list of actions that can be performed on records
+     * of this node in an admin screen.
      *
-     * @example defaultActions("admin") will return a list of actions
-     *          that can be performed on records of this node in an
-     *          admin screen.
+     * @param String $mode The mode for which you want a list of actions.
+     *                     Currently available modes for this method:
+     *                     - "admin" (for actions in adminscreens)
+     *                     - "relation" (for the list of actions when
+     *                       displaying a recordlist in a onetomany-relation)
+     *                     - "view" (for actions when viewing only)
+     *                     Note: the default implementation of defaultActions
+     *                     makes no difference between "relation" and "admin" 
+     *                     and will return the same actions for both, but you 
+     *                     might want to override this behaviour in derived
+     *                     classes.
+     * @param array $params An array of extra parameters to add to all the
+     *                      action urls. You can use this to pass things like
+     *                      an atkfilter for example. The array should be
+     *                      key/value based.     
      */
     function defaultActions($mode, $params=array())
     {

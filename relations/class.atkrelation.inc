@@ -1,42 +1,52 @@
 <?php
   /**
-   * The atkRelation class defines a relation to another node
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   * 
+   * @package atk
+   * @subpackage relations
    *
-   * Note        : A relation is a (very) special kind of attribute.
-   *
-   * TODO: relations with a referential key that consist of more than one field don't work.
-   *
-   * @author Ivo Jansch (ivo@achievo.org)
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
-   *
    * $Id$
+   */
+
+  /**
+   * The atkRelation class defines a relation to another node. 
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage relations
+   * @abstract
    *
    */
   class atkRelation extends atkAttribute
   {
-
-   /**
-    * Destination
-    */
+    /**
+     * @var String Destination node.
+     */
     var $m_destination;
 
-   /**
-    * Destination Instance
-    */
+    /**
+     * @var atkNode Destination instance. 
+     */
     var $m_destInstance="";
 
-   /**
-    * Filter
-    */
-   var $m_destinationFilter="";
+    /**
+     * @var String Filter for destination records. 
+     */
+    var $m_destinationFilter="";
 
-   /**
-    * Constructor
-    * @param $name ?
-    * @param $destination ?
-    * @param $flags Flags for the relation
-    */
+    /**
+     * Constructor
+     * @param String $name The name of the relation. 
+     * @param String $destination The destination node (in module.name notation)
+     * @param int $flags Flags for the relation
+     */
     function atkRelation($name, $destination, $flags=0)
     {
       $this->atkAttribute($name, $flags);
@@ -45,8 +55,12 @@
     }
 
     /**
-    * Create Destination
-    */
+     * Create the instance of the destination. 
+     *
+     * If succesful, the instance is stored in the m_destInstance member variable.
+     * 
+     * @return boolean true if succesful, false if something went wrong.
+     */
     function createDestination()
     {
       if ($this->m_destInstance == "")
@@ -74,30 +88,34 @@
     }
 
     /**
-    * Return a displayable string for this value.
-    * @return a displayable string for this value.
-    */
+     * Return a displayable string for a record. 
+     * @param array $record The record that contains the information to display.
+     * @return String a displayable string for this value.
+     */
     function display($record)
     {
       return $record[$this->fieldName()];
     }
 
     /**
-    * Dummy function
-    */
+     * Validation method. Empty implementation. Derived classes may override
+     * this function.
+     * @abstract     
+     */
     function validate(&$record, $mode)
     {
     }
 
     /**
-     * Check if the attribute is empty
-     * @return true if it's empty
+     * Check if the relation is empty
+     * @param array $record The record to check
+     * @return boolean true if a destination record is present. False if not.
      */
-    function isEmpty($postvars)
+    function isEmpty($record)
     {
       if ($this->createDestination())
       {
-        $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];        
+        $keyval = $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()];        
         return ($keyval == "" || $keyval == NULL || $keyval === 0);
         // mindyou, we must check with '===', because if keyval is  a string, the comparison
         // is always true. (for some reason 'test'==0 is true in php.)
@@ -105,6 +123,10 @@
       return true; // always empty if error.
     }
 
+    /**
+     * Retrieve the searchmodes supported by the relation.
+     * @return array A list of supported searchmodes.
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -119,6 +141,8 @@
      * Since most relations do not store anything in a field, the default
      * fieldtype for relations is "". Exceptions (like the many2oone relation,
      * which stores a foreign key) can implement their own dbFieldType().
+     * @abstract
+     * @return String
      */
     function dbFieldType()
     {
@@ -126,4 +150,5 @@
     }
 
   }
+  
 ?>

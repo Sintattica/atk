@@ -1,7 +1,36 @@
 <?php
-
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler class for the select action of a node. The handler draws a
+   * generic select form for searching through the records and selecting
+   * one of the records.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkSelectHandler extends atkActionHandler
   {
+    /**
+     * The action handler method.
+     */
     function action_select()
     {      
       $output = $this->invoke("selectPage");
@@ -13,7 +42,11 @@
     }
     
     /**
-     * Select page displays records and gives the user the ability to select a record
+     * This method returns an html page containing a recordlist to select
+     * records from. The recordlist can be searched, sorted etc. like an
+     * admin screen.
+     * 
+     * @return String The html select page.
      */
     function selectPage()
     {

@@ -1,32 +1,55 @@
 <?php
 
   /**
-   * The atkEmailAttribute class represents an attribute to handle email addresses.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
    *
-   * @author Ivo Jansch <ivo@achievo.org>
+   * The file contains the default values for most configuration 
+   * settings.
+   * 
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
-   *
    * $Id$
-   *   
+   */
+   
+  /**
+   * Attribute for editing email fields.
+   *
+   * @author Maurice Maas <maurice@ibuildings.nl>
+   * @author Ivo Jansch <ivo@achievo.org
+   * @package atk
+   * @subpackage attributes
+   * @abstract
+   *
    */
   class atkEmailAttribute extends atkAttribute
   {    
 
     /**
-     * Bool to set DNS search in validate function
+     * @var boolean Bool to set DNS search in validate function
+     * @access private
      */
-
     var $m_dnsSearch = false;
 
     /**
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->add(new atkEmailAttribute("email",AF_OBLIGATORY));
-     * @param $name Name of the attribute
-     * @param $search Search DNS for MX records in validate function
-     * @param $flags Flags for the attribute
+     * <code>
+     *   $this->add(new atkEmailAttribute("email", false, AF_OBLIGATORY));
+     * </code>
+     *
+     * @param String $name Name of the attribute
+     * @param boolean $search Search DNS for MX records in validate function
+     * @param int $flags Flags for the attribute
+     * @param int $size The size of the field in characters
      */
     function atkEmailAttribute($name, $search = false, $flags = 0, $size=0)
     {
@@ -36,6 +59,8 @@
 
     /**
      * Returns a displayable string for this value.          
+     * @param array $record The record to display
+     * @return String      
      */
     function display($record)
     {  
@@ -47,11 +72,11 @@
     }
 
     /**
-     * Validates  email adress through regular expression and dns check
-     * @param &$record Record that contains value to be validated.
-     *                 Errors are saved in this record
-     * @param $mode can be either "add" or "update"
-     * @return $record
+     * Validates email address through regular expression and dns check
+     * @param array $record Record that contains value to be validated.
+     *                      Errors are saved in this record, in the 'atkerror'
+     *                      field.
+     * @param String $mode Validation mode. Can be either "add" or "update"
      */
     function validate(&$record, $mode)
     {
@@ -75,6 +100,10 @@
       } 
     }
     
+    /**
+     * Called by the framework to determine the database field datatype.
+     * @return String The databasefield datatype.
+     */
     function dbFieldType()
     {
       return "string";

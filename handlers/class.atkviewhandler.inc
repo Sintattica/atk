@@ -1,7 +1,35 @@
 <?php
 
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler class for a readonly view action. Similar to the edit handler,
+   * but all fields are displayed readonly. 
+   *
+   * @author Ivo Jansch <ivo@achievo.org>   
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkViewHandler extends atkActionHandler
   {
+    /**
+     * The action handler method.
+     */
     function action_view()
     {
       atkdebug("Action view");
@@ -13,7 +41,10 @@
     }
     
     /**
-     * Creates an view (=readonly) page
+     * Returns an htmlpage displaying all displayable attributes.
+     * @param array $record The record to display.
+     * @param atkNode $node The node for which a viewPage is displayed.
+     * @return String The html page with a reaonly view of relevant fields.
      */
     function viewPage($record, $node)
     {            

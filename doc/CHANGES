@@ -11,6 +11,7 @@ Changes in ATK 5.0.1
 --------------------
 * Added missing strings to language files. [Ivo]
 * Fixed default value of $config_application_root for win compatibility. [Ivo]
+* Updated API documentation. [Ivo]
 
 Changes in ATK 5.0
 ------------------

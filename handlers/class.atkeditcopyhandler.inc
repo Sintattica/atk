@@ -1,7 +1,35 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler for the 'editcopy' action of a node. It copies the selected
+   * record, and then redirects to the edit action for the copied record.
+   *
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkEditCopyHandler extends atkActionHandler
   {
+    /**
+     * The action method. 
+     */
     function action_editcopy()
     {
       atkdebug("atknode::action_editcopy()");

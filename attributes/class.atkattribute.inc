@@ -1,5 +1,13 @@
 <?php
   /**
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
    * Attribute-/relationflags. The following flags can be used for attributes/relations.
    * WARNING: flags may *not* exceed 2^31 (2147483648), because that's the integer limit
    *          beyond which the bitwise operators won't work anymore!
@@ -79,11 +87,8 @@
    * control its behaviour, like whether an atkAttribute
    * is obligatory, etc.
    *
-   * @author Ivo Jansch <ivo@achievo.org>
-   *
-   * @version $Revision$
-   *
-   * $Id$
+   * @package atk
+   * @subpackage attributes
    *
    */
   class atkAttribute
@@ -133,17 +138,17 @@
      * <b>Example:</b>
      *        $this->add(new atkAttribute("name",AF_OBLIGATORY, 30));
      *
+     * Note: If you want to use the db/ddl utility class to 
+     *       automatically generate the table, the $size parameter must be 
+     *       set, for it will use the size specified here to determine the 
+     *       field length. (Derived classes might have reasonable default
+     *        values, but the standard atkAttribute doesn't.)
+     *
      * @param $name  Name of the attribute
      * @param $flags Flags for the attribute
      * @param $size  The size(s) of the attribute. See the $size parameter
      *               of the setAttribSize() method for more information
      *               on the possible values of this parameter.
-     *
-     * @Note: If you want to use the db/ddl utility class to 
-     *        automatically generate the table, the $size parameter must be 
-     *        set, for it will use the size specified here to determine the 
-     *        field length. (Derived classes might have reasonable default
-     *        values, but the standard atkAttribute doesn't.)
      *     
      */
     function atkAttribute($name, $flags = 0, $size = 0)
@@ -514,13 +519,13 @@
       }
     }
 
-    /**
-     * Validate's values
-     * @param &$record Record that contains value to be validated.
-     *                 Errors are saved in this record
-     * @param $mode can be either "add" or "update"
-     * @return $record
-     */
+    /**    
+     * Validation method. Checks if a record is valid.
+     *
+     * @param array $record The record to validate. If an error occurs, 
+     *                      the error will be stored in the 'atkerror' field 
+     *                      of the record.     
+     */     
     function validate(&$record, $mode)
     {
     }
@@ -664,10 +669,10 @@
      *        If $size[1] is not specified, or the passed value is not an 
      *        array, all 3 sizes will default to the first value.     
      *
-     * @note  The sizes that are actually used depend both on the specified 
-     *        size and the size of the field in the database. Usually, these 
-     *        are the same. In the case they differ, the smallest of the 2 
-     *        will be used.
+     *        Note: The sizes that are actually used depend both on the
+     *        specified size and the size of the field in the database.
+     *        Usually, these are the same. In the case they differ, the
+     *        smallest of the 2 will be used.
      */
     function setAttribSize($size)
     {

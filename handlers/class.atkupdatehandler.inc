@@ -1,8 +1,39 @@
 <?php
-
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler class for the update action of a node. The action saves an
+   * existing record to the database. The data is retrieved from the postvars.
+   * This is the action that follows an 'edit' action. The 'edit' action
+   * draws the edit form, the 'update' action saves the data to the database.
+   * Validation of the record is performed before storage. If validation
+   * fails, the edit handler is invoked again.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>   
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkUpdatehandler extends atkActionHandler 
   {    
-    
+    /**
+     * The action handler method.
+     */
     function action_update()
     {
       $record = $this->m_node->updateRecord();

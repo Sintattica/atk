@@ -1,26 +1,46 @@
 <?php
 
   /**
-  * This class generates all output from atk.
-  *
-  * @author Ivo Jansch  (ivo@achievo.org)
-  *
-  * @version $Revision$
-  * $Id$
-  */
-
-  // Global debug and error msg
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   * 
+   * @package atk
+   * @deprecated Since version 5.0. Use classes from the ui subpackage instead.
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Global debug messate array
+   * @global array $g_debug_msg
+   */
   $g_debug_msg = array();
+  
+  /**
+   * Global error message array
+   * @global array $g_error_msg
+   */
   $g_error_msg = array();
 
+  /**
+   * This class generates all output from atk. It can draw tables, 
+   * rows, cells, boxes etc.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   *   
+   * @deprecated Since version 5.0. Use classes from the ui subpackage instead.
+   */
   class layout
   {    
     
     var $m_saved = "";
-
-    /**
-     * Raw
-     */    
 
     var $m_submitscripts = array();        
     

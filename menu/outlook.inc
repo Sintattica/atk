@@ -14,6 +14,9 @@
 	global $g_menu;
 	global $g_theme;
 	
+	/**
+	 * @ignore
+	 */
 	function menu_cmp($a,$b)
 	{
 		if ($a["order"] == $b["order"]) return 0;

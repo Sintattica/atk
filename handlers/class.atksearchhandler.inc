@@ -1,13 +1,56 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler class for the search action of a node. The handler draws a
+   * generic search form for the given node.
+   *
+   * The actual search is not performed by this handler. The search values are
+   * stored in the default atksearch variables, which the admin page uses to
+   * perform the actual search. The search form by default redirects to 
+   * the adminpage to display searchresults.  
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Sandy Pleyte <sandy@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   * @todo The admin action handler is called when a search is performed. This
+   *       should be customizable in the future.
+   *
+   */
   class atkSearchHandler extends atkActionHandler
   {
+    /**
+     * The action handler method. 
+     */
     function action_search()
     {
       $page = &$this->getPage();
       $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $this->m_postvars["atksearch"])));
     }
     
+    /**
+     * This method returns an html page that can be used as a search form.     
+     * @param array $record A record containing default values that will be
+     *                      entered in the searchform.
+     * @return String The html search page.
+     */
     function searchPage($record=NULL)
     {         
       $node = &$this->m_node;
@@ -56,7 +99,11 @@
     }
     
     /**
-     * Function outputs a form that the user can use to search records.
+     * This method returns a form that the user can use to search records.
+     * 
+     * @param array $record A record containing default values to put into 
+     *                      the search fields.
+     * @return String The searchform in html form.
      */
     function searchForm($record = NULL)
     {

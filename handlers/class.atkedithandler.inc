@@ -1,7 +1,37 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler class for the edit action of a node. The handler draws a
+   * generic edit form for the given node.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkEditHandler extends atkActionHandler
   {
+    /**
+     * The action handler method.
+     */
     function action_edit()
     {
       $page = &$this->getPage();    
@@ -28,7 +58,12 @@
     }
     
     /**
-     * Creates an edit page
+     * This method draws a generic edit-page for a given record.
+     *
+     * @param array $record The record to edit.
+     * @param boolean $locked Indicates whether the record is locked by the
+     *                        current user.
+     * @return String The rendered page as a string.
      */
     function editPage($record, $locked=FALSE)
     {        
@@ -68,15 +103,18 @@
     }   
     
     /**
-     * Function outputs a form in which a record can be edited.
+     * Function returns a generic html form for editing a record.
      *
-     * @param $mode         the edit mode ("add" or "edit")
-     * @param $forcelist    a key-value array used to preset certain fields to a certain value
-     * @param $suppresslist an array of fields that you want to hide
-     * @param $fieldprefix  if set, each form element is prefixed with the specified
-     *                      prefix (used in embedded form fields)
+     * @param String $mode         The edit mode ("add" or "edit").
+     * @param array $record        The record to edit.
+     * @param array $forcelist     A key-value array used to preset certain 
+     *                             fields to a certain value.
+     * @param array $suppresslist  An array of fields that will be hidden.
+     * @param String $fieldprefix  If set, each form element is prefixed with
+     *                             the specified prefix (used in embedded
+     *                             forms)
      *
-     * @return edit form HTML string
+     * @return String the edit form as a string
      */
     function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="")
     {      
