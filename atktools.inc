@@ -609,7 +609,7 @@
   function mailreport()
   {
     global $config_mailreport, $g_error_msg, $g_debug_msg, $HTTP_SERVER_VARS;
-    global $HTTP_GET_VARS, $txt_app_title, $g_sessionManager, $g_sessionData;
+    global $HTTP_GET_VARS, $HTTP_POST_VARS, $txt_app_title, $g_sessionManager, $g_sessionData;
 
     if ($config_mailreport!="") // only if enabled..
     {
@@ -630,12 +630,14 @@
         $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
       }
 
-      $body.= "\n\nHTTP_POST_VARS\n".str_repeat("-",70)."\n";
-      foreach ($HTTP_POST_VARS as $key=>$value)
-      { 
-        $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
+      if (count($HTTP_POST_VARS)>0)
+      {
+        $body.= "\n\nHTTP_POST_VARS\n".str_repeat("-",70)."\n";
+        foreach ($HTTP_POST_VARS as $key=>$value)
+        { 
+          $body.=$key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value."\n";
+        }
       }
-
       $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
       foreach ($GLOBALS as $key=>$value)
       {
