@@ -1139,11 +1139,11 @@
         $p_attrib = &$this->m_attribList[$attribname];
         $attribSearchModes = $p_attrib->getSearchModes();
 
-        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH) && is_array($attribSearchModes) && count($attribSearchModes))
         {
 
           // We must perform an array_values over array_intersect, to maintain a
-          // correct numeric array index (array_intersect mangles those)
+          // correct numeric array index (array_intersect mangles those)          
           $searchModes = array_values(array_intersect($dbSearchModes,$attribSearchModes));
 
           if (count($searchModes)>0) // Don't display this attribute if it doesn't support searching.
