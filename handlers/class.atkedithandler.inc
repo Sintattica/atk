@@ -169,7 +169,13 @@
 				        
 				$tplfield["tab"] = $field["tabs"][0]; // $this->getTab($field_name);
 				atkdebug("We gaan $field_name tonen op de tab ".$tplfield["tab"]);
+				
+				// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
 				$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
+								
+				$tplfield["rowid"] = "attribrow_".($field['name']!=''?$field['name']:getUniqueID("anonymousattribrows")); // The id of the containing row
+				
 
 				/* check for seperator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
@@ -233,7 +239,7 @@
       
       $ui = &$this->getUi();
       $page = &$this->getPage();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");      
       foreach ($data["hide"] as $hidden)
       {
         $result.= $hidden;
@@ -244,7 +250,8 @@
       $params["errortitle"] = $error_title;
       $params["errors"] = $errors; // Add the list of errors.
       
-      $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);
+      $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);            
+      
 			return $result;
             
     }

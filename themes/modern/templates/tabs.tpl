@@ -1,13 +1,3 @@
-<script language="JavaScript">
-var tabs = new Array();
-{section name=i loop=$tabs}tabs[tabs.length] = "{$tabs[i].tab}"; {/section}
-
-var tabColor = "#FFFFFF";
-var tabBackground = "#2B98F7";
-var tabSelectedColor = "#000000";
-var tabSelectedBackground = "#E0E5F7";
-</script>
-
 <br><table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="100%" align="center" valign="top">
   <tr>
     <td width="100%" bgcolor="#D8E4F0">
@@ -16,9 +6,9 @@ var tabSelectedBackground = "#E0E5F7";
           {section name=i loop=$tabs}
           
           <td valign="bottom">
-            <table style="border: 0px solid black; border-left-width:1px;border-right-width:1px;border-top-width:1px" cellspacing="0" cellpadding="5">
+            <table cellspacing="0" cellpadding="5" id="tab_{$tabs[i].tab}" class="{if $tabs[i].selected}activetab{else}passivetab{/if}">
               <tr>
-                <td id="{$tabs[i].tab}" onclick="showTab('{$tabs[i].tab}')" style="cursor: pointer; cursor: hand; color:{if $tabs[i].selected}#000000{else}#FFFFFF{/if}; background: {if $tabs[i].selected}#E0E5F7{else}#2B98F7{/if}" height="22" valign="middle" align="center" nowrap>
+                <td onclick="showTab('{$tabs[i].tab}')" nowrap>
                     <b>{$tabs[i].title}</b>
                 </td>
               </tr>

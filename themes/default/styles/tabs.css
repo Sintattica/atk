@@ -1,0 +1,18 @@
+.activetab
+{
+  cursor: pointer; 
+  
+  border: 0px solid black; 
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+}
+
+.passivetab
+{
+  cursor: hand; 
+  border: 0px solid black; 
+  border-left-width:1px;
+  border-right-width:1px;
+  border-top-width:1px;
+}

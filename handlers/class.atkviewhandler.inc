@@ -38,47 +38,9 @@
           $p_attrib = &$node->m_attribList[$node->m_attribIndexList[$i]["name"]];
 					
 					$field_name = $node->m_attribIndexList[$i]["name"];
-					
-					$tabnumber = count($p_attrib->m_ownerInstance->m_attribList[$field_name]->m_tabs);
-					
-					if($tabnumber > 1)
-					{
-						$tab_name = "tab_";
-						for($j = 0; $j < $tabnumber; $j++)
-						{
-							$tab_name .= $p_attrib->m_ownerInstance->m_attribList[$field_name]->m_tabs[$j];
-							$tab_name .= ".";
-						}
-						// staat het element op de initieel geselecteerde tab?
-						if (strstr($tab_name,$tab)){ $initial_on_tab = "yes"; } else { $initial_on_tab = "no"; }
-					}
-					
-					// elementen die bij 1 of alle tabs horen
-					else
-					{
-						$tab_name = $p_attrib->m_ownerInstance->m_attribList[$field_name]->m_tabs[0];
-
-						// Van deze elementen kijken welke bij de tab horen die moet worden weergegeven
-						if (strstr($tab_name,$tab)){ $initial_on_tab = "yes"; } else { $initial_on_tab = "no"; }	
-						
-						// elementen die bij alle tabs horen
-						if ($tab_name == "*")
-						{
-							$tab_name = "alltabs";
-							$initial_on_tab = "yes";
-						}
-						elseif (empty($tab_name))
-						{
-							$tab_name = "tab_default";
-						}
-						else
-						{				
-							$tab_name = "tab_" . $tab_name;
-						}
-					}
-					
-					$tplfield["tab"] = $tab_name;
-					$tplfield["initial_on_tab"] = $initial_on_tab;
+									
+					$tplfield["tab"] = $p_attrib->m_tabs[0];
+					$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
 				 
           // An <attributename>_display function may be provided in a derived
           // class to display an attribute. If it exists we will use that method
@@ -89,6 +51,7 @@
 					
           $tplfield["full"] = $editsrc;
           $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
+          $tplfield["rowid"] = "attribrow_".$field_name; // The id of the containing row
              
           // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
           // For each attribute, a txt_<attributename> must be provided in the language files.

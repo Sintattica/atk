@@ -47,9 +47,21 @@
     }
     
     function renderTabs($vars)
-    {
-      $page = &atkPage::getInstance();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php");
+    {      
+      if ($this->m_theme->getAttribute("tabtype")=="dhtml")
+      {
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php");
+        
+        $tabscript = "var tabs = new Array();\n";
+        foreach($vars["tabs"] as $tab)
+        {
+          $tabscript.="tabs[tabs.length] = '".$tab['tab']."';\n";
+        
+        }
+        $page->register_scriptcode($tabscript);        
+                
+      }
 			
       return $this->render("tabs.tpl", $vars);
     }

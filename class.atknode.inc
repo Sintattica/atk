@@ -819,6 +819,7 @@
     
     function tabulate($action, $content)
     {
+      $this->addStyle("tabs.css");
       $list = $this->getTabs($action);
       if (count($list) > 1) 
       {     
