@@ -147,7 +147,10 @@
   function moduleDir($module)
   {
     global $g_modules;
-    return $g_modules[$module];
+    $dir = $g_modules[$module];
+    if ($dir=="") return "";
+    else if (substr($dir,-1)!='/') return $dir."/";
+    return $dir;
   }
 
   /**
