@@ -1165,7 +1165,7 @@
       else $list = &$this->m_tabListView;
       foreach ($list as $t)
       {
-        $title = text("tab_$t");
+        $title = text("tab_$t",$this->m_type);
         if ($ATK_VARS["atkaction"] == "view") $link = session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT);
         else $link = "javascript:atkSubmit('".atkurlencode(session_url("$PHP_SELF?atktab=".$t,SESSION_DEFAULT))."')";
         $result .= $g_layout->ret_tab($title, $link, ($t == $tab));
