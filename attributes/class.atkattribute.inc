@@ -88,6 +88,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.9  2001/06/07 21:06:54  ivo
+   * Added atkemailattribute
+   *
    * Revision 4.8  2001/05/22 08:36:50  peter
    * Added the searchCondition method which will be used by atkNode to create
    * a proper search condition for the attribute.
@@ -460,6 +463,7 @@
   }
 
   include_once($config_atkroot."atk/attributes/class.atkboolattribute.inc");
+  include_once($config_atkroot."atk/attributes/class.atkemailattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");  
   include_once($config_atkroot."atk/attributes/class.atkhtmlattribute.inc");
