@@ -27,6 +27,8 @@
           return "TEXT";
         case "datetime":
           return "DATETIME";
+        case "time":
+          return "TIME";          
         case "boolean":        
           return "NUMBER(1,0)"; // size is added fixed. (because a boolean has no size of its own)          
       }
