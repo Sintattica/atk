@@ -47,6 +47,7 @@
        $usertable = atkconfig("auth_usertable");
        $leveltable = atkconfig("auth_leveltable");
        $userfield = atkconfig("auth_userfield");
+       $userpk = atkconfig("auth_userpk");
 
        if ($usertable==$leveltable||$leveltable=="")
        {
@@ -59,13 +60,13 @@
          // Level and userid are stored in two separate tables. This could
          // mean (but doesn't have to) that a user can have more than one
          // level.
-	 $objname = "atk".atkconfig("database")."query";
-	 $qryobj = new $objname();
-	 $qryobj->addTable($usertable);
-	 $qryobj->addField("*");
-	 $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userfield = usergroup.$userfield", true);
-	 $qryobj->addCondition("$usertable.$userfield = '$user'");
-	 $query = $qryobj->buildSelect();
+	       $objname = "atk".atkconfig("database")."query";
+	       $qryobj = new $objname();
+	       $qryobj->addTable($usertable);
+	       $qryobj->addField("*");
+	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userpk", true);
+	       $qryobj->addCondition("$usertable.$userfield = '$user'");
+	       $query = $qryobj->buildSelect();
        }
 
        $recs = $g_db->getrows($query);
