@@ -1516,7 +1516,7 @@
         $method = "rowColor";
         if (method_exists($this, $method))
         {
-          $bgn = $this->$method(&$recordlist[$i], $i);
+          $bgn = $this->$method(&$recordset[$i], $i);
           if (is_array($bgn))
           {
             $bgh = $bgn[1];
