@@ -324,9 +324,14 @@
     function equal($recA, $recB)
     {
       $this->createDestination();
-      return ($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
-              ==
-              $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+ 
+      return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
+               ==
+               $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()])
+             ||
+              ($this->isEmpty($recA)&&$this->isEmpty($recB)));
+           // we must also check empty values, because empty values need not necessarily
+           // be equal (can be "", NULL or 0.
     }
   }
 
