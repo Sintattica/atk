@@ -25,6 +25,7 @@
    * can be stripped out. Some attributes are used rarely and are 
    * commented out by default. You can enable them if you want to use them.
    */
+  include_once($config_atkroot."atk/attributes/class.atkradioattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkboolattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atkemailattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");

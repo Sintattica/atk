@@ -14,6 +14,7 @@
       $this->add(new atkHtmlAttribute("HTML"));
       $this->add(new atkLimitedTextAttribute("LimitedText"));
       $this->add(new atkListAttribute("List",array("Option 1","Option 2","Option 3"),array("option1","option2","option3")));
+      $this->add(new atkRadioAttribute("Radio",array("Option 1","Option 2","Option 3"),array("option1","option2","option3")));
       $this->add(new atkMultipleFileAttribute("MultipleFile",array("themes","http://locahost/themes")));
       $this->add(new atkNumberAttribute("Number"));
       $this->add(new atkParserAttribute("Parser","Test"));
