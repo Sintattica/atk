@@ -36,6 +36,7 @@
   $config_auth_leveltable  = ""; // defaults to usertable
   $config_auth_accesstable = "access";
   $config_auth_userfield   = "userid";
+  $config_auth_userpk = "userid";//primary key of usertable
   $config_auth_passwordfield = "password";
   $config_auth_accountdisablefield = "";
   $config_auth_levelfield = "entity";
