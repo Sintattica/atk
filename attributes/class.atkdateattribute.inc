@@ -1,13 +1,12 @@
 <?php
   /**
-   * The atkDateAttribute class represents an attribute of a node that has a date dingske.
+   * The atkDateAttribute class offers an advanced date widget for date fields.
    * @author  Peter C. Verhage <peter@achievo.com>
-              Tom Schenkenberg <Tom@achievo.com>
+              Tom Schenkenberg <tom@achievo.com>
    *
    * @version $Revision$
-   *   
-   * $Id$
    *
+   * $Id$
    */
   class atkDateAttribute extends atkAttribute
   {
@@ -28,17 +27,17 @@
       /* format month */
       $format = str_replace("M", "%-%",   $format);
       $format = str_replace("F", "%=%",   $format);
-      
+
       /* format day */
       if ($weekday)
       {
         $format = str_replace("d", "%*% d", $format);
         $format = str_replace("j", "%*% j", $format);
       }
-      
+
       /* get date string */
       $str_date = date($format, $date[0]);
-      
+
       /* replace month/week name */
       $str_date = str_replace("%-%", text(substr(strtolower($date["month"]), 0, 3)), $str_date);
       $str_date = str_replace("%=%", text(strtolower($date["month"])), $str_date);
@@ -90,7 +89,7 @@
     function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
       global $txt_date_format_edit, $txt_date_format_view,$config_atkroot;
-      
+
       // *** API SUPPORT HACK ***
       // Because of backwards compatability and because of the number
       // of arguments this method has we also support the old API: ($name, $flags=0).
@@ -114,10 +113,12 @@
       else   $this->m_date_format_view = "F j Y";
 
       /* max / min date (only valid when obligatory) */
-	if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
+	    if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
 			{
-        $this->m_date_min = $min;
-        $this->m_date_max = $max;
+        if ($min === 0) $this->m_date_min = 0;
+        else $this->m_date_min = strtotime($min);
+        if ($max === 0) $this->m_date_max = 0;
+        else $this->m_date_max = strtotime($max);
 			}
 			else
 			{
@@ -130,10 +131,10 @@
 
       /* base class constructor */
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // FIXME.. until the searchCondition() and
-                                                         // search() methods are fixed, 
+                                                         // search() methods are fixed,
                                                          // you can't search on dates..
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
@@ -143,102 +144,90 @@
     function edit($record="", $fieldprefix="")
     {
       /* this field */
-      $field = $record[$this->fieldName()];    
+      $field = $record[$this->fieldName()];
       $str_format = $this->m_date_format_edit;
-      
+;
       /* currently selected date */
       $current = 0;
-      if (is_array($field) && checkdate($field["month"], $field["day"], $field["year"])) 
-        $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
-      else
+      if (isset($record[$this->fieldName()]))
       {
-        $date = $this->dateArray($field);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
-          $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+        if (!$this->hasFlag(AF_OBLIGATORY) && is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
+          $current = NULL; // NULL date selected (normal date selection)
+        elseif (!$this->hasFlag(AF_OBLIGATORY) && !is_array($field) && empty($field))
+          $current = NULL; // NULL date selected (NULL value in database)
+        elseif (is_array($field) && checkdate($field["month"], $field["day"], $field["year"]))
+          $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
+        else
+        {
+          $date = $this->dateArray($field);
+          if (checkdate($date["month"], $date["day"], $date["year"]))
+            $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+        }
       }
 
       /* minimum date */
-      $minimum = 0;
-      $str_min = $this->m_date_min;
-      if (strlen($str_min) == 8)
-      {
-        $date = $this->dateArray($str_min);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
-          $minimum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
-        else $str_min = 0;
-      }
+      $minimum = $this->m_date_min;
+      if ($minimum > 0) $str_min = date("Ymd", $minimum);
+      else $str_min = 0;
 
       /* maximum date */
-      $maximum = 0;
-      $str_max = $this->m_date_max;
-      if (strlen($str_max) == 8)
-      {
-        $date = $this->dateArray($str_max);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
-          $maximum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
-        else $str_max = 0;        
-      }
+      $maximum = $this->m_date_max;
+      if ($maximum > 0) $str_max = date("Ymd", $maximum);
+      else $str_max = 0;
 
-      
       /* did we select a valid date? */
-      if      (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
+      if      ($current === NULL); // NULL date selection; ignore this if statement
+      else if (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
       else if (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
       else if (empty($current)  && !empty($minimum) && mktime() < $minimum) $current = $minimum;
-      else if (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum; 
-      else if (empty($current)&&$this->hasFlag(AF_OBLIGATORY)) $current = mktime();    
+      else if (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum;
+      else if (empty($current)) $current = mktime();
 
       /* get dates in array format */
-      if($current!=0)
-      {
-        $current = getdate($current);
-      }
-      else
-      {
-        $current = array("hours"=>0,"minutes"=>0,"seconds"=>0,"mday"=>0,"wday"=>0,"mon"=>0,"year"=>"","yday"=>0);
-      }
-
+      if ($current !== NULL) $current = getdate($current);
       if (!empty($minimum)) $minimum = getdate($minimum);
-      if (!empty($maximum)) $maximum = getdate($maximum);      
+      if (!empty($maximum)) $maximum = getdate($maximum);
 
       /* minimum and maximum */
       $current["d_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] && $current["mon"] == $minimum["mon"] ? $minimum["mday"] : 1);
-      $current["d_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] && $current["mon"] == $maximum["mon"] ? $maximum["mday"] : $this->getDays($current));      
+      $current["d_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] && $current["mon"] == $maximum["mon"] ? $maximum["mday"] : $this->getDays($current));
       $current["m_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] ? $minimum["mon"] : 1);
-      $current["m_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] ? $maximum["mon"] : 12);      
-      $current["y_min"] = (!empty($minimum) ? $minimum["year"] : 0);    
+      $current["m_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] ? $maximum["mon"] : 12);
+      $current["y_min"] = (!empty($minimum) ? $minimum["year"] : 0);
       $current["y_max"] = (!empty($maximum) ? $maximum["year"] : 0);
 
-      /* small date selections */
+      /* small date selections, never possible is field isn't obligatory (no min/max date) */
       if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25)
       {
         $result = '<select name="'.$fieldprefix.$this->fieldName().'">';
         for ($i = $str_min; $i <= $str_max; $i++)
-        { 
-          $tmp_date = getdate(mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));          
-          $result .= '<option value="'.$i.'"'.($tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format).'</option>';
+        {
+          $tmp_date = getdate(mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
+          $result .= '<option value="'.$i.'"'.($current !== NULL && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format).'</option>';
         }
         $result .= '</select>';
         return $result;
       }
-      
+
       /* other date selections */
       for($i = 0; $i < strlen($str_format); $i++)
       {
         /* javascript method */
         $str_script = "AdjustDate(this, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max, ".($this->hasFlag(AF_OBLIGATORY) ? "true" : "false").");";
-        
-        /* year input box */ 
+
+        /* year input box */
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
         {
           /* date must be within 25 years */
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= 25)
           {
             $result .= '<select name="'.$fieldprefix.$this->fieldName().'[year]" onChange="'.$str_script.'">';
+            if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
-              $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));          
+              $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));
               $str_year = $this->formatDate($tmp_date, $str_format[$i]);
-              $result .= '<option value="'.$j.'" '.($j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
+              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
             }
             $result .= '</select>';
           }
@@ -246,19 +235,17 @@
           /* normal input box */
           else  $result .= '<input type="text" name="'.$fieldprefix.$this->fieldName().'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.$current["year"].'">';
         }
-        
+
         /* day input box */
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$str_script.'">';
-
-					if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0" '.(0 == $current["mday"] ? "selected" : "").'></option>';
-
+          if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
             $str_day = $this->formatDate($tmp_date, $str_format[$i]);
-            $result .= '<option value="'.$j.'" '.($j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
+            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
           }
           $result .= '</select>';
         }
@@ -267,18 +254,16 @@
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$str_script.'">';
-
-					if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0" '.(0 == $current["mon"] ? "selected" : "").'></option>';					
-
+          if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
-            $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));          
+            $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));
             $str_month = $this->formatDate($tmp_date, $str_format[$i]);
-            $result .= '<option value="'.$j.'" '.($j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+            $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
           }
           $result .= '</select>';
         }
-        
+
         /* other characters */
         else $result .= $str_format[$i];
       }
@@ -298,13 +283,13 @@
       $field = $record[$this->fieldName()];
 
       if (is_array($field))
-        foreach ($field as $key => $value) 
+        foreach ($field as $key => $value)
           $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$key.']" '.'value="'.$value.'">';
 
-      else  
+      else
         $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
 
-      return $result;             
+      return $result;
     }
 
     /**
@@ -316,12 +301,12 @@
     function search($record="", $extended=false)
     {
       if (!$extended) return "&nbsp;";
-      
+
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
       $res = $this->edit($record, "atksearch_AE_");
       return $res;
     }
-    
+
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $dateval = $this->value2db(array($this->fieldName()=>$value));
@@ -329,7 +314,7 @@
       // TODO & FIXME:
       // databases have their own way of comparing dates. (OCI8 needs TO_CHAR etc..
       // so we need to make some $query->dateComparison function..
-      atkdebug("Search support for DATE fields not yet supported (FIXME!)");          
+      atkdebug("Search support for DATE fields not yet supported (FIXME!)");
     }
 
     /**
@@ -338,17 +323,17 @@
      * @return database value for date
      */
     function value2db($rec)
-    {      
-            
+    {
+
       if (!is_array($rec[$this->fieldName()]))
         $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
-        
+
       $year = $rec[$this->fieldName()]["year"];
       $month = $rec[$this->fieldName()]["month"];
       $day = $rec[$this->fieldName()]["day"];
 
       if (empty($year) || empty($month) || empty($day)) return "";
-      
+
       $result = $year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day);
       return $result;
     }
@@ -359,13 +344,13 @@
      * @return array with 3 fields (year, month, day)
      */
     function db2value($rec)
-    {		       
+    {
       if (strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
                    "month"=>substr($rec[$this->fieldName()], 5, 2),
                    "day"  =>substr($rec[$this->fieldName()], 8, 2));
     }
-    
+
     /**
      * Return the HTTP post values for this attribute
      * @param $postvars the HTTP post vars
@@ -376,7 +361,7 @@
       $result = $postvars[$this->formName()];
       return $result;
     }
-    
+
     /**
      * Validate's dates
      * @param &$record Record that contains value to be validated.
@@ -389,14 +374,14 @@
       $value = $record[$this->fieldName()];
       /* array or no array */
       if (is_array($value)) $date = $this->dateArray($value);
-		
+
       /* if not obligatory and one of the fields is null then the date will be saved as null */
       if (!$this->hasFlag(AF_OBLIGATORY) && (empty($year) || empty($month) || empty($day))) return;
-		
+
       /* currently selected date */
-      if (checkdate($value["month"], $value["day"], $value["year"])) 
+      if (checkdate($value["month"], $value["day"], $value["year"]))
         $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
-      else 
+      else
       {
         triggerError($record, $this->fieldName(), 'error_date_invalid');
         return;
@@ -424,24 +409,24 @@
         $date = $this->dateArray($str_max);
         if (checkdate($date["month"], $date["day"], $date["year"]))
           $maximum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
-        else $str_max = 0;        
-      }      
-      
+        else $str_max = 0;
+      }
+
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
       {
         triggerError($record, $this->fieldName(), 'error_date_minimum', text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0));
         return;
       }
-        
+
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
         triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
-        
+
       /* no problem */
       //return "";
     }
-  
+
     /**
      * Function display's the date
      * @param $record array with date
@@ -455,7 +440,7 @@
             if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
             else return "";
     }
-    
+
      function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -464,8 +449,8 @@
       // Possible values
       //"exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
-    }  
-    
+    }
+
     /**
      * Add's fields to query
      * @param $query The SQL query
@@ -476,7 +461,7 @@
      * @return New SQL Query
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
-    {      
+    {
       if ($mode == "add" || $mode == "update")
       {
         if($this->value2db($rec) == '')
@@ -492,8 +477,8 @@
       {
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
       }
-    
+
     }
-    
+
   }
 ?>
