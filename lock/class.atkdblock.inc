@@ -121,7 +121,7 @@ class atkDbLock extends atkLock
 
       $user = getUser();
       if (is_array($user))
-        $user = $user[atkconfig("auth_userfield")];
+        $user = $user['name'];
 
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
@@ -173,7 +173,7 @@ class atkDbLock extends atkLock
 
     $user = getUser();
     if (is_array($user))
-      $user = $user[atkconfig("auth_userfield")];
+      $user = $user['name'];
 
     /* lock the lock table :) */
     $g_db->lock("db_lock");
@@ -219,7 +219,7 @@ class atkDbLock extends atkLock
 
     $user = getUser();
     if (is_array($user))
-      $user = $user[atkconfig("auth_userfield")];
+      $user = $user['name'];
 
     /* lock the lock table :) */
     $g_db->lock("db_lock");
@@ -242,7 +242,6 @@ class atkDbLock extends atkLock
     $query->addCondition("lock_lease >= now()");
     $g_db->query($query->buildUpdate());
     $result = $g_db->affected_rows();
-
     /* unlock the lock table */
     $g_db->unlock("db_lock");
 
@@ -252,8 +251,8 @@ class atkDbLock extends atkLock
       $atklockList = $this->loadLockList();
       if (is_array($atklockList)) unset($atklockList[$atkstackid]);
       $this->storeLockList($atklockList);
-    }
 
+    }
     /* return */
     return $result > 0;
   }
