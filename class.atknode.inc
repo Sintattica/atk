@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.52  2001/06/12 13:19:55  ivo
+   * Added a <br> to the bottom of the treeview.
+   * Removed save and close button when editpage is bottom of the stack.
+   *
    * Revision 4.51  2001/06/12 12:26:54  ivo
    * Fix to treenode: if no icondir is set, it takes the default.
    * Fix to atknode: display a '<br'> if no navigation is active.
@@ -927,7 +931,7 @@
      */
     function editPage($record)
     {
-      global $g_layout;
+      global $g_layout, $atklevel;
       $g_layout->register_script("atk/javascript/formfocus.js");      
       $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
       $g_layout->output($this->stackTrace());
@@ -936,7 +940,14 @@
       $g_layout->output(session_form());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
       $g_layout->output($this->editForm("edit",$record,$forceList));
-      $g_layout->output('<br><input type="submit" value="'.text('saveandclose').'">');
+      
+      $g_layout->output('<br>');
+      if ($atklevel>0) // if atklevel is 0 or less, we are at the bottom of the session stack, 
+                       // which means that 'saveandclose' doesn't close anyway, so we leave out
+                       // the 'saveandclose' button.
+      {
+        $g_layout->output('<input type="submit" value="'.text('saveandclose').'">');
+      }
       $g_layout->output('<input type="submit" name="atknoclose" value="'.text('save').'">');
       $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
       $g_layout->output('</form>');

@@ -13,6 +13,10 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.16  2001/06/12 13:19:55  ivo
+    * Added a <br> to the bottom of the treeview.
+    * Removed save and close button when editpage is bottom of the stack.
+    *
     * Revision 4.15  2001/06/12 12:26:54  ivo
     * Fix to treenode: if no icondir is set, it takes the default.
     * Fix to atknode: display a '<br'> if no navigation is active.
@@ -151,7 +155,7 @@
 
       $g_layout->output($this->GraphTreeRender());
       
-      $g_layout->output("</table>");      
+      $g_layout->output("</table><br>");      
       $g_layout->ui_bottom();
       atkdebug("Generating treeview finished!");
     }
