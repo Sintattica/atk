@@ -76,7 +76,7 @@ with (pMenu) {
 				}
 				else
 				{
-					$menu_icon = substr($theme->iconPath($atkmenutop."_".$name.".gif","dropdown"),0,-4);
+					$menu_icon = $theme->iconPath($atkmenutop."_".$name,"dropdown");
 				}
 								
 				if(file_exists($menu_icon))
@@ -87,7 +87,7 @@ with (pMenu) {
 				else
 				{
 					$menuname = addslashes (text("menu_".$name));
-					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.substr($theme->iconPath("unknown.gif","dropdown"),0,-4).'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
+					$menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("unknown","dropdown").'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
 				}
 			}
 			
@@ -95,7 +95,7 @@ with (pMenu) {
 			elseif($atkmenutop != "main" && $name != "-")
 			{
 				$menuname = addslashes (text("menu_".$name));
-				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.substr($theme->iconPath("folder.gif","dropdown"),0,-4).'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+				$submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
 				$subsubmenu[] = $name;
 			}
 		}
