@@ -42,6 +42,8 @@ Changes in ATK 5.0.5
 * Fixed bug in editing empty choices in an atkManyToOneRelation. [Sandy]
 * Fixed a call-time-pass-by-reference. [Ivo]
 * Fixed a reference copy bug. (bug #350) [Yuri]
+* atkOneToOne's AF_ONETOONE_INTEGRATE integrates columns in recordlists. 
+  (bug #346) [Ivo]
 
 Changes in ATK 5.0.4
 --------------------

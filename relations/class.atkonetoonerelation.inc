@@ -848,6 +848,77 @@
       return parent::showOnTab($tab);      
     }        
     
+    /**
+     * Adds the attribute / field to the list header. This includes the column name and search field.
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param String $atkorderby the current ATK orderby string (if not empty)
+     * @see atkNode::listArray
+     */
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    {      
+      if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+      {
+        // regular behaviour.
+        parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby);
+      }
+      else
+      {
+        // integrated version, don't add ourselves, but add all columns from the destination.
+        if ($this->createDestination())
+        {
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $p_attrib = &$this->m_destInstance->getAttribute($attribname);
+            $p_attrib->addToListArrayHeader($action, $arr, $fieldprefix, $flags|RL_NO_SORT, $atksearch, $atkorderby);
+          }
+        }
+      }
+    }
+    
+    /**
+     * Adds the attribute / field to the list row. And if the row is totalisable also to the total.
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param int    $nr the current row number
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @see atkNode::listArray
+     */
+    function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
+    {    
+      if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
+      {
+        parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
+      }
+      else
+      {
+        // integrated version, don't add ourselves, but add all columns from the destination.
+        if ($this->createDestination())
+        {
+          // small trick, the destination record is in a subarray. The destination
+          // addToListArrayRow will not expect this though, so we have to modify the
+          // record a bit before passing it to the detail columns.
+          $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $p_attrib = &$this->m_destInstance->getAttribute($attribname);            
+            $p_attrib->addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
+          }
+        }
+      }
+    }
+        
+    
   }
   
 ?>
