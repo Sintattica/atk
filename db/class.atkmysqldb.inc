@@ -298,7 +298,11 @@
         /* list fields */
         atkdebug("Retrieving metadata for $table");
         $id = @mysql_list_fields($this->m_database, $table);
-        if (!$id) atkdebug("Metadata query failed.");
+        if (!$id) 
+        {
+          atkdebug("Metadata query failed.");
+          return array();
+        }
  
         /* count fields */
         $count = @mysql_num_fields($id);
