@@ -26,6 +26,7 @@ Changes in ATK 5.0.3
 * Updated atktools documentation [Boy]
 * DHTML menus now check wether the current user has 
   the rights on the node if not, then they don't add it to the menu [Boy]
+* Fixed type in a flag that caused a wrong count query (bug #307) [Nicola]
 
 Changes in ATK 5.0.2
 --------------------
