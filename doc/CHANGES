@@ -6,11 +6,15 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.0.6
 --------------------
+* Fixed bug in validateFilter for filters with tablename and 
+  added documentation [Boy]
 * Bugfix in Oracle 9i/10G driver. [Ivo]
 * 'Import' link is now hidden if NF_READONLY is set. [Ivo]
 * Fixed bug in validateFilter for filters with tablename and added 
   documentation. [Boy]
 * Fixed bug in record navigator when no form was present on the page. [Ivo]
++ Languageoverride directory can now be set using
+  the atklangoverridedir config var [Boy]
 
 Changes in ATK 5.0.5
 --------------------

@@ -93,6 +93,7 @@
   $config_top_frame = 0; // 0 = no   - 1 = yes
   $config_defaulttheme = "default";
   $config_defaultlanguage = "nl";
+  
   $config_multilanguage_linked = true; // True: one language switch attributes automatically switches all others on screen.
                                        // False: each language switch attributes operates only on it's own node
 
@@ -130,7 +131,7 @@
   $config_mysqlfetchmode = MYSQL_ASSOC;
   
   $config_atktempdir = $config_atkroot."atktmp/";
-  
+  $config_atklangoverridedir = $config_atktempdir."languages";
   
   // Template engine configuration
   $config_tplroot = $config_atkroot; // By default all templates are described by their relative
