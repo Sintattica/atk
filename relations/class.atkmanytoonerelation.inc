@@ -120,7 +120,9 @@
           if (is_array($rec[$this->fieldName()]))
           {                 
             $pkfield = $this->m_destInstance->m_primaryKey[0];
-            return $rec[$this->fieldName()][$pkfield];           
+            //return $rec[$this->fieldName()][$pkfield];           
+            $pkattr = &$this->m_destInstance->getAttribute($pkfield);
+            return $pkattr->value2db($rec[$this->fieldName()]);
           }
           else
           {
