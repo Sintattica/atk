@@ -16,6 +16,7 @@ Changes in ATK 5.0.7
 * Fixed filtering and navigating after update/save for navigator [Boy]
 * Fixed bug that would produce php error with NF_EDITAFTERADD 
   when a NULL value for a record is passed to editArray() [Boy]
+* Fixed a security bug for session hijacking. [Sandy]
 
 Changes in ATK 5.0.6
 --------------------
