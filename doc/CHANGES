@@ -12,6 +12,7 @@ Changes in ATK 5.1.1
 + Added plain text search functionality to date- and timeattribute. [Ivo, Boy]
 + Added ability to detect handheld clients. [Boy]
 + atkDateAttribute now has a simplified gui on handheld devices. [Boy]
++ Added atkDirectoryTraverser for traversing directory structures. [Ivo]
 + Added $config_onetomany_addlink_position which can be either
   bottom (default) or top [Boy]
 + Made it possible to search and sort on atkOneToManys [Boy]
