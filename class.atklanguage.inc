@@ -25,7 +25,7 @@ class atkLanguage
   * Using this function will ensure that only 1 instance ever exists
   * @return obj instance of the atkLanguage class
   */
-  function getInstance()
+  function &getInstance()
   {
     static $s_atklanguage;
     if (!is_object($s_atklanguage))
