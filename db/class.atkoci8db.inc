@@ -374,6 +374,14 @@
     }  
     
     /**
+      * get SUBSTRING() equivalent for the current database.
+      */
+    function func_substring($fieldname, $startat=0, $length=0)
+    {
+      return "SUBSTR($fieldname, $startat".($length!=0?", $length":"").")";
+    }
+    
+    /**
       * Returns the maximum length an identifier (tablename, columnname, etc) may have
       *      
       */
