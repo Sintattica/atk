@@ -2727,7 +2727,7 @@
       {
         $usedFields = atk_array_merge($this->descriptorFields(),$this->m_primaryKey);
         foreach (array_keys($this->m_attribList) as $name)
-          if ($this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD)) $usedFields[] = $name;
+          if (is_object($this->m_attribList[$name]) && $this->m_attribList[$name]->hasFlag(AF_FORCE_LOAD)) $usedFields[] = $name;
         $usedFields = array_unique($usedFields);
       }
 
@@ -2735,21 +2735,16 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        $loadmode = $p_attrib->loadType($mode);
-        if (hasFlag($loadmode, ADDTOQUERY))
+        if (is_object($p_attrib)) $loadmode = $p_attrib->loadType($mode);
+        else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
+        if ($loadmode && hasFlag($loadmode, ADDTOQUERY))
         {
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
-          if (!is_object($p_attrib))
-          {
-            atkdebug($usedfield." is not an object?! Check your descriptor_def for non-existant fields");
-          }
-          else
-          {
-            $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
-          }
+          
+          $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
         }
-      }
 
+      }
     }
 
     /**
