@@ -1,0 +1,232 @@
+<?php
+
+  class atkMatrixRelation extends atkRelation
+  {
+   var $m_name1;
+   var $m_destination1;
+   var $m_fk1; 
+   var $m_name2;
+   var $m_destination2;
+   var $m_fk2; 
+
+/**
+    * Constructor
+    * @param $name                 matrix table 
+    * @param $name1               row field name
+    * @param $destination1     row table
+    * @param $fk1                      forenkey in row table
+    * @param $name2               colum field name
+    * @param $destination2    colum table
+     * @param $fk2                     forenkey in colum table 
+    * @param $flags                  AF_ACYCLIC if input must be acyclic
+    */
+    
+    // 1 = row , 2 = col    
+    function atkMatrixRelation($name, $name1, $destination1, $fk1, $name2, $destination2, $fk2, $flags=0)
+    {
+      $this->atkRelation($name, $destination1, $flags);
+
+      $this->m_name1 = $name1;
+      $this->m_destination1 = $destination1;    
+      $this->m_fk1 = $fk1;
+      $this->m_name2 = $name2;
+      $this->m_destination2 = $destination2;
+      $this->m_fk2 = $fk2;
+    }
+    
+
+    function display($record)
+    { 
+    
+    }
+   
+     
+    function load($db, $record)
+    {
+      
+      $query = 'SELECT '.$this->m_name1.','.$this->m_name2.' FROM '.$this->m_name;
+      atkdebug("matrix load: ".$query);
+      $checked = $db->getRows($query);
+      
+      for ($i=0;$i<count($checked);$i++)
+      {
+         $field = $checked[$i][0].'_'.$checked[$i][1];
+         $checkedArray[$field] = 'on';
+      }
+     
+      return $checkedArray;
+    }
+    
+    
+    function edit($record="")
+    {             
+    
+   $checkedArray = $record[$this->fieldName()];
+   
+   $this->createOwner();
+   $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+       
+   $this->m_destination = $this->m_destination1; 
+   $this->m_destInstance="";
+   $this->createDestination();
+   
+   if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
+
+   $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+ 
+   for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+   {
+     $matrix_fields_row[$this->m_destInstance->m_currentRec] = $this->m_destInstance->descriptor();
+          
+     $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
+     $matrix_values_row[$this->m_destInstance->m_currentRec] = $primaryKeyValue[1];
+   }
+
+   $this->m_destination = $this->m_destination2; 
+   $this->m_destInstance="";
+   $this->createDestination();
+   
+   if ($this->m_fk2!="") $where=$this->m_fk2."=".$record[$pkfield]; else $where="";
+
+   $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+
+   for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+   {
+     $matrix_fields_col[$this->m_destInstance->m_currentRec] = $this->m_destInstance->descriptor();
+          
+     $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
+     $matrix_values_col[$this->m_destInstance->m_currentRec] = $primaryKeyValue[1];
+   }
+
+
+   if (count($matrix_fields_col)>1 && count($matrix_fields_row)>1) {      //matrix
+
+   $form = '<table border=1><tr><td>&nbsp;</td>';
+   for ($i=0;$i<count($matrix_fields_col);$i++) {
+      $form .= '<td align="center" valign="top" bgcolor="#cccccc"><b><div style="line-height: 10px">';
+      $text = $matrix_fields_col[$i];
+      for ($j=0;$j<strlen($text);$j++) {
+         $form .= $text[$j].'<br>';   
+      }
+      $form .= '</div></b><br></td>';
+   }
+   $form .= '</tr>';
+
+   $counter=0;
+   for ($i=0;$i<count($matrix_fields_row);$i++) {
+      $form .= '<tr><td bgcolor="#cccccc"><b>';
+      $form .= '&nbsp;'.$matrix_fields_row[$i].'&nbsp;';  
+      $form .= '</b></td>';
+      for ($j=0;$j<count($matrix_fields_col);$j++) {
+         $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
+         if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
+         
+         $form .= '<td align="center">&nbsp;';   
+         $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
+         $form .= '&nbsp;</td>';
+      }
+      $form .= '</tr>';
+   }
+   $form .= '</table><br>';
+
+   } elseif (count($matrix_fields_row)>1) {                              //many bool
+   
+   $form = '<table border=0 cellspacing=0 cellpadding=0>';
+   
+   $counter=0;
+   for ($i=0;$i<count($matrix_fields_row);$i++) {
+      $form .= '<tr>';
+      for ($j=0;$j<count($matrix_fields_col);$j++) {
+         $key = $matrix_values_row[$i].'_'.$matrix_values_col[$j];
+         if ($checkedArray[$key] == 'on') $check='CHECKED'; else $check='';
+         
+         $form .= '<td align="center">&nbsp;';   
+         $form .= '<input type="checkbox" name="'.$this->formName().'_AMDAE_'.$matrix_values_row[$i].'_'.$matrix_values_col[$j].'" '.$check.'>';
+         $form .= '&nbsp;</td>';
+         $form .= '<td>'.$matrix_fields_row[$i].'</td>';
+      }
+      $form .= '</tr>';
+   }
+   $form .= '</table><br>';
+  
+   } else {                                                              //one or none bool
+   
+   $form = '';
+   
+   }
+
+   return $form;
+
+   }
+ 
+    
+    // check if the input is acyclic when flag is set     
+    function validate($value)
+    {
+      if ($this->hasFlag(AF_MATRIX_ACYCLIC)) 
+      {
+       // todo
+      }
+      return "";
+    }
+
+
+    function isEmpty($notused)
+    {
+      return false;
+    }
+
+
+    function delete_before_store($db, $record)
+    {
+    if ($this->m_fk1=="" && $this->m_fk2!="") // manybool 
+    { 
+      $this->createOwner();
+      $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+     
+      $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name2.' = '.$record[$pkfield];
+      $db->query($query);
+      
+    } else {
+    
+      $this->createOwner();
+      $pkfield = $this->m_ownerInstance->m_primaryKey[0];
+
+      $this->m_destination = $this->m_destination1;
+      $this->m_destInstance="";
+      $this->createDestination();
+      
+      if ($this->m_fk1!="") $where=$this->m_fk1."=".$record[$pkfield]; else $where="";
+      
+      $this->m_destInstance->selectDb($where,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+ 
+      for ($this->m_destInstance->m_currentRec=0;$this->m_destInstance->m_currentRec<count($this->m_destInstance->m_records);$this->m_destInstance->m_currentRec++)
+      {
+         $primaryKeyValue = split("'",$this->m_destInstance->primaryKey());
+         $query = 'DELETE FROM '.$this->m_name.' WHERE '.$this->m_name1.' = '.$primaryKeyValue[1];
+         $db->query($query);
+      }    
+    
+    }
+    }
+
+    function store($db, $record)
+    {
+      $this->delete_before_store($db, $record);
+            
+      $matrixcheckbox = $record[$this->fieldName()];
+                
+      if (is_array($matrixcheckbox)&&count($matrixcheckbox)>0) 
+      {
+         while (list($key,$value)=each($matrixcheckbox)) 
+         {
+            $phases = split('_',$key);
+            $query = 'INSERT INTO '.$this->m_name.' ('.$this->m_name1.','.$this->m_name2.') VALUES ('.$phases[0].','.$phases[1].')';
+            $db->query($query);            
+         }
+      }
+    }
+
+  }
+  
+?>

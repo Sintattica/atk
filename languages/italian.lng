@@ -1,0 +1,69 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in new version
+  // have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+   
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Application";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Welcome to this ATK application.";  
+
+  $txt_yes = "Si";
+  $txt_no = "No";
+   
+  $txt_view = "View";   
+  $txt_edit = "Modifica";
+  $txt_delete = "Elimina";
+  $txt_add = "Aggiungi";
+  $txt_admin = "Administration";
+  $txt_search = "Search";
+  $txt_search_all = "Search all";
+
+  $txt_next = "Next";
+  $txt_previous = "Previous";
+  $txt_select = "Select";  
+   
+  $txt_save = "Salva";
+  $txt_saveandclose = "Save and close";
+  $txt_cancel = "Annulla";
+  $txt_back = "Back";
+   
+  $txt_menu = "Menu";
+  $txt_error = "Errore";
+  
+  $txt_error_obligatoryfield = "This field is required";
+  $txt_error_formdataerror = "Save failed due to the following reason: ";
+  $txt_error_uniquefield = "The value for this field must be unique";
+  $txt_confirm_delete = "Are you sure you want to delete this item?";
+  $txt_title_delete = "Confirm delete";
+  
+  $txt_select_none = "None";
+  
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "There is no valid directory";
+  $txt_remove_current_file = "Remove current file";
+  $txt_file_not_exist = "File doesn't exist";
+  $txt_cannot_remove_file = "Can't remove file!";
+
+  // specific password attribute text
+  $txt_password_current = "Current";
+  $txt_password_new = "New";
+  $txt_password_again = "Again";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "The supplied password is not a valid password.";
+  $txt_password_incorrect = "The password you entered was not correct!";
+  $txt_password_nomatch = "The supplied passwords do not match.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Select a language:";
+  $txt_multilanguage_choice = "Selected language:"; 
+  
+  $txt_language_nl = "Dutch";
+  $txt_language_de = "German";
+
+?>

@@ -1,0 +1,353 @@
+<?php
+
+/* Multiple inclusion protection */
+if (!defined("CLASS_ATKMYSQLDB_INC"))
+{
+  define("CLASS_ATKMYSQLDB_INC",1);
+
+  /* include */
+  require("atk/db/class.atkdb.inc");
+
+  /**
+   * Handles database connectivity and database interaction
+   * with the MySQL database server. Portions of this class are
+   * based on the db_mysql.inc file of PHPLib.
+   *
+   * @author Peter Verhage <peter@ibuildings.nl>
+   *
+   * $Id$
+   * $Log$
+   * Revision 1.1  2001/04/23 10:17:10  ivo
+   * Initial revision
+   *
+   * Revision 1.4  2001/04/19 08:49:01  ivo
+   * Fixed bug when sequences are created: first id is now 1 instead of 0
+   *
+   * Revision 1.3  2001/04/05 09:33:40  ivo
+   * *** empty log message ***
+   *
+   * Revision 1.2  2001/03/21 13:13:47  ivo
+   * Fixed a bug with sequences introduced one revision earlier.
+   *
+   * Revision 1.1  2001/03/21 11:00:20  peter
+   * new database management classes
+   *
+   */ 
+  class atkmysqldb extends atkdb
+  {
+    /* identification */
+    var $m_type = "mysql";
+    var $m_revision = '$Revision$';
+  
+    /**
+     * Base constructor 
+     */
+    function atkmysqldb()
+    {
+      /* do nothing */
+    }
+  
+    /**
+     * Connect to the database
+     * @param $database the database name
+     * @param $host database hostname
+     * @param $user database username
+     * @param $password database password
+     * @return link identifier
+     */
+    function connect($database="", $host="", $user="", $password="")
+    {
+      /* defaults ? */
+      if (empty($database)) $database = $this->m_database;
+      if (empty($host)) $host = $this->m_host;
+      if (empty($user)) $user = $this->m_user;
+      if (empty($password)) $password = $this->m_password;      
+      
+      /* establish connection */
+      if (empty($this->m_link_id))
+      {
+        $this->m_link_id = mysql_pconnect($host, $user, $password);
+        if (!$this->m_link_id) $this->halt("connect using $host, $user, ***** failed.");
+      }
+
+      /* select database */
+      if (!@mysql_select_db($database, $this->m_link_id))
+        $this->halt("cannot use database $database.");
+        
+      /* return link identifier */
+      return $this->m_link_id;
+    }
+
+    /**
+     * Disconnect from database
+     */
+    function disconnect()
+    {
+      if ($this->m_debug) 
+        echo "Debug: Disconnecting from database...<br>\n";
+    }
+
+    /**
+     * Performs a query
+     * @param $query the query
+     * @param $offset offset in record list
+     * @param $limit maximum number of records
+     */
+    function query($query, $offset=-1, $limit=-1)
+    {
+      /* limit? */
+      if ($offset >= 0 && $limit > 0)
+        $query .= " LIMIT $offset, $limit";  
+  
+      /* connect to database */
+      $this->connect();
+
+      /* free old results */
+      if ($this->m_query_id)
+      {
+        @mysql_free_result($this->m_query_id);
+        $this->m_query_id = 0;
+      }
+
+      /* debug */
+      if ($this->m_debug)
+        echo "Debug: query = $query<br>\n";
+        
+      /* query database */
+      $this->m_query_id = @mysql_query($query, $this->m_link_id);
+      $this->m_row = 0;
+      $this->m_errno = mysql_errno();
+      $this->m_error = mysql_error();
+    
+      /* invalid query */
+      if (!$this->m_query_id)
+        $this->halt("Invalid SQL: $query");
+        
+      /* return query id */
+      return $this->m_query_id;
+    }
+
+    /**
+     * Goto the next record in the result set
+     * @return result of going to the next record
+     */
+    function next_record()
+    {
+      /* goto next record */
+      $this->m_record = @mysql_fetch_array($this->m_query_id);
+      $this->m_row++;
+      $this->m_errno = mysql_errno();
+      $this->m_error = mysql_error();
+
+      /* are we there? */
+      $result = is_array($this->m_record);
+      if (!$result && $this->m_auto_free)
+      {
+        @mysql_free_result($this->m_query_id);
+        $this->m_query_id = 0;
+      }
+      
+      /* return result */
+      return $result;
+    }
+
+    /**
+     * Goto a certain position in result set.
+     * Not specifying a position will set the pointer
+     * at the beginning of the result set.
+     * @param $position the position
+     */
+    function seek($position=0)
+    {
+      $result = @mysql_data_seek($this->m_query_id, $position);
+      if ($result) $this->m_row = $position;
+      else $this->halt("seek($position) failed: result has ".$this->num_rows()." rows");
+    }
+  
+    /**
+     * Lock a certain table in the database 
+     * @param $table the table name
+     * @param $mode the type of locking
+     * @return result of locking
+     */
+    function lock($table, $mode="write")
+    {
+      /* connect first */
+      $this->connect();
+    
+      /* lock */
+      $result = @mysql_query("lock tables $table $mode", $this->m_link_id);
+      if (!$result) $this->halt("$mode lock on $table failed.");
+      
+      /* return result */
+      return $result;
+    }
+  
+    /**
+     * Unlock table(s) in the database 
+     * @return result of unlocking
+     */
+    function unlock()
+    {
+      /* connect first */
+      $this->connect();
+
+      /* unlock */
+      $result = @mysql_query("unlock tables");
+      if (!$result) $this->halt("unlock tables failed.");
+      
+      /* return result */
+      return $result;
+    }
+
+    /**
+     * Evaluate the result; which rows were
+     * affected by the query.
+     * @return affected rows
+     */  
+    function affected_rows()
+    {
+      return @mysql_affected_rows($this->m_link_id);
+    }
+
+    /**
+     * Evaluate the result; how many rows
+     * were affected by the query.
+     * @return number of affected rows
+     */
+    function num_rows()
+    {
+      return @mysql_num_rows($this->m_query_id);
+    }
+
+    /**
+     * Evaluatie the result; how many fields
+     * where affected by the query.
+     * @return number of affected fields
+     */
+    function num_fields()
+    {
+      return @mysql_num_fields($this->m_query_idD);
+    }
+
+    /**
+     * Get the next sequence number
+     * of a certain sequence.
+     * @param $sequence the sequence name
+     * @return the next sequence id
+     */
+    function nextid($sequence)
+    {
+      /* first connect */
+      $this->connect();
+    
+      /* lock sequence table */
+      if ($this->lock($this->m_seq_table))
+      {
+        /* get sequence number (locked) and increment */
+        $query = "SELECT nextid FROM ".$this->m_seq_table." WHERE seq_name = '$sequence'";
+      
+        $id = @mysql_query($query, $this->m_link_id);
+        $result = @mysql_fetch_array($id);
+      
+        /* no current value, make one */
+        if (!is_array($result))
+        {
+          $query = "INSERT INTO ".$this->m_seq_table." VALUES('$sequence', 1)";
+          $id = @mysql_query($query, $this->m_link_id);
+          $this->unlock();          
+          return 1;
+        }
+        
+        /* enter next value */
+        else
+        {
+          $nextid = $result["nextid"] + 1;
+          $query = "UPDATE ".$this->m_seq_table." SET nextid = '$nextid' WHERE seq_name = '$sequence'";
+          $id = @mysql_query($query, $this->m_link_id);
+          $this->unlock();
+          return $nextid;
+        }
+      }
+      
+      /* cannot lock */
+      else
+      {
+        $this->halt("cannot lock ".$this->m_seq_table." - has it been created?");
+      }
+    }
+
+    /**
+     * Return the meta data of a certain table
+     * @param $table the table name
+     * @param $full all meta data or not
+     * @return array with meta data
+     */
+    function metadata($table, $full=false)
+    {
+      /* first connect */
+      $this->connect();
+      
+      /* list fields */
+      $id = @mysql_list_fields($this->m_database, $table);
+      if (!$id) $this->halt("Metadata query failed.");
+
+      /* count fields */
+      $count = @mysql_num_fields($id);
+
+      /* get meta data */
+      $result = array();      
+      if ($full) $result["num_fields"] = $count;
+      for ($i=0; $i<$count; $i++)
+      {
+        $result[$i]["table"] = @mysql_field_table($id, $i);
+        $result[$i]["name"]  = @mysql_field_name($id, $i);
+        $result[$i]["type"]  = @mysql_field_type($id, $i);
+        $result[$i]["len"]   = @mysql_field_len($id, $i);
+        $result[$i]["flags"] = @mysql_field_flags($id, $i);
+        if ($full) $result["meta"][$result[$i]["name"]] = $i;
+      }
+      /* free result */
+      @mysql_free_result($id);
+      return $result;
+    }
+
+    /**
+     * Return the available table names
+     * @return array with table names etc.
+     */
+    function table_names()
+    {
+      /* query */
+      $this->query("SHOW TABLES");
+      
+      /* get table names */
+      $result = array();
+      for ($i=0; $info = mysql_fetch_row($this->m_query_id); $i++)
+      {
+        $result[$i]["table_name"]      = $info[0];
+        $result[$i]["tablespace_name"] = $this->m_database;
+        $result[$i]["database"]        = $this->m_database;
+      }
+      
+      /* return result */
+      return $result;
+    }
+
+    /**
+     * error handling
+     */
+    function halt($message)
+    {
+      /* no reporting */
+      if ($this->m_halt_on_error = "no") return;
+
+      /* print error */
+      echo "</td></tr></table><b>Database error:</b> %s<br>\n", $message;
+      echo "<b>MySQL Error</b>: ".$this->m_errno." (".$this->m_error.")<br>\n";
+
+      /* not only report but also quit? */
+      if ($this->m_halt_on_error != "report") die();
+    }
+  }  
+} /* endif CLASS_ATKMYSQLDB_INC; */

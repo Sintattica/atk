@@ -1,0 +1,44 @@
+<?
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+  
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application. 
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Application";
+  $txt_app_shorttitle = "ATKApp";
+
+  $txt_title_debugger = "Debugger";
+
+  $txt_yes = "Kyllä";
+  $txt_no = "Ei";
+  
+  $txt_edit = "Muokkaa";
+  $txt_delete = "Poista";
+  $txt_add = "Lisää";
+  $txt_search = "Search";
+  $txt_search_all = "Search all";
+
+  $txt_next = "Next";
+  $txt_previous = "Previous";
+  $txt_select = "Select";
+  
+  $txt_save = "Tallenna";
+  $txt_saveandclose = "Save and close";
+  $txt_cancel = "Peruuta";
+  
+  $txt_menu = "Valikko";
+  $txt_error = "Virhe";
+  
+  $txt_error_obligatoryfield = "This field is required";
+  $txt_error_formdataerror = "Save failed due to the following reason: ";
+  $txt_error_uniquefield = "The value for this field must be unique";
+  $txt_confirm_delete = "Are you sure you want to delete this item?";
+  $txt_title_delete = "Confirm delete";
+  
+  $txt_select_none = "None";
+
+?>

@@ -1,0 +1,209 @@
+<?php
+// Multiple inclusion protector
+if (!defined("CLASS_ATKSECURITYMANAGER_INC"))
+{
+  define("CLASS_ATKSECURITYMANAGER_INC",1);
+
+  /**
+   * This class manages security in atk.
+   *
+   * <b>Todo's</b>   : - everything
+   *
+   * @author Ivo Jansch (ivo@achievo.com)
+   *
+   * <b>Changes</b>:
+   *    
+   * $Id$
+   * $Log$
+   * Revision 1.1  2001/04/23 10:17:14  ivo
+   * Initial revision
+   *
+   * Revision 1.7  2001/04/02 08:22:58  ivo
+   * Improved groupbased attribute security.
+   *
+   * Revision 1.6  2001/03/29 11:22:29  ivo
+   * New feature: logging
+   *
+   * Revision 1.5  2001/03/16 07:51:59  ivo
+   * Improved group-based security.
+   *
+   * Revision 1.4  2001/03/14 16:36:39  ivo
+   * Fixed a bug in the g_user variable.
+   *
+   * Revision 1.3  2001/03/14 16:16:30  sandy
+   * database name and userid field is configurable
+   *
+   * Revision 1.2  2001/03/13 15:09:03  ivo
+   * user is now stored in a global variable.
+   *
+   * Revision 1.1  2001/02/15 16:20:24  ivo
+   * Major new feature: security.
+   *
+   *
+   */
+   
+   require "atk/security/class.auth_interface.inc";
+   
+   if ($config_authentication == "") $config_authentication_type = "none";
+   if ($config_securityscheme == "") $config_securityscheme = "none";
+   
+   include "atk/security/class.auth_".$config_authentication.".inc";   
+   
+   class atkSecurityManager
+   {
+     var $m_authentication = 0;     
+     var $m_scheme = "none";
+     var $m_user = 0;
+        
+     
+     // constructor
+     function atkSecurityManager($authentication_type="none", $securityscheme="none")
+     {       
+     
+       atkdebug("creating securityManager (authtype: $authentication_type, scheme: $securityscheme)");
+       
+       $classname = "auth_".$authentication_type;
+       $this->m_authentication = new $classname;             
+       
+       $this->m_scheme = $securityscheme;
+     }
+     
+     function authenticate()
+     {
+       global $PHP_AUTH_USER, $PHP_AUTH_PW, $config_administratorpassword;
+       
+       // First check superuser..
+       
+       $authenticated = false;
+       
+       if ($config_administratorpassword!=""&&$PHP_AUTH_USER=="administrator"&&$PHP_AUTH_PW==$config_administratorpassword)
+       {
+         $this->m_user = Array("name"=>"administrator","level"=>-1);
+         // for convenience, we also store the user as a global variable.      
+         $GLOBALS["g_user"] = $this->m_user;
+         $authenticated = true;
+       }      
+       else if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
+       {   
+         // We store the username + securitylevel of the logged in user.
+         $this->m_user = $this->m_authentication->getUser($PHP_AUTH_USER);
+         // for convenience, we also store the user as a global variable.      
+         $GLOBALS["g_user"] = $this->m_user;
+         atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
+         $authenticated = true;         
+       } 
+       else 
+       {         
+         Header('WWW-Authenticate: Basic realm="'.$GLOBALS["txt_app_title"].'"');
+         Header("HTTP/1.0 401 Unauthorized");
+         echo "Failed to logon\n<br>";
+         $authenticated = false;
+       }  
+       return $authenticated;
+     }     
+          
+     function allowed($node, $action)
+     {
+       if (($this->m_scheme=="none") || ($this->m_user["level"]==-1)) 
+       {
+         // No securityscheme, or user is superuser.
+         $allowed = true;
+       }
+       else
+       {
+       
+         $required = $this->m_authentication->getEntity($node, $action);       
+       
+         if (count($required)==0)
+         {
+           // No access restrictions found.. 
+           // so either nobody or anybody can perform this
+           // operation, depending on the configuration.
+           $allowed = !$GLOBALS["config_restrictive"];
+         }
+         else
+         {
+           if ($this->m_scheme=="level")
+           {
+             // in level based security, only one level is specified for each node/action combination.
+             $allowed = ($this->m_user["level"] >= $required[0]);
+           }
+           else if ($this->m_scheme=="group")
+           {           
+             $allowed = in_array($this->m_user["level"], $required);          
+           }
+           else // unknown scheme??
+           {
+             $allowed = false;
+           }
+         }
+       }            
+       return $allowed;
+     
+     }
+        
+     function attribAllowed($node, $attribute, $mode)
+     {
+       global $config_security_attributes;
+       
+       if (($this->m_scheme=="none") || (!$config_security_attributes) || ($this->m_user["level"]==-1)) 
+       {
+         // No securityscheme, or user is superuser.
+         return true;
+       }
+       
+       $required = $this->m_authentication->getAttribEntity($node, $attribute, $mode);
+       
+       if ($required==-1)
+       {
+         // No access restrictions found..          
+         $allowed = true;
+       }
+       else
+       {
+         if ($this->m_scheme=="level")
+         {
+           $allowed = ($this->m_user["level"] >= $required);
+         }
+         else if ($this->m_scheme=="group")
+         {
+           $allowed = in_array($this->m_user["level"],$required);
+         }
+         else // unknown scheme??
+         {
+           $allowed = false;
+         }
+       }
+     
+       return $allowed;
+     
+     }
+     
+     function logAction($node, $action)
+     {
+       $this->log(2,"Performing $node.$action");
+     }
+     
+     function log($level, $message)
+     {
+      global $config_logging, $config_logfile, $REMOTE_ADDR;
+    
+      if ($config_logging>0 && $config_logging>=$level)
+      {
+        $fp = @fopen($config_logfile,"a");
+        if ($fp)
+        {
+          $logstamp = "[".date("d-m-Y H:i:s")."] [".$REMOTE_ADDR."] ".$this->m_user["name"]." | ";
+          @fwrite($fp, $logstamp.$message."\n");
+          @fclose($fp);
+       }
+      }
+     }
+     
+   }
+      
+   
+   // The one and only security manager.   
+   $g_securityManager = new atkSecurityManager($config_authentication, $config_securityscheme);
+}
+?>

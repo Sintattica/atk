@@ -1,0 +1,72 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "Aplicacion ATK ";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Bienvenido a esta aplicacion ATK.";
+
+  $txt_yes = "Si";
+  $txt_no = "No";
+
+  $txt_view = "Ver";
+  $txt_edit = "Editar";
+  $txt_delete = "Borrar";
+  $txt_add = "Agregar";
+  $txt_admin = "Administracion";
+  $txt_search = "Buscar";
+  $txt_search_all = "Buscar todos";
+
+  $txt_next = "Siguiente";
+  $txt_previous = "Previo";
+  $txt_select = "Seleccionar";
+
+  $txt_save = "Guardar";
+  $txt_saveandclose = "Guardar y cerrar";
+  $txt_cancel = "Cancelar";
+  $txt_back = "Atras";
+
+  $txt_menu = "Menu";
+  $txt_error = "Error";
+
+  $txt_error_obligatoryfield = "Este campo es requerido";
+  $txt_error_formdataerror = "Falla al guardar debido a la siguiente razon: ";
+  $txt_error_uniquefield = "El valor para este campo debe ser unico";
+  $txt_confirm_delete = "Esta seguro que Ud. quiere borrar este item?";
+  $txt_title_delete = "Confirmar borrado";
+
+  $txt_select_none = "Ninguno";
+  
+  $txt_clickheretoadd_prefix = "Sleccione aca con el mouse (click) para agregar un nuevo ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "No hay un directorio valido";
+  $txt_remove_current_file = "Eliminar archivo actual";
+  $txt_file_not_exist = "Archivo no existe";
+  $txt_cannot_remove_file = "No se puede eliminar archivo!";
+
+  // specific password attribute text
+  $txt_password_current = "Actual";
+  $txt_password_new = "Nueva";
+  $txt_password_again = "Repetir nueva contrasena";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "La contrasena proporcionada no es validad.";
+  $txt_password_incorrect = "La contrasena que Ud. ingreso no es correcta!";
+  $txt_password_nomatch = "Las contrasenas proporcionadas no coinciden.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Seleccione un idioma:";
+  $txt_multilanguage_choice = "Idioma seleccionado:"; 
+  
+  $txt_language_nl = "Holandes";
+  $txt_language_de = "Aleman";
+    
+?>

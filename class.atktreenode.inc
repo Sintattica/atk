@@ -1,0 +1,541 @@
+<?php
+
+// Multiple inclusion protector
+if (!defined("CLASS_ATKTREENODE_INC"))
+{
+  define("CLASS_ATKTREENODE_INC",1);
+  /**
+    * Extension on the atkNode class. Here you will find all 
+    * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
+    * instead of atkNode. Example:
+    * class classname extends atkTreeNode
+    * {
+    *      $this->atkTreeNode("nodeclass",NF_TREE|NF_COPY); 
+    *
+    * }
+    * @author Martin Roest  (martin@ibuildings.nl) and Sandy Pleyte (sandy@achievo.com)
+    *
+    * $Id$
+    * $Log$
+    * Revision 1.1  2001/04/23 10:17:06  ivo
+    * Initial revision
+    *
+    */
+  include "atk/atktreetools.inc"; 
+  
+  $g_limit = 10;
+  $g_start = 0;
+  $g_teller = 0;
+  $g_maxlevel = 0;
+  
+  class atkTreeNode extends atkNode
+  {
+  
+    var $m_tree = array(); 
+  
+    /**
+        * Constructor
+        * @Param $name Node name
+        * @Param $flags Node flags
+        */
+    function atkTreeNode($name,$flags=0)
+    {
+      if($this->hasFlag(NF_TREE_NO_ROOT_ADD))
+      {
+       //
+      }
+      $this->atkNode($name,$flags);    
+    }  
+    
+    /**
+          * Admin page displays records and the actions that can be performed on
+          * them (edit, delete) in a Treeview
+          */
+    function adminPage()
+    {
+      global $g_securityManager,$g_layout,$g_maxlevel,$g_teller,$p;
+
+      $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
+      $g_layout->output('<br>');
+
+      $adminHeader = $this->adminHeader();
+      if ($adminHeader!="")
+      {
+        $g_layout->output($adminHeader."<br><br>");
+      }
+
+      $this->debug("Entering treeview page.");
+      $this->addStickyVar($p);
+      
+      $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
+
+      $t = new tree;
+      for($i=0;$i<count($this->m_records);$i++)
+      {
+        $group=$this->m_records[$i];
+        $t->addNode($this->m_records[$i][$this->m_primaryKey[0]],$this->descriptor($group),$this->m_records[$i][$this->m_parent][$this->m_primaryKey[0]]);    
+      }
+      $this->m_tree[$g_teller][0]=0; 
+      $this->m_tree[$g_teller][1]="treeview"; 
+	    $this->m_tree[$g_teller][2]=''; 
+	    $this->m_tree[$g_teller][3]=''; 
+	    $this->m_tree[$g_teller][4]=1; 
+      $g_teller++;
+      $test = $this->Fill_tree($t->m_tree);
+      $g_maxlevel++;
+      $g_maxlevel++;
+      
+      //var_dump($this->m_tree);   
+      //$g_layout->output("<table border=\"1\" cellspacing=0 cellpadding=0 cols=$g_maxlevel width=".($g_maxlevel*16+200).">\n");
+      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".($g_maxlevel*30).">\n");
+
+      if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
+      {
+        $addurl = $this->stickyUrl("dispatch.php?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'")."&atkreturnurl=".rawurlencode("dispatch.php?atknodetype=".$this->m_type."&atkaction=admin"));
+        $g_layout->output(url($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix")).'<br><br>');
+      }
+
+      //$group = $this->treeGetGroup(0);
+      //$this->treePrintGroup($group, 0);
+      //var_dump($t->m_tree);
+      //$test = $this->Fill_tree($t->m_tree);
+      $g_layout->output($this->GraphTreeRender());
+      
+      //$g_layout->output($this->TreeRender_org($t->m_tree));
+      $g_layout->output("</table>");      
+      $g_layout->ui_bottom();
+      $this->debug("Generating treeview finished!");
+    }
+
+    function Fill_tree($tree="",$level=0)
+    {
+      global $g_teller,$g_maxlevel;
+      while (list($id,$objarr) = each($tree))
+      {
+        $this->m_tree[$g_teller][0]=$level+1; 
+		    $this->m_tree[$g_teller][1]=$objarr->m_label; 
+		    $this->m_tree[$g_teller][2]=$objarr->m_id; 
+		    $this->m_tree[$g_teller][3]=''; 
+		    $this->m_tree[$g_teller][4]=0; 
+		    if ($this->m_tree[$g_teller][0] > $g_maxlevel) $g_maxlevel=$this->m_tree[$g_teller][0];     
+		    $g_teller++;
+        if (count($objarr->m_sub)>0)
+        {          
+          $this->Fill_tree($objarr->m_sub, $level+1);
+        }              
+      }
+      
+      return "";  
+    }
+    
+
+
+    function GraphTreeRender()
+    {
+      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$p;
+      //var_dump($this->m_tree);
+      $img_expand   = "drk_icons/tree_expand.gif"; 
+	$img_collapse = "drk_icons/tree_collapse.gif"; 
+	$img_line     = "drk_icons/tree_vertline.gif";   
+	$img_split	= "drk_icons/tree_split.gif"; 
+	$img_plus     = "drk_icons/tree_split_plus.gif";
+	$img_minus     = "drk_icons/tree_split_minus.gif";
+	$img_end      = "drk_icons/tree_end.gif"; 
+	$img_leaf     = "drk_icons/tree_leaf.gif"; 
+	$img_spc      = "drk_icons/tree_space.gif"; 
+  $tree_color1 = "#aaaaaa";
+  $tree_color2 = "#dddddd";
+  
+      $res="";
+      $lastlevel=0;
+      for ($i=0; $i<count($this->m_tree); $i++) 
+	    { 
+	    	$expand[$i]=0; 
+	    	$visible[$i]=0; 
+	    	$levels[$i]=0; 
+	    } 
+      /*********************************************/ 
+    	/*  Get Node numbers to expand               */ 
+    	/*********************************************/ 
+   
+	    if ($p!="") $explevels = explode("|",$p); 
+   
+	    $i=0; 
+	    while($i<count($explevels)) 
+	    { 
+	    	$expand[$explevels[$i]]=1; 
+      
+	    	$i++; 
+	    } 
+      /*********************************************/ 
+	    /*  Find last nodes of subtrees              */ 
+	    /*********************************************/ 
+   
+	    $lastlevel=$g_maxlevel; 
+    
+	    for ($i=count($this->m_tree)-1; $i>=0; $i--) 
+	    { 
+        //echo "Lastlevel = $lastlevel   - level = ".$this->m_tree[$i][0]."<br>";
+	    	if ( $this->m_tree[$i][0] < $lastlevel ) 
+	    	{ 
+      //echo "Jaa<br>";  
+    			for ($j=$this->m_tree[$i][0]+1; $j <= $g_maxlevel; $j++)    
+			    { 
+        
+			    	$levels[$j]=0; 
+			    } 
+		    } 
+		    if ( $levels[$this->m_tree[$i][0]]==0 ) 
+		    { 
+		    	$levels[$this->m_tree[$i][0]]=1; 
+		    	$this->m_tree[$i][4]=1; 
+          //echo "Last node of subtree  - ".$this->m_tree[$i][1]."<br>";
+		    } 
+		    else 
+		    $this->m_tree[$i][4]=0; 
+		    $lastlevel=$this->m_tree[$i][0];   
+	    }
+      /*********************************************/   
+    	/*  Determine visible nodes                  */ 
+    	/*********************************************/ 
+   
+	    $visible[0]=1;   // root is always visible 
+    	for ($i=0; $i<count($explevels); $i++) 
+    	{ 
+    		$n=$explevels[$i]; 
+    		if ( ($visible[$n]==1) && ($expand[$n]==1) )    
+    		{ 
+    			$j=$n+1; 
+    			while ( $this->m_tree[$j][0] > $this->m_tree[$n][0] ) 
+    			{ 
+    				if ($this->m_tree[$j][0]==$this->m_tree[$n][0]+1) $visible[$j]=1;      
+    				$j++; 
+    			} 
+    		} 
+    	} 
+
+
+
+      for ($i=0; $i<$g_maxlevel; $i++) $levels[$i]=1; 
+      
+      $res.= "<tr>"; 
+      // Make cols for max level
+	    for ($i=0; $i<$g_maxlevel; $i++) $res.= "<td width=10>&nbsp;</td>\n"; 
+      // Make the last text column
+	    $res.= "<td width=300>&nbsp;</td>";
+      // Column for the functions
+      $res.= "<td width=300>&nbsp;</td>";
+      $res.= "</tr>\n"; 
+	$cnt=0; 
+while ($cnt<count($this->m_tree)) 
+	{ 
+		if ($visible[$cnt]) 
+		{ 
+			/****************************************/ 
+			/* start new row                        */ 
+			/****************************************/
+      if($tree_color==$tree_color1) { $tree_color=$tree_color2; } else { $tree_color=$tree_color1; }
+			
+      $res.="<tr>"; 
+			/****************************************/ 
+			/* vertical lines from higher levels    */ 
+			/****************************************/ 
+			$i=0; 
+			while ($i<$this->m_tree[$cnt][0]-1)  
+			{ 
+				if ($levels[$i]==1) 
+        {
+          $res.= "<td><img src=\"".$img_line."\"></td>\n";
+        }
+      else
+        {
+          $res.= "<td><img src=\"".$img_spc."\"></td>\n";
+        }
+				$i++; 
+			} 
+       
+			/****************************************/ 
+			/* corner at end of subtree or t-split  */ 
+			/****************************************/          
+			if ($this->m_tree[$cnt][4]==1)  
+			{ 
+				if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\"></td>\n"; 
+				$levels[$this->m_tree[$cnt][0]-1]=0; 
+			} 
+			else 
+			{
+				if ($expand[$cnt]==0) 
+				{
+					if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+					{
+						/****************************************/ 
+						/* Create expand/collapse parameters    */ 
+						/****************************************/ 
+						$i=0; $params="p="; 
+						while($i<count($expand)) 
+						{ 
+							if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+							{ 
+								$params=$params.$i;
+								$params=$params."|"; 
+							} 
+							$i++; 
+						} 
+						$tmp="&menu=$menu";
+						$params=$params.$tmp;
+						$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_plus."\" border=no></a></td>\n"; 
+					}
+					else
+					{
+						$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
+					}
+				}
+				else
+				{
+					if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+					{
+						/****************************************/ 
+						/* Create expand/collapse parameters    */ 
+						/****************************************/ 
+						$i=0; $params="p="; 
+						while($i<count($expand)) 
+						{ 
+							if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+							{ 
+								$params=$params.$i;
+								$params=$params."|"; 
+							} 
+							$i++; 
+						} 
+						$tmp="&menu=$menu";
+						$params=$params.$tmp;
+						$res.="<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_minus."\" border=no></a></td>\n"; 
+					}
+					else
+					{
+						$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
+					}
+				}
+				$levels[$this->m_tree[$cnt][0]-1]=1;     
+			}  
+       
+			/********************************************/ 
+			/* Node (with subtree) or Leaf (no subtree) */ 
+			/********************************************/ 
+			if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+			{ 
+         
+				/****************************************/ 
+				/* Create expand/collapse parameters    */ 
+				/****************************************/ 
+				$i=0; $params="p="; 
+				while($i<count($expand)) 
+				{ 
+					if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
+					{ 
+						$params=$params.$i;
+						$params=$params."|"; 
+					} 
+					$i++; 
+				} 
+				$tmp="&menu=$menu";
+				$params=$params.$tmp;
+                
+				if ($expand[$cnt]==0) 
+					$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_expand."\" border=no></a></td>\n"; 
+				else 
+					$res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_collapse."\" border=no></a></td>\n";          
+			} 
+			else 
+			{ 
+				/*************************/ 
+				/* Tree Leaf             */ 
+				/*************************/ 
+				$res.= "<td><img src=\"".$img_leaf."\"></td>\n";          
+			} 
+       
+			/****************************************/ 
+			/* output item text                     */ 
+			/****************************************/ 
+      //echo "MAX = $g_maxlevel   tree ".$this->m_tree[$cnt][0]."<br>\n";
+			//if ($this->m_tree[$cnt][2]=="") 
+				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><font size=2>".$this->m_tree[$cnt][1]."</font></td>\n"; 
+			//else 
+				//$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><a href=\"".$this->m_tree[$cnt][2]."\" target=\"".$this->m_tree[$cnt][3]."\"><font size=2>".$this->m_tree[$cnt][1]."</a></font></td>\n"; 
+      
+			/****************************************/ 
+			/* end row   with the functions                      */ 
+			/****************************************/ 
+      $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
+      $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
+      if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+      {    
+        $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
+      }
+      if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
+      {
+         // Do nothing
+      }
+      else
+      {
+        $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
+      }
+      $res.= "</td></tr>\n";       
+		} 
+		$cnt++;     
+	} 
+   return $res;
+
+
+
+
+      
+    }
+
+    function TreeRender_org($tree="",$level=0)
+    {
+      // First time: root tree..
+      //if ($tree == "") $tree = $this->t;
+      //var_dump($tree);
+      //return "";
+      $res="";
+      while (list($id,$objarr) = each($tree))
+      {
+        $res.='<tr><td>'.str_repeat("-",(2*$level))." ".$objarr->m_label.'</td><td>';
+        $res.=' '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin')."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$objarr->m_id."'"), text("add"));
+        $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("edit"));
+        if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+        {    
+          $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("copy"));
+        }
+        if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
+        {
+          // Do nothing
+        }
+        else
+        {
+          $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("delete"));
+        }
+        $res.="</td></tr>";
+        if (count($objarr->m_sub)>0)
+        {          
+          $res.=$this->TreeRender_org($objarr->m_sub, $level+1);
+        }              
+      }
+      return $res;  
+    }
+
+     
+    /** 
+          * Copies a record and the Childs if there are any
+          *
+          *@param $selector The 'where' clause that indicates which records to select.
+          */
+    function copyDb($selector)
+    {
+      $this->selectDb($selector);
+      $tmprecs = $this->m_records;
+      if(count($tmprecs)>0)
+      {      
+        $this->addDb();
+        atkdebug("copyDb - Main Record added");
+        $newparent=$this->m_records[$this->m_currentRec][$this->m_primaryKey[0]];
+        atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$tmprecs[0][$this->m_primaryKey[0]].','.$newparent.')');
+        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$tmprecs[0][$this->m_primaryKey[0]], $newparent);
+      }
+      else
+      {
+        atkdebug("No records found with Selector: $selector - $parent");
+      }
+      return "";
+    }
+    
+    /**
+        * This is a recursive function to copy the childeren from a parent.
+        *
+        * @param $selector Selector
+        * @param $parent Parent ID
+        */
+    function copyChildren($selector, $parent="")
+    {
+      $this->selectDb($selector);
+      $tmprecs = $this->m_records;
+      if(count($tmprecs)>0)
+      {        
+        atkdebug("Loop ".count($tmprecs)." Childrecords - current ".$this->m_currentRec." - New parent id = $parent");
+        for($i=0;$i<count($tmprecs);$i++)
+        {  
+          $tmprecs[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);
+          $this->m_currentRec = 0;
+          $this->m_records[0] = $tmprecs[$i];
+          $this->addDb();
+          $newrec = $this->m_records[0];
+          atkdebug("Child Record added");
+          $newparent=$newrec[$this->m_primaryKey[0]];
+          atkdebug('CopyChildren('.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]].','.$newparent.')');
+          $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]], $newparent);
+        }
+      }
+      else
+      {
+        atkdebug("No records found with Selector: $selector - $parent");
+      }
+      return "";
+    }
+    
+    /**
+         * delete record from the database also the childrecords.
+         * todo: instead of delete, set the deleted flag.
+         * @param $selector Selector
+         */
+    function deleteDb($selector)
+    {
+      global $g_db;
+      atkdebug("Retrieve record");
+      $this->selectDb($selector);
+      $tmpparentrecs = $this->m_records;
+      $parent = $tmpparentrecs[0][$this->m_primaryKey[0]];
+      atkdebug("Check for child records");
+      $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      $tmprecs = $this->m_records;
+      if(count($tmprecs)>0)
+      {
+        atkdebug('DeleteChilderen('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
+        $this->deleteChilderen($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
+      }
+      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
+      $this->debug("deleteDb - query: ".$query);
+      $g_db->query($query);
+      // todo: instead of delete, set the deleted flag.
+    }
+    
+    /**
+         * Recursive function whitch deletes all the child records of a parent
+         *
+         * @Param $selector Selector
+         * @Param $parent Parent
+         */
+    function deleteChilderen($selector,$parent)
+    {
+      global $g_db;
+      atkdebug("Check for child records of the Child");
+      $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent);
+      $tmprecs = $this->m_records;
+      if(count($tmprecs)>0)
+      {
+        for($i=0;$i<count($tmprecs);$i++)
+        {
+          $parent = $tmprecs[$i][$this->m_primaryKey[0]];
+          atkdebug('DeleteChilderen('.$this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]].','.$parent.')');
+          $this->deleteChilderen($this->m_table.'.'.$this->m_parent.'='.$tmprecs[$i][$this->m_primaryKey[0]],$parent);
+        }
+      }
+      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
+      $this->debug("deleteChilderen - query: ".$query);
+      $g_db->query($query);
+      // todo: instead of delete, set the deleted flag.
+    }
+  }
+}
+ 
+?>

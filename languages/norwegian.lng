@@ -1,0 +1,73 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Program";
+  $txt_app_shorttitle = "ATKProg";
+  $txt_app_description = "Velkommen til dette ATK programmet.";
+
+  $txt_yes = "Ja";
+  $txt_no = "Nei";
+
+  $txt_view = "Vis";
+  $txt_edit = "Endre";
+  $txt_delete = "Slett";
+  $txt_add = "Legg til";
+  $txt_admin = "Administrasjon";
+  $txt_search = "Søk";
+  $txt_search_all = "Søk etter alle";
+
+  $txt_next = "Neste";
+  $txt_previous = "Forrige";
+  $txt_select = "Velg";
+
+  $txt_save = "Lagre";
+  $txt_saveandclose = "Lagre og lukk";
+  $txt_cancel = "Avbryt";
+  $txt_back = "Tilbake";
+
+  $txt_menu = "Meny";
+  $txt_error = "Feil";
+
+  $txt_error_obligatoryfield = "Dette feltet må fylles ut";
+  $txt_error_formdataerror = "Lagring feilet med følgende melding: ";
+  $txt_error_uniquefield = "Verdien for dette feltet må være unik";
+  $txt_confirm_delete = "Er du sikker på at du vil slette dette?";
+  $txt_title_delete = "Bekreft sletting";
+
+  $txt_select_none = "Ingen";
+  
+  $txt_clickheretoadd_prefix = "Klikk her for å legge til ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Det finnes ikke noen gyldig katalog";
+  $txt_remove_current_file = "Slett denne filen";
+  $txt_file_not_exist = "Filen finnes ikke";
+  $txt_cannot_remove_file = "Kan ikke slette filen!";
+
+  // specific password attribute text
+  $txt_password_current = "Nåværende";
+  $txt_password_new = "Nytt";
+  $txt_password_again = "Igjen";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "Det oppgitte passordet er ikke gyldig.";
+  $txt_password_incorrect = "Passordet du oppga var ikke korrekt!";
+  $txt_password_nomatch = "De oppgitte passordene er ikke like.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Velg et språk:";
+  $txt_multilanguage_choice = "Valgt språk:"; 
+  
+  $txt_language_nl = "Nederlandsk";
+  $txt_language_de = "Tysk";
+  $txt_language_no = "Norsk";
+    
+?>

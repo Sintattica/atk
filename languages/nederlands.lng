@@ -1,0 +1,71 @@
+<?php
+  // To keep language files up to date, all strings that are introduced in a new version
+  // have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "ATK Application";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Welkom bij deze ATK applicatie.";
+
+  $txt_yes = "Ja";
+  $txt_no = "Nee";
+
+  $txt_view = "Bekijk";
+  $txt_edit = "Bewerk";
+  $txt_delete = "Verwijder";
+  $txt_add = "Toevoegen";
+  $txt_admin = "Administratie";
+  $txt_search = "Zoeken";
+  $txt_search_all = "Alles zoeken";
+
+  $txt_next = "Volgende";
+  $txt_previous = "Vorige";
+  $txt_select = "Selecteren";
+
+  $txt_save = "Opslaan";
+  $txt_saveandclose = "Opslaan en sluiten";
+  $txt_cancel = "Annuleren";
+
+  $txt_menu = "Menu";
+  $txt_error = "Error";
+
+  $txt_error_obligatoryfield = "Dit veld is verplicht";
+  $txt_error_formdataerror = "Opslaan mislukt om de volgende reden: ";
+  $txt_error_uniquefield = "De waarde voor dit veld moet uniek zijn";
+  $txt_confirm_delete = "Weet je zeker dat je dit item wil verwijderen?";
+  $txt_title_delete = "Bevestig verwijderen";
+
+  $txt_select_none = "Geen";
+  
+  $txt_clickheretoadd_prefix = "Klik hier om een nieuwe ";
+  $txt_clickheretoadd_postfix = " toe te voegen.";
+  
+  // Teksten voor file attribute
+  $txt_no_valid_directory = "Geen geldige directory opgegeven";
+  $txt_remove_current_file = "Verwijder huidige bestand";
+  $txtfile_not_exist = "Bestand bestaat niet";
+  $txt_cannot_remove_file = "Kan bestand niet verwijderen!";
+
+  // specific password attribute text
+  $txt_password_current = "Huidig";
+  $txt_password_new = "Nieuw";
+  $txt_password_again = "Opnieuw";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "Het ingevoerde wachtwoord is geen correct wachtwoord.";
+  $txt_password_incorrect = "Het ingevoerde wachtwoord is fout!";
+  $txt_password_nomatch = "De ingevoerde wachtwoorden komen niet met elkaar overeen!";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Kies een taal";
+  $txt_multilanguage_choice = "Gekozen taal";
+
+  $txt_language_nl = "Nederlands";
+  $txt_language_de = "Duits";
+  $txt_language_en = "Engels";
+  $txt_language_fr = "Frans";
+?>

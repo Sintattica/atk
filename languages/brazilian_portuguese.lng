@@ -1,0 +1,72 @@
+<?php
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------==== Strings that were there from the beginning: ====---------
+
+  $txt_app_title = "Aplicação ATK";
+  $txt_app_shorttitle = "ATKApp";
+  $txt_app_description = "Benvindo a esta aplicação ATK.";
+
+  $txt_yes = "Sim";
+  $txt_no = "Não";
+
+  $txt_view = "Visualizar";
+  $txt_edit = "Editar";
+  $txt_delete = "Apagar";
+  $txt_add = "Adicionar";
+  $txt_admin = "Administração";
+  $txt_search = "Pesquisar";
+  $txt_search_all = "Pesquisar tudo";
+
+  $txt_next = "Próximo";
+  $txt_previous = "Anterior";
+  $txt_select = "Selecionar";
+
+  $txt_save = "Savar";
+  $txt_saveandclose = "Savar e fechar";
+  $txt_cancel = "Cancelar";
+  $txt_back = "Voltar";
+
+  $txt_menu = "Menu";
+  $txt_error = "Erro";
+
+  $txt_error_obligatoryfield = "Este campo é requerido";
+  $txt_error_formdataerror = "Falha no salvamento devido à seguinte razão: ";
+  $txt_error_uniquefield = "O valor para este campo deve ser único";
+  $txt_confirm_delete = "Tem certeza que deseja apagar este item?";
+  $txt_title_delete = "Confirmar apagamento";
+
+  $txt_select_none = "Nenhum";
+
+  $txt_clickheretoadd_prefix = "Clique aqui para adicionar um novo ";
+  $txt_clickheretoadd_postfix = ".";
+
+  // Specific File Attribute Text
+  $txt_no_valid_directory = "Não há um diretório válido";
+  $txt_remove_current_file = "Remover  o arquivo atual";
+  $txt_file_not_exist = "Arquivo não existe";
+  $txt_cannot_remove_file = "Não foi possível remover o arquivo!";
+
+  // specific password attribute text
+  $txt_password_current = "Atual";
+  $txt_password_new = "Novo";
+  $txt_password_again = "Novamente";
+  $txt_password_hidden = "*****";
+  $txt_password_invalid = "A senha fornecida não é válida.";
+  $txt_password_incorrect = "A senha digitada é incorreta!";
+  $txt_password_nomatch = "As senhas fornecidas não combinam.";
+
+  // multilanguage text
+  $txt_multilanguage_select = "Selecione uma linguagem:";
+  $txt_multilanguage_choice = "Linguagem selecionada:";
+
+  $txt_language_nl = "Holandês";
+  $txt_language_de = "Alemão";
+
+?>
