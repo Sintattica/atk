@@ -10,7 +10,7 @@
    *
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
+   *  
    * @version $Revision$
    * $Id$
    */
@@ -18,10 +18,34 @@
    
 function showTab(tab)
 {
-	// Eerst de class namen van alle elementen verkrijgen
-	
+	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
 	
+	// Next, check wether the parent tab array has been set
+	if (!parent.document.tab)
+	{
+	  parent.document.tab=Array();
+	}
+	
+	// If we are called without a name, we check if the parent has a stored tab for our page
+	// If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
+	if (!tab)
+	{
+	  if (parent.document.tab[document.location.href + document.location.search])
+    {
+      tab = parent.document.tab[document.location.href + document.location.search];
+    }
+    else
+    {
+      tab = tabs[0];
+    }
+  }
+  
+  // Then we store what tab we are going to visit in the parent
+	parent.document.tab[document.location.href + document.location.search] = tab;
+
+	// Every element that does not have the current tab as class or 'alltabs'
+	// is set to display: none
 	for (i = 0; i < tags.length; i++)
 	{
 		var tabclass = tags.item(i).className;
@@ -44,16 +68,13 @@ function showTab(tab)
 		}
 	}
 
-	// Dan de namen van alle tabs verkrijgen
+	// Then when set the colors or the tabs, the active tab gets a different color
 	for(j = 0; j < tabs.length; j++)
 	{
-		// De kleuren van de tabs goed zetten
-		// De actieve tab
 		if(tabs[j] == tab)
 		{
 			document.getElementById('tab_'+tabs[j]).className = 'activetab';
 		}
-		// De niet-actieve tabs
 		else
 		{
 		  document.getElementById('tab_'+tabs[j]).className = 'passivetab';
