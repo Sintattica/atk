@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.15  2001/07/09 15:41:09  ivo
+  * Created an atk_in_array that does an is_array before it calls in_array.
+  *
   * Revision 4.14  2001/07/01 10:09:52  ivo
   * Replaced the clickheretoadd_prefix/postfix string by link_<nodetype>_add.
   * If you upgrade, please verify your language files!
@@ -325,6 +328,17 @@
       }
     }      
     return $res;
+  }
+  
+  /**
+   * Since php triggers an error if you perform an in_array on an 
+   * uninitialised array, we provide a small wrapper that performs
+   * an is_array on the haystack first, just to make sure the user
+   * doesn't get an error message.
+   */
+  function atk_in_array($needle, $haystack)
+  {
+    return (is_array($haystack)&&in_array($needle, $haystack));
   }
 
   /**
