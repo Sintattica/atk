@@ -136,5 +136,8 @@
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Kies een kleur";
   
+  $txt_check_all = "Alles selecteren";
+  $txt_check_none = "Niets selecteren";
+  $txt_invert_selection = "Selectie omkeren";
   
 ?>

@@ -124,5 +124,9 @@
   
   // colorpicker attribute
   $txt_colorpicker_selectcolor = "Select a color";
+  
+  $txt_check_all = "Select all";
+  $txt_check_none = "Select none";
+  $txt_invert_selection = "Invert selection";
     
 ?>

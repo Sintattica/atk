@@ -57,11 +57,21 @@
     
     function edit($record)
     {
-      global $g_modules, $g_nodes, $config_atkroot;  
+      global $g_modules, $g_nodes, $config_atkroot, $g_layout;  
+      
+      $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
     
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
       include_once("config.nodes.inc");
+      
+      $result.='<div align="right">
+                  [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                    text("check_all").
+             '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                    text("check_none").
+             '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                    text("invert_selection").'</a>]</div>';
   
       /* get permissions */
       $checked = $record[$this->fieldName()];
