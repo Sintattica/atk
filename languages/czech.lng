@@ -95,48 +95,50 @@
   $txt_wed = "Støeda";
   $txt_thu = "Ètvrtek";
   
-  $txt_menu_main = "Main";
-  $txt_back_to = "Back to";
+  $txt_menu_main = "Hlavní menu";
+  $txt_back_to = "Zpátky do";
   
   $txt_permission_denied = "Bohu¾el, k provedení této akce nemáte potøebné oprávnìní";	
   
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-2"; // 'central european' charset for czech..
     
-  $txt_field_obligatory = "This field is a required field";
+  $txt_field_obligatory = "Pole oznaèená '*' jsou povinná";
   
-  $txt_help = "Help";
+  $txt_help = "Pomoc";
   
-  $txt_search_extended = "Extended";
+  $txt_search_extended = "Roz¹íøené";
   
-  $txt_search_exact = "Search for an exact match";
-  $txt_search_substring = "Search for a substring";
-  $txt_search_wildcard = "Search with wildcards (*)";
-  $txt_search_regexp = "Search with a regular expression (advanced)";
-  $txt_search_soundex = "Search for a string that sounds similar";
+  $txt_search_exact = "Vyhledat odpovídají slovo";
+  $txt_search_substring = "Vyhledat podøetìzec";
+  $txt_search_wildcard = "Vyhledávat s wildcardy (*)";
+  $txt_search_regexp = "Vyhledávat pomocí regulárních výrazù (pokroèilí)";
+  $txt_search_soundex = "Hledat slova vypadající podobnì";
   
-  $txt_search_mode = "Searchmode";
+  $txt_search_mode = "Vyhledávací mod";
   
-  $txt_login_failed = "Login failed";
-  $txt_auth_no_server = "No server specified. No authentication possible (please consult your system administrator).";
-  $txt_auth_unable_to_connect = "Unable to connect to server for authentication (please consult your system administrator).";  
+  $txt_login_failed = "Pøihlá¹ení se nepodaøilo";
+  $txt_auth_no_server = "Nebyl vybrán ¾ádný serber. Není mo¾á autentifikace (kontaktujte prosím systémového administrátorar).";
+  $txt_auth_unable_to_connect = "Není mo¾né se pøipojit k serveru pro
+  autentifikaci  (kontaktujte prosím systémového administrátora).";  
   
-  $txt_error_primarykey_exists = "A record with this key already exists";
+  $txt_error_primarykey_exists = "Záznam s tímto primárním klíèem u¾ v databázi
+  existuje";
   
   // colorpicker attribute
-  $txt_colorpicker_selectcolor = "Select a color";
-  
-  $txt_check_all = "Select all";
-  $txt_check_none = "Select none";
-  $txt_invert_selection = "Invert selection";
+  $txt_colorpicker_selectcolor = "Výbìr barvy";
+    
+  $txt_check_all = "Vybrat v¹e";
+  $txt_check_none = "Nevybrat nic";
+  $txt_invert_selection = "Invertovat nic";
   
   // Strings for atkFileEditor
-  $txt_file_exists = "A file with this name already exists";
-  $txt_filename_invalid = "This filename is invalid";
-  $txt_filename = "Filename";
-  $txt_filecontent = "Content";
+  $txt_file_exists = "Soubor s tímto jménem u¾ existuje";
+  $txt_filename_invalid = "Jméno souboru je chybné";
+  $txt_filename = "Jméno souboru";
+  $txt_filecontent = "Obsah";
   
   $txt_title_session_expired = "Session expired";
   $txt_explain_session_expired = "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.";
-    
+  
 ?>

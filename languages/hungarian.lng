@@ -18,102 +18,124 @@
 
   $txt_view = "Mutasd";
   $txt_edit = "Szerkeszt";
-  $txt_delete = "Torol";
-  $txt_add = "Hozzaad";
+  
+  $txt_delete = "Töröl";
+  $txt_add = "Hozzáad";
   $txt_copy = "Copy";  
-  $txt_admin = "Adminisztracio";
-  $txt_search = "Kereses";
+  $txt_admin = "Adminisztráció";
+  $txt_search = "Keresés";
+
   $txt_search_all = "Keress mindben";
 
-  $txt_next = "Kovetkezo";
-  $txt_previous = "Elozo";
-  $txt_select = "Kivalaszt";
+  $txt_next = "Következo"";
+  $txt_previous = "Elo"zo"";
+  $txt_select = "Kiválaszt";
 
-  $txt_save = "Mentes";
-  $txt_saveandclose = "Mentes es bezaras";
-  $txt_cancel = "Megsem";
+  $txt_save = "Mentés";
+  $txt_saveandclose = "Mentés és bezárás";
+  $txt_cancel = "Mégsem";
   $txt_back = "Vissza";
 
-  $txt_menu = "Menu";
+  $txt_menu = "Menü";
   $txt_error = "HIBA!";
 
-  $txt_error_obligatoryfield = "Ez a mezo szukseges";
-  $txt_error_formdataerror = "A mentes nem sikerult, ezert: ";
-  $txt_error_uniquefield = "Ennek a mezonek az erteke paratnal kell, hogy legyen";
-  $txt_confirm_delete = "Biztos, hogy torolni akarod?";
-  $txt_title_delete = "Torles megerositese";
+  $txt_error_obligatoryfield = "Ez a mezo" szükséges";
+  $txt_error_formdataerror = "A mentés nem sikerült, mert: ";
+  $txt_error_uniquefield = "Ennek a mezo"nek az érteke páratlan kell, hogy legyen";
+  $txt_confirm_delete = "Biztos, hogy törölni kívánja?";
+  $txt_title_delete = "Törlés megero"sítése";
 
   $txt_select_none = "Semmi";
   
-  $txt_clickheretoadd_prefix = "Uj hozzaadasa ";
+  $txt_clickheretoadd_prefix = "Új hozzáadása ";
   $txt_clickheretoadd_postfix = ".";
 
   // Specific File Attribute Text
   $txt_no_valid_directory = "Nincs ilyen mappa";
-  $txt_remove_current_file = "Allomany torlese";
-  $txt_file_not_exist = "Nincs ilyen allomany";
-  $txt_cannot_remove_file = "Az allomany nem torolheto!";
+  $txt_remove_current_file = "Állomány törlése";
+  $txt_file_not_exist = "Nincs ilyen állomany";
+  $txt_cannot_remove_file = "Az állomany nem törölheto"!";
 
   // specific password attribute text
   $txt_password_current = "Jelenlegi";
-  $txt_password_new = "Uj";
-  $txt_password_again = "Ujra";
+  $txt_password_new = "Új";
+  $txt_password_again = "Újra";
   $txt_password_hidden = "*****";
-  $txt_password_invalid = "A megadott jelszo nem valos.";
-  $txt_password_incorrect = "Hibas jelszot adtal meg!";
-  $txt_password_nomatch = "A beirt jelszavak nem egyeznek.";
+  $txt_password_invalid = "A megadott jelszó nem valós.";
+  $txt_password_incorrect = "Hibás jelszót adott meg!";
+  $txt_password_nomatch = "A beírt jelszavak nem egyeznek.";
 
   // multilanguage text
-  $txt_multilanguage_select = "Valassz Nyelvet:";
-  $txt_multilanguage_choice = "Selected language:"; 
+  $txt_multilanguage_select = "Válasszon Nyelvet:";
+  $txt_multilanguage_choice = "Választott nyelv:"; 
   
   $txt_language_nl = "Holland";
-  $txt_language_de = "Nemet";
+  $txt_language_de = "Német";
   
   $txt_until = "-";
     
-  $txt_january = "Januar";
-  $txt_february = "Februar";
-  $txt_march = "Marcius";
-  $txt_april = "Aprilis";
-  $txt_may = "Majus";
-  $txt_june = "Junius";
-  $txt_july = "Julius";
+  $txt_january = "Január";
+  $txt_february = "Február";
+  $txt_march = "Március";
+  $txt_april = "Április";
+  $txt_may = "Május";
+  $txt_june = "Június";
+  $txt_july = "Július";
   $txt_august = "Augusztus";
   $txt_september = "Szeptember";
-  $txt_october = "Oktober";
+  $txt_october = "Október";
   $txt_november = "November";
   $txt_december = "December";
   
-  $txt_fri = "Pen.";
-  $txt_sat = "Szo.";
-  $txt_sun = "Vas.";
-  $txt_mon = "Het.";
+  $txt_fri = "Péntek";
+  $txt_sat = "Szombat";
+  $txt_sun = "Vasárnap";
+  $txt_mon = "Hétfo"";
   $txt_tue = "Kedd";
-  $txt_wed = "Sze.";
-  $txt_thu = "Csu.";
+  $txt_wed = "Szerda";
+  $txt_thu = "Csürörtök";
   
-  $txt_permission_denied = "Sajnalom, de ide nincs hozzaferesed, kerlek lepj kapcsolatba egy adminsztratorral!";
+  $txt_permission_denied = "Sajnálom, de ide nincs hozzaférése, kérem lepjen kapcsolatba egy adminsztrátorral!";
   
   // The charset to use.. for most languages, this is iso-8859-1 (Western European).
   $txt_charset="iso-8859-1";
   
-  $txt_error_primarykey_exists = "A record with this key already exists";
+  $txt_error_primarykey_exists = "Ezzel a kulcsal már létezik egy rekord";
   
   // colorpicker attribute
-  $txt_colorpicker_selectcolor = "Select a color";
-  
-  $txt_check_all = "Select all";
-  $txt_check_none = "Select none";
-  $txt_invert_selection = "Invert selection";
-  
+  $txt_colorpicker_selectcolor = "Válasszon színt";
+
+  $txt_help = "Súgó";
+
+  $txt_search_extended = "Kiterjedt";
+
+  $txt_search_exact = "Pontos találatra keres";
+  $txt_search_substring = "Részre keres";
+  $txt_search_wildcard = "Helyettesíto" karakterrel keres (*)";
+  $txt_search_regexp = "Normál kifejezéssel keres (haladóknak)";
+  $txt_search_soundex = "Hasonlóra keres";
+
+  $txt_search_mode = "Keresés módja";
+
+  $txt_login_failed = "Siekrtelen belépés";
+  $txt_auth_no_server = "Nincs szerver megadva. Az azonosítás nem lehetséges (lépjen kapcsolatba egy adminisztrátorral).";
+  $txt_auth_unable_to_connect = "Az azonosító szerverhez történo"o" kapcsolódás sikertelen (lépjen kapcsolatba egy adminisztrátorral).";
+
+  $txt_error_invalid_email = "Hibás e-mail cím";
+  $txt_error_unkown_domain = "Ismeretlen domain";
+  $txt_error_notnumeric = "Az érték nem szám";
+
+  $txt_check_all = "Mindet kijelöli";
+  $txt_check_none = "Semmit sem jelöl ki";
+  $txt_invert_selection = "Inverz kijelölés";
+
   // Strings for atkFileEditor
-  $txt_file_exists = "A file with this name already exists";
-  $txt_filename_invalid = "This filename is invalid";
-  $txt_filename = "Filename";
-  $txt_filecontent = "Content";
+  $txt_file_exists = "Ilyen névvel már létezik állomány";
+  $txt_filename_invalid = "Helytelen az állomány neve";
+  $txt_filename = "Állománynév";
+  $txt_filecontent = "Tartalom";    
   
   $txt_title_session_expired = "Session expired";
   $txt_explain_session_expired = "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.";
-    
+
 ?>

@@ -5,6 +5,7 @@
   * A collection of functions for general use in ATK
   * 
   * @author Ivo Jansch <ivo@ibuildings.nl>
+
   * @version $Revision$
   *
   * $Id$
@@ -544,14 +545,41 @@
     return $string;
   }
   
-  function atkurlencode($string)
-  {
-    return str_replace("%","_#",rawurlencode($string));
+  /**
+   * Safe urlencode function. Note, you can reencode already encoded strings, but
+   * not more than 4 times!
+   * If you encode a string more than 4 times, you won't be able to decode it
+   * anymore
+   *
+   * An atkurlencoded string is normaly prefixed with '__', so atkurldecode can
+   * determine whether the string was encoded or not. Sometimes however, if you 
+   * need to reencode part of a string (used in recordlist), you don't want the
+   * prefix. Pass false as second parameter, and you won't get a prefix. (Note
+   * that you can't atkurldecode that string anymore, so only use this on 
+   * substrings of already encoded strings)
+   */
+  function atkurlencode($string, $pref=true)
+  {    
+    $string = rawurlencode($string);
+    for ($i=3;$i>=1;$i--)
+    {
+      $string = str_replace("_".$i,"_".($i+1),$string);
+    }
+    return ($pref?"__":"").str_replace("%","_1",$string);
   }
   
   function atkurldecode($string)
   {
-    return rawurldecode(str_replace("_#","%",$string));
+    if (substr($string,0,2)!="__") return $string;
+    else  
+    {    
+      $string = str_replace("_1","%",substr($string,2));
+      for ($i=1;$i<=3;$i++)
+      {
+        $string = str_replace("_".($i+1),"_".$i,$string);
+      }
+      return rawurldecode($string);
+    }
   }
   
   /**
