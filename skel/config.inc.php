@@ -31,13 +31,13 @@
   // 0 - No debug information
   // 1 - Print some debug information at the bottom of each screen
   // 2 - Print debug information, and pause before redirects
-  $config_debug = 0;
+  $config_debug = 1;
   
   //----------------- LAYOUT CONFIGURATION --------------------
 
   // The theme defines the layout of your application. You can see which 
   // themes there are in the directory atk/themes.
-  $config_defaulttheme = "default";
+  $config_defaulttheme = "rainyd";
   
   // The language of the application. You can use any language for which
   // a language file is present in the atk/languages directory.
@@ -98,7 +98,7 @@
   // if you set it to nothing (""), administrator login is disabled,
   // and only valid users are allowed to login (depending on the type of
   // authentication used).
-  $config_administratorpassword = "";
+  $config_administratorpassword = "demo";
   
   // The security scheme is used to determine who is allowed to do what.
   // Currently supported:
@@ -130,7 +130,7 @@
   
   // use this if you want a loginform instead off an htaccess boxske
   // currently this is only supported when using the outlook theme
-  $config_auth_loginform = false;
+  $config_auth_loginform = true;
   $config_max_loginattempts = 5;
 
   // if you use "pop3" or "imap" as authentication, you have to fill in 

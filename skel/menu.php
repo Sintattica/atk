@@ -13,6 +13,10 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.22  2003/02/16 09:01:42  ivo
+   * The atk skel was out of date. I made it up 2 par with latest state of
+   * atk.
+   *
    * Revision 4.21  2002/08/22 16:22:25  ivo
    * Atk skel was exploitable by the ?config_atkroot= exploit.
    *
@@ -23,12 +27,10 @@
    */  
   $config_atkroot = "./";
   include_once("atk.inc");  
+  include_once($config_atkroot."atk/atkmenutools.inc");
 
   atksession();
   atksecure();
-
-  /* get main menuitems */
-  include_once("config.menu.inc");
 
   /* general menu stuff */
   include_once($config_atkroot."atk/menu/general.inc");  

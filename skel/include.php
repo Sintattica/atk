@@ -2,7 +2,7 @@
   $config_atkroot = "./";
   include_once("atk.inc");
 
-  atksession("beheer");
+  atksession();
   atksecure();
 
   $file = $ATK_VARS["file"];

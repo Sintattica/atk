@@ -1,4 +1,5 @@
 <?php
+  useattrib("atktextattribute"); 
 
   class test extends atkNode
   {
@@ -11,7 +12,7 @@
       $this->addAttribute(new atkTextAttribute("description"));
 
       $this->setOrder("name");
-      $this->setTable("mod_test_type", "type");
+      $this->setTable("mod_test_table");
     }
   }
 

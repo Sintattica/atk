@@ -3,12 +3,14 @@
   $config_atkroot = "./";
   include_once("atk.inc");
 
-  atksession("beheer");
-  atklock();
-
-  if($ATK_VARS["atknodetype"]=="" || !session_is_registered("login"))
+  atksession();
+  
+  $session = &atkSessionManager::getSession(); 
+  
+  if($ATK_VARS["atknodetype"]=="" || $session["login"]!=1)
   {
     // no nodetype passed, or session expired
+    $g_layout->initGui();
     $g_layout->ui_top(text("title_session_expired"));
     $g_layout->output("<br><br>".text("explain_session_expired")."<br><br><br><br>");
     $g_layout->ui_bottom();
@@ -17,6 +19,8 @@
   else
   {
     atksecure();
+
+    atklock();
 
     // Create node
     $obj = &getNode($ATK_VARS["atknodetype"]);

@@ -11,35 +11,5 @@
   
   // Atknode is required. Don't remove it.
   include_once($config_atkroot."atk/class.atknode.inc");
- 
-  
-  /** 
-   * The attributes. All attributes that you don't use in your application 
-   * can be stripped out. Some attributes are used rarely and are 
-   * commented out by default. You can enable them if you want to use them.
-   */
-  if (!atkconfig("atk_optimized_includes"))
-  {
-    include_once($config_atkroot."atk/attributes/class.atkboolattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atknumberattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkemailattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");  
-    include_once($config_atkroot."atk/attributes/class.atkvisualhtmlattribute.inc");  
-    include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkparserattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");  
-    include_once($config_atkroot."atk/attributes/class.atkdurationattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkpasswordattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkprofileattribute.inc");
-    include_once($config_atkroot."atk/attributes/class.atkfileattribute.inc");
-
-    include_once($config_atkroot."atk/attributes/class.atkcolorpickerattribute.inc"); 
-  
-    include_once($config_atkroot."atk/relations/class.atkmanytoonerelation.inc");
-    include_once($config_atkroot."atk/relations/class.atkmanytomanyrelation.inc");
-    include_once($config_atkroot."atk/relations/class.atkmanyboolrelation.inc");
-    include_once($config_atkroot."atk/relations/class.atkonetomanyrelation.inc");
-  }
+   
 ?>
