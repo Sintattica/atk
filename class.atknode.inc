@@ -92,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/04/25 09:39:02  ivo
+   * is_object check
+   *
    * Revision 4.7  2001/04/25 08:46:08  ivo
    * Big optimisations: using references for attribute manipulation.
    *
@@ -2285,7 +2288,14 @@ if (!defined("CLASS_ATKNODE_INC"))
         else
         {
           if ($usefieldalias) $fieldaliasprefix = $alias."_AMDAE_";
-          $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
+          if (!is_object($p_attrib)
+          {
+            atkdebug($p_attrib->m_name." is not an object?!");
+          }
+          else
+          {
+            $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
+          }
         }
       }
 
