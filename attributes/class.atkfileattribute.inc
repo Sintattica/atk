@@ -27,6 +27,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/11 14:12:53  martin
+   * Yeah! finally the search function on files is finished. If you use the fileattrib
+   * use the AF_SEARCHABLE flag to activate the search function!! :)
+   *
    * Revision 4.2  2001/05/17 08:06:33  ivo
    * Fixes to atkfileattribute and onetoonerelation.
    *
@@ -153,20 +157,6 @@
       }
       return $result;
     }
-    
-    /**
-     * VOID implementation.. currently you cannot search on file attributes..
-     * attribute's value.
-     * @param $record Array with fields
-     * @param $size Not used
-     * @param $maxsize Not used
-     * @return piece of html code with a browsebox
-     */
-    function search($record="")
-    {
-      return "&nbsp";
-    }
-    
 
     /**
      * Convert value to record for database
