@@ -713,8 +713,7 @@
       $fp = fopen($file, "r");
       if($skipfirstrow == "1") $line = fgets($fp);
       for($line = fgets($fp); $line!==false; $line = fgets($fp))
-      {
-        echo 'jeej';
+      {        
         //if we have an empty line, pass it
         if(trim($line)=="")
           continue;
