@@ -1,4 +1,3 @@
-Dit is default
 {$formstart}
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
   {if $header!=""}
