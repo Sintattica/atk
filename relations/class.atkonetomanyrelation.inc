@@ -143,10 +143,17 @@
           $strfilter.=' AND '.$this->m_destinationFilter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $label = text("link_".$this->fieldName()."_add");
-        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower("link_".$this->fieldName()."_add")))
+        $key = "link_".$this->fieldName()."_add";
+        $label = text($key);        
+        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
         {
-          $label = text("link_".getNodeType($this->m_destination)."_add");
+          $key = "link_".getNodeType($this->m_destination)."_add";
+          $label = text($key);
+          if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+          {
+            $key = text(getNodeType($this->m_destination))." ".strtolower(text("add"));
+            $label = text($key);
+          }
         }
         $output.="<tr><td>".href($add_url,$label,SESSION_NESTED,true)."</td></tr>";
       }
