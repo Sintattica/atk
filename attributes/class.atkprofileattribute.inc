@@ -55,6 +55,26 @@
       }
     }
 
+    function hide($record="", $fieldprefix="")
+    {  
+      // get checks
+      $checked = $record[$this->fieldName()];
+
+      // rebuild hidden fields from checked boxes
+      $rights  = "";
+
+      foreach($checked as $key=>$val)
+      { 
+        for ($i=0;$i<=count($val)-1;$i++)
+        {
+          $value   = $key.".".$val[$i];
+          $rights .= '<input type="hidden" name="rights[]" value="'.$value.'">';
+        }
+      }
+      return $rights;
+    }
+
+
     function edit($record)
     {
       global $g_modules, $g_nodes, $config_atkroot, $g_layout;
