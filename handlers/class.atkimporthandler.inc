@@ -222,7 +222,7 @@
 
       $content.= $sample;
 
-      $content.= atktext("import_allfield").': <br/>'.atktext("field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';
+      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';
       $attr = $this->getUsableAttribute($allField);
       
       if(is_object($attr)){
@@ -695,10 +695,18 @@
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
       if($passOverFirstRecord == "1") $line = fgets($fp);
-      for($line = fgets($fp); $line!==false; $line = fgets($fp))
+      for($line = fgets($fp); $line!==false && !feof($fp); $line = fgets($fp))
       {
+        //if we have an empty line, pass it
+        if(trim($line)=="")
+          continue;
+          
+        //large import are a problem for the maximum execution time, so we want to set for each
+        //loop of the for-loop an maximum execution time
+        set_time_limit(30);
+      
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
-
+        
         $rec = $initial_values;
 
         for ($i=0, $_i=count($col_map); $i<$_i; $i++)
