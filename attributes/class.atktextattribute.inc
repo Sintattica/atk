@@ -13,16 +13,27 @@
   {
     // number of rows of the edit box
     var $m_rows = 10;
+    var $m_cols;
+
     /**
      * Constructor
      * @param $name Name of the attribute
+     * @param $size can be an array with cols and rows key for size or just the rows size
      * @param $flags Flags for this attribute
      */
-    function atkTextAttribute($name,$rows=0,$flags=0)
- { 
+    function atkTextAttribute($name,$size=0,$flags=0)
+    { 
       
       // compatiblity with old versions
-      if (func_num_args()==3) $this->m_rows=$rows;
+      if (func_num_args()==3)
+      {
+         if(is_array($size))
+         {
+           if($size['rows']!='') $this->m_rows = $size['rows'];
+           if($size['cols']!='') $this->m_cols = $size['cols'];
+         }
+         else $this->m_rows=$size;
+      }
       else                   
       {
         $flags = $rows;
@@ -37,19 +48,13 @@
      * @param $size Array with field rows and cols for additional size of the text box
      * @return piece of html code with a textarea
      */
-    function edit($record="", $fieldprefix="", $size='')
+    function edit($record="", $fieldprefix="")
     {
       global $g_layout;
-      if ($this->m_size != 0) $cols = $this->m_size;
+      if ($this->m_cols != 0) $cols = $this->m_cols;
       else $cols = $g_layout->maxInputSize();
       $rows = $this->m_rows;
       
-      if(is_array($size))
-      {
-        if($size['rows']!='') $rows = $size['rows'];
-        if($size['cols']!='') $cols = $size['cols'];
-      }
-
       if ($rows =="" || $rows == 0) $rows = 10;
 	    // watch out, $maxsize isn't supported for a textarea.
       $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
