@@ -93,6 +93,7 @@
   $txt_thu = "Don";
   
   $txt_menu_main = "Hauptmenu";
+  $txt_back_to = "Back to";
   
   $txt_permission_denied = "Sorry, you don't have permission to perform this action";
   

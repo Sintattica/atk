@@ -94,6 +94,7 @@
   $txt_thu = "Ètvrtek";
   
   $txt_menu_main = "Main";
+  $txt_back_to = "Back to";
   
   $txt_permission_denied = "Bohu¾el, k provedení této akce nemáte potøebné oprávnìní";	
   

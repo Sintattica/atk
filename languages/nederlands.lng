@@ -94,6 +94,7 @@
   $txt_thu = "Don";
   
   $txt_menu_main = "Hoofdmenu";
+  $txt_back_to = "Terug naar";
   
   $txt_permission_denied = "Sorry, u heeft geen toestemming om deze aktie uit te voeren";
   
