@@ -117,7 +117,7 @@
      */
     function display($record)
     {
-      return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
+    	return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
     }
     
     /**
@@ -128,7 +128,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      // todo: configurable rows
+    	// todo: configurable rows
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
       
@@ -156,7 +156,7 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$this->m_options[$i];
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
       }
       $result.='</select>';
       return $result;
