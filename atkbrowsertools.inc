@@ -80,6 +80,11 @@
        {
         $this->family = "nn4";
        }
+       else
+       {
+        $this->family = "nn6";
+       }
+       break;
 
       default:
        if ($this->gecko == 1)
