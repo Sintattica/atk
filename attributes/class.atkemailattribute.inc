@@ -26,7 +26,6 @@
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   * @abstract
    *
    */
   class atkEmailAttribute extends atkAttribute
