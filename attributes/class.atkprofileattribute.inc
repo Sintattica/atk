@@ -9,6 +9,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.5  2001/09/24 07:28:59  ivo
+   * Fixed a bug with module handling in profile attribute.
+   *
    * Revision 4.4  2001/09/11 11:17:45  ivo
    * atkprofileattribute now works correctly with modules.
    *
@@ -113,7 +116,7 @@
       /*** per module ***/
       foreach ($g_modules as $modname => $pathname)
       {
-        $mod_inst = new $modname();
+        $mod_inst = getModule($modname);
         $nodes = $mod_inst->getNodes();
         if (count($nodes) > 0)
         {
