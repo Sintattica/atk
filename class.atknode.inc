@@ -3074,6 +3074,7 @@
 
     function action_save()
     {
+      $this->debug("action_save !!!");
       global $g_db;
       
       $record = $this->updateRecord();   

@@ -1283,10 +1283,18 @@
   function atkimport($fullclassname, $failsafe=true)
   {
     $elems = explode(".", strtolower($fullclassname));
+    if($elems["0"] == "module")
+    {
+      array_shift($elems);
+      $prefix = moduleDir(array_shift($elems));
+    }
+    else
+      $prefix = atkconfig("atkroot");
+
     $last = &$elems[count($elems)-1];
     $last = "class.".$last.".inc";
     
-    $filename = atkconfig("atkroot").implode("/", $elems);
+    $filename = $prefix.implode("/", $elems);
     
     if ($failsafe)
     {

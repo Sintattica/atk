@@ -33,7 +33,7 @@
      * @param $record array with fields
      * @return piece of html code with a textarea
      */
-    function edit($record="")
+    function edit($record="", $prefix="")
     {
       $languages = $this->getLanguages();
       /* register javascript */
@@ -46,20 +46,20 @@
       /* hidden values */
       for ($i = 1; $i < sizeof($languages); $i++)
       {
-        $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
+        $result .= '<input type="hidden" name="'.$prefix.$this->formName().'['.$languages[$i].']"'.
                  ' value="'.$record[$this->fieldName()][$languages[$i]].'">';
       }
 
       /* default language */
       $result .= text('language_'.$languages[0]).':<br>'.
-               '<textarea name="'.$this->formName().'['.$languages[0].']"'.
+               '<textarea name="'.$prefix.$this->formName().'['.$languages[0].']"'.
                ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
                htmlspecialchars($record[$this->fieldName()][$languages[0]]).
                '</textarea><br><br>';
 
       /* first language of other languages */
       $result .= text((count($languages)==2 ? $languages[1] : "multilanguage_choice")).':<br>'.
-               '<textarea name="'.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
+               '<textarea name="'.$prefix.$this->formName().'['.(count($languages)==2 ? $languages[1] : "multilanguage").']"'.
                ' rows="10" wrap="virtual"'.($this->m_size > 0 ? ' cols="'.$this->m_size.'"' : '').'>'.
                htmlspecialchars($record[$this->fieldName()][$languages[1]]).
                '</textarea><br><br>';

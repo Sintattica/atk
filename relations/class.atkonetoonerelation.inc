@@ -397,6 +397,17 @@
     }
 
     /**
+    * description
+    *
+    * @return void
+    */
+    function isEmpty($record)
+    {	
+      atk_var_dump($record, "atkonetoonerel:rec");
+      return false;
+    }
+
+    /**
      * Validate's values (forward to the destination node)
      * @param &$record record that contains value to be validated
      * @param $mode can be either "add" or "update"
@@ -404,7 +415,9 @@
      */
     function validate(&$record, $mode)
     {
-      if ($this->hasFlag(AF_ONETOONE_ERROR))
+      atkdebug("<font color=green>atkonetonerelation.validate!</font>");
+      // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
+      if ($this->hasFlag(AF_ONETOONE_ERROR)&&($mode!="add" || !$this->hasFlag(AF_HIDE_ADD)))
       {
         if ($this->createDestination())
 	      {

@@ -97,6 +97,10 @@
      */
     function query($query, $offset=-1, $limit=-1)
     {
+//      if(strpos($query, "content_page"))
+//      {
+//        atk_var_dump(debug_backtrace(), "<B>Backtrace of wrong query!</B>");
+//      }
       /* limit? */
       if ($offset >= 0 && $limit > 0)
         $query .= " LIMIT $offset, $limit";  
