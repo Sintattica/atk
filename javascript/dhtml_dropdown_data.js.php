@@ -170,95 +170,96 @@ with (pMenu) {
 		}
 	}
 	
-	if ((navigator.userAgent.indexOf('rv:0.')==-1) &&
-	!(isOp&&!document.documentElement) && !(isIE4&&!window.external))
-	{
-		pMenu.showMenu = new Function('mN','menuAnim(this, mN, 10)');
-		pMenu.hideMenu = new Function('mN','menuAnim(this, mN, -15)');
-	}
-
-
-	function menuAnim(menuObj, menuName, dir)
-	{
-		var mD = menuObj.menu[menuName][0];
-		if (!mD.timer) mD.timer = 0;
-		if (!mD.counter) mD.counter = 0;
-
-		with (mD)
-		{
-			clearTimeout(timer);
-
-			if (!lyr || !lyr.ref) return;
-			if (!visNow && dir>0) dir = 0-dir;
-			if (dir>0) lyr.vis('visible');
-			lyr.sty.zIndex = 1001 + dir;
-
-			lyr.clip(0, 0, menuW+2, (menuH+2)*Math.pow(Math.sin(Math.PI*counter/200),0.75) );
-
-			counter += dir;
-			if (counter>100) counter = 100;
-			else if (counter<0) { counter = 0; lyr.vis('hidden') }
-			else timer = setTimeout(menuObj.myName+'.'+(dir>0?'show':'hide')+'Menu("'+menuName+'")', 40);
-		}
-	}
-	
-	page.elmPos=function(e,p)
-	{
-		var x=0,y=0,w=p?p:this.win;
-		e=e?(e.substr?(isNS4?w.document.anchors[e]:getRef(e,w)):e):p;
-		if(isNS4){if(e&&(e!=p)){x=e.x;y=e.y};if(p){x+=p.pageX;y+=p.pageY}}
-		else if (e && e.focus && e.href && this.MS && /Mac/.test(navigator.platform))
-		{
-			e.onfocus = new  Function('with(event){self.tmpX=clientX-offsetX;' + 'self.tmpY=clientY-offsetY}');
-			e.focus();x=tmpX;y=tmpY;e.blur()
-		}
-		else while(e){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}
-		return{x:x,y:y};
-	};
-	
-	pMenu.heShow = pMenu.showMenu;
-	pMenu.showMenu = new Function('mN','elementHide(this, mN, true)');
-	pMenu.heHide = pMenu.hideMenu;
-	pMenu.hideMenu = new Function('mN','elementHide(this, mN, false)'); 
-	
-	function elementHide(menuObj, menuName, show)
-	{
-		with (menuObj.menu[menuName][0])
-		{
-			if (!lyr || !lyr.ref)  return;
-
-			var oldFn = show ? 'heShow' : 'heHide';
-			if (menuObj[oldFn])  menuObj[oldFn](menuName);
-			if (!isIE) return;
-
-			if (!menuObj.hideElms) menuObj.hideElms = [];
-			var hE = menuObj.hideElms;
-			if (show)
-			{
-				var w  = par?eval(par):self;
-				var elms = w.document.all.tags('SELECT');
-				for (var eN = 0; eN < elms.length; eN++)
-				{
-					var eRef = elms[eN];
-					with (w.page.elmPos(eRef)) var eX = x, eY = y;
-					if (!(lyr.x()+menuW<eX || lyr.x()>eX+eRef.offsetWidth) && !(lyr.y()+menuH<eY || lyr.y()>eY+eRef.offsetHeight))
-					{
-						if (!hE[eN])
-						hE[eN] = { ref:  eRef, menus: [] };
-						hE[eN].menus[menuName] = true;
-						eRef.style.visibility = 'hidden';
-					}
-				}
-			}
-			
-			else  for (var eN in menuObj.hideElms)
-			{
-				var reShow = 1, eD = hE[eN];
-				eD.menus[menuName] = false;
-				for (var  eM in eD.menus) reShow &= !eD.menus[eM];
-				if (reShow &&  eD.ref) eD.ref.style.visibility = 'visible';
-			}
-		}
-		return;
-	} 
+	// Uncomment de volgende code voor een animatie bij het uitklappen van het menu
+	//
+	//if ((navigator.userAgent.indexOf('rv:0.')==-1) &&
+	//!(isOp&&!document.documentElement) && !(isIE4&&!window.external))
+	//{
+	//	pMenu.showMenu = new Function('mN','menuAnim(this, mN, 10)');
+	//	pMenu.hideMenu = new Function('mN','menuAnim(this, mN, -15)');
+	//}
+	//
+	//function menuAnim(menuObj, menuName, dir)
+	//{
+	//	var mD = menuObj.menu[menuName][0];
+	//	if (!mD.timer) mD.timer = 0;
+	//	if (!mD.counter) mD.counter = 0;
+	//
+	//	with (mD)
+	//	{
+	//		clearTimeout(timer);
+	//
+	//		if (!lyr || !lyr.ref) return;
+	//		if (!visNow && dir>0) dir = 0-dir;
+	//		if (dir>0) lyr.vis('visible');
+	//		lyr.sty.zIndex = 1001 + dir;
+	//
+	//		lyr.clip(0, 0, menuW+2, (menuH+2)*Math.pow(Math.sin(Math.PI*counter/200),0.75) );
+	//
+	//		counter += dir;
+	//		if (counter>100) counter = 100;
+	//		else if (counter<0) { counter = 0; lyr.vis('hidden') }
+	//		else timer = setTimeout(menuObj.myName+'.'+(dir>0?'show':'hide')+'Menu("'+menuName+'")', 40);
+	//	}
+	//}
+	//
+	//page.elmPos=function(e,p)
+	//{
+	//	var x=0,y=0,w=p?p:this.win;
+	//	e=e?(e.substr?(isNS4?w.document.anchors[e]:getRef(e,w)):e):p;
+	//	if(isNS4){if(e&&(e!=p)){x=e.x;y=e.y};if(p){x+=p.pageX;y+=p.pageY}}
+	//	else if (e && e.focus && e.href && this.MS && /Mac/.test(navigator.platform))
+	//	{
+	//		e.onfocus = new  Function('with(event){self.tmpX=clientX-offsetX;' + 'self.tmpY=clientY-offsetY}');
+	//		e.focus();x=tmpX;y=tmpY;e.blur()
+	//	}
+	//	else while(e){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}
+	//	return{x:x,y:y};
+	//};
+	//
+	//pMenu.heShow = pMenu.showMenu;
+	//pMenu.showMenu = new Function('mN','elementHide(this, mN, true)');
+	//pMenu.heHide = pMenu.hideMenu;
+	//pMenu.hideMenu = new Function('mN','elementHide(this, mN, false)'); 
+	//
+	//function elementHide(menuObj, menuName, show)
+	//{
+	//	with (menuObj.menu[menuName][0])
+	//	{
+	//		if (!lyr || !lyr.ref)  return;
+	//
+	//		var oldFn = show ? 'heShow' : 'heHide';
+	//		if (menuObj[oldFn])  menuObj[oldFn](menuName);
+	//		if (!isIE) return;
+	//
+	//		if (!menuObj.hideElms) menuObj.hideElms = [];
+	//		var hE = menuObj.hideElms;
+	//		if (show)
+	//		{
+	//			var w  = par?eval(par):self;
+	//			var elms = w.document.all.tags('SELECT');
+	//			for (var eN = 0; eN < elms.length; eN++)
+	//			{
+	//				var eRef = elms[eN];
+	//				with (w.page.elmPos(eRef)) var eX = x, eY = y;
+	//				if (!(lyr.x()+menuW<eX || lyr.x()>eX+eRef.offsetWidth) && !(lyr.y()+menuH<eY || lyr.y()>eY+eRef.offsetHeight))
+	//				{
+	//					if (!hE[eN])
+	//					hE[eN] = { ref:  eRef, menus: [] };
+	//					hE[eN].menus[menuName] = true;
+	//					eRef.style.visibility = 'hidden';
+	//				}
+	//			}
+	//		}
+	//		
+	//		else  for (var eN in menuObj.hideElms)
+	//		{
+	//			var reShow = 1, eD = hE[eN];
+	//			eD.menus[menuName] = false;
+	//			for (var  eM in eD.menus) reShow &= !eD.menus[eM];
+	//			if (reShow &&  eD.ref) eD.ref.style.visibility = 'visible';
+	//		}
+	//	}
+	//	return;
+	//} 
 }
