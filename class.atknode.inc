@@ -2753,7 +2753,7 @@
 
     function feedbackPage($action, $actionstatus)
     {
-      global $g_layout;
+      global $g_layout, $PHP_SELF;
       $g_layout->initGui();
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type, $action));
       $g_layout->output($this->statusbar());
@@ -2762,7 +2762,7 @@
 
       if (atkLevel()>0)
       {
-        $g_layout->output('<br><br><form method="get" action="'.session_url(SESSION_BACK).'">'.
+        $g_layout->output('<br><br><form method="get" action="'.session_url($PHP_SELF, SESSION_BACK).'">'.
                           '<input type="submit" value="&lt;&lt; '.text('back').'"></form>');
       }
 
