@@ -11,7 +11,6 @@ class atkMetaPolicy
   
   var $m_includes = NULL;
   var $m_excludes = NULL;
-  var $m_order = NULL;
 
   var $m_attrs = array();
   
@@ -171,41 +170,15 @@ class atkMetaPolicy
    */
   function setOrder($attrs)
   {
-    atkdebug("setOrder");
     if (func_num_args() > 1)
       $attrs = func_get_args();
     else if (!is_array($attrs))
       $attrs = array($attrs);
-    
-    $this->m_order = $attrs;
-    uksort($this->m_attrs, array($this, "_order"));
-    $this->m_order = array_keys($this->m_attrs);
-    
-    foreach ($this->m_order as $i => $key)
+
+    $order = array_merge($attrs, array_diff(array_keys($this->m_attrs), $attrs));
+    foreach ($order as $i => $key)
       $this->m_attrs[$key]['order'] = ($i + 1) * 100;
-    atkdebug("setOrder done");
   }
-  
-  /**
-   * Order callback. Sorts the given attributes
-   * using the currently set order.
-   */
-  function _order($attr1, $attr2)
-  {
-    $attr1_index = array_search($attr1, $this->m_order);
-    $attr2_index = array_search($attr2, $this->m_order); 
-    if (is_int($attr1_index) && is_int($attr2_index))
-      return $attr1_index < $attr2_index ? -1 : 1;
-    else if (is_int($attr1_index)) return -1;
-    else if (is_int($attr2_index)) return 1;
-    else
-    {
-      $keys = array_keys($this->m_attrs);
-      $attr1_index = array_search($attr1, $keys);
-      $attr2_index = array_search($attr2, $keys);       
-      return $attr1_index < $attr2_index ? -1 : 1;
-    }
-  }  
 
   /**
    * Set flag(s) for the given attribute or list of attributes.
@@ -319,7 +292,6 @@ class atkMetaPolicy
     $cols = $this->m_node->m_db->tableMeta($this->m_node->getTable());
     foreach ($cols as $name => $meta)
       $this->_initAttribute($name, $meta);
-    $this->m_order = array_keys($this->m_attrs);
   }  
   
   /**
