@@ -63,10 +63,6 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $ATK_VARS;
-			//echo "action: ".$ATK_VARS["atkaction"];
-			//echo "<br>Action: ".$this->m_ownerInstance->m_postvars["atkaction"];
-			//var_dump($this->m_ownerInstance->m_postvars);
       $field = $record[$this->fieldName()];
 
       // set vars for hour / minutes dropdowns
@@ -76,7 +72,7 @@
       // set default values for both boxes
       // depends upon atkaction
       // if add/admin, use $default param, else use time in $record
-      if ($ATK_VARS["atkaction"] == "add" || $ATK_VARS["atkaction"]== "admin")
+      if (!is_array($field))
       {
         $m_defHour = $this->m_default[0];
         $m_defMin  = $this->m_default[1];
