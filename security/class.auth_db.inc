@@ -56,7 +56,8 @@
          // Level and userid are stored in two separate tables. This could 
          // mean (but doesn't have to) that a user can have more than one
          // level.
-         $query = "SELECT * 
+         $query = "SELECT 
+                     *
                    FROM 
                      $usertable
                    LEFT JOIN 
@@ -69,20 +70,25 @@
        }
               
        $recs = $g_db->getrows($query);
+                     
+       $groups = array();       
        
        // We might have more then one level, so we loop the result. 
        if (count($recs)>1)
        {
          $level = array();
          for ($i=0;$i<count($recs);$i++)
-         {
+         {                      
            $level[] = $recs[$i][atkconfig("auth_levelfield")];
-         }
+           $groups[] = $recs[$i][atkconfig("auth_levelfield")];
+         }         
        }
        else
        {
          $level = $recs[0][atkconfig("auth_levelfield")];
+         $groups = array($recs[0][atkconfig("auth_levelfield")]);         
        }
+       
        // We might have more then one access level, so we loop the result.
        if (count($recs)>1)
        {
@@ -98,7 +104,8 @@
        }
 			 $userinfo = $recs[0];
 			 $userinfo["name"]=$user;
-			 $userinfo["level"]=$level;
+			 $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
+       $userinfo["groups"]=$groups;       
        $userinfo["access_level"]=$access;
        return $userinfo;
      }
