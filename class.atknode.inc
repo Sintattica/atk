@@ -3216,14 +3216,39 @@
     {
       if($mapped != "")
         if(!is_array($action))
+        {
           $this->m_securityMap[$action] = $mapped;
+          $this->changeMapping($action,$mapped);
+        }
         else
+        {
           foreach ($action as $value)
+          {
             $this->m_securityMap[$value] = $mapped;
+            $this->changeMapping($value,$mapped);
+          }
+        }
       else
         if(is_array($action))
           foreach ($action as $key=>$value)
+          {
             $this->m_securityMap[$key] = $value;
+            $this->changeMapping($key,$value);
+          }
+    }
+    
+    /**
+     * change the securitymap that already exist. Where actions are mapped on $oldmapped change it by $newmapped
+     * @param string $oldmapped the old value
+     * @param string $newmapped the new value with replace the old one
+     */
+    function changeMapping($oldmapped, $newmapped)
+    {
+      foreach ($this->m_securityMap as $key=>$value)
+      {
+        if($value == $oldmapped)
+          $this->m_securityMap[$key] = $newmapped;
+      }
     }
   }
 ?>
