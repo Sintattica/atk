@@ -116,11 +116,11 @@
           */
     function getErrorMsg()
     {
-      $errno = $this->getAtkDbErrNo(); 
+      $errno = $this->getAtkDbErrno(); 
       if($errno==DB_UNKNOWNERROR)
       {
-        $tmp = text('db_'.$this->getDbErrno());
-        if($tmp==$this->m_errno) { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$tmp; }
+        $errstr = 'db_'.$this->getDbErrno();
+        if($GLOBALS[$errstr]=="") { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=text($errstr); }
       //  atkerror($this->m_error);
         return $this->m_error;
       }
