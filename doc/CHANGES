@@ -17,8 +17,6 @@ Changes in ATK 5.0.7
 + Added AF_DATE_DISPLAY_DAY which will make the display function
   of a date attribute include the day of the week [Boy]
 + Added {atkstyle} plugin to template engine. [Ivo]
-+ Added addOnloadScript to atkPage, to make executing extra JS on 
-  document load possible [Harrie]
 * Attributes can now use preload for loading before the main query. [Ivo, Boy]
 * Optimized atkSecureRelation searching. [Ivo, Boy]
 * Fixed deleteAllowed in oneToManyRelation, when the filter is not 
