@@ -2913,7 +2913,7 @@
 
         // parse fields from descriptordef
         $fields = stringfields($descriptordef);
-        
+
         // There might be fields that have a '.' in them. These fields are
         // a concatenation of an attributename (probably a relation), and a subfield
         // (a field of the destination node).
@@ -2925,7 +2925,7 @@
           {
             // dot found. attribute is the first item.
             $fields[$i] = $elems[0];
-            
+
           }
         }
       }
@@ -3857,7 +3857,15 @@
     function validateFilter($filter)
     {
       list($relation, $field) = explode('.', $filter);
-      if (in_array($relation, array_keys($this->m_attribList))) return $filter;
+      if ($field != "")
+      {
+        if (in_array($relation, array_keys($this->m_attribList))) return $filter;
+      }
+      else
+      {
+        list($relation_new, $dummy) = explode('=', $relation);
+        if (in_array($relation_new, array_keys($this->m_attribList))) return $filter;
+      }
       return "";
     }
   }
