@@ -99,32 +99,57 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if ($mode!= "update" && $mode!="add")
+      if ($this->createDestination())
       {
-        if ($tablename!="") $tablename.=".";
-
-        if ($this->createDestination())
-	      {
-          $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
-          if(is_array($this->m_destinationFilter))
+        if ($mode!= "update" && $mode!="add")
+        {
+          if ($tablename!="") $tablename.=".";
+  
+          
+         
+          if ($this->m_refKey!="")
           {
-            for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
-            {
-              $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter[$i];
-            }
+            // Foreign key is in the destination node.
+            $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
           }
-          elseif ($this->m_destinationFilter!="")
+          else
           {
-            $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
+            // Foreign key is in the source node
+            $condition = $tablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0];
           }
+          $condition.= $this->getDestinationFilterCondition();
           $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
-
+  
           // we pass true as the last param to addToQuery, because we need all fields..
           $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
-	      }
+  	     
+        }
+  
+        // When storing, we don't add to the query.. we have our own store() method..
+        // With one exception. If the foreign key is in the source node, we also need to update
+        // the refkey value.
+        if ($this->m_refKey=="" && $mode=="add")
+        {       
+          $query->addField($this->fieldName(),$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],"","",!$this->hasFlag(AF_NO_QUOTES));
+        }
       }
-
-      // When storing, we don't add to the query.. we have our own store() method..
+    }
+    
+    function getDestinationFilterCondition()
+    {
+      $condition="";
+      if(is_array($this->m_destinationFilter))
+      {
+        for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
+        {
+          $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter[$i];
+        }
+      }
+      elseif ($this->m_destinationFilter!="")
+      {
+         $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
+      }
+      return $condition;
     }
 
     /**
@@ -136,8 +161,19 @@
       $rel = &getNode($classname);
       atkdebug("O2O DELETE for $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
-      return $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".
-                          $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record));
+      if ($this->m_refKey!="")
+      {
+        // Foreign key is in the destination node
+        $condition = $rel->m_table.'.'.$this->m_refKey."=".
+                          $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+      }
+      else
+      {
+       // Foreign key is in the source node.        
+       $condition = $rel->m_table.'.'.$rel->m_primaryKey[0]."=".$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
+      }
+      echo $condition;
+      return $rel->deleteDb($condition);
     }
 
     /**
@@ -185,6 +221,24 @@
         }
       }
     }
+    
+    function storageType($mode)
+    {
+      if ($this->m_refKey!="")
+      {
+        // foreign key is in destination node, so we must store the
+        // destination AFTER we stored the master record.
+        return POSTSTORE;
+      }
+      else
+      {
+        // foreign key is in source node, so we must store the
+        // relation node first, so we can store the foreign key
+        // when we store the master record. To store the latter,
+        // we must also perform an addToQuery.
+        return PRESTORE|ADDTOQUERY;
+      }
+    }
 
     /**
      * Store values
@@ -197,16 +251,24 @@
       if ($this->createDestination())
       {
         $vars = &$record[$this->fieldName()];
-        
-        if ($this->destinationHasRelation())
+        if ($this->m_refKey!="")
         {
-          $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];          
+          // Foreign key is in destination node                  
+          if ($this->destinationHasRelation())
+          {
+            $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];          
+          }
+          else
+          {
+            //if the a onetoonerelation has no relation on the other side the m_refKey is not an array          
+            // experimental, will the next line always work?
+            $vars[$this->m_refKey] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+          }
         }
         else
         {
-          //if the a onetoonerelation has no relation on the other side the m_refKey is not an array          
-          // experimental, will the next line always work?
-          $vars[$this->m_refKey] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+          // Foreign key is in source node
+          // After add, we must store the key value.
         }
         
           
@@ -221,7 +283,15 @@
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
           atkdebug("Adding new one2one record");
-          return $this->m_destInstance->addDb($vars, true, $mode);
+          $result = $this->m_destInstance->addDb($vars, true, $mode);
+          
+          if ($this->m_refKey=="")
+          {
+            // Foreign key is in source node, so we must update the record value with 
+            $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $vars[$this->m_destInstance->m_primaryKey[0]];
+          }
+          
+          return $result;
         }
         else
         {
@@ -239,7 +309,17 @@
     {
       if ($this->createDestination())
       {
-        $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];        
+        if ($this->m_refkey!="")
+        { 
+          // foreign key is in the destination node.            
+          $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];                  
+        }
+        else
+        {
+          // foreign key is in the source node. In this case, we must check the primary key
+          // of the target node.
+          $attrib = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[0]];
+        }
         if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
       }
       return false;
@@ -328,7 +408,7 @@
         {
 
           if ($this->createDestination())
-	  {
+	        {
             /* we first check if the record doesn't already exist */
             if ($defaults[$this->fieldName()] != NULL)
             {
@@ -359,16 +439,19 @@
             /* add fields */
 
             $forceList = decodeKeyValueSet($this->m_destinationFilter);
-            if($this->destinationHasRelation())
-            {
-              $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+            if ($this->m_refKey!="")
+            {            
+              if($this->destinationHasRelation())
+              {
+                $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+              }
+              else
+              {
+                 // its possible that the destination has no relation back. In that case the refKey is just an attribute
+                 $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
+              }
             }
-            else
-            {
-               // its possible that the destination has no relation back. In that case the refKey is just an attribute
-               $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
-            }
-            $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
+            $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
 
             /* errors and hidden fields */
             $error = array_merge($error, $a["error"]);

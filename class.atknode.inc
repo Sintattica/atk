@@ -1025,7 +1025,7 @@
       
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
-      $page->register_script($config_atkroot."atk/javascript/formnavigation.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
       $page->register_loadscript("init_nav();");
       $ui = &$this->getUi();
       if (is_object($ui))
@@ -1044,7 +1044,7 @@
         else
         {
           $params["formstart"].=session_form(SESSION_DEFAULT);
-          $params["formstart"].='<input type="hidden" name="'.$fieldprefix.'atkaction" value="admin">';
+          $params["formstart"].='<input type="hidden" name="atkaction" value="admin">';
         }
         $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';        
         $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
@@ -1098,8 +1098,6 @@
         $g_sessionData["default"]["stack"][atkStackID()][atkLevel()]["atkformdata"]="";
       }
 
-      $pk = $this->primaryKey($record);
-
       /* edit mode */
       if ($mode == "edit")
       {
@@ -1109,7 +1107,7 @@
         if (method_exists($this, "edit_values"))
         {
           $overrides = $this->edit_values($defaults);
-          while (list($varname,$value) = each($overrides))
+          foreach ($overrides as $varname=>$value)
           {
             $defaults[$varname]=$value;
           }
@@ -1125,7 +1123,7 @@
         if (method_exists($this,"initial_values"))
         {
           $overrides = $this->initial_values();
-          while (list($varname,$value) = each($overrides))
+          foreach ($overrides as $varname=>$value)
           {
             if ($defaults[$varname]=="") $defaults[$varname]=$value;
           }
@@ -1135,7 +1133,7 @@
       /* check for forced values */
       if (is_array($forceList))
       {
-        while(list($forcedvarname,$forcedvalue)=each($forceList))
+        foreach ($forceList as $forcedvarname=>$forcedvalue)
         {
           $attribname="";
           if ($forcedvarname!="")
@@ -1246,8 +1244,7 @@
       $errors = array();
       if (count($data['error']) > 0)
       {      
-        $error_title = '<b>'.text('error_formdataerror').'</b>';
-        $errormsg = "";
+        $error_title = '<b>'.text('error_formdataerror').'</b>';        
 
         foreach ($data["error"] as $error)
         {
@@ -1268,7 +1265,7 @@
             $tabs  = $this->m_attribIndexList[$index]["tabs"];
             if (count($this->m_tabList[$this->m_action]) > 1
                  && $tabs != "*" && !atk_in_array($tab, $tabs))
-              $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
+              $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $this->m_type),SESSION_DEFAULT,true).')';
             else $error_tab = "";
             
             if(!is_array($error['attrib_name']))
@@ -1479,7 +1476,7 @@
   
               if (method_exists($this,$funcname))
               {
-                $field["widget"] = $this->$funcname($defaults, $fieldprefix);
+                $field["widget"] = $this->$funcname($defaults);
               }
               else
               {
@@ -1495,7 +1492,7 @@
               else
               {
                 $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
-                while (list($key, $searchMode) = each($searchModes))
+                foreach (array_values($searchModes) as $searchMode)
                 {
                   // if supported, we select the 'like' searchmode by default
                   $selected="";
@@ -2032,7 +2029,7 @@
           $headercols[] = array("content"=>"");
         }    
   
-        foreach ($list["heading"] as $field => $head)
+        foreach (array_values($list["heading"]) as $head)
         {
           if (empty($head["url"])) 
           {
@@ -2932,7 +2929,7 @@
      */
     function dispatch($postvars, $fullpage=true)
     {
-      global $g_db, $g_sessionManager;
+      global $g_db;
       $this->m_postvars = $postvars;
 
       $this->m_action = $postvars['atkaction'];
@@ -3227,11 +3224,7 @@
           $g_db->commit();
         }
       }
-      else
-      {
-        atkdebug("Geen records gevonden met selector: $selector");
-      }
-
+      
       $this->redirect();
     }
 
@@ -3649,35 +3642,24 @@
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->needsUpdate($record))
           {
-            if ($p_attrib->hasStore($mode))
-            {
-              $storelist[]=$attribname;
-            }
-            else
-            {
-              $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
-            }
+            $storemode = $p_attrib->storageType($mode);            
+            if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
+            if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
+            if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
           }
+        }
+        
+        if (!$this->storeAttributes($storelist["pre"], $record, "update")) return false;
+        
+        for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
+        {
+          $p_attrib = &$this->m_attribList[$storelist["query"][$i]]; 
+          $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
 
-        if (count($query->m_fields) > 0)
-        {
-          if (!$query->executeUpdate())
-          {          
-            return false;
-          }
-        }
-
-        // also store special storage attributes.
-        for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
-        {
-          $p_attrib = &$this->m_attribList[$storelist[$i]];
-          if (!$p_attrib->store($g_db, $record,"update"))
-          {
-            // something went wrong.
-            return false;
-          }
-        }
+        if (count($query->m_fields) && !$query->executeUpdate()) return false;        
+        
+        if (!$this->storeAttributes($storelist["post"], $record, "update")) return false;
 
         if($this->hasFlag(NF_ML)&&$s_mlRecordUpdate==false)
         {
@@ -3698,6 +3680,23 @@
       else
       {
         atkdebug("NOT UPDATING! NO SELECTOR SET!");
+      }
+      return true;
+    }
+    
+    function storeAttributes($storelist, &$record, $mode)
+    {       
+      global $g_db;
+         
+      // store special storage attributes.
+      for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
+      {        
+        $p_attrib = &$this->m_attribList[$storelist[$i]];
+        if (!$p_attrib->store($g_db, $record, $mode))
+        {
+          // something went wrong.
+          return false;
+        }
       }
       return true;
     }
@@ -4194,8 +4193,7 @@
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
-      $storelist = array();
-      $querylist = array();
+      $storelist = array();      
 
       $query->addTable($this->m_table);
 
@@ -4204,67 +4202,53 @@
         $p_attrib = &$this->m_attribList[$attribname];
         if ($mode != "add" || $p_attrib->needsInsert($record))
         {
-          if ($p_attrib->hasStore($mode))
-          {
-            $storelist[]=$attribname;
-          }
-          else
-          {
-            $querylist[]=$attribname;
-          }
+          $storemode = $p_attrib->storageType($mode);
+          if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
+          if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
+          if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
         }
       }
+      
+      if (!$this->storeAttributes($storelist["pre"], $record, $mode)) return false;
 
-      for ($i = 0, $_i = count($querylist); $i < $_i; $i++)
+      for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
       {
-        $p_attrib = &$this->m_attribList[$querylist[$i]];
+        $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
         if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
           $record[$p_attrib->fieldName()]=$g_db->nextid($this->m_seq);
         }
 
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
+      }            
+
+      if (!$query->executeInsert()) return false;
+      
+      if (!$this->storeAttributes($storelist["post"], $record, $mode)) return false;
+      
+
+      // new primary key
+      $record["atkprimkey"] = $this->primaryKey($record);
+        
+      if($this->hasFlag(NF_ML)&&$s_mlRecordAdd==false)
+      {
+        $s_mlRecordAdd=true;
+        $this->updateMlRecords($record,"add");
       }
 
-      if ($query->executeInsert())
+      // Now we call a postAdd function, that can be used to do some processing after the record
+      // has been saved.
+      if ($exectrigger) 
       {
-
-        // also store special storage attributes.
-        for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
+        $return = $this->postAdd($record, $mode);
+        if(!isSet($return))
         {
-          $p_attrib = &$this->m_attribList[$storelist[$i]];
-
-          if (!$p_attrib->store($g_db, $record, $mode))
-          {
-            atkdebug("store of ".$storelist[$i]."returned false or nothing!");
-            // error
-            return false;
-          }
+          atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
+          $return = true;
         }
 
-        // new primary key
-        $record["atkprimkey"] = $this->primaryKey($record);
-        
-        if($this->hasFlag(NF_ML)&&$s_mlRecordAdd==false)
-        {
-          $s_mlRecordAdd=true;
-          $this->updateMlRecords($record,"add");
-        }
+        return $return;
 
-        // Now we call a postAdd function, that can be used to do some processing after the record
-        // has been saved.
-        if ($exectrigger) {
-          $return = $this->postAdd($record, $mode);
-          if(!isSet($return))
-          {
-            atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
-            $return = true;
-          }
-
-          return $return;
-
-        }
-        return true;
       }
       
       atkdebug($g_db->m_error);
@@ -4710,7 +4694,7 @@
       }
 
       // We load records in admin mode, se we are certain that all fields are added.
-      $recs = $this->selectDb($where, $this->m_defaultOrder, "", $this->m_listExcludes, "", "admin");
+      $recs = $this->selectDb("", $this->m_defaultOrder, "", $this->m_listExcludes, "", "admin");
       
       // Restore original atksearch
       $this->m_postvars['atksearch'] = $orgsearch;

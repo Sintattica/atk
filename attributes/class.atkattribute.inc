@@ -62,6 +62,14 @@
   define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
   define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
   define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5  
+  
+  /**
+   * Storage flags, used by the storageType() and related methods
+   */
+  define("NOSTORE"   ,0);
+  define("PRESTORE"  ,1);
+  define("POSTSTORE" ,2);  
+  define("ADDTOQUERY",4);  
 
   /**
    * The atkAttribute class represents an attribute of an atkNode.
@@ -690,19 +698,48 @@
      */
     function label($record = array())
     {    
-      return text($this->fieldName(),$this->m_ownerInstance->m_type, $this->m_ownerInstance->m_module);
+      return text($this->fieldName(),$this->m_ownerInstance->m_type, 
+                  $this->m_ownerInstance->m_module);
     }
 
     /**
-     * This function is used to check whether a attribute has a store function or not.
-     * It can be overridden to use the store function only in a certain mode.
+     * This function is used to check whether a attribute has a store function
+     * or not.
+     * It can be overridden to determine when to use store() and when not to 
+     * use it.
+     * @return true if it has a store method or false if it hasn't.
+     * @deprecated Use storageType($mode) instead, which has more detailed
+     *             information about storage.
      */
     function hasStore($mode)
     {
+      atkdebug("Deprecated use of hasStore");
+      $storagetype = $this->storageType($mode);
+      return (hasFlag($storagetype, POSTSTORE)
+              ||hasFlag($storagetype, PRESTORE)
+              );
+    }
+    
+    /*
+     * Determine the storage type of this attribute.     
+     * @return A bitmask containing information about storage requirements.
+     *         Note that since it is a bitmask, multiple storage types
+     *         could be returned at once.
+     *         POSTSTORE  - store() must be called, after the master record
+     *                      is saved.
+     *         PRESTORE   - store() must be called before the master record 
+     *                      is saved.
+     *         ADDTOQUERY - addtoquery() must be called, so the attribute 
+     *                      can nest itself in the master query.
+     *         NOSTORE    - nor store(), nor addtoquery() should be called.
+     */
+    function storageType($mode)
+    {
+      // Default backwardscompatible behaviour:
       if (method_exists($this,"store"))
-        return true;
+        return POSTSTORE;
       else
-        return false;
+        return ADDTOQUERY;
     }
     
     /**
