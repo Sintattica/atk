@@ -34,15 +34,22 @@
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param $record Array with fields
+     * @param $size Array with field rows and cols for additional size of the text box
      * @return piece of html code with a textarea
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $size='')
     {
       global $g_layout;
       if ($this->m_size != 0) $cols = $this->m_size;
       else $cols = $g_layout->maxInputSize();
       $rows = $this->m_rows;
       
+      if(is_array($size))
+      {
+        if($size['rows']!='') $rows = $size['rows'];
+        if($size['cols']!='') $cols = $size['cols'];
+      }
+
       if ($rows =="" || $rows == 0) $rows = 10;
 	    // watch out, $maxsize isn't supported for a textarea.
       $result= '<textarea name="'.$fieldprefix.$this->formName().'" rows="'.$rows.'" cols="'.$cols.'" wrap="virtual"'.               
