@@ -201,6 +201,7 @@
     function edit(&$record, $fieldprefix="")
     {
       global $ATK_VARS;
+      atkimport("atk.utils.atkstringparser");
 
       $this->createDestination();
       // Two variances.. one with a dropdownbox containing all records,
@@ -214,7 +215,8 @@
         $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         if ($this->m_destinationFilter!="")
         {
-          $filter = stringparse($this->m_destinationFilter,$record);
+          $parser = new atkStringParser($this->m_destinationFilter);
+          $filter = $parser->parse($record);
           $this->m_destInstance->addFilter($filter);
         }
         $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
@@ -348,11 +350,14 @@
      */
     function search($record="", $extended=false)
     {
+      atkimport("atk.utils.atkstringparser");
       if ($this->createDestination())
       {
         if ($this->m_destinationFilter!="")
         {
-          $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+          $parser = new atkStringParser($this->m_destinationFilter);
+          $filter = $parser->parse($record);
+          $this->m_destInstance->addFilter($filter);
         }
         $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
