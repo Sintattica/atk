@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.83  2001/07/18 16:08:18  ivo
+   * $this->addAttribute() now has a shorter alias: $this->add()
+   *
    * Revision 4.82  2001/07/18 12:10:10  ivo
    * New flags: AF_READONLY_ADD and AF_READONLY_EDIT (AF_READONLY automatically
    * selects both flags)
@@ -403,13 +406,13 @@
       $this->m_type = $type;
       $this->m_flags = $flags;      
     }
-
+    
     /**
      * Add an atkAttribute to the node ($attribute should be an object of type
      * atkAttribute or one of its derivatives)
      * @param $attribute the attribute you want to add
      */
-    function addAttribute($attribute)
+    function add($attribute)
     {
       global $g_securityManager;
 
@@ -473,6 +476,18 @@
       $attribute->init();            
       
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
+    }
+
+    /**
+     * Add an atkAttribute to the node ($attribute should be an object of type
+     * atkAttribute or one of its derivatives)
+     * This function is an alias for add(), and is the same in every way.
+     * (It exists for backwardcompatibility reasons)
+     * @param $attribute the attribute you want to add
+     */
+    function addAttribute($attribute)
+    {
+      $this->add($attribute);
     }
 
     /**
