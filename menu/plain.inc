@@ -15,7 +15,7 @@
    *
    */  	 	
 	
-  global $g_menu, $atkmenutop;
+  global $g_menu, $atkmenutop, $g_menu_parent;
 	
   atkimport("atk.ui.atkpage");
   $page = &atkPage::getInstance();
@@ -45,7 +45,7 @@
       }
       else
       {
-        $delimiter = $config_menu_delimiter;
+        $delimiter = atkconfig("menu_delimiter");
       }
       $name = $g_menu[$atkmenutop][$i]["name"];
       $url = $g_menu[$atkmenutop][$i]["url"];
@@ -83,7 +83,7 @@
   if ($atkmenutop != "main")
   {
     $parent = $g_menu_parent[$atkmenutop];
-    $menu .= $config_menu_delimiter;
+    $menu .= atkconfig("menu_delimiter");
     $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_DEFAULT).'<br>';  
   }      
   
