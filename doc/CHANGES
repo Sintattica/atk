@@ -13,6 +13,10 @@ Changes in ATK 5.1.1
 + Added ability to perform plain text search on date attribute [Ivo,Boy]
   and time attribute 
 + Made time and date attributes autocomplete their searchvalues [Boy]
++ Added ability to detect wether or not the user is using 
+  a handheld device [Boy]
++ atkDateAttribute now displays itsself as simpel as possible 
+  when it detects a handheld device [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * ManyToOne no longer default searches on primary key 
