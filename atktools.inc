@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.23  2001/10/15 09:07:19  maurice
+  * Added function atk_var_dump. Displays an array as a list in de debug
+  * section.
+  *
   * Revision 4.22  2001/10/10 11:33:49  ivo
   * Added stickyurl feature.
   *
@@ -785,5 +789,35 @@
   {
     if($msg=="")  $msg = text($err);
     $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
+  }
+  
+  /**
+   * Does a var dump of an array. Makes use of atkdebug for displaying the values
+   *        $a array   
+   */
+   
+  function atk_var_dump($a) 
+  {
+    atkdebug(create_var_dump($a));             
+  }
+ 
+  function create_var_dump($a)
+  {
+    if(!is_array($a) && !is_object($a)) 
+    {      
+      return $a;
+    }
+    $dump = "<ul>";
+    while(list($key, $val) = @each($a)) 
+    {
+      if(is_array($val) || is_object($val)) 
+      {
+        $dump .= "<LI>$key => array(".count($val).")";
+        $dump .= create_var_dump($val);
+      }
+      else $dump .= "<LI>$key = '$val'";     
+    }
+    $dump .= "</ul>";
+    return $dump;
   }
 ?>
