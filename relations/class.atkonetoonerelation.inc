@@ -114,7 +114,7 @@
     function delete($record)
     {
       $classname = $this->m_destination;
-      $rel = getNode($classname);
+      $rel = &getNode($classname);
       atkdebug("O2O DELETE for $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
       $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);

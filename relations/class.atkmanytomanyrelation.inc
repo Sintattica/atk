@@ -94,7 +94,7 @@
     function load($notused, $record)
     {
       $classname = $this->m_name;      
-      $rel = getNode($classname); 
+      $rel = &getNode($classname); 
       
       return $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }
@@ -105,7 +105,7 @@
     function delete($record)
     {
       $classname = $this->m_name;      
-      $rel = getNode($classname);
+      $rel = &getNode($classname);
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }

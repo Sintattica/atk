@@ -75,7 +75,7 @@
     function store($notused, $record)
     {
       $classname = $this->m_name;      
-      $rel = getNode($classname);
+      $rel = &getNode($classname);
             
       $this->createDestination();
       
