@@ -171,4 +171,11 @@
   $txt_select_invert  = "Selectie omkeren";
   $txt_with_selected  = "Met geselecteerd";
   $txt_submit         = "Uitvoeren";
+
+  // Login form
+  $txt_login_form = "Inloggen";
+  $txt_username = "Gebruikersnaam";
+  $txt_password = "Wachtwoord";
+  $txt_login = "Inloggen";
+  $txt_max_loginattempts_exceeded = "Uw gebruikersnaam en wachtwoord komen niet overeen.<br>Neem contact op met uw software leverancier.";
 ?>

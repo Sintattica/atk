@@ -129,6 +129,11 @@
   $config_auth_levelfield  = "entity";
   
   
+  // use this if you want a loginform instead off an htaccess boxske
+  // currently this is only supported when using the outlook theme
+  $config_auth_loginform = false;
+  $config_max_loginattempts = 5;
+
   // if you use "pop3" or "imap" as authentication, you have to fill in 
   // these parameters:
   

@@ -104,7 +104,9 @@
     {    
       global $PHP_AUTH_USER, $PHP_AUTH_PW, $SCRIPT_NAME, $SERVER_NAME, $config_administratorpassword;
       global $g_sessionManager, $HTTP_COOKIE_VARS, $HTTP_AUTHORIZATION, $ATK_VARS, $atklogout;
+      global $atkusername,$atkpassword,$atkaction,$authorization;
       global $config_guestpassword;
+
       $md5 = false; // PHP_AUTH_PW is plain text..            
 
       // first check if we want to logout
@@ -128,10 +130,17 @@
           exit;
         }
       } 
-      
+ 
       // do we need to login?
       else if (!session_is_registered("login"))
       { 
+        // did we login from a html formpje
+        if($atkaction=="login" && $authorization=="loginform" && trim($atkusername)!="" && trim($atkpassword)!="")
+        {
+          $PHP_AUTH_USER=$atkusername;
+          $PHP_AUTH_PW=$atkpassword;
+        }
+
         // authenticated?
         $authenticated = false;
 
@@ -276,10 +285,19 @@
       // still not logged in?! 
       if (!session_is_registered("login"))
       {
-        header('WWW-Authenticate: Basic realm="'.text("app_title").' - '.strftime("%c",time()).'"');
-        if (ereg("Microsoft", $SERVER_SOFTWARE)) header("Status: 401 Unauthorized");
-        else header("HTTP/1.0 401 Unauthorized");
-        return false;
+        if(atkconfig("auth_loginform"))
+        {
+          $this->loginForm();
+          $GLOBALS['g_layout']->outputFlush();
+          exit();
+        }
+        else
+        {
+          header('WWW-Authenticate: Basic realm="'.text("app_title").' - '.strftime("%c",time()).'"');
+          if (ereg("Microsoft", $SERVER_SOFTWARE)) header("Status: 401 Unauthorized");
+          else header("HTTP/1.0 401 Unauthorized");
+          return false;
+        }
       }
 
       // we are authenticated, but atklogout is still active, let's get rid of it!
@@ -293,9 +311,64 @@
       $this->m_user["name"] =  strtolower($this->m_user["name"]);
       $GLOBALS["g_user"] = $this->m_user;
       $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
+      sessionStore('loginattempts',''); //reset maxloginattempts
       return true;
     }     
           
+    function loginForm()
+    {
+      global $g_layout,$g_theme,$PHP_SELF,$atkusername,$atkaction,$authorization;
+
+      if(sessionLoad('loginattempts')=="")
+      {
+        $loginattempts = 0;
+      }
+      else $loginattempts = sessionLoad('loginattempts');
+      if($atkaction=="login" && $authorization=="loginform")
+      {
+        $loginattempts = $loginattempts+1;
+      }
+      sessionStore('loginattempts',$loginattempts);
+
+      atkdebug('LoginAttempts: '.$loginattempts);
+      $g_layout->head(text('app_title'));
+      $g_layout->login_top(text('login_form'));
+
+      $g_layout->output('<form action="'.$PHP_SELF.'" method="post">');
+      $g_layout->output('<input type="hidden" name="atkaction" value="login">');
+      $g_layout->output('<input type="hidden" name="authorization" value="loginform">');
+
+      $g_layout->output('<br><br><table border=0 cellspacing=0 cellpadding=0 align=left>');
+      $g_layout->output('<tr><td class=table>');
+
+      $g_layout->table_simple();
+      $g_layout->output('<tr>');
+      if($loginattempts>atkconfig('max_loginattempts'))
+      {
+        $g_layout->output("<td class=table>".text('max_loginattempts_exceeded')."</td>");
+      }
+      else
+      {
+        if($loginattempts>=1&&$atkaction=="login"&&$authorization=="loginform")
+        {
+          $g_layout->output('<tr><td colspan=2 class=error>'.text('login_failed').'<br></td></tr>');
+        }
+        $g_layout->output("<td valign=top class=table>".text('username').":</td><td><input type=text size=15 name='atkusername' value='".$atkusername."' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'></td>");
+        $g_layout->output("</tr><tr><td colspan=2 class=table height=6></td></tr><tr>");
+        $g_layout->output("<td valign=top class=table>".text('password').":</td><td><input type=password size=15 name=atkpassword value='' style='width: 110px; background-color: #FFFFFF; font: 12px verdana; color: #000000; border: 1px solid #000000;'></td>");
+        $g_layout->output("</tr><tr>");
+      }
+      $g_layout->output('</tr></table>');
+      $g_layout->output('</td>');
+      if(!($loginattempts>atkconfig('max_loginattempts')))
+      {
+        $g_layout->output('</tr><tr>');
+        $g_layout->output("<td class=table colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td>");
+      }
+      $g_layout->output('</tr></table>');
+      $g_layout->ui_bottom();
+    }
+
     function allowed($node, $action)
     {
       // security disabled or user is superuser? (may do anything)

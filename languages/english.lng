@@ -154,4 +154,11 @@
   $txt_select_invert  = "Invert selection";
   $txt_with_selected  = "With selected";
   $txt_submit         = "Go";
+
+  // Login form
+  $txt_login_form = "Login";
+  $txt_username = "Username";
+  $txt_password = "Password";
+  $txt_login = "Login";
+  $txt_max_loginattempts_exceeded = "Your username and password do not match.<br>Please contact your system administrator";
 ?>

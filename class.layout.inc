@@ -320,6 +320,18 @@
     }
 
     /**
+     * Create the UI login box top
+     * @param $title Title of the UI top
+     */
+    function login_top($heading)
+    {
+      $template = $this->getTemplate("login_top");
+      $template=str_replace('[HEADER]',$heading,$template);
+      $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
+      $this->output($template);
+    }
+
+    /**
      * Create UI Bottom
      */
     function ui_bottom()
