@@ -345,8 +345,25 @@
           }
           else 
           // no record yet, empty value.
-          {          
-            $destrecord = array();
+          { 
+            // we check the initials first 
+            $initials = $this->m_ownerInstance->initial_values();
+            if ($initials[$this->fieldName()])
+            {
+              // Check if the initial is on the destination primary key and use it to get a record
+              $selector = $this->m_destInstance->validateFilter($this->m_destInstance->m_primaryKey."='".$initials[$this->fieldName()]."'");
+              if ($selector)
+              { 
+                $destrecord = $this->m_destInstance->selectDb($selector);
+                $destrecord = $destrecord[0];
+                $record[$this->fieldName()] = $destrecord; // put destrecord inside original
+              }
+            }        
+            else 
+            {
+              $destrecord = array();
+            }
+          
           }
         
           if (count($destrecord))
@@ -355,7 +372,7 @@
           }                
         
           $result.=$this->hide($record, $fieldprefix);
-
+          
           // we use the current level to automatically return to this page
           // when we come from the select..
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
