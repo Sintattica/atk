@@ -358,7 +358,7 @@
      */
     function isEmpty(&$record)
     {    
-	    return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
+      return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
     }
 
 
