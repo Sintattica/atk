@@ -391,7 +391,7 @@
     {
       return '</tr>';
     }
-
+    
     /**
      * Create TD header 
      * @param $contents contents for the TD header
@@ -466,6 +466,21 @@
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
         $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
       }    
+    }
+    
+    function getImgSrc($img)
+    {
+      global $config_atkroot, $g_theme;
+      $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";  
+      $defaultDir = $config_atkroot."atk/themes/default/images/";
+      if (file_exists($themeDir.$img))
+      {
+        return $themeDir.$img;
+      }
+      else
+      {
+        return $defaultDir.$img;
+      }
     }
   }
   

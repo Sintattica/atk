@@ -748,10 +748,9 @@
      */
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout, $g_theme, $txt_field_obligatory, $config_atkroot;      
+      global $g_layout, $config_atkroot;      
                 
-      // if there are displayable obligatory fields, we display a message near the bottom.
-      $has_oblies = false;
+      // if there are displayable obligatory fields, we display a message near the bottom.      
       
       $g_layout->register_script($config_atkroot."atk/javascript/formsubmit.js");
       
@@ -873,6 +872,11 @@
 
         $form.='</tr>';
       }      
+      
+      // load images
+      $reqimg     = $g_layout->getImgSrc("required_field.gif");    
+      $tipimg     = $g_layout->getImgSrc("help.gif");
+      $notipimg   = $g_layout->getImgSrc("nohelp.gif");
   
       // For all attributes we use the edit() function to display an
       // appropriate way to edit the data. This may be overridden by supplying
@@ -919,52 +923,18 @@
                 $form.=$g_layout->ret_td('&nbsp;');
               }
               else 
-              {
- 
-	       // TOOLTIP / required field support      
+              { 
+	              // Tooltip
                 $ttip = "txt_".$this->m_type."_".$p_attrib->fieldName()."_tooltip";
                 if ($GLOBALS[$ttip] != "")
                 { 
-                 $toolTipImg = "help.gif";
-                 $toolMsg    = $GLOBALS[$ttip];
+                  $toolTip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'">&nbsp;';
                 }
                 else
                 {
-                 $toolTipImg = "nohelp.gif";
-                 $toolMsg    = "";
-                }
-
-                $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";  
-                $defaultDir = $config_atkroot."atk/themes/default/images/";
-                $reqImg     = "required_field.gif";
- 
-                if (is_file($themeDir.$toolTipImg))
-                {
-                 $toolTipImg = $themeDir.$toolTipImg;
-                }
-                else
-                {
-                 $toolTipImg = $defaultDir.$toolTipImg;
-                }
-
-                if (is_file($themeDir.$reqImg))
-                {
-                 $reqImg = $themeDir.$reqImg;
-                }   
-                else
-                {
-                 $reqImg = $defaultDir.$reqImg;
-                }
-
-                if (is_file($toolTipImg))
-                {
-                 $toolTipTag= '<img align="top" src="'.$toolTipImg.'" border="0" alt="'.$toolMsg.'">&nbsp;';
-                }
-                else
-                {
-                 $toolTipTag = "";
-                }
-
+                  $toolTip = '<img align="top" src="'.$notipimg.'" border="0">&nbsp;';
+                }                                                                 
+                
                 $found = FALSE;
                 for ($i=0; $i < count($record['atkerror']);$i++)
                 {
@@ -1005,20 +975,11 @@
               {                        
                 $editsrc = $p_attrib->edit($defaults, $fieldprefix);
               }
-            }
-            
-            if ($p_attrib->hasFlag(AF_OBLIGATORY))
-            {
-             if (is_file($reqImg))
-             {
-              $editsrc .= '<img align="top" src="'.$reqImg.'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
-             }
-             else
-             {
-              $editsrc .= "&nbsp; *";
-             }
-             $has_oblies = true;
-            }
+              if ($p_attrib->hasFlag(AF_OBLIGATORY))
+              {
+                $editsrc .= '<img align="top" src="'.$reqimg.'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
+              }              
+            }                        
 
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
@@ -1027,12 +988,7 @@
       }
       
       $form.='</table>';
-
-//      if ($has_oblies && !empty($txt_field_obligatory))
-//      {
-//        $form.= '<br><span style="font-size:8pt">'.text("field_obligatory").'</span><br>';
-//      }
-      
+    
       return $form;
     }
     
