@@ -1,0 +1,2 @@
+This is the dir where Smarty stores its compiled templates.
+Make sure this directory is writable by the webserver.
