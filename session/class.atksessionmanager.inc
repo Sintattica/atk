@@ -10,7 +10,7 @@
    */
 
   $cookie_params = session_get_cookie_params();
-  session_set_cookie_params($cookie_params["lifetime"], dirname($SCRIPT_NAME));
+  session_set_cookie_params($cookie_params["lifetime"], str_replace("\\","/",dirname($SCRIPT_NAME)));
   session_start();
   session_register("g_sessionData");
 
