@@ -36,6 +36,14 @@
 
   for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
   {
+    if ($i==count($g_menu[$atkmenutop])-1)
+    {
+      $delimiter = "";
+    }
+    else
+    {
+      $delimiter = $config_menu_delimiter;
+    }
     $name = $g_menu[$atkmenutop][$i]["name"];
     $url = $g_menu[$atkmenutop][$i]["url"];
     $enable = $g_menu[$atkmenutop][$i]["enable"];
@@ -54,14 +62,14 @@
     if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
     
     /* submenu ? */
-    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$config_menu_delimiter;
+    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$delimiter;
     else if (empty($url) && !$enable)
     {
       //$menu .=text("menu_$name").$config_menu_delimiter;
     }
       
     /* normal menu item */
-    else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$config_menu_delimiter;
+    else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
     else 
     {
       //$menu .= text("menu_$name").$config_menu_delimiter;    
