@@ -11,6 +11,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/06/27 15:25:43  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.4  2001/06/07 09:19:25  ivo
    * m_error now gets filled when a pgsql query fails (contrib by rene)
    *
@@ -104,7 +109,8 @@
       /* limit? */
       if ($offset >= 0 && $limit > 0)
         $query .= " LIMIT $limit OFFSET $offset";  
-  
+      atkdebug("atkpgsqldb.query(): ".$query);
+
       /* connect to database */
       $this->connect();
 

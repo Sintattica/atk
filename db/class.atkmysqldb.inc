@@ -11,6 +11,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/06/27 15:25:42  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.5  2001/06/07 12:36:26  ivo
    * Atknode now reads records atomic.
    * Removed some debug echo's from the db classes.
@@ -113,7 +118,8 @@
       /* limit? */
       if ($offset >= 0 && $limit > 0)
         $query .= " LIMIT $offset, $limit";  
-  
+      atkdebug("atkmysqldb.query(): ".$query);
+
       /* connect to database */
       $this->connect();
 

@@ -11,6 +11,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/27 15:25:43  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.3  2001/06/07 12:36:26  ivo
    * Atknode now reads records atomic.
    * Removed some debug echo's from the db classes.
@@ -75,6 +80,10 @@
         if (!$this->m_link_id) $this->halt("connect using $user / ***** on $database failed.");
       }
 
+      /* set default date format for Oracle */ 
+      $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
+      $myresult = OCIExecute($nls);
+
       /* return link identifier */
       return $this->m_link_id;
     }
@@ -96,6 +105,17 @@
      */
     function query($query, $offset=-1, $limit=-1)
     {
+      /* limit? */
+      if ($offset >= 0 && $limit > 0)
+      {
+        /* row id's start at 1! */
+	$query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (". 
+        $query.") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
+      }	
+      
+      /* query */
+      atkdebug("atkoci8db.query(): ".$query);
+
       /* connect to database */
       $this->connect();
 
@@ -249,9 +269,39 @@
      */
     function nextid($sequence)
     {
-      $query = "SELECT ".$sequence.".nextval AS nextid FROM dual";
-      $result = $this->getrows($query);
-      return $result[0]['nextid'];
+      /* connect first */
+      $this->connect();
+
+      /* get sequence number and increment */
+      $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+
+      /* execute query */
+      $m_query_id = OCIParse($this->m_link_id, $query);
+      $id = @OCIExecute($m_query_id);
+
+      /* error? */
+      if (empty($id))
+      {
+        /* create sequence */
+        $query = "CREATE SEQUENCE seq_$sequence INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
+        $m_query_id = OCIParse($this->m_link_id, $query);
+        $id = @OCIExecute($m_query_id) or $this->halt("cannot create 'seq_$sequence'");
+        
+        /* try again */
+        $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+        $m_query_id = OCIParse($this->m_link_id, $query);
+        $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
+        
+        /* empty? */
+        if (empty($id)) return 0;
+      }
+
+      /* get nextid */
+      OCIFetchInto($m_query_id, &$result);
+
+      /* return id */
+      return $result[0];
+
     }
 
     /**
@@ -277,8 +327,9 @@
       {
         $result[$i]["table"]  = $this->m_record["table_name"];
         $result[$i]["name"]   = strtolower($this->m_record["column_name"]);
-        $result[$i]["type"]   = $this->m_record["data_type"];
+        $result[$i]["type"]   = strtolower($this->m_record["data_type"]);
         $result[$i]["len"]    = $this->m_record["data_length"];
+
         if ($this->m_record["index_name"]) $result[$i]["flags"] = "INDEX ";
         if ($this->m_record["nullable"] == "N") $result[$i]["flags"] .= "NOT NULL";
         $result[$i]["format"] = (int)$this->m_record["data_precision"].",".

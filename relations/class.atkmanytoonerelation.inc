@@ -15,6 +15,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.13  2001/06/27 15:25:43  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.12  2001/06/20 14:33:51  ivo
    * ManyToOneRelation now supports templated destinationfilters.
    *
@@ -338,6 +343,7 @@
      
       /* return search condition */
       //return $condition;
+//willrhee to change above?          $query->addJoin($this->m_destInstance->m_table, $this->fieldName(),$realtablename.$this->fieldName()."=".$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], !$this->hasFlag(AF_OBLIGATORY));
     }
 
     /**

@@ -88,6 +88,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/06/27 15:25:42  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.10  2001/06/18 10:05:51  ivo
    * New attribute: atkProfileAttribute, for editing security profiles.
    * New node flag: NF_NO_SECURITY
@@ -386,7 +391,7 @@
      */
     function searchCondition($table, $value)
     {
-      return $table.".".$this->fieldName()." LIKE '%".$value."%'";
+      return "lower(".$table.".".$this->fieldName().") LIKE lower('%".$value."%')";
     }
 
     /**

@@ -47,54 +47,15 @@
    *                     'todo' in the code :)
    *
    * @author Ivo Jansch (ivo@achievo.com)
-   * @version 0.21
-   *
-   * <b>Changes</b>:
-   *
-   * 0.21    - The editForm() didn't posted readonly attribs. Added hidden values for
-   *           those attribs. (martin)
-   *         - Added new function postDel(). You can use this in your classfiles to
-   *           to do something when you delete a record. (martin)
-   * 0.20    - Attributes can now have an edit_values($record)  function.
-   *           the value of the database will be overwritten. (Sandy)
-   *         - Added a BR tot add_page and the edit_page (Sandy)
-   *         - Move layout class into class.atknode.inc for the template support (Sandy)
-   * 0.19    - Attributes are now informed of the table meta information of
-   *           the field (Peter Verhage <peter@ibuildings.net>)
-   *         - Previous/next links now also appear above recordlists (Ivo)
-   * 0.18    - Small optimisations (Ivo)
-   * 0.17    - Support for new flags: AF_NO_QUOTES and AF_FORCE_LOAD (Ivo)
-   *         - Fixed a bug in search feature en previous/next links (Ivo)
-   * 0.16    - Fixed a bug when using the search feature in Internet Explorer (Ivo)
-   *         - Support for attribute AF_HIDE_SELECT flag (Ivo)
-   * 0.15    - New flags: NF_EDITAFTERADD, NF_NO_SEARCH and NF_NO_FILTER (Ivo)
-   *         - Fixed a bug in search feature (Ivo)
-   *         - Created default language files for atk (atk now runs even if you don't
-   *           have a languages dir in your app) (Ivo)
-   *         - Speed optimisations (less queries, no unneeded joins) (Ivo)
-   *         - Added 'save and close' and 'cancel' buttons to editpage. (Ivo)
-   *         - Fix for primary keys containing spaces (Ivo)
-   *         - Default configuration file (Ivo)
-   * 0.14    - Atk now calls isEmpty function on attributes to see if they're empty
-   *           (instead of checking for "" in the postvars) (Ivo)
-   * 0.13    - Atk now disconnects from the database on end of page. (Ivo)
-   * 0.12    - Fixed a bug in primary key function when primary key was a relation (Ivo)
-   * 0.11    - Fixed a bug in the search boxes (when spaces were used) (Ivo)
-   * 0.10    - Default sort (Sandy)
-   *         - RecordList now has search boxes to search in records (Ivo)
-   * 0.9     - Documented everything and made docs phpdoc compliant (Sandy)
-   *         - Added postAdd() and postUpdate() triggers (Ivo)
-   * 0.8     - Oracle support (Sandy)
-   *         - Solved bug when changing a records primary key (Ivo)
-   *         - Sticky atkfilter (filtering records through url) (Ivo)
-   *         - Solved a bug in the next/previous links (Ivo)
-   * 0.7     - Better API for retrieving currentrec and in the list (Ivo)
-   * 0.6     - Major speedup in admin page (1 query for the entire list instead of
-   *           1 for each relation in each record) (Ivo Jansch <ivo@achievo.com>
-   * 0.5     - AF_READONLY flag for attributes (Sandy Pleyte <sandy@ibuildings.nl>)
+   * @version $Revision$
    *
    * $Id$
    * $Log$
+   * Revision 4.65  2001/06/27 15:25:42  peter
+   * A lot of fixes to the oci8 support, including better outer joins, and
+   * limitting queries! Fields now have an asterix behind them if they are
+   * required. Some other small enhancements.
+   *
    * Revision 4.64  2001/06/27 09:35:32  peter
    * Fixed bug with searching and browsing through records which sometimes
    * prevented ATK from showing search results.
@@ -147,361 +108,7 @@
    * Revision 4.50  2001/06/08 14:33:30  ivo
    * Optimisations to atktreenode.
    * Smaller imp of row color alternationi feature.
-   *
-   * Revision 4.49  2001/06/08 14:19:59  paul
-   * datatable made themable
-   *
-   * Revision 4.48  2001/06/07 12:36:26  ivo
-   * Atknode now reads records atomic.
-   * Removed some debug echo's from the db classes.
-   *
-   * Revision 4.47  2001/06/07 09:26:16  ivo
-   * removed a whitespace (how do these things keep getting in again :()
-   *
-   * Revision 4.46  2001/06/07 09:24:49  ivo
-   * Updated language files.
-   * Support for non-western-european charsets. (backport from 0.6.4)
-   *
-   * Revision 4.45  2001/06/01 12:52:49  peter
-   * Fixed a bug in menu.php (atksecure() was called to late).
-   * Updated english language file month names (long names to short).
-   * Fixed bug in atknode selectPage() -> atktarget was not decoded.
-   *
-   * Revision 4.44  2001/05/30 07:05:43  ivo
-   * Removed is_null funtion calls (because they require PHP4.0.4)
-   * Moved session management initialisation code to a function.
-   *
-   * Revision 4.43  2001/05/23 09:46:28  ivo
-   * SelectPage now also parses encoded action templates.
-   *
-   * Revision 4.42  2001/05/22 15:22:39  peter
-   * Different small enhancements fixes...
-   *
-   * Revision 4.41  2001/05/21 15:18:26  ivo
-   * Made securitymanager cookie and session based. Authentication now only
-   * executes once per session.
-   *
-   * Revision 4.40  2001/05/18 09:14:27  ivo
-   * atkaction is now a sessionvar instead of pagevar.
-   *
-   * Revision 4.39  2001/05/18 07:49:42  ivo
-   * Fixes to sessionmanagement.
-   *
-   * Revision 4.38  2001/05/17 15:19:18  peter
-   * Security manager now knows how to handle module nodes.
-   *
-   * Revision 4.37  2001/05/17 12:28:46  ivo
-   * Committed the wrong pageVars in previous commit.
-   *
-   * Revision 4.36  2001/05/17 12:24:32  ivo
-   * I'm stupid. Ofcourse atkselector is a sessionvar. just not a pagevar per
-   * se.
-   *
-   * Revision 4.35  2001/05/17 12:20:36  ivo
-   * removed atkselector from sessionvars.. it's not a session var!
-   *
-   * Revision 4.34  2001/05/17 12:09:11  ivo
-   * Improvements to session mangement: search values and page numbers are
-   * now remembered if you come back to the admin page.
-   *
-   * Revision 4.33  2001/05/17 10:27:12  ivo
-   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
-   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
-   *
-   * Revision 4.32  2001/05/17 08:06:33  ivo
-   * Fixes to atkfileattribute and onetoonerelation.
-   *
-   * Revision 4.31  2001/05/16 06:52:24  ivo
-   * removed php short-tags.
-   *
-   * Revision 4.30  2001/05/14 10:20:19  ivo
-   * Improved error reporting when database queries fail.
-   * New feature: atk can now send a detailed error report by email.
-   *
-   * Revision 4.29  2001/05/11 15:24:54  peter
-   * Some updates for the module support and some other things...
-   *
-   * Revision 4.28  2001/05/11 14:59:56  ivo
-   * Fixed serious bug in onetoone relation that could overwrite records in a
-   * table..
-   *
-   * Revision 4.27  2001/05/11 12:25:52  ivo
-   * Fixed bugs in atkOneToOneRelation and atkManyToManyRelation (bug only
-   * appeared when the two were used in combination)
-   *
-   * Revision 4.26  2001/05/10 14:18:49  ivo
-   * Fixed an includd_once typo.
-   *
-   * Revision 4.25  2001/05/10 09:48:07  ivo
-   * Added a cancel buttons to add forms.
-   *
-   * Revision 4.24  2001/05/10 09:42:28  sandy
-   * bugfix in menu.php (config menu delimiter) and for the clear posting
-   *
-   * Revision 4.23  2001/05/10 09:16:47  ivo
-   * Fix to formsession.
-   *
-   * Revision 4.22  2001/05/10 08:31:00  ivo
-   * Major upgrade. Changes:
-   * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
-   *   singletons by default, and nodefunctions pass around recordsets.
-   * + Session management for forms. If you now leave a page through a click on
-   *   a link, the session remembers everything from your form and restores it
-   *   when you return.
-   * + New relation: oneToOneRelation
-   * + Reimplemented the embedded editForm feature (forms inside forms)
-   *
-   * Revision 4.21  2001/05/07 15:13:49  ivo
-   * Put config_atkroot in all files.
-   *
-   * Revision 4.20  2001/05/07 14:47:32  ivo
-   * fix in atkroot.
-   *
-   * Revision 4.19  2001/05/07 14:46:15  ivo
-   * Atk now has a configurable rootdirectory (specified in dispatcher)
-   *
-   * Revision 4.18  2001/05/04 11:37:42  sandy
-   * small bug fixes (split function, refresh, treeview,etc)
-   *
-   * Revision 4.17  2001/05/03 07:47:35  ivo
-   * Stacktrace is now only displayed once per page..
-   *
-   * Revision 4.16  2001/05/02 14:55:46  ivo
-   * New cool feature: stacktrace in the topright screen (navigate through
-   * pages you visited before)
-   *
-   * Revision 4.15  2001/05/02 13:09:48  ivo
-   * fix to editafteradd session handling.
-   *
-   * Revision 4.14  2001/05/02 13:06:23  sandy
-   * fixed the AF_CASCADE_DELETE flag
-   *
-   * Revision 4.13  2001/05/02 12:44:21  ivo
-   * multilevel session_back feature.
-   * new relational features: maxRecords for oneToManyRelation, filter for
-   * onetomanyrelation.
-   *
-   * Revision 4.12  2001/05/01 12:08:38  ivo
-   * Small bug in EDITAFTERADD flag.
-   *
-   * Revision 4.11  2001/05/01 09:49:49  ivo
-   * Replaced all require() and include() calls by require_once() and
-   * include_once() calls. The if(!DEFINED)... inclusion protection in files
-   * is now obsolete.
-   *
-   * Revision 4.10  2001/05/01 09:15:51  ivo
-   * Initial session based atk version.
-   *
-   * Revision 4.9  2001/04/25 09:39:36  ivo
-   * typo fix
-   *
-   * Revision 4.7  2001/04/25 08:46:08  ivo
-   * Big optimisations: using references for attribute manipulation.
-   *
-   * Revision 4.6  2001/04/25 07:29:40  sandy
-   * fixed a bug in the data javascript for multilanguage
-   * added the stickyvars to the onetomany relations urls
-   *
-   * Revision 4.5  2001/04/24 13:51:50  ivo
-   * Fixed some small bugs, and updated the language files, improved the menu.
-   *
-   * Revision 4.4  2001/04/24 12:40:50  ivo
-   * skel cleanup, typo fix in moduletools.
-   *
-   * Revision 4.3  2001/04/24 11:50:13  ivo
-   * Bugfixes to modulesupport: changed all 'require' statements to 'include'
-   * statements, since 'require' is always executed at script compile time,
-   * not at runtime.
-   *
-   * Revision 4.2  2001/04/24 09:06:09  sandy
-   * first level of the tree always visible, and fixed the NF_TREE flags.
-   *
-   * Revision 4.1  2001/04/23 13:21:22  peter
-   * Introduction of module support. An ATK application can now have zero
-   * or more modules which can, but don't have to, contain ATK nodes.
-   *
-   * Revision 4.0  2001/04/23 10:19:38  ivo
-   * Revision number update
-   *
-   * Revision 1.1.1.1  2001/04/23 10:17:05  ivo
-   * Added atk4 to repository.
-   *
-   * Revision 1.52  2001/04/19 07:36:32  ivo
-   * New flag NF_AUTOSELECT for automatic redirect in select pages when only
-   * one record is present.
-   * Updated Norwegian language file.
-   *
-   * Revision 1.51  2001/04/18 13:06:32  sandy
-   * form focus added, new nodeflags, and some tree bugfixes
-   *
-   * Revision 1.49  2001/04/11 14:42:44  sandy
-   * fixed edit and add link for treeview
-   *
-   * Revision 1.48  2001/04/11 14:36:25  ivo
-   * Optimisation in treeview.
-   *
-   * Revision 1.47  2001/04/10 20:22:30  martin
-   * Fixed two (small) bugs in treePage(). Code cleanup for treeview features. Small speed optimisations also for atktree features
-   *
-   * Revision 1.46  2001/04/10 13:28:49  ivo
-   * Small fix: <br>'s when navigation is invisible.
-   *
-   * Revision 1.45  2001/04/10 11:51:46  martin
-   * ATK treeview added for parent child relations. Just use NF_TREE as flag when you call the atknode constructor.
-   *
-   * Revision 1.44  2001/04/06 15:09:35  ivo
-   * Fixed bugs in matrixrelation.
-   *
-   * Revision 1.43  2001/04/05 14:50:51  peter
-   * fixed a bug with the load methods of special attributes
-   *
-   * Revision 1.42  2001/04/05 14:17:58  ivo
-   * Navigation fix.
-   *
-   * Revision 1.41  2001/04/05 14:01:58  ivo
-   * Small fix to navigation on select pages.
-   *
-   * Revision 1.40  2001/04/05 13:58:31  ivo
-   * Small navigation fix.
-   * Layout changes: head can now be rendered at the end.
-   *
-   * Revision 1.39  2001/04/05 13:22:52  peter
-   * optimized navigation through records
-   *
-   * Revision 1.38  2001/04/05 11:02:49  ivo
-   * Readded some of the removed code from previous revision, because
-   * the code was necessary when using where clauses on joined tables.
-   *
-   * Revision 1.37  2001/04/05 10:46:42  ivo
-   * Optimized the record count feature. (Removed buildCount and a lot of
-   * duplicate code)
-   *
-   * Revision 1.36  2001/04/05 10:19:06  peter
-   * new way of navigation through the record list
-   *
-   * Revision 1.35  2001/04/04 09:01:48  ivo
-   * AF_READONLY now also affects add forms.
-   * Implemented hide() method for manytoonerelation.
-   *
-   * Revision 1.34  2001/04/03 09:06:05  ivo
-   * Fixed a bug in printableRecordList.
-   *
-   * Revision 1.33  2001/04/02 14:53:18  ivo
-   * New feature: printableRecordList.
-   *
-   * Revision 1.32  2001/04/02 08:22:58  ivo
-   * Improved groupbased attribute security.
-   *
-   * Revision 1.31  2001/03/30 10:06:14  ivo
-   * Attribute 'read' action is now called 'view'.
-   *
-   * Revision 1.30  2001/03/29 11:22:28  ivo
-   * New feature: logging
-   *
-   * Revision 1.29  2001/03/28 14:07:50  ivo
-   * Added support for actions that require no access privileges.
-   *
-   * Revision 1.28  2001/03/27 09:55:06  ivo
-   * Fixed bug: When sorting a recordlist, the stickyvars would get lost.
-   *
-   * Revision 1.27  2001/03/27 07:05:55  ivo
-   * data_top and data_bottom are now themeable.
-   *
-   * Revision 1.26  2001/03/23 15:28:55  ivo
-   * Fixed minor bugs in skel files.
-   * Updated Themes-HOWTO to reflext new theme structure.
-   * Fixed a bug in the atk delete action.
-   * Fixed a bug in the theme support.
-   *
-   * Revision 1.25  2001/03/21 15:02:06  ivo
-   * New feature: sticky vars (variables that 'stick' to all forms and
-   * urls once you've set them.
-   * Stripped the m_prefix function, since embedded forms have become
-   * obsolete.
-   *
-   * Revision 1.24  2001/03/21 11:00:19  peter
-   * new database management classes
-   *
-   * Revision 1.23  2001/03/21 10:18:38  ivo
-   * Fixed bug: viewPage ignored AF_HIDE flag.
-   *
-   * Revision 1.22  2001/03/20 15:34:11  ivo
-   * Added 'view' action (a readonly edit).
-   *
-   * Revision 1.21  2001/03/16 09:25:23  ivo
-   * Commented some code.
-   *
-   * Revision 1.20  2001/03/16 07:51:59  ivo
-   * Improved group-based security.
-   *
-   * Revision 1.19  2001/03/14 18:04:18  peter
-   * removed ORDER BY clause in previous commit, added it again
-   *
-   * Revision 1.18  2001/03/14 16:16:30  sandy
-   * database name and userid field is configurable
-   *
-   * Revision 1.17  2001/03/14 16:05:30  ivo
-   * Fixed a bug which made select pages slow.
-   *
-   * Revision 1.16  2001/03/14 15:21:54  ivo
-   * New feature: AF_TOTAL flag for attributes. This results in a total row
-   * at the bottom of the record list.
-   *
-   * Revision 1.15  2001/03/14 13:16:54  peter
-   * extended query method of the database "drivers" with limit support and 
-   * added PostgreSQL support (which ain't perfect yet, but can't be fixed until 
-   * PostgreSQL gets support for LEFT JOIN's)
-   *
-   * Revision 1.14  2001/03/14 10:22:27  ivo
-   * Attributes now have a hide() function to do their own input=hidden implementation.
-   *
-   * Revision 1.13  2001/03/02 15:06:44  ivo
-   * New node flag: NF_ADD_LINK (instead of an addform on an adminpage, you get
-   * a 'click here to add' link)
-   *
-   * Revision 1.12  2001/02/28 16:00:51  sandy
-   * - fixed the search box length
-   *
-   * Revision 1.11  2001/02/28 15:34:32  sandy
-   * - fixed a bug in the text attributes (length)
-   *
-   * Revision 1.10  2001/02/28 08:32:13  sandy
-   * - Bugfix in the class.atknode for theme support
-   * - Enabled the haltfunctions again
-   *
-   * Revision 1.9  2001/02/23 11:17:30  sandy
-   * - Updated the layout class with new template engine
-   * - New Dummy attribute
-   * - New skel directory
-   * - and some small new config vars
-   *
-   * Revision 1.8  2001/02/22 22:51:32  peter
-   * added multilanguage support, changed addToQuery API for i
-   * attributes, fixed other things, clean-up of code
-   *
-   * Revision 1.7  2001/02/22 12:20:35  ivo
-   * Fixed bug: when NF_EDITAFTERADD was set, atkfilter would disappear.
-   *
-   * Revision 1.6  2001/02/22 11:38:44  ivo
-   * Added some sourcecode comments
-   *
-   * Revision 1.5  2001/02/20 13:17:02  martin
-   * cvs commit test
-   *
-   * Revision 1.4  2001/02/16 16:00:27  peter
-   * changed filename defaultconfig.inc.php to defaultconfig.inc.php3 
-   * because of possible issues with PHP3
-   *
-   * Revision 1.3  2001/02/15 16:20:24  ivo
-   * Major new feature: security.
-   *
-   * Revision 1.2  2001/02/04 14:54:36  martin
-   * Added new function postDel().
-   * Added hidden values in editForm() for readonly attribs.
-   *
-   * Revision 1.1.1.1  2001/01/10 13:57:56  sandy
-   * Achievo Tool Kit
-   *
+   * (...)
    */
 
   // Global theme variable, must be declared before the includes
@@ -1110,7 +717,7 @@
      */
     function editForm($mode="add",$record = NULL, $forceList="",$suppressList="", $fieldprefix="")
     {
-      global $g_layout;      
+      global $g_layout, $txt_field_obligatory;      
       
       $g_layout->register_script("atk/javascript/formsubmit.js");
       
@@ -1268,13 +875,12 @@
             }            
             	                    
             if ($p_attrib->hasFlag(AF_READONLY))
-	          {
+	    {
               // readonly, display value..              
-	            $editsrc=$p_attrib->hide($defaults, $fieldprefix);
-              $editsrc.=$p_attrib->display($defaults);
-                              
+	      $editsrc=$p_attrib->hide($defaults, $fieldprefix);
+              $editsrc.=$p_attrib->display($defaults);                              
             }
-	          else
+	    else
             {            
               $funcname = $p_attrib->m_name."_edit";
               
@@ -1286,14 +892,26 @@
               {                             
                 $editsrc = $p_attrib->edit($defaults, $fieldprefix);
               }
-	          }
+	    }
             
+	    if ($p_attrib->hasFlag(AF_OBLIGATORY))
+	    {
+	      $editsrc .= "&nbsp; *";
+	    }
+	    
             $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
           }
         }        
-      }      
+      }
+      
       $form.='</table>';
+
+      if (!empty($txt_field_obligatory))
+      {
+        $form.= '<span style="font:8pt">'.text("field_obligatory").'</span><br>';
+      }
+      
       return $form;
     }
 
@@ -1305,8 +923,8 @@
     function buildNavigation()
     {
       global $PHP_SELF;
-      $limit    = (int)$this->m_postvars['atklimit'];
-      $count    = (int)$this->countDb($this->m_postvars['atkfilter'], $this->m_listExcludes);
+      $limit = (int)$this->m_postvars['atklimit'];
+      $count = (int)$this->countDb($this->m_postvars['atkfilter'], $this->m_listExcludes);
       
       // maximum number of bookmarks to pages.
       $max_bm = 10;
@@ -1580,6 +1198,7 @@
         {       
           $stractions = "";
           $pk = $this->primaryKey($recordset[$i]);
+	  
           for ($j=0;$j<count($actions);$j++)
           {
             //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
@@ -1805,28 +1424,25 @@
      */
     function selectPage()
     {
-      global $g_layout;
+      global $g_layout, $atksearch;
 
-      // When there's a lot of data, records will be spread across multiple
-      // pages.
+      // When there's a lot of data, records will be spread across multiple pages.
       if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
-
-      if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
+      if ($this->m_postvars['atkstartat']=="" || isset($atksearch)) $this->m_postvars['atkstartat']=0;
 
       $recordset = $this->selectDb($this->m_postvars['atkfilter'],$this->m_postvars['atkorderby'],array("offset" => $this->m_postvars['atkstartat'], "limit" => $this->m_postvars['atklimit']),$this->m_listExcludes);
       
       if (count($recordset)==1 && $this->hasFlag(NF_AUTOSELECT))
       {
         // There's only one record and the autoselect flag is set, so we 
-        // automatically go to the target..
-        $target=stringparse(rawurldecode($this->m_postvars['atktarget']),$recordset[0],true);
+        // automatically go to the target.
+        $target = stringparse(rawurldecode($this->m_postvars['atktarget']),$recordset[0], true);	
         $this->redirect($target);
       }
       else
       {
         $g_layout->ui_top(text('title_'.$this->m_type.'_select'));
         $g_layout->output($this->stackTrace());      
-      
         $g_layout->output(text($this->m_type.'_select').'<br>');
         $g_layout->output('<br>');
         
@@ -1834,6 +1450,7 @@
         $nav = $this->buildNavigation();
         if (!empty($nav)) $g_layout->output("$nav<br>");
         $g_layout->output('<br>');
+	
         $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
 
         $g_layout->output($this->recordList($recordset, $actions));
@@ -2417,7 +2034,7 @@
           {
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
-            else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
+            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".$value."%')";
             $query->addCondition($condition);              
           }
         }
@@ -2451,7 +2068,7 @@
       atkdebug("countDb() - query: ".$querystring);
       $g_db->query($querystring);
       $result = $g_db->getrows($querystring);
-      return $result[0][0];
+      return $result[0]["count"];
     }
 
    /** Copies a record
@@ -2523,7 +2140,7 @@
           {
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) $condition = $p_attrib->searchCondition($this->m_table, $value);
-            else $condition = $this->m_table.".".$key." LIKE '%".$value."%'";
+            else $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".$value."%')";
             $query->addCondition($condition);              
           }
         }
@@ -2560,7 +2177,6 @@
       else $dbrecords = $g_db->getrows($querystring);
       
       $recordset = array();
-
       for ($i=0;$i<count($dbrecords);$i++)
       {        
         $therecord = array();        
@@ -2591,7 +2207,6 @@
       // use the returned recordset instead of $this->m_records;
       $this->m_records = $recordset;
       $this->m_currentRec = 0;
-      
       return $recordset;
     }
 
