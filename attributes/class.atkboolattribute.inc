@@ -7,6 +7,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/06/24 15:09:52  sandy
+   * Ooops, forgot to remove the debug code....
+   *
    * Revision 4.2  2001/06/24 15:00:52  sandy
    * - Fixed the atkbool search function, it will now show a listbox
    * with 3 choices (search all, yes, no).
@@ -67,9 +70,6 @@
      */
     function search($record="")
     {
-      var_dump($record);
-      $checked = "";
-      if ($record[$this->fieldName()]>0) $checked="selected";
       $result = '<select name="atksearch['.$this->formName().']">';
       $result.= '<option value="">'.text('search_all');
       $result.= '<option value="0" ';
@@ -80,7 +80,6 @@
       $result.= '>'.text('yes');
       $result.='</select>';
       return $result;
-      //return '<input type="checkbox" name="atksearch['.$this->formName().']" value="1" '.$checked.'>';
     }   
     
    /**
