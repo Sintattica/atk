@@ -19,11 +19,11 @@
      * Constructor
      * @param $name  Name of the attribute
      * @param $flags Flags for this attribute
-     * @param $size  The size(s) for this attribute
+     * @param $size  The size(s) for this attribute (default 10)
      * @param $decimals The number of decimals to use. 
      *               
      */
-    function atkNumberAttribute($name, $flags=0, $size=0, $decimals=0)
+    function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
     {
       $this->atkAttribute($name,$flags, $size); // base class constructor
       $this->m_decimals = $decimals;
