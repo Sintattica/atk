@@ -1,4 +1,5 @@
 <?php
+  header("Content-Type: text/css"); 
   chdir("../");   
   include_once("atk.inc");
   $g_layout->initGui();
