@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.12  2001/09/12 09:02:22  ivo
+  * Added functions tr_top and tr_bottom.
+  *
   * Revision 4.11  2001/07/15 16:37:19  ivo
   * New atk.inc includefile in skel.
   * New feature: extended search.
@@ -368,34 +371,33 @@
     
     function data_top()
     {
-   global $g_theme;
+      global $g_theme;
       $template=$this->getTemplate("data_top");      
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
       if (!isset($g_theme["border"]))
-         {  
-         if ($template=="") $template='<table border="1" cellspacing="0" cellpadding="3">';
-         }
+      {  
+        if ($template=="") $template='<table border="1" cellspacing="0" cellpadding="3">';
+      }
       else
-         {
-           if ($template=="") $template='<table border="0" cellspacing="0" cellpadding="0" class="backtable"><tr><td><table border="0" cellspacing="'.$g_theme["border"].'" cellpadding="3">';
-         }
+      {
+        if ($template=="") $template='<table border="0" cellspacing="0" cellpadding="0" class="backtable"><tr><td><table border="0" cellspacing="'.$g_theme["border"].'" cellpadding="3">';
+      }
       return $template;
     }
        
     function data_bottom()
     {      
-       global $g_theme;
+      global $g_theme;
       $template=$this->getTemplate("data_bottom");      
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);      
       if (!isset($g_theme["border"]))
-         {
-          if ($template=="") $template='</table>';
-         }
+      {
+        if ($template=="") $template='</table>';
+      }
       else
-         {
-         if ($template=="") $template='</table></td></tr></table>';
-         }
-
+      {
+        if ($template=="") $template='</table></td></tr></table>';
+      }
 
       return $template;
     }
@@ -433,16 +435,7 @@
      */
     function td($contents="", $extraprops="")
     {
-      $this->output('<td class="table" '.$extraprops.'>');
-      if (strlen($contents) == 0)
-      {
-        $this->output("&nbsp;");
-      }
-      else
-      {
-        $this->output($contents);
-      }
-      $this->output("</td>\n");
+      $this->output($this->ret_td($contents, $extraprops));      
     }
 
     /**
@@ -464,6 +457,22 @@
       }
       $output.="</td>\n";
       return $output;
+    }
+    
+    /**
+     * Create TR 
+     * @param $contents contents for the TD
+     * @param $extraops Extra options for the TD (Width, Height)
+     * @return HTML Code with TD + Content
+     */
+    function tr_top($alt=false, $extraprops="")
+    {
+      return '<tr class="row'.($alt?"2":"1").'" '.$extraprops.'>';            
+    }
+    
+    function tr_bottom()
+    {
+      return '</tr>';
     }
 
     /**
