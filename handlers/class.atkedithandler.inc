@@ -126,7 +126,7 @@
       /* check for errors and display them */
       $tab = $node->getActiveTab();
       $error_title = "";
-      
+
       // Handle errors
       $errors = array();
       if (count($data['error']) > 0)
@@ -205,7 +205,7 @@
 				
         $tplfield = array();
 				        
-				$tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":$field["tabs"][0]); // $this->getTab($field_name);
+				$tplfield["tab"] = ($field["tabs"][0]=="*"?$tab:$field["tabs"][0]); // $this->getTab($field_name);
 				
 				// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
 				// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
@@ -213,7 +213,6 @@
 								
 				// ar_ stands voor 'attribrow'.
 				$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
-				
 
 				/* check for seperator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
@@ -290,10 +289,7 @@
       
       $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);            
       
-			return $result;
-            
-    }
-    
+			return $result;       
+    } 
   }
-
 ?>
