@@ -15,15 +15,26 @@
  */
 class atkPasswordAttribute extends atkAttribute
 {
+  // to generate or not.
+  var $m_generate;
   /**
    * Constructor
    * @param $name Name of the attribute
+   * @param $generate Generate password (boolean)
    * @param $flags Flags for this attribute
    */
-  function atkPasswordAttribute($name, $flags=0)
+  function atkPasswordAttribute($name, $generate, $flags=0)
   {
     /* base class constructor */
-    $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
+      // compatiblity with old versions
+      
+      if (func_num_args()==3) $this->m_generate=$generate;
+      else                   
+      {
+      $flags = $generate;
+      $this->m_generate="false";
+      }
+     $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // you can't search by password.
   }
 
   /**
@@ -41,6 +52,9 @@ class atkPasswordAttribute extends atkAttribute
     /* insert */
     if ($action != 'edit' && $action != 'update')
     {
+     if (!$this->m_generate)
+     {
+      
       $result = text("password_new").':<br>'.
                 '<input type="password" name="'.$this->fieldName().'[new]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
@@ -50,6 +64,16 @@ class atkPasswordAttribute extends atkAttribute
                 '<input type="password" name="'.$this->fieldName().'[again]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";                                       
+     }
+     else
+     {
+      $password = makePassword();
+      $result = '<input type="hidden" name="'.$this->fieldName().'[again]"'.
+                ' value ="'.$password.'">'.
+                '<input type="text" name="'.$this->fieldName().'[new]"'.
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')." value ='".$password."'>";                  
+     }
     }
     
     /* edit */
@@ -197,4 +221,24 @@ class atkPasswordAttribute extends atkAttribute
     return array();
   }
 }
+
+
+  # @param $times number of syllables
+  # @return string with value to display
+
+  function makePassword($times=2)
+  {
+   $klinkers = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
+   $mede   = array("a","e","y","u");
+   for ($i=0;$i<$times;$i++)
+       {
+        srand((double)microtime()*1000000);
+        mt_srand((double)microtime()*1000000);
+        $out .=  $klinkers[rand()%count($klinkers)];
+        $out .= $mede[mt_rand()%count($mede)];
+        $out .= $klinkers[mt_rand()%count($klinkers)];
+       }
+  return $out;
+  }
+ 
 ?>
