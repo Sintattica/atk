@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.22  2001/07/13 12:58:46  sandy
+    * Small bugfix for the Tree, it now shows a correct tree in NS6
+    *
     * Revision 4.21  2001/07/03 06:55:41  ivo
     * Treenode still refered to stacktrace() which should now be statusbar()
     *
@@ -162,7 +165,7 @@
       
       //var_dump($this->m_tree);
 
-      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".($g_maxlevel*30).">\n");
+      $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".(($g_maxlevel*30)+300).">\n");
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
