@@ -17,12 +17,12 @@
    */
 
   /** Theme definition */
-  $theme["customtpls"] = array("box.tpl", "tabs.tpl", "login.tpl");  
-  $theme["customstyles"] = array("style.css", "recordlist.css", "tabs.css");
+  $theme["customtpls"] = "scan 'templates/'";  
+  $theme["customstyles"] = "scan 'styles/'";
   $theme["customimgs"] = array("help.gif");
   
   $theme["highlight"] = "#c5d7ff";
   $theme["select"]    = "#96a7ff";
-	
-	$theme["tabtype"] = "dhtml";
+
+  $theme["tabtype"] = "dhtml";
 ?>
