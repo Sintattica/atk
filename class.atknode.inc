@@ -491,7 +491,6 @@
       
       if($attribute->hasFlag(AF_MULTILANGUAGE))
       {
-        atkdebug("atknode::add() multilanguagefield ".$attribute->fieldName());
         $this->m_lngfield = $attribute->fieldName();
       }
 
@@ -1498,7 +1497,6 @@
       $record = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
-        atkdebug("calling fetchvalue for $attribname");
         $p_attrib = &$this->m_attribList[$attribname];
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
@@ -1953,7 +1951,7 @@
 
       $dbrecords = $g_db->getrows($querystring);
       
-      if(($mode=="edit" || $mode=="copy") && count($dbrecords)>1) // do we have mlrecords?
+      if(($mode=="edit" || $mode=="copy") && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
         $mltool = &atknew("atk.utils.atkmlsplitter");
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
@@ -2065,8 +2063,6 @@
     {
       global $g_db;
 
-      atkdebug("atkNode::addDb() start ".$this->m_type." mode: ".$mode);
-
       $query = &$g_db->createQuery();
 
       $storelist = array();      
@@ -2129,8 +2125,6 @@
       }
       
       atkdebug($g_db->m_error);
-      atkdebug("atkNode::addDb() stop ".$this->m_type." mode:".$mode);
-
       return false;
     }
 
