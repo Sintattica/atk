@@ -21,6 +21,11 @@
   userelation("atkrelation");
   
   /**
+   * flag(s) specific for atkManyToOneRelation 
+   */
+  define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1); // Only allow deletion of onetomany item when there are no child records
+  
+  /**
    * Implementation of one-to-many relationships.
    * 
    * Can be used to create one to many relations ('1 library has N books').
@@ -103,7 +108,6 @@
      */
     function display($record, $mode="list")
     {      
-
       $myrecords = $record[$this->fieldName()];
       
       if (!is_array($myrecords))
@@ -358,7 +362,7 @@
       {
          $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]]; 
          $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
-      }         
+      }
       $where = implode(" AND ", $whereelems);
 
       if ($where!="") // double check, so we never by accident delete the entire db
@@ -367,7 +371,6 @@
       }
       return true;
     }
-
 
     /**
      * Store detail records in the database.
@@ -472,6 +475,28 @@
         if (is_object($attrib) && strpos(get_class($attrib), "elation")!==false) return true;
       }
       return false;
+    }
+    
+    function deleteAllowed()
+    {
+    	if ($this->hasFlag(AF_RESTRICTED_DELETE))
+    	{
+    		// Get the destination node
+    		$classname = $this->m_destination;
+      	$cache_id = $this->m_owner.".".$this->m_name;
+      	$rel = &getNode($classname,$cache_id);
+        
+      	// Get the current atkselector
+      	$where = $this->m_ownerInstance->m_postvars['atkselector'];
+
+      	if ($where)
+      	{
+      		$childrecords = $rel->selectDb($where);
+        	if (!empty($childrecords)) return atktext("restricted_delete_error");
+        }
+        else return;
+    	}
+    	return true;
     }
   }
 ?>

@@ -1176,6 +1176,15 @@
     {
       return ($this->m_tabs == "*" || atk_in_array($tab, $this->m_tabs));
     }
+    
+    /**
+     * Wether or not the attribute allows deletion
+     * @return boolean wether or not the attribute allows deletion
+     */
+    function deleteAllowed()
+    {
+    	return true;
+    }
             
   }
 

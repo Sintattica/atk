@@ -34,44 +34,16 @@
      */
     function action_delete()
     {    
-      if (!empty($this->m_postvars['confirm']))
-      {
-        // Confirmation page was displayed and 'yes' was clicked
-        if($this->m_node->deleteDb($this->m_postvars['atkselector']))
-        {
-          $this->m_node->m_db->commit();
-          $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
-          $this->m_node->redirect($location);
-        }
-        else
-        {
-          $this->m_node->m_db->rollback();
-          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$this->m_node->m_db->getErrorMsg());
-          $this->m_node->redirect($location);
-        }
-      }
+      if (!empty($this->m_postvars['confirm'])) $this->_doDelete();
       elseif (empty($this->m_node->m_postvars['cancel']))
       {
-        $locked = FALSE;
-        if ($this->m_node->hasFlag(NF_LOCK))
-        {
-          $locked = TRUE;
-          if (is_array($this->m_postvars['atkselector']))
-          {
-            foreach ($this->m_postvars['atkselector'] as $selector)
-             if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table)) $locked = FALSE;
-          }
-          elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table)) $locked = FALSE;
-
-          if (!$locked)
-          {          
-            $page = &$this->getPage();
-            $page->addContent($this->m_node->lockPage());
-            return;
-          }
-        }
-
-        // Confirmation page was not displayed
+      	// Confirmation page was not displayed
+      	// First we check if the item is locked
+        if ($this->_checkLocked()) return;
+       
+        if (!$this->checkAttributes()) return;
+        // If we got here, then the node is not locked and we haven't displayed the
+        // confirmation page yet, so we display it
         $page = &$this->getPage();        
         $page->addContent($this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", $locked, TRUE));        
       }
@@ -82,6 +54,80 @@
         $this->m_node->redirect($location);
       }      
     }
-  }
+    
+    /**
+     * We have a confirmed delete, so we proceed to delete
+     */
+    function _doDelete()
+    {
+      if($this->m_node->deleteDb($this->m_postvars['atkselector']))
+      {
+        $this->m_node->m_db->commit();
+        $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
+        $this->m_node->redirect($location);
+      }
+      // Something is wrong here, the deleteDb failed
+      else
+      {
+        $this->m_node->m_db->rollback();
+        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$this->m_node->m_db->getErrorMsg());
+        $this->m_node->redirect($location);
+      }
+    }
+    
+    /**
+     * We check if the node is locked, if it is, we display the locked page,
+     * if it's not but it uses the locking feature, we lock it
+     * @return bool wether or not we displayed the 'locked' page
+     */
+    function _checkLocked()
+    {
+    	$locked = FALSE;
+    	
+    	if ($this->m_node->hasFlag(NF_LOCK))
+      {
+      	// We assume that the node is locked, unless proven otherwise
+        $locked = TRUE;
+        if (is_array($this->m_postvars['atkselector']))
+        {
+          foreach ($this->m_postvars['atkselector'] as $selector)
+           if (!$this->m_node->m_lock->lock($selector, $this->m_node->m_table)) $locked = FALSE;
+        }
+        elseif (!$this->m_node->m_lock->lock($this->m_postvars['atkselector'], $this->m_node->m_table)) $locked = FALSE;
 
+        // If the node is locked, we proceed to display the 'locked' page
+        if (!$locked)
+        {          
+          $page = &$this->getPage();
+          $page->addContent($this->m_node->lockPage());
+          return true;
+        }
+      }
+    }
+    
+    /**
+     * Checks with each of the attributes of the node whose record is about to be deleted
+     * if they allow the deletion
+     * @return bool wether or not the attributes have allowed deletion
+     */
+    function checkAttributes()
+    {
+      for ($counter=0; $counter<count($this->m_node->m_attribIndexList); $counter++)
+      {
+      	// Check with every attribute
+      	$p_attrib = &$this->m_node->m_attribList[$this->m_node->m_attribIndexList[$counter]["name"]];
+      	$allowed= $p_attrib->deleteAllowed();
+      	
+      	// If allowed !=== true, then it returned an error message
+      	if ($allowed!==true)
+      	{ 
+      		$this->m_node->m_db->rollback(); 
+          $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,sprintf(atktext("attrib_delete_not_allowed"),$this->m_node->m_attribIndexList[$counter]["name"],$allowed));
+          $this->m_node->redirect($location);
+      	  return;
+      	}
+      }
+      return true;
+    }
+  }
 ?>
