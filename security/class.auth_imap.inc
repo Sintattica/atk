@@ -10,6 +10,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.1  2001/06/18 10:24:58  peter
+   * Split POP3/IMAP authentication support (mainly a new POP3 auth class).
+   * Authentication and authorization can now be done by different auth classes.
+   *
    * Revision 1.2  2001/05/21 13:38:18  ivo
    * Added a cookie that can remember your login if you close your browser.
    * (disabled by default, enable in your configfile if you need it)

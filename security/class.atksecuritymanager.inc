@@ -11,6 +11,10 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.8  2001/06/18 10:24:58  peter
+   * Split POP3/IMAP authentication support (mainly a new POP3 auth class).
+   * Authentication and authorization can now be done by different auth classes.
+   *
    * Revision 4.7  2001/06/12 12:24:23  ivo
    * New feature: users can now have more then one group in db authentication.
    *
@@ -69,26 +73,42 @@
   require_once($config_atkroot."atk/security/class.auth_interface.inc");
   
   if ($config_authentication == "") $config_authentication_type = "none";
+  if ($config_authorization  == "") $config_authorization_type = $config_authentication_type;
   if ($config_securityscheme == "") $config_securityscheme = "none";
    
   include_once($config_atkroot."atk/security/class.auth_".$config_authentication.".inc");
+  include_once($config_atkroot."atk/security/class.auth_".$config_authorization.".inc");
    
   class atkSecurityManager
   {
-    var $m_authentication = 0;     
+    var $m_authentication = 0;    
+    var $m_authorization = 0; 
     var $m_scheme = "none";
     var $m_user = 0;
         
      
     // constructor
-    function atkSecurityManager($authentication_type="none", $securityscheme="none")
+    function atkSecurityManager($authentication_type="none", $authorization_type="none", $securityscheme="none")
     {       
      
-      atkdebug("creating securityManager (authtype: $authentication_type, scheme: $securityscheme)");
-       
+      atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
+
+      /* authentication class */       
       $classname = "auth_".$authentication_type;
       $this->m_authentication = new $classname;             
-       
+      
+      /* authorization class */
+      if ($authorization_type == $authentication_type)
+      {
+        $this->m_authorization &= $this->m_authentication;
+      }
+      else
+      { 
+        $classname = "auth_".$authorization_type; 
+        $this->m_authorization = new $classname;
+      }
+ 
+      /* security scheme */
       $this->m_scheme = $securityscheme;
     }
      
@@ -146,7 +166,7 @@
           if($this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW))
           {   
             // We store the username + securitylevel of the logged in user.
-            $this->m_user = $this->m_authentication->getUser($PHP_AUTH_USER);
+            $this->m_user = $this->m_authorization->getUser($PHP_AUTH_USER);
             // for convenience, we also store the user as a global variable.             
             atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$this->m_user["level"].")");
             $authenticated = true;
@@ -184,7 +204,7 @@
       else
       {
        
-        $required = $this->m_authentication->getEntity($node, $action);       
+        $required = $this->m_authorization->getEntity($node, $action);       
        
         if (count($required)==0)
         {
@@ -234,7 +254,7 @@
         return true;
       }
        
-      $required = $this->m_authentication->getAttribEntity($node, $attribute, $mode);
+      $required = $this->m_authorization->getAttribEntity($node, $attribute, $mode);
        
       if ($required==-1)
       {
@@ -318,6 +338,6 @@
   }      
    
   // The one and only security manager.   
-  $g_securityManager = new atkSecurityManager($config_authentication, $config_securityscheme);
+  $g_securityManager = new atkSecurityManager($config_authentication, $config_authorization, $config_securityscheme);
 
 ?>
