@@ -27,3 +27,6 @@ database access. PHPLIB (http://phplib.netuse.de) is Copyright (c) 1998,1999
 SH Online Dienst GmbH and made available under the Library General Public 
 License (LGPL). 
 
+ATK uses functions from the ADOdb Date Library, for date support prior to
+1970. The ADOdb Date Library (http://php.weblogs.com/adodb_date_time_library)
+is Copyright (c) 2003 John Lim and maide available under a BSD-style license.
