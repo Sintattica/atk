@@ -88,15 +88,15 @@
       
       if ($outer)
       {
-        $join="LEFT OUTER JOIN ";
-        $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
+        $join="LEFT OUTER JOIN ";  
       }
       else
       {
         $join="JOIN ";
-        $this->m_joins[]= " ".$join.$table." ".$alias;
-        $this->addCondition($condition);
+        //$this->m_joins[]= " ".$join.$table." ".$alias;
+        //$this->addCondition($condition);
       }
+      $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
 
     }
     
