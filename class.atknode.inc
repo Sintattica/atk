@@ -22,7 +22,7 @@ if (!defined("CLASS_ATKNODE_INC"))
   define("NF_TREE_NO_ROOT_DELETE",512); // No root elements can be deleted
   define("NF_TREE_NO_ROOT_COPY",1024); // No root elements can be copied
   
-  define("NF_AUTOSELECT",2048); // No root elements can be copied
+  define("NF_AUTOSELECT",2048); // No root elements can be copied 
 
   /**
    * The atkNode class represents a piece of information that
@@ -92,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.10  2001/05/01 09:15:51  ivo
+   * Initial session based atk version.
+   *
    * Revision 4.9  2001/04/25 09:39:36  ivo
    * typo fix
    *
@@ -328,6 +331,7 @@ if (!defined("CLASS_ATKNODE_INC"))
   require "atk/attributes/class.atkattribute.inc";
   require "atk/relations/class.atkrelation.inc";
   require "atk/security/class.atksecuritymanager.inc";
+  require "atk/session/class.atksessionmanager.inc";
   require "atk/atkmenutools.inc";  
   require "atk/modules/atkmoduletools.inc";
   require "atk/modules/class.atkmodule.inc";
@@ -350,6 +354,20 @@ if (!defined("CLASS_ATKNODE_INC"))
   $g_db->m_password = $config_databasepassword;
   $g_db->m_host     = $config_databasehost;
   $g_db->m_debug    = 0;
+  
+  /** 
+   * Sticky vars are variables that are passed in each url, or each form post.
+   * There are a few default sticky vars, but nodes can add their own sticky vars
+   * if they want to.
+   * Sticky vars use the global value of a var, so if you change the value in your
+   * code, the changed value is passed along.
+   *
+   * Sticky vars.. sticky vars.. what are they feeding you.... 
+   * Sticky vars.. sticky vars.. it's not your fault!
+   */
+   //$g_stickyVars = array("atknodetype","atktarget","atkfilter","atkaction");
+   
+   $g_sessionVars = array("atknodetype","atktarget","atkfilter","atkaction","atkselector");
 
   /************* MODULE HANDLING *************/
 
@@ -387,8 +405,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     atkdebug("login failed");
     exit;
   }
-
-
+ 
   // At some places we need a random number generator, so we seed the generator here.
   srand ((double) microtime() * 1000000);
 
@@ -518,19 +535,7 @@ if (!defined("CLASS_ATKNODE_INC"))
      * TODO: This may not be correct. We have to find a way to bind the 
      * select action to the action that follows after the select.
      */
-    var $m_unsecuredActions = array("select");
-                               
-    /** 
-     * Sticky vars are variables that are passed in each url, or each form post.
-     * There are a few default sticky vars, but nodes can add their own sticky vars
-     * if they want to.
-     * Sticky vars use the global value of a var, so if you change the value in your
-     * code, the changed value is passed along.
-     *
-     * Sticky vars.. sticky vars.. what are they feeding you.... 
-     * Sticky vars.. sticky vars.. it's not your fault!
-     */
-    var $m_stickyVars = array("atknodetype","atkreturnurl","atktarget","atkfilter");
+    var $m_unsecuredActions = array("select");                                   
 
     /*** Public functions ***/
 
@@ -546,7 +551,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_layout;
 
-      $this->debug('atkNode::atkNode('.$type.')');
+      atkdebug('atkNode::atkNode('.$type.')');
       $this->m_type = $type;
       $this->m_flags = $flags;
       $this->m_recordLoaded = 0;
@@ -641,7 +646,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
-     // $this->debug("Primary key: ".$primKey);
+     
       return $primKey;
     }
 
@@ -668,7 +673,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         $primKey.=$this->m_primaryKey[$i]."='[".$this->m_primaryKey[$i]."]'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
-      $this->debug("Primary key tpl: ".$primKey);
+      atkdebug("Primary key tpl: ".$primKey);
       return $primKey;
     }
     
@@ -679,7 +684,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     */
     function setOrder($fields)
     {
-      $this->debug('atkNode::setOrder('.$fields.')');
+      atkdebug('atkNode::setOrder('.$fields.')');
 
       $this->m_default_order = $fields;
     }
@@ -784,19 +789,21 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function editPage()
     {
-      $GLOBALS['g_layout']->register_script("atk/javascript/formfocus.js");
-      $GLOBALS['g_layout']->output('<br>');
-      $GLOBALS['g_layout']->ui_top(text('title_'.$this->m_type.'_edit'));
-      $GLOBALS['g_layout']->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php"'.
+      global $g_layout;
+      $g_layout->register_script("atk/javascript/formfocus.js");
+      $g_layout->output('<br>');
+      $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
+      $g_layout->output(session_form());
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-      $GLOBALS['g_layout']->output($this->editForm("edit",$forceList));
-      $GLOBALS['g_layout']->output('<br><input type="submit" value="'.text('saveandclose').'">');
-      $GLOBALS['g_layout']->output('<input type="submit" name="atknoclose" value="'.text('save').'">');
-      $GLOBALS['g_layout']->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
-      $GLOBALS['g_layout']->output('</form>');
-      $GLOBALS['g_layout']->ui_bottom();
-      $GLOBALS['g_layout']->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
+      $g_layout->output($this->editForm("edit",$forceList));
+      $g_layout->output('<br><input type="submit" value="'.text('saveandclose').'">');
+      $g_layout->output('<input type="submit" name="atknoclose" value="'.text('save').'">');
+      $g_layout->output('<input type="submit" name="atkcancel" value="'.text('cancel').'">');
+      $g_layout->output('</form>');
+      $g_layout->ui_bottom();
+      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
     }
     
     /**
@@ -804,7 +811,7 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function viewPage()
     {
-      global $g_layout, $atkreturnurl;  
+      global $g_layout;  
     
       $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
@@ -853,16 +860,8 @@ if (!defined("CLASS_ATKNODE_INC"))
                 
       }
       $page.='</table>';    
-      
-      if (strlen($atkreturnurl)>0)
-      {
-        $target = $atkreturnurl;
-      }
-      else
-      {        
-        $target = $this->stickyUrl('dispatch.php?atkaction=admin');
-      }
-      $page.='<br><br>'.url($target,text('back'));
+            
+      $page.='<br><br>'.href("dispatch.php",text('back'),SESSION_BACK);
       $g_layout->output($page);
       
       $g_layout->ui_bottom();
@@ -873,17 +872,19 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function addPage()
     {
-      $GLOBALS['g_layout']->register_script("atk/javascript/formfocus.js");
-      $GLOBALS['g_layout']->output('<br>');
-      $GLOBALS['g_layout']->ui_top(text('title_'.$this->m_type.'_add'));
-      $GLOBALS['g_layout']->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php"'.
+      global $g_layout;
+      $g_layout->register_script("atk/javascript/formfocus.js");
+      $g_layout->output('<br>');
+      $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
+      $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
+      $g_layout->output(session_form());                                   
       $forceList = decodeKeyValueSet($this->m_postvars['atkfilter']);
-      $GLOBALS['g_layout']->output($this->editForm("add",$forceList));
-      $GLOBALS['g_layout']->output('<br><input type="submit" value="'.text('save').'">');
-      $GLOBALS['g_layout']->output('</form>');
-      $GLOBALS['g_layout']->ui_bottom();
-      $GLOBALS['g_layout']->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
+      $g_layout->output($this->editForm("add",$forceList));
+      $g_layout->output('<br><input type="submit" value="'.text('save').'">');
+      $g_layout->output('</form>');
+      $g_layout->ui_bottom();
+      $g_layout->output('<SCRIPT LANGUAGE="JavaScript">placeFocus()</SCRIPT>');
     }
 
     /**
@@ -905,7 +906,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         array_unshift($this->m_attribList, $selector);
       }
 
-      $form.=$this->stickyForm();
+//      $form.=$this->stickyForm();
 
       $defaults = $this->m_records[$this->m_currentRec];
 
@@ -969,7 +970,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         }
       }      
 
-      $form.=$GLOBALS['g_layout']->ret_table_simple();
+      $form.=$g_layout->ret_table_simple();
 
       if (count($this->m_errors)>0)
       {
@@ -982,7 +983,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           $errormsg.='<br>'.text($attribname).': '.$msg;
         }
 
-        $form.=$GLOBALS['g_layout']->ret_td($errormsg,'colspan="2"');
+        $form.=$g_layout->ret_td($errormsg,'colspan="2"');
         $form.='</tr>';
       }
 
@@ -1028,15 +1029,15 @@ if (!defined("CLASS_ATKNODE_INC"))
             {
               if ($p_attrib->hasFlag(AF_BLANKLABEL))
               {
-                $form.=$GLOBALS['g_layout']->ret_td('&nbsp;');
+                $form.=$g_layout->ret_td('&nbsp;');
               }
               else if ($this->m_errors[$attribname]!="")
               {
-                $form.=$GLOBALS['g_layout']->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
+                $form.=$g_layout->ret_td('<div class="error">'.text($p_attrib->fieldName()).': </div>', 'valign="top"');
               }
               else
               {
-                $form.=$GLOBALS['g_layout']->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
+                $form.=$g_layout->ret_td(text($p_attrib->fieldName()).': ','valign="top"');
               }
             }
             else
@@ -1064,7 +1065,7 @@ if (!defined("CLASS_ATKNODE_INC"))
               }
 	          }
             
-            $form.=$GLOBALS['g_layout']->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
+            $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
             $form.='</tr>';
           }
         }
@@ -1107,24 +1108,20 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       if ($curr > 1)
       {
-        $newvars = $this->m_postvars;
-        $newvars['atkstartat'] = $newvars['atkstartat'] - $limit;
-        $nav = url('dispatch.php'.arrayToUrlVars($newvars),text('previous'))."&nbsp;|&nbsp;";
+        $newstart = $this->m_postvars['atkstartat'] - $limit;        
+        $nav = href('dispatch.php?atkstartat='.$newstart,text('previous'))."&nbsp;|&nbsp;";
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
-      {
-        $newvars = $this->m_postvars;
-        $newvars['atkstartat'] = max(0, ($i-1) * $limit);
-        $nav .= ($i == $curr) ? "<b>$i</b>" : url('dispatch.php'.arrayToUrlVars($newvars),"$i");
+      {      
+        $nav .= ($i == $curr) ? "<b>$i</b>" : href('dispatch.php?atkstartat='.max(0, ($i-1) * $limit),"$i");
         if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
       }
 
       if ($curr < $pages)
       {
-        $newvars = $this->m_postvars;
-        $newvars['atkstartat'] = $newvars['atkstartat'] + $limit;
-        $nav .= "&nbsp;|&nbsp;".url('dispatch.php'.arrayToUrlVars($newvars),text('next'));
+        $newstart = $this->m_postvars['atkstartat'] + $limit;;        
+        $nav .= "&nbsp;|&nbsp;".href('dispatch.php?atkstartat='.$newstart,text('next'));
       }
 
       return $nav;
@@ -1137,21 +1134,21 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function adminPage()
     {
-      global $g_securityManager;
+      global $g_securityManager, $g_layout;
 
-      $GLOBALS['g_layout']->ui_top(text('title_'.$this->m_type.'_admin'));
+      $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
 
-      $GLOBALS['g_layout']->output('<br>');
+      $g_layout->output('<br>');
       
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
       {
-        $GLOBALS['g_layout']->output($adminHeader."<br><br>");
+        $g_layout->output($adminHeader."<br><br>");
       }
 
       // When there's a lot of data, records will be spread across multiple
       // pages.
-      if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=$GLOBALS["config_recordsperpage"];
+      if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
 
       if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
@@ -1159,45 +1156,43 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
-        $addurl = $this->stickyUrl('dispatch.php?atkaction=add');
-        $GLOBALS['g_layout']->output(url($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix")).'<br><br>');
+        $addurl = 'dispatch.php?atkaction=add';
+        $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
       }
 
       // create navigation bar
       $nav = $this->buildNavigation();
-      if (!empty($nav)) $GLOBALS['g_layout']->output("$nav<br><br>");
+      if (!empty($nav)) $g_layout->output("$nav<br><br>");
 
       $actions = Array();
 
       if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
       {
-        $actions[]=url($this->stickyUrl('dispatch.php?atkaction=edit&atkselector=[pk]'),text('edit'));
+        $actions[]=href('dispatch.php?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
       }
       else
       {
         // if you may not edit, maybe you are allowed to view..
         if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
         {
-          $actions[]=url($this->stickyUrl('dispatch.php?atkaction=view&atkselector=[pk]'),text('view'));
+          $actions[]=href('dispatch.php?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
         }
       }
       if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
       {
-        $actions[]=url($this->stickyUrl('dispatch.php?atkaction=delete&atkselector=[pk]'),text('delete'));
+        $actions[]=href('dispatch.php?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
       }
       if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
       {
-        $actions[]=url($this->stickyUrl('dispatch.php?atkaction=copy&atkselector=[pk]'),text('copy'));
+        $actions[]=href('dispatch.php?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
       }
 
-      $GLOBALS['g_layout']->output(
-          $this->recordList($actions)
-                                  );
+      $g_layout->output($this->recordList($actions));
 
-      if (!empty($nav)) $GLOBALS['g_layout']->output('<br>'.$nav);
-      $GLOBALS['g_layout']->output('<br><br>');
+      if (!empty($nav)) $g_layout->output('<br>'.$nav);
+      $g_layout->output('<br><br>');
 
-      $GLOBALS['g_layout']->ui_bottom();
+      $g_layout->ui_bottom();
     }
 
   
@@ -1209,7 +1204,8 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function recordList($actions,$sortable=true,$suppressList="")
     {
-      $output = $GLOBALS['g_layout']->data_top();
+      global $g_layout;
+      $output = $g_layout->data_top();
 
       $output.="<tr>";
    
@@ -1236,17 +1232,16 @@ if (!defined("CLASS_ATKNODE_INC"))
             )
             &&$musthide==false
            )
-        {
-          $newvars = $this->m_postvars;
-          $newvars['atkorderby']=$this->m_table.".".$p_attrib->fieldName();
+        {          
+          $neworder=$this->m_table.".".$p_attrib->fieldName();
 
           if ($sortable && !$p_attrib->hasFlag(AF_NOSORT))
           {
-            $tmp = url($this->stickyUrl('dispatch.php'.arrayToUrlVars($newvars)),text($p_attrib->fieldName()));
+            $tmp = href('dispatch.php?atkorderby='.$neworder,text($p_attrib->fieldName()));
           }
           else $tmp = text($p_attrib->fieldName());
 
-          $output.=$GLOBALS['g_layout']->ret_td_datatitle($tmp);
+          $output.=$g_layout->ret_td_datatitle($tmp);
           
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))
@@ -1261,13 +1256,13 @@ if (!defined("CLASS_ATKNODE_INC"))
       if (!$this->hasFlag(NF_NO_SEARCH))
       {
         $rand = rand(1,1000);
-        //$searchRow = '<tr><a name="searchform"><form action="dispatch.php#searchform" method="post">';
+        
         // The above row was used to move the browserwindow to the bottom of the screen,
         // so a user doesn't have to scroll down after each search. But there's some stupid
         // thing in internet explorer that it doesn't post the form anymore after you've
         // used it once.
-        $searchRow = '<tr><a name="searchform"><form action="dispatch.php" method="post">';
-
+        $searchRow = '<tr><a name="searchform"><form action="dispatch.php?'.SID.'" method="post">';
+        $searchRow.= session_form();
         $searchable = false;
 
         // Second loop.. this time for the search fields.
@@ -1289,18 +1284,18 @@ if (!defined("CLASS_ATKNODE_INC"))
             if ($p_attrib->hasFlag(AF_SEARCHABLE))
             {
               $searchable = true;              
-              $searchRow.=$GLOBALS['g_layout']->ret_td_datatitle($p_attrib->search($this->m_postvars['atksearch']));
+              $searchRow.=$g_layout->ret_td_datatitle($p_attrib->search($this->m_postvars['atksearch']));
             }
             else
             {
-              $searchRow.=$GLOBALS['g_layout']->ret_td_datatitle();
+              $searchRow.=$g_layout->ret_td_datatitle();
             }
           }
         }
 
-        $searchRow.=$GLOBALS['g_layout']->ret_td_datatitle('<input type="submit" value="'.text("search").'">');
+        $searchRow.=$g_layout->ret_td_datatitle('<input type="submit" value="'.text("search").'">');
         $searchRow.='<input type="hidden" name="atkaction" value="'.$this->m_action.'">';
-        $searchRow.=$this->stickyForm();
+        //$searchRow.=$this->stickyForm();
         $searchRow.="</form></tr>";
 
       }
@@ -1308,7 +1303,7 @@ if (!defined("CLASS_ATKNODE_INC"))
       // one empty title which comes on top of the 'edit/delete/...' column
       if (count($actions)>0||$searchable)
       {
-        $output.=$GLOBALS['g_layout']->ret_td_datatitle();
+        $output.=$g_layout->ret_td_datatitle();
       }
 
       $output.="</tr>";
@@ -1338,13 +1333,13 @@ if (!defined("CLASS_ATKNODE_INC"))
 
             if (method_exists($this,$funcname))
             {
-              $output.=$GLOBALS['g_layout']->ret_td($this->$funcname($this->m_records[$this->m_currentRec]));
+              $output.=$g_layout->ret_td($this->$funcname($this->m_records[$this->m_currentRec]));
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $output.=$GLOBALS['g_layout']->ret_td($p_attrib->display($this->m_records[$this->m_currentRec]));
+              $output.=$g_layout->ret_td($p_attrib->display($this->m_records[$this->m_currentRec]));
             }
             
             // Calculate totals..
@@ -1367,13 +1362,13 @@ if (!defined("CLASS_ATKNODE_INC"))
             $action=stringparse($action,$this->m_records[$this->m_currentRec],true);
             $stractions.=$action.'&nbsp;';
           }
-          $output.=$GLOBALS['g_layout']->ret_td($stractions);
+          $output.=$g_layout->ret_td($stractions);
         }
         else
         {
           if ($searchable)
           {
-            $output.=$GLOBALS['g_layout']->ret_td("&nbsp;");
+            $output.=$g_layout->ret_td("&nbsp;");
           }
         }
 
@@ -1402,11 +1397,11 @@ if (!defined("CLASS_ATKNODE_INC"))
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {                            
-              $totalRow.=$GLOBALS['g_layout']->ret_td_datatitle($p_attrib->display($totals[$attribname]));
+              $totalRow.=$g_layout->ret_td_datatitle($p_attrib->display($totals[$attribname]));
             }
             else
             {
-              $totalRow.=$GLOBALS['g_layout']->ret_td_datatitle();
+              $totalRow.=$g_layout->ret_td_datatitle();
             }
           }
         }     
@@ -1414,7 +1409,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         // one empty title which comes below the 'edit/delete/...' column
         if (count($actions)>0||$searchable)
         {  
-          $totalRow.=$GLOBALS['g_layout']->ret_td_datatitle();
+          $totalRow.=$g_layout->ret_td_datatitle();
         }
 
         $totalRow.="</tr>";
@@ -1422,7 +1417,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         $output.=$totalRow;      
       }
       
-      $output.=$GLOBALS['g_layout']->data_bottom();
+      $output.=$g_layout->data_bottom();
 
       return $output;
 
@@ -1568,7 +1563,7 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       // When there's a lot of data, records will be spread across multiple
       // pages.
-      if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=$GLOBALS["config_recordsperpage"];
+      if ($this->m_postvars['atklimit']=="") $this->m_postvars['atklimit']=atkconfig("recordsperpage");
 
       if ($this->m_postvars['atkstartat']=="") $this->m_postvars['atkstartat']=0;
 
@@ -1593,7 +1588,7 @@ if (!defined("CLASS_ATKNODE_INC"))
         $nav = $this->buildNavigation();
         if (!empty($nav)) $g_layout->output("$nav<br><br>");
 
-        $actions=Array(url($this->m_postvars['atktarget'],text('select')));
+        $actions=Array(href($this->m_postvars['atktarget'],text('select')));
 
         $g_layout->output($this->recordList($actions));
 
@@ -1615,24 +1610,24 @@ if (!defined("CLASS_ATKNODE_INC"))
       
       $g_layout->ui_top(text('title_delete'));
 
-      $g_layout->output('<form action="dispatch.php" method="post">');
-
+      $g_layout->output('<form action="dispatch.php?"'.SID.' method="post">');
+      $g_layout->output(session_form());
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
-      $GLOBALS['g_layout']->output($this->stickyForm());
+      
 
-      $GLOBALS['g_layout']->table_simple();
+      $g_layout->table_simple();
 
-      $GLOBALS['g_layout']->output('<tr>');
+      $g_layout->output('<tr>');
 
-      $GLOBALS['g_layout']->td($errormsg,'colspan="2"');
-      $GLOBALS['g_layout']->output('</tr>');
-      $GLOBALS['g_layout']->td(text('confirm_delete'));
-      $GLOBALS['g_layout']->output('<tr>');
-      $GLOBALS['g_layout']->td('<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
-      $GLOBALS['g_layout']->output('</tr></table></form>');
+      $g_layout->td($errormsg,'colspan="2"');
+      $g_layout->output('</tr>');
+      $g_layout->td(text('confirm_delete'));
+      $g_layout->output('<tr>');
+      $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'"><input name="cancel" type="submit" value="'.text('no').'">','colspan="2"');
+      $g_layout->output('</tr></table></form>');
 
-      $GLOBALS['g_layout']->ui_bottom();
+      $g_layout->ui_bottom();
     }
 
     /**
@@ -1642,10 +1637,10 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function dispatch($postvars)
     {
-      global $g_securityManager, $g_db;
+      global $g_securityManager, $g_db, $g_sessionManager, $g_layout;
 
-      $this->m_postvars = $postvars;
-      atkDataDecode($this->m_postvars);
+      $this->m_postvars = $postvars;            
+      
       $this->m_action = $postvars['atkaction'];
       
       if ($this->allowed($this->m_action))
@@ -1769,7 +1764,7 @@ if (!defined("CLASS_ATKNODE_INC"))
               }
               break;
             default:
-              $this->debug("dispatcher error: no action defined for '".$this->m_postvars['atkaction']."'");
+              atkdebug("dispatcher error: no action defined for '".$this->m_postvars['atkaction']."'");
               break;
             // TODO: also, admin should not always have an 'addform' and 'adminPage'. This could be
             // customised.
@@ -1778,14 +1773,14 @@ if (!defined("CLASS_ATKNODE_INC"))
       }
       else
       {
-        $GLOBALS['g_layout']->output("Sorry, you don't have permission to perform this action");
+        $g_layout->output("Sorry, you don't have permission to perform this action");
       }
-      $GLOBALS['g_layout']->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
+      $g_layout->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
       
       // This is the end of all things for this page..
       // so we clean up some resources..
       $g_db->disconnect();
-      $this->debug("disconnected from the database");
+      atkdebug("disconnected from the database");
     }
 
     /**
@@ -1794,39 +1789,45 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function redirect($location="")
     {
-      $this->debug("atknode::redirect()");
+      atkdebug("atknode::redirect()");
+      $back = false;
       
       if ($location=="")
-      {
-        if (strlen($this->m_postvars['atkreturnurl'])>0)
+      {      
+        // The page we redirect to is depending on the action we are doing.
+        switch ($this->m_action)
         {
-          $location = rawurldecode($this->m_postvars['atkreturnurl']);
-        }
+          case "save":
+            if ($this->hasFlag(NF_EDITAFTERADD))              
+            {
+              // todo: FIXME
+              $location = session_url('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey()),SESSION_NESTED);
+            } 
+            else
+            {
+              $back = true;
+            }
+            break;
+          default:
+            $back = true;
+            break;
+        }       
+        
+        if ($back)
+        {
+          $location = session_url("dispatch.php",SESSION_BACK);
+        }     
         else
         {
-          // The page we redirect to is depending on the action we are doing.
-          switch ($this->m_action)
-          {
-            case "save":
-              $location = $this->stickyUrl('dispatch.php?atkaction=admin');
-
-              if ($this->hasFlag(NF_EDITAFTERADD))
-              {
-                $location = $this->stickyUrl('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->primaryKey()));
-              } 
-              break;
-            default:
-              $location = $this->stickyUrl('dispatch.php?atkaction=admin');
-              break;
-          }
+          $location = session_url("dispatch.php",SESSION_DEFAULT);
         }
+
       }
-
-      $this->debug('location: '.$location);
-
-      if ($GLOBALS['config_debug']>=2)
+      
+  
+      if (atkconfig("debug")>=2)
       {
-        $this->debug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
+        atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
       }
       else
       {
@@ -1839,6 +1840,8 @@ if (!defined("CLASS_ATKNODE_INC"))
      */
     function xml()
     {
+      global $g_layout;  
+    
       $xml = "<".$this->m_type." ";
 
       foreach (array_keys($this->m_attribList) as $attribname)
@@ -1853,11 +1856,11 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       if ($this->m_postvars['tohtml']==1)
       {
-        $GLOBALS['g_layout']->output(htmlspecialchars($xml).'<br>');
+        $g_layout->output(htmlspecialchars($xml).'<br>');
       }
       else
       {
-        $GLOBALS['g_layout']->rawoutput($xml);
+        $g_layout->rawoutput($xml);
       }
     }
 
@@ -1946,7 +1949,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     function validate()
     {
       global $g_db;
-      $this->debug("validate()");
+      atkdebug("validate()");
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -1987,7 +1990,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_db;
 
-      $name = "atk".$GLOBALS["config_database"]."query";
+      $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $query->addTable($this->m_table);
@@ -2015,7 +2018,7 @@ if (!defined("CLASS_ATKNODE_INC"))
       $querystring = $query->buildUpdate();
 
       //$query.= " WHERE ;
-      $this->debug("updatedb - querystring: ".$querystring);
+      atkdebug("updatedb - querystring: ".$querystring);
       $g_db->query($querystring);
 
       // also store special storage attributes.
@@ -2051,7 +2054,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_db;
 
-      $name = "atk".$GLOBALS["config_database"]."query";
+      $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $query->addTable($this->m_table);
@@ -2107,15 +2110,11 @@ if (!defined("CLASS_ATKNODE_INC"))
             $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
           }
         }
-        else
-        {
-         // $this->debug("$attribname not included in select");
-        }
       }
 
 
       $querystring = $query->buildCount();
-      $this->debug("countDb() - query: ".$querystring);
+      atkdebug("countDb() - query: ".$querystring);
       $g_db->query($querystring);
       $result = $g_db->getrows($querystring);
       return $result[0][0];
@@ -2159,7 +2158,7 @@ if (!defined("CLASS_ATKNODE_INC"))
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
-      $name = "atk".$GLOBALS["config_database"]."query";
+      $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $query->addTable($this->m_table);
@@ -2214,16 +2213,12 @@ if (!defined("CLASS_ATKNODE_INC"))
           {
             $p_attrib->addToQuery($query,$this->m_table,"","",1,"select"); // start at level 1
           }
-        }
-        else
-        {
-         // $this->debug("$attribname not included in select");
-        }
+        }        
       }
 
       $querystring = $query->buildSelect();
       if ($order!="") $querystring.=" ORDER BY ".$order;
-      $this->debug("selectDb() - query: ".$querystring);
+      atkdebug("selectDb() - query: ".$querystring);
 
       $this->recordLoaded = 1;
 
@@ -2290,7 +2285,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           if ($usefieldalias) $fieldaliasprefix = $alias."_AMDAE_";
           if (!is_object($p_attrib))
           {
-            atkdebug($p_attrib->m_name." is not an object?!");
+            atkdebug($p_attrib->m_name." is not an object?! Check your descriptor_def for non-existant fields");
           }
           else
           {
@@ -2345,7 +2340,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     {
       global $g_db;
       
-      $name = "atk".$GLOBALS["config_database"]."query";
+      $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $storelist = Array();
@@ -2390,14 +2385,14 @@ if (!defined("CLASS_ATKNODE_INC"))
       }
 
       $querystring = $query->buildInsert();
-      $this->debug("adddb - querystring: ".$querystring);
+      atkdebug("adddb - querystring: ".$querystring);
       $g_db->query($querystring);
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
       $this->postAdd($this->m_records[$this->m_currentRec]);
 
-      $this->debug($g_db->m_error);
+      atkdebug($g_db->m_error);
     }
 
     /**
@@ -2425,7 +2420,7 @@ if (!defined("CLASS_ATKNODE_INC"))
       }
 
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      $this->debug("deleteDb - query: ".$query);
+      atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
     }
@@ -2476,28 +2471,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     function adminHeader()
     {
       return "";
-    }
-
-    /**
-     * Retrieve a value from the configuration
-     *
-     * Example: echo config("database"); will show the database you're using.
-     *
-     * @param $var The name of the configuration option you want to retrieve
-     */
-    function config($var)
-    {
-      return $GLOBALS["config_".$var];
-    }
-
-    /**
-     * Create's debug events
-     * @param $txt event
-     */
-    function debug($txt)
-    {
-      $GLOBALS['g_layout']->debug($txt);
-    }
+    }    
     
     /**
      * Lookup the security 'key' for an action
@@ -2561,44 +2535,13 @@ if (!defined("CLASS_ATKNODE_INC"))
       if ($HTTP_POST_VARS[$key]!="") return $HTTP_POST_VARS[$key];
       if ($GLOBALS[$key]!="") return $GLOBALS[$key];
       return "";
-    }
-  
-    /**
-     * Append all sticky vars to a url. The function checks if the url 
-     * doesn't already contain a var. In that case, the existing var
-     * remains in place.
-     */     
-    function stickyUrl($url)
-    {      
-      $first = true;
-      for ($i=0;$i<count($this->m_stickyVars);$i++)
-      {
-        if (!strpos($url, $this->m_stickyVars[$i]."=")>0)
-        {
-          $value = $this->getStickyValue($this->m_stickyVars[$i]);
-          if ($value!="")
-          {
-            if ($first&&!strpos($url, "?")>0) 
-            {
-              $url.="?";
-              $first=false;
-            }
-            else
-            {
-              $url.="&";
-            }
-            $url.=$this->m_stickyVars[$i]."=".rawurlencode($value);
-          }                             
-        }
-      }
-      return $url;
-    }
+    }      
     
     /**
      * Puts all sticky vars in hidden form elements.
      */     
     function stickyForm()
-    {      
+    {    /*  
       for ($i=0;$i<count($this->m_stickyVars);$i++)
       {    
         $value = $this->m_postvars[$this->m_stickyVars[$i]];
@@ -2607,7 +2550,7 @@ if (!defined("CLASS_ATKNODE_INC"))
           $form.="\n".'<input type="hidden" name="'.$this->m_stickyVars[$i].'" value="'.$value.'">';                  
         }
       }
-      return $form;
+      return $form;*/
     }
 
   }

@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.1  2001/05/01 09:15:51  ivo
+  * Initial session based atk version.
+  *
   * Revision 4.0  2001/04/23 10:19:38  ivo
   * Revision number update
   *
@@ -82,6 +85,16 @@
      global $g_debug_msg;
      $g_debug_msg.="dbg: $txt <br>\n";
   }
+  
+  /**
+   * Function atkconfig
+   *
+   * Return the value of a config variable
+   */   
+  function atkconfig($tag)
+  {
+    return $GLOBALS["config_".$tag];
+  }
 
   /**
     * function ArrayToUrlVars
@@ -123,23 +136,118 @@
     else return $result;
   }
   
-  /**
-    * Function url
-    *
-    *  Makes an url   ( <a href="url" extraprops>name</a> )
-    */
-  function url($url,$name="",$extraprops="")
+  /** 
+   * Function session_form
+   *
+   * Adds session information to a form
+   */
+  function session_form($sessionstatus=SESSION_DEFAULT)
   {
+    global $atklevel;
+    
+    if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
+    
+    switch ($sessionstatus)
+    {
+      case SESSION_NEW:
+      {
+        $newlevel = -1; 
+        break;
+      }
+      case SESSION_NESTED:
+      {
+        $newlevel = $atklevel+1; 
+        break;
+      }
+      case SESSION_BACK:
+      {
+        $newlevel = max(0,$atklevel-1);
+        break;
+      }
+      default:
+      {
+        $newlevel = $atklevel;
+      }
+    }
+    
+    if ($newlevel!=0) 
+    {
+      return '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
+    }
+    return "";
+  
+  }
+  
+  /**
+   * Function session_url
+   *
+   *  Makes a session-aware url thingee...
+   */
+  function session_url($url,$sessionstatus=SESSION_DEFAULT)
+  {
+    global $atklevel;
+    
+    if (!isset($atklevel)||$atklevel=="") $atklevel = 0;
+    
+    switch ($sessionstatus)
+    {
+      case SESSION_NEW:
+      {
+        $newlevel = -1; 
+        break;
+      }
+      case SESSION_NESTED:
+      {
+        $newlevel = $atklevel+1; 
+        break;
+      }
+      case SESSION_BACK:
+      {
+        $newlevel = max(0,$atklevel-1); 
+        break;
+      }
+      default:
+      {
+        $newlevel = $atklevel;
+      }
+    }
+    
     if ($name=="") $name=$url;
-    return '<a href="'.$url.'" '.$extraprops.'>'.$name.'</a>';
+    if (strpos($url,"?")>0) 
+    {
+      $start = "&";
+    }
+    else 
+    {
+      $start = "?";
+    }
+    if ($newlevel!=0) 
+    {
+      $url.= $start."atklevel=".$newlevel."&".SID;
+    }
+    else
+    {
+      $url.= $start.SID;
+    }
+    return $url;
+  }
+  
+  /**
+   * Function href
+   *
+   *  Makes a session-aware href thingee...
+   */
+  function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
+  {    
+    return '<a href="'.session_url($url,$sessionstatus).'" '.$extraprops.'>'.$name.'</a>';
   }
 
   
   /**
-    * Function atk_array_merge
-    * 
-    * Same as array_merge from php, but without duplicates..
-    */
+   * Function atk_array_merge
+   * 
+   * Same as array_merge from php, but without duplicates..
+   */
   function atk_array_merge($array1, $array2)
   {
     $res = Array();
@@ -175,11 +283,11 @@
   }
   
   /**
-    * Function stripQuotes
-    *
-    * strips ' or  " from the begin and end of a string (only if they are 
-    * on both sides, e.g. foo' remains foo' but 'bar' becomes bar.
-    */
+   * Function stripQuotes
+   *
+   * strips ' or  " from the begin and end of a string (only if they are 
+   * on both sides, e.g. foo' remains foo' but 'bar' becomes bar.
+   */
   function stripQuotes($string)
   {
     if ($string[0]=="'" && substr($string,-1)=="'") return substr($string,1,-1);
@@ -188,10 +296,10 @@
   }
   
   /**
-    * Function decodeKeyValuePair
-    *
-    * translates a string like id='3' into Array("id"=>3)
-    */
+   * Function decodeKeyValuePair
+   *
+   * translates a string like id='3' into Array("id"=>3)
+   */
   function decodeKeyValuePair($pair)
   {
     list($key,$value)=split("=",$pair);

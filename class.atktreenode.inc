@@ -17,6 +17,9 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     *
     * $Id$
     * $Log$
+    * Revision 4.4  2001/05/01 09:15:51  ivo
+    * Initial session based atk version.
+    *
     * Revision 4.3  2001/04/24 09:06:09  sandy
     * first level of the tree always visible, and fixed the NF_TREE flags.
     *
@@ -100,8 +103,8 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
-        $addurl = $this->stickyUrl("dispatch.php?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'")."&atkreturnurl=".rawurlencode("dispatch.php?atknodetype=".$this->m_type."&atkaction=admin"));
-        $g_layout->output(url($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix")).'<br><br>');
+        $addurl = "dispatch.php?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'")."&atkreturnurl=".rawurlencode("dispatch.php?atknodetype=".$this->m_type."&atkaction=admin");
+        $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix")).'<br><br>');
       }
 
       $g_layout->output($this->GraphTreeRender());
@@ -385,13 +388,13 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
-          $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
+          $res.='<td> '.href("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
           if($cnt>0)
           {
-            $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
+            $res.=' '.href("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
             if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt][0]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
             {    
-              $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
+              $res.=' '.href("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
             }
             if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt][0]==1)
             {
@@ -399,7 +402,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
             }
             else
             {
-              $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
+              $res.=' '.href("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
             }
           }
          $res.= "</td></tr>\n";       
@@ -417,11 +420,11 @@ if (!defined("CLASS_ATKTREENODE_INC"))
       while (list($id,$objarr) = each($tree))
       {
         $res.='<tr><td>'.str_repeat("-",(2*$level))." ".$objarr->m_label.'</td><td>';
-        $res.=' '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin')."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$objarr->m_id."'"), text("add"));
-        $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("edit"));
+        $res.=' '.href("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin')."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$objarr->m_id."'"), text("add"));
+        $res.=' '.href("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("edit"));
         if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
         {    
-          $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("copy"));
+          $res.=' '.href("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("copy"));
         }
         if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
         {
@@ -429,7 +432,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
         }
         else
         {
-          $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("delete"));
+          $res.=' '.href("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$objarr->m_id, text("delete"));
         }
         $res.="</td></tr>";
         if (count($objarr->m_sub)>0)

@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.4  2001/05/01 09:15:51  ivo
+ * Initial session based atk version.
+ *
  * Revision 1.3  2001/04/24 12:40:50  ivo
  * skel cleanup, typo fix in moduletools.
  *
@@ -86,7 +89,10 @@ if (!defined("ATKMODULETOOLS_INC"))
     
     /* check for file */
     if (!file_exists($file))
-      halt("Cannot create node, because a required file ($file) does not exist!", "critical");
+    {
+      atkdebug("Cannot create node, because a required file ($file) does not exist!", "critical");
+      return NULL;
+    }
 
     /* return object */
     include $file;

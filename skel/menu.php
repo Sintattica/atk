@@ -13,6 +13,9 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.4  2001/05/01 09:15:51  ivo
+   * Initial session based atk version.
+   *
    * Revision 4.3  2001/04/24 13:51:50  ivo
    * Fixed some small bugs, and updated the language files, improved the menu.
    *
@@ -57,12 +60,12 @@
     if ($g_menu[$atkmenutop][$i] == "-") $menu .= $config_menu_delimiter;
     
     /* submenu ? */
-    else if (empty($url) && $enable) $menu .= '<a href="menu.php?atkmenutop='.$name.'">'.text("menu_$name").'</a><br>';
-    else if (empty($url) && !$enable) $menu .= text("menu_$name").'</a><br>';
+    else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_NEW).'<br>';
+    else if (empty($url) && !$enable) $menu .= text("menu_$name").'<br>';
       
     /* normal menu item */
-    else if ($enable) $menu .= '<a href="'.$url.'" target="main">'.text("title_$name").'</a><br>';
-    else $menu .= text("title_$name").'</a><br>';    
+    else if ($enable) $menu .= href($url,text("title_$name"),SESSION_NEW,'target="main"').'<br>';
+    else $menu .= text("title_$name").'<br>';    
   }
   
   /* previous */
@@ -70,7 +73,7 @@
   {
     $parent = $g_menu_parent[$atkmenutop];
     $menu .= $config_menu_delimiter;
-    $menu .= '<a href="menu.php?atkmenutop='.$parent.'"><< '.text("menu_$parent").'</a><br>';  
+    $menu .= href('menu.php?atkmenutop='.$parent,'<< '.text("menu_$parent"),SESSION_NEW).'<br>';  
   }
 
   /* bottom */
