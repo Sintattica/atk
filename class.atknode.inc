@@ -95,6 +95,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.58  2001/06/19 14:00:01  ivo
+   * searchform posts to phpself instead of dispatch.php
+   *
    * Revision 4.57  2001/06/19 09:04:32  peter
    * viewPage(...) allows you now to override a attribute's display method
    *
@@ -1402,7 +1405,7 @@
      */
     function recordList($recordset, $actions,$sortable=true,$suppressList="")
     {
-      global $g_layout;
+      global $g_layout, $PHP_SELF;
       $output = $g_layout->data_top();
 
       $output.="<tr>";
@@ -1458,7 +1461,7 @@
         // so a user doesn't have to scroll down after each search. But there's some stupid
         // thing in internet explorer that it doesn't post the form anymore after you've
         // used it once.
-        $searchRow = '<tr><a name="searchform"><form action="dispatch.php?'.SID.'" method="post">';
+        $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="post">';
         $searchRow.= session_form();
         $searchable = false;
 
