@@ -270,7 +270,8 @@
     function delete($record)
     {
       $classname = $this->m_destination;
-      $rel = &getNode($classname);
+      $cache_id = $this->m_owner.".".$this->m_name;
+      $rel = &getNode($classname,$cache_id);
       
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
