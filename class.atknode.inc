@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.50  2001/06/08 14:33:30  ivo
+   * Optimisations to atktreenode.
+   * Smaller imp of row color alternationi feature.
+   *
    * Revision 4.49  2001/06/08 14:19:59  paul
    * datatable made themable
    *
@@ -1458,20 +1462,11 @@
 
       if ($searchable) $output.=$searchRow;           
       
-      $bg_c=0; // bgcolor counter
       
       for ($i=0;$i<count($recordset);$i++)
-      {
-       if ($bg_c==0)
-        {
-        $output.='<tr class="row1">';
-        $bg_c=1;
-        }
-       else 
-        {
-        $output.='<tr class="row2">';
-        $bg_c=0;
-        }
+      {  
+        // We alternate the color for even and non-even rows.        
+        $output.='<tr class="row'.(($i%2==0)?1:2).'">';
         
         foreach (array_keys($this->m_attribList) as $attribname)
         {

@@ -13,6 +13,10 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.13  2001/06/08 14:33:30  ivo
+    * Optimisations to atktreenode.
+    * Smaller imp of row color alternationi feature.
+    *
     * Revision 4.12  2001/05/18 07:49:42  ivo
     * Fixes to sessionmanagement.
     *
@@ -69,9 +73,7 @@
     */
   include_once($config_atkroot."atk/atktreetools.inc");
   
-  $g_limit = 10;
-  $g_start = 0;
-  $g_teller = 0;
+  $g_count = 1;
   $g_maxlevel = 0;
   
   class atkTreeNode extends atkNode
@@ -99,7 +101,7 @@
      */
     function adminPage()
     {
-      global $g_securityManager,$g_layout,$g_maxlevel,$g_teller;
+      global $g_securityManager,$g_layout,$g_maxlevel;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
       $g_layout->output($this->stackTrace());
@@ -122,14 +124,15 @@
         $group=$recordset[$i];
         $t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);    
       }
-      $this->m_tree[$g_teller][0]=0; 
-      $this->m_tree[$g_teller][1]="&nbsp;"; 
-	    $this->m_tree[$g_teller][2]=''; 
-	    $this->m_tree[$g_teller][3]=''; 
-	    $this->m_tree[$g_teller][4]=1; 
-      $g_teller++;
+      $this->m_tree[0]["level"]=0; 
+      $this->m_tree[0]["label"]="&nbsp;"; 
+	    $this->m_tree[0]["id"]=''; 	    
+	    $this->m_tree[0]["isleaf"]=1; 
+      
       $test = $this->Fill_tree($t->m_tree);
       $g_maxlevel=$g_maxlevel+2;
+      
+      //var_dump($this->m_tree);
 
       $g_layout->output("<table border=\"0\" cellspacing=0 cellpadding=0 cols=".($g_maxlevel+2)." width=".($g_maxlevel*30).">\n");
 
@@ -153,16 +156,16 @@
      */
     function Fill_tree($tree="",$level=0)
     {
-      global $g_teller,$g_maxlevel;
+      global $g_count,$g_maxlevel, $exp_index;
       while (list($id,$objarr) = each($tree))
       {
-        $this->m_tree[$g_teller][0]=$level+1; 
-		    $this->m_tree[$g_teller][1]=$objarr->m_label; 
-		    $this->m_tree[$g_teller][2]=$objarr->m_id; 
-		    $this->m_tree[$g_teller][3]=''; 
-		    $this->m_tree[$g_teller][4]=0; 
-		    if ($this->m_tree[$g_teller][0] > $g_maxlevel) $g_maxlevel=$this->m_tree[$g_teller][0];     
-		    $g_teller++;
+        $this->m_tree[$g_count]["level"]=$level+1; 
+		    $this->m_tree[$g_count]["label"]=$objarr->m_label; 
+		    $this->m_tree[$g_count]["id"]=$objarr->m_id; 
+        $exp_index[$objarr->m_id] = $g_count;        		    
+		    $this->m_tree[$g_count]["isleaf"]=0; 
+		    if ($this->m_tree[$g_count]["level"] > $g_maxlevel) $g_maxlevel=$this->m_tree[$g_count]["level"];     
+		    $g_count++;
         if (count($objarr->m_sub)>0)
         {          
           $this->Fill_tree($objarr->m_sub, $level+1);
@@ -179,7 +182,7 @@
      */
     function GraphTreeRender()
     {
-      global $g_limit,$g_teller,$g_maxlevel,$g_layout,$g_theme;
+      global $g_maxlevel,$g_layout,$g_theme, $exp_index;
       if(is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
         $icon_path ="themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
@@ -202,9 +205,9 @@
       $lastlevel=0;
       for ($i=0; $i<count($this->m_tree); $i++) 
 	    { 
-        if($this->m_tree[$i][0]<2)
+        if($this->m_tree[$i]["level"]<2)
         {
-          if($this->m_tree[$i][4]==1&&$this->m_tree[$i][0]<1)
+          if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
           {
      	      $expand[$i]=1; 
 	   	      $visible[$i]=1;
@@ -231,7 +234,8 @@
 	    $i=0;
 	    while($i<count($explevels)) 
 	    { 
-	    	$expand[$explevels[$i]]=1; 
+	    	//$expand[$explevels[$i]]=1; 
+        $expand[$exp_index[$explevels[$i]]]=1; 
       
 	    	$i++; 
 	    } 
@@ -243,22 +247,22 @@
     
 	    for ($i=count($this->m_tree)-1; $i>=0; $i--) 
 	    { 
-	    	if ( $this->m_tree[$i][0] < $lastlevel ) 
+	    	if ( $this->m_tree[$i]["level"] < $lastlevel ) 
 	    	{ 
-    			for ($j=$this->m_tree[$i][0]+1; $j <= $g_maxlevel; $j++)    
+    			for ($j=$this->m_tree[$i]["level"]+1; $j <= $g_maxlevel; $j++)    
 			    { 
         
 			    	$levels[$j]=0; 
 			    } 
 		    } 
-		    if ( $levels[$this->m_tree[$i][0]]==0 ) 
+		    if ( $levels[$this->m_tree[$i]["level"]]==0 ) 
 		    { 
-		    	$levels[$this->m_tree[$i][0]]=1;
-		    	$this->m_tree[$i][4]=1; 
+		    	$levels[$this->m_tree[$i]["level"]]=1;
+		    	$this->m_tree[$i]["isleaf"]=1; 
 		    } 
 		    else 
-		    $this->m_tree[$i][4]=0; 
-		    $lastlevel=$this->m_tree[$i][0];   
+		    $this->m_tree[$i]["isleaf"]=0; 
+		    $lastlevel=$this->m_tree[$i]["level"];   
 	    }
       /*********************************************/   
     	/*  Determine visible nodes                  */ 
@@ -267,13 +271,13 @@
 	    $visible[0]=1;   // root is always visible 
     	for ($i=0; $i<count($explevels); $i++) 
     	{ 
-    		$n=$explevels[$i]; 
+    		$n=$exp_index[$explevels[$i]]; 
     		if ( ($visible[$n]==1) && ($expand[$n]==1) )    
     		{ 
     			$j=$n+1; 
-    			while ( $this->m_tree[$j][0] > $this->m_tree[$n][0] ) 
+    			while ( $this->m_tree[$j]["level"] > $this->m_tree[$n]["level"] ) 
     			{ 
-    				if ($this->m_tree[$j][0]==$this->m_tree[$n][0]+1) $visible[$j]=1;      
+    				if ($this->m_tree[$j]["level"]==$this->m_tree[$n]["level"]+1) $visible[$j]=1;      
     				$j++; 
     			} 
     		} 
@@ -306,7 +310,7 @@
 			    /* vertical lines from higher levels    */ 
 			    /****************************************/ 
 			    $i=0; 
-			    while ($i<$this->m_tree[$cnt][0]-1)  
+			    while ($i<$this->m_tree[$cnt]["level"]-1)  
 			    { 
 				    if ($levels[$i]==1) 
             {
@@ -322,16 +326,16 @@
 			    /****************************************/ 
 			    /* corner at end of subtree or t-split  */ 
 			    /****************************************/          
-			    if ($this->m_tree[$cnt][4]==1)  
+			    if ($this->m_tree[$cnt]["isleaf"]==1)  
 			    { 
 			    	if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\"></td>\n"; 
-				    $levels[$this->m_tree[$cnt][0]-1]=0; 
+				    $levels[$this->m_tree[$cnt]["level"]-1]=0; 
 			    } 
 			    else 
 			    {
 				    if ($expand[$cnt]==0) 
 				    {
-					    if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+					    if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"]) 
 					    {
 						    /****************************************/ 
 						    /* Create expand/collapse parameters    */ 
@@ -341,7 +345,7 @@
 						    { 
 							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
 							    { 
-								    $params=$params.$i;
+								    $params=$params.$this->m_tree[$i]["id"];
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
@@ -355,7 +359,7 @@
 				    }
 				    else
 			    	{
-			    		if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+			    		if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"]) 
 			    		{
 						    /****************************************/ 
 						    /* Create expand/collapse parameters    */ 
@@ -365,7 +369,7 @@
 						    { 
 							    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
 							    { 
-								    $params=$params.$i;
+								    $params=$params.$this->m_tree[$i]["id"];
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
@@ -377,13 +381,13 @@
 					    	$res.="<td><img src=\"".$img_split."\" border=no></td>\n";
 					    }
 				    }
-				    $levels[$this->m_tree[$cnt][0]-1]=1;     
+				    $levels[$this->m_tree[$cnt]["level"]-1]=1;     
 			    }  
        
 			    /********************************************/ 
 			    /* Node (with subtree) or Leaf (no subtree) */ 
 			    /********************************************/ 
-			    if ($this->m_tree[$cnt+1][0]>$this->m_tree[$cnt][0]) 
+			    if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"]) 
 			    { 
     				/****************************************/ 
 	    			/* Create expand/collapse parameters    */ 
@@ -393,7 +397,7 @@
 				    { 
 					    if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i)) 
 					    { 
-					    	$params=$params.$i;
+					    	$params=$params.$this->m_tree[$i]["id"];
 					    	$params=$params."|"; 
 					    } 
 					    $i++; 
@@ -415,26 +419,33 @@
 			    /****************************************/ 
 			    /* output item text                     */ 
 			    /****************************************/ 
-  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt][0])."><font size=2>".$this->m_tree[$cnt][1]."</font></td>\n"; 
+  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])."><font size=2>".$this->m_tree[$cnt]["label"]."</font></td>\n"; 
       
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
-          $res.='<td> '.href("dispatch.php?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"), SESSION_NESTED);
+          $res.='<td> ';
+          if (!$this->hasFlag(NF_NO_ADD))
+          {
+            $res.=href("dispatch.php?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
+          }
           if($cnt>0)
           {
-            $res.=' '.href("dispatch.php?atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"),SESSION_NESTED);
-            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt][0]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
-            {    
-              $res.=' '.href("dispatch.php?atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
+            if (!$this->hasFlag(NF_NO_EDIT))
+            {
+              $res.=' '.href("dispatch.php?atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
             }
-            if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt][0]==1)
+            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+            {    
+              $res.=' '.href("dispatch.php?atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
+            }
+            if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
             {
                // Do nothing
             }
             else
             {
-              $res.=' '.href("dispatch.php?atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"),SESSION_NESTED);
+              $res.=' '.href("dispatch.php?atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
             }
           }
          $res.= "</td></tr>\n";       
