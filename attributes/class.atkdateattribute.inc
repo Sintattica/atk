@@ -164,9 +164,9 @@
       $current = 0;
       if (isset($record[$this->fieldName()]))
       {
-        if (!$this->hasFlag(AF_OBLIGATORY) && is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
+        if (is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
           $current = NULL; /* NULL date selected (normal date selection) */
-        elseif (!$this->hasFlag(AF_OBLIGATORY) && !is_array($field) && empty($field))
+        elseif (!is_array($field) && empty($field))
           $current = NULL; /* NULL date selected (NULL value in database) */
         elseif (is_array($field) && checkdate($field["month"], $field["day"], $field["year"]))
           $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
@@ -235,7 +235,8 @@
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= 25)
           {
             $result .= '<select name="'.$fieldprefix.$this->fieldName().'[year]" onChange="'.$str_script.'">';
-            if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
+            //if (!$this->hasFlag(AF_OBLIGATORY))
+            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
               $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));
@@ -253,7 +254,8 @@
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$str_script.'">';
-          if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
+          //if (!$this->hasFlag(AF_OBLIGATORY)) 
+          $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
@@ -267,7 +269,8 @@
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$str_script.'">';
-          if (!$this->hasFlag(AF_OBLIGATORY)) $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'</option>';
+          //if (!$this->hasFlag(AF_OBLIGATORY))
+          $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));
