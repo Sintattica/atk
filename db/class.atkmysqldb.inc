@@ -386,7 +386,25 @@
     {      
       return array("exact","substring","wildcard","regexp","soundex","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
-    
+
+    /** 
+     * Get TO_CHAR() equivalent for the current database.
+     *
+     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd.
+     */
+    function func_datetochar($fieldname)
+    {
+      return DATE_FORMAT($fieldname, "%Y-%m-%d, %Y");
+    }
+      
+    /** 
+     * Get TO_CHAR() equivalent for the current database.
+     *
+     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd hh:mi.
+     */
+    function func_datetimetochar($fieldname)
+    {
+      return "DATE_FORMAT($fieldname, '%Y-%m-%d %H:%i')";
+    }  
   }  
-  
 ?>

@@ -404,14 +404,25 @@
     }
     
     /** 
-      * Get TO_CHAR() equivalent for the current database.
-      *
-      * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd.
-      */
+     * Get TO_CHAR() equivalent for the current database.
+     *
+     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd.
+     */
     function func_datetochar($fieldname)
     {
       return "TO_CHAR($fieldname, 'YYYY-MM-DD')";
     }
+      
+      
+    /** 
+     * Get TO_CHAR() equivalent for the current database.
+     *
+     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd hh:mi.
+     */
+    function func_datetimetochar($fieldname)
+    {
+      return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
+    }      
     
     /**
       * Returns the maximum length an identifier (tablename, columnname, etc) may have
