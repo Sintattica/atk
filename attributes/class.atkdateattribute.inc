@@ -49,9 +49,13 @@
       $str_date = adodb_date($format, $date[0]);
 
       /* replace month/week name */
-      $str_date = str_replace("%-%", text(substr(strtolower($date["month"]), 0, 3)), $str_date);
-      $str_date = str_replace("%=%", text(strtolower($date["month"])), $str_date);
-      if ($weekday) $str_date = str_replace("%*%", text(strtolower($date["weekday"])), $str_date);
+      static $month;
+      if (!$month) $month = text(strtolower($date["month"]),"","atk");
+      static $shortmonth;
+      if (!$shortmonth) $shortmonth = text(substr(strtolower($date["month"]), 0, 3),"","atk");
+      $str_date = str_replace("%-%", $shortmonth, $str_date);
+      $str_date = str_replace("%=%", $month, $str_date);
+      if ($weekday) $str_date = str_replace("%*%", text(strtolower($date["weekday"]),"","atk"), $str_date);
 
       /* return string */
       return $str_date;
@@ -149,8 +153,9 @@
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
+      global $config_lang;
       $page = &atkPage::getInstance();
-      
+
       /* register javascript */
       $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
       
@@ -158,7 +163,7 @@
       {
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-nl.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-$config_lang.js");
         
         atkimport("atk.ui.atktheme");
         $theme = &atkTheme::getInstance();        
@@ -236,7 +241,7 @@
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
       if (!empty($maximum))  $maximum = adodb_getdate($maximum);
-
+//
       /* minimum and maximum */
       $current["d_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] && $current["mon"] == $minimum["mon"] ? $minimum["mday"] : 1);
       $current["d_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] && $current["mon"] == $maximum["mon"] ? $maximum["mday"] : $this->getDays($current));
