@@ -28,12 +28,6 @@
   define("NF_NO_EXTENDED_SEARCH",16384); // Extended search feature is turned 
                                          // off.
 
-  // Define flags for error handling
-  // Only fields which need seperate handling need to be
-  // defined here.
-
-  define("EF_PRIMARY_KEY_EXISTS", 1);
-
 
   /**
    * The atkNode class represents a piece of information that
@@ -59,6 +53,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.110  2001/09/26 12:05:51  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.109  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -984,16 +981,16 @@
       $form.=$g_layout->ret_table_simple();
       
       // Check for errors and display them
-      if (count($record['error'])>0)
+      if (count($record['atkerror'])>0)
       {
         $form.='<tr>';
         $error_title= '<b>'.text('error_formdataerror').'</b>';
         $errormsg = "";
         
         $pk_err = array();
-        foreach ($record['error'] as $data)
+        foreach ($record['atkerror'] as $data)
         {
-          if (($data['err_flag'] & EF_PRIMARY_KEY_EXISTS) == EF_PRIMARY_KEY_EXISTS)
+          if ($data['err'] == error_primarykey_exists)
           {
             $pk_err_attrib[] = $data['attrib_name'];
           }
@@ -1004,7 +1001,7 @@
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
         {
-          $pk_err_msg = "<br>".text('error_primarykey_exists').": ";
+          $pk_err_msg = "<br>".text(error_primarykey_exists).": ";
           for($i=0;$i<count($pk_err_attrib); $i++)
           {
             $pk_err_msg .= text($pk_err_attrib[$i]);
@@ -1067,9 +1064,9 @@
               else 
               {
                 $found = FALSE;
-                for ($i=0; $i < count($record['error']);$i++)
+                for ($i=0; $i < count($record['atkerror']);$i++)
                 {
-                  if ($record['error'][$i]['attrib_name'] == $p_attrib->fieldName()) $found = TRUE;
+                  if ($record['atkerror'][$i]['attrib_name'] == $p_attrib->fieldName()) $found = TRUE;
                 }
                 if($found)
                 {
@@ -2289,7 +2286,7 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "update");
-        if (count($record['error']>0))
+        if (count($record['atkerror']>0))
         {
           $this->m_action="edit";
           $this->editPage($record);
@@ -2327,7 +2324,7 @@
       {
         $record = $this->updateRecord();
         $this->validate($record, "add");
-        if (count($record['error'])>0)
+        if (count($record['atkerror'])>0)
         {
           $this->addPage($record);
         }
@@ -2621,21 +2618,21 @@
              &&  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE ".$this->primaryKey($record)))>0
             )
           {
-            $record['error'][] = array( attrib_name=> $attribname, err_flag => EF_PRIMARY_KEY_EXISTS, msg=>text('error_primarykey_exists'));
+            triggerError(&$record, $attribname, 'error_primarykey_exists');
           }
         }
         
         // validate obligatory fields (but not the auto_increment ones, because they don't have a value yet)
         if ($p_attrib->hasFlag(AF_OBLIGATORY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT) && $p_attrib->isEmpty($record))
         {
-          $record['error'][] = array( attrib_name=> $attribname, err_flag  => EF_OBLIGATORY_FIELD, msg=>text('error_obligatoryfield'));
+          triggerError(&$record, $attribname, 'error_obligatoryfield');
         }
         // if flag is primary 
         else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
                  count($g_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_table." WHERE $attribname='".escapeSQL($this->m_postvars[$attribname])."' AND NOT (".$this->primaryKey($record).")"))>0
                 )
         {
-          $record['error'][] = array( attrib_name=> $attribname, err_flag => EF_UNIQUE_FIELD, msg=>text('error_uniquefield'));
+          triggerError(&$record, $attribname, 'error_uniquefield');
         }
         
         else

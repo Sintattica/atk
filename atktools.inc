@@ -9,6 +9,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.19  2001/09/26 12:05:51  maurice
+  * Code optimalisations for error handling
+  *
   * Revision 4.18  2001/09/07 09:50:45  ivo
   * Added session debug information to the error reporter.
   *
@@ -710,7 +713,22 @@
    */   
   function atkPopup($target,$params,$winName,$width,$height,$scroll='no',$resize='no')
   {
-  $url ="javascript:NewWindow('popup.php?target=".$target."&".$params."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
-  return $url;
+    $url ="javascript:NewWindow('popup.php?target=".$target."&".$params."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
+    return $url;
+  }
+
+  /**
+   * Adds new element to error array en $record. When
+   * $msg is empty the multilange error string is used.
+   * params $rec var in which to add element to error array 
+   *        $attrib attributename 
+   *        $err multilanguage error string
+   *        $msg optinal error string
+   */
+
+  function triggerError(&$rec, $attrib, $err, $msg="")
+  {
+    if($msg=="")  $msg = text($err);
+    $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg);
   }
 ?>

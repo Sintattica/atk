@@ -11,6 +11,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 4.6  2001/09/26 12:05:52  maurice
+ * Code optimalisations for error handling
+ *
  * Revision 4.5  2001/09/26 07:05:13  maurice
  * New error handling. Errors are saved in $record variable
  *
@@ -177,8 +180,10 @@ class atkPasswordAttribute extends atkAttribute
 
   /**
    * Validates the supplied passwords 
-   * @param $value array with password values
-   * @return empty string or error message in string
+   * @param &$record Record that contains value to be validated.
+   *                 Errors are saved in this record
+   * @param $mode can be either "add" or "update"
+   * @return $record
    */
   function validate($record, $mode)
   {
@@ -193,11 +198,11 @@ class atkPasswordAttribute extends atkAttribute
       
     if ($action == 'update' && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0) &&
         !$this->hasFlag(AF_PASSWORD_NOVALIDATE) && md5($value["current"]) != $value["hash"])
-      $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_password_incorrect'));
+      triggerError($record, $this->fieldName(), 'error_password_incorrect');
     
     //var_dump($value);
     if ($value["new"] != $value["again"])
-      $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_password_nomatch'));
+      triggerError($record, $this->fieldName(), 'error_password_nomatch');
   }  
   
 

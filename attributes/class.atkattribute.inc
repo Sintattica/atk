@@ -100,6 +100,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.22  2001/09/26 12:05:52  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.21  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -470,11 +473,12 @@
 
     /**
      * Validate's values
-     * @param $record Record that contains value to be validated.
+     * @param &$record Record that contains value to be validated.
+     *                 Errors are saved in this record
      * @param $mode can be either "add" or "update"
-     * @return Nothing
+     * @return $record
      */
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {
     }
 

@@ -7,6 +7,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/09/26 12:05:52  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.2  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -41,14 +44,16 @@
     }
 
     /**
-     * Checks if value is numeric
-     * @param $value values that has to be checked
-     * @return boolean true or false
-     */
+     * Validates if value is numeric
+     * @param &$record Record that contains value to be validated.
+     *                 Errors are saved in this record
+     * @param $mode can be either "add" or "update"
+     * @return $record
+     */    
     function validate($record, $mode)
     {
       if (!is_numeric($record[$this->fieldName()])) 
-        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_notnumuric'));
+        triggerError($record, $this->fieldName(), 'error_notnumeric');
     }
   }
 ?>

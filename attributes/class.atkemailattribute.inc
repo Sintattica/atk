@@ -10,6 +10,9 @@
    * $Id$
    *
    * $Log$
+   * Revision 4.6  2001/09/26 12:05:52  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.5  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -64,9 +67,11 @@
     }
 
     /**
-     * Check if the value is a valid email address.
-     * @param $value Value to be validated
-     * @return "" if ok, or an errormessage if not ok.
+     * Validates  email adress through regular expression and dns check
+     * @param &$record Record that contains value to be validated.
+     *                 Errors are saved in this record
+     * @param $mode can be either "add" or "update"
+     * @return $record
      */
     function validate(&$record, $mode)
     {
@@ -74,7 +79,7 @@
       //first check complete string
       if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,3}$", $email, $check)))
       {
-        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_invalid_email'));
+        triggerError($record, $this->fieldName(), 'error_invalid_email');
       }
       else
       {
@@ -82,9 +87,9 @@
         if ($this->$m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records
-          if (!( getmxrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
+          if (!( checkdnsrr(substr(strstr($check[0], '@'), 1), $validate_email_temp) ))
           {
-            $record['error'][] = array( attrib_name=> $this->fieldName(),   err_flag => NULL, msg=>text('error_invalid_email'));
+            triggerError($record, $this->fieldName(), 'error_invalid_email');
           }
         }       
       } 

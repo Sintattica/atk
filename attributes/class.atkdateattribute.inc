@@ -22,6 +22,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.15  2001/09/26 12:05:52  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.14  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -505,11 +508,13 @@ atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
     }
     
     /**
-     * Validate the attribute it's value
-     * @param $value Value to be validated
-     * @return Nothing
+     * Validate's dates
+     * @param &$record Record that contains value to be validated.
+     *                 Errors are saved in this record
+     * @param $mode can be either "add" or "update"
+     * @return $record
      */
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {
       $value = $record[$this->fieldName()];
       /* array or no array */
@@ -523,7 +528,7 @@ atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
         $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
       else 
       {
-        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_date_invalid'));
+        triggerError($record, $this->fieldName(), 'error_date_invalid');
         return;
       }
 
@@ -555,13 +560,13 @@ atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
       {
-        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text('error_date_minimum')." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_minimum', text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0));
         return;
       }
         
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
-        $record['error'][] = array( attrib_name=> $this->fieldName(),  err_flag => NULL, msg=>text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
         
       /* no problem */
       //return "";

@@ -16,6 +16,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.11  2001/09/26 12:05:52  maurice
+   * Code optimalisations for error handling
+   *
    * Revision 4.10  2001/09/26 07:05:13  maurice
    * New error handling. Errors are saved in $record variable
    *
@@ -141,7 +144,7 @@
     /**
     * Dummy function
     */
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {
     }
 
