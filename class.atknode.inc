@@ -709,7 +709,7 @@
     function getActiveTab()
     {
       global $ATK_VARS;
-      $tablist = $this->getTabs($action);          
+      $tablist = $this->getTabs($ATK_VARS["atkaction"]);          
       
       // Note: we may not read atktab from $this->m_postvars, because $this->m_postvars is not filled if this is
       // a nested node (in a relation for example).
