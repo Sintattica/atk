@@ -78,7 +78,7 @@
     function edit($record="", $fieldprefix="")
     {      
       global $config_atkroot, $config_enable_ie_extensions;
-      global $atkwwview, $PHP_SELF;
+      global $atkwwview, $PHP_SELF;                
       
       //var_dump($record);
                                                             

@@ -20,9 +20,7 @@
       // Utility.
       $edithandler = &$node->getHandler("edit");
       
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
-      $page->register_loadscript("init_nav();");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");            
       $node->addStyle("style.css");
       
       $params = $node->getDefaultActionParams();

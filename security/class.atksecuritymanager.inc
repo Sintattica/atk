@@ -386,6 +386,11 @@
       $page = &atknew("atk.ui.atkpage");            
       $ui = &atknew("atk.ui.atkui");
 
+      atkimport("atk.ui.atktheme");
+      $theme = &atkTheme::getInstance();
+      $page->register_style($theme->stylePath("style.css"));
+
+
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");      
             
       $output.='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';

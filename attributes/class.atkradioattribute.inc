@@ -110,6 +110,7 @@
 
         $labelID = $fieldprefix.$this->formName()."_".$this->m_values[$i];
         if($this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
+        $this->registerKeyListener($labelID, KB_CTRLCURSOR|KB_CURSOR);
         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>
         <label for="'.$labelID.'">'.text($this->m_options[$i]).'</label></td>';
         if($this->hasflag(AF_DISPLAY_VERT))

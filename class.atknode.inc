@@ -978,7 +978,7 @@
       /* return the result array */
       return $result;
     }
-    
+  
     /**
      * The system calls this method to determine which template to use when 
      * rendering a certain screen. The default implementation always returns 
@@ -2376,6 +2376,7 @@
      */
     function statusbar($locked=FALSE)
     {      
+      atkdebug("Obsolete use of statusbar()");
       if (!$this->m_statusbarDone)
       {
         global $g_sessionManager;

@@ -135,6 +135,7 @@
   $txt_search_greaterthanequal = "Zoek naar waarde groter dan of gelijk aan";
   $txt_search_lessthan = "Zoek naar waarde kleiner dan";
   $txt_search_lessthanequal = "Zoek naar waarde kleiner dan of gelijk aan";
+  $txt_search_between = "Zoek tussen 2 waarden";
   $txt_search_and = "Alle criteria voldoen";
   $txt_search_or = "Een van de criteria voldoet";
   $txt_search_mode = "Zoekmanier";

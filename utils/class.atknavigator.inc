@@ -2,13 +2,30 @@
 
   class atkNavigator
   {
+    function buildNavigation(&$node, $mode="", $navurls="")
+  	{
+  	  if ($navurls=="")
+  	  {
+  	    // Have to determine navurls ourselves.
+  	    $navurls = $this->getNavigationUrls($node, $mode);
+  	  }
+  	  $links=array();
+  	  foreach ($navurls as $key=>$nav)
+  	  {
+  	    $links[] = href($nav["url"], $nav["title"]);
+  	  }
+  	  return implode("&nbsp;|&nbsp;", $links);
+  	 
+  	}
+  	
     /**
      * Creates a navigation bar, for browsing through the record pages
      * (if a limit is set, and there are more records)
      * @return a HTML string for navigating through records
      */
-    function buildNavigation(&$node, $mode="")
-    {
+    function getNavigationUrls(&$node, $mode="")
+    {	     
+  	  $res = array();
       $limit = (int)$node->m_postvars['atklimit'];
 
       $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
@@ -18,7 +35,7 @@
       // maximum number of bookmarks to pages.
       $max_bm = 10;
 
-      if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) return "";
+      if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) return array();
 
       $pages = ceil($count / $limit);
       $curr  = ($node->m_postvars['atkstartat'] / $limit) + 1;
@@ -40,22 +57,24 @@
       if ($curr > 1)
       {
         $newstart = $node->m_postvars['atkstartat'] - $limit;
-        $nav = href($_SERVER["PHP_SELF"]."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atkstartat=".$newstart,text('previous'))."&nbsp;|&nbsp;";
+        $res['previous'] = array("title"=>text("previous"), "url"=>session_url($_SERVER["PHP_SELF"]."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atkstartat=".$newstart));
       }
 
       for ($i = $begpg; $i <= $endpg; $i++)
       {
-        $nav .= ($i == $curr) ? "<b>$i</b>" : href($_SERVER["PHP_SELF"]."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atkstartat=".max(0, ($i-1) * $limit),"$i");
-        if ($i != $endpg) $nav .= "&nbsp;|&nbsp;";
+         if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
+         else $res[$i] = array("title"=>$i,
+                               "url"=>session_url($_SERVER["PHP_SELF"]."?atknodetype=".$node->atkNodeType()."&atkaction=".
+                                                  $node->m_action."&atkstartat=".max(0, ($i-1) * $limit)));
       }
 
       if ($curr < $pages)
       {
-        $newstart = $node->m_postvars['atkstartat'] + $limit;;
-        $nav .= "&nbsp;|&nbsp;".href($_SERVER["PHP_SELF"].'?atkstartat='.$newstart,text('next'));
+        $newstart = $node->m_postvars['atkstartat'] + $limit;
+        $res['next'] = array("title"=>text("next"), "url"=>session_url($_SERVER["PHP_SELF"].'?atkstartat='.$newstart));
       }
 
-      return $nav;
+      return $res;
     }
 
     /**

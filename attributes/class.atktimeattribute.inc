@@ -66,12 +66,15 @@
      * @return piece of html code with a checkbox
      */
     function edit($record="", $fieldprefix="")
-    {
+    {    
+      $id = $fieldprefix.$this->fieldName();
       $field = $record[$this->fieldName()];
 
       // set vars for hour / minutes dropdowns
-      $m_hourBox = "<select name=\"".$fieldprefix.$this->fieldName()."[hours]\">\n";
-      $m_minBox  = "<select name=\"".$fieldprefix.$this->fieldName()."[minutes]\">\n";
+      $this->registerKeyListener($id.'[hours]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+      $this->registerKeyListener($id.'[minutes]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+      $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\">\n";
+      $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\">\n";
       // set default values for both boxes
       // depends upon atkaction
       // if add/admin, use $default param, else use time in $record

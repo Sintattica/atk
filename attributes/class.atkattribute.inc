@@ -151,6 +151,8 @@
       $this->m_name = $name;
       $this->m_flags = (double)$flags;
       $this->setAttribSize($size);      
+      
+      atkimport("atk.keyboard.atkkeyboard");
     }
 
     /**
@@ -159,7 +161,7 @@
      * @return True or False
      */
     function hasFlag($flag)
-    {
+    {      
       return (($this->m_flags & $flag) == $flag);
     }
 
@@ -188,7 +190,7 @@
     }
 
     /**
-     * Returns the fieldname
+     * Returns the (field)name of the attribute
      * @return fieldname
      */
     function fieldName()
@@ -255,7 +257,10 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      $result = '<input type="text" name="'.$fieldprefix.$this->formName().
+      $id = $fieldprefix.$this->formName();
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+    
+      $result = '<input type="text" id="'.$id.'" name="'.$id.
                 '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
@@ -437,7 +442,9 @@
      */
     function search($record="", $extended=false)
     {
-      $result= '<input type="text" name="atksearch['.$this->formName().']" value="'.$record[$this->fieldName()].'"'.
+      $id = "atksearch[".$this->formName()."]";
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
@@ -808,6 +815,12 @@
     function getTabs($action)
     {
       return array();
+    }
+    
+    function registerKeyListener($id, $navkeys=KB_CTRLCURSOR)
+    {      
+      $kb = &atkKeyboard::getInstance();
+      $kb->addFormElementHandler($id, $navkeys);
     }
 
     /**

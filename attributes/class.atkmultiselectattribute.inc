@@ -104,6 +104,9 @@
       $this->m_record = $record;
       $cols = $this->m_cols;
       $modcols =$cols-1;
+   
+      $id = $fieldprefix.$this->fieldName();   
+      
       $page = &atkPage::getInstance();
       $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");      
 
@@ -122,7 +125,9 @@
       for ($i=0;$i<count($this->m_values);$i++)
       {
         (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
-        $result .= '<td class="table" valign="top"><input type="checkbox" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
+        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
+        $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);  
+
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";
         
       }

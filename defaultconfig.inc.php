@@ -11,6 +11,7 @@
   $config_databasename = "";
   $config_databaseuser = "";
   $config_databasepassword = "";
+  $config_databasepersistent = true;
 
   // mysql, oci8 or pgsql
   $config_database="mysql";

@@ -15,9 +15,7 @@
       $node->addStyle("style.css");      
       
       $page = &$this->getPage();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formnavigation.js");
-      $page->register_loadscript("init_nav();");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");      
       $ui = &$this->getUi();
       if (is_object($ui))
       {        
@@ -90,8 +88,8 @@
           {
             $field = array();
             // We must perform an array_values over array_intersect, to maintain a
-            // correct numeric array index (array_intersect mangles those)
-            $searchModes = array_values(array_intersect($dbSearchModes,$attribSearchModes));
+            // correct numeric array index (array_intersect mangles those)            
+            $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
   
             if (count($searchModes)>0) // Don't display this attribute if it doesn't support searching.
             {

@@ -51,9 +51,11 @@
      */
     function edit($record="", $fieldprefix="")
     {  
+      $id = $fieldprefix.$this->formName();
       if ($this->m_maxtime_min>=60)
-      {
-        $result.= '<select name="'.$fieldprefix.$this->formName().'[hours]">';
+      {      
+        $this->registerKeyListener($id.'_hours', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+        $result.= '<select id="'.$id.'_hours" name="'.$id.'[hours]">';
         for ($h=0;$h<=$this->m_maxtime_min/60;)
         { 
           $result .= '<option value="'.$h.'" ';         
@@ -73,7 +75,8 @@
       
       if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
       {
-        $result.= '<select name="'.$fieldprefix.$this->formName().'[minutes]">';
+        $this->registerKeyListener($id.'_minutes', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+        $result.= '<select id="'.$id.'_minutes" name="'.$id.'[minutes]">';
         for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
         { 
           $result .= '<option value="'.$m.'" ';

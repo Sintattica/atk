@@ -24,7 +24,8 @@
     {
       $this->atkMultiSelectAttribute($name, $optionArray, $valueArray, $cols, $flags, $size);
       $this->m_dbfieldtype = "number";
-    }
+    }      
+
     function value2db($rec)
     {
       //atkdebug("atkFlagAttribute::value2db()");
@@ -52,7 +53,7 @@
             $newrec[] = $value;
           }
         }
-        return $newrec;
+        return $newrec;  
       }
       return array();
     }

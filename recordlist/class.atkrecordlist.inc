@@ -26,7 +26,7 @@
      * @param $suppressList fields we don't display
      * @param $formName if embedded the form name in which we are embedded
      */
-    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="")
+    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation="")
     {                  
       $this->setNode($node);
       $this->m_flags = $flags;
@@ -36,6 +36,11 @@
       $page = &atkPage::getInstance();
       $page->register_style($theme->stylePath("recordlist.css"));
             
+      $listName = "rl_".getUniqueId("normalRecordList");  	   	         
+      $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
+  	 
+  	  $defaulthighlight = $theme->getAttribute("highlight");
+      $selectcolor = $theme->getAttribute("select");
 
       /* retrieve list array */
       $list = $this->listArray($recordset, $flags, "", $actions, $suppressList);
@@ -162,9 +167,7 @@
         /*******************************************/
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {  
-          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");          
-  
-          $listName = "atkrl_".getUniqueId("atkRecordList");
+          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");                    
   
           if (!hasFlag($flags, RL_EMBED))
           {
@@ -188,6 +191,13 @@
         
         $records = array();    
         
+        $actionloader = "rl_a['".$listName."'] = new Array();";
+        $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED)."';";
+        $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
+        
+        if ($navigation["next"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['next'] = '".$navigation["next"]["url"]."';";
+        if ($navigation["previous"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['previous'] = '".$navigation["previous"]["url"]."';";
+        
         for ($i = 0, $_i = count($list["rows"]); $i < $_i; $i++)
         {
           $record = array();
@@ -198,7 +208,7 @@
            * row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
            */
           $method = "rowColor";          
-          $bgh = $theme->getAttribute("highlight");
+          $bgh = $defaulthighlight;
           if (method_exists($this->m_node, $method))
           {
             $bgn = $this->m_node->$method($recordset[$i], $i);
@@ -210,6 +220,7 @@
           $record["background"] = $bgn;
           $record["highlight"] = $bgh;
           $record["rownum"] = $i;
+          $record["id"] = $listName.'_'.$i;
   
           /* multi-record-priority-actions -> priority selection */
           if (hasFlag($flags, RL_MRPA))
@@ -245,8 +256,14 @@
           }
   
           $str_actions = "";
+          $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
           foreach ($list["rows"][$i]["actions"] as $name => $url)
-            $str_actions .= href($url, text($name, $this->m_node->m_type), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
+          {
+  	        //$str_actions .= href($url, text($name, $this->m_type), SESSION_NESTED, hasFlag($flags, RL_EMBED)).'&nbsp;';
+  	        $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
+  	 
+  	        $str_actions.='<a href="'."javascript:rl_do('".$listName."',$i,'".$name."');".'">'.text($name, $this->m_type).'</a>&nbsp;';
+  	      }
   
           /* actions (left) */
           if ($orientation == "left" || $orientation == "both")
@@ -273,6 +290,8 @@
           $records[] = $record;
 
         }
+        
+        $page->register_loadscript($actionloader);
   
         /*************/
         /* TOTAL ROW */
@@ -360,6 +379,10 @@
   
           if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';
         }
+        
+        $kb = &atkKeyboard::getInstance();
+        $kb->addRecordListHandler($listName, $selectcolor, count($records));
+        
         $res = $ui->render("recordlist.tpl", array("vorientation"=>$vorientation,
                                                    "rows"=>$records,
                                                    "header"=>$headercols,
@@ -369,6 +392,7 @@
                                                    "searchend"=>$searchend,
                                                    "liststart"=>$liststart,
                                                    "listend"=>$listend,
+                                                   "listid"=>$listName,
                                                    "mra"=>$mra));
         return $res;
       }

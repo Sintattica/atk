@@ -34,11 +34,11 @@
   
   $page->register_style($theme->stylePath("style.css"));
   
-  $output.= $ui->renderBox(array("title"=>$title,
+  $res = $ui->renderBox(array("title"=>$title,
                                  "content"=>$data));
-  $output.='<br><div align="right"><a href="javascript:window.close();">'.text("close").'</a></div>';
+  $res.='<br><div align="right"><a href="javascript:window.close();">'.text("close").'</a></div>';
   
-  $page->addContent($output);
+  $page->addContent($res);
 
   $output->output($page->render(text('txt_app_title').' - '.text('help'), true));
   

@@ -118,6 +118,7 @@
   $txt_search_wildcard = "Search with wildcards (*)";
   $txt_search_regexp = "Search with a regular expression (advanced)";
   $txt_search_soundex = "Search for a string that sounds similar";
+  $txt_search_between = "Search between two values";
 
   $txt_search_mode = "Searchmode";
 

@@ -560,6 +560,11 @@
       }
     }
     
+    function betweenCondition($field, $value1, $value2)
+    {
+      return $field." BETWEEN '".$value1."' AND '".$value2."'";
+    }
+    
     /**
      * Static factory method. This method returns a new instance of a query 
      * object for the current database.

@@ -51,27 +51,32 @@ class atkPasswordAttribute extends atkAttribute
    */
   function edit($record="", $fieldprefix="", $mode="")
   {
+    $id = $fieldprefix.$this->fieldName();
     /* insert */
     if ($mode != 'edit' && $mode != 'update')
     {
       if (!$this->m_generate)
       {
+        $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
         $result = text("password_new").':<br>'.
-                  '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
+                  '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                   ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
 
                   text("password_again").':<br>'.
-                  '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
+                  '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                   ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
       }
       else
       {
-        $password = $this->makePassword();
-        $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[again]"'.
+        $password = $this->makePassword();        
+        $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
+        $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.
                   ' value ="'.$password.'">'.
-                  '<input type="text" name="'.$fieldprefix.$this->fieldName().'[new]"'.
+                  '<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                   ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
       }
@@ -80,23 +85,27 @@ class atkPasswordAttribute extends atkAttribute
     /* edit */
     else
     {
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[hash]"'.
+      $result = '<input type="hidden" name="'.$id.'[hash]"'.
                 ' value="'.$record[$this->fieldName()]["hash"].'">';
 
 
       if (!$this->hasFlag(AF_PASSWORD_NOVALIDATE))
+      {
+        $this->registerKeyListener($id.'[current]', KB_CTRLCURSOR|KB_UPDOWN);  
         $result .= text("password_current").':<br>'.
-                   '<input type="password" name="'.$fieldprefix.$this->fieldName().'[current]"'.
+                   '<input type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
-
+      }
+      $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
+      $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
       $result .= text("password_new").':<br>'.
-                 '<input type="password" name="'.$fieldprefix.$this->fieldName().'[new]"'.
+                 '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.
 
                  text("password_again").':<br>'.
-                 '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
+                 '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
     }

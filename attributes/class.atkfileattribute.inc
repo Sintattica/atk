@@ -114,20 +114,27 @@
       {
         return text("no_valid_directory");
       }
+      
+      $id = $fieldprefix.$this->fieldName();
 
       if ($result!="")
       {
         $result.="<br>";
-        $result.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
+        $result.='<input type="hidden" name="'.$id.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
       }
       
-      $result.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'_postfileskey" value="'.$fieldprefix.$this->fieldName().'">';
+      $result.='<input type="hidden" name="'.$id.'_postfileskey" value="'.$id.'">';
 
-      if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) $result .= '<input type="file" name="'.$fieldprefix.$this->fieldName().'">';
+      if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) 
+      {
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+        $result .= '<input type="file" id="'.$id.'" name="'.$id.'">';
+      }
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
-        $result .= "<select name=\"".$fieldprefix.$this->fieldName()."_select\">";
+        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+        $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
         $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
@@ -138,7 +145,8 @@
       }
       if(!$this->hasFlag(AF_FILE_NO_DELETE) && $record[$this->fieldname()]['filename']!='')
       {      
-       $result .= '<br><input type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
+       $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
+       $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
       }
       return $result;
     }

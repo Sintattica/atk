@@ -40,7 +40,7 @@
                    WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       if ($db->query($delquery))
-      {
+      {      
         $checked = $record[$this->fieldName()];
 
         while (list($node, $actions)=each($checked))
@@ -56,7 +56,7 @@
               return false;
             }
           }
-        }
+        }        
       }
       return true;
     }

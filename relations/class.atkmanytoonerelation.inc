@@ -235,7 +235,9 @@
             $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
             $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
           }
-          $result.= '<select name="'.$fieldprefix.$this->formName().'">';
+          $id = $fieldprefix.$this->fieldName();
+          $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
+          $result.= '<select id="'.$id.'" name="'.$id.'">';
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
             // Relation may be empty, so we must provide an empty selectable..

@@ -42,7 +42,9 @@
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = OCIplogon($this->m_user, $this->m_password, $this->m_database);
+        $connectfunc = (atkconfig("databasepersistent")?"OCIPlogon":"OCILogon");
+        atkdebug("Connectiontype: ".$connectfunc);
+        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $this->m_database);
         if (!$this->m_link_id) 
         {
           $err = OCIError();

@@ -384,7 +384,7 @@
      */
     function getSearchModes()
     {      
-      return array("exact","substring","wildcard","regexp","soundex","greaterthan","greaterthanequal","lessthan","lessthanequal");
+      return array("exact","substring","wildcard","regexp","soundex","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
     
   }  

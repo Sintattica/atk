@@ -99,9 +99,15 @@
     function edit($record="", $fieldprefix="")
     {
       // todo: configurable rows
-      $result = '<select name="'.$fieldprefix.$this->formName().'">';
+      $id = $fieldprefix.$this->fieldName();
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
+      $result = '<select id="'.$id.'" name="'.$id.'">';
+      
       if(!$this->hasFlag(AF_OBLIGATORY))
-        $result.= '<option value="">'.text('list_null_value', $this->m_ownerInstance->m_type);
+      {
+        $result.= '<option value="">'.text('list_null_value', $this->m_ownerInstance->m_type);   
+      }
+      
       for ($i=0;$i<count($this->m_values);$i++)
       {
         if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")

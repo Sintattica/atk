@@ -35,7 +35,9 @@
     {
       $checked = "";
       if ($record[$this->fieldName()]>0) $checked="checked";
-      return '<input type="checkbox" id="'.$fieldprefix.$this->formName().'" name="'.$fieldprefix.$this->formName().'" value="1" '.$checked.'>';
+      $id = $fieldprefix.$this->fieldName();
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);  
+      return '<input type="checkbox" name="'.$id.'" value="1" '.$checked.'>';
     }
     
 

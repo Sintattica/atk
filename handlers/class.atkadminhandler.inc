@@ -93,7 +93,10 @@
         {
           $params["index"] = $navigator->buildIndex($node, $recordset[0][$node->m_index]);
         }        
-        $params["navbar"] = $navigator->buildNavigation($node, "admin");
+        
+        $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
+  	 
+  	    $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
         
         if(!is_array($actions))
         {
@@ -102,7 +105,7 @@
 
         $flags = ($node->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node->hasFlag(NF_LOCK) ? RL_LOCK : 0);
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
-        $params["list"] = $recordlist->render($node, $recordset, $actions, $flags);
+        $params["list"] = $recordlist->render($node, $recordset, $actions, $flags, $navigation);
  
         $params["footer"] = $this->invoke("adminFooter");
         
