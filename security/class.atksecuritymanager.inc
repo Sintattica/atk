@@ -255,7 +255,7 @@
       else
       {
     //    $session_auth = $ATK_VARS["authentication"];    
-        $session_auth = $g_sessionManager->getValue("authentication", true);          
+        $session_auth = $g_sessionManager->getValue("authentication", "globals");          
         if (atkconfig("authentication_session") && 
             session_is_registered("login") && 
             $session_auth["authenticated"]==1 && 
@@ -464,7 +464,7 @@
   {
     global $g_sessionManager;
     $user = "";    
-    $session_auth = $g_sessionManager->getValue("authentication", true);          
+    $session_auth = $g_sessionManager->getValue("authentication", "globals");          
     if (atkconfig("authentication_session") && 
         session_is_registered("login") && 
         $session_auth["authenticated"]==1 && 
