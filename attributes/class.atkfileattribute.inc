@@ -27,6 +27,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/06/21 11:39:26  martin
+   * fixed url in display value. images are now opened in a new window
+   *
    * Revision 4.4  2001/06/15 13:53:17  ivo
    * Fixed bug in fileattribute: form reposts went wrong when using
    * data from a session.
@@ -297,7 +300,7 @@
           $ext = strtolower(substr($filename, strrpos($filename,'.')+1,strlen($filename)));
           if((in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_NO_AUTOPREVIEW))||(!in_array($ext, $prev_type)))
           { 
-            return "<a href=\"".$this->m_url."$filename\" target=\"_new\">$filename</a>";
+            return "<a href=\"".$this->m_url."$filename\" target=\"_blank\">$filename</a>";
           }
           elseif(in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_POPUP))
           {
