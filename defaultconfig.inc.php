@@ -15,16 +15,19 @@
   // security
   $config_authentication = "none";
   $config_authentication_md5 = true;
-  $config_authentication_cookie = false;
+  $config_authentication_cookie = false; 
   $config_authentication_cookie_expire = 10080; // the default cookie expiry time (in minutes) (7 days)
+  $config_authentication_session = true;
   $config_securityscheme = "none";
   $config_restrictive = true;
   $config_security_attributes = false;
 
   $config_auth_usertable   = "user";
+  $config_auth_leveltable  = "user";
   $config_auth_accesstable = "access";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";  
+  $config_auth_levelfield = "entity";
   
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";

@@ -13,6 +13,10 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.15  2001/06/12 12:26:54  ivo
+    * Fix to treenode: if no icondir is set, it takes the default.
+    * Fix to atknode: display a '<br'> if no navigation is active.
+    *
     * Revision 4.14  2001/06/11 13:18:36  sandy
     * - fixed a small bug in the copy tree function
     *
@@ -186,7 +190,7 @@
     function GraphTreeRender()
     {
       global $g_maxlevel,$g_layout,$g_theme, $exp_index;
-      if(is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
+      if($g_theme["TreeIcon_dir"]!=""&&is_dir("themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
       {
         $icon_path ="themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
       }

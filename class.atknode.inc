@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.51  2001/06/12 12:26:54  ivo
+   * Fix to treenode: if no icondir is set, it takes the default.
+   * Fix to atknode: display a '<br'> if no navigation is active.
+   *
    * Revision 4.50  2001/06/08 14:33:30  ivo
    * Optimisations to atktreenode.
    * Smaller imp of row color alternationi feature.
@@ -1315,8 +1319,8 @@
 
       // create navigation bar
       $nav = $this->buildNavigation();
-      if (!empty($nav)) $g_layout->output("$nav<br><br>");
-
+      if (!empty($nav)) $g_layout->output("$nav<br>");
+      $g_layout->output('<br>');
       $actions = array();
 
       if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
@@ -1744,8 +1748,8 @@
         
         // create navigation bar
         $nav = $this->buildNavigation();
-        if (!empty($nav)) $g_layout->output("$nav<br><br>");
-        
+        if (!empty($nav)) $g_layout->output("$nav<br>");
+        $g_layout->output('<br>');
         $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
 
         $g_layout->output($this->recordList($recordset, $actions));
