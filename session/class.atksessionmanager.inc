@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.2  2001/05/01 12:17:02  ivo
+   * bugfix
+   *
    * Revision 1.1  2001/05/01 12:13:19  ivo
    * Added the sessionmanager.
    *
@@ -36,7 +39,7 @@
       $stack = $g_sessionData["stack"];            
             
            
-      if ($atklevel==-1)
+      if ($atklevel==-1||!is_array($stack))
       {
         atkdebug("Cleaning stack");
         $stack = array();
