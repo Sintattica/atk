@@ -101,6 +101,7 @@
       
         if ($wwview!="plain")
         {
+          $g_layout->register_script($config_atkroot."atk/javascript/newwindow.js");              
           $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
           $this->m_editorname = $fieldprefix.$this->fieldname()."_editor";
           $g_layout->register_submitscript($this->m_editorname."_save();");          

@@ -758,3 +758,36 @@
    obj_editor.ExecCommand(DECMD_OUTDENT,OLECMDEXECOPT_DODEFAULT); 
    //obj_editor.focus(); 
  } 
+ 
+ function modifySelection(pre, post)
+{
+  if (!document.selection) return;
+ 
+  var selection = obj_editor.DOM.selection.createRange();
+  var current   = selection.text;
+ 
+  if (current == '') return;
+ 
+  selection.text = pre + current + post;
+  selection.parentElement().focus();
+}
+
+function popupSelection(url,title)
+{
+  if (!document.selection)
+  {   
+   alert("Selecteer eerst het stuk tekst waar u een link van wilt maken");
+   return;
+  }
+  
+  var selection = obj_editor.DOM.selection.createRange();
+  var current   = selection.text;
+
+  if (current == '')
+  {
+    alert("Selecteer eerst het stuk tekst waar u een link van wilt maken");
+    return;
+  }
+    
+  NewWindow(url,title,400,400,'yes');
+}
