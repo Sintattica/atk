@@ -1332,6 +1332,39 @@
       atkerror("Class $fullclassname not found.");
       return NULL;
     }
-  }  
+  }
 
+  /**
+  * @desc Compares two assosiative multi dimensonal array's
+  * if arrays differ, differences are returned otherwise it returns false
+  * @param array $array1 original array
+  * @param array $array2 new array
+  * @return boolean
+  */
+  function atkArrayCompare($array1, $array2)
+  {
+    foreach($array1 as $key => $value)
+    {
+      if(is_array($value))
+      {
+        if(!is_array($array2[$key]))
+        {
+          $difference[$key] = $value;
+        }
+        else
+        {
+          $new_diff = atkArrayCompare($value, $array2[$key]);
+          if($new_diff != FALSE)
+          {
+            $difference[$key] = $new_diff;
+          }                               
+        }
+      }
+      elseif(!isset($array2[$key]) || $array2[$key] != $value)
+      {
+        $difference[$key] = $value;
+      }
+    }
+    return !isset($difference) ? false : true;
+  }
 ?>
