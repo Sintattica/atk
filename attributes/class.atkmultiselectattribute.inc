@@ -121,7 +121,7 @@
             
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        ($this->issetOption($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
+        (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
         $result .= '<td class="table" valign="top"><input type="checkbox" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";
         
@@ -131,15 +131,6 @@
       return $result;
     }
     
-    function issetOption($value,$valueArray)
-    {
-      if(is_array($valueArray))
-      {
-        return (in_array($value,$valueArray));
-      }
-      return false;
-    }
-   
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       // Multiselect attribute has only 1 searchmode, and that is substring.
