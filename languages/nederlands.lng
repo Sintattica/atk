@@ -63,7 +63,7 @@
   $txt_password_hidden = "*****";
   $txt_password_invalid = "Het ingevoerde wachtwoord is geen correct wachtwoord.";
   $txt_password_incorrect = "Het ingevoerde wachtwoord is fout!";
-  $txt_password_nomatch = "De ingevoerde wachtwoorden komen niet met elkaar overeen!";
+  $txt_error_password_nomatch = "De ingevoerde wachtwoorden komen niet met elkaar overeen!";
 
   // multilanguage text
   $txt_multilanguage_select = "Kies een taal";
