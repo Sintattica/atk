@@ -119,7 +119,89 @@
     return array($matrix_rb, $matrix_rg, $matrix_gb, $matrix_red, $matrix_green, $matrix_blue, $matrix_grey, $matrix_user);
   }
 
+ /**
+  * Function to check if a color is correct (default is hex colors)
+  * Example:
+  * check_color("#zff, "hex"")
+  * check_color("rgb(204,255,0)", "rgb")
+  *
+  * @return boolean valid color or not
+  */
+  function check_color()
+  {
+    $numargs = func_num_args();
+    if($numargs < 1) { atkerror("Error in function check_color(): No arguments passed to function."); return false; }
+    $colors = func_get_arg(0);
+    if($numargs == 2) { $type = func_get_arg(1); }else{ $type = "hex"; }
+    if($numargs > 2) { atkerror("Error in function check_color(): Too many arguments passed to function."); return false; }
+  
+    // color types -
+    //          hex - hexidecimal value in form of #XXX, XXX, #XXXXXX, or XXXXXX
+    //          rgb - rgb value in form of rgb(X,Y,Z);
+    if($type == "hex")
+    {
+      $colors = strtolower(str_replace("#", "", $colors));
+      // \d is all decimal digits (0-9)
+      $t = preg_match_all("([\da-f])", $colors, $matches);
+      $length = strlen($colors);
+  
+      // Have to match the preg_match_all with the length to prevent incorrect results
+      // else 3 matches in a 6 character code would make something like 123x98 valid
+      if(($t == 3 and $length == 3) or ($t == 6 and $length == 6)){ return true; } else { return false; }
+    }
+    elseif($type == "rgb")
+    {
+      $error = 0;
+      // check the start and the end of the color code to make sure it's a valid form
+      if((substr($colors, 0, 4)) != "rgb(" or substr($colors, -1) != ")"){ $error++; }
+      else
+      {
+        $len = strlen($colors);
+        // the full length - 5 characters to make up for the "rgb(" and the ")" - 5 characters total
+        $lenone = $len - 5;
+  
+        // $colors is now only the values and the commas (",") that seperate them
+        // rgb(51,102,153) is now 51,102,153 - we need this to explode the data in the next step
+        $colors = substr($colors, 4, $lenone);
+  
+        // explode the color substring - should be in X,Y,Z format now.
+        // $extras takes any characters more than the X,Y,Z format.
+        list($r, $g, $b, $extras) = explode(",",$colors);
+  
+        // Check the rgb values that were just exploded.
+        if($r < 0 or $r > 255 or $g < 0 or $g > 255 or $b < 0 or $b > 255) { $error++; }
+  
+        // Make sure that none of the values are blank  - prevents rgb(12) or rgb(12,12) from being valid
+        if($r == "" or $g == "" or $b == ""){ $error++; }
+  
+        // \D in the character class means any non-decimal character except newline
+        $rt = preg_match_all("[\D]", $r, $matches);
+        $gt = preg_match_all("[\D]", $g, $matches);
+        $bt = preg_match_all("[\D]", $b, $matches);
+  
+        // If we matched any characters above the values are not valid.
+        // Also is there is anything in $extras - the whole color code is an invalid form!
+        if($rt > 0 or $gt > 0 or $bt > 0 or $extras != ""){ $error++; }
+  
+        // If there are any errors then the color is not valid, return false, otherwise
+        // we're okay and we retun true
+        if($error > 0) { return false; } else { return true; }
+      }
+    }
+    else
+    {
+      atkerror("Error in function check_color(): Invalid argument for color type.");
+      return false;
+    }
+  }
 
+
+  
+  
+  
+  
+  
+  
   class atkColorPickerAttribute extends atkAttribute
   {
     var $m_userColors;
@@ -212,7 +294,12 @@
       return $result;
     }
     
-
+    function validate(&$record, $mode)
+    {
+      $color = $record[$this->fieldName()];
+      if(!check_color($color))
+        triggerError($record, $this->fieldName(), 'error_invalid_color');
+    }
     function dbFieldType()
     { 
       return "string";
