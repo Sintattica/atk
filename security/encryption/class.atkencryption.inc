@@ -22,6 +22,7 @@
    * @subpackage security
    *
    */
+
   class atkEncryption
   {
     /**
@@ -42,7 +43,8 @@
       {
         return new $encryptionclass();
       }
-      else return $this;
+      else
+        return $this;
     }
 
     /**
