@@ -69,8 +69,8 @@
 <HTML>
 <HEAD>
  <TITLE>menu</TITLE>
- <link href="../platform/atk/style.php" rel="stylesheet" type="text/css">
- <LINK REL="stylesheet" HREF="../styles/tabs.css">
+ <link href="../../platform/atk/style.php" rel="stylesheet" type="text/css">
+ <LINK REL="stylesheet" HREF="../../styles/tabs.css">
  <script language="JavaScript">
   var tabSelectMode = "<? echo $config_tabselectMode ?>";
  </script>
@@ -80,7 +80,7 @@
    var num_rows = 1;
    var top      = 0;
    var left     = 10;
-   var width    = 640;
+   var width    = "100%";
    var tab_off  = "#198DE9";
    var tab_on   = "#EEEEE0";
 
