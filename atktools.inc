@@ -665,7 +665,7 @@
             $body.=$key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value."\n";
           }
         }
-        $globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
+        $globals = $g_sessionData["globals"];
         if (count($globals)>0)
         {
           $body.="\nGlobals:\n";
