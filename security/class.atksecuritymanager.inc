@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.9  2001/06/18 10:43:41  peter
+   * Small bug fix with authorization... :/
+   *
    * Revision 4.8  2001/06/18 10:24:58  peter
    * Split POP3/IMAP authentication support (mainly a new POP3 auth class).
    * Authentication and authorization can now be done by different auth classes.
@@ -72,8 +75,8 @@
    
   require_once($config_atkroot."atk/security/class.auth_interface.inc");
   
-  if ($config_authentication == "") $config_authentication_type = "none";
-  if ($config_authorization  == "") $config_authorization_type = $config_authentication_type;
+  if ($config_authentication == "") $config_authentication = "none";
+  if ($config_authorization  == "") $config_authorization = $config_authentication;
   if ($config_securityscheme == "") $config_securityscheme = "none";
    
   include_once($config_atkroot."atk/security/class.auth_".$config_authentication.".inc");
