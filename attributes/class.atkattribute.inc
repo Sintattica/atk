@@ -651,13 +651,30 @@
       }
     }
     
+    /**
+     * Creates a searchcondition for the field,
+     * was once part of searchCondition, however, 
+     * searchcondition() also immediately adds the search condition.
+     *
+     * @param atkQuery $query     The query object where the search condition should be placed on
+     * @param String $table       The name of the table in which this attribute
+     *                              is stored
+     * @param mixed $value        The value the user has entered in the searchbox
+     * @param String $searchmode  The searchmode to use. This can be any one
+     *                              of the supported modes, as returned by this
+     *                              attribute's getSearchModes() method.
+     */
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $func = $searchmode."Condition";
       if (method_exists($query,$func))
+      {
         return $query->$func($table.".".$this->fieldName(),escapeSQL($value));
+      }
       else
+      {
         return false;
+      }
     }
 
     /**
@@ -1311,18 +1328,6 @@
       // add $field to fields array
       $fields[] = $field;
 
-    }
-    
-    /**
-     * Returns the condition (SQL) that should be used when we want to join a relation's
-     * owner node with the parent node. Void implementation for normal non-relation
-     * attributes
-     * @return String SQL string for joining the owner with the destination. 
-     *                Returns false when impossible (f.e. attrib is not a relation).
-     */
-    function getJoinCondition()
-    {
-      return false; 
     }
   }
 ?>
