@@ -1,5 +1,7 @@
 <?php
 
+  define(AF_NO_TOGGLELINKS, AF_SPECIFIC_1);
+  
   useattrib("atklistattribute");
   
   /**
@@ -103,7 +105,7 @@
       $modcols =$cols-1;
       $g_layout->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
       // todo: configurable cols
-      if (count($this->m_values)>4)
+      if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
       {
         $result.='<div align="left"><font size="-2">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.

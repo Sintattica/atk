@@ -2,27 +2,17 @@
 
   /**
    * The atkFlagAttribute class offers an way to use flags in an attribute.
-   * @author  Lineke Willems <lineke@ibuildings.nl>
+   * @author  M. Roest <martin@ibuildings.nl>
    *
    * @version $Revision$
    *
    * $Id$
    */
 
-  // TODO: Test this attribute and bring back the parameters to one array in stead of two arrays
-
-  class atkFlagAttribute extends atkAttribute
+  useattrib("atkmultiselectattribute");
+  
+  class atkFlagAttribute extends atkMultiSelectAttribute
   {
-    /**
-     * Array with checkbox options
-     */
-    var $m_options = Array();
-
-    /**
-     * Array with checkbox values
-     */
-    var $m_values = Array();
-
     /**
      * Constructor
      * @param $name Name of the attribute
@@ -30,71 +20,64 @@
      * @param $optionArray Array with options
      * @param $valueArray Array with flags
      */
-    function atkFlagAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
+    function atkFlagAttribute($name, $optionArray, $valueArray="", $cols="", $flags=0, $size="")
     {
-      // For flags, we use a default size of 10. (PHP can only handle 32 bit flags,
-      // so 10 positions is enough to store the bits of a PHP flag set).
-      if ($size==0) $size=10;
-      
-      $this->atkAttribute($name,$flags, $size); // base class constructor
-      $this->m_options = $optionArray;
-      $this->m_values = $valueArray;
+      $this->atkMultiSelectAttribute($name, $optionArray, $valueArray, $cols, $flags, $size);
+      $this->m_dbfieldtype = "number";
     }
 
-    function edit($record="", $fieldprefix="")
+    function value2db($rec)
     {
-      $result = "";
-      for ($i=0;$i<count($this->m_values);$i++)
+      //atkdebug("atkFlagAttribute::value2db()");
+      if(is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]>=1))
       {
-        if ((hasFlag($record[$this->fieldName()], $this->m_values[$i])) && $record[$this->fieldName()]!="")
+        $flags=0;
+        foreach($rec[$this->fieldName()] as $flag)
         {
-          $sel = "checked";
+          $flags |= $flag;
         }
-        else
+        return $flags;
+      }
+      else return 0;
+    }
+    
+    function db2value($rec)
+    {
+      if($rec[$this->fieldName()]>0)
+      {
+        $newrec = array();
+        foreach($this->m_values as $value)
         {
-          $sel = "";
+          if(hasFlag($rec[$this->fieldName()],$value))
+          {
+            $newrec[] = $value;
+          }
         }
-        $result.= '<input type=checkbox name="'.$fieldprefix.$this->formName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
+        return $newrec;
       }
-      return $result;
-    }
-
-    /**
-     * Convert checkbox array to database value
-     * @param $rec array with x fields (for each checkbox a field)
-     * @return database value for role
-     */
-    function fetchValue($rec)
-    {
-      $rolenumber = 0;
-
-      for ($i=0;$i<count($rec[$this->fieldName()]);$i++)
-      {
-        $rolenumber += $rec[$this->fieldName()][$i];
-      }
-      return $rolenumber;
-    }
-
-    /**
-     * Function display's the role in text
-     * @param $record array with roles
-     * @return formatted role string array
-     */
-    function display($record)
-    {
-      $value = $record[$this->fieldName()];
-      for ($j=0;$j<count($this->m_values);$j++)
-      {
-        if (hasFlag($record[$this->fieldName()], $this->m_values[$j]))
-          $rolestring .= text($this->m_options[$j])." ";
-      }
-      return $rolestring;
+      return array();
     }
     
     function dbFieldType()
     {
-      return "number";
+      return $this->m_dbfieldtype;
     }
-  }
 
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      // not implemented
+    }
+  
+    function getSearchModes()
+    {
+      // currently you can't search the flag attribute
+    
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      // return array("exact");
+    }  
+  }
 ?>
