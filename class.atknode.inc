@@ -2396,6 +2396,10 @@
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
+
+        // just before we validate the record we call the preUpdate() to check if the record needs to be modified
+        $this->preUpdate($record);
+
         $this->validate($record, "update");
 
         $error = count($record['atkerror']) > 0;
@@ -2801,7 +2805,7 @@
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->needsUpdate($record))
-           {
+          {
             if (method_exists($p_attrib,"store"))
             {
               $storelist[]=$attribname;
@@ -3261,6 +3265,18 @@
       // Do nothing
     }
 
+    /**
+     * Function that is called before an existing record has been saved to
+     * the database. This function does essentially nothing, but it can be
+     * overriden in your derived classes if you want to do something special
+     * after you saved a record.
+     *
+     * @param $record The record that has just been saved.
+     */
+    function preUpdate(&$rec)
+    {
+      // Do nothing
+    }
 
     /**
      * Function that is called right after an existing record has been deleted.
