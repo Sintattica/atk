@@ -15,6 +15,7 @@ Changes in ATK 5.0.6
 * Fixed bug in record navigator when no form was present on the page. [Ivo]
 + Base language directory can be set with $config_language_basedir. [Boy]
 * Default applicaton language dir is now languages/. [Ivo]
+* Fixed deleteAllowed in oneToManyRelation, when the filter is not on the destination node. [Boy,Harrie]
 
 Changes in ATK 5.0.5
 --------------------
