@@ -172,17 +172,22 @@
     */
     function addJoin($table, $alias, $condition, $outer)
     {
-    
       if ($outer)
       {
-        $join="LEFT JOIN ";
-        $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
+        $jointype="LEFT JOIN ";
+        $join = " ".$jointype.$table." ".$alias." ON ".$condition." ";
+        
+        if (!in_array($join, $this->m_joins)) $this->m_joins[]= $join;
       }
       else
       {
-        $join="JOIN ";
-        $this->m_joins[]= " ".$join.$table." ".$alias;
-        $this->addCondition($condition);
+        $jointype="JOIN ";
+        $join = " ".$jointype.$table." ".$alias;
+        if (!in_array($join, $this->m_joins))
+        {
+          $this->m_joins[]= $join;
+          $this->addCondition($condition);
+        }
       }
 
     }

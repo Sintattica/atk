@@ -29,7 +29,8 @@ Changes in ATK 5.0.7
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
   this only works for the 'normal' searchfields, extended search still
   has to be fixed [Harrie]
-* Fixed navigating for select mode [Yuri,Boy]
+* Fixed navigating for select mode [Boy,Yuri]
+* atkQuery now checks for double joins [Boy,Harrie]
 
 Changes in ATK 5.0.6
 --------------------
