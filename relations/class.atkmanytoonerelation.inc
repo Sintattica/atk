@@ -225,6 +225,7 @@
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
           }
         }
+
         return $result;
       }
       return "";
@@ -286,8 +287,14 @@
             $result.= '<select id="'.$id.'" name="'.$id.'">';
             if ($this->hasFlag(AF_OBLIGATORY)==false)
             {
+              //get the select_none string
+              $type = explode(".",$this->m_destInstance->atknodetype());
+              $nodename = array_pop($type);
+              $modulename = array_pop($type);
+              $nonetext = atktext('select_none', $modulename, $nodename);
+
               // Relation may be empty, so we must provide an empty selectable..
-              $result.= '<option value="">'.text('select_none');
+              $result.= '<option value="">'.$nonetext;
             }
           
             // Newly added check
@@ -348,22 +355,22 @@
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
           if ($this->m_destinationFilter!="")
           {
-          	$parser = new atkStringParser($this->m_destinationFilter);
+            $parser = new atkStringParser($this->m_destinationFilter);
             $filter = $parser->parse($record);
-	          $result.= href("dispatch.php?atknodetype=".$this->m_destination.
+            $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
                            text("link_select_".getNodeType($this->m_destination)),
                            SESSION_NESTED,
                            true);
-				  }
-				  else
-				  {
+          }
+          else
+          {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atktarget=".$atktarget,
                            text("link_select_".getNodeType($this->m_destination)),
                            SESSION_NESTED,
                            true);
-				  }
+          }
         }
         return $result;
       }
