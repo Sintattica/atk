@@ -379,13 +379,11 @@
      */
     function hide($record="", $fieldprefix="")
     {
-      
       atkdebug("hide called for ".$this->fieldName());
-
       if ($this->createDestination())
       {
         if ($record[$this->fieldName()]!=NULL)
-      {
+        {
           $myrecord = $record[$this->fieldName()];
   
           if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
@@ -397,14 +395,13 @@
           {
             $mode = "edit";
             $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
-        }
+          }
         }
         else
         {
           $mode = "add";
         }
 
-        atk_var_dump($myrecord,"myrecord van onetoone hide method");
         $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
         $forceList = decodeKeyValueSet($this->getFilter());
         $output.= $this->m_destInstance->hideform($mode,$myrecord,$forceList,$fieldprefix.$this->fieldName()."_AE_");
