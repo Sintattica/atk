@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.20  2001/05/07 14:47:32  ivo
+   * fix in atkroot.
+   *
    * Revision 4.19  2001/05/07 14:46:15  ivo
    * Atk now has a configurable rootdirectory (specified in dispatcher)
    *
@@ -350,7 +353,7 @@
   require_once("atk/atkconfigtools.inc");
   require_once("atk/defaultconfig.inc.php");
 
-  include_once("./config.inc.php");
+  include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
   require_once($config_atkroot."atk/class.layout.inc");
   require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
