@@ -372,12 +372,12 @@
     */
     function deAlias(&$record)
     {
-      while (list($name,$value) = each($record))
+      foreach ($record as $name => $value)
       {
         if(substr($name,0,3)=="al_")
-	      {
-          $name = substr($name,0,strlen($name)-1).strtoupper(substr($name,strlen($name)-1,strlen($name)));
-	      }
+        {
+          $name = substr($name,0,3).strtoupper(substr($name,3));
+        }
         if ($this->m_aliasLookup[$name]!="")
         {
           $record[$this->m_aliasLookup[$name]]=$value;
