@@ -268,8 +268,18 @@
     function _stringNameFallback($string, $node, $lng, $nodefaulttext)
     {
       $module = array_shift($this->m_fallbackmodules);
-      if ($module) { return $this->_getStringName($string, $module, $node, $lng, $nodefaulttext); }
-      else { atkdebug("atkLanguage: We ran out of modules! $string just couldn't be found"); return; }
+      if ($module) 
+      { 
+        return $this->_getStringName($string, $module, $node, $lng, $nodefaulttext); 
+      }
+      else 
+      { 
+        if ($nodefaulttext)
+        {
+          atkdebug("atkLanguage: We ran out of modules! Non-empty $string just couldn't be found");
+        }
+        return; 
+      }
     }
     
     /**
