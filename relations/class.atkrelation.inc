@@ -83,7 +83,8 @@
     function isEmpty($postvars)
     {
       $this->createDestination();
-      return ($postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()] == "");
+      $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
+      return ($keyval == "" || $keyval == NULL || $keyval == 0);
     }
   
     function getSearchModes()
