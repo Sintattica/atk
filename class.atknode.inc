@@ -95,6 +95,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.57  2001/06/19 09:04:32  peter
+   * viewPage(...) allows you now to override a attribute's display method
+   *
    * Revision 4.56  2001/06/18 10:05:51  ivo
    * New attribute: atkProfileAttribute, for editing security profiles.
    * New node flag: NF_NO_SECURITY
@@ -1023,11 +1026,16 @@
           {
             $tdcount++; // If there's no label, the other td's have to be filled up.
           }
-        	         
-          $editsrc=$p_attrib->display($record);
-                        
-          $page.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
-          $page.='</tr>';
+
+          // An <attributename>_display function may be provided in a derived
+          // class to display an attribute. If it exists we will use that method
+          // else we will just use the attribute's display method.
+          $funcname = $p_attrib->m_name."_display";
+          if (method_exists($this, $funcname)) $editsrc = $this->$funcname($record);
+          else $editsrc=$p_attrib->display($record);
+            
+          $page .= $g_layout->ret_td($editsrc, 'colspan="'.$tdcount.'" valign="top"');
+          $page .= "</tr>";
         }
                 
       }
