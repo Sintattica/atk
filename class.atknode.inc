@@ -1434,23 +1434,23 @@
 
         if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
         {
-          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
+          $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]';
         }
         else
         {
           // if you may not edit, maybe you are allowed to view..
           if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
           {
-            $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
+            $actions["view"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]';
           }
         }
         if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
         {
-          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
+          $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]';
         }
         if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
         {
-          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
+          $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]';
         }
       }
 
@@ -1469,7 +1469,7 @@
      * @param $sortable
      * @param $suppresslist
      */
-    function recordList($recordset, $actions,$sortable=true,$suppressList="")
+    function recordList($recordset, $actions, $sortable=true,$suppressList="")
     {
       global $g_layout, $PHP_SELF,$g_theme;
       $output = $g_layout->data_top();
@@ -1630,43 +1630,47 @@
 
       for ($i=0;$i<count($recordset);$i++)
       {
-        // the functionality list:
-        // TODO: pick some cool little icons instead of text
+        // Look for custom record actions.
+        $recordactions = $actions;
+        $this->recordActions($recordset[$i], $recordactions);    
+        
+        // Actions passed to the function.
+        
         $actionCol="";
-        if (count($actions)>0)
+        if (count($recordactions)>0)
         {
           $stractions = "";
           $pk = $this->primaryKey($recordset[$i]);
 
-          for ($j=0;$j<count($actions);$j++)
-          {
-            //$action=str_replace('[pk]',rawurlencode($pk),$actions[$j]);
-            // experimental: [] tags could be encoded but we still parse them..
-
-            // dirty hack:
-            $atkencoded = false;
-            if (strpos($actions[$j],"_1")>0)
+          foreach($recordactions as $action_name => $action_url)
+          {          
+            if ($action_url!="")
             {
-              // normal value..
-              $atkencoded = true;
-            }
-            $action=str_replace("%5B","[",$actions[$j]);
-            $action=str_replace("%5D","]",$action);
+              // dirty hack:
+              $atkencoded = false;
+              if (strpos($action_url,"_1")>0)
+              {
+                // normal value..
+                $atkencoded = true;
+              }
+              $action=str_replace("%5B","[",$action_url);
+              $action=str_replace("%5D","]",$action);
 
-            $action=str_replace("_1"."5B","[",$action);
-            $action=str_replace("_1"."5D","]",$action);
+              $action=str_replace("_1"."5B","[",$action);
+              $action=str_replace("_1"."5D","]",$action);
 
-            if ($atkencoded)
-            {
-              $action=str_replace('[pk]',atkurlencode(rawurlencode($pk), false),$action);
-            }
-            else
-            {
-              $action=str_replace('[pk]',rawurlencode($pk),$action);
-            }
-            $action=stringparse($action,$recordset[$i],true);
+              if ($atkencoded)
+              {
+                $action=str_replace('[pk]',atkurlencode(rawurlencode($pk), false),$action);
+              }
+              else
+              {
+                $action=str_replace('[pk]',rawurlencode($pk),$action);
+              }
+              $action=stringparse($action,$recordset[$i],true);
 
-            $stractions.=$action.'&nbsp;';
+              $stractions.=href($action,text($action_name),SESSION_NESTED).'&nbsp;';
+            }
           }
           $actionCol=$g_layout->ret_td($stractions);
         }
@@ -3297,6 +3301,28 @@
     function preCopy(&$record)
     {
       // Do nothing
+    }
+    
+    /**
+     * Function that is called for each record in a recordlist, to determine
+     * what actions may be performed on the record. 
+     * This function does nothing, but it can be overriden in your derived
+     * class. 
+     * The array with actions (edit, delete, etc.) is passed to the function 
+     * and can be modified.     
+     * To create a new action, just do $actions["new_action"]="somefile.php";
+     * in the derived function.
+     * To disable the edit action for a record, use unset($actions["edit"]);
+     *
+     * @param $record The record for which actions need to be determined
+     * @param &$actions Reference to an array with the already defined actions.
+     *                  This is an associative array with the action identifier
+     *                  as key, and an url as value.
+     *
+     */
+    function recordActions($record, &$actions)
+    {
+      // Do nothing.
     }
 
     /**

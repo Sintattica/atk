@@ -94,16 +94,16 @@
         }
         if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
         {
-        $actions[] = href($PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter,text("edit"),SESSION_NESTED,true);
+        $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
         }        
 
         if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
         {
-          $actions[] = href($PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter,text("delete"),SESSION_NESTED,true);
+          $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
         }                 
         if($this->m_destInstance->hasFlag(NF_COPY))
         {
-          $actions[]=href($PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED, true);
+          $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
         }
         
         // User may not search in embedded forms..        
