@@ -1080,7 +1080,7 @@
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
      */
-    function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="")
+    function editArray($mode="add", $record, $forceList="", $suppressList="", $fieldprefix="")
     {
       global $g_sessionData;
 
@@ -1088,7 +1088,8 @@
       $this->setAttribSizes();
 
       /* default values */
-      $defaults = $record;
+      if (!empty($record)) $defaults = $record;
+      else $defaults = array();
 
       /* formdata from session */
       if ($this->m_postvars["atkformdata"]!="")
