@@ -349,6 +349,15 @@
       return "SYSDATE";
     }
     
+    /**
+      * Returns the maximum length an identifier (tablename, columnname, etc) may have
+      *      
+      */
+    function maxIdentifierLength()
+    {
+      return 30;
+    }
+    
   }
 
 ?>
