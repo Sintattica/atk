@@ -84,7 +84,7 @@
   					
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-            $tplfield["rowid"] = "attribrow_".$field_name; // The id of the containing row
+            $tplfield["rowid"] = "ar_".$field_name; // The id of the containing row
                
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
