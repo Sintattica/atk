@@ -2307,6 +2307,45 @@
       $g_layout->ui_bottom();
     }
 
+    /**
+     * Function outputs a page in which the user is asked if he really wants.
+     * to delete the record.
+     * @param $atkselector Selected record you want to delete
+     */
+    function confirmTopicDelete($atkselector, $locked=FALSE)
+    {  
+      global $g_layout, $PHP_SELF;
+
+      // multi-record?
+      $multi = FALSE;
+      if (is_array($atkselector))
+      {
+        $multi = count($atkselector) > 1;
+        $atkselector = '('. implode($atkselector, ') OR (').')';
+      }
+
+      $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
+      $g_layout->output($this->statusbar($locked));
+
+      $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
+      $g_layout->output(session_form());
+      $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
+      $g_layout->output('<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">');
+      $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
+
+      $g_layout->table_simple();
+
+      $g_layout->output('<tr>');
+      $g_layout->td(text('confirm_topic_delete'), 'align="center"');
+      $g_layout->output('</tr><tr>');
+      $g_layout->td('<input name="confirm" type="submit" value="'.text('yes').'" style="width:80px">&nbsp;&nbsp;<input name="cancel" type="submit" value="'.text('no').'" style="width:80px">','align="center"');
+      $g_layout->output('</tr></table></form>');
+
+      $g_layout->ui_bottom();
+    }
+
+
+
     // Small compare function for sorting attribs on order field
     function attrib_cmp($a,$b)
     {
