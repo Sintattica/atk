@@ -11,7 +11,7 @@ Changes in ATK 5.0.3
 * atkDateAttribute no longer displays current date unless obligatory. [Boy]
 * Fixed remaining bugs with tabs. (bug #301) [Boy]
 * If an attribute doesn't validate, the error now shows the tabname. [Boy]
-* Improvements and cleanups in atkLanguagen. [Boy]
+* Improvements and cleanups in atkLanguage. [Boy]
 * Small bugfix in atkFileExport, and added XML mime type. [Sandy]
 * Small modifications to facilitate HTML 4.01 validation. [Boy]
 * Improvements to atkTheme and atkThemeCompiler:
@@ -26,7 +26,7 @@ Changes in ATK 5.0.3
 * Updated atktools documentation. [Boy]
 * Fixed typo in a flag that caused a wrong count query. (bug #307) [Nicola]
 * Fixed bug in the atkmanytoonerelation. (bug #308) [Ruiz]
-* Fixed bug in saving float values (atknumberattribute) [Martin]
+* Fixed bug in saving float values (atknumberattribute). [Martin]
 
 Changes in ATK 5.0.2
 --------------------
