@@ -34,7 +34,7 @@ var tabSelectedColor = "#000000";
                 </tr>
               </table>
             </div>
-            <table border="0" cellspacing="0" cellpadding="0">
+            <table border="0" cellspacing="0" cellpadding="0" style="cursor: pointer;">
               <tr>
                 <td><img src="{$themedir}images/tab_left.gif"></td>
                 <td onclick="showTab('{$tabs[i].tab}')" height="22" valign="middle" background="{$themedir}images/tab_back.gif" align="center" nowrap>
