@@ -675,7 +675,7 @@
      */
     function getTabs($action)
     {
-      $list = &$this->m_tabList[$this->m_action];
+      $list = &$this->m_tabList[$action];      
       if (!is_array($list)) 
       {
         // fallback to view tabs.
