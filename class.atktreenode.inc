@@ -132,7 +132,7 @@
         
         // Store extra info in the record, so the recordActions override can make 
         // use of some extra info to determine whether or not to show certain actions.
-        $objarr->m_label["subcount"] = count($objarr->m_sub);
+        if (is_array($objarr->m_label)) $objarr->m_label["subcount"] = count($objarr->m_sub);
         
 		    $this->m_tree[$g_count]["label"]=$objarr->m_label;
         $this->m_tree[$g_count]["img"]=$objarr->m_img;         
@@ -466,7 +466,17 @@
 			    /****************************************/ 
 			    /* output item text                     */ 
 			    /****************************************/ 
-  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])." nowrap><font size=2>".$this->descriptor($this->m_tree[$cnt]["label"])."</font></td>\n"; 
+          // If there's an array inside the 'label' thingee, we have an entire record.
+          // Else, it's probably just a textual label.
+          if (is_array($this->m_tree[$cnt]["label"]))
+          {
+            $label = $this->descriptor($this->m_tree[$cnt]["label"]);
+          }
+          else
+          {
+            $label = $this->m_tree[$cnt]["label"];
+          }
+  				$res.= "<td colspan=".($g_maxlevel-$this->m_tree[$cnt]["level"])." nowrap><font size=2>".$label."</font></td>\n"; 
       
     			/****************************************/ 
     			/* end row   with the functions                      */     
