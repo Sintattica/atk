@@ -236,7 +236,7 @@
       else $str_max = 0;
 
       /* did we select a valid date? */
-      if     ($current === NULL); // NULL date selection; ignore this if statement
+      if     ($current === NULL && !$this->hasFlag(AF_OBLIGATORY)); // NULL date selection; ignore this if statement
       elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
       elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
       elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
