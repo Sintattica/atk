@@ -16,8 +16,8 @@
   define("NF_COPY"          ,256); // Records / trees may  be copied
   define("NF_TREE_NO_ROOT_DELETE",512); // No root elements can be deleted
   define("NF_TREE_NO_ROOT_COPY",1024); // No root elements can be copied
-  
-  define("NF_AUTOSELECT",2048); // No root elements can be copied 
+    
+  define("NF_AUTOSELECT",2048); // No root elements can be copied   
 
   /**
    * The atkNode class represents a piece of information that
@@ -87,12 +87,15 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.16  2001/05/02 14:55:46  ivo
+   * New cool feature: stacktrace in the topright screen (navigate through
+   * pages you visited before)
+   *
    * Revision 4.15  2001/05/02 13:09:48  ivo
    * fix to editafteradd session handling.
    *
    * Revision 4.14  2001/05/02 13:06:23  sandy
    * fixed the AF_CASCADE_DELETE flag
-   * CV: ----------------------------------------------------------------------
    *
    * Revision 4.13  2001/05/02 12:44:21  ivo
    * multilevel session_back feature.
@@ -440,7 +443,7 @@
     /**
      * This array will hold the data of records that are read from the database.
      */
-    var $m_records = Array();
+    var $m_records = array();
 
     /**
      * Pointer to the current record.
@@ -451,13 +454,13 @@
      * The list of attributes of a node. These should be of the class atkAtribute
      * or one of its derivatives.
      */
-    var $m_attribList = Array();
+    var $m_attribList = array();
 
     /**
      * The list of relations with other nodes. These should be of the class
      * atkRelation or one of its derivatives.
      */
-    var $m_relationList = Array();
+    var $m_relationList = array();
 
     /**
      * The type of node. (The constructor of a derived class passes its type
@@ -474,12 +477,12 @@
     /**
      * The primary key of this node
      */
-    var $m_primaryKey = Array();
+    var $m_primaryKey = array();
 
     /**
      * Array containing the metadata of the table (with fieldname, type and length)
      */
-    var $m_tableMeta = Array();
+    var $m_tableMeta = array();
 
     /**
      * Boolean that indicates whether a record is currently loaded from the database.
@@ -491,7 +494,7 @@
      * to the class using the dispatch function. We store them in a member
      * variable for easy access.
      */
-    var $m_postvars = Array();
+    var $m_postvars = array();
 
     /**
      * The action that we are currently performing.
@@ -502,7 +505,7 @@
      * This array is used to store error in the input data. The array is an
      * associative array with fieldname as key and an errormessage as value.
      */
-    var $m_errors = Array();
+    var $m_errors = array();
 
     var $m_default_order = "";
 
@@ -519,20 +522,25 @@
     /**
      * Record filters
      */
-    var $m_filters = Array();
-    var $m_fuzzyFilters = Array();
+    var $m_filters = array();
+    var $m_fuzzyFilters = array();
 
     /**
      * For speed, we keep a list of fields we don't have to load in recordlists.
      */
-    var $m_listExcludes = Array();
+    var $m_listExcludes = array();
+    
+    /**
+     * For speed, we keep a list of fields that have the cascade delete flag set..
+     */
+    var $m_cascadingAttribs = array();
 
     /**
      * For speed, we keep a list of fields which are multilangual.
      * We also want to know if there is a multilanguage select box.
      */
-    var $m_listMlAdd = Array();
-    var $m_listMlEdit = Array();
+    var $m_listMlAdd = array();
+    var $m_listMlEdit = array();
     var $m_hasMlSelectAdd = 0;
     var $m_hasMlSelectEdit = 0;
     
@@ -606,6 +614,12 @@
       if($attribute->hasFlag(AF_PARENT))
       {
         $this->m_parent = $attribute->fieldName();
+      }
+      
+      // check for cascading delete flag
+      if ($attribute->hasFlag(AF_CASCADE_DELETE))
+      {
+        $this->m_cascadingAttribs[]=$attribute->fieldName();
       }
 
       // check for title fieldname (treeview)
@@ -807,7 +821,8 @@
       global $g_layout;
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->output('<br>');
-      $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));
+      $g_layout->ui_top(text('title_'.$this->m_type.'_edit'));      
+      $g_layout->output($this->stackTrace());
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlEdit) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());
@@ -830,6 +845,7 @@
     
       $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_view'));
+      $g_layout->output($this->stackTrace());
 
       $page.=$g_layout->ret_table_simple();
 
@@ -891,6 +907,8 @@
       $g_layout->register_script("atk/javascript/formfocus.js");
       $g_layout->output('<br>');
       $g_layout->ui_top(text('title_'.$this->m_type.'_add'));
+      $g_layout->output($this->stackTrace());
+      
       $g_layout->output('<form name="entryform" enctype="multipart/form-data" action="dispatch.php?'.SID.'"'.
                                    ' method="post"'.(sizeof($this->m_listMlAdd) > 0 ? ' onsubmit="submitSave(this)"' : '').'>');
       $g_layout->output(session_form());                                   
@@ -1152,6 +1170,7 @@
       global $g_securityManager, $g_layout;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
+      $g_layout->output($this->stackTrace());
 
       $g_layout->output('<br>');
       
@@ -1179,7 +1198,7 @@
       $nav = $this->buildNavigation();
       if (!empty($nav)) $g_layout->output("$nav<br><br>");
 
-      $actions = Array();
+      $actions = array();
 
       if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
       {
@@ -1226,7 +1245,7 @@
    
       // stuff for the totals row..
       $totalisable = false;
-      $totals = Array();      
+      $totals = array();      
 
       // display a headerrow with titles. each attributetitle is clickable to
       // sort the list by that attribute.
@@ -1450,7 +1469,7 @@
    
       // stuff for the totals row..
       $totalisable = false;
-      $totals = Array();      
+      $totals = array();      
 
       // display a headerrow with titles. 
       // Since we are looping the attriblist anyway, we also check if there
@@ -1594,6 +1613,7 @@
       else
       {
         $g_layout->ui_top(text('title_'.$this->m_type.'_select'));
+        $g_layout->output($this->stackTrace());
         $g_layout->output('<br>');
       
         $g_layout->output('<br>'.text($this->m_type.'_select').'<br>');
@@ -1603,7 +1623,7 @@
         $nav = $this->buildNavigation();
         if (!empty($nav)) $g_layout->output("$nav<br><br>");
 
-        $actions=Array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
+        $actions=array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
 
         $g_layout->output($this->recordList($actions));
 
@@ -1624,6 +1644,7 @@
       global $g_layout;
       
       $g_layout->ui_top(text('title_delete'));
+      $g_layout->output($this->stackTrace());
 
       $g_layout->output('<form action="dispatch.php?"'.SID.' method="post">');
       $g_layout->output(session_form());
@@ -1789,7 +1810,8 @@
       else
       {
         $g_layout->output("Sorry, you don't have permission to perform this action");
-      }
+      }      
+      
       $g_layout->page(text('app_shorttitle')." - ".text('title_'.$this->m_type.'_'.$this->m_postvars['atkaction']));
       
       // This is the end of all things for this page..
@@ -1910,7 +1932,7 @@
      */
     function descriptorFields()
     {
-      $fields = Array();
+      $fields = array();
 
       // See if node has a custom descriptor definition.
       if (method_exists($this,"descriptor_def"))
@@ -2025,7 +2047,7 @@
       //$query->addCondition($this->primaryKey());
       $query->addCondition($this->m_postvars['atkorgkey']);
 
-      $storelist = Array();
+      $storelist = array();
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -2180,9 +2202,9 @@
     {
       global $g_db;
       
-      $this->m_records = Array();
-      $selectlist = Array();
-      $loadlist = Array();
+      $this->m_records = array();
+      $selectlist = array();
+      $loadlist = array();
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
@@ -2257,7 +2279,7 @@
 
       while ($g_db->next_record())
       {        
-        $therecord = Array();
+        $therecord = array();
         $dbrecord = $g_db->m_record;        
         $query->deAlias($dbrecord); // dereference aliases..
         atkDataDecode($dbrecord);
@@ -2371,8 +2393,8 @@
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
-      $storelist = Array();
-      $querylist = Array();
+      $storelist = array();
+      $querylist = array();
 
       $query->addTable($this->m_table);
 
@@ -2431,19 +2453,19 @@
     function deleteDb($selector)
     {
       global $g_db;
-      $this->selectDb($selector);
-
-      for ($i=0;$i<count($this->m_records);$i++)
+      
+      if (count($this->m_cascadingAttribs)>0)
       {
-        foreach (array_keys($this->m_attribList) as $attribname)
+        $this->selectDb($selector);
+
+        for ($i=0;$i<count($this->m_records);$i++)
         {
-          $p_attrib = &$this->m_attribList[$attribname];
-          if ($p_attrib->hasFlag(AF_CASCADE_DELETE))
+          for ($j=0;$j<count($this->m_cascadingAttribs);$j++)
           {
+            $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];            
             $p_attrib->delete($this->m_records[$i]);
           }
         }
-
       }
 
       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
@@ -2580,14 +2602,27 @@
       return $form;*/
     }
     
+    /**
+     * Dirty function to see if the current edit form is following an add screen
+     * that had NF_EDITAFTERADD set..
+     */ 
     function editingAfterAdd()
     {
       global $g_sessionData, $atklevel;
       $res = ($this->m_action == "update"
               && $g_sessionData["stack"][$atklevel-1]["atkaction"] == "add"
-              && $g_sessionData["stack"][$atklevel-1]["atknodetype"] == $this->m_type);
-      if ($res) echo "EDIT AFTER ADDDDDDDD!!!!!!!";
+              && $g_sessionData["stack"][$atklevel-1]["atknodetype"] == $this->m_type);  
       return $res;
+    }
+    
+    function stackTrace()
+    {
+      global $g_sessionManager;
+      if (atkconfig("stacktrace"))
+      {
+        return '<div align="right">'.$g_sessionManager->stackTrace().'</div><br>';   
+      }
+      return "";
     }
 
   }

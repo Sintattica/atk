@@ -35,10 +35,14 @@
   $config_menu_pos = "left";
   $config_top_frame = 0; // 0 = no   - 1 = yes
   $config_defaulttheme = "default";
+ 
+  // Display a 'stack' of the user activities in the top right corner.
+  $config_stacktrace = true;
 
   // An administrator password that is empty will *DISABLE* administrator login!
   $config_administratorpassword = "";
 
   // Module path (without trailing slash!)
   $config_module_path = "./modules"
+
 ?>

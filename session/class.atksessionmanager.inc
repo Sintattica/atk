@@ -6,6 +6,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.7  2001/05/02 14:55:46  ivo
+   * New cool feature: stacktrace in the topright screen (navigate through
+   * pages you visited before)
+   *
    * Revision 1.6  2001/05/02 14:21:51  sandy
    * new keyword in the session manager (clean)
    *
@@ -175,6 +179,28 @@
         
       //echo "<hr>";
       //var_dump($g_sessionData["stack"]);
+    }
+    
+    function stackTrace()
+    {
+      global $g_sessionData;
+      $res = "";
+      
+      $stack = $g_sessionData["stack"];
+      
+      for ($i=0;$i<count($stack);$i++)
+      {
+        $title = text("title_".$stack[$i]["atknodetype"]."_".$stack[$i]["atkaction"]);        
+        if ($i<count($stack)-1) 
+        {
+          $res.='<a href="dispatch.php?atklevel='.$i.'">'.$title.'</a> | ';
+        }
+        else
+        {
+          $res.=$title;
+        }
+      }            
+      return $res;
     }
 
 

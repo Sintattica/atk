@@ -15,6 +15,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/05/02 14:55:46  ivo
+   * New cool feature: stacktrace in the topright screen (navigate through
+   * pages you visited before)
+   *
    * Revision 4.7  2001/05/02 13:06:23  sandy
    * fixed the AF_CASCADE_DELETE flag
    * CV: ----------------------------------------------------------------------
@@ -261,9 +265,8 @@
      */
     function delete($record)
     {
-      $classname = $this->m_destination;
-      include_once("class.".$classname.".inc");
-      $rel = new $classname();      
+      $classname = $this->m_destination;      
+      $rel = createNode($classname);      
       atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
 
       $rel->deleteDb($rel->m_table.'.'.$this->m_refKey."=".$record[$this->m_ownerInstance->primaryKeyField()]);
