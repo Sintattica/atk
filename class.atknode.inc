@@ -353,9 +353,6 @@
     {
       $this->m_type = $type;
       $this->m_flags = $flags;
-
-      if ($this->hasFlag(NF_LOCK))
-        $this->m_lock = &atkLock::getInstance();
     }
 
     /**
@@ -1411,7 +1408,7 @@
       $mra = $this->hasFlag(NF_NO_DELETE) ? array() : array("delete");
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
-        $result["rows"][$i] = array("columns" => array(), "actions" => $actions, "mra" => $mra, "record" => &$recordset[$i]);
+        $result["rows"][$i] = array("columns" => array(), "actions" => $actions, "mra" => $mra, "record" => &$recordset[$i], "data" => array());
         $result["rows"][$i]["selector"] = $this->primaryKey($recordset[$i]);
         $row = &$result["rows"][$i];
 
@@ -2351,6 +2348,10 @@
       }
 
       $this->attribSort();
+
+      if ($this->hasFlag(NF_LOCK))
+        $this->m_lock = &atkLock::getInstance();
+
       $this->m_initialised = true;
     }
 
@@ -2899,6 +2900,7 @@
 
         $storelist = array();
 
+        $update = FALSE;
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
@@ -2911,13 +2913,16 @@
             else
             {
               $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
+              $update = TRUE;
             }
           }
         }
 
-        $querystring = $query->buildUpdate();
-
-        $g_db->query($querystring);
+        if ($update)
+        {
+          $querystring = $query->buildUpdate();
+          $g_db->query($querystring);
+        }
 
         // also store special storage attributes.
         for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
