@@ -324,14 +324,8 @@
     function tableExists($table)
     {
       global $g_db;
-      
-      $res = $g_db->getrows("SHOW TABLES");    
-      $found = FALSE;
-      for($i=0; ($i<count($res)) && (!$found); $i++)
-      {
-        if ($res[$i][0] == $table) $found = TRUE;
-      }    
-      return ($found);    
+      $res = $g_db->getrows("SHOW TABLES LIKE '$table'");
+      return (count($res)==0 ? false : true);
     }    
   
     /**
