@@ -50,7 +50,6 @@
     function atkFileEditor($name, $dir="", $filter="", $flags=0)
     {
       $this->atkNode($name, $flags|NF_ADD_LINK);
-      
       $this->m_dir = $dir;
       if ($dir=="") $this->m_dir = "./";                
       
@@ -64,6 +63,11 @@
       
       $this->setOrder("dummy.filename");
       $this->setTable("dummy");
+    }
+    
+    function setDir($dir)
+    {
+      $this->m_dir = $dir;
     }
     
     function countDb($selector)
@@ -81,7 +85,7 @@
       return count($arr);
     }
     
-    function selectDb($selector, $orderby="", $limit="")
+    function selectDb($selector="", $orderby="", $limit="")
     {   
       if ($selector=="")
       {
@@ -102,6 +106,7 @@
           // list only regular files.
           if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
           {
+            
             $arr[] = $entry;
           }
         }
