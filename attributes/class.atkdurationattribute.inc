@@ -1,11 +1,14 @@
 <?php
   /**
-   * The atkTimeAttribute is an attribute for entering a time value.
+   * The atkDurationAttribute is an attribute for entering a time value.
    * @author  Ivo Jansch <ivo@achievo.com>
    * @version 0.1
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/08/24 09:59:39  maurice
+   * Corrected class name from atkTimAttribute to atkDurationAttribute
+   *
    * Revision 4.1  2001/08/16 15:17:13  wim
    * Changed original atktimeattrib to atkduration
    * and added our new timattrib which is used inour scheduler.
@@ -40,7 +43,7 @@
    * Achievo Tool Kit
    *
    */
-  class atkTimeAttribute extends atkAttribute
+  class atkDurationAttribute extends atkAttribute
   {    
     /** member vars **/
     var $m_resolution_min;
@@ -56,7 +59,7 @@
      * @param $flags
      * @see atkAttribute
      */
-    function atkTimeAttribute($name, $resolution="1m", $maxtime="10h", $flags=0)
+    function atkDurationAttribute($name, $resolution="1m", $maxtime="10h", $flags=0)
     {
       $this->atkAttribute($name,$flags); // base class constructor
       $hms = substr($resolution,-1);

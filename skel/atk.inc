@@ -36,6 +36,7 @@
   include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");  
   // include_once($config_atkroot."atk/attributes/class.atkfileattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
+  // include_once($config_atkroot."atk/attributes/class.atkdurationattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atkmultiplefileattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atkpasswordattribute.inc");
   include_once($config_atkroot."atk/attributes/class.atkdummyattribute.inc");
