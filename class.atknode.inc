@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.84  2001/07/19 11:35:04  ivo
+   * Formsession save now works for action==admin
+   *
    * Revision 4.83  2001/07/18 16:08:18  ivo
    * $this->addAttribute() now has a shorter alias: $this->add()
    *
@@ -1769,7 +1772,7 @@
       
       /** DIRTY HACK 
           if action is something else than edit, we clear the atkformdata sessionstuff **/    
-      if ($this->m_action!="edit"&&$this->m_action!="add")
+      if ($this->m_action!="edit"&&$this->m_action!="add"&&$this->m_action!="admin")
       {
         atkdebug("Clearing stored formdata");
         $this->m_postvars["atkformdata"]="";
