@@ -2443,6 +2443,10 @@
       if ($this->m_postvars['atkcancel']=="")
       {
         $record = $this->updateRecord();
+
+        // just before we validate the record we call the preAdd() to check if the record needs to be modified
+        $this->preAdd($record);
+
         $this->validate($record, "add");
 
         $error = count($record['atkerror']) > 0;
@@ -3248,6 +3252,19 @@
      * @param $record The record that has just been saved.
      */
     function postAdd($record)
+    {
+      // Do nothing
+    }
+
+    /**
+     * Function that is called before a new record has been saved to the
+     * database. This function does essentially nothing, but it can be
+     * overriden in your derived classes if you want to do something special
+     * after you saved a record.
+     *
+     * @param $record The record that has just been saved.
+     */
+    function preAdd(&$record)
     {
       // Do nothing
     }
