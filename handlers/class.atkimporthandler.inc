@@ -110,8 +110,14 @@
       $col_map = $this->m_postvars["col_map"];  
       if (!is_array($col_map))
       {
-        // init colmap
-        $col_map = $this->getUsableAttributes();
+        // init colmap        
+        $col_map = $this->getUsableAttributes();        
+      }      
+      
+      if ($columncount>count($col_map))
+      {
+        // fill with ignored
+          for ($i=0, $_i=($columncount-count($col_map)); $i<$_i; $i++) $col_map[] = "-";        
       }
       
       // header
@@ -146,7 +152,14 @@
           if ($col_map[$j]!="" && $col_map[$j]!="-")
           {
             $attr = &$this->m_node->getAttribute($col_map[$j]);
-            $sample.=$attr->display(array($col_map[$j]=>$attr->parseStringValue(trim($line[$j+1]))));
+            $newval = $attr->parseStringValue(trim($line[$j+1]));
+            $sample.=$attr->display(array($col_map[$j]=>$newval));
+            
+            if ((string)$newval!=(string)$line[$j+1])
+            {
+              // Also display raw value so we can verify 
+              $sample.= ' <i style="color: #777777">('.trim($line[$j+1]).")</i>";
+            }
           }
           else if ($col_map[$j]=="-")
           {
@@ -300,6 +313,7 @@
       $res = '<select name="col_map['.$index.']">';
       
       $j=0;      
+      $hasoneselected = false;
       $attrs = $this->getUsableAttributes();
       foreach ($attrs as $attribname)
       {               
@@ -308,13 +322,14 @@
         {
           // select the next.
           $selected="selected";
+          $hasoneselected = true;
         }
           
         $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type);
         $j++;
       }        
       
-      $res.= '<option value="-" '.($value=="-"?"selected":"").' style="font-style: italic">Ignore this column';
+      $res.= '<option value="-" '.(($value=="-"||!$hasoneselected)?"selected":"").' style="font-style: italic">Ignore this column';
       
       $res.= '</select>';
       return $res;      
