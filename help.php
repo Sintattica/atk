@@ -1,11 +1,19 @@
 <?
 /* help.php
 *
-*  Author : Rene Bakx (rene@ibuildings.nl)
+*  @Author : Rene Bakx (rene@ibuildings.nl)
+*  @Version: $Revision$
 *
 * descr.  : Opens a new page in the same atk-template style as the atk-application, in a new pop-up screen and shows a help page.
 *  input   :  $node     -> name of the to be included text file ( help.[node].inc) 
 *  call     : help.php?node=[node]
+*
+* $Id$
+* $Log$
+* Revision 4.2  2001/06/29 13:15:12  ivo
+* Added cvs headers to file.
+*
+*
 */
 
   chdir("../");    
