@@ -134,7 +134,7 @@
       /* now that we have included the node source file, we check
        * for overloaders (because overloaders might need the included file!)
        */
-      $overloader = $this->nodeOverloader($node);
+      $overloader = &$this->nodeOverloader($node);
       if ($overloader != NULL)
       {
         $overloader->m_module = $module;
