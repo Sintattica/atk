@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.26  2001/05/10 14:18:49  ivo
+   * Fixed an includd_once typo.
+   *
    * Revision 4.25  2001/05/10 09:48:07  ivo
    * Added a cancel buttons to add forms.
    *
@@ -445,7 +448,7 @@
     for ($j = 0; $j < sizeof($attr_arr); $j++)
     {
       if (file_exists("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]))
-      includd_once("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
+      include_once("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
     }
   }
   
