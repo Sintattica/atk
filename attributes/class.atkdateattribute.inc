@@ -42,7 +42,7 @@
       }
 
       /* get date string */
-      $str_date = date($format, $date[0]);
+      $str_date = adodb_date($format, $date[0]);
 
       /* replace month/week name */
       $str_date = str_replace("%-%", text(substr(strtolower($date["month"]), 0, 3)), $str_date);
@@ -61,7 +61,7 @@
     function getDays($date)
     {
       /* the last day of any given month can be expressed as the "0" day of the next month! */
-      $date = getdate(mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
+      $date = adodb_getdate(adodb_mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
       return $date["mday"];
     }
 
@@ -151,8 +151,8 @@
       {
         $value = &$record[$this->fieldName()];
 
-        if (is_array($value)) $value = date("Y-m-d", mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-        elseif ($this->hasFlag(AF_OBLIGATORY)) $value = date("Y-m-d");
+        if (is_array($value)) $value = adodb_date("Y-m-d", adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
+        elseif ($this->hasFlag(AF_OBLIGATORY)) $value = adodb_date("Y-m-d");
         else $value = "";
 
         return '<input type="text" name="'.$fieldprefix.$this->formName().'" value="'.$value.'" size="10">';
@@ -171,44 +171,44 @@
         elseif (!is_array($field) && empty($field))
           $current = NULL; /* NULL date selected (NULL value in database) */
         elseif (is_array($field) && checkdate($field["month"], $field["day"], $field["year"]))
-          $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
+          $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
         else
         {
           $date = $this->dateArray($field);
           if (checkdate($date["month"], $date["day"], $date["year"]))
-            $current = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+            $current = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         }
       }
 
       /* minimum date */
       $minimum = $this->m_date_min;
-      if ($minimum > 0) $str_min = date("Ymd", $minimum);
+      if ($minimum > 0) $str_min = adodb_date("Ymd", $minimum);
       else $str_min = 0;
 
       /* maximum date */
       $maximum = $this->m_date_max;
-      if ($maximum > 0) $str_max = date("Ymd", $maximum);
+      if ($maximum > 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
       /* did we select a valid date? */
       if     ($current === NULL); // NULL date selection; ignore this if statement
       elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
       elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
-      elseif (empty($current)  && !empty($minimum) && mktime() < $minimum) $current = $minimum;
-      elseif (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum;
-      elseif (empty($current)) $current = mktime();
+      elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
+      elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
+      elseif (empty($current)) $current = time();
 
 
       /* if for some weird reason $current is still not set, assign current time */
       //if (!isset($current))
       //{
-      //  $current = mktime();
+      //  $current = adodb_mktime();
       //}
 
       /* get dates in array format */
-      if ($current !== NULL) $current = getdate($current);
-      if (!empty($minimum))  $minimum = getdate($minimum);
-      if (!empty($maximum))  $maximum = getdate($maximum);
+      if ($current !== NULL) $current = adodb_getdate($current);
+      if (!empty($minimum))  $minimum = adodb_getdate($minimum);
+      if (!empty($maximum))  $maximum = adodb_getdate($maximum);
 
       /* minimum and maximum */
       $current["d_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] && $current["mon"] == $minimum["mon"] ? $minimum["mday"] : 1);
@@ -224,7 +224,7 @@
         $result = '<select name="'.$fieldprefix.$this->fieldName().'">';
         for ($i = $str_min; $i <= $str_max; $i++)
         {
-          $tmp_date = getdate(mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
+          $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
           $result .= '<option value="'.$i.'"'.($current !== NULL && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format).'</option>';
         }
         $result .= '</select>';
@@ -253,7 +253,7 @@
               $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
-              $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
               $str_year = $this->formatDate($tmp_date, $str_format[$i]);
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
             }
@@ -272,7 +272,7 @@
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
-            $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
+            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
             if (($current['year']!="") && ($current['mon']!=""))
               $str_day = $this->formatDate($tmp_date, $str_format[$i]);
             else
@@ -290,7 +290,7 @@
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
-            $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));
+            $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
             $str_month = $this->formatDate($tmp_date, $str_format[$i]);
             $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
           }
@@ -393,7 +393,7 @@
     {
       if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
       elseif (empty($postvars[$this->formName()])) return "";
-      else return $this->dateArray(date("Ymd", strtotime($postvars[$this->formName()])));
+      else return $this->dateArray(adodb_date("Ymd", strtotime($postvars[$this->formName()])));
     }
 
     /**
@@ -408,7 +408,7 @@
       $value = &$record[$this->fieldName()];
 
       /* array or no array */
-      if (!is_array($value)) $value = $this->dateArray(date("Ymd", strtotime($value)));
+      if (!is_array($value)) $value = $this->dateArray(adodb_date("Ymd", strtotime($value)));
 
       /* if not obligatory and one of the fields is null then the date will be saved as null */
       if (!$this->hasFlag(AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) return;
@@ -418,7 +418,7 @@
       {
         /* currently selected date */
         if (checkdate($value["month"], $value["day"], $value["year"]))
-          $current = mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
+          $current = adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
         else
         {
           triggerError($record, $this->fieldName(), 'error_date_invalid');
@@ -444,7 +444,7 @@
       {
         $date = $this->dateArray($str_min);
         if (checkdate($date["month"], $date["day"], $date["year"]))
-          $minimum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+          $minimum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_min = 0;
       }
 
@@ -455,20 +455,20 @@
       {
         $date = $this->dateArray($str_max);
         if (checkdate($date["month"], $date["day"], $date["year"]))
-          $maximum = mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+          $maximum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_max = 0;
       }
 
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
       {
-        triggerError($record, $this->fieldName(), 'error_date_minimum', text("error_date_minimum")." ". $this->formatDate(getdate($minimum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_minimum', text("error_date_minimum")." ". $this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
         return;
       }
 
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
-        triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(adodb_getdate($maximum), $this->m_date_format_view, 0));
     }
 
     /**
@@ -478,9 +478,10 @@
      */
     function display($record)
     {
-      $value = $record[$this->fieldName()];
+      $value = $record[$this->fieldName()];      
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
-      $tmp_date = getdate(mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
+      $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
+      echo "<BR>"; var_dump($tmp_date);
       if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
       else return "&nbsp;";
     }
