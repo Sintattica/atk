@@ -92,6 +92,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.55  2001/06/14 12:30:21  ivo
+   * Moved postDel to inside deleteDb, instead of in action_delete.
+   *
    * Revision 4.54  2001/06/13 10:40:11  martin
    * Dirty evil hack :)
    *
@@ -1955,8 +1958,7 @@
       if ($this->m_postvars['confirm']==text('yes'))
       {
         // Confirmation page was displayed and 'yes' was clicked
-        $recordset = $this->deleteDb($this->m_postvars['atkselector']);                
-        $this->postDel($recordset[0]);
+        $recordset = $this->deleteDb($this->m_postvars['atkselector']);
         $this->redirect();
       }
       else if ($this->m_postvars['cancel']!=text('no'))
@@ -2674,6 +2676,11 @@
       atkdebug("deleteDb - query: ".$query);
       $g_db->query($query);
       // todo: instead of delete, set the deleted flag.
+      
+      for ($i=0;$i<count($recordset);$i++)
+      {
+        $this->postDel($recordset[$i]);
+      }
       
       return $recordset;
     }
