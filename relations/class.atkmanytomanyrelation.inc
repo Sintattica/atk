@@ -74,26 +74,27 @@
     */
     function display($record)
     {
-      $this->createDestination();
-
-      $recordset = array();
-
-      for ($i=0;$i<count($record[$this->m_name]);$i++)
+      if ($this->createDestination())
       {
-        $recordset[] = $record[$this->m_name][$i][$this->remoteKey()];
-      }
+        $recordset = array();
 
-      if (count($record[$this->m_name])!=0)
-      {
-        $result = "<ul>";
-        for ($i=0;$i<count($recordset);$i++)
+        for ($i=0;$i<count($record[$this->m_name]);$i++)
         {
-          $result.="<li>".$this->m_destInstance->descriptor($recordset[$i]);
+          $recordset[] = $record[$this->m_name][$i][$this->remoteKey()];
         }
-        $result.="</ul>";
-      }
 
-      return $result;
+        if (count($record[$this->m_name])!=0)
+        {
+          $result = "<ul>";
+          for ($i=0;$i<count($recordset);$i++)
+          {
+            $result.="<li>".$this->m_destInstance->descriptor($recordset[$i]);
+          }
+          $result.="</ul>";
+        }
+        return $result;
+      }
+      return "&nbsp;";
     }
 
     /**
@@ -118,10 +119,12 @@
     */
     function load($notused, $record)
     {
-      $this->createLink();
-      $rel = &$this->m_linkInstance;
-
-      return $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      if ($this->createLink())
+      {
+        $rel = &$this->m_linkInstance;
+        return $rel->selectDb($this->m_name.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      }
+      return array();
     }
 
     /**
@@ -129,10 +132,11 @@
      */
     function delete($record)
     {
-      $this->createLink();
-      $rel = &$this->m_linkInstance;
-
-      $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      if ($this->createLink())
+      {
+        $rel = &$this->m_linkInstance;
+        $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+      }
     }
 
   }
