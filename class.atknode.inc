@@ -2197,39 +2197,6 @@
         }
       }
 
-      /* there may be search criteria, which we also filter */
-      $searchArray = $this->m_postvars['atksearch'];
-      if (is_array($searchArray) && count($searchArray)>0)
-      {
-        $searchmode = $this->m_postvars["atksearchmode"];
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-        while (list($key,$value) = each($searchArray))
-        {
-          if ($value!="")
-          {
-            $p_attrib = &$this->m_attribList[$key];
-            if (is_object($p_attrib))
-            {
-              if(is_array($searchmode))
-              {
-                $search = $searchmode[$key];
-                if ($search=="") $search = atkconfig("search_defaultmode");
-                $p_attrib->searchCondition($query, $this->m_table, $value, $search);
-              }
-              else
-              {
-                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
-              }
-            }
-            else
-            {
-              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-              $query->addSearchCondition($condition);
-            }
-          }
-        }
-      }
-
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2264,7 +2231,39 @@
           $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
         }
       }
-
+      
+      /* there may be search criteria, which we also filter */
+      $searchArray = $this->m_postvars['atksearch'];
+      if (is_array($searchArray) && count($searchArray)>0)
+      {
+        $searchmode = $this->m_postvars["atksearchmode"];
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        while (list($key,$value) = each($searchArray))
+        {
+          if ($value!="")
+          {
+            $p_attrib = &$this->m_attribList[$key];
+            if (is_object($p_attrib))
+            {
+              if(is_array($searchmode))
+              {
+                $search = $searchmode[$key];
+                if ($search=="") $search = atkconfig("search_defaultmode");
+                $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+              }
+              else
+              {
+                $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+              }
+            }
+            else
+            {
+              $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+              $query->addSearchCondition($condition);
+            }
+          }
+        }
+      }
 
       $querystring = $query->buildCount($this->hasFlag(NF_ML));
       $result = $this->m_db->getrows($querystring);
@@ -2363,42 +2362,6 @@
         }
       }
 
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = $this->m_postvars['atksearch'];
-        if (is_array($searchArray) && count($searchArray)>0)
-        {
-          $searching = true;
-          $searchmode = $this->m_postvars["atksearchmode"];
-          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-          while (list($key,$value) = each($searchArray))
-          {
-            if ($value!="")
-            {
-              $p_attrib = &$this->m_attribList[$key];
-              if (is_object($p_attrib))
-              {
-                if(is_array($searchmode))
-                {
-                  $search = $searchmode[$key];
-                  if ($search=="") $search = atkconfig("search_defaultmode");
-                  $p_attrib->searchCondition($query, $this->m_table, $value, $search);
-                }
-                else
-                {
-                  $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
-                }
-              }
-              else
-              {
-                $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-                $query->addSearchCondition($condition);
-              }
-            }
-          }
-        }
-      }
       $loadlist = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -2448,6 +2411,43 @@
       {
         $p_attrib = &$this->m_attribList[$querylist[$i]];
         $p_attrib->addToQuery($query,$this->m_table,"",$recordset[0],1,$mode); // start at level 1
+      }
+      
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = $this->m_postvars['atksearch'];
+        if (is_array($searchArray) && count($searchArray)>0)
+        {
+          $searching = true;
+          $searchmode = $this->m_postvars["atksearchmode"];
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+          while (list($key,$value) = each($searchArray))
+          {
+            if ($value!="")
+            {
+              $p_attrib = &$this->m_attribList[$key];
+              if (is_object($p_attrib))
+              {
+                if(is_array($searchmode))
+                {
+                  $search = $searchmode[$key];
+                  if ($search=="") $search = atkconfig("search_defaultmode");
+                  $p_attrib->searchCondition($query, $this->m_table, $value, $search);
+                }
+                else
+                {
+                  $p_attrib->searchCondition($query, $this->m_table, $value, $searchmode);
+                }
+              }
+              else
+              {
+                $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+                $query->addSearchCondition($condition);
+              }
+            }
+          }
+        }
       }
 
       if ($order!="") $query->addOrderBy($order);
