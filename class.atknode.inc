@@ -2177,7 +2177,7 @@
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
       
       if(array_key_exists("atkfilter", $this->m_postvars))
-       $query->addCondition($this->m_postvars["atkfilter"]);
+       $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
        
       if (!$this->hasFlag(NF_NO_FILTER))
       {
@@ -2570,7 +2570,7 @@
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
       $query = &$this->m_db->createQuery();
-atk_var_dump("In adddb");
+
       $storelist = array();      
 
       $query->addTable($this->m_table);

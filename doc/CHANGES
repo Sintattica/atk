@@ -33,6 +33,8 @@ Changes in ATK 5.0.5
 * You can now pass along your own filter to the atkNavigator [Boy]
 * Tab-remembering fixed for older browsers 
   and for both IE and Gecko engine [Boy]
+* Fixed bug that would cause the navigator to fail and generate SQL errors 
+  when AF_LARGE is set and an atkfilter is passed along [Boy,Yuri]
 
 Changes in ATK 5.0.4
 --------------------
