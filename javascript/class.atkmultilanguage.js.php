@@ -107,7 +107,7 @@
           var endpos = element.name.lastIndexOf("[multilanguage]");
           if (element.name.substr(endpos)=="[multilanguage]")
           {
-          //alert(element.name);
+            //alert(element.name);
             // And this element is a multilanguage hidden dingske.
             // So we must put it's current value in the hidden field that belongs to it
             // And set it's value to the hidden field of the new language.

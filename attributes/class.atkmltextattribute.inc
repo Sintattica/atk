@@ -38,6 +38,7 @@
     {
       $this->m_edited=true;
       $languages = $this->getLanguages();
+      $id = $this->getHtmlId($fieldprefix);
       $this->m_languages = $languages;
       /* register javascript */
       $page = &atkPage::getInstance();
@@ -72,6 +73,8 @@
 
         /* label? */
         $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.text("language_".strtolower($this->m_languages[1])).'</label>)';
+        $entry["id"] = $this->getHtmlId($fieldprefix);
+        $entry["tabs"] = $this->m_tabs;     
 
         /* first language of other languages */
         $entry["html"] = '<textarea name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $this->m_languages[1] : "multilanguage").']"'.
