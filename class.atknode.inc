@@ -92,6 +92,9 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/04/24 12:40:50  ivo
+   * skel cleanup, typo fix in moduletools.
+   *
    * Revision 4.3  2001/04/24 11:50:13  ivo
    * Bugfixes to modulesupport: changed all 'require' statements to 'include'
    * statements, since 'require' is always executed at script compile time,
@@ -342,8 +345,13 @@ if (!defined("CLASS_ATKNODE_INC"))
   
   // Module specific language file
   for ($i = 0; $i < sizeof($g_modules); $i++)
-    if (file_exists("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile"))
-      include ("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile");
+  {
+    $filename = "$config_module_path/".$g_modules[$i]."/languages/$config_languagefile";
+    if (file_exists($filename))
+    {
+      include ($filename);
+    }
+  }
   
   // Module attributes (do not move, needs database!)
   for ($i = 0; $i < sizeof($g_modules); $i++)
@@ -724,29 +732,29 @@ if (!defined("CLASS_ATKNODE_INC"))
      * Sets the module name a certain node is part off.
      * @param $module the module name
      */
-    function setModule($module)
-    {
-      $this->m_module = $module;
-    }
+//    function setModule($module)
+//    {
+//      $this->m_module = $module;
+//    }
 
     /**
      * Get the relative path for this node
      * (this does *not* include the trailing slash!)
      */
-    function getPath()
-    {
-      global $config_module_path;
+//    function getPath()
+//    {
+//      global $config_module_path;
       
-      /* path for module */
-      if (!empty($this->m_module))
-      {
-        $path = "$config_module_path/".$this->m_module;
-        return $path;
-      }
+//      /* path for module */
+//      if (!empty($this->m_module))
+//      {
+//        $path = "$config_module_path/".$this->m_module;
+//        return $path;
+//      }
       
       /* default path */
-      return "./";
-    }
+//      return "./";
+//    }
 
     /**
      * Add a filter

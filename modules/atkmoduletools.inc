@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.3  2001/04/24 12:40:50  ivo
+ * skel cleanup, typo fix in moduletools.
+ *
  * Revision 1.2  2001/04/24 11:50:13  ivo
  * Bugfixes to modulesupport: changed all 'require' statements to 'include'
  * statements, since 'require' is always executed at script compile time,

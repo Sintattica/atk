@@ -21,6 +21,9 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.1  2001/04/24 12:40:50  ivo
+  * skel cleanup, typo fix in moduletools.
+  *
   * Revision 4.0  2001/04/23 10:19:38  ivo
   * Revision number update
   *
@@ -271,7 +274,7 @@ if (!defined("CLASS_LAYOUT_INC"))
       {
         $res.='<script language="javascript" src="'.$this->m_scripts[$i].'"></script>';
       }
-      $res.='<link href="style.php" rel="stylesheet" type="text/css">';
+      $res.='<link href="atk/style.php" rel="stylesheet" type="text/css">';
       $res.="</head>\n";
       return $res;
     }
