@@ -125,6 +125,7 @@
      */
     function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false)
     {
+      if(is_numeric($string)) return $string;
       $atklanguage =& atkLanguage::getInstance();
       
       $atklanguage->_preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
