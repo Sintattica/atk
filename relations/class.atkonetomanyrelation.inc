@@ -23,7 +23,7 @@
   /**
    * flag(s) specific for atkManyToOneRelation 
    */
-  define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1); // Only allow deletion of onetomany item when there are no child records
+  define("AF_RESTRICTED_DELETION", AF_SPECIFIC_1); // Only allow deletion of onetomany item when there are no child records
   
   /**
    * Implementation of one-to-many relationships.
@@ -479,7 +479,7 @@
     
     function deleteAllowed()
     {
-    	if ($this->hasFlag(AF_RESTRICTED_DELETE))
+    	if ($this->hasFlag(AF_RESTRICTED_DELETION))
     	{
     		// Get the destination node
     		$classname = $this->m_destination;
