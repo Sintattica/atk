@@ -16,6 +16,8 @@
   $txt_yes = "Ja";
   $txt_no = "Nee";
 
+  $txt_none = "Geen";
+
   $txt_view = "Bekijk";
   $txt_edit = "Bewerk";
   $txt_delete = "Verwijder";
