@@ -145,8 +145,15 @@
     /* check for file */
     if (!file_exists($file))
     {  
-      atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");
-      return NULL;
+      if (function_exists("missing_class_handler"))
+      {
+        return missing_class_handler($node);
+      }
+      else
+      {
+        atkerror("Cannot create node, because a required file ($file) does not exist!", "critical");      
+        return NULL;
+      }      
     }  
     /* return object */
     include_once($file);
