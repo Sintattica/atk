@@ -76,6 +76,7 @@
     function store($notused, $record, $mode)
     {
       $this->createLink();
+      $this->createDestination();
       $rel = &$this->m_linkInstance;
 
       if (is_object($rel) && $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]))
@@ -89,13 +90,22 @@
           $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
   
           if (!$rel->addDb($newrecord, true, $mode))
-          {
+          {            
             return false;
           }
-        }
+        }        
         return true;
       }
       return false;
+    }
+    
+    /**
+     * Check if the attribute is empty
+     * @return true if it's empty
+     */
+    function isEmpty($postvars)
+    {      
+      return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()])==0);
     }
 
   }
