@@ -1,7 +1,36 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler for the 'add' action of a node. It draws a page where the user
+   * can enter a new record.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkAddHandler extends atkActionHandler 
   {
+    /**
+     * The action handler.
+     */
     function action_add()
     {
       atkdebug("Action add");
@@ -10,7 +39,11 @@
     }    
     
     /**
-     * Creates an add page
+     * Creates an add page.
+     * 
+     * @param array $record The record which contains default values for the
+     *                      add-form.
+     * @return String A String containing a box with an add form.
      */
     function addPage($record=NULL)
     {            

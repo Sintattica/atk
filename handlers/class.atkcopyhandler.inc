@@ -1,15 +1,46 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler for the 'tcopy' action of a node. It copies the selected
+   * record, and then redirects back to the calling page.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkCopyHandler extends atkActionHandler 
   {
+    /**
+     * The action handler.
+     */
     function action_copy($redirect=true)
     {
       $this->invoke("nodeCopy");
     }
     
+    /**
+     * Copies a record, based on parameters passed in the url.
+     */
     function nodeCopy()
     {
-      atkdebug("atkCopyHandler::action_copy()");
+      atkdebug("atkCopyHandler::nodeCopy()");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","copy");
       if(count($recordset)>0)
       {

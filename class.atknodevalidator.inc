@@ -7,7 +7,6 @@
    * included in the distribution.
    *
    * @package atk
-   * @subpackage handlers
    *
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License

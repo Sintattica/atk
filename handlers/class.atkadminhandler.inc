@@ -1,7 +1,37 @@
 <?php
-
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Handler for the 'admin' action of a node. It displays a recordlist with
+   * existing records, and links to view/edit/delete them (or custom actions
+   * if present), and an embedded addform or a link to an addpage (depending
+   * on the presence of the NF_ADD_LINK flag).
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
   class atkAdminHandler extends atkActionHandler
   {
+    /**
+     * The action method
+     */
     function action_admin()
     {
       $page = &$this->getPage();
@@ -20,6 +50,13 @@
             
     }
     
+    /**
+     * Draws the form for adding new records.
+     *
+     * The implementation delegates drawing of the form to the atkAddHandler.
+     *
+     * @return String A box containing the add page.
+     */
     function addPage()
     {
       // Reuse the atkAddHandler for the addPage.
@@ -31,6 +68,13 @@
     /**
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete)
+     *
+     * @param array $actions The list of actions displayed next to each
+     *                       record. Nodes can implement a
+     *                       recordActions($record, &$actions, &$mraactions)
+     *                       method to add/remove record-specific actions.
+     * @return String A box containing the admin page (without the add form,
+     *                which is added later.
      */
     function adminPage($actions="")
     {     
@@ -120,8 +164,13 @@
     }
     
     /**
-     * Function that is called when creating an adminPage. Developers can override
-     * this function in their classes and return a string.
+     * Function that is called when creating an adminPage.
+     *
+     * The default implementation returns an empty string, but developers can 
+     * override this function in their custom handlers or directly in the 
+     * node class.
+     * 
+     * @return String A string that is displayed above the recordlist.
      */
     function adminHeader()
     {
@@ -129,8 +178,13 @@
     }
 
    /**
-     * Function that is called when creating an adminPage. Developers can override
-     * this function in their classes and return a string.
+     * Function that is called when creating an adminPage.
+     *
+     * The default implementation returns an empty string, but developers can
+     * override this function in their custom handlers or directly in the 
+     * node class. 
+     *
+     * @return String A string that is displayed below the recordlist.
      */
     function adminFooter()
     {

@@ -1,7 +1,39 @@
 <?php
-
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage ui
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Wrapper class for the Smarty template engine.
+   * This class instantiates Smarty and configures it for use in ATK.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage ui
+   *
+   */   
   class atkSmarty
   {    
+    /**
+     * Get the atkSmarty  instance.
+     *
+     * atkSmarty is a singleton.
+     *
+     * @static
+     * @return atkSmarty The one and only instance.
+     */
     function &getInstance()
     {
       static $s_smarty = NULL;
@@ -64,6 +96,11 @@
       return $s_smarty;
     }
         
+    /**
+     * Add a plugin dir to Smarty.
+     * @static
+     * @param String $path The plugin dir to add
+     */
     function addPluginDir($path)
     {
       $smarty = &atkSmarty::getInstance();
