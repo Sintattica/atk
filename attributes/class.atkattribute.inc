@@ -66,21 +66,22 @@
   define("AF_PARENT",                         4194304); // parent field for parent child relations (treeview)
   define("AF_NO_QUOTES",                      8388608); // no quotes are used when adding to database
   define("AF_ML",                            16777216); // multi-language field
+  define("AF_SUBITEM",                       33554432); // subnumbering, only for use with NF_NUMBERING
   define("AF_MULTILANGUAGE",                    AF_ML);
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
-
+                                     
   /*                                     
    * flag (values) that can be used for attribute specific flags
    * NOTE: Attribute specific flags aren't good behaviour, but for 
    * compatibility reasons we support them anyway. Newly derived attributes 
    * should not use these specific flags, but work with extra parameters.
    */
-  define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1
-  define("AF_SPECIFIC_2",                    67108864); // specific attribute flag 2
-  define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
-  define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
-  define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5  
+  define("AF_SPECIFIC_1",                    134217728); // specific attribute flag 1
+  define("AF_SPECIFIC_2",                    268435456); // specific attribute flag 2
+  define("AF_SPECIFIC_3",                    536870912); // specific attribute flag 3
+  define("AF_SPECIFIC_4",                   1073741824); // specific attribute flag 4
+  define("AF_SPECIFIC_5",                   2147483648); // specific attribute flag 5  
   
   /**
    * Storage types, used by the storageType() and related methods

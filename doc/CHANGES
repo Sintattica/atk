@@ -11,6 +11,7 @@ Changes in ATK 5.0.4
 + atkSecureRelation introduced [Mark]
 * Added documentation to new classes above [Boy]
 * atkManyToManyRelation sets the ref and local key upon construction [Mark]
++ Added NF_NUMBERING and AF_SUBITEM, setting these will number the fields [Boy]
 
 Changes in ATK 5.0.3
 --------------------

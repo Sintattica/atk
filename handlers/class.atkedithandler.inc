@@ -82,8 +82,7 @@
       $ui = &$node->getUi();
       
       if (is_object($ui))
-      {
-      
+      {      
         $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
         $form =$this->editForm("edit",$record,$forceList,$node->m_postvars['atksuppress']);
 
@@ -203,20 +202,20 @@
       {
         $field = &$data["fields"][$i];
 				
-		$field_name = $field['name'];								
+		    $field_name = $field['name'];								
 				
         $tplfield = array();
 				        
-		$tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":$field["tabs"][0]); // $this->getTab($field_name);
+		    $tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":$field["tabs"][0]); // $this->getTab($field_name);
 		
-		// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-		// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-		$tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
+		    // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+		    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+		    $tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
 								
-		// ar_ stands voor 'attribrow'.
-		$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+		    // ar_ stands voor 'attribrow'.
+		    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-		/* check for seperator */
+		    /* check for seperator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
         {
           $tplfield["line"] = "<hr>"; 
@@ -233,6 +232,11 @@
         /* edit field */
         else
         {                  
+          if ($this->m_node->hasFlag(NF_NUMBERING))
+          {
+            $this->addNumbering($field, $tplfield, $i);
+          }
+          
           /* does the field have a label? */
           if ($field["label"] !== NULL)
           {
@@ -242,7 +246,7 @@
             }
             else
             {
-              $tplfield["label"] =  $field["label"];
+              $tplfield["label"] .=  $field["label"];
               if ($field["error"]) // TODO KEES
               {
                 $tplfield["error"] = $field["error"];
@@ -293,5 +297,30 @@
       
 			return $result;       
     } 
+    
+    /**
+     * Adds numbering to the label of a field, if a field has the AF_SUBITEM flag set 
+     * it will become a subitem in the numbering.
+     * @param array $field    the currently handled attribute
+     * @param array $tplfield the template data for the current attribute
+     * @param int $i          the counter being used to loop the node for each attribute
+     */
+    function addNumbering(&$field, &$tplfield, &$i)
+    {
+      if (!$number) static $number = 0;
+      if (!$subnumber) static $subnumber = 1;
+           
+      if ($field["attribute"]->hasFlag(AF_SUBITEM)) 
+      { 
+        $tplfield["label"]="&nbsp;&nbsp;$number.$subnumber. "; 
+        $subnumber++;
+      }
+      else 
+      { 
+        $number++;
+        $subnumber = 1;
+        $tplfield["label"]="$number. ";
+      }
+    }
   }
 ?>
