@@ -132,12 +132,43 @@
    *
    * Replaces the txt_[vars] with the values from the language files
    */
-  function text($var,$node="")
+  function text($var, $node="",$module="")
   {
-    if($node!="") $result = $GLOBALS["txt_".$node."_".$var];
-    if($result=="") $result =  $GLOBALS["txt_".$var];
-    if ($result=="") return ucfirst(str_replace("_"," ",str_replace('title_','',$var)));
-    else return $result;
+    if ($module=="")
+    {
+      // Module is empty, we can only look for a node specific text.      
+      if ($node=="")
+      {
+        // Node is empty too, we can only use the generic string.        
+        $key = "txt_".$var;
+      }
+      else
+      {
+        // Node is not empty. We try to find a node specific string first. If that doesn't exist,
+        // we return the generic string.
+        $key = "txt_".$node."_".$var;
+        if (empty($GLOBALS[$key]))
+        {
+          // No node specific string. We should use the generic string.
+          $key = "txt_".$var;
+        }        
+      }
+    }
+    else
+    {
+      // Module is set. We try to find a module specific string first.
+      // If that doesn't exist, we fall back.
+      // NOTE: we don't support passing a module but not a node. You pass
+      // both or none at all.
+      $key = "txt_".$module."_".$node."_".$var;
+      if (empty($GLOBALS[$key]))
+      {
+        // No module specific string found. We return the non-module
+        // specific fallback string.
+        return text($var, $node);
+      }      
+    }        
+    return (!empty($GLOBALS[$key])?$GLOBALS[$key]:ucfirst(str_replace("_"," ",str_replace('title_','',$var))));
   }
 
   /**
