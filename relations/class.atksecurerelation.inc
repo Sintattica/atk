@@ -38,6 +38,8 @@
     var $m_searching = false;
     var $m_keylookup = array();
     var $m_records = array();
+    var $m_linkpass;
+    var $m_linkbackfield;
 
     /**
      * Creates an atkSecureRelation, 
@@ -58,7 +60,7 @@
      * @param int $flags          Attribute flags that influence this 
      *                            attributes' behavior.     
      */
-    function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $encryption, $flags=0)
+    function atkSecureRelation($name, $destination, $linktable, $linkfield, $linkbackfield, $keylength, $refKey="", $encryption, $flags=0)
     {
       $this->atkOneToOneRelation($name, $destination, $refKey, $flags);
       $this->createDestination();
@@ -67,6 +69,7 @@
       $this->m_linktable = $linktable;
       $this->m_linkfield = $linkfield;
       $this->m_keylength = $keylength;
+      $this->m_linkbackfield = $linkbackfield;
     }
   
     /**
@@ -141,7 +144,7 @@
       else // lookup matching
       {
         $where = array();
-        
+
         foreach (array_keys($this->m_keylookup) as $decryptedlink)
         {                     
           $where[] = $decryptedlink;
@@ -169,15 +172,15 @@
           {
             $this->m_destInstance->m_postvars["atksearch"] = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
             $records = $this->m_destInstance->selectDb();
-            
+           
             // create lookup table for easy reference.            
             $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);           
             for ($i=0, $_i=count($records); $i<$_i; $i++)
             {
-              $link = $records[$i][$this->m_refKey];                              
+              $link = $records[$i][$this->m_linkbackfield];                              
               $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
               
-              if (!$decryptedlink) atkdebug("Unable to decrypt: $link");
+              if (!$decryptedlink) atkdebug("Unable to decrypt link: ".$link);
               else
               {
                 $this->m_keylookup[$decryptedlink] = $i;
@@ -194,14 +197,23 @@
       }
       else 
       { 
-        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->primaryKeyField()."= '".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+        if (!$this->m_linkpass) $this->m_linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
+        
+        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
         $result = $g_db->getrows($query);
         $link = $result[0][$this->fieldName()];
   
-        $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
+        $cryptedlink = $this->m_crypt->decrypt($link,$this->m_linkpass);
         $record[$this->fieldName()] = $cryptedlink;
-  
-        return parent::load($db, $record, $mode); 
+
+        //for the use of encrypted id's we don't want to use the refkey,
+        //because in that case we have to encrypt the id of the employee
+        //and than atk CAN get the destination data, but not the owner data.
+        //so we backup de refkey, make in empty and put it back after loading the record.
+        $backup_refkey = $this->m_refKey;
+        $this->m_refKey = "";
+        return parent::load($db, $record, $mode);
+        $this->m_refKey = $backup_refkey;
       }
     }
   
