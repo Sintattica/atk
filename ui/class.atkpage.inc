@@ -86,6 +86,13 @@
     var $m_content = "";
     
     /**
+     * The hidden variables for the page
+     * @access private
+     * @var Array
+     */
+    var $m_hiddenvars = array();
+    
+    /**
      * Retrieve the one-and-only atkPage instance.
      * @return atkPage
      */
@@ -169,6 +176,20 @@
      function register_stylecode($code)
      {
        if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
+     }
+     
+     /**
+      * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
+      * but will not be shown to the user unless he/she has a very, very old browser 
+      * that is not capable of rendering CSS
+      * @param array $hiddenvars the hiddenvariables we want to register
+      */
+     function register_hiddenvars($hiddenvars)
+     {
+     	 foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue)
+     	 {
+     	 	 $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
+     	 }
      }
     
     /**
@@ -289,25 +310,28 @@
       $page.= $this->head($title);
       if ($body) $page.= $this->body();
       $page.= $this->m_content."\n";
-      $page.= $this->renderATKvars();
+      $page.= $this->renderHiddenVars();
       if ($body) $page.= "</body>\n";
       $page.= "</html>\n";       
       return $page;
     }
     
     /**
-     * Here we set a hidden div in the page with specific ATK variables
-     * that we want to make accessible to javascripts
+     * Here we render a hidden div in the page with hidden variables
+     * that we want to make accessible to client side scripts
      * @return string a hidden div with the selected ATK variabels
      */
-    function renderATKvars()
-    {
-    	global $ATK_VARS;
-    	
-    	$page.= "\n".'<div id="ATKVARS" style="display: none">';
-      $page.="\n <span id='atknodetype'>".$ATK_VARS['atknodetype']."</span>";
-      $page.="\n</div>";
-      
+    function renderHiddenVars()
+    {  	
+    	if ($this->m_hiddenvars)
+    	{
+    	  $page.= "\n".'<div id="hiddenvars" style="display: none">';
+    		foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue)
+    		{
+        	$page.="\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
+    		}
+    		$page.="\n</div>";
+    	}
     	return $page;
     }
     

@@ -1703,6 +1703,7 @@
         $secMgr = &atkGetSecurityManager();
         $secMgr->logAction($this->m_type, $this->m_action);
         $this->callHandler($this->m_action);
+        $page->register_hiddenvars(array("atknodetype"=>$this->m_module.".".$this->m_type));
       }
       else
       {

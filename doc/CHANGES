@@ -26,7 +26,8 @@ Changes in ATK 5.0.5
 * Fix for bug that would cause obligatory atkdateattributes to be empty 
   instead of assuming the current date [Boy]
 + Added AF_DUMMY_SHOW_LABEL, which causes dummy attribs to be labeled [Boy]
-* Fixed tabbing, atkPage now passes along the nodetype in a hidden div 
++ Added register_hiddenvars() to atkPage [Boy]
+* Fixed tabbing, atkNode now passes along the nodetype as a hidden var 
   and the DHTML tabbing uses this instead of the URL [Boy]
 
 Changes in ATK 5.0.4
