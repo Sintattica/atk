@@ -2948,6 +2948,8 @@
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
       }
 
+      $querystring = $query->buildInsert();
+      $g_db->query($querystring);
 
       // also store special storage attributes.
       for ($i=0;$i<count($storelist);$i++)
@@ -2958,8 +2960,6 @@
 
       }
 
-      $querystring = $query->buildInsert();
-      $g_db->query($querystring);
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
