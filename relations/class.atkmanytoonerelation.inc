@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.12  2001/06/20 14:33:51  ivo
+   * ManyToOneRelation now supports templated destinationfilters.
+   *
    * Revision 4.11  2001/05/22 08:38:40  peter
    * Added searchCondition method for this relation, note this method
    * should be extended to create a search condition for the descriptor fields!
@@ -186,25 +189,39 @@
       if (!$this->hasFlag(AF_LARGE))      
       {
         // normal dropdown..
-        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);           
-        
-        $result = '<select name="'.$fieldprefix.$this->formName().'">';
-            
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);                           
+
+        if ($this->m_destinationFilter!="")
+        {
+          $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+        }
         $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-
-        if ($this->hasFlag(AF_OBLIGATORY)==false)
+        
+        // autoselect if there is only one record (if obligatory is not set, 
+        // we don't autoselect, since user may wist to select 'none' instead 
+        // of the 1 record.
+        if (count($recordset)==1&&$this->hasFlag(AF_OBLIGATORY))
         {
-          // Relation may be empty, so we must provide an empty selectable..
-          $result.= '<option value="0">'.text('select_none');
+          $result = $this->m_destInstance->descriptor($recordset[0])."&nbsp;&nbsp;";
+          $result.= $this->hide(array($this->fieldName()=>$recordset[0]), $fieldprefix);          
         }
-
-        for ($i=0;$i<count($recordset);$i++)
+        else
         {
-          $pk = $this->m_destInstance->primaryKey($recordset[$i]);
-          if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
-          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+          $result = '<select name="'.$fieldprefix.$this->formName().'">';
+          if ($this->hasFlag(AF_OBLIGATORY)==false)
+          {
+            // Relation may be empty, so we must provide an empty selectable..
+            $result.= '<option value="0">'.text('select_none');
+          }
+
+          for ($i=0;$i<count($recordset);$i++)
+          {
+            $pk = $this->m_destInstance->primaryKey($recordset[$i]);
+            if ( $pk== $currentPk) $sel = "selected"; else $sel = "";
+            $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+          }
+          $result.='</select>';
         }
-        $result.='</select>';
       }
       else
       {
@@ -271,6 +288,10 @@
     function search($record="")
     {
       $this->createDestination();
+      if ($this->m_destinationFilter!="")
+      {
+        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+      }
       $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
       $result = '<select name="atksearch['.$this->fieldName().']">';

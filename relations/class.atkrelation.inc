@@ -16,6 +16,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/06/20 14:33:51  ivo
+   * ManyToOneRelation now supports templated destinationfilters.
+   *
    * Revision 4.6  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -105,10 +108,10 @@
       {
         $this->m_destInstance = getNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
-        if ($this->m_destinationFilter!="")
-        {
-          $this->m_destInstance->addFilter($this->m_destinationFilter);
-        }
+//        if ($this->m_destinationFilter!="")
+  //      {
+    //      $this->m_destInstance->addFilter($this->m_destinationFilter);
+      //  }
       }      
     }
     

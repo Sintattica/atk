@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.13  2001/06/20 14:33:51  ivo
+   * ManyToOneRelation now supports templated destinationfilters.
+   *
    * Revision 4.12  2001/06/14 12:25:38  ivo
    * fixed bug: onetomanyrelation ignored NF_NO_ADD flag.
    *
@@ -255,6 +258,10 @@
       if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
       
       $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+      if ($this->m_destinationFilter!="")
+      {
+        $this->m_destInstance->addFilter($this->m_destinationFilter);
+      }
       $recordset = $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);
       
       return $recordset;

@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/06/20 14:33:51  ivo
+   * ManyToOneRelation now supports templated destinationfilters.
+   *
    * Revision 4.3  2001/05/10 08:31:01  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -82,6 +85,10 @@
       $this->createDestination();
       $tmp1=atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
       $tmp2=atk_array_merge($tmp1,array($this->m_destInstance->m_parent));
+      if ($this->m_destinationFilter!="")
+      {
+        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+      }
       $recordset = $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
             
       $m_current = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
@@ -107,6 +114,10 @@
     function search($record="")
     {
       $this->createDestination();
+      if ($this->m_destinationFilter!="")
+      {
+        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+      }
       $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
       $result = '<select name="atksearch['.$this->fieldName().']">';
