@@ -29,11 +29,10 @@
   define(SESSION_NESTED,2);  // new item on current stack
   define(SESSION_BACK,3);    // move one level down on stack
   define(SESSION_REPLACE,4); // replace current stacklevel
-
-  /* Workaround for a PHP4.0.4 bug */
+  
   $atklevel = trim($_REQUEST["atklevel"]);
   $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
-  $atkstackid = trim($_REQUEST["atkstackid"]);    
+  $atkstackid = trim($_REQUEST["atkstackid"]);      
 
   class atkSessionManager
   {
@@ -188,7 +187,7 @@
         atkdebug("ATK session escapemode");
 
         $currentitem = &$stack[count($stack)-1];
-
+        
         atkdebug("Saving formdata in session");
 
         $atkformdata = array();
@@ -203,7 +202,11 @@
         $currentitem["atkformdata"] = $atkformdata;
 
         // also remember getvars that were passed in the url
-        foreach(array_keys($_REQUEST) as $var)
+        // this *may not be* $_REQUEST, because then the posted vars
+        // will be overwritten, which may not be done in escape mode, 
+        // I wonder if the next few lines are necessary at all, but
+        // I think I needed them once, so I'll leave it in place. 
+        foreach(array_keys($_GET) as $var) 
         {
           if (isset($postvars[$var])&&$postvars[$var]!="")
           {
@@ -320,7 +323,7 @@
             $postvars[$var] = $value;
           }
         }
-      } // end if atkescape
+      } // end if atkescape      
 
     }
 
