@@ -2454,6 +2454,7 @@
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
+      $this->_checkDatabaseConn();
       $query = &$this->m_db->createQuery();
       $mltool = &atknew("atk.utils.atkmlsplitter");
 
@@ -2683,6 +2684,27 @@
       }
 
       return $recordset;
+    }
+    
+    /**
+     * Checks if the node still has a valid database connection
+     * and if not, it attempts to restore it
+     */
+    function _checkDatabaseConn()
+    {
+      if (!$this->m_db || !is_object($this->m_db))
+      {
+        global $g_db;
+        if ($g_db)
+        { 
+          $this->m_db = &$g_db;
+          atkdebug("Restored database connection for node: {$this->m_module}.{$this->m_type} please check that setTable was called");
+        }
+        else 
+        {
+          atkerror("Unable to restore database connection!");
+        }
+      }
     }
 
     /**
