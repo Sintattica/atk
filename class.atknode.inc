@@ -521,6 +521,10 @@
         {
           if ($this->m_viewExcludes[$i] == $attribname) unset($this->m_viewExcludes[$i]);
         }
+        for ($i=0, $_i=count($this->m_cascadingAttribs); $i<$_i; $i++)
+        {
+          if ($this->m_cascadingAttribs[$i] == $attribname) unset($this->m_cascadingAttribs[$i]);
+        }
 
         unset($this->m_attribIndexList[$listindex]);
       }
@@ -2961,9 +2965,6 @@
       {
         $descriptordef = $this->descriptor_def();
 
-//        preg_match_all('/\[\w+\]/', $descriptordef, $fields);
-  //      var_dump($fields);
-
         // parse fields from descriptordef
         $fields = stringfields($descriptordef);
 
@@ -3545,6 +3546,7 @@
       global $g_db;
 
       $recordset = $this->selectDb($selector,"","","","","delete");
+               
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
