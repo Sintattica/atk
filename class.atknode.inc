@@ -87,6 +87,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.38  2001/05/17 15:19:18  peter
+   * Security manager now knows how to handle module nodes.
+   *
    * Revision 4.37  2001/05/17 12:28:46  ivo
    * Committed the wrong pageVars in previous commit.
    *
@@ -1279,7 +1282,7 @@
       $g_layout->ui_top(text('title_'.$this->m_type.'_admin'));
       $g_layout->output($this->stackTrace());
 
-      $g_layout->output('<br>');
+      //$g_layout->output('<br>');
       
       $adminHeader = $this->adminHeader();
       if ($adminHeader!="")
