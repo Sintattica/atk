@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.21  2001/07/03 06:55:41  ivo
+    * Treenode still refered to stacktrace() which should now be statusbar()
+    *
     * Revision 4.20  2001/06/29 11:26:59  ivo
     * Patches to oracle support.
     *
@@ -129,7 +132,7 @@
       global $g_securityManager,$g_layout,$g_maxlevel;
 
       $g_layout->ui_top(text('title_'.$this->m_type.'_tree'));
-      $g_layout->output($this->stackTrace());
+      $g_layout->output($this->statusbar());
       $g_layout->output('<br>');
 
       $adminHeader = $this->adminHeader();
