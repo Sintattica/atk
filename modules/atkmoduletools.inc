@@ -71,12 +71,19 @@
     if (!is_object($g_moduleRepository[$modname]))
     {  
       atkdebug("Constructing a new module - $modname");
-      if (class_exists($modname))
+      if (class_exists("mod_".$modname))
       {
+        $realmodname = "mod_".$modname;
+        $mod = new $realmodname();
+      }
+      else if (class_exists($modname))
+      {        
+        atkdebug("Warning: Deprecated use of short modulename '$modname'. Class in module.inc should be renamed to 'mod_$modname'.");
         $mod = new $modname();
       }
       else
       {
+        // construct dummy module
         $mod = new atkmodule($modname);
       }
       $g_moduleRepository[$modname] = $mod;
