@@ -36,7 +36,7 @@
    */ 
   function getDb($database="", $user="", $password="", $host="", $type="")
   {
-    global $config_databasename, $config_databaseuser, $config_databasepassword, $config_databasehost, $config_database;
+    global $config_databasename, $config_databaseuser, $config_databasepassword, $config_databasehost, $config_database, $config_atkroot;
     if ($database=="") $database = $config_databasename;
     if ($user=="") $user = $config_databaseuser;
     if ($password=="") $password = $config_databasepassword;
