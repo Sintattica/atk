@@ -81,6 +81,7 @@
 
   $config_debug = 0;
   $config_debuglog = "";
+  $config_smart_debug = array();
   $config_display_errors = true;
   $config_halt_on_error = "critical";
 

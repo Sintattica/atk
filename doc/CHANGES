@@ -28,6 +28,7 @@ Changes in ATK 5.0.8
 + Added documentation to callback param and added "addSearchFilter" 
   to add a filter to the searchNodeInstance of the fuzzySearch 
   attribute [Boy]
++ Added $config_smart_debug for dynamic debugging based on IP etc.
 * AF_RELATION_AUTOLINK now also work with AF_LARGE for manytoone [Boy]
 * Fixed bug in securerelation (whould sometimes do it's queries on the
   wrong table) [Harrie]

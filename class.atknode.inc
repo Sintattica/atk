@@ -97,6 +97,7 @@
   $PHP_SELF = $_SERVER["PHP_SELF"];
 
   require_once($config_atkroot."atk/atkconfigtools.inc");
+  require_once($config_atkroot."atk/class.atkconfig.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
   // Auto-register modules
@@ -105,7 +106,7 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
-
+  
   // Once atktools is loaded, we can register our own error handler.
 //  set_error_handler("atkErrorHandler");
   //error_reporting(E_ALL);
@@ -119,6 +120,9 @@
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
   require_once($config_atkroot."atk/lock/class.atklock.inc");
+
+  if (is_array($config_smart_debug))
+    $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
