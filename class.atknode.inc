@@ -925,7 +925,7 @@
               $attribname = $forcedvarname;
             }
             $p_attrib = &$this->m_attribList[$attribname];
-            $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+            if (!$p_attrib->hasFlag(AF_NO_FILTER)) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
           }
         }
       }
