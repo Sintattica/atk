@@ -2227,7 +2227,7 @@
       }            
    
 
-      $querystring = $query->buildCount($this->hasFlag(N_ML));
+      $querystring = $query->buildCount($this->hasFlag(NF_ML));
       $result = $this->m_db->getrows($querystring);          
       
       // group by fix:
