@@ -36,10 +36,9 @@ class atkCurrencyAttribute extends atkNumberAttribute
     * @param $size  The size(s) for this attribute (default 10)
     *
     */
-  function atkCurrencyAttribute ($name,$valutasymbol,$flags,$size)
+  function atkCurrencyAttribute ($name,$valutasymbol,$size,$flags,$decimals=2)
   {
-    $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
-    $this->m_decimals = 2;
+    $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
     $this->m_valutasymbol = $valutasymbol;
   }
   
