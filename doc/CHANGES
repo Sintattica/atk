@@ -45,6 +45,8 @@ Changes in ATK 5.0.7
 * Fixed a call-time-pass-by-reference. [Ivo]
 * Upgraded the adodb-time library, for better date supoprt. [Harrie]
 * Updated Norwegian translation. [Olav]
+* Bugfix in embedded recordlist paging in oneToMany's (seperate filter
+  build in load method is now forwarded to the navigator) [Harrie]  
 
 Changes in ATK 5.0.6
 --------------------
