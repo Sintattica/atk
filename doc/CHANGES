@@ -10,8 +10,9 @@ Changes in ATK 5.1.1
   in customRecordList [Boy]
 + Added ability to add custom HTML to MRA form [Ivo,Boy]
 + Made datetochar date format configurable [Boy]
-+ Added ability to perform plain text search on date attribute
-  and time attribute and made time attrib autocomplete the time [Ivo,Boy]
++ Added ability to perform plain text search on date attribute [Ivo,Boy]
+  and time attribute 
++ Made time and date attributes autocomplete their searchvalues [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * ManyToOne no longer default searches on primary key 

@@ -484,6 +484,24 @@
       }
       else 
       {
+        // auto-complete it
+        $value = explode("-", $value);
+        if (strlen($value[0])==1) $value[0]= "0".$value[0];
+        if (strlen($value[1])==1) $value[1]= "0".$value[1];
+        if (strlen($value[2])==2) 
+        {
+          if (50<$value[2])
+          {
+            $value[2]= "19".$value[2];
+          }
+          else 
+          {
+            $value[2]= "20".$value[2];
+          }
+        }
+        
+        $value = $value[0]."-".$value[1]."-".$value[2];
+        
         // plain text search condition
         $searchcondition = $query->exactCondition($field, $value);
       }
