@@ -78,6 +78,9 @@
     {
       global $g_db;
       
+      $linktable = "personData";
+      $linkpass = "linkpass";
+      
       $user = &getUser();
       $username = $user['name'];
   
