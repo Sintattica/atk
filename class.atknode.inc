@@ -1791,7 +1791,12 @@
       //$g_db->query($querystring);
       $result = $g_db->getrows($querystring);          
       
-      return $result[0]["count"];
+      // group by fix:
+      // if there exists a group by (added by atk/filters) the 'else' situation occurs
+      if(count($result)==1)
+        return $result[0]["count"];
+      else
+        return count($result);
     }
 
    /** Copies a record
