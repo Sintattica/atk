@@ -114,18 +114,14 @@
       else   $this->m_date_format_view = "F j Y";
 
       /* max / min date (only valid when obligatory) */
-	    if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
-			{
+	    //if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
+			//{
         if ($min === 0) $this->m_date_min = 0;
         else $this->m_date_min = strtotime($min);
         if ($max === 0) $this->m_date_max = 0;
         else $this->m_date_max = strtotime($max);
-			}
-			else
-			{
-        $this->m_date_min = 0;
-        $this->m_date_max = 0;
-			}
+			//}
+
 
       /* register javascript */
       $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkdateattribute.js.php");
@@ -225,8 +221,13 @@
       /* other date selections */
       for($i = 0; $i < strlen($str_format); $i++)
       {
+      
+        if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
+        else if (!$this->hasFlag(AF_OBLIGATORY)) $emptyfield=true;
+        else $emptyfield=false;
+        
         /* javascript method */
-        $str_script = "AdjustDate(this, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max, ".($this->hasFlag(AF_OBLIGATORY) ? "true" : "false").");";
+        $str_script = "AdjustDate(this, '".$fieldprefix.$this->fieldName()."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
 
         /* year input box */
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
@@ -235,8 +236,8 @@
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= 25)
           {
             $result .= '<select name="'.$fieldprefix.$this->fieldName().'[year]" onChange="'.$str_script.'">';
-            //if (!$this->hasFlag(AF_OBLIGATORY))
-            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+            if (!$this->hasFlag(AF_OBLIGATORY) || $this->hasflag(AF_DATE_EMPTYFIELD))
+              $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
               $tmp_date = getdate(mktime(0,0,0, $current["mon"], $current["mday"], $j));
@@ -254,12 +255,16 @@
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[day]" onChange="'.$str_script.'">';
-          //if (!$this->hasFlag(AF_OBLIGATORY)) 
-          $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+          if (!$this->hasFlag(AF_OBLIGATORY) || $this->hasflag(AF_DATE_EMPTYFIELD)) 
+            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["d_min"]; $j <= $current["d_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $current["mon"], $j, $current["year"]));
-            $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+            atk_var_dump($current);
+            if (($current['year']!="") && ($current['mon']!=""))
+              $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+            else
+              $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
             $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
           }
           $result .= '</select>';
@@ -269,8 +274,8 @@
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
           $result .= '<select name="'.$fieldprefix.$this->fieldName().'[month]" onChange="'.$str_script.'">';
-          //if (!$this->hasFlag(AF_OBLIGATORY))
-          $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
+          if (!$this->hasFlag(AF_OBLIGATORY) || $this->hasflag(AF_DATE_EMPTYFIELD))
+            $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
           {
             $tmp_date = getdate(mktime(0,0,0, $j,1, $current["year"]));

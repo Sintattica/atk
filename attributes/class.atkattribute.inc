@@ -78,6 +78,7 @@
 
   /* flag(s) specific for atkDateAttribute */
   define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
+  define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
 
   /* flag(s) specific for atkManyToOneRelation */
   define("AF_RELATION_AUTOLINK",        AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.

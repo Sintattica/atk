@@ -66,18 +66,28 @@ function getDays(date)
  * @param str_max the maximum valid date
  * @param obligatory is the date field obligatory
  */
-function AdjustDate(el, arr, format, str_min, str_max, obligatory)
+function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
 {
   var format_month, format_day, array_months;
   var frm = el.form;
 
-  /* check obligatory */
-  if (!obligatory && (str_min != "0" || str_max != "0"))
-  {
-     str_min = 0;
-     str_max = 0;
-  }
-  
+
+  /* current date attribute inputs */
+  input = Array();
+  input["d"] = frm.elements[arr + "[day]"];
+  input["m"] = frm.elements[arr + "[month]"];
+  input["y"] = frm.elements[arr + "[year]"];
+
+  /* check if valid date attribute inputs */
+  if (input["d"] == null || input["m"] == null || input["y"] == null) return;
+
+  /* currently selected date */
+  current = Array();
+  current["d"] = parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
+  current["m"] = parseInt(input["m"].options[input["m"].selectedIndex].value, 10);  
+  current["y"] = parseInt(input["y"].type == "select-one" ? input["y"].options[input["y"].selectedIndex].value : input["y"].value, 10);    
+  if (current["y"].toString() == "NaN") current["y"] = 0;
+ 
   /* check month format */
   if      (format.indexOf("F") >= 0) array_months = m_months_long;
   else if (format.indexOf("M") >= 0) array_months = m_months_short;
@@ -88,24 +98,10 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   if (format.indexOf("d") >= 0) format_day = "d";
   else format_day = "j";
 
-  /* current date attribute inputs */
-  input = Array();
-  input["d"] = frm.elements[arr + "[day]"];
-  input["m"] = frm.elements[arr + "[month]"];
-  input["y"] = frm.elements[arr + "[year]"];
-
-  /* check if valid date attribute inputs */
-  if (input["d"] == null || input["m"] == null || input["y"] == null) return;
   
-  /* currently selected date */
-  current = Array();
-  current["d"] = parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
-  current["m"] = parseInt(input["m"].options[input["m"].selectedIndex].value, 10);  
-  current["y"] = parseInt(input["y"].type == "select-one" ? input["y"].options[input["y"].selectedIndex].value : input["y"].value, 10);    
-  if (current["y"].toString() == "NaN") current["y"] = 0;
 
   /* we just changed one of the fields to null */
-  if (!obligatory && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == ""))) 
+  if (emptyfield && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == ""))) 
   {
     for (i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;	
     input["d"].options[0] = new Option("", 0);
@@ -117,12 +113,12 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   }
 	
   /* we just changed one of the fields from null to something */
-  else if (!obligatory && (current["d"] == 0 || current["y"] == 0 || current["m"] == 0))
+  else if (!emptyfield && (current["d"] == 0 || current["y"] == 0 || current["m"] == 0))
   {
     today = new Date();
-    if (current["d"] == 0) current["d"] = today.getDate();
-    if (current["m"] == 0) current["m"] = today.getMonth() + 1;		
-    if (current["y"] == 0) current["y"] = today.getFullYear();	
+    current["d"] = today.getDate();
+    current["m"] = today.getMonth() + 1;		
+    current["y"] = today.getFullYear();	
   }
 
   /* minimum date */
@@ -147,44 +143,85 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   
   /* convert to real dates */
   date_now     = new Date();
-  date_current = new Date(current["y"], current["m"]-1, current["d"]);
   date_minimum = new Date(minimum["y"], minimum["m"]-1, minimum["d"]);
   date_maximum = new Date(maximum["y"], maximum["m"]-1, maximum["d"]);  
-
-  /* check dates */
-  if (date_current.getDate().toString() == "NaN") date_current = null;
-  if (date_minimum.getDate().toString() == "NaN") date_minimum = null;
-  if (date_maximum.getDate().toString() == "NaN") date_maximum = null;  
   
-  /* did we select a valid date? */
-  if      (date_current != null && date_minimum != null && date_current < date_minimum) date_current = date_minimum;
-  else if (date_current != null && date_maximum != null && date_current > date_maximum) date_current = date_maximum;
-  else if (date_current == null && date_minimum != null && date_now < date_minimum) date_current = date_minimum;
-  else if (date_current == null && date_maximum != null && date_now > date_maximum) date_current = date_maximum;  
-  else if (date_current == null) date_current = date_now;
   
-  /* put current date back into array */
-  current["d"] = date_current.getDate();
-  current["m"] = date_current.getMonth() + 1;  
-  current["y"] = date_current.getFullYear();
+  if (current["d"] != 0 && current["y"] != 0 && current["m"] != 0) 
+  {
+    date_current = new Date(current["y"], current["m"]-1, current["d"]);   
+    
+    /* check dates */
+    if (date_current.getDate().toString() == "NaN") date_current = null;
+    if (date_minimum.getDate().toString() == "NaN") date_minimum = null;
+    if (date_maximum.getDate().toString() == "NaN") date_maximum = null;  
+    
+    /* did we select a valid date? */
+    if      (date_current != null && date_minimum != null && date_current < date_minimum) date_current = date_minimum;
+    else if (date_current != null && date_maximum != null && date_current > date_maximum) date_current = date_maximum;
+    else if (date_current == null && date_minimum != null && date_now < date_minimum) date_current = date_minimum;
+    else if (date_current == null && date_maximum != null && date_now > date_maximum) date_current = date_maximum;  
+    else if (date_current == null) date_current = date_now;
+    
+    /* put current date back into array */
+    if (current["d"] != 0) current["d"] = date_current.getDate();
+    if (current["m"] != 0) current["m"] = date_current.getMonth() + 1;  
+    if ((current["y"] != 0) || !emptyfield) current["y"] = date_current.getFullYear();
+    else current["y"] = "";
+    
+    /* minimum and maximum */
+    current["d_min"] = (date_minimum != null && date_current.getFullYear() == date_minimum.getFullYear() &&
+                        date_current.getMonth() == date_minimum.getMonth() ? date_minimum.getDate() : 1);
+    current["d_max"] = (date_maximum != null && date_current.getFullYear() == date_maximum.getFullYear() &&
+                        date_current.getMonth() == date_maximum.getMonth() ? date_maximum.getDate() : getDays(date_current));
+    current["m_min"] = (date_minimum != null && date_current.getFullYear() == date_minimum.getFullYear() ? date_minimum.getMonth() + 1 : 1);
+    current["m_max"] = (date_maximum != null && date_current.getFullYear() == date_maximum.getFullYear() ? date_maximum.getMonth() + 1 : 12);  
+    current["y_min"] = (date_minimum != null ? date_minimum.getFullYear() : 0);    
+    current["y_max"] = (date_maximum != null ? date_maximum.getFullYear() : 0);    
 
-  /* minimum and maximum */
-  current["d_min"] = (date_minimum != null && date_current.getFullYear() == date_minimum.getFullYear() &&
-                      date_current.getMonth() == date_minimum.getMonth() ? date_minimum.getDate() : 1);
-  current["d_max"] = (date_maximum != null && date_current.getFullYear() == date_maximum.getFullYear() &&
-                      date_current.getMonth() == date_maximum.getMonth() ? date_maximum.getDate() : getDays(date_current));
-  current["m_min"] = (date_minimum != null && date_current.getFullYear() == date_minimum.getFullYear() ? date_minimum.getMonth() + 1 : 1);
-  current["m_max"] = (date_maximum != null && date_current.getFullYear() == date_maximum.getFullYear() ? date_maximum.getMonth() + 1 : 12);  
-  current["y_min"] = (date_minimum != null ? date_minimum.getFullYear() : 0);    
-  current["y_max"] = (date_maximum != null ? date_maximum.getFullYear() : 0);
+  }
+  else 
+  {
+    if (!emptyfield) 
+    {
+      if (current["y"] == "" && current["d"] != 0 && current["m"] != 0)
+      {        
+        date_current = new Date(date_now["y"], date_now["m"]-1, date_now["d"]);   
+      }
+    }
+    else
+    {
+      current["d_min"] = 1;
+      current["d_max"] = 31;
+      current["m_min"] = 1;
+      current["m_max"] = 12;    
+      if(input["y"].type == "select-one")
+      {
+        current["y_min"] = (date_minimum != null ? date_minimum.getFullYear() : 0);    
+        current["y_max"] = (date_maximum != null ? date_maximum.getFullYear() : 0);          
+      }
+    }
+  }
+  
+  if (current["y"] == 0) current["y"] = "";
 
+  
+//alert(current["d"] + " " + current["y"] + " " + current["m"] + " " + current["d_min"] + " " + current["d_max"]);
   /* clean day input, and build new one */
-  for(i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;
-  if (!obligatory) input["d"].options[0] = new Option("", 0);
+  for(i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;  
+  if (emptyfield) input["d"].options[0] = new Option("", 0);
+  //if (current["y"] == "" || current["m"] == 0)  alert('heee');
   for(i = current["d_min"]; i <= current["d_max"]; i++) 
   {
-    date = new Date(current["y"], current["m"]-1, i);
-    value = m_weekdays[date.getDay()] + " " + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
+    if (current["y"] == "" || current["m"] == 0) 
+    {
+      value = (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);      
+    }
+    else    
+    {
+      date = new Date(current["y"], current["m"]-1, i);
+      value = m_weekdays[date.getDay()] + " " + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
+    }
     input["d"].options[input["d"].options.length] = new Option(value, i);    
     if (i == current["d"])
     {
@@ -195,7 +232,7 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   
   /* clean month input, and build new one */
   for(i = input["m"].options.length; i >= 0; i--) input["m"].options[i] = null;
-  if (!obligatory) input["m"].options[0] = new Option("", 0);	
+  if (emptyfield) input["m"].options[0] = new Option("", 0);	
   for(i = current["m_min"]; i <= current["m_max"]; i++)
   {
     value = ("m" == format_month) ? (i < 10 ? "0" : "") + i : ("n" == format_month) ? i : array_months[i-1];
@@ -211,7 +248,7 @@ function AdjustDate(el, arr, format, str_min, str_max, obligatory)
   if(input["y"].type == "select-one")
   {
     for(i = input["y"].options.length; i >= 0; i--) input["y"].options[i] = null;
-    if (!obligatory) input["y"].options[0] = new Option("", 0);			
+    if (emptyfield) input["y"].options[0] = new Option("", 0);			
     for(i = current["y_min"]; i <= current["y_max"]; i++)
     {
       input["y"].options[input["y"].options.length] = new Option(i, i);
