@@ -40,7 +40,7 @@
      */
     function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
     {
-      $this->atkAttribute($name,$flags, $size); // base class constructor
+      $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
     }
 
@@ -60,7 +60,7 @@
     function value2db($rec)
     {
       if($rec[$this->fieldName()]==""&&!$this->hasFlag(AF_OBLIGATORY))
-        return NULL;
+        return "NULL";
       return (int) $rec[$this->fieldName()];
     }
 
