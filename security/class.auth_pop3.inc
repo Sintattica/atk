@@ -8,6 +8,9 @@
  * <b>Changes</b>:
  * $Id$
  * $Log$
+ * Revision 4.5  2001/07/10 12:45:47  ivo
+ * Support for per-user pop3 servers.
+ *
  * Revision 4.4  2001/07/09 15:50:57  ivo
  * Forgot a space in the log.
  *
@@ -33,19 +36,39 @@ class auth_pop3 extends auth_interface
    */
   function validateUser($user, $passwd)
   { 
-    global $g_securityManager; // used for logging..
+    global $g_securityManager, $g_db; // used for logging..
     
     /* if it's a virtual mail server add @<domain> to the username */
     if(atkconfig("auth_mail_virtual") == true)
       $user = $user . "@" . atkconfig("auth_mail_suffix");
+      
+    $server = atkconfig("auth_mail_server");
+    
+    // Special feature
+    if ($server=="[db]")
+    {
+      // if server is set to [db], that means we have a different server per
+      // user. We lookup in the database what server we need to call.
+      $res = $g_db->getrows("SELECT auth_server 
+                             FROM ".atkconfig("auth_usertable")." 
+                            WHERE ".atkconfig("auth_userfield")."='".$user."'");
+      $server = $res[0]["auth_server"];
+    }
+    
+    if ($server=="")
+    {
+      $g_securityManager->log(1,"pop3auth error: No server specified");
+      atkdebug("pop3auth error: No server specified");
+      return false;
+    }
  
     /* connect */
     $port = atkconfig("auth_mail_port");
-    $link_id = fsockopen(atkconfig("auth_mail_server"), $port, $errno, $errstr, 30);
+    $link_id = fsockopen($server, $port, $errno, $errstr, 30);
     if (!$link_id) 
     {
-      $g_securityManager->log(1,"Error connecting to server ".atkconfig("auth_mail_server").": $errstr");
-      atkdebug("Error connecting to server ".atkconfig("auth_mail_server").": $errstr");
+      $g_securityManager->log(1,"pop3auth serverconnect error $server: $errstr");
+      atkdebug("Error connecting to server $server: $errstr");
       return false;
     }
 
