@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.17  2001/09/12 12:04:13  ivo
+ * Added config_atkroot to default module path.
+ *
  * Revision 1.16  2001/09/12 09:04:58  ivo
  * Bugfixes to module modifiers that corrupted atknodes.
  *
@@ -142,7 +145,7 @@
     global $g_moduleRepository;
     //if (!is_object($g_moduleRepository[$modname]))
     //{  
-//      atkdebug("Constructing a new module - $modname");
+      atkdebug("Constructing a new module - $modname");
       //$g_moduleRepository[$modname] = new $modname();        
     //}     
     //atkdebug("Returning module instance - $modname");
@@ -163,21 +166,25 @@
     $module = getNodeModule($node);
     $type = getNodeType($node);
     $file = "class.$type.inc";
-    
+  
     /* filename */
-    if (empty($module)) $file = $config_atkroot."class.$type.inc";  
+    if (empty($module)) 
+    {  
+      $file = $config_atkroot."class.$type.inc";  
+    }
     else 
-    {    
+    {      
       if (is_array($g_modules)&&in_array($module, array_keys($g_modules)))
       {
-        $file = $config_atkroot.$g_modules[$module]."/class.$type.inc";
+    
+        $file = $g_modules[$module]."/class.$type.inc";
       }      
       else
       {
         atkerror("Couldn't find node '$node' in module '$module'");
       }
     }
-  
+  echo "<br>".$file;
     /* check for file */
     if (!file_exists($file))
     {

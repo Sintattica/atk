@@ -53,7 +53,7 @@
   $config_guestpassword = "";
 
   // Module path (without trailing slash!)
-  $config_module_path = "./modules";
+  $config_module_path = $config_atkroot."modules";
   
   // Automatic error reporting is turned off by default.
   $config_mailreport = "";
