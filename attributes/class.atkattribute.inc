@@ -150,6 +150,30 @@
     }
 
     /**
+     * Adds a flag to the attribute
+     * Note that adding flags at any time after the constructor might not 
+     * always work. There are flags that are processed only at 
+     * constructor time.
+     * @param $flag the flag you want to add
+     */
+    function addFlag($flag)
+    {
+      $this->m_flags |= $flag;
+    }
+
+    /**
+     * Removes a flag from the attribute
+     * Note that removing flags at any time after the constructor might not
+     * always work. There are flags that have already been processed at 
+     * constructor time, so removing them will be futile.
+     * @param $flag The flag that you want to remove
+     */
+    function removeFlag($flag)
+    {
+      $this->m_flags ^= $flag;
+    }
+
+    /**
      * Returns the fieldname
      * @return fieldname
      */
