@@ -50,7 +50,7 @@
   define("NF_MRPA",                16384); // Multi-priority-selection of records is turned on.
 
   define("NF_LOCK",                32768); // lock records
-  define("NF_ML",                  65636); // multilanguage support  
+  define("NF_ML",                  65536); // multilanguage support  
     
   define("NF_SPECIFIC_1",       33554432); // specific node flag 1
   define("NF_SPECIFIC_2",       67108864); // specific node flag 2
