@@ -27,7 +27,8 @@ Changes in ATK 5.0.4
 * Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
   turn was a manytoonerelation. [Lineke,Ivo]
 * atkListAttribute's display values are now fetchd from language file. [Ludo]
-* Updated German language file. [Udo]
++ Added Spanish translation. [Jose]
+* Updated German translation. [Udo]
 
 Changes in ATK 5.0.3
 --------------------
