@@ -28,7 +28,7 @@
      * @param $suppressList fields we don't display
      * @param $formName if embedded the form name in which we are embedded
      */
-    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation="")
+    function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array())
     {                  
       $this->setNode($node);
       $this->m_flags = $flags;
@@ -195,7 +195,7 @@
         $actionloader = "rl_a['".$listName."'] = new Array();";
         $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED)."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
-        
+
         if ($navigation["next"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['next'] = '".$navigation["next"]["url"]."';";
         if ($navigation["previous"]["url"]!="") $actionloader.="\nrl_a['".$listName."']['previous'] = '".$navigation["previous"]["url"]."';";
         
