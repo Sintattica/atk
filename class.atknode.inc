@@ -1598,8 +1598,9 @@
       // See if node has a custom descriptor definition.
       if (method_exists($this,"descriptor_def"))
       {
-        $descriptor = $this->descriptor_def();
-        return stringparse($descriptor,$rec);
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($this->descriptor_def());
+          return $parser->parse($rec);
       }
       else
       {
@@ -1878,13 +1879,12 @@
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
       $query = &$this->m_db->createQuery();
+      $mltool = &atknew("atk.utils.atkmlsplitter");
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
-      if($this->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
-      {
-        $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
-      }
+
+      $mltool->addMlCondition($query,$this,$mode);
       
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
@@ -1987,26 +1987,25 @@
       
       if(($mode=="edit" || $mode=="copy") && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
-        $mltool = &atknew("atk.utils.atkmlsplitter");
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
-
 //      $this->setOrgKeyValue($dbrecords[0]);
 
       $recordset = array();
       for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
       {
         $therecord = array();
-        $recordcopy = $dbrecords[$i];
         $query->deAlias($dbrecords[$i]); // dereference aliases..
         atkDataDecode($dbrecords[$i]);
+        $recordcopy = $dbrecords[$i];
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
           {
             $therecord[$attribname] = $recordcopy[$attribname];
-          } else  $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+          } else
+          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
         
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming
@@ -2017,11 +2016,9 @@
         $therecord["atkprimkey"] = $this->primaryKey($therecord);
 
         $recordset[] = $therecord;
-
       }
       
       // also load special storage attributes.
-
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         for ($j = 0, $_j = count($loadlist); $j < $_j; $j++)
@@ -2031,6 +2028,7 @@
           $recordset[$i][$loadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
         }
       }
+
       return $recordset;
     }
   
@@ -2131,21 +2129,21 @@
         atkdebug("executeInsert failed..");
         return false;
       }
-      
-      if (!$this->storeAttributes($storelist["post"], $record, $mode))
-      {
-        atkdebug("storeAttributes failed..");
-        return false;
-      }
-      
+
       // new primary key
       $record["atkprimkey"] = $this->primaryKey($record);
-        
+      
       if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
         $record["atkmlsplit"]=1;
         $mltool = &atknew("atk.utils.atkmlsplitter");
         $mltool->updateMlRecords($this, $record,"add");
+      }
+
+      if (!$this->storeAttributes($storelist["post"], $record, $mode))
+      {
+        atkdebug("storeAttributes failed..");
+        return false;
       }
 
       // Now we call a postAdd function, that can be used to do some processing after the record

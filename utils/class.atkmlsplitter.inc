@@ -32,15 +32,26 @@
     */
     function updateMlRecords(&$node, $record, $mode="add")
     {
+      atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
       $excludelist = array();
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
         {
-          // assume all relations are stored in the PRESTORE so we MUST NOT use addDb()
+          // manytoone relations are stored only when adding
+          // assume all onetomanyrelations are stored in the PRESTORE so we MUST NOT use addDb()
           // on this node if its contains relations to others
-          //unset($node->m_attribList[$attribname]);
-          $excludelist[] = $attribname;
+          // but for 1:n and n:1 we need to save the refkey
+          if(is_a($node->m_attribList[$attribname],"atkManyToOneRelation")||
+             is_a($node->m_attribList[$attribname],"atkOneToOneRelation"))
+          {
+            $p_attrib = &$node->m_attribList[$attribname];
+            $p_attrib->createDestination();
+            $attribvalue=$p_attrib->m_destInstance->m_attribList[$p_attrib->m_destInstance->primaryKeyField()]->value2db($record[$attribname]);
+            $record[$p_attrib->fieldName()]=$attribvalue;
+            $p_attrib=new atkAttribute($attribname);
+          }
+          else  $excludelist[] = $attribname;
         }
       }
       
@@ -86,6 +97,31 @@
     }
     
     /**
+    * Adds language condition
+    */
+    function addMlCondition(&$query,&$node,$mode)
+    {
+      if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
+      {
+        $query->addCondition("UPPER(".$node->m_table.".".$node->m_lngfield.")='".$node->m_defaultlanguage."'");
+      }
+      
+      $relations=&$node->m_relations["atkmanytoonerelation"];
+      if(is_array($relations) && count($relations)>0)
+      {
+        foreach ($relations as $attribname=>$attribute)
+        {
+          $p_attrib = &$relations[$attribname];
+          if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+          {
+            $dest = $p_attrib->m_destInstance;
+            $query->addCondition("UPPER(".$attribname.".".$dest->m_lngfield.")='".$node->m_defaultlanguage."'");
+          }
+        }
+      }
+    }
+    
+    /**
     * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
     */
     function combineMlRecordSet(&$node, &$recordset,$query)
@@ -96,9 +132,12 @@
       {
         $recordset = $this->addLngRecords($node,$recordset);
       }
-      if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
-      {
+      // TODO FIXME (martin): why different situations?
+      // if the select uses mlconditions there are always three records and thus no need to have different situations?
+//      if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
+//      {
         $this->mergeMlRecords(&$node,&$recordset);
+/*
       }
       else if(!$node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
       {
@@ -126,6 +165,7 @@
         }
         $recordset=$newrecord;
       }
+*/
       sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
     }
     
