@@ -224,10 +224,11 @@
         }
 
         $currentitem = $stack[$atklevel];
-
         if (!isset($currentitem)||$currentitem=="")
         {
           atkdebug("New level on session stack");
+          // Initialise
+          $currentitem = array();
           // new level.. always based on the previous level
           //$newstackitem = array();
           //$currentitem = $stack[count($stack)-1];
@@ -262,7 +263,6 @@
               }
             }
           }
-
           array_push($stack, $currentitem);
         }
         else
