@@ -38,6 +38,7 @@
     var $m_searching = false;
     var $m_keylookup = array();
     var $m_records = array();
+    var $m_searcharray;
     var $m_linkpass;
     var $m_linkbackfield;
 
@@ -181,17 +182,24 @@
     function load($db, $record, $mode)
     {     
       global $g_db;
-           
       if ($this->m_searching)
       {
-        if (count($this->m_records)==0) // lookup not yet created, first loading stage (preload)
+        if($this->m_searcharray != $this->m_ownerInstance->m_postvars["atksearch"]["data"])
         {
+
+          $this->m_records = array();
           // perform query on destination node to retrieve all records.
           if ($this->createDestination())
           {
-            $this->m_destInstance->m_postvars["atksearch"] = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
+            $this->m_searcharray = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
+
+            //if al search values are equal, then make it an OR search
+            if(count(array_unique(array_values($this->m_searcharray))) == 1)
+              $this->m_destInstance->m_postvars['atksearchmethod'] = "OR";
+
+            $this->m_destInstance->m_postvars["atksearch"] = $this->m_searcharray;
             $records = $this->m_destInstance->selectDb();
-           
+
             // create lookup table for easy reference.
             $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
             for ($i=0, $_i=count($records); $i<$_i; $i++)
@@ -199,45 +207,10 @@
               $link = $records[$i][$this->m_linkbackfield];                              
               $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
 
-              /* Temporary dirty hack */
-              if (!$decryptedlink) 
-	      {
+              if(!$decryptedlink) {
                 atkdebug("Unable to decrypt link: ".$link);
-                if ($link)
-	        {
-                  atkdebug("Trying to fix link");
-                  $destKey = $records[$i][$this->m_destInstance->primaryKeyField()];
-
-                  //try to fix it (problem with slashes)
-                  $query = "SELECT ".$this->m_linkbackfield." 
-                            FROM ".$this->m_destInstance->m_table." 
-                            WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
-                  $result = $g_db->getrows($query);
-                  $link_better = $result[0][$this->m_linkbackfield];
-                  $decryptedlink = $this->m_crypt->decrypt($link_better,$linkpass);
-                
-                  if($decryptedlink) 
-                  {
-                    //change in the database
-                    $link_better = $this->m_crypt->stripbackslashes($link_better);
-                    $query = "UPDATE ".$this->m_destInstance->m_table." 
-                              SET ".$this->m_linkbackfield."='".addslashes($link_better)."' 
-                              WHERE ".$this->m_destInstance->primaryKeyField()." = ".$destKey;
-                    $g_db->query($query);
-                    atkdebug("Fixed!");
-                  }
-                  else 
-                    atkdebug("Still unable to decrypt link: ".$link_better.", for id=".$destKey);
-	        }
-                else
-                  atkdebug("No link present, so unable to fix");
+                atkerror("Unable to decrypt link: ".$link);
               }
-              /* end of temporary dirty hack */
-              
-              
-
-              if(!$decryptedlink)
-                atkdebug("Unable to decrypt link: ".$link);
               else
               {
                 $this->m_keylookup[$decryptedlink] = $i;
@@ -282,11 +255,6 @@
       }
     }
 
-    function analyseFailures($failures) {
-      //atkerror(arrayToString($failures));
-    }
-  
-  
     /**
      * For creating a new user put the linkpassword in the db
      * @param string $id the id of the user to create
