@@ -13,10 +13,15 @@
    {
      function validateUser($user, $passwd)
      {       
-       global $config_user;
-                   
-       if ($user!="" && $config_user[$user]["password"]==$passwd) return AUTH_SUCCESS;
-       return AUTH_MISMATCH;
+       global $config_user;       
+       if ($user!="" && $passwd!="" && $config_user[$user]["password"]==$passwd) 
+       {        
+         return AUTH_SUCCESS;       
+       }
+       else
+       {
+         return AUTH_MISMATCH;
+       }
      }
      
      function canMd5()
