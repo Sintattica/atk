@@ -34,6 +34,7 @@ Changes in ATK 5.0.7
 * Fixed searching in oneToOneIntegrated relations and secureRelations,
   for normal/extended searching and sorting. [Boy, Harrie]
 * Fixed navigating for select mode. [Boy, Yury]
+* Fixed navigating in embedded recordlists. [Harrie]
 * Fixed bug in NF_ML functionality for 'copy' action. [Lineke]
 * atkQuery now checks for double joins. [Boy,Harrie]
 * Added AF_CHECK_ALL and AF_LINKS_BOTTOM to multiselect attribute. [Boy]
@@ -43,10 +44,8 @@ Changes in ATK 5.0.7
   atkdateattrib to atktext() calls. [Boy]
 * Bugfixes and codecleanups in CSV import feature (bug #406). [Ivo, Harrie]
 * Fixed a call-time-pass-by-reference. [Ivo]
-* Upgraded the adodb-time library, for better date supoprt. [Harrie]
+* Upgraded the adodb-time library, for better date support. [Harrie]
 * Updated Norwegian translation. [Olav]
-* Bugfix in embedded recordlist paging in oneToMany's (seperate filter
-  build in load method is now forwarded to the navigator) [Harrie]  
 
 Changes in ATK 5.0.6
 --------------------
