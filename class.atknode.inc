@@ -2312,6 +2312,10 @@
       global $g_layout, $PHP_SELF;
       $g_layout->initGui();
 
+      if (is_array($atkselector))
+        $atkselector_str = '('. implode($atkselector, ') OR (').')';
+      else $atkselector_str = $atkselector;
+
       $g_layout->ui_top($g_layout->title($this->m_module, $this->m_type,'delete'));
       $g_layout->output($this->statusbar($locked));
 
@@ -2319,7 +2323,7 @@
       $g_layout->output(session_form());
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
       $g_layout->output('<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">');
-      $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
+      $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector_str.'">');
 
       $g_layout->table_simple();
 
@@ -2337,11 +2341,7 @@
     function confirmDeleteText($atkselector="")
     {
       $multi = FALSE;
-      if (is_array($atkselector))
-      {
-        $multi = count($atkselector) > 1;
-        $atkselector = '('. implode($atkselector, ') OR (').')';
-      }
+      if (is_array($atkselector)) $multi = count($atkselector) > 1;
       return text('confirm_delete'.($multi ? '_multi':''), $this->m_type);
     }
 
