@@ -1325,17 +1325,6 @@
       atkerror("Class $fullclassname not found.");
       return NULL;
     }
-  }
-
-  /**
-  * TODO: DELETE THIS FUNCTION!!!
-  *
-  * @return void
-  */
-  function kdb($m)
-  {	
-    atkdebug("<font color=green><b>$m</b></font>");
-  }
-
+  }  
 
 ?>

@@ -3093,8 +3093,7 @@
     }
 
     function action_save()
-    {
-      $this->debug("action_save !!!");
+    {      
       global $g_db;
       
       $record = $this->updateRecord();   
@@ -4756,14 +4755,6 @@
       $page = &$this->getPage();
       $page->register_style($theme->stylePath($style));
     }
-    /**
-    * TODO: Remove this wrapper!
-    *
-    * @return void
-    */
-    function debug($m)
-    {	
-      kdb($this->atkNodeType().":".$m);
-    }
+    
   }
 ?>
