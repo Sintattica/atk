@@ -18,7 +18,7 @@
     /*
      * Content
      */
-    var $m_content = "";    
+    var $m_content = "";
 
     /**
      * Raw
@@ -41,9 +41,9 @@
      * Constructor
      */
     function layout()
-    {           
+    {
     }
-    
+
     /**
       * Gui initialisation.
       * Call this before using gui functions (themes)..
@@ -52,7 +52,7 @@
     {
       static $initialized = false;
       global $g_theme;
-      
+
       if (!$initialized)
       {
         global $g_theme;
@@ -95,8 +95,8 @@
     }
 
     /**
-     * Output all data to the browser.     
-     * @param $nocache. If set to true, the function sends no-cache headers 
+     * Output all data to the browser.
+     * @param $nocache. If set to true, the function sends no-cache headers
      *                                (the default, for backwardcompatibility)
      *                  If set to false, browsers can cache the result.
      * @param $lastmodificationstamp. If set, this timestamp is used to send
@@ -344,12 +344,12 @@
     {
       $this->tpl("block_top", array("header"=>$title));
     }
-    
+
     function ret_tpl($tplname, $vars="", $fallbacktpl="")
     {
       $template = $this->getTemplate($tplname, $fallbacktpl);
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."/images",$template);
-      
+
       if (is_array($vars))
       {
         foreach($vars as $key=>$value)
@@ -357,11 +357,11 @@
           $template=str_replace('['.strtoupper($key).']',$value,$template);
         }
       }
-      return $template;  
+      return $template;
     }
-    
+
     function tpl($tplname, $vars="", $fallbacktpl="")
-    {     
+    {
       $this->output($this->ret_tpl($tplname, $vars, $fallbacktpl));
     }
 
@@ -379,7 +379,20 @@
      */
     function tabs_top($tabs)
     {
-      $this->tpl("tabs_top", array("tabs"=>$tabs));      
+      if (file_exists($this->m_tpldir."tabs_top.tmpl"))
+      {
+        $this->tpl("tabs_top", array("tabs"=>$tabs));
+      }
+      else
+      {
+        $this->output('<table border="0" cellpadding="0" cellspacing="0" width="98%" align="center" valign="top">
+                        <tr>
+                          <td width="100%">
+                            <table border="1" cellpadding="2" cellspacing="0">
+                              <tr>');
+        $this->output($tabs);
+        $this->output('</tr></table><table border="1" cellspacing="0" cellpadding="5" width="100%"><tr><td>');
+      }
     }
 
     /**
@@ -387,7 +400,14 @@
      */
     function tabs_bottom()
     {
-      $this->tpl("tabs_bottom");
+      if (file_exists($this->m_tpldir."tabs_bottom.tmpl"))
+      {
+        $this->tpl("tabs_bottom");
+      }
+      else
+      {
+        $this->output('</td></tr></table></td></tr></table>');
+      }
     }
 
     /**
@@ -397,18 +417,32 @@
      * @param $selected is this tab selected?
      */
     function ret_tab($title, $link, $selected=false)
-    {      
-      return $this->ret_tpl("tab_".($selected ? "selected" : "normal"), 
+    {
+      if (file_exists($this->m_tpldir."tab_".($selected ? "selected" : "normal").".tmpl"))
+      {
+        return $this->ret_tpl("tab_".($selected ? "selected" : "normal"),
                             array("title"=>$title,
                                   "link"=>$link));
+      }
+      else
+      {
+        if ($selected)
+        {
+          return $this->ret_td('<b>'.$title.'&nbsp;</b>', 'valign="middle" align="left"');
+        }
+        else
+        {
+          return $this->ret_td('<a href="'.$link.'" style="color:black;text-decoration:none">'.$title.'</a>&nbsp;', 'valign="middle" align="left" nowrap');
+        }
+      }
     }
 
     function data_top()
     {
       global $g_theme;
       $template=$this->ret_tpl("data_top");
-      
-      if ($template=="") 
+
+      if ($template=="")
       {
         if (!isset($g_theme["border"]))
         {
@@ -426,8 +460,8 @@
     {
       global $g_theme;
       $template=$this->ret_tpl("data_bottom");
-      
-      if ($template=="") 
+
+      if ($template=="")
       {
         if (!isset($g_theme["border"]))
         {
@@ -698,7 +732,7 @@
 
     function initTheme()
     {
-      global $g_theme;      
+      global $g_theme;
 
       // First check local theme directory
       if(file_exists(atkconfig("atkroot")."themes/".$g_theme["Name"]."/layout.inc") &&
@@ -719,7 +753,7 @@
       {
         halt("Theme ".$g_theme["Name"]."cannot be found, swithing to default.","warning");
         $this->m_tpldir = atkconfig("atkroot")."atk/themes/default/";
-      }      
+      }
     }
 
     function getImgSrc($img)
