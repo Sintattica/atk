@@ -36,7 +36,7 @@
   
   // predefine for a 'simple' visual editor that only supports basic options
   // that don't allow a user to crap a sites layout.
-  define("WW_LIGHT", WW_STYLE|WW_TOOLS|WW_LIST|WW_LINK);
+  define("WW_LIGHT", WW_STYLE|WW_TOOLS|WW_LIST|WW_LINK|WW_ALIGN);
    
   class atkVisualHtmlAttribute extends atkTextAttribute
   {
@@ -117,6 +117,24 @@
     function display($record)
     {
       return $record[$this->fieldName()];
+    }
+
+    // overide the fetchValue function to perform some content cleaning
+    function fetchValue($rec)
+    {
+     // TODO: value is replaced in the DB
+     //       but the screen still shows the unreplaced value
+
+     $content = $rec[$this->fieldName()];
+
+     // remove <p>&nbsp;</p>
+      if (strtolower(trim($content)) == "<p>&nbsp;</p>")
+      {
+       $content = "";
+      }
+
+     // return content
+      return $content;
     }
         
   }
