@@ -143,11 +143,9 @@ with (pMenu) {
 	
 	?>
 	
-	// De volgende code is voor het toevoegen van speciale effecten aan het menu welke veelal alleen in IE zichtbaar is
+	// The following code is for showing special effects in the menu
 	
-	addDropShadow(pMenu, window.subM, [40,"#333333",6,6,-4,-4], [40,"#666666",4,4,0,0]);
-	addDropShadow(pMenu, window.subSubM, [40,"#333333",6,6,-4,-4], [40,"#666666",4,4,0,0]);
-	
+	// Begin Menu- Shadow code
 	function addDropShadow(mObj, iS)
 	{
 		 for (var mN in mObj.menu)
@@ -169,38 +167,44 @@ with (pMenu) {
 			mD.menuW+=addW; mD.menuH+=addH;
 		}
 	}
+	addDropShadow(pMenu, window.subM, [40,"#333333",6,6,-4,-4], [40,"#666666",4,4,0,0]);
+	addDropShadow(pMenu, window.subSubM, [40,"#333333",6,6,-4,-4], [40,"#666666",4,4,0,0]);
+	// End Menu- Shadow code
 	
-	if ((navigator.userAgent.indexOf('rv:0.')==-1) &&
-	!(isOp&&!document.documentElement) && !(isIE4&&!window.external))
-	{
-		pMenu.showMenu = new Function('mN','menuAnim(this, mN, 10)');
-		pMenu.hideMenu = new Function('mN','menuAnim(this, mN, -15)');
-	}
+	// Begin Menu- Animation code (IE Only)
+	//if ((navigator.userAgent.indexOf('rv:0.')==-1) &&
+	//!(isOp&&!document.documentElement) && !(isIE4&&!window.external))
+	//{
+	//	pMenu.showMenu = new Function('mN','menuAnim(this, mN, 10)');
+	//	pMenu.hideMenu = new Function('mN','menuAnim(this, mN, -15)');
+	//}
+	//
+	//function menuAnim(menuObj, menuName, dir)
+	//{
+	//	var mD = menuObj.menu[menuName][0];
+	//	if (!mD.timer) mD.timer = 0;
+	//	if (!mD.counter) mD.counter = 0;
+	//
+	//	with (mD)
+	//	{
+	//		clearTimeout(timer);
+	//
+	//		if (!lyr || !lyr.ref) return;
+	//		if (!visNow && dir>0) dir = 0-dir;
+	//		if (dir>0) lyr.vis('visible');
+	//		lyr.sty.zIndex = 1001 + dir;
+	//
+	//		lyr.clip(0, 0, menuW+2, (menuH+2)*Math.pow(Math.sin(Math.PI*counter/200),0.75) );
+	//
+	//		counter += dir;
+	//		if (counter>100) counter = 100;
+	//		else if (counter<0) { counter = 0; lyr.vis('hidden') }
+	//		else timer = setTimeout(menuObj.myName+'.'+(dir>0?'show':'hide')+'Menu("'+menuName+'")', 40);
+	//	}
+	//}
+	// End Menu- Animation code
 	
-	function menuAnim(menuObj, menuName, dir)
-	{
-		var mD = menuObj.menu[menuName][0];
-		if (!mD.timer) mD.timer = 0;
-		if (!mD.counter) mD.counter = 0;
-	
-		with (mD)
-		{
-			clearTimeout(timer);
-	
-			if (!lyr || !lyr.ref) return;
-			if (!visNow && dir>0) dir = 0-dir;
-			if (dir>0) lyr.vis('visible');
-			lyr.sty.zIndex = 1001 + dir;
-	
-			lyr.clip(0, 0, menuW+2, (menuH+2)*Math.pow(Math.sin(Math.PI*counter/200),0.75) );
-	
-			counter += dir;
-			if (counter>100) counter = 100;
-			else if (counter<0) { counter = 0; lyr.vis('hidden') }
-			else timer = setTimeout(menuObj.myName+'.'+(dir>0?'show':'hide')+'Menu("'+menuName+'")', 40);
-		}
-	}
-	
+	// Code to hide the elements (when the menu is visible above them) that normally overlap the menu layer
 	page.elmPos=function(e,p)
 	{
 		var x=0,y=0,w=p?p:this.win;
@@ -215,49 +219,66 @@ with (pMenu) {
 		return{x:x,y:y};
 	};
 	
-	pMenu.heShow = pMenu.showMenu;
-	pMenu.showMenu = new Function('mN','elementHide(this, mN, true)');
-	pMenu.heHide = pMenu.hideMenu;
-	pMenu.hideMenu = new Function('mN','elementHide(this, mN, false)'); 
-	
-	function elementHide(menuObj, menuName, show)
-	{
-		with (menuObj.menu[menuName][0])
-		{
-			if (!lyr || !lyr.ref)  return;
-	
-			var oldFn = show ? 'heShow' : 'heHide';
-			if (menuObj[oldFn])  menuObj[oldFn](menuName);
-			if (!isIE) return;
-	
-			if (!menuObj.hideElms) menuObj.hideElms = [];
-			var hE = menuObj.hideElms;
-			if (show)
-			{
-				var w  = par?eval(par):self;
-				var elms = w.document.all.tags('SELECT');
-				for (var eN = 0; eN < elms.length; eN++)
-				{
-					var eRef = elms[eN];
-					with (w.page.elmPos(eRef)) var eX = x, eY = y;
-					if (!(lyr.x()+menuW<eX || lyr.x()>eX+eRef.offsetWidth) && !(lyr.y()+menuH<eY || lyr.y()>eY+eRef.offsetHeight))
-					{
-						if (!hE[eN])
-						hE[eN] = { ref:  eRef, menus: [] };
-						hE[eN].menus[menuName] = true;
-						eRef.style.visibility = 'hidden';
-					}
-				}
-			}
-			
-			else  for (var eN in menuObj.hideElms)
-			{
-				var reShow = 1, eD = hE[eN];
-				eD.menus[menuName] = false;
-				for (var  eM in eD.menus) reShow &= !eD.menus[eM];
-				if (reShow &&  eD.ref) eD.ref.style.visibility = 'visible';
-			}
-		}
-		return;
-	} 
+ PopupMenu.prototype.elementHide = function(mN, show)
+ {
+  // If you want, you can trim this down to the tags you need for a small speed boost.
+  // Otherwise it won't hurt to leave it as is.
+  var hideTags = ['SELECT', 'IFRAME', 'OBJECT', 'APPLET'];
+ 
+  with (this.menu[mN][0])
+  {
+   if (!lyr || !lyr.ref) return;
+ 
+   var oldFn = show ? 'ehShow' : 'ehHide';
+   if (this[oldFn]) this[oldFn](mN);
+   else this.menu[mN][0].lyr.vis(show ? 'visible' : 'hidden');
+   if (isOp ? document.documentElement : !isIE) return;
+ 
+   if (!this.hideElms) this.hideElms = [];
+   var hE = this.hideElms;
+   if (show)
+   {
+    var elms = [], w = par?eval(par):self;
+    for (var t = 0; t < hideTags.length; t++)
+    {
+     var tags = isDOM ? w.document.getElementsByTagName(hideTags[t]) :
+      isIE ? w.document.all.tags(hideTags[t]) : null;
+     for (var i = 0; i < tags.length; i++) elms[elms.length] = tags[i];
+    }
+    for (var eN = 0; eN < elms.length; eN++)
+    {
+     var eRef = elms[eN];
+     with (w.page.elmPos(eRef)) var eX = x, eY = y;
+     if (!(lyr.x()+menuW<eX || lyr.x()>eX+eRef.offsetWidth) &&
+         !(lyr.y()+menuH<eY || lyr.y()>eY+eRef.offsetHeight))
+     {
+      if (!hE[eN]) hE[eN] = { ref: eRef, menus: [] };
+      hE[eN].menus[mN] = true;
+      eRef.style.visibility = 'hidden';
+     }
+    }
+   }
+   else for (var eN in hE)
+   {
+    var reShow = 1, eD = hE[eN];
+    eD.menus[mN] = false;
+    for (var eM in eD.menus) reShow &= !eD.menus[eM];
+    if (reShow && eD.ref)
+    {
+     eD.ref.style.visibility = 'visible';
+     delete hE[eN];
+    }
+   }
+  }
+  return;
+ };
+ for (var p in PopupMenu.list)
+ {
+  var pm = PopupMenu.list[p];
+  pm.ehShow = pm.showMenu;
+  pm.showMenu = new Function('mN','this.elementHide(mN, true)');
+  pm.ehHide = pm.hideMenu;
+  pm.hideMenu = new Function('mN','this.elementHide(mN, false)');
+ }
+
 }
