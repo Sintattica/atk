@@ -5,6 +5,7 @@
   $theme["customstyles"] = array("atkdateattribute.css","dhtml_dropdown.css","recordlist.css", "style.css", "tabs.css");
   
   $theme["recordlist_icons"] = array("copy.gif","default.gif","delete.gif","done.gif","edit.gif","export.gif","preview.gif","select.gif","view.gif");
+  $theme["toolbar_icons"] = array("bold.gif","delimiter.gif","italic.gif","link.gif","underline.gif");
   
   $theme["highlight"] = "#eeeeee";
   $theme["select"] = "#cccccc";
