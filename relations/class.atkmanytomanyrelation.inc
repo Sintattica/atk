@@ -129,8 +129,8 @@
      */
     function delete($record)
     {
-      $classname = $this->m_name;
-      $rel = &getNode($classname);
+      $this->createLink();
+      $rel = &$this->m_linkInstance;
 
       $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
     }
