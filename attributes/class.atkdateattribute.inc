@@ -4,7 +4,7 @@
    * @author  Peter C. Verhage <peter@achievo.org>
    *          Tom Schenkenberg <tom@achievo.org>
    *
-   * @version $Revision$   
+   * @version $Revision$
    *
    * $Id$
    */
@@ -90,9 +90,10 @@
     {
       global $txt_date_format_edit, $txt_date_format_view,$config_atkroot;
 
-      // *** API SUPPORT HACK ***
-      // Because of backwards compatability and because of the number
-      // of arguments this method has we also support the old API: ($name, $flags=0).
+      /* *** API SUPPORT HACK ***
+       * Because of backwards compatability and because of the number
+       * of arguments this method has we also support the old API: ($name, $flags=0).
+       */
       if (is_int($format_edit))
       {
         $flags = $format_edit;
@@ -104,12 +105,12 @@
 
       /* edit date format */
       if     (!empty($format_edit)) $this->m_date_format_edit = $format_edit;
-      else if (!empty($txt_date_format_edit)) $this->m_date_format_edit = $txt_date_format_edit;
+      elseif (!empty($txt_date_format_edit)) $this->m_date_format_edit = $txt_date_format_edit;
       else   $this->m_date_format_edit = "F j Y";
 
       /* display date format */
       if     (!empty($format_view)) $this->m_date_format_view = $format_view;
-      else if (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
+      elseif (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
       else   $this->m_date_format_view = "F j Y";
 
       /* max / min date (only valid when obligatory) */
@@ -152,9 +153,9 @@
       if (isset($record[$this->fieldName()]))
       {
         if (!$this->hasFlag(AF_OBLIGATORY) && is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
-          $current = NULL; // NULL date selected (normal date selection)
+          $current = NULL; /* NULL date selected (normal date selection) */
         elseif (!$this->hasFlag(AF_OBLIGATORY) && !is_array($field) && empty($field))
-          $current = NULL; // NULL date selected (NULL value in database)
+          $current = NULL; /* NULL date selected (NULL value in database) */
         elseif (is_array($field) && checkdate($field["month"], $field["day"], $field["year"]))
           $current = mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
         else
@@ -176,17 +177,17 @@
       else $str_max = 0;
 
       /* did we select a valid date? */
-      if      ($current === NULL); // NULL date selection; ignore this if statement
-      else if (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
-      else if (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
-      else if (empty($current)  && !empty($minimum) && mktime() < $minimum) $current = $minimum;
-      else if (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum;
-      else if (empty($current)) $current = mktime();
+      if     ($current === NULL); // NULL date selection; ignore this if statement
+      elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
+      elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
+      elseif (empty($current)  && !empty($minimum) && mktime() < $minimum) $current = $minimum;
+      elseif (empty($current)  && !empty($maximum) && mktime() > $maximum) $current = $maximum;
+      elseif (empty($current)) $current = mktime();
 
       /* get dates in array format */
       if ($current !== NULL) $current = getdate($current);
-      if (!empty($minimum)) $minimum = getdate($minimum);
-      if (!empty($maximum)) $maximum = getdate($maximum);
+      if (!empty($minimum))  $minimum = getdate($minimum);
+      if (!empty($maximum))  $maximum = getdate($maximum);
 
       /* minimum and maximum */
       $current["d_min"] = (!empty($minimum) && $current["year"] == $minimum["year"] && $current["mon"] == $minimum["mon"] ? $minimum["mday"] : 1);
@@ -324,7 +325,6 @@
      */
     function value2db($rec)
     {
-
       if (!is_array($rec[$this->fieldName()]))
         $rec[$this->fieldName()] = $this->dateArray($rec[$this->fieldName()]);
 
@@ -358,8 +358,8 @@
      */
     function fetchValue($postvars)
     {
-      $result = $postvars[$this->formName()];
-      return $result;
+      if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
+      else return $this->dateArray(date("Ymd", strtotime($postvars[$this->formName()])));
     }
 
     /**
@@ -371,12 +371,13 @@
      */
     function validate(&$record, $mode)
     {
-      $value = $record[$this->fieldName()];
+      $value = &$record[$this->fieldName()];
+
       /* array or no array */
-      if (is_array($value)) $date = $this->dateArray($value);
+      if (!is_array($value)) $value = $this->dateArray(date("Ymd", strtotime($value)));
 
       /* if not obligatory and one of the fields is null then the date will be saved as null */
-      if (!$this->hasFlag(AF_OBLIGATORY) && (empty($year) || empty($month) || empty($day))) return;
+      if (!$this->hasFlag(AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) return;
 
       /* currently selected date */
       if (checkdate($value["month"], $value["day"], $value["year"]))
@@ -422,9 +423,6 @@
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
         triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(getdate($maximum), $this->m_date_format_view, 0));
-
-      /* no problem */
-      //return "";
     }
 
     /**
@@ -437,11 +435,11 @@
       $value = $record[$this->fieldName()];
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
       $tmp_date = getdate(mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-            if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
-            else return "";
+      if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
+      else return "&nbsp;";
     }
 
-     function getSearchModes()
+    function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
@@ -477,8 +475,6 @@
       {
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
       }
-
     }
-
   }
 ?>
