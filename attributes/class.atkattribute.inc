@@ -242,6 +242,7 @@
                   '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
         return $result;
       }
+      else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
     }
 
     /**
