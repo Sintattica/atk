@@ -51,7 +51,7 @@
     {
       if ($this->m_destInstance == "")
       {
-        $this->m_destInstance = &getNode($this->m_destination);
+        $this->m_destInstance = &newNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
 //        if ($this->m_destinationFilter!="")
   //      {
