@@ -26,7 +26,7 @@
        list($module, $node, $id) = explode(".", $params["id"]);       
        return atktext($id, $module, $node);
      }
-     default: return atktext($params["id"], $params["module"], $params["node"]);
+     default: return atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
    }     
  }
 
