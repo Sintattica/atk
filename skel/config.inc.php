@@ -196,7 +196,7 @@
   // if you're using urlrewrites within your httpd or htaccess configuration i think this should be '/'
   // be careful with this setting because it could create a major securityhole.
   // It is used to set the cookiepath when using PHP sessions.
-  $config_application_root = str_replace($_SERVER["DOCUMENT_ROOT"],"",dirname(__FILE__)."/");
+  $config_application_root = "/";
 
   // Atk can write security events to a logfile. 
   // There are several values you can choose for $config_logging.
