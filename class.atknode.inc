@@ -87,6 +87,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.41  2001/05/21 15:18:26  ivo
+   * Made securitymanager cookie and session based. Authentication now only
+   * executes once per session.
+   *
    * Revision 4.40  2001/05/18 09:14:27  ivo
    * atkaction is now a sessionvar instead of pagevar.
    *
@@ -506,14 +510,7 @@
     }
   }
   
-  /*******************************************/
-
-  // Login
-  if (!$g_securityManager->authenticate())
-  {
-    atkdebug("login failed");
-    exit;
-  }
+  /*******************************************/  
  
   // At some places we need a random number generator, so we seed the generator here.
   srand ((double) microtime() * 1000000);

@@ -9,6 +9,10 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.8  2001/05/21 15:18:26  ivo
+  * Made securitymanager cookie and session based. Authentication now only
+  * executes once per session.
+  *
   * Revision 4.7  2001/05/17 10:27:12  ivo
   * Fixes to session management, new AF_LARGE feature for manytoonerelation.
   * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -613,5 +617,6 @@
       mail($config_mailreport,$subject,$body,"From: $from <atkinfo@ibuildings.nl>");
     }
   }
+    
 
 ?>

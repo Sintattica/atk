@@ -15,6 +15,8 @@
   }
    
   $g_sessionManager->session_read(&$ATK_VARS);
+
+  atksecure();
    
   // Create node
   $obj = getNode($ATK_VARS["atknodetype"]); 
