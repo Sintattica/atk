@@ -1,9 +1,8 @@
 <?php
   /**
    * Can be used to create '1 library has N books' relations.
-   *
-   * @author Ivo Jansch (ivo@achievo.com)
-   *
+   *   
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$
@@ -109,7 +108,7 @@
         // User may not search in embedded forms..        
         $this->m_destInstance->m_flags |= NF_NO_SEARCH;    
         
-        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey));
+        $cell.=$this->m_destInstance->recordList($myrecords, $actions,false,array($this->m_refKey), true);
 
         $output.=$GLOBALS['g_layout']->ret_td($cell);
         $output.="</tr>";
