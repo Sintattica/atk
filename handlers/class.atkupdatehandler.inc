@@ -94,13 +94,6 @@
               //update succesful, pk value might be changed so update m_orgkey
               $record["atkprimkey"] = $this->m_node->primaryKey($record);
 
-              $locked = FALSE;
-              if ($this->m_node->hasFlag(NF_LOCK))
-              {                              
-                $page->addContent($this->lockPage());
-                return;
-              }
-
               //$this->setOrgKeyValue($record);
               $this->m_node->m_action = "edit";              
               $edithandler = $this->m_node->getHandler("edit");
