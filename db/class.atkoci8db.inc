@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/07/10 08:36:31  ivo
+   * Put seq_ in front of the sequence name again (compatibility problems)
+   *
    * Revision 4.6  2001/06/29 13:35:01  ivo
    * pgsqldb and oci8db no longer assume sequence names to begin with 'seq_'
    *
@@ -279,7 +282,7 @@
       $this->connect();
 
       /* get sequence number and increment */
-      $query = "SELECT ".$sequence.".nextval AS nextid FROM dual";
+      $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
 
       /* execute query */
       $m_query_id = OCIParse($this->m_link_id, $query);
@@ -289,14 +292,14 @@
       if (empty($id))
       {
         /* create sequence */
-        $query = "CREATE SEQUENCE $sequence INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
+        $query = "CREATE SEQUENCE seq_".$sequence." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
         $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create '$sequence'");
+        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
         
         /* try again */
-        $query = "SELECT ".$sequence.".nextval AS nextid FROM dual";
+        $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
         $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence '$sequence'");
+        $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
         
         /* empty? */
         if (empty($id)) return 0;
