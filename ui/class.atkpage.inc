@@ -15,6 +15,16 @@
    * @version $Revision$
    * $Id$
    */
+
+  /**
+   * Rendering flags.
+   */
+  define("HTML_BODY",1);                        // Add body tags to page
+  define("HTML_HEADER",2);                      // Add header to page
+  define("HTML_DOCTYPE",4);                     // Add doctype to page
+  define("HTML_ALL",HTML_BODY|HTML_HEADER);     // Shortcut
+  define("HTML_STRICT",HTML_ALL|HTML_DOCTYPE);  // Shortcut
+
    
   /**
    * Page renderer. 
@@ -32,15 +42,6 @@
    * @subpackage ui
    *
    */
-   
-   
-   define("HTML_BODY",1);                        // Add body tags to page
-   define("HTML_HEADER",2);                      // Add header to page
-   define("HTML_DOCTYPE",4);                     // Add doctype to page
-   define("HTML_ALL",HTML_BODY|HTML_HEADER);     // Shortcut
-   define("HTML_STRICT",HTML_ALL|HTML_DOCTYPE);  // Shortcut
-    
-   
   class atkPage 
   {
     /**
