@@ -50,11 +50,12 @@
       
     }
     
-    function getValue($var, $no_namespace=false)
+    function getValue($var, $namespace="")
     {
       global $g_sessionData;
-      if ($no_namespace) return $g_sessionData["globals"][$var];
-      else return $g_sessionData[$this->m_namespace]["globals"][$var];
+      if ($namespace=="globals") return $g_sessionData["globals"][$var];
+      else if ($namespace!="") return $g_sessionData[$namespace]["globals"][$var];
+      return $g_sessionData[$this->m_namespace]["globals"][$var];
     }
     
     function stackVar($var, $value="")
@@ -363,10 +364,10 @@
     $g_sessionManager->globalVar($var, $value);      
   }
   
-  function sessionLoad($var)
+  function sessionLoad($var, $namespace="")
   {
     global $g_sessionManager;
-    return $g_sessionManager->getValue($var);      
+    return $g_sessionManager->getValue($var, $namespace);      
   }
   
 ?>
