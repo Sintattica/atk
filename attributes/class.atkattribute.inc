@@ -459,6 +459,16 @@
     {      
       return (($this->m_flags & $flag) == $flag);
     }
+    
+    /**
+     * Returns the binairy representation of flags set in the attribute.
+     * @param 
+     * @return $m_flags
+     */
+    function getFlags()
+    {      
+      return $this->m_flags;
+    }
 
     /**
      * Adds a flag to the attribute.
@@ -470,6 +480,19 @@
     function addFlag($flag)
     {
       $this->m_flags |= $flag;
+    }
+    
+    /**
+     * Sets the flags of the attribute
+     *
+     * Note that if you assign nothing or 0, this will remove all the flags 
+     * from the attribute. You can assign multiple flags by using the pipe
+     * symbol. Setting the flags will overwrite all previous flag-settings.
+     * @param int $flags The flags to be set to the attribute.
+     */
+    function setFlags($flags = 0)
+    {
+      $this->m_flags = $flags;
     }
 
     /**
@@ -484,6 +507,8 @@
     {
       $this->m_flags ^= $flag;
     }
+    
+    
 
     /**
      * Returns the name of the attribute. 

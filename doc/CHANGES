@@ -23,6 +23,8 @@ Changes in ATK 5.1.1
 + If decimals are set, atkNumberAttribute now rounds the value. [Nicola]
 + Added "server" authentication method (htaccess). [Gabriele, Ivo]
 + atkNode() sets the global $g_db as databaseconnection [Boy]
++ Added getFlags() and setFlags($flags) to atkAttribute
+  [Dennis-Jan, MartinL]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
@@ -41,6 +43,8 @@ Changes in ATK 5.1.1
 * Fixed file export with MSIE in combination with SSL (HTTPS) [Wim]
 * Made atkNumberAttribute replace "decimals_seperator" from the language files 
   for . while validating numbers [Boy]
+* setFlags() and getFlags() test added in atkattributetestcase 
+  [Dennis-Jan, MartinL] 
 
 Changes in ATK 5.1.0
 --------------------

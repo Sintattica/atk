@@ -56,10 +56,12 @@
      */
     function _testFlagGetSet()
     {
-      $this->m_attribute->m_flags = 0;
+      $this->m_attribute->setFlags(0);
+      $this->assertTrue($this->m_attribute->getFlags() == 0,"getFlagIsZero");
       $this->assertFalse($this->m_attribute->hasFlag(AF_HIDE_LIST), "hasflagfalse");      
       $this->m_attribute->addFlag(AF_HIDE_LIST);
-      $this->assertTrue($this->m_attribute->hasFlag(AF_HIDE_LIST), "hasflagtrue");      
+      $this->assertTrue($this->m_attribute->hasFlag(AF_HIDE_LIST), "hasflagtrue");
+      $this->assertTrue($this->m_attribute->getFlags() == 16, "hasflag16");
       $this->m_attribute->removeFlag(AF_HIDE_LIST);
       $this->assertFalse($this->m_attribute->hasFlag(AF_HIDE_LIST), "hasflagfalse");      
     }
@@ -72,6 +74,7 @@
     {
       // check roundtrip
       $dbvalue = "300";
+ 
       $internalvalue = $this->m_attribute->db2value(array($this->m_attribute->m_name=>$dbvalue));      
       $roundtrip = $this->m_attribute->value2db(array($this->m_attribute->m_name=>$internalvalue));
       $this->assertEqual($dbvalue, $roundtrip, $this->_getMsg("db/value roundtrip check"));                        
