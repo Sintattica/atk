@@ -111,23 +111,11 @@
 
       /*get permission of user to find out which permission may be changed*/
       if(!is_array($g_user['level']))
-        $levels = $g_user['level'];
+        $levels = "'".$g_user['level']."'";
       else
-        $levels = implode(",",$g_user['level']);
-      $query = "SELECT DISTINCT node, action  FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
-      $activeNodeActions = $g_db->getrows($query);
-
-      foreach( $activeNodeActions as $a)
-      {
-        $active[$a['node']][] = $a['action'];
-      }
-
-      /*get permission of user to find out which permission may be changed*/
-      if(!is_array($g_user['level']))
-        $levels = $g_user['level'];
-      else
-        $levels = implode(",",$g_user['level']);
-      $query = "SELECT DISTINCT node, action  FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+        $levels = "'".implode("','",$g_user['level'])."'";
+      $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+      
       $activeNodeActions = $g_db->getrows($query);
 
       foreach( $activeNodeActions as $a)
