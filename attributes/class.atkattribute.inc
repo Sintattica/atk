@@ -643,7 +643,7 @@
      */
     function label($record)
     {    
-      return text($this->fieldName(),$this->m_ownerInstance->m_type);
+      return text($this->fieldName(),$this->m_ownerInstance->m_type, $this->m_ownerInstance->m_module);
     }
 
   }
