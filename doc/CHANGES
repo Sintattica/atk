@@ -39,6 +39,7 @@ Changes in ATK 5.0.7
 * Changed deprecated $txt_ global variables in mailreport() and the
   atkdateattrib to atktext() calls. [Boy]
 * Bugfixes and codecleanups in CSV import feature (bug #406). [Ivo]
+* Upgraded the adodb-time library, for better date supoprt. [Harrie]
 * Updated Norwegian translation. [Olav]
 
 Changes in ATK 5.0.6
