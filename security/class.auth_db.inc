@@ -103,9 +103,9 @@
        {
          $access = $recs[0][atkconfig("auth_accesslevelfield")];
        }
-			 $userinfo = $recs[0];
-			 $userinfo["name"]=$user;
-			 $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
+       $userinfo = $recs[0];
+       $userinfo["name"]=$user;
+       $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
        $userinfo["groups"]=$groups;       
        $userinfo["access_level"]=$access;
        return $userinfo;
