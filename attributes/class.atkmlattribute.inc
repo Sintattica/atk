@@ -287,7 +287,7 @@
       {
         // when this node has multilanguage support we save multiple records per occurance
         // we only add the default language to this query
-        parent::addToQuery(&$query,$tablename,$fieldaliasprefix,$rec,$level,$mode);
+        parent::addToQuery($query,$tablename,$fieldaliasprefix,$rec,$level,$mode);
       }
     }
 
