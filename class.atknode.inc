@@ -51,6 +51,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.73  2001/07/04 07:17:10  ivo
+   * searchform now uses method="get"
+   *
    * Revision 4.72  2001/07/03 16:07:13  ivo
    * the *_display override of readonly attribs was not called.
    *
@@ -1131,7 +1134,7 @@
         // so a user doesn't have to scroll down after each search. But there's some stupid
         // thing in internet explorer that it doesn't post the form anymore after you've
         // used it once.
-        $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="post">';
+        $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="get">';
         $searchRow.= session_form();
         $searchable = false;
 
