@@ -107,7 +107,7 @@
     function renderTop($vars)
     {
       atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
-      return renderBox($vars, "top");
+      return $this->renderBox($vars, "top");
     }
     
     /**
@@ -121,7 +121,6 @@
      */
     function renderBox($vars, $name="")
     {
-      atk_var_dump($name, "<h1>Name</h1>");
       if (file_exists($this->m_theme->tplPath($name.".tpl")))
       {
         return $this->render($name.".tpl", $vars);
