@@ -130,55 +130,40 @@ class atkPasswordAttribute extends atkAttribute
   }
 
   /**
-   * Fetch values
-   * @param $rec array with values
-   * @return String without slashes
-   */
-  function fetchValue($rec)
-  {
-    /* no password change? */
-    if (!empty($rec[$this->fieldName()]["hash"]) &&
-        strlen($rec[$this->fieldName()]["new"]) == 0 &&
-        strlen($rec[$this->fieldName()]["again"]) == 0)
-    {
-      return array("hash" => $rec[$this->fieldName()]["hash"],
-                   "old"  => $rec[$this->fieldName()]["hash"]);
-    }
-
-    /* password has changed, or new record */
-    else
-    {
-      return array("hash"    => md5($rec[$this->fieldName()]["new"]),
-                   "old"     => $rec[$this->fieldName()]["hash"],
-                   "new"     => $rec[$this->fieldName()]["new"],
-                   "again"   => $rec[$this->fieldName()]["again"],
-                   "current" => $rec[$this->fieldName()]["current"]);
-    }
-  }
-
-  /**
    * Validates the supplied passwords
    * @param &$record Record that contains value to be validated.
    *                 Errors are saved in this record
    * @param $mode can be either "add" or "update"
    */
-  function validate($record, $mode)
+  function validate(&$record, $mode)
   {
+    $error = FALSE;
     $value = $record[$this->fieldName()];
 
     if ($mode == 'update'
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
-        && md5($value["current"]) != $value["old"])
-          triggerError($record, $this->fieldName(), 'error_password_incorrect');
+        && md5($value["current"]) != $value["hash"])
+    {
+      $error = TRUE;
+      triggerError($record, $this->fieldName(), 'error_password_incorrect');
+    }
 
     if ($value["new"] != $value["again"])
+    {
+      $error = TRUE;
       triggerError($record, $this->fieldName(), 'error_password_nomatch');
+    }
 
     if ($mode =="add" && $this->hasFlag(AF_OBLIGATORY) && strlen($value["new"]) == 0)
     {
+      $error = TRUE;
       triggerError($record, $this->fieldName(), 'error_obligatoryfield');
     }
+
+    /* new password? */
+    if (!$error && strlen($value["new"]) > 0)
+      $record[$this->fieldName()]["hash"] = md5($record[$this->fieldName()]["new"]);
   }
 
   /**
