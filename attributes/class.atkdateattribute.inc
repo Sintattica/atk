@@ -91,7 +91,6 @@
     {
       global $txt_date_format_edit, $txt_date_format_view,$config_atkroot;
       
-atkdebug("min ".$min." max ".$max);
       // *** API SUPPORT HACK ***
       // Because of backwards compatability and because of the number
       // of arguments this method has we also support the old API: ($name, $flags=0).
@@ -114,22 +113,18 @@ atkdebug("min ".$min." max ".$max);
       else if (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
       else   $this->m_date_format_view = "F j Y";
 
-atkdebug("min ".$this->m_date_min." max ".$this->m_date_max." flags ".$flags);
       /* max / min date (only valid when obligatory) */
 	if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
 			{
-atkdebug("inIf");
         $this->m_date_min = $min;
         $this->m_date_max = $max;
 			}
 			else
 			{
-atkdebug("inElse");
         $this->m_date_min = 0;
         $this->m_date_max = 0;
 			}
 
-atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
       /* register javascript */
       $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkdateattribute.js.php");
 
