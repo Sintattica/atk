@@ -2736,6 +2736,9 @@
     {
       global $g_db;
 
+      // Call a preUpdate function, to do some processing before the record is saved.
+      $this->preUpdate($record);
+
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
@@ -3127,6 +3130,10 @@
 		 //var_dump($record);
       global $g_db;
 
+      // Call a preAdd function, to do some processing before the record is saved.
+      $this->preAdd($record);
+
+
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
@@ -3229,6 +3236,20 @@
     }
 
     /**
+     * Function that is called before a new record is been saved to the
+     * database. This function does essentially nothing, but it can be
+     * overriden in your derived classes if you want to do something special
+     * after you saved a record.
+     *
+     * @param $record The record that has just been saved.
+     */
+    function preAdd($record)
+    {
+      // Do nothing
+    }
+
+
+    /**
      * Function that is called right after an existing record has been saved to
      * the database. This function does essentially nothing, but it can be
      * overriden in your derived classes if you want to do something special
@@ -3237,6 +3258,20 @@
      * @param $record The record that has just been saved.
      */
     function postUpdate($record)
+    {
+      // Do nothing
+    }
+
+
+    /**
+     * Function that is called right before an existing record is saved to
+     * the database. This function does essentially nothing, but it can be
+     * overriden in your derived classes if you want to do something special
+     * after you saved a record.
+     *
+     * @param $record The record that has just been saved.
+     */
+    function preUpdate($record)
     {
       // Do nothing
     }
