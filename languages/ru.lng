@@ -1,0 +1,142 @@
+<?php
+$ru=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Приложение",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Добро пожаловать в ATK приложение.",
+
+  "yes" =>  "Да",
+  "no" =>  "Нет",
+
+  "view" =>  "Вид",
+  "edit" =>  "Правка",
+  "delete" =>  "Удаление",
+  "add" =>  "Добавление",
+  "admin" =>  "Администрирование",
+  "search" =>  "Найти",
+  "search_all" =>  "Найти все",
+
+  "next" =>  "Следующий",
+  "previous" =>  "Предыдущий",
+  "select" =>  "Выбрать",
+
+  "save" =>  "Сохранить",
+  "close" =>  "Закрыть",
+  "saveandclose" =>  "Сохранить и закрыть",
+  "cancel" =>  "Отменить",
+  "back" =>  "Назад",
+
+  "menu" =>  "Меню",
+  "error" =>  "Ошибка",
+
+  "error_obligatoryfield" =>  "Это поле является обязательным для ввода",
+  "error_formdataerror" =>  "Не удалось сохранить из-за:",
+  "error_uniquefield" =>  "Значение этого поля должно быть уникальным",
+  "confirm_delete" =>  "Вы уверены, что хотите удалить этот пункт?",
+  "title_delete" =>  "Подтвердите удаление",
+
+  "select_none" =>  "Пусто",
+  
+  "clickheretoadd_prefix" =>  "Кликни здесь чтобы добавить новый",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Это неправильный директорий",
+  "remove_current_file" =>  "Удалить текущий файл",
+  "file_not_exist" =>  "Файл не существует",
+  "cannot_remove_file" =>  "Невозможно удалить файл!",
+
+  // specific password attribute text
+  "password_current" =>  "Текущий",
+  "password_new" =>  "Новый",
+  "password_again" =>  "Опять",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "Введенный пароль является неправильным.",
+  "password_incorrect" =>  "Введен неверный пароль!",
+  "password_nomatch" =>  "Введенные пароли не совпадают.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Выбери язык:",
+  "multilanguage_choice" =>  "Выбранный язык:", 
+  
+  "language_nl" =>  "Голландский",
+  "language_de" =>  "Немецкий",
+  
+  "until" =>  "по",
+    
+  "january" =>  "Январь",
+  "february" =>  "Февраль",
+  "march" =>  "Март",
+  "april" =>  "Апрель",
+  "may" =>  "Май",
+  "june" =>  "Июнь",
+  "july" =>  "Июль",
+  "august" =>  "Август",
+  "september" =>  "Сентябрь",
+  "october" =>  "Октябрь",
+  "november" =>  "Ноябрь",
+  "december" =>  "Декабрь",
+  
+  "fri" =>  "Пят",
+  "sat" =>  "Суб",
+  "sun" =>  "Вос",
+  "mon" =>  "Пон",
+  "tue" =>  "Вто",
+  "wed" =>  "Сре",
+  "thu" =>  "Чет",
+  
+  "menu_main" =>  "главному",
+  "back_to" =>  "Назад к",
+  
+  "permission_denied" =>  "Извините, вы не имеете прав выполнить это действие",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "windows-1251",
+  
+  "field_obligatory" =>  "Это поле является обязательным для заполнения",
+  
+  "help" =>  "Помощь",
+
+  "search_extended" =>  "Расширенный",
+  
+  "search_exact" =>  "Найти точное совпадение",
+  "search_substring" =>  "Найти подстроку",
+  "search_wildcard" =>  "Найти с символом группы (*)",
+  "search_regexp" =>  "Найти с использованием регулярного выражения (расширенный)",
+  "search_soundex" =>  "Найти строку, которая звучит похоже",
+
+  "search_mode" =>  "Режим поиска",  
+  
+  "login_failed" =>  "Неверный Логин",
+  "auth_no_server" =>  "Не указан сервер. Аутентификация невозможна (обратитесь к системному администратору).",
+  "auth_unable_to_connect" =>  "Невозможно соединиться с сервером для аутентификации (обратитесь к системному администратору).",  
+  
+  "error_primarykey_exists" =>  "Запись с таким ключом уже существует",
+  "error_invalid_email" =>  "Неверный e-mail адрес",
+  "error_unkown_domain" =>  "Неизвестный домен",
+  "error_notnumeric" =>  "Значение не является числом",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Выбрать цвет",    
+  
+  "check_all" =>  "Отметить все",
+  "check_none" =>  "Очистить все",
+  "invert_selection" =>  "Отметить наоборот",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "Файл с таким именем уже существует",
+  "filename_invalid" =>  "Неверное имя файла",
+  "filename" =>  "Имя файла",
+  "filecontent" =>  "Содержимое",
+  
+);
+?>

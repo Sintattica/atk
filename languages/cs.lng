@@ -1,0 +1,169 @@
+<?php
+$cs=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Application",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Vítejte v aplikaci ATK.",
+
+  "yes" =>  "Ano",
+  "no" =>  "Ne",
+
+  "view" =>  "Zobrazit",
+  "edit" =>  "Editovat",
+  "delete" =>  "Odstranit",
+  "add" =>  "Pøidat",
+  "copy" =>  "Copy",  
+  "admin" =>  "Administrace",
+  "search" =>  "Vyhledat",
+  "search_all" =>  "Vyhledat v¹e",
+
+  "next" =>  "Následující",
+  "previous" =>  "Pøedchozí",
+  "select" =>  "Vybrat",
+
+  "save" =>  "Ulo¾it",
+  "close" =>  "Zavøít",
+  "saveandclose" =>  "Ulo¾it a zavøít",
+  "cancel" =>  "Zru¹it",
+  "back" =>  "Zpìt",
+
+  "menu" =>  "Menu",
+  "error" =>  "Chyba",
+
+  "error_obligatoryfield" =>  "Toto pole je povinné",
+  "error_formdataerror" =>  "Ukládání selhalo z následujících dùvodù",
+  "error_uniquefield" =>  "Hodnota pro toto pole musí bý jedineèná",
+  "confirm_delete" =>  "Jste si jistý ¾e chcete odstranit tuto polo¾ku",
+  "title_delete" =>  "Potvrdit odstranìní",
+
+  "select_none" =>  "®ádný",
+  
+  "clickheretoadd_prefix" =>  "Kliknutím lze pøidat nový",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Nelze najít adresáø",
+  "remove_current_file" =>  "Odstranit teno soubor",
+  "file_not_exist" =>  "Soubor neexistuje",
+  "cannot_remove_file" =>  "Nelze odstranit soubor!",
+
+  // specific password attribute text
+  "password_current" =>  "Aktuální",
+  "password_new" =>  "Nové",
+  "password_again" =>  "Znovu",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "Nové hesle má nesprávný formát",
+  "password_incorrect" =>  "Nesprávné heslo!",
+  "error_password_nomatch" =>  "Poskytnuté heslo neodpovídá",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Vyberte jazyk",
+  "multilanguage_choice" =>  "Vybraný jazyk", 
+  
+  "language_nl" =>  "Dutch",
+  "language_de" =>  "German",
+  "language_de" =>  "Èesky",
+  
+  "until" =>  "do",
+    
+  "january" =>  "Leden",
+  "february" =>  "Únor",
+  "march" =>  "Bøezen",
+  "april" =>  "Duben",
+  "may" =>  "Kvìten",
+  "june" =>  "Èerven",
+  "july" =>  "Èervenec",
+  "august" =>  "Srpen",
+  "september" =>  "Záøí",
+  "october" =>  "Øíjen",
+  "november" =>  "Listopad",
+  "december" =>  "Prosinec",
+  
+  "fri" =>  "Pátek",
+  "sat" =>  "Sobota",
+  "sun" =>  "Nedìle",
+  "mon" =>  "Pondìlí",
+  "tue" =>  "Úterý",
+  "wed" =>  "Støeda",
+  "thu" =>  "Ètvrtek",
+  
+  "menu_main" =>  "Hlavní menu",
+  "back_to" =>  "Zpátky do",
+  
+  "permission_denied" =>  "Bohu¾el, k provedení této akce nemáte potøebné oprávnìní",	
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-2", // 'central european' charset for czech..
+    
+  "field_obligatory" =>  "Pole oznaèená '*' jsou povinná",
+  
+  "help" =>  "Pomoc",
+  
+  "search_extended" =>  "Roz¹íøené",
+  
+  "search_exact" =>  "Vyhledat odpovídají slovo",
+  "search_substring" =>  "Vyhledat podøetìzec",
+  "search_wildcard" =>  "Vyhledávat s wildcardy (*)",
+  "search_regexp" =>  "Vyhledávat pomocí regulárních výrazù (pokroèilí)",
+  "search_soundex" =>  "Hledat slova vypadající podobnì",
+  
+  "search_mode" =>  "Vyhledávací mod",
+  
+  "login_failed" =>  "Pøihlá¹ení se nepodaøilo",
+  "auth_no_server" =>  "Nebyl vybrán ¾ádný serber. Není mo¾á autentifikace (kontaktujte prosím systémového administrátorar).",
+  "auth_unable_to_connect" =>  "Není mo¾né se pøipojit k serveru pro
+  autentifikaci  (kontaktujte prosím systémového administrátora).",  
+  
+  "error_primarykey_exists" =>  "Záznam s tímto primárním klíèem u¾ v databázi
+  existuje",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Výbìr barvy",
+    
+  "check_all" =>  "Vybrat v¹e",
+  "check_none" =>  "Nevybrat nic",
+  "invert_selection" =>  "Invertovat nic",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "Soubor s tímto jménem u¾ existuje",
+  "filename_invalid" =>  "Jméno souboru je chybné",
+  "filename" =>  "Jméno souboru",
+  "filecontent" =>  "Obsah",
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",  
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+  
+);
+?>

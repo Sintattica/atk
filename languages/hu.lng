@@ -1,0 +1,166 @@
+<?php
+$hu=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Applikaciö",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Udvozollek ebben az ATK applikacioban.",
+
+  "yes" =>  "Igen",
+  "nö" =>  "Nem",
+
+  "view" =>  "Mutasd",
+  "edit" =>  "Szerkeszt",
+  
+  "delete" =>  "T�r�l",
+  "add" =>  "Hozz�ad",
+  "copy" =>  "Copy",  
+  "admin" =>  "Adminisztr�ci�",
+  "search" =>  "Keres�s",
+
+  "search_all" =>  "Keress mindben",
+
+  "next" =>  "K�vetkezö",
+  "previous" =>  "Elözö",
+  "select" =>  "Kiv�laszt",
+
+  "save" =>  "Ment�s",
+  "saveandclose" =>  "Ment�s �s bez�r�s",
+  "cancel" =>  "M�gsem",
+  "back" =>  "Vissza",
+
+  "menu" =>  "Men�",
+  "error" =>  "HIBA!",
+
+  "error_obligatoryfield" =>  "Ez a mezö sz�ks�ges",
+  "error_formdataerror" =>  "A ment�s nem siker�lt, mert:",
+  "error_uniquefield" =>  "Ennek a mezönek az �rteke p�ratlan kell, hogy legyen",
+  "confirm_delete" =>  "Biztos, hogy t�r�lni k�v�nja?",
+  "title_delete" =>  "T�rl�s megerös�t�se",
+
+  "select_none" =>  "Semmi",
+  
+  "clickheretoadd_prefix" =>  "�j hozz�ad�sa",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Nincs ilyen mappa",
+  "remove_current_file" =>  "�llom�ny t�rl�se",
+  "file_not_exist" =>  "Nincs ilyen �llomany",
+  "cannot_remove_file" =>  "Az �llomany nem t�r�lhetö!",
+
+  // specific password attribute text
+  "password_current" =>  "Jelenlegi",
+  "password_new" =>  "�j",
+  "password_again" =>  "�jra",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "A megadott jelsz� nem val�s.",
+  "password_incorrect" =>  "Hib�s jelsz�t adott meg!",
+  "error_password_nomatch" =>  "A be�rt jelszavak nem egyeznek.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "V�lasszon Nyelvet:",
+  "multilanguage_choice" =>  "V�lasztott nyelv:", 
+  
+  "language_nl" =>  "Holland",
+  "language_de" =>  "N�met",
+  
+  "until" =>  "-",
+    
+  "january" =>  "Janu�r",
+  "february" =>  "Febru�r",
+  "march" =>  "M�rcius",
+  "april" =>  "�prilis",
+  "may" =>  "M�jus",
+  "june" =>  "J�nius",
+  "july" =>  "J�lius",
+  "august" =>  "Augusztus",
+  "september" =>  "Szeptember",
+  "october" =>  "Okt�ber",
+  "november" =>  "November",
+  "december" =>  "December",
+  
+  "fri" =>  "P�ntek",
+  "sat" =>  "Szombat",
+  "sun" =>  "Vas�rnap",
+  "mon" =>  "H�tfö",
+  "tue" =>  "Kedd",
+  "wed" =>  "Szerda",
+  "thu" =>  "Cs�r�rt�k",
+  
+  "permission_denied" =>  "Sajn�lom, de ide nincs hozzaf�r�se, k�rem lepjen kapcsolatba egy adminsztr�torral!",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+  
+  "error_primarykey_exists" =>  "Ezzel a kulcsal m�r l�tezik egy rekord",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "V�lasszon sz�nt",
+
+  "help" =>  "S�g�",
+
+  "search_extended" =>  "Kiterjedt",
+
+  "search_exact" =>  "Pontos tal�latra keres",
+  "search_substring" =>  "R�szre keres",
+  "search_wildcard" =>  "Helyettes�tö karakterrel keres (*)",
+  "search_regexp" =>  "Norm�l kifejez�ssel keres (halad�knak)",
+  "search_soundex" =>  "Hasonl�ra keres",
+
+  "search_mode" =>  "Keres�s m�dja",
+
+  "login_failed" =>  "Siekrtelen bel�p�s",
+  "auth_no_server" =>  "Nincs szerver megadva. Az azonos�t�s nem lehets�ges (l�pjen kapcsolatba egy adminisztr�torral).",
+  "auth_unable_to_connect" =>  "Az azonos�t� szerverhez t�rt�nöö kapcsol�d�s sikertelen (l�pjen kapcsolatba egy adminisztr�torral).",
+
+  "error_invalid_email" =>  "Hib�s e-mail c�m",
+  "error_unkown_domain" =>  "Ismeretlen domain",
+  "error_notnumeric" =>  "Az �rt�k nem sz�m",
+
+  "check_all" =>  "Mindet kijel�li",
+  "check_none" =>  "Semmit sem jel�l ki",
+  "invert_selection" =>  "Inverz kijel�l�s",
+
+  // Strings for atkFileEditor
+  "file_exists" =>  "Ilyen n�vvel m�r l�tezik �llom�ny",
+  "filename_invalid" =>  "Helytelen az �llom�ny neve",
+  "filename" =>  "�llom�nyn�v",
+  "filecontent" =>  "Tartalom",    
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Gö",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+
+);
+?>

@@ -1,0 +1,176 @@
+<?php
+$da=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Program",
+  "app_shorttitle" =>  "ATKprog",
+  "app_description" =>  "Velkommen til dette ATK program.",
+
+  "yes" =>  "Ja",
+  "no" =>  "Nej",
+
+  "view" =>  "Vis",
+  "edit" =>  "Rediger",
+  "delete" =>  "Slet",
+  "add" =>  "Tilføj",
+  "admin" =>  "Administration",
+  "search" =>  "Søg",
+  "search_all" =>  "Søg alle",
+
+  "next" =>  "Næste",
+  "previous" =>  "Forrige",
+  "select" =>  "Vælg",
+
+  "save" =>  "Gem",
+  "close" =>  "Luk",
+  "saveandclose" =>  "Gem og luk",
+  "cancel" =>  "Annullere",
+  "back" =>  "Tilbage",
+
+  "menu" =>  "Menu",
+  "error" =>  "Fejl",
+
+  "error_obligatoryfield" =>  "Dette felt er obligatorisk",
+  "error_formdataerror" =>  "Kunne ikke gemmes pga. følgende:",
+  "error_uniquefield" =>  "Værdien for dette felt skal være unik",
+  "confirm_delete" =>  "Er du sikker på at du vil slette denne post?",
+  "title_delete" =>  "Bekræft slettelsen",
+
+  "select_none" =>  "Ingen",
+  
+  "clickheretoadd_prefix" =>  "Klik her for at tilføje en ny",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Der er ingen gyldige mapper",
+  "remove_current_file" =>  "Fjern nuværende fil",
+  "file_not_exist" =>  "Filen eksisterer ikke",
+  "cannot_remove_file" =>  "Kan ikke fjerne filen!",
+
+  // specific password attribute text
+  "password_current" =>  "Nuværrende",
+  "password_new" =>  "Ny",
+  "password_again" =>  "Igen",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "Den indtastede adganskode er ikke en gyldig adgangskode.",
+  "password_incorrect" =>  "Adgangskoden du intastede er ikke korrekt!",
+  "password_nomatch" =>  "Den indtastede adgangskode er forkert.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Vælg et sprog:",
+  "multilanguage_choice" =>  "Valgte sprog:", 
+  
+  "language_nl" =>  "Hollandsk",
+  "language_de" =>  "Tysk",
+  
+  "until" =>  "indtil",
+    
+  "january" =>  "januar",
+  "february" =>  "februar",
+  "march" =>  "marts",
+  "april" =>  "april",
+  "may" =>  "maj",
+  "june" =>  "juni",
+  "july" =>  "juli",
+  "august" =>  "august",
+  "september" =>  "september",
+  "october" =>  "oktober",
+  "november" =>  "november",
+  "december" =>  "december",
+  
+  "fri" =>  "fre",
+  "sat" =>  "lør",
+  "sun" =>  "søn",
+  "mon" =>  "man",
+  "tue" =>  "tir",
+  "wed" =>  "ons",
+  "thu" =>  "tor",
+  
+  "friday" =>  "fredag",
+  "saturday" =>  "lørdag",
+  "sunday" =>  "søndag",
+  "monday" =>  "mandag",
+  "tuesday" =>  "tirsdag",
+  "wednesday" =>  "onsdag",
+  "thursday" =>  "torsdag",
+
+  "menu_main" =>  "Hovedmenu",
+  "back_to" =>  "Tilbage til",
+  
+  "permission_denied" =>  "Desværre, du har ikke adgang til at udføre denne handling",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+  
+  "field_obligatory" =>  "Dette felt er et obligatorisk felt",
+  
+  "help" =>  "Hjælp",
+
+  "search_extended" =>  "Udvidet",
+  
+  "search_exact" =>  "Søg efter det nøjatige ord",
+  "search_substring" =>  "Søg efter en sætning",
+  "search_wildcard" =>  "Søg med jokertegn (*)",
+  "search_regexp" =>  "Søg med et regulært udtryk (avanceret)",
+  "search_soundex" =>  "Søg efter en sætning som lyder familiær",
+
+  "search_mode" =>  "Søgemåde",  
+  
+  "login_failed" =>  "Log på fejlede",
+  "auth_no_server" =>  "Ingen server specifieret. Ingen adgang mulig (kontakt venligst din systemadministrator).",
+  "auth_unable_to_connect" =>  "Ude af stand til at forbinde til serveren for adgang (kontakt venligst din systemadministrator).",  
+  
+  "error_primarykey_exists" =>  "En post med denne nøgle eksisterer allerede",
+  "error_invalid_email" =>  "Ugyldig e-mail adresse",
+  "error_unkown_domain" =>  "Ukendt domæne",
+  "error_notnumeric" =>  "Værdien er ikke et tal",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Vælg en farve",    
+  
+  "check_all" =>  "Vælg alle",
+  "check_none" =>  "Fravælg alle",
+  "invert_selection" =>  "Inverter valg",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "En fil med dette navn eksisterer allerede",
+  "filename_invalid" =>  "Dette filnavn er ugyldigt",
+  "filename" =>  "Filnavn",
+  "filecontent" =>  "Indhold",
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+  
+);
+?>

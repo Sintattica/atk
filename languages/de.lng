@@ -1,0 +1,174 @@
+<?php
+$de=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+  
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Applikation",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Willkommen zu dieser ATK Applikation.",
+
+  "yes" =>  "Ja",
+  "no" =>  "Nein",
+  
+  "view" =>  "Anzeigen",
+  "edit" =>  "Bearbeiten",
+  "delete" =>  "L&ouml,schen",
+  "add" =>  "Hinzuf&uuml,gen",
+  "admin" =>  "Verwalten",
+  "search" =>  "Suchen",
+  "search_all" =>  "Alle suchen",
+
+  "next" =>  "N&auml,chster",
+  "previous" =>  "Vorheriger",
+  "select" =>  "Ausw&auml,hlen",
+  
+  "save" =>  "Speichern",
+  "close" =>  "Schlie&szlig,en",
+  "saveandclose" =>  "Speichern und schlie&szlig,en",
+  "cancel" =>  "Abbrechen",
+  "back" =>  "Zur&uuml,ck",
+
+  "menu" =>  "Men&uuml,",
+  "error" =>  "Fehler",
+  
+  "error_obligatoryfield" =>  "Dieses Feld mu&szlig, ausgef&uuml,llt werden.",
+  "error_formdataerror" =>  "Das Speichern ist fehlgeschlagen aufgrund folgenden Fehlers:",
+  "error_uniquefield" =>  "Der Wert dieses Feldes mu&szlig, eindeutig sein.",
+  "confirm_delete" =>  "Soll dieser Eintrag wirklich gel&ouml,scht werden?",
+  "title_delete" =>  "L&ouml,schen best&auml,tigen",
+  
+  "select_none" =>  "(leer)",
+
+  "clickheretoadd_prefix" =>  "Hier klicken f&uuml,r einen neuen",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Es existiert kein g&uuml,ltiges Verzeichnis",
+  "remove_current_file" =>  "Aktuelle Datei l&ouml,schen",
+  "file_not_exist" =>  "Die Datei existiert nicht",
+  "cannot_remove_file" =>  "Die Datei kann nicht gel&ouml,scht werden!",
+
+  // specific password attribute text
+  "password_current" =>  "Jetziges",
+  "password_new" =>  "Neu",
+  "password_again" =>  "Wiederholen",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "Das eingegebene Passwort ist kein g&uuml,ltiges Passwort.",
+  "password_incorrect" =>  "Das eingegebene Passwort war nicht richtig!",
+  "password_nomatch" =>  "Die eingegebenen Passw&ouml,rter stimmen nicht &uuml,berein.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Sprache ausw&auml,hlen:",
+  "multilanguage_choice" =>  "Ausgew&auml,hlte Sprache:", 
+  
+  "language_nl" =>  "Holl&auml,ndisch",
+  "language_de" =>  "Deutsch",
+
+  "until" =>  "bis",
+
+  "january" =>  "Januar",
+  "february" =>  "Februar",
+  "march" =>  "M&auml,rz",
+  "april" =>  "April",
+  "may" =>  "Mai",
+  "june" =>  "Juni",
+  "july" =>  "Juli",
+  "august" =>  "August",
+  "september" =>  "September",
+  "october" =>  "Oktober",
+  "november" =>  "November",
+  "december" =>  "Dezember",
+
+  "fri" =>  "Fre",
+  "sat" =>  "Sam",
+  "sun" =>  "Son",
+  "mon" =>  "Mon",
+  "tue" =>  "Die",
+  "wed" =>  "Mit",
+  "thu" =>  "Don",
+  
+  "friday" =>  "Freitag",
+  "saturday" =>  "Samstag",
+  "sunday" =>  "Sonntag",
+  "monday" =>  "Montag",
+  "tuesday" =>  "Dienstag",
+  "wednesday" =>  "Mittwoch",
+  "thursday" =>  "Donnerstag",
+  
+  "menu_main" =>  "Hauptmen&uuml,",
+  "back_to" =>  "Zur&uuml,ck zum",
+  
+  "permission_denied" =>  "Sie haben f&uuml,r diesen Vorgang keine Berechtigung",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+    
+  "field_obligatory" =>  "Dieses Feld ist obligatorisch.",
+  
+  "help" =>  "Hilfe",
+  
+  "search_extended" =>  "Erweitert",
+  
+  "search_exact" =>  "Suche nach genauer Text",
+  "search_substring" =>  "Suche nach Teilword",
+  "search_wildcard" =>  "Suche mit Platzhaltern (*)",
+  "search_regexp" =>  "Suche mit regul&auml,ren Ausdr&uuml,cken (Profi)",
+  "search_soundex" =>  "Suche mit &auml,hnlich klingenden W&ouml,rtern",
+  
+  "search_mode" =>  "Suchmodus",
+  
+  "login_failed" =>  "Anmeldung fehlgeschlagen",
+  "auth_no_server" =>  "Kein Server angegeben. Keine Authentifizierung m&ouml,glich (bitte wenden Sie sich an Ihren Systemverwalter).",
+  "auth_unable_to_connect" =>  "Verbindung zum Authentifizierungsserver konnte nicht hergestellt werden (bitte wenden Sie sich an Ihren Systemverwalter).",
+  
+  "error_primarykey_exists" =>  "Ein Eintrag mit diesem Prim&auml,rschl&uuml,ssel existiert bereits.",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Farbe ausw&auml,hlen",
+  
+  "check_all" =>  "Alles ausw&auml,hlen",
+  "check_none" =>  "Nichts ausw&auml,hlen",
+  "invert_selection" =>  "Auswahl umkehren",
+  
+  // Strings for atkFileEditor
+
+  "file_exists" =>  "Eine Datei mit diesem Namen existiert bereits.",
+  "filename_invalid" =>  "Dieser Dateiname ist ung&uuml,ltig.",
+  "filename" =>  "Dateiname",
+  "filecontent" =>  "Inhalt",
+  
+    "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+  
+);
+?>

@@ -1,0 +1,145 @@
+<?php
+$es=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+  
+  // Translated by:
+  //   Daniel Adad <info@adad.net>
+  // 
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "Aplicación ATK",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Bienvenido a esta aplicación ATK.",
+
+  "yes" =>  "Sí",
+  "no" =>  "No",
+
+  "view" =>  "Ver",
+  "edit" =>  "Editar",
+  "delete" =>  "Borrar",
+  "add" =>  "Agregar",
+  "admin" =>  "Administración",
+  "search" =>  "Buscar",
+  "search_all" =>  "Buscar todos",
+
+  "next" =>  "Siguiente",
+  "previous" =>  "Anterior",
+  "select" =>  "Seleccionar",
+
+  "save" =>  "Guardar",
+  "close" =>  "Cerrar",
+  "saveandclose" =>  "Guardar y cerrar",
+  "cancel" =>  "Cancelar",
+  "back" =>  "Volver",
+
+  "menu" =>  "Menú",
+  "error" =>  "Error",
+
+  "error_obligatoryfield" =>  "Este campo es obligatorio",
+  "error_formdataerror" =>  "No se ha podido guardar debido a la siguiente causa:",
+  "error_uniquefield" =>  "El valor para este campo debe ser único",
+  "confirm_delete" =>  "¿Está seguro de que quiere borrar este ítem?",
+  "title_delete" =>  "Confirmar borrado",
+
+  "select_none" =>  "Ninguno",
+  
+  "clickheretoadd_prefix" =>  "Haga clic aquí para agregar un nuevo",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "No hay un directorio válido",
+  "remove_current_file" =>  "Eliminar el archivo actual",
+  "file_not_exist" =>  "El archivo no existe",
+  "cannot_remove_file" =>  "¡No se puede eliminar el archivo!",
+
+  // specific password attribute text
+  "password_current" =>  "Actual",
+  "password_new" =>  "Nueva",
+  "password_again" =>  "Repítala",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "La contraseña proporcionada no es válida.",
+  "password_incorrect" =>  "¡La contraseña ingresada no es correcta!",
+  "password_nomatch" =>  "Las contraseñas proporcionadas no coinciden.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Seleccione un idioma:",
+  "multilanguage_choice" =>  "Idioma seleccionado:", 
+  
+  "language_nl" =>  "Holandés",
+  "language_de" =>  "Alemán",
+  
+  "until" =>  "hasta",
+    
+  "january" =>  "Enero",
+  "february" =>  "Febrero",
+  "march" =>  "Marzo",
+  "april" =>  "Abril",
+  "may" =>  "Mayo",
+  "june" =>  "Junio",
+  "july" =>  "Julio",
+  "august" =>  "Agosto",
+  "september" =>  "Septiembre",
+  "october" =>  "Octubre",
+  "november" =>  "Noviembre",
+  "december" =>  "Diciembre",
+  
+  "fri" =>  "Vie",
+  "sat" =>  "Sab",
+  "sun" =>  "Dom",
+  "mon" =>  "Lun",
+  "tue" =>  "Mar",
+  "wed" =>  "Mie",
+  "thu" =>  "Jue",
+  
+  "menu_main" =>  "Principal",
+  "back_to" =>  "Volver a",
+  
+	"permission_denied" =>  "Lo siento, pero no está autorizado para realizar esta acción",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+  
+  "field_obligatory" =>  "Este campo es obligatorio",
+  
+  "help" =>  "Ayuda",
+  
+  "search_extended" =>  "Extendido",
+  
+  "search_exact" =>  "Buscar coincidencia exacta",
+  "search_substring" =>  "Buscar texto dentro de las palabras",
+  "search_wildcard" =>  "Buscar con comodines (*)",
+  "search_regexp" =>  "Buscar con expresiones regulares (avanzado)",
+  "search_soundex" =>  "Buscar un texto que suene similar",
+  
+  "search_mode" =>  "Modo Buscar",
+  
+  "login_failed" =>  "No se ha podido iniciar la sesión",
+  "auth_no_server" =>  "No se ha especificado un servidor. No es posible autenticar (consulte con su administrador de sistemas).",
+  "auth_unable_to_connect" =>  "No se ha podido conectar con un servidor para autenticar (consulte con su administrador de sistemas).",    
+ 
+  "error_primarykey_exists" =>  "Ya existe un registro con esta clave",
+  "error_invalid_email" =>  "Dirección de e-mail no válida",
+  "error_unkown_domain" =>  "Dominio desconocido",
+  "error_notnumeric" =>  "El valor no es un número",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Seleccionar un color",
+  
+  "check_all" =>  "Seleccionar todo",
+  "check_none" =>  "Seleccionar ninguno",
+  "invert_selection" =>  "Invertir selección",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "Ya existe un archivo con este nombre",
+  "filename_invalid" =>  "El nombre del archivo no es válido",
+  "filename" =>  "Nombre de archivo",
+  "filecontent" =>  "Contenido",
+    
+);
+?>

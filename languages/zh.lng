@@ -1,0 +1,169 @@
+<?php
+$zh=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+  // Translated by:
+  // xiaogang sun <sun.xiao.g@263.net>
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Application",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Welcome to this ATK application.",
+
+  "yes" =>  "Yes",
+  "no" =>  "No",
+
+  "view" =>  "查看",
+  "edit" =>  "编辑",
+  "delete" =>  "删除",
+  "add" =>  "添加",
+  "admin" =>  "管理",
+  "search" =>  "搜索",
+  "search_all" =>  "查询所有",
+
+  "next" =>  "后一个",
+  "previous" =>  "前一个",
+  "select" =>  "选择",
+
+  "save" =>  "保存",
+  "close" =>  "关闭",
+  "saveandclose" =>  "保存和关闭",
+  "cancel" =>  "取消",
+  "back" =>  "后退",
+
+  "menu" =>  "菜单",
+  "error" =>  "错误",
+
+  "error_obligatoryfield" =>  "这些区域必须填写",
+  "error_formdataerror" =>  "由于下列原因保存失败:",
+  "error_uniquefield" =>  "这个区域的值必须唯一",
+  "confirm_delete" =>  "你确定删除这一条吗？",
+  "title_delete" =>  "确定删除",
+
+  "select_none" =>  "没有",
+  
+  "clickheretoadd_prefix" =>  "单击这里新建",
+  "clickheretoadd_postfix" =>  ".",
+
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "没有有效的目录",
+  "remove_current_file" =>  "删除现存文件",
+  "file_not_exist" =>  "文件不存在",
+  "cannot_remove_file" =>  "不能删除文件!",
+
+  // specific password attribute text
+  "password_current" =>  "当前的",
+  "password_new" =>  "新建",
+  "password_again" =>  "再输入一次",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "输入的密码不是有效的密码.",
+  "password_incorrect" =>  "你输入的密码不正确!",
+  "password_nomatch" =>  "两次输入的密码不一致.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "选择一种语言:",
+  "multilanguage_choice" =>  "选择语言:", 
+  
+  "language_nl" =>  "荷兰",
+  "language_de" =>  "德语",
+  
+  "until" =>  "到",
+    
+  "january" =>  "一月",
+  "february" =>  "二月",
+  "march" =>  "三月",
+  "april" =>  "四月",
+  "may" =>  "五月",
+  "june" =>  "六月",
+  "july" =>  "七月",
+  "august" =>  "八月",
+  "september" =>  "九月",
+  "october" =>  "四月",
+  "november" =>  "十一月",
+  "december" =>  "十二月",
+  
+  "fri" =>  "周五",
+  "sat" =>  "周六",
+  "sun" =>  "周日",
+  "mon" =>  "周一",
+  "tue" =>  "周二",
+  "wed" =>  "周三",
+  "thu" =>  "周四",
+  
+  "menu_main" =>  "主菜单",
+  "back_to" =>  "返回",
+  
+  "permission_denied" =>  "对不起，你没有权限进行这项操作！",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "GB2312",
+  
+  "field_obligatory" =>  "这个输入框必须填写",
+  
+  "help" =>  "帮助",
+
+  "search_extended" =>  "高级",
+  
+  "search_exact" =>  "全字匹配搜索",
+  "search_substring" =>  "子字符串搜索",
+  "search_wildcard" =>  "带通配符搜索(*)",
+  "search_regexp" =>  "固定表达式搜索(高级)",
+  "search_soundex" =>  "相似字符串搜索",
+
+  "search_mode" =>  "搜索方式",  
+  
+  "login_failed" =>  "登陆失败",
+  "auth_no_server" =>  "没有指定服务器。不能认证(请联细你的系统管理员).",
+  "auth_unable_to_connect" =>  "不能连接到服务器进行认证(请联系你的系统管理员).",  
+  
+  "error_primarykey_exists" =>  "这个关键字的记录已经存在",
+  "error_invalid_email" =>  "无效的邮件地址",
+  "error_unkown_domain" =>  "不知道的域名",
+  "error_notnumeric" =>  "Value not a number",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "选择一种颜色",    
+  
+  "check_all" =>  "选择所有",
+  "check_none" =>  "没有选择",
+  "invert_selection" =>  "调整选项",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "这个文件名已经存在",
+  "filename_invalid" =>  "这个文件名无效",
+  "filename" =>  "文件名",
+  "filecontent" =>  "目录",
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+  
+);
+?>

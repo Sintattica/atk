@@ -1,0 +1,163 @@
+<?php
+$it=array(
+
+  // To keep language files up to date, all strings that are introduced in new version
+  // have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+   
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "Applicazione ATK",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Benvenuto su questa applicazione ATK.",  
+
+  "yes" =>  "Si",
+  "no" =>  "No",
+   
+  "view" =>  "View",   
+  "edit" =>  "Modifica",
+  "delete" =>  "Elimina",
+  "add" =>  "Aggiungi",
+  "copy" =>  "Copy",  
+  "admin" =>  "Amministra",
+  "search" =>  "Ricerca",
+  "search_all" =>  "Cerca su tutto/i",
+
+  "next" =>  "Successivo",
+  "previous" =>  "Precedente",
+  "select" =>  "Seleziona",  
+   
+  "save" =>  "Salva",
+  "close" =>  "Chiudi",
+  "saveandclose" =>  "salva e chiudi",
+  "cancel" =>  "Annulla",
+  "back" =>  "Indietro",
+   
+  "menu" =>  "Menu",
+  "error" =>  "Errore",
+  
+  "error_obligatoryfield" =>  "Questo campo è obbligatorio",
+  "error_formdataerror" =>  "Il salvataggio è fallito per questa ragione:",
+  "error_uniquefield" =>  "Il valire di quetso campo deve essere univoco",
+  "confirm_delete" =>  "Sicuro di volerlo cancellare?",
+  "title_delete" =>  "Comferma la cancellazione",
+  
+  "select_none" =>  "Nessuno/a",
+  
+  // Specific File Attribute Text
+  "no_valid_directory" =>  "Non è una directory valida",
+  "remove_current_file" =>  "Rimuovere il file corrente",
+  "file_not_exist" =>  "Il file non esiste",
+  "cannot_remove_file" =>  "Non posso rimuovere il file!",
+
+  // specific password attribute text
+  "password_current" =>  "Corrente",
+  "password_new" =>  "Nuova",
+  "password_again" =>  "Ripeti",
+  "password_hidden" =>  "*****",
+  "password_invalid" =>  "La password fornita non è in un formato valido.",
+  "password_incorrect" =>  "La password inserita non è valida!",
+  "error_password_nomatch" =>  "La password fornita non corrisponde.",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Seleziona una lingua:",
+  "multilanguage_choice" =>  "Lingua selezionata:", 
+  
+  "language_nl" =>  "Dutch",
+  "language_de" =>  "German",
+  
+  "until" =>  "fino a",
+    
+  "january" =>  "Gennaio",
+  "february" =>  "Febbraio",
+  "march" =>  "Marzo",
+  "april" =>  "Aprile",
+  "may" =>  "Maggio",
+  "june" =>  "Giugno",
+  "july" =>  "Luglio",
+  "august" =>  "Agosto",
+  "september" =>  "Settembre",
+  "october" =>  "Ottobre",
+  "november" =>  "Novembre",
+  "december" =>  "Dicembre",
+  
+  "fri" =>  "Ven",
+  "sat" =>  "Sab",
+  "sun" =>  "Dom",
+  "mon" =>  "Lun",
+  "tue" =>  "Mar",
+  "wed" =>  "Mer",
+  "thu" =>  "Gio",
+  
+  "menu_main" =>  "Main",
+  "back_to" =>  "Back to",
+  
+  "permission_denied" =>  "Attenzione, non si dispongono dei permessi per questa operazione",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+    
+  "field_obligatory" =>  "This field is a required field",
+  
+  "help" =>  "Help",
+  
+  "search_extended" =>  "Extended",
+  
+  "search_exact" =>  "Search for an exact match",
+  "search_substring" =>  "Search for a substring",
+  "search_wildcard" =>  "Search with wildcards (*)",
+  "search_regexp" =>  "Search with a regular expression (advanced)",
+  "search_soundex" =>  "Search for a string that sounds similar",
+  
+  "search_mode" =>  "Searchmode",
+  
+  "login_failed" =>  "Login failed",
+  "auth_no_server" =>  "No server specified. No authentication possible (please consult your system administrator).",
+  "auth_unable_to_connect" =>  "Unable to connect to server for authentication (please consult your system administrator).",    
+  
+  "error_primarykey_exists" =>  "A record with this key already exists",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Select a color",
+  
+  "check_all" =>  "Select all",
+  "check_none" =>  "Select none",
+  "invert_selection" =>  "Invert selection",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "A file with this name already exists",
+  "filename_invalid" =>  "This filename is invalid",
+  "filename" =>  "Filename",
+  "filecontent" =>  "Content",
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+
+);
+?>

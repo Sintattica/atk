@@ -1,0 +1,242 @@
+<?php
+$nl=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application.
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Application",
+  "app_shorttitle" =>  "ATKApp",
+  "app_description" =>  "Welkom bij deze ATK applicatie.",
+
+  "yes" =>  "Ja",
+  "no" =>  "Nee",
+
+  "none" =>  "Geen",
+
+  "view" =>  "Bekijk",
+  "edit" =>  "Bewerk",
+  "delete" =>  "Verwijder",
+  "add" =>  "Toevoegen",
+  "new" =>  "Nieuw",
+  "copy" =>  "Kopieer",
+  "editcopy" =>  "Bewerk kopie",
+  "admin" =>  "Administratie",
+  "search" =>  "Zoeken",
+  "search_all" =>  "Alles zoeken",
+
+  "next" =>  "Volgende",
+  "previous" =>  "Vorige",
+  "select" =>  "Selecteren",
+
+  "save" =>  "Opslaan",
+  "close" =>  "Sluiten",
+  "saveandclose" =>  "Opslaan en sluiten",
+  "cancel" =>  "Annuleren",
+  "back" =>  "Terug",
+
+  "menu" =>  "Menu",
+  "error" =>  "Error",
+
+  "error_obligatoryfield" =>  "Dit veld is verplicht",
+  "error_formdataerror" =>  "Opslaan mislukt om de volgende reden:",
+  "error_uniquefield" =>  "De waarde voor dit veld moet uniek zijn",
+  "error_uniquefieldset" =>  "De waarden voor de combinaties tussen deze velden moeten uniek zijn",
+  "error_tab" =>  "zie",
+
+  "confirm_delete" =>  "Weet u zeker dat u dit item wilt verwijderen?",
+  "confirm_delete_multi" =>  "Weet u zeker dat u deze items wilt verwijderen?",
+  "title_delete" =>  "Bevestig verwijderen",
+
+  "select_none" =>  "Geen",
+
+  "clickheretoadd_prefix" =>  "Klik hier om een nieuw",
+  "clickheretoadd_postfix" =>  " toe te voegen.",
+
+  // Teksten voor file attribute
+  "no_valid_directory" =>  "Geen geldige directory opgegeven",
+  "remove_current_file" =>  "Verwijder huidige bestand",
+  "file_not_exist" =>  "Bestand bestaat niet",
+  "cannot_remove_file" =>  "Kan bestand niet verwijderen!",
+
+  // specific password attribute text
+  "password_current" =>  "Huidig",
+  "password_new" =>  "Nieuw",
+  "password_again" =>  "Opnieuw",
+  "password_hidden" =>  "*****",
+  "error_password_invalid" =>  "Het ingevoerde wachtwoord is geen correct wachtwoord!",
+  "error_password_incorrect" =>  "Het ingevoerde wachtwoord is fout!",
+  "error_password_nomatch" =>  "De ingevoerde wachtwoorden komen niet met elkaar overeen!",
+
+  // multilanguage text
+  "multilanguage_select" =>  "Kies een taal",
+  "multilanguage_choice" =>  "Gekozen taal",
+
+  "language_nl" =>  "Nederlands",
+  "language_de" =>  "Duits",
+  "language_en" =>  "Engels",
+  "language_fr" =>  "Frans",
+
+  "until" =>  "t/m",
+
+  "january" =>  "januari",
+  "february" =>  "februari",
+  "march" =>  "maart",
+  "april" =>  "april",
+  "may" =>  "mei",
+  "june" =>  "juni",
+  "july" =>  "juli",
+  "august" =>  "augustus",
+  "september" =>  "september",
+  "october" =>  "oktober",
+  "november" =>  "november",
+  "december" =>  "december",
+
+  "fri" =>  "Vri",
+  "sat" =>  "Zat",
+  "sun" =>  "Zon",
+  "mon" =>  "Maa",
+  "tue" =>  "Din",
+  "wed" =>  "Woe",
+  "thu" =>  "Don",
+
+  "friday" =>  "vrijdag",
+  "saturday" =>  "zaterdag",
+  "sunday" =>  "zondag",
+  "monday" =>  "maandag",
+  "tuesday" =>  "dinsdag",
+  "wednesday" =>  "woensdag",
+  "thursday" =>  "donderdag",
+
+  "menu_main" =>  "Hoofdmenu",
+  "back_to" =>  "Terug naar",
+
+  "permission_denied" =>  "Sorry, u heeft geen toestemming om deze aktie uit te voeren",
+
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+
+  "field_obligatory" =>  "Dit veld is verplicht",
+
+  "help" =>  "Help",
+
+  "search_extended" =>  "Uitgebreid",
+
+  "search_exact" =>  "Zoek naar een exact resultaat",
+  "search_substring" =>  "Zoek resultaten waarin het gegeven woord voorkomt",
+  "search_wildcard" =>  "Zoek met 'wildcards' (*)",
+  "search_regexp" =>  "Zoek met een reguliere expressie (geavanceerd)",
+  "search_soundex" =>  "Zoek naar een string die ongeveer hetzelfde klinkt",
+  "search_greaterthan" =>  "Zoek naar waarde groter dan",
+  "search_greaterthanequal" =>  "Zoek naar waarde groter dan of gelijk aan",
+  "search_lessthan" =>  "Zoek naar waarde kleiner dan",
+  "search_lessthanequal" =>  "Zoek naar waarde kleiner dan of gelijk aan",
+  "search_between" =>  "Zoek tussen 2 waarden",
+  "search_and" =>  "Alle criteria voldoen",
+  "search_or" =>  "Een van de criteria voldoet",
+  "search_mode" =>  "Zoekmanier",
+
+  "login_failed" =>  "Inloggen mislukt",
+  "auth_no_server" =>  "Geen server opgegeven. Geen authenticatie mogelijk (raadpleeg uw systeembeheerder).",
+  "auth_unable_to_connect" =>  "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).",
+
+  "error_primarykey_exists" =>  "Er bestaat al een record met deze sleutel",
+  "error_invalid_email" =>  "Ongeldig e-mail adres",
+  "error_unkown_domain" =>  "Onbekend domein",
+  "error_notnumeric" =>  "Geen numerieke waarde",
+
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Kies een kleur",
+
+  "check_all" =>  "Alles selecteren",
+  "check_none" =>  "Niets selecteren",
+  "invert_selection" =>  "Selectie omkeren",
+
+  // Strings for atkFileEditor
+  "file_exists" =>  "Er bestaat al een bestand met deze naam",
+  "filename_invalid" =>  "Deze bestandsnaam is niet geldig",
+  "filename" =>  "Bestandsnaam",
+  "filecontent" =>  "Inhoud",
+
+  "title_session_expired" =>  "Sessie verlopen",
+  "explain_session_expired" =>  "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw in te loggen.",
+
+  // visual html editor
+  "ww_sourcemode" =>  "Broncode modus",
+  "ww_visualmode" =>  "Visuele modus",
+
+  // multi-record actions selection
+  "select_all" =>  "Selecteer alles",
+  "deselect_all" =>  "Deselecteer alles",
+  "select_invert" =>  "Selectie omkeren",
+  "with_selected" =>  "Met geselecteerd",
+  "submit" =>  "Uitvoeren",
+  "list_null_value" =>  "Geen waarde",
+
+  // Login form
+  "login_form" =>  "Inloggen",
+  "username" =>  "Gebruikersnaam",
+  "password" =>  "Wachtwoord",
+  "login" =>  "Inloggen",
+  "auth_max_loginattempts_exceeded" =>  "Teveel pogingen. Inloggen is geblokkeerd. Neem contact op met uw systeembeheerder.",
+  "auth_mismatch" =>  "Gebruikernaam en/of wachtwoord zijn niet juist. Probeert u het opnieuw.",
+  "auth_account_locked" =>  "Dit account is vergrendeld. Probeer indien mogelijk een ander account, of neem contact op met uw systeembeheerder.",
+
+  "wysiwyg_fontface" =>  "Lettertype",
+  "wysiwyg_fontsize" =>  "Pt",
+
+  "wysiwyg_insert_table" =>  "Tabel invoegen",
+  "wysiwyg_insert_row" =>  "Rij invoegen",
+  "wysiwyg_insert_col" =>  "Kolom invoegen",
+  "wysiwyg_insert_cell" =>  "Cel invoegen",
+  "wysiwyg_delete_row" =>  "Rij verwijderen",
+  "wysiwyg_delete_col" =>  "Kolom verwijderen",
+  "wysiwyg_delete_cell" =>  "Cel verwijderen",
+  "wysiwyg_merge_cell" =>  "Cellen samenvoegen",
+  "wysiwyg_split_cell" =>  "Cellen splitsen",
+
+  "lock_locked" =>  "De door u geselecteerde items zijn momenteel niet toegankelijk omdat een andere gebruiker deze open heeft staan.",
+
+  "lock_expired" =>  "De items die u open heeft staan zijn niet meer exclusief voor u toegankelijk. Dit kan verschillende oorzaken hebben,".
+                      "de meest gebruikelijke oorzaak is dat u te lang niet heeft opgeslagen. U kunt proberen uw werk nog op te slaan, maar".
+                      "het is mogelijk dat de items inmiddels door een andere gebruiker is/zijn toege�igend!",
+
+  "feedback_delete_success" =>  "Het item is verwijderd.",
+  "feedback_delete_cancelled" =>  "Het item is niet verwijderd.",
+  "feedback_delete_failed" =>  "Het item kon niet verwijderd worden.",
+  "feedback_save_success" =>  "Het item is toegevoegd.",
+  "feedback_save_cancelled" =>  "Het item is niet toegevoegd.",
+  "feedback_save_failed" =>  "Het item kon niet toegevoegd worden.",
+  "feedback_update_success" =>  "De wijzigingen zijn opgeslagen.",
+  "feedback_update_cancelled" =>  "Geen wijzigingen opgeslagen.",
+  "feedback_update_failed" =>  "De wijzigingen konden niet opgeslagen worden.",
+  "feedback" =>  "Bevestiging",
+
+  "error_date_invalid" =>  "Ongeldige datum",
+  
+  "access_denied" =>  "Toegang geweigerd",
+  "error_node_action_access_denied" =>  "Sorry, u heeft geen toestemming om deze bewerking uit te voeren.",
+
+  "export" =>  "Exporteren",
+  "error_fileexists" =>  "Bestand bestaat al op de server. Verander de naam van het bestand",
+
+  "date_format_edit" =>  "j F Y",
+  "date_format_view" =>  "j F Y",
+  
+  // General Database error's
+  "db_unknown_host" =>  "Kan de host '%s' niet vinden",
+  "db_unknown_database" =>  "Kan niet connecten met database '%s'",
+  "db_access_denied_user" =>  "Gebruiker '%s' kan niet connecten met de database '%s'",
+  "db_access_denied_database" =>  "Gebruiker '%s' heeft geen rechten voor de database '%s'",
+
+  "app_launcher" =>  "ATK Applicatie Starter",
+  "app_reopen" =>  "Opnieuw starten",
+  "app_close" =>  "Afsluiten",
+
+);
+?>

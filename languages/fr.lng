@@ -1,0 +1,124 @@
+<?php
+$fr=array(
+
+  // To keep language files up to date, all strings that are introduced in a new version
+  // Have to be kept in a separate section, so we can easily see which strings need to be
+  // translated when a new version comes out.
+  
+  // Note that these are ATK defaults. You can always override the defaults by providing
+  // a languages/ dir with language files in your application. 
+
+  // --------" =>" => " =>" =>  Strings that were there from the beginning: " =>" => " =>" => ---------
+
+  "app_title" =>  "ATK Application",
+  "app_shorttitle" =>  "ATKApp",
+
+  "title_debugger" =>  "Debugger",
+
+  "yes" =>  "Oui",
+  "no" =>  "Non",
+
+  "edit" =>  "Editer",
+  "delete" =>  "Effacer",
+  "add" =>  "Ajouter",
+  "copy" =>  "Copy",  
+  "search" =>  "Search",
+  "search_all" =>  "Search all",
+
+  "next" =>  "Next",
+  "previous" =>  "Previous",
+  "select" =>  "Select",
+  
+  "save" =>  "Sauver",
+  "close" =>  "Fermer",
+  "saveandclose" =>  "Sauver et fermer",  
+  "cancel" =>  "Annuler",
+  
+  "menu" =>  "Menu",
+  "error" =>  "Erreur",
+
+  "error_obligatoryfield" =>  "This field is required",
+  "error_formdataerror" =>  "Save failed due to the following reason:",
+  "error_uniquefield" =>  "The value for this field must be unique",
+  "confirm_delete" =>  "Are you sure you want to delete this item?",
+  "title_delete" =>  "Confirm delete",
+  
+  "select_none" =>  "None",  
+  
+  "fri" =>  "Fri",
+  "sat" =>  "Sat",
+  "sun" =>  "Sun",
+  "mon" =>  "Mon",
+  "tue" =>  "Tue",
+  "wed" =>  "Wed",
+  "thu" =>  "Thu",
+  
+  "permission_denied" =>  "Sorry, you don't have permission to perform this action",
+  
+  "menu_main" =>  "Main",
+  "back_to" =>  "Back to",
+  
+  // The charset to use.. for most languages, this is iso-8859-1 (Western European).
+  "charset" => "iso-8859-1",
+    
+  "field_obligatory" =>  "This field is a required field",
+  
+  "help" =>  "Help",
+  
+  "search_extended" =>  "Extended",
+  
+  "search_exact" =>  "Search for an exact match",
+  "search_substring" =>  "Search for a substring",
+  "search_wildcard" =>  "Search with wildcards (*)",
+  "search_regexp" =>  "Search with a regular expression (advanced)",
+  "search_soundex" =>  "Search for a string that sounds similar",
+  
+  "search_mode" =>  "Searchmode",
+  
+  "login_failed" =>  "Login failed",
+  "auth_no_server" =>  "No server specified. No authentication possible (please consult your system administrator).",
+  "auth_unable_to_connect" =>  "Unable to connect to server for authentication (please consult your system administrator).",    
+  
+  "error_primarykey_exists" =>  "A record with this key already exists",
+  
+  // colorpicker attribute
+  "colorpicker_selectcolor" =>  "Select a color",
+  
+  "check_all" =>  "Select all",
+  "check_none" =>  "Select none",
+  "invert_selection" =>  "Invert selection",
+  
+  // Strings for atkFileEditor
+  "file_exists" =>  "A file with this name already exists",
+  "filename_invalid" =>  "This filename is invalid",
+  "filename" =>  "Filename",
+  "filecontent" =>  "Content",
+  
+  "title_session_expired" =>  "Session expired",
+  "explain_session_expired" =>  "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  
+  // visual html editor
+  "ww_sourcemode" =>  "Source mode",
+  "ww_visualmode" =>  "Visual mode",
+
+  // multi-record actions selection
+  "select_all" =>  "Select all",
+  "deselect_all" =>  "Deselect all",
+  "select_invert" =>  "Invert selection",
+  "with_selected" =>  "With selected",
+  "submit" =>  "Go",
+
+  // Login form
+  "login_form" =>  "Login",
+  "username" =>  "Username",
+  "password" =>  "Password",
+  "login" =>  "Login",
+  "auth_max_loginattempts_exceeded" =>  "Too many retries. Login has been disabled. Please contact your system administrator.",
+  "auth_mismatch" =>  "Username and/or password are incorrect. Please try again.",
+  "auth_account_locked" =>  "This account has been locked. Try a different account if possible, or contact your system administrator.",
+  
+  "wysiwyg_fontface" =>  "Font",
+  "wysiwyg_fontsize" =>  "Pt",
+  
+);
+?>
