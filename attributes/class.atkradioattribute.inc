@@ -1,5 +1,7 @@
 <?php
 
+  include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
+
   /**
    * The atkRadioAttribute class represents an attribute of a node
    * that has a field with radio button  to select from predefined values.

@@ -1,5 +1,7 @@
 <?php
 
+  include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
+
   /**
    * The atkMultiboolAttribute class represents an attribute of a node
    * that has a field with checkboxes, and stores the input seperated by a |
