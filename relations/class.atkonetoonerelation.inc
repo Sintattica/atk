@@ -37,27 +37,29 @@
     {
       $myrecord = $record[$this->fieldName()];
 
-      $this->createDestination();
-
-      if (is_array($myrecord))
+      // default result
+      $result = text("none");
+      
+      if ($this->createDestination())
       {
-        /* display in list mode */
-        if ($mode == "list")
-          $result = $this->m_destInstance->descriptor($myrecord);
 
-        /* display in view mode */
-        else
+        if (is_array($myrecord))
         {
-          if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
-          if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
-            $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
-          else $actions = array();
-          $result = $this->m_destInstance->normalRecordList(array($myrecord), $actions, RL_NO_SEARCH|RL_NO_SORT, array($this->m_refKey))."<br>";
+          /* display in list mode */
+          if ($mode == "list")
+            $result = $this->m_destInstance->descriptor($myrecord);
+  
+          /* display in view mode */
+          else
+          {
+            if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+              $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+            else $actions = array();
+            $result = $this->m_destInstance->normalRecordList(array($myrecord), $actions, RL_NO_SEARCH|RL_NO_SORT, array($this->m_refKey))."<br>";
+          }
         }
       }
-
-      else $result = text("none");
-
       return $result;
     }
 
@@ -87,17 +89,19 @@
       {
         if ($tablename!="") $tablename.=".";
 
-        $this->createDestination();
+        if ($this->createDestination())
+	{
 
-        $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
-        if ($this->m_destinationFilter!="")
-        {
-          $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
-        }
-        $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
+          $condition = $tablename.$this->m_ownerInstance->m_primaryKey[0]."=".$fieldaliasprefix.$this->fieldName().".".$this->m_refKey;
+          if ($this->m_destinationFilter!="")
+          {
+            $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
+          }
+          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
 
-        // we pass true as the last param to addToQuery, because we need all fields..
-        $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
+          // we pass true as the last param to addToQuery, because we need all fields..
+          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
+	}
       }
 
       // When storing, we don't add to the query.. we have our own store() method..
@@ -124,19 +128,21 @@
     {
       // we need to pass all values to the destination node, so it can
       // run it's db2value stuff over it..
-      $this->createDestination();
-      $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
-      if ($pkval!=NULL && $pkval!="") // If primary key is not filled, there was no record, so we
-                                      // should return NULL.
+      if ($this->createDestination())
       {
-        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
+        if ($pkval!=NULL && $pkval!="") // If primary key is not filled, there was no record, so we
+                                        // should return NULL.
         {
-          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
-          $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
+            $rec[$this->fieldName()][$attribname] = $p_attrib->db2value($rec[$this->fieldName()]);
+          }
+          // also set the primkey..
+          $rec[$this->fieldName()]["atkprimkey"] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
+          return $rec[$this->fieldName()];
         }
-        // also set the primkey..
-        $rec[$this->fieldName()]["atkprimkey"] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
-        return $rec[$this->fieldName()];
       }
       return NULL;
     }
@@ -145,16 +151,17 @@
     {
       // we need to pass all values to the destination node, so it can
       // run it's fetchValue stuff over it..
-      $this->createDestination();
-
-      if ($rec[$this->fieldName()]!=NULL)
+      if ($this->createDestination())
       {
-        foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+        if ($rec[$this->fieldName()]!=NULL)
         {
-          $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
-          $rec[$this->fieldName()][$attribname] = $p_attrib->fetchValue($rec[$this->fieldName()]);
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
+            $rec[$this->fieldName()][$attribname] = $p_attrib->fetchValue($rec[$this->fieldName()]);
+          }
+          return $rec[$this->fieldName()];
         }
-        return $rec[$this->fieldName()];
       }
     }
 
@@ -166,27 +173,28 @@
      */
     function store($notused, &$record, $mode)
     {
-      $this->createDestination();
+      if ($this->createDestination())
+      {
+        $vars = &$record[$this->fieldName()];
+        $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
 
-      $vars = &$record[$this->fieldName()];
-      $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-
-      if ($vars["mode"]=="edit")
-      {
-        atkdebug("Updating existing one2one record");
-        // we put the vars in the postvars, because there is information
-        // like atkorgkey in it that is vital.
-        $this->m_destInstance->m_postvars = $vars;
-        $this->m_destInstance->updateDb($vars);
-      }
-      elseif ($vars["mode"]=="add" || $mode == "add")
-      {
-        atkdebug("Adding new one2one record");
-        $this->m_destInstance->addDb($vars);
-      }
-      else
-      {
-        atkdebug("Nothing to store in one2one record");
+        if ($vars["mode"]=="edit")
+        {
+          atkdebug("Updating existing one2one record");
+          // we put the vars in the postvars, because there is information
+          // like atkorgkey in it that is vital.
+          $this->m_destInstance->m_postvars = $vars;
+          $this->m_destInstance->updateDb($vars);
+        }
+        elseif ($vars["mode"]=="add" || $mode == "add")
+        {
+          atkdebug("Adding new one2one record");
+          $this->m_destInstance->addDb($vars);
+        }
+        else
+        {
+          atkdebug("Nothing to store in one2one record");
+        }
       }
     }
 
@@ -200,33 +208,35 @@
     {
       atkdebug("hide called for ".$this->fieldName());
 
-      $this->createDestination();
-
-      if ($record[$this->fieldName()]!=NULL)
+      if ($this->createDestination())
       {
-        $myrecord = $record[$this->fieldName()];
-
-        if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
-        {
-          // rec has no primkey yet, so we must add instead of update..
-          $mode = "add";
+        if ($record[$this->fieldName()]!=NULL)
+      {
+          $myrecord = $record[$this->fieldName()];
+  
+          if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
+          {
+            // rec has no primkey yet, so we must add instead of update..
+            $mode = "add";
+          }
+          else
+          {
+            $mode = "edit";
+            $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+        }
         }
         else
         {
-          $mode = "edit";
-          $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+          $mode = "add";
         }
-      }
-      else
-      {
-        $mode = "add";
-      }
 
-      $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
-      $forceList = decodeKeyValueSet($this->m_destinationFilter);
+        $output.='<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+        $forceList = decodeKeyValueSet($this->m_destinationFilter);
 
-      $output.= $this->m_destInstance->hideform($mode,$myrecord,$forceList,$this->fieldName()."_AE_");
-      return $output;
+        $output.= $this->m_destInstance->hideform($mode,$myrecord,$forceList,$this->fieldName()."_AE_");
+        return $output;
+      }
+      return "";
     }
 
     /**
@@ -269,60 +279,61 @@
         /* how we handle 1:1 relations normally */
         else
         {
-          $this->createDestination();
-
-          /* we first check if the record doesn't already exist */
-          if ($defaults[$this->fieldName()] != NULL)
-          {
-            /* record has no primarykey yet, so we must add instead of update */
-            $myrecord = $defaults[$this->fieldName()];
-                                    
-            if (empty($myrecord[$this->m_destInstance->primaryKeyField()]))
+          if ($this->createDestination())
+	  {
+            /* we first check if the record doesn't already exist */
+            if ($defaults[$this->fieldName()] != NULL)
             {
-              $mode = "add";
+              /* record has no primarykey yet, so we must add instead of update */
+              $myrecord = $defaults[$this->fieldName()];
+                                    
+              if (empty($myrecord[$this->m_destInstance->primaryKeyField()]))
+              {
+                $mode = "add";
+              }
+              /* record exists! */
+              else
+              {
+                $mode = "edit";
+                $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+              }
             }
-            /* record exists! */
+
+            /* record does not exist */
             else
             {
-              $mode = "edit";
-              $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
+               $mode = "add";
+            }
+  
+            /* mode */
+            $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+
+            /* add fields */
+            $forceList = decodeKeyValueSet($this->m_destinationFilter);
+            $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];                 
+            $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
+
+            /* errors and hidden fields */
+            $error = array_merge($error, $a["error"]);
+            $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+
+            /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+             * same name as the relation we don't display a label
+             */
+            if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            {
+              /* seperator and name */
+              $arr["fields"][] = "-";
+              $arr["fields"][] = "<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>";
+            }  
+            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+            if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            {
+              /* seperator */
+              $arr["fields"][] = "-";
             }
           }
-
-          /* record does not exist */
-          else
-          {
-             $mode = "add";
-          }
-
-          /* mode */
-          $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
-
-          /* add fields */
-          $forceList = decodeKeyValueSet($this->m_destinationFilter);
-          $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];                 
-          $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $this->fieldName()."_AE_");
-
-          /* errors and hidden fields */
-          $error = array_merge($error, $a["error"]);
-          $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
-
-          /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
-           * same name as the relation we don't display a label
-           */
-          if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
-          {
-            /* seperator and name */
-            $arr["fields"][] = "-";
-            $arr["fields"][] = "<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>";
-          }
-          $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-          if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
-          {
-            /* seperator */
-            $arr["fields"][] = "-";
-          }
-        }
+	}
       }
     }
 
@@ -336,8 +347,10 @@
     {
       if ($this->hasFlag(AF_ONETOONE_ERROR))
       {
-        $this->createDestination();
-        $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
+        if ($this->createDestination())
+	{
+          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
+	}
       }
     }
   }

@@ -43,15 +43,14 @@
     {
       if (is_array($rec[$this->fieldName()]))
       {
-        $this->createDestination();
-        $pkfield = $this->m_destInstance->m_primaryKey[0];
-        return $rec[$this->fieldName()][$pkfield];
+        if ($this->createDestination())
+        {
+          $pkfield = $this->m_destInstance->m_primaryKey[0];
+          return $rec[$this->fieldName()][$pkfield];
+	}
       }
-      else
-      {
-        // This never happens, does it?
-        return "";
-      }
+      // This never happens, does it?
+      return "";
     }
 
     /**
@@ -92,8 +91,8 @@
       else
       {
         // if the record is not an array, probably only the value of the primary key was loaded..
-        $this->createDestination();
-        return array($this->m_destInstance->primaryKeyField() => $myrec);
+        if ($this->createDestination())
+          return array($this->m_destInstance->primaryKeyField() => $myrec);
       }
     }
 
@@ -104,25 +103,26 @@
      */
     function display($record)
     {
-      $this->createDestination();
-
-      $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
-
-      $result = $title; // default result is just the title.
-
-      if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
+      if ($this->createDestination())
       {
-        if ($this->m_destInstance->allowed("edit")&&!$this->m_destInstance->hasFlag(NF_NO_EDIT))
-        {
-          $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
-        }
-        else if ($this->m_destInstance->allowed("view")&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
-        {
-          $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
-        }
-      }
+        $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
 
-      return $result;
+        $result = $title; // default result is just the title.
+ 
+        if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
+        {
+          if ($this->m_destInstance->allowed("edit")&&!$this->m_destInstance->hasFlag(NF_NO_EDIT))
+          {
+            $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
+          }
+          else if ($this->m_destInstance->allowed("view")&&!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+          {
+            $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
+          }
+        }
+        return $result;
+      }
+      return "";
     }
 
     /**
@@ -239,11 +239,14 @@
      */
     function hide($record="", $fieldprefix="")
     {
-      $this->createDestination();
-      $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
-                '" value="'.$currentPk.'">';
-      return $result;
+      if ($this->createDestination())
+      {
+        $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
+                  '" value="'.$currentPk.'">';
+        return $result;
+      }
+      return "";
     }
 
 
@@ -256,32 +259,35 @@
      */
     function search($record="", $extended=false)
     {
-      $this->createDestination();
-      if ($this->m_destinationFilter!="")
+      if ($this->createDestination())
       {
-        $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+        if ($this->m_destinationFilter!="")
+        {
+          $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
+        }
+        $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+
+        $result = '<select ';
+        if ($extended)
+        {
+          $result.='multiple size="'.min(5,count($recordset)+1).'"';
+        }
+        $result.='name="atksearch['.$this->fieldName().'][]">';
+
+        $pkfield = $this->m_destInstance->primaryKeyField();
+
+        $result.= '<option value="">'.text('search_all');
+
+        for ($i=0;$i<count($recordset);$i++)
+        {
+          $pk = $recordset[$i][$pkfield];
+          if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
+          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+        }
+        $result.='</select>';
+        return $result;
       }
-      $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-
-      $result = '<select ';
-      if ($extended)
-      {
-        $result.='multiple size="'.min(5,count($recordset)+1).'"';
-      }
-      $result.='name="atksearch['.$this->fieldName().'][]">';
-
-      $pkfield = $this->m_destInstance->primaryKeyField();
-
-      $result.= '<option value="">'.text('search_all');
-
-      for ($i=0;$i<count($recordset);$i++)
-      {
-        $pk = $recordset[$i][$pkfield];
-        if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
-        $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
-      }
-      $result.='</select>';
-      return $result;
+      return "";
     }
 
     /**
@@ -321,9 +327,11 @@
       if ($mode != "update" && $mode != "add")
       {
         if ($tablename!="") $realtablename=$tablename.".";
-        $this->createDestination();
-        $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$realtablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], $this->m_leftjoin);
-        $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1);
+        if ($this->createDestination())
+	{
+          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$realtablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0], $this->m_leftjoin);
+          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1);
+	}
       }
       else
       {
@@ -341,15 +349,17 @@
 
     function equal($recA, $recB)
     {
-      $this->createDestination();
- 
-      return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
-               ==
-               $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()])
-             ||
-              ($this->isEmpty($recA)&&$this->isEmpty($recB)));
-           // we must also check empty values, because empty values need not necessarily
-           // be equal (can be "", NULL or 0.
+      if ($this->createDestination())
+      {
+        return (($recA[$this->fieldName()][$this->m_destInstance->primaryKeyField()]
+                 ==
+                 $recB[$this->fieldName()][$this->m_destInstance->primaryKeyField()])
+               ||
+                ($this->isEmpty($recA)&&$this->isEmpty($recB)));
+             // we must also check empty values, because empty values need not necessarily
+             // be equal (can be "", NULL or 0.
+      }
+      return false;
     }
   }
 

@@ -52,6 +52,15 @@
       if ($this->m_destInstance == "")
       {
         $this->m_destInstance = &newNode($this->m_destination);
+
+        // Validate if destination was created succesfully
+        if (!is_object($this->m_destInstance))
+	{
+	  atkerror("Relation with unknown nodetype '".$this->m_destination."' (in node '".$this->m_owner."')");
+	  $this->m_destInstance = NULL;
+	  return false;
+	}
+	
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
         foreach (array_keys($this->m_destInstance->m_attribList) as $key)
         {
@@ -60,6 +69,7 @@
             $attribute->m_destInstance = &$this->m_ownerInstance;
         }
       }
+      return true;
     }
 
     /**
@@ -84,11 +94,14 @@
      */
     function isEmpty($postvars)
     {
-      $this->createDestination();
-      $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
-      return ($keyval == "" || $keyval == NULL || $keyval === 0);
-      // mindyou, we must check with '===', because if keyval is  a string, the comparison
-      // is always true. (for some reason 'test'==0 is true in php.)
+      if ($this->createDestination())
+      {
+        $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
+        return ($keyval == "" || $keyval == NULL || $keyval === 0);
+        // mindyou, we must check with '===', because if keyval is  a string, the comparison
+        // is always true. (for some reason 'test'==0 is true in php.)
+      }
+      return true; // always empty if error.
     }
 
     function getSearchModes()

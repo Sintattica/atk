@@ -48,30 +48,30 @@
       global $g_layout;
 
       $myrecords = $record[$this->fieldName()];
-      $this->createDestination();
+      $result = text("none"); // default result
 
-      /* record list */
-      if (count($myrecords) > 0)
+      if ($this->createDestination())
       {
-        /* display in list mode */
-        if ($mode == "list")
-          for ($i = 0; $i < count($myrecords);$i++)
-            $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
 
-        /* display in view mode */
-        else
+        /* record list */
+        if (count($myrecords) > 0)
         {
-          if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
-          if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
-            $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
-          else $actions = array();
-          $result = $this->m_destInstance->normalRecordList($myrecords, $actions, RL_NO_SORT|RL_NO_SEARCH, array($this->m_refKey))."<br>";
+          /* display in list mode */
+          if ($mode == "list")
+            for ($i = 0; $i < count($myrecords);$i++)
+              $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
+
+          /* display in view mode */
+          else
+          {
+            if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+              $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
+            else $actions = array();
+            $result = $this->m_destInstance->normalRecordList($myrecords, $actions, RL_NO_SORT|RL_NO_SEARCH, array($this->m_refKey))."<br>";
+          }
         }
       }
-
-      /* no records */
-      else $result = text("none");
-
       return $result;
     }
 
@@ -85,84 +85,87 @@
     {
       global $PHP_SELF;
 
-      $this->createDestination();
+      if ($this->createDestination())
+      {
       
-      // If someone pressed 'save', no records are loaded from the db.
-      // since we don't post all records in this relation like we do with
-      // other attributes, we have to load them at 'edit' time.
-      // we pass 'admin' as mode, since we show a recordlist, and we need
-      // all fields that we also get when we would be on an admin screen.
-      $myrecords = $this->load(NULL, $record, "admin");
+        // If someone pressed 'save', no records are loaded from the db.
+        // since we don't post all records in this relation like we do with
+        // other attributes, we have to load them at 'edit' time.
+        // we pass 'admin' as mode, since we show a recordlist, and we need
+        // all fields that we also get when we would be on an admin screen.
+        $myrecords = $this->load(NULL, $record, "admin");
 
-      $output.=$this->editHeader($record, $myrecords);
-      $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
+        $output.=$this->editHeader($record, $myrecords);
+        $output =$GLOBALS['g_layout']->ret_table_simple(0,true);
 
-      if (count($myrecords)!=0)
-      {
-        $output.="<tr>";
-        $cell="";
-
-        $actions = array();
-        if ($this->m_destinationFilter!="")
+        if (count($myrecords)!=0)
         {
-          $strfilter = '&atkfilter='.rawurlencode($this->m_destinationFilter);
+          $output.="<tr>";
+          $cell="";
+
+          $actions = array();
+          if ($this->m_destinationFilter!="")
+          {
+            $strfilter = '&atkfilter='.rawurlencode($this->m_destinationFilter);
+          }
+          if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
+          {
+          $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
+          }
+
+          if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
+          {
+            $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
+          }
+          if($this->m_destInstance->hasFlag(NF_COPY))
+          {
+            $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
+          }
+
+          $flags = RL_EMBED;
+          $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
+          $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;
+          $cell.=$this->m_destInstance->normalRecordList($myrecords, $actions, $flags, array($this->m_refKey), "entryform");
+
+          $output.=$GLOBALS['g_layout']->ret_td($cell);
+          $output.="</tr>";
         }
-        if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
-        {
-        $actions["edit"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter;
-        }
 
-        if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
+        if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
         {
-          $actions["delete"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter;
-        }
-        if($this->m_destInstance->hasFlag(NF_COPY))
-        {
-          $actions["copy"] = $PHP_SELF.'?atknodetype='.$this->m_destination.'&atkaction=copy&atkselector=[pk]';
-        }
+          //$strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
+          //echo $record["atkprimkey"];
+          // we need to set the filter of the record we are going to add. The referential key must
+          // be set to the value of the current primary key. However, the current primary key
+          // contains the table name and a dot. So we strip that.
+          list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
+          $strfilter = $this->m_refKey.".".$refkeyvalue;
 
-        $flags = RL_EMBED;
-        $flags |= $this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA : 0;
-        $flags |= $this->m_destInstance->hasFlag(NF_MRPA) ? RL_MRPA : 0;
-        $cell.=$this->m_destInstance->normalRecordList($myrecords, $actions, $flags, array($this->m_refKey), "entryform");
-
-        $output.=$GLOBALS['g_layout']->ret_td($cell);
-        $output.="</tr>";
-      }
-
-      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
-      {
-        //$strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
-      //echo $record["atkprimkey"];
-        // we need to set the filter of the record we are going to add. The referential key must
-        // be set to the value of the current primary key. However, the current primary key
-        // contains the table name and a dot. So we strip that.
-        list($tmp,$refkeyvalue) = explode(".",$record["atkprimkey"]);
-        $strfilter = $this->m_refKey.".".$refkeyvalue;
-
-        if ($this->m_destinationFilter!="")
-        {
-          $strfilter.=' AND '.$this->m_destinationFilter;
-        }
-        $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $key = "link_".$this->fieldName()."_add";
-        $label = text($key);
-        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
-        {
-          $key = "link_".getNodeType($this->m_destination)."_add";
+          if ($this->m_destinationFilter!="")
+          {
+            $strfilter.=' AND '.$this->m_destinationFilter;
+          }
+          $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
+          $key = "link_".$this->fieldName()."_add";
           $label = text($key);
           if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
           {
-            $key = text(getNodeType($this->m_destination))." ".strtolower(text("add"));
+            $key = "link_".getNodeType($this->m_destination)."_add";
             $label = text($key);
+            if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+            {
+              $key = text(getNodeType($this->m_destination))." ".strtolower(text("add"));
+              $label = text($key);
           }
+          } 
+          $output.="<tr><td>".href($add_url,$label,SESSION_NESTED,true)."</td></tr>";
         }
-        $output.="<tr><td>".href($add_url,$label,SESSION_NESTED,true)."</td></tr>";
+        $output.="</table>";
+        $output.=$this->editFooter($record, $myrecords);
+        $output.="<br>";
+        return $output;
       }
-      $output.="</table>";
-      $output.=$this->editFooter($record, $myrecords);
-      $output.="<br>";
-      return $output;
+      return "";
     }
     
     /**
@@ -210,34 +213,37 @@
       }
       else
       {
-        $this->createDestination();
-        if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
+        if ($this->createDestination())
+	{
+          if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
 
-        $key = decodeKeyValueSet($record["atkprimkey"]);
-        // we assume singular referential keys, which means, there's only one value in $keyvalue;
-        list($tmp,$keyvalue) = each($key);
+          $key = decodeKeyValueSet($record["atkprimkey"]);
+          // we assume singular referential keys, which means, there's only one value in $keyvalue;
+          list($tmp,$keyvalue) = each($key);
 
-        $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
+          $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$keyvalue."'";
 
-        if ($this->m_destinationFilter!="")
-        {
-          $this->m_destInstance->addFilter($this->m_destinationFilter);
+          if ($this->m_destinationFilter!="")
+          {
+            $this->m_destInstance->addFilter($this->m_destinationFilter);
+          }
+
+          if ($mode=="admin" || $mode=="select" || $mode=="view")
+          {
+            // we only need fields that are displayed in the descriptor.
+            $excludes = $this->m_destInstance->m_listExcludes;
+          }
+          else
+          {
+            // we probably need everything
+            $excludes = "";
+          }
+          $recordset = $this->m_destInstance->selectDb($where,"","",$excludes);
+
+          return $recordset;
         }
-
-        if ($mode=="admin" || $mode=="select" || $mode=="view")
-        {
-          // we only need fields that are displayed in the descriptor.
-          $excludes = $this->m_destInstance->m_listExcludes;
-        }
-        else
-        {
-          // we probably need everything
-          $excludes = "";
-        }
-        $recordset = $this->m_destInstance->selectDb($where,"","",$excludes);
-
-        return $recordset;
       }
+      return NULL;
     }
 
 
@@ -274,15 +280,17 @@
         $onetomanyrecs = $record[$this->fieldName()];
         if (is_array($onetomanyrecs)&&count($onetomanyrecs)>0)
         {
-          $this->createDestination();
-          for ($i=0;$i<count($onetomanyrecs);$i++)
-          {
-            // the referential key of the onetomanyrecs could be wrong, if we
-            // are called for example from a copy function. So just in case,
-            // we reset the correct key.
-            $onetomanyrecs[$i][$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-
-            $this->m_destInstance->addDb($onetomanyrecs[$i]);
+          if ($this->createDestination())
+	  {
+            for ($i=0;$i<count($onetomanyrecs);$i++)
+            {
+              // the referential key of the onetomanyrecs could be wrong, if we
+              // are called for example from a copy function. So just in case,
+              // we reset the correct key.
+              $onetomanyrecs[$i][$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+  
+              $this->m_destInstance->addDb($onetomanyrecs[$i]);
+            }
           }
         }
       }
