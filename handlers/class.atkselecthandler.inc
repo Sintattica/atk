@@ -17,6 +17,7 @@
      */
     function selectPage()
     {
+     atkimport("atk.utils.atkstringparser");
       $node = &$this->m_node;
       // When there's a lot of data, records will be spread across multiple pages.
       if ($node->m_postvars['atklimit']=="") $node->m_postvars['atklimit']=atkconfig("recordsperpage");
@@ -35,7 +36,8 @@
       {
         // There's only one record and the autoselect flag is set, so we
         // automatically go to the target.
-        $target = stringparse(rawurldecode(atkurldecode($node->m_postvars['atktarget'])),$recordset[0], true);
+        $parser = new atkStringParser(rawurldecode(atkurldecode($node->m_postvars['atktarget'])));
+        $target = $parser->parse($recordset[0],true);
         $node->redirect(session_url($target, SESSION_NESTED));
         return "";
       }
