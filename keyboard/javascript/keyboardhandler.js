@@ -1,4 +1,3 @@
-
 // Key definitions.
 KEY_DOWN  = 40;
 KEY_RIGHT = 39;
@@ -24,12 +23,14 @@ for (var iln = 0; iln < len; iln++)
 var isNetscape = (ver.charAt(iln+1).toUpperCase() != "C");
 
 var keyListeners = new Array();
-var focussedListener = -1;
+if (!document.getElementById('<%=getFocusElement%>').focus())
+{
+  var focussedListener = -1;
+}
 
 /**
  * The generic keylistener base class.
  */
-
 function atkGKeyListener()
 {  
 }
@@ -116,7 +117,6 @@ atkFEKeyListener.prototype.focus = function(direction)
 /**
  The keyboard handler
  **/
-
 function kb_addListener(listener)
 {
   listener.id = keyListeners.length; // Let the listener know it's position in the array.
@@ -157,11 +157,6 @@ function kb_handleKey(e)
     
     keyListeners[focussedListener].handleKey(k, ctrl, shift);  
   }
-  else
-  {
-    alert('nobody has the focus');
-  }
-
 }
 
 function kb_focusFirst()
