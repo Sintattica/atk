@@ -14,7 +14,7 @@
   {
    $tabContent = "";
    $atkmenutop = $name;
-   $tabName    = addslashes(text("menu_".$atkmenutop));
+   $tabName    = addslashes(text($atkmenutop, "menu"));
    $items      = 0;
 
    for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
@@ -42,7 +42,7 @@
     {            
      if($g_menu[$atkmenutop][$i]["url"]!="")
      {    
-      $tabContent .= "<a target='main' class='tablink' href='$url'>".text("menu_$name")."</a>";
+      $tabContent .= "<a target='main' class='tablink' href='$url'>".text("$name", "menu")."</a>";
 
       if ($i < count($g_menu[$atkmenutop])-1)
       {
