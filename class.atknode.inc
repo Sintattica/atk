@@ -52,6 +52,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.95  2001/09/05 21:05:31  sandy
+   * - Added new parameter to SpecialRecordList and Export2file for compression.
+   * It can now send gzip/bzip compressed files (if it's support in PHP)
+   *
    * Revision 4.94  2001/09/05 07:29:44  paul
    * added
    * specialrecordlist
@@ -1805,9 +1809,10 @@
      * @param $eof      -- end field 
      * @param $sof      -- start field
      * @param $eol      -- end record/line
-     * @param $type     -- 0=in simple table ; 1= export 
+     * @param $type     -- 0=in simple table ; 1= export
+	 *@param $compression -- Compression technique (bzip / gzip)
   */
-   function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $suppressList="")
+   function specialRecordList($recordset, $sol, $sof, $eof, $eol, $type="0", $compression="",$suppressList="")
     {
       // example      html         csv
 
@@ -1943,16 +1948,17 @@
         $output.=$totalRow;      
       }
 
-  
+		  // To the Screen
       if ($type=="0")
       {
         $output .= "</table>";
         return $output;
       }
+			// To a File
       if ($type=="1")
       {
 
-        $this->export2File($output,"achievo","text/x-csv","csv");
+        $this->export2File($output,"achievo","text/x-csv","csv",$compression);
       }
     }
 
@@ -1962,17 +1968,41 @@
 		*@param $fileName -- bestandsnaam
     *@param  $ext   -- extension of the file
 		*@param  $mime_type  -- the mimetype
+		*@param $compression -- Compression technique (bzip / gzip)
     * used by specialRecordist();
     */
     
-   function export2File($data, $fileName, $mime_type, $ext)
+   function export2File($data, $fileName, $mime_type, $ext, $compression="")
    {
 
-     header('Content-Type: '. $mime_type);
-     header('Content-Disposition: filename="'.$fileName.'.'.$ext.'"');
-     header('Pragma: no-cache');
-     header('Expires: 0');
-    echo $data;
+    header('Content-Type: '. $mime_type);
+    header('Content-Disposition: filename="'.$fileName.'.'.$ext.'"');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+		
+		// 1. as a bzipped file
+	  if($compression=="bzip")
+		{
+		  if (@function_exists('bzcompress')) 
+			{
+        echo bzcompress($data);
+      } 
+		}
+		// 2. as a gzipped file
+		else if ($compression == 'gzip') 
+		{
+      if (@function_exists('gzencode')) 
+			{
+        // without the optional parameter level because it bug
+        echo gzencode($data);
+      }
+    }
+    // 3. on screen
+    else 
+		{
+      echo $data;
+    }
+		
     exit;
    }
     
