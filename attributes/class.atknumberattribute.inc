@@ -27,10 +27,11 @@
      * @param $mode can be either "add" or "update"
      * @return $record
      */    
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {
       if (!is_numeric($record[$this->fieldName()])) 
-        triggerError($record, $this->fieldName(), 'error_notnumeric');
+         triggerError($record, $this->fieldName(), 'error_notnumeric');
+ 
     }
     
     function getSearchModes()

@@ -31,7 +31,7 @@
      * @param $mode can be either "add" or "update"
      * @return $record
      */
-    function validate($record, $mode)
+    function validate(&$record, $mode)
     {     
       global $config_language;
       
