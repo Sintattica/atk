@@ -3403,19 +3403,12 @@
      */
     function callHandler($action)
     {
-      $handler = getNodeHandler(get_class($this), $action);
-
-      // handler object / method
-      if ($handler != NULL && is_array($handler) && method_exists($handler["object"], $handler["method"]))
-      {
-        atkdebug("Calling (external) handler object method for node action: $action");
-        $handler["object"]->$handler["method"]($this, $action);
-      }
+      $handler = getNodeHandler($this->m_type, $action);
 
       // handler function
-      elseif ($handler != NULL && function_exists($handler))
+      if ($handler != NULL && function_exists($handler))
       {
-        atkdebug("Calling (external) handler function for node action: $action");
+        atkdebug("Calling (external) handler function for '".$action."'");
         $handler($this, $action);
       }
 

@@ -204,8 +204,7 @@
    * Returns a registered node action handler.
    * @param $node the name of the node
    * @param $action the node action
-   * @return handler array ("object" => &..., "method" => ...) or
-   *         handler functionname or
+   * @return handler functionname or
    *         NULL if no handler exists for the specified action
    */
   function getNodeHandler($node, $action)
@@ -220,8 +219,7 @@
    * Registers a new node action handler.
    * @param $node the name of the node (* matches all)
    * @param $action the node action
-   * @param $handler handler functionname or
-   *                 handler array ("object" => &..., "method" => ...)
+   * @param $handler handler functionname
    * @return true if there is no known handler
    */
   function registerNodeHandler($node, $action, $handler)
