@@ -63,7 +63,10 @@
 
       /* get nodes */
       require_once($config_atkroot."atk/atknodetools.inc");
-      include_once("config.nodes.inc");
+      if (file_exists("config.nodes.inc"))
+      {
+        include_once("config.nodes.inc");
+      }
       foreach ($g_modules as $modname => $pathname)
       {
         $mod_inst = &getModule($modname);
