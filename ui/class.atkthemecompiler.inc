@@ -116,6 +116,12 @@
       }
     }
     
+    /**
+     * If a theme has attributes with a "scan 'somedir/'" 
+     * it will scan the files in that dir
+     * @param array &$theme the current themedefinition
+     * @param string $from the directory of the current themedefinition
+     */
     function _checkForAutodetect(&$theme, $from)
     {      
       foreach ($theme as $themename => $themedata)
@@ -134,7 +140,14 @@
         }
       }
     }
-    
+
+    /**
+     * Extracts the director(y/ies) we need to scan, checks wether the user set the slashes
+     * Multiple directories are seperated with a ;
+     * @param array &$theme the current themedefinition
+     * @param string $from the directory of the current themedefinition
+     * @return array an array with the directories
+     */
     function _getAutodetectdirectories($themedata)
     {
       $begindirs = strpos($themedata, "'");
@@ -150,6 +163,12 @@
       return $directories;  
     }
     
+    /**
+     * Scans the directory given to it and returns the files it finds
+     * @param string $directory the directory we need to scan
+     * @param string $from the directory of the current themedefinition
+     * @return array an array with the files we found
+     */
     function _scanAutodetectdirectory($directory, $from)
     {
       $handle=opendir(atkconfig("platformroot").$from.$directory);
