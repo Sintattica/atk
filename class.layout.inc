@@ -6,9 +6,7 @@
   * @author Ivo Jansch  (ivo@achievo.org)
   *
   * @version $Revision$
-  *
   * $Id$
-  *
   */
 
   // Global debug and error msg
@@ -580,38 +578,54 @@
       {
         $field = &$data["fields"][$i];
 
-        $form.='<tr>';
+        /* check for seperator */
+        if (!is_array($field) && $field == "-" && $i > 0 && $data["fields"][$i-1] != "-")
+          $form .= '<tr>'.$this->ret_td('<hr>', 'colspan="2" valign="middle"').'</tr>';
 
-        /* Keep track of the number of td's we have to fill with the edit thingee..
-         * This depends on AF_NOLABEL for example.
-         */
-        $tdcount = 1;
+        /* double seperator, ignore */
+        elseif (!is_array($field) && $field == "-");
 
-        /* does the field have a label? */
-        if ($field["label"] !== NULL)
+        /* only HTML */
+        elseif (!is_array($field))
+          $form .= '<tr>'.$this->ret_td($field, 'colspan="2" valign="middle"').'</tr>';
+
+        /* edit field */
+        else
         {
-          if ($field["label"] == "") $form .= $this->ret_td('&nbsp;');
-          elseif ($field["error"]) $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
-          else $form .= $this->ret_td($field["label"].': ','valign="top"');
+          $form.='<tr>';
+
+          /* Keep track of the number of td's we have to fill with the edit thingee..
+           * This depends on AF_NOLABEL for example.
+           */
+          $tdcount = 1;
+
+          /* does the field have a label? */
+          if ($field["label"] !== NULL)
+          {
+            if ($field["label"] == "") $form .= $this->ret_td('&nbsp;');
+            elseif ($field["error"]) $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
+            else $form .= $this->ret_td($field["label"].': ','valign="top"');
+          }
+
+          /* If there's no label, the other td's have to be filled up. */
+          else $tdcount++;
+
+          /* html source */
+          $editsrc = $field["html"];
+
+          /* obligatory indicator */
+          if ($field["obligatory"]) $editsrc.= $reqimg;
+
+          /* tooltip */
+          $ttip = "txt_".$this->m_type."_".$field["name"]."_tooltip";
+          if ($GLOBALS[$ttip] != "")
+          {
+            $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
+          }
+
+          $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
+          $form.='</tr>';
         }
-
-        /* If there's no label, the other td's have to be filled up. */
-        else $tdcount++;
-
-        $editsrc = $field["html"];
-
-        /* obligatory indicator */
-        if ($field["obligatory"]) $editsrc.= $reqimg;
-
-        /* tooltip */
-        $ttip = "txt_".$this->m_type."_".$field["name"]."_tooltip";
-        if ($GLOBALS[$ttip] != "")
-        {
-          $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$GLOBALS[$ttip].'" onClick="javascipt:alert(\''.$GLOBALS[$ttip].'\')" onMouseOver="javascript:window.status=\''.addslashes($GLOBALS[$ttip]).'\';">&nbsp;';
-        }
-
-        $form.=$this->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
-        $form.='</tr>';
       }
 
       $form.='</table>';

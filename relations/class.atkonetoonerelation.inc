@@ -7,7 +7,7 @@
    * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
-   * $Id$   
+   * $Id$
    *
    */
 
@@ -290,10 +290,17 @@
            * same name as the relation we don't display a label
            */
           if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
-            $arr["fields"][] = array("html" => "<hr><b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>");
+          {
+            /* seperator and name */
+            $arr["fields"][] = "-";
+            $arr["fields"][] = "<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>";
+          }
           $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
           if (!$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
-            $arr["fields"][] = array("html" => "<hr>");
+          {
+            /* seperator */
+            $arr["fields"][] = "-";
+          }
         }
       }
     }
