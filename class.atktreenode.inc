@@ -534,10 +534,11 @@
           atkdebug('DeleteChildren('.$this->m_table.'.'.$this->m_parent.'='.$parent.','.$parent.')');
           $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
         }
-        $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
- 
-        $g_db->query($query);
-      }   
+      }
+      
+       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
+       $g_db->query($query);
+         
       
       return $recordset;
       // todo: instead of delete, set the deleted flag.
