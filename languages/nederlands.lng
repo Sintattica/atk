@@ -151,4 +151,7 @@
   $txt_filename = "Bestandsnaam";
   $txt_filecontent = "Inhoud";
   
+  $txt_title_session_expired = "Sessie verlopen";
+  $txt_explain_session_expired = "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw in te loggen.";
+  
 ?>

@@ -23,10 +23,13 @@
   $g_maxlevel = 0;
   
   class atkTreeNode extends atkNode
-  {
-  
+  {  
     var $m_tree = array(); 
     
+    /**
+     * parent Attribute flag (treeview)
+     */
+     var $m_parent;    
   
     /**
      * Constructor
@@ -96,7 +99,7 @@
 
       if (!$this->hasFlag(NF_NO_ADD) && $this->hasFlag(NF_ADD_LINK) && $this->allowed("add"))
       {
-        $addurl = $PHP_SELF."?atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
+        $addurl = $PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".rawurlencode($this->m_parent.".".$this->m_primaryKey[0]."='0'");
         $g_layout->output(href($addurl,text("clickheretoadd_prefix").text($this->m_type).text("clickheretoadd_postfix"),SESSION_NESTED).'<br><br>');
       }
 
@@ -457,17 +460,17 @@
           $res.='<td nowrap> ';
           if (!$this->hasFlag(NF_NO_ADD) && !($this->hasFlag(NF_TREE_NO_ROOT_ADD) && $this->m_tree[$cnt]["level"] == 0))
           {
-            $res.=href($PHP_SELF."?atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
+            $res.=href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=add&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt]["id"]."'"), text("add"), SESSION_NESTED);
           }
           if($cnt>0)
           {
             if (!$this->hasFlag(NF_NO_EDIT))
             {
-              $res.=' '.href($PHP_SELF."?atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
+              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=edit&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("edit"),SESSION_NESTED);
             }
             if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($this->m_tree[$cnt]["level"]!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
             {    
-              $res.=' '.href($PHP_SELF."?atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
+              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=copy&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("copy"));
             }
             if($this->hasFlag(NF_NO_DELETE)||($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$this->m_tree[$cnt]["level"]==1))
             {
@@ -475,7 +478,7 @@
             }
             else
             {
-              $res.=' '.href($PHP_SELF."?atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
+              $res.=' '.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=delete&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt]["id"], text("delete"),SESSION_NESTED);
             }
           }
          $res.= "</td></tr>\n";       

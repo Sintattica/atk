@@ -111,5 +111,8 @@
   $txt_filename_invalid = "This filename is invalid";
   $txt_filename = "Filename";
   $txt_filecontent = "Content";
+  
+  $txt_title_session_expired = "Session expired";
+  $txt_explain_session_expired = "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.";
     
 ?>

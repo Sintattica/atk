@@ -196,13 +196,7 @@
      * or one of its derivatives.
      */
     var $m_attribList = array();
-    var $m_attribIndexList = array();
-
-    /**
-     * The list of relations with other nodes. These should be of the class
-     * atkRelation or one of its derivatives.
-     */
-    var $m_relationList = array();
+    var $m_attribIndexList = array();    
 
     /**
      * The type of node. (The constructor of a derived class passes its type
@@ -226,11 +220,6 @@
      */
 
     var $m_primaryKey = array();
-
-    /*
-     * The last known primary key value for a certain record
-     */
-    //var $m_orgkey = array();
 
     /**
      * The postvars (or getvars) that are passed to a page will be passed
@@ -264,12 +253,7 @@
     var $m_index = "";
 
     /**
-     * parent Attribute flag (treeview)
-     */
-     var $m_parent;
-
-    /**
-                              * Record filters
+     * Record filters
      */
     var $m_filters = array();
     var $m_fuzzyFilters = array();
@@ -735,6 +719,7 @@
         $g_layout->output(session_form(SESSION_DEFAULT));
         $g_layout->output('<input type="hidden" name="'.$fieldprefix.'atkaction" value="admin">');
       }
+      $form.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
       
       $g_layout->output($this->searchForm($record));
       $g_layout->output('<br>&nbsp;<input type="submit" value="'.text('search').'">&nbsp;');
@@ -791,11 +776,12 @@
       // hidden value that is used by the atkSubmit javascript function as a means
       // of posting extra data when submitting.. 
       $form.='<input type="hidden" name="'.$fieldprefix.'atkescape">';
+      $form.='<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
 
       if ($mode=="edit")
       {
         $form.='<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
-        $form.='<input type="hidden" name="'.$fieldprefix.'atkselector" value="'.rawurlencode($pk).'">';        
+        //$form.='<input type="hidden" name="'.$fieldprefix.'atkselector" value="'.rawurlencode($pk).'">';        
 
         // Nodes can define edit_values
         if (method_exists($this,"edit_values"))
@@ -1024,39 +1010,12 @@
       $form.=$g_layout->ret_td($sel);
       $form.='</tr>';
       $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="3"').'</tr>';
-      
-      /*      
-      if (count($searchModes)>1)
-      {      
-        $form.='<tr>';
-        $form.=$g_layout->ret_td(text("search_mode"));                
-        $sel = '<select name="atksearchmode">';
-        for ($i=0;$i<count($searchModes);$i++)
-        {
-          // if supported, we select the 'like' searchmode by default
-          $selected="";
-          if ($this->m_postvars["atksearchmode"]==$searchModes[$i]||($this->m_postvars["atksearchmode"]==""&&$searchModes[$i]=="substring")) $selected="selected";
-          
-          $sel.= '<option value="'.$searchModes[$i].'" '.$selected.'>'.text("search_".$searchModes[$i]);
-        }
-        $sel.= '</select>';
-        $form.=$g_layout->ret_td($sel);
-        $form.='</tr>';
-      }
-      elseif (count($searchModes)==1)
-      {
-        $form.='<input type="hidden" name="atksearchmode" value="'.$searchModes[0].'">';
-      }
-      
-      $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="2"').'</tr>';
-         */             
+            
       foreach (array_keys($this->m_attribList) as $attribname)
       {      
         $p_attrib = &$this->m_attribList[$attribname];
         $attribSearchModes = $p_attrib->getsearchmodes();
         $searchModes = array_intersect($dbSearchModes,$attribSearchModes);
-
-
 
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {        
@@ -1242,7 +1201,7 @@
 
       if ($this->hasFlag(NF_ADD_LINK) && !$this->hasFlag(NF_NO_ADD) && $this->allowed("add"))
       {
-        $addurl = $PHP_SELF.'?atkaction=add';
+        $addurl = $PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=add';
         if ($GLOBALS["txt_link_".getNodeType($this->m_type)."_add"]!="")
         {
           // specific text
@@ -1268,23 +1227,23 @@
 
         if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit"))
         {
-          $actions[]=href($PHP_SELF.'?atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
+          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector=[pk]',text('edit'),SESSION_NESTED);
         }
         else
         {
           // if you may not edit, maybe you are allowed to view..
           if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
           {
-            $actions[]=href($PHP_SELF.'?atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
+            $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=view&atkselector=[pk]',text('view'),SESSION_NESTED);
           }
         }
         if (!$this->hasFlag(NF_NO_DELETE)&&$this->allowed("delete"))
         {
-          $actions[]=href($PHP_SELF.'?atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
+          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=delete&atkselector=[pk]',text('delete'),SESSION_NESTED);
         }
         if($this->hasFlag(NF_COPY)&&$this->allowed("copy"))
         {
-          $actions[]=href($PHP_SELF.'?atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
+          $actions[]=href($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=copy&atkselector=[pk]',text('copy'),SESSION_NESTED);
         }
       }
 
@@ -1371,6 +1330,7 @@
         // thing in internet explorer that it doesn't post the form anymore after you've
         // used it once.
         $searchRow = '<tr><a name="searchform"><form action="'.$PHP_SELF.'?'.SID.'" method="get">';
+        $searchRow.= '<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
         $searchRow.= session_form();
         
         $searchmode = $this->m_postvars["atksearchmode"];        
@@ -1390,11 +1350,7 @@
         $searchBtn = '<input type="submit" value="'.text("search").'">';        
         if (!$this->hasFlag(NF_NO_EXTENDED_SEARCH))
         {
-          $searchBtn.='<br>'.href($PHP_SELF."?atkaction=search&atksearchmode=".$searchmode,"(".text("search_extended").")",SESSION_NESTED);
-          //$searchBtn.='<form action="'.$PHP_SELF.'?'.SID.'" method="get">'.
-            //          session_form(SESSION_NESTED).
-              //        '<input type="hidden" name="atkaction" value="search">'.
-                //      '<input type="submit" value="'.text("ext").'"></form>';
+          $searchBtn.='<br>'.href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=search&atksearchmode=".$searchmode,"(".text("search_extended").")",SESSION_NESTED);          
         }
         $actioncol = $g_layout->ret_td_datatitle($searchBtn);       
 
@@ -2047,6 +2003,7 @@
       $g_layout->output('<form action="'.$PHP_SELF.'?"'.SID.' method="post">');
       $g_layout->output(session_form());
       $g_layout->output('<input type="hidden" name="atkaction" value="delete">');
+      $g_layout->output('<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">');
       $g_layout->output('<input type="hidden" name="atkselector" value="'.$atkselector.'">');
       
       $g_layout->table_simple();
@@ -2254,7 +2211,7 @@
           $location="";
           if ($this->hasFlag(NF_EDITAFTERADD))              
           {          
-            $location = session_url($PHP_SELF.'?atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
+            $location = session_url($PHP_SELF.'?atknodetype='.$this->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->primaryKey($record)),SESSION_NESTED);
           }         
           $this->redirect($location);
         }
@@ -3125,12 +3082,20 @@
       return $this->m_securityMap[$action];
     }
     
+    /**
+     * Return full atknodetype of this node (module.nodetype or, if no module is set, just nodetype)
+     */
+    function atknodetype()
+    {
+      return (empty($this->m_module) ? "" : $this->m_module.".").$this->m_type;
+    }
+    
     function allowed($action)
     {
       global $g_securityManager;
       if (empty($this->m_securityAlias))
       {
-        $alias = (empty($this->m_module) ? "" : $this->m_module.".").$this->m_type;
+        $alias = $this->atknodetype();
       }
       else
       {
@@ -3161,53 +3126,13 @@
         $this->m_unsecuredActions[] = $action;
       }      
     }
-    
-    /**
-     * Register a new sticky var
-     * @param $varname can be a string, or an array of strings.
-     * @param $global global or local stickyvar
-     */
-    /*function addStickyVar($varname,$global=true)
-    {
-      if (is_array($varname))
-      {
-        $this->m_stickyVars = atk_array_merge($this->m_stickyVars,$varname);
-      }
-      else
-      {
-        $this->m_stickyVars[] = $varname;
-      }   
-    }*/
-  
-   /**
-    * This function gets the value of a sticky var. There are several scopes
-    * in which the value could have been defined. They are searched in the 
-    * order $this->m_postvars, $HTTP_GET_VARS, $HTTP_POST_VARS, $GLOBALS.
-    */
-/*    function getStickyValue($key)
-    {
-      global $HTTP_GET_VARS, $HTTP_POST_VARS;
-      if ($this->m_postvars[$key]!="") return $this->m_postvars[$key];
-      if ($HTTP_GET_VARS[$key]!="") return $HTTP_GET_VARS[$key];
-      if ($HTTP_POST_VARS[$key]!="") return $HTTP_POST_VARS[$key];
-      if ($GLOBALS[$key]!="") return $GLOBALS[$key];
-      return "";
-    }      */
-    
+      
     /**
      * Puts all sticky vars in hidden form elements.
+     * DEPRECATED. 
      */     
     function stickyForm()
-    {    /*  
-      for ($i=0;$i<count($this->m_stickyVars);$i++)
-      {    
-        $value = $this->m_postvars[$this->m_stickyVars[$i]];
-        if ($value!="")
-        {        
-          $form.="\n".'<input type="hidden" name="'.$this->m_stickyVars[$i].'" value="'.$value.'">';                  
-        }
-      }
-      return $form;*/
+    { 
     }
     
     /**
@@ -3220,7 +3145,7 @@
       $namespace = $g_sessionManager->m_namespace;           
       $res = ($this->m_action == "update"
               && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
-              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == (empty($this->m_module) ? "" : $this->m_module.".").($this->m_type));
+              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == $this->atknodetype());
       
       return $res;
     }
@@ -3270,9 +3195,7 @@
        return atkPopup('help.php','node='.$node,$name,650,650,'yes','no');
       }
     }
-    
-    
-
+      
   }  
 
 ?>
