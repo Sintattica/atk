@@ -115,6 +115,10 @@
 
     function dbFieldType()
     {
+      if ($this->m_dbfieldtype=="")
+      {
+        return "text";
+      }
       return $this->m_dbfieldtype;
     }
     
