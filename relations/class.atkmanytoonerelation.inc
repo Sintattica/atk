@@ -346,24 +346,7 @@
           else 
           // no record yet, empty value.
           { 
-            // we check the initials first 
-            $initials = $this->m_ownerInstance->initial_values();
-            if ($initials[$this->fieldName()])
-            {
-              // Check if the initial is on the destination primary key and use it to get a record
-              $selector = $this->m_destInstance->validateFilter($this->m_destInstance->m_primaryKey."='".$initials[$this->fieldName()]."'");
-              if ($selector)
-              { 
-                $destrecord = $this->m_destInstance->selectDb($selector);
-                $destrecord = $destrecord[0];
-                $record[$this->fieldName()] = $destrecord; // put destrecord inside original
-              }
-            }        
-            else 
-            {
-              $destrecord = array();
-            }
-          
+            $destrecord = array();          
           }
         
           if (count($destrecord))
