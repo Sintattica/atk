@@ -35,6 +35,9 @@
     var $m_linkfield;
     var $m_linkuserfield = "username";
     var $m_keylength;
+    var $m_searching = false;
+    var $m_keylookup = array();
+    var $m_records = array();
 
     /**
      * Creates an atkSecureRelation, 
@@ -57,13 +60,13 @@
      */
     function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $encryption, $flags=0)
     {
+      $this->atkOneToOneRelation($name, $destination, $refKey, $flags);
+      $this->createDestination();
       $this->m_crypt = &atkEncryption::getEncryption($encryption);
-    
+            
       $this->m_linktable = $linktable;
       $this->m_linkfield = $linkfield;
       $this->m_keylength = $keylength;
-
-      $this->atkOneToOneRelation($name, $destination, $refKey, $flags);
     }
   
     /**
@@ -76,12 +79,10 @@
      */
     function getLinkPassword($linktable,$linkfield,$encryption="")
     {
-      //return "test";
-
       global $g_db;
       
-      $linktable = "personData";
-      $linkfield = "linkpass";
+      if (!$linktable) $linktable = $this->m_linktable;
+      if (!$linkfield) $linkfield = $this->m_linkfield;
       
       $user = getUser();
       $username = $user['name'];
@@ -107,7 +108,7 @@
         $rec = $g_db->getrows($query);
         if(count($rec) < 1)
           return $linkpass;
-
+          
         $encryptedpass = array_pop($rec);
 
         $linkpass = $encryptedpass['pass'];
@@ -124,14 +125,29 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
-      if(is_array($rec))
+      $records = $this->m_records;
+      
+      if (count($records)==0 && !$this->m_searching)
       {
-        $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
-        $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
-        $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
+        if(is_array($rec))
+        {
+          $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
+          $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+          $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
+        }
+  
+        return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
       }
-
-      return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+      else // lookup matching
+      {
+        $where = array();
+        
+        foreach (array_keys($this->m_keylookup) as $decryptedlink)
+        {                     
+          $where[] = $decryptedlink;
+        }
+        $query->addCondition($this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()." IN ('".implode("','", $where)."')");
+      }
     }
   
     /**
@@ -141,17 +157,52 @@
      * For more documentation see the atkOneToOneRelation
      */
     function load($db, $record, $mode)
-    {
-      global $g_db;
-
-      $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE id=".$record['id'];
-      $result = $g_db->getrows($query);
-      $link = $result[0][$this->fieldName()];
-
-      $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
-      $record[$this->fieldName()] = $cryptedlink;
-
-      return parent::load($db, $record, $mode);
+    {          
+      if ($this->m_searching)
+      {
+        if (count($this->m_records)==0) // lookup not yet created, first loading stage (preload)
+        {
+          // perform query on destination node to retrieve all records.
+          if ($this->createDestination())
+          {
+            $this->m_destInstance->m_postvars["atksearch"] = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
+            $records = $this->m_destInstance->selectDb();
+            
+            // create lookup table for easy reference.            
+            $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);           
+            for ($i=0, $_i=count($records); $i<$_i; $i++)
+            {
+              $link = $records[$i][$this->m_refKey];                              
+              $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
+              
+              if (!$decryptedlink) atkdebug("Unable to decrypt: $link");
+              else
+              {
+                $this->m_keylookup[$decryptedlink] = $i;
+                $this->m_records[] = $records[$i];     
+              }
+            }
+            return $this->m_records;
+          }
+        }
+        else // lookup table present, postload stage
+        {
+          return $this->m_records[$this->m_keylookup[$record[$this->m_ownerInstance->primaryKeyField()]]];
+        }
+      }
+      else 
+      {
+        global $g_db;
+  
+        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE $this->m_ownerInstance->primaryKeyField()=".$record[$this->m_ownerInstance->primaryKeyField()];
+        $result = $g_db->getrows($query);
+        $link = $result[0][$this->fieldName()];
+  
+        $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
+        $record[$this->fieldName()] = $cryptedlink;
+  
+        return parent::load($db, $record, $mode); 
+      }
     }
   
     /**
@@ -165,6 +216,11 @@
       $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable,$this->m_linkfield),$pass);
       $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id' LIMIT 1";
       $g_db->query($query);
+    }
+    
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      //dummy implementation, we handle our own search in the destination node.
     }
     
     /**
@@ -196,6 +252,19 @@
       $condition .= ") ";
 
       return $condition;
+    }
+    
+    function loadType($mode, $searching=false)
+    {
+      if ($searching) 
+      {        
+        $this->m_searching = true;
+        return PRELOAD|ADDTOQUERY|POSTLOAD;
+      }
+      else 
+      {
+        return parent::loadType($mode, $searching);
+      }
     }
   }
 ?>

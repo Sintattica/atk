@@ -2332,6 +2332,7 @@
      */
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
     {
+      $searching=false;
       $selectlist = array();
       $loadlist = array();
 
@@ -2368,6 +2369,7 @@
         $searchArray = $this->m_postvars['atksearch'];
         if (is_array($searchArray) && count($searchArray)>0)
         {
+          $searching = true;
           $searchmode = $this->m_postvars["atksearchmode"];
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
           while (list($key,$value) = each($searchArray))
@@ -2414,16 +2416,38 @@
               )
            )
         {
-          $loadmode = $p_attrib->loadType($mode);
+          $loadmode = $p_attrib->loadType($mode, $searching);
           if (hasFlag($loadmode, POSTLOAD))
           {
-            $loadlist[]=$attribname;
+            $postloadlist[]=$attribname;
+          }
+          if (hasFlag($loadmode, PRELOAD))
+          {
+            $preloadlist[]=$attribname;
           }
           if (hasFlag($loadmode, ADDTOQUERY))
           {
-            $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+            $querylist[]=$attribname;            
           }
         }
+      }
+      
+      // First load PRELOAD attribs
+      for ($j = 0, $_j = count($preloadlist); $j < $_j; $j++)
+      {
+        $p_attrib = &$this->m_attribList[$preloadlist[$j]];
+
+        $preloadedrecs = $p_attrib->load($this->m_db, $recordset[$i], $mode);
+
+        // todo, dirty hack, if preload returns x records, we treat them as 1 record now.
+        $recordset[0][$preloadlist[$j]] = $preloadedrecs;
+      }
+      
+      // Add attributes to query
+      for ($i=0, $_i=count($querylist); $i<$_i; $i++)
+      {
+        $p_attrib = &$this->m_attribList[$querylist[$i]];
+        $p_attrib->addToQuery($query,$this->m_table,"",$recordset[0],1,$mode); // start at level 1
       }
 
       if ($order!="") $query->addOrderBy($order);
@@ -2438,7 +2462,7 @@
       else if (!empty($limit))
       {
         $query->setLimit(0, $limit);
-      }
+      }                 
 
       $querystring = $query->buildSelect();
 
@@ -2448,7 +2472,6 @@
       {
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
-//      $this->setOrgKeyValue($dbrecords[0]);
 
       $recordset = array();
       for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
@@ -2460,18 +2483,11 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-
-          if (is_object($p_attrib))
+          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
           {
-            if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
-            {
-              $therecord[$attribname] = $recordcopy[$attribname];
-            } 
-            else
-            {
-              $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
-            }
-          }
+            $therecord[$attribname] = $recordcopy[$attribname];
+          } else
+          $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
         }
 
         // We now have a semi-complete record. We can now calculate it's primarykey, assuming
@@ -2484,14 +2500,14 @@
         $recordset[] = $therecord;
       }
 
-      // also load special storage attributes.
+      // also load special storage attributes. (POST)
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
-        for ($j = 0, $_j = count($loadlist); $j < $_j; $j++)
+        for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
         {
-          $p_attrib = &$this->m_attribList[$loadlist[$j]];
+          $p_attrib = &$this->m_attribList[$postloadlist[$j]];
 
-          $recordset[$i][$loadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
+          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
         }
       }
 

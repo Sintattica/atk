@@ -1131,7 +1131,7 @@
      *             ADDTOQUERY - addtoquery() must be called, so the attribute 
      *                          can nest itself in the master query.
      */
-    function loadType($mode)
+    function loadType($mode, $searching=false)
     {
       // Default backwardscompatible behaviour:
       if (method_exists($this,"load"))      
