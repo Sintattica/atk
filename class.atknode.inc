@@ -142,12 +142,7 @@
   if (file_exists($config_atkroot."languages/".$config_languagefile))
   {
     include_once($config_atkroot."languages/".$config_languagefile);
-  }
-  // Application specific language file
-  if (file_exists("languages/".$config_languagefile))
-  {
-    include_once("languages/".$config_languagefile);
-  }
+  }  
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");
@@ -176,7 +171,6 @@
    $g_stickyurl = array();
 
   /************* MODULE HANDLING *************/
-
   foreach ($g_modules as $modname => $modpath)
   {
     // Module specific language file
@@ -185,6 +179,7 @@
     {
       include_once($filename);
     }
+
     $filename = "$modpath/module.inc";
 
     // The module itself
@@ -209,12 +204,8 @@
     }
 
   }
-
   /*******************************************/
-
-  // At some places we need a random number generator, so we seed the generator here.
-  srand ((double) microtime() * 1000000);
-
+  
   // The atk node class
   class atkNode
   {
