@@ -1709,6 +1709,7 @@
         if (!$p_attrib->store($this->m_db, $record, $mode))
         {
           // something went wrong.
+          atkdebug("Store aborted. Attribute '".$storelist[$i]."' reported an error.");
           return false;
         }
       }
@@ -1785,6 +1786,10 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         if (
+             (
+               is_object($p_attrib)
+             )
+             &&             
              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
@@ -1922,14 +1927,18 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         if (
-             (
+              ( 
+                is_object($p_attrib)
+              ) 
+              && 
+              (
                 ((is_array($includeList) && in_array($attribname,$includeList))
                 || (is_array($excludeList) && !in_array($attribname,$excludeList)))
                 || (!is_array($excludeList) && !is_array($includeList))
                 || ($p_attrib->hasFlag(AF_FORCE_LOAD))
               )
            )
-        {
+        {          
           $loadmode = $p_attrib->loadType($mode);        
           if (hasFlag($loadmode, POSTLOAD))
           {
@@ -2101,11 +2110,18 @@
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
       }            
 
-      if (!$query->executeInsert()) return false;
+      if (!$query->executeInsert())
+      {
+        atkdebug("executeInsert failed..");
+        return false;
+      }
       
-      if (!$this->storeAttributes($storelist["post"], $record, $mode)) return false;
+      if (!$this->storeAttributes($storelist["post"], $record, $mode))
+      {
+        atkdebug("storeAttributes failed..");
+        return false;
+      }
       
-
       // new primary key
       $record["atkprimkey"] = $this->primaryKey($record);
         
@@ -2117,16 +2133,19 @@
       }
 
       // Now we call a postAdd function, that can be used to do some processing after the record
-      // has been saved.
+      // has been saved.      
       if ($exectrigger) 
       {
-        $return = $this->postAdd($record, $mode);
+        $return = $this->postAdd($record, $mode);       
         if(!isSet($return))
         {
           atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
           $return = true;
         }
-
+        if (!$return)
+        {
+          atkdebug("postAdd failed..");
+        }        
         return $return;
 
       }
