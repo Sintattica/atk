@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.23  2001/10/08 11:40:11  ivo
+   * Added 2 new functions to session API: sessionLoad and sessionStore.
+   *
    * Revision 1.22  2001/07/25 10:33:45  maurice
    * Created a workaround for a bug in php4.0.4
    *
@@ -415,5 +418,17 @@
    
     $g_sessionManager->session_read(&$ATK_VARS);
   }  
-
+  
+  function sessionStore($var, $value)
+  {
+    global $g_sessionManager;
+    $g_sessionManager->globalVar($var, $value);      
+  }
+  
+  function sessionLoad($var)
+  {
+    global $g_sessionManager;
+    return $g_sessionManager->getValue($var);      
+  }
+  
 ?>
