@@ -19,8 +19,9 @@
    * Includes   
    */  
   require_once(atkconfig("atkroot")."atk/atktools.inc");
-  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
+  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");  
   atkimport("atk.test.atktestreporter");  
+  atkimport("atk.test.atkattributetestcase");  
   
   /**
    * atkTestCaseCollector is a visitor that can be passed to an 
