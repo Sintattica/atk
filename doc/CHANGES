@@ -12,6 +12,7 @@ Changes in ATK 5.0.3
 * Fixed remaining bugs with tabs (bug #301) [Boy]
 * Improvements to atkLanguage [Boy]
 + Autodetecting of themefiles, no longer have to fill them in manually [Boy]
++ Pages by atkPage now have HTML4.01 Transitional DTD and ISO-8859-1 charset [Boy]
 
 Changes in ATK 5.0.2
 --------------------
