@@ -55,9 +55,9 @@
      * @param int $flags          Attribute flags that influence this 
      *                            attributes' behavior.     
      */
-    function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $flags=0)
+    function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $encryption, $flags=0)
     {
-      $this->m_crypt = &atkEncryption::getEncryption("base64");
+      $this->m_crypt = &atkEncryption::getEncryption($encryption);
     
       $this->m_linktable = $linktable;
       $this->m_linkfield = $linkfield;
@@ -68,8 +68,10 @@
   
     /**
      * Gets the password for the link
-     * @param string $linktable the table where we link to (?)
-     * @param string $linkfield the field where we link to (?)
+     * for more security the administrator gets a random password. You have to capture in your application that
+     * the administrator is only able to insert the first record in this relation and make also a useracount with it.
+     * @param string $linktable the table where we find the linkpass
+     * @param string $linkfield the field where we find the encrypted linkpass
      * @return string           the password for the link
      */
     function getLinkPassword($linktable,$linkfield)
@@ -81,7 +83,9 @@
   
       if($username == "administrator")
       {
-        $linkpass = atkconfig("administratorpassword");
+        //if the administrator asks for a  password we generate one
+        //because the administrator only makes the first person
+        return atkEncryption::getRandomString(6);
       }
       else
       {
@@ -109,7 +113,7 @@
      * For more documentation see the atkOneToOneRelation
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
-    {      
+    {
       if(is_array($rec))
       {
         $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
@@ -128,6 +132,8 @@
      */
     function load($db, $record, $mode)
     {
+      atkdebug("<H1>atkSecureRelation::load($db, $record, $mode)</H1>");
+      atk_var_dump($record, "Record for load");
       $link = $record[$this->fieldName()];
       $cryptedlink = $this->m_crypt->decrypt($link,$this->getLinkPassword($this->m_linktable,$this->m_linkfield));
       $record[$this->fieldName()] = $cryptedlink;
@@ -148,5 +154,6 @@
       $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '$linkpass' WHERE $this->m_linkuserfield = '$user' LIMIT 1";
       $g_db->query($query);
     }
+    
   }
 ?>
