@@ -7,6 +7,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/06/24 15:00:52  sandy
+   * - Fixed the atkbool search function, it will now show a listbox
+   * with 3 choices (search all, yes, no).
+   *
    * Revision 4.1  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -63,10 +67,34 @@
      */
     function search($record="")
     {
+      var_dump($record);
       $checked = "";
-      if ($record[$this->fieldName()]>0) $checked="checked";
-      return '<input type="checkbox" name="search['.$this->formName().']" value="1" '.$checked.'>';
-    }    
+      if ($record[$this->fieldName()]>0) $checked="selected";
+      $result = '<select name="atksearch['.$this->formName().']">';
+      $result.= '<option value="">'.text('search_all');
+      $result.= '<option value="0" ';
+      if($record[$this->fieldName()]==0 && !empty($record)) $result.="selected";
+      $result.= '>'.text('no');
+      $result.= '<option value="1" ';
+      if($record[$this->fieldName()]==1) $result.="selected";
+      $result.= '>'.text('yes');
+      $result.='</select>';
+      return $result;
+      //return '<input type="checkbox" name="atksearch['.$this->formName().']" value="1" '.$checked.'>';
+    }   
+    
+   /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition($table, $value)
+    {
+      atkdebug("SEARCH - $table - $value");
+      return $table.".".$this->fieldName()." = '$value'";
+    }     
+    
 
     /**
      * Returns a displayable string for this value.
