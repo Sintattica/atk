@@ -253,7 +253,7 @@
             // we probably need everything
             $excludes = "";
           }
-          $recordset = $this->m_destInstance->selectDb($where,"","",$excludes);
+          $recordset = $this->m_destInstance->selectDb($where,"","",$excludes,"",$mode);
 
           return $recordset;
         }
@@ -269,11 +269,12 @@
     {
       $classname = $this->m_destination;
       $rel = &getNode($classname);
-      atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
+      //atkdebug("O2M DELETE voor $classname: ".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
       
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
-         $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$record[$this->m_ownerInstance->m_primaryKey[$i]]."'";
+         $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]]; 
+         $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
       }         
       $where = implode(" AND ", $whereelems);
 
