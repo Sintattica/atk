@@ -259,6 +259,19 @@
         }
         $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
+        $id = $fieldprefix.$this->fieldName();
+        $autolink = "";
+        if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
+        {
+          $page = &atkPage::getInstance();
+          $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
+          $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
+
+          $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
+          $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+        }          
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
+
         // autoselect if there is only one record (if obligatory is not set,
         // we don't autoselect, since user may wist to select 'none' instead
         // of the 1 record.
@@ -269,18 +282,6 @@
         }
         else
         {
-          $id = $fieldprefix.$this->fieldName();
-          $autolink = "";
-          if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
-          {
-            $page = &atkPage::getInstance();
-            $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
-            $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
-
-            $autolink = "<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$fieldprefix.$this->fieldName().".value))'>".text('edit')."</a>";
-            $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
-          }          
-          $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);  
           $result.= '<select id="'.$id.'" name="'.$id.'">';
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
@@ -298,8 +299,8 @@
           }
           $result.='</select>';
 
-          $result.=$autolink;
         }
+        $result.=$autolink;
       }
       else
       {
