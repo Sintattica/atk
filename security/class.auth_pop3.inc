@@ -8,6 +8,9 @@
  * <b>Changes</b>:
  * $Id$
  * $Log$
+ * Revision 4.4  2001/07/09 15:50:57  ivo
+ * Forgot a space in the log.
+ *
  * Revision 4.3  2001/07/09 15:40:46  ivo
  * Authentication classes can now indicate whether they support md5 encoding
  * of passwords.
@@ -41,7 +44,7 @@ class auth_pop3 extends auth_interface
     $link_id = fsockopen(atkconfig("auth_mail_server"), $port, $errno, $errstr, 30);
     if (!$link_id) 
     {
-      $g_securityManager->log(1,"Error connecting to server".atkconfig("auth_mail_server").": $errstr");
+      $g_securityManager->log(1,"Error connecting to server ".atkconfig("auth_mail_server").": $errstr");
       atkdebug("Error connecting to server ".atkconfig("auth_mail_server").": $errstr");
       return false;
     }
