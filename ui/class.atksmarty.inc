@@ -64,6 +64,11 @@
       return $s_smarty;
     }
         
+    function addPluginDir($path)
+    {
+      $smarty = &atkSmarty::getInstance();
+      $smarty->plugins_dir[] = $path; 
+    }
   }
 
 ?>
