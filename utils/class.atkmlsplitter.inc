@@ -1,13 +1,33 @@
 <?php
 
   /**
-  * @author Martin Roest <martin@ibuildings.nl>
-  *
-  * This class is responsable for managing multilanguage nodes wich have
-  * multiple records per occurance.
-  * It updates/saves or merges multiple records
-  */
-
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * This class is responsible for managing multilanguage nodes which have
+   * multiple records per occurance.
+   * It updates/saves or merges multiple records.
+   * This is used by multilingual atkNodes. It should generally not be 
+   * necessary to use this class directly.
+   *
+   * @author Martin Roest <martin@ibuildings.nl>
+   * @package atk
+   * @subpackage utils
+   *
+   */  
   class atkmlsplitter
   {
     function getLanguages(&$node)

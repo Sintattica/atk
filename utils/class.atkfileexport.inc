@@ -1,22 +1,50 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * File download exporter.
+   *
+   * Can write any string to a file and send it as download to the browser.
+   *
+   * @author Sandy Pleyte <sandy@achievo.org>
+   * @package atk
+   * @subpackage handlers
+   *
+   */
+
   class atkFileExport
   {
    /**
-    * export2file   exporteert data naar een file
-    *@param  $data  -- the content
-    *@param $fileName -- bestandsnaam
-    *@param  $ext   -- extension of the file
-    *@param  $type  -- the type (cvs / excel)
-    *@param $compression -- Compression technique (bzip / gzip)
-    * used by specialRecordist();
+    * Export data to a download file.
+    *
     * BROWSER BUG:
     * IE has problems with the use of attachment; needs atachment (someone at MS can't spell) or none.
     * however ns under version 6 accepts this also.
     * NS 6+ has problems with the absense of attachment; and the misspelling of attachment;
     * at present ie 5 on mac gives wrong filename and NS 6+ gives wrong filename.
+    *
+    * @todo Currently supports only csv/excel mimetypes.
+    * @param String $data  The content
+    * @param String $fileName Filename for the download
+    * @param String $ext Extension of the file
+    * @param String $type The type (csv / excel)
+    * @param String $compression Compression method (bzip / gzip)
     */
-
    function export($data, $fileName, $type, $ext, $compression="")
    {
     if($compression=="bzip")

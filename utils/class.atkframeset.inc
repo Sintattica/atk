@@ -1,18 +1,19 @@
 <?php
-
   /**
-   * Frame and frameset utilities.
-   * 
-   * @author Ivo Jansch <ivo@achievo.org>
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
-   *
    * $Id$
-   *
-   *
-   * @copyright (c) Ivo Jansch 2004
-   * Licensing is governed by the terms described in the LICENSE file 
-   * in the doc/ directory of the ATK distribution. 
-   */
+   */     
 
   /** 
    * Defines used by the frameset utilities.
@@ -25,8 +26,13 @@
   define("FRAME_SCROLL_AUTO", "auto");
 
   /**
-   * Class that represents a frameset.
-   */
+   * Class for generating framesets.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   *
+   */  
   class atkFrameSet extends atkAbstractFrame
   {  
     var $m_border;
@@ -66,6 +72,7 @@
      * @param boolean $embedded If set to true, the frameset is treated as the
      *                          outmost frameset, causing it to render the
      *                          noframes tag for frameless browsers.
+     * @return String HTML fragment containing a frameset.
      */
     function render($embedded=false)
     {
@@ -85,6 +92,7 @@
     /**
      * Returns a dimension specifier ("70,10,*") based on the dimensions of the
      * framesets' childs.
+     * @return String
      */
     function getDimensions()
     {
@@ -99,8 +107,12 @@
   }
   
   /**
-   * Class that represents a frame   
-   */
+   * Class that represents a single frame.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   */  
   class atkFrame extends atkAbstractFrame
   {
     var $m_name;
@@ -138,6 +150,7 @@
     
     /**
      * Render the frame to html     
+     * @return String
      */
     function render()
     {
@@ -151,11 +164,16 @@
    * Null frame to optionally hook the topmost frame into. This frame
    * has no html output, just the output of its child. 
    * The rootframeset should contain only one child frameset.
-   */
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   */  
   class atkRootFrameset extends atkAbstractFrame 
   {  
     /**
      * Render the root frameset.
+     * @return String
      */     
     function render()
     {
@@ -170,7 +188,11 @@
   /**
    * Abstract base class for frames and framesets. It defines common 
    * functionality that frames and framesets share.
-   */
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   */   
   class atkAbstractFrame
   {
     var $m_childs = array();
@@ -186,7 +208,7 @@
     
     /** 
      * Add a child to the frameset.
-     * @param atkAbstractFrame $abstractframe The frame or frameset to add.
+     * @param atkAbstractFrame $abstractframe The frame or frameset to add.     
      */
     function addChild(&$abstractframe)
     {
@@ -195,11 +217,13 @@
     
     /**
      * Abstract render method. Derived classes should implement this method.
+     * @return String
      */
     function render($embedded=false) { return ""; } 
     
     /**
      * Return the dimension of the frame/frameset, within its parent frameset.
+     * @return String
      */
     function getDimension()
     {

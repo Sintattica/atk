@@ -1,5 +1,33 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * This class creates record navigation for nodes. 
+   *
+   * It can generate paging links, previous/next links and alphabetical
+   * indexes.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   *
+   */
   class atkNavigator
   {
     function buildNavigation(&$node, $mode="", $navurls="")

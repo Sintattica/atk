@@ -1,5 +1,29 @@
 <?php
-
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage ui
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Utility class for rendering boxes, lists, tabs or other templates. 
+   *
+   * @todo Document methods.
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage ui
+   *
+   */
   class atkUI
   {
     var $m_smarty = NULL;  
@@ -106,23 +130,23 @@
     }        
     
     /**
-      * This function returns a complete themed path for a given stylesheet.
-      * This is a convenience method, which calls the stylePath method on
-      * the theme instance. 
-      *
-      * @param String $style The filename (without path) of the stylesheet for
-      *                      which you want to complete the path.
-      */
+     * This function returns a complete themed path for a given stylesheet.
+     * This is a convenience method, which calls the stylePath method on
+     * the theme instance. 
+     *
+     * @param String $style The filename (without path) of the stylesheet for
+     *                      which you want to complete the path.
+     */
     function stylePath($style)
     {
       return $this->m_theme->stylePath($style);
     }
     
     /**
-      * This function returns a suitable title text for an action.
-      * Example: echo $g_layout->title("employee", "edit"); might return:
-      *          'Edit an existing employee'
-      */
+     * This function returns a suitable title text for an action.
+     * Example: echo $g_layout->title("employee", "edit"); might return:
+     *          'Edit an existing employee'
+     */
     function title($module, $nodetype, $action)
     {
       // first look for specific text.
