@@ -425,7 +425,12 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {    
-      if (!$extended) return "&nbsp;"; // Only search on dates in extended mode.     
+      if (!$extended) 
+      {
+        // plain text search
+        return parent::search($record, $extended, $fieldprefix);
+      }
+
       // Set default values to null.
       $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
 
@@ -447,8 +452,9 @@
       
       $fromval = $this->value2db(array($this->fieldName()=>$value["from"]));
       $toval   = $this->value2db(array($this->fieldName()=>$value["to"]));            
-                  
+
       $field = $g_db->func_datetochar($table.".".$this->fieldName());
+      
       if ($fromval!="NULL" && $toval!="NULL")
       {     
         if ($fromval>$toval)
@@ -475,6 +481,11 @@
                    $query->lessthanequalCondition(
                       $field,
                       $toval);
+      }
+      else 
+      {
+        // plain text search condition
+        $searchcondition = $query->exactCondition($field, $value);
       }
       return $searchcondition;
     }

@@ -194,9 +194,9 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function search($record="")
+    function search($record="", $extended=false, $fieldprefix="")
     {
-     return "";
+     return parent::search($record, $extended, $fieldprefix);
     }
 
      function getSearchModes()
@@ -269,6 +269,23 @@
         $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$field.'">';
 
       return $result;
+    }
+    
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+      // When we get $value as a substring, we autocomplete the time
+      // So 09 becomes 09:00:00 and 11:15 becomes 11:15:00
+      if (!is_array($value))
+      {
+        $retval = array("hours"=>substr($value, 0, 2),
+                   "minutes"=>substr($value, 3, 2),
+                   "seconds"=>substr($value, 6, 2));
+        
+        if (!$retval["seconds"]) $retval["seconds"]="00";
+        if (!$retval["minutes"]) $retval["minutes"]="00";
+        $value = implode(":",$retval);
+      }
+      return parent::getSearchCondition($query, $table, $value, $searchmode);
     }
   }
 ?>
