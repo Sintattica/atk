@@ -163,7 +163,7 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {  
-      if (!is_array($value)) 
+      if (!is_array($value))
       {        
         $slash = strpos($value, "/"); // Support for 'from/to' searches.
         $str = $value;
@@ -176,7 +176,8 @@
         }
         else
         {
-          $value["from"] = $value; // quicksearch doesn't use an array.    
+          $value = array();
+          $value["from"] = $str; // quicksearch doesn't use an array.
         }
       }
       if ($searchmode!="between") 
