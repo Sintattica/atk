@@ -76,8 +76,8 @@ function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
   input["d"] = frm.elements[arr + "[day]"];
   input["m"] = frm.elements[arr + "[month]"];
   input["y"] = frm.elements[arr + "[year]"];
-
-  /* check if valid date attribute inputs */
+  
+    /* check if valid date attribute inputs */
   if (input["d"] == null || input["m"] == null || input["y"] == null) return;
 
   /* currently selected date */
@@ -259,4 +259,57 @@ function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
     }
   }
   else input["y"].value = current["y"];
+}
+
+function dateAttribute_getValue(id)
+{
+  var dayel = document.getElementById(id+"[day]");
+  var monthel = document.getElementById(id+"[month]");
+  var yearel = document.getElementById(id+"[year]");
+  var result = yearel.value+'-'+monthel.options[monthel.selectedIndex].value+'-'+dayel.options[dayel.selectedIndex].value;    
+  return result;
+}
+
+function dateAttribute_setValue(id, year, month, day)
+{     
+  
+  month = parseInt(month, 10); // remove leading '0'
+  day = parseInt(day, 10); 
+  
+  format = eval(id+'_fmt');
+  
+  var dayel = document.getElementById(id+"[day]");
+  var monthel = document.getElementById(id+"[month]");
+  var yearel = document.getElementById(id+"[year]");
+    
+  // set year
+  yearel.value = year;    
+  
+  // I need to call this to calculate the correct months and days 
+  // after setting the year. 
+  // TODO FIXME: I don't have the arr ('enddate') and format parameters here!!
+  AdjustDate(yearel, id, format, 0, 0, false);
+  
+  // set month
+  for (i=0; i<monthel.options.length;  i++)
+  {
+    if (monthel.options[i].value==month)
+    {
+      monthel.selectedIndex = i;
+    }
+  }
+  
+  // I need to call this to calculate the correct days 
+  // after setting the month. 
+  // TODO FIXME: I don't have the arr ('enddate') and format parameters here!!
+  AdjustDate(monthel, id, format, 0, 0, false);
+  
+  // set day
+  for (i=0; i<dayel.options.length;  i++)
+  {
+    if (dayel.options[i].value==day)
+    {
+      dayel.selectedIndex = i;
+    }
+  }
 }
