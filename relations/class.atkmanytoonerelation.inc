@@ -494,7 +494,7 @@
           if ($val!=="")
           {
             $searchcondition = $this->getSearchCondition($query, $table, $val, $searchmode);
-            $query->addSearchCondition($searchcondition);
+            $query->addSearchCondition($searchcondition, $this->fieldname());
           }
         }
       }
@@ -506,7 +506,7 @@
     }
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
-    {      
+    {     
       if (!$this->hasFlag(AF_LARGE) && !$this->createDestination())
       {
         // We only support 'exact' matches. 
@@ -527,7 +527,7 @@
           $searchConditions = array();
           $descfields = array();
           $descfields = $this->m_destInstance->descriptorFields();
-          $descfields[] = $this->m_destInstance->primaryKeyField();
+      //    $descfields[] = $this->m_destInstance->primaryKeyField();
           
           foreach($descfields as $descField)
           {
@@ -552,10 +552,15 @@
                 // checking for the getSearchCondition
                 // for backwards compatibility
                 if (method_exists($p_attrib,"getSearchCondition"))
-                {
+                {                  
+                  $attribsearchmode = $searchmode;
+                  if (is_array($searchmode))
+                  {
+                    $attribsearchmode = $attribsearchmode[$descField];
+                  }
                   $searchcondition = $p_attrib->getSearchCondition($query,$itsTable,$value,$searchmode);
                   if ($searchcondition)
-                  {
+                  {                    
                     $searchConditions[] = $searchcondition;
                   }
                 }
@@ -563,12 +568,15 @@
                 {
                   $p_attrib->searchCondition($query,$itsTable,$value,$searchmode);
                 }
-                
               }
               $prevdescfield = $descField;
             }
           }
-          return implode(" OR ",$searchConditions);
+          
+          if (count($searchConditions))
+          {
+            return "(".implode(" OR ",$searchConditions).")";
+          }
         }
       }
       return;

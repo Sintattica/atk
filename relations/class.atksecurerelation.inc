@@ -369,7 +369,9 @@
             {
               $itsTable = $p_attrib->m_ownerInstance->m_table;
             }
-
+            
+            if (is_array($searchmode)) $searchmode = $searchmode[$this->fieldName()];
+            if (!$searchmode) $searchmode = atkconfig("search_defaultmode");
             // checking for the getSearchCondition
             // for backwards compatibility
             if (method_exists($p_attrib,"getSearchCondition"))
