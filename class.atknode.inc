@@ -92,6 +92,11 @@ if (!defined("CLASS_ATKNODE_INC"))
    *
    * $Id$
    * $Log$
+   * Revision 4.3  2001/04/24 11:50:13  ivo
+   * Bugfixes to modulesupport: changed all 'require' statements to 'include'
+   * statements, since 'require' is always executed at script compile time,
+   * not at runtime.
+   *
    * Revision 4.2  2001/04/24 09:06:09  sandy
    * first level of the tree always visible, and fixed the NF_TREE flags.
    *
@@ -338,7 +343,7 @@ if (!defined("CLASS_ATKNODE_INC"))
   // Module specific language file
   for ($i = 0; $i < sizeof($g_modules); $i++)
     if (file_exists("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile"))
-      require ("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile");
+      include ("$config_module_path/".$g_modules[$i]."/languages/$config_languagefile");
   
   // Module attributes (do not move, needs database!)
   for ($i = 0; $i < sizeof($g_modules); $i++)
@@ -348,7 +353,7 @@ if (!defined("CLASS_ATKNODE_INC"))
     for ($j = 0; $j < sizeof($attr_arr); $j++)
     {
       if (file_exists("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]))
-      require ("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
+      include ("$config_module_path/".$g_modules[$i]."/".$attr_arr[$j]);
     }
   }
   

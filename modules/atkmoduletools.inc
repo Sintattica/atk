@@ -10,6 +10,11 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.2  2001/04/24 11:50:13  ivo
+ * Bugfixes to modulesupport: changed all 'require' statements to 'include'
+ * statements, since 'require' is always executed at script compile time,
+ * not at runtime.
+ *
  * Revision 1.1  2001/04/23 13:21:22  peter
  * Introduction of module support. An ATK application can now have zero
  * or more modules which can, but don't have to, contain ATK nodes.
@@ -29,7 +34,7 @@ if (!defined("ATKMODULETOOLS_INC"))
     $filename = "$config_module_path/$module/module.inc";
     if (file_exists($filename))
     {
-      require ($filename);
+      include ($filename);
       $GLOBALS["g_modules"][] = $module;
     }
   }
@@ -81,7 +86,7 @@ if (!defined("ATKMODULETOOLS_INC"))
       halt("Cannot create node, because a required file ($file) does not exist!", "critical");
 
     /* return object */
-    require $file;
+    include $file;
     return new $type();
   }
 }
