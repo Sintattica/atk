@@ -18,6 +18,7 @@ Changes in ATK 5.0.5
 * Fixed: atkLanguage broke tooltip functionality [Boy]
 * Changed some globals to proper functions (atkconfig & atktext) [Boy]
 * Moved Doctype to defaultconfig [Boy]
++ Login screen now also uses own CSS file (login.css) [Boy]
 
 Changes in ATK 5.0.4
 --------------------

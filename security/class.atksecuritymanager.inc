@@ -424,7 +424,7 @@
       atkimport("atk.ui.atktheme");
       $theme = &atkTheme::getInstance();
       $page->register_style($theme->stylePath("style.css"));
-
+      $page->register_style($theme->stylePath("login.css"));
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");      
             
