@@ -45,12 +45,19 @@
      */
     function value2db($rec)
     {
-      if (is_array($rec[$this->fieldName()]))
+      if ($this->isEmpty($rec))
       {
-        if ($this->createDestination())
+        return NULL;
+      }
+      else
+      {
+        if (is_array($rec[$this->fieldName()]))
         {
-          $pkfield = $this->m_destInstance->m_primaryKey[0];
-          return $rec[$this->fieldName()][$pkfield];
+          if ($this->createDestination())
+          {
+            $pkfield = $this->m_destInstance->m_primaryKey[0];
+            return $rec[$this->fieldName()][$pkfield];
+          }
         }
       }
       // This never happens, does it?
@@ -207,7 +214,7 @@
           if ($this->hasFlag(AF_OBLIGATORY)==false)
           {
             // Relation may be empty, so we must provide an empty selectable..
-            $result.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField().'=0">'.text('select_none');
+            $result.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField().'=">'.text('select_none');
           }
 
           for ($i=0;$i<count($recordset);$i++)

@@ -96,7 +96,7 @@
     {
       if ($this->createDestination())
       {
-        $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
+        $keyval = $postvars[$this->fieldName()][$this->m_destInstance->primaryKeyField()];        
         return ($keyval == "" || $keyval == NULL || $keyval === 0);
         // mindyou, we must check with '===', because if keyval is  a string, the comparison
         // is always true. (for some reason 'test'==0 is true in php.)
