@@ -45,6 +45,7 @@
 
   // Tree settings
   $g_theme["TreeIcon_dir"] = "tree_icons";
+  $g_theme["ToolbarIcon_dir"] = "toolbar_icons";
 
   // display settings 
   $g_theme["border"] = "1";

@@ -45,6 +45,7 @@
   // include_once($config_atkroot."atk/attributes/class.atkmltextattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atkmlnumberattribute.inc");
   // include_once($config_atkroot."atk/attributes/class.atkmlhtmlattribute.inc");
+  // include_once($config_atkroot."atk/attributes/class.atktoolbar.inc");
   
   /** 
    * The relations. All relations that you don't use in your application 

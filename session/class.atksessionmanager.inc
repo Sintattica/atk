@@ -6,6 +6,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.21  2001/07/18 16:10:18  ivo
+   * New feature: atkToolbar. Works in IE4 (or newer) only.
+   *
    * Revision 1.20  2001/07/15 16:37:19  ivo
    * New atk.inc includefile in skel.
    * New feature: extended search.
@@ -363,7 +366,6 @@
     {
       global $g_sessionData;
       $res = "";
-      
       $stack = $g_sessionData[$this->m_namespace]["stack"];
       
       // we only show the last 4 elements of the stack

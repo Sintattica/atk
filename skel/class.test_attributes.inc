@@ -6,20 +6,20 @@
     {
       $this->atkNode("test_attributes"); // node() constructor is *not* called automatically!
      
-      $this->addAttribute(new atkAttribute("Attribute",AF_HIDE|AF_PRIMARY|AF_AUTO_INCREMENT));
-      $this->addAttribute(new atkBoolAttribute("Boolean",AF_SEARCHABLE));
-      $this->addAttribute(new atkDateAttribute("Date"));
-      $this->addAttribute(new atkDummyAttribute("This is a dummy attribute"));
-      $this->addAttribute(new atkFileAttribute("File",array("themes","http://localhost/themes")));
-      $this->addAttribute(new atkHtmlAttribute("HTML"));
-      $this->addAttribute(new atkLimitedTextAttribute("LimitedText"));
-      $this->addAttribute(new atkListAttribute("List",array("Option 1","Option 2","Option 3"),array("option1","option2","option3")));
-      $this->addAttribute(new atkMultipleFileAttribute("MultipleFile",array("themes","http://locahost/themes")));
-      $this->addAttribute(new atkNumberAttribute("Number"));
-      $this->addAttribute(new atkParserAttribute("Parser","Test"));
-      $this->addAttribute(new atkPasswordAttribute("Password"));
-      $this->addAttribute(new atkTextAttribute("Text",AF_LIST_HIDE));
-      $this->addAttribute(new atkTimeAttribute("Time"));
+      $this->add(new atkAttribute("Attribute",AF_HIDE|AF_PRIMARY|AF_AUTO_INCREMENT));
+      $this->add(new atkBoolAttribute("Boolean",AF_SEARCHABLE));
+      $this->add(new atkDateAttribute("Date"));
+      $this->add(new atkDummyAttribute("This is a dummy attribute"));
+      $this->add(new atkFileAttribute("File",array("themes","http://localhost/themes")));
+      $this->add(new atkHtmlAttribute("HTML"));
+      $this->add(new atkLimitedTextAttribute("LimitedText"));
+      $this->add(new atkListAttribute("List",array("Option 1","Option 2","Option 3"),array("option1","option2","option3")));
+      $this->add(new atkMultipleFileAttribute("MultipleFile",array("themes","http://locahost/themes")));
+      $this->add(new atkNumberAttribute("Number"));
+      $this->add(new atkParserAttribute("Parser","Test"));
+      $this->add(new atkPasswordAttribute("Password"));
+      $this->add(new atkTextAttribute("Text",AF_LIST_HIDE));
+      $this->add(new atkTimeAttribute("Time"));
       
       
       //$this->setOrder("news_id");
