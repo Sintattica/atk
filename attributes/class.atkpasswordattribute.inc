@@ -22,7 +22,7 @@ class atkPasswordAttribute extends atkAttribute
 {
   /* generate? */
   var $m_generate;
-  var $m_validaterecordupdated;
+
   /**
    * Constructor
    * @param $name Name of the attribute
@@ -152,7 +152,8 @@ class atkPasswordAttribute extends atkAttribute
   function validate(&$record, $mode)
   {
     $error = FALSE;
-
+    $value = $record[$this->fieldName()];
+    
     if ($mode == 'update'
         && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
         && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
@@ -177,7 +178,6 @@ class atkPasswordAttribute extends atkAttribute
     /* new password? */
     if (!$error && strlen($value["new"]) > 0)
     $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
-    $this->$m_validaterecordupdated=1;
   }
 
   /**
