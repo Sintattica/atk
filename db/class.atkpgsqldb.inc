@@ -120,9 +120,10 @@
         }
         
         /* query database */
-        $this->m_query_id = @pg_exec($this->m_link_id, $query) or $this->halt("Invalid SQL query: $query");
+        $this->m_query_id = @pg_exec($this->m_link_id, $query) or $error = true;
         $this->m_row = 0;
         $this->m_error = pg_errormessage();
+        if ($error) $this->halt("Invalid SQL query: $query");
         
         if ($this->m_query_id)
         {
