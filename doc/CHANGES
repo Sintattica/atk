@@ -8,6 +8,8 @@ Changes in ATK 5.0.3
 --------------------
 * Small bugfixes in language files. [Boy, Ivo]
 * Fixed bug in the value of NF_MULTILANGUAGE. [Ivo]
+* atkDateAttribute now no longer displays current date unless obligatory [Boy]
+* Fixed remaining bugs with tabs (bug #301) [Boy]
 
 Changes in ATK 5.0.2
 --------------------
