@@ -12,6 +12,9 @@
    
   require_once($config_atkroot."atk/security/class.auth_interface.inc");
   
+  // initialise g_user array.
+  $g_user = array();
+  
   if ($config_authentication == "") $config_authentication = "none";
   if ($config_authorization  == "") $config_authorization = $config_authentication;
   if ($config_securityscheme == "") $config_securityscheme = "none";
@@ -419,6 +422,26 @@
       exit;
     }
   }      
+  
+  /**
+   * Retrieve the currently logged in user.
+   * if no user is logged in, returns "".
+   */
+  function getUser()
+  {
+    global $g_sessionManager;
+    $user = "";    
+    $session_auth = $g_sessionManager->getValue("authentication", true);          
+    if (atkconfig("authentication_session") && 
+        session_is_registered("login") && 
+        $session_auth["authenticated"]==1 && 
+        !empty($session_auth["user"]))
+    {
+      $user = $session_auth["user"];
+      if($user["access_level"]=="") $user["access_level"]=0;
+    }    
+    return $user;
+  }
    
   // The one and only security manager.   
   $g_securityManager = new atkSecurityManager($config_authentication, $config_authorization, $config_securityscheme);
