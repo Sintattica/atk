@@ -130,10 +130,11 @@
     {
       // we need to pass all values to the destination node, so it can
       // run it's db2value stuff over it..
-      $this->createDestination();
-
-      if ($rec[$this->fieldName()]!=NULL)
-      {
+      $this->createDestination();    
+      $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];    
+      if ($pkval!=NULL && $pkval!="") // If primary key is not filled, there was no record, so we 
+                                      // should return NULL.
+      {    
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
@@ -143,6 +144,7 @@
         $rec[$this->fieldName()]["atkprimkey"] = $this->m_destInstance->primaryKey($rec[$this->fieldName()]);
         return $rec[$this->fieldName()];
       }
+      return NULL;
     }
 
     function fetchValue($rec)
@@ -242,7 +244,7 @@
      * @param $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {
+    {    
       /* hide */
       if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -282,7 +284,6 @@
             if ($myrecord[$this->m_destInstance->primaryKeyField()] == NULL) 
             {
               $mode = "add";
-              $myrecord="";
             }
             /* record exists! */
             else
@@ -296,7 +297,6 @@
           else 
           { 
              $mode = "add";
-             $myrecord="";
           }
 
           /* mode */
