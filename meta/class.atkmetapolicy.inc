@@ -1,6 +1,9 @@
 <?php
 /**
  * The default ATK meta policy.
+ *
+ * @author Peter C. Verhage <peter@achievo.org>
+ * @version $Revision$ 
  */
 class atkMetaPolicy
 {

@@ -2,9 +2,16 @@
 /**
  * The meta module.
  *
- * Plug & play. :)
+ * To enable this module just add the following line
+ * in the config.modules.inc file:
+ *
+ *   module("meta", atkconfig("atkroot")."/atk/meta");
+ *
+ * If you are not logged in as administrator you might have to
+ * do so to get access to the module and/or give yourself
+ * the proper access rights.
  * 
- * @author Peter C. Verhage <peter@ibuildings.nl>
+ * @author Peter C. Verhage <peter@achievo.org>
  * @version $Revision$
  */
 class mod_meta extends atkModule
