@@ -8,8 +8,8 @@ Changes in ATK 5.0.4
 --------------------
 * atkLanguage now also supports empty values in language files. [Boy]
 + atkEncryption and atkBase64Encryption introduced [Mark]
-+ atkSecureRelation introduced [Mark]
-* Added documentation to new classes above [Boy]
++ Added 'Privacy Enhancing Technologies' (PET) by ways of an 
+  atkSecureRelation. [Mark]
 * atkManyToManyRelation sets the ref and local key upon construction [Mark]
 + Added NF_NUMBERING and AF_SUBITEM, setting these will number the fields [Boy]
 * showTab is now called from tabs template in Outlook theme, 

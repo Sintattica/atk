@@ -6,17 +6,21 @@
    * included in the distribution.
    * 
    * @package atk
-   * @subpackage utils
+   * @subpackage relations
    *
    * @copyright (c)2000-2004 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    */
-  atkimport("atk.utils.atkencryption");
+  atkimport("atk.security.encryption.atkencryption");
   userelation("atkonetoonerelation");
   
   /**
-   * Base class for all ATK encryption methods
+   * Relationship that can link 2 tables based on a secure link
+   * that can not be decrypted when not logged in through an atk
+   * application. 
+   * This effectively secures the database so that data in two
+   * tables can not be correlated by mischievous access to the database.
    *
    * @author Mark Baaijens <mark@ibuildings.nl>
    *
@@ -36,25 +40,24 @@
      * Creates an atkSecureRelation, 
      * similar to an atkOneToOne relation only encrypted
      *
-     * @param string $name        The unique name of the attribute. In slave mode, 
-     *                            this corresponds to the foreign key field in the
-     *                            database table. 
+     * @param string $name        The unique name of the attribute. In slave 
+     *                            mode, this corresponds to the foreign key 
+     *                            field in the database table. 
      * @param string $destination The destination node (in module.nodename
      *                            notation)
      * @param string $linktable   The table we link to
      * @param string $linkfield   The field we link to
      * @param int $keylength      The length of the encryption key
-     * @param string $encryption  The type of encryption to use
-     * @param string $refKey=""   In master mode, this specifies the foreign key
-     *                            field from the destination node that points to
-     *                            the master record. In slave mode, this parameter
-     *                            should be empty.
-     * @param int $flags          Attribute flags that influence this attributes'
-     *                            behavior.     
+     * @param string $refKey=""   In master mode, this specifies the foreign 
+     *                            key field from the destination node that 
+     *                            points to the master record. In slave mode, 
+     *                            this parameter should be empty.
+     * @param int $flags          Attribute flags that influence this 
+     *                            attributes' behavior.     
      */
-    function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $encryption, $refKey="", $flags=0)
+    function atkSecureRelation($name, $destination, $linktable, $linkfield, $keylength, $refKey="", $flags=0)
     {
-      $this->m_crypt = atkEncryption::getEncryption($encryption);
+      $this->m_crypt = &atkEncryption::getEncryption();
     
       $this->m_linktable = $linktable;
       $this->m_linkfield = $linkfield;
@@ -92,7 +95,7 @@
 
         $encryptedpass = array_pop($rec);
         //atkerror($encryptedpass['pass']." ");
-        $crypt = atkEncryption::getEncryption("base64");
+        $crypt = &atkEncryption::getEncryption("base64");
         $linkpass = $crypt->decrypt($encryptedpass['pass'],$password);
       }
     

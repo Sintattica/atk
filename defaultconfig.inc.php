@@ -73,6 +73,9 @@
   $config_authentication_ldap_context = "";
   $config_authentication_ldap_field   = "";
 
+  // Encrytion method.
+  $config_encryption_defaultmethod = "base64";
+
   $config_logging = 0; // no logging;
   $config_logfile = "/tmp/atk-security.log";
 
