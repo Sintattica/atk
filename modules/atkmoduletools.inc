@@ -58,12 +58,8 @@
     if (!is_object($g_nodeRepository[$node]))
     {
       atkdebug("Constructing a new node - $node");
-      $g_nodeRepository[$node] = newNode($node);
-      if (is_object($g_nodeRepository[$node]))
-      {
-        $g_nodeRepository[$node]->m_module = getNodeModule($node);
-      }
-    }
+      $g_nodeRepository[$node] = & newNode($node);        
+    } 
     else
     {
       atkdebug("Returning cached node instance - $node");
@@ -159,7 +155,8 @@
 
     $file = nodeFile($node);
     $type = getNodeType($node);
-
+    $module = getNodeModule($node);
+  
     /* check for file */
     if (!file_exists($file))
     {
@@ -177,8 +174,10 @@
     include_once($file);
 
     $node =  new $type();
+    $node->m_module = $module;
     // Nodes must be initialised.
     $node->init();
+    
     return $node;
   }
 
