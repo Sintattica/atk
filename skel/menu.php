@@ -13,6 +13,10 @@
    *
    * $Id$   
    * $Log$
+   * Revision 4.12  2001/06/14 09:50:43  ivo
+   * Submenu's opened a new session. This corrupted the session. Now they
+   * continue in the same session.
+   *
    * Revision 4.11  2001/06/11 08:23:40  ivo
    * Replaced '<<' in submenu's by translatable 'back to' string.
    *
@@ -110,7 +114,7 @@
   {
     $parent = $g_menu_parent[$atkmenutop];
     $menu .= $config_menu_delimiter;
-    $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_NEW).'<br>';  
+    $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_DEFAULT).'<br>';  
   }
 
   /* bottom */
