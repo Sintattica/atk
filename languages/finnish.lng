@@ -18,6 +18,7 @@
 
   $txt_view = "N‰yt‰";
   $txt_edit = "Muokkaa";
+  $txt_copy = "Copy";  
   $txt_delete = "Poista";
   $txt_add = "Lis‰‰";
   $txt_admin = "Yll‰pito";

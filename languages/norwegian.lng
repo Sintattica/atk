@@ -20,6 +20,7 @@
   $txt_edit = "Endre";
   $txt_delete = "Slett";
   $txt_add = "Legg til";
+  $txt_copy = "Copy";
   $txt_admin = "Administrasjon";
   $txt_search = "Søk";
   $txt_search_all = "Søk etter alle";

@@ -20,6 +20,7 @@
   $txt_edit = "Szerkeszt";
   $txt_delete = "Torol";
   $txt_add = "Hozzaad";
+  $txt_copy = "Copy";  
   $txt_admin = "Adminisztracio";
   $txt_search = "Kereses";
   $txt_search_all = "Keress mindben";

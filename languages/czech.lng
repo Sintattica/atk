@@ -20,6 +20,7 @@
   $txt_edit = "Editovat";
   $txt_delete = "Odstranit";
   $txt_add = "Pøidat";
+  $txt_copy = "Copy";  
   $txt_admin = "Administrace";
   $txt_search = "Vyhledat";
   $txt_search_all = "Vyhledat v¹e";

@@ -20,6 +20,7 @@
   $txt_edit = "Modifica";
   $txt_delete = "Elimina";
   $txt_add = "Aggiungi";
+  $txt_copy = "Copy";  
   $txt_admin = "Amministra";
   $txt_search = "Ricerca";
   $txt_search_all = "Cerca su tutto/i";

@@ -20,6 +20,7 @@
   $txt_edit = "Bewerk";
   $txt_delete = "Verwijder";
   $txt_add = "Toevoegen";
+  $txt_copy = "Kopieer";
   $txt_admin = "Administratie";
   $txt_search = "Zoeken";
   $txt_search_all = "Alles zoeken";
