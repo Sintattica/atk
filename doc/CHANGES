@@ -19,6 +19,7 @@ Changes in ATK 5.0.7
 + Added {atkstyle} plugin to template engine. [Ivo]
 + Added {atktext} plugin for internationalization in templates. [Ivo]
 + Added default fieldvalue and title row skip features to CSV import. [Mark]
++ atkFlagAttributes can now be searched. [Yury]
 * Attributes can now use preload for loading before the main query. [Ivo, Boy]
 * Optimized atkSecureRelation searching. [Ivo, Boy]
 * Fixed deleteAllowed in oneToManyRelation, when the filter is not 
