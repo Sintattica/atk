@@ -56,6 +56,7 @@
         /* record list */
         if (count($myrecords) > 0)
         {
+          $result = "";
           /* display in list mode */
           if ($mode == "list")
             for ($i = 0; $i < count($myrecords);$i++)
