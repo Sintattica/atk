@@ -120,7 +120,7 @@
   "import_field" => "Veld",
   "import_ignorecolumn" => "Negeer deze kolom",
   "import_import" => "Importeer",
-  "import_loadup" => "Uploaden",
+  "import_upload" => "Uploaden",
   "import_passfirstrecord" => "Het eerste record overslaan?",
   "import_sample" => "Gegevens sample uit de csv-file",
   "invert_selection" => "Selectie omkeren",

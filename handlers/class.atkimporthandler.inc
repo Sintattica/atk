@@ -64,7 +64,7 @@
                                   ' method="post">'.session_form();
       $content.= '<input type="hidden" name="phase" value="upload">';
       $content.= '<input type="file" name="csvfile">';
-      $content.= '<br><br><input type="submit" value="'.atktext("import_loadup","atk").'"> ';
+      $content.= '<br><br><input type="submit" value="'.atktext("import_upload","atk").'"> ';
       $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
