@@ -216,7 +216,7 @@
      */
     function _getStringName($string, &$module, $node, $lng, &$nodefaulttext)
     {
-//      atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
+      if (atkconfig("language_debugging")) atkdebug("Checking for string $string <br /> with module: $module <br /> node: $node <br /> and language: $lng");
       if ($this->_getLanguageFile($module,$lng))
       {
         $finalstring = $this->_getString($string, $node, $module, $lng, $nodefaulttext);
@@ -309,7 +309,7 @@
       if(file_exists($file)) {return $this->_setLanguage($file, $module, $lng);}
       else 
       {
-//        atkdebug("atkLanguage: failed to get language file for module: $module with language: $lng"); 
+        if (atkconfig("language_debugging")) atkdebug("atkLanguage: failed to get language file for module: $module with language: $lng"); 
         return false;
       }
     }
@@ -368,12 +368,16 @@
           {
             $key = $module."_".$string;
             if (empty($this->m_cachedlang[$module][$lng][$key]))
-            { $key = $module."_".$node."_".$string; }
+            {
+              $key = $module."_".$node."_".$string; 
+            }
           }
         }          
       }
       if (!$key || !$this->m_cachedlang[$module][$lng][$key])
-      { $key = $string; }
+      { 
+        $key = $string;
+      }
       
       if (is_array($this->m_cachedlang[$module][$lng]))
       {

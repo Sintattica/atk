@@ -97,7 +97,7 @@
   // language config
   $config_defaultlanguage = "en";
   $config_language_basedir = "languages/";
-   
+  $config_language_debugging = false; 
   
   $config_multilanguage_linked = true; // True: one language switch attributes automatically switches all others on screen.
                                        // False: each language switch attributes operates only on it's own node
