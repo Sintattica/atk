@@ -201,7 +201,7 @@
           {
             if (empty($formName)) $formName = $listName;
             $liststart = '<form name="'.$formName.'" method="post">'.
-                       session_form(SESSION_NESTED).
+                       session_form(SESSION_DEFAULT).
                        '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">';
           }
@@ -374,18 +374,21 @@
             foreach ($this->m_node->m_priority_actions as $name)
               $mra .= '<option value="'.$name.'">'.text($name).'</option>';
   
-            $mra .= '</select>&nbsp;'.
+            $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
                        '<input type="button" class="btn" value="'.text("submit").'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
   
           /* one action -> only the submit button */
           else
-          {
-            $mra = '<input type="hidden" name="'.$listName.'_atkaction" value="'.$this->m_node->m_priority_actions[0].'">'.
+          {            
+            $mra= $this->getCustomMraHtml().'<input type="hidden" name="'.$listName.'_atkaction" value="'.$this->m_node->m_priority_actions[0].'">'.
                        '<input type="button" class="btn" value="'.text($this->m_node->m_priority_actions[0]).'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }        
-  
-          if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';
+            
+          if (!hasFlag($flags, RL_EMBED)) 
+          {
+            $listend= '</form>';
+          }
         }
   
         /****************************************/
@@ -411,7 +414,7 @@
             foreach ($list["mra"] as $name)
               $mra .= '<option value="'.$name.'">'.text($name).'</option>';
   
-            $mra .= '</select>&nbsp;'.
+            $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
                        '<input type="button" class="btn" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
   
@@ -419,6 +422,7 @@
           else
           {
             $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$list["mra"][0].'">'.
+            $this->getCustomMraHtml().
                        '<input type="button" class="btn" value="'.text($list["mra"][0]).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
   
@@ -444,6 +448,15 @@
                                                    "mra"=>$mra));
         return $res;
       }
+    }
+    
+    function getCustomMraHtml()
+    {
+      if (method_exists($this->m_node, "getcustommrahtml"))
+      {
+        $output = $this->m_node->getCustomMraHtml();      
+      }            
+      return $output;
     }
     
     /**
