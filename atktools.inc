@@ -9,6 +9,11 @@
   *
   * $Id$
   * $Log$
+  * Revision 4.2  2001/05/02 12:44:21  ivo
+  * multilevel session_back feature.
+  * new relational features: maxRecords for oneToManyRelation, filter for
+  * onetomanyrelation.
+  *
   * Revision 4.1  2001/05/01 09:15:51  ivo
   * Initial session based atk version.
   *
@@ -183,7 +188,7 @@
    *
    *  Makes a session-aware url thingee...
    */
-  function session_url($url,$sessionstatus=SESSION_DEFAULT)
+  function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
     global $atklevel;
     
@@ -203,7 +208,7 @@
       }
       case SESSION_BACK:
       {
-        $newlevel = max(0,$atklevel-1); 
+        $newlevel = max(0,$atklevel-$levelskip); 
         break;
       }
       default:

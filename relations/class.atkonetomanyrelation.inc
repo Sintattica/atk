@@ -15,6 +15,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.6  2001/05/02 12:44:21  ivo
+   * multilevel session_back feature.
+   * new relational features: maxRecords for oneToManyRelation, filter for
+   * onetomanyrelation.
+   *
    * Revision 4.5  2001/05/01 09:15:51  ivo
    * Initial session based atk version.
    *
@@ -99,6 +104,11 @@
      * The referential key in the target node
      */
     var $m_refKey="";
+    
+    /** 
+     * The maximum number of records that you may have a relation with..
+     */
+    var $m_maxRecords = 0;
   
     /**
      * Constructor
@@ -180,18 +190,20 @@
         //
         // So I also need the owner instance (which would also be a pointer if php supported it)
         $output.="<tr>";
-        $cell="";        
-        
-        $returnurl=rawurlencode('dispatch.php?atknodetype='.$this->m_owner.'&atkaction=edit&atkselector='.rawurlencode($this->m_ownerInstance->primaryKey()));
+        $cell="";                       
         
         $actions = array();
+        if ($this->m_destinationFilter!="")
+        {
+          $strfilter = '&atkfilter='.rawurlencode($this->m_destinationFilter);
+        }
         if (!$this->m_destInstance->hasFlag(NF_NO_EDIT))
         {
-          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]&atkreturnurl='.$returnurl,text("edit"),SESSION_NESTED);
+          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=edit&atkselector=[pk]'.$strfilter,text("edit"),SESSION_NESTED);
         }        
         if (!$this->m_destInstance->hasFlag(NF_NO_DELETE))
         {
-          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]&atkreturnurl='.$returnurl,text("delete"),SESSION_NESTED);
+          $actions[] = href('dispatch.php?atknodetype='.$this->m_destination.'&atkaction=delete&atkselector=[pk]'.$strfilter,text("delete"),SESSION_NESTED);
         }
          
         $this->m_destInstance->m_records = $myrecords;
@@ -205,10 +217,16 @@
         $output.="</tr>";
       }
 
-      //$returnurl = rawurlencode('dispatch.php?atknodetype='.$this->m_owner.'&atkaction=edit&atkselector='.$this->m_ownerInstance->primaryKey());
-      $returnurl = rawurlencode('dispatch.php?atkaction=edit&atkselector='.rawurlencode($this->m_ownerInstance->primaryKey()));
-      $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkreturnurl='.$returnurl."&atkfilter=".rawurlencode($this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
-      $output.="<tr><td>".href($add_url,text("link_".$this->m_destination."_add"),SESSION_NESTED)."</td></tr>";      
+      if ($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))
+      {
+        $strfilter = $this->m_refKey.".".$this->m_ownerInstance->primaryKeyField()."=".$record[$this->m_ownerInstance->primaryKeyField()];
+        if ($this->m_destinationFilter!="")
+        {
+          $strfilter.=' AND '.$this->m_destinationFilter;
+        }
+        $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
+        $output.="<tr><td>".href($add_url,text("link_".$this->m_destination."_add"),SESSION_NESTED)."</td></tr>";      
+      }
       $output.="</table><br>";
       return $output;
     } 
@@ -224,7 +242,7 @@
       $GLOBALS['g_layout']->debug("load called for ".$this->m_name);
       $this->createDestination();
       
-      if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;
+      if ($this->m_refKey=="") $this->m_refKey=$this->m_owner;            
       
       $where = $this->m_destInstance->m_table.".".$this->m_refKey."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";      
       $this->m_destInstance->selectDb($where,"","",$this->m_destInstance->m_listExcludes);

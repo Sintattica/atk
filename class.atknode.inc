@@ -87,6 +87,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.13  2001/05/02 12:44:21  ivo
+   * multilevel session_back feature.
+   * new relational features: maxRecords for oneToManyRelation, filter for
+   * onetomanyrelation.
+   *
    * Revision 4.12  2001/05/01 12:08:38  ivo
    * Small bug in EDITAFTERADD flag.
    *
@@ -1591,7 +1596,7 @@
         $nav = $this->buildNavigation();
         if (!empty($nav)) $g_layout->output("$nav<br><br>");
 
-        $actions=Array(href($this->m_postvars['atktarget'],text('select')));
+        $actions=Array(href($this->m_postvars['atktarget'],text('select'),SESSION_NESTED));
 
         $g_layout->output($this->recordList($actions));
 
@@ -1793,7 +1798,7 @@
     function redirect($location="")
     {
       atkdebug("atknode::redirect()");
-      $back = false;
+      $back = 0;
       
       if ($location=="")
       {      
@@ -1807,19 +1812,29 @@
             } 
             else
             {
-              $back = true;
+              $back = 1;
+            }
+            break;
+          case "update":
+            if ($this->hasFlag(NF_EDITAFTERADD))              
+            {          
+              $back = 2;              
+            } 
+            else
+            {
+              $back = 1;
             }
             break;
           default:
-            $back = true;
+            $back = 1;
             break;
         }       
         
-        if ($back)
+        if ($back>0)
         {
-          $location = session_url("dispatch.php",SESSION_BACK);
-        }     
-        else
+          $location = session_url("dispatch.php",SESSION_BACK,$back);
+        }        
+        else    
         {
           if ($location=="")
           {

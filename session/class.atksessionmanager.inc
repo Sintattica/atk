@@ -6,6 +6,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 1.5  2001/05/02 12:44:21  ivo
+   * multilevel session_back feature.
+   * new relational features: maxRecords for oneToManyRelation, filter for
+   * onetomanyrelation.
+   *
    * Revision 1.4  2001/05/01 13:48:22  ivo
    * removed some debugcode.
    *
@@ -52,8 +57,20 @@
       global $g_sessionData, $atklevel;
             
       $currentitem = &$g_sessionData["stack"][$atklevel];
-      
-      $currentitem[$var] = $value;
+
+      if ($value=="")
+      {
+        if ($GLOBALS[$var]!="")
+        {
+          $currentitem[$var] = $GLOBALS[$var];
+        }
+      }
+      else
+      {
+        $currentitem[$var] = $value;
+      }
+      // We always return the current value..
+      return $currentitem[$var];
       
     }
     

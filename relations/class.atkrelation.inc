@@ -16,6 +16,11 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.4  2001/05/02 12:44:21  ivo
+   * multilevel session_back feature.
+   * new relational features: maxRecords for oneToManyRelation, filter for
+   * onetomanyrelation.
+   *
    * Revision 4.3  2001/05/01 09:49:49  ivo
    * Replaced all require() and include() calls by require_once() and
    * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -61,6 +66,11 @@
     var $m_destInstance="";
     
    /**
+    * Filter
+    */
+   var $m_destinationFilter="";
+    
+   /**
     * Constructor
     * @param $name ?
     * @param $destination ?
@@ -70,9 +80,7 @@
     {
       $this->atkAttribute($name, $flags);
       $this->m_destination = $destination;
-      
-      // the next line would be efficient, but leads to stack overflows.. :(
-      // $this->createDestination();
+            
     }
 
     /**
@@ -84,7 +92,11 @@
       {
         $this->m_destInstance = createNode($this->m_destination);
         if ($this->hasFlag(AF_NO_FILTER)) $this->m_destInstance->m_flags |= NF_NO_FILTER;
-      }
+        if ($this->m_destinationFilter!="")
+        {
+          $this->m_destInstance->addFilter($this->m_destinationFilter);
+        }
+      }      
     }
     
     /**
