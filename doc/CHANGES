@@ -9,10 +9,12 @@ ATK 5.0. The changes below are rough feature indications.
 
 Changes in ATK 5.0.1
 --------------------
++ Added getAttribute() method to atkNode. [Ivo]
++ Added 2 lessons to demo application. [Sandy]
 * Added missing strings to language files. [Ivo]
 * Fixed default value of $config_application_root for win compatibility. [Ivo]
 * Updated API documentation. [Ivo]
-* Fixed small bug for the Multi Record Actions [Sandy]
+* Fixed small bug for the Multi Record Actions. [Sandy]
 
 Changes in ATK 5.0
 ------------------
