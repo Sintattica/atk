@@ -238,7 +238,7 @@
         {
           $this->m_user = $session_auth["user"];
           atkdebug("Using session for authentication / user = ".$this->m_user["name"]);
-          atk_var_dump($this->m_user);
+          //atk_var_dump($this->m_user);
         }
       }
 
