@@ -205,7 +205,7 @@
     * the validator is overridable by changing this variabele
     *
     * @access private
-    * @var vartype varname
+    * @var string validate_class
     */
     var $m_validate_class = "atk.atknodevalidator";
 
@@ -215,7 +215,7 @@
     * use uniqueFieldSet() to add sets of unique fields
     *
     * @access private
-    * @var vartype varname
+    * @var array uniqueFieldSets
     */
     var $m_uniqueFieldSets = array();
 

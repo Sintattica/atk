@@ -220,11 +220,10 @@
 
           if(is_array($whereValueMixed))
           {	
-
+            atk_var_dump($whereValueMixed, "<B>ARRAY for field $field</B>");
             // add the current attribute itself to the string and remove it 
             // from the array. 
-            $whereValueStr = "'".escapeSQL($whereValueMixed[$field])."'";
-            unset($whereValueMixed[$field]);
+            $whereValueStr = "'".escapeSQL(array_shift($whereValueMixed))."'";
 
             foreach($whereValueMixed as $name => $value)
               $whereValueStr .= " and ".$name." = '".escapeSQL($value)."'";
