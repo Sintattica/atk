@@ -49,7 +49,7 @@
   if (is_array($g_menu[$atkmenutop]))
   {
     usort($g_menu[$atkmenutop],"menu_cmp");   
-  
+    $menuitems = array();
     for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
     {
       if ($i==count($g_menu[$atkmenutop])-1)
@@ -61,9 +61,10 @@
         $delimiter = atkconfig("menu_delimiter");
       }
       $name = $g_menu[$atkmenutop][$i]["name"];
+      $menuitems[$i]["name"]=$name;
       $url = $g_menu[$atkmenutop][$i]["url"];
       $enable = $g_menu[$atkmenutop][$i]["enable"];
-      
+
       if (is_array($enable))
       {
         $enabled = false;
@@ -73,23 +74,29 @@
         }
         $enable = $enabled;
       }
+
+      $menuitems[$i]["enable"]=$enable;
   
       /* delimiter ? */
-      if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
+      if ($name == "-") $menu .= "<br>";
       
       /* submenu ? */
-      else if (empty($url) && $enable) $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$delimiter;
+      else if (empty($url) && $enable)
+      {
+        $url = 'menu.php?atkmenutop='.$name;
+        $menu .= href($url,text("menu_$name"),SESSION_DEFAULT).$delimiter;
+      }
       else if (empty($url) && !$enable)
       {
         //$menu .=text("menu_$name").$config_menu_delimiter;
       }
-        
       /* normal menu item */
       else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
       else 
       {
         //$menu .= text("menu_$name").$config_menu_delimiter;    
       }
+      $menuitems[$i]["url"]=session_url($url);
     }
   }
   /* previous */  
@@ -103,7 +110,8 @@
   $page->register_style($theme->stylePath("style.css"));
   $page->register_style($theme->stylePath("menu.css"));
   $box = $ui->renderBox(array("title"=>text("menu_".$atkmenutop),
-                                         "content"=>$menu),"menu");
+                                         "content"=>$menu,
+                                         "menuitems"=>$menuitems),"menu");
  
   $page->addContent($box);
 			
