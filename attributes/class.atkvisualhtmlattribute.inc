@@ -36,7 +36,7 @@
       
       $browser = getBrowserInfo();
                               
-      if ($browser["family"]!="ie5up")
+      if ($browser["family"]!="ie5up"||$config_enable_ie_extensions==false)
       {
         return atkTextAttribute::edit($record, $fieldprefix);
       }
