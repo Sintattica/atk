@@ -335,7 +335,7 @@
      * record, you may also view that record, and don't need explicit rights
      * to view it. So the 'view' right is said to be 'implied' by the 'edit' right. 
      */
-    var $m_securityImplied = array("view"=>"edit");
+    var $m_securityImplied = array("view"=>"admin");
 
     /**
      * If a class is named 'project', then by default, if the system needs to know whether
