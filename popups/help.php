@@ -22,7 +22,7 @@
   $language = strtok(atkconfig("languagefile"),".");
   $title1 ="txt_title_".$node;
   $title = $$title1;
-  $file   = "help/".$language."/help.".$node.".inc";
+  $file   = $config_atkroot."help/".$language."/help.".$node.".inc";
   $data = '<div align="left">';
   $data .= implode("<br>",file($file));
   $data .='</div>';

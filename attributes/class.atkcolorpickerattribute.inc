@@ -173,9 +173,10 @@
 
     function atkColorPickerAttribute($name ,$userColors="", $flags = 0)
     {
+      global $config_atkroot;
       $this->atkAttribute($name, $flags);
-      $GLOBALS['g_layout']->register_script("atk/javascript/newwindow.js");      
-      $GLOBALS['g_layout']->register_script("atk/javascript/colorpicker.js");            
+      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/newwindow.js");      
+      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/colorpicker.js");            
       $this->m_userColors = $userColors;
      
     }

@@ -13,7 +13,7 @@
   *
   */
 
-  include("atk.inc");  
+  include($config_atkroot."atk.inc");  
   
   atksession();
   atksecure();  
@@ -26,7 +26,7 @@
   //  Display's the picker in the current ATK style-template
   $g_layout->output("<html>");
   $g_layout->head("ColorPicker");
-  $g_layout->output('<script language="javascript" src="atk/javascript/colorpicker.js"></script>');
+  $g_layout->output('<script language="javascript" src="'.$config_atkroot.'atk/javascript/colorpicker.js"></script>');
   $g_layout->body();
   $g_layout->output ($matrix);
   $g_layout->output("</body>");

@@ -89,7 +89,7 @@
      */
     function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
-      global $txt_date_format_edit, $txt_date_format_view;
+      global $txt_date_format_edit, $txt_date_format_view,$config_atkroot;
       
 atkdebug("min ".$min." max ".$max);
       // *** API SUPPORT HACK ***
@@ -131,7 +131,7 @@ atkdebug("inElse");
 
 atkdebug("min ".$this->m_date_min." max ".$this->m_date_max);
       /* register javascript */
-      $GLOBALS['g_layout']->register_script("atk/javascript/class.atkdateattribute.js.php");
+      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkdateattribute.js.php");
 
       /* base class constructor */
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH); // FIXME.. until the searchCondition() and

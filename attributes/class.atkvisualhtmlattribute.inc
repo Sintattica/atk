@@ -42,7 +42,7 @@
       }
       else
       {    
-        $g_layout->register_script("atk/javascript/class.atkvisualhtmlattribute.js");      
+        $g_layout->register_script($config_atkroot."atk/javascript/class.atkvisualhtmlattribute.js");      
         $nom_editor = $fieldprefix.$this->fieldname()."_editor";
         $g_layout->register_submitscript($nom_editor."_save();");
         $idi_edit = 'eng';

@@ -24,6 +24,7 @@
      */
     function atkMultipleFileAttribute($name, $dir, $flags=0)
     {
+      global $config_atkroot;
       $this->atkAttribute($name,$flags|AF_CASCADE_DELETE); // base class constructor
       if(is_array($dir))
       {
@@ -35,7 +36,8 @@
         $this->m_dir = $this->AddSlash($dir);
         $this->m_url = $this->AddSlash($dir);
       }
-      $GLOBALS['g_layout']->register_script("atk/javascript/class.atkfileattribute.js.php");
+      
+      $GLOBALS['g_layout']->register_script($config_atkroot."atk/javascript/class.atkfileattribute.js.php");
     }
 
     /**
