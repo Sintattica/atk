@@ -11,6 +11,9 @@
    *    
    * $Id$
    * $Log$
+   * Revision 4.23  2001/10/15 15:38:47  martin
+   * added feature to use multiple authentication types.
+   *
    * Revision 4.22  2001/09/12 11:30:44  ivo
    * Changed guest level from 0 to -2, since 0 may be a valid userlevel.
    *
@@ -125,12 +128,24 @@
   if ($config_authorization  == "") $config_authorization = $config_authentication;
   if ($config_securityscheme == "") $config_securityscheme = "none";
    
-  include_once($config_atkroot."atk/security/class.auth_".$config_authentication.".inc");
+  $authentication = explode(",",$config_authentication);
+  if(is_array($authentication))
+  {
+    foreach($authentication as $value)
+    {
+      include_once($config_atkroot."atk/security/class.auth_".$value.".inc");
+    }
+  }
+  else
+  {
+    include_once($config_atkroot."atk/security/class.auth_".$authentication.".inc");
+  }
+
   include_once($config_atkroot."atk/security/class.auth_".$config_authorization.".inc");
    
   class atkSecurityManager
   {
-    var $m_authentication = 0;    
+    var $m_authentication = "";    
     var $m_authorization = 0; 
     var $m_scheme = "none";
     var $m_user = 0;
@@ -146,8 +161,22 @@
       atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
 
       /* authentication class */       
-      $classname = "auth_".$authentication_type;
-      $this->m_authentication = new $classname;             
+      $authentication = explode(",",$authentication_type);
+      if(is_array($authentication))
+      {
+        foreach($authentication as $class)
+        {
+          $classname = "auth_".$class;
+          atkdebug("atkSecurityManager() constructing class $classname");
+          $this->m_authentication[$class] = new $classname;
+        }
+      }
+      else
+      {
+        $classname = "auth_".$authentication;
+        atkdebug("atkSecurityManager() constructing class $classname");
+        $this->m_authentication[$authentication] = new $classname;
+      }
       
       /* authorization class */
       if ($authorization_type == $authentication_type)
@@ -235,11 +264,20 @@
         // other users     
         else 
         {     
-          if ($this->m_authentication->canMd5()&&!$md5)
+          $response=0;
+          if(is_array($this->m_authentication))
           {
-            $PHP_AUTH_PW = md5($PHP_AUTH_PW);
-          }  
-          $response = $this->m_authentication->validateUser($PHP_AUTH_USER,$PHP_AUTH_PW);
+            foreach($this->m_authentication as $name => $obj)
+            {
+              $obj->canMd5()&&!$md5 ? $tmp_pw=md5($PHP_AUTH_PW) : $tmp_pw=$PHP_AUTH_PW;
+              $response = $obj->validateUser($PHP_AUTH_USER,$tmp_pw);
+              if($response==1)
+              {
+                atkdebug("atkSecurityManager::authenticate() using $name authentication");
+                break;
+              }
+            }
+          }
           if($response==1) // succesful login
           {   
             // We store the username + securitylevel of the logged in user. 
