@@ -10,6 +10,9 @@
  *
  * $Id$
  * $Log$
+ * Revision 1.18  2001/09/12 12:31:00  ivo
+ * Removed debugcode that was committed by accident.
+ *
  * Revision 1.17  2001/09/12 12:04:13  ivo
  * Added config_atkroot to default module path.
  *
@@ -184,7 +187,6 @@
         atkerror("Couldn't find node '$node' in module '$module'");
       }
     }
-  echo "<br>".$file;
     /* check for file */
     if (!file_exists($file))
     {
