@@ -55,12 +55,12 @@
   
     function dbFieldType()
     {
-      return "number";
+      return ($this->m_decimals>0?"decimal":"number");
     }
     
     function dbFieldSize()
     {
-      return $this->m_maxsize.($this->m_decimals>0?".".$this->m_decimals:"");
+      return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
     }    
   }
 ?>
