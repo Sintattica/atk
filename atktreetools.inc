@@ -4,6 +4,9 @@
 *
 * $Id$
 * $Log$
+* Revision 4.1  2001/05/01 12:32:54  sandy
+* removed the debug functions and created a new Tree relations
+*
 * Revision 4.0  2001/04/23 10:19:38  ivo
 * Revision number update
 *
@@ -14,7 +17,7 @@
 
 
 
-class node 
+  class node 
   {
     var $m_id;
     var $m_label;

@@ -13,6 +13,9 @@
     *
     * $Id$
     * $Log$
+    * Revision 4.6  2001/05/01 12:32:54  sandy
+    * removed the debug functions and created a new Tree relations
+    *
     * Revision 4.5  2001/05/01 09:49:49  ivo
     * Replaced all require() and include() calls by require_once() and
     * include_once() calls. The if(!DEFINED)... inclusion protection in files
@@ -80,7 +83,7 @@
         $g_layout->output($adminHeader."<br><br>");
       }
 
-      $this->debug("Entering treeview page.");
+      atkdebug("Entering treeview page.");
       $this->addStickyVar($p);
       
       $this->selectDb($this->m_postvars['atkfilter'],$this->m_primaryKey[0],"",$this->m_listExcludes);
@@ -112,7 +115,7 @@
       
       $g_layout->output("</table>");      
       $g_layout->ui_bottom();
-      $this->debug("Generating treeview finished!");
+      atkdebug("Generating treeview finished!");
     }
     
     /**

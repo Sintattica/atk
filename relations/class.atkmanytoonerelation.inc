@@ -15,6 +15,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/01 12:32:54  sandy
+   * removed the debug functions and created a new Tree relations
+   *
    * Revision 4.1  2001/04/23 13:21:22  peter
    * Introduction of module support. An ATK application can now have zero
    * or more modules which can, but don't have to, contain ATK nodes.
@@ -266,4 +269,5 @@
       return "";
     }
   }
+  include "atk/relations/class.atkmanytoonetreerelation.inc";
 ?>
