@@ -20,7 +20,7 @@ function showTab(tab)
 {  
 	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
-	var tabid = document.getElementById("atknodetype").innerHTML;
+	var tabid = document.getElementById("atknodetype").value;
 	
 	// Next, check wether the parent tab array has been set
 	if (!parent.document.tab)
