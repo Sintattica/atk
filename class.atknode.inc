@@ -52,6 +52,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.107  2001/09/18 07:15:27  ivo
+   * Missing module.inc files is now a warning instead of an error.
+   *
    * Revision 4.106  2001/09/17 09:03:11  ivo
    * recordlist: empty items are now correctly replaced by &nbsp; if necessary
    *
@@ -312,7 +315,7 @@
     }
     else
     {
-      atkerror("Couldn't find module.inc for module '$modname' in '$modpath'");
+      atkdebug("Couldn't find module.inc for module '$modname' in '$modpath'");
     }
 
   }  
