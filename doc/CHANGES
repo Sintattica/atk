@@ -11,7 +11,7 @@ Changes in ATK 5.0.4
 + Added 'Privacy Enhancing Technologies' (PET) by ways of an 
   atkSecureRelation. [Mark]
 * atkManyToManyRelation sets the ref and local key upon construction [Mark]
-+ Added NF_NUMBERING and AF_SUBITEM, setting these will number the fields [Boy]
++ Added setNumbering() to atkNode, setting this will number the fields [Boy]
 * showTab is now called from tabs template in Outlook theme, 
   ensuring the tab always being set [Boy]
 + Added renderTop function which gets top.tpl if it exists, 
