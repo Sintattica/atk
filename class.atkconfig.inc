@@ -1,9 +1,37 @@
 <?php
 
-  // This should be a static class member, but that doesn't exist
-  // in PHP4.
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk  
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+     
+  /**
+   * @internal This should be a static class member, but that doesn't exist
+   *           in PHP4.
+   * @global atkConfig The global config object   
+   */
   global $g_atkconfig;
 
+  /**
+   * Config class for loading configfiles and retrieving configoptions.
+   *
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @todo Fixme :-) This class is currently not functional. Use the atkconfig()
+   *                 function for retrieving config options instead.
+   *
+   */
   class atkConfig
   {      
     function get($varname)

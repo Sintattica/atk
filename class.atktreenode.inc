@@ -10,8 +10,8 @@
    *
    * }
    *
-   * @author Martin Roest (martin@ibuildings.nl) 
-   *         Sandy Pleyte (sandy@achievo.org)
+   * @author Martin Roest <martin@ibuildings.nl>
+   *         Sandy Pleyte <sandy@achievo.org>
    * @version $Revision$
    *
    * $Id$

@@ -1,16 +1,26 @@
 <?php
   /**
-   * @author Ivo Jansch <ivo@achievo.org>
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
    * @package atk
    * @subpackage attributes
+   *
+   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
    * @version $Revision$
    * $Id$
-   */
+   */     
 
   /**
-   * Attribute-/relationflags. The following flags can be used for attributes/relations.
-   * WARNING: flags may *not* exceed 2^31 (2147483648), because that's the integer limit
-   *          beyond which the bitwise operators won't work anymore!
+   * Attributeflags. The following flags can be used for attributes
+   * @internal WARNING: flags may *not* exceed 2^31 (2147483648), because
+   * that's the integer limit beyond which the bitwise operators won't 
+   * work anymore!
    */
 
   /* "database-level" processing flags */
@@ -60,7 +70,8 @@
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
 
-  /* flag (values) that can be used for attribute specific flags
+  /*                                     
+   * flag (values) that can be used for attribute specific flags
    * NOTE: Attribute specific flags aren't good behaviour, but for 
    * compatibility reasons we support them anyway. Newly derived attributes 
    * should not use these specific flags, but work with extra parameters.
@@ -72,7 +83,7 @@
   define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5  
   
   /**
-   * Storage flags, used by the storageType() and related methods
+   * Storage types, used by the storageType() and related methods
    */
   define("NOSTORE"   ,0);
   define("PRESTORE"  ,1);
@@ -80,56 +91,76 @@
   define("POSTSTORE" ,2);
   define("POSTLOAD", 2);  
   define("ADDTOQUERY",4);  
-
+  
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
    * control its behaviour, like whether an atkAttribute
    * is obligatory, etc.
    *
+   * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   *
-   */
+   */  
   class atkAttribute
   {
     /**
      * The name of the attribute
+     * @var String 
+     * @access private
      */
     var $m_name;
 
     /**
      * The attribute flags (see above)
+     * @var int 
+     * @access private
      */
     var $m_flags = 0;
 
     /**
      * The owner of the attribute (set by atknode)
+     * @var String 
      */
     var $m_owner = "";
 
     /**
-     * Owner Instance
+     * Instance that owns this attribute
+     * @var atkNode
      */
     var $m_ownerInstance="";
 
     /**
      * The size, searchsize and maxsize of the attribute's field.
+     * @var int
      */
     var $m_size = 0;
     var $m_searchsize = 0;
     var $m_maxsize = 0;
     
+    /**
+     * The database fieldtype.
+     * @var String 
+     */
     var $m_dbfieldtype = "";
 
     /**
-     * Order of the attribute
+     * The order of the attribute within its node.
+     * @var int 
      */
     var $m_order = 0;
-    // just a var for keeping a index
+    
+    /**
+     * Index of the attribute within its node. (I'm not sure this is still used)
+     * @var int 
+     * @access private
+     */
     var $m_index = 0;
         
-    // The tab on which the attribute lives.
+    /**
+     * The tab(s) on which the attribute lives.
+     * @var mixed 
+     */
     var $m_tabs="*";
 
     /**
@@ -144,11 +175,14 @@
      *       field length. (Derived classes might have reasonable default
      *        values, but the standard atkAttribute doesn't.)
      *
-     * @param $name  Name of the attribute
-     * @param $flags Flags for the attribute
-     * @param $size  The size(s) of the attribute. See the $size parameter
-     *               of the setAttribSize() method for more information
-     *               on the possible values of this parameter.
+     * @param String $name Name of the attribute (unique within a node, and
+     *                     for most attributes, corresponds to a field in 
+     *                     the database. 
+     * @param int $flags Flags for the attribute.
+     * @param mixed $size  The size(s) of the attribute. See the $size
+     *                     parameter of the setAttribSize() method for more 
+     *                     information on the possible values of this
+     *                     parameter.
      *     
      */
     function atkAttribute($name, $flags = 0, $size = 0)
@@ -160,9 +194,9 @@
     }
 
     /**
-     * Checks if flag exist
-     * @param $flag the flag you want to check
-     * @return True or False
+     * Check if the attribute has a certain flag.
+     * @param int $flag The flag you want to check
+     * @return boolean
      */
     function hasFlag($flag)
     {      
@@ -174,7 +208,7 @@
      * Note that adding flags at any time after the constructor might not 
      * always work. There are flags that are processed only at 
      * constructor time.
-     * @param $flag the flag you want to add
+     * @param int $flag The flag to add to the attribute
      */
     function addFlag($flag)
     {
@@ -186,7 +220,7 @@
      * Note that removing flags at any time after the constructor might not
      * always work. There are flags that have already been processed at 
      * constructor time, so removing them will be futile.
-     * @param $flag The flag that you want to remove
+     * @param int $flag The flag to remove from the attribute
      */
     function removeFlag($flag)
     {
@@ -194,8 +228,13 @@
     }
 
     /**
-     * Returns the (field)name of the attribute
-     * @return fieldname
+     * Returns the name of the attribute. 
+     * For most attributes, this corresponds to the name of the field in the
+     * database. For some attributes though (like one2many relations), the
+     * name is a mere identifier within a node. This method always returns
+     * the attribute name, despite the 'field' prefix of the method.
+     *
+     * @return String fieldname
      */
     function fieldName()
     {
@@ -203,8 +242,10 @@
     }
 
     /**
-     * Returns the formname
-     * @return formname
+     * Retrieve the name of the attribute in HTML forms.
+     * @deprecated HTML formname and fieldname are equal, use fieldName 
+     *                  instead.
+     * @return String Name of the attribute in HTML forms
      */
     function formName()
     {
@@ -212,18 +253,24 @@
     }
 
     /**
-     * Check if the attribute is empty
-     * @return true if it's empty
+     * Check if a record has an empty value for this attribute.
+     * @param array $record The record that h olds this attribute's value.
+     * @return boolean
      */
-    function isEmpty($postvars)
+    function isEmpty($record)
     {
-      return ($postvars[$this->fieldName()]=="");
+      return ($record[$this->fieldName()]=="");
     }
 
     /**
-     * Add's slashes to the string for the database
-     * @param $rec Array with values
-     * @return String with slashes
+     * Converts the internal attribute value to one that is understood by the
+     * database. For the regular atkAttribute, this means escaping things like
+     * quotes and slashes. Derived attributes may reimplement this for their
+     * own conversion. 
+     * This is the exact opposite of the db2value method.
+     * 
+     * @param array $rec The record that holds this attribute's value.
+     * @return String The database compatible value
      */
     function value2db($rec)
     {
@@ -231,33 +278,44 @@
     }
 
     /**
-     * Removes slashes from the string
-     * @param $rec Array with values
-     * @return String without slashes
+     * Converts a database value to an internal value. 
+     * For the regular atkAttribute, this means stripping slashes.
+     * Derived attributes may reimplement this for their own conversion.
+     * (In which case, the return type might be 'mixed')
+     * 
+     * This is the exact opposite of the value2db method.
+     *
+     * @param array $rec The database record that holds this attribute's value
+     * @return String The internal value
      */
     function db2value($rec)
     {
       return stripslashes($rec[$this->fieldName()]);
     }
 
-
     /**
-     * Fetch values
-     * @param $rec Array with values
-     * @return String without slashes
+     * Convert values from an HTML form posting to an internal value for 
+     * this attribute. 
+     * For the regular atkAttribute, this means getting the field with the
+     * same name as the attribute from the html posting. 
+     *
+     * @param array $postvars The array with html posted values ($_POST, for 
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
      */
-    function fetchValue($rec)
+    function fetchValue($postvars)
     {
-      return $rec[$this->fieldName()];
+      return $postvars[$this->fieldName()];
     }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with values
-     * @param $fieldprefix The attribute must use this to prefix its form elements (used for
-     *                     embedded forms)
-     * @return Piece of htmlcode
+     *
+     * @param array $record The record that holds the value for this attribute.
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode for editing this attribute
      */
     function edit($record="", $fieldprefix="")
     {
@@ -273,10 +331,13 @@
     }
 
     /**
-     * Returns a piece of html code that can be used in a form to display
-     * hidden values for this attribute.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                This attribute's value without showing it.
      */
     function hide($record="", $fieldprefix="")
     {
@@ -293,21 +354,29 @@
     }
     
     /**
-     * Return the html identifier (id="") (unique within a page)
+     * Return the html identifier (id="") of the attribute. (unique within a
+     * page)
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String the HTML identifier.
      */
     function getHtmlId($fieldprefix)
     {
-      return $fieldprefix.$this->formName();
+      return $fieldprefix.$this->fieldName();
     }
 
     /**
-     * Adds the attribute's edit / hide HTML code to the edit array. This method
-     * is called by the node if it want the data needed to create an edit form.
-     * @param $mode     the edit mode ("add" or "edit")
-     * @param $arr      pointer to the edit array
-     * @param $defaults pointer to the default values array
-     * @param $error    pointer to the error array
-     * @param $prefix   the fieldprefix
+     * Adds the attribute's edit / hide HTML code to the edit array. This
+     * method is called by the node if it wants the data needed to create
+     * an edit form.
+     * 
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the edit mode ("add" or "edit")
+     * @param array  $arr      pointer to the edit array
+     * @param array  $defaults pointer to the default values array
+     * @param array  $error    pointer to the error array
+     * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
@@ -342,6 +411,11 @@
       }
     }
     
+    /**
+     * Put the attribute on one or more tabs.
+     * @param array $tabs An array of tabs on which the attribute should
+     *                    be displayed.
+     */
     function setTabs($tabs)
     {      
       if ($tabs==NULL)
@@ -354,6 +428,24 @@
       }
     }        
     
+    /**
+     * Retrieve the html code for placing this attribute in an edit page.
+     * The difference with the edit() method is that the edit() method just
+     * generates the HTML code for editing the attribute, while the getEdit()
+     * method is 'smart', and implements a hide/readonly policy based on
+     * flags and/or custom override methodes in the node. 
+     * (<attributename>_edit() and <attributename>_display() methods)
+     *
+     * Framework method, it should not be necessary to call this method
+     * directly.
+     *
+     * @param String $mode The edit mode ("add" or "edit")
+     * @param array $defaults The record holding the values for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String the HTML code for this attribute that can be used in an
+     *                editpage.
+     */
     function getEdit($mode, &$defaults, $fieldprefix)
     {
       /* readonly */
@@ -388,6 +480,14 @@
       return $result;
     }
     
+    /**
+     * Check if this attribute has errors in the specified error list.     
+     *
+     * @param array $errors The error list is one that is stored in the 
+     *                      "atkerror" section of a record, for example
+     *                      generated by validate() methods.
+     * @return boolean 
+     */
     function getError($errors)
     {      
       for ($i = 0; $i < count($errors) && !$error; $i++)
@@ -403,12 +503,15 @@
 
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
-     * @param $action the action that is being performed on the node
-     * @param $arr reference to the the recordlist array
-     * @param $fieldprefix the fieldprefix
-     * @param $flags the recordlist flags
-     * @param $atksearch the current ATK search list (if not empty)
-     * @param $atkorderby the current ATK orderby string (if not empty)
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
+     * @param array  $atksearch the current ATK search list (if not empty)
+     * @param String $atkorderby the current ATK orderby string (if not empty)
      * @see atkNode::listArray
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
@@ -434,11 +537,14 @@
 
     /**
      * Adds the attribute / field to the list row. And if the row is totalisable also to the total.
-     * @param $action the action that is being performed on the node
-     * @param $arr reference to the the recordlist array
-     * @param $nr the current row number
-     * @param $fieldprefix the fieldprefix
-     * @param $flags the recordlist flags
+     *
+     * Framework method. It should not be necessary to call this method directly.
+     *
+     * @param String $action the action that is being performed on the node
+     * @param array  $arr reference to the the recordlist array
+     * @param int    $nr the current row number
+     * @param String $fieldprefix the fieldprefix
+     * @param int    $flags the recordlist flags
      * @see atkNode::listArray
      */
     function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
@@ -464,10 +570,23 @@
     }
 
     /**
-     * Returns a piece of html code that can be used to search for an
-     * attribute's value.
-     * @param $record Array with values
-     * @return Piece of htmlcode
+     * Returns a piece of html code that can be used to get search terms input
+     * from the user. The framework calls this method to display the searchbox
+     * in the search bar of the recordlist, and to display a more extensive
+     * search in the 'extended' search screen.
+     * The regular atkAttributes returns a simple text input box for entering
+     * a keyword to search for.
+     *
+     * @param array $record Array with values
+     * @param boolean $extended if set to false, a simple search input is
+     *                          returned for use in the searchbar of the 
+     *                          recordlist. If set to true, a more extended
+     *                          search may be returned for the 'extended' 
+     *                          search page. The atkAttribute does not
+     *                          make a difference for $extended is true, but
+     *                          derived attributes may reimplement this.
+     *
+     * @return String A piece of html-code
      */
     function search($record="", $extended=false)
     {
@@ -480,10 +599,16 @@
     }
 
     /**
-     * Creates an search condition for a given search value
-     * @param $table the table name
-     * @param $value the search value
-     * @return a piece of the SQL where clause
+     * Creates a search condition for a given search value, and adds it to the
+     * query that will be used for performing the actual search.
+     *
+     * @param atkQuery $query The query to which the condition will be added.
+     * @param String $table The name of the table in which this attribute
+     *                      is stored
+     * @param mixed $value The value the user has entered in the searchbox
+     * @param String $searchmode The searchmode to use. This can be any one
+     *                           of the supported modes, as returned by this
+     *                           attribute's getSearchModes() method.
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
@@ -499,13 +624,12 @@
     }
 
     /**
-     * Returns a displayable string for this value.
-     * Since we always display in html, but we don't expext the text
-     * to be html, we have to do some conversions.
-     * if you don't like this, use the atkHtmlAttribute.
-     * @param $record
-     * @return String ready for displaying
-     * @see atkHtmlAttribute
+     * Returns a displayable string for this value, to be used in HTML pages.
+     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
+     * methods to prepare a value for display.
+     *
+     * @param @array $record The record that holds the value for this attribute
+     * @return String HTML String 
      */
     function display($record)
     {
@@ -520,28 +644,44 @@
     }
 
     /**    
-     * Validation method. Checks if a record is valid.
+     * Checks if a value is valid. The regular atkAttribute has no specific
+     * validation. Derived attributes may override this method to perform
+     * custom validation.
+     * Note that obligatory and unique fields are checked by the
+     * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array $record The record to validate. If an error occurs, 
-     *                      the error will be stored in the 'atkerror' field 
-     *                      of the record.     
+     * @param array $record The record that holds the value for this 
+     *                      attribute. If an error occurs, the error will  
+     *                      be stored in the 'atkerror' field of the record.
      */     
     function validate(&$record, $mode)
     {
     }
 
     /**
-     * Add's fields to query
-     * @param $query The SQL query
-     * @param $tablename Tablename
-     * @param $fieldaliasprefix Field alias prefix
-     * @param $level ?
-     * @param $mode Indicates what kind of query is being processing:
-     *              This can be any action performed on a node (edit, add, etc)
-     *              Mind you that "add" and "update" are the actions that store
-     *              something in the database, whereas the rest are probably
-     *              select queries.
-     * @return New SQL Query
+     * Adds this attribute to database queries. Database queries (select,
+     * insert and update) are passed to this method so the attribute can
+     * 'hook' itself into the query.
+     *
+     * Framework method. It should not be necessary to call this method 
+     * directly. Derived attributes that consist of more than a single simple
+     * database field (like relations for example), may have to reimplement
+     * this method.
+     *     
+     * @param atkQuery $query The SQL query object
+     * @param String $tablename The name of the table of this attribute
+     * @param String $fieldaliasprefix Prefix to use in front of the alias
+     *                                 in the query.
+     * @param int $level Recursion level if relations point to eachother, an
+     *                   endless loop could occur if they keep loading
+     *                   eachothers data. The $level is used to detect this
+     *                   loop. If overriden in a derived class, any subcall to
+     *                   an addToQuery method should pass the $level+1.
+     * @param String $mode Indicates what kind of query is being processing:     
+     *                     This can be any action performed on a node (edit,
+     *                     add, etc) Mind you that "add" and "update" are the
+     *                     actions that store something in the database,
+     *                     whereas the rest are probably select queries.     
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -552,9 +692,17 @@
     }
 
     /**
-     * delete is only of interest for special attributes like relations, or file attributes.
-     * @param $record record that has to be delete
-     * @return true if successful, false otherwise
+     * The delete method is called by the framework to inform the attribute
+     * that a record is deleted. The regular atkAttribute has no
+     * implementation for this method, but derived attributes may override
+     * this, to take care of cleanups, cascade deletes etc.
+     * Note, that the framework only calls this method if the attribute has
+     * the AF_CASCADE_DELETE flag.
+     *
+     * @param array $record The record that is deleted.
+     * @return boolean true if cleanup was successful, false otherwise. If the
+     *                 database driver supports it, the entire transaction is
+     *                 rolled back when this method returns false.
      */
     function delete($record)
     {
@@ -563,7 +711,17 @@
     }
 
     /**
-     * returns a record which is the sum of two records
+     * Calculate the sum of 2 records. This is called by the framework for the
+     * auto-totalling feature. Two records are passed, and a record is
+     * returned. The reason that the params are entire records instead of
+     * plain values, is that derived classes or custom attributes may need
+     * information from other attributes too.
+     * 
+     * @param array $rec1 The first record
+     * @param array $rec2 The second record
+     * @param String $fieldprefix The prefix that values in $rec1
+     *                            and $rec2 have
+     * @return array A record containing the sum of $rec1 and $rec2
      */
     function sum($rec1, $rec2, $fieldprefix="")
     {
@@ -571,7 +729,12 @@
     }
 
     /**
-     * Fetch the metadata about this attrib from the table metadata
+     * Fetch the metadata about this attrib from the table metadata, and
+     * process it. Lengths for the edit and searchboxes, and maximum lengths
+     * are retrieved from the table metadata by this method.
+     *
+     * @param array $metadata The table metadata from the table for this
+     *                        attribute.
      */
     function fetchMeta($metadata)
     {      
@@ -595,15 +758,24 @@
 
     /**
      * This function is called right after the attribute is added to the node.
-     * Attributes may do special initialisation here..
+     * The regular atkAttribute has no implementation for this method, but
+     * derived attributes may override this method to perform custom
+     * initialization.
      */
     function init()
     {
     }
 
     /**
-     * This function is called to compare two values.
-     *
+     * This function is called to compare if two records are considered equal
+     * by this attribute. The regular atkAttribute performs a simple string
+     * match; derived classes may override this method to perform more complex
+     * comparisons.
+     * 
+     * @param array $recA The first record holding a value for this attribute.
+     * @param array $recB The second record holding a value for the attribute.
+     * @return boolean True if the attribute considers the records equal,
+     *                 false if not.
      */
     function equal($recA, $recB)
     {
@@ -611,10 +783,15 @@
     }
 
     /**
-     * This function is called by atkNode to determine if a field
+     * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an updateDb call.
+     * The regular atkAttribute returns false if AF_READONLY_EDIT or
+     * AF_HIDE_EDIT are set, but derived attributes may override this
+     * behavior.
      *
-     * @param $record The record that is about to be saved.
+     * @param array $record The record that is going to be saved.
+     * @return boolean True if this attribute should participate in the update
+     *                 query; false if not.
      */
     function needsUpdate($record)
     {
@@ -622,10 +799,16 @@
     }
 
     /**
-     * This function is called by atkNode to determine if a field
+     * This function is called by the framework to determine if the attribute
      * needs to be saved to the database in an addDb call.
+     * The regular atkAttribute returns false if the value is empty, or if
+     * AF_HIDE is set; true in other cases. Exception: when AF_AUTO_INCREMENT
+     * is set, the method always returns true. Derived attributes may override
+     * this behavior.
      *
-     * @param $record The record that is about to be saved
+     * @param array $record The record that is going to be saved
+     * @return boolean True if this attribute should participate in the add
+     &                 query; false if not.
      */
     function needsInsert($record)
     {
@@ -639,20 +822,26 @@
       // value is still empty, but they do need to be inserted lateron.
     }
 
+    /**
+     * Retrieve the list of searchmodes supported by the attribute. 
+     * Note that not all modes may be supported by the database driver.
+     * Compare this list to the one returned by the databasedriver, to 
+     * determine which searchmodes may be used.
+     *
+     * @return array List of supported searchmodes
+     */
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      // searches can be implemented using LIKE)      
       return array("exact","substring","wildcard","regexp");
     }
 
     /**
      * Set the size(s) of the attribute
      *     
-     * @param $size The maximum number of characters that can be entered.
+     * @param mixed $size The max. number of characters that can be entered.
      *        If not specified, or set to 0, the max. size is automatically 
      *        retrieved from the table metadata.      
      *
@@ -710,13 +899,13 @@
      * what type it should be. If AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
-     * @return The 'generic' type of the database field for this
-     *         attribute. 
-     *
      * Note: Derived attributes should override this method if they 
      *       use other field types than string or number. If the 
      *       derived attribute is one that can not be stored in the
      *       database, an empty string should be returned.
+     *
+     * @return String The 'generic' type of the database field for this
+     *                attribute.      
      */
     function dbFieldType()
     {
@@ -742,6 +931,7 @@
      * for example to store decimal numbers. The number after the dot
      * should be interpreted as the number of decimals.
      *
+     * @return int The database field size
      */
     function dbFieldSize()
     {
@@ -760,7 +950,13 @@
     }
     
     /**
-     * Return the label of the field.
+     * Return the label of the attribute. 
+     * The regular atkAttribute does not make use of the $record parameter; 
+     * The label is based on the attribute name, but is automatically
+     * translated. Derived attributes may override this behavior.
+     * 
+     * @param array $record The record holding the value for this attribute.
+     * @return String HTML compatible label for this attribute
      */
     function label($record = array())
     {          
@@ -768,6 +964,17 @@
                   $this->m_ownerInstance->m_module);
     }
     
+    /** 
+     * Get the HTML label of the attribute. The difference with the label()
+     * method is that the label method always returns the HTML label, while
+     * the getLabel() method is 'smart', by taking the AF_NOLABEL and
+     * AF_BLANKLABEL flags into account.
+     *
+     * @param array $record The record holding the value for this attribute.
+     * @return String The HTML compatible label for this attribute, or an 
+     *                empty string if the label should be blank, or NULL if no
+     *                label at all should be displayed.
+     */
     function getLabel($record = array())
     {
       $label = NULL;
@@ -784,7 +991,7 @@
      * or not.
      * It can be overridden to determine when to use store() and when not to 
      * use it.
-     * @return true if it has a store method or false if it hasn't.
+     * @return boolean true if it has a store method or false if it hasn't.
      * @deprecated Use storageType($mode) instead, which has more detailed
      *             information about storage.
      */
@@ -798,17 +1005,30 @@
     }
     
     /*
-     * Determine the storage type of this attribute.     
-     * @return A bitmask containing information about storage requirements.
-     *         Note that since it is a bitmask, multiple storage types
-     *         could be returned at once.
-     *         POSTSTORE  - store() must be called, after the master record
-     *                      is saved.
-     *         PRESTORE   - store() must be called before the master record 
-     *                      is saved.
-     *         ADDTOQUERY - addtoquery() must be called, so the attribute 
-     *                      can nest itself in the master query.
-     *         NOSTORE    - nor store(), nor addtoquery() should be called.
+     * Determine the storage type of this attribute. With this method, the
+     * attribute tells the framework whether it wants to be stored in the
+     * main query (addToQuery) or whether the attribute has its own
+     * store() implementation. The regular atkAttribute checks if a store()
+     * method is present, and returns POSTSTORE in this case, or ADDTOQUERY
+     * otherwise. Derived attributes may override this behavior.
+     *
+     * Framework method. It should not be necesary to call this method 
+     * directly.
+     *
+     * @param String $mode The type of storage ("add" or "update")
+     *
+     * @return int Bitmask containing information about storage requirements.
+     *             Note that since it is a bitmask, multiple storage types
+     *             could be returned at once.
+     *             POSTSTORE  - store() method must be called, after the
+     *                          master record is saved.
+     *             PRESTORE   - store() must be called, before the master 
+     *                          record is saved.
+     *             ADDTOQUERY - addtoquery() must be called, so the attribute 
+     *                          can nest itself in the master query.
+     *             NOSTORE    - nor store(), nor addtoquery() should be
+     *                          called (attribute can not be stored in the
+     *                          database)
      */
     function storageType($mode)
     {
@@ -819,6 +1039,29 @@
         return ADDTOQUERY;
     }
     
+    /*
+     * Determine the load type of this attribute. With this method, the
+     * attribute tells the framework whether it wants to be loaded in the
+     * main query (addToQuery) or whether the attribute has its own
+     * load() implementation. The regular atkAttribute checks if a load()
+     * method is present, and returns POSTLOAD in this case, or ADDTOQUERY
+     * otherwise. Derived attributes may override this behavior.
+     *
+     * Framework method. It should not be necesary to call this method 
+     * directly.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     *
+     * @return int Bitmask containing information about load requirements.
+     *             Note that since it is a bitmask, multiple load types
+     *             could be returned at once.
+     *             POSTLOAD   - load() method must be called, after the
+     *                          master record is loaded.
+     *             PRELOAD    - load() must be called, before the master 
+     *                          record is loaded.
+     *             ADDTOQUERY - addtoquery() must be called, so the attribute 
+     *                          can nest itself in the master query.
+     */
     function loadType($mode)
     {
       // Default backwardscompatible behaviour:
@@ -830,6 +1073,7 @@
     
     /**
      * Determine the maximum length an input field may be.
+     * @return int
      */
     function maxInputSize()
     {
@@ -838,14 +1082,31 @@
     }
     
     /**
-     * Attributes can add tabs to tabbed screens. This method will be called to retrieve
-     * the tabs.
+     * Attributes can add new tabs to tabbed screens. This method will be
+     * called to retrieve the tabs. The regular atkAttribute has no
+     * implementation for this method. Derived attributes may override this.
+     *
+     * @param String $action The action for which additional tabs should be 
+     *                       loaded.
+     * @return array The list of tabs to add to the screen.
      */
     function getAdditionalTabs($action)
     {
       return array();
     }
     
+    /**
+     * Register keyboard navigation for this attribute. This method is called
+     * by the attribute itself to register the keyboard navigation, usually
+     * from its edit() method. The regular atkAttribute calls this method
+     * once for its default text input box. Derived classes may call this
+     * for any input box or control they have.
+     *
+     * @param String $id The unique HTML id of the form element to which
+     *                   navigation is added.
+     * @param int $navkeys The mask indicating which keys to support for
+     *                     navigation.
+     */
     function registerKeyListener($id, $navkeys=KB_CTRLCURSOR)
     {      
       $kb = &atkKeyboard::getInstance();
@@ -854,6 +1115,9 @@
 
     /**
      * Check if the attribute wants to be shown on a certain tab.
+     *
+     * @param String $tab The name of the tab to check.
+     * @return boolean
      */
     function showOnTab($tab)
     {

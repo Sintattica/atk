@@ -1,101 +1,105 @@
 <?PHP
 
   /**
-  * validate the atknode records
-  * this new class is made to decrease the size of the atknode class.
-  *
-  * @author Kees van Dieren <kees@ibuildings.nl>
-  * @version $Revision$
-  * $Id$
-  * @copyright Ibuildings.nl BV
-  * @package atk
-  */
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage handlers
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+   
+  /**
+   * Validator for records, based on node definition. 
+   * 
+   * The class takes a node, and based on the attribute definitions,
+   * validation can be performed on records.
+   *
+   * @author Kees van Dieren <kees@ibuildings.nl>
+   * @package atk
+   *
+   */
   class atkNodeValidator 
   {
 
-    /**
-    * The node which needs to get validated
-    *
-    * @access private
-    * @var atkNode nodeObj
-    */
+    /**     
+     * @var atkNode The node which needs to get validated
+     * @access private
+     */
     var $m_nodeObj = null;
 
-    /**
-    * the record of the node which will get validated
-    *
-    * @access private
-    * @var KeyVal record
-    */
+    /**    
+     * @var array the record of the node which will get validated
+     * @access private
+     */
     var $m_record = array();
 
     /**
-    * the mode in which the validate will get runned
-    *
-    * @access private
-    * @var string mode
-    */
+     * @var String the mode in which the validate will get runned     
+     * @access private
+     */
     var $m_mode = "";
 
     /**
-    * constructor
-    *
-    */
+     * constructor
+     *
+     */
     function atkNodeValidator() 
     {
     }
 
     /**
-    * set the list of fields which will get ignored 
-    * @param array fieldArr
-    *
-    * @return void
-    */
+     * set the list of fields which will get ignored 
+     * @param array $fieldArr List of fields to ignore during validation
+     */
     function setIgnoreList($fieldArr)
     {	
       $this->m_ignoreList = $fieldArr;
     }
 
     /**
-    * set the mode in which to validate
-    * @param string mode
-    *
-    * @return void
-    */
+     * set the mode in which to validate
+     * @param String $mode The mode ("edit"/"add")
+     */
     function setMode($mode)
     {	
       $this->m_mode = &$mode;
     }
 
     /**
-    * set the Node which should be validated
-    *
-    * @param Object nodeObj
-    * @return void
-    */
+     * Set the Node which should be validated
+     *
+     * @param atkNode $nodeObj The node for validation
+     */
     function setNode(&$nodeObj)
     {	
       $this->m_nodeObj = $nodeObj;
     }
 
     /**
-    * set the record which should get validated
-    *
-    * @return void
-    */
+     * set the record which should get validated.
+     * @param array $record The record to validate. The record is passed by
+     *                      reference, because errors that are found are
+     *                      stored in the record.
+     */
     function setRecord(&$record)
     {	
       $this->m_record = &$record;
     }
 
     /**
-    * validate an atknode
-    *
-    * @param string mode (optional) : override the mode
-    * @param array ignoreList (optional) : override the ignoreList
-    *
-    * @return void
-    */
+     * Validate a record
+     *
+     * @param string $mode Override the mode
+     * @param array $ignoreList Override the ignoreList
+     */
     function validate($mode="", $ignoreList=array())
     {	
       atkdebug("validate() with mode $mode for node ".$this->m_nodeObj->atkNodeType());
@@ -181,11 +185,13 @@
     }
 
     /**
-    * validate the field sets
-    *
-    * @param KeyVal $record
-    * @return void
-    */
+     * Check unique field combinations.
+     * The function is called by the validate() method automatically. It is
+     * not necessary to call this manually in a validation process.
+     * Errors that are found are stored in the $record parameter
+     *
+     * @param array $record The record to validate
+     */
     function validateUniqueFieldSets(&$record)
     {	
       foreach($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet)

@@ -18,7 +18,7 @@
    */
    
   /**
-   * Global debug messate array
+   * Global debug message array
    * @global array $g_debug_msg
    */
   $g_debug_msg = array();
