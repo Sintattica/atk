@@ -57,6 +57,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.121  2001/10/26 09:46:30  ivo
+   * Added needsUpdate() call to attribute API.
+   *
    * Revision 4.120  2001/10/22 13:07:48  ivo
    * New initial visualhtml attribute. Needs quite a cleanup yet, and the table
    * features have been disabled because they don't seem to work.
@@ -2751,7 +2754,7 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];        
-          if ($p_attrib->hasFlag(AF_READONLY_EDIT)==false && $p_attrib->hasFlag(AF_HIDE_EDIT)==false)
+          if ($p_attrib->needsUpdate($record))
  	        {
             if (method_exists($p_attrib,"store"))
             {

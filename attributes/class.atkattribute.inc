@@ -100,6 +100,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.23  2001/10/26 09:46:30  ivo
+   * Added needsUpdate() call to attribute API.
+   *
    * Revision 4.22  2001/09/26 12:05:52  maurice
    * Code optimalisations for error handling
    *
@@ -539,6 +542,17 @@
     function equal($recA, $recB)
     {
       return ($recA[$this->fieldName()] == $recB[$this->fieldName()]);
+    }
+
+    /**
+     * This function is called by atkNode to determine if a field
+     * needs to be saved to the database in an updateDb call. 
+     *     
+     * @param $record The record that is about to be saved.
+     */
+    function needsUpdate($record)
+    {      
+      return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));     
     }
 
   }
