@@ -480,8 +480,7 @@
     {
       $value = $record[$this->fieldName()];      
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
-      $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-      echo "<BR>"; var_dump($tmp_date);
+      $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));      
       if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
       else return "&nbsp;";
     }
