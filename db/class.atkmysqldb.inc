@@ -11,6 +11,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.7  2001/07/03 16:38:52  ivo
+   * new variable: m_affected_rows (only for mysql for now)
+   *
    * Revision 4.6  2001/06/27 15:25:42  peter
    * A lot of fixes to the oci8 support, including better outer joins, and
    * limitting queries! Fields now have an asterix behind them if they are
@@ -130,11 +133,14 @@
         $this->m_query_id = 0;
       }      
         
+      $this->m_affected_rows = 0;
+      
       /* query database */
       $this->m_query_id = @mysql_query($query, $this->m_link_id);
       $this->m_row = 0;
       $this->m_errno = mysql_errno();
       $this->m_error = mysql_error();
+      $this->m_affected_rows = mysql_affected_rows();
     
       /* invalid query */
       if (!$this->m_query_id)

@@ -5,6 +5,9 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.5  2001/07/03 16:38:52  ivo
+   * new variable: m_affected_rows (only for mysql for now)
+   *
    * Revision 4.4  2001/06/07 12:36:26  ivo
    * Atknode now reads records atomic.
    * Removed some debug echo's from the db classes.
@@ -52,6 +55,13 @@
     /*  current error number and error text */
     var $m_errno = 0;
     var $m_error = "";
+    
+    /** 
+     * number of affected rows after an update/delete/insert query 
+     * NOTE: this is currently only supported for mysql.
+     */
+    var $m_affected_rows = 0;
+    
 
     /* identification */
     var $m_type     = "db";
