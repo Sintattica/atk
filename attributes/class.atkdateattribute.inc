@@ -484,28 +484,31 @@
       }
       else 
       {
-        // auto-complete it
-        $value = explode("-", $value);
-        if (strlen($value[0])==1) $value[0]= "0".$value[0];
-        if (strlen($value[1])==1) $value[1]= "0".$value[1];
-        if (strlen($value[2])==2) 
-        {
-          if (50<$value[2])
-          {
-            $value[2]= "19".$value[2];
-          }
-          else 
-          {
-            $value[2]= "20".$value[2];
-          }
-        }
-        
-        $value = $value[0]."-".$value[1]."-".$value[2];
-        
         // plain text search condition
+        $value = $this->_autoCompleteDateString($value);
         $searchcondition = $query->exactCondition($field, $value);
       }
       return $searchcondition;
+    }
+
+    /**
+     * Completes a date string by adding zeros to day and month
+     * (if absent) and 19 or 20 in front of the year, depending
+     * on the current value of the year. If the year is below 50
+     * it will assume it's a year of the 21th century otherwise
+     * (50 or above) it will assume it's a 20th century year.
+     * @todo make this suitable for other date formats like
+     *       YYYY-MM-DD
+     * @todo change this code when it's approaching 2050 :-)
+     * @param $value String A date in String format (like 9-12-2005)
+     * @return String The auto-completed date String
+     */
+    function _autoCompleteDateString($value)
+    {
+      $elems = explode("-", $value);
+      return sprintf("%02d", $elems[0])."-".
+             sprintf("%02d", $elems[1])."-".
+             ($elems[2]<50?"20":"19").sprintf("%02d", $elems[2]);
     }
 
     /**
