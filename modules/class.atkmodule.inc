@@ -112,10 +112,12 @@
       /* check for file */
       $file = nodeFile($node);
       if (!file_exists($file))
-      {
-        if (function_exists("missing_class_handler"))
+      {        
+        atkimport("atk.utils.atkclassloader");
+        $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array("node"=>$node));
+        if ($res!==false)
         {
-          return missing_class_handler($node);
+          return $res;
         }
         else
         {

@@ -83,13 +83,10 @@
         $mod = new $modname();
       }
       else
-      {                  
-        if (function_exists("missing_module_handler"))
-        {
-          atkdebug("Calling missing_module_handler() for module $modname");
-          $mod = missing_module_handler($modname);
-        }
-        else
+      {    
+        atkimport("atk.utils.atkclassloader");              
+        $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array("module"=>$modname));
+        if ($mod===false)        
         {               
           // Changed by Ivo: This used to construct a dummy module, so
           // modules could exist that didn't have a module.inc file.
