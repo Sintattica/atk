@@ -195,7 +195,7 @@
       // if the select uses mlconditions there are always three records and thus no need to have different situations?
 //      if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
 //      {
-        $this->mergeMlRecords(&$node,&$recordset);
+        $this->mergeMlRecords($node,$recordset);
         /*
       }
       else if(!$node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
