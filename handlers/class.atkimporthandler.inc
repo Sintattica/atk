@@ -372,9 +372,16 @@
       $delimiterChar = strtr($delimiterChar, $regExpSpecialChars);
       $enclosureChar = strtr($enclosureChar, $regExpSpecialChars);
       
-      // Some exports don't enclose empty fields with the enclosureChar. Let's fix that first so we can use
-      // one preg_split statement that works in those cases too.
-      $line = str_replace($delimiterChar.$delimiterChar,$delimiterChar.$enclosureChar.$enclosureChar.$delimiterChar, $line);      
+      // Some exports don't enclose empty or numeric fields with the enclosureChar. Let's fix
+      // that first so we can use one preg_split statement that works in those cases too.      
+      // loop until all occurrences are replaced. Contains an infinite loop prevention.
+      for ($fix="", $i=0, $_i=substr_count($line, $enclosureChar); $fix!=$line && $i<$_i;$i++)
+      {
+        if ($fix!="") $line = $fix;
+        $fix = preg_replace('/'.$delimiterChar.'(\d*)'.$delimiterChar.'/',
+                           $delimiterChar.$enclosureChar.'\\1'.$enclosureChar.$delimiterChar, $line);
+      }       
+      // now split by delimiter
       $expression = '#'.$enclosureChar.' *'.$delimiterChar.' *'.$enclosureChar.'#';
       return preg_split($expression, $line);                
     }
