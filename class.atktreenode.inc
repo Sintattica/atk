@@ -17,6 +17,9 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     *
     * $Id$
     * $Log$
+    * Revision 4.2  2001/04/23 13:10:48  sandy
+    * small bugfix in the tree class
+    *
     * Revision 4.1  2001/04/23 12:32:57  sandy
     * Made the TreeIcons themeable, updated the Themes howto, and removed some debugging code in the atktreenode.
     *
@@ -196,7 +199,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 		    } 
 		    if ( $levels[$this->m_tree[$i][0]]==0 ) 
 		    { 
-		    	$levels[$this->m_tree[$i][0]]=1; 
+		    	$levels[$this->m_tree[$i][0]]=1;
 		    	$this->m_tree[$i][4]=1; 
 		    } 
 		    else 
@@ -289,8 +292,6 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 							    } 
 							    $i++; 
 						    } 
-						    $tmp="&menu=$menu";
-						    $params=$params.$tmp;
 						    $res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_plus."\" border=no></a></td>\n"; 
 					    }
 					    else
@@ -315,8 +316,6 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 							    } 
 							    $i++; 
 						    } 
-						    $tmp="&menu=$menu";
-						    $params=$params.$tmp;
 						    $res.="<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_minus."\" border=no></a></td>\n"; 
 					    }
 					    else
@@ -345,9 +344,7 @@ if (!defined("CLASS_ATKTREENODE_INC"))
 					    } 
 					    $i++; 
 				    } 
-				    $tmp="&menu=$menu";
-				    $params=$params.$tmp;
-                
+				                    
 				    if ($expand[$cnt]==0) 
 					    $res.= "<td><a href=\"dispatch.php?atknodetype=".$this->m_type."&atkaction=admin&".$script.$params."\"><img src=\"".$img_expand."\" border=no></a></td>\n"; 
 				    else 
@@ -369,19 +366,22 @@ if (!defined("CLASS_ATKTREENODE_INC"))
     			/****************************************/ 
     			/* end row   with the functions                      */     
     			/****************************************/ 
-         $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
-         $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
-         if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
-         {    
-           $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
-         }
-         if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
-         {
-            // Do nothing
-         }
-         else
-         {
-           $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
+          $res.='<td> '.url("dispatch.php?atknodetype=".$this->m_type."&atkaction=add&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkfilter=".$this->m_parent.".".$this->m_primaryKey[0].rawurlencode("='".$this->m_tree[$cnt][2]."'"), text("add"));
+          if($cnt>0)
+          {
+            $res.=' '.url("dispatch.php?atkaction=edit&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("edit"));
+            if(($this->hasFlag(NF_COPY)&&$this->allowed("add")&&!$this->hasflag(NF_TREE_NO_ROOT_COPY))||($depth_org!=1&&$this->hasFlag(NF_COPY)&&$this->allowed("add"))) 
+            {    
+              $res.=' '.url("dispatch.php?atkaction=copy&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("copy"));
+            }
+            if($this->hasFlag(NF_TREE_NO_ROOT_DELETE)&&$depth_org==1)
+            {
+               // Do nothing
+            }
+            else
+            {
+              $res.=' '.url("dispatch.php?atkaction=delete&atknodetype=".$this->m_type."&atkreturnurl=".rawurlencode('dispatch.php?atknodetype='.$this->m_type.'&atkaction=admin&p='.$p)."&atkselector=".$this->m_table.'.'.$this->m_primaryKey[0].'='.$this->m_tree[$cnt][2], text("delete"));
+            }
           }
          $res.= "</td></tr>\n";       
 		    } 
