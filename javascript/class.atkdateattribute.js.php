@@ -7,9 +7,13 @@
    * @version $Revision$
    *
    * $Id$
+   *
    * $Log$
+   * Revision 4.4  2001/04/25 15:56:07  peter
+   * fixed a minor bug concerning the day-of-week
+   *
    * Revision 4.3  2001/04/25 07:29:40  sandy
-   * fixed a bug in the data javascript for multilanguage
+   * fixed a bug in the date javascript for multilanguage
    * added the stickyvars to the onetomany relations urls
    *
    * Revision 4.2  2001/04/24 18:23:35  peter
@@ -17,7 +21,6 @@
    * a bug with the day-of-week added in the previous commit. The file has
    * been totally rewritten to be more clear and understandable so other
    * people can also fix bugs in this script. ;)
-   *
    */
   
   /* change dir for includes */
@@ -26,12 +29,12 @@
   include "config.inc.php";
   include "atk/atktools.inc";
   include "atk/languages/".$config_languagefile;
-  // Application specific language file
+  
+  /* application specific language file */
   if (file_exists("languages/".$config_languagefile))
   {
     include "languages/".$config_languagefile;
   }
-
 
   /* english month names and weekdays */
   $m_months_short = Array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
@@ -151,7 +154,7 @@ function AdjustDate(frm, arr, format, str_min, str_max)
   for(i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;
   for(i = current["d_min"]; i <= current["d_max"]; i++) 
   {
-    date_tmp = new Date(current["y"], current["m"], i);
+    date_tmp = new Date(current["y"], current["m"]-1, i);
     str_day  = m_weekdays[date_tmp.getDay()] + " ";    
     if ("d" == format_day) str_day += (i < 10 ? "0" : "") + i;
     else str_day += i;
