@@ -14,6 +14,7 @@ Changes in ATK 5.0.5
 * Fixed bug in atkManyToOnerelation when pointing to a primarykey that in its
   turn was a manytoonerelation (in addToQuery function). [Lineke,Ivo]
 * atkManyBoolRelation now takes initial_values into account. [Ivo]
+* Fixed: atkLanguage broke tooltip functionality [Boy]
 
 Changes in ATK 5.0.4
 --------------------
