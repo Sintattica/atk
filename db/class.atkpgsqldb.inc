@@ -304,7 +304,7 @@
      */
     function getSearchModes()
     {      
-      return array("exact","substring","wildcard","regexp");
+      return array("exact","substring","wildcard","regexp","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
     
   }  

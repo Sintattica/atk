@@ -65,7 +65,7 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
     }     
     
 
@@ -80,5 +80,17 @@
 	    if ($record[$this->fieldName()]>0) return text("yes");
 	    return text("no");
     }
+  
+    function getSearchModes()
+    {
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      return array("exact");
+    }
+    
+    
   }
 ?>

@@ -636,7 +636,7 @@
       // appropriate way to edit the data. This may be overridden by supplying
       // an <attributename>_edit function in the derived classes.
       //for($i=0;$i<count($this->m_attribIndexList);$i++)
-      for($i=0;$i<=count($this->m_attribIndexList);$i++)
+      for($i=0;$i<count($this->m_attribIndexList);$i++)
       {
         $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
         
@@ -1008,8 +1008,16 @@
 
       $form.=$g_layout->ret_table_simple();      
    
-      $searchModes = $g_db->getSearchModes();
-            
+      $dbSearchModes = $g_db->getSearchModes();
+      $form.='<tr>';
+      $form.=$g_layout->ret_td(text("search_mode"),'colspan="1"');
+      $sel.='<input type="radio" name="atksearchmethod" value="AND" checked>'.text("search_and").'&nbsp;&nbsp;&nbsp;';
+      $sel.='<input type="radio" name="atksearchmethod" value="OR">'.text("search_or");
+      $form.=$g_layout->ret_td($sel);
+      $form.='</tr>';
+      $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="3"').'</tr>';
+      
+      /*      
       if (count($searchModes)>1)
       {      
         $form.='<tr>';
@@ -1033,14 +1041,15 @@
       }
       
       $form.='<tr>'.$g_layout->ret_td("<hr>",'colspan="2"').'</tr>';
-                      
+         */             
       foreach (array_keys($this->m_attribList) as $attribname)
       {      
         $p_attrib = &$this->m_attribList[$attribname];
-      //for($i=0;$i<count($this->m_attribIndexList);$i++)
-      //{
-      //  $p_attrib = &$this->m_attribList[$this->m_attribIndexList[$i]["name"]];
-  
+        $attribSearchModes = $p_attrib->getsearchmodes();
+        $searchModes = array_intersect($dbSearchModes,$attribSearchModes);
+
+
+
         if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
         {        
           $form.='<tr>';
@@ -1080,7 +1089,24 @@
           }
                                     
 	    
-          $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');	    
+          $form.=$g_layout->ret_td($editsrc,'colspan="'.$tdcount.'" valign="top"');
+          if(count($searchModes)==1)
+          {
+            $sel = '<input type="hidden" name="atksearchmode['.$p_attrib->m_name.']" value="'.$searchModes[0].'">'.text("search_".$searchModes[0]);
+          }
+          else
+          {
+            $sel = '<select name="atksearchmode['.$p_attrib->m_name.']">';
+            for ($i=0;$i<count($searchModes);$i++)
+            {
+              // if supported, we select the 'like' searchmode by default
+              $selected="";
+              if ($this->m_postvars["atksearchmode"][$p_attrib->m_name]==$searchModes[$i]||($this->m_postvars["atksearchmode"][$p_attrib->m_name]==""&&$searchModes[$i]=="substring")) $selected="selected";
+              $sel.= '<option value="'.$searchModes[$i].'" '.$selected.'>'.text("search_".$searchModes[$i]);
+            }
+            $sel.= '</select>';
+          } 
+          $form.=$g_layout->ret_td($sel);
           $form.='</tr>';
         }
                  
@@ -1170,7 +1196,7 @@
         else $label=$char;
         
         // We use wildcard search for the index. Should be supported by any database.
-        $nav.=href($PHP_SELF."?atksearch[".$this->m_index."]=".$char."*&atksearchmode=wildcard",$label);
+        $nav.=href($PHP_SELF."?atksearch[".$this->m_index."]=".$char."*&atksearchmode[".$this->m_index."]=wildcard",$label);
         
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else 
@@ -1326,7 +1352,16 @@
         
         $searchmode = $this->m_postvars["atksearchmode"];        
         if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");      
-        $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+        if(is_array($searchmode))
+        {
+          // Get the first one, because they are all the same for now
+          // TODO: every attrib needs to get his own searchmode
+          $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode[0].'">';
+        }
+        else
+        {
+          $searchRow.= '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+        }    
         $searchable = false;
         
         $searchBtn = '<input type="submit" value="'.text("search").'">';        
@@ -2624,12 +2659,12 @@
     function countDb($selector="", $excludeList="", $includeList="")
     {
       global $g_db;
-
       $name = "atk".atkconfig("database")."query";
       $query = new $name();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
+      $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
       if (!$this->hasFlag(NF_NO_FILTER))
       {
@@ -2673,7 +2708,7 @@
             else 
             {
               $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-              $query->addCondition($condition);              
+              $query->addSearchCondition($condition);              
             }
           }
         }
@@ -2740,7 +2775,7 @@
     function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="")
     {      
       global $g_db;      
-          
+
       $this->m_records = array();
       $selectlist = array();
       $loadlist = array();
@@ -2752,6 +2787,7 @@
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
+      $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
 
       if (!$this->hasFlag(NF_NO_FILTER))
       {
@@ -2774,7 +2810,6 @@
       {      
         $searchmode = $this->m_postvars["atksearchmode"];
         if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");        
-        
         while (list($key,$value) = each($searchArray))
         {
           if ($value!="")
@@ -2782,7 +2817,7 @@
             $p_attrib = &$this->m_attribList[$key];
             if (is_object($p_attrib)) 
             {
-              if(is_array($seachmode))
+              if(is_array($searchmode))
               {
                 $search = $searchmode[$key];
                 if ($search=="") $search = atkconfig("search_defaultmode");
@@ -2796,7 +2831,7 @@
             else 
             {
               $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
-              $query->addCondition($condition);              
+              $query->addSearchCondition($condition);              
             }
           }
         }
@@ -3182,11 +3217,11 @@
     function editingAfterAdd()
     {
       global $g_sessionData, $atklevel,$g_sessionManager;
-      
       $namespace = $g_sessionManager->m_namespace;           
       $res = ($this->m_action == "update"
               && $g_sessionData[$namespace]["stack"][$atklevel-1]["atkaction"] == "add"
-             && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == (empty($this->m_module) ? "" : $this->m_module.".").($this->m_type));  
+              && $g_sessionData[$namespace]["stack"][$atklevel-1]["atknodetype"] == (empty($this->m_module) ? "" : $this->m_module.".").($this->m_type));
+      
       return $res;
     }
     

@@ -28,6 +28,12 @@
     * Array with conditions
     */
     var $m_conditions;
+    var $m_searchconditions;
+
+    /**
+    * Var with AND or OR method 
+    */
+    var $m_searchmethod;
 
     /**
     * Array with aliases
@@ -63,10 +69,12 @@
       $this->m_fields = Array();
       $this->m_tables = Array();
       $this->m_conditions = Array();
+      $this->m_searchconditions = Array();
       $this->m_aliases = Array();
       $this->m_values = Array();
       $this->m_fieldaliases = Array();
       $this->m_joins = Array();
+      $this->m_searchmethod = "";
       
       // start at 'A'.
       $this->m_generatedAlias = "A";
@@ -151,6 +159,15 @@
       if ($condition!="") $this->m_conditions[] = $condition;
     }        
 
+  /**
+    * Add search condition to search condition Array
+    * @param $condition Condition
+    */
+    function addSearchCondition($condition)
+    {
+      if ($condition!="") $this->m_searchconditions[] = $condition;
+    }        
+
     /**
     * Builds the SQL Select query
     * @result a SQL Select Query
@@ -180,7 +197,21 @@
 
       if (count($this->m_conditions)>0)
       {
-        $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+          $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+      }
+
+      if (count($this->m_searchconditions)>0)
+      {
+        $prefix=" ";
+        if(count($this->m_conditions)==0) $prefix=" WHERE ";
+        if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
+        {
+          $result.= $prefix."(".implode(" AND ",$this->m_searchconditions).")";
+        }
+        else
+        {
+          $result.= $prefix."(".implode(" OR ",$this->m_searchconditions).")";
+        }
       }
       
       if (count($this->m_groupbys)>0)
@@ -215,7 +246,14 @@
  
        if (count($this->m_conditions)>0)
        {
-         $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+         if($this->m_searchmethod==""||$this->m_searchmethod=="AND")
+         {
+           $result.= " WHERE ".implode(" AND ",$this->m_conditions);
+         }
+         else
+         {
+           $result.= " WHERE ".implode(" OR ",$this->m_conditions);
+         }
        }
        
        if (count($this->m_groupbys)>0)
@@ -335,6 +373,65 @@
       }
     }
     
+    /**
+        *  generate searchcondition with greater than
+        */
+    function greaterthanCondition($field, $value)
+    {
+      if($value[0]=='!')
+      {
+        return $field." < '".substr($value,1,strlen($value))."'";
+      }
+      else
+      {
+        return $field." > '".$value."'";
+      }
+    }
+ 
+   /**
+        *  generate searchcondition with greater than
+        */
+    function greaterthanequalCondition($field, $value)
+    {
+      if($value[0]=='!')
+      {
+        return $field." < '".substr($value,1,strlen($value))."'";
+      }
+      else
+      {
+        return $field." >= '".$value."'";
+      }
+    }
+    
+    /**
+        *  generate searchcondition with less than
+        */
+    function lessthanCondition($field, $value)
+    {
+      if($value[0]=='!')
+      {
+        return $field." > '".substr($value,1,strlen($value))."'";
+      }
+      else
+      {
+        return $field." < '".$value."'";
+      }
+    }
+
+    /**
+        *  generate searchcondition with less than
+        */
+    function lessthanequalCondition($field, $value)
+    {
+      if($value[0]=='!')
+      {
+        return $field." > '".substr($value,1,strlen($value))."'";
+      }
+      else
+      {
+        return $field." <= '".$value."'";
+      }
+    }
   }
 
   $name = $config_atkroot."atk/db/class.atk".$GLOBALS["config_database"]."query.inc";

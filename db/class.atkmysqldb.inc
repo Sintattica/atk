@@ -340,7 +340,7 @@
      */
     function getSearchModes()
     {      
-      return array("exact","substring","wildcard","regexp","soundex");
+      return array("exact","substring","wildcard","regexp","soundex","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
     
   }  

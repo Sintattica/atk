@@ -324,8 +324,16 @@
       }
       else
       {
-        // probably a varchar field..
-        $query->addCondition($query->exactCondition($table.".".$this->fieldName(),$dateval));
+        $func = $searchmode."Condition";
+        if (method_exists($query,$func))
+        {
+          $query->addSearchCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
+        }
+        else
+        {
+          // probably a varchar field..
+          $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),$dateval));
+        }
       }      
     }
 
@@ -454,5 +462,16 @@
 			if (!empty($tmp_date)) return $this->formatDate($tmp_date, $this->m_date_format_view, 0);
 			else return "";
     }
+    
+     function getSearchModes()
+    {
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
+    }  
+    
   }
 ?>

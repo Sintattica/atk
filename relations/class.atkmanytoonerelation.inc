@@ -258,7 +258,7 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      $query->addCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      $query->addSearchCondition($query->exactCondition($table.".".$this->fieldName(),escapeSQL($value)));
       
       //return $table.".".$this->fieldName()." = '".$value."'";
       

@@ -92,7 +92,7 @@
     
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      return $query->addCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value)));
+      return $query->addSearchCondition($query->substringCondition($table.".".$this->fieldName(),escapeSQL($value)));
     }
 
   }

@@ -296,11 +296,11 @@
       $func = $searchmode."Condition";
       if (method_exists($query,$func))
       {
-        $query->addCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
+        $query->addSearchCondition($query->$func($table.".".$this->fieldName(),escapeSQL($value)));
       }
       else
       {
-        atkdebug("Database doesn't support searchmode '$searchmode', ignoring condition.");
+        atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
       }
     }
 
@@ -398,6 +398,16 @@
     function needsUpdate($record)
     {      
       return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));     
+    }
+
+    function getSearchModes()
+    {
+      // exact match and substring search should be supported by any database.
+      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
+      // searches can be implemented using LIKE)
+      // Possible values
+      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+      return array("exact","substring","wildcard","regexp");
     }
 
   }
