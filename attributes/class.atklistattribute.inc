@@ -17,6 +17,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.2  2001/05/22 08:36:50  peter
+   * Added the searchCondition method which will be used by atkNode to create
+   * a proper search condition for the attribute.
+   *
    * Revision 4.1  2001/05/10 08:31:00  ivo
    * Major upgrade. Changes:
    * * Deprecated the m_records/m_currentRec feature of atknode. Nodes are now
@@ -166,5 +170,16 @@
       $result.='</select>';
       return $result;
     }
+    
+    /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition($table, $value)
+    {
+      return $table.".".$this->fieldName()." = '$value'";
+    }    
   }
 ?>

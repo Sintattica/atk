@@ -88,6 +88,10 @@
    *
    * $Id$
    * $Log$
+   * Revision 4.8  2001/05/22 08:36:50  peter
+   * Added the searchCondition method which will be used by atkNode to create
+   * a proper search condition for the attribute.
+   *
    * Revision 4.7  2001/05/17 10:27:12  ivo
    * Fixes to session management, new AF_LARGE feature for manytoonerelation.
    * Improved handling of GET_VARS and POST_VARS (requires a new dispatcher)
@@ -367,6 +371,16 @@
       return $result;
     }
 
+    /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition($table, $value)
+    {
+      return $table.".".$this->fieldName()." LIKE '%".$value."%'";
+    }
 
     /**
      * Returns a displayable string for this value.
