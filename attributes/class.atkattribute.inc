@@ -1,8 +1,8 @@
 <?php
 
   /** Define some flags for attributes. Use the constructor of the atkAttribute
-  * class to set the flags. (concatenate multiple flags with '|')
-  */
+   * class to set the flags. (concatenate multiple flags with '|')
+   */
   define("AF_UNIQUE"        ,  4); // The value of the attribute must be unique.
   define("AF_OBLIGATORY"    ,  8); // A value must always be entered for the attribute.
   define("AF_HIDE_LIST"     ,  1); // If this flag is set, the attribute will not show
@@ -79,7 +79,7 @@
    * control its behaviour, like whether an atkAttribute
    * is obligatory, etc.
    *
-   * @author Ivo Jansch <ivo@achievo.com>
+   * @author Ivo Jansch <ivo@achievo.org>
    *
    * @version $Revision$
    *

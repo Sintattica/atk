@@ -2,7 +2,7 @@
   /**
    * The atkDurationAttribute is an attribute for entering a length of time.
    *
-   * @author  Ivo Jansch <ivo@achievo.com>
+   * @author  Ivo Jansch <ivo@achievo.org>
    * @version $Revision$
    *
    * $Id$

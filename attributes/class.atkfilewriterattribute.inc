@@ -3,7 +3,7 @@
    * The atkFileWriterAttribute is an attribute that reads data from / saves 
    * data to a file, instead of the database.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$      

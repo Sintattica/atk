@@ -2,7 +2,7 @@
   /**
    * This class does authentication via a user/password in the configfile
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$

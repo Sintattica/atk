@@ -3,7 +3,7 @@
   /**
    * This class manages security in atk.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$   

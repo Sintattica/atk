@@ -1,22 +1,22 @@
 <?php
 
   /**
-    * Extension on the atkNode class. Here you will find all 
-    * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
-    * instead of atkNode. Example:
-    * class classname extends atkTreeNode
-    * {
-    *      $this->atkTreeNode("nodeclass",NF_TREE|NF_COPY); 
-    *
-    * }
-    *
-    * @author Martin Roest (martin@ibuildings.nl) 
-    *         Sandy Pleyte (sandy@achievo.com)
-    * @version $Revision$
-    *
-    * $Id$
-    *
-    */
+   * Extension on the atkNode class. Here you will find all 
+   * functions for the tree view. If you want to use the treeview, you must define the atkTreeNode 
+   * instead of atkNode. Example:
+   * class classname extends atkTreeNode
+   * {
+   *      $this->atkTreeNode("nodeclass",NF_TREE|NF_COPY); 
+   *
+   * }
+   *
+   * @author Martin Roest (martin@ibuildings.nl) 
+   *         Sandy Pleyte (sandy@achievo.org)
+   * @version $Revision$
+   *
+   * $Id$
+   *
+   */
   include_once($config_atkroot."atk/atktreetools.inc");
   
   $g_count = 1;

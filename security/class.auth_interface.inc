@@ -5,7 +5,7 @@
    * authentication/authorization methods need to derive from this 
    * class.   
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *   
    * $Id$

@@ -14,7 +14,7 @@
    *   reason the constructor accepts a parameter which tells
    *   it to do a newline-to-br conversion.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *   
    * $Id$   

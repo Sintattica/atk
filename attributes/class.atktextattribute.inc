@@ -3,7 +3,7 @@
    * The atkTextAttribute class represents an attribute of a node
    * that is a big text field.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *   
    * $Id$

@@ -2,7 +2,7 @@
   /**
    * The atkNumberAttribute can be used for numeric values.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$   

@@ -6,7 +6,7 @@
    *
    * TODO: relations with a referential key that consist of more than one field don't work.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    *
    * @version $Revision$
    *   

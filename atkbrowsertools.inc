@@ -3,7 +3,7 @@
    * A collection of functions for browser detection
    *
    * @author Wim Kosten <wim@ibuildings.nl>
-   *         Ivo Jansch <ivo@achievo.com>
+   *         Ivo Jansch <ivo@achievo.org>
    * @version $Revision$
    *
    * $Id$

@@ -1,10 +1,10 @@
 <?php
   /**
    * The atkDateAttribute class offers an advanced date widget for date fields.
-   * @author  Peter C. Verhage <peter@achievo.com>
-              Tom Schenkenberg <tom@achievo.com>
+   * @author  Peter C. Verhage <peter@achievo.org>
+   *          Tom Schenkenberg <tom@achievo.org>
    *
-   * @version $Revision$
+   * @version $Revision$   
    *
    * $Id$
    */

@@ -2,7 +2,7 @@
   /**
    * This class does authentication through an IMAP server.
    *
-   * @author Sandy Pleyte (sandy@achievo.com)
+   * @author Sandy Pleyte (sandy@achievo.org)
    * @version $Revision$
    *
    * $Id$

@@ -8,7 +8,7 @@
    * This relation essentially creates a dropdown box, from which 
    * you can select from a set of records.
    *
-   * @author Ivo Jansch <ivo@achievo.com>
+   * @author Ivo Jansch <ivo@achievo.org>
    * @version $Revision$
    *   
    * $Id$   

@@ -3,7 +3,7 @@
   /**
    * Handles database connectivity and database interaction.
    *
-   * @author Peter Verhage <peter@achievo.com>
+   * @author Peter Verhage <peter@achievo.org>
    * @version $Revision$
    *
    * $Id$
@@ -33,7 +33,6 @@
     
     // array to store meta-information about tables.
     var $m_tableMeta = array();
-
 
     /* link and query handles */
     var $m_link_id  = 0;

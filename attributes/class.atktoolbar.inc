@@ -5,7 +5,7 @@
    *
    * This attribute only works in Internet Explorer 4 and up.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$

@@ -3,7 +3,7 @@
    * This class is a non-authenticating authentication thingee. (it 
    * is used for applacations that don't need security)
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$   

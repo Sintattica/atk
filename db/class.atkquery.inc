@@ -5,7 +5,7 @@
    * ansi compliant SQL. The code for this should go into classes
    * that extend this class.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$

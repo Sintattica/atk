@@ -4,7 +4,7 @@
    * The atkListAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined values.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$ 
    *
    * $Id$   

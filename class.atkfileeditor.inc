@@ -10,7 +10,7 @@
    *       Other overrides may or me not be supported, but this has not been
    *       tested.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$

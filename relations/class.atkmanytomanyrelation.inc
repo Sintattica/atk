@@ -6,7 +6,7 @@
    * This class is used as base class for special kinds of manytomany 
    * relations, like the manyboolrelation.
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$   

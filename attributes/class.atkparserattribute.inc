@@ -3,7 +3,7 @@
    * The atkParserAttribute can be used to create links or texts that 
    * contain values, by supplying a template as parameter.   
    *
-   * @author	 : Ivo Jansch <ivo@achievo.com>
+   * @author	 : Ivo Jansch <ivo@achievo.org>
    * @version	 : $Revision$
    *
    * $Id$

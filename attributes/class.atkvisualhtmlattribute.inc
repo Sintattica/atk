@@ -2,7 +2,7 @@
   /**
    * The atkVisualHtmlAttribute class is an MS IE html edit control thingee
    *
-   * @author Ivo Jansch <ivo@achievo.com>
+   * @author Ivo Jansch <ivo@achievo.org>
    * @version $Revision$
    *
    * $Id$   

@@ -8,7 +8,7 @@
    * This attribute is automatically set to readonly, and to hide add (because we only
    * have the first timestamp AFTER a record is added).
    *
-   * @author Ivo Jansch (ivo@achievo.com)
+   * @author Ivo Jansch (ivo@achievo.org)
    * @version $Revision$
    *
    * $Id$

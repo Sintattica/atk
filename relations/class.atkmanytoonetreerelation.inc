@@ -3,7 +3,7 @@
    * A special many to one relation, where the destination of the relation
    * is a tree structure. 
    *
-   * @author Sandy Pleyte <sandy@achievo.com>
+   * @author Sandy Pleyte <sandy@achievo.org>
    * @version $Revision$
    *   
    * $Id$
