@@ -4,6 +4,10 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.0.4
+--------------------
+* atkLanguage now also supports empty values in language files. [Boy]
+
 Changes in ATK 5.0.3
 --------------------
 * Small bugfixes in language files. [Boy, Ivo]
@@ -27,7 +31,6 @@ Changes in ATK 5.0.3
 * Fixed typo in a flag that caused a wrong count query. (bug #307) [Nicola]
 * Fixed bug in the atkmanytoonerelation. (bug #308) [Ruiz]
 * Fixed bug in saving float values (atknumberattribute). [Martin]
-* atkLanguage now also supports empty values in language files. [Boy]
 
 Changes in ATK 5.0.2
 --------------------
