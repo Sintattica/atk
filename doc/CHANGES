@@ -4,8 +4,13 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Note: The CHANGES file has not been accurately updated until the release of
-ATK 5.0. The changes below are rough feature indications.
+Changes in ATK 5.0.2
+--------------------
+* Fixed missing db_sequence entries in demo install.sql file. [Yuri]
+* Fixed several bugs in dhtml tabs. (bug #301) [Boy]
+* Fixed NF_LOCK images. [Boy]
+* Fixed bug in atkFileAttribute's AF_FILE_PHYSICAL_DELETE. [Ivo]
+* atkNumberAttribute can now save NULL values. [Martin]
 
 Changes in ATK 5.0.1
 --------------------
@@ -38,6 +43,9 @@ Changes in ATK 5.0
   + Various other attributes. [Martin, Lineke, Ivo]
   + atkTreeNode for managing tree relationships in a node. [Sandy, Ivo]
   + Multilanguage attributes for data internationalization. [Martin, Peter]
+
+Note: The CHANGES file has not been accurately updated until the release of
+ATK 5.0. The changes below are rough feature indications.
  
 Changes in ATK 4.0 Light
 ------------------------
