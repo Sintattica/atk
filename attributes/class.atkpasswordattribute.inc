@@ -61,7 +61,7 @@ class atkPasswordAttribute extends atkAttribute
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
 
                 text("password_again").':<br>'.
-                '<input type="password" name="'.,$fieldprefix.$this->fieldName().'[again]"'.
+                '<input type="password" name="'.$fieldprefix.$this->fieldName().'[again]"'.
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
      }
