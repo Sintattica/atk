@@ -70,6 +70,15 @@
       return $this->render("box.tpl", $vars);
     }
     
+    function renderTop($vars)
+    {
+      if (file_exists($this->m_theme->tplPath("top.tpl")))
+      {
+        return $this->render("top.tpl", $vars);
+      }
+      return $this->render("box.tpl", $vars);
+    }
+    
     function renderTabs($vars)
     {      
       if ($this->m_theme->getAttribute("tabtype")=="dhtml")
@@ -177,8 +186,6 @@
           }
         }
       }
-    }
-      
+    }   
   }
-
 ?>
