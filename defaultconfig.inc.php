@@ -148,4 +148,9 @@
   // 1 to check just for node
   // 2 to check for module and node
   $config_atklangcheckmodule = 2;
+
+  // To force the themecompiler to recompile the theme all the time
+  // uncomment the config variable below.
+  // This can be handy when working on themes.
+  // $config_force_theme_recompile = true;
 ?>
