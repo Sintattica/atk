@@ -50,9 +50,10 @@
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'><br><br>';
 
+      
       /* first language of other languages */
-      $result .= text('multilanguage_choice').':<br>'.
-                 '<input type="text" name="'.$this->formName().'[multilanguage]"'.
+      $result .= text((count($config_language)==2 ? $config_language[1] : "multilanguage_choice").'').':<br>'.
+                 '<input type="text" name="'.$this->formName().'['.(count($config_language)==2 ? $config_language[1] : "multilanguage").']"'.
                  ' value="'.htmlspecialchars($record[$this->fieldName()][$config_language[1]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'><br><br>';
