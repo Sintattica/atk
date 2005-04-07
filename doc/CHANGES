@@ -24,6 +24,8 @@ Changes in ATK 5.1.1
 + atkNode() sets the global $g_db as databaseconnection [Boy]
 + Added getFlags() and setFlags($flags) to atkAttribute
   [Dennis-Jan, MartinL]
++ Added setSearchMode() to atkAttribute, making it possible to set 
+  a searchmode for a single attribute [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 

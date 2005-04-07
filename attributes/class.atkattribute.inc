@@ -419,6 +419,14 @@
      * @var mixed 
      */
     var $m_tabs="*";
+    
+    /**
+     * The searchmode for this attribute
+     *
+     * This var exists so that you can assign searchmodes to specific attributes
+     * instead of having a general searchmode for the entire search
+     */
+    var $m_searchmode = "";
 
     /**
      * Constructor
@@ -942,6 +950,8 @@
       // we only take our own attribute value from the array
       if (is_array($value)) $value = $value[$this->fieldName()];
       
+      if ($this->m_searchmode) $searchmode = $this->m_searchmode;
+           
       $func = $searchmode."Condition";
       if (method_exists($query,$func) && $value)
       {
@@ -951,6 +961,18 @@
       {
         return false;
       }
+    }
+    
+    /**
+     * Sets the searchmode for an attribute
+     * This will cause attributes that respect this
+     * to use the attributes searchmode for that particulair attribute
+     * instead of the general searchmode.
+     * @param String $searchmode The searchmode we want to set on the attribute
+     */
+    function setAttributeSearchmode($searchmode)
+    {
+      $this->m_searchmode = $searchmode;
     }
 
     /**
