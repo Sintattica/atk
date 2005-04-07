@@ -421,6 +421,13 @@
     var $m_tabs="*";
     
     /**
+     * The id of the attribute in the HTML
+     * @access private
+     * @var String
+     */
+    var $m_htmlid;
+    
+    /**
      * The searchmode for this attribute
      *
      * This var exists so that you can assign searchmodes to specific attributes
@@ -659,7 +666,19 @@
      */
     function getHtmlId($fieldprefix)
     {
-      return $fieldprefix.$this->fieldName();
+      $this->m_htmlid = $fieldprefix.$this->fieldName();
+      return $this->m_htmlid;
+    }
+    
+    /**
+     * Returns the html identifier of the attribute without setting it
+     * Created because getHtmlId would always SET the htmlid while getting it.
+     * @return String The HTML id of this attribute
+     */
+    function getAttributeHtmlId()
+    {
+      if ($this->m_htmlid) return $this->m_htmlid;
+      else return $this->fieldName();
     }
 
     /**
