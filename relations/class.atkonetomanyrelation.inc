@@ -219,7 +219,7 @@
      */
     function _getRecordList($myrecords)
     {
-      if (count($myrecords)!=0)
+      if (count($myrecords)!=0 || $this->m_ownerInstance->m_postvars['atksearch'])
       {
         $actions = array();
         $params = array();
