@@ -869,7 +869,8 @@
      * search in the 'extended' search screen.
      * The regular atkAttributes returns a simple text input box for entering
      * a keyword to search for.
-     *
+     * @todo  find a better way to search on onetomanys that does not require
+     *        something evil in atkAttribute
      * @param array $record Array with values
      * @param boolean $extended if set to false, a simple search input is
      *                          returned for use in the searchbar of the 
@@ -883,7 +884,12 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      $id = "atksearch"."[".$fieldprefix.$this->formName()."]";
+      // Evil bit to get searching in one-to-manys to work alongside
+      // searching on normal recordlists.
+      if (strstr($fieldprefix, "]["))
+        $id = "atksearch"."[".$fieldprefix.$this->formName()."]";
+      else 
+        $id = "atksearch"."[".$this->formName()."]";
       
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
