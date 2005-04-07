@@ -140,7 +140,7 @@
       if(count($checked) > 0)
         $filter = "NOT IN (".implode(",",$checked).",0)";
 
-      if (is_object($rel) && $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]." AND ".$this->remoteKey()." $filter"))
+      if (is_object($rel) && $rel->deleteDb($this->localKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->remoteKey()." $filter"))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {

@@ -51,6 +51,8 @@ Changes in ATK 5.1.1
 * setFlags() and getFlags() test added in atkattributetestcase 
   [Dennis-Jan, MartinL] 
 * Fixed infinite loop atkOneToMany::translateSelector() would cause [Boy] 
+* Fixed ability to use alpha-numeric characters as primary keys in 
+  atkmanyboolrelation (Bug #450) [Gustavo]
 
 Changes in ATK 5.1.0
 --------------------

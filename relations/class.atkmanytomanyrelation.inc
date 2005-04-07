@@ -150,7 +150,7 @@
       if ($this->createLink())
       {
         $rel = &$this->m_linkInstance;
-        return $rel->selectDb($this->m_linkInstance->m_table.".".$this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+        return $rel->selectDb($this->m_linkInstance->m_table.".".$this->localKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
       }
       return array();
     }
