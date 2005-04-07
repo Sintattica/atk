@@ -465,7 +465,11 @@
           {
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
           }
-          $result.='name="atksearch['. $this->fieldName().'][]">';
+          
+          if (strstr($fieldprefix,"]["))
+            $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
+          else
+            $result.='name="atksearch['. $this->fieldName().'][]">';
   
           $pkfield = $this->m_destInstance->primaryKeyField();
   
