@@ -159,6 +159,9 @@
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
         if ($i!=$count-1) $nav.=" ";
       }
+      
+      if ($node->m_postvars['atksearch']) 
+        $nav.=" - ".href(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"")), atktext("view_all"));
 
       return $nav;
     }  
