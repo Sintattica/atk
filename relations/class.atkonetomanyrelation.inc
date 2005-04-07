@@ -709,7 +709,7 @@
       $this->createDestination();
       
       // Check the filter for every SQL operators
-      for ($counter=0;$counter!==-1;$counter++)
+      for ($counter=0;$counter<count($sqloperators);$counter++)
       {
         if ($sqloperators[$counter])
         {
