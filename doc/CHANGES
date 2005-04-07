@@ -6,7 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.1.1
 --------------------
-* Changed image paths in outlooks top.tpl to a relative filepath [Martin]
 + Added atkFckAttribute (wysywig editor). [Fabrizio, Ivo]
 + Added support for turning CSV file-exporting off in customRecordList. [Boy]
 + Added ability to add custom HTML to MRA form. [Ivo, Boy]
@@ -43,8 +42,10 @@ Changes in ATK 5.1.1
 * Fixed file export with MSIE in combination with SSL (HTTPS) [Wim]
 * Made atkNumberAttribute replace "decimals_seperator" from the language files 
   for . while validating numbers [Boy]
+* Changed image paths in outlooks top.tpl to a relative filepath [Martin]
 * setFlags() and getFlags() test added in atkattributetestcase 
   [Dennis-Jan, MartinL] 
+* Fixed infinite loop atkOneToMany::translateSelector() would cause [Boy] 
 
 Changes in ATK 5.1.0
 --------------------
