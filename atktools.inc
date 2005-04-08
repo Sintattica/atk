@@ -1228,13 +1228,13 @@
    * @param string $type the type of the class (attribute|relation|filter)
    * @param string $name the name of the class
    */
-  function atkuse($type, $name, $customdir="")
+  function atkuse($type, $name)
   {	
     global $config_atkroot;
     $a = explode(".", $name);
     if (count($a) == 2)
-      $include = moduleDir(strtolower($a[0])).$type."s/$customdir/class.".strtolower($a[1]).".inc";
-    else $include = $config_atkroot."atk/".$type."s/$customdir/class.".strtolower($name).".inc";
+      $include = moduleDir(strtolower($a[0])).$type."s/class.".strtolower($a[1]).".inc";
+    else $include = $config_atkroot."atk/".$type."s/class.".strtolower($name).".inc";
     
     include_once($include);
   }
