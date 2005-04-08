@@ -41,18 +41,16 @@ Changes in ATK 5.1.1
 * Fixed bug in atkOneToOneRelation search. [Ivo]
 * atkClassLoader now handles nonexistant classes gracefully. [Ivo]
 * Filter passed to autolink feature again and added support for newlyadded
-  records [Yury]
-* Functional decomposition of importhandler [Boy]
-* Improved postgres error reporting [Boy]
-* Fixed file export with MSIE in combination with SSL (HTTPS) [Wim]
+  records. [Yury]
+* Functional decomposition of importhandler. [Boy]
+* Improved postgres error reporting. [Boy]
+* Fixed file export with MSIE in combination with SSL (HTTPS). [Wim]
 * Made atkNumberAttribute replace "decimals_seperator" from the language files 
-  for . while validating numbers [Boy]
-* Changed image paths in outlooks top.tpl to a relative filepath [Martin]
-* setFlags() and getFlags() test added in atkattributetestcase 
-  [Dennis-Jan, MartinL] 
-* Fixed infinite loop atkOneToMany::translateSelector() would cause [Boy] 
+  for . while validating numbers. [Boy]
+* Changed image paths in outlooks top.tpl to a relative filepath. [Martin]
+* Fixed infinite loop atkOneToMany::translateSelector() would cause. [Boy] 
 * Fixed ability to use alpha-numeric characters as primary keys in 
-  atkmanyboolrelation (Bug #450) [Gustavo]
+  atkmanyboolrelation. (Bug #450) [Gustavo]
 
 Changes in ATK 5.1.0
 --------------------
