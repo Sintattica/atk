@@ -150,6 +150,17 @@
       return get_class($this->m_attribute)." $msg %s";
     }      
     
+    /**
+     * Return the testvalue of the attribute.
+     * 
+     * @return String returns the testvalue which will be used by 
+     *                the testcases for inserting data in the database.
+     */
+	  function getTestValue()
+	  {
+	    return "Automated testvalue";	    	   
+	  }
+    
   }
 
 ?>
