@@ -58,6 +58,17 @@
         $this->assertEqual($g_db->escapeSQL($dbvalue), $roundtrip, "value2db encoding check %s");      
       }
       
+      /**
+       * Return the testvalue of the attribute.
+       * 
+       * @return String returns the testvalue which will be used by 
+       *                the testcases for inserting data in the database.
+       */
+	    function getTestValue()
+	    {
+	      return "Automated testvalue";	    	   
+	    }
+      
     }
 
 ?>
