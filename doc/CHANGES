@@ -52,6 +52,7 @@ Changes in ATK 5.1.1
 * Fixed infinite loop atkOneToMany::translateSelector() would cause. [Boy] 
 * Fixed ability to use alpha-numeric characters as primary keys in 
   atkmanyboolrelation. (Bug #450) [Gustavo]
+* Fixed atkImport if file not exists return false [dennisjan]
 
 Changes in ATK 5.1.0
 --------------------

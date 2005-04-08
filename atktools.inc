@@ -1448,6 +1448,8 @@
         include_once($filename);
       return true;
     }
+    else 
+      return false;
   }
   
   /**
