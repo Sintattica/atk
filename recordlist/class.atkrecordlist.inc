@@ -496,7 +496,7 @@
 
       if (hasFlag($this->m_flags, RL_EMBED) && $embedprefix)
       {
-        $prefix = $embedprefix;
+        $prefix = $embedprefix."][";
       }
                       
       /* get the heading and search columns */

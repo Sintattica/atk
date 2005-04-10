@@ -201,7 +201,7 @@
     function _getRecords($record)
     {
       $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
-      $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()."]_"];
+      $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
       
       $myrecords = $this->load(NULL, $record, "admin");
       
@@ -223,7 +223,8 @@
       {
         $actions = array();
         $params = array();
-        $embedprefix = "{$this->m_name}][";
+
+        $embedprefix = "{$this->m_name}";
 
         if ($this->m_destinationFilter!="")
         {
@@ -239,7 +240,7 @@
         $this->m_destInstance->m_type =     $this->m_ownerInstance->m_type;
         $this->m_destInstance->m_action =   $this->m_ownerInstance->m_action;
         
-        $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()."]_"];
+        $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
         $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
         $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
 
