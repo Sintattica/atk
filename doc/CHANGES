@@ -53,6 +53,8 @@ Changes in ATK 5.1.1
 * Fixed ability to use alpha-numeric characters as primary keys in 
   atkmanyboolrelation. (Bug #450) [Gustavo]
 * Fixed atkImport if file not exists return false [dennisjan]
+* Fixed bug in atkDateAttribute javascript which made some IE 6
+  browsers crash [Peter]
 
 Changes in ATK 5.1.0
 --------------------
