@@ -66,6 +66,14 @@ function getDays(date)
 }
 
 /**
+ * Wrapper function for ReadAdjustDate, since it's crashing in some IE 6.0 browsers
+ */
+function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
+{
+  setTimeout(function() { RealAdjustDate(el, arr, format, str_min, str_max, emptyfield) }, 1);
+}
+
+/**
  * Checks/changes the date input boxes for a certain date field on the form.
  * @param el pointer to the form element which initiated the call to this method
  * @param arr name of the input boxes (without [day] etc.)
@@ -74,7 +82,7 @@ function getDays(date)
  * @param str_max the maximum valid date
  * @param obligatory is the date field obligatory
  */
-function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
+function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield)
 {
   var format_month, format_day, array_months;
   var frm = el.form;
