@@ -19,22 +19,27 @@
    * @internal some session initialization.
    */
   $cookie_params = session_get_cookie_params();
-
+  
+  $config_identifier = atkconfig("identifier");
+  if (empty($config_identifier)) $config_identifier = "default";
+  
   $cookiepath = atkconfig("application_root");
   session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
-  session_name(atkconfig("identifier"));
-  session_start();    
-
-  global $config_identifier;
-  if (empty($config_identifier)) $config_identifier = "default";
+  
+  // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
+  // we don't have a session...
+  if (!cleanSessionId(atkconfig("identifier")))
+  {
+    session_name(atkconfig("identifier"));
+    session_start();    
   
   // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
   // You can use $session = &atkSessionManager::getSession() now, and you'll have a
   // session enabled, multi-app array in which you can store whatever you like.
   // There are old applications however that still use $g_sessionData, so I'll 
   // leave it in place for now.
-  $g_sessionData = &$_SESSION[$config_identifier];
-
+    $g_sessionData = &$_SESSION[$config_identifier];
+  }
   define("SESSION_DEFAULT",0); // stay at current stacklevel
   define("SESSION_NEW",1);     // new stack
   define("SESSION_NESTED",2);  // new item on current stack
@@ -667,19 +672,20 @@
       $atklevel = 0; // assume bottom level.
     }
     return $atklevel;
-  }  
+  }
     
   // Below added in 5.3 but not working right!!
   
   // Function created by timo at frenay dot net taken from: 
   // http://nl.php.net/manual/en/function.session-regenerate-id.php
   
-  //if (!function_exists('session_regenerate_id')) 
-  //{
+  if (!function_exists('session_regenerate_id')) 
+  {
     /**
      * Generates a php combined lcg
      * @return float php combined lcg
      *
+     */
     function php_combined_lcg() 
     {
       $tv = gettimeofday();
@@ -709,6 +715,7 @@
      * this is done for session hijacking
      * return bool true
      *
+     */
     function session_regenerate_id() 
     {
       $tv = gettimeofday();
@@ -719,6 +726,27 @@
       return TRUE;
     }
   }
-  */
+    
+  function cleanSessionId($name)
+  {   
+    global ${$name};
+
+    if ($_COOKIE[$name]) $oldsessionid = $_COOKIE[$name];
+    else $oldsessionid = ${$name};
+    
+    for ($position=0; $position<32; $position++)
+    {
+      if (eregi('[a-zA-Z0-9]', substr($oldsessionid, $position, 1)))
+      {
+        $sessionid .= substr($oldsessionid, $position, 1);
+      }
+    }
+    if ($oldsessionid !== $sessionid) $dirt = true;
+    
+    if ($_COOKIE[$name]) $_COOKIE[$name] = $sessionid;
+    else ${$name} = $sessionid;
+    
+    return $dirt;
+  }
 
 ?>
