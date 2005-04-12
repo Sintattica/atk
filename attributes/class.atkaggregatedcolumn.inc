@@ -28,7 +28,7 @@
    * @subpackage attributes
    *
    */
-  class atkAggregatedColumnAttribute extends atkAttribute
+  class atkAggregatedColumn extends atkAttribute
   {
     /**
      * The display/sort template
@@ -59,7 +59,7 @@
      *                             If ommited, fields from $template will be used
      * @param $flags Flags for this attribute
      */
-    function atkAggregatedColumnAttribute($name, $template, $flags=0, $searchfields = "")
+    function atkAggregatedColumn($name, $template, $flags=0, $searchfields = "")
     {
       $this->atkAttribute($name,$flags|AF_HIDE_EDIT|AF_HIDE_ADD); // base class constructor
       $this->m_template = $template;
