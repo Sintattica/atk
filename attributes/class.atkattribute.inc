@@ -641,7 +641,7 @@
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
      * @return String A piece of htmlcode with hidden form elements that post
-     *                This attribute's value without showing it.
+     *                this attribute's value without showing it.
      */
     function hide($record="", $fieldprefix="")
     {
