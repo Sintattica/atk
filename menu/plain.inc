@@ -108,7 +108,6 @@
   }      
   
   $page->register_style($theme->stylePath("style.css"));
-  $page->register_style($theme->stylePath("menu.css"));
   $box = $ui->renderBox(array("title"=>text("menu_".$atkmenutop),
                                          "content"=>$menu,
                                          "menuitems"=>$menuitems),"menu");

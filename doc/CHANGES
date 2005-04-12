@@ -55,6 +55,7 @@ Changes in ATK 5.2.0
 * Added setLocalKey() and setRemoteKey() to atkManyToManyRelation and renamed
   remoteKey() and localKey() to getRemoteKey() and getLocalKey(). [Ivo]
 * Fixed bug in atkDateAttribute that crashed some IE 6 browsers. [Peter]
+* Removed reference to nonexisting menu.css. (bug #443) [Ivo]
 
 Changes in ATK 5.1.0
 --------------------
