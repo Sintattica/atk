@@ -1567,4 +1567,29 @@
     }
     return !isset($difference) ? false : true;
   }
+  
+  /**
+   * Recursive function that checks an array for values
+   * because sometimes arrays will be filled with other empty
+   * arrays and therefore still show up filled.
+   *
+   * WARNING: take care with using this function as it is recursive
+   * and if you have a value linking back to it's self in one way or another,
+   * you may spend a loooong time waiting on your application
+   *
+   * @param Array $array The array that 
+   * @return bool Wether or not we found anything
+   */
+  function atk_value_in_array($array)
+  {
+  	foreach ($array as $key => $value)
+  	{
+  		if (is_array($value))
+  		{
+  			if (atk_value_in_array($value)) return true;
+  		}
+  		else if($value) return true;
+  	}
+  	return false;
+  }
 ?>
