@@ -63,10 +63,10 @@
       for ($i=0;$i<count($record[$this->m_name]);$i++)
       {
 
-        if(is_array($record[$this->fieldName()][$i][$this->remoteKey()]))
-          $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->remoteKey()]);
+        if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
+          $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
         else{
-          $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->m_name][$i][$this->remoteKey()]));
+          $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->m_name][$i][$this->getRemoteKey()]));
         }
         $selectedPk[] = $newselected;
        }
@@ -84,8 +84,8 @@
           $sel = "checked";
           if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
           {
-            $selector = $this->localKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
-              ' AND '.$this->remoteKey().
+            $selector = $this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
+              ' AND '.$this->getRemoteKey().
               "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
 
             // Create link to details.
@@ -102,7 +102,7 @@
         }
         $result.= '<tr><td class="table"><input type="checkbox" name="'.
                        $fieldprefix.$this->fieldName().
-                       '_AMDAE_'.$this->remoteKey().
+                       '_AMDAE_'.$this->getRemoteKey().
                        '[]" value="'.
                        $recordset[$i][$this->m_destInstance->primaryKeyField()].
                        '" '.$sel.'></td><td class="table">'.
@@ -130,25 +130,25 @@
       $checked = array();
       for ($i=0;$i<count($record[$this->fieldName()]);$i++)
       {
-        if(is_array($record[$this->fieldName()][$i][$this->remoteKey()]))
-          $newchecked = $record[$this->fieldName()][$i][$this->remoteKey()][$this->m_destInstance->primaryKeyField()];
+        if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
+          $newchecked = $record[$this->fieldName()][$i][$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()];
         else
-          $newchecked = $record[$this->fieldName()][$i][$this->remoteKey()];
+          $newchecked = $record[$this->fieldName()][$i][$this->getRemoteKey()];
 
       }
       
       if(count($checked) > 0)
         $filter = "NOT IN (".implode(",",$checked).",0)";
 
-      if (is_object($rel) && $rel->deleteDb($this->localKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->remoteKey()." $filter"))
+      if (is_object($rel) && $rel->deleteDb($this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->getRemoteKey()." $filter"))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
           // magical stuff..
           $newrecord = $this->m_destInstance->initial_values(); 
-          $newrecord[$this->remoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->remoteKey()];
+          $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->getRemoteKey()];
   
-          $newrecord[$this->localKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
   
           // First check if the record does not exist yet.
           /* @var $rel atkNode */

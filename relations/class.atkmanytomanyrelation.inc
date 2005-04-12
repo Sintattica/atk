@@ -8,8 +8,8 @@
    * @package atk
    * @subpackage relations
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2005 Ibuildings.nl BV
+   * @copyright (c)2000-2005 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -42,7 +42,15 @@
      * Constructor
      * @param String $name The name of the relation
      * @param String $link The full name of the node that is used as
-     *                     intermediairy node.
+     *                     intermediairy node. The intermediairy node is
+     *                     assumed to have 2 attributes that are named
+     *                     after the nodes at both ends of the relation.
+     *                     For example, if node 'project' has a M2M relation 
+     *                     with 'activity', then the intermediairy node
+     *                     'project_activity' is assumed to have an attribute
+     *                     named 'project' and one that is named 'activity'.
+     *                     You can set your own keys by calling setLocalKey()
+     *                     and setRemoteKey()
      * @param String $destination The full name of the node that is the other
      *                            end of the relation.
      * @param int $flags Flags for the relation.
@@ -54,7 +62,7 @@
 
       $this->m_localKey = substr (strrchr ($this->m_owner, '.'), 1 );
       $this->m_remoteKey = substr (strrchr ($this->m_destination, '.'), 1 );
-    }
+    }        
 
     /**
      * Create instance of the intermediairy link node.
@@ -81,19 +89,47 @@
       return true;
     }
 
-
-    function localKey()
+    /**
+     * Get the name of the attribute of the intermediairy node that points
+     * to the master node.
+     * @return String The name of the attribute.
+     */
+    function getLocalKey()
     {
       if ($this->m_localKey=="") return $this->m_owner;
       return $this->m_localKey;
     }
+    
+    /**
+     * Change the name of the attribute of the intermediairy node that points
+     * to the master node.
+     * @param String $attributename The name of the attribute.
+     */
+    function setLocalKey($attributename)
+    {
+      $this->m_localKey = $attributename;
+    }
 
-    function remoteKey()
+    /**
+     * Get the name of the attribute of the intermediairy node that points
+     * to the node on the other side of the relation.
+     * @return String The name of the attribute.
+     */
+    function getRemoteKey()
     {
       if ($this->m_remoteKey=="") return $this->m_destination;
       return $this->m_remoteKey;
     }
-
+    
+    /**
+     * Change the name of the attribute of the intermediairy node that points
+     * to the node on the other side of the relation.
+     * @param String $attributename The name of the attribute.
+     */
+    function setRemoteKey($attributename)
+    {
+      $this->m_remoteKey = $attributename;
+    }
 
     /**
      * Returns a displayable string for this value.
@@ -108,7 +144,7 @@
 
         for ($i=0;$i<count($record[$this->m_name]);$i++)
         {
-          $recordset[] = $record[$this->m_name][$i][$this->remoteKey()];
+          $recordset[] = $record[$this->m_name][$i][$this->getRemoteKey()];
         }
 
         if (count($record[$this->m_name])!=0)
@@ -150,7 +186,7 @@
       if ($this->createLink())
       {
         $rel = &$this->m_linkInstance;
-        return $rel->selectDb($this->m_linkInstance->m_table.".".$this->localKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
+        return $rel->selectDb($this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
       }
       return array();
     }
@@ -163,7 +199,7 @@
       if ($this->createLink())
       {
         $rel = &$this->m_linkInstance;
-        return $rel->deleteDb($this->localKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+        return $rel->deleteDb($this->getLocalKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
       }
       return false;
     }
