@@ -57,6 +57,7 @@ Changes in ATK 5.2.0
 * Fixed bug in atkDateAttribute that crashed some IE 6 browsers. [Peter]
 * Removed reference to nonexisting menu.css. (bug #443) [Ivo]
 * Submitbuttons on edit forms no longer by default save data. [Ivo]
+* Fixed bug in atkHarvestModules. (bug #354) [Yury]
 
 Changes in ATK 5.1.0
 --------------------

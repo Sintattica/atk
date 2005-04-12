@@ -256,8 +256,11 @@
   function atkHarvestModules($function, $param="", $associative=false)
   {
     global $g_modules;
+		
+    $modulekeys = array_keys($g_modules);
     $total = array();
-    foreach ($g_modules as $modname => $modpath)
+
+    foreach ($modulekeys as $modname)
     {
       $module = &getModule($modname);      
       if (is_object($module) && method_exists($module, $function))
