@@ -28,6 +28,7 @@ Changes in ATK 5.2.0
   the stored HTML id. [Boy]
 + Added "view all" link to navigation links when searching [Boy]
 + If PHP's sessionid is corrupted, ATK no longer displays an error. [Boy]
++ atkManyBoolRelation can now be properly hidden. (bug #428) [Yury]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
@@ -48,7 +49,7 @@ Changes in ATK 5.2.0
 * Changed image paths in outlooks top.tpl to a relative filepath. [Martin]
 * Fixed an infinite loop in atkOneToManyRelation::translateSelector(). [Boy] 
 * atkManyBoolRelation can now use alpha-numeric characters as primary keys. 
-  (Bug #450) [Gustavo]
+  (bug #450) [Gustavo]
 * atkImport now returns false if file does not exist. [Dennis-Jan]
 * Added setLocalKey() and setRemoteKey() to atkManyToManyRelation and renamed
   remoteKey() and localKey() to getRemoteKey() and getLocalKey(). [Ivo]

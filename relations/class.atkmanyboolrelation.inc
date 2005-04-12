@@ -174,7 +174,30 @@
     {      
       return (!is_array($postvars[$this->fieldName()]) || count($postvars[$this->fieldName()])==0);
     }
+    
+    /**
+     * Returns a piece of html code for hiding this attribute in an HTML form,
+     * while still posting its value. (<input type="hidden">)
+     *
+     * @param array $record The record that holds the value for this attribute
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
+     * @return String A piece of htmlcode with hidden form elements that post
+     *                This attribute's value without showing it.
+     */
+    function hide($record="", $fieldprefix="")
+    {
+      if(is_array($record[$this->fieldName()]))
+      {
+        for ($i=0;$i<count($this->m_values);$i++)
+        {
+          if(in_array($this->m_values[$i],$record[$this->fieldName()]))
+          $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
+                      value="'.$this->m_values[$i].'">';
+        }
+      } else return parent::hide($record,$fieldprefix);
+      return $result;
+    }
 
   }
-
 ?>
