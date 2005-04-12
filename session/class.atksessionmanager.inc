@@ -28,7 +28,7 @@
   
   // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
   // we don't have a session...
-  if (!cleanSessionId(atkconfig("identifier")))
+  if (isSessionIdValid())
   {
     session_name(atkconfig("identifier"));
     session_start();    
@@ -46,9 +46,9 @@
   define("SESSION_BACK",3);    // move one level down on stack
   define("SESSION_REPLACE",4); // replace current stacklevel
   
-  $atklevel = trim($_REQUEST["atklevel"]);
-  $atkprevlevel = trim($_REQUEST["atkprevlevel"]);
-  $atkstackid = trim($_REQUEST["atkstackid"]);      
+  if (isset($_REQUEST["atklevel"])) 	 $atklevel 		= trim($_REQUEST["atklevel"]);
+  if (isset($_REQUEST["atkprevlevel"]))$atkprevlevel= trim($_REQUEST["atkprevlevel"]);
+  if (isset($_REQUEST["atkstackid"]))  $atkstackid 	= trim($_REQUEST["atkstackid"]);      
 
   /**
    * The atk session manager. 
@@ -136,7 +136,7 @@
     {
       global $g_sessionData;
 
-      if ($value=="") $value = $_REQUEST[$var];      
+      if ($value=="" && isset($_REQUEST[$var])) $value = $_REQUEST[$var];      
 
       if ($no_namespace) $g_sessionData["globals"][$var] = $value;
       else $g_sessionData[$this->m_namespace]["globals"][$var] = $value;
@@ -319,7 +319,7 @@
 
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
 
-      if ($postvars["atkescape"]!="")
+      if (isset($postvars["atkescape"]) && $postvars["atkescape"]!="")
       {
         $this->m_escapemode = true;
         atkdebug("ATK session escapemode");
@@ -373,7 +373,7 @@
           $atklevel = count($stack);
         }
 
-        $currentitem = $stack[$atklevel];              
+        if (isset($stack[$atklevel])) $currentitem = $stack[$atklevel];              
         
         if (!isset($currentitem)||$currentitem=="")
         {
@@ -383,9 +383,9 @@
           // new level.. always based on the previous level
           //$newstackitem = array();
           //$currentitem = $stack[count($stack)-1];
-          $copieditem = $stack[count($stack)-1];
+          if (isset($stack[count($stack)-1])) $copieditem = $stack[count($stack)-1];
 
-          if (is_array($copieditem))
+          if (isset($copieditem) && is_array($copieditem))
           {
             foreach($copieditem as $key=>$value)
             {
@@ -449,7 +449,7 @@
 
         }
 
-        if (is_array($currentitem["atkformdata"]))
+        if (isset($currentitem["atkformdata"]) && is_array($currentitem["atkformdata"]))
         {
           atkdebug("Session formdata present");
           // atkformdata will be present in postvars.. editForm() has to read them..
@@ -515,7 +515,10 @@
     function _verifyStackIntegrity()
     {
       global $g_sessionData, $atkstackid, $atklevel, $atkprevlevel;
-      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+      $stack = "";
+      
+      if (isset($g_sessionData[$this->m_namespace]["stack"][atkStackID()]))
+      	$stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       if (!is_array($stack)) $prevlevelfromstack = 0;
       else $prevlevelfromstack = count($stack)-1;
 
@@ -593,7 +596,7 @@
     $g_sessionManager->session_read($ATK_VARS);
     
     // Escape check
-    if ($ATK_VARS["atkescape"]!="")
+    if (isset($ATK_VARS["atkescape"]) && $ATK_VARS["atkescape"]!="")
     {
       atkNode::redirect(atkurldecode($ATK_VARS["atkescape"]));
 
@@ -602,7 +605,7 @@
       exit;
     }      
     // Back check
-    else if ($ATK_VARS["atkback"]!="")
+    else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"]!="")
     {
       // When we go back, we go one level deeper than the level we came from.
       atkNode::redirect(session_url($_SERVER["PHP_SELF"]."?atklevel=".($atkprevlevel-1)));
@@ -727,8 +730,18 @@
     }
   }
     
-  function cleanSessionId($name)
+  /**
+   * Checks wether or not the sessionid that was passed along is valid
+   * A session id can become invalid because of tampering and would otherwise
+   * cause a php error.
+   * A valid session id consists of 32 alphanumeric characters.
+   * Mind you, an empty sessionid is also valid, 
+   * simply because there is no session yet
+   * @return bool Wether or not the sessionid is valid
+   */
+  function isSessionIdValid()
   {   
+  	$name = atkconfig("identifier");
     global ${$name};
 
     if ($_COOKIE[$name]) $oldsessionid = $_COOKIE[$name];
@@ -741,12 +754,8 @@
         $sessionid .= substr($oldsessionid, $position, 1);
       }
     }
-    if ($oldsessionid !== $sessionid) $dirt = true;
-    
-    if ($_COOKIE[$name]) $_COOKIE[$name] = $sessionid;
-    else ${$name} = $sessionid;
-    
-    return $dirt;
+    if ($oldsessionid !== $sessionid) return false;
+    else return true;
   }
 
 ?>
