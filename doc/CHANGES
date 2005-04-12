@@ -46,21 +46,13 @@ Changes in ATK 5.2.0
 * atkNumberAttribute now reads "decimals_seperator" from the language file 
   instead of assuming '.' as decimal separator. [Boy]
 * Changed image paths in outlooks top.tpl to a relative filepath. [Martin]
-<<<<<<< CHANGES
 * Fixed an infinite loop in atkOneToManyRelation::translateSelector(). [Boy] 
-* Fixed ability to use alpha-numeric characters as primary keys in
-  atkManyBoolRelation. (Bug #450) [Gustavo]
+* atkManyBoolRelation can now use alpha-numeric characters as primary keys. 
+  (Bug #450) [Gustavo]
 * atkImport now returns false if file does not exist. [Dennis-Jan]
 * Added setLocalKey() and setRemoteKey() to atkManyToManyRelation and renamed
   remoteKey() and localKey() to getRemoteKey() and getLocalKey(). [Ivo]
-=======
-* Fixed infinite loop atkOneToMany::translateSelector() would cause. [Boy] 
-* Fixed ability to use alpha-numeric characters as primary keys in 
-  atkmanyboolrelation. (Bug #450) [Gustavo]
-* Fixed atkImport if file not exists return false [dennisjan]
-* Fixed bug in atkDateAttribute javascript which made some IE 6
-  browsers crash [Peter]
->>>>>>> 5.205
+* Fixed bug in atkDateAttribute that crashed some IE 6 browsers. [Peter]
 
 Changes in ATK 5.1.0
 --------------------
