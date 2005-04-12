@@ -1439,7 +1439,6 @@
       $filename = getClassPath($fullclassname);
     else 
       $filename = $fullclassname;
-        
     if (file_exists($filename))
     {
       if ($failsafe)
