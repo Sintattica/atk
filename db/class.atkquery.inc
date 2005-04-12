@@ -303,7 +303,7 @@
     }
     
     /**
-     * Wrapper function to execute a select query 
+     * Wrapper function to execute a select query.
      * @param boolean $distinct Set to true to perform a distinct select,
      *                          false for a regular select.
      * @return array The set of records returned by the database.
@@ -471,6 +471,17 @@
       }
 
       return $result;
+    }
+    
+    /**
+     * Wrapper function to execute a delete query 
+     */
+    function executeDelete()
+    {
+      global $g_db;
+       
+      $query = $this->buildDelete();
+      return $g_db->query($query);      
     }
 
     /**
