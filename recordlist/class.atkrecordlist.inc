@@ -162,11 +162,12 @@
   
           $searchstart = '<a name="searchform"></a>';
           if (!hasFlag($this->m_flags, RL_EMBED))
-            $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();
-          
-          $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
-                         '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
-                         '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+          {
+            $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();          
+            $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
+                           '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
+                           '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+          }
   
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
           {
