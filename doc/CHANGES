@@ -36,7 +36,7 @@ Changes in ATK 5.2.0
   searchconditions are now grouped together. [Ivo, Boy]
 * atkSecureRelation passes along searchmode to its attributes. [Boy]
 * atkImportHandler now handles relations better. [Boy]
-* Improved searching on atkOneToMany- and atkManyToOneRelations. [Boy]
+* Improved search on atkOneToMany- and atkManyToOneRelations. (bug #435) [Boy]
 * Removed deprecated call-time-pass-by-reference. [MartinL, Boy]
 * Fixed bug in atkOneToOneRelation search. [Ivo]
 * atkClassLoader now handles nonexisting classes gracefully. [Ivo]
