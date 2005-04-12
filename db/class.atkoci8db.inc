@@ -369,7 +369,8 @@
      *
      * If the sequence does not exist, it is created automatically. For this
      * to work, the database user should have the 'create sequence' privilege.
-     * The name of the sequence in the database is prefixed with "seq_".
+     * The name of the sequence in the database is prefixed with 
+     * the string that's configured in $config_database_sequenceprefix.
      *
      * <b>Example</b>
      * If the database contains a sequence named "seq_employees", the following
@@ -386,9 +387,10 @@
       /* connect first */
       if ($this->connect()==DB_SUCCESS)
       {
+        $sequencename = atkconfig("database_sequenceprefix").$sequence;
 
         /* get sequence number and increment */
-        $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+        $query = "SELECT ".$sequencename.".nextval AS nextid FROM dual";
   
         /* execute query */
         $m_query_id = OCIParse($this->m_link_id, $query);
@@ -398,14 +400,14 @@
         if (empty($id))
         {
           /* create sequence */
-          $query = "CREATE SEQUENCE seq_".$sequence." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
+          $query = "CREATE SEQUENCE ".$sequencename." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
           $m_query_id = OCIParse($this->m_link_id, $query);
-          $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create 'seq_$sequence'");
+          $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create '$sequencename'");
           
           /* try again */
-          $query = "SELECT seq_".$sequence.".nextval AS nextid FROM dual";
+          $query = "SELECT ".$sequencename.".nextval AS nextid FROM dual";
           $m_query_id = OCIParse($this->m_link_id, $query);
-          $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence 'seq_$sequence'");
+          $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence '$sequencename'");
           
           /* empty? */
           if (empty($id)) return 0;
@@ -418,7 +420,7 @@
         return $result[0];
       }
       return 0;
-    }
+    }        
 
     /**
      * Return the meta data of a certain table

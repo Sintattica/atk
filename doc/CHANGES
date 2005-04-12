@@ -30,6 +30,8 @@ Changes in ATK 5.2.0
 + If PHP's sessionid is corrupted, ATK no longer displays an error. [Boy]
 + atkManyBoolRelation can now be properly hidden. (bug #428) [Yury]
 + Added MySQL 4.1+ driver (handles transactions etc.) (bug #434) [Eldad]
++ Sequence prefix for PostgreSQL/Oracle can now be configured with 
+  $config_database_sequenceprefix. (bug #365) [Ivo]
 + Added atk_value_in_array, which recursively checks if an array has
   a value [Boy]
 * Fixed typo in php version check. [Ivo]

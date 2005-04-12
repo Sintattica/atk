@@ -248,13 +248,16 @@
       /* connect first */
       if ($this->connect()==DB_SUCCESS)
       {
+        $sequencename = atkconfig("database_sequenceprefix").$sequence;
         /* get sequence number and increment */
-        $query = "SELECT nextval('seq_".$sequence."') AS nextid";
+        $query = "SELECT nextval('$sequencename') AS nextid";
     
         /* execute query */
         $id = @pg_exec($this->m_link_id, $query);
         
-        /* maybe the name should not have the default seq_ prefix */
+        // maybe the name should not have the default seq_ prefix.
+        // this is here for backwardscompatibility. $config_database_sequenceprefix
+        // should be used to specify the sequence prefix.
         if (empty($id))
         {
           /* get sequence number and increment */
@@ -268,12 +271,12 @@
         if (empty($id))
         {
           /* create sequence */
-          $query = 'CREATE SEQUENCE "seq_'.$sequence.'"';
+          $query = "CREATE SEQUENCE '".$sequencename."'";
           $id = @pg_exec($this->m_link_id, $query);
 
           /* try again */
-          $query = "SELECT nextval('seq_".$sequence."') AS nextid";
-          $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence 'seq_$sequence'");                
+          $query = "SELECT nextval('".$sequencename."') AS nextid";
+          $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");                
         
           /* empty? */
           if (empty($id)) return 0;

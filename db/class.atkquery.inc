@@ -303,6 +303,20 @@
     }
     
     /**
+     * Wrapper function to execute a select query 
+     * @param boolean $distinct Set to true to perform a distinct select,
+     *                          false for a regular select.
+     * @return array The set of records returned by the database.
+     */
+    function executeSelect($distinct = FALSE)
+    {
+      global $g_db;
+       
+      $query = $this->buildSelect($distinct);
+      return $g_db->getrows($query);      
+    }
+    
+    /**
       * Add limiting clauses to the query.
       * Default implementation: no limit supported. Derived classes should implement this.
       */
@@ -394,9 +408,9 @@
       return $result;
     }
 
- /**
-    * Wrapper function to execute an update query 
-    */
+    /**
+     * Wrapper function to execute an update query 
+     */
     function executeUpdate()
     {
       global $g_db;
@@ -405,9 +419,9 @@
       return $g_db->query($query);      
     }
 
- /**
-    * Wrapper function to execute an insert query 
-    */
+    /**  
+     * Wrapper function to execute an insert query 
+     */
     function executeInsert()
     {
       global $g_db;
