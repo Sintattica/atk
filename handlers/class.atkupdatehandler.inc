@@ -38,7 +38,7 @@
     {
       $record = $this->m_node->updateRecord();
 
-      if ($this->m_postvars['atkcancel']=="")
+      if ($this->m_postvars['atknoclose']!=""||$this->m_postvars['atksaveandclose']!="")
       {      
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
@@ -89,33 +89,43 @@
             else
             {
               // 'save' was clicked
-              $page = &$this->getPage();
-            //  $this->m_action="edit";
-              //update succesful, pk value might be changed so update m_orgkey
-              $record["atkprimkey"] = $this->m_node->primaryKey($record);
-              
-              if ($this->m_node->hasFlag(NF_LOCK))
-              {                              
-                $locked = true;
-              }
-              
-              //$this->setOrgKeyValue($record);
-              $this->m_node->m_action = "edit";              
-              $edithandler = $this->m_node->getHandler("edit");
-              $editpage = $edithandler->invoke("editPage", $record, $locked);
-              $screen = $this->m_node->renderActionPage("edit", $editpage);
-              $page->addContent($screen);
+              $this->renderEditPage($record);
             }
 
           }
         }
       }
-      else
+      else if ($this->m_postvars['atkcancel']!="")
       {
         // Cancel was pressed
         $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record);
         $this->m_node->redirect($location);
       }
+      else 
+      {
+        // something other than one of the three buttons was pressed. Let's just refresh.
+        $this->renderEditPage($record);
+      }
+    }
+    
+    function renderEditPage(&$record)
+    {
+       $page = &$this->getPage();
+    //  $this->m_action="edit";
+      //update succesful, pk value might be changed so update m_orgkey
+      $record["atkprimkey"] = $this->m_node->primaryKey($record);
+      
+      if ($this->m_node->hasFlag(NF_LOCK))
+      {                              
+        $locked = true;
+      }
+      
+      //$this->setOrgKeyValue($record);
+      $this->m_node->m_action = "edit";              
+      $edithandler = $this->m_node->getHandler("edit");
+      $editpage = $edithandler->invoke("editPage", $record, $locked);
+      $screen = $this->m_node->renderActionPage("edit", $editpage);
+      $page->addContent($screen);
     }
   }
 
