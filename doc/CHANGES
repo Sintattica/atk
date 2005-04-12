@@ -30,6 +30,8 @@ Changes in ATK 5.1.1
   to get the stored HTML id [Boy]
 + Added "view all" link to navigation links when searching [Boy]
 + Added getTestValue() for testing purposes [Dennisjan]
++ Added sessionid cleaner, when the sessionid is messed up, it won't
+  display an error any more [Boy]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
