@@ -34,7 +34,14 @@
   //----------------- DATABASE CONFIGURATION --------------------
 
   // Specify the type of database. 
-  // Currently supported are: "mysql", "oci8" and "pgsql".
+  // Currently supported are: 
+  // "mysql"   - All MySQL versions since 3.23
+  // "mysql41" - MySQL 4.1+. On top of the "mysql" driver, this one
+  //             has transaction support.
+  // "oci805"  - Oracle 8.0.5
+  // "oci8"    - All Oracle 8i versions
+  // "oci9"    - Oracle9i+ (also works for 10G)
+  // "pgsql"   - PostgreSQL 7.1+
   $config_database="mysql";
 
   // The database configuration. Specify the hostname of the database server,
