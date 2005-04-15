@@ -20,6 +20,7 @@
    */  
   require_once(atkconfig("atkroot")."atk/atktools.inc");
   require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");  
+  require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");  
   atkimport("atk.test.atktestreporter");  
   atkimport("atk.test.atkattributetestcase");  
   
@@ -84,16 +85,25 @@
     
     /**
      * Detect, and run, all available tests.
+     * @param string $reporttype Simpletest report type, can be 'text' or 'html'
+     *                           If you are running it in cli mode, it will select
+     *                           text automaticly
      */
-    function run()
+    function run($reporttype="html")
     {           
       $test = &new GroupTest("Full ATK test");
       
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
       $traverser->traverse(".");     
-      
-      $test->run(atknew("atk.test.atktestreporter"));
+      if($reporttype=="html")
+      {
+        $test->run(atknew("atk.test.atktestreporter"));
+      }
+      else
+      {
+        $test->run(new TextReporter());        
+      }
     }
   }
   

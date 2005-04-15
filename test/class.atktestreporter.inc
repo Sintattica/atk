@@ -16,11 +16,6 @@
    * $Id$
    */  
 
-  /** 
-   * includes 
-   */
-  include_once("simpletest/reporter.php");
-
   /**
    * This class is an extension to the default HtmlReporter of the SimpleTest
    * framework. The difference is that this reporter also displays succesful
