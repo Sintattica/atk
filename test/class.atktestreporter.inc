@@ -33,16 +33,27 @@
     function paintPass($message) 
     {
       parent::paintPass($message);
-      print "<span class=\"pass\">Pass</span>: ";
+      print "<span class=\"pass\">[PASS]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
       print implode("-&gt;", $breadcrumb);
       print "-&gt;$message<br />\n";
     }
+
+     function paintFail($message)
+    {
+//      parent::paintFail($message);
+      print "<b><span class=\"fail\">[FAIL]</span> ";
+      $breadcrumb = $this->getTestList();
+      array_shift($breadcrumb);
+      print implode("-&gt;", $breadcrumb);
+      print "-&gt;$message</b><br />\n";
+    }
+
     
     function _getCss() 
     {
-      return parent::_getCss() . ' .pass { color: green; }';
+      return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
     }
   }
 
