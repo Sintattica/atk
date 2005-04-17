@@ -27,7 +27,7 @@
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
-    var $m_endTime = 24;
+    var $m_endTime = 23;
     var $m_steps = array("0","30");
     var $m_default = "";
 
@@ -40,7 +40,7 @@
 	   * @param $default  Start Time (exp: 20:30)
      * @param $flags Flags for this attribute
      */
-    function atkTimeAttribute($name, $beginTime, $endTime, $steps, $default="", $flags=0)
+    function atkTimeAttribute($name, $beginTime=0, $endTime=23, $steps=array("00","15","30","45"), $default="", $flags=0)
     {
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_beginTime = $beginTime;

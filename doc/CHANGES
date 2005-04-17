@@ -64,6 +64,7 @@ Changes in ATK 5.2.0
 * Removed reference to nonexisting menu.css. (bug #443) [Ivo]
 * Submitbuttons on edit forms no longer by default save data. [Ivo]
 * Fixed bug in atkHarvestModules. (bug #354) [Yury]
+* atkTimeAttribute now has sensible default constructor params. [Ivo]
 
 Changes in ATK 5.1.0
 --------------------
