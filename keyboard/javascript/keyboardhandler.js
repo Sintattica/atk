@@ -70,7 +70,7 @@ function atkFEKeyListener(elementId, onUp, onDown, onLeft, onRight, onCtrl)
   { 
     if (this.listener.id != focussedListener)
     {
-      kb_defocus(); // Another element was focussed before.
+      kb_focus(this.listener.id, DIR_DOWN);
     }
     focussedListener = this.listener.id; 
   }

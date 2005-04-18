@@ -65,6 +65,8 @@ Changes in ATK 5.2.0
 * Submitbuttons on edit forms no longer by default save data. [Ivo]
 * Fixed bug in atkHarvestModules. (bug #354) [Yury]
 * atkTimeAttribute now has sensible default constructor params. [Ivo]
+* Fixed keyboardhandler defocussing if user does not use it to focus on something
+  else, but focusses manually [Boy]
 
 Changes in ATK 5.1.0
 --------------------
