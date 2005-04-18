@@ -46,7 +46,31 @@
          return AUTH_LOCKED;
        }
 
-       return ((count($recs)>0 && $user!="" && strtoupper($recs[0][atkconfig("auth_passwordfield")])==strtoupper($passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
+       return ((count($recs)>0 && $user!="" && $this->matchPasswords($recs[0][atkconfig("auth_passwordfield")], $passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
+     }
+     
+     /**
+      * Match 2 passwords.
+      * In normal situations, $dbpassword and $userpasswd are considered equal
+      * if they are a case-insensitive match. When $config_auth_cryptedpassword
+      * is true, they are only considered a match if $dbpassword is equal to the
+      * crypt() of $userpasswd, where $dbpassword itself is used as the 'salt'.
+      * (This method is used by Bugzilla, among other apps)
+      */
+     function matchPasswords($dbpasswd, $userpasswd)
+     {     
+       // crypt password method, like in bugzilla
+       if (atkconfig("auth_usecryptedpassword", false))
+       {
+       	 // password is stored using the crypt method, using the cryptedpassword itself as the salt.      
+       	 return (crypt($userpasswd, $dbpasswd)==$dbpasswd);
+       }
+       else 
+       {
+       	 // regular match, perhaps with md5.
+     	 return (strtoupper($dbpasswd)==strtoupper($userpasswd));
+       }
+       return false;
      }
 
      function canMd5()

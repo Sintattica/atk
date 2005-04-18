@@ -33,8 +33,8 @@
 
   //----------------- DATABASE CONFIGURATION --------------------
 
-  // Specify the type of database. 
-  // Currently supported are: 
+  // Specify the type of database.
+  // Currently supported are:
   // "mysql"   - All MySQL versions since 3.23
   // "mysql41" - MySQL 4.1+. On top of the "mysql" driver, this one
   //             has transaction support.
@@ -147,6 +147,13 @@
   // Note2: If set to false, and authentication_cookie is set to true,
   //        the password in the cookie will be stored plaintext!!!
   $config_authentication_md5 = true;
+  
+  // This parameter specified whether passwords are stored using the
+  // php/perl crypt() function. Applications using this are Bugzilla.
+  // Setting this to true, and setting $config_authentication_md5 to
+  // false, allows users to login to applications where the database
+  // uses crypted passwords.
+  $config_auth_usecryptedpassword = false;
   
   // If you specify an administrator password here, you are always able 
   // to login using user 'administrator' and the specified password,
