@@ -42,7 +42,7 @@
 
      function paintFail($message)
     {
-//      parent::paintFail($message);
+      SimpleReporter::paintFail($message);
       print "<b><span class=\"fail\">[FAIL]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
