@@ -15,16 +15,20 @@
    */
 
 var scFr=window.PopupMenu?window:(parent.PopupMenu?parent:top);
-function popEvt(str,each)
+function popEvt(str, each)
 {
-var PML=scFr.PopupMenu.list,mN;
-for(var objName in PML)with(PML[objName])
+var PML=scFr.PopupMenu.list, mN;
+for (var obj in PML)
 {
-if(scFr!=window&&each)for(mN in menu)with(menu[mN][0])
+var  evStr = 'var objName = "' + obj + '";  with (window) with (scFr.PopupMenu.list[objName]) { ';
+if  (each) for (mN in PML[obj].menu)
 {
-if(par.substring(par.lastIndexOf('.')+1)==window.name)eval(str);
+var  mD = PML[obj].menu[mN][0], objName = obj;
+if ((!mD.par  && scFr == self) ||
+(mD.par  && mD.par.substring(mD.par.lastIndexOf('.')+1) == self.name))
+eval(evStr + str  + '}');
 }
-else eval(str);
+else  eval(evStr + str + '}');
 }
 }
 var scrFn,popOL=window.onload,popUL=window.onunload,popOR=window.onresize,popOS=window.onscroll,
