@@ -201,7 +201,6 @@ function kb_focus(num, direction)
 {  
   if (num<keyListeners.length)
   {
-    kb_defocus();
     focussedListener=num;
     keyListeners[focussedListener].focus(direction);
   }  
