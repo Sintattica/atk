@@ -26,7 +26,8 @@ if  (each) for (mN in PML[obj].menu)
 var  mD = PML[obj].menu[mN][0], objName = obj;
 if ((!mD.par  && scFr == self) ||
 (mD.par  && mD.par.substring(mD.par.lastIndexOf('.')+1) == self.name))
-eval(evStr + str  + '}');
+var doCmd = evStr + 'mN = "' + mN + '"; ' + str + '}';
+eval(doCmd);
 }
 else  eval(evStr + str + '}');
 }
