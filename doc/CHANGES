@@ -67,6 +67,7 @@ Changes in ATK 5.2.0
 * atkTimeAttribute now has sensible default constructor params. [Ivo]
 * Fixed keyboardhandler defocussing if user does not use it to focus on something
   else, but focusses manually [Boy]
+* Fixed small bug in the atkTimeAttribute (bug #464). [Sandy,Yury]
 
 Changes in ATK 5.1.0
 --------------------
