@@ -80,10 +80,10 @@
      */
     function edit($record="", $fieldprefix="")
     {    
-			if(($default=="NOW" && $this->m_ownerInstance->m_action=="add") OR
-			   ($default=="" && $this->hasFlag(AF_OBLIGATORY)))
+			if(($this->m_default=="NOW" && $this->m_ownerInstance->m_action=="add") ||
+			   ($this->m_default=="" && $this->hasFlag(AF_OBLIGATORY)))
 		  {
-		    $default=date("H:i");
+		    $this->m_default=date("H:i");
 		  }
 		  $default = split(":",$this->m_default);
 
