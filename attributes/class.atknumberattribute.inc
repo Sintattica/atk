@@ -58,6 +58,8 @@
     {
       if (atktext("decimal_seperator", "atk",null,null,null,true)) 
         return str_replace(atktext("decimal_seperator"),".",$number);
+      else 
+        return $number;
     }
     
     /**
@@ -70,6 +72,8 @@
     {
       if (atktext("decimal_seperator", "atk",null,null,null,true)) 
         return str_replace(atktext("decimal_seperator"),".",$number);
+      else 
+        return $number;
     }
 
     /**
