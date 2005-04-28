@@ -937,7 +937,7 @@
       $this->getSearchCondition($query, $table, $value, $searchmode);
     }
     
-    function getSearchCondition()
+    function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value))
       {
