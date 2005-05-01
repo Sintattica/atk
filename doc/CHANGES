@@ -33,9 +33,12 @@ Changes in ATK 5.2.0
 + Sequence prefix for PostgreSQL/Oracle can now be configured with 
   $config_database_sequenceprefix. (bug #365) [Ivo]
 + Added atk_value_in_array, which recursively checks if an array has
-  a value [Boy]
+  a value. [Boy]
 + Added executeDelete() and executeSelect() to atkQuery. (bug #381) [Arnold]
 + Added atkAggregatedColumn for grouping columns in lists. (bug #426) [Yury]
++ Added NF_IMPORT flag for turning on CSV import feature on a node. [Ivo]
+- NF_NO_IMPORT is now deprecated. [Ivo]
+* Required access right for importing from CSV files is now 'add'. [Ivo]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
@@ -65,9 +68,10 @@ Changes in ATK 5.2.0
 * Submitbuttons on edit forms no longer by default save data. [Ivo]
 * Fixed bug in atkHarvestModules. (bug #354) [Yury]
 * atkTimeAttribute now has sensible default constructor params. [Ivo]
-* Fixed keyboardhandler defocussing if user does not use it to focus on something
-  else, but focusses manually [Boy]
-* Fixed small bug in the atkTimeAttribute (bug #464). [Sandy,Yury]
+* Fixed keyboardhandler; in Firefox, the user no longer has to double click
+  fields to focus them. [Boy]
+* Fixed small bug in the atkTimeAttribute. (bug #464) [Sandy, Yury]
+* Small layout improvements in CSV import feature. [Ivo]
 
 Changes in ATK 5.1.0
 --------------------

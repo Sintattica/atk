@@ -115,9 +115,15 @@
   define("NF_ML",                  65536);
   
   /**
-   * Quick way to disable the import feature
+   * Quick way to ensable the csv import feature
    */
-  define("NF_NO_IMPORT",          131072);
+  define("NF_IMPORT",             131072);
+  
+  /**
+   * Disable csv import feature
+   * @deprecated since ATK 5.2
+   */
+  define("NF_NO_IMPORT",               0);
   
   /**
    * Specific node flag 1
@@ -528,6 +534,7 @@
     var $m_securityMap = array("save"=>"add",
                                "update"=>"edit",
                                "copy"=>"add",
+                               "import"=>"add",
                                "editcopy"=>"add",
                                "search"=>"admin");
 

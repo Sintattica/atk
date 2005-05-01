@@ -132,6 +132,8 @@
     {
       global $g_sessionManager;
       $filename = $this->getTmpFileDestination($fileid);
+      
+      $content = '<div style="text-align: left; margin-left: 10px;">'; // left align, because the sample might be very wide.
 
       $rows =             $this->getSampleRows($filename);      
       $delimiter =        $g_sessionManager->pageVar("delimiter");
@@ -172,24 +174,13 @@
       if(is_array($importerror))
         $content.= "<b>".text($importerror['msg']).$importerror['spec']."</b>";
 
-      $content.= $sample;
+      $content.= $sample;      
 
-      $content.= atktext("import_allfield").': <br/>'.atktext("import_field").': '.$this->getAttributeSelector(0,$allField,"allField").'<br/>';      
-      if ($allField!="")
-      {
-        $attr = $this->getUsableAttribute($allField);
-        
-        if(is_object($attr))
-        {
-          $record = array();
-  
-          $content.= atktext("value").': '.$attr->edit($record,"","edit").'<br/>';
-        }
-      }
-
-      $content.=$this->_getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier);
+      $content.=$this->_getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allField);
       
       $content.=$this->_getAnalyseFooter();
+      
+      $content.='</div>';
 
       $page = &$this->getPage();
       $theme = &atkTheme::getInstance();
@@ -212,9 +203,11 @@
       $content.= '<input type="hidden" name="phase" value="process">';
       $content.= '<input type="hidden" name="fileid" value="'.$fileid.'">';
       $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
-      $content.= text("delimiter").': <input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'">';
-      $content.= '&nbsp; '.text("enclosure").': <input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'">';
-      $content.= '<br><br>'.atktext("import_detectedcolumns").': '.$columncount.'<br />';
+      $content.= '<table border="0">';
+      $content.= '<tr><td>'.text("delimiter").': </td><td><input type="text" size="2" name="delimiter" value="'.htmlentities($delimiter).'"></td></tr>';
+      $content.= '<tr><td>'.text("enclosure").': </td><td><input type="text" size="2" name="enclosure" value="'.htmlentities($enclosure).'"></td></tr>';
+      $content.= '<tr><td>'.atktext("import_detectedcolumns").': </td><td>'.$columncount.'</td></tr>';
+      $content.= '</table>';
       return $content;
     }
     
@@ -312,18 +305,31 @@
      * @param String $onfalseidentifier What to do on a false identifier
      * @return String The HTML with the extra options
      */
-    function _getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier)
-    {
+    function _getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allField)
+    {                
       $content.= '<br /><table id="importoptions">';
       $content.= '  <tr>';
       $content.= '    <td>';
-      $content.= atktext("import_skipfirstrow").' </td><td><input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/>';
+      $content.= atktext("import_allfield").': </td><td>'.$this->getAttributeSelector(0,$allField,"allField");      
+      
+      if ($allField!="")
+      {
+        $attr = $this->getUsableAttribute($allField);
+        
+        if(is_object($attr))
+        {           
+          $content.= ' '.atktext("value").': '.$attr->edit(array(),"","edit").'<br/>';
+        }
+      }
+      
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_doupdate").'    </td><td> <input type="checkbox" name="doupdate" value="1" '.($doupdate?"CHECKED":"").'/>';
+      $content.= atktext("import_skipfirstrow").': </td><td><input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_update_key").' 1</td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",0).'</td>';
+      $content.= atktext("import_doupdate").': </td><td> <input type="checkbox" name="doupdate" value="1" '.($doupdate?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_onfalseidentifier").'    </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
+      $content.= atktext("import_update_key").': </td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",0).'</td>';
+      $content.= '</td></tr><tr><td>';
+      $content.= atktext("import_onfalseidentifier").': </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
       
       $content.= '    </td>';
       $content.= '  </tr>';
