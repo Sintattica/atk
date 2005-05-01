@@ -158,8 +158,8 @@
         {
           // Tablename must be stripped out because it is in the way..
           if (strpos($key,'.')>0)
-          {
-            $field = substr($key,strpos($key,'.')+1);
+          {            
+            $field = substr($key,strrpos($key,'.')+1);
           }
           else
           {

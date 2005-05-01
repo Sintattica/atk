@@ -45,6 +45,7 @@ Changes in ATK 5.2.0
 * Fixed bug in cascade delete. (bug #419) [Ivo]
 * atkManyToOneRelation no longer searches on primary key values and 
   searchconditions are now grouped together. [Ivo, Boy]
+* atkManyToOneRelation can now handle nodes with schema name. (bug #366) [Thom]
 * atkSecureRelation passes along searchmode to its attributes. [Boy]
 * atkImportHandler now handles relations better. [Boy]
 * Improved search on atkOneToMany- and atkManyToOneRelations. (bug #435) [Boy]
