@@ -78,6 +78,8 @@ Changes in ATK 5.2.0
 * Fixed small bug in the atkTimeAttribute. (bug #464) [Sandy, Yury]
 * Small layout improvements in CSV import feature. [Ivo]
 * atkFlagAttribute supports initial_values() initialisation. (bug #413). [Yury]
+* Fixed bug: atkAttribute::removeFlag would set a flag if the flag was not
+  present in the first place. (bug #454) [Yury]
 
 Changes in ATK 5.1.0
 --------------------

@@ -519,7 +519,7 @@
      */
     function removeFlag($flag)
     {
-      $this->m_flags ^= $flag;
+      if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
     
     
