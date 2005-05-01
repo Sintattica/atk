@@ -92,7 +92,7 @@
         {
           $query->addSearchCondition($field." & ".$value[0]);
         }
-        else // search for more values using IN()
+        else
         {
         	$mask = "(".implode("|",$value).")";
         	$searchcondition = $field."&".$mask."=".$mask;
@@ -100,6 +100,48 @@
       }
       return $searchcondition;
     }
+    
+    /**
+     * Convert values from an HTML form posting to an internal value for 
+     * this attribute. 
+     *
+     * For the regular atkAttribute, this means getting the field with the
+     * same name as the attribute from the html posting. 
+     *
+     * @param array $postvars The array with html posted values ($_POST, for 
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
+    function fetchValue($postvars)
+    {
+			$vars = $postvars[$this->fieldName()];
+			if(!is_array($vars))
+			{
+				$result = array();
+        foreach($this->m_values as $value)
+        {
+          if(hasFlag($vars, $value))
+          {
+            $result[] = $value;
+          }
+        }
+	      return $result;
+			}
+			else return $vars;
+    }
+
+    function hide($record="", $fieldprefix="")
+    {
+      $values = 0;
+    	$name = $this->fieldName();
+      if(is_array($record[$name]))
+      {
+        foreach ($record[$name] as $var) $values |=$var;
+      } 
+      else $values = $record[$name];
+      return '<input type="hidden" name="'.$fieldprefix.$name.'"
+                      value="'.$values.'">';
+    }    
 
     function getSearchModes()
     {
