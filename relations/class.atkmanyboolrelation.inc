@@ -31,6 +31,7 @@
    */  
   class atkManyBoolRelation extends atkManyToManyRelation
   {
+    var $m_cols=3;
 
     /**
      * Constructor.
@@ -53,7 +54,8 @@
      */
     function edit($record="", $fieldprefix="")
     {
-    //var_dump($record);
+      $cols = $this->m_cols;
+      $modcols = $cols-1;
       $this->createDestination();
       $this->createLink();
 
@@ -70,11 +72,29 @@
         }
         $selectedPk[] = $newselected;
        }
-      
+
+      if ($this->m_destinationFilter!="")
+      {
+	      $parser = new atkStringParser($this->m_destinationFilter);
+	      $filter = $parser->parse($record);
+	      $recordset = $this->m_destInstance->selectDb($filter);
+      }
+      else
       // now select all records
       $recordset = $this->m_destInstance->selectDb();
 
-      $result.= '<table border="0">';
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
+	  
+      $result ='<div align="left"><font size="-2">
+                [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                     text("check_all").
+                '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                     text("check_none").
+                '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                     text("invert_selection").'</a>]</font></div>';
+       	
+      $result.= '<table border="0"><tr>';
       for ($i=0;$i<count($recordset);$i++)
       {
         $detaillink = "&nbsp;";
@@ -100,16 +120,17 @@
         {
           $sel = "";
         }
-        $result.= '<tr><td class="table"><input type="checkbox" name="'.
+        $result.= '<td class="table"><input type="checkbox" name="'.
                        $fieldprefix.$this->fieldName().
                        '_AMDAE_'.$this->getRemoteKey().
                        '[]" value="'.
                        $recordset[$i][$this->m_destInstance->primaryKeyField()].
                        '" '.$sel.'></td><td class="table">'.
                        $this->m_destInstance->descriptor($recordset[$i]).
-                       '</td><td class="table">'.$detaillink.'</td></tr>'."\n";
+                       '</td><td class="table">'.$detaillink.'</td>';
+		if ($i%$cols == $modcols) $result .="</tr><tr>\n";
       }
-      $result .= '</table>';
+      $result.="</tr></table>\n";
       return $result;
     }
 
@@ -125,15 +146,15 @@
       $this->createLink();
       $this->createDestination();
       $rel = &$this->m_linkInstance;
-      
+
       // Find items that are checked.
       $checked = array();
       for ($i=0;$i<count($record[$this->fieldName()]);$i++)
       {
         if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
-          $newchecked = $record[$this->fieldName()][$i][$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()];
+          $checked[] = $record[$this->fieldName()][$i][$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()];
         else
-          $newchecked = $record[$this->fieldName()][$i][$this->getRemoteKey()];
+          $checked[] = $record[$this->fieldName()][$i][$this->getRemoteKey()];
 
       }
       
@@ -149,17 +170,17 @@
           $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->getRemoteKey()];
   
           $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-  
+					
           // First check if the record does not exist yet.
           /* @var $rel atkNode */
           $existing = $rel->selectDb($rel->primaryKey($newrecord), "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {
             if (!$rel->addDb($newrecord, true, $mode))
-            {
+            {            
               return false;
             }
-          }
+          }        
         }        
         return true;
       }
@@ -199,5 +220,66 @@
       return $result;
     }
 
+    /**
+     * Returns a piece of html code that can be used in a form to search
+     * @param $record Record
+     * @param $size Size of the editbox
+     * @param $maxsize Maxsize of the editbox
+     * @return Piece of html code that can  be used in a form to edit this
+     */
+    function search($record="", $extended=false)
+    {
+      $this->createDestination();
+
+      // now select all records
+      $recordset = $this->m_destInstance->selectDb();
+
+        $result = '<select ';
+        if ($extended)
+        {
+          $result.='multiple size="'.min(5,count($recordset)+1).'"';
+        }
+        $result.='name="atksearch['.$this->fieldName().'][]">';
+
+        $pkfield = $this->m_destInstance->primaryKeyField();
+
+        $result.= '<option value="">'.text('search_all');
+
+        for ($i=0;$i<count($recordset);$i++)
+        {
+          $pk = $recordset[$i][$pkfield];
+          if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
+          $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+        }
+        $result.='</select>';
+        return $result;
+    }
+
+    /**
+     * Creates an search condition for a given search value
+     * @param $table the table name
+     * @param $value the search value
+     * @return a piece of the SQL where clause
+     */
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      // We only support 'exact' matches. 
+      // But you can select more than one value, which we search using the IN() statement,
+      // which should work in any ansi compatible database.
+      if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+      {
+    		$this->createLink();
+    		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(),$table.".id"."=".$this->m_linkInstance->m_table.".".$this->getLocalKey(),FALSE );//!$this->hasFlag(AF_OBLIGATORY)
+    		$query->setDistinct(TRUE);
+        if (count($value)==1) // exactly one value
+        {
+          $query->addSearchCondition($query->exactCondition($this->m_linkInstance->m_table.".".$this->getRemoteKey(),escapeSQL($value[0])));
+        }
+        else // search for more values using IN()
+        {
+          $query->addSearchCondition($this->m_linkInstance->m_table.".".$this->remoteKey()." IN ('".implode("','",$value)."')");
+        }
+      }
+    }
   }
 ?>
