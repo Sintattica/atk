@@ -33,21 +33,23 @@
   	
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param $recordset $suppresslist
-
-     * @param $sol                -- start row/record/line
-     * @param $eof                -- end field
-     * @param $sof                -- start field
-     * @param $eol                -- end record/line
-     * @param $type               -- 0=in simple table ; 1= export
-     * @param outputparamKeyVal   -- Key-Value parameters for output. Currently existening: 
-     *                               filename   -- the name of the file (without extension .cvs)
-    *@param $compression         -- Compression technique (bzip / gzip)
+     * @param atkNode $node       The node to use as definition for the columns.
+     * @param array $recordset    The records to render
+     * @param String $sol         String to use at start of each row     
+     * @param String $sof         String to use at start of each field
+     * @param String $eof         String to use at end of each field     
+     * @param String $eol         String to use at end of each row
+     * @param int $type           0=Render rows in simple html tabl; 1= raw export
+     * @param $compression        Compression technique (bzip / gzip)
+     * @param array $outputparams Key-Value parameters for output. Currently existing: 
+     *                               filename - the name of the file (without extension .csv)     
+     * @param array $suppressList List of attributes from $node that should be ignored     
+     * @param String $mode	      The mode that is passed to attributes' display() method 
+     *                            (for overrides). Defaults to 'list'.
     */
-    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="",$suppressList="", $outputparamKeyVal = Array(), $flags=0)
+    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="", $outputparams=array(), $mode="list")
     {
       $this->setNode($node);
-      $this->m_flags = $flags;
       // example      html         csv
 
       // $sol     = "<tr>"         or  ""
@@ -125,15 +127,15 @@
 
             if (method_exists($this->m_node,$funcname))
             {
-              $value=$this->m_node->$funcname($recordset[$i], "list");
+              $value=$this->m_node->$funcname($recordset[$i], $mode);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $value=$p_attrib->display_plain($recordset[$i], "list");
+              $value=$p_attrib->display_plain($recordset[$i], $mode);
               if (!$value)
-                $value=$p_attrib->display($recordset[$i], "list");
+                $value=$p_attrib->display($recordset[$i], $mode);
             }
             $output.=$sof.($value==""?$empty:$value).$eof;
 
@@ -170,9 +172,9 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $value = $p_attrib->display_plain($totals[$attribname], "list");
+              $value = $p_attrib->display_plain($totals[$attribname], $mode);
               if (!$value)
-                $value = $p_attrib->display($totals[$attribname], "list");
+                $value = $p_attrib->display($totals[$attribname], $mode);
               $totalRow.=$sof.($value==""?$empty:$value).$eof;
 
             }
@@ -199,13 +201,13 @@
       // To a File
       if ($type=="1") 
       {
-        if (!array_key_exists("filename", $outputparamKeyVal))
-          $outputparamKeyVal["filename"] = "achievo";
+        if (!array_key_exists("filename", $outputparams))
+          $outputparams["filename"] = "achievo";
 
         if ($this->m_exportcsv)
         {
           $exporter = &atknew("atk.utils.atkfileexport");        
-          $exporter->export($output, $outputparamKeyVal["filename"],"csv","csv",$compression);        
+          $exporter->export($output, $outputparams["filename"],"csv","csv",$compression);        
         }
         else 
         {
