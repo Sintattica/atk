@@ -47,7 +47,7 @@
   $top = $ui->renderBox(array("content"=> $content,
   			      "logintext" => atktext("logged_in_as"),
                               "logouttext" => ucfirst(text("logout", "", "atk")),
-                              "logoutlink" => "",
+                              "logoutlink" => "app.php?atklogout=1",
                               "logouttarget"=>"_top",
                               "centerpiece"=>$centerpiece,
                               "searchpiece"=>$searchpiece,

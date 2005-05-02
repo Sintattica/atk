@@ -82,6 +82,7 @@ Changes in ATK 5.2.0
 * atkFlagAttribute supports initial_values() initialisation. (bug #413). [Yury]
 * Fixed bug: atkAttribute::removeFlag would set a flag if the flag was not
   present in the first place. (bug #454) [Yury]
+* Fixed bug: logout link in top frame did not work. [Ivo]
 
 Changes in ATK 5.1.0
 --------------------
