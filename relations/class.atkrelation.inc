@@ -197,6 +197,20 @@
     {
       return false; 
     }
+    
+    /**
+     * Returns an instance of the node that the relation points to.
+     * @return atkNode The node that this relation points to, or 
+     *                 NULL if the destination is not valid.
+     */
+    function &getDestination()
+    {
+      if ($this->createDestination())
+      {
+        return $this->m_destInstance;
+      }
+      return NULL;
+    }
   }
   
 ?>

@@ -33,6 +33,8 @@ Changes in ATK 5.2.0
 + atkManyBoolRelation can now be searched, has multi-column support and
   supports destinationfilters. (bug #212, #355) [Yury]
 + Added MySQL 4.1+ driver (handles transactions etc.) (bug #434) [Eldad]
++ Added addFlag() and removeFlag() methods to atkNode. [Ivo]
++ Added getDestination() method to atkRelation. [Ivo]
 + Sequence prefix for PostgreSQL/Oracle can now be configured with 
   $config_database_sequenceprefix. (bug #365) [Ivo]
 + Added atk_value_in_array, which recursively checks if an array has

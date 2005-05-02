@@ -864,12 +864,31 @@
 
     /**
      * Checks if the node has a certain flag set.
-     * @param int $flag The flag to set.
-     * @return boolean
+     * @param int $flag The flag to check.
+     * @return boolean True if the node has the flag.
      */
     function hasFlag($flag)
     {
       return (($this->m_flags & $flag) == $flag);
+    }
+    
+    /** 
+     * Add a flag to the node.
+     * @param int $flag The flag to add.
+     */
+    function addFlag($flag)
+    {
+      $this->m_flags |= $flag;
+    }
+    
+    /**
+     * Removes a flag from the node.
+     *     
+     * @param int $flag The flag to remove from the attribute
+     */
+    function removeFlag($flag)
+    {
+      if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
 
     /**
