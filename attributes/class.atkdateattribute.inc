@@ -133,8 +133,8 @@
      */
     function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
-      $txt_date_format_edit = atktext("date_format_edit","","","","",true);
-      $txt_date_format_view = atktext("date_format_view","","","","",true);
+      $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
+      $txt_date_format_view = atktext("date_format_view","atk","","","",true);
       
       /* *** API SUPPORT HACK ***
        * Because of backwards compatability and because of the number
