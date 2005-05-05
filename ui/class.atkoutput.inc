@@ -101,7 +101,16 @@
         }
         else if ($lastmodificationstamp!=0)
         {
-          header ("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+          $_last_modified_date = @substr($_SERVER['HTTP_IF_MODIFIED_SINCE'], 0, strpos($_SERVER['HTTP_IF_MODIFIED_SINCE'], 'GMT') + 3);
+          $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
+          if($_last_modified_date == $_gmt_mtime)
+          {
+            header("HTTP/1.1 304 Not Modified");
+          }
+          else
+          {
+            header ("Last-Modified: " . gmdate("D, d M Y H:i:s", $lastmodificationstamp) . " GMT");
+          }
         }
 
         // Set the content type.
