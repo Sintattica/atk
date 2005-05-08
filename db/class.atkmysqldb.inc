@@ -21,7 +21,7 @@
    */
   require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
   //Mysql errors includen
-  include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
+  @include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
 
   /**
    * Driver for MySQL databases.
