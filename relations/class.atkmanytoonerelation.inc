@@ -507,22 +507,9 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
-      if (is_array($value))
-      {
-        foreach($value as $val)
-        {
-          if ($val!=="")
-          {
-            $searchcondition = $this->getSearchCondition($query, $table, $val, $searchmode);
-            $query->addSearchCondition($searchcondition, $this->fieldname());
-          }
-        }
-      }
-      else
-      {
-        $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-        $query->addSearchCondition($searchcondition);
-      }
+      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+      $query->addSearchCondition($searchcondition);
+     
     }
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
@@ -532,19 +519,28 @@
     		// We only support 'exact' matches.
     		// But you can select more than one value, which we search using the IN() statement,
     		// which should work in any ansi compatible database.
-    		if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+    		if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
     		{
     			if (count($value)==1) // exactly one value
-    			return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
+    			{
+    			  if ($value[0]!="")
+    			  {
+    			    return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
+    			  }
+    			}
     			else // search for more values using IN()
-    			return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+    			{
+    			  return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+    			}
     		}
     		else
     		{
-    			return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+    			$cond= $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+    			atkdebug($cond, "condition");
+    			return $cond;
     		}
     	}
-    	else
+    	else // in theory, this never happens.
     	{
     		$descfields = array();
     		$descfields = $this->m_destInstance->descriptorFields();
