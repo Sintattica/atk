@@ -73,29 +73,18 @@
     }
 
     /**
-     * Display's text version of Record
-     * @param $record
-     * @return text string of $record
-     */
-    function display_plain($record)
-    { 
-      $date = $this->m_date->display($record);
-      $time = $this->m_time->display($record);
-      if($date!='' && $time!='')
-        return $date." ".$time;
-      else
-        return "";
-    }
-
-    /**
      * Display's html version of Record
      * @param $record
      * @return text string of $record
      */
-    function display($record)
+    function display($record, $mode="")
     { 
-      $date = $this->display_plain($record);
-      return str_replace(" ","&nbsp;",$date);
+      $date = $this->m_date->display($record, $mode);
+      $time = $this->m_time->display($record, $mode);
+      if($date!='' && $time!='')
+        return $date.($mode=="csv"?" ":"&nbsp;").$time;
+      else
+        return "";
     }
 
     function fetchValue($postvars)

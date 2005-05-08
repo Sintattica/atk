@@ -132,10 +132,8 @@
             else
             {
               // otherwise, the display function of the particular attribute
-              // is called.
-              $value=$p_attrib->display_plain($recordset[$i], $mode);
-              if (!$value)
-                $value=$p_attrib->display($recordset[$i], $mode);
+              // is called.            
+              $value=$p_attrib->display($recordset[$i], $mode);
             }
             $output.=$sof.($value==""?$empty:$value).$eof;
 
@@ -171,10 +169,8 @@
              )
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
-            {
-              $value = $p_attrib->display_plain($totals[$attribname], $mode);
-              if (!$value)
-                $value = $p_attrib->display($totals[$attribname], $mode);
+            {              
+              $value = $p_attrib->display($totals[$attribname], $mode);
               $totalRow.=$sof.($value==""?$empty:$value).$eof;
 
             }

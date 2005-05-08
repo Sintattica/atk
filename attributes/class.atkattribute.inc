@@ -993,36 +993,19 @@
     {
       $this->m_searchmode = $searchmode;
     }
-
-    /**
-  	* Returns a displayable string for this value, without html
-  	* @param $record
-  	* @return String ready for displaying
-  	*/
-  	function display_plain($record)
-  	{
-  	  // the next if-statement is a workaround for derived attributes which do
-  	  // not override the display_plain() method.
-  	  if (!is_array($record[$this->fieldName()]))
-  	  {
-  	  // default behaviour is that we display a value 'as is'.
-  	  return $record[$this->fieldName()];
-  	  }
-  	}
     
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
-     * methods to prepare a value for display.
+     * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute
      * @param String $mode The display mode ("view" for viewpages, or "list" 
      *                     for displaying in recordlists, "edit" for
      *                     displaying in editscreens, "add" for displaying in 
-     *                     add screens. The regular atkAttribute does not use
-     *                     this parameter, but derived attributes may use it
-     *                     to distinguish between display modes.
+     *                     add screens. "csv" for csv files. Applications can
+     *                     use additional modes.
      * @return String HTML String 
      */
     function display($record, $mode="")
@@ -1033,6 +1016,7 @@
       if (!is_array($record[$this->fieldName()])) 
       {
         // default behaviour is that we display a value 'as is'.
+        if ($mode=="csv") return $record[$this->fieldName()];
         return nl2br(htmlspecialchars($record[$this->fieldName()]));
       }
     }
