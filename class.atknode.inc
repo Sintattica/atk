@@ -125,6 +125,8 @@
    */
   define("NF_NO_IMPORT",               0);
   
+  define("NF_EXPORT",         1073741824);
+  
   /**
    * Specific node flag 1
    */

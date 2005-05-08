@@ -206,6 +206,16 @@
       return $link;
     }
     
+    function getExportLink()
+    {
+      $link = "";
+      if ($this->m_node->allowed("view")&& $this->m_node->hasFlag(NF_EXPORT))
+      {
+        $link.= href(dispatch_url($this->m_node->atkNodeType(), "export"), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
+      }
+      return $link;
+    }
+    
     function getAddLink()
     {
       if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
@@ -233,6 +243,8 @@
       if ($addlink!="") $links[] = $addlink;
       $importlink = $this->getImportLink();
       if ($importlink!="") $links[] = $importlink;
+      $exportlink = $this->getExportLink();
+      if ($exportlink!="") $links[] = $exportlink;
       return implode(" | ", $links);
     }
   }
