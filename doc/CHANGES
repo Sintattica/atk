@@ -6,8 +6,14 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.2.1
 --------------------
++ Added preliminary CSV export handler (NF_EXPORT). [Ivo]
 + Added additional http/1.1 304 not modified header. Document lastmodified
   timestamp is compared to the client's if-modified-since header. [Martin]
++ atkAggregatedColumn::display() now supports $mode param. [Ivo]
+* Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
+* Missing db error translations no longer causes error message. [Ivo]
+- Removed atkAttribute::display_plain(). [Ivo]
+
 
 Changes in ATK 5.2.0
 --------------------
