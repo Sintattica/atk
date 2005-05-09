@@ -93,44 +93,17 @@
     {           
       $test = &new GroupTest("Full ATK test");
       
-      if ($this->_traverse($test))
-      {      
-        if($reporttype=="html")
-        {
-          $test->run(atknew("atk.test.atktestreporter"));
-        }
-        else
-        {
-          $test->run(new TextReporter());
-        }
-      }
-      else 
-      {
-        atkerror("Unable to traverse to testpath");
-      }
-    }
-    
-    /**
-     * traverses the directories to a given depth to find the testcases
-     *
-     * Traverses the directories to a given depth to find all testcases.
-     * The depth is configurable in the defaultconfig file (testlevelsup)
-     *
-     * @param Grouptest The testgroup where the testcases belong to.
-     * @return Boolean Indicates wheter the traverser has run successful
-     */
-     
-    
-    function _traverse(&$test)
-    {
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
-      $traverse = "./atk/";
-      for ($counter = 0; $counter<atkconfig("testlevelsup",1);$counter++)
+      $traverser->traverse(".");     
+      if($reporttype=="html")
       {
-        $traverse.="../";
+        $test->run(atknew("atk.test.atktestreporter"));
       }
-      return $traverser->traverse($traverse);      
+      else
+      {
+        $test->run(new TextReporter());        
+      }
     }
   }
   
