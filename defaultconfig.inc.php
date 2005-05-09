@@ -176,4 +176,11 @@
   
   // Use the given meta handler as the default meta handler
   $config_meta_handler = "atk.meta.atkmetahandler";
+  
+  // Sets the level depth of directories that are traversed in order to search testcases.
+  // 0 = only ATK itself is searched for the presence of testcases
+  // 1 = default -> one level below ATK is searched
+  // 2 = two levels below ATK are searched
+  // etc ..
+  $config_testlevelsup = 2;
 ?>
