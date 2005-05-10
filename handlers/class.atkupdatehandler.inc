@@ -66,6 +66,7 @@
             {
               triggerError($record, 'Error', $this->m_node->m_db->getErrorMsg(), '', '');
               $this->m_node->m_action="edit";
+              global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
               $page = &$this->getPage();
               $edithandler = $this->m_node->getHandler("edit");
               $page->addContent($edithandler->invoke("editPage", $record));
@@ -122,6 +123,8 @@
       
       //$this->setOrgKeyValue($record);
       $this->m_node->m_action = "edit";              
+      // we have to make the entire system think we are in edit mode again.
+      global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
       $edithandler = $this->m_node->getHandler("edit");
       $editpage = $edithandler->invoke("editPage", $record, $locked);
       $screen = $this->m_node->renderActionPage("edit", $editpage);
