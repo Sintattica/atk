@@ -834,7 +834,7 @@
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
-      global $g_sessionManager;
+      global $g_sessionManager, $ATK_VARS;
       
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
@@ -845,7 +845,7 @@
           $order = $this->m_ownerInstance->m_table.".".$this->fieldName();
           if ($atkorderby == $order) $order .= " DESC";
           $arr["heading"][$fieldprefix.$this->fieldName()]["url"] =
-            session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_ownerInstance->atkNodeType().'&atkaction='.$action.'&atkorderby='.rawurlencode($order));
+            session_url($_SERVER["PHP_SELF"].'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($order));
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
