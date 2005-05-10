@@ -19,10 +19,11 @@
   /** recordlist flags */
   define("RL_NO_SORT",                         1); // recordlist is not sortable
   define("RL_NO_SEARCH",                       2); // recordlist is not searchable
-  define("RL_EMBED",                           4); // recordlist is embedded
-  define("RL_MRA",                             8); // multi-record-actions enabled
-  define("RL_MRPA",                           16); // multi-record-priority-actions enabled
-  define("RL_LOCK",                           32); // records can be locked
+  define("RL_NO_EXTENDED_SEARCH",              4); // recordlist is not searchable
+  define("RL_EMBED",                           8); // recordlist is embedded
+  define("RL_MRA",                            16); // multi-record-actions enabled
+  define("RL_MRPA",                           32); // multi-record-priority-actions enabled
+  define("RL_LOCK",                           64); // records can be locked
 
   atkimport("atk.utils.atkstringparser");
 
@@ -154,7 +155,7 @@
           if (is_array($searchmode)) $searchmode = $searchmode[0];
   
           $button = '<input type="submit" class="btn_search" value="'.text("search").'">';
-          if (!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
+          if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
           {
             $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->m_node->atkNodeType()."&atkaction=search&atksearchmode=".
                                                $searchmode,"(".text("search_extended").")",SESSION_NESTED);
