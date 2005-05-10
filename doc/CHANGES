@@ -13,6 +13,7 @@ Changes in ATK 5.2.1
 * Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
 * Missing db error translations no longer cause fatal error message. [Ivo]
 * Fixed bug and cleaned up code in atkOneToManyRelation searching. [Ivo]
+* atkTextAttribute's $size parameter detection is now a bit smarter. [Ivo]
 - Removed atkAttribute::display_plain(). [Ivo]
 
 

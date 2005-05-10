@@ -40,6 +40,10 @@
 
     /**
      * Constructor
+     * Note that for backwardscompatibility reasons, if you only pass 2
+     * parameters and the second one is not an array, the attribute assumes
+     * the second parameters is the $flags param, not the $size param.
+     *
      * @param $name  Name of the attribute
      * @param $size  Can be an array with cols and rows key for size and 
      *               an autoadjust value or just the rows size
@@ -47,8 +51,8 @@
      */
     function atkTextAttribute($name,$size=0,$flags=0)
     { 
-      // compatiblity with old versions
-      if (func_num_args()==3 || func_num_args()==4)
+      // compatiblity with old versions (old apps expect a 2 param call to be $name, $flags)
+      if (func_num_args()==3 || is_array($size))
       {
          if(is_array($size))
          {
