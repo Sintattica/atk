@@ -210,10 +210,7 @@
     }
     
     /**
-     * Gets the recordlist.
-     * It does a lot of tricks to trick the recordlist into thinking that it is
-     * actually making a recordlist for the destination record, 
-     * but one that's still embedded
+     * Gets the recordlist.     
      * @param Array $myrecords The records that are loaded into the recordlist
      * @return String The generated recordlist
      */
@@ -231,60 +228,37 @@
           $params["atkfilter"]=$this->m_destinationFilter;
         }
 
-        $actions = $this->m_destInstance->defaultActions("relation", $params);
-
-        $desttype =                         $this->m_destInstance->m_type;
-        $destaction =                       $this->m_destInstance->m_action;
-        $destpostvars =                     $this->m_destInstance->m_postvars;
-
-        $this->m_destInstance->m_type =     $this->m_ownerInstance->m_type;
-        $this->m_destInstance->m_action =   $this->m_ownerInstance->m_action;
+        $actions = $this->m_destInstance->defaultActions("relation", $params);      
         
+        $recordlist = &atknew("atk.recordlist.atkrecordlist");
+        
+        $flags = $this->_getRecordListFlags();
+      
         $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
         $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
         $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
-
-        $output = $this->_getRecordListRecords($myrecords, $actions, $embedprefix);
-
-        $this->m_destInstance->m_type =     $desttype;
-        $this->m_destInstance->m_action =   $destaction;
-        $this->m_destInstance->m_postvars = $destpostvars;
-      }
-      
-      return $output;
-    }
-    
-    /**
-     * Actually gets the recordlist and does one last trick,
-     * we disable extended searching because that's simply not possible on onetomanys
-     * @param Array   $myrecords    The actual records for the recordlist
-     * @param Array   $actions      The actions for the recordlist
-     * @param Integer $flags        The flags for the recordlist
-     * @param String  $embedprefix  The prefix for embeded fields
-     * @return String The generated recordlist
-     */
-    function _getRecordListRecords($myrecords, $actions, $embedprefix="")
-    {
-      $recordlist = &atknew("atk.recordlist.atkrecordlist");
-      
-      $flags=RL_EMBED;
-      $flags|= hasFlag($this->m_destInstance->m_flags,NF_MRA) ? RL_MRA  : 0;
-      $flags|= hasFlag($this->m_destInstance->m_flags,NF_MRPA)? RL_MRPA : 0;
-      
-      if (!hasFlag($this->m_destInstance->m_flags, NF_NO_EXTENDED_SEARCH))
-      {
-        $this->m_destInstance->m_flags|=NF_NO_EXTENDED_SEARCH;
-        $removedflag = true;
-      }
-      
-      $output = $recordlist->render($this->m_destInstance, $myrecords, 
+        
+           
+        $output = $recordlist->render($this->m_destInstance, $myrecords, 
                                     $actions,              $flags, 
                                     $this->m_refKey,       "entryform",
-                                    array(),               $embedprefix);
-                                      
-      if ($removedflag) $this->m_destInstance->m_flags-=NF_NO_EXTENDED_SEARCH;
+                                    array(),               $embedprefix);                                            
+      }
       
       return $output;
+    }        
+    
+    /**
+     * Determine the flags that the embedded recordlist should have.
+     * @return int The flags for the recordlist.
+     */
+    function _getRecordListFlags()
+    {
+      // for now, we don't support extended search in embedded one2many recordlists.
+      $flags=RL_EMBED|RL_NO_EXTENDED_SEARCH;
+      $flags|= ($this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA  : 0);
+      $flags|= ($this->m_destInstance->hasFlag(NF_MRPA)? RL_MRPA : 0);      
+      return $flags;
     }
     
     /**
