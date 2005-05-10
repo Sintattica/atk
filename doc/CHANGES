@@ -11,7 +11,8 @@ Changes in ATK 5.2.1
   timestamp is compared to the client's if-modified-since header. [Martin]
 + atkAggregatedColumn::display() now supports $mode param. [Ivo]
 * Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
-* Missing db error translations no longer causes error message. [Ivo]
+* Missing db error translations no longer cause fatal error message. [Ivo]
+* Fixed bug and cleaned up code in atkOneToManyRelation searching. [Ivo]
 - Removed atkAttribute::display_plain(). [Ivo]
 
 
