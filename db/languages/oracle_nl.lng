@@ -3,6 +3,7 @@
 
 $txt_db_1    = "Unique constraint violated";
 $txt_db_904  = "Ongeldige kolom naam";
+$txt_db_932  = "Datatypes komen niet overeen";
 $txt_db_918  = "Kolom dubbel gedefinieerd";
 $txt_db_1400 = "Kan geen 'NULL' toevoegen";
 $txt_db_1438 = "Waarde is groter dan toegestaan";
