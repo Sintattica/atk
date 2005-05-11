@@ -160,11 +160,10 @@
             OCIBindByName($this->m_query_id, $bindVars[$i], $this->m_bindresult[$bindVars[$i]], 32);
           }    
         
-          if (!OCIExecute($this->m_query_id,OCI_DEFAULT))
+          if (!@OCIExecute($this->m_query_id,OCI_DEFAULT))
           {
             /* error in query */
             $error = OCIError($this->m_query_id);
-            $this->halt("Invalid SQL: $query"); 
             $this->halt($this->_translateError($error));
             return false;
           }
