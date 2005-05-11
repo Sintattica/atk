@@ -10,6 +10,7 @@ Changes in ATK 5.2.1
 + Added additional http/1.1 304 not modified header. Document lastmodified
   timestamp is compared to the client's if-modified-since header. [Martin]
 + atkAggregatedColumn::display() now supports $mode param. [Ivo]
++ Added Oracle demo installation file to the demo. [Ivo]
 * Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
 * Missing db error translations no longer cause fatal error message. [Ivo]
 * Fixed bug and cleaned up code in atkOneToManyRelation searching. [Ivo]
