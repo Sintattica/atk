@@ -1211,7 +1211,14 @@
       header('Content-Type: '. $mime);
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
       if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: no-cache');
+      if ($_SERVER["SERVER_PORT"] == "443" AND eregi("msie", $_SERVER["HTTP_USER_AGENT"]))
+      {
+        header('Pragma: public');
+      }
+      else
+      {
+        header('Pragma: no-cache');
+      }
       header('Expires: 0');
 		  fpassthru($fp);
       return true;
