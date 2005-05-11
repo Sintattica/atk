@@ -59,6 +59,8 @@ Changes in ATK 5.2.0
 + Added NF_IMPORT flag for turning on CSV import feature on a node. [Ivo]
 - NF_NO_IMPORT is now deprecated. [Ivo]
 - Removed unused $flags parameter in atkCustomRecordList::render(). [Ivo]
+* Adding a multilanguage condition now takes into concideration the current
+  language. Not just the default language. [MartinL]
 * Required access right for importing from CSV files is now 'add'. [Ivo]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
