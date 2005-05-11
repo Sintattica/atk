@@ -76,7 +76,9 @@
               triggerError($record, 'Error', $this->m_node->m_db->getErrorMsg(), '', '');
               $this->m_action="add";
               $this->m_node->m_action = "add";
-              $this->m_node->addPage($record);
+              $page = &$this->getPage();
+              $addhandler = &$this->m_node->getHandler("add");
+              $page->addContent($addhandler->invoke("addPage", $record));
             }
             else
             {
