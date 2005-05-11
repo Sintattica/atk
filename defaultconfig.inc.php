@@ -35,6 +35,9 @@
   // mysql, oci8 or pgsql
   $config_database="mysql";
 
+  // default sequence prefix. 
+  $config_database_sequenceprefix = "seq_";
+
   $config_language="en";
   $config_recordsperpage=25;
 
