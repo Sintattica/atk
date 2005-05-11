@@ -23,6 +23,7 @@ Changes in ATK 5.2.1
 - Removed atkAttribute::display_plain(). [Ivo]
 * Fixed bug where searching on dates would always add 19 or 20 
   in front of the year [Boy]
+* Fixed bug in exportFile() that would prevent exporting with MSIE and SSL [Boy]
 
 Changes in ATK 5.2.0
 --------------------
