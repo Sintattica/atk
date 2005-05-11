@@ -11,6 +11,10 @@ Changes in ATK 5.2.1
   timestamp is compared to the client's if-modified-since header. [Martin]
 + atkAggregatedColumn::display() now supports $mode param. [Ivo]
 + Added Oracle demo installation file to the demo. [Ivo]
+* Changed the addMlCondition so that is uses ATK_VARS["lng"] instead of a 
+  global value $lng which isn't always set [MartinL]
+* Adding a multilanguage condition now takes into concideration the current
+  language. Not just the default language. [MartinL]
 * Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
 * Missing db error translations no longer cause fatal error message. [Ivo]
 * Fixed bug and cleaned up code in atkOneToManyRelation searching. [Ivo]
@@ -59,8 +63,6 @@ Changes in ATK 5.2.0
 + Added NF_IMPORT flag for turning on CSV import feature on a node. [Ivo]
 - NF_NO_IMPORT is now deprecated. [Ivo]
 - Removed unused $flags parameter in atkCustomRecordList::render(). [Ivo]
-* Adding a multilanguage condition now takes into concideration the current
-  language. Not just the default language. [MartinL]
 * Required access right for importing from CSV files is now 'add'. [Ivo]
 * Fixed typo in php version check. [Ivo]
 * Fixed bug in cascade delete. (bug #419) [Ivo]
