@@ -194,7 +194,8 @@
       $pattern = array_keys($this->m_joinaliases);      
       if (count($pattern))
       {
-        usort($pattern, "sortSearchPattern");
+        //usort($pattern, "sortSearchPattern");
+        sort($pattern);
     
         for($i=0, $count=count($pattern);$i<$count;$i++)
         {
