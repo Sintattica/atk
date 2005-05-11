@@ -160,7 +160,10 @@
     */
     function addMlCondition(&$query,&$node,$mode)
     {
-      global $lng;
+      global $ATK_VARS;
+      $lng = "";
+      
+      $lng = $ATK_VARS["lng"];
       if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
       {
         if (!$lng) $lng = $node->m_defaultlanguage;
@@ -176,7 +179,7 @@
           if($p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML) && !$p_attrib->hasFlag(AF_HIDE))
           {
             $dest = $p_attrib->m_destInstance;
-            $query->addCondition("(".$attribname.".".$dest->m_lngfield." IS NULL OR UPPER(".$attribname.".".$dest->m_lngfield.")='".$node->m_defaultlanguage."')");
+            $query->addCondition("(".$attribname.".".$dest->m_lngfield." IS NULL OR UPPER(".$attribname.".".$dest->m_lngfield.")='".$lng."')");
           }
         }
       }
