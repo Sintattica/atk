@@ -176,16 +176,6 @@
     var $m_user_error = array();
     
     /**
-     * List of unrecoverable system errors.
-     *
-     * This type of errors is non-recoverable. An example would be a
-     * connection failure or an internal server error.     
-     * @access private
-     * @var array
-     */    
-    var $m_critical_error = array();
-
-    /**
      * Get the current connection.
      * @return Connection resource id
      */
@@ -263,8 +253,8 @@
       $errno = $this->getAtkDbErrno(); 
       if($errno==DB_UNKNOWNERROR)
       {
-        $errstr = 'db_'.$this->getDbErrno();
-        if($GLOBALS[$errstr]=="") { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=text($errstr); }
+        $errstr = 'txt_db_'.$this->getDbErrno();
+        if($GLOBALS[$errstr]=="") { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$GLOBALS[$errstr]; }
       //  atkerror($this->m_error);
 
         return $this->m_error;
@@ -300,7 +290,8 @@
         if($this->getErrorType()=="system")
         {
           atkdebug("atkdb::halt() on system error");
-          if(in_array($this->m_errno,$this->m_critical_error)) $level='critical';
+          if(!in_array($this->m_errno,$this->m_user_error)) $level='critical';
+          atkerror($this->getErrorMsg());
           halt($this->getErrorMsg(),$level);
         }
         else
