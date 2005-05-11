@@ -49,8 +49,7 @@
     {
       // set the user error's
       $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);   
-      // set critical error's      
-      $this->m_critical_error = array(600,904,1017,12154);
+      // Other errors are assumed to be critical errors
     }
 
     /**
