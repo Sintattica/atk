@@ -20,10 +20,15 @@ Changes in ATK 5.2.1
 * Fixed bug and cleaned up code in atkOneToManyRelation searching. [Ivo]
 * atkTextAttribute's $size parameter detection is now a bit smarter. [Ivo]
 * Fixed error in CSV import handler. [Boy]
-- Removed atkAttribute::display_plain(). [Ivo]
+* Default $config_sequenceprefix is now "seq_". (bug #365) [Ivo]
+* Fixed fatal error in add screen when insert query would fail. [Ivo]
 * Fixed bug where searching on dates would always add 19 or 20 
-  in front of the year [Boy]
-* Fixed bug in exportFile() that would prevent exporting with MSIE and SSL [Boy]
+  in front of the year. [Boy]
+* Fixed bug in exportFile() that would prevent exporting with MSIE and SSL. [Boy]
+* Improvements to Oracle OCI9 driver error handling. [Ivo]
+- Removed $m_critical_error lists from the db drivers. Anything that's not a
+  userlevel error should be considered critical. [Ivo]
+- Removed atkAttribute::display_plain(). [Ivo]
 
 Changes in ATK 5.2.0
 --------------------
