@@ -318,7 +318,8 @@
         
         if(is_object($attr))
         {           
-          $content.= ' '.atktext("value").': '.$attr->edit(array(),"","edit").'<br/>';
+          $fakeeditarray = array();
+          $content.= ' '.atktext("value").': '.$attr->edit($fakeeditarray,"","edit").'<br/>';
         }
       }
       
