@@ -160,9 +160,11 @@
     */
     function addMlCondition(&$query,&$node,$mode)
     {
+      global $lng;
       if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
       {
-        $query->addCondition("UPPER(".$node->m_table.".".$node->m_lngfield.")='".$node->m_defaultlanguage."'");
+        if (!$lng) $lng = $node->m_defaultlanguage;
+        $query->addCondition("UPPER(".$node->m_table.".".$node->m_lngfield.")='".$lng."'");
       }
       
       $relations=&$node->m_relations["atkmanytoonerelation"];
