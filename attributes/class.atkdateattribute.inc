@@ -547,7 +547,7 @@
       $elems = explode("-", $value);
       return sprintf("%02d", $elems[0])."-".
              sprintf("%02d", $elems[1])."-".
-             ($elems[2]<50?"20":"19").sprintf("%02d", $elems[2]);
+             ($elems[2]<100?($elems[2]<50?"20":"19"):"").sprintf("%02d", $elems[2]);
     }
 
     /**

@@ -21,7 +21,8 @@ Changes in ATK 5.2.1
 * atkTextAttribute's $size parameter detection is now a bit smarter. [Ivo]
 * Fixed error in CSV import handler. [Boy]
 - Removed atkAttribute::display_plain(). [Ivo]
-
+* Fixed bug where searching on dates would always add 19 or 20 
+  in front of the year [Boy]
 
 Changes in ATK 5.2.0
 --------------------
