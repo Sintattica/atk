@@ -43,37 +43,34 @@
     }
     
     function display($record, $mode="")
-    {
-      $record[$this->fieldName()] = $this->_convertDecimalSeperatorToPoint($record[$this->fieldName()]);
-      return parent::display($record, $mode);
+    {      
+      return atkNumberAttribute::translateSeparator(sprintf("%.".$this->m_decimals."f", $record[$this->fieldName()]));
     }
     
     /**
-     * Replace decimal seperator (from the language files "decimal_seperator") 
-     * by . so, for instance, the Dutch 99,95 would become 99.95
-     * @param Float $number The number that needs to be converted
-     * @return Float The converted number 
+     * Replace decimal separator (from the language file "decimal_separator") 
+     * with the standard separator ('.') so, for instance,  99,95 would become 
+     * 99.95 when language is set to 'nl'.
+     * @static
+     * @param String $number The number that needs to be converted
+     * @return String The converted number 
      */
-    function _convertDecimalSeperatorToPoint($number)
-    {
-      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
-        return str_replace(atktext("decimal_seperator"),".",$number);
-      else 
-        return $number;
+    function standardiseSeparator($number)
+    {      
+      return str_replace(atktext("decimal_separator"),".",$number);     
     }
     
     /**
-     * Replace decimal seperator . by the one from the language files so, for instance, 
-     * 99.95 would be converted to the Dutch 99,95
-     * @param Float $number The number that needs to be converted
-     * @return Float The converted number 
+     * Replace standard decimal separator ('.') with the one from the language 
+     * file so, for instance, 99.95 would be converted to 99,95 when language
+     * is set to 'nl'.
+     * @static
+     * @param String $number The number that needs to be converted
+     * @return String The converted number 
      */
-    function _convertDecimalSeperatorFromPoint($number)
+    function translateSeparator($number)
     {
-      if (atktext("decimal_seperator", "atk",null,null,null,true)) 
-        return str_replace(atktext("decimal_seperator"),".",$number);
-      else 
-        return $number;
+      return str_replace(".", atktext("decimal_separator"), $number);      
     }
 
     /**
@@ -84,12 +81,28 @@
      * @return $record
      */    
     function validate(&$record, $mode)
-    {
-      $record[$this->fieldName()] = $this->_convertDecimalSeperatorToPoint($record[$this->fieldName()]);
-      
+    {            
       if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
          triggerError($record, $this->fieldName(), 'error_notnumeric');
     }
+    
+    /**
+     * Convert values from an HTML form posting to an internal value for 
+     * this attribute. 
+     *
+     * If the user entered a number in his native language, he may have used
+     * a different decimal separator, which we first convert to the '.'
+     * standard separator (ATK uses the regular dot notation internally)
+     *
+     * @param array $postvars The array with html posted values ($_POST, for 
+     *                        example) that holds this attribute's value.
+     * @return String The internal value
+     */
+    function fetchValue($postvars)
+    {
+      return atkNumberAttribute::standardiseSeparator($postvars[$this->fieldName()]);
+    }
+    
     
     function value2db($rec)
     {
@@ -137,10 +150,13 @@
       {
         $maxsize += ($this->m_decimals+1); // make room for the number of decimals
       }
+      
+      $value = atkNumberAttribute::translateSeparator(sprintf("%.".$this->m_decimals."f", $record[$this->fieldName()]));
+      
       $id = $fieldprefix.$this->fieldName();      
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result = '<input type="text" id="'.$id.'" name="'.$id.
-                '" value="'.$record[$this->fieldName()].'"'.
+                '" value="'.$value.'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').'>';
 
