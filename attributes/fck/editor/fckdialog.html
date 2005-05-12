@@ -1,6 +1,6 @@
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,9 +11,6 @@
  * File Name: fckdialog.html
  * 	This page is used by all dialog box as the container.
  * 
- * Version:  2.0 RC3
- * Modified: 2005-02-19 14:49:02
- * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
 -->
@@ -23,9 +20,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="robots" content="noindex, nofollow" />
 		<script type="text/javascript">
-<!--
 
-// On some Gecko browsers (probably over slow connections) the 
+// On some Gecko browsers (probably over slow connections) the
 // "dialogArguments" are not set so we must get it from the opener window.
 if ( !dialogArguments )
 	dialogArguments = window.opener.FCKLastDialogInfo ;
@@ -43,7 +39,7 @@ function LoadInnerDialog()
 {
 	if ( window.onresize )
 		window.onresize() ;
-	
+
 	// First of all, translate the dialog box contents.
 	dialogArguments.Editor.FCKLanguageManager.TranslatePage( document ) ;
 
@@ -56,13 +52,13 @@ function InnerDialogLoaded()
 
 	// Set the language direction.
 	oInnerDoc.dir = dialogArguments.Editor.FCKLang.Dir ;
-	
+
 	// Sets the Skin CSS.
 	oInnerDoc.write( '<link href="' + dialogArguments.Editor.FCKConfig.SkinPath + 'fck_dialog.css" type="text/css" rel="stylesheet">' ) ;
-	
+
 	SetOnKeyDown( oInnerDoc ) ;
 	DisableContextMenu( oInnerDoc ) ;
-	
+
 	return dialogArguments.Editor ;
 }
 
@@ -84,16 +80,16 @@ function RefreshSize()
 	if ( bAutoSize )
 	{
 		var oInnerDoc = document.getElementById('frmMain').contentWindow.document ;
-		
+
 		if ( document.all )
 			var iFrameHeight	= oInnerDoc.body.offsetHeight ;
 		else
 			var iFrameHeight	= document.getElementById('frmMain').contentWindow.innerHeight ;
-			
+
 		var iInnerHeight	= oInnerDoc.body.scrollHeight ;
-		
+
 		var iDiff = iInnerHeight - iFrameHeight ;
-		
+
 		if ( iDiff > 0 )
 		{
 			if ( document.all )
@@ -118,6 +114,11 @@ function Cancel()
 // Object that holds all available tabs.
 var oTabs = new Object() ;
 
+function TabDiv_OnClick()
+{
+	SetSelectedTab( this.TabCode ) ;
+}
+
 function AddTab( tabCode, tabText, startHidden )
 {
 	if ( typeof( oTabs[ tabCode ] ) != 'undefined' )
@@ -132,30 +133,27 @@ function AddTab( tabCode, tabText, startHidden )
 	oDiv.className = 'PopupTab' ;
 	oDiv.innerHTML = tabText ;
 	oDiv.TabCode = tabCode ;
-	oDiv.onclick = function()
-	{
-		SetSelectedTab( this.TabCode ) ;
-	}
-	
+	oDiv.onclick = TabDiv_OnClick ;
+
 	if ( startHidden )
 		oDiv.style.display = 'none' ;
-	
+
 	var eTabsRow = document.getElementById( 'TabsRow' ) ;
-	
+
 	oCell.appendChild( oDiv ) ;
-	
+
 	if ( eTabsRow.style.display == 'none' )
 	{
 		var eTitleArea = document.getElementById( 'TitleArea' ) ;
 		eTitleArea.className = 'PopupTitle' ;
-		
+
 		oDiv.className = 'PopupTabSelected' ;
 		eTabsRow.style.display = '' ;
-		
+
 		if ( ! dialogArguments.Editor.FCKBrowserInfo.IsIE )
 			window.onresize() ;
 	}
-	
+
 	oTabs[ tabCode ] = oDiv ;
 	oTabs[ tabCode ].Index = oTabs.length - 1 ;
 }
@@ -169,7 +167,7 @@ function SetSelectedTab( tabCode )
 		else
 			oTabs[sCode].className = 'PopupTab' ;
 	}
-	
+
 	if ( typeof( window.frames["frmMain"].OnDialogTabChange ) == 'function' )
 		window.frames["frmMain"].OnDialogTabChange( tabCode ) ;
 }
@@ -178,7 +176,7 @@ function SetTabVisibility( tabCode, isVisible )
 {
 	var oTab = oTabs[ tabCode ] ;
 	oTab.style.display = isVisible ? '' : 'none' ;
-	
+
 	if ( ! isVisible && oTab.className == 'PopupTabSelected' )
 	{
 		for ( var sCode in oTabs )
@@ -216,7 +214,7 @@ SetOnKeyDown( document ) ;
 function DisableContextMenu( targetDocument )
 {
 	if ( dialogArguments.Editor.FCKBrowserInfo.IsIE ) return ;
-	
+
 	// Disable Right-Click
 	var oOnContextMenu = function( e )
 	{
@@ -233,15 +231,15 @@ if ( ! dialogArguments.Editor.FCKBrowserInfo.IsIE )
 	window.onresize = function()
 	{
 		var oFrame = document.getElementById("frmMain") ;
-		
+
 		if ( ! oFrame )
 		return ;
-		
+
 		oFrame.height = 0 ;
 
-		var oCell = document.getElementById("FrameCell") ;	
+		var oCell = document.getElementById("FrameCell") ;
 		var iHeight = oCell.offsetHeight ;
-		
+
 		oFrame.height = iHeight - 2 ;
 	}
 }
@@ -251,7 +249,18 @@ window.onfocus = function()
 	document.getElementById('frmMain').contentWindow.focus() ;
 }
 
-//-->
+if ( dialogArguments.Editor.FCKBrowserInfo.IsIE )
+{
+	function Window_OnBeforeUnload()
+	{
+		for ( var t in oTabs )
+			oTabs[t] = null ;
+
+		dialogArguments.Editor = null ;
+	}
+	window.attachEvent( "onbeforeunload", Window_OnBeforeUnload ) ;
+}
+
 		</script>
 	</head>
 	<body onload="LoadInnerDialog();" class="PopupBody">
@@ -259,9 +268,7 @@ window.onfocus = function()
 			<tr>
 				<td id="TitleArea" class="PopupTitle PopupTitleBorder">
 					<script type="text/javascript">
-<!--
 document.write( sTitle ) ;
-//-->
 					</script>
 				</td>
 			</tr>

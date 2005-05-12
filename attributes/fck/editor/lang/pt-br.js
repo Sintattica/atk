@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: pt-br.js
  * 	Brazilian Portuguese language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
  * 
  * File Authors:
  * 		Carlos Alberto Tomatis Loth (carlos.loth@conectait.com.br)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Formatar Caixa de Listagem",
 TextareaProp		: "Formatar Área de Texto",
 FormProp			: "Formatar Formulário",
 
-FontFormats			: "Normal;Formatado;Endereço;Título 1;Título 2;Título 3;Título 4;Título 5;Título 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatado;Endereço;Título 1;Título 2;Título 3;Título 4;Título 5;Título 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Processando XHTML. Por favor, aguarde...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Superior Absoluto",
 DlgImgAlignTop		: "Superior",
 DlgImgPreview		: "Visualização",
 DlgImgAlertUrl		: "Por favor, digite o URL da figura.",
+DlgImgLinkTab		: "Hiperlink",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Hiperlink",
@@ -327,7 +325,7 @@ DlgAnchorName		: "Nome da Âncora",
 DlgAnchorErrorName	: "Por favor, digite o nome da âncora",
 
 // Speller Pages Dialog
-DlgSpellNotInDic		: "Not in dictionary",	//MISSING
+DlgSpellNotInDic		: "Não encontrada",
 DlgSpellChangeTo		: "Alterar para",
 DlgSpellBtnIgnore		: "Ignorar uma vez",
 DlgSpellBtnIgnoreAll	: "Ignorar Todas",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Descrição do Documento",
 DlgDocMeAuthor		: "Autor",
 DlgDocMeCopy		: "Direitos Autorais",
 DlgDocPreview		: "Visualizar",
+
+// Templates Dialog
+Templates			: "Modelos de layout",
+DlgTemplatesTitle	: "Modelo de layout do conteúdo",
+DlgTemplatesSelMsg	: "Selecione um modelo de layout para ser aberto no editor<br>(o conteúdo atual será perdido):",
+DlgTemplatesLoading	: "Carregando a lista de modelos de layout. Aguarde...",
+DlgTemplatesNoTpl	: "(Não foram definidos modelos de layout)",
 
 // About Dialog
 DlgAboutAboutTab	: "Sobre",

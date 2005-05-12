@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -9,10 +9,7 @@
  * 		http://www.fckeditor.net/
  * 
  * File Name: ko.js
- * 	Danish language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
+ * 	Korean language file.
  * 
  * File Authors:
  * 		Taehwan Kwag (thkwag@nate.com)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "펼침목록 속성",
 TextareaProp		: "입력영역 속성",
 FormProp			: "폼 속성",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "XHTML 처리중. 잠시만 기다려주십시요.",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "글자위(Text Top)",
 DlgImgAlignTop		: "위",
 DlgImgPreview		: "미리보기",
 DlgImgAlertUrl		: "이미지 URL을 입력하십시요",
+DlgImgLinkTab		: "링크",
 
 // Link Dialog
 DlgLnkWindowTitle	: "링크",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "문서 설명",
 DlgDocMeAuthor		: "작성자",
 DlgDocMeCopy		: "저작권",
 DlgDocPreview		: "미리보기",
+
+// Templates Dialog
+Templates			: "템플릿",
+DlgTemplatesTitle	: "내용 템플릿",
+DlgTemplatesSelMsg	: "에디터에서 사용할 템플릿을 선택하십시요.<br>(지금까지 작성된 내용은 사라집니다.):",
+DlgTemplatesLoading	: "템플릿 목록을 불러오는중입니다. 잠시만 기다려주십시요.",
+DlgTemplatesNoTpl	: "(템플릿이 없습니다.)",
 
 // About Dialog
 DlgAboutAboutTab	: "About",

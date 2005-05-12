@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: sv.js
  * 	Swedish language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
  * 
  * File Authors:
  * 		Kristoffer Malvefors (kristoffer@intema.ws)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Egenskaper för flervalslista",
 TextareaProp		: "Egenskaper för textruta",
 FormProp			: "Egenskaper för formulär",
 
-FontFormats			: "Normal;Formaterad;Adress;Rubrik 1;Rubrik 2;Rubrik 3;Rubrik 4;Rubrik 5;Rubrik 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formaterad;Adress;Rubrik 1;Rubrik 2;Rubrik 3;Rubrik 4;Rubrik 5;Rubrik 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Bearbetar XHTML. Var god vänta...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Text överkant",
 DlgImgAlignTop		: "Överkant",
 DlgImgPreview		: "Förhandsgranska",
 DlgImgAlertUrl		: "Var god och ange bildens URL",
+DlgImgLinkTab		: "Länk",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Länk",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Sidans beskrivning",
 DlgDocMeAuthor		: "Författare",
 DlgDocMeCopy		: "Upphovsrätt",
 DlgDocPreview		: "Förhandsgranska",
+
+// Templates Dialog
+Templates			: "Sidmallar",
+DlgTemplatesTitle	: "Sidmallar",
+DlgTemplatesSelMsg	: "Var god välj en mall att använda med editorn<br>(allt nuvarande innehåll raderas):",
+DlgTemplatesLoading	: "Laddar mallar. Var god vänta...",
+DlgTemplatesNoTpl	: "(Ingen mall är vald)",
 
 // About Dialog
 DlgAboutAboutTab	: "Om",

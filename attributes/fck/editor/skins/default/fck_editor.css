@@ -1,6 +1,6 @@
 /*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: fck_editor.css
  * 	Styles used by the editor IFRAME and Toolbar.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 15:49:28
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -107,12 +104,18 @@ body
 {
 	filter: alpha(opacity=70);
 	-moz-opacity: 0.70;
+	background-color: #efefde;
 }
 
 .TB_Button_Disabled, .TB_Combo_Disabled
 {
 	filter: gray() alpha(opacity=30);
 	-moz-opacity: 0.30;
+}
+
+.TB_Button_On_Over, .TB_Button_Off_Over
+{
+	background-color: #dff1ff;
 }
 
 .TB_Icon DIV
@@ -132,21 +135,6 @@ body
 .TB_ButtonArrow
 {
 	padding-right: 3px;
-}
-
-.TB_ButtonType_Icon .TB_Text
-{
-	display: none;
-}
-
-.TB_ButtonType_Text .TB_Icon
-{
-	display: none;
-}
-
-.TB_ButtonType_Text .TB_Text
-{
-	padding-left: 5px;
 }
 
 .TB_Break

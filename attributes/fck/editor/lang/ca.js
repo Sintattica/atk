@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: ca.js
  * 	Catalan language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Jordi Cerdan (nan@myp.ad)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Proprietats de camp de selecció",
 TextareaProp		: "Proprietats de camp de text",
 FormProp			: "Proprietats de formulari",
 
-FontFormats			: "Normal;Formatejat;Adreça;Capçalera 1;Capçalera 2;Capçalera 3;Capçalera 4;Capçalera 5;Capçalera 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatejat;Adreça;Capçalera 1;Capçalera 2;Capçalera 3;Capçalera 4;Capçalera 5;Capçalera 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Processant XHTML. Si us plau esperi...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Text Top",
 DlgImgAlignTop		: "Top",
 DlgImgPreview		: "Vista Prèvia",
 DlgImgAlertUrl		: "Si us plau, escriviu la URL de la imatge",
+DlgImgLinkTab		: "Enllaç",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Enllaç",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Descripció del document",
 DlgDocMeAuthor		: "Autor",
 DlgDocMeCopy		: "Copyright",
 DlgDocPreview		: "Vista prèvia",
+
+// Templates Dialog
+Templates			: "Plantilles",
+DlgTemplatesTitle	: "Contingut Plantilles",
+DlgTemplatesSelMsg	: "Si us plau, seleccioneu la plantilla per obrir en l'editor<br>(el contingut actual no serà enregistrat):",
+DlgTemplatesLoading	: "Carregant la llista de plantilles. Si us plau, esperi...",
+DlgTemplatesNoTpl	: "(No hi ha plantilles definides)",
 
 // About Dialog
 DlgAboutAboutTab	: "Sobre",

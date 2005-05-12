@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,9 +11,6 @@
  * 
  * File Name: fck_replace.html
  * 	"Replace" dialog box window.
- * 
- * Version:  2.0 RC3
- * Modified: 2004-11-30 10:26:37
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -33,6 +30,8 @@ function OnLoad()
 	oEditor.FCKLanguageManager.TranslatePage( document ) ;
 
 	window.parent.SetAutoSize( true ) ;
+
+	oEditor.FCKUndo.SaveUndoStep() ;
 }
 
 function btnStat(frm)

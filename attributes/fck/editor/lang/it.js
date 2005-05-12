@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: it.js
  * 	Italian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Simone Chiaretta (simone@piyosailing.com)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Proprietà menu di selezione",
 TextareaProp		: "Proprietà area di testo",
 FormProp			: "Proprietà modulo",
 
-FontFormats			: "Normale;Formattato;Indirizzo;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "Normale;Formattato;Indirizzo;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "Elaborazione XHTML in corso. Attendere prego...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "In alto al testo",
 DlgImgAlignTop		: "In Alto",
 DlgImgPreview		: "Anteprima",
 DlgImgAlertUrl		: "Inserisci il tipo di URL per l'immagine",
+DlgImgLinkTab		: "Collegamento",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Collegamento",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Descrizione documento",
 DlgDocMeAuthor		: "Autore",
 DlgDocMeCopy		: "Copyright",
 DlgDocPreview		: "Anteprima",
+
+// Templates Dialog
+Templates			: "Modelli",
+DlgTemplatesTitle	: "Contenuto dei modelli",
+DlgTemplatesSelMsg	: "Seleziona il modello da aprire nell'editor<br>(il contenuto attuale verrà eliminato):",
+DlgTemplatesLoading	: "Caricamento modelli in corso. Attendere prego...",
+DlgTemplatesNoTpl	: "(Nessun modello definito)",
 
 // About Dialog
 DlgAboutAboutTab	: "Informazioni",

@@ -1,6 +1,6 @@
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: fckeditor.original.html
  * 	Main page that holds the editor.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-02 10:54:21
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -29,6 +26,7 @@
 		<meta http-equiv="Cache-Control" content="public">
 		@Packager.RemoveLine -->
 		<!-- @Packager.Remove.Start -->
+		<script type="text/javascript" src="_source/internals/fcknamespace.js"></script>
 		<script type="text/javascript" src="_source/internals/fckcoreextensions.js"></script>
 		<script type="text/javascript" src="_source/globals/fck_constants.js"></script>
 		<script type="text/javascript" src="_source/internals/fckbrowserinfo.js"></script>
@@ -62,7 +60,7 @@
 			</tr>
 			<tr id="eWysiwyg">
 				<td id="eWysiwygCell" height="100%" valign="top">
-					<iframe id="eEditorArea" name="eEditorArea" height="100%" width="100%" frameborder="no" src="fckeditorarea.html"></iframe>
+					<iframe id="eEditorArea" name="eEditorArea" height="100%" width="100%" frameborder="no" src="fckblank.html"></iframe>
 				</td>
 			</tr>
 			<tr id="eSource" style="DISPLAY: none">

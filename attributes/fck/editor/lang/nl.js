@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: nl.js
  * 	Dutch language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Bram Crins (bcrins@realdesign.nl)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Eigenschappen selectieveld",
 TextareaProp		: "Eigenschappen tekstveld (groot)",
 FormProp			: "Eigenschappen formulier",
 
-FontFormats			: "Normaal;Met opmaak;Adres;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normaal;Met opmaak;Adres;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Verwerken XHTML. Even geduld aub...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Tekst boven",
 DlgImgAlignTop		: "Boven",
 DlgImgPreview		: "Voorbeeld",
 DlgImgAlertUrl		: "Geeft de URL van de afbeelding",
+DlgImgLinkTab		: "Link",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Link",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Beschrijving document",
 DlgDocMeAuthor		: "Auteur",
 DlgDocMeCopy		: "Copyright",
 DlgDocPreview		: "Voorbeeld",
+
+// Templates Dialog
+Templates			: "Sjablonen",
+DlgTemplatesTitle	: "Inhoud sjabonen",
+DlgTemplatesSelMsg	: "Selecteer een sjabloon die in de editor geopend moet worden. (De actuele inhoud gaat verloren.):",
+DlgTemplatesLoading	: "Bezig met laden sjabonen. Even geduld aub...",
+DlgTemplatesNoTpl	: "(Geen sjablonen gedefiniëerd)",
 
 // About Dialog
 DlgAboutAboutTab	: "Over",

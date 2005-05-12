@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: hr.js
  * 	Croatian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Alex Varga (avarga@globaldizajn.hr)
@@ -53,8 +50,8 @@ InsertSpecialChar	: "Ubaci posebne karaktere",
 InsertSmileyLbl		: "Smješko",
 InsertSmiley		: "Ubaci smješka",
 About				: "O FCKeditoru",
-Bold				: "Bold",
-Italic				: "Italic",
+Bold				: "Podebljaj",
+Italic				: "Ukosi",
 Underline			: "Podcrtano",
 StrikeThrough		: "Precrtano",
 Subscript			: "Subscript",
@@ -120,14 +117,14 @@ SelectionFieldProp	: "Selection svojstva",
 TextareaProp		: "Textarea svojstva",
 FormProp			: "Form svojstva",
 
-FontFormats			: "Normal;Formatirano;Adresa;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatirano;Adresa;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Obrađujem XHTML. Molimo pričekajte...",
 Done				: "Završio",
 PasteWordConfirm	: "Tekst koji želite zalijepiti čini se da je kopiran iz Worda. Želite li prije očistiti tekst?",
 NotCompatiblePaste	: "Ova naredba je dostupna samo u Internet Exploreru 5.5 ili novijem. Želite li nastaviti bez čišćenja?",
-UnknownToolbarItem	: "Nepoznata član trake s alatima \"%1\"",
+UnknownToolbarItem	: "Nepoznati član trake s alatima \"%1\"",
 UnknownCommand		: "Nepoznata naredba \"%1\"",
 NotImplemented		: "Naredba nije implementirana",
 UnknownToolbarSet	: "Traka s alatima \"%1\" ne postoji",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Vrh teksta",
 DlgImgAlignTop		: "Vrh",
 DlgImgPreview		: "Pregledaj",
 DlgImgAlertUrl		: "Unesite URL slike",
+DlgImgLinkTab		: "Link",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Link",
@@ -439,10 +437,17 @@ DlgDocMeAuthor		: "Autor",
 DlgDocMeCopy		: "Autorska prava",
 DlgDocPreview		: "Pregledaj",
 
+// Templates Dialog
+Templates			: "Predlošci",
+DlgTemplatesTitle	: "Predlošci sadržaja",
+DlgTemplatesSelMsg	: "Molimo odaberite predložak koji želite otvoriti<br>(stvarni sadržaj će biti izgubljen):",
+DlgTemplatesLoading	: "Učitavam listu predložaka. Molimo pričekajte...",
+DlgTemplatesNoTpl	: "(Nema definiranih predložaka)",
+
 // About Dialog
 DlgAboutAboutTab	: "O FCKEditoru",
 DlgAboutBrowserInfoTab	: "Podaci o pretraživaču",
 DlgAboutVersion		: "inačica",
-DlgAboutLicense		: "Licencirano pod uvijetima GNU Lesser General Public License",
+DlgAboutLicense		: "Licencirano pod uvjetima GNU Lesser General Public License",
 DlgAboutInfo		: "Za više informacija posjetite"
 }

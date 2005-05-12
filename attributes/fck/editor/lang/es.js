@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: es.js
  * 	Spanish language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Gabriel Schillaci (internetbug@users.sourceforge.net)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Propiedades de Campo de Selección",
 TextareaProp		: "Propiedades de Area de Texto",
 FormProp			: "Propiedades de Formulario",
 
-FontFormats			: "Normal;Formateado;Direccion;Encabezado 1;Encabezado 2;Encabezado 3;Encabezado 4;Encabezado 5;Encabezado 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formateado;Direccion;Encabezado 1;Encabezado 2;Encabezado 3;Encabezado 4;Encabezado 5;Encabezado 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Procesando XHTML. Por favor, espere...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Tope del texto",
 DlgImgAlignTop		: "Tope",
 DlgImgPreview		: "Vista Previa",
 DlgImgAlertUrl		: "Por favor tipee el URL de la imagen",
+DlgImgLinkTab		: "Vínculo",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Vínculo",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Descripción del Documento",
 DlgDocMeAuthor		: "Autor",
 DlgDocMeCopy		: "Copyright",
 DlgDocPreview		: "Vista Previa",
+
+// Templates Dialog
+Templates			: "Plantillas",
+DlgTemplatesTitle	: "Contenido de Plantillas",
+DlgTemplatesSelMsg	: "Por favor selecciona la plantilla a abrir en el editor<br>(el contenido actual se perderá):",
+DlgTemplatesLoading	: "Cargando lista de Plantillas. Por favor, aguarde...",
+DlgTemplatesNoTpl	: "(No hay plantillas definidas)",
 
 // About Dialog
 DlgAboutAboutTab	: "Acerca de",

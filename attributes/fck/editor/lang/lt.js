@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: lt.js
  * 	Lithuanian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Tauras Paliulis (tauras.paliulis@tauras.com)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Atrankos lauko savybės",
 TextareaProp		: "Teksto srities savybės",
 FormProp			: "Formos savybės",
 
-FontFormats			: "Normalus;Formuotas;Kreipinio;Antraštinis 1;Antraštinis 2;Antraštinis 3;Antraštinis 4;Antraštinis 5;Antraštinis 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normalus;Formuotas;Kreipinio;Antraštinis 1;Antraštinis 2;Antraštinis 3;Antraštinis 4;Antraštinis 5;Antraštinis 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Apdorojamas XHTML. Prašome palaukti...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Teksto viršūnę",
 DlgImgAlignTop		: "Viršūnę",
 DlgImgPreview		: "Peržiūra",
 DlgImgAlertUrl		: "Prašome įvesti vaizdo URL",
+DlgImgLinkTab		: "Link",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "Nuoroda",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Dokumento apibūdinimas",
 DlgDocMeAuthor		: "Autorius",
 DlgDocMeCopy		: "Autorinės teisės",
 DlgDocPreview		: "Peržiūra",
+
+// Templates Dialog
+Templates			: "Templates",	//MISSING
+DlgTemplatesTitle	: "Content Templates",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
+DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Apie",

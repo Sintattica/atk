@@ -1,4 +1,21 @@
-﻿// Register the related command.
+﻿/*
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * File Name: fckplugin.js
+ * 	Plugin to insert "Placeholders" in the editor.
+ * 
+ * File Authors:
+ * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ */
+
+// Register the related command.
 FCKCommands.RegisterCommand( 'Placeholder', new FCKDialogCommand( 'Placeholder', FCKLang.PlaceholderDlgTitle, FCKPlugins.Items['placeholder'].Path + 'fck_placeholder.html', 340, 170 ) ) ;
 
 // Create the "Plaholder" toolbar button.
@@ -44,7 +61,7 @@ FCKPlaceholders._SetupClickListener = function()
 	FCKPlaceholders._ClickListener = function( e )
 	{
 		if ( e.target.tagName == 'SPAN' && e.target._fckplaceholder )
-			FCKSelection.SelectElement( e.target ) ;
+			FCKSelection.SelectNode( e.target ) ;
 	}
 
 	FCK.EditorDocument.addEventListener( 'click', FCKPlaceholders._ClickListener, true ) ;

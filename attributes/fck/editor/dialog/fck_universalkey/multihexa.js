@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,9 +11,6 @@
  * File Name: multihexa.js
  * 	Scripts for the fck_universalkey.html page.
  * 	Definition des 104 caracteres en hexa unicode.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-02-10 17:58:53
  * 
  * File Authors:
  * 		Michel Staelens (michel.staelens@wanadoo.fr)
@@ -229,36 +226,36 @@ function setCk(inval){
 // Arabic Keystroke Translator
 function arkey(a) {
 		if ((document.layers)|(navigator.userAgent.indexOf("MSIE 4")>-1)|(langue!="Arabic")) return true;
-		key=event.keyCode;
+		keyCode=event.keyCode;
 		entry=true;
 		cont=event.srcElement ;
-		if (key>64 && key<91) {
+		if (keyCode>64 && keyCode<91) {
 			entry=false;
-			source='? ??? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ';
-			shsource='? ??} ] ? [ ??? ÷ ? ? /   ? × ? ? ? ? ??  { ? ? ? ~';
+			source='ش لاؤ ي ث ب ل ا ه ت ن م ة ى خ ح ض ق س ف ع ر ص ء غ ئ ';
+			shsource='ِ لآ} ] ُ [ لأأ ÷ ـ ، /   آ × ؛ َ ٌ ٍ لإ  { ً ْ إ ~'; 
 
-			if (event.shiftKey) cont.value += shsource.substr((key-64)*2-2,2);
+			if (event.shiftKey) cont.value += shsource.substr((keyCode-64)*2-2,2);
 			else
-				cont.value += source.substr((key-64)*2-2,2);
+				cont.value += source.substr((keyCode-64)*2-2,2);
 			if (cont.value.substr(cont.value.length-1,1)==' ') cont.value=cont.value.substr(0,cont.value.length-1);
 		}
 		if (event.shiftKey) {
-			if (key==186) {cont.value += ':';entry=false;}
-			if (key==188) {cont.value += ',';entry=false;}
-			if (key==190) {cont.value += '.';entry=false;}
-			if (key==191) {cont.value += '?';entry=false;}
-			if (key==192) {cont.value += '?';entry=false;}
-			if (key==219) {cont.value += '<';entry=false;}
-			if (key==221) {cont.value += '>';entry=false;}
+			if (keyCode==186) {cont.value += ':';entry=false;}
+			if (keyCode==188) {cont.value += ',';entry=false;}
+			if (keyCode==190) {cont.value += '.';entry=false;}
+			if (keyCode==191) {cont.value += '؟';entry=false;}
+			if (keyCode==192) {cont.value += 'ّ';entry=false;}
+			if (keyCode==219) {cont.value += '<';entry=false;}
+			if (keyCode==221) {cont.value += '>';entry=false;}
 		} else {
-			if (key==186) {cont.value += '?';entry=false;}
-			if (key==188) {cont.value += '?';entry=false;}
-			if (key==190) {cont.value += '?';entry=false;}
-			if (key==191) {cont.value += '?';entry=false;}
-			if (key==192) {cont.value += '?';entry=false;}
-			if (key==219) {cont.value += '?';entry=false;}
-			if (key==221) {cont.value += '?';entry=false;}
-			if (key==222) {cont.value += '?';entry=false;}
+			if (keyCode==186) {cont.value += 'ك';entry=false;}
+			if (keyCode==188) {cont.value += 'و';entry=false;}
+			if (keyCode==190) {cont.value += 'ز';entry=false;}
+			if (keyCode==191) {cont.value += 'ظ';entry=false;}
+			if (keyCode==192) {cont.value += 'ذ';entry=false;}
+			if (keyCode==219) {cont.value += 'ج';entry=false;}
+			if (keyCode==221) {cont.value += 'د';entry=false;}
+			if (keyCode==222) {cont.value += 'ط';entry=false;}
 		}
 
 

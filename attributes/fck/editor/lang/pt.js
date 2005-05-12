@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: pt.js
  * 	Portuguese language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
  * 
  * File Authors:
  * 		Francisco Pereira (fjpereira@netcabo.pt)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Propriedades da Caixa de Combinação",
 TextareaProp		: "Propriedades da Área de Texto",
 FormProp			: "Propriedades do Formulário",
 
-FontFormats			: "Normal;Formatado;Endereço;Título 1;Título 2;Título 3;Título 4;Título 5;Título 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatado;Endereço;Título 1;Título 2;Título 3;Título 4;Título 5;Título 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "A Processar XHTML. Por favor, espere...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Topo do texto",
 DlgImgAlignTop		: "Topo",
 DlgImgPreview		: "Pré-visualizar",
 DlgImgAlertUrl		: "Por favor introduza o URL da imagem",
+DlgImgLinkTab		: "Hiperligação",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Hiperligação",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Descrição do Documento",
 DlgDocMeAuthor		: "Autor",
 DlgDocMeCopy		: "Direitos de Autor",
 DlgDocPreview		: "Pré-visualizar",
+
+// Templates Dialog
+Templates			: "Modelos",
+DlgTemplatesTitle	: "Modelo de Conteúdo",
+DlgTemplatesSelMsg	: "Por favor, seleccione o modelo a abrir no editor<br>(o conteúdo actual será perdido):",
+DlgTemplatesLoading	: "A carregar a lista de modelos. Aguarde por favor...",
+DlgTemplatesNoTpl	: "(Sem modelos definidos)",
 
 // About Dialog
 DlgAboutAboutTab	: "Acerca",

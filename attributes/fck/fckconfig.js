@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -12,9 +12,6 @@
  * 	Editor configuration settings.
  * 	See the documentation for more info.
  * 
- * Version:  2.0 RC3
- * Modified: 2005-02-27 21:31:48
- * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
@@ -22,6 +19,8 @@
 FCKConfig.CustomConfigurationsPath = '' ;
 
 FCKConfig.EditorAreaCSS = FCKConfig.BasePath + 'css/fck_editorarea.css' ;
+
+FCKConfig.DocType = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' ;
 
 FCKConfig.BaseHref = '' ;
 
@@ -35,12 +34,16 @@ FCKConfig.PluginsPath = FCKConfig.BasePath + 'plugins/' ;
 
 // FCKConfig.Plugins.Add( 'placeholder', 'en,it' ) ;
 
-FCKConfig.AutoDetectLanguage	= false ;
+FCKConfig.AutoDetectLanguage	= true ;
 FCKConfig.DefaultLanguage		= 'en' ;
 FCKConfig.ContentLangDirection	= 'ltr' ;
 
 FCKConfig.EnableXHTML		= true ;
 FCKConfig.EnableSourceXHTML	= true ;
+
+FCKConfig.ProcessHTMLEntities	= true ;
+FCKConfig.IncludeLatinEntities	= true ;
+FCKConfig.IncludeGreekEntities	= true ;
 
 FCKConfig.FillEmptyBlocks	= true ;
 
@@ -59,7 +62,7 @@ FCKConfig.ToolbarStartExpanded	= true ;
 FCKConfig.ToolbarCanCollapse	= true ;
 
 FCKConfig.ToolbarSets["Default"] = [
-	['Source','DocProps','-','Save','NewPage','Preview'],
+	['Source','DocProps','-','Save','NewPage','Preview','-','Templates'],
 	['Cut','Copy','Paste','PasteText','PasteWord','-','Print','SpellCheck'],
 	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
@@ -86,23 +89,38 @@ FCKConfig.FontNames		= 'Arial;Comic Sans MS;Courier New;Tahoma;Times New Roman;V
 FCKConfig.FontSizes		= '1/xx-small;2/x-small;3/small;4/medium;5/large;6/x-large;7/xx-large' ;
 FCKConfig.FontFormats	= 'p;div;pre;address;h1;h2;h3;h4;h5;h6' ;
 
-FCKConfig.StylesXmlPath	= '../fckstyles.xml' ;
+FCKConfig.StylesXmlPath		= FCKConfig.EditorPath + 'fckstyles.xml' ;
+FCKConfig.TemplatesXmlPath	= FCKConfig.EditorPath + 'fcktemplates.xml' ;
 
 FCKConfig.SpellChecker			= 'ieSpell' ;	// 'ieSpell' | 'SpellerPages'
 FCKConfig.IeSpellDownloadUrl	= 'http://www.iespell.com/rel/ieSpellSetup211325.exe' ;
 
+FCKConfig.MaxUndoLevels = 15 ;
+
+FCKConfig.LinkDlgHideTarget		= false ;
+FCKConfig.LinkDlgHideAdvanced	= false ;
+
+FCKConfig.ImageDlgHideLink		= false ;
+FCKConfig.ImageDlgHideAdvanced	= false ;
+
 FCKConfig.LinkBrowser = true ;
-//FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/asp/connector.asp' ;
+FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/asp/connector.asp' ;
 //FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/asp/connector.asp&ServerPath=/CustomFiles/' ;
-//FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/aspx/connector.aspx' ;
-FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/php/connector.php' ;
+// ASP.Net		// FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/aspx/connector.aspx' ;
+// ColdFusion	// FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/cfm/connector.cfm' ;
+// Perl			// FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/perl/connector.cgi' ;
+// PHP			// FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Connector=connectors/php/connector.php' ;
+// PHP - mcpuk	// FCKConfig.LinkBrowserURL = FCKConfig.BasePath + 'filemanager/browser/mcpuk/browser.html?Connector=connectors/php/connector.php' ;
 FCKConfig.LinkBrowserWindowWidth	= screen.width * 0.7 ;	// 70%
 FCKConfig.LinkBrowserWindowHeight	= screen.height * 0.7 ;	// 70%
 
 FCKConfig.ImageBrowser = true ;
 FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/asp/connector.asp' ;
-//FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/aspx/connector.aspx' ;
-//FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/php/connector.php' ;
+// ASP.Net		// FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/aspx/connector.aspx' ;
+// ColdFusion	// FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/cfm/connector.cfm' ;
+// Perl			// FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/perl/connector.cgi' ;
+// PHP			// FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/default/browser.html?Type=Image&Connector=connectors/php/connector.php' ;
+// PHP - mcpuk	// FCKConfig.ImageBrowserURL = FCKConfig.BasePath + 'filemanager/browser/mcpuk/browser.html?Type=Image&Connector=connectors/php/connector.php' ;
 FCKConfig.ImageBrowserWindowWidth  = screen.width * 0.7 ;	// 70% ;
 FCKConfig.ImageBrowserWindowHeight = screen.height * 0.7 ;	// 70% ;
 

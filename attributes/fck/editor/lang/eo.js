@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: eo.js
  * 	Esperanto language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Tim Morley (timsk@openoffice.org)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Atributoj de Elekta Kampo",
 TextareaProp		: "Atributoj de Teksta Areo",
 FormProp			: "Formularaj Atributoj",
 
-FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "Traktado de XHTML. Bonvolu pacienci...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Je Supro de Teksto",
 DlgImgAlignTop		: "Supre",
 DlgImgPreview		: "Vidigi Aspekton",
 DlgImgAlertUrl		: "Bonvolu tajpi la URL de la bildo",
+DlgImgLinkTab		: "Link",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "Ligilo",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Dokumenta Priskribo",
 DlgDocMeAuthor		: "Verkinto",
 DlgDocMeCopy		: "Kopirajto",
 DlgDocPreview		: "Aspekto",
+
+// Templates Dialog
+Templates			: "Templates",	//MISSING
+DlgTemplatesTitle	: "Content Templates",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
+DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Pri",

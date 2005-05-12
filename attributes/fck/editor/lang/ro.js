@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,11 +11,9 @@
  * File Name: ro.js
  * 	Romanian language file.
  * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
- * 
  * File Authors:
  * 		Adrian Nicoara
+ * 		Ionut Traian Popa
  */
 
 var FCKLang =
@@ -23,134 +21,134 @@ var FCKLang =
 // Language direction : "ltr" (left to right) or "rtl" (right to left).
 Dir					: "ltr",
 
-ToolbarCollapse		: "Ascunde bara cu optiuni",
-ToolbarExpand		: "Expandeaza bara cu optiuni",
+ToolbarCollapse		: "Ascunde bara cu opţiuni",
+ToolbarExpand		: "Expandează bara cu opţiuni",
 
 // Toolbar Items and Context Menu
-Save				: "Salveaza",
-NewPage				: "Pagina noua",
+Save				: "Salvează",
+NewPage				: "Pagină nouă",
 Preview				: "Previzualizare",
 Cut					: "Taie",
-Copy				: "Copiaza",
-Paste				: "Adauga",
-PasteText			: "Adauga ca text simplu",
-PasteWord			: "Adauga din Word",
-Print				: "Printeaza",
-SelectAll			: "Selecteaza tot",
-RemoveFormat		: "nlatura formatarea",
-InsertLinkLbl		: "Link (Legatura web)",
-InsertLink			: "Insereaza/Editeaza link (legatura web)",
-RemoveLink			: "nlatura link (legatura web)",
-Anchor				: "Insert/Edit Anchor",	//MISSING
+Copy				: "Copiază",
+Paste				: "Adaugă",
+PasteText			: "Adaugă ca text simplu",
+PasteWord			: "Adaugă din Word",
+Print				: "Printează",
+SelectAll			: "Selectează tot",
+RemoveFormat		: "Înlătură formatarea",
+InsertLinkLbl		: "Link (Legătură web)",
+InsertLink			: "Inserează/Editează link (legătură web)",
+RemoveLink			: "Înlătură link (legătură web)",
+Anchor				: "Inserează/Editează ancoră",
 InsertImageLbl		: "Imagine",
-InsertImage			: "Insereaza/Editeaza imagine",
+InsertImage			: "Inserează/Editează imagine",
 InsertTableLbl		: "Tabel",
-InsertTable			: "Insereaza/Editeaza tabel",
+InsertTable			: "Inserează/Editează tabel",
 InsertLineLbl		: "Linie",
-InsertLine			: "Insereaza linie orizonta",
+InsertLine			: "Inserează linie orizontă",
 InsertSpecialCharLbl: "Caracter special",
-InsertSpecialChar	: "Insereaza caracter special",
-InsertSmileyLbl		: "Figura expresiva (Emoticon)",
-InsertSmiley		: "Insereaza Figura expresiva (Emoticon)",
+InsertSpecialChar	: "Inserează caracter special",
+InsertSmileyLbl		: "Figură expresivă (Emoticon)",
+InsertSmiley		: "Inserează Figură expresivă (Emoticon)",
 About				: "Despre FCKeditor",
-Bold				: "ngrosat (bold)",
-Italic				: "nclinat (italic)",
+Bold				: "Îngroşat (bold)",
+Italic				: "Înclinat (italic)",
 Underline			: "Subliniat (underline)",
-StrikeThrough		: "Taiat (strike through)",
+StrikeThrough		: "Tăiat (strike through)",
 Subscript			: "Indice (subscript)",
 Superscript			: "Putere (superscript)",
-LeftJustify			: "Aliniere la stnga",
-CenterJustify		: "Aliniere centrala",
+LeftJustify			: "Aliniere la stânga",
+CenterJustify		: "Aliniere centrală",
 RightJustify		: "Aliniere la dreapta",
-BlockJustify		: "Aliniere n bloc (Block Justify)",
+BlockJustify		: "Aliniere în bloc (Block Justify)",
 DecreaseIndent		: "Scade indentarea",
-IncreaseIndent		: "Creste indentarea",
-Undo				: "Starea anterioara (undo)",
-Redo				: "Starea ulterioara (redo)",
-NumberedListLbl		: "Lista numerotata",
-NumberedList		: "Insereaza/Sterge lista numerotata",
-BulletedListLbl		: "Lista cu puncte",
-BulletedList		: "Insereaza/Sterge lista cu puncte",
-ShowTableBorders	: "Arata marginile tabelului",
-ShowDetails			: "Arata detalii",
+IncreaseIndent		: "Creşte indentarea",
+Undo				: "Starea anterioară (undo)",
+Redo				: "Starea ulterioară (redo)",
+NumberedListLbl		: "Listă numerotată",
+NumberedList		: "Inserează/Şterge listă numerotată",
+BulletedListLbl		: "Listă cu puncte",
+BulletedList		: "Inserează/Şterge listă cu puncte",
+ShowTableBorders	: "Arată marginile tabelului",
+ShowDetails			: "Arată detalii",
 Style				: "Stil",
 FontFormat			: "Formatare",
 Font				: "Font",
-FontSize			: "Marime",
+FontSize			: "Mărime",
 TextColor			: "Culoarea textului",
 BGColor				: "Coloarea fundalului",
 Source				: "Sursa",
-Find				: "Gaseste",
-Replace				: "nlocuieste",
-SpellCheck			: "Check Spell",	//MISSING
-UniversalKeyboard	: "Universal Keyboard",	//MISSING
+Find				: "Găseşte",
+Replace				: "Înlocuieşte",
+SpellCheck			: "Verifică text",
+UniversalKeyboard	: "Tastatură universală",
 
-Form			: "Form",	//MISSING
-Checkbox		: "Checkbox",	//MISSING
-RadioButton		: "Radio Button",	//MISSING
-TextField		: "Text Field",	//MISSING
-Textarea		: "Textarea",	//MISSING
-HiddenField		: "Hidden Field",	//MISSING
-Button			: "Button",	//MISSING
-SelectionField	: "Selection Field",	//MISSING
-ImageButton		: "Image Button",	//MISSING
+Form			: "Formular (Form)",
+Checkbox		: "Bifă (Checkbox)",
+RadioButton		: "Buton radio (RadioButton)",
+TextField		: "Câmp text (TextField)",
+Textarea		: "Suprafaţă text (Textarea)",
+HiddenField		: "Câmp ascuns (HiddenField)",
+Button			: "Buton",
+SelectionField	: "Câmp selecţie (SelectionField)",
+ImageButton		: "Buton imagine (ImageButton)",
 
 // Context Menu
-EditLink			: "Editeaza Link",
-InsertRow			: "Insereaza Row",
-DeleteRows			: "Sterge Rows",
-InsertColumn		: "Insereaza Column",
-DeleteColumns		: "Sterge Columns",
-InsertCell			: "Insereaza Cell",
-DeleteCells			: "Sterge celule",
-MergeCells			: "Uneste celule",
-SplitCell			: "mparte celula",
-CellProperties		: "Proprietatile celulei",
-TableProperties		: "Proprietatile tabelului",
-ImageProperties		: "Proprietatile imaginii",
+EditLink			: "Editează Link",
+InsertRow			: "Inserează Row",
+DeleteRows			: "Şterge Rows",
+InsertColumn		: "Inserează Column",
+DeleteColumns		: "Şterge Columns",
+InsertCell			: "Inserează Cell",
+DeleteCells			: "Şterge celule",
+MergeCells			: "Uneşte celule",
+SplitCell			: "Împarte celulă",
+CellProperties		: "Proprietăţile celulei",
+TableProperties		: "Proprietăţile tabelului",
+ImageProperties		: "Proprietăţile imaginii",
 
-AnchorProp			: "Anchor Properties",	//MISSING
-ButtonProp			: "Button Properties",	//MISSING
-CheckboxProp		: "Checkbox Properties",	//MISSING
-HiddenFieldProp		: "Hidden Field Properties",	//MISSING
-RadioButtonProp		: "Radio Button Properties",	//MISSING
-ImageButtonProp		: "Image Button Properties",	//MISSING
-TextFieldProp		: "Text Field Properties",	//MISSING
-SelectionFieldProp	: "Selection Field Properties",	//MISSING
-TextareaProp		: "Textarea Properties",	//MISSING
-FormProp			: "Form Properties",	//MISSING
+AnchorProp			: "Proprietăţi ancoră",
+ButtonProp			: "Proprietăţi buton",
+CheckboxProp		: "Proprietăţi bifă (Checkbox)",
+HiddenFieldProp		: "Proprietăţi câmp ascuns (Hidden Field)",
+RadioButtonProp		: "Proprietăţi buton radio (Radio Button)",
+ImageButtonProp		: "Proprietăţi buton imagine (Image Button)",
+TextFieldProp		: "Proprietăţi câmp text (Text Field)",
+SelectionFieldProp	: "Proprietăţi câmp selecţie (Selection Field)",
+TextareaProp		: "Proprietăţi suprafaţă text (Textarea)",
+FormProp			: "Proprietăţi formular (Form)",
 
-FontFormats			: "Normal;Formatat;Adresa;Titlu 1;Titlu 2;Titlu 3;Titlu 4;Titlu 5;Titlu 6;Paragraf (DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatat;Adresa;Titlu 1;Titlu 2;Titlu 3;Titlu 4;Titlu 5;Titlu 6;Paragraf (DIV)",
 
 // Alerts and Messages
-ProcessingXHTML		: "Procesam XHTML. Va rugam asteptati...",
+ProcessingXHTML		: "Procesăm XHTML. Vă rugăm aşteptaţi...",
 Done				: "Am terminat",
-PasteWordConfirm	: "Textul pe care doriti sa-l adaugati pare a fi formatat pentru Word. Doriti sa-l curatati de aceasta formatare nainte de a-l adauga?",
-NotCompatiblePaste	: "Aceasta facilitate e disponibila doar pentru Microsoft Internet Explorer, versiunea 5.5 sau ulterioara. Vreti sa-l adaugati fara a-i fi nlaturat formatarea?",
-UnknownToolbarItem	: "Obiectul \"%1\" din bara cu optiuni necunoscut",
-UnknownCommand		: "Comanda \"%1\" necunoscuta",
-NotImplemented		: "Comanda neimplementata",
-UnknownToolbarSet	: "Grupul din bara cu optiuni \"%1\" nu exista",
+PasteWordConfirm	: "Textul pe care doriţi să-l adăugaţi pare a fi formatat pentru Word. Doriţi să-l curăţaţi de această formatare înainte de a-l adăuga?",
+NotCompatiblePaste	: "Această facilitate e disponibilă doar pentru Microsoft Internet Explorer, versiunea 5.5 sau ulterioară. Vreţi să-l adăugaţi fără a-i fi înlăturat formatarea?",
+UnknownToolbarItem	: "Obiectul \"%1\" din bara cu opţiuni necunoscut",
+UnknownCommand		: "Comanda \"%1\" necunoscută",
+NotImplemented		: "Comandă neimplementată",
+UnknownToolbarSet	: "Grupul din bara cu opţiuni \"%1\" nu există",
 
 // Dialogs
 DlgBtnOK			: "Bine",
 DlgBtnCancel		: "Anulare",
-DlgBtnClose			: "nchidere",
-DlgBtnBrowseServer	: "Browse Server",	//MISSING
+DlgBtnClose			: "Închidere",
+DlgBtnBrowseServer	: "Răsfoieşte server",
 DlgAdvancedTag		: "Avansat",
-DlgOpOther			: "&lt;Other&gt;",	//MISSING
+DlgOpOther			: "&lt;Altul&gt;",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;nesetat&gt;",
 DlgGenId			: "Id",
-DlgGenLangDir		: "Directia cuvintelor",
-DlgGenLangDirLtr	: "stnga-dreapta (LTR)",
-DlgGenLangDirRtl	: "dreapta-stnga (RTL)",
+DlgGenLangDir		: "Direcţia cuvintelor",
+DlgGenLangDirLtr	: "stânga-dreapta (LTR)",
+DlgGenLangDirRtl	: "dreapta-stânga (RTL)",
 DlgGenLangCode		: "Codul limbii",
 DlgGenAccessKey		: "Tasta de acces",
 DlgGenName			: "Nume",
 DlgGenTabIndex		: "Indexul tabului",
-DlgGenLongDescr		: "Descrierea lunga URL",
+DlgGenLongDescr		: "Descrierea lungă URL",
 DlgGenClass			: "Clasele cu stilul paginii (CSS)",
 DlgGenTitle			: "Titlul consultativ",
 DlgGenContType		: "Tipul consultativ al titlului",
@@ -158,21 +156,21 @@ DlgGenLinkCharset	: "Setul de caractere al resursei legate",
 DlgGenStyle			: "Stil",
 
 // Image Dialog
-DlgImgTitle			: "Proprietatile imaginii",
-DlgImgInfoTab		: "Informatii despre imagine",
+DlgImgTitle			: "Proprietăţile imaginii",
+DlgImgInfoTab		: "Informaţii despre imagine",
 DlgImgBtnUpload		: "Trimite la server",
 DlgImgURL			: "URL",
-DlgImgUpload		: "ncarca",
+DlgImgUpload		: "Încarcă",
 DlgImgAlt			: "Text alternativ",
-DlgImgWidth			: "Latime",
-DlgImgHeight		: "naltime",
-DlgImgLockRatio		: "Pastreaza proportiile",
-DlgBtnResetSize		: "Reseteaza marimea",
+DlgImgWidth			: "Lăţime",
+DlgImgHeight		: "Înălţime",
+DlgImgLockRatio		: "Păstrează proporţiile",
+DlgBtnResetSize		: "Resetează mărimea",
 DlgImgBorder		: "Margine",
 DlgImgHSpace		: "HSpace",
 DlgImgVSpace		: "VSpace",
 DlgImgAlign			: "Aliniere",
-DlgImgAlignLeft		: "Stnga",
+DlgImgAlignLeft		: "Stânga",
 DlgImgAlignAbsBottom: "Jos absolut (Abs Bottom)",
 DlgImgAlignAbsMiddle: "Mijloc absolut (Abs Middle)",
 DlgImgAlignBaseline	: "Linia de jos (Baseline)",
@@ -182,100 +180,101 @@ DlgImgAlignRight	: "Dreapta",
 DlgImgAlignTextTop	: "Text sus",
 DlgImgAlignTop		: "Sus",
 DlgImgPreview		: "Previzualizare",
-DlgImgAlertUrl		: "Va rugam sa scrieti URL-ul imaginii",
+DlgImgAlertUrl		: "Vă rugăm să scrieţi URL-ul imaginii",
+DlgImgLinkTab		: "Link (Legătură web)",
 
 // Link Dialog
-DlgLnkWindowTitle	: "Link (Legatura web)",
-DlgLnkInfoTab		: "Informatii despre link (Legatura web)",
-DlgLnkTargetTab		: "Tinta (Target)",
+DlgLnkWindowTitle	: "Link (Legătură web)",
+DlgLnkInfoTab		: "Informaţii despre link (Legătură web)",
+DlgLnkTargetTab		: "Ţintă (Target)",
 
-DlgLnkType			: "Tipul link-ului (al legaturii web)",
+DlgLnkType			: "Tipul link-ului (al legăturii web)",
 DlgLnkTypeURL		: "URL",
-DlgLnkTypeAnchor	: "Ancora n aceasta pagina",
+DlgLnkTypeAnchor	: "Ancoră în această pagină",
 DlgLnkTypeEMail		: "E-Mail",
 DlgLnkProto			: "Protocol",
 DlgLnkProtoOther	: "&lt;altul&gt;",
 DlgLnkURL			: "URL",
-DlgLnkAnchorSel		: "Selectati o ancora",
-DlgLnkAnchorByName	: "dupa numele ancorei",
-DlgLnkAnchorById	: "dupa Id-ul elementului",
-DlgLnkNoAnchors		: "&lt;Nici o ancora disponibila n document&gt;",
-DlgLnkEMail			: "Adresa de e-mail",
+DlgLnkAnchorSel		: "Selectaţi o ancoră",
+DlgLnkAnchorByName	: "după numele ancorei",
+DlgLnkAnchorById	: "după Id-ul elementului",
+DlgLnkNoAnchors		: "&lt;Nici o ancoră disponibilă în document&gt;",
+DlgLnkEMail			: "Adresă de e-mail",
 DlgLnkEMailSubject	: "Subiectul mesajului",
-DlgLnkEMailBody		: "Continutul mesajului",
-DlgLnkUpload		: "ncarca",
+DlgLnkEMailBody		: "Conţinutul mesajului",
+DlgLnkUpload		: "Încarcă",
 DlgLnkBtnUpload		: "Trimite la server",
 
-DlgLnkTarget		: "Tinta (Target)",
+DlgLnkTarget		: "Ţintă (Target)",
 DlgLnkTargetFrame	: "&lt;frame&gt;",
 DlgLnkTargetPopup	: "&lt;fereastra popup&gt;",
-DlgLnkTargetBlank	: "Fereastra noua (_blank)",
-DlgLnkTargetParent	: "Fereastra parinte (_parent)",
-DlgLnkTargetSelf	: "Aceeasi fereastra (_self)",
+DlgLnkTargetBlank	: "Fereastră nouă (_blank)",
+DlgLnkTargetParent	: "Fereastra părinte (_parent)",
+DlgLnkTargetSelf	: "Aceeaşi fereastră (_self)",
 DlgLnkTargetTop		: "Fereastra din topul ierarhiei (_top)",
-DlgLnkTargetFrameName	: "Target Frame Name",	//MISSING
+DlgLnkTargetFrameName	: "Numele frame-ului ţintă",
 DlgLnkPopWinName	: "Numele ferestrei popup",
-DlgLnkPopWinFeat	: "Proprietatile ferestrei popup",
-DlgLnkPopResize		: "Scalabila",
-DlgLnkPopLocation	: "Bara de locatie",
+DlgLnkPopWinFeat	: "Proprietăţile ferestrei popup",
+DlgLnkPopResize		: "Scalabilă",
+DlgLnkPopLocation	: "Bara de locaţie",
 DlgLnkPopMenu		: "Bara de meniu",
 DlgLnkPopScroll		: "Scroll Bars",
 DlgLnkPopStatus		: "Bara de status",
-DlgLnkPopToolbar	: "Bara de optiuni",
+DlgLnkPopToolbar	: "Bara de opţiuni",
 DlgLnkPopFullScrn	: "Tot ecranul (Full Screen)(IE)",
 DlgLnkPopDependent	: "Dependent (Netscape)",
-DlgLnkPopWidth		: "Latime",
-DlgLnkPopHeight		: "naltime",
-DlgLnkPopLeft		: "Pozitia la stnga",
-DlgLnkPopTop		: "Pozitia la dreapta",
+DlgLnkPopWidth		: "Lăţime",
+DlgLnkPopHeight		: "Înălţime",
+DlgLnkPopLeft		: "Poziţia la stânga",
+DlgLnkPopTop		: "Poziţia la dreapta",
 
-DlnLnkMsgNoUrl		: "Va rugam sa scrieti URL-ul",
-DlnLnkMsgNoEMail	: "Va rugam sa scrieti adresa de e-mail",
-DlnLnkMsgNoAnchor	: "Va rugam sa selectati o ancora",
+DlnLnkMsgNoUrl		: "Vă rugăm să scrieţi URL-ul",
+DlnLnkMsgNoEMail	: "Vă rugăm să scrieţi adresa de e-mail",
+DlnLnkMsgNoAnchor	: "Vă rugăm să selectaţi o ancoră",
 
 // Color Dialog
-DlgColorTitle		: "Selecteaza culoare",
-DlgColorBtnClear	: "Curata",
-DlgColorHighlight	: "Subliniaza (Highlight)",
+DlgColorTitle		: "Selectează culoare",
+DlgColorBtnClear	: "Curăţă",
+DlgColorHighlight	: "Subliniază (Highlight)",
 DlgColorSelected	: "Selectat",
 
 // Smiley Dialog
-DlgSmileyTitle		: "Insereaza o figura expresiva (Emoticon)",
+DlgSmileyTitle		: "Inserează o figură expresivă (Emoticon)",
 
 // Special Character Dialog
-DlgSpecialCharTitle	: "Selecteaza caracter special",
+DlgSpecialCharTitle	: "Selectează caracter special",
 
 // Table Dialog
-DlgTableTitle		: "Proprietatile tabelului",
+DlgTableTitle		: "Proprietăţile tabelului",
 DlgTableRows		: "Linii",
 DlgTableColumns		: "Coloane",
-DlgTableBorder		: "Marimea marginii",
+DlgTableBorder		: "Mărimea marginii",
 DlgTableAlign		: "Aliniament",
 DlgTableAlignNotSet	: "<Nesetat>",
-DlgTableAlignLeft	: "Stnga",
+DlgTableAlignLeft	: "Stânga",
 DlgTableAlignCenter	: "Centru",
 DlgTableAlignRight	: "Dreapta",
-DlgTableWidth		: "Latime",
+DlgTableWidth		: "Lăţime",
 DlgTableWidthPx		: "pixeli",
 DlgTableWidthPc		: "procente",
-DlgTableHeight		: "naltime",
-DlgTableCellSpace	: "Spatiu ntre celule",
-DlgTableCellPad		: "Spatiu n cadrul celulei",
+DlgTableHeight		: "Înălţime",
+DlgTableCellSpace	: "Spaţiu între celule",
+DlgTableCellPad		: "Spaţiu în cadrul celulei",
 DlgTableCaption		: "Titlu (Caption)",
 
 // Table Cell Dialog
-DlgCellTitle		: "Proprietatile celulei",
-DlgCellWidth		: "Latime",
+DlgCellTitle		: "Proprietăţile celulei",
+DlgCellWidth		: "Lăţime",
 DlgCellWidthPx		: "pixeli",
 DlgCellWidthPc		: "procente",
-DlgCellHeight		: "naltime",
+DlgCellHeight		: "Înălţime",
 DlgCellWordWrap		: "Desparte cuvintele (Wrap)",
 DlgCellWordWrapNotSet	: "&lt;Nesetat&gt;",
 DlgCellWordWrapYes	: "Da",
 DlgCellWordWrapNo	: "Nu",
 DlgCellHorAlign		: "Aliniament orizontal",
 DlgCellHorAlignNotSet	: "&lt;Nesetat&gt;",
-DlgCellHorAlignLeft	: "Stnga",
+DlgCellHorAlignLeft	: "Stânga",
 DlgCellHorAlignCenter	: "Centru",
 DlgCellHorAlignRight: "Dreapta",
 DlgCellVerAlign		: "Aliniament vertical",
@@ -284,165 +283,172 @@ DlgCellVerAlignTop	: "Sus",
 DlgCellVerAlignMiddle	: "Mijloc",
 DlgCellVerAlignBottom	: "Jos",
 DlgCellVerAlignBaseline	: "Linia de jos (Baseline)",
-DlgCellRowSpan		: "Lungimea n linii (Span)",
-DlgCellCollSpan		: "Lungimea n coloane (Span)",
+DlgCellRowSpan		: "Lungimea în linii (Span)",
+DlgCellCollSpan		: "Lungimea în coloane (Span)",
 DlgCellBackColor	: "Culoarea fundalului",
 DlgCellBorderColor	: "Culoarea marginii",
-DlgCellBtnSelect	: "Selectati...",
+DlgCellBtnSelect	: "Selectaţi...",
 
 // Find Dialog
-DlgFindTitle		: "Gaseste",
-DlgFindFindBtn		: "Gaseste",
-DlgFindNotFoundMsg	: "Textul specificat nu a fost gasit.",
+DlgFindTitle		: "Găseşte",
+DlgFindFindBtn		: "Găseşte",
+DlgFindNotFoundMsg	: "Textul specificat nu a fost găsit.",
 
 // Replace Dialog
 DlgReplaceTitle			: "Replace",
-DlgReplaceFindLbl		: "Gaseste:",
-DlgReplaceReplaceLbl	: "nlocuieste cu:",
-DlgReplaceCaseChk		: "Deosebeste majuscule de minuscule (Match case)",
-DlgReplaceReplaceBtn	: "nlocuieste",
-DlgReplaceReplAllBtn	: "nlocuieste tot",
-DlgReplaceWordChk		: "Doar cuvintele ntregi",
+DlgReplaceFindLbl		: "Găseşte:",
+DlgReplaceReplaceLbl	: "Înlocuieşte cu:",
+DlgReplaceCaseChk		: "Deosebeşte majuscule de minuscule (Match case)",
+DlgReplaceReplaceBtn	: "Înlocuieşte",
+DlgReplaceReplAllBtn	: "Înlocuieşte tot",
+DlgReplaceWordChk		: "Doar cuvintele întregi",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Setarile de securitate ale navigatorului (browser) pe care l folositi nu permit editorului sa execute automat operatiunea de adaugare. Va rugam folositi tastatura (Ctrl+V).",
-PasteErrorCut	: "Setarile de securitate ale navigatorului (browser) pe care l folositi nu permit editorului sa execute automat operatiunea de taiere. Va rugam folositi tastatura (Ctrl+X).",
-PasteErrorCopy	: "Setarile de securitate ale navigatorului (browser) pe care l folositi nu permit editorului sa execute automat operatiunea de copiere. Va rugam folositi tastatura (Ctrl+C).",
+PasteErrorPaste	: "Setările de securitate ale navigatorului (browser) pe care îl folosiţi nu permit editorului să execute automat operaţiunea de adăugare. Vă rugăm folosiţi tastatura (Ctrl+V).",
+PasteErrorCut	: "Setările de securitate ale navigatorului (browser) pe care îl folosiţi nu permit editorului să execute automat operaţiunea de tăiere. Vă rugăm folosiţi tastatura (Ctrl+X).",
+PasteErrorCopy	: "Setările de securitate ale navigatorului (browser) pe care îl folosiţi nu permit editorului să execute automat operaţiunea de copiere. Vă rugăm folosiţi tastatura (Ctrl+C).",
 
-PasteAsText		: "Adauga ca text simplu (Plain Text)",
-PasteFromWord	: "Adauga din Word",
+PasteAsText		: "Adaugă ca text simplu (Plain Text)",
+PasteFromWord	: "Adaugă din Word",
 
-DlgPasteMsg		: "Editor nu a putut executa automat adaugarea din cauza <STRONG>setarilor de securitate</STRONG> ale navigatorului (browser) dvs.<BR>Va rugam adaugati inauntrul casutei folosind tastatura (<STRONG>Ctrl+V</STRONG>) si apasati <STRONG>Bine</STRONG>.",
+DlgPasteMsg		: "Editor nu a putut executa automat adăugarea din cauza <STRONG>setărilor de securitate</STRONG> ale navigatorului (browser) dvs.<BR>Vă rugăm adăugaţi inăuntrul casuţei folosind tastatura (<STRONG>Ctrl+V</STRONG>) şi apăsaţi <STRONG>Bine</STRONG>.",
 
 // Color Picker
 ColorAutomatic	: "Automatic",
 ColorMoreColors	: "Mai multe culori...",
 
 // Document Properties
-DocProps		: "Document Properties",	//MISSING
+DocProps		: "Proprietăţile documentului",
 
 // Anchor Dialog
-DlgAnchorTitle		: "Anchor Properties",	//MISSING
-DlgAnchorName		: "Anchor Name",	//MISSING
-DlgAnchorErrorName	: "Please type the anchor name",	//MISSING
+DlgAnchorTitle		: "Proprietăţile ancorei",
+DlgAnchorName		: "Numele ancorei",
+DlgAnchorErrorName	: "Vă rugăm scrieţi numele ancorei",
 
 // Speller Pages Dialog
-DlgSpellNotInDic		: "Not in dictionary",	//MISSING
-DlgSpellChangeTo		: "Change to",	//MISSING
-DlgSpellBtnIgnore		: "Ignore",	//MISSING
-DlgSpellBtnIgnoreAll	: "Ignore All",	//MISSING
-DlgSpellBtnReplace		: "Replace",	//MISSING
-DlgSpellBtnReplaceAll	: "Replace All",	//MISSING
-DlgSpellBtnUndo			: "Undo",	//MISSING
-DlgSpellNoSuggestions	: "- No suggestions -",	//MISSING
-DlgSpellProgress		: "Spell check in progress...",	//MISSING
-DlgSpellNoMispell		: "Spell check complete: No misspellings found",	//MISSING
-DlgSpellNoChanges		: "Spell check complete: No words changed",	//MISSING
-DlgSpellOneChange		: "Spell check complete: One word changed",	//MISSING
-DlgSpellManyChanges		: "Spell check complete: %1 words changed",	//MISSING
+DlgSpellNotInDic		: "Nu e în dicţionar",
+DlgSpellChangeTo		: "Schimbă în",
+DlgSpellBtnIgnore		: "Ignoră",
+DlgSpellBtnIgnoreAll	: "Ignoră toate",
+DlgSpellBtnReplace		: "Înlocuieşte",
+DlgSpellBtnReplaceAll	: "Înlocuieşte tot",
+DlgSpellBtnUndo			: "Starea anterioară (undo)",
+DlgSpellNoSuggestions	: "- Fără sugestii -",
+DlgSpellProgress		: "Verificarea textului în desfăşurare...",
+DlgSpellNoMispell		: "Verificarea textului terminată: Nici o greşeală găsită",
+DlgSpellNoChanges		: "Verificarea textului terminată: Nici un cuvânt modificat",
+DlgSpellOneChange		: "Verificarea textului terminată: Un cuvânt modificat",
+DlgSpellManyChanges		: "Verificarea textului terminată: 1% cuvinte modificate",
 
-IeSpellDownload			: "Spell checker not installed. Do you want to download it now?",	//MISSING
+IeSpellDownload			: "Spell checker not installed. Do you want to download it now?",
 
 // Button Dialog
-DlgButtonText	: "Text (Value)",	//MISSING
-DlgButtonType	: "Type",	//MISSING
+DlgButtonText	: "Text (Valoare)",
+DlgButtonType	: "Tip",
 
 // Checkbox and Radio Button Dialogs
-DlgCheckboxName		: "Name",	//MISSING
-DlgCheckboxValue	: "Value",	//MISSING
-DlgCheckboxSelected	: "Selected",	//MISSING
+DlgCheckboxName		: "Nume",
+DlgCheckboxValue	: "Valoare",
+DlgCheckboxSelected	: "Selectat",
 
 // Form Dialog
-DlgFormName		: "Name",	//MISSING
-DlgFormAction	: "Action",	//MISSING
-DlgFormMethod	: "Method",	//MISSING
+DlgFormName		: "Nume",
+DlgFormAction	: "Acţiune",
+DlgFormMethod	: "Metodă",
 
 // Select Field Dialog
-DlgSelectName		: "Name",	//MISSING
-DlgSelectValue		: "Value",	//MISSING
-DlgSelectSize		: "Size",	//MISSING
-DlgSelectLines		: "lines",	//MISSING
-DlgSelectChkMulti	: "Allow multiple selections",	//MISSING
-DlgSelectOpAvail	: "Available Options",	//MISSING
-DlgSelectOpText		: "Text",	//MISSING
-DlgSelectOpValue	: "Value",	//MISSING
-DlgSelectBtnAdd		: "Add",	//MISSING
-DlgSelectBtnModify	: "Modify",	//MISSING
-DlgSelectBtnUp		: "Up",	//MISSING
-DlgSelectBtnDown	: "Down",	//MISSING
-DlgSelectBtnSetValue : "Set as selected value",	//MISSING
-DlgSelectBtnDelete	: "Delete",	//MISSING
+DlgSelectName		: "Nume",
+DlgSelectValue		: "Valoare",
+DlgSelectSize		: "Mărime",
+DlgSelectLines		: "linii",
+DlgSelectChkMulti	: "Permite selecţii multiple",
+DlgSelectOpAvail	: "Opţiuni disponibile",
+DlgSelectOpText		: "Text",
+DlgSelectOpValue	: "Valoare",
+DlgSelectBtnAdd		: "Adaugă",
+DlgSelectBtnModify	: "Modifică",
+DlgSelectBtnUp		: "Sus",
+DlgSelectBtnDown	: "Jos",
+DlgSelectBtnSetValue : "Setează ca valoare selectată",
+DlgSelectBtnDelete	: "Şterge",
 
 // Textarea Dialog
-DlgTextareaName	: "Name",	//MISSING
-DlgTextareaCols	: "Columns",	//MISSING
-DlgTextareaRows	: "Rows",	//MISSING
+DlgTextareaName	: "Nume",
+DlgTextareaCols	: "Coloane",
+DlgTextareaRows	: "Linii",
 
 // Text Field Dialog
-DlgTextName			: "Name",	//MISSING
-DlgTextValue		: "Value",	//MISSING
-DlgTextCharWidth	: "Character Width",	//MISSING
-DlgTextMaxChars		: "Maximum Characters",	//MISSING
-DlgTextType			: "Type",	//MISSING
-DlgTextTypeText		: "Text",	//MISSING
-DlgTextTypePass		: "Password",	//MISSING
+DlgTextName			: "Nume",
+DlgTextValue		: "Valoare",
+DlgTextCharWidth	: "Lărgimea caracterului",
+DlgTextMaxChars		: "Caractere maxime",
+DlgTextType			: "Tip",
+DlgTextTypeText		: "Text",
+DlgTextTypePass		: "Parolă",
 
 // Hidden Field Dialog
-DlgHiddenName	: "Name",	//MISSING
-DlgHiddenValue	: "Value",	//MISSING
+DlgHiddenName	: "Nume",
+DlgHiddenValue	: "Valoare",
 
 // Bulleted List Dialog
-BulletedListProp	: "Bulleted List Properties",	//MISSING
-NumberedListProp	: "Numbered List Properties",	//MISSING
-DlgLstType			: "Type",	//MISSING
-DlgLstTypeCircle	: "Circle",	//MISSING
-DlgLstTypeDisk		: "Disk",	//MISSING
-DlgLstTypeSquare	: "Square",	//MISSING
-DlgLstTypeNumbers	: "Numbers (1, 2, 3)",	//MISSING
-DlgLstTypeLCase		: "Lowercase Letters (a, b, c)",	//MISSING
-DlgLstTypeUCase		: "Uppercase Letters (A, B, C)",	//MISSING
-DlgLstTypeSRoman	: "Small Roman Numerals (i, ii, iii)",	//MISSING
-DlgLstTypeLRoman	: "Large Roman Numerals (I, II, III)",	//MISSING
+BulletedListProp	: "Proprietăţile listei punctate (Bulleted List)",
+NumberedListProp	: "Proprietăţile listei numerotate (Numbered List)",
+DlgLstType			: "Tip",
+DlgLstTypeCircle	: "Cerc",
+DlgLstTypeDisk		: "Disc",
+DlgLstTypeSquare	: "Pătrat",
+DlgLstTypeNumbers	: "Numere (1, 2, 3)",
+DlgLstTypeLCase		: "Minuscule-litere mici (a, b, c)",
+DlgLstTypeUCase		: "Majuscule (A, B, C)",
+DlgLstTypeSRoman	: "Cifre romane mici (i, ii, iii)",
+DlgLstTypeLRoman	: "Cifre romane mari (I, II, III)",
 
 // Document Properties Dialog
-DlgDocGeneralTab	: "General",	//MISSING
-DlgDocBackTab		: "Background",	//MISSING
-DlgDocColorsTab		: "Colors and Margins",	//MISSING
-DlgDocMetaTab		: "Meta Data",	//MISSING
+DlgDocGeneralTab	: "General",
+DlgDocBackTab		: "Fundal",
+DlgDocColorsTab		: "Culori si margini",
+DlgDocMetaTab		: "Meta Data",
 
-DlgDocPageTitle		: "Page Title",	//MISSING
-DlgDocLangDir		: "Language Direction",	//MISSING
-DlgDocLangDirLTR	: "Left to Right (LTR)",	//MISSING
-DlgDocLangDirRTL	: "Right to Left (RTL)",	//MISSING
-DlgDocLangCode		: "Language Code",	//MISSING
-DlgDocCharSet		: "Character Set Encoding",	//MISSING
-DlgDocCharSetOther	: "Other Character Set Encoding",	//MISSING
+DlgDocPageTitle		: "Titlul paginii",
+DlgDocLangDir		: "Descrierea limbii",
+DlgDocLangDirLTR	: "stânga-dreapta (LTR)",
+DlgDocLangDirRTL	: "dreapta-stânga (RTL)",
+DlgDocLangCode		: "Codul limbii",
+DlgDocCharSet		: "Encoding setului de caractere",
+DlgDocCharSetOther	: "Alt encoding al setului de caractere",
 
-DlgDocDocType		: "Document Type Heading",	//MISSING
-DlgDocDocTypeOther	: "Other Document Type Heading",	//MISSING
-DlgDocIncXHTML		: "Include XHTML Declarations",	//MISSING
-DlgDocBgColor		: "Background Color",	//MISSING
-DlgDocBgImage		: "Background Image URL",	//MISSING
-DlgDocBgNoScroll	: "Nonscrolling Background",	//MISSING
-DlgDocCText			: "Text",	//MISSING
-DlgDocCLink			: "Link",	//MISSING
-DlgDocCVisited		: "Visited Link",	//MISSING
-DlgDocCActive		: "Active Link",	//MISSING
-DlgDocMargins		: "Page Margins",	//MISSING
-DlgDocMaTop			: "Top",	//MISSING
-DlgDocMaLeft		: "Left",	//MISSING
-DlgDocMaRight		: "Right",	//MISSING
-DlgDocMaBottom		: "Bottom",	//MISSING
-DlgDocMeIndex		: "Document Indexing Keywords (comma separated)",	//MISSING
-DlgDocMeDescr		: "Document Description",	//MISSING
-DlgDocMeAuthor		: "Author",	//MISSING
-DlgDocMeCopy		: "Copyright",	//MISSING
-DlgDocPreview		: "Preview",	//MISSING
+DlgDocDocType		: "Document Type Heading",
+DlgDocDocTypeOther	: "Alt Document Type Heading",
+DlgDocIncXHTML		: "Include declaraţii XHTML",
+DlgDocBgColor		: "Culoarea fundalului (Background Color)",
+DlgDocBgImage		: "URL-ul imaginii din fundal (Background Image URL)",
+DlgDocBgNoScroll	: "Fundal neflotant, fix (Nonscrolling Background)",
+DlgDocCText			: "Text",
+DlgDocCLink			: "Link (Legătură web)",
+DlgDocCVisited		: "Link (Legătură web) vizitat",
+DlgDocCActive		: "Link (Legătură web) activ",
+DlgDocMargins		: "Marginile paginii",
+DlgDocMaTop			: "Sus",
+DlgDocMaLeft		: "Stânga",
+DlgDocMaRight		: "Dreapta",
+DlgDocMaBottom		: "Jos",
+DlgDocMeIndex		: "Cuvinte cheie după care se va indexa documentul (separate prin virgulă)",
+DlgDocMeDescr		: "Descrierea documentului",
+DlgDocMeAuthor		: "Autor",
+DlgDocMeCopy		: "Drepturi de autor",
+DlgDocPreview		: "Previzualizare",
+
+// Templates Dialog
+Templates			: "Template-uri (şabloane)",
+DlgTemplatesTitle	: "Template-uri (şabloane) de conţinut",
+DlgTemplatesSelMsg	: "Vă rugăm selectaţi template-ul (şablonul) ce se va deschide în editor<br>(conţinutul actual va fi pierdut):",
+DlgTemplatesLoading	: "Se încarcă lista cu template-uri (şabloane). Vă rugăm aşteptaţi...",
+DlgTemplatesNoTpl	: "(Nici un template (şablon) definit)",
 
 // About Dialog
-DlgAboutAboutTab	: "About",	//MISSING
-DlgAboutBrowserInfoTab	: "Browser Info",	//MISSING
+DlgAboutAboutTab	: "Despre",
+DlgAboutBrowserInfoTab	: "Informaţii browser",
 DlgAboutVersion		: "versiune",
-DlgAboutLicense		: "Licentiat sub termenii GNU Lesser General Public License",
-DlgAboutInfo		: "Pentru informatii amanuntite, vizitati"
+DlgAboutLicense		: "Licenţiat sub termenii GNU Lesser General Public License",
+DlgAboutInfo		: "Pentru informaţii amănunţite, vizitaţi"
 }

@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: zh.js
  * 	Chinese Traditional language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
  * 
  * File Authors:
  * 		NetRube (NetRube@126.com)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "功能表/列表屬性",
 TextareaProp		: "多行文本屬性",
 FormProp			: "表單屬性",
 
-FontFormats			: "普通;帶格式的;地址;標題 1;標題 2;標題 3;標題 4;標題 5;標題 6;段落(DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "普通;帶格式的;地址;標題 1;標題 2;標題 3;標題 4;標題 5;標題 6;段落(DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "正在處理 XHTML，請稍等...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "文本上方",
 DlgImgAlignTop		: "頂端",
 DlgImgPreview		: "預覽",
 DlgImgAlertUrl		: "請輸入圖像位址",
+DlgImgLinkTab		: "Link",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "超鏈結",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "頁面說明",
 DlgDocMeAuthor		: "作者",
 DlgDocMeCopy		: "版權",
 DlgDocPreview		: "預覽",
+
+// Templates Dialog
+Templates			: "Templates",	//MISSING
+DlgTemplatesTitle	: "Content Templates",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
+DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "關於",

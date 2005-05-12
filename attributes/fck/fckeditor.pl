@@ -1,6 +1,6 @@
 #####
 #  FCKeditor - The text editor for internet
-#  Copyright (C) 2003-2004 Frederico Caldeira Knabben
+#  Copyright (C) 2003-2005 Frederico Caldeira Knabben
 #  
 #  Licensed under the terms of the GNU Lesser General Public License:
 #  		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
 #  
 #  File Name: fckeditor.pl
 #  	This is the integration file for Perl.
-#  
-#  Version:  2.0 RC3
-#  Modified: 2005-02-28 15:50:35
 #  
 #  File Authors:
 #  		Takashi Yamaguchi (jack@omakase.net)
@@ -64,15 +61,15 @@ sub CreateHtml
 	if(&IsCompatible()) {
 		$Link = $BasePath . "editor/fckeditor.html?InstanceName=$InstanceName";
 		if($ToolbarSet ne '') {
-			$Link .= "&Toolbar=$ToolbarSet";
+			$Link .= "&amp;Toolbar=$ToolbarSet";
 		}
 		#// Render the linked hidden field.
-		$Html .= "<input type=\"hidden\" id=\"$InstanceName\" name=\"$InstanceName\" value=\"$HtmlValue\">" ;
+		$Html .= "<input type=\"hidden\" id=\"$InstanceName\" name=\"$InstanceName\" value=\"$HtmlValue\" />" ;
 
 		#// Render the configurations hidden field.
 		$cfgstr = &GetConfigFieldString();
 		$wk = $InstanceName."___Config";
-		$Html .= "<input type=\"hidden\" id=\"$wk\" value=\"$cfgstr\">" ;
+		$Html .= "<input type=\"hidden\" id=\"$wk\" value=\"$cfgstr\" />" ;
 
 		#// Render the editor IFRAME.
 		$wk = $InstanceName."___Frame";
@@ -101,7 +98,7 @@ sub IsCompatible
 	if(($sAgent =~ /MSIE/i) && !($sAgent =~ /mac/i) && !($sAgent =~ /Opera/i)) {
 		$iVersion = substr($sAgent,index($sAgent,'MSIE') + 5,3);
 		return($iVersion >= 5.5) ;
-	} elsif($sAgent =~ /Gecko/i) {
+	} elsif($sAgent =~ /Gecko\//i) {
 		$iVersion = substr($sAgent,index($sAgent,'Gecko/') + 6,8);
 		return($iVersion >= 20030210) ;
 	} else {
@@ -116,7 +113,7 @@ sub GetConfigFieldString
 	foreach $sKey (keys %Config) {
 		$sValue = $Config{$sKey};
 		if($bFirst == 1) {
-			$sParams .= '&';
+			$sParams .= '&amp;';
 		} else {
 			$bFirst = 1;
 		}

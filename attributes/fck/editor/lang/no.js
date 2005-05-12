@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: no.js
  * 	Norwegian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Martin Kronstad (www.siteman.no) (martin.kronstad@broadpark.no)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Dropdown menyegenskaper",
 TextareaProp		: "Tekstfeltegenskaper",
 FormProp			: "Skjemaegenskaper",
 
-FontFormats			: "Normal;Formatert;Adresse;Tittel 1;Tittel 2;Tittel 3;Tittel 4;Tittel 5;Tittel 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatert;Adresse;Tittel 1;Tittel 2;Tittel 3;Tittel 4;Tittel 5;Tittel 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Lager XHTML. Vennligst vent...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Tekst topp",
 DlgImgAlignTop		: "Topp",
 DlgImgPreview		: "Forhåndsvis",
 DlgImgAlertUrl		: "Vennligst skriv bildeurlen",
+DlgImgLinkTab		: "Lenke",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Lenke",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Dokumentbeskrivelse",
 DlgDocMeAuthor		: "Forfatter",
 DlgDocMeCopy		: "Kopirett",
 DlgDocPreview		: "Forhåndsvising",
+
+// Templates Dialog
+Templates			: "Maler",
+DlgTemplatesTitle	: "Innholdsmaler",
+DlgTemplatesSelMsg	: "Velg malen du vil åpne<br>(innholdet du har skrevet blir tapt!):",
+DlgTemplatesLoading	: "Laster malliste. Vennligst vent...",
+DlgTemplatesNoTpl	: "(Ingen maler definert)",
 
 // About Dialog
 DlgAboutAboutTab	: "Om",

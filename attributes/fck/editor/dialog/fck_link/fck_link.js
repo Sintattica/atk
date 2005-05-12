@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,33 +11,35 @@
  * File Name: fck_link.js
  * 	Scripts related to the Link dialog window (see fck_link.html).
  * 
- * Version:  2.0 RC3
- * Modified: 2005-02-09 13:53:13
- * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
 
-var oEditor = window.parent.InnerDialogLoaded() ;
-var FCK		= oEditor.FCK ;
-var FCKLang	= oEditor.FCKLang ;
+var oEditor		= window.parent.InnerDialogLoaded() ;
+var FCK			= oEditor.FCK ;
+var FCKLang		= oEditor.FCKLang ;
+var FCKConfig	= oEditor.FCKConfig ;
 
 //#### Dialog Tabs
 
 // Set the dialog tabs.
 window.parent.AddTab( 'Info', FCKLang.DlgLnkInfoTab ) ;
-window.parent.AddTab( 'Target', FCKLang.DlgLnkTargetTab, true ) ;
+
+if ( !FCKConfig.LinkDlgHideTarget )
+	window.parent.AddTab( 'Target', FCKLang.DlgLnkTargetTab, true ) ;
+
 // TODO : Enable File Upload (1/3).
 //window.parent.AddTab( 'Upload', 'Upload', true ) ;
-window.parent.AddTab( 'Advanced', FCKLang.DlgAdvancedTag ) ;
+
+if ( !FCKConfig.LinkDlgHideAdvanced )
+	window.parent.AddTab( 'Advanced', FCKLang.DlgAdvancedTag ) ;
 
 // Function called when a dialog tag is selected.
 function OnDialogTabChange( tabCode )
 {
 	ShowE('divInfo'		, ( tabCode == 'Info' ) ) ;
 	ShowE('divTarget'	, ( tabCode == 'Target' ) ) ;
-// TODO : Enable File Upload (2/3).
-//	ShowE('divUpload'	, ( tabCode == 'Upload' ) ) ;
+//	ShowE('divUpload'	, ( tabCode == 'Upload' ) ) ;	// TODO : Enable File Upload (2/3).
 	ShowE('divAttribs'	, ( tabCode == 'Advanced' ) ) ;
 }
 
@@ -117,7 +119,7 @@ oParser.CreateEMailUri = function( address, subject, body )
 // oLink: The actual selected link in the editor.
 var oLink = FCK.Selection.MoveToAncestorNode( 'A' ) ;
 if ( oLink )
-	FCK.Selection.MoveToNode( oLink ) ;
+	FCK.Selection.SelectNode( oLink ) ;
 
 window.onload = function()
 {
@@ -134,7 +136,7 @@ window.onload = function()
 	SetLinkType( GetE('cmbLinkType').value ) ;
 
 	// Show/Hide the "Browse Server" button.
-	GetE('divBrowseServer').style.display = oEditor.FCKConfig.LinkBrowser ? '' : 'none' ;
+	GetE('divBrowseServer').style.display = FCKConfig.LinkBrowser ? '' : 'none' ;
 
 	// Show the initial dialog content.
 	GetE('divInfo').style.display = '' ;
@@ -281,10 +283,14 @@ function SetLinkType( linkType )
 	ShowE('divLinkTypeAnchor'	, (linkType == 'anchor') ) ;
 	ShowE('divLinkTypeEMail'	, (linkType == 'email') ) ;
 
-	window.parent.SetTabVisibility( 'Target'	, (linkType == 'url') ) ;
+	if ( !FCKConfig.LinkDlgHideTarget )
+		window.parent.SetTabVisibility( 'Target'	, (linkType == 'url') ) ;
+
 // TODO : Enable File Upload (3/3).
 //	window.parent.SetTabVisibility( 'Upload'	, (linkType == 'url') ) ;
-	window.parent.SetTabVisibility( 'Advanced'	, (linkType != 'anchor' || bHasAnchors) ) ;
+
+	if ( !FCKConfig.LinkDlgHideAdvanced )
+		window.parent.SetTabVisibility( 'Advanced'	, (linkType != 'anchor' || bHasAnchors) ) ;
 
 	if ( linkType == 'email' )
 		window.parent.SetAutoSize( true ) ;
@@ -452,7 +458,10 @@ function Ok()
 	}
 
 	if ( oLink )	// Modifying an existent link.
+	{
+		oEditor.FCKUndo.SaveUndoStep() ;
 		oLink.href = sUri ;
+	}
 	else			// Creating a new link.
 	{
 		oLink = oEditor.FCK.CreateLink( sUri ) ;
@@ -489,8 +498,8 @@ function Ok()
 function BrowseServer()
 {
 	// Set the browser window feature.
-	var iWidth	= oEditor.FCKConfig.LinkBrowserWindowWidth ;
-	var iHeight	= oEditor.FCKConfig.LinkBrowserWindowHeight ;
+	var iWidth	= FCKConfig.LinkBrowserWindowWidth ;
+	var iHeight	= FCKConfig.LinkBrowserWindowHeight ;
 
 	var iLeft = (screen.width  - iWidth) / 2 ;
 	var iTop  = (screen.height - iHeight) / 2 ;
@@ -502,7 +511,7 @@ function BrowseServer()
 	sOptions += ",top=" + iTop ;
 
 	// Open the browser window.
-	var oWindow = window.open( oEditor.FCKConfig.LinkBrowserURL, "FCKBrowseWindow", sOptions ) ;
+	var oWindow = window.open( FCKConfig.LinkBrowserURL, "FCKBrowseWindow", sOptions ) ;
 }
 
 function SetUrl( url )

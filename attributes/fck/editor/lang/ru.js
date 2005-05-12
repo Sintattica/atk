@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: ru.js
  * 	Russian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:18
  * 
  * File Authors:
  * 		Andrey Grebnev (andrey.grebnev@blandware.com)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Свойства списка",
 TextareaProp		: "Свойства текстовой области",
 FormProp			: "Свойства формы",
 
-FontFormats			: "Нормальный;Форматированный;Адрес;Заголовок 1;Заголовок 2;Заголовок 3;Заголовок 4;Заголовок 5;Заголовок 6",	// 2.0: The last entry has been added.
+FontFormats			: "Нормальный;Форматированный;Адрес;Заголовок 1;Заголовок 2;Заголовок 3;Заголовок 4;Заголовок 5;Заголовок 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Обработка XHTML. Пожалуйста подождите...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Текст наверху",
 DlgImgAlignTop		: "По верху",
 DlgImgPreview		: "Предварительный просмотр",
 DlgImgAlertUrl		: "Пожалуйста введите URL изображения",
+DlgImgLinkTab		: "Ссылка",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Ссылка",
@@ -273,12 +271,12 @@ DlgCellWordWrap		: "Заворачивание текста",
 DlgCellWordWrapNotSet	: "<Не уст.>",
 DlgCellWordWrapYes	: "Да",
 DlgCellWordWrapNo	: "Нет",
-DlgCellHorAlign		: "Горизонтальное выравнивание",
+DlgCellHorAlign		: "Гор. выравнивание",
 DlgCellHorAlignNotSet	: "<Не уст.>",
 DlgCellHorAlignLeft	: "Слева",
 DlgCellHorAlignCenter	: "По центру",
 DlgCellHorAlignRight: "Справа",
-DlgCellVerAlign		: "Вертикальное выравнивание",
+DlgCellVerAlign		: "Верт. выравнивание",
 DlgCellVerAlignNotSet	: "<Не уст.>",
 DlgCellVerAlignTop	: "Сверху",
 DlgCellVerAlignMiddle	: "Посередине",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Описание документа",
 DlgDocMeAuthor		: "Автор",
 DlgDocMeCopy		: "Авторские права",
 DlgDocPreview		: "Предварительный просмотр",
+
+// Templates Dialog
+Templates			: "Шаблоны",
+DlgTemplatesTitle	: "Шаблоны содержимого",
+DlgTemplatesSelMsg	: "Пожалуйста выберете шаблон для открытия в редакторе<br>(текущее содержимое будет потеряно):",
+DlgTemplatesLoading	: "Загрузка списка шаблонов. Пожалуйста подождите...",
+DlgTemplatesNoTpl	: "(Ни одного шаблона не определено)",
 
 // About Dialog
 DlgAboutAboutTab	: "О программе",

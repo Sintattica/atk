@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,9 +11,6 @@
  * 
  * File Name: fck_document_preview.html
  * 	Preview shown in the "Document Properties" dialog window.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-01-12 16:05:41
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -25,10 +22,25 @@
 		<meta name="robots" content="noindex, nofollow">
 		<script language="javascript">
 
+var eBase = parent.FCK.EditorDocument.getElementsByTagName( 'BASE' ) ;
+if ( eBase.length > 0 && eBase[0].href.length > 0 )
+{
+	document.write( '<base href="' + eBase[0].href + '">' ) ;
+}
+
 window.onload = function()
 {
 	if ( typeof( parent.OnPreviewLoad ) == 'function' )
 		parent.OnPreviewLoad( window, document.body ) ;
+}
+
+function SetBaseHRef( baseHref )
+{
+	var eBase = document.createElement( 'BASE' ) ;
+	eBase.href = baseHref ;
+
+	var eHead = document.getElementsByTagName( 'HEAD' )[0] ;
+	eHead.appendChild( eBase ) ;
 }
 
 function SetLinkColor( color )

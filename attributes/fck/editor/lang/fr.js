@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -11,11 +11,8 @@
  * File Name: fr.js
  * 	French language file.
  * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
- * 
  * File Authors:
- * 		Hubert Garrido (webmaster@liane.net)
+ * 		Hubert Garrido (liane@users.sourceforge.net)
  */
 
 var FCKLang =
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Propriétés de Liste/Menu",
 TextareaProp		: "Propriétés de Zone Texte",
 FormProp			: "Propriétés de Formulaire",
 
-FontFormats			: "Normal;Formatted;Address;Titre 1;Titre 2;Titre 3;Titre 4;Titre 5;Titre 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normal;Formatted;Address;Titre 1;Titre 2;Titre 3;Titre 4;Titre 5;Titre 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Calcul XHTML. Veuillez patienter...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Haut du texte",
 DlgImgAlignTop		: "Haut",
 DlgImgPreview		: "Prévisualisation",
 DlgImgAlertUrl		: "Veuillez saisir l'URL de l'image",
+DlgImgLinkTab		: "Lien",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Propriétés de Lien",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Description",
 DlgDocMeAuthor		: "Auteur",
 DlgDocMeCopy		: "Copyright",
 DlgDocPreview		: "Prévisualisation",
+
+// Templates Dialog
+Templates			: "Modèles",
+DlgTemplatesTitle	: "Modèles de Contenu",
+DlgTemplatesSelMsg	: "Veuillez sélectionner le modèle à ouvrir dans l'éditeur<br>(le contenu actuel sera remplacé):",
+DlgTemplatesLoading	: "Chargement de la liste des modèles. Veuillez patienter...",
+DlgTemplatesNoTpl	: "(Aucun modèle disponible)",
 
 // About Dialog
 DlgAboutAboutTab	: "A propos de",

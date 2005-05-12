@@ -1,6 +1,6 @@
 <!--
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: fck_image.html
  * 	Image Properties dialog window.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-02-18 23:54:52
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -38,9 +35,7 @@
 									<span fckLang="DlgImgURL">URL</span>
 								</td>
 								<td id="tdBrowse" style="DISPLAY: none" nowrap rowspan="2">
-									&nbsp;
-									<input id="btnBrowse" onclick="BrowseServer();" type="button"
-										value="Browse Server" fckLang="DlgBtnBrowseServer" NAME="btnBrowse">
+									&nbsp; <input id="btnBrowse" onclick="BrowseServer();" type="button" value="Browse Server" fckLang="DlgBtnBrowseServer">
 								</td>
 							</tr>
 							<tr>
@@ -53,8 +48,8 @@
 				</tr>
 				<tr>
 					<td>
-						<span fckLang="DlgImgAlt">Short Description</span><br>
-						<input id="txtAlt" style="WIDTH: 100%" type="text"><br>
+						<span fckLang="DlgImgAlt">Short Description</span><br />
+						<input id="txtAlt" style="WIDTH: 100%" type="text"><br />
 					</td>
 				</tr>
 				<tr height="100%">
@@ -62,17 +57,18 @@
 						<table cellspacing="0" cellpadding="0" width="100%" border="0" height="100%">
 							<tr>
 								<td valign="top">
-									<br>
+									<br />
 									<table cellspacing="0" cellpadding="0" border="0">
 										<tr>
 											<td nowrap><span fckLang="DlgImgWidth">Width</span>&nbsp;</td>
 											<td>
 												<input type="text" size="3" id="txtWidth" onkeyup="OnSizeChanged('Width',this.value);"></td>
 											<td nowrap rowspan="2">
-												<div id="btnLockSizes" class="BtnLocked" onmouseover="this.className = (bLockRatio ? 'BtnLocked' : 'BtnUnlocked' ) + ' BtnOver';" onmouseout="this.className = (bLockRatio ? 'BtnLocked' : 'BtnUnlocked' );"
-													title="Lock Sizes" onclick="SwitchLock(this);"></div>
-												<div id="btnResetSize" class="BtnReset" onmouseover="this.className='BtnReset BtnOver';" onmouseout="this.className='BtnReset';"
-													title="Reset Size" onclick="ResetSizes();"></div>
+												<div id="btnLockSizes" class="BtnLocked" onmouseover="this.className = (bLockRatio ? 'BtnLocked' : 'BtnUnlocked' ) + ' BtnOver';"
+													onmouseout="this.className = (bLockRatio ? 'BtnLocked' : 'BtnUnlocked' );" title="Lock Sizes"
+													onclick="SwitchLock(this);"></div>
+												<div id="btnResetSize" class="BtnReset" onmouseover="this.className='BtnReset BtnOver';"
+													onmouseout="this.className='BtnReset';" title="Reset Size" onclick="ResetSizes();"></div>
 											</td>
 										</tr>
 										<tr>
@@ -81,7 +77,7 @@
 												<input type="text" size="3" id="txtHeight" onkeyup="OnSizeChanged('Height',this.value);"></td>
 										</tr>
 									</table>
-									<br>
+									<br />
 									<table cellspacing="0" cellpadding="0" border="0">
 										<tr>
 											<td nowrap><span fckLang="DlgImgBorder">Border</span>&nbsp;</td>
@@ -125,21 +121,22 @@
 										<tr>
 											<td valign="top">
 												<div class="ImagePreviewArea">
-													<img id="imgPreview" style="DISPLAY: none">Magnus es, domine, et laudabilis 
-													valde: magna virtus tua, et sapientiae tuae non est numerus. et laudare te vult 
-													homo, aliqua portio creaturae tuae, et homo circumferens mortalitem suam, 
-													circumferens testimonium peccati sui et testimonium, quia superbis resistis: et 
-													tamen laudare te vult homo, aliqua portio creaturae tuae.tu excitas, ut laudare 
-													te delectet, quia fecisti nos ad te et inquietum est cor nostrum, donec 
-													requiescat in te. da mihi, domine, scire et intellegere, utrum sit prius 
-													invocare te an laudare te, et scire te prius sit an invocare te. sed quis te 
-													invocat nesciens te? aliud enim pro alio potest invocare nesciens. an potius 
-													invocaris, ut sciaris? quomodo autem invocabunt, in quem non crediderunt? aut 
-													quomodo credent sine praedicante? et laudabunt dominum qui requirunt eum. 
-													quaerentes enim inveniunt eum et invenientes laudabunt eum. quaeram te, domine, 
-													invocans te, et invocem te credens in te: praedicatus enim es nobis. invocat 
-													te, domine, fides mea, quam dedisti mihi, quam inspirasti mihi per humanitatem 
-													filii tui, per ministerium praedicatoris tui.
+													<a id="lnkPreview" onclick="return false;" style="CURSOR: default"><img id="imgPreview" style="DISPLAY: none"></a>Magnus 
+													es, domine, et laudabilis valde: magna virtus tua, et sapientiae tuae non est 
+													numerus. et laudare te vult homo, aliqua portio creaturae tuae, et homo 
+													circumferens mortalitem suam, circumferens testimonium peccati sui et 
+													testimonium, quia superbis resistis: et tamen laudare te vult homo, aliqua 
+													portio creaturae tuae.tu excitas, ut laudare te delectet, quia fecisti nos ad 
+													te et inquietum est cor nostrum, donec requiescat in te. da mihi, domine, scire 
+													et intellegere, utrum sit prius invocare te an laudare te, et scire te prius 
+													sit an invocare te. sed quis te invocat nesciens te? aliud enim pro alio potest 
+													invocare nesciens. an potius invocaris, ut sciaris? quomodo autem invocabunt, 
+													in quem non crediderunt? aut quomodo credent sine praedicante? et laudabunt 
+													dominum qui requirunt eum. quaerentes enim inveniunt eum et invenientes 
+													laudabunt eum. quaeram te, domine, invocans te, et invocem te credens in te: 
+													praedicatus enim es nobis. invocat te, domine, fides mea, quam dedisti mihi, 
+													quam inspirasti mihi per humanitatem filii tui, per ministerium praedicatoris 
+													tui.
 												</div>
 											</td>
 										</tr>
@@ -151,11 +148,36 @@
 				</tr>
 			</table>
 		</div>
+		<div id="divLink" style="DISPLAY: none">
+			<table cellspacing="1" cellpadding="1" border="0" width="100%">
+				<tr>
+					<td>
+						<div>
+							<span fckLang="DlgLnkURL">URL</span><br />
+							<input id="txtLnkUrl" style="WIDTH: 100%" type="text" onblur="UpdatePreview();" />
+						</div>
+						<div id="divLnkBrowseServer" align="right">
+							<input type="button" value="Browse Server" fckLang="DlgBtnBrowseServer" onclick="LnkBrowseServer();" />
+						</div>
+						<div>
+							<span fckLang="DlgLnkTarget">Target</span><br />
+							<select id="cmbLnkTarget">
+								<option value="" fckLang="DlgGenNotSet" selected="selected">&lt;not set&gt;</option>
+								<option value="_blank" fckLang="DlgLnkTargetBlank">New Window (_blank)</option>
+								<option value="_top" fckLang="DlgLnkTargetTop">Topmost Window (_top)</option>
+								<option value="_self" fckLang="DlgLnkTargetSelf">Same Window (_self)</option>
+								<option value="_parent" fckLang="DlgLnkTargetParent">Parent Window (_parent)</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
 		<div id="divAdvanced" style="DISPLAY: none">
 			<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0">
 				<tr>
 					<td valign="top" width="50%">
-						<span fckLang="DlgGenId">Id</span><br>
+						<span fckLang="DlgGenId">Id</span><br />
 						<input id="txtAttId" style="WIDTH: 100%" type="text">
 					</td>
 					<td width="1">&nbsp;&nbsp;</td>
@@ -163,7 +185,7 @@
 						<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0">
 							<tr>
 								<td width="60%">
-									<span fckLang="DlgGenLangDir">Language Direction</span><br>
+									<span fckLang="DlgGenLangDir">Language Direction</span><br />
 									<select id="cmbAttLangDir" style="WIDTH: 100%">
 										<option value="" fckLang="DlgGenNotSet" selected>&lt;not set&gt;</option>
 										<option value="ltr" fckLang="DlgGenLangDirLtr">Left to Right (LTR)</option>
@@ -172,7 +194,7 @@
 								</td>
 								<td width="1%">&nbsp;&nbsp;</td>
 								<td nowrap>
-									<span fckLang="DlgGenLangCode">Language Code</span><br>
+									<span fckLang="DlgGenLangCode">Language Code</span><br />
 									<input id="txtAttLangCode" style="WIDTH: 100%" type="text">&nbsp;
 								</td>
 							</tr>
@@ -184,7 +206,7 @@
 				</tr>
 				<tr>
 					<td colspan="3">
-						<span fckLang="DlgGenLongDescr">Long Description URL</span><br>
+						<span fckLang="DlgGenLongDescr">Long Description URL</span><br />
 						<input id="txtLongDesc" style="WIDTH: 100%" type="text">
 					</td>
 				</tr>
@@ -193,16 +215,16 @@
 				</tr>
 				<tr>
 					<td valign="top">
-						<span fckLang="DlgGenClass">Stylesheet Classes</span><br>
+						<span fckLang="DlgGenClass">Stylesheet Classes</span><br />
 						<input id="txtAttClasses" style="WIDTH: 100%" type="text">
 					</td>
 					<td></td>
-					<td valign="top">&nbsp;<span fckLang="DlgGenTitle">Advisory Title</span><br>
+					<td valign="top">&nbsp;<span fckLang="DlgGenTitle">Advisory Title</span><br />
 						<input id="txtAttTitle" style="WIDTH: 100%" type="text">
 					</td>
 				</tr>
 			</table>
-			<span fckLang="DlgGenStyle">Style</span><br>
+			<span fckLang="DlgGenStyle">Style</span><br />
 			<input id="txtAttStyle" style="WIDTH: 100%" type="text">
 		</div>
 	</body>

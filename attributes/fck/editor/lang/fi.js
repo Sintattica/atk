@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: fi.js
  * 	Finnish language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Marko Korhonen (marko.korhonen@datafisher.com)
@@ -28,7 +25,7 @@ ToolbarExpand		: "Näytä työkalurivi",
 
 // Toolbar Items and Context Menu
 Save				: "Tallenna",
-NewPage				: "Uusi sivu",
+NewPage				: "Tyhjennä",
 Preview				: "Esikatsele",
 Cut					: "Leikkaa",
 Copy				: "Kopioi",
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Valintakentän ominaisuudet",
 TextareaProp		: "Tekstilaatikon ominaisuudet",
 FormProp			: "Lomakkeen ominaisuudet",
 
-FontFormats			: "Normaali;Muotoiltu;Osoite;Otsikko 1;Otsikko 2;Otsikko 3;Otsikko 4;Otsikko 5;Otsikko 6",	// 2.0: The last entry has been added.
+FontFormats			: "Normaali;Muotoiltu;Osoite;Otsikko 1;Otsikko 2;Otsikko 3;Otsikko 4;Otsikko 5;Otsikko 6",
 
 // Alerts and Messages
 ProcessingXHTML		: "Prosessoidaan XHTML:ää. Odota hetki...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Ylös (teksti)",
 DlgImgAlignTop		: "Ylös",
 DlgImgPreview		: "Esikatselu",
 DlgImgAlertUrl		: "Kirjoita kuvan osoite (URL)",
+DlgImgLinkTab		: "Linkki",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Linkki",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Kuvaus",
 DlgDocMeAuthor		: "Tekijä",
 DlgDocMeCopy		: "Tekijänoikeudet",
 DlgDocPreview		: "Esikatselu",
+
+// Templates Dialog
+Templates			: "Pohjat",
+DlgTemplatesTitle	: "Sisältöpohjat",
+DlgTemplatesSelMsg	: "Valitse pohja editoriin<br>(aiempi sisältö menetetään):",
+DlgTemplatesLoading	: "Ladataan listaa pohjista. Hetkinen...",
+DlgTemplatesNoTpl	: "(Ei määriteltyjä pohjia)",
 
 // About Dialog
 DlgAboutAboutTab	: "Editorista",

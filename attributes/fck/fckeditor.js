@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -14,9 +14,6 @@
  * 	It defines the FCKeditor class that can be used to create editor
  * 	instances in a HTML page in the client side. For server side
  * 	operations, use the specific integration system.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-02-27 19:04:39
  * 
  * File Authors:
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
@@ -54,7 +51,7 @@ FCKeditor.prototype.Create = function()
 
 	if ( !this.CheckBrowser || this._IsCompatibleBrowser() )
 	{
-		document.write( '<input type="hidden" id="' + this.InstanceName + '" name="' + this.InstanceName + '" value="' + this._HTMLEncode( this.Value ) + '">' ) ;
+		document.write( '<input type="hidden" id="' + this.InstanceName + '" name="' + this.InstanceName + '" value="' + this._HTMLEncode( this.Value ) + '" />' ) ;
 		document.write( this._GetConfigHtml() ) ;
 		document.write( this._GetIFrameHtml() ) ;
 	}
@@ -107,11 +104,11 @@ FCKeditor.prototype._GetConfigHtml = function()
 	var sConfig = '' ;
 	for ( var o in this.Config )
 	{
-		if ( sConfig.length > 0 ) sConfig += '&' ;
+		if ( sConfig.length > 0 ) sConfig += '&amp;' ;
 		sConfig += escape(o) + '=' + escape( this.Config[o] ) ;
 	}
 
-	return '<input type="hidden" id="' + this.InstanceName + '___Config" value="' + sConfig + '">' ;
+	return '<input type="hidden" id="' + this.InstanceName + '___Config" value="' + sConfig + '" />' ;
 }
 
 FCKeditor.prototype._GetIFrameHtml = function()

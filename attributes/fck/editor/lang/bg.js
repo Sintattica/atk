@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: bg.js
  * 	Bulgarian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Miroslav Ivanov (miro@primal-chaos.net)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Параметри на падащото меню с оп�
 TextareaProp		: "Параметри на текстовата област",
 FormProp			: "Параметри на формуляра",
 
-FontFormats			: "Нормален;Форматиран;Адрес;Заглавие 1;Заглавие 2;Заглавие 3;Заглавие 4;Заглавие 5;Заглавие 6;Параграф (DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "Нормален;Форматиран;Адрес;Заглавие 1;Заглавие 2;Заглавие 3;Заглавие 4;Заглавие 5;Заглавие 6;Параграф (DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "Обработка на XHTML. Моля изчакайте...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Върху текста",
 DlgImgAlignTop		: "Отгоре",
 DlgImgPreview		: "Изглед",
 DlgImgAlertUrl		: "Моля, въведете пълния път до изображението",
+DlgImgLinkTab		: "Link",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "Връзка",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Описание на документа",
 DlgDocMeAuthor		: "Автор",
 DlgDocMeCopy		: "Авторски права",
 DlgDocPreview		: "Изглед",
+
+// Templates Dialog
+Templates			: "Templates",	//MISSING
+DlgTemplatesTitle	: "Content Templates",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
+DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "За",

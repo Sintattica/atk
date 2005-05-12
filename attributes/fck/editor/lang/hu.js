@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2004 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
  * Licensed under the terms of the GNU Lesser General Public License:
  * 		http://www.opensource.org/licenses/lgpl-license.php
@@ -10,9 +10,6 @@
  * 
  * File Name: hu.js
  * 	Hungarian language file.
- * 
- * Version:  2.0 RC3
- * Modified: 2005-03-01 17:26:17
  * 
  * File Authors:
  * 		Varga Zsolt (meridian@netteszt.hu)
@@ -120,7 +117,7 @@ SelectionFieldProp	: "Választómező(k) tulajdonsága(i)",
 TextareaProp		: "Szövegterület(ek) tulajdonsága(i)",
 FormProp			: "Űrlap(ok) tulajdonsága(i)",
 
-FontFormats			: "Normál;Formázott;Címsor;Fejléc 1;Fejléc 2;Fejléc 3;Fejléc 4;Fejléc 5;Fejléc 6;Bekezdés (DIV)",	// 2.0: The last entry has been added.
+FontFormats			: "Normál;Formázott;Címsor;Fejléc 1;Fejléc 2;Fejléc 3;Fejléc 4;Fejléc 5;Fejléc 6;Bekezdés (DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "XHTML feldolgozása. Kérem várjon...",
@@ -183,6 +180,7 @@ DlgImgAlignTextTop	: "Szöveg tetjére",
 DlgImgAlignTop		: "Tetejére",
 DlgImgPreview		: "Elõnézet",
 DlgImgAlertUrl		: "Töltse ki a kép URL-ét",
+DlgImgLinkTab		: "Link",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "Hivatkozás",
@@ -438,6 +436,13 @@ DlgDocMeDescr		: "Dokumentum leírás",
 DlgDocMeAuthor		: "Szerző",
 DlgDocMeCopy		: "Szerzői jog",
 DlgDocPreview		: "Előnézet",
+
+// Templates Dialog
+Templates			: "Templates",	//MISSING
+DlgTemplatesTitle	: "Content Templates",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
+DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "About",
