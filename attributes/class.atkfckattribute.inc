@@ -62,7 +62,7 @@
 			  $this->fck_opt=array_merge($this->fck_opt,$opt);
 		  }
       
-		  // $this->fck_opt['Language']=atkconfig("language"); <-- this doesn't work for some reason
+		  //$this->fck_opt['Language']=atkconfig("language"); <-- this doesn't work for some reason
       //$this->m_editflags = $editflags;
       $this->atkTextAttribute($name,$size,$flags); 
     }
@@ -96,7 +96,7 @@
       $oFCKeditor->ToolbarSet=$this->fck_opt['ToolbarSet'];
       $oFCKeditor->Width=$this->fck_opt['Width'];
       $oFCKeditor->Height=$this->fck_opt['Height'];
-      $oFCKeditor->Language=$this->fck_opt['Langugae'];
+      $oFCKeditor->Language=$this->fck_opt['Language'];
 		
 		  return $oFCKeditor->CreateHtml();	
     }
