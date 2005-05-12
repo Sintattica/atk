@@ -105,7 +105,8 @@
           $_gmt_mtime = gmdate('D, d M Y H:i:s', $lastmodificationstamp).' GMT';
           if($_last_modified_date == $_gmt_mtime)
           {
-            header("HTTP/1.1 304 Not Modified");
+            header("HTTP/1.0 304 Not Modified");
+            return;
           }
           else
           {

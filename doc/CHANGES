@@ -6,7 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.2.1
 --------------------
-+ Made PHP session cache limiter configurable [Martin]
++ When using the browser's cache outputflush() doesn't sent the page body
+  anymore. [Martin]
++ Made PHP session cache limiter and session cache expire configurable [Martin]
 + Added preliminary CSV export handler (NF_EXPORT). [Ivo]
 + Added additional http/1.1 304 not modified header. Document lastmodified
   timestamp is compared to the client's if-modified-since header. [Martin]
