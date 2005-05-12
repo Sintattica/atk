@@ -180,4 +180,12 @@
   // Use the given meta handler as the default meta handler
   $config_meta_handler = "atk.meta.atkmetahandler";
   
+  // Session cache limiter
+  // possible values:
+  // - nocache
+  // - public  (permits caching by proxies and clients
+  // - private (permits caching by clients
+  // - private_no_expire (permits caching by clients but not sending expire headers >PHP4.2.0)
+  $config_session_cache_limiter = "nocache";
+  
 ?>

@@ -26,6 +26,9 @@
   $cookiepath = atkconfig("application_root");
   session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
   
+  // set the cache limiter (used for caching)
+  session_cache_limiter(atkconfig("session_cache_limiter"));
+  
   // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
   // we don't have a session...
   if (isSessionIdValid())
