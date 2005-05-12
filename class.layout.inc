@@ -669,11 +669,11 @@
       {
         $field = &$data["fields"][$i];
 
-        /* check for seperator */
+        /* check for separator */
         if (!is_array($field) && $field == "-" && $i > 0 && $data["fields"][$i-1] != "-")
           $form .= '<tr>'.$this->ret_td('<hr>', 'colspan="2" valign="middle"').'</tr>';
 
-        /* double seperator, ignore */
+        /* double separator, ignore */
         elseif (!is_array($field) && $field == "-");
 
         /* only HTML */

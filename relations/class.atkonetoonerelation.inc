@@ -727,7 +727,7 @@
              */
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
-              /* seperator and name */
+              /* separator and name */
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
               $arr["fields"][] = array("line"=>"<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
             }              
@@ -735,7 +735,7 @@
             
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
-              /* seperator */
+              /* separator */
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
             }
           }

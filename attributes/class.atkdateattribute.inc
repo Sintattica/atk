@@ -751,7 +751,8 @@
     /**
      * Convert a String representation into an internal value.
      *
-     * This implementation converts datestring to a array with day,mont and year seperated
+     * This implementation converts datestring to a array with day, month and 
+     * year separated
      *
      * @param String $stringvalue The value to parse.
      * @return Internal value for a date
@@ -798,13 +799,13 @@
 
         $regexpr = "^$regexpr$";
 
-        $valueSeperators = array ("-","/","\.","\\\\","a");
+        $valueSeparators = array ("-","/","\.","\\\\","a");
 
         //if the value has the format given by regexpr.
         //also try to replace - by "/","." or "\""
-        foreach($valueSeperators as $valueSeperator)
+        foreach($valueSeparators as $valueSeparator)
         {
-          $expr = str_replace(" ",$valueSeperator,$regexpr);
+          $expr = str_replace(" ",$valueSeparator,$regexpr);
           if(ereg($expr,$stringvalue))
           {
             $day    = substr($stringvalue,$dayBegin,$dayLength);

@@ -203,12 +203,12 @@
 		    // ar_ stands voor 'attribrow'.
 		    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
-		    /* check for seperator */
+		    /* check for separator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
         {
           $tplfield["line"] = "<hr>"; 
         }
-        /* double seperator, ignore */
+        /* double separator, ignore */
         elseif ($field["html"] == "-")
         {
         }        
