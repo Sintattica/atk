@@ -26,6 +26,9 @@
   $cookiepath = atkconfig("application_root");
   session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
   
+  // set cache expire
+  session_cache_expire(atkconfig("session_cache_expire"));
+  
   // set the cache limiter (used for caching)
   session_cache_limiter(atkconfig("session_cache_limiter"));
   

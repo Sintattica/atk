@@ -180,6 +180,9 @@
   // Use the given meta handler as the default meta handler
   $config_meta_handler = "atk.meta.atkmetahandler";
   
+  // Session cache expire (minutes)
+  $config_session_cache_expire = 180;
+  
   // Session cache limiter
   // possible values:
   // - nocache
