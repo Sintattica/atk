@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.2.2
+--------------------
+
 Changes in ATK 5.2.1
 --------------------
 + When using the browser's cache outputflush() doesn't sent the page body
