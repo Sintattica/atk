@@ -8,14 +8,14 @@ Changes in ATK 5.2.1
 --------------------
 + When using the browser's cache outputflush() doesn't sent the page body
   anymore. [Martin]
-+ Made PHP session cache limiter and session cache expire configurable [Martin]
++ Made PHP session cache limiter and cache expire configurable. [Martin]
 + Added preliminary CSV export handler (NF_EXPORT). [Ivo]
 + Added additional http/1.1 304 not modified header. Document lastmodified
   timestamp is compared to the client's if-modified-since header. [Martin]
 + atkAggregatedColumn::display() now supports $mode param. [Ivo]
 + Added Oracle demo installation file to the demo. [Ivo]
 * Changed the addMlCondition so that is uses ATK_VARS["lng"] instead of a 
-  global value $lng which isn't always set [MartinL]
+  global value $lng which isn't always set. [MartinL]
 * Adding a multilanguage condition now takes into concideration the current
   language. Not just the default language. [MartinL]
 * Fixed bug in multi-select search of atkManyToOneRelation. [Ivo]
@@ -27,10 +27,14 @@ Changes in ATK 5.2.1
 * Fixed fatal error in add screen when insert query would fail. [Ivo]
 * Fixed bug where searching on dates would always add 19 or 20 
   in front of the year. [Boy]
-* Fixed bug in exportFile() that would prevent exporting with MSIE and SSL. [Boy]
+* Fixed bug in exportFile() that would prevent exporting with MSIE and SSL. 
+  [Boy]
 * Improvements to Oracle OCI9 driver error handling. [Ivo]
-* Upgraded Smarty to 2.6.9
-* Corrected config var name tplcachelifetime [Martin]
+* Upgraded Smarty to 2.6.9. [Sandy]
+* Upgraded FCKEditor to 2.0 FC. [Danny] 
+* Corrected config var name tplcachelifetime. [Martin]
+* Fixed decimal separator handling/display of atkNumberAttribute. [Ivo]
+* Fixed 'seperator'->'separator' typo. [Ivo]
 - Removed $m_critical_error lists from the db drivers. Anything that's not a
   userlevel error should be considered critical. [Ivo]
 - Removed atkAttribute::display_plain(). [Ivo]
@@ -92,7 +96,7 @@ Changes in ATK 5.2.0
 * Functional decomposition of importhandler. [Boy]
 * Improved PostgreSQL error reporting. [Boy]
 * Fixed file export with MSIE in combination with SSL (https). [Wim]
-* atkNumberAttribute now reads "decimals_seperator" from the language file 
+* atkNumberAttribute now reads "decimals_separator" from the language file 
   instead of assuming '.' as decimal separator. [Boy]
 * Changed image paths in outlooks top.tpl to a relative filepath. [Martin]
 * Fixed an infinite loop in atkOneToManyRelation::translateSelector(). [Boy] 
