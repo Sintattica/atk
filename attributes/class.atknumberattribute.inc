@@ -44,7 +44,7 @@
     
     function display($record, $mode="")
     {      
-      return atkNumberAttribute::translateSeparator(sprintf("%.".$this->m_decimals."f", $record[$this->fieldName()]));
+      return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
     }
     
     /**
@@ -151,7 +151,8 @@
         $maxsize += ($this->m_decimals+1); // make room for the number of decimals
       }
       
-      $value = atkNumberAttribute::translateSeparator(sprintf("%.".$this->m_decimals."f", $record[$this->fieldName()]));
+      $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
+      $value = ($value==0?"":$value);
       
       $id = $fieldprefix.$this->fieldName();      
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
