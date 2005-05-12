@@ -29,6 +29,7 @@ Changes in ATK 5.2.1
   in front of the year. [Boy]
 * Fixed bug in exportFile() that would prevent exporting with MSIE and SSL. [Boy]
 * Improvements to Oracle OCI9 driver error handling. [Ivo]
+* Upgraded Smarty to 2.6.9
 - Removed $m_critical_error lists from the db drivers. Anything that's not a
   userlevel error should be considered critical. [Ivo]
 - Removed atkAttribute::display_plain(). [Ivo]
