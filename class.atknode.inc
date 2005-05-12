@@ -2220,7 +2220,12 @@
         // If we need to track changes, we first load the original values..
         if ($this->hasFlag(NF_TRACK_CHANGES))
         {
+          //We need to add the NO_FILTER flag in case the new values would filter the record.
+          //Need to restore the NO_FILTER bit back to its original value.
+          $flags = $this->m_flags;
+          $this->addFlag(NF_NO_FILTER);
           $recordset = $this->selectDb($pk,"","","","","edit"); // we need the same record we got when editing.
+          $this->m_flags = $flags;
           $record["atkorgrec"] = $recordset[0];
         }
         $query->addCondition($pk);

@@ -35,6 +35,7 @@ Changes in ATK 5.2.1
 * Corrected config var name tplcachelifetime. [Martin]
 * Fixed decimal separator handling/display of atkNumberAttribute. [Ivo]
 * Fixed 'seperator'->'separator' typo. [Ivo]
+* postUpdate atkorgrec now also works if a filter was set. (bug #469) [Thom]
 - Removed $m_critical_error lists from the db drivers. Anything that's not a
   userlevel error should be considered critical. [Ivo]
 - Removed atkAttribute::display_plain(). [Ivo]
