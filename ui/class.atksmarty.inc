@@ -65,7 +65,7 @@
                                                                         // 2 = use cache_lifetime in cache file
                                                                         // default = 0.
         $s_smarty->cache_dir       = atkconfig("tplcachedir");    // name of directory for template cache files
-        $s_smarty->cache_lifetime  = atkconfig("smarty_cachelifetime"); // number of seconds cached content will persist.
+        $s_smarty->cache_lifetime  = atkconfig("tplcachelifetime"); // number of seconds cached content will persist.
 	  									                                                        // 0 = always regenerate cache,
                                                                               // -1 = never expires. default is one hour (3600)
         $s_smarty->cache_modified_check = true;                         // respect If-Modified-Since headers on cached content
