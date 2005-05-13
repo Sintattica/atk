@@ -1599,4 +1599,28 @@
   	}
   	return false;
   }
+  
+  /**
+   * Recursive function to look if the needle exists in the haystack
+   *
+   * WARNING: take care with using this function as it is recursive
+   * and if you have a value linking back to it's self in one way or another,
+   * you may spend a loooong time waiting on your application
+   *
+   * @param String $needle The value which will be searched in the haystack
+   * @package Array $haystack Array with values
+   * @return Boolean True if needle exists in haystack
+   */   
+  function atk_value_in_array_recursive($needle, $haystack)
+  {
+    foreach ($haystack as $key=>$value)
+    {
+      if ($value==$needle) return true;
+      else if (is_array($value))
+      {
+        if (atk_value_in_array_recursive($needle, $value)) return true;
+      }
+    }
+    return false;    
+  }
 ?>
