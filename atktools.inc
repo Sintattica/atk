@@ -1611,14 +1611,14 @@
    * @package Array $haystack Array with values
    * @return Boolean True if needle exists in haystack
    */   
-  function atk_value_in_array_recursive($needle, $haystack)
+  function atk_in_array_recursive($needle, $haystack)
   {
     foreach ($haystack as $key=>$value)
     {
       if ($value==$needle) return true;
       else if (is_array($value))
       {
-        if (atk_value_in_array_recursive($needle, $value)) return true;
+        if (atk_in_array_recursive($needle, $value)) return true;
       }
     }
     return false;    
