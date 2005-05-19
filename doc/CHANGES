@@ -13,6 +13,8 @@ Changes in ATK 5.2.2
   - Updated documentation
   - Improved error handling, import documents are validated before 
     they are added [Boy]
+* Currency attribute no longer formats the number as a decimal as 
+  the numberattribute from which it extends does this anyway [Boy]
 
 Changes in ATK 5.2.1
 --------------------

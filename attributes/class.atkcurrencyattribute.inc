@@ -54,7 +54,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
    */
   function display($record, $mode="")
   {
-    return $this->m_valutasymbol.number_format(parent::display($record,$mode),2,",",".");
+    return $this->m_valutasymbol.parent::display($record,$mode);
   }
 }
 
