@@ -65,6 +65,7 @@
         case "int": 
           return "number";
         case "float":
+        case "real":
           return "decimal";        
         case "varchar":
         case "char":
