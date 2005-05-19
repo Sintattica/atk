@@ -469,7 +469,7 @@
           if (strstr($fieldprefix,"]["))
             $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
           else
-            $result.='name="atksearch['. $this->fieldName().'][]">';
+            $result.='name="atksearch'.$fieldprefix.'['. $this->fieldName().'][]">';
   
           $pkfield = $this->m_destInstance->primaryKeyField();
   

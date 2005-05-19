@@ -175,7 +175,7 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
       // todo: configurable rows
       $result = '<select ';
@@ -183,7 +183,7 @@
       {
         $result.='multiple size="'.min(5,count($this->m_values)+1).'"';
       }
-      $result.='name="atksearch['.$this->formName().'][]">';
+      $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
       $result.= '<option value="">'.text('search_all');
 
       for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)

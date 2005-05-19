@@ -881,7 +881,7 @@
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $pref = $fieldprefix . "AE_" .$this->fieldName();
+            $pref = $fieldprefix . "_AE_" .$this->fieldName();
             $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags, $atksearch[$this->fieldName()], $atkorderby);
             
             $fieldPointer = &$arr["search"][$pref.$p_attrib->fieldName()];            

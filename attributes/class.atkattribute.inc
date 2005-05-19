@@ -914,9 +914,9 @@
       // Evil bit to get searching in one-to-manys to work alongside
       // searching on normal recordlists.
       if (strstr($fieldprefix, "]["))
-        $id = "atksearch"."[".$fieldprefix.$this->formName()."]";
-      else 
-        $id = "atksearch".$fieldprefix."[".$this->formName()."]";
+        $id = "atksearch[".$fieldprefix.$this->formName()."]";
+      else
+        $id = "atksearch$fieldprefix"."[".$this->formName()."]";
       
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
