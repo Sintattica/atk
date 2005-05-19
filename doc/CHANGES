@@ -8,6 +8,11 @@ Changes in ATK 5.2.2
 --------------------
 + Added function atk_value_in_array_recursive($needle, $haystack) which
   returns a boolean if the needle exists or not in the haystack.[Dennis-Jan] 
+* Improvements on atkImportHandler:
+  - Some functional decomposition applied
+  - Updated documentation
+  - Improved error handling, import documents are validated before 
+    they are added [Boy]
 
 Changes in ATK 5.2.1
 --------------------

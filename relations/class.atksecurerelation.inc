@@ -65,7 +65,7 @@
      */
     function atkSecureRelation($name, $destination, $linktable, $linkfield, $linkbackfield, $keylength, $refKey="", $encryption, $flags=0)
     {
-      $this->atkOneToOneRelation($name, $destination, $refKey, $flags);
+      $this->atkOneToOneRelation($name, $destination, $refKey, $flags|AF_ONETOONE_ERROR);
       $this->createDestination();
       $this->m_crypt = &atkEncryption::getEncryption($encryption);
             

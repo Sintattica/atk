@@ -231,6 +231,11 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
+  
+  "feedback_import_failed"=>"Het bestand kan niet geimporteerd worden",
+  "import_detectedrows"=>"Gedetecteerde aantal rijen",
+  "import_novalidatefirst"=>"Controleer importbestand niet voor importeren",
+  "import_importedreminder"=>"LET OP: Het bestand is al geimporteerd, enkel zijn wel deze fouten opgetreden in de hierondervolgende regels, deze records zijn dan ook niet toegevoegd",
 );
 
 ?>

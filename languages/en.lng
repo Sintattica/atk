@@ -231,6 +231,11 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
+  
+  "import_detectedrows"=>"Number of detected rows",
+  "import_validatefirst"=>"Do not validate before importing",  
+  "feedback_import_failed"=>"File can not be imported",
+  "import_importedreminder"=>"The file has already been imported, however there were errors detected in the following rows, these were not added/updated",
 );
 
 ?>
