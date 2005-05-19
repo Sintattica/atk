@@ -149,7 +149,7 @@
             foreach($bindLobs as $bind => $value)
             {          
               $clobVar = $bind.$i;
-              OCIBindByName($this->m_query_id, $bind, &$$clobVar, -1, OCI_B_CLOB);
+              OCIBindByName($this->m_query_id, $bind, $$clobVar, -1, OCI_B_CLOB);
               $i++;          
               atkdebug("Binding CLOB ".$bind);
             }          

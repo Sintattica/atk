@@ -6,16 +6,17 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.2.2
 --------------------
-+ Added function atk_value_in_array_recursive($needle, $haystack) which
-  returns a boolean if the needle exists or not in the haystack.[Dennis-Jan] 
++ Added function atk_in_array_recursive($needle, $haystack) which
+  is similar to php's in_array, only this one is recursive.[Dennis-Jan] 
 * Improvements on atkImportHandler:
-  - Some functional decomposition applied
-  - Updated documentation
-  - Improved error handling, import documents are validated before 
-    they are added [Boy]
+  * Some functional decomposition applied.
+  * Updated documentation.
+  * Improved error handling, import documents are validated before 
+    they are added. [Boy]
 * Currency attribute no longer formats the number as a decimal as 
-  the numberattribute from which it extends does this anyway [Boy]
-* Fixed extended searching on OneToOne relations [Boy]
+  the numberattribute from which it extends does this anyway. [Boy]
+* Fixed extended searching on OneToOne relations. [Boy]
+* Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
 
 Changes in ATK 5.2.1
 --------------------
