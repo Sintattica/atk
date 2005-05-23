@@ -187,7 +187,7 @@
             $record[$this->fieldName()] = "";
           }
         }
-        return parent::search($record, $extended);
+        return parent::search($record, $extended, $fieldprefix);
       }
       else
       {
