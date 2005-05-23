@@ -206,16 +206,16 @@
         $content.="\n<table>";
         foreach ($importerrors as $record => $errors)
         {
-          if ($record==0 && !empty($errors[0]))
+          if ($record==0)
           {
             $content.="<tr><td colSpan=2>";
             foreach ($errors as $error)
             {
-              $content.= "<b>".text($error['msg']).$error['spec']."</b><br />";
+              if (!empty($error)) $content.= "<b>".text($error['msg']).$error['spec']."</b><br />";
             }
             $content.="</td></tr>";
           }
-          else if (!empty($errors[0]) && $record<atkconfig("showmaximporterrors",50))
+          else if (atk_value_in_array($errors) && $record<atkconfig("showmaximporterrors",50))
           {
             $content.="<tr><td>";
             $content.="<b> Record $record: ";
@@ -1011,7 +1011,7 @@
           else
           {
             $importerrors[$counter][] = array("msg"=>atktext("error_formdataerror"),
-            "spec"=>sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $updatekey1)));
+            "spec"=>sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $attributename)));
           }
         }
       }
@@ -1032,7 +1032,7 @@
      * @param Array $extraerror   An extra error, if we found errors
      * @return bool Wether or not errors occurred
      */
-    function showErrors($importerrors, $extraerror)
+    function showErrors($importerrors, $extraerror=null)
     {
       foreach ($importerrors as $importerror)
       {
