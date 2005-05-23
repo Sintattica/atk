@@ -59,17 +59,25 @@
     {
 	  	$value = $record[$this->fieldName()];
       if (empty($value["hours"]) ) return "";
-      $tmp_time = $value["hours"].":".$value["minutes"].":".$value["seconds"];			
+      $tmp_time = $value["hours"].":".$value["minutes"];
+      if ($value["seconds"]) $tmp_time.=":".$value["seconds"];			
       return $tmp_time;
     }
 
     function fetchValue($postvars)
     {
       $result = $postvars[$this->fieldName()];
-      if(is_array($result))
-        return $result;
-      else
-        return "";
+        
+      if(!is_array($result))
+      {
+        $exploded = explode(":",$postvars[$this->fieldName()]);
+        if (count($exploded)<=1) return "";
+        $result= array();
+        $result["hours"]  = $exploded[0];
+        $result["minutes"]= $exploded[1];
+        if ($exploded[2]) $result["seconds"]= $exploded[2];
+      }
+      return $result;
     }
 
     /**

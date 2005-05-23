@@ -8,6 +8,7 @@ Changes in ATK 5.2.2
 --------------------
 + Added function atk_in_array_recursive($needle, $haystack) which
   is similar to php's in_array, only this one is recursive.[Dennis-Jan] 
++ Made atkTimeAttribute work with a time string from the postvars.[Boy]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
