@@ -197,7 +197,7 @@
           // perform query on destination node to retrieve all records.
           if ($this->createDestination())
           {
-            $this->m_searcharray = $this->m_ownerInstance->m_postvars["atksearch"]["data"];
+            $this->m_searcharray = $this->m_ownerInstance->m_postvars["atksearch"][$this->fieldName()];
 
             //if al search values are equal, then make it an OR search
             if(count(array_unique(array_values($this->m_searcharray))) == 1)
