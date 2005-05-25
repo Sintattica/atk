@@ -183,6 +183,13 @@
       {
         $result.='multiple size="'.min(5,count($this->m_values)+1).'"';
       }
+
+      if (strstr($fieldprefix,"]["))
+        $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
+      else
+        $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
+        
+      $result.= '<option value="">'.text('search_all');
       $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
       $result.= '<option value="">'.text('search_all');
 
