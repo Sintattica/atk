@@ -567,12 +567,42 @@
     
     /** 
      * Get TO_CHAR() equivalent for the current database.
-     *
-     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd.
+     * Each database driver should override this method to perform vendor
+     * specific conversion.
+     *     
+     * @param String $fieldname The field to generate the to_char for.
+     * @param String $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     *                       The default is what's specified by 
+     *                       $config_date_to_char, or "Y-m-d" if not
+     *                       set in the configuration.     
+     * @return String Piece of sql query that converts a date field to char
+     *                for the current database
      */
-    function func_datetochar($fieldname)
+    function func_datetochar($fieldname, $format="")
     {
-      return "TO_CHAR($fieldname, ".atkconfig("date_to_char",'YYYY-MM-DD').")";
+      if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
+      return "TO_CHAR($fieldname, ".$this->venderDateFormat($format).")";
+    }
+    
+    /**
+     * Convert a php date() format specifier to a vendor specific format
+     * specifier. 
+     * The default implementation returns the format as used by many
+     * database vendors ('YYYYMMDD HH24:MI'). Databases that use different
+     * formatting, should override this method.
+     *
+     * Note that currently, only the common specifiers Y, m, d, H, h, i and
+     * s are supported.
+     * @param String $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     * @return String Vendor specific format specifier.
+     */
+    function vendorDateFormat($format)
+    {
+      $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
+      $db_fmt  = array("YYYY", "MM", "DD", "HH24", "HH12", "MI", "SS");      
+      return str_replace($php_fmt, $db_fmt, $format);
     }
       
       

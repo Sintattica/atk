@@ -416,15 +416,43 @@
       return array("exact","substring","wildcard","regexp","soundex","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
 
-    /** 
+     /** 
      * Get TO_CHAR() equivalent for the current database.
-     *
-     * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd.
+     * Each database driver should override this method to perform vendor
+     * specific conversion.
+     *     
+     * @param String $fieldname The field to generate the to_char for.
+     * @param String $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     *                       The default is what's specified by 
+     *                       $config_date_to_char, or "Y-m-d" if not
+     *                       set in the configuration.     
+     * @return String Piece of sql query that converts a date field to char
+     *                for the current database
      */
-    function func_datetochar($fieldname)
+    function func_datetochar($fieldname, $format="")
     {
-      return "DATE_FORMAT($fieldname, '".atkconfig("mysql_date_to_char",'%Y-%m-%d, %Y')."')";
+      if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
+      return "DATE_FORMAT($fieldname, '".$this->vendorDateFormat($format)."')";
     }
+    
+    /**
+     * Convert a php date() format specifier to a mysql specific format
+     * specifier.      
+     *
+     * Note that currently, only the common specifiers Y, m, d, H, h, i and
+     * s are supported.
+     * @param String $format Format specifier. The format is compatible with
+     *                       php's date() function (http://www.php.net/date)
+     * @return String Mysql specific format specifier.
+     */
+    function vendorDateFormat($format)
+    {
+      $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
+      $db_fmt  = array("%Y", "%m", "%d", "%H", "%h", "%i", "%s");      
+      return str_replace($php_fmt, $db_fmt, $format);
+    }
+
       
     /** 
      * Get TO_CHAR() equivalent for the current database.
