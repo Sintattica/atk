@@ -190,8 +190,6 @@
         $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
         
       $result.= '<option value="">'.text('search_all');
-      $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
-      $result.= '<option value="">'.text('search_all');
 
       for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)
       {                
