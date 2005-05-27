@@ -138,7 +138,7 @@
       if (atkconfig('database') != 'oci9')
         return escapeSQL($rec[$this->fieldName()]);
       else 
-        return addslashes($rec[$this->fieldName()]); //CLOB in oci9 don't need quotes to be escapedt
+        return $rec[$this->fieldName()]; //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
     }
     
     /**

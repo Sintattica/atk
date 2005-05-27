@@ -19,6 +19,9 @@ Changes in ATK 5.2.2
 * Fixed extended searching on OneToOne relations. [Boy]
 * Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
 * Made atkListAttribute searchable in embedded OneToMany. [Yury]
+* Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
+  check, causing the test to fail on Oracle installs. [Ivo]
+- atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 Changes in ATK 5.2.1
 --------------------

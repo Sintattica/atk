@@ -52,10 +52,11 @@
         // check encoding      
         global $g_db;
         $attribute = new atkTextAttribute("remark");
-        $dbvalue = "contains'quote";
-        $internalvalue = $attribute->db2value(array("remark"=>$dbvalue));      
-        $roundtrip = $attribute->value2db(array("remark"=>$internalvalue));
-        $this->assertEqual($g_db->escapeSQL($dbvalue), $roundtrip, "value2db encoding check %s");      
+        $value = "contains'quote";
+        $dbvalue = $attribute->value2db(array("remark"=>$value));
+        $roundtrip = $attribute->db2value(array("remark"=>$dbvalue));      
+        
+        $this->assertEqual($value, $roundtrip, "value2db encoding check %s");      
       }
       
     }
