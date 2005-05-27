@@ -493,7 +493,7 @@
       $toval   = $this->value2db(array($this->fieldName()=>$value["to"]));            
 
       $field = $g_db->func_datetochar($table.".".$this->fieldName());
-      
+
       if ($fromval!="NULL" && $toval!="NULL")
       {     
         if ($fromval>$toval)
@@ -521,7 +521,11 @@
                       $field,
                       $toval);
       }
-      else 
+      else if ((is_array($value["from"])) or (is_array($value["to"])))
+      {
+        $searchcondition = $this->_getDateArraySearchCondition($query,$table,$value);
+      }
+      else
       {
         // plain text search condition
         $value = $this->_autoCompleteDateString($value);
@@ -548,6 +552,58 @@
       return sprintf("%02d", $elems[0])."-".
              sprintf("%02d", $elems[1])."-".
              ($elems[2]<100?($elems[2]<50?"20":"19"):"").sprintf("%02d", $elems[2]);
+    }
+    
+    /**
+     * Makes the search conditions if the normal conditions are
+     * not met and if given date is an array,
+     * for example when only the year or year-month is given
+     * @param $query Query which is given in getSearchCondition
+     * @param $table Table on which the condition must be executed
+     * @param $value Array with values given for the search
+     * @return String YYYY-MM or YYYY
+     */
+    function _getDateArraySearchCondition($query,$table,$value)
+    {
+      global $g_db;
+      $fromvalue = $this->_MakeDateForCondition($value["from"]);
+      $tovalue   = $this->_MakeDateForCondition($value["to"]);
+        
+      if ($fromvalue!="") {
+        $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["from"]));
+        $datearraysearchcondition = $query->greaterthanequalCondition($field,$fromvalue);
+        // check if tovalue is set, if so add the AND                               
+        if ($tovalue!="") $datearraysearchcondition.=" AND "; }
+      if ($tovalue!="") {
+        $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["to"]));
+        $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue); }
+      return $datearraysearchcondition;
+    }
+    
+    /**
+     * Checks which of the two values are filled in the array
+     * and returns them
+     * @param $value Array with 3 fields (year, month, day)
+     * @return String YYYY-MM or YYYY
+     */
+    function _MakeDateForCondition($value)
+    {
+      if ($value["year"]!="") $fromvalue.= $value["year"];
+      if ($value["year"]!="" && $value["month"]!=0) $fromvalue.= "-".sprintf("%02d",$value["month"]);
+      return $fromvalue;
+    }
+
+    /**
+    * Checks which of the two values are filled in the array
+    * and returns the DATE_FORMAT for the database
+    * @param $value Array with 3 fields (year, month, day)
+    * @return String DATE_FORMAT
+    */
+    function _SetDateFormat($value)
+    {
+      if ($value["year"]!="") $format = 'Y';
+      if ($value["year"]!="" && $value["month"]!=0) $format = 'Y-m';
+      return $format;
     }
 
     /**

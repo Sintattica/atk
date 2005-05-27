@@ -9,6 +9,8 @@ Changes in ATK 5.2.2
 + Added function atk_in_array_recursive($needle, $haystack) which
   is similar to php's in_array, only this one is recursive. [Dennis-Jan] 
 + Made atkTimeAttribute work with a time string from the postvars. [Boy]
++ Extended the getSearchCondition of atkDateAttribute so it handles none
+  complete and empty requests [Wouter]
 + Added $format parameter to func_datetochar. [Ivo]
 + Added venderDateFormat method to abstraction layer for database specific
   date formatting strings. [Ivo]
