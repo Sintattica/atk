@@ -54,8 +54,8 @@
         $attribute = new atkTextAttribute("remark");
         $value = "contains'quote";
         $dbvalue = $attribute->value2db(array("remark"=>$value));
-        $roundtrip = $attribute->db2value(array("remark"=>$dbvalue));      
-        
+        $roundtrip = $attribute->db2value(array("remark"=>$value));      
+               
         $this->assertEqual($value, $roundtrip, "value2db encoding check %s");      
       }
       
