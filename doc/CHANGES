@@ -18,7 +18,9 @@ Changes in ATK 5.2.2
   * Some functional decomposition applied.
   * Updated documentation.
   * Improved error handling, import documents are validated before 
-    they are added. [Boy]
+    they are added. 
+  * Fixed bug that would cause first field never to be properly recognized
+    at analysis time. [Boy]
 * Currency attribute no longer formats the number as a decimal as 
   the numberattribute from which it extends does this anyway. [Boy]
 * Fixed extended searching on OneToOne relations. [Boy]

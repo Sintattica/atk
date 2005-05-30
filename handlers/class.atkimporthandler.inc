@@ -869,6 +869,7 @@
       
       foreach($firstRecord as $value)
       {
+        
         $key = $this->inArray($attributes,$value);
         if($key)
         {
@@ -878,8 +879,12 @@
         {
           //checks the translation
           $key = $this->inArray($translations,$value);
-          if($key)
+          
+          if($key!==false)
+          {
+            
             $result[] = $attributes[$key];
+          }
           else
             $result[] = "-";
         }
