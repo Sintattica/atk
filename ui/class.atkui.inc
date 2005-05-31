@@ -231,8 +231,8 @@
       }
       else
       {
-        $key = $module."_".$nodetype;
-        if (atktext($key,"","","","","",true))
+        $key = $nodetype;
+        if (atktext($key,$module,"","","","",true))
         {
           return atktext($key)." - ".atktext($action, "",$nodetype);
         }

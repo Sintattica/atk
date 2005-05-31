@@ -28,6 +28,10 @@ Changes in ATK 5.2.2
 * Made atkListAttribute searchable in embedded OneToMany. [Yury]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
   check, causing the test to fail on Oracle installs. [Ivo]
+* Changed atkLanguage stringid fallback module_node_stringid is now 
+  the most important, followed by node_stringid and finally stringid. [Boy]
+* Fixed atkUIs title() function as it failed to translate the module name
+  properly. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 Changes in ATK 5.2.1
