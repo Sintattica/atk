@@ -118,7 +118,8 @@
      * Text function, retrieves a translation for a certain string.
      *
      * @param String $string         the name of the string to return
-     * @param String $module         module in which the language file should be looked for, defaults to core module with fallback to ATK
+     * @param String $module         module in which the language file should be looked for, 
+     *                                defaults to core module with fallback to ATK
      * @param String $node           the node to which the string belongs
      * @param String $lng            ISO 639-1 language code, defaults to config variable
      * @param String $firstfallback  the first module to check as part of the fallback
@@ -144,7 +145,8 @@
      *
      * @access private
      * @param string &$string       the name of the string to return
-     * @param string &$module       module in which the language file should be looked for, defaults to core module with fallback to ATK
+     * @param string &$module       module in which the language file should be looked for, 
+     *                               defaults to core module with fallback to ATK
      * @param string &$node         the node to which the string belongs
      * @param string &$lng          ISO 639-1 language code, defaults to config variable
      * @param string $firstfallback the first module to check as part of the fallback
@@ -182,7 +184,8 @@
      * @access private
      * @param string &$finalstring  the result of the text call
      * @param string &$string       the name/label/ID of the string to return
-     * @param string &$module       module in which the language file should be looked for, defaults to core module with fallback to ATK
+     * @param string &$module       module in which the language file should be looked for, 
+     *                               defaults to core module with fallback to ATK
      * @param string &$node         the node to which the string belongs
      * @param string &$lng          ISO 639-1 language code, defaults to config variable
      * @param string $firstfallback the first module to check as part of the fallback
@@ -208,10 +211,12 @@
      * Gets the appropriate language file and name to call the string by
      *
      * @access private
-     * @param string $string the name of the string to return
-     * @param string $module module in which the language file should be looked for, defaults to core module with fallback to ATK
-     * @param string $node   the node to which the string belongs
-     * @param string $lng    ISO 639-1 language code, defaults to config variable
+     * @param string $string        the name of the string to return
+     * @param string $module        module in which the language file should be looked for, 
+     *                              defaults to core module with fallback to ATK
+     * @param string $node          the node to which the string belongs
+     * @param string $lng           ISO 639-1 language code, defaults to config variable
+     * @param bool  &$nodefaulttext wether or not to pass a default text back
      * @return string the name with which to call the string we want from the languagefile
      */
     function _getStringName($string, &$module, $node, $lng, &$nodefaulttext)
@@ -263,9 +268,10 @@
      * until it produces a result or runs out of fallbackmodules
      *
      * @access private
-     * @param string $string the name of the string to return
-     * @param string $node   the node to which the string belongs
-     * @param string $lng    ISO 639-1 language code, defaults to config variable
+     * @param string $string        the name of the string to return
+     * @param string $node          the node to which the string belongs
+     * @param string $lng           ISO 639-1 language code, defaults to config variable
+     * @param bool  &$nodefaulttext wether or not to pass a default text back
      */
     function _stringNameFallback($string, $node, $lng, $nodefaulttext)
     {
@@ -321,8 +327,9 @@
      * otherwise it sets it
      *
      * @access private
-     * @param string $file file to import
-     * @param string $lng  language of file to import
+     * @param string $file    file to import
+     * @param string $module  the module to import the language file from
+     * @param string $lng     language of file to import
      * @return bool true if everything went okay
      */
     function _setLanguage($file, $module, $lng)
@@ -352,32 +359,16 @@
      * Gets the string from the languagefile or, if we failed, returns false
      *
      * @access private
-     * @param string $string    the name which was given when the text function was called
-     * @param string $module    the name of the module to which the text function belongs
-     * @param string $node      the name of the node to which the text function belongs
+     * @param string $string        the name which was given when the text function was called
+     * @param string $module        the name of the module to which the text function belongs
+     * @param string $node          the name of the node to which the text function belongs
+     * @param string $lng           the current language
+     * @param bool  &$nodefaulttext wether or not to pass a default text back
      * @return var the true name by which the txt is called or false if we can't find any entry
      */
     function _getString($string, $node, $module, $lng, &$nodefaulttext)
     { 
-      if (atkconfig("atklangcheckmodule"))
-      {
-        if ($node)
-        {
-          $key = $node."_".$string;
-          if (empty($this->m_cachedlang[$module][$lng][$key]) && atkconfig("atklangcheckmodule") == 2)
-          {
-            $key = $module."_".$string;
-            if (empty($this->m_cachedlang[$module][$lng][$key]))
-            {
-              $key = $module."_".$node."_".$string; 
-            }
-          }
-        }          
-      }
-      if (!$key || !$this->m_cachedlang[$module][$lng][$key])
-      { 
-        $key = $string;
-      }
+      $key = $this->_getStringID($string, $node, $module, $lng);
       
       if (is_array($this->m_cachedlang[$module][$lng]))
       {
@@ -388,6 +379,52 @@
         }
       }
       return;
+    }
+    
+    /**
+     * Gets the string ID for the text that we are looking for
+     *
+     * This function takes care of the fallback with string ids. It is as following:
+     * First we check for a string specific to both the module and the node
+     * If that isn't found we check for a node specific string
+     * Then we check for a module specific string
+     * And if all that fails (as it usually does) we look for a general string
+     * 
+     * @access private
+     * @param string $string    the name which was given when the text function was called
+     * @param string $module    the name of the module to which the text function belongs
+     * @param string $node      the name of the node to which the text function belongs
+     * @param string $lng       the current language
+     * @return var the true name by which the txt is called or false if we can't find any entry
+     */
+    function _getStringID($string, $node, $module, $lng)
+    {
+      if (atkconfig("atklangcheckmodule"))
+      {
+        if ($node && $module && atkconfig("atklangcheckmodule") == 2)
+        {
+          $key = $module."_".$node."_".$string;
+          if (!empty($this->m_cachedlang[$module][$lng][$key]))
+            return $key;
+        }
+        if ($node)
+        {
+          $key = $node."_".$string;
+          if (empty($this->m_cachedlang[$module][$lng][$key]))
+          {
+            if (atkconfig("atklangcheckmodule") == 2)
+            {
+              $key = $module."_".$string;
+            }
+          }
+        }
+      }
+      
+      if (!$key || !$this->m_cachedlang[$module][$lng][$key])
+      { 
+        return $string;
+      }
+      return $key;
     }
   }
 ?>
