@@ -29,7 +29,7 @@
 
     function atkDropdownMenu() 
     {
-      $this->height = "106";
+      $this->height = "23";
     }
 
     function render()
@@ -74,10 +74,10 @@
       return MENU_UNSCROLLABLE;
     }
 
-		function getMultilevel()
-		{
-			return MENU_MULTILEVEL;
-		}
+    function getMultilevel()
+    {
+      return MENU_MULTILEVEL;
+    }
   }
 
 ?>

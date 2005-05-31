@@ -159,7 +159,7 @@ while (list ($name) = each ($g_menu))
 }
 
 // Create a menuroot
-$menuroot .= 'startMenu("root", false, "285", "86", 21, hBar, "parent.menu", true);';
+$menuroot .= 'startMenu("root", false, "285", "0", 21, hBar, "parent.menu", true);';
 $menuroot .= "\n";
 
 for ($i = 0; $i < count($menurootarray); $i++)
