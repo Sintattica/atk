@@ -127,7 +127,6 @@
 
       if ($this->createDestination())
       {
-
         /* record list */
         if (count($myrecords) > 0)
         {
@@ -175,14 +174,14 @@
         $output.= $this->_getRecordList($myrecords);
         
         if (atkconfig("onetomany_addlink_position","bottom")=="bottom") 
-          $output.=$this->_addAddLink($myrecords, $record);
+          $output.=$this->_addAddLink($myrecords, $record)."<br />";
           
         $output.=$this->editFooter($record, $myrecords);
         $output.="<br>";
         $this->_fetchNavigationLinks($output);
         
         if (atkconfig("onetomany_addlink_position","bottom")=="top") 
-          $output=$this->_addAddLink($myrecords, $record)."<br /><br />".$output;
+          $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
         
         return $output;
       }
@@ -762,7 +761,8 @@
       $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation, true);
 
       // add the navigation to the top and bottom of the page
-      $output = $navstr . "<br />" . $output . "<br />" . $navstr . "<br /><br />";
+      if ($navstr) $output = $navstr . "<br />" . $output . "<br />" . $navstr;
+      else return $output;
   	}
   }
 ?>
