@@ -173,15 +173,14 @@
         
         $output.= $this->_getRecordList($myrecords);
         
-        if (atkconfig("onetomany_addlink_position","bottom")=="bottom") 
-          $output.=$this->_addAddLink($myrecords, $record)."<br />";
           
         $output.=$this->editFooter($record, $myrecords);
-        $output.="<br>";
         $this->_fetchNavigationLinks($output);
         
         if (atkconfig("onetomany_addlink_position","bottom")=="top") 
           $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
+        else if (atkconfig("onetomany_addlink_position","bottom")=="bottom") 
+          $output.=$this->_addAddLink($myrecords, $record)."<br />";
         
         return $output;
       }
@@ -646,8 +645,8 @@
     
     function deleteAllowed()
     {
-    	if ($this->hasFlag(AF_RESTRICTED_DELETE))
-    	{
+      if ($this->hasFlag(AF_RESTRICTED_DELETE))
+      {
     		// Get the destination node
     		$classname = $this->m_destination;
       	$cache_id = $this->m_owner.".".$this->m_name;
@@ -662,8 +661,8 @@
         	if (!empty($childrecords)) return atktext("restricted_delete_error");
         }
         else return;
-    	}
-    	return true;
+      }
+      return true;
     }
     
     /**
@@ -746,7 +745,7 @@
         // if the filter is on the owner, we translate it back to the destination
         else if ($this->m_ownerInstance->validateFilter($ATK_VARS['atkselector']))
         {
-        	$destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
+          $destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
         }
         // otherwise we just don't set a filter
       }
@@ -761,8 +760,8 @@
       $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation, true);
 
       // add the navigation to the top and bottom of the page
-      if ($navstr) $output = $navstr . "<br />" . $output . "<br />" . $navstr;
+      if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
       else return $output;
-  	}
+    }
   }
 ?>
