@@ -32,6 +32,7 @@ Changes in ATK 5.2.2
   the most important, followed by node_stringid and finally stringid. [Boy]
 * Fixed atkUIs title() function as it failed to translate the module name
   properly. [Boy]
+* Removed unnecessary brs from edit() of atkOneToMany. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 Changes in ATK 5.2.1
