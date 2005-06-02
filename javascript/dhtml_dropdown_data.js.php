@@ -18,10 +18,16 @@
 /** @internal includes and defines */
 $config_platformroot = "../../";
 $config_atkroot = "../../";
+
+if ($argv[1]=="externalinclude")
+{
+  $config_platformroot = "../";
+  $config_atkroot = "../";
+}
 include_once($config_atkroot."atk.inc");
 include_once($config_atkroot."atk/menu/general.inc");
-atksession("admin");
-atksecure();
+                                  atksession("admin");
+if ($argv[1]!="externalinclude")  atksecure();
 ?>
 
 // Function for realigning the submenu position when hiding the tree-frame
@@ -105,7 +111,10 @@ while (list ($name) = each ($g_menu))
         $action = $enable[(2*$j)+1];
         
         $instance = &getNode($enable[(2*$j)]);
-        $enabled |= $instance->allowed($action);
+        if (is_object($instance) && method_exists($instance,"allowed"))     
+        {
+          $enabled |= $instance->allowed($action);
+        }
       }
       $enable = $enabled;
     }
@@ -164,11 +173,10 @@ $menuroot .= "\n";
 
 for ($i = 0; $i < count($menurootarray); $i++)
 {
-  if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main")
+  if(!in_array($menurootarray[$i], $subsubmenu) && $menurootarray[$i] != "main" && $menubuttonsarray[$i])
   {
     // Every menu item on the first level will be added to the menu root
     $menuroot .= 'addItem("'.$menutopnamearray[$i].'", "m'.$menurootarray[$i].'", "sm:",hBar,100);';
-
     // Create menus that will open the submenuitems for the first level
     echo ('startMenu("m'.$menurootarray[$i].'", true, "'.$plus.'+frameAdjust()+main.page.scrollX()", "main.page.scrollY()",180, subM, "parent.main");');
     echo $menubuttonsarray[$i];

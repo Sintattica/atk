@@ -38,17 +38,18 @@
       $page = &atkPage::getInstance();
       $ui =   &atknew("atk.ui.atkui");
       $theme = &atkTheme::getInstance();
-      $smarty = &atkSmarty::getInstance();
       
       $page->register_style($ui->stylePath("dhtml_dropdown.css"));
       
       $user = getUser();
+      $error = $this->checkDataForErrors();
       
       $tplvars = array(
       "jscode"=>atkconfig("atkroot").'atk/javascript/dhtml_dropdown_events.js',
       "name"=>$user["name"],
       "menubanner"=>$theme->imgPath("menubanner.jpg"),
       "menulogo"=>$theme->imgPath("menulogo.gif"));
+      if ($error) $tplvars["error"]= $error;      
       
       $dhtml_dropdown = $ui->render("dhtml_menu.tpl", $tplvars);
       $page->addContent($dhtml_dropdown);
@@ -57,6 +58,19 @@
       $output = &atkOutput::getInstance();
       $output->output($string);
       $output->outputFlush();
+    }
+    
+    function checkDataForErrors()
+    {
+      $output=array();
+      $content = exec("php -Cq ".atkconfig("atkroot")."atk/javascript/dhtml_dropdown_data.js.php externalinclude", $output);
+      
+      $error = "<b>".array_pop($output)."</b>";
+      
+      if (strstr($error,"error")) 
+      {
+        return $error;
+      }
     }
 
     function getHeight()
