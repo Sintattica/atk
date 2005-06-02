@@ -10,11 +10,11 @@ Changes in ATK 5.2.2
   is similar to php's in_array, only this one is recursive. [Dennis-Jan] 
 + Made atkTimeAttribute work with a time string from the postvars. [Boy]
 + Extended the getSearchCondition of atkDateAttribute so it handles none
-  complete and empty requests [Wouter]
+  complete and empty requests. [Wouter]
 + Added $format parameter to func_datetochar. [Ivo]
 + Added venderDateFormat method to abstraction layer for database specific
   date formatting strings. [Ivo]
-+ Made it possible to pass size to filewriter attribute [Boy]
++ Made it possible to pass size to atkFileWriterAttribute. [Boy]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
@@ -34,8 +34,8 @@ Changes in ATK 5.2.2
 * Fixed atkUIs title() function as it failed to translate the module name
   properly. [Boy]
 * Removed unnecessary brs from edit() of atkOneToMany. [Boy]
-* Made textattribute not display rows or columns property if it doesn't
-  have any value [Boy]
+* Made atkTextAttribute not display rows or columns property if it doesn't
+  have any value. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 Changes in ATK 5.2.1
