@@ -91,15 +91,17 @@
       $id = $fieldprefix.$this->fieldName();
       $this->registerKeyListener($id, KB_CTRLCURSOR);  
       if ($rows =="" || $rows == 0) $rows = 10;
-	    // watch out, $maxsize isn't supported for a textarea.
+      // watch out, $maxsize isn't supported for a textarea.
 	    
-	    if ($this->m_autoadjust)
-	    {
-	      $this->doAutoAdjust(htmlspecialchars($record[$this->fieldName()]), $rows, $cols);
-	    }
+      if ($this->m_autoadjust)
+      {
+        $this->doAutoAdjust(htmlspecialchars($record[$this->fieldName()]), $rows, $cols);
+      }
       
-	    $result= '<textarea id="'.$id.'" name="'.$id.'" rows="'.$rows.'" cols="'.$cols.'" wrap="soft"'.               
-               '>'.htmlspecialchars($record[$this->fieldName()]).'</textarea>';
+      $result= "<textarea id='$id' name='$id' wrap='soft' ";
+      if ($rows) $result.= "rows='$rows' ";
+      if ($cols) $result.= "cols='$cols'";
+      $result.=">".htmlspecialchars($record[$this->fieldName()]).'</textarea>';
       return $result;
     }
     

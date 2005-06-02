@@ -37,21 +37,23 @@
   
     /**
      * Constructor
-     * @param $name Name of the attribute
-     * @param $filename The name of the file to read/write. 
-     *                  Advanced use: This may be a template containing 
-     *                  fields from your class, for example: 
-     *                  "somedir/textfile_[id].txt". If a record has id '9', 
-     *                  this will read/write a file named 
-     *                  somedir/textfile_9.txt. Watch out when using fields
-     *                  that can change; the attribute won't remove the old
-     *                  files.
-     * @param $flags Flags for this attribute
+     * @param String $name     Name of the attribute
+     * @param String $filename The name of the file to read/write. 
+     *                         Advanced use: This may be a template containing 
+     *                         fields from your class, for example: 
+     *                         "somedir/textfile_[id].txt". If a record has id '9', 
+     *                         this will read/write a file named 
+     *                         somedir/textfile_9.txt. Watch out when using fields
+     *                         that can change; the attribute won't remove the old
+     *                         files.
+     * @param int    $flags    Flags for this attribute
+     * @param mixed  $size     Size of the attribute
      */
-    function atkFileWriterAttribute($name, $filename, $flags=0)
+    function atkFileWriterAttribute($name, $filename, $flags=0, $size=30)
     {
       $this->m_filename = $filename;
-      $this->atkTextAttribute($name,30,$flags); // base class constructor
+
+      $this->atkTextAttribute($name,$size,$flags); // base class constructor      
     }
 
     function value2db($record)
