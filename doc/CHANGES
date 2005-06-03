@@ -14,6 +14,8 @@ Changes in ATK 5.2.2
 + Added $format parameter to func_datetochar. [Ivo]
 + Added venderDateFormat method to abstraction layer for database specific
   date formatting strings. [Ivo]
++ Added atkLiveTextPreview attribute to preview html content of atkAttributes
+  and atkTextAttributes in realtime. [Ivo]
 + Made it possible to pass size to atkFileWriterAttribute. [Boy]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
