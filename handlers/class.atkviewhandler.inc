@@ -132,7 +132,7 @@
         
         $output = $ui->renderAction("view", $params);
         
-        $total = $ui->renderBox(array("title"=>$ui->title($node->m_module, $node->m_type,'view'),
+        $total = $ui->renderBox(array("title"=>$node->actionTitle('view', $record),
                                       "content"=>$output));
         return $total;
       }

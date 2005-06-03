@@ -38,6 +38,7 @@ Changes in ATK 5.2.2
 * Removed unnecessary brs from edit() of atkOneToMany. [Boy]
 * Made atkTextAttribute not display rows or columns property if it doesn't
   have any value. [Boy]
+* Current record is now displayed in title of view page. [Alberto]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 Changes in ATK 5.2.1
