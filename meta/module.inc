@@ -61,11 +61,25 @@ class mod_meta extends atkModule
    */
   function &newNode($node)
   {
+    if (!$this->nodeExists($node)) return NULL;
     $table = getNodeType($node);
+
     $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => new atkMetaHandler(array(&$this, "initMetaPolicy"))));
     $node->m_module = "meta";
     $node->setSecurityAlias("meta.meta");
+    
     return $node;
+  }
+  
+  /**
+   * Node exists?
+   */
+  function nodeExists($node)
+  {
+    global $g_db;
+    $table = getNodeType($node);    
+    if (!preg_match('/[a-z0-9_]/i', $table)) return FALSE;
+    else return $g_db->tableExists($table);
   }
   
   /**

@@ -1,28 +1,30 @@
 <?php
- /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   * @subpackage meta
-   *
-   * @copyright (c)2004-2005 Peter C. Verhage
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision$
-   * $Id$
-   */
+/**
+ * This file is part of the Achievo ATK distribution.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage meta
+ *
+ * @copyright (c) 2004-2005 Peter C. Verhage
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision$
+ * $Id$
+ */
 
-  /**
-   * The default meta policy.
-   *
-   * @author Peter C. Verhage <peter@achievo.org>
-   * @package atk
-   * @subpackage meta
-   *
-   */
+atkimport("atk.meta.atkmetatools");
+
+/**
+ * The default meta policy.
+ *
+ * @author Peter C. Verhage <peter@achievo.org>
+ *
+ * @package atk
+ * @subpackage meta
+ */
 class atkMetaPolicy
 {
   var $m_node = NULL;
@@ -83,7 +85,7 @@ class atkMetaPolicy
     $params = array();
     
     if (in_array($name, array("passw", "password")))
-      $type = "atkpasswordattribute";
+      $type = "atk.attributes.atkpasswordattribute";
       
     else
     {
@@ -91,29 +93,58 @@ class atkMetaPolicy
       {
         // string
         case "string":
-          $type = "atkattribute";
+          $type = "atk.attributes.atkattribute";
           break;
           
         // text
         case "text":
-          $type = "atktextattribute";
+          $type = "atk.attributes.atktextattribute";
           break;
           
         // number
         case "number":
         case "decimal":
-          $type = "atknumberattribute";
+          $type = "atk.attributes.atknumberattribute";
           break;
           
         // date
         case "date":
-          $type = "atkdateattribute";
+          $type = "atk.attributes.atkdateattribute";
+          break;
+          
+        // time
+        case "time":
+          $type = "atk.attributes.atktimeattribute";
+          break;
+          
+        // datetime
+        case "datetime":
+          $type = "atk.attributes.atkdatetimeattribute";
           break;
       }    
     }
     
     return array("type" => $type, "params" => $params);
   }  
+  
+  /**
+   * Get default value for the given attribute.
+   */
+  function _getDefaultValue($name, $meta)
+  {
+    if ($meta['default'] == "NOW" && in_array($meta['gentype'], array('date', 'time', 'datetime')))
+    {
+      $stamp = getdate();
+      $date = array('day' => $stamp['yday'], 'month' => $stamp['mon'], 'year' => $stamp['year']);
+      $time = array('hours' => $stamp['hours'], 'minutes' => $stamp['minutes'], 'seconds' => $stamp['seconds']);
+      return array_merge($meta['gentype'] == 'time' ? array() : $date, $meta['gentype'] == 'date' ? array() : $time);
+    }
+
+    else if (array_key_exists('default', $meta))
+      return $meta['default'];
+
+    else return NULL;
+  }
 
   /**
    * Sets the node.
@@ -152,8 +183,24 @@ class atkMetaPolicy
     foreach ($cols as $name => $meta)
       if (strlen($meta['sequence']) > 0)
         $sequence = $meta['sequence'];
-        
+
+    if ($sequence == NULL)
+      $sequence = "seq_".$this->getTable();
+    
     return $sequence;
+  }
+  
+  /**
+   * Returns the default values for the node's attributes.
+   */
+  function getDefaultValues()
+  {
+    $result = array();
+    $cols = $this->m_node->m_db->tableMeta($this->m_node->getTable());
+    foreach ($cols as $name => $meta)
+      if (array_key_exists('default', $meta))
+        $result[$name] = $this->_getDefaultValue($name, $meta);
+    return $result;
   }
   
   /**
@@ -166,7 +213,7 @@ class atkMetaPolicy
   
     $this->m_includes = $attrs;
     $this->m_excludes = NULL;
-    
+
     $this->setOrder($attrs);
   }
   
@@ -181,7 +228,7 @@ class atkMetaPolicy
     $this->m_excludes = $attrs;
     $this->m_includes = NULL;
   }
-  
+
   /**
    * Sets the attribute order. All attributes not mentioned
    * will be put at the bottom using their current order.
@@ -194,6 +241,7 @@ class atkMetaPolicy
       $attrs = array($attrs);
 
     $order = array_merge($attrs, array_diff(array_keys($this->m_attrs), $attrs));
+
     foreach ($order as $i => $key)
       $this->m_attrs[$key]['order'] = ($i + 1) * 100;
   }
@@ -203,6 +251,7 @@ class atkMetaPolicy
    * If $autoDetect is set to FALSE (defaults to TRUE) no
    * auto-detected flags will be added later on.
    */
+
   function setFlag($attrs, $flag) { call_user_func_array(array($this, "setFlags"), func_get_args()); }   
   function setFlags($attrs, $flags)
   {
@@ -259,7 +308,7 @@ class atkMetaPolicy
       if (array_key_exists($attr, $this->m_attrs))
         $this->m_attrs[$attr]["flags"] = ($this->m_attrs[$attr]["flags"] | $flags) ^ $flags;
   }  
-  
+
   /**
    * Set the tab(s) for the given attribute or list of attributes.
    */
@@ -274,12 +323,216 @@ class atkMetaPolicy
     
     else if (!is_array($attrs))
       $attrs = array($attrs);
-      
+
     foreach ($attrs as $attr)
       if (array_key_exists($attr, $this->m_attrs))
         $this->m_attrs[$attr]["tabs"] = $tabs;
   }
   
+  /**
+   * Returns the current maximum order in the attribute list.
+   */
+  function _getMaxOrder()
+  {
+    $max = 0;
+    
+    foreach (array_keys($this->m_attrs) as $key)
+      if ($this->m_attrs[$key]["order"] > $max)
+        $max = $this->m_attrs[$key]["order"];
+        
+    return $max;
+  }
+  
+ /**
+   * Find destination node for the given meta relation.
+   *
+   * @param $relation  meta relation
+   *
+   * @return destination node name for the given relation
+   */
+  function findDestination(&$relation)
+  {
+    $module = getNodeModule($relation->m_accessor);
+    if ($module == "")
+      $module = $this->m_node->m_module;
+      
+    $node = getNodeType($relation->m_accessor);
+    $toMany = is_a($relation, "atkmetaonetomanyrelation");
+
+    if ($module != "")
+    {
+      if (nodeExists("$module.$node"))
+        return "$module.$node";
+        
+      if ($toMany && nodeExists("$module.".atkMetaTools::singularize($node)))
+        return "$module.".atkMetaTools::singularize($node);
+
+      if (!$toMany && nodeExists("$module.".atkMetaTools::pluralize($node)))
+        return "$module.".atkMetaTools::pluralize($node);
+    }
+    
+    if (nodeExists($node))
+      return $node;
+    
+    if ($toMany && nodeExists(atkMetaTools::singularize($node)))
+      return atkMetaTools::singularize($node);
+
+    if (!$toMany && nodeExists(atkMetaTools::pluralize($node)))
+      return atkMetaTools::pluralize($node);
+      
+    return NULL;
+  }
+
+  /**
+   * Find destination attribute for the given relation.
+   *
+   * @param $relation  meta relation
+   *
+   * @return destination attribute name for the given relation
+   */
+  function findDestinationAttribute(&$relation)
+  {
+    $table = $this->getTable();  
+    $node = getNodeType($this->m_node->atkNodeType());
+    $attrs = array_keys($relation->m_destInstance->m_attribList);
+
+    $attr = NULL;
+    if (array_key_exists("dest", $relation->m_options))
+      $attr = $this->m_options["dest"];
+    else if (array_key_exists("destination", $relation->m_options))
+      $attr = $this->m_options["destination"];      
+    else if (in_array("{$table}_id", $attrs))
+      $attr = "{$table}_id";
+    else if (in_array("{$node}_id", $attrs))
+      $attr = "{$node}_id";
+    else if (in_array("{$table}id", $attrs))
+      $attr = "{$table}id";
+    else if (in_array("{$node}id", $attrs))
+      $attr = "{$node}id";
+    else if (in_array($table, $attrs))
+      $attr = $table;
+    else if (in_array($node, $attrs))
+      $attr = $node;
+      
+    return $attr;
+  }
+  
+  /**
+   * One-to-many relation support. You can call the hasMany method to indicate
+   * that this node has a one-to-many relation with another node. The meta
+   * policy will then try to guess, amongst other things, which fields should
+   * be used for this relation.
+   *
+   * This method uses a smart name guessing scheme for the destination node.
+   * If you enter the plural form of the (singular) node name it will still
+   * be able to find the node. You can ommit the module name prefix if the
+   * destination node resides in the same module as the source node. Ofcourse
+   * you can also just use the real module/node name combination.
+   *
+   * The options list may contain several parameters to make more complex
+   * relations work. The supported parameters are as follows:
+   *
+   * - dest(-ination)  destination attribute name
+   * - filter          destination filter 
+   *
+   * @param $accessor  accessor name (complete description is given above)
+   * @param $options   list op options (complete description is given above)
+   */
+  function hasMany($accessor, $templateOrOptions=array(), $options=array())
+  {
+    $template = NULL;
+    if (is_array($templateOrOptions))
+      $options = $templateOrOptions;
+    else $template = $templateOrOptions;
+    
+    $this->m_attrs[getNodeType($accessor)] =
+      array(
+        "type" => "atk.meta.relations.atkmetaonetomanyrelation",
+        "params" => array($accessor, $template, $options),
+        "flags" => AF_HIDE_LIST,
+        "tabs" => NULL,
+        "order" => $this->_getMaxOrder() + 100
+      );
+  }
+  
+  /**
+   * Many-to-one / one-to-one relation support. You can call the hasOne method
+   * to indicate that this node has a many-to-one or a one-to-one relation with
+   * another node. The meta policy will then try to guess, amongst other
+   * things, which fields should be used for this relation.
+   *
+   * To determine if a many-to-one or a one-to-one relation should be used
+   * the system will check if the source node contains an attribute for 
+   * storing the relation. If so the system will use a many-to-one relation,
+   * else a one-to-one relation will be used.
+   *
+   * This method uses a smart name guessing scheme for the destination node.
+   * If you enter the singular form of the (plural) node name it will still
+   * be able to find the node. You can ommit the module name prefix if the
+   * destination node resides in the same module as the source node. Ofcourse
+   * you can also just use the real module/node name combination.
+   *
+   * The options list may contain several parameters to make more complex
+   * relations work. The supported parameters are as follows:
+   *
+   * - source          source attribute name (should only be used for
+   *                   many-to-one relations and will act as an indicator
+   *                   for whatever this is a many-to-one relation or not)
+   * - dest(-ination)  destination attribute name  (should only be used for
+   *                   one-to-one relations and will act as an indicator
+   *                   for whatever this is a one-to-one relation or not)
+   * - filter          destination filter    
+   * - large           boolean indicating if there will be lots and lots of
+   *                   records in case of a many-to-one relation, same as
+   *                   the AF_LARGE flag (defaults to false)
+   *
+   * @param $accessor  accessor name (complete description is given above)
+   * @param $options   list op options (complete description is given above)
+   */
+  function hasOne($accessor, $templateOrOptions=array(), $options=array())
+  {
+    $template = NULL;
+    if (is_array($templateOrOptions))
+      $options = $templateOrOptions;
+    else $template = $templateOrOptions;
+  
+    $node = getNodeType($accessor);
+    $attr = NULL;
+    
+    if (array_key_exists("source", $options))
+      $attr = $options["source"];
+      
+    else if (!array_key_exists("dest", $options) && !array_key_exists("destination", $options))
+    {
+      foreach (array_keys($this->m_attrs) as $name)
+      {
+        if ($name == "{$node}_id")
+          $attr = "{$node}_id";
+        else if ($name == "{$node}id")
+          $attr = "{$node}id";
+        else if ($name == atkMetaTools::singularize($node)."_id")
+          $attr = atkMetaTools::singularize($node)."_id";
+        else if ($name == atkMetaTools::singularize($node)."id")
+          $attr = atkMetaTools::singularize($node)."id";
+        else if ($name == $node)
+          $attr = $node;
+        else if ($name == atkMetaTools::singularize($node))
+          $attr = atkMetaTools::singularize($node);
+          
+        if ($attr != NULL) break;
+      }
+    }
+
+    $this->m_attrs[$attr != NULL ? $attr : $node] =
+      array(
+        "type" => "atk.meta.relations.atkmeta".($attr != NULL ? 'many' : 'one')."toonerelation",
+        "params" => array($accessor, $template, $options),
+        "flags" => ($attr != NULL ? $this->m_attrs[$attr]["flags"] : 0) | (array_key_exists("large", $options) && $options["large"] ? AF_LARGE : 0),
+        "tabs" => $attr != NULL ? $this->m_attrs[$attr]["tabs"] : NULL,
+        "order" => $attr != NULL ? $this->m_attrs[$attr]["order"] : $this->_getMaxOrder() + 100        
+      );
+  }
+
   /**
    * Returns the attributes data array.
    */
@@ -320,9 +573,9 @@ class atkMetaPolicy
     if ($this->m_includes !== NULL && !in_array($name, $this->m_includes)) return;
     if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return;
   
-    useattrib($type);
-    if (strpos($type, ".") !== FALSE)
-      $type = substr($type, strpos($type, ".") + 1);
+    atkimport($type);
+    if (strrpos($type, ".") !== FALSE)
+      $type = substr($type, strrpos($type, ".") + 1);
 
     $call = "\$attr = new $type(\$name";
     foreach (array_keys($params) as $i)

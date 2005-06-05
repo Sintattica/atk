@@ -17,6 +17,17 @@ Changes in ATK 5.2.2
 + Added atkLiveTextPreview attribute to preview html content of atkAttributes
   and atkTextAttributes in realtime. [Ivo]
 + Made it possible to pass size to atkFileWriterAttribute. [Boy]
++ Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
++ Added support for default values to the atkMetaNode (only numerics
+  and strings at this time and only on PostgreSQL and Oracle). [Peter]
++ Added relation support to the atkMetaPolicy (supports one-to-one,
+  one-to-many and many-to-one relations). [Peter]
++ Added get/setDescriptorTemplate methods to atkNode and atkRelation. [Peter]
++ Added get/setDestinationFilter methods to atkRelation. [Peter]
++ Added nodeExists method to atkModule. At this time only used by
+  atkMetaPolicy relation support. [Peter]
++ Added atkMetaTools class which contains methods to singularize or pluralize
+  English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
@@ -39,7 +50,17 @@ Changes in ATK 5.2.2
 * Made atkTextAttribute not display rows or columns property if it doesn't
   have any value. [Boy]
 * Current record is now displayed in title of view page. [Alberto]
+* Type, table, flags, policy and handler can now be specified by setting
+  the instance vars ($type, $table, $flags, $metaPolicy, $metaHandler) on
+  the atkMetaNode subclass. [Peter]
+* The atkMetaPolicy now knows the difference between time, date and datetime
+  fields (required some changes in various atkDB classes). [Peter]
+* The atkNode::add method now returns the added attribute/relation. [Peter]
+* Fixed 0 value check in atkNumberAttribute. [Peter]
+* Fixed reference bug in the atkModule::newNode method which caused the
+  newNode method to always return a copy of the newly created node. [Peter]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
+
 
 Changes in ATK 5.2.1
 --------------------

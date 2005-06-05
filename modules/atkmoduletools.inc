@@ -170,6 +170,26 @@
     }
     return NULL;
   }
+  
+  /**
+   * Checks if a certain node exists.
+   * @param $node the node type
+   * @return node exists?
+   */
+  function nodeExists($node)
+  {
+    static $existence = array();
+    if (array_key_exists($node, $existence)) 
+      return $existence[$node];
+      
+    $module = getNodeModule($node);
+    if ($module == "") $module = &new atkModule();
+    else $module = &getModule(getNodeModule($node));
+    
+    $exists = is_object($module) && $module->nodeExists($node);
+    $existence[$node] = $exists;
+    return $exists;
+  }
 
   /**
    * Return the physical directory of a module..

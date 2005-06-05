@@ -40,6 +40,12 @@
      * @var String Filter for destination records. 
      */
     var $m_destinationFilter="";
+    
+    /**
+     * Descriptor template for destination node.
+     * @var String
+     */
+    var $m_descTemplate = NULL;    
 
     /**
      * Constructor
@@ -52,6 +58,42 @@
       $this->atkAttribute($name, $flags);
       $this->m_destination = $destination;
 
+    }
+    
+    /**
+     * Returns the destination filter.
+     * @return String The destination filter.
+     */
+    function getDestinationFilter()
+    {
+      return $this->m_destinationFilter;
+    }
+    
+    /**
+     * Sets the destination filter.
+     * @param String $filter The destination filter.
+     */
+    function setDestinationFilter($filter)
+    {
+      $this->m_destinationFilter = $filter;
+    }
+    
+    /**
+     * Returns the descriptor template for the destination node.
+     * @return String The descriptor Template
+     */
+    function getDescriptorTemplate()
+    {
+      return $this->m_descTemplate;
+    }     
+    
+    /**
+     * Sets the descriptor template for the destination node.
+     * @param String $template The descriptor template.
+     */
+    function setDescriptorTemplate($template)
+    {
+      $this->m_descTemplate = $template;
     }
 
     /**
@@ -83,6 +125,8 @@
           if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType())
             $attribute->m_destInstance = &$this->m_ownerInstance;
         }
+        
+        $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
       }
       return true;
     }

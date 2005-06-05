@@ -433,46 +433,88 @@
      */
     function metadata($table, $full=false)
     {
-      /* query for data */
-      $this->query("SELECT 
-                      T.table_name,T.column_name,T.data_type,
-                      T.data_length,T.data_precision,T.data_scale,T.nullable,
-                      T.char_col_decl_length,I.index_name
-                   FROM USER_TAB_COLUMNS T,USER_IND_COLUMNS I
-                   WHERE 
-                     T.column_name=I.column_name (+)
-                     AND T.table_name=I.table_name (+)
-                     AND T.table_name=UPPER('$table') 
-                   ORDER BY T.column_id");
-
       atkimport("atk.db.atkddl");
-      $ddl = atkDDL::create();
-      
-      /* result */
-      $result = array();
-      for ($i = 0; $this->next_record(); $i++)
+      $type = substr(substr(get_class($this), 3), 0, -2);
+      $ddl = &atkDDL::create($type);    
+    
+      // retrieve meta data
+      $sql = "
+        SELECT
+          LOWER(c.column_name) AS name,
+          c.data_type AS type,
+          c.data_length AS length,
+          c.data_default AS default_value,
+          (CASE WHEN c.nullable = 'Y' THEN 1 ELSE 0 END) AS is_not_null,
+          (
+            SELECT COUNT(1)
+            FROM user_constraints uc
+            JOIN user_cons_columns ucc ON (ucc.constraint_name = uc.constraint_name)
+            WHERE uc.table_name = c.table_name
+            AND ucc.column_name = c.column_name
+            AND uc.constraint_type = 'P'
+            AND ROWNUM = 1
+          ) AS is_primary,
+          (
+            SELECT (CASE WHEN COUNT(1) = 1 THEN 1 ELSE 0 END)
+            FROM user_constraints uc
+            JOIN user_cons_columns ucc ON (ucc.constraint_name = uc.constraint_name)
+            WHERE uc.table_name = c.table_name
+            AND ucc.column_name = c.column_name
+            AND uc.constraint_type = 'U'
+          ) AS is_unique,
+          (
+            SELECT COUNT(1)
+            FROM user_objects o
+            WHERE o.object_type = 'SEQUENCE'
+            AND UPPER(o.object_name) IN (UPPER('seq_' || c.table_name), UPPER(c.table_name || '_seq'))
+            AND ROWNUM = 1
+          ) AS is_auto_inc,
+          (
+            SELECT o.object_name
+            FROM user_objects o
+            WHERE o.object_type = 'SEQUENCE'
+            AND UPPER(o.object_name) IN (UPPER('seq_' || c.table_name), UPPER(c.table_name || '_seq'))
+            AND ROWNUM = 1
+          ) AS sequence
+         FROM user_tab_cols c
+         WHERE c.table_name = UPPER('$table')
+         AND c.hidden_column <> 'YES'
+         ORDER BY c.column_id";
+         
+      $meta = array();
+      $rows = $this->getRows($sql);
+
+      foreach ($rows as $i => $row)
       {
-        $result[$i]["table"]  = $this->m_record["table_name"];
-        $result[$i]["name"]   = strtolower($this->m_record["column_name"]);
-        $result[$i]["type"]   = $ddl->getGenericType($this->m_record["data_type"]);
-        $result[$i]["len"]    = $this->m_record["data_length"];
-
-        if ($this->m_record["index_name"]) $result[$i]["flags"] = "INDEX ";
-        if ($this->m_record["nullable"] == "N") $result[$i]["flags"] .= "NOT NULL";
-        $result[$i]["format"] = (int)$this->m_record["data_precision"].",".
-                                (int)$this->m_record["data_scale"];
-        if ($result[$i]["format"] == "0,0") $result[$i]["format"]="";
-        $result[$i]["index"]  = $this->m_record["index_name"];
-        $result[$i]["chars"]  = $this->m_record["char_col_decl_length"];
-        if ($full)
+        $meta[$i]['table']   = $table;
+        $meta[$i]['type']    = $row['type'];
+        $meta[$i]['gentype'] = $ddl->getGenericType($row['type']);
+        $meta[$i]['name']    = $row['name'];
+        $meta[$i]['len']     = $row['length'];
+        $meta[$i]['flags']   =
+          ($row['is_primary'] == 1 ? MF_PRIMARY : 0) |
+          ($row['is_unique'] == 1 ? MF_UNIQUE : 0) |
+          ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
+          ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
+        
+        if ($row['is_auto_inc'] == 1)
+          $meta[$i]['sequence'] = $row['sequence'];    
+        else if ($row['default_value'] !== NULL)
         {
-          $result["meta"][$result[$i]["name"]] = $i;
-          $result["num_fields"] = $i;
-        } 
+          if (in_array($meta[$i]['gentype'], array('string', 'text')))
+            $meta[$i]['default'] = substr(substr($row['default_value'], 1), 0, -1);
+          else if (in_array($meta[$i]['gentype'], array('number', 'decimal'))) 
+            $meta[$i]['default'] = $row['default_value'];
+        }
+          
+        if ($full)
+          $meta["meta"][$row['name']] = &$meta[$i];
       }
+      
+      if ($full)
+        $meta['num_fields'] = count($rows);
 
-      /* return */
-      return $result;
+      return $meta;
     }
 
     /**
@@ -483,7 +525,7 @@
     function table_names()
     {
       /* query */
-      $this->query("SELECT table_name, tablespace_name FROM user_tables");
+      $this->query("SELECT LOWER(table_name) AS table_name, LOWER(tablespace_name) AS tablespace_name FROM user_tables");
 
       /* get table names */
       $result = array();

@@ -649,6 +649,12 @@
      * @var mixed
      */
     var $m_numbering = null;
+    
+    /**
+     * Descriptor template.
+     * @var String
+     */
+    var $m_descTemplate = NULL;
 
     /**
      * Constructor.
@@ -682,8 +688,9 @@
      *                   If ommitted, this defaults to 100 for the first
      *                   attribute, and 100 more for each next attribute that
      *                   is added.
+     * @return mixed the attribute just added
      */
-    function add($attribute,$tab=NULL,$order=0)
+    function &add($attribute,$tab=NULL,$order=0)
     {
       static $attrib_order = 100;
       static $attrib_index = 0;
@@ -819,6 +826,8 @@
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
+      
+      return $attribute;
     }
 
     /**
@@ -1663,7 +1672,7 @@
         // we are gonna perform an action on more than one record
         // show a list of affected records, at least if we can find a
         // descriptor_def method
-        if (method_exists($this,"descriptor_def"))
+        if ($this->m_descTemplate != NULL || method_exists($this,"descriptor_def"))
         {
           $record = "";
           $content.= "<ul>";
@@ -2069,7 +2078,25 @@
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
     }
-
+    
+    /**
+     * Returns the descriptor template for this node.
+     * @return String The descriptor Template
+     */
+    function getDescriptorTemplate()
+    {
+      return $this->m_descTemplate;
+    }     
+    
+    /**
+     * Sets the descriptor template for this node.
+     * @param String $template The descriptor template.
+     */
+    function setDescriptorTemplate($template)
+    {
+      $this->m_descTemplate = $template;
+    }
+    
     /**
      * Retrieve the list of attributes that are used in the descriptor
      * definition.
@@ -2080,9 +2107,11 @@
       $fields = array();
 
       // See if node has a custom descriptor definition.
-      if (method_exists($this,"descriptor_def"))
+      if ($this->m_descTemplate != NULL || method_exists($this,"descriptor_def"))
       {
-        $descriptordef = $this->descriptor_def();
+        if ($this->m_descTemplate != NULL)
+          $descriptordef = $this->m_descTemplate;
+        else $descriptordef = $this->descriptor_def();
 
         // parse fields from descriptordef
         atkimport("atk.utils.atkstringparser");
@@ -2137,8 +2166,15 @@
      */
     function descriptor($rec="")
     {
+      // Descriptor template is set?
+      if ($this->m_descTemplate != NULL)
+      {
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($this->m_descTemplate);
+          return $parser->parse($rec);
+      }
       // See if node has a custom descriptor definition.
-      if (method_exists($this,"descriptor_def"))
+      else if (method_exists($this,"descriptor_def"))
       {
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->descriptor_def());

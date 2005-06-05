@@ -334,7 +334,8 @@
             LIMIT 1
           ) AS is_unique,
           (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN 1 ELSE 0 END) AS is_auto_inc,
-          (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN SUBSTRING(ad.adsrc, '''(.*?)''') END) AS sequence
+          (CASE WHEN ad.adsrc LIKE 'nextval(%::text)' THEN SUBSTRING(ad.adsrc, '''(.*?)''') END) AS sequence,
+          (CASE WHEN t.typname = 'varchar' THEN SUBSTRING(ad.adsrc FROM '^''(.*)''.*$') ELSE ad.adsrc END) AS default
         FROM pg_class c
         JOIN pg_attribute a ON (a.attrelid = c.oid AND a.attnum > 0)
         JOIN pg_type t ON (t.oid = a.atttypid)
@@ -360,6 +361,25 @@
         
         if ($row['is_auto_inc'] == 1)
           $meta[$i]['sequence'] = $row['sequence'];
+          
+        else if (strlen($row['default']) > 0)
+        {
+          // date/time/datetime
+          if (strtolower($row['default']) == "now" && in_array($meta[$i]['gentype'], array("date", "time", "datetime")))
+            $meta[$i]['default'] = "NOW";
+          
+          // numbers
+          else if (in_array($meta[$i]['gentype'], array("number", "decimal")))
+            $meta[$i]['default'] = $row['default'];
+            
+          // strings
+          else if (in_array($meta[$i]['gentype'], array("string", "text")))
+            $meta[$i]['default'] = $row['default'];
+
+          // boolean
+          else if ($meta[$i]['gentype'] == "boolean")
+            $meta[$i]['default'] = strtolower($row['default']) == "t" ? 1 : 0;
+        }
         
         if ($full)
           $meta["meta"][$row['name']] = &$meta[$i];
@@ -391,6 +411,16 @@
       
       /* return result */
       return $result;
+    }
+    
+    /**
+     * Check if table exists.
+     */
+    function tableExists($table)
+    {
+      global $g_db;
+      $res = $g_db->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
+      return (count($res)==0 ? false : true);    
     }
     
     /**

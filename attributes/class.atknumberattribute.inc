@@ -151,8 +151,9 @@
         $maxsize += ($this->m_decimals+1); // make room for the number of decimals
       }
       
-      $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
-      $value = ($value==0?"":$value);
+      $value = "";
+      if (strlen($record[$this->fieldName()]) > 0)
+        $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
       
       $id = $fieldprefix.$this->fieldName();      
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  

@@ -1,18 +1,18 @@
 <?php
-  /**
-   * This file is part of the Achievo ATK distribution.
-   * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be
-   * included in the distribution.
-   *
-   * @package atk
-   *
-   * @copyright (c)2004-2005 Peter C. Verhage   
-   * @license http://www.achievo.org/atk/licensing ATK Open Source License
-   *
-   * @version $Revision$
-   * $Id$
-   */
+/**
+ * This file is part of the Achievo ATK distribution.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ *
+ * @copyright (c) 2004-2005 Peter C. Verhage   
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision$
+ * $Id$
+ */
 
 /**
  * imports..
@@ -27,6 +27,7 @@ atkimport("atk.meta.atkmetahandler");
  * using metadata from the database.
  *
  * @author Peter C. Verhage <peter@achievo.org> 
+ *
  * @package atk
  */
 class atkMetaNode extends atkNode
@@ -51,27 +52,52 @@ class atkMetaNode extends atkNode
    */
   function atkMetaNode($args=array())
   {
-    $this->atkNode(array_key_exists("type", $args) ? $args["type"] : get_class($this), array_key_exists("flags", $args) ? $args["flags"] : 0);
-
-    global $g_db;
-    if (array_key_exists("db", $args))
-      $this->m_db = &$args["db"];
-    else $this->m_db = &$g_db;
+    $type = get_class($this);
+    if (isset($this->type))
+      $type = $this->type;
+    else if (array_key_exists("type", $args))
+      $type = $args["type"]; 
     
-    $policy = NULL;
-    if (array_key_exists("policy", $args))
+    $flags = 0;
+    if (isset($this->flags))
+      $flags = $this->flags;
+    else if (array_key_exists("flags", $args))
+      $flags = $args["flags"]; 
+
+    $this->atkNode($type, $flags);
+    
+    if (isset($this->meta_policy))
+      $policy = &$this->meta_policy;
+    else if (array_key_exists("policy", $args))
       $policy = &$args["policy"];
     else $policy = &$this->_defaultMetaPolicy();
     $this->setMetaPolicy($policy);
 
-    $handler = NULL;
-    if (array_key_exists("handler", $args))
+    if (isset($this->meta_handler))
+      $handler = &$this->meta_handler;
+    else if (array_key_exists("handler", $args))
       $handler = &$args["handler"];
     else $handler = &$this->_defaultMetaHandler();
     $this->setMetaHandler($handler);
+
+    if (isset($this->table)) 
+      $this->m_table = $this->table;
+    else if (array_key_exists("table", $args)) 
+      $this->m_table = $args["table"];
+    else $this->m_table = $policy->getTable();
     
-    $this->m_table = array_key_exists("table", $args) ? $args["table"] : $policy->getTable();
-    $this->m_seq = array_key_exists("sequence", $args) ? $args["sequence"] : $policy->getSequence();
+    if (isset($this->sequence)) 
+      $this->m_seq = $this->sequence;
+    else if (array_key_exists("sequence", $args)) 
+      $this->m_seq = $args["sequence"];
+    else $this->m_seq = $policy->getSequence();
+    
+    global $g_db;
+    if (isset($this->db))
+      $this->m_db = &$this->db;
+    else if (array_key_exists("db", $args))
+      $this->m_db = &$args["db"];
+    else $this->m_db = &$g_db;    
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }
@@ -141,6 +167,14 @@ class atkMetaNode extends atkNode
    */
   function meta(&$metaPolicy)
   {
+  }
+  
+  /**
+   * Returns the default values for the node's attributes.
+   */
+  function initial_values()
+  {
+    return $this->m_metaPolicy->getDefaultValues();
   }
 }
 ?>

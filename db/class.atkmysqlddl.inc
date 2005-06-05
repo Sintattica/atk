@@ -76,6 +76,8 @@
         case "text":
         case "blob":
           return "text";
+        case "time":
+          return "time";
         case "datetime":
           return "datetime";                
       }

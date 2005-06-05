@@ -207,59 +207,5 @@
       }
       return false;
     }    
-
-    /**
-     * Return the meta data of a certain table
-     * @param $table the table name
-     * @param $full all meta data or not
-     * @return array with meta data
-     */
-    function metadata($table, $full=false)
-    {
-    
-      /* query for data */
-      $this->query("SELECT 
-                      T.table_name,T.column_name,T.data_type,
-                      T.data_length,T.data_precision,T.data_scale,T.nullable,
-                      T.char_col_decl_length,I.index_name
-                    FROM 
-                      ALL_IND_COLUMNS I
-                      JOIN ALL_TAB_COLUMNS T ON
-                        T.table_name=I.table_name
-                        AND T.table_name=UPPER('$table')
-                    ORDER BY T.column_id");
-
-      atkimport("atk.db.atkddl");
-      $ddl = atkDDL::create();
-
-      /* result */
-      $result = array();
-      for ($i = 0; $this->next_record(); $i++)
-      {
-        $result[$i]["table"]  = $this->m_record["table_name"];
-        $result[$i]["name"]   = strtolower($this->m_record["column_name"]);
-        $result[$i]["type"]   = $ddl->getGenericType($this->m_record["data_type"]);
-        $result[$i]["len"]    = $this->m_record["data_length"];                
-
-        if ($this->m_record["index_name"]) $result[$i]["flags"] = "INDEX ";
-        if ($this->m_record["nullable"] == "N") $result[$i]["flags"] .= "NOT NULL";
-        $result[$i]["format"] = (int)$this->m_record["data_precision"].",".
-                                (int)$this->m_record["data_scale"];
-        if ($result[$i]["format"] == "0,0") $result[$i]["format"]="";
-        $result[$i]["index"]  = $this->m_record["index_name"];
-        $result[$i]["chars"]  = $this->m_record["char_col_decl_length"];
-        if ($full)
-        {
-          $result["meta"][$result[$i]["name"]] = $i;
-          $result["num_fields"] = $i;
-        } 
-      }
-      
-
-      /* return */
-      return $result;
-    }    
-        
   }
-
 ?>

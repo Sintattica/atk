@@ -33,8 +33,6 @@
     
     function getType($generictype)
     {  
-      atkdebug("GETTYPE: " . $type);
-      
       switch ($generictype)
       {
         case "number": 
@@ -59,8 +57,6 @@
     
     function getGenericType($type)
     {
-      atkdebug("GETGENERICTYPE: " . $type);
-      
       $type = strtolower($type);
       switch($type)
       {
@@ -78,10 +74,15 @@
           return "string";          
         case "date":
           return "date";
+        case "time":
+          return "time";
         case "text":
           return "text";
+        case "timestamp":
         case "datetime":
-          return "datetime";                
+          return "datetime";  
+        case "boolean":
+          return "boolean";
       }
       return ""; // in case we have an unsupported type.      
     }

@@ -163,9 +163,21 @@
 
       /* initialize node and return */
       $type = getNodeType($node);
-      $node = new $type();
+      $node =& new $type();
       $node->m_module = $module;
       return $node;
+    }
+    
+    /**
+     * Checks if a certain node exists for this module.
+     * @param $node the node type
+     * @return node exists?
+     */    
+    function nodeExists($node)
+    {
+      // check for file
+      $file = nodeFile($node);
+      return file_exists($file);
     }
   }
 ?>
