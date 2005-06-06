@@ -508,6 +508,34 @@
       }
       return $res;
     }
+    
+    /**
+     * Gets the node and the descriptor for the current item
+     * and returns a trace of that.
+     *
+     * So for instance, if we were adding a grade to a student,
+     * it would show:
+     * Student [ Teknoman ] - Grade [ A+ ]
+     * @return String The descriptortrace
+     */
+    function descriptorTrace()
+    {
+      global $g_sessionData;
+      
+      $ui = &atknew("atk.ui.atkui");   
+     
+      $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
+      $res = array();
+      for ($i=0;$i<count($stack)-1;$i++)
+      {
+        if ($stack[$i]["descriptor"])
+        {
+          $node = explode(".",$stack[$i]["atknodetype"]);
+          $res[] = atktext($node[1],$node[1])." [ ".$stack[$i]["descriptor"]." ] ";
+        }
+      }
+      return $res;
+    }
 
     /**
      * Verify the integrity of the session stack.

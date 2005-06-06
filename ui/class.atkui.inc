@@ -219,9 +219,11 @@
      * @param String $module   the module in which to look
      * @param String $nodetype the nodetype of the action
      * @param String $action   the action that we are trying to find a title for
+     * @param bool   $nomodule wether or not to return a translation of the module
+     *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action)
+    function title($module, $nodetype, $action, $nomodule=false)
     {
       // first look for specific text.
       $key = 'title_'.$module.'_'.$nodetype.'_'.$action;
@@ -234,7 +236,8 @@
         $key = $nodetype;
         if (atktext($key,$module,"","","","",true))
         {
-          return atktext($key)." - ".atktext($action, "",$nodetype);
+          if ($nomodule) return atktext($action, "",$nodetype);
+          else return atktext($key)." - ".atktext($action, "",$nodetype);
         }
         else
         {

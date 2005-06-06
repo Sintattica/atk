@@ -59,6 +59,7 @@ Changes in ATK 5.2.2
 * Fixed 0 value check in atkNumberAttribute. [Peter]
 * Fixed reference bug in the atkModule::newNode method which caused the
   newNode method to always return a copy of the newly created node. [Peter]
+* Changed actiontitle to return descriptor trace when appropriate [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 

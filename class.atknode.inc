@@ -1169,16 +1169,30 @@
      */
     function actionTitle($action, $record="")
     {
+      global $g_sessionManager;
       $ui = &$this->getUi();
+      
+      $descriptortrace = $g_sessionManager->descriptorTrace();
+      if (!empty($descriptortrace)) 
+      {
+        $nomodule=true;
+        foreach ($descriptortrace as $desc)
+        {
+          $descrtrace.= $desc." - ";
+        }
+        $res= $descrtrace . $res;
+      }
       if (is_object($ui))
       {
-        $res = $ui->title($this->m_module, $this->m_type, $action);
+        $res.= $ui->title($this->m_module, $this->m_type, $action,$nomodule);
       }
       if ($record!="")
       {
         $descr = $this->descriptor($record);
-        if ($descr!="") $res.= "&nbsp; [".$descr."]";
+        $g_sessionManager->pageVar("descriptor",$descr);
+        if ($descr!="") $res= $res."&nbsp; [".$descr."]";
       }
+      
       return $res;
     }
 
