@@ -24,6 +24,7 @@
    * flag(s) specific for atkManyToOneRelation 
    */
   define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1); // Only allow deletion of master item when there are no child records
+  define("AF_ONETOMANY_INTEGRATE", AF_SPECIFIC_2);
   
   /**
    * Implementation of one-to-many relationships.
@@ -88,6 +89,10 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js.php");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
+        
       $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT); 
       // 1toM Relations are NEVER edited when adding a rec. And for now, we 
       // cannot search or sort them.
@@ -167,6 +172,7 @@
     {
       if ($this->createDestination())
       {
+        $error = $this->_checkIntegratedSave();
         $myrecords = $this->_getRecords($record);
 
         $output.=$this->editHeader($record, $myrecords);          
@@ -176,15 +182,92 @@
           
         $output.=$this->editFooter($record, $myrecords);
         $this->_fetchNavigationLinks($output);
-        
-        if (atkconfig("onetomany_addlink_position","bottom")=="top") 
-          $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
-        else if (atkconfig("onetomany_addlink_position","bottom")=="bottom") 
-          $output.=$this->_addAddLink($myrecords, $record)."<br />";
+        $output.=$error;
+        $this->_addAddToEditOutput($output, $myrecords, $record);
         
         return $output;
       }
       return "";
+    }
+    
+    /**
+     * Checks for an added integrated record and adds it
+     * @return String An error, if one occured
+     */
+    function _checkIntegratedSave()
+    {
+      if ($this->hasFlag(AF_ONETOMANY_INTEGRATE))
+      {
+        if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
+        {
+          foreach (array_values($this->m_ownerInstance->m_postvars[$this->fieldName()]) as $fieldname)
+          {
+            $attribute = &$this->m_destInstance->getAttribute($fieldname);
+            $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $attribute->fetchValue($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+          }
+          $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
+          if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
+          {
+            $this->m_destInstance->addDb($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+          }
+          else 
+          {
+            $error = "<span class='error'>".$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
+          }
+        }
+      }
+      return $error;
+    }
+    
+    /**
+     * Adds the 'add' option to the onetomany, either integrated or as a link
+     * 
+     * @param String $output   The HTML output of the edit function
+     * @param Array $myrecords The records that are loaded into the recordlist
+     * @param array $record The master record that is being edited.
+     * @todo Find a way to make the AF_ONETOMANY_INTEGRATE use the edithandler
+     * @todo Move the HTML to a template
+     */
+    function _addAddToEditOutput(&$output, $myrecords, $record)
+    {
+      if ($this->hasFlag(AF_ONETOMANY_INTEGRATE))
+      {
+        if ($this->createDestination())
+        {
+          $output.='<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
+          $output.="<table>";
+          foreach ($this->m_destInstance->m_attribList as $attribute)
+          {
+            $output.="<tr>";
+            $fakearray=array();
+            if (strtolower($attribute->m_destination)==strtolower($this->m_ownerInstance->atknodetype()))
+            {
+              $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
+              $fakearray[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
+              $output.= $attribute->hide($fakearray,$this->fieldName()."_AE_");
+            }
+            else 
+            {
+              if (!$attribute->hasFlag(AF_NOLABEL) && !$this->hasFlag(AF_BLANKLABEL)) $output.="<td>".atktext($attribute->fieldName(),$attribute->m_ownerInstance->m_module,$attribute->m_owner).": </td>";
+              $output.= "<td>".$attribute->edit($fakearray,$this->fieldName()."_AE_")."</td>";
+            }
+            $output.="</tr>";
+          }
+          $output.='<tr><td colSpan=2><input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'"></td></tr></table>';
+          $text = atktext("link_".$this->fieldName()."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
+          if (!$text) $text = atktext($this->fieldName(),$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
+          $output.="\n </div> <a href='javascript:toggleDisplay(\"".$this->fieldName()."_integrated\")'>$text</a>";
+        }
+        else 
+          atkerror("Could not create destination for ". $this->fieldName()."!");
+      }
+      else 
+      {
+        if (atkconfig("onetomany_addlink_position","bottom")=="top")
+          $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
+        else if (atkconfig("onetomany_addlink_position","bottom")=="bottom")
+          $output.=$this->_addAddLink($myrecords, $record)."<br />";
+      }
     }
 
     /**

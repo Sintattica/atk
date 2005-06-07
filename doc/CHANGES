@@ -28,6 +28,8 @@ Changes in ATK 5.2.2
   atkMetaPolicy relation support. [Peter]
 + Added atkMetaTools class which contains methods to singularize or pluralize
   English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
++ Added AF_ONETOMANY_INTEGRATED, this causes the add to be integrated
+  in the current node, instead of displaying it on a seperate screen. [Boy]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
@@ -60,6 +62,8 @@ Changes in ATK 5.2.2
 * Fixed reference bug in the atkModule::newNode method which caused the
   newNode method to always return a copy of the newly created node. [Peter]
 * Changed actiontitle to return descriptor trace when appropriate [Boy]
+* Moved javascript get_object() function from dhtml_tabs.js to seperate
+  tools.inc.php file [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 
