@@ -1,13 +1,16 @@
-function toggleDisplay(name)
+function toggleHiding(name, linkhidden, linkunhidden)
 {
-  var obj = get_object(name);
+  var integratedadd = get_object(name);
+  toggleDisplay(name,integratedadd);
   
-  if (obj.style.display=="none")
-  {
-    obj.style.display="";		  
+  var link = get_object(name+'_link');
+  
+  if (integratedadd.style.display!=="none")
+  {  
+    link.innerHTML = linkunhidden;
   }
   else
   {
-    obj.style.display="none";
+    link.innerHTML = linkhidden;
   }
 }

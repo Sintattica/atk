@@ -15,3 +15,16 @@ function get_object(name)
   }
   return false;
 }
+
+// For toggling the display on an object
+function toggleDisplay(name, obj)
+{  
+  if (obj.style.display=="none")
+  {
+    obj.style.display="";		  
+  }
+  else
+  {
+    obj.style.display="none";
+  }
+}

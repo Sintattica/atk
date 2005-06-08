@@ -115,7 +115,7 @@
      *
      * @return String the edit form as a string
      */
-    function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="")
+    function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="",$template="")
     {      
       $node = &$this->m_node;            
       
@@ -285,8 +285,8 @@
       $params["fields"] = $fields; // add all fields as an numeric array.
       $params["errortitle"] = $error_title;
       $params["errors"] = $errors; // Add the list of errors.
-      
-      $result.= $ui->render($node->getTemplate($mode, $record, $tab), $params);            
+      if (!$template) $template = $node->getTemplate($mode, $record, $tab);
+      $result.= $ui->render($template, $params);            
       
 	  return $result;       
     } 

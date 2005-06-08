@@ -90,7 +90,7 @@
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
       $page = &atkPage::getInstance();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js.php");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
         
       $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT); 
@@ -200,10 +200,22 @@
       {
         if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
         {
-          foreach (array_values($this->m_ownerInstance->m_postvars[$this->fieldName()]) as $fieldname)
+          foreach (array_keys($this->m_ownerInstance->m_postvars[$this->fieldName()]) as $fieldname)
           {
-            $attribute = &$this->m_destInstance->getAttribute($fieldname);
-            $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $attribute->fetchValue($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+            if (!in_array($fieldname,array("atkaction","atknodetype","atkprimkey")))
+            {
+              $attribute = &$this->m_destInstance->getAttribute($fieldname);
+              if (is_object($attribute))
+              {
+                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $attribute->fetchValue($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+              }
+              else
+              {
+                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$this->fieldName()];
+                var_dump($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+                echo("$fieldname is no attribute for integrated save, is this correct?");exit;
+              }
+            }
           }
           $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
           if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
@@ -225,7 +237,6 @@
      * @param String $output   The HTML output of the edit function
      * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
-     * @todo Find a way to make the AF_ONETOMANY_INTEGRATE use the edithandler
      * @todo Move the HTML to a template
      */
     function _addAddToEditOutput(&$output, $myrecords, $record)
@@ -234,29 +245,31 @@
       {
         if ($this->createDestination())
         {
-          $output.='<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
-          $output.="<table>";
-          foreach ($this->m_destInstance->m_attribList as $attribute)
+          $output.="\n".'<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
+
+          $destInstanceCopy = $this->m_destInstance;
+          $editrecord=array();
+          foreach ($destInstanceCopy->m_attribList as $key=> $attribute)
           {
-            $output.="<tr>";
-            $fakearray=array();
             if (strtolower($attribute->m_destination)==strtolower($this->m_ownerInstance->atknodetype()))
             {
               $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
-              $fakearray[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
-              $output.= $attribute->hide($fakearray,$this->fieldName()."_AE_");
+              $editrecord[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
+              $p_attrib = &$destInstanceCopy->m_attribList[$key];
+              $p_attrib->addFlag(AF_HIDE);
             }
-            else 
-            {
-              if (!$attribute->hasFlag(AF_NOLABEL) && !$this->hasFlag(AF_BLANKLABEL)) $output.="<td>".atktext($attribute->fieldName(),$attribute->m_ownerInstance->m_module,$attribute->m_owner).": </td>";
-              $output.= "<td>".$attribute->edit($fakearray,$this->fieldName()."_AE_")."</td>";
-            }
-            $output.="</tr>";
           }
-          $output.='<tr><td colSpan=2><input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'"></td></tr></table>';
+          atkimport("atk.handlers.atkedithandler");
+          $handler = new atkEditHandler();
+          $handler->m_node = &$destInstanceCopy;
+          $output.=$handler->editForm("add",$editrecord,"","",$this->fieldName()."_AE_","integratededitform.tpl");
+          
+          $output.='<input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'">';
           $text = atktext("link_".$this->fieldName()."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
           if (!$text) $text = atktext($this->fieldName(),$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
-          $output.="\n </div> <a href='javascript:toggleDisplay(\"".$this->fieldName()."_integrated\")'>$text</a>";
+          $output.="\n </div> <a id='".$this->fieldName()."_integrated_link' 
+                                 href='javascript:toggleHiding(\"".$this->fieldName()."_integrated\",
+                                                               \"$text\",\"".atktext("cancel")."\")'>$text</a>";
         }
         else 
           atkerror("Could not create destination for ". $this->fieldName()."!");
