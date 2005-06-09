@@ -28,7 +28,7 @@ Changes in ATK 5.2.2
   atkMetaPolicy relation support. [Peter]
 + Added atkMetaTools class which contains methods to singularize or pluralize
   English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
-+ Added AF_ONETOMANY_INTEGRATED, this causes the add to be integrated
++ Added AF_ONETOMANY_EMBED, this causes the add to be embedded
   in the current node, instead of displaying it on a seperate screen. [Boy]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.

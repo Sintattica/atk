@@ -24,7 +24,7 @@
    * flag(s) specific for atkManyToOneRelation 
    */
   define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1); // Only allow deletion of master item when there are no child records
-  define("AF_ONETOMANY_INTEGRATE", AF_SPECIFIC_2);
+  define("AF_ONETOMANY_EMBED", AF_SPECIFIC_2);
   
   /**
    * Implementation of one-to-many relationships.
@@ -196,7 +196,7 @@
      */
     function _checkIntegratedSave()
     {
-      if ($this->hasFlag(AF_ONETOMANY_INTEGRATE))
+      if ($this->hasFlag(AF_ONETOMANY_EMBED))
       {
         if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
         {
@@ -238,10 +238,12 @@
      * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
      * @todo Move the HTML to a template
+     * @todo Expand this to make this integrate editting as well and 
+     *        make it respect an editafterad
      */
     function _addAddToEditOutput(&$output, $myrecords, $record)
     {
-      if ($this->hasFlag(AF_ONETOMANY_INTEGRATE))
+      if ($this->hasFlag(AF_ONETOMANY_EMBED))
       {
         if ($this->createDestination())
         {
