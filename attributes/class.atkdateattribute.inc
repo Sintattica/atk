@@ -569,14 +569,18 @@
       $fromvalue = $this->_MakeDateForCondition($value["from"]);
       $tovalue   = $this->_MakeDateForCondition($value["to"]);
         
-      if ($fromvalue!="") {
+      if ($fromvalue!="") 
+      {
         $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["from"]));
         $datearraysearchcondition = $query->greaterthanequalCondition($field,$fromvalue);
         // check if tovalue is set, if so add the AND                               
-        if ($tovalue!="") $datearraysearchcondition.=" AND "; }
-      if ($tovalue!="") {
+        if ($tovalue!="") $datearraysearchcondition.=" AND "; 
+      }
+      if ($tovalue!="") 
+      {
         $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["to"]));
-        $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue); }
+        $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue); 
+      }
       return $datearraysearchcondition;
     }
     
