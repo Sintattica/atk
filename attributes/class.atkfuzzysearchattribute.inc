@@ -401,7 +401,7 @@
      * @param String $value Required value. (Ommit this parameter if you pass
      *                      an SQL expression for $filter.)
      */
-    function addSearchFilter($filter, $value)
+    function addSearchFilter($filter, $value="")
     {
       if (!$this->m_searchnodeInstance) $this->createSearchNodeInstance();
       $this->m_searchnodeInstance->addFilter($filter, $value);
