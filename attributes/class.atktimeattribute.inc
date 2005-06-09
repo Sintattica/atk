@@ -88,12 +88,12 @@
      */
     function edit($record="", $fieldprefix="")
     {    
-			if(($this->m_default=="NOW" && $this->m_ownerInstance->m_action=="add") ||
-			   ($this->m_default=="" && $this->hasFlag(AF_OBLIGATORY)))
-		  {
-		    $this->m_default=date("H:i");
-		  }
-		  $default = split(":",$this->m_default);
+      if(($this->m_default=="NOW" && $this->m_ownerInstance->m_action=="add") ||
+         ($this->m_default=="" && $this->hasFlag(AF_OBLIGATORY)))
+      {
+	  $this->m_default=date("H:i");
+      }
+      $default = split(":",$this->m_default);
 
       $id = $fieldprefix.$this->fieldName();
       $field = $record[$this->fieldName()];
@@ -166,13 +166,13 @@
     function value2db($rec)
     {
 
-		 $hours = $rec[$this->fieldName()]["hours"];
+     $hours = $rec[$this->fieldName()]["hours"];
      $minutes = $rec[$this->fieldName()]["minutes"];
      $seconds = $rec[$this->fieldName()]["seconds"];
 
      if ($hours=="" || $minutes=="") return "NULL";
 
-		 $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
+     $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
 
      return $result;
     }
