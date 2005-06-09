@@ -212,8 +212,7 @@
               else
               {
                 $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$this->fieldName()];
-                var_dump($this->m_ownerInstance->m_postvars[$this->fieldName()]);
-                echo("$fieldname is no attribute for integrated save, is this correct?");exit;
+                atkerror("$fieldname is no attribute for integrated save, is this correct?");
               }
             }
           }
