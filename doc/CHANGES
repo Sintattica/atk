@@ -65,6 +65,8 @@ Changes in ATK 5.2.2
 * Moved javascript get_object() function from dhtml_tabs.js to seperate
   tools.inc.php file [Boy]
 * Made value part of addSearchFilter optional, as it was intended to be [Boy]
+* Made tabbing more robust, tabs may not always exist for every action
+  so when the remembered tab isn't present, the default tab is selected [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 

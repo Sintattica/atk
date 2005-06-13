@@ -45,6 +45,8 @@ function showTab(tab)
 	  if (parent.document.tab[tabid])
     {
       tab = parent.document.tab[tabid];
+      // However if for some reason this tab does not exist, we switch to the default tab
+      if (!document.getElementById('tab_'+tab)) tab = tabs[0];
     }
     else
     {
