@@ -668,10 +668,13 @@
      {
        if ($this->createDestination() && $this->m_ownerInstance->m_postvars["atkselector"])
        {
-         $query->addTable($this->m_destInstance->m_table);
-         $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
          $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
-         $query->addSearchCondition($searchcondition);
+         if(isset($searchcondition) && !empty($searchcondition))
+         {
+           $query->addTable($this->m_destInstance->m_table);
+           $query->addCondition($this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']));
+           $query->addSearchCondition($searchcondition);
+         }
        }
      }
      
