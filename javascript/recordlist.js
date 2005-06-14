@@ -37,17 +37,23 @@ function selectrow(row, rlId, rownum)
   }
 }
 
-function rl_do(rlId, rownum, action)
+function rl_do(rlId, rownum, action, confirmtext)
 {
-  if (rl_a[rlId][rownum][action])
+  extra="";
+  if (confirmtext)
+  {
+    confirmed = confirm(confirmtext);
+    if (confirmed) extra = "&confirm=1";
+  }
+  if (rl_a[rlId][rownum][action] && (!confirmtext || confirmed))
   {
     if (!rl_a[rlId]['embed'])
     {
-      document.location.href = rl_a[rlId][rownum][action]+'&'+rl_a[rlId]['base'];
+      document.location.href = rl_a[rlId][rownum][action]+'&'+rl_a[rlId]['base']+extra;
     }
     else
     {
-      atkSubmit(rl_a[rlId][rownum][action]+'&'+rl_a[rlId]['base']);
+      atkSubmit(rl_a[rlId][rownum][action]+'&'+rl_a[rlId]['base']+extra);
     }
   }
 }

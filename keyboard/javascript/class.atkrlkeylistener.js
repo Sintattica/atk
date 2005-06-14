@@ -38,7 +38,7 @@ atkRLKeyListener.prototype.do_action = function(action)
 {
   if (this.currentrec>-1)
   {
-    rl_do(this.recordlistId, this.currentrec, action);
+    rl_do(this.recordlistId, this.currentrec, action,false);
   }
 }
 

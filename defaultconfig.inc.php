@@ -129,7 +129,12 @@
   $config_recordlist_vorientation = "middle";
 	
   // Use icons for action links or not  
-	$config_recordlist_icons = "true";
+  $config_recordlist_icons = "true";
+	
+  // Make the recordlist use a javascript
+  // confirm box for deleting instead of a seperate page
+  // Depends on register_globals, so off by default
+  $config_recordlist_javascript_delete = false;
 	
   $config_enable_ie_extensions = false;
 
