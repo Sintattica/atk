@@ -236,52 +236,67 @@
      * @param String $output   The HTML output of the edit function
      * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
-     * @todo Move the HTML to a template
-     * @todo Expand this to make this integrate editting as well and 
-     *        make it respect an editafterad
      */
     function _addAddToEditOutput(&$output, $myrecords, $record)
     {
-      if ($this->hasFlag(AF_ONETOMANY_EMBED))
+      if (atkconfig("onetomany_addlink_position","bottom")=="top")
       {
-        if ($this->createDestination())
-        {
-          $output.="\n".'<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
-
-          $destInstanceCopy = $this->m_destInstance;
-          $editrecord=array();
-          foreach ($destInstanceCopy->m_attribList as $key=> $attribute)
-          {
-            if (strtolower($attribute->m_destination)==strtolower($this->m_ownerInstance->atknodetype()))
-            {
-              $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
-              $editrecord[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
-              $p_attrib = &$destInstanceCopy->m_attribList[$key];
-              $p_attrib->addFlag(AF_HIDE);
-            }
-          }
-          atkimport("atk.handlers.atkedithandler");
-          $handler = new atkEditHandler();
-          $handler->m_node = &$destInstanceCopy;
-          $output.=$handler->editForm("add",$editrecord,"","",$this->fieldName()."_AE_","integratededitform.tpl");
-          
-          $output.='<input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'">';
-          $text = atktext("link_".$this->fieldName()."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
-          if (!$text) $text = atktext($this->fieldName(),$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
-          $output.="\n </div> <a id='".$this->fieldName()."_integrated_link' 
-                                 href='javascript:toggleHiding(\"".$this->fieldName()."_integrated\",
-                                                               \"$text\",\"".atktext("cancel")."\")'>$text</a>";
-        }
-        else 
-          atkerror("Could not create destination for ". $this->fieldName()."!");
-      }
-      else 
-      {
-        if (atkconfig("onetomany_addlink_position","bottom")=="top")
+        if ($this->hasFlag(AF_ONETOMANY_EMBED))
+          $output=$this->_getEmbededOutput()."<br />".$output;
+        else
           $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
-        else if (atkconfig("onetomany_addlink_position","bottom")=="bottom")
+      }
+      else if (atkconfig("onetomany_addlink_position","bottom")=="bottom")
+      {
+        if ($this->hasFlag(AF_ONETOMANY_EMBED))
+          $output.=$this->_getEmbededOutput();
+        else 
           $output.=$this->_addAddLink($myrecords, $record)."<br />";
       }
+    }
+    
+    /**
+     * Returns the HTML for the embedded form for the OneToMany
+     * @return String The embeded form
+     * @todo Move the HTML to a template
+     * @todo Expand this to make this integrate editting as well and 
+     *        make it respect an editafteradd
+     * @todo Make this work with an atkManyToOne
+     */
+    function _getEmbededOutput()
+    {
+      if ($this->createDestination())
+      {
+        $output.="\n".'<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
+
+        $destInstanceCopy = $this->m_destInstance;
+        $editrecord=array();
+        foreach ($destInstanceCopy->m_attribList as $key=> $attribute)
+        {
+          if (strtolower($attribute->m_destination)==strtolower($this->m_ownerInstance->atknodetype()))
+          {
+            $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
+            $editrecord[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
+            $p_attrib = &$destInstanceCopy->m_attribList[$key];
+            $p_attrib->addFlag(AF_HIDE);
+          }
+        }
+        atkimport("atk.handlers.atkedithandler");
+        $handler = new atkEditHandler();
+        $handler->m_node = &$destInstanceCopy;
+        $output.=$handler->editForm("add",$editrecord,"","",$this->fieldName()."_AE_","integratededitform.tpl");
+
+        $output.='<input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'">';
+        $text = atktext("link_".$this->fieldName()."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
+        if (!$text) $text = atktext($this->fieldName(),$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
+        $output.="\n </div> <a id='".$this->fieldName()."_integrated_link'
+                                 href='javascript:toggleHiding(\"".$this->fieldName()."_integrated\",
+                                                               \"$text\",\"".atktext("cancel")."\")'>$text</a>";
+      }
+      else
+        atkerror("Could not create destination for ". $this->fieldName()."!");
+      
+      return $output;
     }
 
     /**
