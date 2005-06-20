@@ -134,9 +134,9 @@
         $this->m_affected_rows = 0;
       
         /* query database */
-       
-       $this->m_row = 0;
-        
+        $this->m_query_id = @mysql_query($query, $this->m_link_id);
+        $this->m_row = 0;
+
         
         //$this->m_errno = mysql_errno();
         //$this->m_error = mysql_error();
