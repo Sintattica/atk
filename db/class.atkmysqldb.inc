@@ -170,13 +170,11 @@
      */
     function next_record()
     {
-      /* goto next record */      
-      var_dump("m_row is: ".$this->m_row);     
+      /* goto next record */     
       $this->m_record = @mysql_fetch_array($this->m_query_id, MYSQL_ASSOC|atkconfig("mysqlfetchmode"));
       $this->m_row++;
       $this->m_errno = mysql_errno();
       $this->m_error = mysql_error();
-      var_dump("m_row after is: ".$this->m_row);
 
       /* are we there? */
       $result = is_array($this->m_record);
