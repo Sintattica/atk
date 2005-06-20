@@ -372,10 +372,9 @@
      *                    record.
      * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
      *                   retrieve all rows.
-     * @param $startat internal row counter, by -1 m_row won't be changed
      * @abstract
      */
-    function query($query, $offset=-1, $limit=-1, $startat = 0)
+    function query($query, $offset=-1, $limit=-1)
     {
       return true;    
     }

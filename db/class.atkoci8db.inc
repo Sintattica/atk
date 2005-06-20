@@ -168,9 +168,8 @@
      *                    record.
      * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
      *                   retrieve all rows.
-     * @param $startat internal row counter, by -1 m_row won't be changed
      */
-    function query($query, $offset=-1, $limit=-1, $startat = 0)
+    function query($query, $offset=-1, $limit=-1)
     {
       /* limit? */
       if ($offset >= 0 && $limit > 0)
@@ -216,14 +215,7 @@
           return false;
         }
         
-        if ($startat != -1 && $startat >= 0)
-        {
-          $this->m_row = $startat;
-        }
-        else
-        {
-          atkdebug("atkmysqldb.query() wrong startat: ".$startat);
-        }
+        $this->m_row = 0;
                
         /* return query id */                        
         return true;

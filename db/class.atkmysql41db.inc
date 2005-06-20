@@ -104,9 +104,8 @@
     * @param $query the query
     * @param $offset offset in record list
     * @param $limit maximum number of records
-    * @param $startat internal row counter, by -1 m_row won't be changed
     */
-   function query($query, $offset=-1, $limit=-1, $startat = 0)
+   function query($query, $offset=-1, $limit=-1)
    {
      /* limit? */
      if ($offset >= 0 && $limit > 0)
@@ -126,16 +125,9 @@
        $this->m_affected_rows = 0;
 
        /* query database */
-       $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+       $this->m_query_id = @mysqli_query($this->m_link_id, $query);       
        
-       if ($startat != -1 && $startat >= 0)
-       {
-         $this->m_row = $startat;
-       }
-       else
-       {
-         atkdebug("atkmysqldb.query() wrong startat: ".$startat);
-       }
+       $this->m_row = 0;
         
        $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
 

@@ -33,9 +33,6 @@ Changes in ATK 5.2.2
   in the current node, instead of displaying it on a seperate screen. [Boy]
 + Added $config_javascript_confirmation, setting this to true will
   make ATK use javascript for the confirmation dialogue when deleting [Boy]
-* Changed query() in all atk*db.inc. Query() has now $startat and 
-  rowcounter will be set to the specified row. Also with -1 the rowcounter 
-  will not be changed.[Dennis-Jan]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
 * Improvements on atkImportHandler:
