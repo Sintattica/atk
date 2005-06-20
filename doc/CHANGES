@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.2.2
 --------------------
++ Added getInstance() for the atkMlSplitter class. [Martin]
 + Added function atk_in_array_recursive($needle, $haystack) which
   is similar to php's in_array, only this one is recursive. [Dennis-Jan] 
 + Made atkTimeAttribute work with a time string from the postvars. [Boy]
@@ -32,6 +33,8 @@ Changes in ATK 5.2.2
   in the current node, instead of displaying it on a seperate screen. [Boy]
 + Added $config_javascript_confirmation, setting this to true will
   make ATK use javascript for the confirmation dialogue when deleting [Boy]
+* atkmlsplitter::addmlcondition() is now recursive to support relations
+  with multiple mlnodes. [Martin]
 * Improvements on atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.

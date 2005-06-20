@@ -2307,7 +2307,8 @@
         if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
           $record["atkmlsplit"]=1;
-          $mltool = &atknew("atk.utils.atkmlsplitter");
+          atkimport("atk.utils.atkmlsplitter");
+          $mltool = &atkmlsplitter::getInstance();
           $mltool->updateMlRecords($this, $record,"update");
         }
 
@@ -2356,6 +2357,24 @@
     }
 
     /**
+    * Checks if the attribute is needed in a select query
+    *
+    * @param string attribname name of the attribute
+    * @param array list of exclueded attribs
+    * @param array list of inclueded attribs
+    * @return bool true in case the attribute needs to be in the select
+    */
+    function isAllowedQueryList($attribname,$excludeList="",$includeList="")
+    {
+      return (
+              ((is_array($includeList) && in_array($attribname,$includeList))
+              || (is_array($excludeList) && !in_array($attribname,$excludeList)))
+              || (!is_array($excludeList) && !is_array($includeList))
+              || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
+              );
+    }
+
+    /**
      * Count the number of records in the database that a call to selectDb
      * would return.
      *
@@ -2375,6 +2394,8 @@
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
+      atkimport("atk.utils.atkmlsplitter");
+      $mltool =& atkmlsplitter::getInstance();
       $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
@@ -2402,36 +2423,17 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if (
-             (
-               is_object($p_attrib)
-             )
-             &&
-             (
-                ((is_array($includeList) && in_array($attribname,$includeList))
-                || (is_array($excludeList) && !in_array($attribname,$excludeList)))
-                || (!is_array($excludeList) && !is_array($includeList))
-                || ($p_attrib->hasFlag(AF_FORCE_LOAD))
-              )
-           )
+        if (is_object($p_attrib) && $this->isAllowedQueryList($attribname,$excludeList,$includeList))
         {
           $loadmode = $p_attrib->loadType($mode);
           if (hasFlag($loadmode, ADDTOQUERY)) $loadlist["query"][]=$attribname;
-
         }
       }
-
+      
       for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
-        if(!$this->hasFlag(NF_ML))
-        {
-          $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
-        }
-        else if($this->m_primaryKey[0] == $p_attrib->fieldName())
-        {
-          $query->addCondition("UPPER(".$this->m_table.".".$this->m_lngfield.")='".$this->m_defaultlanguage."'");
-        }
+        $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
       }
       
       /* there may be search criteria, which we also filter */
@@ -2467,6 +2469,8 @@
         }
       }
 
+      $mltool->addMlCondition($query,$this,$mode);
+      
       $querystring = $query->buildCount($this->hasFlag(NF_ML));
       $result = $this->m_db->getrows($querystring);
 
@@ -2540,12 +2544,12 @@
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
       $query = &$this->m_db->createQuery();
-      $mltool = &atknew("atk.utils.atkmlsplitter");
 
+      atkimport("atk.utils.atkmlsplitter");
+      $mltool =& atkmlsplitter::getInstance();
+      
       $query->addTable($this->m_table);
       $query->addCondition($selector);
-
-      $mltool->addMlCondition($query,$this,$mode);
 
       $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
             
@@ -2582,18 +2586,7 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        if (
-              (
-                is_object($p_attrib)
-              )
-              &&
-              (
-                ((is_array($includeList) && in_array($attribname,$includeList))
-                || (is_array($excludeList) && !in_array($attribname,$excludeList)))
-                || (!is_array($excludeList) && !is_array($includeList))
-                || ($p_attrib->hasFlag(AF_FORCE_LOAD))
-              )
-           )
+        if (is_object($p_attrib) && $this->isAllowedQueryList($attribname,$excludeList,$includeList))
         {
           $loadmode = $p_attrib->loadType($mode, $searching);
           if (hasFlag($loadmode, POSTLOAD))
@@ -2667,6 +2660,8 @@
           }
         }
       }
+
+      $mltool->addMlCondition($query,$this,$mode);
 
       if ($order!="") $query->addOrderBy($order);
 
@@ -2889,7 +2884,8 @@
       if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
         $record["atkmlsplit"]=1;
-        $mltool = &atknew("atk.utils.atkmlsplitter");
+        atkimport("atk.utils.atkmlsplitter");
+        $mltool = &atkmlsplitter::getInstance();
         $mltool->updateMlRecords($this, $record,"add");
       }
 
