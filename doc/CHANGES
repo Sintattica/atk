@@ -74,6 +74,8 @@ Changes in ATK 5.2.2
   so when the remembered tab isn't present, the default tab is selected [Boy]
 * Fixed cartesian product when searchcondition is missing 
   with OneToMany [Yury]
+* Made edithandler pass the proper module to atktext() when looking 
+  for a tooltip [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 
 
