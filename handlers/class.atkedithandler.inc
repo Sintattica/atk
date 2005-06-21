@@ -258,7 +258,9 @@
           }
 
           /* tooltip */
-          $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip", "atk", "", "", "", true);
+          if ($node->m_attribList[$field['name']]->m_ownerInstance->m_module) $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;
+          else $module = "atk";
+          $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip", $module, "", "", "", true);
           
           if ($ttip)
           {
