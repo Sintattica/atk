@@ -43,6 +43,7 @@
     var $m_linkbackfield;
     var $m_ownersearch;
     var $m_destsearch;
+    var $m_cachefield;
 
     /**
      * Creates an atkSecureRelation, 
@@ -73,6 +74,11 @@
       $this->m_linkfield = $linkfield;
       $this->m_keylength = $keylength;
       $this->m_linkbackfield = $linkbackfield;
+    }
+    
+    function setCacheField($fieldname="cache")
+    {
+      $this->m_cachefield = $fieldname;
     }
   
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
@@ -157,7 +163,9 @@
         if(is_array($rec))
         {
           $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
+          atkdebug("<h1>doing an encrypt</h1>");
           $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+          atkdebug("<h1>doing an encrypt over</h1>");
           $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
         }
   
@@ -218,14 +226,11 @@
             $this->m_searcharray = $oldsearcharray;
             $errorconfig = atkconfig("securerelation_decrypterror", null);
 
-            // create lookup table for easy reference.
-            $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
-            
+            // create lookup table for easy reference.            
             for ($i=0, $_i=count($records); $i<$_i; $i++)
-            {
-              $link = $records[$i][$this->m_linkbackfield];     
-              $decryptedlink = $this->m_crypt->decrypt($link,$linkpass);
-
+            {              
+              $decryptedlink = $this->decrypt($records[$i], $this->m_linkbackfield);
+              
               if(!$decryptedlink && $errorconfig) 
               {
                 atkdebug("Unable to decrypt link: ".$link."for record: ".atk_var_dump($records[$i])." with linkbackfield: ".$this->m_linkbackfield);
@@ -252,17 +257,18 @@
         }
       }
       else 
-      { 
-        $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
-        
-        $query = "SELECT ".$this->fieldName()." FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+      {         
+        $query = "SELECT ".$this->fieldName();
+        $query.= ($this->m_cachefield?",{$this->m_cachefield}":"");
+        $query.=" FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
         $result = $g_db->getrows($query);
-        $link = $result[0][$this->fieldName()];
-  
-        $cryptedlink = $this->m_crypt->decrypt($link,$this->m_linkpass);
-        
+
+        $cryptedlink = $this->decrypt($result[0],$this->fieldName());
+        $records[0][$this->fieldName()] = $cryptedlink;
+
         if ($cryptedlink)
         {
+
           $record[$this->fieldName()] = $cryptedlink;
 
           //for the use of encrypted id's we don't want to use the refkey,
@@ -275,11 +281,42 @@
           $this->m_refKey = $backup_refkey;
           return $load;
         }
-        else 
+        else
         {
           atkdebug("Could not decrypt the link: $link for ".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]);
         }
       }
+    }
+    
+    function decrypt($record, $field)
+    {      
+      global $g_db, $g_encryption;
+      
+      if (!$this->m_linkpass) $this->getLinkPassword($this->m_linktable, $this->m_linkfield, $g_encryption);
+      
+      if (!$this->m_cachefield || !$record[$this->m_cachefield])
+      {
+        $cryptedlink = $this->m_crypt->decrypt($record[$field],$this->m_linkpass);
+        
+        if ($this->m_cachefield && is_numeric($cryptedlink) && $cryptedlink && $record[$this->m_ownerInstance->primaryKeyField()])
+        {
+          atk_var_dump($this->m_ownerInstance->primaryKeyField(),"pkfield");
+          atk_var_dump($record,"<h1>record</h1>");
+          $g_db->query("UPDATE {$this->m_ownerInstance->m_table}
+                              SET {$this->m_cachefield}='$cryptedlink'
+                              WHERE ".$this->m_ownerInstance->primaryKeyField()." = '".
+                                      $record[$this->m_ownerInstance->primaryKeyField()]."'");
+        }
+        else if (!$cryptedlink || !is_numeric($cryptedlink))
+        {
+          return atk_var_dump($record,"<h1>decrypt($record, $field) failed! and yielded: $cryptedlink</h1>");
+        }
+      }
+      else
+      {
+        $cryptedlink = $record[$this->m_cachefield];
+      }
+      return $cryptedlink;
     }
 
     /**
@@ -308,11 +345,10 @@
       $result = $g_db->getRows($temp_query);
       
       $condition = "";
-      $linkpass = $this->getLinkPassword($this->m_linktable,$this->m_linkfield);
       foreach($result as $recordArray)
       {
         $record = $recordArray[$this->fieldName()];
-        $decrypted_record = $this->m_crypt->decrypt($record,$linkpass);
+        $decrypted_record = $this->decrypt($recordArray,$this->fieldName());
         if ($condition == "")
           $whereOrAnd = "(";
         else
@@ -398,7 +434,7 @@
       
       foreach ($this->m_destsearch[$value] as $result)
       {
-        $destresult = $this->m_crypt->decrypt($result[$this->m_linkbackfield],$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
+        $destresult = $this->decrypt($result,$this->m_linkbackfield);
         if ($destresult) $destresults[] = $destresult;
       }
       
@@ -408,9 +444,9 @@
         return $table.".".$this->m_ownerInstance->primaryKeyField()." IN (".implode(",",$destresults).")";
     }
     
-    function getJoinCondition(&$query, $tablename="",$fieldalias="")
-    {
-      // Dummy implementation... we can't join a secured relation
-    }
+//    function getJoinCondition(&$query, $tablename="",$fieldalias="")
+//    {
+//      // Dummy implementation... we can't join a secured relation
+//    }
   }
 ?>
