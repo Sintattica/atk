@@ -297,7 +297,8 @@
       if (!$this->m_cachefield || !$record[$this->m_cachefield])
       {
         $cryptedlink = $this->m_crypt->decrypt($record[$field],$this->m_linkpass);
-        
+        if ($this->m_ownerInstance)
+        {
         if ($this->m_cachefield && is_numeric($cryptedlink) && $cryptedlink && $record[$this->m_ownerInstance->primaryKeyField()])
         {
           atk_var_dump($this->m_ownerInstance->primaryKeyField(),"pkfield");
@@ -310,6 +311,11 @@
         else if (!$cryptedlink || !is_numeric($cryptedlink))
         {
           return atk_var_dump($record,"<h1>decrypt($record, $field) failed! and yielded: $cryptedlink</h1>");
+        }
+        }
+        else 
+        {
+          halt("Geen ownerinstantie gevonden voor securerelation");
         }
       }
       else
