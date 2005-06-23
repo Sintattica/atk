@@ -1015,6 +1015,11 @@
           }
           else
           {
+            $relation = $this->isRelationAttribute($attributename);
+            
+            if ($relation) $rec[$relation][$attributename] = $value;
+            else $rec[$attributename] = $value;
+            
             $importerrors[$counter][] = array("msg"=>atktext("error_formdataerror"),
             "spec"=>sprintf(atktext("import_nonunique_identifier"), $this->getValueFromRecord($rec, $attributename)));
           }
@@ -1022,7 +1027,15 @@
       }
       else if (is_object($attr) && method_exists($attr,"fetchValue"))
       {
-        $value = $attr->fetchValue($value);
+        $relation = $this->isRelationAttribute($attributename);
+        if ($relation)
+        {
+          $value = $attr->fetchValue(array($attributename=>$value));
+        }
+        else 
+        {
+          $value = $attr->fetchValue($value);
+        }
       }
       else
       {
