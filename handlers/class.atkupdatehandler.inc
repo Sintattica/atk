@@ -81,6 +81,8 @@
           {
             $this->m_node->m_db->commit();            
             
+            if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $this->clearCache($this->m_node->m_type);
+            
             if ($this->m_postvars['atknoclose']=="")
             {
               // 'save and close' was clicked

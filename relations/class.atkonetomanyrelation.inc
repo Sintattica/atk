@@ -40,6 +40,11 @@
    */
   class atkOneToManyRelation extends atkRelation
   {    
+    var $m_recordlist;
+    
+    /** @access private */
+    var $m_recordlistcache;
+    
     /**
      * List of keys from the destination node that refer to the master record.
      * @access private
@@ -173,21 +178,38 @@
       if ($this->createDestination())
       {
         $error = $this->_checkIntegratedSave();
-        $myrecords = $this->_getRecords($record);
-
-        $output.=$this->editHeader($record, $myrecords);          
         
-        $output.= $this->_getRecordList($myrecords);
-        
-          
-        $output.=$this->editFooter($record, $myrecords);
-        $this->_fetchNavigationLinks($output);
-        $output.=$error;
-        $this->_addAddToEditOutput($output, $myrecords, $record);
-        
+        if ($this->m_destInstance->hasFlag(NF_CACHE_RECORDLIST))
+        {
+          $this->_setRecordlistCache();
+          $cache = $this->m_recordlistcache->getCache();
+          if ($cache)
+          {
+            atkdebug("Using recordlist cache: {$this->m_recordlistcache->m_cacheid}");
+            return $cache;
+          }
+        }
+        $output = $this->_getEditOutput($record,$fieldprefix);
+        if ($this->m_recordlistcache) $this->m_recordlistcache->writeCache($output, $this->m_recordlist->m_actionloader);
         return $output;
       }
       return "";
+    }
+    
+    function _getEditOutput($record="", $fieldprefix="")
+    {
+      $myrecords = $this->_getRecords($record);
+
+      $output.=$this->editHeader($record, $myrecords);
+
+      $output.= $this->_getRecordList($myrecords);
+
+
+      $output.=$this->editFooter($record, $myrecords);
+      $this->_fetchNavigationLinks($output);
+      $output.=$error;
+      $this->_addAddToEditOutput($output, $myrecords, $record);
+      return $output;
     }
     
     /**
@@ -353,6 +375,7 @@
                                     $actions,              $flags, 
                                     $this->m_refKey,       "entryform",
                                     array(),               $embedprefix);                                            
+        $this->m_recordlist = $recordlist;
       }
       
       return $output;
@@ -877,6 +900,18 @@
       // add the navigation to the top and bottom of the page
       if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
       else return $output;
+    }
+    
+    function _setRecordlistCache()
+    {
+      if (!$this->m_recordlistcache && $this->createDestination())
+      {
+        $this->m_recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
+        $this->m_recordlistcache->setNode($this->m_destInstance);
+        $this->m_recordlistcache->setPostvars($this->m_destInstance->m_postvars);
+        $this->m_recordlistcache->addCacheIdentifier(array('key'=>"embeded"));
+      }
+      return true;
     }
   }
 ?>

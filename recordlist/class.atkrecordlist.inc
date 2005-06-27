@@ -41,6 +41,7 @@
   {    
     var $m_node=NULL;    
     var $m_flags=0;     
+    var $m_actionloader;
     
     function setNode(&$node)
     {
@@ -352,6 +353,7 @@
         }
         
         $page->register_loadscript($actionloader);
+        $this->m_actionloader = $actionloader;
   
         /*************/
         /* TOTAL ROW */

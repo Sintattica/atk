@@ -46,6 +46,11 @@
         else
         {
           $this->m_node->m_db->commit();
+          if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
+          {
+            if ($this->_setRecordlistCache())
+              $this->m_recordlistcache->clearCache($this->m_node->m_type);
+          }
           $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($recordset[0]))), SESSION_REPLACE);
           $this->m_node->redirect($location);
         }

@@ -124,6 +124,11 @@
    * @deprecated since ATK 5.2
    */
   define("NF_NO_IMPORT",               0);
+
+  /**
+   * Makes a node cache it's recordlist
+   */
+  define("NF_CACHE_RECORDLIST",   262144);
   
   define("NF_EXPORT",         1073741824);
   

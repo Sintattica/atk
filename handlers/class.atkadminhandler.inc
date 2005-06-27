@@ -30,12 +30,12 @@
   atkimport("atk.handlers.atkactionhandler");
    
   class atkAdminHandler extends atkActionHandler
-  {
+  {    
     /**
      * The action method
      */
     function action_admin()
-    {
+    {      
       $page = &$this->getPage();
       
       $res = array();
@@ -46,10 +46,9 @@
           $res[]=$this->invoke("addPage");
         }
       }
-      $res[]= $this->invoke("adminPage");
+      $res[] = $this->invoke("adminPage");
                         
       $page->addContent($this->m_node->renderActionPage("admin", $res));
-            
     }
     
     /**
@@ -82,6 +81,16 @@
     {     
       $node = &$this->m_node;
       $node->addStyle("style.css");
+      
+      if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
+        if ($this->_setRecordlistCache())
+           $cached = $this->m_recordlistcache->getCache();
+           
+      if ($cached)
+      {
+        atkdebug("Using recordlist cache: {$this->m_recordlistcache->m_cacheid}");
+        return $cached;
+      }
       
       $ui = &$this->getUi();
       if (is_object($ui))
@@ -159,13 +168,15 @@
         
         $output = $ui->renderList("admin", $params);   
       
-        return $ui->renderBox(array("title"=>$node->actionTitle('admin'),
+        $output = $ui->renderBox(array("title"=>$node->actionTitle('admin'),
                                     "content"=>$output));
+        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $this->m_recordlistcache->writeCache($output, $recordlist->m_actionloader);
       }                 
       else
       {
         atkerror("Failed to create ui object");
-      }      
+      } 
+      return $output;     
     }
     
     /**

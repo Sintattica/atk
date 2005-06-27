@@ -39,6 +39,9 @@
   class atkActionHandler
   {
     /** @access private */
+    var $m_recordlistcache;
+    
+    /** @access private */
     var $m_node = NULL;
     
     /** @access private */
@@ -185,6 +188,17 @@
         return new atkActionHandler(); // De default handler will automatically
                                        // invoke the node methods.
       }
+    }
+    
+    function _setRecordlistCache()
+    {
+      if (!$this->m_recordlistcache)
+      {
+        $this->m_recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
+        $this->m_recordlistcache->setNode($this->m_node);
+        $this->m_recordlistcache->setPostvars($this->m_postvars);
+      }
+      return true;
     }
   }
 

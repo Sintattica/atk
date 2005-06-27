@@ -63,6 +63,11 @@
       if($this->m_node->deleteDb($this->m_postvars['atkselector']))
       {
         $this->m_node->m_db->commit();
+        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) 
+        {
+          if ($this->_setRecordlistCache())
+            $this->m_recordlistcache->clearCache($this->m_node->m_type);
+        }
         $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
         $this->m_node->redirect($location);
       }
