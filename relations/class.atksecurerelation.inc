@@ -301,8 +301,6 @@
         {
         if ($this->m_cachefield && is_numeric($cryptedlink) && $cryptedlink && $record[$this->m_ownerInstance->primaryKeyField()])
         {
-          atk_var_dump($this->m_ownerInstance->primaryKeyField(),"pkfield");
-          atk_var_dump($record,"<h1>record</h1>");
           $g_db->query("UPDATE {$this->m_ownerInstance->m_table}
                               SET {$this->m_cachefield}='$cryptedlink'
                               WHERE ".$this->m_ownerInstance->primaryKeyField()." = '".
