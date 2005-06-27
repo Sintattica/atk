@@ -86,7 +86,7 @@
        $leveltable = atkconfig("auth_leveltable");
        $userfield = atkconfig("auth_userfield");
        $userpk = atkconfig("auth_userpk");
-
+       $userfk = atkconfig("auth_userfk", $userpk);
        if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
@@ -102,7 +102,7 @@
 	       $qryobj = new $objname();
 	       $qryobj->addTable($usertable);
 	       $qryobj->addField("*");
-	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userpk", true);
+	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userfk", true);
 	       $qryobj->addCondition("$usertable.$userfield = '$user'");
 	       $query = $qryobj->buildSelect();
        }
