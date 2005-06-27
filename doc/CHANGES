@@ -77,7 +77,11 @@ Changes in ATK 5.2.2
 * Made edithandler pass the proper module to atktext() when looking 
   for a tooltip [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
-
++ Added a config option to the config.inc.php to configure the name of the
+  foreign key (of the user table) into the level table ($config_auth_userfk).
+  This option is available in the SECURITY CONFIGURATION section.
+  If $config_auth_userfk is not set, $config_auth_userpk is used as a
+  default [Mlooise]
 
 Changes in ATK 5.2.1
 --------------------
