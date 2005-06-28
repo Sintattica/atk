@@ -83,7 +83,7 @@
       $node->addStyle("style.css");
       
       if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
-        if ($this->_setRecordlistCache())
+        if ($this->getRecordlistCache())
            $cached = $this->m_recordlistcache->getCache();
            
       if ($cached)

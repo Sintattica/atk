@@ -190,7 +190,7 @@
       }
     }
     
-    function _setRecordlistCache()
+    function getRecordlistCache()
     {
       if (!$this->m_recordlistcache)
       {
@@ -198,7 +198,16 @@
         $this->m_recordlistcache->setNode($this->m_node);
         $this->m_recordlistcache->setPostvars($this->m_postvars);
       }
-      return true;
+      return $this->m_recordlistcache;
+    }
+    
+    function clearCache()
+    {
+      if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
+      {
+        if ($this->getRecordlistCache())
+        $this->m_recordlistcache->clearCache($this->m_node->atkNodeType());
+      }
     }
   }
 

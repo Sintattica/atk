@@ -1090,7 +1090,7 @@
           $this->$action($validrec);
         }
       }
-      
+      $this->clearCache();
       if ($this->showErrors($importerrors, array("msg"=>atktext("import_importedreminder")))) return;
       
       //return;
