@@ -908,7 +908,11 @@
       {
         $this->m_recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
         $this->m_recordlistcache->setNode($this->m_destInstance);
-        $this->m_recordlistcache->setPostvars($this->m_destInstance->m_postvars);
+        $postvars = $this->m_destInstance->m_postvars;
+        $postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+        $postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+        $postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'];
+        $this->m_recordlistcache->setPostvars($postvars);
         $this->m_recordlistcache->addCacheIdentifier(array('key'=>"embeded"));
       }
       return true;
