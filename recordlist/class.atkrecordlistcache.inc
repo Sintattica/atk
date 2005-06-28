@@ -107,23 +107,18 @@
         }
         atkdebug("New cache created for {$this->m_node->m_module}.{$this->m_node->m_type} and written to: $this->m_cacheid");
       }
+      return;
     }
     
     function noCaching()
     {
-      global $atkorderby;
-     
-      if ($atkorderby || ($this->m_postvars['atksearchmode'] && atk_value_in_array($this->m_postvars['atksearchmode'])))
-      {
+      if ($this->m_postvars['atkorderby'] || ($this->m_postvars['atksearch'] && atk_value_in_array($this->m_postvars['atksearch'])))
         return true;
-      }
       else
-      {
         return false;
-      }
     }
     
-    function clearCache($node="")
+    function clearCache()
     {
       atkimport("atk.utils.atkdirectorytraverser");
       $cachedir = atkconfig("atktempdir")."rlcache/";
@@ -155,13 +150,12 @@
     function getIdentifiers()
     {
       $identifiers=array();
-      $identifiers[] = $this->m_node->m_type."cache";
+      $identifiers[] = $this->m_node->atkNodeType()."cache";
       if ($this->m_node->m_cacheidentifiers) 
       {
         $this->_formatIdentifiers($this->m_node->m_cacheidentifiers,$identifiers);
       }
       $this->_formatIdentifiers($this->m_cacheidentifiers, $identifiers);
-      
       return $identifiers;
     }
     
