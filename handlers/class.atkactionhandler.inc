@@ -37,10 +37,7 @@
    * @abstract   
    */
   class atkActionHandler
-  {
-    /** @access private */
-    var $m_recordlistcache;
-    
+  {   
     /** @access private */
     var $m_node = NULL;
     
@@ -192,21 +189,23 @@
     
     function getRecordlistCache()
     {
-      if (!$this->m_recordlistcache)
+      static $recordlistcache;
+      if (!$recordlistcache)
       {
-        $this->m_recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
-        $this->m_recordlistcache->setNode($this->m_node);
-        $this->m_recordlistcache->setPostvars($this->m_postvars);
+        $recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
+        $recordlistcache->setNode($this->m_node);
+        $recordlistcache->setPostvars($this->m_postvars);
       }
-      return $this->m_recordlistcache;
+      return $recordlistcache;
     }
     
     function clearCache()
     {
       if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
       {
-        if ($this->getRecordlistCache())
-        $this->m_recordlistcache->clearCache($this->m_node->atkNodeType());
+        $recordlistcache = $this->getRecordlistCache();
+        if ($recordlistcache)
+          $recordlistcache->clearCache($this->m_node->atkNodeType());
       }
     }
   }

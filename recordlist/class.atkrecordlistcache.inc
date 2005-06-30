@@ -15,6 +15,17 @@
    
   /**
    * RecordlistCaching class
+   * This class should take care of all the caching of recordlists.
+   * Using this you should be able to dramatically improve the performance of
+   * your application.
+   *
+   * It works by storing the HTML output of recordlist in an 'rlcache' directory
+   * in the atktempdir.
+   * In addition to this you can specify your own 'identifiers' (in your node or on the instance)
+   * of this class) in a member variable called 'm_cacheidentifiers'.
+   * Use these vars to identify between different situations per node.
+   *
+   * Example: $this->m_cacheidentifiers=array(array('key'=>'answer','value'=>$answer));
    *
    * @author Boy Baukema <boy@ibuildings.nl>
    * @package atk
@@ -22,32 +33,77 @@
    */
   class atkRecordlistCache
   {
+    /**
+     * The directory where we store the cache
+     * @var String
+     * @access private
+     */
     var $m_cachedir;
     
+    /**
+     * The full path of the cachefile
+     * @var String
+     * @access private
+     */
     var $m_cacheid;
     
+    /**
+     * The postvars for the recordlist
+     * @var Array
+     * @access private
+     */
     var $m_postvars;
     
+    /**
+     * The node of the recordlist
+     * @var Object
+     * @access private
+     */
     var $m_node;
     
+    /**
+     * The cache identifiers
+     * These are the variables that make a cacheid unique
+     * @var Array
+     * @access private
+     */
     var $m_cacheidentifiers;
     
+    /**
+     * The constructor
+     * This is a singleton, so please use the getInstance method
+     * @param Object $node The node of the recordlist 
+     * @param string $postvars The postvars of the recordlist
+     * @access private
+     */
     function atkRecordlistCache($node="",$postvars="")
     {
       $this->m_node = $node;
       $this->m_postvars = $postvars;
     }
     
+    /**
+     * Setter for the node of the recordlistcache
+     * @param Object $node The node of the recordlist 
+     */
     function setNode($node)
     {
       $this->m_node = $node;
     }
     
+    /**
+     * Setter for the postvars of the recordlistcache
+     * @param string $postvars The postvars of the recordlist
+     */
     function setPostvars($postvars)
     {
       $this->m_postvars = $postvars;
     }
     
+    /**
+     * Gets the cache of the recordlist and registers the appropriate javascript
+     * @return string The cached recordlist
+     */
     function getCache()
     {
       $output=false;
@@ -69,6 +125,9 @@
       return $output;
     }
     
+    /**
+     * Makes sure the m_cachedir and the m_cacheid are properly set
+     */
     function _setCacheId()
     {
       $this->m_cachedir = atkconfig("atktempdir")."rlcache/";
@@ -78,6 +137,11 @@
       if (!file_exists($this->m_cachedir) || !is_dir($this->m_cachedir)) mkdir($this->m_cachedir,0700);
     }
     
+    /**
+     * Writes a cached recordlist to the rlcache directory
+     * @param string $output       The HTML output of the recordlist
+     * @param string $actionloader The actionloader js part of the recordlist
+     */
     function writeCache($output, $actionloader)
     {
       if (!$this->noCaching())
@@ -110,6 +174,11 @@
       return;
     }
     
+    /**
+     * Wether or not to use caching
+     * We don't cache when we are ordering or searching on a recordlist
+     * @return bool Wether or not to use caching
+     */
     function noCaching()
     {
       if ($this->m_postvars['atkorderby'] || ($this->m_postvars['atksearch'] && atk_value_in_array($this->m_postvars['atksearch'])))
@@ -118,6 +187,9 @@
         return false;
     }
     
+    /**
+     * Clears the current recordlist cache
+     */
     function clearCache()
     {
       atkimport("atk.utils.atkdirectorytraverser");
@@ -147,6 +219,10 @@
       atkdebug("Cache for {$this->m_node->m_module}.{$this->m_node->m_type} cleared");
     }
     
+    /**
+     * Gets all the current identifiers and returns them in an array
+     * @return Array The identifiers
+     */
     function getIdentifiers()
     {
       $identifiers=array();
@@ -159,6 +235,12 @@
       return $identifiers;
     }
     
+    /**
+     * Formats the identifiers in a '_keyvalue' way
+     * @param Array The identifiers to format
+     * @param Array The formatted identifiers so far
+     * @return Array The formatted identifiers
+     */
     function _formatIdentifiers($identifiers, &$output)
     {
       foreach ($identifiers as $identifier)
@@ -168,6 +250,10 @@
       return $output;
     }
     
+    /**
+     * Adds a cache identifier
+     * @param Array $identifier The extra cache identifier
+     */
     function addCacheIdentifier($identifier)
     {
       $this->m_cacheidentifiers[] = $identifier;

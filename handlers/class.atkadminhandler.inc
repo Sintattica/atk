@@ -82,13 +82,13 @@
       $node = &$this->m_node;
       $node->addStyle("style.css");
       
-      if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
-        if ($this->getRecordlistCache())
-           $cached = $this->m_recordlistcache->getCache();
+      $recordlistcache = $this->getRecordlistCache();
+      if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST) && $recordlistcache)
+         $cached = $recordlistcache->getCache();
            
       if ($cached)
       {
-        atkdebug("Using recordlist cache: {$this->m_recordlistcache->m_cacheid}");
+        atkdebug("Using recordlist cache: {$recordlistcache->m_cacheid}");
         return $cached;
       }
       
@@ -170,7 +170,7 @@
       
         $output = $ui->renderBox(array("title"=>$node->actionTitle('admin'),
                                     "content"=>$output));
-        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $this->m_recordlistcache->writeCache($output, $recordlist->m_actionloader);
+        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $recordlistcache->writeCache($output, $recordlist->m_actionloader);
       }                 
       else
       {
