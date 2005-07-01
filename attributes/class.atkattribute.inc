@@ -556,8 +556,8 @@
      * @return boolean
      */
     function isEmpty($record)
-    {
-      return ($record[$this->fieldName()]=="");
+    {      
+      return (!isset($record[$this->fieldName()])||$record[$this->fieldName()]=="");
     }
 
     /**
@@ -574,7 +574,11 @@
      */
     function value2db($rec)
     {
-      return escapeSQL($rec[$this->fieldName()]);
+      if (is_array($rec)&&isset($rec[$this->fieldName()]))
+      {
+        return escapeSQL($rec[$this->fieldName()]);
+      }
+      return NULL;
     }
 
     /**
@@ -591,7 +595,11 @@
      */
     function db2value($rec)
     {
-      return stripslashes($rec[$this->fieldName()]);
+      if (isset($rec[$this->fieldName()]))
+      {
+        return stripslashes($rec[$this->fieldName()]);
+      }
+      return NULL;
     }
 
     /**
@@ -606,8 +614,11 @@
      * @return String The internal value
      */
     function fetchValue($postvars)
-    {
-      return $postvars[$this->fieldName()];
+    {      
+      if (is_array($postvars)&&isset($postvars[$this->fieldName()]))
+      {
+        return $postvars[$this->fieldName()];
+      }
     }
 
     /**
@@ -626,7 +637,7 @@
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
     
       $result = '<input type="text" id="'.$id.'" name="'.$id.
-                '" value="'.htmlspecialchars($record[$this->fieldName()]).'"'.
+                '" value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
@@ -909,17 +920,23 @@
      *
      * @return String A piece of html-code
      */
-    function search($record="", $extended=false, $fieldprefix="")
-    {
+    function search($record=array(), $extended=false, $fieldprefix="")
+    {      
       // Evil bit to get searching in one-to-manys to work alongside
       // searching on normal recordlists.
       if (strstr($fieldprefix, "]["))
         $id = "atksearch[".$fieldprefix.$this->formName()."]";
       else
         $id = "atksearch$fieldprefix"."[".$this->formName()."]";
+        
+      $value="";
+      if (is_array($record)&&isset($record[$this->fieldName()]))
+      {
+        $value=$record[$this->fieldName()];
+      }
       
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
-      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+      $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$value.'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       
@@ -1110,7 +1127,9 @@
      */
     function sum($rec1, $rec2, $fieldprefix="")
     {
-      return array($fieldprefix.$this->fieldName() => ($rec1[$fieldprefix.$this->fieldName()]+$rec2[$fieldprefix.$this->fieldName()]));
+      $value1 = (isset($rec1[$fieldprefix.$this->fieldName()])?$rec1[$fieldprefix.$this->fieldName()]:0);
+      $value2 = (isset($rec2[$fieldprefix.$this->fieldName()])?$rec2[$fieldprefix.$this->fieldName()]:0);
+      return array($fieldprefix.$this->fieldName() => ($value1+$value2));
     }
 
     /**
@@ -1129,14 +1148,17 @@
       $attribname = $this->fieldName();
       // Only use meta info if size is not already set manual. (constructor or setAttribSize)
       // If both are set, use the smallest value.
-      if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $this->maxInputSize());
-      else $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
-      
-      if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], 20);
-      else $this->m_searchsize = min($metadata[$attribname]['len'], 20);   
-      
-      if ($this->m_maxsize > 0) $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
-      else $this->m_maxsize = $metadata[$attribname]['len'];
+      if (isset($metadata[$attribname]))
+      {
+        if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $this->maxInputSize());
+        else $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
+        
+        if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], 20);
+        else $this->m_searchsize = min($metadata[$attribname]['len'], 20);   
+        
+        if ($this->m_maxsize > 0) $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
+        else $this->m_maxsize = $metadata[$attribname]['len'];
+      }
       
       // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
       // set accordingly. Currently the metadata contains database specific types, so this

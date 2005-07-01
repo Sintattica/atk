@@ -73,12 +73,12 @@
       $shortmonth = substr(strtolower($date["month"]), 0, 3);
       
       /* store the text calls */
-      if(!$langcache[$month])
+      if(!isset($langcache[$month]))
       {
         $langcache[$month]= text(strtolower($month),"","atk");
       }
       
-      if(!$langcache[$shortmonth])
+      if(!isset($langcache[$shortmonth]))
       {
         $langcache[$shortmonth] = text($shortmonth,"","atk");
       }
@@ -100,8 +100,12 @@
     function getDays($date)
     {
       /* the last day of any given month can be expressed as the "0" day of the next month! */
-      $date = adodb_getdate(adodb_mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
-      return $date["mday"];
+      if (isset($date["mon"])&&isset($date["year"]))
+      {
+        $date = adodb_getdate(adodb_mktime (0, 0, 0, $date["mon"]+1, 0, $date["year"]));
+        return $date["mday"];
+      }
+      return "";
     }
 
     /**
@@ -185,6 +189,8 @@
      */
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
+      $result = "";
+      
       $pda = browserInfo::detectPDA();
       
       if (!$pda) $this->_registerScripts();
@@ -327,7 +333,7 @@
           else  
           {
             $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);  
-            $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.$current["year"].'">';
+            $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
         }
 
@@ -383,10 +389,10 @@
           if (!$pda)
           {
             for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
-            {
-              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, $current["year"]));
+            {              
+              $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, (isset($current["year"])?$current["year"]:0)));
               $str_month = $this->formatDate($tmp_date, $str_format[$i]);
-              $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
+              $result .= '<option value="'.$j.'" '.(isset($current["mon"]) && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
             }
           }
           else 
@@ -638,7 +644,7 @@
      */
     function db2value($rec)
     {
-      if (strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
+      if (!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()]) == 0 || (int)substr($rec[$this->fieldName()], 0, 4) == 0) return "";
       return array("year" =>substr($rec[$this->fieldName()], 0, 4),
                    "month"=>substr($rec[$this->fieldName()], 5, 2),
                    "day"  =>substr($rec[$this->fieldName()], 8, 2));
@@ -650,10 +656,14 @@
      * @return array with 3 fields (year, month, day)
      */
     function fetchValue($postvars)
-    {
-      if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
-      elseif (empty($postvars[$this->formName()])) return "";
-      else return $this->dateArray(adodb_date("Ymd", strtotime($postvars[$this->formName()])));
+    {      
+      if (is_array($postvars))
+      {
+        if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
+        elseif (empty($postvars[$this->formName()])) return "";
+        else return $this->dateArray(adodb_date("Ymd", strtotime($postvars[$this->formName()])));
+      }
+      return NULL;
     }
 
     /**
