@@ -51,7 +51,6 @@
       else
       {                
         $res = $this->invoke("editPage", $recordset[0], false);       
-        echo $this->m_node->test;
       }
             
       $page->addContent($this->m_node->renderActionPage("edit", $res));
@@ -82,9 +81,18 @@
       $ui = &$node->getUi();
       
       if (is_object($ui))
-      {      
-        $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
-        $form =$this->editForm("edit",$record,$forceList,$node->m_postvars['atksuppress']);
+      { 
+        $forceList = array();
+        if (isset($node->m_postvars['atkfilter']))
+        {     
+          $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
+        }
+        $suppressList = array();
+        if (isset($node->m_postvars['atksuppress']))
+        {
+          $suppressList = $node->m_postvars['atksuppress'];
+        }
+        $form =$this->editForm("edit",$record,$forceList,$suppressList);
 
         $params["content"] = $node->tabulate("edit", $form);
         
@@ -213,7 +221,7 @@
         {
         }        
         /* only full HTML */
-        elseif ($field["line"]!="")
+        elseif (isset($field["line"]))
         {
           $tplfield["line"] = $field["line"];
         }
@@ -225,16 +233,16 @@
             $this->_addNumbering($field, $tplfield, $i);
           }
           
-          /* does the field have a label? */
-          if ($field["label"]!=="AF_NO_LABEL")
-          {
+          /* does the field have a label? */          
+          if (isset($field["label"]) && $field["label"]!=="AF_NO_LABEL")
+          {            
             if ($field["label"] == "") 
             {
               $tplfield["label"] = "";
             }
             else
             {
-              $tplfield["label"] .=  $field["label"];
+              $tplfield["label"] = $field["label"];
               if ($field["error"]) // TODO KEES
               {
                 $tplfield["error"] = $field["error"];
@@ -245,6 +253,7 @@
           {
           	$tplfield["label"]="AF_NO_LABEL";
           }
+          
           
           /* html source */
           $tplfield["widget"] = $field["html"];
@@ -278,6 +287,9 @@
       $ui = &$this->getUi();
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");      
+      
+      $result = "";
+      
       foreach ($data["hide"] as $hidden)
       {
         $result.= $hidden;

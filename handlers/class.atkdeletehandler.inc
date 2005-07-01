@@ -45,7 +45,7 @@
         // If we got here, then the node is not locked and we haven't displayed the
         // confirmation page yet, so we display it
         $page = &$this->getPage();        
-        $page->addContent($this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", $locked, TRUE));        
+        $page->addContent($this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE));        
       }
       else
       {

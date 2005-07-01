@@ -83,8 +83,11 @@
       $node->addStyle("style.css");
       
       $recordlistcache = $this->getRecordlistCache();
+      $cached = "";
       if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST) && $recordlistcache)
-         $cached = $recordlistcache->getCache();
+      {
+        $cached = $recordlistcache->getCache();
+      }
            
       if ($cached)
       {
@@ -99,11 +102,11 @@
 
         // When there's a lot of data, records will be spread across multiple
         // pages.
-        if ($node->m_postvars['atklimit']=="") $node->m_postvars['atklimit']=atkconfig("recordsperpage");
-        if ($node->m_postvars['atkstartat']=="") $node->m_postvars['atkstartat']=0;
+        if (!isset($node->m_postvars['atklimit'])) $node->m_postvars['atklimit']=atkconfig("recordsperpage");
+        if (!isset($node->m_postvars['atkstartat'])) $node->m_postvars['atkstartat']=0;
 
-        $recordset = $node->selectDb($node->m_postvars['atkfilter'],
-                                     $node->m_postvars['atkorderby'],
+        $recordset = $node->selectDb(@$node->m_postvars['atkfilter'],
+                                     @$node->m_postvars['atkorderby'],
                                      array("offset" => $node->m_postvars['atkstartat'], "limit" => $node->m_postvars['atklimit']),
                                      $node->m_listExcludes,
                                      "",
@@ -123,8 +126,8 @@
         
 
         // check for search-action (if search returns only one record!)
-        if (is_array($node->m_postvars['atksearch']) && count($node->m_postvars['atksearch']) > 0 &&
-            is_array($node->m_search_action) && count($recordset) == 1)
+        if (isset($node->m_postvars["atksearch"]) && is_array($node->m_postvars['atksearch']) 
+            && count($node->m_postvars['atksearch']) > 0 && is_array($node->m_search_action) && count($recordset) == 1)
         {
           for ($i = 0, $_i = count($node->m_search_action); $i < $_i; $i++)
             if ($node->allowed($node->m_search_action[$i], $recordset[$i]))
@@ -145,14 +148,14 @@
         $navigator = &atknew("atk.utils.atknavigator");
         if ($node->m_index != "") 
         {
-          $params["index"] = $navigator->buildIndex($node, $recordset[0][$node->m_index]);
+          $params["index"] = $navigator->buildIndex($node, (count($recordset)>0?$recordset[0][$node->m_index]:""));
         }        
         
         $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
      
         if ($navigation)
         {
-          if ($params["index"]) $params["index"].="<br />";
+          if (isset($params["index"])) $params["index"].="<br />";
           $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
         }
         
@@ -232,7 +235,8 @@
       if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
       {
         $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-        if ($GLOBALS["txt_link_".getNodeType($this->m_node->m_type)."_add"]!="")
+        $lngkey = "txt_link_".getNodeType($this->m_node->m_type)."_add";
+        if (isset($GLOBALS[$lngkey]))
         {
           // specific text
           $label = text("link_".getNodeType($this->m_node->m_type)."_add");
@@ -240,7 +244,7 @@
         else
         {
           // generic text
-          $label = text(getNodeType($node->m_type))." ".text("add","","atk");
+          $label = text(getNodeType($this->m_node->m_type))." ".text("add","","atk");
         }
         return href($addurl,$label,SESSION_NESTED);
       }

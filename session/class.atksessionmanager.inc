@@ -35,7 +35,7 @@
   // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
   // we don't have a session...
   if (isSessionIdValid())
-  {
+  {   
     session_name(atkconfig("identifier"));
     session_start();    
   
@@ -45,7 +45,7 @@
   // There are old applications however that still use $g_sessionData, so I'll 
   // leave it in place for now.
     $g_sessionData = &$_SESSION[$config_identifier];
-  }
+  }  
   define("SESSION_DEFAULT",0); // stay at current stacklevel
   define("SESSION_NEW",1);     // new stack
   define("SESSION_NESTED",2);  // new item on current stack
@@ -163,7 +163,11 @@
       global $g_sessionData;            
       if ($namespace=="globals") return $g_sessionData["globals"][$var];
       else if ($namespace!="") return $g_sessionData[$namespace]["globals"][$var];
-      return $g_sessionData[$this->m_namespace]["globals"][$var];
+      if (isset($g_sessionData[$this->m_namespace]["globals"][$var]))
+      {
+        return $g_sessionData[$this->m_namespace]["globals"][$var];
+      }
+      return NULL;
     }
 
     /**
@@ -253,7 +257,7 @@
         {
           $currentitem[$var] = $value;
         }
-        if (!is_array($currentitem["defined_pagevars"])||!in_array($var, $currentitem["defined_pagevars"]))
+        if (!isset($currentitem["defined_pagevars"])||!is_array($currentitem["defined_pagevars"])||!in_array($var, $currentitem["defined_pagevars"]))
         {
           $currentitem["defined_pagevars"][] = $var;
         }
@@ -396,13 +400,16 @@
             foreach($copieditem as $key=>$value)
             {
               if(in_array($key, $sessionVars)||
-                 (is_array($copieditem["defined_stackvars"])
+                 (isset($copieditem["defined_stackvars"])&&is_array($copieditem["defined_stackvars"])
                   &&in_array($key,$copieditem["defined_stackvars"])))
               {
                 $currentitem[$key] = $value;
               }
             }
-            $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
+            if (isset($copieditem["defined_stackvars"]))
+            {
+              $currentitem["defined_stackvars"]= $copieditem["defined_stackvars"];
+            }
           }                  
 
           // Posted vars always overwrite anything in the current session..
@@ -466,7 +473,7 @@
           foreach($currentitem as $var => $value)
           {
             // don't override what was passed in the url.
-            if ($postvars[$var]=="")
+            if (!isset($postvars[$var]))
             {
               $postvars[$var] = $value;            
             }
@@ -528,7 +535,7 @@
       $res = array();
       for ($i=0;$i<count($stack)-1;$i++)
       {
-        if ($stack[$i]["descriptor"])
+        if (isset($stack[$i]["descriptor"]))
         {
           $node = explode(".",$stack[$i]["atknodetype"]);
           $res[] = atktext($node[1],$node[1])." [ ".$stack[$i]["descriptor"]." ] ";
@@ -593,7 +600,7 @@
      * @return array The application aware php session.
      */
     function &getSession()
-    {
+    {      
       return $_SESSION[atkconfig("identifier")];
     }
 
@@ -774,22 +781,30 @@
    * @return bool Wether or not the sessionid is valid
    */
   function isSessionIdValid()
-  {   
+  {           
   	$name = atkconfig("identifier");
+  	$sessionid = "";
     global ${$name};
 
-    if ($_COOKIE[$name]) $oldsessionid = $_COOKIE[$name];
-    else $oldsessionid = ${$name};
+    if (isset($_COOKIE[$name])&&$_COOKIE[$name]) 
+    {
+      $sessionid = $_COOKIE[$name];
+    }
+    else 
+    {
+      $sessionid = ${$name};
+    }
+    
+    if ($sessionid=="") return true;
+    
+    //echo $name.": ".$sessionid;
+    //var_dump($_COOKIE);
     
     for ($position=0; $position<32; $position++)
     {
-      if (eregi('[a-zA-Z0-9]', substr($oldsessionid, $position, 1)))
-      {
-        $sessionid .= substr($oldsessionid, $position, 1);
-      }
-    }
-    if ($oldsessionid !== $sessionid) return false;
-    else return true;
+      if (!eregi('[a-zA-Z0-9]', $sessionid[$position])) return false;
+    }    
+    return true;
   }
 
 ?>

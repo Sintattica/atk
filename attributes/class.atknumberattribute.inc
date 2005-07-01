@@ -44,7 +44,11 @@
     
     function display($record, $mode="")
     {      
-      return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
+      if (isset($record[$this->fieldName()]))
+      {
+        return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
+      }
+      return "";
     }
     
     /**
@@ -100,7 +104,10 @@
      */
     function fetchValue($postvars)
     {
-      return atkNumberAttribute::standardiseSeparator($postvars[$this->fieldName()]);
+      if (is_array($postvars))
+      {
+        return atkNumberAttribute::standardiseSeparator($postvars[$this->fieldName()]);
+      } 
     }
     
     
@@ -173,7 +180,9 @@
      */
     function search($record="", $extended=false, $fieldprefix="")
     {
-      $value = $record[$this->fieldName()];
+      $value = "";
+      if (isset($record[$this->fieldName()])) $value = $record[$this->fieldName()];
+      
       if (!$extended) 
       {
         if (is_array($value))
@@ -220,6 +229,7 @@
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
+      $searchcondition = "";
     	if (!is_array($value))
       {        
         $slash = strpos($value, "/"); // Support for 'from/to' searches.

@@ -111,14 +111,14 @@
       }
       foreach ($g_modules as $modname => $pathname)
       {        
-        if (!hasFlag($g_moduleflags[$modname], MF_NORIGHTS))
+        if (!isset($g_moduleflags[$modname])||!hasFlag($g_moduleflags[$modname], MF_NORIGHTS))
         {
           $mod_inst = &getModule($modname);
           if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();          
         }
       }
 
-      $result.='<div align="right">
+      $result='<div align="right">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
                     text("check_all").
              '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
@@ -151,7 +151,8 @@
       foreach ($modcopy as $modname => $pathname)
       {
         //echo "<br><hr>".var_dump($g_modules);        
-        $nodes = $g_nodes[$modname];
+        $nodes = (isset($g_nodes[$modname])?$g_nodes[$modname]:array());
+        
         $mainHtml="";
         
         if (count($nodes) > 0)
@@ -160,8 +161,8 @@
           
           foreach($nodes as $node => $actionarr)
           {            
-            $checked_actions = $checked["$modname.$node"];
-            $active_actions = $active["$modname.$node"];
+            $checked_actions = isset($checked["$modname.$node"])?$checked["$modname.$node"]:array();
+            $active_actions = isset($active["$modname.$node"])?$active["$modname.$node"]:array();
             if (is_array($actionarr))
             {              
               
@@ -230,14 +231,18 @@
       $label = text("permission_".$action, $nodename, $modulename); // module/node specific text
       if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
       {
-        $label = text($action, $node, $modulename); // generic action text.        
+        $label = text($action, $nodename, $modulename); // generic action text.        
       }
       return $label;
     }
 
     function fetchValue($postvars)
-    {
-      $checkboxes = $postvars[$this->fieldName()];
+    {      
+      $checkboxes = array();
+      if (isset($postvars[$this->fieldName()]))
+      {
+        $checkboxes = $postvars[$this->fieldName()];
+      }
       $actions = Array();
       for($i=0;$i<count($checkboxes);$i++)
       {

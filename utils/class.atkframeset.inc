@@ -177,6 +177,7 @@
      */     
     function render()
     {
+      $res = "";
       foreach($this->m_childs as $abstractframe)
       {
         $res.=$abstractframe->render(false);

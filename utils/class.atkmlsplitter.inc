@@ -177,7 +177,9 @@
     function addMlCondition(&$query,&$node,$mode)
     {
       global $ATK_VARS;
-      $lng = $ATK_VARS["lng"];
+     
+      $lng = (isset($ATK_VARS["lng"])?$ATK_VARS["lng"]:"");
+      
       if (!$lng) $lng = $node->m_defaultlanguage;
 
       if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")

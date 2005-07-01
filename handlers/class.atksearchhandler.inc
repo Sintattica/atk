@@ -42,7 +42,9 @@
     function action_search()
     {
       $page = &$this->getPage();
-      $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $this->m_postvars["atksearch"])));
+      $searcharray = array();
+      if (isset($this->m_postvars["atksearch"])) $searcharray = $this->m_postvars["atksearch"];
+      $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $searcharray)));
     }
     
     /**

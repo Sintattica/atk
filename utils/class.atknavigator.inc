@@ -62,7 +62,7 @@
   	  $res = array();
       $limit = (int)$node->m_postvars['atklimit'];
      
-      if (!$filter) $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
+      if (!$filter && isset($node->m_postvars["atkfilter"])) $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
       
       $count = (int)$node->countDb($filter, $node->m_listExcludes, "", $mode);
 
@@ -100,8 +100,8 @@
                                   "url"=>$_SERVER["PHP_SELF"].
                                           "?atknodetype=".$ATK_VARS["atknodetype"].
                                           "&atkaction=".$action.
-                                          "&atktarget=".rawurlencode($ATK_VARS["atktarget"]).
-                                          "&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart);
+                                          (isset($ATK_VARS["atktarget"])?"&atktarget=".rawurlencode($ATK_VARS["atktarget"]):"").
+                                          "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".$newstart);
       }
       
       for ($i = $begpg; $i <= $endpg; $i++)
@@ -111,9 +111,9 @@
                                "url"=>$_SERVER["PHP_SELF"].
                                         "?atknodetype=".$ATK_VARS["atknodetype"].
                                         "&atkaction=".$action.
-                                        "&atkstartat".$node->m_postvars["limitPostfix"]."=".max(0, ($i-1) * $limit).
-                                        "&atkselector=".rawurlencode($ATK_VARS['atkselector']).
-                                        "&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
+                                        "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".max(0, ($i-1) * $limit).
+                                        (isset($ATK_VARS["atkselector"])?"&atkselector=".rawurlencode($ATK_VARS['atkselector']):"").
+                                        (isset($ATK_VARS["atktarget"])?"&atktarget=".rawurlencode($ATK_VARS["atktarget"]):""));
       }
 
       if ($curr < $pages)
@@ -123,8 +123,8 @@
                               "url"=>$_SERVER["PHP_SELF"].
                                       "?atknodetype=".$ATK_VARS["atknodetype"].
                                       "&atkaction=".$node->m_action.
-                                      "&atkstartat".$node->m_postvars["limitPostfix"]."=".$newstart.
-                                      "&atktarget=".rawurlencode($ATK_VARS["atktarget"]));
+                                      "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".$newstart.
+                                      (isset($ATK_VARS["atktarget"])?"&atktarget=".rawurlencode($ATK_VARS["atktarget"]):""));
       }
       return $res;
     }
@@ -137,7 +137,8 @@
      */
     function buildIndex(&$node, $selected="")
     {
-
+      $nav = "";
+      
       // TODO: show only those letters that are present in the database.
       // e.g. don't show the letter Q if there aren't any records starting
       // with a Q.
@@ -148,7 +149,7 @@
       for ($i=0;$i<$count;$i++)
       {
         $char = $available_letters[$i];
-        if (strtoupper($selected[0])==$char) $label="<b>$char</b>";
+        if ($selected!="" && strtoupper($selected[0])==$char) $label="<b>$char</b>";
         else $label=$char;
 
         // We use wildcard search for the index. Should be supported by any database.
@@ -160,7 +161,7 @@
         if ($i!=$count-1) $nav.=" ";
       }
       
-      if ($node->m_postvars['atksearch']) 
+      if (isset($node->m_postvars['atksearch'])) 
         $nav.=" - ".href(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"")), atktext("view_all"));
 
       return $nav;

@@ -38,7 +38,7 @@
     {
       $record = $this->m_node->updateRecord();
 
-      if ($this->m_postvars['atknoclose']!=""||$this->m_postvars['atksaveandclose']!="")
+      if (isset($this->m_postvars['atknoclose'])||isset($this->m_postvars['atksaveandclose']))
       {      
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
@@ -46,9 +46,13 @@
 
         $this->m_node->validate($record, "update");
 
-        $error = count($record['atkerror']) > 0;
-        foreach (array_keys($record) as $key)
-          $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
+        $error = false;
+        if (isset($record['atkerror']))
+        {
+          $error = count($record['atkerror']) > 0;
+          foreach (array_keys($record) as $key)
+            $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
+        }
 
         if ($error)
         {
@@ -82,8 +86,7 @@
             $this->m_node->m_db->commit();            
             
             $this->clearCache();
-            
-            if ($this->m_postvars['atknoclose']=="")
+            if (!isset($this->m_postvars['atknoclose']))
             {
               // 'save and close' was clicked
               $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
@@ -98,7 +101,7 @@
           }
         }
       }
-      else if ($this->m_postvars['atkcancel']!="")
+      else if (isset($this->m_postvars['atkcancel']))
       {
         // Cancel was pressed
         $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record);
@@ -118,10 +121,7 @@
       //update succesful, pk value might be changed so update m_orgkey
       $record["atkprimkey"] = $this->m_node->primaryKey($record);
       
-      if ($this->m_node->hasFlag(NF_LOCK))
-      {                              
-        $locked = true;
-      }
+      $locked = ($this->m_node->hasFlag(NF_LOCK));      
       
       //$this->setOrgKeyValue($record);
       $this->m_node->m_action = "edit";              

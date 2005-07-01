@@ -39,7 +39,7 @@
     {      
       $record = $this->m_node->updateRecord();   
       
-      if ($this->m_postvars['atkcancel']=="")
+      if (!isset($this->m_postvars['atkcancel']))
       {      
 
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
@@ -48,7 +48,7 @@
         $this->m_node->validate($record, "add");
 
 
-        if(!is_array($record['atkerror']))
+        if(!isset($record['atkerror']))
           $record['atkerror'] = array();
 
         $error = count($record['atkerror']) > 0;

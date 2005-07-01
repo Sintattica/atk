@@ -70,7 +70,11 @@
       $ui = &$node->getUi();
       if (is_object($ui))
       {        
-        $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
+        $forceList = array();
+        if (isset($node->m_postvars['atkfilter']))
+        {
+          $forceList = decodeKeyValueSet($node->m_postvars['atkfilter']);
+        }
         $form = $edithandler->editForm("add",$record,$forceList);                      
         
         $params["content"] = $node->tabulate("add", $form);                
