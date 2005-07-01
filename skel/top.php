@@ -49,8 +49,8 @@
                               "logouttext" => ucfirst(text("logout", "", "atk")),
                               "logoutlink" => "app.php?atklogout=1",
                               "logouttarget"=>"_top",
-                              "centerpiece"=>$centerpiece,
-                              "searchpiece"=>$searchpiece,
+                              "centerpiece"=>"",
+                              "searchpiece"=>"",
                               "title" => atktext("app_title"),
   			      "user"   => $g_user["name"]),
                               "top");
