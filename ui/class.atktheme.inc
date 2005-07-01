@@ -180,7 +180,7 @@
     {
       for($counter=0;$counter <= count($this->m_def[$name]);$counter++)
       {
-        if ($this->m_def[$name][$counter])
+        if (isset($this->m_def[$name])&&isset($this->m_def[$name][$counter])&&$this->m_def[$name][$counter])
         {
           foreach($this->m_def[$name][$counter] as $from => $itemarray)
           {
@@ -188,7 +188,7 @@
             {
               if ($item == $searchfor)
               {
-                return array("dir" => $from, "item" => $itemarray[$searchfor]);
+                return array("dir" => $from, "item" => isset($itemarray[$searchfor])?$itemarray[$searchfor]:NULL);
               }
             }
           }

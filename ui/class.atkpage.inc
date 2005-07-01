@@ -297,7 +297,7 @@
       if (count($this->m_loadscripts)) 
       {
         $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'';
-        if ($ATK_VARS['atktab']) $res.=$ATK_VARS['atktab'];
+        if (isset($ATK_VARS['atktab'])) $res.=$ATK_VARS['atktab'];
         $res.='\');}" ';
       }
       $res.= $extraprops.">\n";
@@ -346,6 +346,7 @@
      */
     function renderHiddenVars()
     {  	
+      $page = "";
     	if ($this->m_hiddenvars)
     	{
     	  $page.= "\n".'<div id="hiddenvars" style="display: none">';

@@ -81,13 +81,13 @@
                   "order"=> $order,
                   "module"=> $module);
         
-    if ($s_dupelookup[$parent][$name]!=""&&$name!="-")
+    if (isset($s_dupelookup[$parent][$name])&&$s_dupelookup[$parent][$name]!=""&&$name!="-")
     {
       $g_menu[$parent][$s_dupelookup[$parent][$name]] = $item;
     }
     else
     {    
-      $s_dupelookup[$parent][$name] = count($g_menu[$parent]);
+      $s_dupelookup[$parent][$name] = isset($g_menu[$parent])?count($g_menu[$parent]):0;
       $g_menu[$parent][] = $item;
     }
     if (empty($url)) $g_menu_parent[$name] = $parent;

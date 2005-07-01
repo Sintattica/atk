@@ -64,7 +64,7 @@
   function &getNode($node, $init=TRUE, $cache_id="default")
   {
     global $g_nodeRepository;
-    if (!is_object($g_nodeRepository[$cache_id][$node]))
+    if (!isset($g_nodeRepository[$cache_id][$node])||!is_object($g_nodeRepository[$cache_id][$node]))
     {
       atkdebug("Constructing a new node - $node");
       $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
@@ -79,7 +79,7 @@
   function &getModule($modname)
   {
     global $g_moduleRepository;
-    if (!is_object($g_moduleRepository[$modname]))
+    if (!isset($g_moduleRepository[$modname])||!is_object($g_moduleRepository[$modname]))
     {
       atkdebug("Constructing a new module - $modname");
       if (class_exists("mod_".$modname))
@@ -197,10 +197,13 @@
   function moduleDir($module)
   {
     global $g_modules;
-    $dir = $g_modules[$module];
-    if ($dir=="") return "";
-    else if (substr($dir,-1)!='/') return $dir."/";
-    return $dir;
+    if (isset($g_modules[$module]))
+    {
+      $dir = $g_modules[$module];     
+      if (substr($dir,-1)!='/') return $dir."/";
+      return $dir;
+    }
+    return "";
   }
 
   /**

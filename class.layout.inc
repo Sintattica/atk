@@ -87,7 +87,7 @@
       if (!$initialized)
       {
         global $g_theme;
-        if($g_theme["Name"]=="") $g_theme["Name"] = atkconfig("defaulttheme");
+        if(!isset($g_theme["Name"])||$g_theme["Name"]=="") $g_theme["Name"] = atkconfig("defaulttheme");
         if($g_theme["Name"]=="") $g_theme["Name"]="default";
         $this->initTheme();
         $this->import_layout();             
@@ -116,7 +116,7 @@
       $page = &$this->getPage();
       if (is_object($page))
       {
-        if ($g_theme["css_default"]!="")
+        if (isset($g_theme["css_default"])&&$g_theme["css_default"]!="")
         {
           $page->register_style($this->m_tpldir.$g_theme["css_default"]);
         }

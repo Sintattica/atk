@@ -20,43 +20,40 @@
   /** 
    * @internal includes and definitions
    */
-  require_once($config_atkroot."atk/security/class.auth_interface.inc");
+  $atkroot = atkconfig("atkroot");
+  require_once($atkroot."atk/security/class.auth_interface.inc");
   
   // initialise g_ array.
-  $g_user = array();
-  
-  if ($config_authentication == "") $config_authentication = "none";
-  if ($config_authorization  == "") $config_authorization = $config_authentication;
-  if ($config_securityscheme == "") $config_securityscheme = "none";
+  $g_user = array();    
   
   // Some result defines
   define ("AUTH_UNVERIFIED", 0); // initial value.
   define ("AUTH_SUCCESS", 1);
   define ("AUTH_LOCKED", 2);
   define ("AUTH_MISMATCH", 3);
-  define ("AUTH_ERROR",-1);
+  define ("AUTH_ERROR",-1); 
    
-  $authentication = explode(",",trim($config_authentication));
+  $authentication = explode(",",trim(atkconfig("authentication", "none")));
   if(is_array($authentication))
   {
     foreach($authentication as $value)
     {
       $value = trim($value);
-      if(is_file($config_atkroot."atk/security/class.auth_".$value.".inc"))
+      if(is_file($atkroot."atk/security/class.auth_".$value.".inc"))
       {
-        include_once($config_atkroot."atk/security/class.auth_".$value.".inc");
+        include_once($atkroot."atk/security/class.auth_".$value.".inc");
       }
     }
   }
   else
   {
-    if(is_file($config_atkroot."atk/security/class.auth_".$authentication.".inc"))
+    if(is_file($atkroot."atk/security/class.auth_".$authentication.".inc"))
     {
-      include_once($config_atkroot."atk/security/class.auth_".$authentication.".inc");
+      include_once($atkroot."atk/security/class.auth_".$authentication.".inc");
     }
   }
 
-  include_once($config_atkroot."atk/security/class.auth_".$config_authorization.".inc");
+  include_once($atkroot."atk/security/class.auth_".atkconfig("authorization", atkconfig("authentication", "none")).".inc");
    
   /**
    * The security manager for ATK applications.
@@ -135,14 +132,14 @@
     function authenticate()
     {    
       global $g_sessionManager, $ATK_VARS;      
-      $session = &atkSessionManager::getSession();
+      $session = &atkSessionManager::getSession();            
       
       $response=AUTH_UNVERIFIED;
       
       if (atkconfig("auth_loginform")==true) // form login
       {
-        $auth_user = $ATK_VARS["auth_user"];
-        $auth_pw = $ATK_VARS["auth_pw"];                
+        $auth_user = @$ATK_VARS["auth_user"];
+        $auth_pw = @$ATK_VARS["auth_pw"];                
       }
       else // HTTP login
       {
@@ -152,12 +149,12 @@
 
       $md5 = false; // PHP_AUTH_PW is plain text..            
       // first check if we want to logout
-      if (isset($ATK_VARS["atklogout"]) && $session["relogin"]!=1)
+      if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"])||$session["relogin"]!=1))
       {        
         session_destroy();
         $cookie_params = session_get_cookie_params();
         session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
-        session_start();
+        @session_start();
         $session["relogin"]=1;
 
         // destroy cookie
@@ -173,14 +170,14 @@
         }
       }  
       // do we need to login?
-      else if ($session["login"]!=1)
-      {         
+      else if (@$session["login"]!=1)
+      {             
         // authenticated?
         $authenticated = false;
 
         // sometimes we manually have to set the PHP_AUTH vars 
         // old style http_authorization
-        if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"]))
+        if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", @$_SERVER["HTTP_AUTHORIZATION"]))
         {
           list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
         }
@@ -347,7 +344,7 @@
         return false;
       }      
       // still not logged in?! 
-      if ($session["login"]!=1)
+      if (!isset($session["login"])||$session["login"]!=1)
       {
         if(atkconfig("auth_loginform"))
         {
@@ -369,7 +366,7 @@
       else if (isset($ATK_VARS["atklogout"])) header("Location: ".$_SERVER["PHP_SELF"]."?");
 
       // we keep the relogin state until the atklogout variable isn't set anymore
-      else if (!isset($ATK_VARS["atklogout"]) && $session["relogin"]==1) $session["relogin"]=0;
+      else if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"]==1) $session["relogin"]=0;
 
       // return
       // g_user always lowercase                  
@@ -435,7 +432,8 @@
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");      
             
-      $tplvars = Array();      
+      $tplvars = Array();    
+      $output = "";  
       $output.='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));       
       $output.='<br><br><table border=0 cellspacing=2 cellpadding=0 align=center>';                     
@@ -463,20 +461,20 @@
         
         if ($lastresponse == AUTH_LOCKED)
         {        
-          $output.="<tr><td colspan=2 class=error>".text('auth_account_locked')."<br><br></td></tr>";
+          $output.="<tr><td colspan=3 class=error>".text('auth_account_locked')."<br><br></td></tr>";
           $tplvars["auth_account_locked"] = text('auth_account_locked');
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
-          $output.='<tr><td colspan=2 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
+          $output.='<tr><td colspan=3 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
           $tplvars["auth_mismatch"] = text('auth_mismatch');
         }
 
         // generate the form
         $output.="<tr><td valign=top>".text('username')."</td><td>:</td><td>".$userField."</td></tr>";   
-        $output.="<tr><td colspan=2 height=6></td></tr>";
+        $output.="<tr><td colspan=3 height=6></td></tr>";
         $output.="<tr><td valign=top>".text('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
-        $output.="<tr><td colspan=2 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";      
+        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";      
                        
       }
       
@@ -783,7 +781,10 @@
     if (!is_object($g_securityManager))
     {
       // The one and only security manager.   
-      $g_securityManager = new atkSecurityManager(atkconfig("authentication"), atkconfig("authorization"), atkconfig("securityscheme"));   
+      $authentication = atkconfig("authentication", "none");
+      $authorization = atkconfig("authorization", $authentication);
+      $scheme = atkconfig("securityscheme", "none");
+      $g_securityManager = new atkSecurityManager($authentication, $authorization, $scheme);   
     }
     return $g_securityManager;
   }

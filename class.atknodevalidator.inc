@@ -134,7 +134,7 @@
           }
         }
       }
-      if(count($record['atkerror']) > 0) return false;
+      if(isset($record['atkerror'])&&count($record['atkerror']) > 0) return false;
 
       // After the values check, we check the Flags.
       foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname)
@@ -143,7 +143,7 @@
         {
           $p_attrib = &$this->m_nodeObj->m_attribList[$attribname];
 
-          if(count($record['atkerror']) > 0) return false;
+          //if(count($record['atkerror']) > 0) return false;
           //Validate if ne
           if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
           {
@@ -179,8 +179,11 @@
       
       $this->validateUniqueFieldSets($record);
 
-      for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
-        $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;
+      if (isset($record['atkerror']))
+      {
+        for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
+          $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;
+      }
     }
 
     /**

@@ -34,8 +34,8 @@
    * @param $errline: The line in the file on which the error occured.
    */
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
-  {
-    // Don't handle notices, and don't do anything if @ was u sed
+  {    
+    // Don't handle notices, and don't do anything if @ was used
     if ($errtype==E_NOTICE || (version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT) || 
         error_reporting()==0)
     {
@@ -470,8 +470,7 @@
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $g_stickyurl;
-    if ($name=="") $name=$url;
+    global $g_stickyurl;    
     if (strpos($url,"?")!==false)
     {
       $start = "&";
@@ -1003,7 +1002,7 @@
    */
   function atkversion()
   {
-    include($config_atkroot."version.inc");
+    include(atkconfig("atkroot")."atk/version.inc");
     return $atk_version;
   }
 
@@ -1037,7 +1036,7 @@
     global $lng;
     if($msg=="")  $msg = atktext($err,"atk","",$lng);
     
-    $rec['atkerror'][] = array( attrib_name=> $attrib, err => $err, msg => $msg, tab=>$tab);
+    $rec['atkerror'][] = array( "attrib_name"=> $attrib, "err" => $err, "msg" => $msg, "tab"=>$tab);
   }
 
 
@@ -1271,7 +1270,11 @@
   function getUniqueID($sequence)
   {
     static $unique = array();
-    return ++$unique[$sequence];
+    if (isset($unique[$sequence]))
+    {
+      return ++$unique[$sequence];
+    }
+    return 1;
   }
 
   /**
@@ -1313,6 +1316,7 @@
   function makeHiddenPostvars($excludes=array())
   {
     global $ATK_VARS;
+    $str = "";
     
     if(count($ATK_VARS ))
     {

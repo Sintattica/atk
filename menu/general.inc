@@ -24,15 +24,15 @@
    * @internal Includes etc.
    */
   include_once(atkconfig("atkroot")."atk/atkmenutools.inc");
-
-  $atkmenutop = $_REQUEST["atkmenutop"];
+  
+  $atkmenutop = @$_REQUEST["atkmenutop"];
 
   /* first add module menuitems */
 	global $g_modules;
 	
   foreach ($g_modules as $modname => $modpath)
   {
-    if (!hasFlag($g_moduleflags[$modname], MF_NOMENU))
+    if (!isset($g_moduleflags[$modname])||!hasFlag($g_moduleflags[$modname], MF_NOMENU))
     {
       $mod = getModule($modname);
       if (method_exists($mod,"getMenuItems")) $mod->getMenuItems();

@@ -254,7 +254,7 @@
       if($errno==DB_UNKNOWNERROR)
       {
         $errstr = 'txt_db_'.$this->getDbErrno();
-        if($GLOBALS[$errstr]=="") { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$GLOBALS[$errstr]; }
+        if(!isset($GLOBALS[$errstr])) { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$GLOBALS[$errstr]; }
       //  atkerror($this->m_error);
 
         return $this->m_error;
@@ -532,7 +532,7 @@
     
     function tableMeta($table)
     {
-      if (!is_array($this->m_tableMeta[$table]))
+      if (!isset($this->m_tableMeta[$table]))
       {
         $meta = $this->metadata($table);
         $this->m_tableMeta[$table] = array();

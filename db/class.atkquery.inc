@@ -247,8 +247,8 @@
       $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
-        $result.= $this->m_fields[$i];
-        $fieldalias = $this->m_fieldaliases[$this->m_fields[$i]];
+        $result.= $this->m_fields[$i];        
+        $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]])?$this->m_fieldaliases[$this->m_fields[$i]]:"");
         if ($fieldalias!="") $result.=" AS ".$fieldalias;
         if ($i < count($this->m_fields)-1) $result.=",";
       }
@@ -492,7 +492,7 @@
     {
       foreach ($record as $name => $value)
       {
-        if ($this->m_aliasLookup[$name]!="")
+        if (isset($this->m_aliasLookup[$name]))
         {
           $record[$this->m_aliasLookup[strtolower($name)]]=$value;
           unset($record[strtolower($name)]);

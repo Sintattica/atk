@@ -30,18 +30,19 @@
      function validateUser($user, $passwd)
      {
        global $g_db;
+       $userexpr = $g_db->escapeSql($user);
        if (atkconfig("auth_accountdisablefield")!="")
        {
-         $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
+         $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
          if (atkconfig("auth_accountenableexpression")!="") $query .= " AND ".atkconfig("auth_accountenableexpression");
        }
        else
        {
-         $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$user'";
+         $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
          if (atkconfig("auth_accountenableexpression")!="") $query .= " AND ".atkconfig("auth_accountenableexpression");
        }
        $recs = $g_db->getrows($query);
-       if ($recs[0][atkconfig("auth_accountdisablefield")]==1)
+       if (isset($recs[0][atkconfig("auth_accountdisablefield")])&&$recs[0][atkconfig("auth_accountdisablefield")]==1)
        {
          return AUTH_LOCKED;
        }
@@ -140,7 +141,11 @@
        }
        else
        {
-         $access = $recs[0][atkconfig("auth_accesslevelfield")];
+         $access = "";
+         if (isset($recs[0][atkconfig("auth_accesslevelfield")]))
+         {
+           $access = $recs[0][atkconfig("auth_accesslevelfield")];
+         }
        }
        $userinfo = $recs[0];
        $userinfo["name"]=$user;
@@ -154,7 +159,7 @@
      {
        global $g_db;
 
-       if (count($this->m_rightscache[$node])==0)
+       if (!isset($this->m_rightscache[$node])||count($this->m_rightscache[$node])==0)
        {
          $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node'";
 

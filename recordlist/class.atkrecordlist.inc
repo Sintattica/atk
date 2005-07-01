@@ -147,13 +147,20 @@
         
         if (!hasFlag($flags, RL_NO_SEARCH))
         {
-          $searchmode = $this->m_node->m_postvars["atksearchmode"];
+          if (isset($this->m_node->m_postvars["atksearchmode"]))
+          {
+            $searchmode = $this->m_node->m_postvars["atksearchmode"];
+          }
           if (empty($searchmode)) $searchmode = atkconfig("search_defaultmode");
   
           /* Get the first one, because they are all the same for now
            * TODO: every attrib needs to get his own searchmode
-           */
-          if (is_array($searchmode)) $searchmode = $searchmode[0];
+           */          
+          if (is_array($searchmode))
+          {
+            $keys = array_keys($searchmode);
+            $searchmode = $searchmode[$keys[0]];
+          }
   
           $button = '<input type="submit" class="btn_search" value="'.text("search").'">';
           if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
@@ -200,12 +207,15 @@
             $searchcols[] = array("content"=>$button);
           }
   
+          $searchend = "";
           if (!hasFlag($this->m_flags, RL_EMBED)) $searchend = '</form>';
         }
   
         /*******************************************/
         /* MULTI-RECORD-(PRIORITY-)ACTIONS FORM DATA */
         /*******************************************/
+        $liststart = "";
+        $listend = "";
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {  
           $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");                    
@@ -235,11 +245,11 @@
         $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED,1,$actions[$keys['0']])."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
         
-        if (is_array($navigation["next"]) && $navigation["next"]["url"]!="") 
+        if (isset($navigation["next"]) && isset($navigation["next"]["url"])) 
         {
           $actionloader.="\nrl_a['".$listName."']['next'] = '".$navigation["next"]["url"]."';";
         }
-        if (is_array($navigation["next"]) && $navigation["previous"]["url"]!="") 
+        if (isset($navigation["previous"]) && isset($navigation["previous"]["url"])) 
         {
           $actionloader.="\nrl_a['".$listName."']['previous'] = '".$navigation["previous"]["url"]."';";
         }
@@ -254,6 +264,7 @@
            * row color, example: function rowColor(&$record, $num) { return array('red', 'blue'); }
            */
           $method = "rowColor";          
+          $bgn="";
           $bgh = $defaulthighlight;
           if (method_exists($this->m_node, $method))
           {
@@ -368,7 +379,7 @@
   
           foreach (array_keys($list["heading"]) as $key)
           {
-            $totalcols[] = array("content"=>$list["total"][$key]);
+            $totalcols[] = array("content"=>(isset($list["total"][$key])?$list["total"][$key]:""));
           }
   
           if ($orientation == "right" || $orientation == "both") $totalcols[] = array("content"=>"");          
@@ -377,6 +388,7 @@
         /*************************************************/
         /* MULTI-RECORD-PRIORITY-ACTION FORM (CONTINUED) */
         /*************************************************/
+        $mra = "";
         if (hasFlag($flags, RL_MRPA))
         {
           $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType(), SESSION_NESTED);
@@ -515,7 +527,7 @@
         {
           $attribute = &$this->m_node->m_attribList[$name];
           $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags,
-                                           $this->m_node->m_postvars["atksearch"], $this->m_node->m_postvars["atkorderby"]);
+                                           @$this->m_node->m_postvars["atksearch"], @$this->m_node->m_postvars["atkorderby"]);
         }
       }
 

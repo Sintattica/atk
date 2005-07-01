@@ -170,7 +170,7 @@
             
       $module = "langoverrides";
       
-      if (!$lng && $ATK_VARS["lng"]) { $lng = $ATK_VARS["lng"]; } // we first check for a lng variable
+      if (!$lng && isset($ATK_VARS["lng"])) { $lng = $ATK_VARS["lng"]; } // we first check for a lng variable
       if (!$lng) { $lng = atkconfig("language", atkconfig("lang")); } // language is nicer, lang is backwardscompatible with iep2.
       $lng = strtolower($lng); // language files should always be lowercase
       
@@ -334,7 +334,7 @@
      */
     function _setLanguage($file, $module, $lng)
     {
-      if ($this->m_cachedlangfiles[$module][$lng] != $file)
+      if (!isset($this->m_cachedlangfiles[$module][$lng])||$this->m_cachedlangfiles[$module][$lng] != $file)
       {
         include($file);
         $this->m_cachedlangfiles[$module][$lng] = $file;
@@ -399,6 +399,7 @@
      */
     function _getStringID($string, $node, $module, $lng)
     {
+      $key="";
       if (atkconfig("atklangcheckmodule"))
       {
         if ($node && $module && atkconfig("atklangcheckmodule") == 2)
@@ -420,7 +421,7 @@
         }
       }
       
-      if (!$key || !$this->m_cachedlang[$module][$lng][$key])
+      if (!$key || !isset($this->m_cachedlang[$module][$lng][$key]))
       { 
         return $string;
       }
