@@ -179,17 +179,20 @@
      * @return decoded value
      */
     function db2value($rec)
-    {    
-      $myrec = $rec[$this->fieldName()];
+    {   
+      if (isset($rec[$this->fieldName()]))
+      { 
+        $myrec = $rec[$this->fieldName()];
             
-      if (is_array($myrec)) return $myrec;
-      else
-      {
-        // if the record is not an array, probably only the value of the primary key was loaded.
-        // This workaround only works for single-field primary keys.
-        if ($this->createDestination())
-          return array($this->m_destInstance->primaryKeyField() => $myrec);
-      }      
+        if (is_array($myrec)) return $myrec;
+        else
+        {
+          // if the record is not an array, probably only the value of the primary key was loaded.
+          // This workaround only works for single-field primary keys.
+          if ($this->createDestination())
+            return array($this->m_destInstance->primaryKeyField() => $myrec);
+        }      
+      }
     }
 
     /**
@@ -257,6 +260,7 @@
       if ($this->createDestination())
       {
         $id = $fieldprefix.$this->fieldName();
+        $filter="";
         if ($this->m_destinationFilter!="")
         {
           $parser = new atkStringParser($this->m_destinationFilter);
@@ -276,9 +280,10 @@
           // autoselect if there is only one record (if obligatory is not set,
           // we don't autoselect, since user may wist to select 'none' instead
           // of the 1 record.
+          $result = "";
           if (count($recordset)==1&&$this->hasFlag(AF_OBLIGATORY))
           {
-            $result = $this->m_destInstance->descriptor($recordset[0])."&nbsp;&nbsp;";
+            $result.= $this->m_destInstance->descriptor($recordset[0])."&nbsp;&nbsp;";
             $result.= $this->hide(array($this->fieldName()=>$recordset[0]), $fieldprefix);
           }
           else
@@ -297,13 +302,17 @@
             }
           
             // Newly added check
-            $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
+            $newlyadded = "";
+            if (isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
+            {
+              $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
+            }
             for ($i=0;$i<count($recordset);$i++)
             {
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
               $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
-            }
+            }            
             $result.='</select>';
           }
         }
@@ -446,7 +455,7 @@
      * @param $maxsize Maxsize of the editbox
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record="", $extended=false, $fieldprefix="")
+    function search($record=array(), $extended=false, $fieldprefix="")
     {
       if (!$this->hasFlag(AF_LARGE))
       {
@@ -478,7 +487,9 @@
           for ($i=0;$i<count($recordset);$i++)
           {
             $pk = $recordset[$i][$pkfield];
-            if (atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
+            
+            if (is_array($record)&&isset($record[$this->fieldName()])&&
+                       atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
             $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
           }
           $result.='</select>';
