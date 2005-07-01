@@ -149,11 +149,12 @@
      * @return String without slashes
      */
     function db2value($rec)
-    {
-      if (atkconfig('database') != 'oci9')
-        return stripslashes($rec[$this->fieldName()]);
-      else
+    {      
+      if (isset($rec[$this->fieldName()]))
+      {
         return $rec[$this->fieldName()];
+      }
+      return NULL;
     }
 
     function dbFieldType()
