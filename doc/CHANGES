@@ -4,12 +4,25 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changes in ATK 5.2.2
---------------------
+Changes in ATK 5.3
+------------------
++ Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
++ Added support for default values to the atkMetaNode (only numerics
+  and strings at this time and only on PostgreSQL and Oracle). [Peter]
++ Added relation support to the atkMetaPolicy (supports one-to-one,
+  one-to-many and many-to-one relations). [Peter]
++ Added get/setDescriptorTemplate methods to atkNode and atkRelation. [Peter]
++ Added get/setDestinationFilter methods to atkRelation. [Peter]
 + Added getInstance() for the atkMlSplitter class. [Martin]
-+ Added function atk_in_array_recursive($needle, $haystack) which
-  is similar to php's in_array, only this one is recursive. [Dennis-Jan] 
-+ Made atkTimeAttribute work with a time string from the postvars. [Boy]
++ Added nodeExists method to atkModule. At this time only used by
+  atkMetaPolicy relation support. [Peter]
++ Added atkMetaTools class which contains methods to singularize or pluralize
+  English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
++ Added AF_ONETOMANY_EMBED, this causes the add to be embedded
+  in the current node, instead of displaying it on a seperate screen. [Boy]
++ Added $config_javascript_confirmation, setting this to true will
+  make ATK use javascript for the confirmation dialogue when deleting. [Boy]
++ Added NF_CACHE_RECORDLIST which makes ATK cache all the recordlists. [Boy]
 + Extended the getSearchCondition of atkDateAttribute so it handles none
   complete and empty requests. [Wouter]
 + Added $format parameter to func_datetochar. [Ivo]
@@ -18,25 +31,15 @@ Changes in ATK 5.2.2
 + Added atkLiveTextPreview attribute to preview html content of atkAttributes
   and atkTextAttributes in realtime. [Ivo]
 + Made it possible to pass size to atkFileWriterAttribute. [Boy]
-+ Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
-+ Added support for default values to the atkMetaNode (only numerics
-  and strings at this time and only on PostgreSQL and Oracle). [Peter]
-+ Added relation support to the atkMetaPolicy (supports one-to-one,
-  one-to-many and many-to-one relations). [Peter]
-+ Added get/setDescriptorTemplate methods to atkNode and atkRelation. [Peter]
-+ Added get/setDestinationFilter methods to atkRelation. [Peter]
-+ Added nodeExists method to atkModule. At this time only used by
-  atkMetaPolicy relation support. [Peter]
-+ Added atkMetaTools class which contains methods to singularize or pluralize
-  English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
-+ Added AF_ONETOMANY_EMBED, this causes the add to be embedded
-  in the current node, instead of displaying it on a seperate screen. [Boy]
-+ Added $config_javascript_confirmation, setting this to true will
-  make ATK use javascript for the confirmation dialogue when deleting [Boy]
-+ Added NF_CACHE_RECORDLIST which makes ATK cache all the recordlists [Boy]
++ Added function atk_in_array_recursive($needle, $haystack) which
+  is similar to php's in_array, only this one is recursive. [Dennis-Jan]
++ Made atkTimeAttribute work with a time string from the postvars. [Boy]
++ Added a $config_auth_userfk config option to configure the name of the
+  foreign keys pointing to the usertable. [MartinL]
+* Fixed possible sql injection in db authentication. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
-* Improvements on atkImportHandler:
+* Improvements to atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
   * Improved error handling, import documents are validated before 
@@ -47,6 +50,9 @@ Changes in ATK 5.2.2
   the numberattribute from which it extends does this anyway. [Boy]
 * Fixed extended searching on OneToOne relations. [Boy]
 * Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
+* Fixed numerous php notices. (ATK now runs better when error_reporting set to
+  E_ALL). [Ivo]
+* The alphabetical index no longer breaks the search button. (bug #415) [Ivo]
 * Made atkListAttribute searchable in embedded OneToMany. [Yury]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
   check, causing the test to fail on Oracle installs. [Ivo]
@@ -57,6 +63,7 @@ Changes in ATK 5.2.2
 * Removed unnecessary brs from edit() of atkOneToMany. [Boy]
 * Made atkTextAttribute not display rows or columns property if it doesn't
   have any value. [Boy]
+* Function isSessionIdValid() now returns true for empty sessionid's. [Ivo]
 * Current record is now displayed in title of view page. [Alberto]
 * Type, table, flags, policy and handler can now be specified by setting
   the instance vars ($type, $table, $flags, $metaPolicy, $metaHandler) on
@@ -69,20 +76,16 @@ Changes in ATK 5.2.2
   newNode method to always return a copy of the newly created node. [Peter]
 * Changed actiontitle to return descriptor trace when appropriate [Boy]
 * Moved javascript get_object() function from dhtml_tabs.js to seperate
-  tools.inc.php file [Boy]
-* Made value part of addSearchFilter optional, as it was intended to be [Boy]
+  tools.inc.php file. [Boy]
+* Made value part of addSearchFilter optional, as it was intended to be. [Boy]
 * Made tabbing more robust, tabs may not always exist for every action
-  so when the remembered tab isn't present, the default tab is selected [Boy]
-* Fixed cartesian product when searchcondition is missing 
-  with OneToMany [Yury]
-* Made edithandler pass the proper module to atktext() when looking 
-  for a tooltip [Boy]
+  so when the remembered tab isn't present, the default tab is selected. [Boy]
+* Fixed cartesian product when searchcondition is missing in OneToMany. [Yury]
+* Made atkEditHandler pass the proper module to atktext() when looking 
+  for a tooltip. [Boy]
+* Fixed DNS lookup feature of atkEmailAttribute. [Ivo]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
-+ Added a config option to the config.inc.php to configure the name of the
-  foreign key (of the user table) into the level table ($config_auth_userfk).
-  This option is available in the SECURITY CONFIGURATION section.
-  If $config_auth_userfk is not set, $config_auth_userpk is used as a
-  default [Mlooise]
+- atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 
 Changes in ATK 5.2.1
 --------------------
