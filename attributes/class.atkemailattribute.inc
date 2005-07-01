@@ -87,7 +87,7 @@
       }
       else
       {
-        if ($this->$m_dnsSearch)
+        if ($this->m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records
           $domain = substr(strstr($check[0], '@'), 1);
