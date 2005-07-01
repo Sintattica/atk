@@ -192,45 +192,7 @@
     {
       return "";
     }
-    
-    /**
-    * Returns an array to pass as limit parameter to the selectdb function
-    *
-    * @return array an array to pass to the selectdb function
-    */
-    function fetchLimitArray()
-    {
-      global $ATK_VARS;
-
-      // limitVarPostfix was introduced to make a difference when
-      // there is more than one item with pagenumbers on the page
-      $postfix = $this->fieldName();
-
-      $retArray = array();
-
-      if ($ATK_VARS["atkstartat" . $postfix] == "" )
-      {
-        $retArray["offset"] = 0;
-      }
-      else
-      {
-        $retArray["offset"] = $ATK_VARS["atkstartat" . $postfix];
-      }
-
-      // If we didn't pass along our own limit (atklimit var with postfix)
-      // we'll use the recordsperpage config value and if THAT fails,
-      // we use 25
-      if ($ATK_VARS["atklimit" . $postfix] == "")
-      {
-        $retArray["limit"] = atkconfig("recordsperpage", 25);
-      }
-      else
-      {
-        $retArray["limit"] = $ATK_VARS["atklimit" . $postfix];
-      }
-      return $retArray;
-    }
-    
+        
     /**
      * Returns the condition (SQL) that should be used when we want to join a relation's
      * owner node with the parent node.

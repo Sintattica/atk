@@ -200,14 +200,14 @@
     {
       $myrecords = $this->_getRecords($record);
 
-      $output.=$this->editHeader($record, $myrecords);
+      $output=$this->editHeader($record, $myrecords);
 
       $output.= $this->_getRecordList($myrecords);
 
 
       $output.=$this->editFooter($record, $myrecords);
       $this->_fetchNavigationLinks($output);
-      $output.=$error;
+      
       $this->_addAddToEditOutput($output, $myrecords, $record);
       return $output;
     }
@@ -218,6 +218,7 @@
      */
     function _checkIntegratedSave()
     {
+      $error = "";
       if ($this->hasFlag(AF_ONETOMANY_EMBED))
       {
         if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
@@ -332,8 +333,12 @@
      */
     function _getRecords($record)
     {
-      $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
-      $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
+      $ownerorderby="";
+      if (isset($this->m_ownerInstance->m_postvars['atkorderby']))
+      {
+        $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];      
+        $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
+      }
       
       $myrecords = $this->load(NULL, $record, "admin");
       
@@ -348,7 +353,7 @@
      */
     function _getRecordList($myrecords)
     {
-      if (count($myrecords)!=0 || $this->m_ownerInstance->m_postvars['atksearch'])
+      if (count($myrecords)!=0 || isset($this->m_ownerInstance->m_postvars['atksearch']))
       {
         $actions = array();
         $params = array();
@@ -366,9 +371,14 @@
         
         $flags = $this->_getRecordListFlags();
       
-        $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
-        $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-        $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
+        if (isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))        
+          $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
+        
+        if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))        
+          $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+          
+        if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))        
+          $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
         
            
         $output = $recordlist->render($this->m_destInstance, $myrecords, 
@@ -376,9 +386,9 @@
                                     $this->m_refKey,       "entryform",
                                     array(),               $embedprefix);                                            
         $this->m_recordlist = $recordlist;
-      }
-      
-      return $output;
+        return $output;
+      }            
+      return "";
     }        
     
     /**
@@ -402,6 +412,7 @@
      */
     function _addAddLink($myrecords, $record)
     {
+      $url = "";
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         if ($this->destinationHasRelation())
@@ -538,9 +549,15 @@
             // we probably need everything
             $excludes = "";
           }
-          $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-          $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-          $recordset = $this->m_destInstance->selectDb($where,$this->m_ownerInstance->m_postvars['atkorderby'],
+          if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
+          {
+            $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+          }
+          if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
+          {
+            $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+          }
+          $recordset = $this->m_destInstance->selectDb($where,@$this->m_ownerInstance->m_postvars['atkorderby'],
                                                        $this->fetchLimitArray(),$excludes,"",$mode);
 
           $this->m_loadFilter = $where;
@@ -562,7 +579,44 @@
     {    
       return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
     }
+    
+    /**
+     * Returns an array to pass as limit parameter to the selectdb function
+     *
+     * @return array an array to pass to the selectdb function
+     */
+    function fetchLimitArray()
+    {
+      global $ATK_VARS;
 
+      // limitVarPostfix was introduced to make a difference when
+      // there is more than one item with pagenumbers on the page
+      $postfix = $this->fieldName();
+
+      $retArray = array();
+
+      if (!isset($ATK_VARS["atkstartat" . $postfix]))
+      {
+        $retArray["offset"] = 0;
+      }
+      else
+      {
+        $retArray["offset"] = $ATK_VARS["atkstartat" . $postfix];
+      }
+
+      // If we didn't pass along our own limit (atklimit var with postfix)
+      // we'll use the recordsperpage config value and if THAT fails,
+      // we use 25
+      if (!isset($ATK_VARS["atklimit" . $postfix]))
+      {
+        $retArray["limit"] = atkconfig("recordsperpage", 25);
+      }
+      else
+      {
+        $retArray["limit"] = $ATK_VARS["atklimit" . $postfix];
+      }
+      return $retArray;
+    }
 
     /** 
      * The delete method is called by the framework to inform the attribute
