@@ -39,8 +39,9 @@
 
     /**
      * Constructor
-     * @param $text text field
-     * @param $flags Flags for this attribute
+     * @param String $name The name of the attribute
+     * @param String $text The text to display
+     * @param int $flags The flags for this attribute
      */
     function atkDummyAttribute($name, $text="", $flags=0)
     {
@@ -88,6 +89,11 @@
     function store($a, $b)
     {
       return true;
+    }
+    
+    function db2value($record)
+    {
+      return NULL;
     }
 
     /**
