@@ -120,6 +120,11 @@
   define("NF_IMPORT",             131072);
   
   /**
+   * Add CSV export ability to the node. 
+   */
+  define("NF_EXPORT",         1073741824);
+  
+  /**
    * Disable csv import feature
    * @deprecated since ATK 5.2
    */
@@ -128,9 +133,7 @@
   /**
    * Makes a node cache it's recordlist
    */
-  define("NF_CACHE_RECORDLIST",   262144);
-  
-  define("NF_EXPORT",         1073741824);
+  define("NF_CACHE_RECORDLIST",   262144);    
   
   /**
    * Specific node flag 1
@@ -234,7 +237,7 @@
   require_once($config_atkroot."atk/atktools.inc");
   
   // Once atktools is loaded, we can register our own error handler.
-//  set_error_handler("atkErrorHandler");
+  //set_error_handler("atkErrorHandler");
   //error_reporting(E_ALL);
 
   require_once($config_atkroot."atk/ui/class.atkoutput.inc");
@@ -790,7 +793,7 @@
       $attribute->init();
 
       $exist=false;
-      if(is_object($this->m_attribList[$attribute->fieldName()]))
+      if(isset($this->m_attribList[$attribute->fieldName()])&&is_object($this->m_attribList[$attribute->fieldName()]))
       {
         $exist=true;
         // if order is set, overwrite it with new order, last order will count
@@ -813,9 +816,9 @@
           if (!is_array($tab) && $tab != "*") $tab = array($tab);
           if ($tab != "*")
           {
-            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = atk_array_merge($this->m_tabList["add"], $tab);
-            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = atk_array_merge($this->m_tabList["edit"], $tab);
-            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = atk_array_merge($this->m_tabList["view"], $tab);
+            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = atk_array_merge(@$this->m_tabList["add"], $tab);
+            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = atk_array_merge(@$this->m_tabList["edit"], $tab);
+            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = atk_array_merge(@$this->m_tabList["view"], $tab);
           }
         }
 
@@ -1177,10 +1180,14 @@
       global $g_sessionManager;
       $ui = &$this->getUi();
       
+      $res = "";
+      
       $descriptortrace = $g_sessionManager->descriptorTrace();
+      $nomodule=false;
       if (!empty($descriptortrace)) 
       {
         $nomodule=true;
+        $descrtrace = "";
         foreach ($descriptortrace as $desc)
         {
           $descrtrace.= $desc." - ";
@@ -1269,7 +1276,7 @@
       else $defaults = array();
 
       /* formdata from session */
-      if ($this->m_postvars["atkformdata"]!="")
+      if (isset($this->m_postvars["atkformdata"])&&is_array($this->m_postvars["atkformdata"]))
       {
         atkdebug("Restoring formdata from session");
         $this->modifyRecord($defaults, $this->m_postvars["atkformdata"]);
@@ -1370,7 +1377,7 @@
         if ($p_attrib!=NULL)
         {
           /* fields that have not yet been initialised may be overriden in the url */
-          if ($defaults[$p_attrib->fieldName()]=="" && $this->m_postvars[$p_attrib->fieldName()]!="")
+          if (!isset($defaults[$p_attrib->fieldName()]) && isset($this->m_postvars[$p_attrib->fieldName()]))
           {
             $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
           }
@@ -1705,7 +1712,7 @@
 
       $content.= '<br>'.$this->confirmActionText($atkselector, $action, $checkoverride);
 
-      $output.=$ui->renderAction($action, array("content"=>$content,
+      $output=$ui->renderAction($action, array("content"=>$content,
                                                 "formstart"=>$formstart,
                                                 "formend"=>'</form>',
                                                 "buttons"=>$buttons));
@@ -1767,38 +1774,41 @@
       // See if there are modules active that modify all nodes with the same name
       // for example, modules modifying all classes in all modules with the
       // name 'bill'.
-      for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
+      if (isset($g_modifiers[$this->atknodetype()]))
       {
-        $modname = $g_modifiers[$this->atknodetype()][$i];
-        $mod = getModule($modname);
-        $modifiername = $this->m_type."_modifier";
-
-        if (method_exists($mod,$modifiername))
+        for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
         {
-          atkdebug("Applying modifier from module $modname to ".$this->m_type);
-          $mod->$modifiername($this);
+          $modname = $g_modifiers[$this->atknodetype()][$i];
+          $mod = getModule($modname);
+          $modifiername = $this->m_type."_modifier";
+  
+          if (method_exists($mod,$modifiername))
+          {
+            atkdebug("Applying modifier from module $modname to ".$this->m_type);
+            $mod->$modifiername($this);
+          }
+          else
+          {
+            atkdebug("Modifier function for $modifiername not found!");
+          }
         }
-        else
+      
+        // See if there are modules active that modify this module.node..
+        // for example, modules modifying 'finance.bill'
+        for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
         {
-          atkdebug("Modifier function for $modifiername not found!");
+          $modname = $g_modifiers[$this->atknodetype()][$i];
+  
+          $mod = getModule($modname);
+          $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
+  
+          if (method_exists($mod,$modifiername))
+          {
+            atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
+            $mod->$modifiername($this);
+          }
         }
       }
-      // See if there are modules active that modify this module.node..
-      // for example, modules modifying 'finance.bill'
-      for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
-      {
-        $modname = $g_modifiers[$this->atknodetype()][$i];
-
-        $mod = getModule($modname);
-        $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
-
-        if (method_exists($mod,$modifiername))
-        {
-          atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
-          $mod->$modifiername($this);
-        }
-      }
-
       // We set the tabs for the attributes
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -2027,7 +2037,7 @@
 
       if (count($record))
       {
-        if ($this->m_postvars["atkpkret"]!="")
+        if (isset($this->m_postvars["atkpkret"]))
         {
           $location.="&".$this->m_postvars["atkpkret"]."=".rawurlencode($this->primaryKey($record));
         }
@@ -2090,7 +2100,7 @@
      * @param array $vars The request variables that were posted from a form.
      */
     function modifyRecord(&$record, $vars)
-    {
+    {      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2285,14 +2295,14 @@
         }
         $query->addCondition($pk);
 
-        $storelist = array();
+        $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
 
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if ($p_attrib->needsUpdate($record))
           {
-            $storemode = $p_attrib->storageType($mode);
+            $storemode = $p_attrib->storageType("update");
             if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
             if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
             if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
@@ -2405,7 +2415,10 @@
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
-      $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
+      if (isset($this->m_postvars['atksearchmethod']))
+      {
+        $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
+      }
 
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
@@ -2442,9 +2455,11 @@
       }
       
       /* there may be search criteria, which we also filter */
-      $searchArray = $this->m_postvars['atksearch'];
-      if (is_array($searchArray) && count($searchArray)>0)
+        
+      
+      if (isset($this->m_postvars['atksearch']) && is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch'])>0)
       {
+        $searchArray = $this->m_postvars['atksearch'];
         $searchmode = $this->m_postvars["atksearchmode"];
         if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         while (list($key,$value) = each($searchArray))
@@ -2556,18 +2571,18 @@
       $query->addTable($this->m_table);
       $query->addCondition($selector);
 
-      $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
+      $query->m_searchmethod = @$this->m_postvars['atksearchmethod'];
             
       // First we check if we are about to search and set a few things
       // if we are
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = $this->m_postvars['atksearch'];
+        $searchArray = @$this->m_postvars['atksearch'];
         if (is_array($searchArray) && count($searchArray)>0)
         {
           $searching = true;
-          $searchmode = $this->m_postvars["atksearchmode"];
+          $searchmode = @$this->m_postvars["atksearchmode"];
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         }
       }
@@ -2587,7 +2602,9 @@
         }
       }
 
+      $preloadlist = array();
       $loadlist = array();
+      $postloadlist = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2609,6 +2626,8 @@
         }
       }
       
+      
+      $recordset = array();
       // First load PRELOAD attribs
       for ($j = 0, $_j = count($preloadlist); $j < $_j; $j++)
       {
@@ -2624,7 +2643,7 @@
       for ($i=0, $_i=count($querylist); $i<$_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$querylist[$i]];
-        $p_attrib->addToQuery($query,$this->m_table,"",$recordset[0],1,$mode); // start at level 1
+        $p_attrib->addToQuery($query,$this->m_table,"",(isset($recordset[0])?$recordset[0]:array()),1,$mode); // start at level 1
       }
       
       if (!atkReadOptimizer())
@@ -2640,7 +2659,7 @@
               
               if (is_object($p_attrib))
               {
-                if (is_array($value) && $value[$key])
+                if (is_array($value) && isset($value[$key]))
                 {
                   $value = $value[$key];
                 }
@@ -2818,7 +2837,7 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib)) $loadmode = $p_attrib->loadType($mode);
+        if (is_object($p_attrib)) $loadmode = $p_attrib->loadType("");
         else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
         if ($loadmode && hasFlag($loadmode, ADDTOQUERY))
         {
@@ -2848,9 +2867,9 @@
     {
       $query = &$this->m_db->createQuery();
 
-      $storelist = array();
+      $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
 
-      $query->addTable($this->m_table);
+      $query->addTable($this->m_table);            
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -2863,7 +2882,7 @@
           if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
         }
       }
-
+      
       if (!$this->_storeAttributes($storelist["pre"], $record, $mode)) return false;
       
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
@@ -3132,7 +3151,7 @@
      */
     function securityKey($action)
     {
-      if ($this->m_securityMap[$action]=="") return $action;
+      if (!isset($this->m_securityMap[$action])) return $action;
       return $this->m_securityMap[$action];
     }
 
@@ -3189,7 +3208,7 @@
       return ($this->hasFlag(NF_NO_SECURITY)
               ||in_array($action, $this->m_unsecuredActions)
               || $secMgr->allowed($alias,$action)
-              || ($this->m_securityImplied[$action]!="" && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
+              || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
     }
 
     /**
@@ -3454,7 +3473,8 @@
      */
     function feedbackUrl($action, $status, $record="", $message="")
     {
-      return (hasFlag($this->m_feedback[$action], $status)||$status==ACTION_FAILED?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message)),SESSION_REPLACE):"");
+      return ((isset($this->m_feedback[$action])&&hasFlag($this->m_feedback[$action], $status))
+                      ||$status==ACTION_FAILED?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message)),SESSION_REPLACE):"");
     }
 
     /**
@@ -3470,7 +3490,7 @@
      *                 string if not.
      */
     function validateFilter($filter)
-    {
+    {      
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
