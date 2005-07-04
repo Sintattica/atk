@@ -42,7 +42,11 @@
   {    
     var $m_recordlist;
     
-    /** @access private */
+    /**
+     * Instance of atk.recordlist.atkrecordlistcache
+     * @access private 
+     * @var Object
+     */
     var $m_recordlistcache;
     
     /**
@@ -175,7 +179,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      if ($this->createDestination())
+      if ($this && $this->createDestination())
       {
         $error = $this->_checkIntegratedSave();
         
