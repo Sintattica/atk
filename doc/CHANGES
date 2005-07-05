@@ -40,6 +40,7 @@ Changes in ATK 5.3
 * Fixed possible sql injection in db authentication. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
+* Added include/exclude lists as param for addmlcondition(). [Sandy]
 * Improvements to atkImportHandler:
   * Some functional decomposition applied.
   * Updated documentation.
