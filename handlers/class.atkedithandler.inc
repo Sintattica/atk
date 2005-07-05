@@ -234,7 +234,7 @@
           }
           
           /* does the field have a label? */          
-          if (isset($field["label"]) && $field["label"]!=="AF_NO_LABEL")
+          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
           {            
             if ($field["label"] == "") 
             {
