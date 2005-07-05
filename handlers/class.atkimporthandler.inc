@@ -973,13 +973,12 @@
             if($i != $_i-1 || $col_map[$i] != $allField)// column is mapped
             {
               $value = $data[$i]; 
+              $value = $this->_getAttributeValue($col_map[$i], $allField, $value, $importerrors,$counter,$rec);
             }
             else //this is the allField
             {
               $value = $allFieldValue;
             }
-
-            $value = $this->_getAttributeValue($col_map[$i], $allField, $value, $importerrors,$counter,$rec);
             
             $this->addToRecord($rec,$col_map[$i],$value);
           }
