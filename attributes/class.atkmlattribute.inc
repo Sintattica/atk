@@ -131,8 +131,8 @@
     function search($record="")
     {
       $languages = $this->getLanguages();
-      $result= '<input type="text" name="atksearch['.$this->formName().'_'.$languages[0].']"'.
-               ' value="'.$record[$this->fieldName().'_'.$languages[0]].'"'.
+      $result= '<input type="text" name="atksearch['.$this->formName().(!$this->isMlNode()?'_'.$languages[0]:'').']"'.
+               ' value="'.$record[$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:'')].'"'.
                ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
@@ -297,7 +297,7 @@
     function fetchMeta($metadata)    
     {
       $languages = $this->getLanguages();
-      $attribname = $this->fieldName().'_'.$languages[0];
+      $attribname = $this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:'');
       $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], 20);
       $this->m_maxsize = $metadata[$attribname]['len'];                           
@@ -316,21 +316,16 @@
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	//TODO: support for multilanguages nodes wich have multiple records per occurance
       $languages = $this->getLanguages();
-      if(!$this->isMlNode())
+      $func = $searchmode."Condition";
+      if (method_exists($query,$func))
       {
-        $func = $searchmode."Condition";
-        if (method_exists($query,$func))
-        {
-          $searchcondition = $query->$func($table.".".$this->fieldName()."_".$languages[0],escapeSQL($value));
-        }
-        else
-        {
-          atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
-        }
+        $searchcondition = $query->$func($table.".".$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:''),escapeSQL($value));
       }
-      else atkdebug("ERROR: atkmlattribute::searchCondition() unsupported action!!!");
+      else
+      {
+        atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
+      }
       return $searchcondition;
     }
   }
