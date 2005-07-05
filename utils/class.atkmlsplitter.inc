@@ -174,7 +174,7 @@
     /**
     * Adds language condition
     */
-    function addMlCondition(&$query,&$node,$mode)
+    function addMlCondition(&$query,&$node,$mode,$excludeList=NULL,$includeList=NULL)
     {
       global $ATK_VARS;
      
@@ -201,11 +201,12 @@
           $p_attrib = &$relations[$attribname];
           if($p_attrib->createDestination()
               && $p_attrib->m_destInstance->hasFlag(NF_ML)
-              && !$p_attrib->hasFlag(AF_HIDE)
-              && $this->needsMlCondition($node,$query,$attribname))
+              && (!$p_attrib->hasFlag(AF_HIDE_LIST) || $p_attrib->hasFlag(AF_FORCE_LOAD))
+              && $this->needsMlCondition($node,$query,$attribname,$excludeList,$includeList))
           {
             $dest = $p_attrib->m_destInstance;
             $fieldname = $attribname.".".$dest->m_lngfield;
+            atkdebug("FIELDNAME: $fieldname");
             $joinalias = $dest->m_module."_".$dest->m_type."*".$dest->primaryKeyField();
             if($query->m_joinaliases[$joinalias])
             {
@@ -242,12 +243,12 @@
      * @return bool true in case the attribute is loaded in the selectdb
      */
      
-    function needsMlCondition(&$node,&$query,$attribname)
+    function needsMlCondition(&$node,&$query,$attribname,$excludeList=NULL,$includeList=NULL)
     {
       $p_attrib =& $node->m_attribList[$attribname];
       if(is_object($p_attrib)
           && $p_attrib->createDestination()
-          && $node->isAllowedQueryList($attribname)) 
+          && $node->isAllowedQueryList($attribname,$excludeList,$includeList)) 
       {
         $loadType = $node->m_attribList[$attribname]->loadType($mode);
         return hasFlag($loadType, ADDTOQUERY);
