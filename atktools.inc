@@ -1270,11 +1270,11 @@
   function getUniqueID($sequence)
   {
     static $unique = array();
-    if (isset($unique[$sequence]))
+    if (!isset($unique[$sequence]))
     {
-      return ++$unique[$sequence];
+      $unique[$sequence] = 0;
     }
-    return 1;
+    return ++$unique[$sequence];
   }
 
   /**
