@@ -260,15 +260,19 @@ class Smarty_Compiler extends Smarty {
         preg_match_all($search, $source_content, $match,  PREG_SET_ORDER);
         $this->_folded_blocks = $match;
         reset($this->_folded_blocks);
-
+        
+        /* BEGIN SMARTY HACK *\
+        atkimport("atk.ui.atksmarty");
         /* replace special blocks by "{php}" */
-        $source_content = preg_replace($search.'e', "'"
+        $source_content = preg_replace($search.'e', "'".
+        (!atkSmarty::getSmartyRemoveLiteral()?"{literal}":"")
                                        . $this->_quote_replace($this->left_delimiter) . 'php'
                                        . "' . str_repeat(\"\n\", substr_count('\\0', \"\n\")) .'"
                                        . $this->_quote_replace($this->right_delimiter)
-                                       . "'"
+        .(!atkSmarty::getSmartyRemoveLiteral()?"{/literal}":"")."'"
                                        , $source_content);
-
+        /* END SMARTY HACK *\
+        
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
         $template_tags = $_match[1];

@@ -37,6 +37,8 @@ Changes in ATK 5.3
 + Added a $config_auth_userfk config option to configure the name of the
   foreign keys pointing to the usertable. [MartinL]
 + Added multilanguage multirecord search for atkMlAttribute. [Sandy]
++ Added smarty hack making it possible to leave literal tag after parsing
+  of the template [Boy]
 * Fixed possible sql injection in db authentication. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
