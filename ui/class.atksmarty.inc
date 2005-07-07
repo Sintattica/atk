@@ -122,7 +122,7 @@
      */
     function _smartyRemoveLiteral($smartyremoveliteral="")
     {
-      static $removesmartyliteral;
+      static $removesmartyliteral=true;
       if ($smartyremoveliteral=="FALSE")     $removesmartyliteral=false;
       else if ($smartyremoveliteral=="TRUE") $removesmartyliteral=true;
       else return $removesmartyliteral;
