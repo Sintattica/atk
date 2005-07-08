@@ -88,6 +88,7 @@ Changes in ATK 5.3
 * Made atkEditHandler pass the proper module to atktext() when looking 
   for a tooltip. [Boy]
 * Fixed DNS lookup feature of atkEmailAttribute. [Ivo]
+* Send no-cache header for DHTML menu JavaScript. [Ivo/Peter]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 

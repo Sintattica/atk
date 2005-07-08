@@ -64,6 +64,20 @@
       }   
       return $s_instance;
     }
+
+    /**
+     * Send no cache headers to the browser.
+     * @static
+     */
+    function sendNoCacheHeaders()
+    {
+      atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
+      header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
+      header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
+      header("Cache-Control: no-store, no-cache, must-revalidate");
+      header("Cache-Control: post-check=0, pre-check=0", false);
+      header ("Pragma: no-cache");                          // HTTP/1.0
+    }
     
     /**
      * Send all output to the browser.
@@ -92,12 +106,7 @@
         // the pages, unless $nocache was set to true.
         if ($nocache)
         {
-	        atkdebug("Sending no-cache headers (lmd: ".gmdate("D, d M Y H:i:s")." GMT)");
-          header ("Expires: Mon, 26 Jul 1997 05:00:00 GMT");    // Date in the past
-          header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT"); // always modified
-          header("Cache-Control: no-store, no-cache, must-revalidate");
-          header("Cache-Control: post-check=0, pre-check=0", false);
-          header ("Pragma: no-cache");                          // HTTP/1.0
+	        atkOutput::sendNoCacheHeaders();
         }
         else if ($lastmodificationstamp!=0)
         {

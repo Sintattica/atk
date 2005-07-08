@@ -1,19 +1,19 @@
 <?php
 /**
-* This file is part of the Achievo ATK distribution.
-* Detailed copyright and licensing information can be found
-* in the doc/COPYRIGHT and doc/LICENSE files which should be
-* included in the distribution.
-*
-* @package atk
-* @subpackage javascript
-*
-* @copyright (c)2000-2004 Ibuildings.nl BV
-* @license http://www.achievo.org/atk/licensing ATK Open Source License
-*
-* @version $Revision$
-* $Id$
-*/
+ * This file is part of the Achievo ATK distribution.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage javascript
+ *
+ * @copyright (c)2000-2004 Ibuildings.nl BV
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ *
+ * @version $Revision$
+ * $Id$
+ */
 
 /** @internal includes and defines */
 $config_platformroot = "../../";
@@ -26,8 +26,15 @@ if ($argv[1]=="externalinclude")
 }
 include_once($config_atkroot."atk.inc");
 include_once($config_atkroot."atk/menu/general.inc");
-                                  atksession("admin");
-if ($argv[1]!="externalinclude")  atksecure();
+                                  
+atksession("admin");
+
+if ($argv[1]!="externalinclude")  
+  atksecure();
+
+// use output hsndler for sending headers
+atkimport("atk.ui.atkoutput");
+atkOutput::sendNoCacheHeaders();
 ?>
 
 // Function for realigning the submenu position when hiding the tree-frame
