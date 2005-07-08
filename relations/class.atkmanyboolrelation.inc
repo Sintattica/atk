@@ -104,8 +104,8 @@
           $sel = "checked";
           if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
           {
-            $selector = $this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
-              ' AND '.$this->getRemoteKey().
+            $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
+              ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
               "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
 
             // Create link to details.
@@ -159,9 +159,9 @@
       }
       
       if(count($checked) > 0)
-        $filter = "NOT IN (".implode(",",$checked).",0)";
+        $filter = "NOT IN ('".implode("','",$checked)."')";
 
-      if (is_object($rel) && $rel->deleteDb($this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->getRemoteKey()." $filter"))
+      if (is_object($rel) && $rel->deleteDb($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter"))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
