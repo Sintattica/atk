@@ -111,6 +111,15 @@
       // session_regenerate_id();
       atkdebug("creating sessionManager (namespace: $namespace)");
     }
+    
+    /**
+     * Get the name of the current session (as was passed to atksession())
+     * @return String namespace
+     */
+    function getNameSpace()
+    {
+      return $this->m_namespace;
+    }
 
     /**
      * Read session variables from the stack and the global scope.

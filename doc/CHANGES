@@ -40,6 +40,7 @@ Changes in ATK 5.3
 + Added smarty hack making it possible to leave literal tag after parsing
   of the template [Boy]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
++ Added getNameSpace() to atkSessionManager. [Ivo]
 * Fixed possible sql injection in db authentication. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
