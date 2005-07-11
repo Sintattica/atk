@@ -54,6 +54,11 @@
      * parent Attribute flag (treeview)
      */
      var $m_parent;    
+     
+    /**
+     * var for giving the link for expanding/collapsing the tree extra params 
+     */
+     var $xtraparams = "";
   
     /**
      * Constructor
@@ -415,7 +420,8 @@
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
-						    } 
+						    }
+						    if($this->extraparams) $params=$params.$this->extraparams;  
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
 						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
@@ -446,7 +452,8 @@
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
-						    }                
+						    }
+						    if($this->extraparams) $params=$params.$this->extraparams;
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {                  
                   if($cnt!=0) 
@@ -511,7 +518,7 @@
 					      } 
 					      $i++; 
 				      } 
-				                    
+				      if($this->extraparams) $params=$params.$this->extraparams;              
 				      if ($expand[$cnt]==0) 
   					    $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=0>")."</td>\n"; 
 				      else 
