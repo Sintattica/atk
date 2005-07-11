@@ -847,10 +847,10 @@
     		$classname = $this->m_destination;
       	$cache_id = $this->m_owner.".".$this->m_name;
       	$rel = &getNode($classname,$cache_id);
-        
+        atk_var_dump($this->m_ownerInstance->m_postvars['atkselector'],"<h1>selector</h1>");
       	// Get the current atkselector
       	$where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);      	
-
+atk_var_dump($where,"<h1>where</h1>");
       	if ($where)
       	{
       		$childrecords = $rel->selectDb($where);
@@ -883,6 +883,7 @@
         if ($sqloperators[$counter])
         {
           list($key, $value) = explode($sqloperators[$counter], $selector);
+          
           // if the operator is in the filter
           if ($value)
           {
@@ -890,20 +891,20 @@
             for ($refkeycount=0;$refkeycount<count($this->m_refKey);$refkeycount++)
             {
               $destinationkey = $this->m_destInstance->m_table.".".$this->m_refKey[$refkeycount];
+              
               // if the selector is on the destination, we pass it back
               if ($key ==  $destinationkey || $key == $this->m_refKey[$refkeycount])
               {
-                $ret = $selector;
+                return $selector;
               }
             }
             // otherwise we set it on the destination
-            $ret = $destinationkey.$sqloperators[$counter].$value;
+            return $destinationkey.$sqloperators[$counter].$value;
           }
         }
-        // We never found a value, something is wrong with the filter
-        $ret = "";
       }
-      return $ret;
+      // We never found a value, something is wrong with the filter
+      return "";
     }
     
    /**

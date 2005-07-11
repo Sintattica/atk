@@ -92,6 +92,8 @@ Changes in ATK 5.3
 * Fixed DNS lookup feature of atkEmailAttribute. [Ivo]
 * Send no-cache header for DHTML menu JavaScript. [Ivo/Peter]
 * Fixed prefixing of table name in atkManyBoolRelation. [Peter]
+* Fixed translateSelector method of onetomany, which caused restricted
+  deletes to be too restricting [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 

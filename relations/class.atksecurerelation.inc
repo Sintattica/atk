@@ -163,9 +163,7 @@
         if(is_array($rec))
         {
           $link = $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]];
-          atkdebug("<h1>doing an encrypt</h1>");
           $cryptedlink = $this->m_crypt->encrypt($link,$this->getLinkPassword($this->m_linktable, $this->m_linkfield));
-          atkdebug("<h1>doing an encrypt over</h1>");
           $rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = addslashes($cryptedlink);
         }
   
@@ -257,12 +255,18 @@
         }
       }
       else 
-      {         
-        $query = "SELECT ".$this->fieldName();
-        $query.= ($this->m_cachefield?",{$this->m_cachefield}":"");
-        $query.=" FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
-        $result = $g_db->getrows($query);
-
+      {
+        if (!$record[$this->fieldName()] || (!$record[$this->m_cachefield] && $this->m_cachefield))
+        {
+          $query = "SELECT ".$this->fieldName();
+          $query.= ($this->m_cachefield?",{$this->m_cachefield}":"");
+          $query.=" FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+          $result = $g_db->getrows($query);
+        }
+        else 
+        {
+          $result[0] = $record;
+        }
         $cryptedlink = $this->decrypt($result[0],$this->fieldName());
         $records[0][$this->fieldName()] = $cryptedlink;
 
@@ -311,7 +315,7 @@
           }
           else if (!$cryptedlink || !is_numeric($cryptedlink))
           {
-            return atk_var_dump($record,"<h1>decrypt($record, $field) failed! and yielded: $cryptedlink</h1>");
+            return atk_var_dump($record,"decrypt($record, $field) failed! and yielded: $cryptedlink");
           }
         }
         else
