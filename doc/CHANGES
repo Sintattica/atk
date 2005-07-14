@@ -93,9 +93,13 @@ Changes in ATK 5.3
 * Send no-cache header for DHTML menu JavaScript. [Ivo/Peter]
 * Fixed prefixing of table name in atkManyBoolRelation. [Peter]
 * Fixed translateSelector method of onetomany, which caused restricted
-  deletes to be too restricting [Boy]
+  deletes to be too restricting. [Boy]
 * Restricted delete message now displays translation of fieldname instead of
-  the actual fieldname [Boy]
+  the actual fieldname. [Boy]
+* Made it possible to pass a day/month/year array as min/max to date 
+  attribute. [Sandy]
+* Made it possible to set the maximum amount of years for the year dropdown
+  field of the date attribute. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 

@@ -43,6 +43,7 @@
     var $m_date_format_edit;
     var $m_date_format_view;
     var $m_onchangecode = array();
+    var $m_maxyears = 25;
 
     /**
      * Format date according to a format string
@@ -120,6 +121,34 @@
                    "month" => substr($date, 4, 2),
                    "year" => substr($date, 0, 4));
     }
+    
+    /**
+     * Converts a date array to a timestamp
+     * year, month, day are obligatory !!
+     *
+     * @param array $dateArray Date Array
+     * @return int Timestamp
+     */
+    function _arrayToTime($dateArray)
+    {
+      $hour = 0;
+      $min = 0;
+      $sec = 0;
+      $dateValid = true;
+      
+      if(!empty($dateArray["hour"])) $hour = $dateArray["hour"];
+      if(!empty($dateArray["min"])) $min = $dateArray["min"];
+      if(!empty($dateArray["sec"])) $sec = $dateArray["sec"];
+      if(!empty($dateArray["day"])) $day = $dateArray["day"];
+      else $dateValid = false;
+      if(!empty($dateArray["month"])) $month = $dateArray["month"];
+      else $dateValid = false;
+      if(!empty($dateArray["year"])) $year = $dateArray["year"];
+      else $dateValid = false; 
+
+      if($dateValid) return adodb_mktime($hour,$min,$sec,$month,$day,$year); 
+      else return adodb_mktime(0,0,0);
+    }
 
     /**
      * Default Constructor, sets up the atkDateAttribute
@@ -163,14 +192,13 @@
       elseif (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
       else   $this->m_date_format_view = "F j Y";
 
-      /* max / min date (only valid when obligatory) */
-      //if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY)
-      //{
-        if ($min === 0) $this->m_date_min = 0;
-        else $this->m_date_min = strtotime($min);
-        if ($max === 0) $this->m_date_max = 0;
-        else $this->m_date_max = strtotime($max);
-      //}
+      /* max / min date */
+      if ($min === 0) $this->m_date_min = 0;
+      else if (is_array($min)) $this->m_date_min = $this->_arrayToTime($min);
+      else $this->m_date_min = strtotime($min);
+      if ($max === 0) $this->m_date_max = 0;
+      else if (is_array($max)) $this->m_date_max = $this->_arrayToTime($max);
+      else $this->m_date_max = strtotime($max);
 
       /* base class constructor */
       $this->atkAttribute($name, $flags); 
@@ -247,12 +275,12 @@
 
       /* minimum date */
       $minimum = $this->m_date_min;
-      if ($minimum > 0) $str_min = adodb_date("Ymd", $minimum);
+      if ($minimum != 0) $str_min = adodb_date("Ymd", $minimum);
       else $str_min = 0;
-
+      
       /* maximum date */
       $maximum = $this->m_date_max;
-      if ($maximum > 0) $str_max = adodb_date("Ymd", $maximum);
+      if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
       /* did we select a valid date? */
@@ -313,8 +341,8 @@
         /* year input box */
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
         {
-          /* date must be within 25 years */
-          if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= 25)
+          /* date must be within specified (default: 25) years */
+          if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears)
           {
             $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
             $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" onChange="'.$str_script.'">';
@@ -322,6 +350,8 @@
               $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
             {
+              if(empty($current["mon"])) $current["mon"] = 1;
+              if(empty($current["mday"])) $current["mday"] = 1;
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $current["mday"], $j));
               $str_year = $this->formatDate($tmp_date, $str_format[$i]);
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
@@ -894,6 +924,37 @@
       }
 
       return array('day'=>0,'month'=>0,'year'=>0);
+    }
+    
+    /**
+     * Setter for max years, this specifies the maximum amount of years in the dropdown
+     * if the amount is more than specified in the max years the years field is shown
+     * as a normal textbox instead of a dropdown.
+     * @param int $maxyears The maximum amount of years for the years dropdown
+     * @return bool Wether or not we succeed in setting the variable
+     */
+    function setMaxYears($maxyears)
+    {
+      if (is_numeric($maxyears))
+      {
+        $this->m_maxyears = (int)$maxyears;
+      }
+      else 
+      {
+        return false;
+      }
+      return true;
+    }
+    
+    /**
+     * Getter for max years, this specifies the maximum amount of years in the dropdown
+     * if the amount is more than specified in the max years the years field is shown
+     * as a normal textbox instead of a dropdown.
+     * @return int The maximum years for the dropdown
+     */
+    function getMaxYears()
+    {
+      return $this->m_maxyears;
     }
   }
 ?>
