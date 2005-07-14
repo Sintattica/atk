@@ -2489,7 +2489,7 @@
         }
       }
 
-      $mltool->addMlCondition($query,$this,$mode);
+      $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
       
       $querystring = $query->buildCount($this->hasFlag(NF_ML));
       $result = $this->m_db->getrows($querystring);
@@ -2685,7 +2685,7 @@
         }
       }
 
-      $mltool->addMlCondition($query,$this,$mode);
+      $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
 
       if ($order!="") $query->addOrderBy($order);
 
