@@ -100,12 +100,11 @@
     
     function display($record)
     {
-       //$values = explode('|',$record[$this->fieldName()]);
        $values = $record[$this->fieldName()];
        $res=array();
        for ($i=0;$i<count($values);$i++)
        {
-         $res[] = text($this->m_lookup[$values[$i]]);
+         $res[] = atktext($this->m_lookup[$values[$i]],$this->m_ownerInstance->m_module);
        }
        return implode(', ',$res);
     }
@@ -142,7 +141,7 @@
         {
           $sel = "checked";
         }
-        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i]).'</td>';
+        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.atktext($this->m_options[$i],$this->m_ownerInstance->m_module).'</td>';
         $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);  
 
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";        

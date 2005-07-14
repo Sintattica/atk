@@ -162,7 +162,7 @@
           $sel = "";
         }
         if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
-        else $option=atktext($this->m_options[$i],$this->m_ownerInstance->m_type);
+        else $option=atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
         
         $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option;
       }

@@ -547,7 +547,7 @@
         if (isset($stack[$i]["descriptor"]))
         {
           $node = explode(".",$stack[$i]["atknodetype"]);
-          $res[] = atktext($node[1],$node[1])." [ ".$stack[$i]["descriptor"]." ] ";
+          $res[] = atktext($node[1],$node[0])." [ ".$stack[$i]["descriptor"]." ] ";
         }
       }
       return $res;
