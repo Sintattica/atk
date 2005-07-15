@@ -101,6 +101,8 @@ Changes in ATK 5.3
 * Made it possible to set the maximum amount of years for the year dropdown
   field of the date attribute. [Boy]
 * Fixed some atktext() calls to improve perfomance of atkLanguage [Boy]
+* updated documenation of the currencyattrbite class constructor and made
+  the flags parameter optional [Martin]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 
