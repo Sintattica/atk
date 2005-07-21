@@ -111,11 +111,9 @@
 
       /* there may be search criteria, which we also filter */
       $searchArray = @$this->m_postvars['atksearch'];
-      if (is_array($searchArray) && count($searchArray)>0)
+      if (isset($searchArray["filename"]) && $searchArray["filename"]!="")
       {
         $searching = true;
-        $searchmode = @$this->m_postvars["atksearchmode"];
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
       }
 
       // list only regular files.
