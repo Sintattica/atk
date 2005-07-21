@@ -234,7 +234,7 @@
       $img_leaflink = $icon_path."tree_leaf_link.gif"; 
 	    $img_spc      = $icon_path."tree_space.gif"; 
       $img_extfile  = $icon_path."tree_extfile.gif"; 
-       
+      
       $res="";
       $lastlevel=0;
      // echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
@@ -420,8 +420,8 @@
 								    $params=$params."|"; 
 							    } 
 							    $i++; 
-						    }
-						    if($this->extraparams) $params=$params.$this->extraparams;  
+						    } 
+						    if($this->extraparams) $params=$params.$this->extraparams; 
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
 						      if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
