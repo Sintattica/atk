@@ -919,13 +919,12 @@ atk_var_dump($where,"<h1>where</h1>");
 
       // create temporary node and set the right parameters
       $this->createDestination();
-      $destNode = &$this->m_destInstance;
 
       $limitArray = $this->fetchLimitArray();
-      $destNode->m_postvars["atklimit"]     = $limitArray["limit"];
-      $destNode->m_postvars["atkstartat"]   = $limitArray["offset"];
-      $destNode->m_postvars["limitPostfix"] = $this->fieldName();
-      $destNode->m_action                   = $ATK_VARS["atkaction"];
+      $this->m_destInstance->m_postvars["atklimit"]     = $limitArray["limit"];
+      $this->m_destInstance->m_postvars["atkstartat"]   = $limitArray["offset"];
+      $this->m_destInstance->m_postvars["limitPostfix"] = $this->fieldName();
+      $this->m_destInstance->m_action                   = $ATK_VARS["atkaction"];
       
       // If we build a custom loadFilter (in the load method), use this filter
       if ($this->m_loadFilter) $destfilter=$this->m_loadFilter;
@@ -947,14 +946,10 @@ atk_var_dump($where,"<h1>where</h1>");
         // otherwise we just don't set a filter
       }
 
-      // the type of the temporary node has to be the type of the owner
-      if ($destNode->m_type == $this->m_destInstance->m_type)
-          $destNode->m_type  = $this->m_owner;
-
       // create a navigator and let it create the navigation links using the temporary node
       $navigator  = &atknew("atk.utils.atknavigator");
-      $navigation = $navigator->getNavigationUrls($destNode,"admin", $destfilter);
-      $navstr     = $navigator->buildNavigation($destNode,"admin",$navigation, true);
+      $navigation = $navigator->getNavigationUrls($this->m_destInstance,"admin", $destfilter);
+      $navstr     = $navigator->buildNavigation($this->m_destInstance,"admin",$navigation, true);
 
       // add the navigation to the top and bottom of the page
       if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
