@@ -275,5 +275,26 @@
       }
       return $rec[$this->fieldName()];
     }
+    
+    
+    // Due to the new storeType functions
+    // password field is not allways saved from within the password attrib
+    //
+    // Added a "dynamic" needsUpdate to cancel updates if no password fields where used
+    // to alter the password. This overcomes the overwriting with an empty password.
+    function needsUpdate($record)
+    {
+      $value = $record[$this->fieldName()];
+      
+      // new is set from an update using the password attrib edit() function
+      // hash is set from the _setNewPassword() function in users module
+      
+      if ($value["new"] != "" || $value["hash"] != "")
+      {
+      	return true;
+      }
+      return false;
+    }
+    
   }
 ?>
