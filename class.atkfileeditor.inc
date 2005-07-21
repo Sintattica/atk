@@ -79,7 +79,7 @@
       
       $this->m_filefilter = $filter;
       
-      $this->add(new atkAttribute("filename",AF_PRIMARY));
+      $this->add(new atkAttribute("filename",AF_PRIMARY|AF_SEARCHABLE));
       $this->add(new atkTextAttribute("filecontent",30,AF_HIDE_LIST));
       
       $this->setOrder("dummy.filename");
@@ -94,18 +94,44 @@
     function countDb($selector)
     {
       $d = dir($this->m_dir);
+      $arr = array();
       while (false !== ($entry = $d->read()))
       {
-        // list only regular files.
-        if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
-        {
-          $arr[] = $entry;
-        }
+        $this->addFileEntry($entry,$arr);
       }
       $d->close();
       return count($arr);
     }
     
+    function addFileEntry($entry,&$arr)
+    {
+      // First we check if we are about to search and set a few things
+      // if we are
+      $searching=false;
+
+      /* there may be search criteria, which we also filter */
+      $searchArray = @$this->m_postvars['atksearch'];
+      if (is_array($searchArray) && count($searchArray)>0)
+      {
+        $searching = true;
+        $searchmode = @$this->m_postvars["atksearchmode"];
+        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+      }
+
+      // list only regular files.
+      if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
+      {
+        if($searching===true && (ereg($searchArray["filename"],$entry)))
+        {
+          $arr[] = $entry;
+        }
+        elseif($searching==false) 
+        {
+          $arr[] = $entry;
+        }
+      }
+    }
+
     function selectDb($selector="", $orderby="", $limit="")
     {   
       if ($selector=="")
@@ -124,14 +150,10 @@
         $d = dir($this->m_dir);
         if($d->handle)
         {
+          $arr=array();
           while (false !== ($entry = $d->read()))
           {
-            // list only regular files.
-            if (is_file($this->m_dir.$entry) && ($this->m_filefilter=="" || ereg($this->m_filefilter,$entry)))
-            {
-              
-              $arr[] = $entry;
-            }
+            $this->addFileEntry($entry,$arr);
           }
           $d->close();
         
