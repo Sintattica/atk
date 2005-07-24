@@ -14,185 +14,606 @@
    * @copyright (c)2000-2004 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
+   * @todo Make sure EVERY config variable is located here and properly documented
+   *
    * @version $Revision$
    * $Id$
    */
-
-  // the application identifier (used for sessions)
-  $config_identifier   = "default";
-
-  // The application root
-  $config_application_root = "/";
-  if ($config_atkroot == "") $config_atkroot = "./";
-
-  // set several default configuration options
-  $config_databasehost = "localhost";
-  $config_databasename = "";
-  $config_databaseuser = "";
-  $config_databasepassword = "";
-  $config_databasepersistent = true;
-
-  // mysql, oci8 or pgsql
-  $config_database="mysql";
-
-  // default sequence prefix. 
-  $config_database_sequenceprefix = "seq_";
-
-  $config_language="en";
-  $config_recordsperpage=25;
-
-  // lock type
-  $config_lock_type = "dummy";
-
-  // security
-  $config_authentication = "none";
-  $config_authentication_md5 = true;
-  $config_authentication_cookie = false;
-  $config_authentication_cookie_expire = 10080; // the default cookie expiry time (in minutes) (7 days)
-  $config_authentication_session = true;
-  $config_securityscheme = "none";
-  $config_restrictive = true;
-  $config_security_attributes = false;
-
-  $config_auth_usertable   = "user";
-  $config_auth_leveltable  = ""; // defaults to usertable
-  $config_auth_accesstable = "access";
-  $config_auth_userfield   = "userid";
-  $config_auth_userpk = "userid";//primary key of usertable
-  $config_auth_passwordfield = "password";
-  $config_auth_accountdisablefield = "";
-  $config_auth_levelfield = "entity";
-  $config_auth_mail_port = "110"; // default pop3 port
-  $config_auth_mail_virtual = false; // no vmail.
-  $config_auth_usecryptedpassword = false; // use bugzilla-style crypted password storage
-  $config_max_loginattempts = 5; // 0 = no maximum.
-  $config_auth_dropdown = false;
-  $config_auth_userdescriptor = "[".$config_auth_userfield."]";
-  // this parameter can be used to specify a where clause which will be used to validate users login credentials
-  $config_auth_accountenableexpression = "";
-
-  // LDAP settings
-  // to use LDAP you should fill this config_variabels with the right values
-  $config_authentication_ldap_host    = "";
-  $config_authentication_ldap_context = "";
-  $config_authentication_ldap_field   = "";
-
-  // Encrytion method.
-  $config_encryption_defaultmethod = "base64";
-
-  $config_logging = 0; // no logging;
-  $config_logfile = "/tmp/atk-security.log";
-
-  $config_debug = 0;
-  $config_debuglog = "";
-  $config_smart_debug = array();
-  $config_display_errors = true;
-  $config_halt_on_error = "critical";
-
-  // Layout config
-  $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">';
-  $config_menu_delimiter = "<br>";
-  $config_menu_pos = "left";
-  $config_menu_layout = "default";
-  $config_menu_align = "center";
-  $config_top_frame = 0; // 0 = no   - 1 = yes
-  $config_defaulttheme = "default";
-
-  // language config
-  $config_defaultlanguage = "en";
-  $config_language_basedir = "languages/";
-  $config_language_debugging = false; 
   
-  $config_multilanguage_linked = true; // True: one language switch attributes automatically switches all others on screen.
-                                       // False: each language switch attributes operates only on it's own node
-
-  // Display a 'stack' of the user activities in the top right corner.
-  $config_stacktrace = true;
-
-  // An administrator password that is empty will *DISABLE* administrator login!
-  $config_administratorpassword = "";
-
-  // A guest password that is empty will *DISABLE* guest login!
-  $config_guestpassword = "";
-
-  // Module path (without trailing slash!)
+  /****************************** FILE LOCATIONS & PATHS ******************************/
+  
+  /**
+   * The application root
+   * @var String The application root
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_application_root = "/";
+  
+  if ($config_atkroot == "")
+  {
+    /**
+     * The root of the ATK application, where the atk/ directory resides
+     * @var String The root
+     */
+     $config_atkroot = "./";
+  }
+  
+  /**
+   * Module path (without trailing slash!) where the modules directory resides,
+   * defaults to the atk root, so not IN the atk/ directory, but more likely in
+   * the application root
+   * @var String
+   */
   $config_module_path = $config_atkroot."modules";
 
-  // Automatic error reporting is turned off by default.
-  $config_mailreport = "";
-
-  $config_search_defaultmode = "substring";
-
-  // Whether the action links in a recordlist appear left or right
-  $config_recordlist_orientation  = "left";
-  $config_recordlist_vorientation = "middle";
-	
-  // Use icons for action links or not  
-  $config_recordlist_icons = "true";
-	
-  // Make the recordlist use a javascript
-  // confirm box for deleting instead of a seperate page
-  $config_javascript_confirmation = false;
-	
-  $config_enable_ie_extensions = false;
-
-  // Whatever tabs are enabled or not
-  $config_tabs = true;  
-
-  // Backwardscompatibility setting. Set this to MYSQL_BOTH if your
-  // software relies on numerical indexes (WHICH IS A BAD IDEA!!)
-  $config_mysqlfetchmode = MYSQL_ASSOC;
-  
+  /**
+   * The location of a directory that is writable to ATK and that ATK can store it's
+   * temporary files in.
+   * @var String
+   */
   $config_atktempdir = $config_atkroot."atktmp/";
   
-  // Template engine configuration
-  $config_tplroot = $config_atkroot; // By default all templates are described by their relative
-                                     // path, relative to the applications' root dir.
-  $config_tplcaching = false;
-  $config_tplcachelifetime = 3600; // default one hour
-  $config_tplcompiledir = $config_atktempdir."compiled/tpl/";
-  $config_tplcachedir = $config_atktempdir."tplcache/";
-  $config_tplcompilecheck = "true"; // check templates to see if they changed
+  /**
+   * Use the given meta policy as the default meta policy
+   * @var String
+   */
+  $config_meta_policy = "atk.meta.atkmetapolicy";
+  
+  /**
+   * Use the given meta handler as the default meta handler
+   * @var String
+   */
+  $config_meta_handler = "atk.meta.atkmetahandler";
+  
+  /****************************** DATABASE SETTINGS ******************************/
 
-  // files that are allowed to be included by the include wrapper script
-  // NOTE: this has nothing to do with useattrib and userelation etc.!
+  /**
+   * The IP or hostname of the database host
+   * @var String
+   */
+  $config_databasehost = "localhost";
+  
+  /**
+   * The name of the database to use
+   * @var String
+   */
+  $config_databasename = "";
+  
+  /**
+   * The name of the database user with which to connect to the host
+   * @var String
+   */
+  $config_databaseuser = "";
+  
+  /**
+   * The password for the database user, used to connect to the databasehost
+   * @var String
+   */
+  $config_databasepassword = "";
+  
+  /**
+   * Wether or not to use a persistent connection.
+   *
+   * Note that this is usefull if you don't have a lot of applications doing this
+   * as the application won't constantly have to connect to the database.
+   * However, the database server won't be able to handle a lot of persistent connections.
+   * @var bool
+   */
+  $config_databasepersistent = true;
+
+  /**
+   * The databasetype.
+   *
+   * Currently supported are: 
+   *   mysql:   MySQL (3.X ?)
+   *   mysql41: MySQL > 4.1.3
+   *   oci8:    Oracle 8i
+   *   oci9:    Oracle 9i
+   *   pgsql:   PostgreSQL
+   * @var String
+   */
+  $config_database="mysql";
+  
+  /**
+   * Backwardscompatibility setting. Set this to MYSQL_BOTH if your
+   * software relies on numerical indexes (WHICH IS A BAD IDEA!!)
+   * @var int
+   */
+  $config_mysqlfetchmode = MYSQL_ASSOC;  
+
+  /****************************** SECURITY ******************************/
+  
+  /**
+   * The password to use for administrator login.
+   * An administrator password that is empty will *DISABLE* administrator login!
+   * @var mixed
+   */
+  $config_administratorpassword = "";
+
+  /**
+   * The password to use for guest login.
+   * A guest password that is empty will *DISABLE* guest login!
+   * @var String
+   */
+  $config_guestpassword = "";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_authentication = "none";
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_authentication_md5 = true;
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_authentication_cookie = false;
+  
+  /**
+   * The default cookie expiry time (in minutes) (7 days)
+   * @var int
+   */
+  $config_authentication_cookie_expire = 10080;
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_authentication_session = true;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_securityscheme = "none";
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_restrictive = true;
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_security_attributes = false;
+  
+  /**
+   * Zero is no logging
+   * @var int
+   */
+  $config_logging = 0;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_logfile = "/tmp/atk-security.log";
+
+  /****************************** AUTHENTICATION ************************************/
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_usertable   = "user";
+  
+  /**
+   * Defaults to usertable
+   * @var String
+   */
+  $config_auth_leveltable  = "";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_accesstable = "access";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_userfield   = "userid";
+  
+  /**
+   * Primary key of usertable
+   * @var String
+   */
+  $config_auth_userpk = "userid";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_passwordfield = "password";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_accountdisablefield = "";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_levelfield = "entity";
+  
+  /**
+   * Default pop3 port
+   * @var String
+   */
+  $config_auth_mail_port = "110";
+  
+  /**
+   * No vmail.
+   * @var bool
+   */
+  $config_auth_mail_virtual = false;
+  
+  /**
+   * Use bugzilla-style crypted password storage
+   * @var bool
+   */
+  $config_auth_usecryptedpassword = false;
+  
+  /**
+   * 0 = no maximum.
+   * @var int
+   */
+  $config_max_loginattempts = 5;
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_auth_dropdown = false;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_auth_userdescriptor = "[".$config_auth_userfield."]";
+  
+  /**
+   * This parameter can be used to specify a where clause which will be used to validate users login credentials
+   * @var String
+   */
+  $config_auth_accountenableexpression = "";
+
+  
+  /**************** LDAP settings ******************/
+  /**
+   * To use LDAP you should fill this config_variabels with the right values
+   */
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_authentication_ldap_host    = "";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_authentication_ldap_context = "";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_authentication_ldap_field   = "";
+  
+  /****************************** DEBUGGING AND ERROR HANDLING ******************************/
+  
+  /**
+   * 
+   * @var int
+   */
+  $config_debug = 0;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_debuglog = "";
+  
+  /**
+   * 
+   * @var Array
+   */
+  $config_smart_debug = array();
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_display_errors = true;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_halt_on_error = "critical";
+
+  /**
+   * Automatic error reporting is turned off by default.
+   * @var String
+   */
+  $config_mailreport = "";
+
+  /****************************** LAYOUT ******************************/
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">';
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_menu_delimiter = "<br>";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_menu_pos = "left";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_menu_layout = "default";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_menu_align = "center";
+  
+  /**
+   * 0 = no   - 1 = yes
+   * @var int
+   */
+  $config_top_frame = 0;
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_defaulttheme = "default";
+  
+  /**
+   * Fullscreen mode (IE only)
+   * @var String
+   */
+  $config_fullscreen = false;
+  
+  /**
+   * Whether the action links in a recordlist appear left or right
+   * @var String
+   */
+  $config_recordlist_orientation  = "left";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_recordlist_vorientation = "middle";
+	
+  /**
+   * Use icons for action links or not  
+   * @var String
+   */
+   $config_recordlist_icons = "true";
+	
+  /**
+   * Whatever tabs are enabled or not
+   * @var bool
+   */
+  $config_tabs = true;  
+  
+  /**
+   * The number of records to display on a single page
+   * @var int
+   */
+  $config_recordsperpage=25;
+  
+  /**
+   * Display a 'stack' of the user activities in the top right corner.
+   * @var bool
+   */
+  $config_stacktrace = true;
+  
+  /**
+   * The maximum length of an HTML input field generated by atkAttribute or descendants
+   * @var int
+   */
+  $config_max_input_size = 70;
+
+  /****************************** LANGUAGE ******************************/
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_language="en";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_defaultlanguage = "en";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_language_basedir = "languages/";
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_language_debugging = false; 
+  
+  /**
+   * True: one language switch attributes automatically switches all others on screen.
+   * False: each language switch attributes operates only on it's own node
+   * @var bool
+   */
+  $config_multilanguage_linked = true;
+
+  /**
+   * Module/node checking for strings in atkLanguage (if you don't know, don't change)
+   * comment out to disable checking for module of node
+   * 1 to check just for node
+   * 2 to check for module and node
+   * @var String
+   */
+  $config_atklangcheckmodule = 2;      
+                                         
+  /****************************** TEMPLATE ENGINE CONFIGURATION ******************************/
+  
+  /**
+   * By default all templates are described by their relative
+   * path, relative to the applications' root dir.
+   * @var String
+   */
+  $config_tplroot = $config_atkroot;
+  
+  /**
+   * 
+   * @var bool
+   */
+  $config_tplcaching = false;
+  
+  /**
+   * default one hour
+   * @var int
+   */
+  $config_tplcachelifetime = 3600;
+  /**
+   * 
+   * @var String
+   */
+  $config_tplcompiledir = $config_atktempdir."compiled/tpl/";
+  
+  /**
+   * 
+   * @var String
+   */
+  $config_tplcachedir = $config_atktempdir."tplcache/";
+  
+  /**
+   * Check templates to see if they changed
+   * @var String
+   */
+  $config_tplcompilecheck = "true";
+  
+  /****************************** MISCELLANEOUS CONFIGURATION OPTIONS ******************************/
+  
+  /**
+   * The application identifier (used for sessions)
+   * @var String
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_identifier   = "default";
+  
+  /**
+   * Lock type
+   * @var String
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_lock_type = "dummy";
+  
+  /**
+   * The default encryption method for atkEncryption
+   * @var String
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_encryption_defaultmethod = "base64";
+
+  /**
+   * The default searchmode
+   * @var String
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_search_defaultmode = "substring";
+	
+  /**
+   * Wether or not to enable Internet Explorer extensions
+   * @var bool
+   * @todo update this bit of documentation as it doesn't really say much
+   */
+  $config_enable_ie_extensions = false;
+  
+  /**
+   * Files that are allowed to be included by the include wrapper script
+   * NOTE: this has nothing to do with useattrib and userelation etc.!
+   * @var Array
+   */
   $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php", "atk/javascript/class.atkdateattribute.js.inc",
                                                "atk/popups/help.inc", "atk/popups/colorpicker.inc");
 
-  // fullscreen mode (IE only)
-  $config_fullscreen = false;
+  /**
+   * Forces the themecompiler to recompile the theme all the time
+   * This can be handy when working on themes.
+   * @var bool
+   */
+  $config_force_theme_recompile = false;
   
-  // Module/node checking for strings in atkLanguage (if you don't know, don't change)
-  // comment out to disable checking for module of node
-  // 1 to check just for node
-  // 2 to check for module and node
-  $config_atklangcheckmodule = 2;
-
-  // To force the themecompiler to recompile the theme all the time
-  // uncomment the config variable below.
-  // This can be handy when working on themes.
-  // $config_force_theme_recompile = true;
-  
-  // Wether or not to use the keyboardhandler for attributes and the recordlist
-  // Defaults to 1 (true), comment or set to null to remove keyboard handler
+  /**
+   * Wether or not to use the keyboardhandler for attributes and the recordlist
+   * Defaults to 1 (true), comment or set to null to remove keyboard handler
+   * @var int
+   */
   $config_use_keyboard_handler = 1;
   
-  // Use the given meta policy as the default meta policy
-  $config_meta_policy = "atk.meta.atkmetapolicy";
   
-  // Use the given meta handler as the default meta handler
-  $config_meta_handler = "atk.meta.atkmetahandler";
-  
-  // Session cache expire (minutes)
+  /**
+   * Session cache expire (minutes)
+   * @var int
+   */
   $config_session_cache_expire = 180;
   
-  // Session cache limiter
-  // possible values:
-  // - nocache
-  // - public  (permits caching by proxies and clients
-  // - private (permits caching by clients
-  // - private_no_expire (permits caching by clients but not sending expire headers >PHP4.2.0)
+  /**
+   * Session cache limiter
+   *
+   * Possible values:
+   * - nocache
+   * - public  (permits caching by proxies and clients
+   * - private (permits caching by clients
+   * - private_no_expire (permits caching by clients but not sending expire headers >PHP4.2.0)
+   * @var String
+   */
   $config_session_cache_limiter = "nocache";
+
+  /**
+   * Default sequence prefix.
+   * @var String
+   */ 
+  $config_database_sequenceprefix = "seq_";
+
+  /** 
+   * Make the recordlist use a javascript
+   * confirm box for deleting instead of a seperate page
+   * @var bool
+   */
+  $config_javascript_confirmation = false;
+	
   
 ?>
