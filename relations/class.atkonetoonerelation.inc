@@ -254,10 +254,17 @@
                       "='".$record[$this->fieldName()]."'";
         }
         else
-        {          
+        {
           // Foreign key in destination
           $condition = $this->m_destInstance->m_table.'.'.$this->m_refKey."='".
                           $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record)."'";
+          
+          $destfilter = $this->getDestinationFilter();
+          if(is_string($destfilter) && $destfilter!="")
+          {
+            $condition .= " AND ".$destfilter;
+          }
+                          
         }
         $fields = atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
         $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);

@@ -45,6 +45,9 @@ Changes in ATK 5.3
   of the template [Boy]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
 + Added getNameSpace() to atkSessionManager. [Ivo]
+* Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
+* Fixed atkonetoonerelation::load() wich didn't set the
+   destination filter when using master mode. [Martin]
 * Fixed possible sql injection in db authentication. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]

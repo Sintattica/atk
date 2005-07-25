@@ -2410,7 +2410,7 @@
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
       atkimport("atk.utils.atkmlsplitter");
-      $mltool =& atkmlsplitter::getInstance();
+      $mltool = &atkmlsplitter::getInstance();
       $query = &$this->m_db->createQuery();
 
       $query->addTable($this->m_table);
@@ -2566,7 +2566,7 @@
       $query = &$this->m_db->createQuery();
 
       atkimport("atk.utils.atkmlsplitter");
-      $mltool =& atkmlsplitter::getInstance();
+      $mltool = &atkmlsplitter::getInstance();
       
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -2785,7 +2785,6 @@
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
         }
       }
-
       return $recordset;
     }
 

@@ -41,13 +41,13 @@
     */
     function &getInstance()
     {
-      static $s_instance = NULL;
-      if ($s_instance == NULL)
+      static $s_mlsplitter = NULL;
+      if (!is_object($s_mlsplitter))
       {
+        $s_mlsplitter = new atkmlsplitter();
         atkdebug("Created a new atkmlsplitter instance");
-        $s_instance = new atkmlsplitter();
       }   
-      return $s_instance;
+      return $s_mlsplitter;
     }
     
     function getLanguages(&$node)
@@ -267,40 +267,7 @@
       {
         $recordset = $this->addLngRecords($node,$recordset);
       }
-      // TODO FIXME (martin): why different situations?
-      // if the select uses mlconditions there are always three records and thus no need to have different situations?
-//      if($node->hasFlag(NF_ML) && count($hasrelationwithmlnode)==0) // just this node has mlsupport
-//      {
-        $this->mergeMlRecords($node,$recordset);
-        /*
-      }
-      else if(!$node->hasFlag(NF_ML) && count($hasrelationwithmlnode)>0)
-      {
-        // TODO:
-        // i think this case is no longer valid therefor the code will probably won't work :)
-        // one2one's use the lazy flag and their own load method to load data.
-        atkdebug("WHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA PANIC");
-        $newrecord[0] = $recordset[0];
-        
-        // we have relations with mlnodes
-        for($i=0,$i_=count($recordset);$i<$i_;$i++)
-        {
-          $query->deAlias($recordset[$i]);
-          atkDataDecode($recordset[$i]);
-          foreach($hasrelationwithmlnode as $attribname=>$attrib)
-          {
-            $tmprecord[$attribname][] = $recordset[$i][$attribname];
-          }
-        }
-        foreach($tmprecord as $attribname=>$attribrecords)
-        {
-          $node->m_attribList[$attribname]->createDestination();
-          $this->combineMlRecordSet($node->m_attribList[$attribname]->m_destInstance, $attribrecords,$query);
-          $newrecord[0][$attribname]=$attribrecords[0];
-        }
-        $recordset=$newrecord;
-      }
-*/
+      $this->mergeMlRecords($node,$recordset);
       sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
     }
     
