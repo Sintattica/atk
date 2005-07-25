@@ -107,9 +107,12 @@ Changes in ATK 5.3
   attribute. [Sandy]
 * Made it possible to set the maximum amount of years for the year dropdown
   field of the date attribute. [Boy]
-* Fixed some atktext() calls to improve perfomance of atkLanguage [Boy]
-* updated documenation of the currencyattrbite class constructor and made
-  the flags parameter optional [Martin]
+* Fixed some atktext() calls to improve perfomance of atkLanguage. [Boy]
+* Updated documenation of the currencyattrbite class constructor and made
+  the flags parameter optional. [Martin]
+* Made Smarty param[0] (unnamed param) accept forward slash and dot as well
+  as alphanumeric characters. [Boy]
+* Made documentation of defaultconfig PHPDoc compatible. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 
