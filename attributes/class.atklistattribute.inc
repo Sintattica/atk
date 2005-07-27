@@ -122,7 +122,10 @@
      */
     function display($record)
     {
-      return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
+      if(isset($this->m_lookup[$record[$this->fieldName()]]))
+      {
+        return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type);
+      }
     }
     
     /**

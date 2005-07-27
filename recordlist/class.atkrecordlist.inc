@@ -483,8 +483,8 @@
       if (method_exists($this->m_node, "getcustommrahtml"))
       {
         $output = $this->m_node->getCustomMraHtml();      
+        return $output;
       }            
-      return $output;
     }
     
     /**

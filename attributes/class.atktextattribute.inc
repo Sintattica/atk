@@ -56,9 +56,9 @@
       {
          if(is_array($size))
          {
-           if($size['rows']!='') $this->m_rows = $size['rows'];
-           if($size['cols']!='') $this->m_cols = $size['cols'];
-           if($size['autoadjust']) $this->m_autoadjust = $size['autoadjust'];
+           if(isset($size['rows'])!='') $this->m_rows = $size['rows'];
+           if(isset($size['cols'])!='') $this->m_cols = $size['cols'];
+           if(isset($size['autoadjust'])) $this->m_autoadjust = $size['autoadjust'];
          }
          else $this->m_rows=$size;
       }
@@ -78,7 +78,9 @@
      * @return piece of html code with a textarea
      */
     function edit($record="", $fieldprefix="")
-    {      
+    {
+      (isset($record[$this->fieldName()]))?$text=$record[$this->fieldName()]:$text="";
+
       if ($this->m_cols != 0) 
       {
         $cols = $this->m_cols;
@@ -95,13 +97,13 @@
 	    
       if ($this->m_autoadjust)
       {
-        $this->doAutoAdjust(htmlspecialchars($record[$this->fieldName()]), $rows, $cols);
+        $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
       }
       
       $result= "<textarea id='$id' name='$id' wrap='soft' ";
       if ($rows) $result.= "rows='$rows' ";
       if ($cols) $result.= "cols='$cols'";
-      $result.=">".htmlspecialchars($record[$this->fieldName()]).'</textarea>';
+      $result.=">".htmlspecialchars($text).'</textarea>';
       return $result;
     }
     

@@ -49,7 +49,7 @@
     function edit($record="", $fieldprefix="")
     {
       $checked = "";
-      if ($record[$this->fieldName()]>0) $checked="checked";
+      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]>0) $checked="checked";
       $id = $fieldprefix.$this->fieldName();
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);  
       return '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$checked.'>';

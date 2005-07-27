@@ -130,16 +130,20 @@
      */
     function db2value($rec)
     {
-		   
-			$datetime = split(" ",$rec[$this->fieldname()]);
-			$tmp_rec = $rec;
-			$tmp_rec[$this->fieldname()]=$datetime[0];
-      $result_date=$this->m_date->db2value($tmp_rec);
-			$tmp_rec = $rec;
-			$tmp_rec[$this->fieldname()]=$datetime[1];
-			$result_time = $this->m_time->db2value($tmp_rec);
-			//var_dump(array_merge($result_date,$result_time));
-			return array_merge($result_date,$result_time);
+		  if(isset($rec[$this->fieldName()]))
+		  {
+  			$datetime = split(" ",$rec[$this->fieldname()]);
+  			
+  			$tmp_rec = $rec;
+  			$tmp_rec[$this->fieldname()]=$datetime[0];
+        $result_date=$this->m_date->db2value($tmp_rec);
+  			
+  			$tmp_rec = $rec;
+  			$tmp_rec[$this->fieldname()]=$datetime[1];
+  			$result_time = $this->m_time->db2value($tmp_rec);
+  			
+  			return array_merge($result_date,$result_time);
+		  }
     }
 	
     /**

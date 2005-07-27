@@ -107,16 +107,16 @@
      * @return string piece of html code with a browsebox
      */
     function edit($record="", $fieldprefix="")
-    {  
-      $del = $_REQUEST["del"];
-      
-      if ($del[$this->fieldName()]!="on")
+    { 
+      $result=""; 
+      if (isset($_REQUEST["del"][$this->fieldName()]) && $_REQUEST["del"][$this->fieldName()]!="on")
       {
         $result=$this->display($record);
       }
 
       if(is_dir($this->m_dir))
       {
+        $file_arr=array();
         $d = dir($this->m_dir);
         while($item = $d->read())
         {
@@ -153,12 +153,14 @@
         $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
-          ($record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
-          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val.$sel."\" $selected>".$val;
+          (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
+          if(is_file($this->m_dir.$val)) $result .= "<option value=\"".$val."\" $selected>".$val;
         }
         if(count($file_arr) > 0) $result .= "</select>";
       }
-      if(!$this->hasFlag(AF_FILE_NO_DELETE) && $record[$this->fieldname()]['filename']!='')
+      if(!$this->hasFlag(AF_FILE_NO_DELETE)
+         && isset($record[$this->fieldname()]['filename'])
+         && $record[$this->fieldname()]['filename']!='')
       {      
        $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
        $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
@@ -173,16 +175,18 @@
      */
     function value2db($rec)
     {
-      $del    = $_REQUEST["del"];
+      if(isset($_REQUEST["del"])) $del = $_REQUEST["del"];
 
-      if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!="" && !$this->hasFlag(AF_FILE_NO_SELECT) && $del[$this->fieldName()]!="on")
+      if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!=""
+         && !$this->hasFlag(AF_FILE_NO_SELECT)
+         && (!isset($del[$this->fieldName()]) || $del[$this->fieldName()]!="on"))
       {
         return $rec[$this->fieldName()]["filename"];
       }
 
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
 
-      if($del[$this->fieldName()] == "on")
+      if(isset($del[$this->fieldName()]) && $del[$this->fieldName()] == "on")
       {    
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
         {
@@ -233,7 +237,7 @@
      */
     function fetchValue($rec)
     {    
-      $del = $_REQUEST["del"];
+      if(isset($_REQUEST["del"])) $del=$_REQUEST["del"];
 
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
      
@@ -245,17 +249,18 @@
         if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         {
            // No file to upload, then check if the select box is filled
-          if($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT))
+          if(isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != ""
+             && !$this->hasFlag(AF_FILE_NO_SELECT))
           {
             atkdebug("file selected!");
-            ($del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
+            (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
             $result = array("tmpfile"=>"",
 
                           "filename"=>$filename,
                           "filesize"=>0,
                           "orgfilename"=>$filename);
           }  // maybe we atk restored data from session
-          elseif($rec[$this->fieldName()]["filename"]!="")
+          elseif(isset($rec[$this->fieldName()]["filename"]) && $rec[$this->fieldName()]["filename"]!="")
           {
             $result = $rec[$this->fieldName()];
           }
@@ -264,7 +269,7 @@
             $result = array("tmpfile"=>"",
                           "filename"=>"",
                           "filesize"=>0,
-                          "orgfilename"=>$rec[$basename."_orgfilename"]);
+                          "orgfilename"=>(isset($rec[$basename."_orgfilename"]))?$rec[$basename."_orgfilename"]:"");
           }
         }
         else
