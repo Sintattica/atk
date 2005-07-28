@@ -159,7 +159,7 @@
       }
       
       $value = "";
-      if (strlen($record[$this->fieldName()]) > 0)
+      if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
         $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
       
       $id = $fieldprefix.$this->fieldName();      

@@ -141,7 +141,7 @@
     function hide($record="", $fieldprefix)
     {
       $field = $record[$this->fieldName()];
-
+      $result="";
       if (is_array($field))
         foreach ($field as $key => $value)
           $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$key.']" '.'value="'.$value.'">';

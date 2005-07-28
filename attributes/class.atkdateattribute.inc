@@ -480,6 +480,7 @@
      */
     function hide($record="", $fieldprefix)
     {
+      $result="";
       $field = $record[$this->fieldName()];
 
       if (is_array($field))

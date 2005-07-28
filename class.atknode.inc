@@ -1306,7 +1306,7 @@
         $overrides = $this->initial_values();
         foreach ($overrides as $varname=>$value)
         {
-          if ($defaults[$varname]=="") $defaults[$varname]=$value;
+          if (!isset($defaults[$varname]) || $defaults[$varname]=="") $defaults[$varname]=$value;
         }
       }
 

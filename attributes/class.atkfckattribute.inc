@@ -62,7 +62,7 @@
 			  $this->fck_opt=array_merge($this->fck_opt,$opt);
 		  }
       
-		  //$this->fck_opt['Language']=atkconfig("language"); <-- this doesn't work for some reason
+		  $this->fck_opt['Language']=atkconfig("language"); // <-- this doesn't work for some reason
       //$this->m_editflags = $editflags;
       $this->atkTextAttribute($name,$size,$flags); 
     }
@@ -86,8 +86,6 @@
     {      		
 		  $id = $fieldprefix.$this->fieldName();
 		  $this->registerKeyListener($id, KB_CTRLCURSOR);  
-		  if ($rows =="" || $rows == 0) $rows = 10;
-	    // watch out, $maxsize isn't supported for a textarea.
 	    	    		
 		  $oFCKeditor = new FCKeditor($fieldprefix.$this->fieldName()) ;		
 		  $oFCKeditor->BasePath	= atkconfig("atkroot")."atk/attributes/fck/";

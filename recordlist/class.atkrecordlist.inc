@@ -144,7 +144,7 @@
         /**************/
     
         $searchcols = array();
-        
+        $searchstart=""; $searchend="";
         if (!hasFlag($flags, RL_NO_SEARCH))
         {
           if (isset($this->m_node->m_postvars["atksearchmode"]))

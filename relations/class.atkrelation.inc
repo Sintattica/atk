@@ -157,12 +157,9 @@
      */
     function isEmpty($record)
     {
-      if ($this->createDestination())
+      if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
       {
-        $keyval = $record[$this->fieldName()][$this->m_destInstance->primaryKeyField()];        
-        return ($keyval == "" || $keyval == NULL || $keyval === 0);
-        // mindyou, we must check with '===', because if keyval is  a string, the comparison
-        // is always true. (for some reason 'test'==0 is true in php.)
+          return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
       }
       return true; // always empty if error.
     }

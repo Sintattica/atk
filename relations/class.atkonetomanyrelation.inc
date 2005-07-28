@@ -340,8 +340,9 @@
       $ownerorderby="";
       if (isset($this->m_ownerInstance->m_postvars['atkorderby']))
       {
-        $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];      
-        $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
+        $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
+        if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))      
+          $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
       }
       
       $myrecords = $this->load(NULL, $record, "admin");
@@ -581,7 +582,8 @@
      */
     function isEmpty($record)
     {    
-      return (!is_array($record[$this->fieldName()]) || count($record[$this->fieldName()])==0);	    	    
+      return (!isset($record[$this->fieldName()])
+              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0));	    	    
     }
     
     /**
