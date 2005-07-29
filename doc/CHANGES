@@ -45,6 +45,7 @@ Changes in ATK 5.3
   of the template [Boy]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
 + Added getNameSpace() to atkSessionManager. [Ivo]
++ Added ucfirst(string) to javascript/tools.js [Boy] 
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the
