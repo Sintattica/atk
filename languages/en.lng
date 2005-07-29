@@ -236,6 +236,7 @@
   "import_validatefirst"=>"Do not validate before importing",  
   "feedback_import_failed"=>"File can not be imported",
   "import_importedreminder"=>"The file has already been imported, however there were errors detected in the following rows, these were not added/updated",
+  "today"=>"Today",
 );
 
 ?>

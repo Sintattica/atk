@@ -236,6 +236,7 @@
   "import_detectedrows"=>"Gedetecteerde aantal rijen",
   "import_novalidatefirst"=>"Controleer importbestand niet voor importeren",
   "import_importedreminder"=>"LET OP: Het bestand is al geimporteerd, enkel zijn wel deze fouten opgetreden in de hierondervolgende regels, deze records zijn dan ook niet toegevoegd",
+  "today"=>"Vandaag",
 );
 
 ?>
