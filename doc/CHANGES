@@ -115,6 +115,7 @@ Changes in ATK 5.3
 * Made Smarty param[0] (unnamed param) accept forward slash and dot as well
   as alphanumeric characters. [Boy]
 * Made documentation of defaultconfig PHPDoc compatible. [Boy]
+* Fixed ability to search for 'No' with atkBoolAttribute [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 
