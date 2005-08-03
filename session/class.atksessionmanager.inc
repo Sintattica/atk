@@ -257,7 +257,7 @@
 
         if ($value=="")
         {
-          if ($_REQUEST[$var]!="")
+          if (isset($_REQUEST[$var]) && !empty($_REQUEST[$var]))
           {
             $currentitem[$var] = $_REQUEST[$var];
           }

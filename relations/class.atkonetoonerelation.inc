@@ -350,7 +350,8 @@
 
       if ($this->createDestination())
       {
-        $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()];
+        (isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))?
+          $pkval = $rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]:$pkval=NULL;
         if ($pkval!=NULL && $pkval!="") // If primary key is not filled, there was no record, so we
                                         // should return NULL.
         {
@@ -544,7 +545,7 @@
     {
       if ($this->createDestination())
       {
-        if ($this->m_refkey!="")
+        if (isset($this->m_refKey) && !empty($this->m_refkey))
         { 
           // foreign key is in the destination node.            
           $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];                  
@@ -680,7 +681,7 @@
           if ($this->createDestination())
 	        {
             /* we first check if the record doesn't already exist */
-            if ($defaults[$this->fieldName()] != NULL)
+            if (isset($defaults[$this->fieldName()]) && !empty($defaults[$this->fieldName()]))
             {
               /* record has no primarykey yet, so we must add instead of update */
               $myrecord = $defaults[$this->fieldName()];

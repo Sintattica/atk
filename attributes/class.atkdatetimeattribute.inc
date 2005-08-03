@@ -89,7 +89,9 @@
 
     function fetchValue($postvars)
     {
-      $result = $postvars[$this->formName()];
+      $result=NULL;
+      if(isset($postvars[$this->formName()]))
+        $result = $postvars[$this->formName()];
       return $result;
     }
 		

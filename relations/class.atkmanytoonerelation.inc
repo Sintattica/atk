@@ -272,7 +272,10 @@
         if (!$this->hasFlag(AF_LARGE))
         {
           // normal dropdown..
-          $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+          $value=NULL;
+          if(isset($record[$this->fieldName()]))
+            $value = $record[$this->fieldName()];
+          $currentPk = $this->m_destInstance->primaryKey($value);
           $this->m_destInstance->addFilter($filter);
           
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
