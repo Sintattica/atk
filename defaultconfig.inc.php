@@ -524,6 +524,11 @@
    */
   $config_tplcompilecheck = "true";
   
+  /**
+  * Use subdirectories for compiled and cached templates
+  */
+  $config_tplusesubdirs = false;
+  
   /****************************** MISCELLANEOUS CONFIGURATION OPTIONS ******************************/
   
   /**

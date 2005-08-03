@@ -67,6 +67,7 @@
                                                                         // 2 = use cache_lifetime in cache file
                                                                         // default = 0.
         $s_smarty->cache_dir       = atkconfig("tplcachedir");    // name of directory for template cache files
+        $s_smarty->use_sub_dirs    = atkconfig("tplusesubdirs"); // use subdirs for compiled and cached templates
         $s_smarty->cache_lifetime  = atkconfig("tplcachelifetime"); // number of seconds cached content will persist.
 	  									                                                        // 0 = always regenerate cache,
                                                                               // -1 = never expires. default is one hour (3600)
