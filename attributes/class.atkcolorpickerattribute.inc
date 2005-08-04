@@ -32,7 +32,7 @@
       $row .='<A href ="javascript:picker';
     }
     $row .="('".$field."','".$color."')";
-    $row .='" title="'.text('color').': '.$color.'"><IMG SRC="atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' ></a></td>';
+    $row .='" title="'.text('color').': '.$color.'"><IMG SRC="'.atkconfig('atkroot').'atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' alt="-X-"></a></td>';
     $row .= "\n";
 
     return $row;
