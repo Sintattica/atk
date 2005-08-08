@@ -119,6 +119,8 @@ Changes in ATK 5.3
 * Made documentation of defaultconfig PHPDoc compatible. [Boy]
 * Fixed ability to search for 'No' with atkBoolAttribute [Boy]
 * Made colorpicker path to dummy image more dynamic [Boy]
+* Fixed getDestinationFilterCondition() when we pass 
+  a fieldalias prefix [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 

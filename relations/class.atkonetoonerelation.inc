@@ -209,11 +209,12 @@
             // Foreign key is in the source node
             $condition = $tablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0];
           }
-          $condition.= $this->getDestinationFilterCondition();
+          
+          $condition.= $this->getDestinationFilterCondition($fieldaliasprefix);
           $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);  
+          
           // we pass true as the last param to addToQuery, because we need all fields..
           $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
-  	     
         }
   
         // When storing, we don't add to the query.. we have our own store() method..
@@ -264,7 +265,6 @@
           {
             $condition .= " AND ".$destfilter;
           }
-                          
         }
         $fields = atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
         $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
@@ -278,19 +278,19 @@
      * @access private
      * @return String A where clause condition.
      */
-    function getDestinationFilterCondition()
-    {
+    function getDestinationFilterCondition($fieldaliasprefix="")
+    {        
       $condition="";
       if(is_array($this->m_destinationFilter))
       {
         for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
         {
-          $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter[$i];
+          $condition.=" AND ".$fieldaliasprefix.$this->m_name.".".$this->m_destinationFilter[$i];
         }
       }
       elseif ($this->m_destinationFilter!="")
       {
-         $condition.=" AND ".$this->m_name.".".$this->m_destinationFilter;
+         $condition.=" AND ".$fieldaliasprefix.$this->m_name.".".$this->m_destinationFilter;
       }
       return $condition;
     }
