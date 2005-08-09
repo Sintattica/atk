@@ -103,7 +103,7 @@
       $result= "<textarea id='$id' name='$id' wrap='soft' ";
       if ($rows) $result.= "rows='$rows' ";
       if ($cols) $result.= "cols='$cols'";
-      $result.=">\n".htmlspecialchars($text)."\n</textarea>";
+      $result.=">\n".htmlspecialchars($text)."</textarea>";
       return $result;
     }
     
