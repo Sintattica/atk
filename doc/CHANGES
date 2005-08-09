@@ -122,6 +122,8 @@ Changes in ATK 5.3
 * Fixed getDestinationFilterCondition() when we pass 
   a fieldalias prefix. [Boy]
 * Fixed editting of colorpicker attribute. [Boy]
+* Added newline to html of textattribute to solve problem of dissapearing
+  newlines on storing. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 
