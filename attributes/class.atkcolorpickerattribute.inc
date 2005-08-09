@@ -217,6 +217,7 @@
   class atkColorPickerAttribute extends atkAttribute
   {
     var $m_userColors;
+    var $m_currentColor;
  
     /**
      * Constructor
@@ -263,12 +264,12 @@
       $colWidth   = "11";
       $formRef    = $this->fieldName();
 
-      if ($this->currentColor == "")
+      if ($this->m_currentColor == "")
       {
-         $this->currentColor = $record[$fieldprefix.$this->formName()];	
+         $this->m_currentColor = $record[$this->fieldName()];	
       }
 
-      $colorField = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$this->currentColor.'" size="7" maxlength="7">';
+      $colorField = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_currentColor.'" size="7" maxlength="7">';
       
       if ($this->m_userColors !="")
       {
@@ -276,7 +277,7 @@
         $userCol = implode("|",$temp);
       }
 
-      if (trim($this->currentColor) == "")
+      if (trim($this->m_currentColor) == "")
       {
         $selectImg = $config_atkroot."atk/images/select_color_off.gif";
         $alt       = text("no_color_selected");
@@ -284,23 +285,23 @@
       else
       {
         $selectImg = $config_atkroot."atk/images/select_color_on.gif";
-        $alt       = $this->currentColor;
+        $alt       = $this->m_currentColor;
       }
 
-      // check if $this->currentColor starts with an # (to avoid parted url)
-      if (substr($this->currentColor,0,1) == "#")
+      // check if $this->m_currentColor starts with an # (to avoid parted url)
+      if (substr($this->m_currentColor,0,1) == "#")
       {
-        $urlColor = substr($this->currentColor,1);
+        $urlColor = substr($this->m_currentColor,1);
       }
       else
       {
-        $urlColor = $this->currentColor;
+        $urlColor = $this->m_currentColor;
       }
 
       $url     = atkPopup('atk/popups/colorpicker.inc','field='.$fieldprefix.$this->fieldName().'&activecolor='.$urlColor.'&usercol='.$userCol,'colorPicker',315,600,'no','no');
       $text    = '<a href ="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField; 
       $result  = "<table><tr><td valign='top' align='left'>";  
-      $result .= " <table cellpadding='0' cellspacing='0' border='0' width='35' height='21'><tr><td id='example_".$fieldprefix.$this->fieldName()."' name='example_".$fieldprefix.$this->fieldName()."' valign='top' align='left' bgcolor='".$this->currentColor."'>".$text."</td></tr></table>";
+      $result .= " <table cellpadding='0' cellspacing='0' border='0' width='35' height='21'><tr><td id='example_".$fieldprefix.$this->fieldName()."' name='example_".$fieldprefix.$this->fieldName()."' valign='top' align='left' bgcolor='".$this->m_currentColor."'>".$text."</td></tr></table>";
       $result .= "</td><tr></table>";      
 
       return $result;
@@ -312,11 +313,11 @@
       if(!check_color($color))
         triggerError($record, $this->fieldName(), 'error_invalid_color');
     }
+    
     function dbFieldType()
     { 
       return "string";
     }
-    
   } 
   
 ?>
