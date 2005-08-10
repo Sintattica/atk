@@ -28,13 +28,11 @@
     {
       if ($this->open("w"))
       {
-        echo "\nit is open";
         $this->write($data);
-        echo "\nit is written";
         $this->close();
         return true;
       }
-      echo "\nit could not be opened";
+
       return false;
     }          
 
@@ -44,9 +42,6 @@
       $res.= "\$".$varname." = ".var_export($data, true);
       $res.= "\n?>";
       
-      echo "\nfile contents: ";
-      var_dump($res);
-      
       return $this->writeFile($res);
     }   
     
@@ -55,12 +50,10 @@
       if ($this->m_mode!="" && $this->m_mode!=$mode)
       {
         // file is already open in different mode, close first
-        echo "\nwas already open";
         $this->close();
       }
       if (is_null($this->m_fp))
       {
-        echo "\nopening";
         $this->m_fp = fopen($this->getPath(), $mode);
         $this->m_mode = $mode;
       }      

@@ -126,7 +126,8 @@
             $attribute->m_destInstance = &$this->m_ownerInstance;
         }
         
-        $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
+        if (!empty($this->m_descTemplate))
+          $this->m_destInstance->setDescriptorTemplate($this->m_descTemplate);
       }
       return true;
     }
