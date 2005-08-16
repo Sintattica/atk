@@ -1593,14 +1593,17 @@
    */
   function atk_value_in_array($array)
   {
-  	foreach ($array as $key => $value)
-  	{
-  		if (is_array($value))
-  		{
-  			if (atk_value_in_array($value)) return true;
-  		}
-  		else if($value) return true;
-  	}
+    if (is_array($array) && !empty($array))
+    {
+      foreach ($array as $key => $value)
+      {
+        if (is_array($value))
+        {
+          if (atk_value_in_array($value)) return true;
+        }
+        else if($value) return true;
+      }
+    }
   	return false;
   }
   
