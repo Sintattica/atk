@@ -109,6 +109,13 @@
       $smarty = &atkSmarty::getInstance();
       $smarty->plugins_dir[] = $path; 
     }
+    
+    function addDynamicFunction($module, $tag)
+    {
+      $smarty = &atkSmarty::getInstance();
+      include_once(moduleDir($module)."plugins/function.".$tag.".php");
+      $smarty->register_function($tag, "smarty_function_".$tag, false);
+    }
      
     /**
      * Internal function to handle a static variable that keeps track

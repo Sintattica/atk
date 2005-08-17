@@ -45,6 +45,8 @@ Changes in ATK 5.3
 + Added multilanguage multirecord search for atkMlAttribute. [Sandy]
 + Added smarty hack making it possible to leave literal tag after parsing
   of the template [Boy]
++ Added addDynamicFunction to atkSmarty for easier registration of plugins
+  that should not be cached. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
 + Added getNameSpace() to atkSessionManager. [Ivo]
 + Added ucfirst(string) to javascript/tools.js [Boy] 
