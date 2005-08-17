@@ -143,14 +143,12 @@
         $active[$a['node']][] = $a['action'];
       }
 
-      ///var_dump($g_modules);
       /*** per module ***/      
       
       $modcopy = $g_modules;
       
       foreach ($modcopy as $modname => $pathname)
       {
-        //echo "<br><hr>".var_dump($g_modules);        
         $nodes = (isset($g_nodes[$modname])?$g_nodes[$modname]:array());
         
         $mainHtml="";

@@ -109,7 +109,6 @@
 
     function value2db($rec)
     {
-		  //var_dump($rec);
       //$datetime = split(" ",$rec[$this->fieldname()]);
 			//$tmp_rec = $rec;
 			//$tmp_rec[$this->fieldname()]=$datetime[0];

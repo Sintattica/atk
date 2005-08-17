@@ -189,7 +189,6 @@
 
        $rights = $g_db->getrows($query);
 
-//       var_dump($rights);
        $result = Array();
 
        for ($i=0;$i<count($rights);$i++)

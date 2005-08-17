@@ -805,10 +805,7 @@
     }
     
     if ($sessionid=="") return true;
-    
-    //echo $name.": ".$sessionid;
-    //var_dump($_COOKIE);
-    
+      
     for ($position=0; $position<32; $position++)
     {
       if (!eregi('[a-zA-Z0-9]', $sessionid[$position])) return false;

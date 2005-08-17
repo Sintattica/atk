@@ -45,8 +45,6 @@
 	}
 	
 	//$atkmenutop = $_REQUEST["atkmenutop"];
-	//var_dump($atkmenutop);
-	//var_dump($g_theme);
 	usort($g_menu[$atkmenutop],"menu_cmp");
 	
 	function menu_href($url,$name="",$sessionstatus=SESSION_DEFAULT, $extraprops="")
@@ -67,7 +65,6 @@
 	');
 	
 	$theme = &atkTheme::getInstance();
-	atk_var_dump($theme);
 	// this vars are here for theme support
 	$page->register_scriptcode("
 		this.ol_themename       = '".$theme->m_curtheme."';

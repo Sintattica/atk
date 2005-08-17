@@ -109,7 +109,6 @@
               "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
 
             // Create link to details.
-            //var_dump($recordset[$this->fieldName()]);
             $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
               "[".text("details")."]",
               SESSION_NESTED,

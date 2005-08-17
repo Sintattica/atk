@@ -102,8 +102,6 @@
       global $config_atkroot, $g_layout, $config_enable_ie_extensions;
       global $atkwwview, $PHP_SELF;
 
-      //var_dump($record);
-
       if (!ieExtensions())
       {
         return atkTextAttribute::edit($record, $fieldprefix);

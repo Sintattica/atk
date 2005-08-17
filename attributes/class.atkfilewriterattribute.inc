@@ -73,7 +73,6 @@
         atkdebug("[atkfilewriter] Lazy loading rest of record to complete filename.");
         $recs = $this->m_ownerInstance->selectDb($record["atkprimkey"]);
         $record = $recs[0];
-        //atk_var_dump($record, 'this is what we have now');
      }
 
       $filename = $parser->parse($record);      

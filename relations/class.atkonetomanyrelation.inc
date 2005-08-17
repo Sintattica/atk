@@ -849,10 +849,8 @@
     		$classname = $this->m_destination;
       	$cache_id = $this->m_owner.".".$this->m_name;
       	$rel = &getNode($classname,$cache_id);
-        atk_var_dump($this->m_ownerInstance->m_postvars['atkselector'],"<h1>selector</h1>");
       	// Get the current atkselector
       	$where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);      	
-atk_var_dump($where,"<h1>where</h1>");
       	if ($where)
       	{
       		$childrecords = $rel->selectDb($where);
