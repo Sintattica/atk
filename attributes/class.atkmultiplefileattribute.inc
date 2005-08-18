@@ -14,6 +14,7 @@
    * @version $Revision$
    * $Id$
    */
+  useattrib("atkFileAttribute");
    
   /**
    * This is an extend of the famous atkfileattribute :). Now its possible 
