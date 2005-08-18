@@ -254,9 +254,14 @@
       if($errno==DB_UNKNOWNERROR)
       {
         $errstr = 'txt_db_'.$this->getDbErrno();
-        if(!isset($GLOBALS[$errstr])) { $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; } else { $this->m_error=$GLOBALS[$errstr]; }
-      //  atkerror($this->m_error);
-
+        if(!isset($GLOBALS[$errstr])) 
+        { 
+          $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; 
+        } 
+        else 
+        { 
+          $this->m_error=$GLOBALS[$errstr].($this->getErrorType()=="system"?" (".$this->getDbError().")":""); 
+        }
         return $this->m_error;
       }
       else
