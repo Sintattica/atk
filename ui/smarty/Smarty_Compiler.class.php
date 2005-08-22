@@ -260,18 +260,13 @@ class Smarty_Compiler extends Smarty {
         preg_match_all($search, $source_content, $match,  PREG_SET_ORDER);
         $this->_folded_blocks = $match;
         reset($this->_folded_blocks);
-        
-        /* BEGIN SMARTY HACK *\
-        atkimport("atk.ui.atksmarty");
+                
         /* replace special blocks by "{php}" */
-        $source_content = preg_replace($search.'e', "'".
-        (!atkSmarty::getSmartyRemoveLiteral()?"{literal}":"")
+        $source_content = preg_replace($search.'e', "'"
                                        . $this->_quote_replace($this->left_delimiter) . 'php'
                                        . "' . str_repeat(\"\n\", substr_count('\\0', \"\n\")) .'"
-                                       . $this->_quote_replace($this->right_delimiter)
-        .(!atkSmarty::getSmartyRemoveLiteral()?"{/literal}":"")."'"
+                                       . $this->_quote_replace($this->right_delimiter)."'"
                                        , $source_content);
-        /* END SMARTY HACK *\
         
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
@@ -2219,7 +2214,7 @@ class Smarty_Compiler extends Smarty {
     function _syntax_error($error_msg, $error_type = E_USER_ERROR, $file=null, $line=null)
     {
         //$this->_trigger_fatal_error("syntax error: $error_msg", $this->_current_file, $this->_current_line_no, $file, $line, $error_type);
-        //SANDY HACK: We don't Smary errors but ATK Errors
+        //SANDY HACK: We don't want Smarty errors but ATK Errors
         atkerror("Template compile error: [in ".$this->_current_file." line ".$this->_current_line_no."]: syntax error: $error_msg");
     }
 

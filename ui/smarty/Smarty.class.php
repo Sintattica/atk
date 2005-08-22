@@ -1244,7 +1244,7 @@ class Smarty
         // buffering - for speed
         $_cache_including = $this->_cache_including;
         $this->_cache_including = false;
-        if ($display && !$this->caching && count($this->_plugins['outputfilter']) == 0) {
+        if ($display && !$this->caching && count($this->_plugins['outputfilter']) == 0) {            
             if ($this->_is_compiled($resource_name, $_smarty_compile_path)
                     || $this->_compile_resource($resource_name, $_smarty_compile_path))
             {
@@ -1405,7 +1405,6 @@ class Smarty
      */
     function _compile_resource($resource_name, $compile_path)
     {
-
         $_params = array('resource_name' => $resource_name);
         if (!$this->_fetch_resource_info($_params)) {
             return false;
@@ -1739,14 +1738,20 @@ class Smarty
         }
 
         if(isset($auto_source)) {
-            // make source name safe for filename
-            $_filename = urlencode(basename($auto_source));
+            // make source name safe for filename            
+            $_filename = urlencode(basename($auto_source));            
             $_crc32 = sprintf('%08X', crc32($auto_source));
             // prepend %% to avoid name conflicts with
-            // with $params['auto_id'] names
+            // with $params['auto_id'] names                                    
             $_crc32 = substr($_crc32, 0, 2) . $_compile_dir_sep .
                       substr($_crc32, 0, 3) . $_compile_dir_sep . $_crc32;
-            $_return .= '%%' . $_crc32 . '%%' . $_filename;
+                      
+            // Ivo hack.. use hash instead of actual name, if actual name has an invalid length
+            if (strlen($_filename)>100) {
+              $_filename = md5($_filename);
+            }
+            // end ivo hack                      
+            $_return .= '%%' . $_crc32 . '%%' . $_filename;            
         }
 
         return $_return;
@@ -1854,7 +1859,6 @@ class Smarty
 
         $_smarty_compile_path = $this->_get_compile_path($params['smarty_include_tpl_file']);
 
-
         if ($this->_is_compiled($params['smarty_include_tpl_file'], $_smarty_compile_path)
             || $this->_compile_resource($params['smarty_include_tpl_file'], $_smarty_compile_path))
         {
@@ -1909,7 +1913,7 @@ class Smarty
      */
     function _include($filename, $once=false, $params=null)
     {
-        if ($once) {
+        if ($once) {          
             return include_once($filename);
         } else {
             return include($filename);

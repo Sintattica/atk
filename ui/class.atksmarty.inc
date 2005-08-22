@@ -26,7 +26,6 @@
    */   
   class atkSmarty
   {    
-    var $m_removesmartyliteral=true;
     
     /**
      * Get the Smarty  instance.
@@ -112,50 +111,10 @@
     
     function addDynamicFunction($module, $tag)
     {
-      $smarty = &atkSmarty::getInstance();
+      $smarty = &atkSmarty::getInstance();      
       include_once(moduleDir($module)."plugins/function.".$tag.".php");
       $smarty->register_function($tag, "smarty_function_".$tag, false);
-    }
-     
-    /**
-     * Internal function to handle a static variable that keeps track
-     * Of wether we want to remove the literal tag or leave it.
-     *
-     * Leaving it will result in literal output with the literal tags still surrounding
-     * it and this is not generally needed except for special situations when
-     * content is parsed multiple times.
-     *
-     * @param String $removesmartyliteral wether or not to set the removesmartyliteral
-     *                                    or to get it.
-     */
-    function _smartyRemoveLiteral($smartyremoveliteral="")
-    {
-      static $removesmartyliteral=true;
-      if ($smartyremoveliteral=="FALSE")     $removesmartyliteral=false;
-      else if ($smartyremoveliteral=="TRUE") $removesmartyliteral=true;
-      else return $removesmartyliteral;
-    }
-    
-    /**
-     * Getter for wether or not to leave the literal tag after Smarty parsing
-     * a template
-     * @return bool wether or not to remove the literal tag
-     */
-    function getSmartyRemoveLiteral()
-    {
-      return atkSmarty::_smartyRemoveLiteral();
-    }
-    
-    /**
-     * Setter for wether or not to leave the literal tag after Smarty parsing
-     * a template
-     * @param bool $smartyremoveliteral wether or not to remove the literal tag
-     */
-    function setSmartyRemoveLiteral($smartyremoveliteral)
-    {
-      if (!$smartyremoveliteral) atkSmarty::_smartyRemoveLiteral("FALSE");
-      else atkSmarty::_smartyRemoveLiteral("TRUE");
-    }
+    }         
   }
 
 ?>

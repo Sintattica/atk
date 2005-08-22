@@ -43,8 +43,8 @@ Changes in ATK 5.3
 + Added a $config_auth_userfk config option to configure the name of the
   foreign keys pointing to the usertable. [MartinL]
 + Added multilanguage multirecord search for atkMlAttribute. [Sandy]
-+ Added smarty hack making it possible to leave literal tag after parsing
-  of the template [Boy]
+* Modified Smarty so it can work with compiled template names that have
+  a name longer than what is valid for a filename. [Ivo]
 + Added addDynamicFunction to atkSmarty for easier registration of plugins
   that should not be cached. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
