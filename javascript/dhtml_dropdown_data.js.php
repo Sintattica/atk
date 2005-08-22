@@ -105,7 +105,7 @@ while (list ($name) = each ($g_menu))
     $url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
 
     $enable = $g_menu[$atkmenutop][$i]["enable"];
-//echo "<h3>enable: ".var_export($enable,1)."</h3>";
+
     // Check wether we have the rights and the item is not a root item
     if (is_array($enable) && $atkmenutop != "main" && $name != "-")
     {
@@ -122,7 +122,6 @@ while (list ($name) = each ($g_menu))
         {
           $enabled |= $instance->allowed($action);
         }
-//        echo "<h2>node: ".$enable[(2*$j)]." with action: $action resulting in is_allowed(): '$enabled'</h2>";
       }
       $enable = $enabled;
     }
@@ -144,8 +143,7 @@ while (list ($name) = each ($g_menu))
       {
         if(file_exists($menu_icon))
         {
-          $menuname = addslashes (text("menu_".$name))
-          ;
+          $menuname = addslashes (text("menu_".$name));
           $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
         }
         else
