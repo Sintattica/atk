@@ -41,7 +41,7 @@ atkOutput::sendNoCacheHeaders();
 
 function frameAdjust() {
 	var adjust = 0;
-	if (parent.document.getElementById('middleframe').cols=='0,10,*')
+	if (!parent.document.getElementById('middleframe') || parent.document.getElementById('middleframe').cols=='0,10,*')
 	{
 		adjust = 275;
 	}
@@ -105,7 +105,7 @@ while (list ($name) = each ($g_menu))
     $url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
 
     $enable = $g_menu[$atkmenutop][$i]["enable"];
-
+//echo "<h3>enable: ".var_export($enable,1)."</h3>";
     // Check wether we have the rights and the item is not a root item
     if (is_array($enable) && $atkmenutop != "main" && $name != "-")
     {
@@ -122,6 +122,7 @@ while (list ($name) = each ($g_menu))
         {
           $enabled |= $instance->allowed($action);
         }
+//        echo "<h2>node: ".$enable[(2*$j)]." with action: $action resulting in is_allowed(): '$enabled'</h2>";
       }
       $enable = $enabled;
     }
@@ -143,7 +144,8 @@ while (list ($name) = each ($g_menu))
       {
         if(file_exists($menu_icon))
         {
-          $menuname = addslashes (text("menu_".$name));
+          $menuname = addslashes (text("menu_".$name))
+          ;
           $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
         }
         else
@@ -158,20 +160,30 @@ while (list ($name) = each ($g_menu))
     elseif($atkmenutop != "main" && $name != "-")
     {
       $menuname = addslashes (text("menu_".$name));
-      $submenubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
+      $submenubuttons[$name] = 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
       $subsubmenu[] = $name;
     }
   }
 
-  $menubuttons .= $submenubuttons;
+  $menudata[$atkmenutop]["name"] = addslashes (text("menu_".$atkmenutop,"menu"));
+  $menudata[$atkmenutop]["buttons"] = $menubuttons;
+  $menudata[$atkmenutop]["submenubuttons"] = $submenubuttons;
+}
 
+foreach ($menudata as $menukey=>$menuitem)
+{
+  $menubuttons = $menuitem["buttons"];
+  foreach ($menuitem["submenubuttons"] as $subkey=>$submenu)
+  {
+    if ($menudata[$subkey]["buttons"] || $menudata[$subkey]["submenubuttons"]) $menubuttons.=$submenu;
+  }
+  
   // The menu item sets for each submenu
   $menubuttonsarray[] = $menubuttons;
   // The menu items that open a submenu
-  $menurootarray[] = $atkmenutop;
+  $menurootarray[] = $menukey;
   // The names of menu items
-  $menutopname = addslashes (text("menu_".$atkmenutop,"menu"));
-  $menutopnamearray[] = $menutopname;
+  $menutopnamearray[] = $menuitem["name"];
 }
 
 // Create a menuroot
