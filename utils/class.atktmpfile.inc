@@ -80,6 +80,31 @@
       unlink($this->getPath());
     }
     
+    /**
+     * Returns the time the file was last changed, or FALSE in case of an error. 
+     * The time is returned as a Unix timestamp.
+     *
+     * @return int last changed timestamp 
+     */
+    function filecTime()
+    {
+      return filectime($this->m_filename); 
+    }
+    
+    /**
+     * Returns the file age in seconds
+     * 
+     * @return int fileage in seconds
+     */
+    function fileAge()
+    {
+      $filectime = $this->filectime();
+      if($filectime!=false) return (time()-$filectime);
+      return false;
+    }
+    
+    
+    
     function getPath()
     {
       return atkconfig("atktempdir").$this->m_filename;
