@@ -87,8 +87,9 @@
      * @return int last changed timestamp 
      */
     function filecTime()
-    {
-      return filectime($this->m_filename); 
+    { 
+      if($this->exists()) return filectime($this->getPath());
+      return false; 
     }
     
     /**
