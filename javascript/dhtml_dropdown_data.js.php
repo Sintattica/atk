@@ -171,9 +171,12 @@ while (list ($name) = each ($g_menu))
 foreach ($menudata as $menukey=>$menuitem)
 {
   $menubuttons = $menuitem["buttons"];
-  foreach ($menuitem["submenubuttons"] as $subkey=>$submenu)
+  if ($menuitem["submenubuttons"] && is_array($menuitem["submenubuttons"]))
   {
-    if ($menudata[$subkey]["buttons"] || $menudata[$subkey]["submenubuttons"]) $menubuttons.=$submenu;
+    foreach ($menuitem["submenubuttons"] as $subkey=>$submenu)
+    {
+      if ($menudata[$subkey]["buttons"] || $menudata[$subkey]["submenubuttons"]) $menubuttons.=$submenu;
+    }
   }
   
   // The menu item sets for each submenu
