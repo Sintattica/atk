@@ -78,9 +78,19 @@
 
   function &getModule($modname)
   {
-    global $g_moduleRepository;
+    global $g_moduleRepository, $g_modules;
     if (!isset($g_moduleRepository[$modname])||!is_object($g_moduleRepository[$modname]))
     {
+      $filename = moduleDir($modname)."module.inc";
+      if (file_exists($filename))
+      {
+        include_once($filename);
+      }
+      else
+      {
+        atkdebug("Couldn't find module.inc for module '$modname' in '".moduleDir($modname)."'");
+      }
+            
       atkdebug("Constructing a new module - $modname");
       if (class_exists("mod_".$modname))
       {
@@ -346,4 +356,43 @@
     }        
   }
   
+  /**
+   * Preloads all modules. If a module_preload.inc file exists in the
+   * module directory, this file will be included. If no module_preload.inc
+   * file exists in the module directory the module.inc file will be used 
+   * instead (to remain backwards compatible).
+   */
+  function atkPreloadModules()
+  {
+    global $g_modules, $g_modifiers, $g_overloaders;
+    
+    foreach ($g_modules as $modname => $modpath)
+    {
+      $preload = "$modpath/module_preload.inc";
+      $module = "$modpath/module.inc";
+      $filename = file_exists($preload) ? $preload : $module;
+
+      // no module file exists
+      if (!file_exists($filename))
+      {
+        atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
+        continue;
+      }
+      
+      if ($filename == $preload)
+        atkdebug("Preloading module - $modname");
+      else atkdebug("Loading module - $modname");
+      
+      // the include file may specify modifiers.
+      $modifiers = array();
+      $overloaders = array();
+      include_once($filename);
+      
+      for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
+        $g_modifiers[$modifiers[$i]][] = $modname;
+
+      if (count($overloaders) > 0)
+        $g_overloaders = array_merge($g_overloaders, $overloaders);
+    }
+  }
 ?>

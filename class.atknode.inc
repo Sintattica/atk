@@ -258,34 +258,8 @@
 
    $g_stickyurl = array();
 
-  /************* MODULE HANDLING *************/
-  foreach ($g_modules as $modname => $modpath)
-  {
-    $filename = "$modpath/module.inc";
-
-    // The module itself
-    if (file_exists($filename))
-    {
-      // the include file may specify modifiers.
-      $modifiers = array();
-      $overloaders = array();
-      include_once($filename);
-      for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
-      {
-        $g_modifiers[$modifiers[$i]][] = $modname;
-      }
-      if (count($overloaders)>0)
-      {
-        $g_overloaders = array_merge($g_overloaders,$overloaders);
-      }
-    }
-    else
-    {
-      atkdebug("Couldn't find module.inc for module '$modname' in '$modpath'");
-    }
-
-  }
-  /*******************************************/
+  // preload modules
+  atkPreloadModules();
 
   /**
    * The atkNode class represents a piece of information that is part of an
@@ -1779,7 +1753,7 @@
         for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
         {
           $modname = $g_modifiers[$this->atknodetype()][$i];
-          $mod = getModule($modname);
+          $mod = &getModule($modname);
           $modifiername = $this->m_type."_modifier";
   
           if (method_exists($mod,$modifiername))
@@ -1799,7 +1773,7 @@
         {
           $modname = $g_modifiers[$this->atknodetype()][$i];
   
-          $mod = getModule($modname);
+          $mod = &getModule($modname);
           $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
   
           if (method_exists($mod,$modifiername))
