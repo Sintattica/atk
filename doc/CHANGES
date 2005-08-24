@@ -49,12 +49,12 @@ Changes in ATK 5.3
   that should not be cached. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
 + Added support for preloading only certain parts of a module
-  using special module_preload.inc file. If this file exists it will
-  be loaded instead of module.inc and module.inc will only be loaded
-  when a call to getModule(...) has been made. NOTE: this means
-  modules are *not* loaded in the global space anymore!  [Peter]
+  using special module_preload.inc file. If this file exists it will be loaded
+  instead of module.inc and module.inc will only be loaded when a call to 
+  getModule(...) has been made. NOTE: this means modules are *not* loaded in 
+  the global space anymore! [Peter]
 + Added getNameSpace() to atkSessionManager. [Ivo]
-+ Added ucfirst(string) to javascript/tools.js [Boy] 
++ Added ucfirst(string) to javascript/tools.js. [Boy] 
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the
