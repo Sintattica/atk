@@ -115,6 +115,13 @@
   // If the users are using IE, then the application can be run in fullscreen
   // mode. Set the next variable to true to enable this:
   $config_fullscreen = false;
+
+  // Lists that are obligatory, by default have no 'Select none' option. In
+  // some applications, this leads to the user just selecting the first item
+  // since that is the default. If this is a problem set this config variable
+  // to true; this will add a 'Select none' option to obligatory lists so the
+  // user is forced to make a selection.
+  $config_list_obligatory_null_item = false;
   
   //----------------- SECURITY CONFIGURATION --------------------
 

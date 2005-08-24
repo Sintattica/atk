@@ -55,6 +55,10 @@ Changes in ATK 5.3
   the global space anymore! [Peter]
 + Added getNameSpace() to atkSessionManager. [Ivo]
 + Added ucfirst(string) to javascript/tools.js. [Boy] 
++ Added $config_list_obligatory_null_item to add a 'None' item to dropdowns 
+  even when obligatory (forces the user to choose). Can be disabled per
+  individual atkListAttribute with AF_LIST_NO_OBLIGATORY_NULL_ITEM. [Bas, Ivo]
++ atkListAttribute now supports custom onChange javascript code. [Boy]
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the

@@ -20,6 +20,8 @@
     * Flags for the attribute
     */
    define("AF_NO_TRANSLATION", AF_SPECIFIC_1); // Do not translate the options
+   define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2); // Do not add a default
+                                                             // null option.
 
   /**
    * The atkListAttribute class represents an attribute of a node
@@ -149,7 +151,7 @@
       
       $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.'>';
       
-      if(!$this->hasFlag(AF_OBLIGATORY))
+      if(!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&$record[$this->fieldName()]==""&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)))
       {
         $result.= '<option value="'.$this->m_emptyvalue.'">'.text('list_null_value', $this->m_ownerInstance->m_type);   
       }
