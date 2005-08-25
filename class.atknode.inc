@@ -1508,7 +1508,7 @@
         $newtab["total"] = count($list);
         foreach ($list as $t)
         {
-          $newtab["title"] = text("tab_$t",$this->m_type);
+          $newtab["title"] = atktext("tab_$t",$this->m_module,$this->m_type);
           $newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")
