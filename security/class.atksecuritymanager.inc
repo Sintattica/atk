@@ -1,7 +1,5 @@
 <?php
 
-  atk_var_dump(atk_get_trace());
-
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
