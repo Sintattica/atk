@@ -286,8 +286,7 @@
     {
       $value = $record[$this->fieldName()];
       
-      // new is set from an update using the password attrib edit() function
-      // hash is set from the _setNewPassword() function in users module
+      // new is set from an update using the password attrib edit() function      
       
       if ($value["new"] != "" || $value["hash"] != "")
       {
