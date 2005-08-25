@@ -68,6 +68,13 @@
     var $m_originalmodule;
     
     /**
+     * Wether or not to check all the modules for strings that we are searching
+     * @access private
+     * @var boolean
+     */
+    var $m_modulefallback;
+    
+    /**
      * Default Constructor
      * @access private
      */
@@ -90,8 +97,8 @@
       if (!is_object($s_atklanguage))
       {
         $s_atklanguage = new atkLanguage();
+        $s_atklanguage->m_modulefallback = atkconfig("language_modulefallback",false);
       }
-      $s_atklanguage->_fillFallbackModules();
       return $s_atklanguage;
     }
     
@@ -99,12 +106,12 @@
      * Calculate the list of fallbackmodules.
      * @access private
      */
-    function _fillFallbackModules()
+    function _fillFallbackModules($modulefallback)
     {
       global $g_modules;
       
       $this->m_fallbackmodules=array();
-      if (is_array($g_modules))
+      if (is_array($g_modules) && ($modulefallback|| $this->m_modulefallback))
       { 
         foreach ($g_modules as $modname => $modpath)
         {
@@ -112,23 +119,26 @@
         }
       }
       $this->m_fallbackmodules[] = "atk";
-    }      
+    }
     
     /**
      * Text function, retrieves a translation for a certain string.
      *
-     * @param String $string         the name of the string to return
-     * @param String $module         module in which the language file should be looked for, 
+     * @param String $string          the name of the string to return
+     * @param String $module          module in which the language file should be looked for, 
      *                                defaults to core module with fallback to ATK
-     * @param String $node           the node to which the string belongs
-     * @param String $lng            ISO 639-1 language code, defaults to config variable
-     * @param String $firstfallback  the first module to check as part of the fallback
-     * @param boolean $nodefaulttext if true, then it doesn't returns false when it can't find a translation
+     * @param String $node            the node to which the string belongs
+     * @param String $lng             ISO 639-1 language code, defaults to config variable
+     * @param String $firstfallback   the first module to check as part of the fallback
+     * @param boolean $nodefaulttext  if true, then it doesn't returns false when it can't find a translation
+     * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback, 
+     *                                when looking for strings
      * @return String the string from the languagefile
      */
-    function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false)
+    function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false,$modulefallback=false)
     {
       $atklanguage =& atkLanguage::getInstance();
+      $atklanguage->_fillFallbackModules($modulefallback);
       
       if ($atklanguage->preTextChecks($string, $module, $node, $lng, $firstfallback, $nodefaulttext))
       {

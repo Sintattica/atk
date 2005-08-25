@@ -319,9 +319,11 @@
    * @param String $firstfallback   the first module to check as part of the fallback
    * @param boolean $nodefaulttext  if true, then it doesn't return a default text 
    *                                when it can't find a translation
+   * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback, 
+   *                                when looking for strings
    * @return String the string from the languagefile  
    */
-  function atktext($string, $module="atk",$node="", $lng="", $firstfallback="", $nodefaulttext=false)
+  function atktext($string, $module="atk",$node="", $lng="", $firstfallback="", $nodefaulttext=false, $modulefallback=false)
   {
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);

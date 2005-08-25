@@ -59,6 +59,9 @@ Changes in ATK 5.3
   even when obligatory (forces the user to choose). Can be disabled per
   individual atkListAttribute with AF_LIST_NO_OBLIGATORY_NULL_ITEM. [Bas, Ivo]
 + atkListAttribute now supports custom onChange javascript code. [Boy]
++ Added $modulefallback param to atktext, use this for a single text call or 
+  set $config_language_module_fallbak to true for all calls to search
+  all the modules for a string. [Boy]
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the
@@ -138,6 +141,7 @@ Changes in ATK 5.3
 * Fixed atkMultipleFileAttribute unmet dependency on atkFileAttribute. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
+- Removed fallback of all modules for atkLanguage. [Boy]
 
 Changes in ATK 5.2.1
 --------------------
