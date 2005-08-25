@@ -109,14 +109,20 @@
       $smarty->plugins_dir[] = $path; 
     }
     
-    function addDynamicFunction($module, $tag, $preload=true)
+    function addDynamicFunction($module, $tag)
     {
-      $smarty = &atkSmarty::getInstance();      
-      if ($preload) 
-      {
-        include_once(moduleDir($module)."plugins/function.".$tag.".php");
-      }
-      $smarty->register_function($tag, "smarty_function_".$tag, false);
+      $smarty = &atkSmarty::getInstance();  
+      $wrapper = "__dyn_smarty_function_$tag";
+           
+      eval('
+        function '.$wrapper.'($params, &$smarty)
+        {
+          include_once(moduleDir("'.$module.'")."plugins/function.'.$tag.'.php");
+          return smarty_function_'.$tag.'($params, $smarty);
+        }
+      ');
+      
+      $smarty->register_function($tag, $wrapper, false);
     }         
   }
 
