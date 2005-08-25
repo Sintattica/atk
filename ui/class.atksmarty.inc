@@ -109,10 +109,13 @@
       $smarty->plugins_dir[] = $path; 
     }
     
-    function addDynamicFunction($module, $tag)
+    function addDynamicFunction($module, $tag, $preload=true)
     {
       $smarty = &atkSmarty::getInstance();      
-      include_once(moduleDir($module)."plugins/function.".$tag.".php");
+      if ($preload) 
+      {
+        include_once(moduleDir($module)."plugins/function.".$tag.".php");
+      }
       $smarty->register_function($tag, "smarty_function_".$tag, false);
     }         
   }
