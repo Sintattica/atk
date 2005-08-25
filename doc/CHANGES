@@ -43,7 +43,7 @@ Changes in ATK 5.3
 + Added a $config_auth_userfk config option to configure the name of the
   foreign keys pointing to the usertable. [MartinL]
 + Added multilanguage multirecord search for atkMlAttribute. [Sandy]
-* Modified Smarty so it can work with compiled template names that have
++ Modified Smarty so it can work with compiled template names that have
   a name longer than what is valid for a filename. [Ivo]
 + Added addDynamicFunction to atkSmarty for easier registration of plugins
   that should not be cached. [Ivo]
@@ -62,6 +62,8 @@ Changes in ATK 5.3
 + Added $modulefallback param to atktext, use this for a single text call or 
   set $config_language_module_fallbak to true for all calls to search
   all the modules for a string. [Boy]
+* ATK now has a smaller memory footprint and less overhead, due to cleanup 
+  of includes. [Peter, Boy, Ivo]
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the

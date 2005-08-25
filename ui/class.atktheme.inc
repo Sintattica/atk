@@ -111,7 +111,7 @@
           include_once($this->m_curthemedir."layout.inc");
         }
         
-        $this->_getCachedTheme();
+        //$this->_getCachedTheme();
         $this->m_initialized = true;
       }
     }
@@ -122,14 +122,16 @@
      */
     function _getCachedTheme()
     {
-      if (!atkconfig("force_theme_recompile")) $this->_loadThemedef();
-      if(!$this->m_def)
+      if (count($this->m_def)==0)
       {
-        atkdebug("Cached themedefinition was not found, compiling one");
-        $compiler = &atknew("atk.ui.atkthemecompiler");
-        $compiler->compile();
-        $this->_loadThemedef();
-      }
+        if (!atkconfig("force_theme_recompile")||!$this->_loadThemedef())
+        {        
+          atkdebug("Cached themedefinition was not found, compiling one");
+          $compiler = &atknew("atk.ui.atkthemecompiler");
+          $compiler->compile();
+          $this->_loadThemedef();
+        }
+     }
     }
     
     /**
@@ -144,7 +146,9 @@
       {
         include_once($filelocation);
         $this->m_def = $theme;
+        return true;
       }
+      return false;
     }
     
     /**
@@ -178,6 +182,7 @@
      */
     function _getStackedItem($name, $searchfor)
     {
+      $this->_getCachedTheme();
       for($counter=0;$counter <= count($this->m_def[$name]);$counter++)
       {
         if (isset($this->m_def[$name])&&isset($this->m_def[$name][$counter])&&$this->m_def[$name][$counter])
@@ -208,6 +213,7 @@
     function _getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
     { 
       global $PHP_SELF;
+      $this->_getCachedTheme();
       
       if (!$defaultreturnpath) $defaultreturnpath = $returnpath;
       
