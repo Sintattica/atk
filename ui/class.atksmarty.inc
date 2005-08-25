@@ -162,7 +162,7 @@
         }
       ');
       
-      $smarty->register_function($tag, $function, $cacheable);
+      $smarty->register_compiler_function($tag, $function, $cacheable);
     }  
   }
 
