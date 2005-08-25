@@ -326,7 +326,7 @@
   function atktext($string, $module="atk",$node="", $lng="", $firstfallback="", $nodefaulttext=false, $modulefallback=false)
   {
     atkimport("atk.atklanguage");
-    return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
+    return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext,$modulefallback);
   }
   
   

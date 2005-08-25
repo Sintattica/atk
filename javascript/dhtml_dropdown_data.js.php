@@ -126,6 +126,10 @@ while (list ($name) = each ($g_menu))
       $enable = $enabled;
     }
 
+    // Get the module from the first item of the menu and use it to translate
+    if ($g_menu[$atkmenutop][$i]["enable"][0]) $exploded = explode(".",$g_menu[$atkmenutop][$i]["enable"][0]);
+    $menuname = addslashes (atktext("menu_".$name,$exploded[0],"","","","",true));
+    
     // Menu items with a URL become links
     if($g_menu[$atkmenutop][$i]["url"]!="")
     {
@@ -137,33 +141,29 @@ while (list ($name) = each ($g_menu))
       {
         $menu_icon = $theme->iconPath($atkmenutop."_".$name,"dropdown");
       }
-
+      
       // If we have the rights, add the menu items
       if ($enable)
-      {
+      {        
         if(file_exists($menu_icon))
         {
-          $menuname = addslashes (text("menu_".$name));
           $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$menu_icon.'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
         }
         else
-        {
-          $menuname = addslashes (text("menu_".$name));
+        { 
           $menubuttons .= 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("unknown","dropdown").'\">&nbsp; '.$menuname.'", "'.$url.'", "parent.main",subM);';
         }
       }
     }
-
     // Menu items without a URL become a new submenu
     elseif($atkmenutop != "main" && $name != "-")
     {
-      $menuname = addslashes (text("menu_".$name));
       $submenubuttons[$name] = 'addItem("<img align=\"top\" width=\"16\" height=\"16\" src=\"platform/'.$theme->iconPath("folder","dropdown").'\">&nbsp; '.$menuname.'","m'.$name.'" ,"sm:");';
       $subsubmenu[] = $name;
     }
   }
 
-  $menudata[$atkmenutop]["name"] = addslashes (text("menu_".$atkmenutop,"menu"));
+  $menudata[$atkmenutop]["name"] = addslashes (atktext("menu_".$atkmenutop,"","menu","","",false,true));
   $menudata[$atkmenutop]["buttons"] = $menubuttons;
   $menudata[$atkmenutop]["submenubuttons"] = $submenubuttons;
 }
