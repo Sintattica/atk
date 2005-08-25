@@ -1748,7 +1748,7 @@ class Smarty
                       
             // Ivo hack.. use hash instead of actual name, if actual name has an invalid length
             if (strlen($_filename)>100) {
-              $_filename = md5($_filename);
+              $_filename = crc32($_filename);
             }
             // end ivo hack                      
             $_return .= '%%' . $_crc32 . '%%' . $_filename;            
