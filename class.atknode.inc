@@ -248,7 +248,6 @@
   require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
-  require_once($config_atkroot."atk/lock/class.atklock.inc");
 
   if (is_array($config_smart_debug))
     $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
@@ -1794,6 +1793,7 @@
 
       if ($this->hasFlag(NF_LOCK))
       {
+        atkimport("atk.lock.atklock");      
         $this->m_lock = &atkLock::getInstance();
       }
 
