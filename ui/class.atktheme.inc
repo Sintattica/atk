@@ -124,7 +124,7 @@
     {
       if (count($this->m_def)==0)
       {
-        if (!atkconfig("force_theme_recompile")||!$this->_loadThemedef())
+        if (atkconfig("force_theme_recompile")||!$this->_loadThemedef())
         {        
           atkdebug("Cached themedefinition was not found, compiling one");
           $compiler = &atknew("atk.ui.atkthemecompiler");
