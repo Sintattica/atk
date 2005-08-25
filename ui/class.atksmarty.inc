@@ -110,31 +110,27 @@
     }
     
     /**
-     * Register (cacheable) function / tag.
+     * Register function / tag.
      *
      * NOTE: you should only use this function for
      *       tags with special names!
      */
-    function addFunction($module, $tag, $name="")
+    function addFunction($module, $tag, $name="", $cacheable=true)
     {
       $smarty = &atkSmarty::getInstance();        
       
-      $function = "smarty_function_$tag";
-
-      if (!empty($name))
-      {
-        $function = "__smarty_function_$name";
-           
-        eval('
-          function '.$function.'($params, &$smarty)
-          {
-            include_once(moduleDir("'.$module.'")."plugins/function.'.$name.'.php");
-            return smarty_function_'.$name.'($params, $smarty);
-          }
-        ');
-      }
+      $name = empty($name) ? $tag : $name;
+      $function = "__smarty_function_$name";
+         
+      eval('
+        function '.$function.'($params, &$smarty)
+        {
+          include_once(moduleDir("'.$module.'")."plugins/function.'.$name.'.php");
+          return smarty_function_'.$name.'($params, $smarty);
+        }
+      ');
       
-      $smarty->register_function($tag, $function, true);
+      $smarty->register_function($tag, $function, $cacheable);
     }
     
     /**
@@ -142,19 +138,32 @@
      */
     function addDynamicFunction($module, $tag)
     {
-      $smarty = &atkSmarty::getInstance();  
-      $function = "__dyn_smarty_function_$tag";
-           
+      atkSmarty::addFunction($module, $tag, $tag, false);
+    }
+
+    /**
+     * Register compiler function / tag.
+     *
+     * NOTE: you should only use this function for
+     *       tags with special names!     
+     */
+    function addCompilerFunction($module, $tag, $name="", $cacheable=true)
+    {
+      $smarty = &atkSmarty::getInstance();        
+      
+      $name = empty($name) ? $tag : $name;
+      $function = "__smarty_compiler_$name";
+         
       eval('
-        function '.$function.'($params, &$smarty)
+        function '.$function.'($tag_arg, &$smarty)
         {
-          include_once(moduleDir("'.$module.'")."plugins/function.'.$tag.'.php");
-          return smarty_function_'.$tag.'($params, $smarty);
+          include_once(moduleDir("'.$module.'")."plugins/compiler.'.$name.'.php");
+          return smarty_compiler_'.$name.'($tag_arg, $smarty);
         }
       ');
       
-      $smarty->register_function($tag, $function, false);
-    }         
+      $smarty->register_function($tag, $function, $cacheable);
+    }  
   }
 
 ?>
