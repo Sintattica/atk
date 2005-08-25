@@ -109,20 +109,51 @@
       $smarty->plugins_dir[] = $path; 
     }
     
+    /**
+     * Register (cacheable) function / tag.
+     *
+     * NOTE: you should only use this function for
+     *       tags with special names!
+     */
+    function addFunction($module, $tag, $name="")
+    {
+      $smarty = &atkSmarty::getInstance();        
+      
+      $function = "smarty_function_$tag";
+
+      if (!empty($name))
+      {
+        $function = "__smarty_function_$name";
+           
+        eval('
+          function '.$function.'($params, &$smarty)
+          {
+            include_once(moduleDir("'.$module.'")."plugins/function.'.$name.'.php");
+            return smarty_function_'.$name.'($params, $smarty);
+          }
+        ');
+      }
+      
+      $smarty->register_function($tag, $function, true);
+    }
+    
+    /**
+     * Register dynamic function / tag.
+     */
     function addDynamicFunction($module, $tag)
     {
       $smarty = &atkSmarty::getInstance();  
-      $wrapper = "__dyn_smarty_function_$tag";
+      $function = "__dyn_smarty_function_$tag";
            
       eval('
-        function '.$wrapper.'($params, &$smarty)
+        function '.$function.'($params, &$smarty)
         {
           include_once(moduleDir("'.$module.'")."plugins/function.'.$tag.'.php");
           return smarty_function_'.$tag.'($params, $smarty);
         }
       ');
       
-      $smarty->register_function($tag, $wrapper, false);
+      $smarty->register_function($tag, $function, false);
     }         
   }
 
