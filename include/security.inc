@@ -1,5 +1,8 @@
 <?php
 
+  // initialise g_ array.
+  $g_user = array();    
+
   /**
    * Calling this function will invoke the login process. Call this function in 
    * every file that you want to have secured.

@@ -19,10 +19,7 @@
    
   /** 
    * @internal includes and definitions
-   */
-  
-  // initialise g_ array.
-  $g_user = array();    
+   */    
   
   // Some result defines
   define ("AUTH_UNVERIFIED", 0); // initial value.
