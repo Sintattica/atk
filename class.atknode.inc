@@ -241,11 +241,10 @@
   //error_reporting(E_ALL);
 
   require_once($config_atkroot."atk/ui/class.atkoutput.inc");
-  require_once($config_atkroot."atk/class.layout.inc");
-  require_once($config_atkroot."atk/db/class.atk".$config_database."db.inc");
+  require_once($config_atkroot."atk/class.layout.inc");  
   require_once($config_atkroot."atk/attributes/class.atkattribute.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
-  require_once($config_atkroot."atk/security/class.atksecuritymanager.inc");
+  require_once($config_atkroot."atk/include/security.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
   require_once($config_atkroot."atk/modules/class.atkmodule.inc");
 
