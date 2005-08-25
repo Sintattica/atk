@@ -1,7 +1,7 @@
 <?php
 // Language file for the mysql errors
-
-$txt_db_1130 = "Host is not allowed to connect to this MySQL server";
-$txt_db_1146 = "Table doesn't exist";
-$txt_db_1054 = "Unknown column name";
+$txt_db = array();
+$txt_db["1130"] = "Host is not allowed to connect to this MySQL server";
+$txt_db["1146"] = "Table doesn't exist";
+$txt_db["1054"] = "Unknown column name";
 ?>

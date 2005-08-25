@@ -19,9 +19,7 @@
   /**   
    * @internal Include baseclass
    */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
-  //Mysql errors includen
-  @include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
+  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");  
 
   /**
    * Driver for MySQL databases.
@@ -49,6 +47,8 @@
     function atkmysqldb()
     {
       // set the user error's
+      $this->m_type = "mysql";
+      $this->m_vendor = "mysql";
       $this->m_user_error=array();   
     }
   

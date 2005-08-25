@@ -20,8 +20,6 @@
   * @internal Include baseclass
   */
  require_once(atkconfig("atkroot")."atk/db/class.atkmysqldb.inc");
- //Mysql errors includen
- include_once(atkconfig("atkroot")."atk/db/languages/mysql_".atkconfig('language').'.lng');
 
  /**
   * Driver for MySQL databases > 4.1.3
@@ -38,9 +36,9 @@
     */
    function atkmysql41db()
    {
-       // set type
-       $this->m_type = "mysql41";
+       // set type       
        parent::atkmysqldb();
+       $this->m_type = "mysql41";       
    }
 
    /**

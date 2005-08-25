@@ -128,6 +128,17 @@
     var $m_type = "";
     
     /** 
+     * Vendor. 
+     *
+     * This is mainly used to retrieve things like error messages that are 
+     * common for a vendor (i.e., they do not differ between versions).
+     * @abstract 
+     * @access private
+     * @var String
+     */ 
+    var $m_vendor = "";
+    
+    /** 
      * number of affected rows after an update/delete/insert query 
      * @access private
      * @var int
@@ -174,6 +185,12 @@
      * @var array
      */    
     var $m_user_error = array();
+    
+    /**
+     * Internal use; error messages from language files are cached here
+     * @access private
+     */
+    var $m_errorLookup = array();    
     
     /**
      * Get the current connection.
@@ -244,6 +261,21 @@
       $this->m_user_error[]=$errno;
     }
     
+    function errorLookup($errno)
+    {
+      if (count($this->m_errorLookup)==0)
+      {
+        $filename = atkconfig("atkroot")."atk/db/languages/".$this->m_vendor."_".atkconfig('language').'.lng';
+        @include_once($filename);
+        $this->m_errorLookup = $txt_db;
+      }
+      if (isset($this->m_errorLookup[$errno]))
+      {
+        return $this->m_errorLookup[$errno];
+      }
+      return "";
+    }
+    
     /**
      * Get localized error message (for display in the application)
      * @return String Error message
@@ -253,14 +285,14 @@
       $errno = $this->getAtkDbErrno(); 
       if($errno==DB_UNKNOWNERROR)
       {
-        $errstr = 'txt_db_'.$this->getDbErrno();
-        if(!isset($GLOBALS[$errstr])) 
+        $errstr = $this->errorLookup($this->getDbErrno());
+        if($errstr=="") 
         { 
           $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; 
         } 
         else 
         { 
-          $this->m_error=$GLOBALS[$errstr].($this->getErrorType()=="system"?" (".$this->getDbError().")":""); 
+          $this->m_error=$errstr.($this->getErrorType()=="system"?" (".$this->getDbError().")":""); 
         }
         return $this->m_error;
       }

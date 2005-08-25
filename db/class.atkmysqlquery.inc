@@ -15,6 +15,11 @@
    * @version $Revision$
    * $Id$
    */
+  
+  /**
+   * Base include
+   */
+  atkimport("atk.db.atkquery");
 
   /**
    * SQL Builder for MySQL databases. 

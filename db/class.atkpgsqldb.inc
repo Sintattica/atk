@@ -17,9 +17,7 @@
    */
   
   /** @internal include baseclass */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
-  //PostgreSQL error's includen
-  include_once(atkconfig("atkroot")."atk/db/languages/postgresql_".atkconfig('language').'.lng');
+  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");  
 
   /**
    * Database driver for PostgreSQL.
@@ -33,6 +31,7 @@
   {
     /* identification */
     var $m_type = "pgsql";  
+    var $m_vendor = "postgresql";
   
     /**
      * Base constructor 

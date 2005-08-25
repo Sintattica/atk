@@ -19,12 +19,7 @@
   /**   
    * @internal Include baseclass
    */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");
-  
-  /** 
-   * @internal Include error translations
-   */
-  include_once(atkconfig("atkroot")."atk/db/languages/oracle_".atkconfig('language').'.lng');
+  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");    
 
   /**
    * Driver for Oracle 8i databases.
@@ -41,6 +36,7 @@
      * @access private
      */
     var $m_type = "oci8";
+    var $m_vendor = "oracle";
     
     /**
      * Default constructor

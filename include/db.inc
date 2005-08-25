@@ -71,8 +71,7 @@
     if ($type=="") $type = $config_database;
     
     // include DB stuff
-    require_once($config_atkroot."atk/db/class.atk".$type."db.inc");
-    require_once($config_atkroot."atk/db/class.atkquery.inc");  
+    require_once($config_atkroot."atk/db/class.atk".$type."db.inc");    
     
     // init DB
     $classname = "atk".$type."db";

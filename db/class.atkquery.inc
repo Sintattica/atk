@@ -619,9 +619,6 @@
       $name = "atk".atkconfig("database")."query";
       return new $name();
     }
-  }
-
-  $name = $config_atkroot."atk/db/class.atk".atkconfig("database")."query.inc";
-  include_once($name);
+  }  
 
 ?>
