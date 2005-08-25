@@ -20,8 +20,6 @@
   /** 
    * @internal includes and definitions
    */
-  $atkroot = atkconfig("atkroot");
-  require_once($atkroot."atk/security/class.auth_interface.inc");
   
   // initialise g_ array.
   $g_user = array();    
@@ -32,28 +30,6 @@
   define ("AUTH_LOCKED", 2);
   define ("AUTH_MISMATCH", 3);
   define ("AUTH_ERROR",-1); 
-   
-  $authentication = explode(",",trim(atkconfig("authentication", "none")));
-  if(is_array($authentication))
-  {
-    foreach($authentication as $value)
-    {
-      $value = trim($value);
-      if(is_file($atkroot."atk/security/class.auth_".$value.".inc"))
-      {
-        include_once($atkroot."atk/security/class.auth_".$value.".inc");
-      }
-    }
-  }
-  else
-  {
-    if(is_file($atkroot."atk/security/class.auth_".$authentication.".inc"))
-    {
-      include_once($atkroot."atk/security/class.auth_".$authentication.".inc");
-    }
-  }
-
-  include_once($atkroot."atk/security/class.auth_".atkconfig("authorization", atkconfig("authentication", "none")).".inc");
    
   /**
    * The security manager for ATK applications.
@@ -84,8 +60,32 @@
      */
     function atkSecurityManager($authentication_type="none", $authorization_type="none", $securityscheme="none")
     {       
-     
       atkdebug("creating securityManager (authenticationtype: $authentication_type, authorizationtype: $authorization_type, scheme: $securityscheme)");
+          
+      $atkroot = atkconfig("atkroot");
+      require_once($atkroot."atk/security/class.auth_interface.inc");
+    
+      $authentication = explode(",",trim(atkconfig("authentication", "none")));
+      if(is_array($authentication))
+      {
+        foreach($authentication as $value)
+        {
+          $value = trim($value);
+          if(is_file($atkroot."atk/security/class.auth_".$value.".inc"))
+          {
+            include_once($atkroot."atk/security/class.auth_".$value.".inc");
+          }
+        }
+      }
+      else
+      {
+        if(is_file($atkroot."atk/security/class.auth_".$authentication.".inc"))
+        {
+          include_once($atkroot."atk/security/class.auth_".$authentication.".inc");
+        }
+      }
+    
+      include_once($atkroot."atk/security/class.auth_".atkconfig("authorization", atkconfig("authentication", "none")).".inc");
 
       /* authentication class */       
       $authentication = explode(",",trim($authentication_type));
