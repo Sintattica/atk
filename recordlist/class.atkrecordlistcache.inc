@@ -120,7 +120,7 @@
         $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
         
         $page->register_loadscript(file_get_contents($this->m_cacheid."_actionloader"));
-        $output = file_get_contents(atkconfig("atkroot").$this->m_cacheid);
+        $output = str_replace(atkStackID(),"*|REPLACESTACKID|*",file_get_contents(atkconfig("atkroot").$this->m_cacheid));
       }
       return $output;
     }
@@ -146,6 +146,8 @@
     {
       if (!$this->noCaching())
       {
+        str_replace("*|REPLACESTACKID|*",atkStackID(),$output);
+        
         if (file_exists($this->m_cacheid)) unlink($this->m_cacheid);
         $fp = &fopen($this->m_cacheid,"a+");
         
