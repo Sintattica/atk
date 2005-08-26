@@ -45,6 +45,8 @@
    * @var String
    */
   $config_module_path = $config_atkroot."modules";
+  
+  $config_corporate_node_base = "";
 
   /**
    * The location of a directory that is writable to ATK and that ATK can store it's

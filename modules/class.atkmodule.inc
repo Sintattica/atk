@@ -127,6 +127,15 @@
     function &newNode($node)
     {
       global $g_modules, $config_atkroot, $g_overloaders;
+      
+      /* include the base file */
+      atkimport("atk.atknode");
+      
+      $corporate_base = atkconfig("corporate_node_base");
+      if ($corporate_base!="")
+      {
+        atkimport($corporate_base);
+      }      
 
       /* check for file */
       $file = nodeFile($node);

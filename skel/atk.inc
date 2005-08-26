@@ -28,8 +28,7 @@
    */
   if ($config_atkroot =="")  $config_atkroot = "./";      
   
-  // Atknode is required. Don't remove it.
-  include_once($config_atkroot."atk/class.atknode.inc");
+  include_once($config_atkroot."atk/includes/initial.inc");
   
   // This one may be removed, but why would you wanna do that? :)
   include_once($config_atkroot."atk/class.atkmetanode.inc");  

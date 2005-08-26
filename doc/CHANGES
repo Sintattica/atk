@@ -62,6 +62,8 @@ Changes in ATK 5.3
 + Added $modulefallback param to atktext, use this for a single text call or 
   set $config_language_module_fallbak to true for all calls to search
   all the modules for a string. [Boy]
++ Added $config_corporate_node_base for defining an application wide, custom
+  baseclass for all nodes. [Ivo]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup 
   of includes. [Peter, Boy, Ivo]
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
