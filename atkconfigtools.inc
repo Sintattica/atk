@@ -29,6 +29,8 @@
   define("MF_SPECIFIC_2",                      8);
   define("MF_SPECIFIC_3",                     16);
   define("MF_REFERENCE",   MF_NOMENU|MF_NORIGHTS); // use this module only as a reference
+  define("MF_NO_PRELOAD",                     32);
+  
 
   /**
    * Create a new user.

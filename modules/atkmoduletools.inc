@@ -364,34 +364,37 @@
    */
   function atkPreloadModules()
   {
-    global $g_modules, $g_modifiers, $g_overloaders;
+    global $g_modules, $g_modifiers, $g_overloaders, $g_moduleflags;
     
     foreach ($g_modules as $modname => $modpath)
     {
-      $preload = "$modpath/module_preload.inc";
-      $module = "$modpath/module.inc";
-      $filename = file_exists($preload) ? $preload : $module;
-
-      // no module file exists
-      if (!file_exists($filename))
+      if (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))
       {
-        atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
-        continue;
+        $preload = "$modpath/module_preload.inc";
+        $module = "$modpath/module.inc";
+        $filename = file_exists($preload) ? $preload : $module;
+  
+        // no module file exists
+        if (!file_exists($filename))
+        {
+          atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
+          continue;
+        }
+        
+        if ($filename != $preload)        
+          atkdebug("Loading module - $modname");          
+        
+        // the include file may specify modifiers.
+        $modifiers = array();
+        $overloaders = array();
+        include_once($filename);
+        
+        for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
+          $g_modifiers[$modifiers[$i]][] = $modname;
+  
+        if (count($overloaders) > 0)
+          $g_overloaders = array_merge($g_overloaders, $overloaders);
       }
-      
-      if ($filename != $preload)        
-        atkdebug("Loading module - $modname");
-      
-      // the include file may specify modifiers.
-      $modifiers = array();
-      $overloaders = array();
-      include_once($filename);
-      
-      for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
-        $g_modifiers[$modifiers[$i]][] = $modname;
-
-      if (count($overloaders) > 0)
-        $g_overloaders = array_merge($g_overloaders, $overloaders);
     }
   }
 ?>
