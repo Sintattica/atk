@@ -45,6 +45,11 @@
 
   if (is_array($config_smart_debug))
     $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
+  
+  // Include locking functionality?  
+  $lockType = atkconfig("lock_type");
+  if (!empty($lockType))
+    require_once($config_atkroot."atk/lock/class.atklock.inc");      
 
   // Create database object.
   include_once($config_atkroot."atk/include/db.inc");

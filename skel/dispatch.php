@@ -55,13 +55,14 @@
   {
     atksecure();
 
+    $lockType = atkconfig("lock_type");
+    if (!empty($lockType)) atklock();
+
     // Create node
     $obj = &getNode($ATK_VARS["atknodetype"]);
 
     if (is_object($obj))
     {
-      if ($obj->hasFlag(NF_LOCK))
-        atklock();
       $obj->dispatch($ATK_VARS);
     }
     else

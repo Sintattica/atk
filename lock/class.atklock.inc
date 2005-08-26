@@ -33,7 +33,7 @@
   
     /**
      * Returns the *only* lock instance, based on the settings in the
-     * configuration file (if no settings found -> default is dummy!).
+     * configuration file (if no settings found -> returns NULL!).
      *
      * @return reference to the *only* lock instance
      */
@@ -45,12 +45,6 @@
       {
         $class = "atk".atkconfig("lock_type")."Lock";
         $file  = atkconfig("atkroot")."atk/lock/class.".strtolower($class).".inc";
-  
-        if (!file_exists($file))
-        {
-          $class = "atkDummyLock";
-          $file  = atkconfig("atkroot")."atk/lock/class.".strtolower($class).".inc";
-        }
   
         if (file_exists($file))
         {

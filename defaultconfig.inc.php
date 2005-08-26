@@ -538,14 +538,15 @@
    * @var String
    * @todo update this bit of documentation as it doesn't really say much
    */
-  $config_identifier   = "default";
+  $config_identifier = "default";
   
   /**
-   * Lock type
+   * Lock type, only supported type at this time is "db".
+   * If empty locking is disabled.
    * @var String
    * @todo update this bit of documentation as it doesn't really say much
    */
-  $config_lock_type = "dummy";
+  $config_lock_type = "";
   
   /**
    * The default encryption method for atkEncryption

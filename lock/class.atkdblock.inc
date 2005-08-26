@@ -128,8 +128,7 @@
       $g_db->lock("db_lock");
   
       /* check if the item can be locked */
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
       $query->addField("*");
       $query->addTable("db_lock");
       $query->addCondition("lock_table = '".escapeSQL($table)."'");
@@ -152,8 +151,7 @@
         $user = getUser();
         if (is_array($user)) $user = $user['name'];
   
-        $name = "atk".atkconfig("database")."query";
-        $query = new $name();
+        $query = &$g_db->createQuery();
         $query->addField("lock_id", $this->m_id);
         $query->addField("lock_table", escapeSQL($table));
         $query->addField("lock_record", escapeSQL($selector));
@@ -206,8 +204,7 @@
       $g_db->lock("db_lock");
   
       /* extend lock lease */
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
       $query->addTable("db_lock");
       $query->addCondition
       (
@@ -250,8 +247,7 @@
       $g_db->lock("db_lock");
   
       /* extend lock lease */
-      $name = "atk".atkconfig("database")."query";
-      $query = new $name();
+      $query = &$g_db->createQuery();
       if (substr(atkconfig("database"),0,3) != 'oci')
         $query->addField("lock_lease", $g_db->func_now()." + INTERVAL 60 SECOND", "", "", FALSE);
       else $query->addField("lock_lease", $g_db->func_now()." +  ".(60/86400), "", "", FALSE);
@@ -306,8 +302,7 @@
       /* select all locks for the node table -> cache */
       if (!is_array($_cache[$table]))
       {
-        $name = "atk".atkconfig("database")."query";
-        $query = new $name();
+        $query = &$g_db->createQuery();
         $query->addField("lock_id");
         $query->addField("lock_record");
         $query->addField("user_id");

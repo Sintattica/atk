@@ -1741,11 +1741,10 @@
 
       $this->attribSort();
 
-      if ($this->hasFlag(NF_LOCK))
-      {
-        atkimport("atk.lock.atklock");      
+      $lockType = atkconfig("lock_type");
+      if (!empty($lockType) && $this->hasFlag(NF_LOCK))
         $this->m_lock = &atkLock::getInstance();
-      }
+      else $this->removeFlag(NF_LOCK);
 
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
