@@ -62,7 +62,15 @@
     function layout()
     {          
       $this->m_atkoutput = &atkOutput::getInstance();      
-      $this->m_atkui = &atknew("atk.ui.atkui");
+      //$this->m_atkui = &atknew("atk.ui.atkui");
+    }
+    
+    function constructUI()
+    {
+      if ($this->m_atkui==NULL)
+      {
+        $this->m_atkui = &atknew("atk.ui.atkui");
+      }
     }
 
 
@@ -95,6 +103,7 @@
         // Also load stylesheet, for people still using initGui will not have an addStyle
         // call in their code.
         $page = &$this->getPage();
+        $this->constructUI();
         $page->register_style($this->m_atkui->stylePath("style.css"));
 
         atkdebug("Initialized GUI");
@@ -245,6 +254,7 @@
     function title($module, $nodetype, $action)
     {
       atkdebug("Obsolete use of \$g_layout->title()!");
+      $this->constructUI();
       return $this->m_atkui->title($module, $nodetype, $action);
     }
 
@@ -355,6 +365,7 @@
     function ui_bottom()
     {
       atkdebug("Obsolete use of \$g_layout->ui_bottom()!");
+      $this->constructUI();
       $rendered = $this->m_atkui->render("box.tpl", array("content"=>$this->m_atkoutput->m_content,
                                                           "title"=>$this->m_lasttitle));
       $this->m_atkoutput->m_content = $this->m_saved;
