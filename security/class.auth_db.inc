@@ -98,9 +98,8 @@
        {
          // Level and userid are stored in two separate tables. This could
          // mean (but doesn't have to) that a user can have more than one
-         // level.
-	       $objname = "atk".atkconfig("database")."query";
-	       $qryobj = new $objname();
+         // level.	       
+	       $qryobj =&$g_db->createQuery();
 	       $qryobj->addTable($usertable);
 	       $qryobj->addField("*");
 	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userfk", true);
