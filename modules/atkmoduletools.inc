@@ -379,9 +379,8 @@
         continue;
       }
       
-      if ($filename == $preload)
-        atkdebug("Preloading module - $modname");
-      else atkdebug("Loading module - $modname");
+      if ($filename != $preload)        
+        atkdebug("Loading module - $modname");
       
       // the include file may specify modifiers.
       $modifiers = array();
