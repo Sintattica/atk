@@ -648,6 +648,7 @@
     // Escape check
     if (isset($ATK_VARS["atkescape"]) && $ATK_VARS["atkescape"]!="")
     {
+      atkimport("atk.atknode");
       atkNode::redirect(atkurldecode($ATK_VARS["atkescape"]));
 
       $output = &atkOutput::getInstance();
