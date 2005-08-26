@@ -61,28 +61,37 @@
    *
    * @return atkDb An instance of a database connection.
    */ 
-  function getDb($database="", $user="", $password="", $host="", $type="")
+  function &getDb($database="", $user="", $password="", $host="", $type="")
   {
+    static $s_dbs = array();
+    
     global $config_databasename, $config_databaseuser, $config_databasepassword, $config_databasehost, $config_database, $config_atkroot;
     if ($database=="") $database = $config_databasename;
     if ($user=="") $user = $config_databaseuser;
     if ($password=="") $password = $config_databasepassword;
     if ($host=="") $host = $config_databasehost;
     if ($type=="") $type = $config_database;
+   
+    $hash = $database.$user.$password.$host.$type;
     
-    // include DB stuff
-    require_once($config_atkroot."atk/db/class.atk".$type."db.inc");    
+    if (!isset($s_dbs[$hash]))
+    {
+      atkdebug("Creating new db instance");  
+      // include DB stuff
+      require_once($config_atkroot."atk/db/class.atk".$type."db.inc");    
+      
+      // init DB
+      $classname = "atk".$type."db";
+      $db             = new $classname();
+      $db->m_database = $database;
+      $db->m_user     = $user;
+      $db->m_password = $password;
+      $db->m_host     = $host;
+      $db->m_debug    = 0;
+      $s_dbs[$hash] = &$db;
+    }
     
-    // init DB
-    $classname = "atk".$type."db";
-    $db             = new $classname();
-    $db->m_database = $database;
-    $db->m_user     = $user;
-    $db->m_password = $password;
-    $db->m_host     = $host;
-    $db->m_debug    = 0;
-    
-    return $db;
+    return $s_dbs[$hash];
   }
 
   /**
