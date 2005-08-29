@@ -180,7 +180,7 @@
             
       $module = "langoverrides";
       
-      if (!$lng && isset($ATK_VARS["lng"])) { $lng = $ATK_VARS["lng"]; } // we first check for a lng variable
+      if (!$lng && isset($ATK_VARS["atklng"])) { $lng = $ATK_VARS["atklng"]; } // we first check for an atklng variable
       if (!$lng) { $lng = atkconfig("language", atkconfig("lang")); } // language is nicer, lang is backwardscompatible with iep2.
       $lng = strtolower($lng); // language files should always be lowercase
       
