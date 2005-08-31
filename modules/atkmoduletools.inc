@@ -68,11 +68,7 @@
     {
       atkdebug("Constructing a new node - $node");
       $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
-    }
-    else
-    {
-      atkdebug("Returning cached node instance - $node");
-    }
+    }    
     return $g_nodeRepository[$cache_id][$node];
   }
 
@@ -116,10 +112,6 @@
         }
       }
       $g_moduleRepository[$modname] = $mod;
-    }
-    else
-    {
-      atkdebug("Returning cached module instance - $modname");
     }
     return $g_moduleRepository[$modname];
   }
