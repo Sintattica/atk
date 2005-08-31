@@ -17,6 +17,7 @@
 /**
  * imports..
  */
+atkimport("atk.atknode");
 atkimport("atk.meta.atkmetapolicy");
 atkimport("atk.meta.atkmetahandler");
 
