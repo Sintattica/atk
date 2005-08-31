@@ -64,6 +64,7 @@ Changes in ATK 5.3
   all the modules for a string. [Boy]
 + Added $config_corporate_node_base for defining an application wide, custom
   baseclass for all nodes. [Ivo]
+* Fixed menuitem translations for the outlook and plain menu. [Martin]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup 
   of includes. [Peter, Boy, Ivo]
 * Changing the gui language through the url should now be done using ?atklng

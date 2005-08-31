@@ -89,13 +89,14 @@
 	{
 		$atkmenutop=$name;
 		$panelbuttons="";
-		
+		atk_var_dump($g_modules);
 		for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
 		{
 			$menu="";
 			$name = $g_menu[$atkmenutop][$i]["name"];
 			$url = session_url($g_menu[$atkmenutop][$i]["url"],SESSION_NEW);
 			$enable = $g_menu[$atkmenutop][$i]["enable"];
+			$modname = $g_menu[$atkmenutop][$i]["module"];
 	
 			if (is_array($enable))
 			{
@@ -113,7 +114,7 @@
 			/* submenu ? */
 			else if (empty($url) && $enable) 
 			{
-				$menu .= href('menu.php?atkmenutop='.$name,text("menu_$name"),SESSION_DEFAULT).$config_menu_delimiter;
+				$menu .= href('menu.php?atkmenutop='.$name,text("menu_$name","",$modname),SESSION_DEFAULT).$config_menu_delimiter;
 			}
 			else if (empty($url) && !$enable)
 			{
@@ -135,11 +136,11 @@
 					}
 					if(file_exists($menu_icon))
 					{
-						$panelbuttons .= "p.addButton('".$menu_icon."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";
+						$panelbuttons .= "p.addButton('".$menu_icon."','".addslashes(text("menu_$name","",$modname))."','parent.main.location.href = \""."".$url."\"');\n";
 					}
 					else
 					{
-						$panelbuttons .= "p.addButton('".$theme->imgPath('empty.gif')."','".addslashes(text("menu_$name"))."','parent.main.location.href = \""."".$url."\"');\n";          
+						$panelbuttons .= "p.addButton('".$theme->imgPath('empty.gif')."','".addslashes(text("menu_$name",'',$modname))."','parent.main.location.href = \""."".$url."\"');\n";          
 					}
 				}
 			}

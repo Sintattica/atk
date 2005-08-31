@@ -64,6 +64,7 @@
       $menuitems[$i]["name"]=$name;
       $url = $g_menu[$atkmenutop][$i]["url"];
       $enable = $g_menu[$atkmenutop][$i]["enable"];
+      $modname = $g_menu[$atkmenutop][$i]["module"];
 
       if (is_array($enable))
       {
@@ -84,14 +85,14 @@
       else if (empty($url) && $enable)
       {
         $url = 'menu.php?atkmenutop='.$name;
-        $menu .= href($url,text("menu_$name"),SESSION_DEFAULT).$delimiter;
+        $menu .= href($url,text("menu_$name","",$modname),SESSION_DEFAULT).$delimiter;
       }
       else if (empty($url) && !$enable)
       {
         //$menu .=text("menu_$name").$config_menu_delimiter;
       }
       /* normal menu item */
-      else if ($enable) $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
+      else if ($enable) $menu .= href($url,text("menu_$name",'',$modname),SESSION_NEW,false,'target="main"').$delimiter;
       else 
       {
         //$menu .= text("menu_$name").$config_menu_delimiter;    
