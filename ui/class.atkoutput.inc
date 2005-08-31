@@ -90,7 +90,7 @@
      *                                   the browser. If $nocache is true,
      *                                   this parameter is ignored.     
      */
-    function outputFlush($nocache=true, $lastmodificationstamp="")
+    function outputFlush($nocache=true, $lastmodificationstamp="", $charset="")
     {
       global $g_debug_msg, $g_error_msg;
       $res = "";
@@ -124,7 +124,7 @@
         }
 
         // Set the content type.
-        header ("Content-Type: text/html; charset=".text('charset')); // The character set (defined
+        header ("Content-Type: text/html; charset=".($charset==""?text('charset'):$charset)); // The character set (defined
                                                                       // in the language files
 
         $res = $this->m_content;            
