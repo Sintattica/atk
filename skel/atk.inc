@@ -28,7 +28,7 @@
    */
   if ($config_atkroot =="")  $config_atkroot = "./";      
   
-  include_once($config_atkroot."atk/includes/initial.inc");
+  include_once($config_atkroot."atk/include/initial.inc");
   
   // This one may be removed, but why would you wanna do that? :)
   include_once($config_atkroot."atk/class.atkmetanode.inc");  

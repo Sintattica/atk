@@ -33,6 +33,7 @@
   
   $output = &atkOutput::getInstance();
   $page = &atknew("atk.ui.atkpage");
+  atkimport("atk.ui.atktheme");
   $theme = &atkTheme::getInstance();  
   $ui = &atknew("atk.ui.atkui");
 
