@@ -56,6 +56,12 @@
   $config_atktempdir = $config_atkroot."atktmp/";
   
   /**
+   * The location of the module specific configuration files.
+   * @var String
+   */
+  $config_configdir = $config_atkroot."configs/";
+  
+  /**
    * Use the given meta policy as the default meta policy
    * @var String
    */

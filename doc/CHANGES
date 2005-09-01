@@ -6,12 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3
 ------------------
-+ Added config variable 'tplusesubdirs' to use subdirectories with the
-  smarty's cached and compiled templates. [Martin]
-+ Implemented a search feature for the atk File editor class.
-  You're now able to search on filenames. [Martin]
-+ Added extraparams in atkTreeNode for putting extra params 
-  in the url when expanding/collapsing [Wouter]
 + Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
 + Added support for default values to the atkMetaNode (only numerics
   and strings at this time and only on PostgreSQL and Oracle). [Peter]
@@ -59,11 +53,19 @@ Changes in ATK 5.3
   even when obligatory (forces the user to choose). Can be disabled per
   individual atkListAttribute with AF_LIST_NO_OBLIGATORY_NULL_ITEM. [Bas, Ivo]
 + atkListAttribute now supports custom onChange javascript code. [Boy]
++ Added config variable 'tplusesubdirs' to use subdirectories with the
+  smarty's cached and compiled templates. [Martin]
++ Implemented a search feature for the atk File editor class. You're now able
+  to search on filenames. [Martin]
++ Added extraparams in atkTreeNode for putting extra params in the url when 
+  expanding/collapsing [Wouter]
 + Added $modulefallback param to atktext, use this for a single text call or 
   set $config_language_module_fallbak to true for all calls to search
   all the modules for a string. [Boy]
 + Added $config_corporate_node_base for defining an application wide, custom
   baseclass for all nodes. [Ivo]
++ Added atkmodconfig() for retrieving module specific config values. Variables
+  can be defined as $config["value"] in configs/modname.inc.php files. [Ivo]
 * Fixed menuitem translations for the outlook and plain menu. [Martin]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup 
   of includes. [Peter, Boy, Ivo]
