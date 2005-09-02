@@ -63,6 +63,12 @@
      * Value that is used when list is empty, normally empty
      */
      var $m_emptyvalue;
+     
+     /**
+      * The width of the dropdown list in pixels
+      * @var int
+      */
+     var $m_width;
 
     /**
      * Constructor.
@@ -149,7 +155,7 @@
         $this->renderChangeHandler($fieldprefix);
       }
       
-      $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.($this->m_size?" style='width: {$this->m_size}px'":"").'>';
+      $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.($this->m_width?" style='width: {$this->m_width}px'":"").'>';
       
       if(!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&$record[$this->fieldName()]==""&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)))
       {
@@ -355,6 +361,24 @@
       }
 
       return $this->m_value[0];
+    }
+    
+    /**
+     * Set the width of the dropdown list in pixels
+     * @param int $width The width of the dropdown list in pixels
+     */
+    function setWidth($width)
+    {
+      $this->m_width=$width;
+    }
+    
+    /**
+     * Gets the width of the dropdown list in pixels
+     * @return int The width of the dropdown list in pixels
+     */
+    function getWidth()
+    {
+      return $this->m_width;
     }
   }
 

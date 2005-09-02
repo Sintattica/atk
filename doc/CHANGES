@@ -66,7 +66,8 @@ Changes in ATK 5.3
   baseclass for all nodes. [Ivo]
 + Added atkmodconfig() for retrieving module specific config values. Variables
   can be defined as $config["value"] in configs/modname.inc.php files. [Ivo]
-+ atkListAttribute now respects the size param [Boy]
++ Added setWidth() and getWidth() function to atkListAttribute to set the
+  width of dropdown list in pixels. [Boy]
 * Fixed menuitem translations for the outlook and plain menu. [Martin]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup 
   of includes. [Peter, Boy, Ivo]
