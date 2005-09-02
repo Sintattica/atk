@@ -16,8 +16,14 @@
    * $Id$
    */
 
-  /** Flag(s) specific for atkRadioAttribute */
-  define("AF_DISPLAY_VERT", AF_SPECIFIC_2); // erm, dislpays a set of radio buttons vertically
+  /** 
+   * Flag(s) specific for atkRadioAttribute 
+   */
+  
+  /**
+   * Displays the set of radio buttons vertically
+   */
+  define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
 
   /** @internal Include base class */
   include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
