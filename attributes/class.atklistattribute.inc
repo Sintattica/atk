@@ -149,7 +149,7 @@
         $this->renderChangeHandler($fieldprefix);
       }
       
-      $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.'>';
+      $result = '<select id="'.$id.'" name="'.$id.'" '.$onchange.($this->m_size?" style='width: {$this->m_size}px'":"").'>';
       
       if(!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&$record[$this->fieldName()]==""&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)))
       {
