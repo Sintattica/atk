@@ -88,8 +88,7 @@
 	while (list ($name) = each ($g_menu))
 	{
 		$atkmenutop=$name;
-		$panelbuttons="";
-		atk_var_dump($g_modules);
+		$panelbuttons="";		
 		for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
 		{
 			$menu="";
