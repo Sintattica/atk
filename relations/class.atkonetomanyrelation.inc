@@ -202,7 +202,7 @@
     
     function _getEditOutput($record="", $fieldprefix="")
     {
-      $myrecords = $this->_getRecords($record);
+      $myrecords = $this->_getRecords($record,true);
 
       $output=$this->editHeader($record, $myrecords);
 
@@ -308,17 +308,21 @@
             $p_attrib->addFlag(AF_HIDE);
           }
         }
+        $fname = $this->fieldName();
+        
         atkimport("atk.handlers.atkedithandler");
         $handler = new atkEditHandler();
         $handler->m_node = &$destInstanceCopy;
-        $output.=$handler->editForm("add",$editrecord,"","",$this->fieldName()."_AE_","integratededitform.tpl");
+        $output.=$handler->editForm("add",$editrecord,"","",$fname."_AE_","integratededitform.tpl");
 
-        $output.='<input type="submit" class="otm_add" name="'.$this->fieldName().'_save" value="'.atktext("add").'">';
-        $text = atktext("link_".$this->fieldName()."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
-        if (!$text) $text = atktext($this->fieldName(),$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
-        $output.="\n </div> <a id='".$this->fieldName()."_integrated_link'
-                                 href='javascript:toggleHiding(\"".$this->fieldName()."_integrated\",
-                                                               \"$text\",\"".atktext("cancel")."\")'>$text</a>";
+        $output.='<input type="submit" class="otm_add" name="'.$fname.'_save" value="'.atktext("add").'">';
+        $output.='<input type="button" onClick="toggleAddForm(\''.$fname."_integrated',
+                                                               '".$fname."_integrated_link');\"
+                                       class=\"otm_add\" name=\"".$fname."_cancel\" value=\"".atktext("cancel").'">';
+        $text = atktext("link_".$fname."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
+        if (!$text) $text = atktext($fname,$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
+        $output.="\n </div> <a id=\"".$fname."_integrated_link\" 
+                                href=\"javascript:toggleAddForm('".$fname."_integrated','".$fname."_integrated_link');\">$text</a>";
       }
       else
         atkerror("Could not create destination for ". $this->fieldName()."!");
@@ -334,8 +338,12 @@
      * all fields that we also get when we would be on an admin screen.
      * Also, because the load looks to the owner for it's orderby but we have special orderbys
      * for each onetomany, we fake it.
+     *
+     * @param array $record the current master record
+     & @param bool $paging divide the result on multiple pages (based on $config_recordsperpage)
+     * @return array records from database
      */
-    function _getRecords($record)
+    function _getRecords($record,$paging=false)
     {
       $ownerorderby="";
       if (isset($this->m_ownerInstance->m_postvars['atkorderby']))
@@ -345,7 +353,7 @@
           $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
       }
       
-      $myrecords = $this->load(NULL, $record, "admin");
+      $myrecords = $this->load(NULL, $record, "admin", $paging);
       
       $this->m_ownerInstance->m_postvars['atkorderby'] = $ownerorderby;
       return $myrecords;
@@ -509,6 +517,7 @@
      *                  $g_db)
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
+     * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
      * 
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
@@ -516,7 +525,7 @@
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    function load($db, $record, $mode="")
+    function load($db, $record, $mode="", $paging=false)
     {
       if ($mode=="edit")
       {
@@ -562,8 +571,9 @@
           {
             $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
           }
+          ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
           $recordset = $this->m_destInstance->selectDb($where,@$this->m_ownerInstance->m_postvars['atkorderby'],
-                                                       $this->fetchLimitArray(),$excludes,"",$mode);
+                                                       $limitarray,$excludes,"",$mode);
 
           $this->m_loadFilter = $where;
           return $recordset;

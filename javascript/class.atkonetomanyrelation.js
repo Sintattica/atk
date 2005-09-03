@@ -14,3 +14,9 @@ function toggleHiding(name, linkhidden, linkunhidden)
     link.innerHTML = linkhidden;
   }
 }
+
+function toggleAddForm(formname,linkname)
+{
+  toggleDisplay(formname,get_object(formname));
+  toggleDisplay(linkname,get_object(linkname));
+}
