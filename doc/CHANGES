@@ -64,8 +64,8 @@ Changes in ATK 5.3
   all the modules for a string. [Boy]
 + Added $config_corporate_node_base for defining an application wide, custom
   baseclass for all nodes. [Ivo]
-+ Added atkmodconfig() for retrieving module specific config values. Variables
-  can be defined as $config["value"] in configs/modname.inc.php files. [Ivo]
++ Added atkConfig::get() for retrieving config values by section. Variables
+  can be defined as $config["value"] in configs/<section>.inc.php files. [Ivo]
 + $config values can now be redirected to a runtime function by defining
   a function called config_<configkey>() or config_<modname>_<configkey>() for
   modules. [Ivo]

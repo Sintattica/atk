@@ -167,21 +167,6 @@
     $fn = 'config_'.$tag;
     if (function_exists($fn)) return $fn();
     return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
-  }
-  
-  function atkmodconfig($module, $tag, $default="")
-  {
-    static $s_configs = array();
-    $fn = 'config_'.$module.'_'.$tag;
-    if (function_exists($fn)) return $fn();
-    if (!is_array($s_configs[$module]))
-    {
-      $s_configs[$module] = array();
-      atkdebug("Loading config file for module $module");
-      @include_once(atkconfig("configdir").$module.".inc.php");
-      if (isset($config)) $s_configs[$module] = $config;
-    }
-    return (isset($s_configs[$module][$tag])?$s_configs[$module][$tag]:$default);
-  }
+  }    
 
 ?>

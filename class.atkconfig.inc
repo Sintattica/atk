@@ -13,14 +13,7 @@
    *
    * @version $Revision$
    * $Id$
-   */
-     
-  /**
-   * @internal This should be a static class member, but that doesn't exist
-   *           in PHP4.
-   * @global atkConfig The global config object   
-   */
-  global $g_atkconfig;
+   */       
 
   /**
    * Config class for loading config files and retrieving config options.
@@ -29,60 +22,23 @@
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
-   * @todo Fixme :-) This class is currently not functional. Use the atkconfig()
-   *                 function for retrieving config options instead.
    *
    */
   class atkConfig
   {      
-    function get($varname)
+    function get($section, $tag, $default="")
     {
-      global $g_atkconfig;
-      
-      $elems = explode(".", $varname);
-      if (count($elems)==1)
+      static $s_configs = array();
+      $fn = 'config_'.$section.'_'.$tag;
+      if (function_exists($fn)) return $fn();
+      if (!is_array($s_configs[$section]))
       {
-        // Global configvar. 
-        if (!is_array($g_atkconfig["global"]))
-        {
-          atkdebug("Loading global config");
-          // Global configfile not yet included.          
-          atkConfig::loadConfig(ATK_CONFIGROOT."config.inc.php", "global");
-        }
-        return $g_atkconfig["global"][$varname];
+        $s_configs[$section] = array();
+        atkdebug("Loading config file for section $section");
+        @include_once(atkconfig("configdir").$section.".inc.php");
+        if (isset($config)) $s_configs[$section] = $config;
       }
-      else
-      {
-        // Module configvar.
-        if (!is_array($g_atkconfig[$elems[0]]))
-        {
-          // DISABLED THE FOLLOWING BROKEN LINE
-          //atkConfig::loadConfig(ATK_CONFIGROOT.moduleDir(). 
-        }
-        return $g_atkconfig[$elems[0]][$elems[1]];
-      }
-    }
-    
-    function loadConfig($configfile, $scope="global")
-    {
-      global $g_atkconfig;
-      
-      $config = array();
-      
-      include($configfile);
-      $g_atkconfig[$scope]=$config;
-          
-      // Backwardscompatibilityhack: most configvariables in
-      // older apps are in the form $config_...; We must put those
-      // manually in the $g_atkconfig list. 
-      $vars = get_defined_vars();
-      foreach ($vars as $key=>$value)
-      {
-        if (substr($key, 0, 7)=="config_")
-        {
-          $g_atkconfig[$scope][substr($key,7)] = $value;
-        }
-      }
+      return (isset($s_configs[$section][$tag])?$s_configs[$section][$tag]:$default);
     }
     
     /**
