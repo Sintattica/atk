@@ -156,6 +156,12 @@ Changes in ATK 5.3
 * Added newline to html of textattribute to solve problem of dissapearing
   newlines on storing. [Boy]
 * Fixed atkMultipleFileAttribute unmet dependency on atkFileAttribute. [Boy]
+* Removed atkconfigtools.inc:
+  * attrib_restrict() is now atkConfig::attribRestrict()
+  * grant() is now atkConfig::grant()
+  * removed language() as it was not used
+  * auth_pop3_response is now atkConfig::addPop3Response()
+  * user() is now atkConfig::addUser(). [Ivo]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]

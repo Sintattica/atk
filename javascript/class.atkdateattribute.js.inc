@@ -36,7 +36,7 @@
    */
   
   /* change dir for includes */
-  include_once($config_atkroot."atk/atkconfigtools.inc");
+  include_once($config_atkroot."atk/class.atkconfig.inc");
   include_once($config_atkroot."atk/defaultconfig.inc.php");
   include_once($config_atkroot."config.inc.php");
   include_once($config_atkroot."atk/atktools.inc");

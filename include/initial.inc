@@ -20,8 +20,7 @@
   // need to make it global ourselves. Todo: replace EVERY reference to
   // PHP_SELF with _SERVER["PHP_SELF"] eventually.
   $PHP_SELF = $_SERVER["PHP_SELF"];
-
-  require_once($config_atkroot."atk/atkconfigtools.inc");
+  
   require_once($config_atkroot."atk/class.atkconfig.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 

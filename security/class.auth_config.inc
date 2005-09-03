@@ -19,7 +19,7 @@
    * Driver for authentication and authorization using entries in the
    * configurationfile.
    *
-   * See the methods in atkconfigtools.inc for an explanation of how to add
+   * See the methods in the atkConfig class for an explanation of how to add
    * users and privileges.
    *
    * Does not support authorization.
