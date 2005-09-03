@@ -164,12 +164,16 @@
    */
   function atkconfig($tag, $default="")
   {
+    $fn = 'config_'.$tag;
+    if (function_exists($fn)) return $fn();
     return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
   }
   
   function atkmodconfig($module, $tag, $default="")
   {
     static $s_configs = array();
+    $fn = 'config_'.$module.'_'.$tag;
+    if (function_exists($fn)) return $fn();
     if (!is_array($s_configs[$module]))
     {
       $s_configs[$module] = array();
