@@ -290,14 +290,6 @@
       { 
         return $this->_getStringName($string, $module, $node, $lng, $nodefaulttext); 
       }
-      else 
-      { 
-        if ($nodefaulttext)
-        {
-          atkdebug("atkLanguage: We ran out of modules! Non-empty $string just couldn't be found");
-        }
-        return; 
-      }
     }
     
     /**
