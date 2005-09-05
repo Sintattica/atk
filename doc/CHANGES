@@ -102,6 +102,7 @@ Changes in ATK 5.3
   E_ALL). [Ivo]
 * The alphabetical index no longer breaks the search button. (bug #415) [Ivo]
 * Made atkListAttribute searchable in embedded OneToMany. [Yury]
+* atkListAttribute now gets item translations from the correct module. [Ivo]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
   check, causing the test to fail on Oracle installs. [Ivo]
 * Changed atkLanguage stringid fallback module_node_stringid is now 
