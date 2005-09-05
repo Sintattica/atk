@@ -254,17 +254,16 @@
           	$tplfield["label"]="AF_NO_LABEL";
           }
           
+          /* obligatory indicator */
+          if ($field["obligatory"]) 
+          {
+            $tplfield["label"].="<span class='reqimg'>".$reqimg."</span>";
+            $tplfield["obligatory"] = $reqimg;
+          }
           
           /* html source */
           $tplfield["widget"] = $field["html"];
           $editsrc = $field["html"];
-
-          /* obligatory indicator */
-          if ($field["obligatory"]) 
-          {
-            $editsrc.= $reqimg."&nbsp;";
-            $tplfield["obligatory"] = $reqimg;
-          }
 
           /* tooltip */
           if ($node->m_attribList[$field['name']]->m_ownerInstance->m_module) $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;

@@ -162,6 +162,8 @@ Changes in ATK 5.3
   * removed language() as it was not used
   * auth_pop3_response is now atkConfig::addPop3Response()
   * user() is now atkConfig::addUser(). [Ivo]
+* Moved obligatory asterisk from HTML attribute to label and removed colon
+  from default editform template. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
