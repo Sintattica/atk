@@ -46,7 +46,6 @@
     
     var $m_atkui = NULL;
     var $m_atkoutput = NULL;
-    var $m_atkpage = NULL;
 
     /**
      * The directory where the current template files are located..
@@ -63,6 +62,17 @@
     {          
       $this->m_atkoutput = &atkOutput::getInstance();      
       //$this->m_atkui = &atknew("atk.ui.atkui");
+    }
+    
+    function &getInstance()
+    {
+      atkdebug("obsolete use of layout class!");
+      static $s_instance = NULL;
+      if ($s_instance == NULL)
+      {
+        $s_instance = new layout();        
+      }
+      return $s_instance;
     }
     
     function constructUI()
@@ -88,7 +98,7 @@
       */
     function initGui()
     {
-      atkdebug("Obsolete use of \$g_layout->initGui()!");
+      atkdebug("Obsolete use of layout::initGui()!");
       static $initialized = false;
       global $g_theme;
 
@@ -117,7 +127,7 @@
      */
     function import_layout()
     {
-      atkdebug("Obsolete use of \$g_layout->import_layout()!");
+      atkdebug("Obsolete use of layout::import_layout()!");
       
       global $g_theme;      
       
@@ -142,7 +152,7 @@
      */
     function output($txt)
     {
-      atkdebug("Obsolete use of \$g_layout->output()!");
+      atkdebug("Obsolete use of layout::output()!");
       $this->m_atkoutput->output($txt);
     }
 
@@ -152,7 +162,7 @@
      */
     function rawoutput($txt)
     {
-      atkdebug("Obsolete use of \$g_layout->rawoutput()!");
+      atkdebug("Obsolete use of layout::rawoutput()!");
       $this->m_atkoutput->rawoutput($txt);
     }
 
@@ -166,7 +176,7 @@
      */
     function outputFlush($nocache=true, $lastmodificationstamp="",$gzip=false)
     {
-      atkdebug("Obsolete use of \$g_layout->outputFlush()!");
+      atkdebug("Obsolete use of layout::outputFlush()!");
       $this->m_atkoutput->outputFlush($nocache, $lastmodificationstamp);
     }
   
@@ -175,7 +185,7 @@
      */
     function page($title="")
     {
-      atkdebug("Obsolete use of \$g_layout->page()!");
+      atkdebug("Obsolete use of layout::page()!");
       $page = &$this->getPage();
       $this->output($page->render($title, $this->m_atkoutput->m_content));      
     }
@@ -187,7 +197,7 @@
      */
     function error($title,$txt)
     {
-      atkdebug("Obsolete use of \$g_layout->error()!");
+      atkdebug("Obsolete use of layout::error()!");
       $this->ui_top($title);
       $this->output("<br><br><br>");
       $this->output($txt);
@@ -202,7 +212,7 @@
      */
     function maxInputSize()
     {
-      atkdebug("Obsolete use of \$g_layout->maxInputSize()!");
+      atkdebug("Obsolete use of layout::maxInputSize()!");
       $size = atkconfig("max_input_size");
       if ($size!="") return $size;
       return 70;
@@ -214,7 +224,7 @@
      */
     function searchSize()
     {
-      atkdebug("Obsolete use of \$g_layout->searchSize()!");
+      atkdebug("Obsolete use of layout::searchSize()!");
       return 20;
     }
 
@@ -224,14 +234,14 @@
      */
     function register_script($file)
     {
-      atkdebug("Obsolete use of \$g_layout->register_script()!");
+      atkdebug("Obsolete use of layout::register_script()!");
       $page = &$this->getPage();
       $page->register_script($file);
     }
 
     function register_submitscript($code)
     {
-      atkdebug("Obsolete use of \$g_layout->register_submitscript()!");
+      atkdebug("Obsolete use of layout::register_submitscript()!");
       if (!in_array($code, $this->m_submitscripts)) $this->m_submitscripts[] = $code;
     }
 
@@ -241,19 +251,19 @@
      */
     function register_style($file)
     {
-      atkdebug("Obsolete use of \$g_layout->register_style()!");
+      atkdebug("Obsolete use of layout::register_style()!");
       $page = &$this->getPage();
       $page->register_style($file);
     }
 
     /**
      * This function returns a suitable title text for an action.
-     * Example: echo $g_layout->title("employee", "edit"); might return:
+     * Example: echo $layout->title("employee", "edit"); might return:
      *          'Edit an existing employee'
      */
     function title($module, $nodetype, $action)
     {
-      atkdebug("Obsolete use of \$g_layout->title()!");
+      atkdebug("Obsolete use of layout::title()!");
       $this->constructUI();
       return $this->m_atkui->title($module, $nodetype, $action);
     }
@@ -264,7 +274,7 @@
      */
     function head($title)
     {
-      atkdebug("Obsolete use of \$g_layout->head()!");
+      atkdebug("Obsolete use of layout::head()!");
       if (!$this->m_wrotehead)
       {
         $page = &$this->getPage();
@@ -276,11 +286,8 @@
     // Dummy, creates an atkPage if one does not exist (for backward compatibility).
     function &getPage()
     {
-      if (!is_object($this->m_atkpage))
-      {
-        $this->m_atkpage = &atknew("atk.ui.atkpage");
-      }
-      return $this->m_atkpage;
+      $page = &atkPage::getInstance();      
+      return $page;
     }  
 
     /**
@@ -289,7 +296,7 @@
      */
     function ret_head($title)
     {
-      atkdebug("Obsolete use of \$g_layout->ret_head()!");
+      atkdebug("Obsolete use of layout::ret_head()!");
       $page = &$this->getPage();
       return $page->head($title);
     }
@@ -300,7 +307,7 @@
      */
     function body($extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->body()!");
+      atkdebug("Obsolete use of layout::body()!");
       if (!$this->m_wrotebody)
       {
         $page = &$this->getPage();
@@ -315,7 +322,7 @@
      */
     function ret_body($extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->ret_body()!");
+      atkdebug("Obsolete use of layout::ret_body()!");
       $page = &$this->getPage();
       return $page->body($extraprops);
     }
@@ -327,7 +334,7 @@
      */
     function ui_top($title)
     {
-      atkdebug("Obsolete use of \$g_layout->ui_top()!");
+      atkdebug("Obsolete use of layout::ui_top()!");
       $this->m_saved = $this->m_atkoutput->m_content;
       $this->m_atkoutput->m_content = "";
       //atkimport("atk.ui.atksmarty");
@@ -339,7 +346,7 @@
 
     function ret_tpl($tplname, $vars="", $fallbacktpl="")
     {
-      atkdebug("Obsolete use of \$g_layout->ret_tpl()!");
+      atkdebug("Obsolete use of layout::ret_tpl()!");
       $template = $this->getTemplate($tplname, $fallbacktpl);
       $template=str_replace('[IMAGEDIR]',$this->m_tpldir."images",$template);
 
@@ -355,7 +362,7 @@
 
     function tpl($tplname, $vars="", $fallbacktpl="")
     {
-      atkdebug("Obsolete use of \$g_layout->tpl()!");
+      atkdebug("Obsolete use of layout::tpl()!");
       $this->output($this->ret_tpl($tplname, $vars, $fallbacktpl));
     }
 
@@ -364,7 +371,7 @@
      */
     function ui_bottom()
     {
-      atkdebug("Obsolete use of \$g_layout->ui_bottom()!");
+      atkdebug("Obsolete use of layout::ui_bottom()!");
       $this->constructUI();
       $rendered = $this->m_atkui->render("box.tpl", array("content"=>$this->m_atkoutput->m_content,
                                                           "title"=>$this->m_lasttitle));
@@ -379,7 +386,7 @@
      */
     function tabs_top($tabs)
     {
-      atkdebug("Obsolete use of \$g_layout->tabs_top()!");
+      atkdebug("Obsolete use of layout::tabs_top()!");
       if (file_exists($this->m_tpldir."tabs_top.tmpl"))
       {
         $this->tpl("tabs_top", array("tabs"=>$tabs));
@@ -401,7 +408,7 @@
      */
     function tabs_bottom()
     {
-      atkdebug("Obsolete use of \$g_layout->tabs_bottom()!");
+      atkdebug("Obsolete use of layout::tabs_bottom()!");
       if (file_exists($this->m_tpldir."tabs_bottom.tmpl"))
       {
         $this->tpl("tabs_bottom");
@@ -420,7 +427,7 @@
      */
     function ret_tab($title, $link, $selected=false)
     {
-      atkdebug("Obsolete use of \$g_layout->ret_tab()!");
+      atkdebug("Obsolete use of layout::ret_tab()!");
       if (file_exists($this->m_tpldir."tab_".($selected ? "selected" : "normal").".tmpl"))
       {
         return $this->ret_tpl("tab_".($selected ? "selected" : "normal"),
@@ -442,7 +449,7 @@
 
     function data_top()
     {
-      atkdebug("Obsolete use of \$g_layout->data_top()!");
+      atkdebug("Obsolete use of layout::data_top()!");
       global $g_theme;
       $template=$this->ret_tpl("data_top");
 
@@ -462,7 +469,7 @@
 
     function data_bottom()
     {
-      atkdebug("Obsolete use of \$g_layout->data_bottom()!");
+      atkdebug("Obsolete use of layout::data_bottom()!");
       global $g_theme;
       $template=$this->ret_tpl("data_bottom");
 
@@ -488,7 +495,7 @@
      */
     function table_simple($border=0,$fillout=false)
     {
-      atkdebug("Obsolete use of \$g_layout->tableSimple()!");
+      atkdebug("Obsolete use of layout::tableSimple()!");
       $this->output('<table border="'.$border.'" cellspacing="0" cellpadding="2"');
       if ($fillout) $this->output(' width="100%"');
       $this->output(">\n");
@@ -502,7 +509,7 @@
      */
     function ret_table_simple($border=0,$fillout=false)
     {
-      atkdebug("Obsolete use of \$g_layout->ret_table_simple()!");
+      atkdebug("Obsolete use of layout::ret_table_simple()!");
       $output = '<table border="'.$border.'" cellspacing="0" cellpadding="2"';
       if ($fillout) $output.=' width="100%"';
       $output.=">\n";
@@ -516,7 +523,7 @@
      */
     function td($contents="", $extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->td()!");
+      atkdebug("Obsolete use of layout::td()!");
       $this->output($this->ret_td($contents, $extraprops));
     }
 
@@ -528,7 +535,7 @@
      */
     function ret_td($contents="", $extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->ret_td()!");
+      atkdebug("Obsolete use of layout::ret_td()!");
       $output='<td class="table" '.$extraprops.'>';
       if (strlen($contents) == 0)
       {
@@ -550,13 +557,13 @@
      */
     function tr_top($alt=false, $extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->tr_top()!");
+      atkdebug("Obsolete use of layout::tr_top()!");
       return '<tr class="row'.($alt?"2":"1").'" '.$extraprops.'>';
     }
 
     function tr_bottom()
     {
-      atkdebug("Obsolete use of \$g_layout->tr_bottom()!");
+      atkdebug("Obsolete use of layout::tr_bottom()!");
       return '</tr>';
     }
 
@@ -567,7 +574,7 @@
      */
     function td_datatitle($contents="", $extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->td_datatitle()!");  
+      atkdebug("Obsolete use of layout::td_datatitle()!");  
       $this->output('<td class="tableheader" '.$extraprops.'>');
       if ($contents=="")
       {
@@ -588,7 +595,7 @@
      */
     function ret_td_datatitle($contents="", $extraprops="")
     {
-      atkdebug("Obsolete use of \$g_layout->ret_td_datatitle()!");
+      atkdebug("Obsolete use of layout::ret_td_datatitle()!");
       global $g_colorset;
       $output='<td class="tableheader" '.$extraprops.'>';
       if ($contents=="")
@@ -611,7 +618,7 @@
      */
     function ret_editForm(&$data, &$node)
     {
-      atkdebug("Obsolete use of \$g_layout->ret_editForm()!");
+      atkdebug("Obsolete use of layout::ret_editForm()!");
       global $config_atkroot;
 
       /* javascript */
@@ -742,7 +749,7 @@
 
     function getTemplate($templatefile, $fallback="")
     {
-      atkdebug("Obsolete use of \$g_layout->getTemplate()!");
+      atkdebug("Obsolete use of layout::getTemplate()!");
       if (file_exists($this->m_tpldir.$templatefile.".tmpl"))
       {
         return implode(file($this->m_tpldir.$templatefile.".tmpl"), "");
@@ -757,7 +764,7 @@
 
     function theme_style($stylesheetname)
     {        
-       atkdebug("Obsolete use of \$g_layout->theme_style()!");
+       atkdebug("Obsolete use of layout::theme_style()!");
       if (file_exists($this->m_tpldir."styles/$stylesheetname"))
       {
         $this->register_style($this->m_tpldir."styles/$stylesheetname");
@@ -771,7 +778,7 @@
 
     function initTheme()
     {      
-      atkdebug("Obsolete use of \$g_layout->initTheme()!");
+      atkdebug("Obsolete use of layout::initTheme()!");
       atkimport("atk.ui.atktheme");
       $theme = &atkTheme::getInstance();
       $this->m_tpldir = $theme->themeDir();
@@ -779,7 +786,7 @@
 
     function getImgSrc($img)
     {
-      atkdebug("Obsolete use of \$g_layout->getImgSrc()!");
+      atkdebug("Obsolete use of layout::getImgSrc()!");
       global $config_atkroot, $g_theme;
       $themeDir   = $config_atkroot."atk/themes/".$g_theme["Name"]."/images/";
       $defaultDir = $config_atkroot."atk/themes/default/images/";
@@ -793,13 +800,6 @@
       }
     }
 
-  }
-
-   // The one and only layout object
-  if (empty($g_layout))
-  {
-    atkdebug("Obsolete creation of g_layout");
-    $g_layout = new layout();
   }
 
 ?>

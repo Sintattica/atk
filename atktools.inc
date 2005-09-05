@@ -1416,8 +1416,8 @@
    */
   function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT, $embedded=true)
   {
-    global $g_layout;
-    $g_layout->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
+    $page = &atkPage::getInstance();    
+    $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
     static $cnt=0;    
     
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';

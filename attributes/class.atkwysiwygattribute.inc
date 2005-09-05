@@ -99,7 +99,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      global $config_atkroot, $g_layout, $config_enable_ie_extensions;
+      global $config_atkroot, $config_enable_ie_extensions;
       global $atkwwview, $PHP_SELF;
 
       if (!ieExtensions())
@@ -121,9 +121,10 @@
 
         if ($wwview!="plain")
         {
-          $g_layout->register_script($config_atkroot."atk/javascript/class.atkwysiwygattribute.js");
+          $page = &atkPage::getInstance();
+          $page->register_script($config_atkroot."atk/javascript/class.atkwysiwygattribute.js");
           $this->m_editorname = $fieldprefix.$this->fieldname()."_editor";
-          $g_layout->register_submitscript($this->m_editorname."_save();");
+          $page->register_submitscript($this->m_editorname."_save();");
 
           $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldname().'" value="">';
           //include $config_atkroot."atk/attributes/wysiwyg/editor.php";

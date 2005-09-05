@@ -108,7 +108,7 @@
         $this->m_node->redirect($location);
       }
       else 
-      {
+      {        
         // something other than one of the three buttons was pressed. Let's just refresh.
         $this->renderEditPage($record);
       }

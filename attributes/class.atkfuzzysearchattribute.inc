@@ -90,9 +90,8 @@
     function atkFuzzySearchAttribute($name, $searchnode, $callback, $mode="all", $flags=0, $size=0)
     {
       if ($size==0)
-      {
-        global $g_layout;
-        $size = $g_layout->maxInputSize();        
+      {        
+        $size = $this->maxInputSize();        
       }
       $this->atkAttribute($name, $flags|AF_HIDE_VIEW|AF_HIDE_LIST, $size);
       $this->m_searchnode = $searchnode;

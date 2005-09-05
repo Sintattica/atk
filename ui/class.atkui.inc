@@ -159,14 +159,7 @@
      * @param array $vars     the variables with which to render the template
      */
     function render($tplname, $vars=array())
-    { 
-      // Backwardscompatibility hack.. g_layout must be initGui'd
-      global $g_layout;
-      if (is_object($g_layout))
-      {
-        $g_layout->initGui();
-      }
-
+    {       
       // First clear any existing smarty var.
       $this->m_smarty->clear_all_assign();
       
@@ -220,7 +213,7 @@
     
     /**
      * This function returns a suitable title text for an action.
-     * Example: echo $g_layout->title("employee", "edit"); might return:
+     * Example: echo $ui->title("users", "employee", "edit"); might return:
      *          'Edit an existing employee'
      * @param String $module   the module in which to look
      * @param String $nodetype the nodetype of the action

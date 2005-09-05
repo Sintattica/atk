@@ -1913,13 +1913,7 @@
     function &getPage()
     {
       atkimport("atk.ui.atkpage");
-      $page = &atkPage::getInstance();
-
-      // Backwardscompatibility hack. We must inform the (deprecated) layout class
-      // of the page.
-      global $g_layout;
-      $g_layout->m_atkpage = &$page;
-
+      $page = &atkPage::getInstance();      
       return $page;
     }
 

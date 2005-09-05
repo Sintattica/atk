@@ -35,8 +35,7 @@
   //set_error_handler("atkErrorHandler");
   //error_reporting(E_ALL);
 
-  require_once($config_atkroot."atk/ui/class.atkoutput.inc");
-  require_once($config_atkroot."atk/class.layout.inc");    
+  require_once($config_atkroot."atk/ui/class.atkoutput.inc");  
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/include/security.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
