@@ -152,7 +152,7 @@
         $txt = htmlentities($txt);
      	
       atkWriteLog($txt);
-      $g_debug_msg[]="[".elapsed().(function_exists("memory_get_usage")?" / ".round((memory_get_usage()/1024/1024),2)."MB":"")."] ".$txt;
+      $g_debug_msg[]="[".elapsed().(function_exists("memory_get_usage")?" / ".sprintf("%02.02f", (memory_get_usage()/1024/1024))."MB":"")."] ".$txt;
     }
   }
   
