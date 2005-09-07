@@ -141,12 +141,15 @@
    */
   function atkdebug($txt, $viewhtml=false)
   {
-     global $g_debug_msg;
-     if($viewhtml) 
-       $txt = htmlentities($txt);
+    if (atkconfig("debug")>0) 
+    {
+      global $g_debug_msg;
+      if($viewhtml) 
+        $txt = htmlentities($txt);
      	
-     atkWriteLog($txt);
-     if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed().(function_exists("memory_get_usage")?" / ".round((memory_get_usage()/1024/1024),2)."MB":"")."] ".$txt;
+      atkWriteLog($txt);
+      $g_debug_msg[]="[".elapsed().(function_exists("memory_get_usage")?" / ".round((memory_get_usage()/1024/1024),2)."MB":"")."] ".$txt;
+    }
   }
   
   /**
