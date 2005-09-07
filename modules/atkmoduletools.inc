@@ -77,6 +77,13 @@
     global $g_moduleRepository, $g_modules;
     if (!isset($g_moduleRepository[$modname])||!is_object($g_moduleRepository[$modname]))
     {
+      atkimport("atk.modules.atkmodule");
+      $corporate_base = atkconfig("corporate_module_base");
+      if ($corporate_base!="")
+      {
+        atkimport($corporate_base);
+      }      
+      
       $filename = moduleDir($modname)."module.inc";
       if (file_exists($filename))
       {
@@ -85,7 +92,7 @@
       else
       {
         atkdebug("Couldn't find module.inc for module '$modname' in '".moduleDir($modname)."'");
-      }
+      }            
             
       atkdebug("Constructing a new module - $modname");
       if (class_exists("mod_".$modname))

@@ -65,8 +65,8 @@ Changes in ATK 5.3
 + Added $modulefallback param to atktext, use this for a single text call or 
   set $config_language_module_fallbak to true for all calls to search
   all the modules for a string. [Boy]
-+ Added $config_corporate_node_base for defining an application wide, custom
-  baseclass for all nodes. [Ivo]
++ Added $config_corporate_node_base and $config_corporate_module_base for 
+  defining application wide custom baseclasses for nodes and modules. [Ivo]
 + Added atkConfig::get() for retrieving config values by section. Variables
   can be defined as $config["value"] in configs/<section>.inc.php files. [Ivo]
 + $config values can now be redirected to a runtime function by defining
