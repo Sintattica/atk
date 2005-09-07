@@ -119,15 +119,19 @@
    */
   function elapsed($reset = false)
   {
-    static $offset="";
+    static $offset="", $previous="";
     if ($offset=="" || $reset)
     {
       $offset = getmicrotime();
+      $previous = $offset;
       return strftime("%H:%M:%S")."h";
     }
     else
     {
-      return "+".sprintf("%02.05f",getmicrotime()-$offset)."s";
+      $new = getmicrotime();      
+      $res = "+".sprintf("%02.05f",$new-$offset)."s / ".sprintf("%02.05f", $new-$previous)."s";
+      $previous = $new;
+      return $res;
     }
 
   }

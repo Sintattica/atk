@@ -72,8 +72,9 @@ Changes in ATK 5.3
 + $config values can now be redirected to a runtime function by defining
   a function called config_<configkey>() or config_<modname>_<configkey>() for
   modules. [Ivo]
++ Debug output now includes memory usage information and elapsed time between
+  two atkdebug calls. [Ivo]
 + Added setWidth() and getWidth() function to atkListAttribute to set the
-+ Debug output now includes memory usage information. [Ivo]
   width of dropdown list in pixels. [Boy]
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always returned
   a maximum records of config_recordsperpage. [Martin] 
