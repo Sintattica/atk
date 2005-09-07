@@ -48,11 +48,8 @@
   $lockType = atkconfig("lock_type");
   if (!empty($lockType))
     require_once($config_atkroot."atk/lock/class.atklock.inc");      
-
-  // Create database object.
-  include_once($config_atkroot."atk/include/db.inc");
-
-   $g_stickyurl = array();
+  
+  $g_stickyurl = array();
 
   // preload modules
   atkPreloadModules();

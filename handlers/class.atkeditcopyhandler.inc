@@ -37,15 +37,16 @@
 
       if(count($recordset) > 0)
       {
+        $db = &$this->m_node->getDb();
         if(!$this->m_node->copyDb($recordset[0]))
         {
-          $this->m_node->m_db->rollback();
-          $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $this->m_node->m_db->getErrorMsg());
+          $db->rollback();
+          $location = $this->m_node->feedbackUrl("editcopy", ACTION_FAILED, $recordset[0], $db->getErrorMsg());
           $this->m_node->redirect($location);
         }
         else
         {
-          $this->m_node->m_db->commit();
+          $db->commit();
           $this->clearCache();
           $location = session_url(dispatch_url($this->m_node->atknodetype(), "edit", array("atkselector" => $this->m_node->primaryKey($recordset[0]))), SESSION_REPLACE);
           $this->m_node->redirect($location);

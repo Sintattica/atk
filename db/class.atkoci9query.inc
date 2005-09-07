@@ -216,10 +216,10 @@
     */
     function executeUpdate()
     {
-      global $g_db;
+      $db = &atkGetDb();
       
       $query = $this->buildUpdate();
-      return $g_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
  /**
@@ -227,10 +227,10 @@
     */
     function executeInsert()
     {
-      global $g_db;
+      $db = &atkGetDb();
       
       $query = $this->buildInsert();
-      return $g_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
 

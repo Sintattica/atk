@@ -523,13 +523,13 @@
     
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	global $g_db;      
+    	$db = &atkGetDb();
       // We only support searchmode 'between' for now.
       
       $fromval = $this->value2db(array($this->fieldName()=>$value["from"]));
       $toval   = $this->value2db(array($this->fieldName()=>$value["to"]));            
 
-      $field = $g_db->func_datetochar($table.".".$this->fieldName());
+      $field = $db->func_datetochar($table.".".$this->fieldName());
 
       if ($fromval!="NULL" && $toval!="NULL")
       {     
@@ -602,20 +602,20 @@
      */
     function _getDateArraySearchCondition($query,$table,$value)
     {
-      global $g_db;
+      $db = &atkGetDb();
       $fromvalue = $this->_MakeDateForCondition($value["from"]);
       $tovalue   = $this->_MakeDateForCondition($value["to"]);
         
       if ($fromvalue!="") 
       {
-        $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["from"]));
+        $field = $db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["from"]));
         $datearraysearchcondition = $query->greaterthanequalCondition($field,$fromvalue);
         // check if tovalue is set, if so add the AND                               
         if ($tovalue!="") $datearraysearchcondition.=" AND "; 
       }
       if ($tovalue!="") 
       {
-        $field = $g_db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["to"]));
+        $field = $db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["to"]));
         $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue); 
       }
       return $datearraysearchcondition;

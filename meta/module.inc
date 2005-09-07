@@ -46,8 +46,8 @@ class mod_meta extends atkModule
    */
   function getMenuItems()
   {    
-    global $g_db;
-    $tables = $g_db->table_names();
+    $db = &atkGetDb();
+    $tables = $db->table_names();
 
     menuitem("meta", "", "main", array("meta.meta", "admin"));
     foreach ($tables as $table)
@@ -76,10 +76,10 @@ class mod_meta extends atkModule
    */
   function nodeExists($node)
   {
-    global $g_db;
+    $db = &atkGetDb();
     $table = getNodeType($node);    
     if (!preg_match('/[a-z0-9_]/i', $table)) return FALSE;
-    else return $g_db->tableExists($table);
+    else return $db->tableExists($table);
   }
   
   /**

@@ -353,7 +353,7 @@
           $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
       }
       
-      $myrecords = $this->load(NULL, $record, "admin", $paging);
+      $myrecords = $this->load(atkGetDb(), $record, "admin", $paging);
       
       $this->m_ownerInstance->m_postvars['atkorderby'] = $ownerorderby;
       return $myrecords;
@@ -513,8 +513,7 @@
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node. (Usually equal to 
-     *                  $g_db)
+     * @param atkDb $db The database used by the node. 
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
      * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
@@ -525,7 +524,7 @@
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    function load($db, $record, $mode="", $paging=false)
+    function load(&$db, $record, $mode="", $paging=false)
     {
       if ($mode=="edit")
       {
@@ -673,13 +672,12 @@
      * this method to clone detail records.
      * If mode is anything other than "copy" this method does not do anything.
      *
-     * @param atkDb $db The database used by the node. (Usually equal to 
-     *                  $g_db)
+     * @param atkDb $db The database used by the node. 
      * @param array $record The master record which has the detail records
      *                      embedded.
      * @return boolean true if store was successful, false otherwise. 
      */
-    function store($db, $record, $mode)
+    function store(&$db, $record, $mode)
     {
       if ($mode=="copy") // when copying, mode is "copy".
       {

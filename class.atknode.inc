@@ -317,9 +317,9 @@
     /**
      * The database that the node is using for storing and loading its data.
      * @access protected
-     * @var atkDb
+     * @var mixed
      */
-    var $m_db;
+    var $m_db = NULL;
 
     /**
      * The table to use for data storage.
@@ -600,12 +600,10 @@
      * @param int $flags Bitmask of node flags (NF_*).
      */
     function atkNode($type, $flags=0)
-    {
-      global $g_db;
+    {      
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
-      $this->m_flags = $flags;
-      if ($g_db && !$this->m_db) $this->m_db = &$g_db;
+      $this->m_flags = $flags;     
     }
 
     /**
@@ -906,19 +904,40 @@
      * @param String $tablename The name of the table to use.
      * @param String $seq The name of the sequence to use for autoincrement
      *                    attributes.
-     * @param atkDb $db The database connection to use. If ommitted, this
-     *                  defaults to the global database connection ($g_db).
+     * @param mixed $db The database connection to use. If ommitted, this
+     *                  defaults to the default database connection.
      *                  So in apps using only one database, it's not necessary
      *                  to pass this parameter.
+     *                  You can pass either a connection (atkDb instance), or
+     *                  a string containing the name of the connection to use.
      */
     function setTable($tablename,$seq="",$db=NULL)
-    {
-      global $g_db;
+    {      
       $this->m_table      = $tablename;
       if ($seq=="") $seq = $tablename;
       $this->m_seq        = $seq;
-      if ($db==NULL) $this->m_db = &$g_db;
-       else $this->m_db = &$db;
+      $this->m_db = $db;
+    }
+    
+    /**
+     * Get the database connection for this node.
+     * @return atkDb Database connection instance
+     */
+    function &getDb()
+    {
+      if ($this->m_db == NULL) 
+      {
+        return atkGetDb();
+      }
+      else if (is_object($this->m_db))
+      {
+        return $this->m_db;
+      }
+      else 
+      {
+        // must be a named connection
+        return atkGetDb($this->m_db);        
+      } 
     }
 
     /**
@@ -1763,7 +1782,8 @@
     {
       if ($this->m_attribsizesset) return true;
 
-      $metainfo = $this->m_db->tableMeta($this->m_table);
+      $db = &$this->getDb();
+      $metainfo = $db->tableMeta($this->m_table);
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -1829,7 +1849,8 @@
 
       // This is the end of all things for this page..
       // so we clean up some resources..
-      if (!empty($this->m_db)) $this->m_db->disconnect();
+      $db = &$this->getDb();
+      if (is_object($db)) $db->disconnect();
       atkdebug("disconnected from the database");
     }
 
@@ -2187,7 +2208,8 @@
      */
     function updateDb(&$record)
     {
-      $query = &$this->m_db->createQuery();
+      $db = &$this->getDb();
+      $query = &$db->createQuery();
 
       $query->addTable($this->m_table);
 
@@ -2278,7 +2300,7 @@
       for ($i = 0, $_i = count($storelist); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$storelist[$i]];
-        if (!$p_attrib->store($this->m_db, $record, $mode))
+        if (!$p_attrib->store($this->getDb(), $record, $mode))
         {
           // something went wrong.
           atkdebug("Store aborted. Attribute '".$storelist[$i]."' reported an error.");
@@ -2328,7 +2350,8 @@
     {
       atkimport("atk.utils.atkmlsplitter");
       $mltool = &atkmlsplitter::getInstance();
-      $query = &$this->m_db->createQuery();
+      $db = &$this->getDb();
+      $query = &$db->createQuery();
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -2409,7 +2432,8 @@
       $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
       
       $querystring = $query->buildCount();
-      $result = $this->m_db->getrows($querystring);
+      $db = &$this->getDb();
+      $result = $db->getrows($querystring);
 
       // group by fix:
       // if there exists a group by (added by atk/filters) the 'else' situation occurs
@@ -2480,7 +2504,8 @@
 
       if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
 
-      $query = &$this->m_db->createQuery();
+      $db = &$this->getDb();
+      $query = &$db->createQuery();
 
       atkimport("atk.utils.atkmlsplitter");
       $mltool = &atkmlsplitter::getInstance();
@@ -2550,7 +2575,7 @@
       {
         $p_attrib = &$this->m_attribList[$preloadlist[$j]];
 
-        $preloadedrecs = $p_attrib->load($this->m_db, $recordset[$i], $mode);
+        $preloadedrecs = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
 
         // todo, dirty hack, if preload returns x records, we treat them as 1 record now.
         $recordset[0][$preloadlist[$j]] = $preloadedrecs;
@@ -2620,7 +2645,8 @@
 
       $querystring = $query->buildSelect();
 
-      $dbrecords = $this->m_db->getrows($querystring);
+      $db = &$this->getDb();
+      $dbrecords = $db->getrows($querystring);
 
       if($mode=="copy" && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
@@ -2699,7 +2725,7 @@
         {
           $p_attrib = &$this->m_attribList[$postloadlist[$j]];
           
-          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->m_db, $recordset[$i], $mode);
+          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
         }
       }
       return $recordset;
@@ -2781,7 +2807,8 @@
      */
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
-      $query = &$this->m_db->createQuery();
+      $db = &$this->getDb();
+      $query = &$db->createQuery();
 
       $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
 
@@ -2806,7 +2833,7 @@
         $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
         if ($p_attrib->hasFlag(AF_AUTO_INCREMENT))
         {
-          $record[$p_attrib->fieldName()]=$this->m_db->nextid($this->m_seq);
+          $record[$p_attrib->fieldName()]=$db->nextid($this->m_seq);
         }
 
         $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"add"); // start at level 1
@@ -2854,7 +2881,7 @@
 
       }
 
-      atkdebug($this->m_db->m_error);
+      atkdebug($db->m_error);
       return false;
     }
 
@@ -2895,7 +2922,8 @@
         }
       }
 
-      if ($this->m_db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
+      $db = &$this->getDb();
+      if ($db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {

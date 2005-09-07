@@ -108,9 +108,7 @@
      * @return string           the password for the link
      */
     function getLinkPassword($linktable,$linkfield,$encryption="")
-    {
-      global $g_db;
-      
+    {      
       if ($this->m_linkpass) return $this->m_linkpass;
       if (!$linktable) $linktable = $this->m_linktable;
       if (!$linkfield) $linkfield = $this->m_linkfield;
@@ -136,7 +134,8 @@
       {
         $query = "SELECT ".$linkfield." as pass FROM ".$linktable." WHERE ".atkconfig("auth_userfield")." = '".$username."'";
 
-        $rec = $g_db->getrows($query);
+        $db = &atkGetDb();
+        $rec = $db->getrows($query);
         if(count($rec) < 1)
           return $linkpass;
           
@@ -189,10 +188,8 @@
      * So we decrypt the reference key before we call the method. 
      * For more documentation see the atkOneToOneRelation
      */
-    function load($db, $record, $mode)
-    {     
-      global $g_db;
-      
+    function load(&$db, $record, $mode)
+    {                 
       if ($this->m_searching)
       {
         if($this->m_searcharray !== $this->m_ownerInstance->m_postvars["atksearch"][$this->fieldName()] 
@@ -261,7 +258,7 @@
           $query = "SELECT ".$this->fieldName();
           $query.= ($this->m_cachefield?",{$this->m_cachefield}":"");
           $query.=" FROM ".$this->m_ownerInstance->m_table." WHERE ".$this->m_ownerInstance->m_table.".".$this->m_ownerInstance->primaryKeyField()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
-          $result = $g_db->getrows($query);
+          $result = $db->getrows($query);
         }
         else 
         {
@@ -294,7 +291,7 @@
     
     function decrypt($record, $field)
     { 
-      global $g_db, $g_encryption;
+      global $g_encryption;
       
       if (!$this->m_linkpass) $this->getLinkPassword($this->m_linktable, $this->m_linkfield, $g_encryption);
       
@@ -308,7 +305,8 @@
             if ($this->m_ownerInstance->m_attribList[$field]) $cachetable = $this->m_ownerInstance->m_table;
             else if ($this->m_destInstance->m_attribList[$field]) $cachetable = $this->m_destInstance->m_table;
             
-            $g_db->query("UPDATE $cachetable
+            $db = &atkGetDb();
+            $db->query("UPDATE $cachetable
                               SET {$this->m_cachefield}='$cryptedlink'
                               WHERE ".$this->m_ownerInstance->primaryKeyField()." = '".
             $record[$this->m_ownerInstance->primaryKeyField()]."'");
@@ -337,10 +335,10 @@
      */
     function newUser($id,$pass)
     {
-      global $g_db;
+      $db = &atkGetDb();
       $linkpass = $this->m_crypt->encryptKey($this->getLinkPassword($this->m_linktable,$this->m_linkfield),$pass);
       $query = "UPDATE $this->m_linktable SET $this->m_linkfield = '".$linkpass."' WHERE id = '$id'";
-      $g_db->query($query);
+      $db->query($query);
     }
         
     /**
@@ -349,11 +347,11 @@
      */
     function _getJoinCondition()
     {
-      global $g_db;
+      $db = &atkGetDb();
       
       // decrypt the encrypted keys to get the tables joined
       $temp_query = "SELECT " . $this->fieldName() . " FROM " . $this->m_ownerInstance->m_table;
-      $result = $g_db->getRows($temp_query);
+      $result = $db->getRows($temp_query);
       
       $condition = "";
       foreach($result as $recordArray)

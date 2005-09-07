@@ -35,7 +35,7 @@
      */
     function validateUser($user, $passwd)
     {     
-      global $g_db, $g_pop3_responses; 
+      global $g_pop3_responses; 
       
       /* if it's a virtual mail server add @<domain> to the username */
       if(atkconfig("auth_mail_virtual") == true)
@@ -48,7 +48,8 @@
       {
         // if server is set to [db], that means we have a different server per
         // user. We lookup in the database what server we need to call.
-        $res = $g_db->getrows("SELECT auth_server 
+        $db = &atkGetDb();
+        $res = $db->getrows("SELECT auth_server 
                                FROM ".atkconfig("auth_usertable")." 
                               WHERE ".atkconfig("auth_userfield")."='".$user."'");
         if (count($res)==0)

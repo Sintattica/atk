@@ -994,8 +994,8 @@
    */
   function escapeSQL($string, $wildcard=false)
   {
-    global $g_db;    
-    return $g_db->escapeSQL($string, $wildcard);    
+    $db = &atkGetDb();
+    return $db->escapeSQL($string, $wildcard);    
   }
 
   /**
@@ -1006,6 +1006,18 @@
   {
     include(atkconfig("atkroot")."atk/version.inc");
     return $atk_version;
+  }
+  
+  /**
+   * Convenience wrapper for atkDb::getInstance()
+   * @param String $conn The name of the connection to retrieve
+   * @return atkDb Database connection instance
+   */
+  function &atkGetDb($conn="default")
+  {
+    atkimport("atk.db.atkdb");
+    $db = &atkDb::getInstance($conn);
+    return $db;
   }
 
   /**

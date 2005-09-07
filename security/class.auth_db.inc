@@ -29,8 +29,8 @@
    
      function validateUser($user, $passwd)
      {
-       global $g_db;
-       $userexpr = $g_db->escapeSql($user);
+       $db = &atkGetDb();
+       $userexpr = $db->escapeSql($user);
        if (atkconfig("auth_accountdisablefield")!="")
        {
          $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
@@ -41,7 +41,7 @@
          $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
          if (atkconfig("auth_accountenableexpression")!="") $query .= " AND ".atkconfig("auth_accountenableexpression");
        }
-       $recs = $g_db->getrows($query);
+       $recs = $db->getrows($query);
        if (isset($recs[0][atkconfig("auth_accountdisablefield")])&&$recs[0][atkconfig("auth_accountdisablefield")]==1)
        {
          return AUTH_LOCKED;
@@ -81,7 +81,7 @@
 
      function getUser($user)
      {
-       global $g_db;
+       $db = &atkGetDb();
 
        $usertable = atkconfig("auth_usertable");
        $leveltable = atkconfig("auth_leveltable");
@@ -99,7 +99,7 @@
          // Level and userid are stored in two separate tables. This could
          // mean (but doesn't have to) that a user can have more than one
          // level.	       
-	       $qryobj =&$g_db->createQuery();
+	       $qryobj =&$db->createQuery();
 	       $qryobj->addTable($usertable);
 	       $qryobj->addField("*");
 	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userfk", true);
@@ -107,7 +107,7 @@
 	       $query = $qryobj->buildSelect();
        }
 
-       $recs = $g_db->getrows($query);
+       $recs = $db->getrows($query);
 
        $groups = array();
 
@@ -156,13 +156,13 @@
 
      function getEntity($node, $action)
      {
-       global $g_db;
+       $db = &atkGetDb();
 
        if (!isset($this->m_rightscache[$node])||count($this->m_rightscache[$node])==0)
        {
          $query = "SELECT * FROM ".atkconfig("auth_accesstable")." WHERE node='$node'";
 
-         $this->m_rightscache[$node] = $g_db->getrows($query);
+         $this->m_rightscache[$node] = $db->getrows($query);
        }
 
        $result = Array();
@@ -182,11 +182,11 @@
 
      function getAttribEntity($node, $attrib, $mode)
      {
-       global $g_db;
+       $db = &atkGetDb();
 
        $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
-       $rights = $g_db->getrows($query);
+       $rights = $db->getrows($query);
 
        $result = Array();
 
@@ -203,7 +203,7 @@
 
      function getUserList()
      {
-       global $g_db;
+       $db = &atkGetDb();
        $query = "SELECT * FROM ".atkconfig("auth_usertable");
 
        $accountdisablefield = atkconfig("auth_accountdisablefield");
@@ -218,7 +218,7 @@
          if ($accountdisablefield!="") $query.= " WHERE $accountdisablefield = 0";
        }
 
-       $recs = $g_db->getrows($query);
+       $recs = $db->getrows($query);
 
        $userlist = array();
        for ($i=0, $_i=count($recs); $i<$_i; $i++)

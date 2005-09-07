@@ -16,11 +16,6 @@
    * $Id$
    */
 
-  /**   
-   * @internal Include baseclass
-   */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");    
-
   /**
    * Driver for Oracle 8i databases.
    *
@@ -373,7 +368,7 @@
      * If the database contains a sequence named "seq_employees", the following
      * call will retrieve the next value from the sequence:
      * <code> 
-     *   $id = $g_db->nextid("employees");
+     *   $id = $db->nextid("employees");
      * </code>
      *
      * @param $sequence The sequence name
@@ -545,10 +540,8 @@
      * @return boolean True if the table exists, false if not.
      */  
     function tableExists($table)
-    {      
-      global $g_db;
-      
-      $found = $g_db->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
+    {                  
+      $found = $this->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
       return ($found[0]['found']==0 ? false : true);
     }    
     

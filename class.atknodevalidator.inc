@@ -137,6 +137,7 @@
       if(isset($record['atkerror'])&&count($record['atkerror']) > 0) return false;
 
       // After the values check, we check the Flags.
+      $db = &$this->m_nodeObj->getDb();
       foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname)
       {
         if (!atk_in_array($attribname, $this->m_ignoreList))
@@ -146,12 +147,11 @@
           //if(count($record['atkerror']) > 0) return false;
           //Validate if ne
           if ($p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->hasFlag(AF_AUTO_INCREMENT))
-          {
-          //  $atkorgkey = $this->m_nodeObj->orgKey();
+          {                        
             $atkorgkey = $record["atkprimkey"];
             if(($atkorgkey == '' // no orgkey, so adding this record
                 || $atkorgkey != $this->m_nodeObj->primaryKey($record)) // key has changed, so check is necessary
-               &&  count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
+               &&  count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
               )
             {
               triggerError($record, $attribname, 'error_primarykey_exists', '', $p_attrib->m_tabs[0]);
@@ -169,7 +169,7 @@
           }
           // if flag is primary
           else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) &&
-                   count($this->m_nodeObj->m_db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".escapeSQL($this->m_nodeObj->m_postvars[$this->m_nodeObj->m_attribList[$attribname]->fieldName()])."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
+                   count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".escapeSQL($this->m_nodeObj->m_postvars[$this->m_nodeObj->m_attribList[$attribname]->fieldName()])."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
                   )
           {
             triggerError($record, $attribname, 'error_uniquefield', '', $p_attrib->m_tabs[0]);
@@ -196,6 +196,7 @@
      */
     function validateUniqueFieldSets(&$record)
     {	
+      $db = &$this->m_nodeObj->getDb();
       foreach($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet)
       {
         $whereStr = " WHERE 1 ";
@@ -221,7 +222,7 @@
 
           $whereStr .= "AND ".$field." = ".$whereValueStr." " ;
         }
-        if(count($this->m_nodeObj->m_db->getRows("
+        if(count($db->getRows("
           SELECT 
             1            
           FROM

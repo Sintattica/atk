@@ -14,10 +14,7 @@
    *
    * @version $Revision$
    * $Id$
-   */
-  
-  /** @internal include baseclass */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");  
+   */    
 
   /**
    * Database driver for PostgreSQL.
@@ -418,9 +415,8 @@
      * Check if table exists.
      */
     function tableExists($table)
-    {
-      global $g_db;
-      $res = $g_db->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
+    {      
+      $res = $this->getrows("SELECT relname FROM pg_class WHERE relkind = 'r' AND UPPER(relname) = UPPER('".$table."')");
       return (count($res)==0 ? false : true);    
     }
     

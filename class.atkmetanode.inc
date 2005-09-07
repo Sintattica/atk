@@ -92,13 +92,12 @@ class atkMetaNode extends atkNode
     else if (array_key_exists("sequence", $args)) 
       $this->m_seq = $args["sequence"];
     else $this->m_seq = $policy->getSequence();
-    
-    global $g_db;
+        
     if (isset($this->db))
       $this->m_db = &$this->db;
     else if (array_key_exists("db", $args))
       $this->m_db = &$args["db"];
-    else $this->m_db = &$g_db;    
+    else $this->m_db = &atkGetDb();  
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }

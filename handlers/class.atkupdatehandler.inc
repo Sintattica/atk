@@ -63,12 +63,13 @@
         }
         else
         {
+          $db = &$this->m_node->getDb();
           if(!$this->m_node->updateDb($record))
           {
-            $this->m_node->m_db->rollback();
-            if($this->m_node->m_db->getErrorType()=="user")
+            $db->rollback();
+            if($db->getErrorType()=="user")
             {
-              triggerError($record, 'Error', $this->m_node->m_db->getErrorMsg(), '', '');
+              triggerError($record, 'Error', $db->getErrorMsg(), '', '');
               $this->m_node->m_action="edit";
               global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
               $page = &$this->getPage();
@@ -77,13 +78,13 @@
             }
             else
             {
-              $location = $this->m_node->feedbackUrl("update",ACTION_FAILED, $record, $this->m_node->m_db->getErrorMsg());
+              $location = $this->m_node->feedbackUrl("update",ACTION_FAILED, $record, $db->getErrorMsg());
               $this->m_node->redirect($location);
             }
           }
           else
           {
-            $this->m_node->m_db->commit();            
+            $db->commit();            
             
             $this->clearCache();
             if (!isset($this->m_postvars['atknoclose']))

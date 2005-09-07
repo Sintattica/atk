@@ -41,6 +41,9 @@ Changes in ATK 5.3
   a name longer than what is valid for a filename. [Ivo]
 + Added addDynamicFunction to atkSmarty for easier registration of plugins
   that should not be cached. [Ivo]
++ Added multiple named db connections ability. Note that this requires a
+  change in all config.inc.php files. See atk/skel/config.inc.php for
+  examples. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
 + Added support for preloading only certain parts of a module
   using special module_preload.inc file. If this file exists it will be loaded
@@ -172,6 +175,8 @@ Changes in ATK 5.3
   present. Use atkimport("atk.layout"); $layout = layout::getInstance()
   instead. Note though, that the layout class is still deprecated and should
   not be used. [Ivo]
+- Removed $g_db. Db connections should be retrieved using &atkGetDb() or
+  &atkDb::getInstance(). [Ivo]
 
 Changes in ATK 5.2.1
 --------------------

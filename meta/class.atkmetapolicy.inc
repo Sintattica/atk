@@ -178,7 +178,8 @@ class atkMetaPolicy
   {
     $sequence = NULL;
     
-    $cols = $this->m_node->m_db->tableMeta($this->getTable());
+    $db = &$this->m_node->getDb();
+    $cols = $db->tableMeta($this->getTable());
     
     foreach ($cols as $name => $meta)
       if (strlen($meta['sequence']) > 0)
@@ -196,7 +197,8 @@ class atkMetaPolicy
   function getDefaultValues()
   {
     $result = array();
-    $cols = $this->m_node->m_db->tableMeta($this->m_node->getTable());
+    $db = &$this->m_node->getDb();
+    $cols = $db->tableMeta($this->m_node->getTable());
     foreach ($cols as $name => $meta)
       if (array_key_exists('default', $meta))
         $result[$name] = $this->_getDefaultValue($name, $meta);
@@ -560,7 +562,8 @@ class atkMetaPolicy
    */
   function init()
   {
-    $cols = $this->m_node->m_db->tableMeta($this->m_node->getTable());
+    $db = &$this->m_node->getDb();
+    $cols = $db->tableMeta($this->m_node->getTable());
     foreach ($cols as $name => $meta)
       $this->_initAttribute($name, $meta);
   }  

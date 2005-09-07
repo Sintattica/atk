@@ -232,8 +232,7 @@
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node. (Usually equal to 
-     *                  $g_db)
+     * @param atkDb $db The database used by the node. 
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
      * 
@@ -243,7 +242,7 @@
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
-    function load($db, $record, $mode)
+    function load(&$db, $record, $mode)
     {
       if ($this->createDestination())
       {              
@@ -466,13 +465,12 @@
     /**
      * Store detail record in the database.
      *          
-     * @param atkDb $db The database used by the node. (Usually equal to 
-     *                  $g_db)
+     * @param atkDb $db The database used by the node. 
      * @param array $record The master record which has the detail records
      *                      embedded.
      * @return boolean true if store was successful, false otherwise. 
      */
-    function store($db, &$record, $mode)
+    function store(&$db, &$record, $mode)
     {
       if ($this->createDestination())
       {

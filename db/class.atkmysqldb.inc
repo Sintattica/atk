@@ -16,11 +16,6 @@
    * $Id$
    */
 
-  /**   
-   * @internal Include baseclass
-   */
-  require_once(atkconfig("atkroot")."atk/db/class.atkdb.inc");  
-
   /**
    * Driver for MySQL databases.
    *
@@ -398,9 +393,8 @@
      * @return boolean true if found, false if not found
      */  
     function tableExists($table)
-    {
-      global $g_db;
-      $res = $g_db->getrows("SHOW TABLES LIKE '$table'");
+    {      
+      $res = $this->getrows("SHOW TABLES LIKE '$table'");
       return (count($res)==0 ? false : true);
     }    
   

@@ -32,9 +32,8 @@
   $config_identifier = "atkapp";
 
   //----------------- DATABASE CONFIGURATION --------------------
-
-  // Specify the type of database.
-  // Currently supported are:
+  
+  // Currently supported drivers are:
   // "mysql"   - All MySQL versions since 3.23
   // "mysql41" - MySQL 4.1+. On top of the "mysql" driver, this one
   //             has transaction support.
@@ -42,14 +41,11 @@
   // "oci8"    - All Oracle 8i versions
   // "oci9"    - Oracle9i+ (also works for 10G)
   // "pgsql"   - PostgreSQL 7.1+
-  $config_database="mysql";
-
-  // The database configuration. Specify the hostname of the database server,
-  // the database to use and the user/password.
-  $config_databasehost = "localhost";
-  $config_databasename = "";
-  $config_databaseuser = "";
-  $config_databasepassword = "";
+  $config_db["default"]["driver"]   = "mysql";
+  $config_db["default"]["host"]     = "localhost";
+  $config_db["default"]["db"]       = "";
+  $config_db["default"]["user"]     = "";
+  $config_db["default"]["password"] = "";
   
   // In admin pages, atk shows you a number of records with previous and
   // next buttons. You can specify the number of records to show on a page.

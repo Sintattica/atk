@@ -19,7 +19,6 @@
   /**   
    * @internal Include baseclass
    */
-
   require_once(atkconfig("atkroot")."atk/db/class.atkoci8db.inc");
 
   /**

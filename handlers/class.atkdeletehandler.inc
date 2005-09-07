@@ -60,9 +60,10 @@
      */
     function _doDelete()
     {
+      $db = &$this->m_node->getDb();
       if($this->m_node->deleteDb($this->m_postvars['atkselector']))
       {
-        $this->m_node->m_db->commit();
+        $db->commit();
         $this->clearCache();
         $location = $this->m_node->feedbackUrl("delete", ACTION_SUCCESS);
         $this->m_node->redirect($location);
@@ -70,8 +71,8 @@
       // Something is wrong here, the deleteDb failed
       else
       {
-        $this->m_node->m_db->rollback();
-        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$this->m_node->m_db->getErrorMsg());
+        $db->rollback();
+        $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,$db->getErrorMsg());
         $this->m_node->redirect($location);
       }
     }
@@ -122,7 +123,8 @@
       	// If allowed !=== true, then it returned an error message
       	if ($allowed!==true)
       	{ 
-      		$this->m_node->m_db->rollback(); 
+      	  $db = &$this->m_node->getDb();
+      		$db->rollback(); 
           $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,sprintf(atktext("attrib_delete_not_allowed"),atktext($this->m_node->m_attribIndexList[$counter]["name"],$this->m_node->m_module,$this->m_node->m_type),$allowed));
           $this->m_node->redirect($location);
       	  return;

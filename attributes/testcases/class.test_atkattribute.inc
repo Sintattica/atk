@@ -50,12 +50,12 @@
       function test_encoding()
       {
         // check encoding      
-        global $g_db;
+        $db = &atkGetDb();
         $attribute = new atkAttribute("name");
         $dbvalue = "contains'quote";
         $internalvalue = $attribute->db2value(array("name"=>$dbvalue));      
         $roundtrip = $attribute->value2db(array("name"=>$internalvalue));
-        $this->assertEqual($g_db->escapeSQL($dbvalue), $roundtrip, "value2db encoding check %s");      
+        $this->assertEqual($db->escapeSQL($dbvalue), $roundtrip, "value2db encoding check %s");      
       }      
     }
 

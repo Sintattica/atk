@@ -673,10 +673,42 @@
       return $result;
     }
 
+    /**
+     * Create an atkQuery object for constructing queries.
+     * @return atkQuery Query class.
+     */
     function &createQuery()
     {      
       $query = &atknew("atk.db.atk".$this->m_type."query");
       return $query;
+    }
+    
+    /**
+     * Get database instance.
+     *
+     * This method instantiates and returns the correct (vendor specific)
+     * database instance, depending on the configuration.
+     *
+     * @static 
+     * @param String $conn The name of the connection as defined in the
+     *                     config.inc.php file (defaults to 'default')
+     * @return atkDb Instance of the database class. 
+     */
+    function &getInstance($conn="default")
+    {
+      static $s_instances = array();
+      if (!isset($s_instances[$conn]))
+      {        
+        atkdebug("Creating new db instance for connection $conn");  
+        $dbconfig = atkconfig("db");
+         // include DB stuff
+        $s_instances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");                     
+        $s_instances[$conn]->m_database = $dbconfig[$conn]["db"];
+        $s_instances[$conn]->m_user     = $dbconfig[$conn]["user"];
+        $s_instances[$conn]->m_password = $dbconfig[$conn]["password"];
+        $s_instances[$conn]->m_host     = $dbconfig[$conn]["host"];        
+      }
+      return $s_instances[$conn];
     }
 
   }  

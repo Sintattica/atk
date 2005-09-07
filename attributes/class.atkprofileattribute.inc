@@ -97,7 +97,7 @@
     function edit($record)
     {
       global $g_modules, $g_nodes, $config_atkroot,$g_moduleflags;
-      global $g_user, $g_db;            
+      global $g_user;            
 
       $page = &atkPage::getInstance();
       $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
@@ -136,7 +136,8 @@
         $levels = "'".implode("','",$g_user['level'])."'";
       $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
       
-      $activeNodeActions = $g_db->getrows($query);
+      $db = &atkGetDb();
+      $activeNodeActions = $db->getrows($query);
 
       foreach( $activeNodeActions as $a)
       {

@@ -368,12 +368,12 @@
      *         false if anything went wrong, or if no table could be created.
      */
     function executeCreate()
-    {
-      global $g_db; 
+    {      
       $query = $this->buildCreate();
       if ($query!="")
       {
-        $g_db->query($query);        
+        $db = &atkGetDb();
+        $db->query($query);        
         return true;
       }
       else
@@ -395,16 +395,16 @@
      *         false if anything went wrong, or if no table could be altered.
      */
     function executeAlter()
-    {
-      global $g_db;
+    {      
       $queries = $this->buildAlter();            
       if (count($queries)>0)
       {
+        $db = &atkGetDb();
         for ($i=0, $_i=count($queries); $i<$_i; $i++)
         {
           if ($queries[$i]!="")
-          {
-            $g_db->query($queries[$i]);
+          {            
+            $db->query($queries[$i]);
           }
         }
         return true;

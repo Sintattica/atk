@@ -1306,7 +1306,7 @@
      * 
      * Note that the type returned is a 'generic' type. Each database
      * vendor might have his own types, therefor, the type should be
-     * converted to a database specific type using $g_db->fieldType().
+     * converted to a database specific type using $db->fieldType().
      *
      * If the type was read from the table metadata, that value will 
      * be used. Else, the attribute will analyze its flags to guess 
@@ -1597,7 +1597,8 @@
       $field = array();
       $defaults = $record;
 
-      $dbSearchModes = $node->m_db->getSearchModes();
+      $db = &$node->getDb();
+      $dbSearchModes = $db->getSearchModes();
       $attribSearchModes = $this->getSearchModes();
       $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
 

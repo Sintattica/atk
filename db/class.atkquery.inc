@@ -310,10 +310,10 @@
      */
     function executeSelect($distinct = FALSE)
     {
-      global $g_db;
+      $db = &atkGetDb();
        
       $query = $this->buildSelect($distinct);
-      return $g_db->getrows($query);      
+      return $db->getrows($query);      
     }
     
     /**
@@ -412,11 +412,10 @@
      * Wrapper function to execute an update query 
      */
     function executeUpdate()
-    {
-      global $g_db;
-      
+    {      
+      $db = &atkGetDb(); 
       $query = $this->buildUpdate();
-      return $g_db->query($query);      
+      return $db->query($query);      
     }
 
     /**  
@@ -424,10 +423,9 @@
      */
     function executeInsert()
     {
-      global $g_db;
-      
+      $db = &atkGetDb();      
       $query = $this->buildInsert(true);
-      return $g_db->query($query);      
+      return $db->query($query);      
     }
 
     /**
@@ -478,10 +476,9 @@
      */
     function executeDelete()
     {
-      global $g_db;
-       
+      $db = &atkGetDb();            
       $query = $this->buildDelete();
-      return $g_db->query($query);      
+      return $db->query($query);      
     }
 
     /**

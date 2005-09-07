@@ -682,8 +682,7 @@
      * @param $selector Selector
      */
     function deleteDb($selector)
-    {
-      global $g_db;
+    {      
       atkdebug("Retrieve record");
       $recordset = $this->selectDb($selector,"","","","","delete");
       for ($i=0;$i<count($recordset);$i++)
@@ -709,9 +708,10 @@
           $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$parent,$parent);
         }
       }
-      
-       $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-       $g_db->query($query);
+
+      $db = &$this->getDb(); 
+      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
+      $db->query($query);
          
       for ($i=0;$i<count($recordset);$i++)
       {
@@ -729,8 +729,7 @@
      * @param $parent Parent
      */
     function deleteChildren($selector,$parent)
-    {
-      global $g_db;
+    {      
       atkdebug("Check for child records of the Child");
       $recordset = $this->selectDb($this->m_table.'.'.$this->m_parent.'='.$parent,"","","","","delete");
       for ($i=0;$i<count($recordset);$i++)
@@ -754,11 +753,10 @@
           $this->deleteChildren($this->m_table.'.'.$this->m_parent.'='.$recordset[$i][$this->m_primaryKey[0]],$parent);
         }
       }
-      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;
-      
-      $g_db->query($query);
 
-      
+      $db = &$this->getDb();
+      $query = "DELETE FROM ".$this->m_table." WHERE ".$selector;      
+      $db->query($query);     
     }
   }
 

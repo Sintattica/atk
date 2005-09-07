@@ -49,8 +49,7 @@
       
       function test_encoding()
       {
-        // check encoding      
-        global $g_db;
+        // check encoding              
         $attribute = new atkTextAttribute("remark");
         $value = "contains'quote";
         $dbvalue = $attribute->value2db(array("remark"=>$value));
