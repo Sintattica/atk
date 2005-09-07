@@ -629,5 +629,13 @@
    */
   $config_javascript_confirmation = false;
 	
+  /**
+   * This should be turned on when an application makes use
+   * of OpenSSL encryption (atk.security.encryption.atkopensslencryption)
+   * It makes sure that the user password is available in the session
+   * for the private key.
+   * @var bool
+   */
+  $config_enable_ssl_encryption = false;
   
 ?>

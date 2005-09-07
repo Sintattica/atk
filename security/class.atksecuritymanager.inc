@@ -257,7 +257,7 @@
               // We store the username + securitylevel of the logged in user. 
               $this->m_user = $this->m_authorization->getUser($auth_user);
               $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
-              $this->m_user['PASS']=$auth_pw; // used by aktsecurerelation to decrypt an linkpass
+              if (atkconfig("enable_ssl_encryption")) $this->m_user['PASS']=$auth_pw; // used by aktsecurerelation to decrypt an linkpass
               // for convenience, we also store the user as a global variable.
               (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
               atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
