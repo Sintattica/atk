@@ -381,7 +381,10 @@
         }
         
         if ($filename != $preload)        
-          atkdebug("Loading module - $modname");          
+        {
+          atkdebug("Loading module - $modname");
+          atkimport("atk.modules.atkmodule");
+        }
         
         // the include file may specify modifiers.
         $modifiers = array();
