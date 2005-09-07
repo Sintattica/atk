@@ -123,7 +123,7 @@
     if ($offset=="" || $reset)
     {
       $offset = getmicrotime();
-      return "@".strftime("%H:%M:%S")."h";
+      return strftime("%H:%M:%S")."h";
     }
     else
     {
@@ -146,7 +146,7 @@
        $txt = htmlentities($txt);
      	
      atkWriteLog($txt);
-     if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()."] ".$txt;
+     if (atkconfig("debug")>=0) $g_debug_msg[]="[".elapsed()." | ".round((memory_get_usage()/1024/1024),2)."MB"."] ".$txt;
   }
   
   /**
