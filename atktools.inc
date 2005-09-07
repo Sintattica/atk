@@ -124,7 +124,7 @@
     {
       $offset = getmicrotime();
       $previous = $offset;
-      return strftime("%H:%M:%S")."h";
+      return strftime("%H:%M:%S")."h / 0.00000s";
     }
     else
     {
