@@ -72,6 +72,8 @@ Changes in ATK 5.3
 + $config values can now be redirected to a runtime function by defining
   a function called config_<configkey>() or config_<modname>_<configkey>() for
   modules. [Ivo]
++ Added debug console for debugging queries. Shows explain plan, results and
+  backtrace for each query performed on a page (mysql only currently). [Ivo]
 + Debug output now includes memory usage information and elapsed time between
   two atkdebug calls. [Ivo]
 + Added setWidth() and getWidth() function to atkListAttribute to set the

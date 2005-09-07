@@ -110,7 +110,12 @@
       /* limit? */
       if ($offset >= 0 && $limit > 0)
         $query .= " LIMIT $offset, $limit";  
-      atkdebug("atkmysqldb.query(): ".$query);
+      if (atkconfig("debug")>0)
+      {               
+        atkimport("atk.utils.atkdebugger");
+        $debugger = &atkDebugger::getInstance();
+        $debugger->addQuery($query);
+      }
 
       /* connect to database */
       if ($this->connect()==DB_SUCCESS)
