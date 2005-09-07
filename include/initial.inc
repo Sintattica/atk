@@ -39,7 +39,6 @@
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/include/security.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
-  require_once($config_atkroot."atk/modules/class.atkmodule.inc");
 
   if (is_array($config_smart_debug))
     $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
