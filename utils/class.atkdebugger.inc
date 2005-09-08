@@ -181,8 +181,9 @@
       {
         $session = &$g_sessionManager->getSession(); 
         return $session["debugger"];
-      }
-      return array();
+      }      
+      $data = array();
+      return $data;
     }
     
     function renderQueryList($queries)
