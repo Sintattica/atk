@@ -36,7 +36,7 @@
       {
         $data = &$this->getDebuggerData();
         
-        atkdebug($query." [".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])), true)."]");
+        atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])), true)."] ".$query);
                 
         $data["queries"][] = array("query"=>$query, "trace"=>atk_get_trace());
       }
