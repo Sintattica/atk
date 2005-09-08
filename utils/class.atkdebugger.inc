@@ -22,7 +22,7 @@
         $link = $this->consoleLink('Open console', '', array(), true);
         atkdebug($res."Debugger initialized. [".$link."]");
         $data = &$this->getDebuggerData();
-        $data = array(); // start clean
+        $data = array(); // start clean        
       }
       else
       {
@@ -177,8 +177,12 @@
     function &getDebuggerData()
     {
       global $g_sessionManager;
-      $session = &$g_sessionManager->getSession(); 
-      return $session["debugger"];
+      if (is_object($g_sessionManager))
+      {
+        $session = &$g_sessionManager->getSession(); 
+        return $session["debugger"];
+      }
+      return array();
     }
     
     function renderQueryList($queries)
