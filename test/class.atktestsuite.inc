@@ -46,9 +46,11 @@
     }
     
     function visitFile($fullpath)
-    {            
+    { 
+      global $include;
+      $includefiles = explode("|",$include);
       $filename = basename($fullpath);
-      if (substr($filename, 0, 11)=="class.test_")
+      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))))
       {
         $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
         $testclassname = $elems[1]; 
