@@ -173,7 +173,10 @@ Changes in ATK 5.3
 * Moved obligatory asterisk from HTML attribute to label and removed colon
   from default editform template. [Boy]
 * PASS is no longer stored in session unless $config_enable_ssl_encryption 
-  is turned on [Boy]
+  is turned on. [Boy]
+* Added 'include' global, using this in your URL when summoning test.php 
+  you can make the testsuite run only one (or multiple piped together) 
+  test at a time. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
