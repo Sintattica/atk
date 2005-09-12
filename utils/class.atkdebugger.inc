@@ -1,5 +1,30 @@
 <?php
 
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @copyright (c)2005 Ivo Jansch   
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
+  /**
+   * This class implements the ATK debug console for analysing queries
+   * performed in a page.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage utils
+   *
+   */  
   class atkDebugger
   {        
     var $m_isconsole = true;
@@ -103,11 +128,11 @@
     
     function queryDetails($queries, $id)
     {
-      $output = "<h1>Query</h1>";
+      $output = "<h1>Query</h1>";      
       $query = $queries[$id]["query"];
       $output.= $this->highlightQuery($query);
       $db = &atkGetDb();
-      if (strtolower(substr($query, 0, 6))=="select")
+      if (strtolower(substr(trim($query), 0, 6))=="select")
       {
         $output.= '<h1>Resultset</h1>';              
         $result = $db->getrows($query);
@@ -128,6 +153,10 @@
           $output.=$queries[$id]["trace"];
         }
       }      
+      else
+      {
+        echo "jammer: ".strtolower(substr($query, 0, 6));
+      }       
       return $output;
     }
     
