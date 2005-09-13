@@ -43,9 +43,17 @@
   
   $position = $menu->getPosition();
   $scrolling = ($menu->getScrollable()==MENU_SCROLLABLE?FRAME_SCROLL_AUTO:FRAME_SCROLL_NO);
-  
+  if(!($ATK_VARS["atknodetype"]=="" || $ATK_VARS["atkselector"]=="" || $ATK_VARS["atkaction"]==""))
+  {
+    $destination = "dispatch.php?atknodetype=".$ATK_VARS["atknodetype"]."&atkselector=".$ATK_VARS["atkselector"]."&atkaction=".$ATK_VARS["atkaction"];
+  } 
+  else 
+  {
+    $destination = "welcome.php";
+  }
+
   $topframe = &new atkFrame("70", "top", "top.php", FRAME_SCROLL_NO, true);
-  $mainframe = &new atkFrame("*", "main", "welcome.php", FRAME_SCROLL_AUTO, true);
+  $mainframe = &new atkFrame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
   $menuframe = &new atkFrame(($position==MENU_LEFT||$position==MENU_RIGHT?190:$menu->getHeight()), "menu", "menu.php", $scrolling);
   $noframes = '<p>Your browser doesnt support frames, but this is required to run '.text('app_title')."</p>\n";
   
