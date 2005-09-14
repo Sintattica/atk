@@ -58,6 +58,7 @@ Changes in ATK 5.3
 + atkListAttribute now supports custom onChange javascript code. [Boy]
 + Added config variable 'tplusesubdirs' to use subdirectories with the
   smarty's cached and compiled templates. [Martin]
++ App.php now supports direct linking. [Thom]
 + Implemented a search feature for the atk File editor class. You're now able
   to search on filenames. [Martin]
 + Added extraparams in atkTreeNode for putting extra params in the url when 
