@@ -659,6 +659,7 @@
     else if (isset($ATK_VARS["atkback"]) && $ATK_VARS["atkback"]!="")
     {
       // When we go back, we go one level deeper than the level we came from.
+      atkimport("atk.atknode");
       atkNode::redirect(session_url($_SERVER["PHP_SELF"]."?atklevel=".($atkprevlevel-1)));
       $output = &atkOutput::getInstance();
       $output->outputFlush();
