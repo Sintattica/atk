@@ -978,6 +978,8 @@
     function getTabs($action)
     {
       $list = &$this->m_tabList[$action];
+      $tabAttribSet = array();
+      
       if (!is_array($list))
       {
         // fallback to view tabs.
@@ -991,9 +993,37 @@
         if(is_object($p_attrib))
         {
           $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
-        } else atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
+
+          // add the attrib counter / tab so we can later detect empty tabs
+          $tabCode = $this->m_attributeTabs[$attribname][0];
+          
+          if (!isset($tabAttribSet[$tabCode]))
+          {
+            $tabAttribSet[$tabCode] = true;
+            atkdebug("TAB ".$tabCode." contains attributes");
+          }  
+        }
+        else
+        {
+          atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
+        }  
       }
-      return $list;
+      
+      // Loop the known tabentries and see if they where set
+      // If set, they contain attributes      
+      foreach ($list AS $tabEntry)
+      {
+      	if (isset($tabAttribSet[$tabEntry]))
+      	{
+      	  $tabList[] = $tabEntry;	
+      	}
+      	else
+      	{
+      	  atkdebug("Removing TAB ".$tabEntry." because it had no attributes assigned");
+      	}
+      }
+      
+      return $tabList;
     }
 
     /**
