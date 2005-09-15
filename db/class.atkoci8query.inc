@@ -23,7 +23,13 @@
    * @package atk
    * @subpackage db
    *
-   */   
+   */
+
+  /**
+   * Base include
+   */
+  atkimport("atk.db.atkquery");
+ 
   class atkOci8Query extends atkQuery
   {
 
