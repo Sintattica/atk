@@ -301,6 +301,13 @@
     var $m_attributeTabs = array();
 
     /**
+     * Keep track if a tab contains attribs (checkEmptyTabs function)
+     * @access private
+     * @var array
+     */
+    var $m_filledTabs = array();
+
+    /**
      * The nodetype.
      * @access protected
      * @var String
@@ -979,7 +986,8 @@
     {
       $list = &$this->m_tabList[$action];
       $tabAttribSet = array();
-      
+      $tabCode = "";      
+
       if (!is_array($list))
       {
         // fallback to view tabs.
@@ -994,13 +1002,12 @@
         {
           $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
 
-          // add the attrib counter / tab so we can later detect empty tabs
+          // Keep track of the tabs that containg attribs
+          // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
-          
-          if (!isset($tabAttribSet[$tabCode]))
+          if (!isset($this->m_filled[$tabCode])) 
           {
-            $tabAttribSet[$tabCode] = true;
-            atkdebug("TAB ".$tabCode." contains attributes");
+            $this->m_filledTabs[$tabCode] = true;
           }  
         }
         else
@@ -1008,21 +1015,35 @@
           atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
         }  
       }
-      
-      // Loop the known tabentries and see if they where set
-      // If set, they contain attributes      
+
+      // Check if the currently known tabs all containg attributes
+      // so we don't end up with empty tabs       
+      $tabList = $this->checkEmptyTabs($list);      
+      return $tabList;
+    }
+
+    /**
+     * Remove tabs without attribs from the tablist
+     * @param array $list The list of tabnames
+     * @return array The list of tabnames without the empty tabs.
+     *
+     */
+    function checkEmptyTabs($list)
+    {
+      $tabList = array();
+
       foreach ($list AS $tabEntry)
       {
-      	if (isset($tabAttribSet[$tabEntry]))
-      	{
-      	  $tabList[] = $tabEntry;	
-      	}
-      	else
-      	{
-      	  atkdebug("Removing TAB ".$tabEntry." because it had no attributes assigned");
-      	}
+        if (isset($this->m_filledTabs[$tabEntry]))
+        {
+          $tabList[] = $tabEntry;
+        }
+        else
+        {
+          atkdebug("Removing TAB ".$tabEntry." because it had no attributes assigned");
+        }
       }
-      
+
       return $tabList;
     }
 
