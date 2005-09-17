@@ -83,7 +83,7 @@
         $data = &$this->getDebuggerData();
         global $g_debug_msg;
         $data["statements"][] = array("statement"=>$txt, "trace"=>atk_get_trace());
-        $txt =" [".$this->consoleLink("trace", "statement", array("stmt_id"=>count($data["statements"])-1), true)."]".$txt;
+        $txt = str_replace("MB]", "MB] [".$this->consoleLink("trace", "statement", array("stmt_id"=>count($data["statements"])-1), true)."]", $txt);
         $g_debug_msg[] = $txt;
         return true;
       }
