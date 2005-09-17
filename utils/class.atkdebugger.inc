@@ -9,7 +9,7 @@
    * @package atk
    * @subpackage utils
    *
-   * @copyright (c)2005 Ivo Jansch   
+   * @copyright (c)2005 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -24,56 +24,92 @@
    * @package atk
    * @subpackage utils
    *
-   */  
+   */
   class atkDebugger
-  {        
+  {
     var $m_isconsole = true;
-    
-    function &getInstance($isconsole=false)
+
+    function &getInstance()
     {
       static $s_instance = NULL;
       if ($s_instance==NULL)
       {
-        $s_instance = new atkDebugger($isconsole);
+        global $g_sessionManager;
+        if (is_object($g_sessionManager)) // don't bother to create if session has not yet been initialised
+        {
+          $s_instance = new atkDebugger();
+        }
       }
       return $s_instance;
     }
-    
-    function atkDebugger($isconsole=false)
+
+    function atkDebugger()
     {
-      $this->m_isconsole = $isconsole;
-      if (!$isconsole)
-      {     
-        $link = $this->consoleLink('Open console', '', array(), true);
-        atkdebug($res."Debugger initialized. [".$link."]");
-        $data = &$this->getDebuggerData();
-        $data = array(); // start clean        
-      }
-      else
+      $this->m_isconsole = (strpos($_SERVER['SCRIPT_NAME'], "debugger.php")!==false);
+      if (!$this->m_isconsole)
       {
-        atkdebug("Console started");
+        $link = $this->consoleLink('Open console', '', array(), true);
+        $data = &$this->getDebuggerData();
+        $data = array(); // start clean
+        global $g_debug_msg;
+        $g_debug_msg[] = atkGetTimingInfo().$res."Debugger initialized. [".$link."]";
       }
     }
-    
+
+    function addStatement($txt)
+    {
+      $instance = &atkDebugger::getInstance();
+      if (is_object($instance))
+      {
+        return $instance->_addStatement($txt);
+      }
+      return false;
+    }
+
     function addQuery($query)
-    {      
+    {
+      $instance = &atkDebugger::getInstance();
+      if (is_object($instance))
+      {
+        return $instance->_addQuery($query);
+      }
+      return false;
+    }
+
+    function _addStatement($txt)
+    {
+      if (!$this->m_isconsole)
+      {
+        $data = &$this->getDebuggerData();
+        global $g_debug_msg;
+        $data["statements"][] = array("statement"=>$txt, "trace"=>atk_get_trace());
+        $txt.=" [".$this->consoleLink("trace", "statement", array("stmt_id"=>count($data["statements"])-1), true)."]";
+        $g_debug_msg[] = $txt;
+        return true;
+      }
+      return false;
+    }
+
+    function _addQuery($query)
+    {
       if (!$this->m_isconsole) // don't add queries executed by the console itself
       {
         $data = &$this->getDebuggerData();
-        
+
         atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])), true)."] ".$query);
-                
+
         $data["queries"][] = array("query"=>$query, "trace"=>atk_get_trace());
+        return true;
       }
-      
+      return false;
     }
-    
+
     function consoleLink($text, $action="", $params=array(), $popup=false)
     {
       static $s_first = true;
       $res = "";
       $url = atkconfig("atkroot").'debugger.php?action='.$action.$this->urlParams($params);
-      
+
       if ($popup)
       {
         if ($s_first)
@@ -89,11 +125,11 @@
       }
       return $res;
     }
-    
+
     function urlParams($params)
     {
       if (count($params))
-      {          
+      {
         foreach($params as $key=>$value)
         {
           $res.='&'.$key."=".rawurlencode($value);
@@ -102,39 +138,44 @@
       }
       return "";
     }
-    
+
     function renderConsole()
     {
       atkimport("atk.ui.atkpage");
       $page = &atkPage::getInstance();
       atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();      
+      $theme = &atkTheme::getInstance();
       $page->register_style($theme->stylePath("debugger.css"));
       $data = &$this->getDebuggerData();
       $res = $this->consoleControls().'<br/><br/>';
       switch ($_REQUEST["action"])
       {
         case "query": $res.= $this->queryDetails($data["queries"], $_REQUEST["query_id"]); break;
-        default: $res.= $this->renderQueryList($data["queries"]);
+        case "statement": $res.= $this->statementDetails($data["statements"], $_REQUEST["stmt_id"]); break;
+        default:
+        {
+          $res.= $this->renderQueryList($data["queries"]);
+          $res.= $this->renderStatementList($data["statements"]);
+        }
       }
       $page->addContent($res);
       return $page->render('Console');
     }
-    
+
     function consoleControls()
     {
       return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index').' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
-    
+
     function queryDetails($queries, $id)
     {
-      $output = "<h1>Query</h1>";      
+      $output = "<h1>Query</h1>";
       $query = $queries[$id]["query"];
       $output.= $this->highlightQuery($query);
       $db = &atkGetDb();
       if (strtolower(substr(trim($query), 0, 6))=="select")
       {
-        $output.= '<h1>Resultset</h1>';              
+        $output.= '<h1>Resultset</h1>';
         $result = $db->getrows($query);
         if (count($result))
         {
@@ -143,23 +184,33 @@
         else
         {
           $output.= "Query returned no rows";
-        }      
+        }
         $output.= '<h1>Explain plan</h1>';
         $result = $db->getrows("EXPLAIN ".$query);
         $output.=$this->arrToTable($result);
-        if ($queries[$id]["trace"]!="")
-        {
-          $output.= '<h1>Backtrace</h1>';
-          $output.=$queries[$id]["trace"];
-        }
-      }      
-      else
+      }
+      if ($queries[$id]["trace"]!="")
       {
-        echo "jammer: ".strtolower(substr($query, 0, 6));
-      }       
+        $output.= '<h1>Backtrace</h1>';
+        $output.=$queries[$id]["trace"];
+      }
       return $output;
     }
-    
+
+    function statementDetails($stmts, $id)
+    {
+      $output = "<h1>Debug Statement</h1>";
+      $stmt = $stmts[$id]["statement"];
+      $output.= "<b>".$stmt."</b>";
+
+      if ($stmts[$id]["trace"]!="")
+      {
+        $output.= '<h1>Backtrace</h1>';
+        $output.=$stmts[$id]["trace"];
+      }
+      return $output;
+    }
+
     function arrToTable($result, $full=true, $id="")
     {
       if (count($result))
@@ -184,7 +235,7 @@
       }
       return "";
     }
-    
+
     function highlightQuery($query)
     {
       $query = strtolower($query);
@@ -201,41 +252,63 @@
       $query = str_replace('delete from', '<b>DELETE FROM</b>', $query);
       return '<span class="query">'.nl2br($query).'</span>';
     }
-    
-    
+
+
     function &getDebuggerData()
     {
       global $g_sessionManager;
       if (is_object($g_sessionManager))
       {
-        $session = &$g_sessionManager->getSession(); 
+        $session = &$g_sessionManager->getSession();
         return $session["debugger"];
-      }      
+      }
       $data = array();
       return $data;
     }
-    
+
     function renderQueryList($queries)
     {
       $output = 'Number of queries performed: '.count($queries);
-      $output.= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Query</th></tr>';
-      
-      for($i=0, $_i=count($queries); $i<$_i; $i++)
+      if (count($queries))
       {
-        $query = $queries[$i]["query"];
-        if ($query=="")
+        $output.= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Query</th></tr>';
+
+        for($i=0, $_i=count($queries); $i<$_i; $i++)
         {
-          $detaillink = 'EMPTY QUERY!';
+          $query = $queries[$i]["query"];
+          if ($query=="")
+          {
+            $detaillink = 'EMPTY QUERY!';
+          }
+          else
+          {
+            $detaillink = $this->consoleLink("details", "query", array("query_id"=>$i));
+          }
+          $output.= '<tr><td valign="top">'.($i+1).'</td><td>'.$detaillink.'</td><td>'.$this->highlightQuery($query).'</td></tr>';
         }
-        else        
-        {
-          $detaillink = $this->consoleLink("details", "query", array("query_id"=>$i));
-        }
-        $output.= '<tr><td valign="top">'.($i+1).'</td><td>'.$detaillink.'</td><td>'.$this->highlightQuery($query).'</td></tr>';
+
+        $output.= '</table>';
+        return $output;
       }
-      
-      $output.= '</table>';
-      return $output;
+    }
+
+    function renderStatementList($statements)
+    {
+      $output = 'Number of debug statements: '.count($statements);
+      if (count($statements))
+      {
+        $output.= '<table border="1" width="100%"><tr><th>#</th><th>Details</th><th>Statement</th></tr>';
+
+        for($i=0, $_i=count($statements); $i<$_i; $i++)
+        {
+
+          $detaillink = $this->consoleLink("details", "statement", array("stmt_id"=>$i));
+          $output.= '<tr><td valign="top">'.($i+1).'</td><td>'.$detaillink.'</td><td>'.$statements[$i]["statement"].'</td></tr>';
+        }
+
+        $output.= '</table>';
+        return $output;
+      }
     }
   }
 

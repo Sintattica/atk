@@ -74,7 +74,8 @@ Changes in ATK 5.3
   a function called config_<configkey>() or config_<modname>_<configkey>() for
   modules. [Ivo]
 + Added debug console for debugging queries. Shows explain plan, results and
-  backtrace for each query performed on a page (mysql only currently). [Ivo]
+  backtrace for each query performed on a page (mysql only currently). 
+  If debuglevel is 2, a stacktrace of each debug statement is shown. [Ivo]
 + Debug output now includes memory usage information and elapsed time between
   two atkdebug calls. [Ivo]
 + Added setWidth() and getWidth() function to atkListAttribute to set the

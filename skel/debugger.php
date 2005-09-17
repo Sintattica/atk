@@ -34,7 +34,7 @@
   atksecure();
 
   atkimport("atk.utils.atkdebugger");
-  $debugger = &atkDebugger::getInstance(true);    
+  $debugger = &atkDebugger::getInstance();    
 
   $output = &atkOutput::getInstance();
 
