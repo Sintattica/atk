@@ -93,6 +93,8 @@ Changes in ATK 5.3
 * Fixed atkonetoonerelation::load() wich didn't set the
    destination filter when using master mode. [Martin]
 * Fixed possible sql injection in db authentication. [Ivo]
+* {atktext} Smarty plugin now assumes 'module.text' instead of 'node.text' for
+  single dotstrings. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
 * Added include/exclude lists as param for addmlcondition(). [Sandy]

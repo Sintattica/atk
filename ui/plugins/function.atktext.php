@@ -15,19 +15,19 @@
  function smarty_function_atktext($params, &$smarty)
  {
    switch(substr_count($params["id"], "."))
-   {     
-     case 1: 
+   {
+     case 1:
      {
-       list($node, $id) = explode(".", $params["id"]);
-       return atktext($id, $params["module"], $node);
+       list($module, $id) = explode(".", $params["id"]);
+       return atktext($id, $module, $params["node"]);
      }
      case 2:
      {
-       list($module, $node, $id) = explode(".", $params["id"]);       
+       list($module, $node, $id) = explode(".", $params["id"]);
        return atktext($id, $module, $node);
      }
      default: return atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
-   }     
+   }
  }
 
 ?>
