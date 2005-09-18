@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    *
    * @version $Revision$
    * $Id$
-   */     
+   */
 
   /**
    * Some defines
@@ -41,14 +41,12 @@
    * @subpackage menu
    */
   class atkMenu
-  {   
-    var $menuclass;
-
-    function getMenu()
+  {
+    function &getMenu()
     {
       $menuclass = &atknew("atk.menu."."atk".atkconfig("menu_layout")."menu");
       return $menuclass;
     }
   }
-	
+
 ?>

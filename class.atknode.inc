@@ -15,120 +15,120 @@
    * @version $Revision$
    * $Id$
    */
- 
-  /** 
+
+  /**
    * some includes
    */
   atkimport("atk.attributes.atkattribute");
-  
+
   /**
    * Define some flags for nodes. Use the constructor of the atkNode
    * class to set the flags. (concatenate multiple flags with '|')
    */
-  
+
   /**
    * No new records may be added
    */
   define("NF_NO_ADD",                  1);
-  
+
   /**
    * Records may not be edited
    */
   define("NF_NO_EDIT",                 2);
-  
+
   /**
    * Records may not be deleted
    */
   define("NF_NO_DELETE",               4);
-  
+
   /**
    * Immediately after you add a new record,
    * you get the editpage for that record
    */
   define("NF_EDITAFTERADD",            8);
-                                           
+
   /**
    * Reocrds may not be searched
    */
   define("NF_NO_SEARCH",              16);
-  
+
   /**
    * Ignore addFilter filters
    */
   define("NF_NO_FILTER",              32);
-  
+
   /**
    * Doesn't show an add form on the admin page
    * but a link to the form
    */
   define("NF_ADD_LINK",               64);
-  
+
   /**
    * Records may not be viewed
    */
   define("NF_NO_VIEW",               128);
-  
+
   /**
    * Records / trees may be copied
    */
   define("NF_COPY",                  256);
-  
+
   /**
-   * If this flag is set and only one record is 
+   * If this flag is set and only one record is
    * present on a selectpage, atk automagically
    * selects it and moves on to the target
    */
   define("NF_AUTOSELECT",            512);
-                                           
+
   /**
    * If set, atk stores the old values of
    * a record as ["atkold"] in the $rec that
    * gets passed to the postUpdate
    */
   define("NF_TRACK_CHANGES",        1024);
-                                           
+
   /**
    * Quick way to disable accessright checking
    * for an entire node. (Everybody may access this node)
    */
   define("NF_NO_SECURITY",          2048);
-                                           
+
   /**
    * Extended search feature is turned off
    */
   define("NF_NO_EXTENDED_SEARCH",   4096);
-  
+
   /**
    * Multi-selection of records is turned on
    */
   define("NF_MULTI_RECORD_ACTIONS", 8192);
-  
+
   /**
    * Multi-priority-selection of records is turned on
    */
   define("NF_MRPA",                16384);
-  
+
   /**
    * Add locking support to node, if one user is editing a record,
    * no one else may edit it.
    */
   define("NF_LOCK",                32768);
-  
+
   /**
    * Multi-language support
    */
   define("NF_ML",                  65536);
-  
+
   /**
    * Quick way to ensable the csv import feature
    */
   define("NF_IMPORT",             131072);
-  
+
   /**
-   * Add CSV export ability to the node. 
+   * Add CSV export ability to the node.
    */
   define("NF_EXPORT",         1073741824);
-  
+
   /**
    * Disable csv import feature
    * @deprecated since ATK 5.2
@@ -138,43 +138,43 @@
   /**
    * Makes a node cache it's recordlist
    */
-  define("NF_CACHE_RECORDLIST",   262144);    
-  
+  define("NF_CACHE_RECORDLIST",   262144);
+
   /**
    * Specific node flag 1
    */
   define("NF_SPECIFIC_1",       33554432);
-  
+
   /**
    * Specific node flag 2
    */
   define("NF_SPECIFIC_2",       67108864);
-  
+
   /**
    * Specific node flag 3
    */
   define("NF_SPECIFIC_3",      134217728);
-  
+
   /**
    * Specific node flag 4
    */
   define("NF_SPECIFIC_4",      268435456);
-  
+
   /**
    * Specific node flag 5
    */
   define("NF_SPECIFIC_5",      536870912);
-  
+
   /**
    * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
    */
   define("NF_MRA",           NF_MULTI_RECORD_ACTIONS);
-  
+
   /**
    * Alias for NF_ML flag (typed out)
    */
   define("NF_MULTILANGUAGE", NF_ML);
-  
+
   /**
    * Aggregate flag to quickly create readonly nodes
    */
@@ -187,29 +187,29 @@
    * This is done however, so the flags can be used as a mask in the setFeedback
    * function.
    */
-  
+
   /**
    * The action is cancelled
-   * 
+   *
    * action status flag
    */
   define("ACTION_CANCELLED", 1);
-  
+
   /**
    * The action failed to accomplish it's goal
-   * 
+   *
    * action status flag
    */
   define("ACTION_FAILED", 2);
-  
+
   /**
    * The action is a success
-   * 
+   *
    * action status flag
    */
   define("ACTION_SUCCESS", 4);
- 
-  
+
+
   /**
    * The atkNode class represents a piece of information that is part of an
    * application. This class provides standard functionality for adding,
@@ -575,19 +575,12 @@
     var $m_defaultlanguage = "";
 
     /**
-     * Cached ui object
-     * @access protected
-     * @var atkUI
-     */
-    var $m_atkUI = NULL;
-
-    /**
      * Number to use with numbering
      * @access protected
      * @var mixed
      */
     var $m_numbering = null;
-    
+
     /**
      * Descriptor template.
      * @var String
@@ -607,10 +600,10 @@
      * @param int $flags Bitmask of node flags (NF_*).
      */
     function atkNode($type, $flags=0)
-    {      
+    {
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
-      $this->m_flags = $flags;     
+      $this->m_flags = $flags;
     }
 
     /**
@@ -762,7 +755,7 @@
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
-      
+
       return $attribute;
     }
 
@@ -818,8 +811,8 @@
     {
       return (($this->m_flags & $flag) == $flag);
     }
-    
-    /** 
+
+    /**
      * Add a flag to the node.
      * @param int $flag The flag to add.
      */
@@ -827,10 +820,10 @@
     {
       $this->m_flags |= $flag;
     }
-    
+
     /**
      * Removes a flag from the node.
-     *     
+     *
      * @param int $flag The flag to remove from the attribute
      */
     function removeFlag($flag)
@@ -919,20 +912,20 @@
      *                  a string containing the name of the connection to use.
      */
     function setTable($tablename,$seq="",$db=NULL)
-    {      
+    {
       $this->m_table      = $tablename;
       if ($seq=="") $seq = $tablename;
       $this->m_seq        = $seq;
       $this->m_db = $db;
     }
-    
+
     /**
      * Get the database connection for this node.
      * @return atkDb Database connection instance
      */
     function &getDb()
     {
-      if ($this->m_db == NULL) 
+      if ($this->m_db == NULL)
       {
         return atkGetDb();
       }
@@ -940,11 +933,11 @@
       {
         return $this->m_db;
       }
-      else 
+      else
       {
         // must be a named connection
-        return atkGetDb($this->m_db);        
-      } 
+        return atkGetDb($this->m_db);
+      }
     }
 
     /**
@@ -986,7 +979,7 @@
     {
       $list = &$this->m_tabList[$action];
       $tabAttribSet = array();
-      $tabCode = "";      
+      $tabCode = "";
 
       if (!is_array($list))
       {
@@ -1005,20 +998,20 @@
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
-          if (!isset($this->m_filled[$tabCode])) 
+          if (!isset($this->m_filled[$tabCode]))
           {
             $this->m_filledTabs[$tabCode] = true;
-          }  
+          }
         }
         else
         {
           atkdebug("atknode::getTabs() Warning: $attribname is not an object!?");
-        }  
+        }
       }
 
       // Check if the currently known tabs all containg attributes
-      // so we don't end up with empty tabs       
-      $tabList = $this->checkEmptyTabs($list);      
+      // so we don't end up with empty tabs
+      $tabList = $this->checkEmptyTabs($list);
       return $tabList;
     }
 
@@ -1147,15 +1140,9 @@
      */
     function &getUi()
     {
-      if (!is_object($this->m_atkUI))
-      {
-        $this->m_atkUI = &atknew("atk.ui.atkui");
-        if (is_object($this->m_atkUI))
-        {
-          $this->m_atkUI->setNode($this);
-        }
-      }
-      return $this->m_atkUI;
+      atkimport("atk.ui.atkui");
+      $ui = &atkUI::getInstance();
+      return $ui;
     }
 
     /**
@@ -1172,12 +1159,12 @@
     {
       global $g_sessionManager;
       $ui = &$this->getUi();
-      
+
       $res = "";
-      
+
       $descriptortrace = $g_sessionManager->descriptorTrace();
       $nomodule=false;
-      if (!empty($descriptortrace)) 
+      if (!empty($descriptortrace))
       {
         $nomodule=true;
         $descrtrace = "";
@@ -1197,7 +1184,7 @@
         $g_sessionManager->pageVar("descriptor",$descr);
         if ($descr!="") $res= $res."&nbsp; [".$descr."]";
       }
-      
+
       return $res;
     }
 
@@ -1774,7 +1761,7 @@
           $modname = $g_modifiers[$this->atknodetype()][$i];
           $mod = &getModule($modname);
           $modifiername = $this->m_type."_modifier";
-  
+
           if (method_exists($mod,$modifiername))
           {
             atkdebug("Applying modifier from module $modname to ".$this->m_type);
@@ -1785,16 +1772,16 @@
             atkdebug("Modifier function for $modifiername not found!");
           }
         }
-      
+
         // See if there are modules active that modify this module.node..
         // for example, modules modifying 'finance.bill'
         for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
         {
           $modname = $g_modifiers[$this->atknodetype()][$i];
-  
+
           $mod = &getModule($modname);
           $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
-  
+
           if (method_exists($mod,$modifiername))
           {
             atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
@@ -1985,7 +1972,7 @@
     function &getPage()
     {
       atkimport("atk.ui.atkpage");
-      $page = &atkPage::getInstance();      
+      $page = &atkPage::getInstance();
       return $page;
     }
 
@@ -2089,14 +2076,14 @@
      * @param array $vars The request variables that were posted from a form.
      */
     function modifyRecord(&$record, $vars)
-    {      
+    {
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
     }
-    
+
     /**
      * Returns the descriptor template for this node.
      * @return String The descriptor Template
@@ -2104,8 +2091,8 @@
     function getDescriptorTemplate()
     {
       return $this->m_descTemplate;
-    }     
-    
+    }
+
     /**
      * Sets the descriptor template for this node.
      * @param String $template The descriptor template.
@@ -2114,7 +2101,7 @@
     {
       $this->m_descTemplate = $template;
     }
-    
+
     /**
      * Retrieve the list of attributes that are used in the descriptor
      * definition.
@@ -2438,16 +2425,16 @@
           if (hasFlag($loadmode, ADDTOQUERY)) $loadlist["query"][]=$attribname;
         }
       }
-      
+
       for ($i = 0, $_i = count($loadlist["query"]); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
         $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
       }
-      
+
       /* there may be search criteria, which we also filter */
-        
-      
+
+
       if (isset($this->m_postvars['atksearch']) && is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch'])>0)
       {
         $searchArray = $this->m_postvars['atksearch'];
@@ -2481,7 +2468,7 @@
       }
 
       $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
-      
+
       $querystring = $query->buildCount();
       $db = &$this->getDb();
       $result = $db->getrows($querystring);
@@ -2560,12 +2547,12 @@
 
       atkimport("atk.utils.atkmlsplitter");
       $mltool = &atkmlsplitter::getInstance();
-      
+
       $query->addTable($this->m_table);
       $query->addCondition($selector);
 
       $query->m_searchmethod = @$this->m_postvars['atksearchmethod'];
-            
+
       // First we check if we are about to search and set a few things
       // if we are
       if (!atkReadOptimizer())
@@ -2614,12 +2601,12 @@
           }
           if (hasFlag($loadmode, ADDTOQUERY))
           {
-            $querylist[]=$attribname;            
+            $querylist[]=$attribname;
           }
         }
       }
-      
-      
+
+
       $recordset = array();
       // First load PRELOAD attribs
       for ($j = 0, $_j = count($preloadlist); $j < $_j; $j++)
@@ -2631,25 +2618,25 @@
         // todo, dirty hack, if preload returns x records, we treat them as 1 record now.
         $recordset[0][$preloadlist[$j]] = $preloadedrecs;
       }
-      
+
       // Add attributes to query
       for ($i=0, $_i=count($querylist); $i<$_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$querylist[$i]];
         $p_attrib->addToQuery($query,$this->m_table,"",(isset($recordset[0])?$recordset[0]:array()),1,$mode); // start at level 1
       }
-      
+
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
         if (is_array($searchArray) && count($searchArray)>0)
-        {        
+        {
           while (list($key,$value) = each($searchArray))
           {
             if ($value!="")
             {
               $p_attrib = &$this->m_attribList[$key];
-              
+
               if (is_object($p_attrib))
               {
                 if (is_array($value) && isset($value[$key]))
@@ -2692,7 +2679,7 @@
       else if (!empty($limit))
       {
         $query->setLimit(0, $limit);
-      }                 
+      }
 
       $querystring = $query->buildSelect();
 
@@ -2701,7 +2688,7 @@
 
       if($mode=="copy" && $this->hasFlag(NF_ML)) // do we have mlrecords?
       {
-        // When copying there could be more than one multilanguage record in the dbrecords array. 
+        // When copying there could be more than one multilanguage record in the dbrecords array.
         // So we split this before sending it to the multilanguage splitter.
         // This only happens in case of an atkonetomanyrelation.
         $result = array();
@@ -2726,7 +2713,7 @@
         $dbrecords = array();
         for ($i=0;$i<count($result);$i++)
         {
-          $mltool->combineMlRecordSet($this, $result[$i],$query); 
+          $mltool->combineMlRecordSet($this, $result[$i],$query);
           $dbrecords[$i] = $result[$i][0];
         }
       }
@@ -2748,7 +2735,7 @@
           if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
           {
             $therecord[$attribname] = $recordcopy[$attribname];
-          } 
+          }
           else if ($p_attrib && method_exists($p_attrib, "db2value"))
           {
             $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
@@ -2775,7 +2762,7 @@
         for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
         {
           $p_attrib = &$this->m_attribList[$postloadlist[$j]];
-          
+
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
         }
       }
@@ -2835,7 +2822,7 @@
         if ($loadmode && hasFlag($loadmode, ADDTOQUERY))
         {
           if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
-          
+
           $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
         }
 
@@ -2863,7 +2850,7 @@
 
       $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
 
-      $query->addTable($this->m_table);            
+      $query->addTable($this->m_table);
 
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -2876,9 +2863,9 @@
           if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
         }
       }
-      
+
       if (!$this->_storeAttributes($storelist["pre"], $record, $mode)) return false;
-      
+
       for ($i = 0, $_i = count($storelist["query"]); $i < $_i; $i++)
       {
         $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
@@ -2907,7 +2894,7 @@
         $mltool->updateMlRecords($this, $record,"add");
       }
 
-      
+
       if (!$this->_storeAttributes($storelist["post"], $record, $mode))
       {
         atkdebug("_storeAttributes failed..");
@@ -3485,7 +3472,7 @@
      *                 string if not.
      */
     function validateFilter($filter)
-    {      
+    {
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);

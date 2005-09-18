@@ -96,6 +96,7 @@ Changes in ATK 5.3
 * Fixed possible sql injection in db authentication. [Ivo]
 * {atktext} Smarty plugin now assumes 'module.text' instead of 'node.text' for
   single dotstrings. [Ivo]
+* atkUI is now a singleton and no longer has an m_node variable. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
 * Added include/exclude lists as param for addmlcondition(). [Sandy]

@@ -3,9 +3,9 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
-   * 
+   *
    * @package atk
    * @deprecated Since version 5.0. Use classes from the ui subpackage instead.
    *
@@ -16,13 +16,13 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Global debug message array
    * @global array $g_debug_msg
    */
   $g_debug_msg = array();
-  
+
   /**
    * Global error message array
    * @global array $g_error_msg
@@ -30,7 +30,7 @@
   $g_error_msg = array();
 
   /**
-   * This class generates all output from atk. It can draw tables, 
+   * This class generates all output from atk. It can draw tables,
    * rows, cells, boxes etc.
    *
    * @author Ivo Jansch <ivo@achievo.org>
@@ -38,12 +38,12 @@
    * @deprecated Since version 5.0. Use classes from the ui subpackage instead.
    */
   class layout
-  {    
-    
+  {
+
     var $m_saved = "";
 
-    var $m_submitscripts = array();        
-    
+    var $m_submitscripts = array();
+
     var $m_atkui = NULL;
     var $m_atkoutput = NULL;
 
@@ -59,27 +59,27 @@
      * Constructor
      */
     function layout()
-    {          
-      $this->m_atkoutput = &atkOutput::getInstance();      
-      //$this->m_atkui = &atknew("atk.ui.atkui");
+    {
+      $this->m_atkoutput = &atkOutput::getInstance();
     }
-    
+
     function &getInstance()
     {
       atkdebug("obsolete use of layout class!");
       static $s_instance = NULL;
       if ($s_instance == NULL)
       {
-        $s_instance = new layout();        
+        $s_instance = new layout();
       }
       return $s_instance;
     }
-    
+
     function constructUI()
     {
       if ($this->m_atkui==NULL)
       {
-        $this->m_atkui = &atknew("atk.ui.atkui");
+        atkimport("atk.ui.atkui");
+        $this->m_atkui = &atkUI::getInstance();
       }
     }
 
@@ -108,8 +108,8 @@
         if(!isset($g_theme["Name"])||$g_theme["Name"]=="") $g_theme["Name"] = atkconfig("defaulttheme");
         if($g_theme["Name"]=="") $g_theme["Name"]="default";
         $this->initTheme();
-        $this->import_layout();             
-        
+        $this->import_layout();
+
         // Also load stylesheet, for people still using initGui will not have an addStyle
         // call in their code.
         $page = &$this->getPage();
@@ -128,9 +128,9 @@
     function import_layout()
     {
       atkdebug("Obsolete use of layout::import_layout()!");
-      
-      global $g_theme;      
-      
+
+      global $g_theme;
+
       // stylesheets
       $page = &$this->getPage();
       if (is_object($page))
@@ -179,7 +179,7 @@
       atkdebug("Obsolete use of layout::outputFlush()!");
       $this->m_atkoutput->outputFlush($nocache, $lastmodificationstamp);
     }
-  
+
     /**
      * Generate a complete page..
      */
@@ -187,7 +187,7 @@
     {
       atkdebug("Obsolete use of layout::page()!");
       $page = &$this->getPage();
-      $this->output($page->render($title, $this->m_atkoutput->m_content));      
+      $this->output($page->render($title, $this->m_atkoutput->m_content));
     }
 
     /**
@@ -282,13 +282,13 @@
         $this->m_wrotehead = true;
       }
     }
-    
+
     // Dummy, creates an atkPage if one does not exist (for backward compatibility).
     function &getPage()
     {
-      $page = &atkPage::getInstance();      
+      $page = &atkPage::getInstance();
       return $page;
-    }  
+    }
 
     /**
      * Return a HTML header
@@ -339,9 +339,9 @@
       $this->m_atkoutput->m_content = "";
       //atkimport("atk.ui.atksmarty");
       //$smarty = &atkSmarty::getInstance();
-      //$smarty->assign("title", $title);      
+      //$smarty->assign("title", $title);
       $this->m_lasttitle = $title;
-      
+
     }
 
     function ret_tpl($tplname, $vars="", $fallbacktpl="")
@@ -574,7 +574,7 @@
      */
     function td_datatitle($contents="", $extraprops="")
     {
-      atkdebug("Obsolete use of layout::td_datatitle()!");  
+      atkdebug("Obsolete use of layout::td_datatitle()!");
       $this->output('<td class="tableheader" '.$extraprops.'>');
       if ($contents=="")
       {
@@ -653,7 +653,7 @@
             {
               $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
             }
-            else 
+            else
             {
               $error_tab = "";
             }
@@ -711,11 +711,11 @@
           /* does the field have a label? */
           if ($field["label"] !== NULL)
           {
-            if ($field["label"] == "") 
+            if ($field["label"] == "")
               $form .= $this->ret_td('&nbsp;');
-            elseif ($field["error"]) 
+            elseif ($field["error"])
               $form .= $this->ret_td('<span class="error">'.$field["label"].': </span>', 'valign="top"');
-            else 
+            else
               $form .= $this->ret_td($field["label"].': ','valign="top"');
           }
 
@@ -732,7 +732,7 @@
           if ($node->m_attribList[$field['name']]->m_ownerInstance->m_module) $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;
           else $module = "atk";
           $ttip = atktext("txt_".$node->m_type."_".$field["name"]."_tooltip",$module,"","","",true);
-          
+
           if ($ttip != "")
           {
             $editsrc.= '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\')" onMouseOver="javascript:window.status=\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">&nbsp;';
@@ -763,7 +763,7 @@
     }
 
     function theme_style($stylesheetname)
-    {        
+    {
        atkdebug("Obsolete use of layout::theme_style()!");
       if (file_exists($this->m_tpldir."styles/$stylesheetname"))
       {
@@ -777,7 +777,7 @@
     }
 
     function initTheme()
-    {      
+    {
       atkdebug("Obsolete use of layout::initTheme()!");
       atkimport("atk.ui.atktheme");
       $theme = &atkTheme::getInstance();
