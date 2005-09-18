@@ -14,6 +14,7 @@
   */
  function smarty_function_atktext($params, &$smarty)
  {
+   if (!isset($params["id"])) $params["id"] = $params[0];
    switch(substr_count($params["id"], "."))
    {
      case 1:

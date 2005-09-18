@@ -81,8 +81,8 @@ Changes in ATK 5.3
 + Added setWidth() and getWidth() function to atkListAttribute to set the
   width of dropdown list in pixels. [Boy]
 * Added Query Base class import for atkoci8query. [Tjeerd,Martin]
-* Fixed a bug in the paging feature of an o2m relation. A selectDb always returned
-  a maximum records of config_recordsperpage. [Martin] 
+* Fixed a bug in the paging feature of an o2m relation. A selectDb always 
+  returned a maximum records of config_recordsperpage. [Martin] 
 * Layout improvements on the o2m embedded add form. [Martin]
 * Fixed menuitem translations for the outlook and plain menu. [Martin]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup 
@@ -96,6 +96,7 @@ Changes in ATK 5.3
 * Fixed possible sql injection in db authentication. [Ivo]
 * {atktext} Smarty plugin now assumes 'module.text' instead of 'node.text' for
   single dotstrings. [Ivo]
+* {atktext} now supports nameless param: {atktext module.text}. [Ivo]
 * atkUI is now a singleton and no longer has an m_node variable. [Ivo]
 * atkmlsplitter::addmlcondition() is now recursive to support relations
   with multiple mlnodes. [Martin]
