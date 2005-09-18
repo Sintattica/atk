@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * This file is the skeleton menu loader, which you can copy to your
@@ -26,25 +26,18 @@
    * @internal includes
    */
   $config_atkroot = "./";
-  include_once("atk.inc");    
+  include_once("atk.inc");
 
   atksession();
   atksecure();
-  
-  $output = &atkOutput::getInstance();
-  $page = &atknew("atk.ui.atkpage");
-  atkimport("atk.ui.atktheme");
-  $theme = &atkTheme::getInstance();  
-  $ui = &atknew("atk.ui.atkui");
-
 
   /* general menu stuff */
-  include_once($config_atkroot."atk/menu/general.inc");  
+  include_once($config_atkroot."atk/menu/general.inc");
 
   /* load menu layout */
   atkimport("atk.menu.atkmenu");
   $menu = &atkMenu::getMenu();
-  
+
   $menu->render();
 
 ?>
