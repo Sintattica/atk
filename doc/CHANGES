@@ -7,9 +7,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changes in ATK 5.3
 ------------------
 + Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
-+ Added support for default values to the atkMetaNode (only numerics
-  and strings at this time and only on PostgreSQL and Oracle). [Peter]
-+ Added relation support to the atkMetaPolicy (supports one-to-one,
++ Added support for default values to the atkMetaNode (only numerics and 
+  strings at this time and only on PostgreSQL and Oracle). [Peter]
++ Added relation support to the atkMetaPolicy (supports one-to-one, 
   one-to-many and many-to-one relations). [Peter]
 + Added get/setDescriptorTemplate methods to atkNode and atkRelation. [Peter]
 + Added get/setDestinationFilter methods to atkRelation. [Peter]
@@ -18,10 +18,10 @@ Changes in ATK 5.3
   atkMetaPolicy relation support. [Peter]
 + Added atkMetaTools class which contains methods to singularize or pluralize
   English strings (e.g. dogs => dog, dog => dogs etc.). [Peter]
-+ Added AF_ONETOMANY_EMBED, this causes the add to be embedded
-  in the current node, instead of displaying it on a seperate screen. [Boy]
-+ Added $config_javascript_confirmation, setting this to true will
-  make ATK use javascript for the confirmation dialogue when deleting. [Boy]
++ Added AF_ONETOMANY_EMBED, this causes the add to be embedded in the current 
+  node, instead of displaying it on a seperate screen. [Boy]
++ Added $config_javascript_confirmation, setting this to true will make ATK 
+  use javascript for the confirmation dialogue when deleting. [Boy]
 + Added NF_CACHE_RECORDLIST which makes ATK cache all the recordlists. [Boy]
 + Added $format parameter to func_datetochar. [Ivo]
 + Added venderDateFormat method to abstraction layer for database specific
@@ -29,25 +29,25 @@ Changes in ATK 5.3
 + Added atkLiveTextPreview attribute to preview html content of atkAttributes
   and atkTextAttributes in realtime. [Ivo]
 + Made it possible to pass size to atkFileWriterAttribute. [Boy]
-+ Added function atk_in_array_recursive($needle, $haystack) which
-  is similar to php's in_array, only this one is recursive. [Dennis-Jan]
++ Added function atk_in_array_recursive($needle, $haystack) which is similar 
+  to php's in_array, only this one is recursive. [Dennis-Jan]
 + Made atkTimeAttribute work with a time string from the postvars. [Boy]
 + Added a $config_auth_userfk config option to configure the name of the
   foreign keys pointing to the usertable. [MartinL]
 + Added multilanguage multirecord search for atkMlAttribute. [Sandy]
-+ Modified Smarty so it can work with compiled template names that have
-  a name longer than what is valid for a filename. [Ivo]
++ Modified Smarty so it can work with compiled template names that have a name 
+  longer than what is valid for a filename. [Ivo]
 + Added addDynamicFunction to atkSmarty for easier registration of plugins
   that should not be cached. [Ivo]
 + Added multiple named db connections ability. Note that this requires a
   change in all config.inc.php files. See atk/skel/config.inc.php for
   examples. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
-+ Added support for preloading only certain parts of a module
-  using special module_preload.inc file. If this file exists it will be loaded
-  instead of module.inc and module.inc will only be loaded when a call to 
-  getModule(...) has been made. NOTE: this means modules are *not* loaded in 
-  the global space anymore! [Peter]
++ Added support for preloading only certain parts of a module using s 
+  module_preload.inc file. If this file exists it will be loaded instead of 
+  module.inc and module.inc will only be loaded once a call to getModule(...) 
+  has been made. NOTE: this means modules are *not* loaded in the global space
+  anymore! [Peter]
 + Added getNameSpace() to atkSessionManager. [Ivo]
 + Added ucfirst(string) to javascript/tools.js. [Boy] 
 + Added $config_list_obligatory_null_item to add a 'None' item to dropdowns 
@@ -62,8 +62,8 @@ Changes in ATK 5.3
 + Added extraparams in atkTreeNode for putting extra params in the url when 
   expanding/collapsing [Wouter]
 + Added $modulefallback param to atktext, use this for a single text call or 
-  set $config_language_module_fallbak to true for all calls to search
-  all the modules for a string. [Boy]
+  set $config_language_module_fallbak to true for all calls to search all the
+   modules for a string. [Boy]
 + Added $config_corporate_node_base and $config_corporate_module_base for 
   defining application wide custom baseclasses for nodes and modules. [Ivo]
 + Added atkConfig::get() for retrieving config values by section. Variables
@@ -79,38 +79,37 @@ Changes in ATK 5.3
 + Added setWidth() and getWidth() function to atkListAttribute to set the
   width of dropdown list in pixels. [Boy]
 + Added search support to atkAggregatedColumn. (bug #480, #512) [Yury]
-* Added Query Base class import for atkoci8query. [Tjeerd,Martin]
++ atkDateAttribute now accepts a day/month/year array as min/max. [Sandy]
++ Added ability to set the maximum amount of years for the year dropdown field
+  of the atkDateAttribute. [Boy]
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
   returned a maximum records of config_recordsperpage. [Martin] 
 * Layout improvements on the o2m embedded add form. [Martin]
 * Fixed menuitem translations for the outlook and plain menu. [Martin]
 * $this->menuitem() should now be used instead of menuitem() in module's 
   getMenuItems() call. [Ivo]
-* ATK now has a smaller memory footprint and less overhead, due to cleanup 
-  of includes. [Peter, Boy, Ivo]
+* ATK now has a smaller memory footprint and less overhead, due to cleanup of 
+  includes. [Peter, Boy, Ivo]
 * Changing the gui language through the url should now be done using ?atklng
   instead of ?lng. [Ivo]
 * Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
-* Fixed atkonetoonerelation::load() wich didn't set the
-   destination filter when using master mode. [Martin]
+* Fixed atkonetoonerelation::load() wich didn't set the destination filter 
+  when using master mode. [Martin]
 * Fixed possible sql injection in db authentication. [Ivo]
 * {atktext} Smarty plugin now assumes 'module.text' instead of 'node.text' for
   single dotstrings. [Ivo]
-* {atktext} now supports nameless param: {atktext module.text}. [Ivo]
+* Tpltag {atktext} now supports nameless param: {atktext module.text}. [Ivo]
 * atkUI is now a singleton and no longer has an m_node variable. [Ivo]
-* atkmlsplitter::addmlcondition() is now recursive to support relations
-  with multiple mlnodes. [Martin]
+* atkmlsplitter::addmlcondition() is now recursive to support relations with 
+  multiple mlnodes. [Martin]
 * Added include/exclude lists as param for addmlcondition(). [Sandy]
-* Improvements to atkImportHandler:
-  * Some functional decomposition applied.
-  * Updated documentation.
-  * Improved error handling, import documents are validated before 
-    they are added. 
-  * Fixed bug that would cause first field never to be properly recognized
-    at analysis time. [Boy]
-* Currency attribute no longer formats the number as a decimal as 
-  the numberattribute from which it extends does this anyway. [Boy]
+* Improved atkImportHandler's error handling, import documents are validated 
+  before they are added. 
+* Fixed bug in atkImportHandler that prevented first field from being properly 
+  recognized at analyse time. [Boy]
+* atkCurrencyAttribute no longer formats the number as a decimal as the 
+  atkNumberAttribute from which it extends does this anyway. [Boy]
 * Fixed extended searching on OneToOne relations. [Boy]
 * Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
 * Fixed numerous php notices. (ATK now runs better when error_reporting set to
@@ -120,8 +119,8 @@ Changes in ATK 5.3
 * atkListAttribute now gets item translations from the correct module. [Ivo]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
   check, causing the test to fail on Oracle installs. [Ivo]
-* Changed atkLanguage stringid fallback module_node_stringid is now 
-  the most important, followed by node_stringid and finally stringid. [Boy]
+* Changed atkLanguage stringid fallback module_node_stringid is now the most
+  important, followed by node_stringid and finally stringid. [Boy]
 * Fixed atkUIs title() function as it failed to translate the module name
   properly. [Boy]
 * Removed unnecessary br's from edit() of atkOneToManyRelation. [Boy]
@@ -133,9 +132,9 @@ Changes in ATK 5.3
   have any value. [Boy]
 * Function isSessionIdValid() now returns true for empty sessionid's. [Ivo]
 * Current record is now displayed in title of view page. [Alberto]
-* Type, table, flags, policy and handler can now be specified by setting
-  the instance vars ($type, $table, $flags, $metaPolicy, $metaHandler) on
-  the atkMetaNode subclass. [Peter]
+* Type, table, flags, policy and handler can now be specified by setting the
+  instance vars ($type, $table, $flags, $metaPolicy, $metaHandler) on the
+  atkMetaNode subclass. [Peter]
 * The atkMetaPolicy now knows the difference between time, date and datetime
   fields (required some changes in various atkDB classes). [Peter]
 * The atkNode::add method now returns the added attribute/relation. [Peter]
@@ -146,39 +145,32 @@ Changes in ATK 5.3
 * Moved javascript get_object() function from dhtml_tabs.js to separate
   tools.inc.php file. [Boy]
 * Made value part of addSearchFilter optional, as it was intended to be. [Boy]
-* Made tabbing more robust, tabs may not always exist for every action
-  so when the remembered tab isn't present, the default tab is selected. [Boy]
+* Made tabbing more robust, tabs may not always exist for every action so when
+  the remembered tab isn't present, the default tab is selected. [Boy]
 * Removed unnecessary cartesian product when searchcondition is missing in 
   an atkOneToManyRelation. (bug #495) [Yury]
 * Attrib tooltips are displayed again. Also fixed handling of newlines. 
-  (bug #492) [Ivo]
-* Made atkEditHandler pass the proper module to atktext() when looking 
-  for a tooltip. [Boy]
+  (bug #492) [Ivo, Boy]
 * Fixed DNS lookup feature of atkEmailAttribute. [Ivo]
-* Send no-cache header for DHTML menu JavaScript. [Ivo/Peter]
+* Send no-cache header for DHTML menu JavaScript. [Ivo, Peter]
 * Fixed prefixing of table name in atkManyBoolRelation. [Peter]
-* Fixed translateSelector method of onetomany, which caused restricted
-  deletes to be too restricting. [Boy]
+* Fixed translateSelector method of atkOneToManyRelation, which caused i
+  restricted deletes to be too restrictive. [Boy]
 * Restricted delete message now displays translation of fieldname instead of
   the actual fieldname. [Boy]
-* Made it possible to pass a day/month/year array as min/max to date 
-  attribute. [Sandy]
-* Made it possible to set the maximum amount of years for the year dropdown
-  field of the atkDateAttribute. [Boy]
 * getSearchCondition of atkDateAttribute can now handle incomplete and empty 
   requests. [Wouter]
 * Fixed extended search for atkDateAttribute. (bug #510) [Yury]
 * Fixed some atktext() calls to improve perfomance of atkLanguage. [Boy]
-* Updated documenation of the currencyattrbite class constructor and made
-  the flags parameter optional. [Martin]
-* Made Smarty param[0] (unnamed param) accept forward slash and dot as well
-  as alphanumeric characters. [Boy]
+* Updated documenation of the currencyattrbite class constructor and made the 
+  flags parameter optional. [Martin]
+* Made Smarty param[0] (unnamed param) accept forward slash and dot as well as 
+  alphanumeric characters. [Boy]
 * Made documentation of defaultconfig PHPDoc compatible. [Boy]
 * Fixed ability to search for 'No' in atkBoolAttribute. (bug #520) [Boy, Yury]
 * Fixed searching with atkBoolAttribute within relations. (bug #482) [Yury]
 * Made colorpicker path to dummy image more dynamic. [Boy]
-* Fixed getDestinationFilterCondition() when we pass 
-  a fieldalias prefix. [Boy]
+* Fixed getDestinationFilterCondition() when we pass a fieldalias prefix. [Boy]
 * Fixed editting of colorpicker attribute. [Boy]
 * Added newline to html of textattribute to solve problem of dissapearing
   newlines on storing. [Boy]
