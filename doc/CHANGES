@@ -190,8 +190,7 @@ Changes in ATK 5.3
   you can make the testsuite run only one (or multiple piped together) 
   test at a time. [Boy]
 * Fixed mimetype for gzip and zip export. [Sandy]
-* Fixed detection of Microsoft IIS so it can sent the correct 401
-  header. [Sandy]
+* Fixed detection of MS IIS so ATK can sent the correct 401 header. [Sandy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
