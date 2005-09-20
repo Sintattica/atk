@@ -78,7 +78,7 @@ Changes in ATK 5.3
   two atkdebug calls. [Ivo]
 + Added setWidth() and getWidth() function to atkListAttribute to set the
   width of dropdown list in pixels. [Boy]
-+ Added search support to atkAggregatedColumn. (bug #480) [Yury]
++ Added search support to atkAggregatedColumn. (bug #480, #512) [Yury]
 * Added Query Base class import for atkoci8query. [Tjeerd,Martin]
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
   returned a maximum records of config_recordsperpage. [Martin] 
