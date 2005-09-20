@@ -124,8 +124,10 @@ Changes in ATK 5.3
 * Fixed atkUIs title() function as it failed to translate the module name
   properly. [Boy]
 * Removed unnecessary br's from edit() of atkOneToManyRelation. [Boy]
-* Add link in atkOneToManyRelation is now only displayed if the user has
-  add access on the destination node. (bug #499) [Yury]
+* Add link in atkOneToManyRelation is now only displayed if the user has add
+  privilege on the destination node. (bug #499) [Yury]
+* Edit link in atkManyToOneRelation is now only displayed if there are records
+  to be edited. (bug #516) [Yury]
 * Made atkTextAttribute not display rows or columns property if it doesn't
   have any value. [Boy]
 * Function isSessionIdValid() now returns true for empty sessionid's. [Ivo]

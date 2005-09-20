@@ -179,7 +179,7 @@
      * @return decoded value
      */
     function db2value($rec)
-    {   
+    {    
       if (isset($rec[$this->fieldName()]))
       { 
         $myrec = $rec[$this->fieldName()];
@@ -268,6 +268,7 @@
         }
         
         $autolink = $this->getRelationAutolink($id, $filter);
+        $editflag = true;
         
         if (!$this->hasFlag(AF_LARGE))
         {
@@ -279,6 +280,8 @@
           $this->m_destInstance->addFilter($filter);
           
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+
+          if(count($recordset)==0) $editflag = false;
 
           // autoselect if there is only one record (if obligatory is not set,
           // we don't autoselect, since user may wist to select 'none' instead
@@ -315,7 +318,7 @@
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
               $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
-            }            
+            }
             $result.='</select>';
           }
         }
@@ -358,7 +361,8 @@
           else 
           // no record yet, empty value.
           { 
-            $destrecord = array();          
+            $destrecord = array();
+            $editflag = false;          
           }
         
           if (count($destrecord))
@@ -388,7 +392,10 @@
                            true);
           }
         }
-        $result.=$autolink;
+        
+        if($editflag) $result.=$autolink['edit'];
+        
+        $result.= $autolink['add'];
         return $result;
       }
       return atkerror("Could not create destination for $this->m_destination!");
@@ -398,11 +405,11 @@
      * Creates and returns the auto edit/view links
      * @param String $id          The field id
      * @param String $filter      Filter that we want to apply on the destination node
-     * @return String The HTML code for the autolink links
+     * @return array              The HTML code for the autolink links
      */
     function getRelationAutolink($id, $filter)
     {
-      $autolink = "";
+      $autolink = array();
       if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
       {
         $page = &atkPage::getInstance();
@@ -410,11 +417,11 @@
         if ($this->m_destInstance->allowed("edit"))
         {
           $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
-          $autolink = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".text('edit')."</a>";
+          $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".text('edit')."</a>";
         }
         if ($this->m_destInstance->allowed("add"))
         {
-          $autolink.= "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+          $autolink['add'] = "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
         }
       }
       return $autolink;
