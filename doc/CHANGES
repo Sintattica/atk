@@ -143,7 +143,8 @@ Changes in ATK 5.3
 * Made value part of addSearchFilter optional, as it was intended to be. [Boy]
 * Made tabbing more robust, tabs may not always exist for every action
   so when the remembered tab isn't present, the default tab is selected. [Boy]
-* Fixed cartesian product when searchcondition is missing in OneToMany. [Yury]
+* Removed unnecessary cartesian product when searchcondition is missing in 
+  an atkOneToManyRelation. (bug #495) [Yury]
 * Attrib tooltips are displayed again. Also fixed handling of newlines. 
   (bug #492) [Ivo]
 * Made atkEditHandler pass the proper module to atktext() when looking 
