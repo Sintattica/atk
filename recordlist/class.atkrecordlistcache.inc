@@ -118,6 +118,11 @@
         $page->register_style($theme->stylePath("recordlist.css"));
         $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js"); 
         $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
+
+      /**
+       * RecordlistCache must call getUniqueId() too, or the counter will be off.
+       */
+       getUniqueId("normalRecordList");    
         
         $page->register_loadscript(file_get_contents($this->m_cacheid."_actionloader"));
         $output = str_replace(atkStackID(),"*|REPLACESTACKID|*",file_get_contents(atkconfig("atkroot").$this->m_cacheid));
