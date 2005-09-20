@@ -115,7 +115,7 @@ Changes in ATK 5.3
 * Fixed numerous php notices. (ATK now runs better when error_reporting set to
   E_ALL). [Ivo]
 * The alphabetical index no longer breaks the search button. (bug #415) [Ivo]
-* Made atkListAttribute searchable in embedded OneToMany. [Yury]
+* Made atkListAttribute searchable in embedded atkOneToManyRelation. [Yury]
 * atkListAttribute now gets item translations from the correct module. [Ivo]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip
   check, causing the test to fail on Oracle installs. [Ivo]
@@ -123,7 +123,9 @@ Changes in ATK 5.3
   the most important, followed by node_stringid and finally stringid. [Boy]
 * Fixed atkUIs title() function as it failed to translate the module name
   properly. [Boy]
-* Removed unnecessary brs from edit() of atkOneToMany. [Boy]
+* Removed unnecessary br's from edit() of atkOneToManyRelation. [Boy]
+* Add link in atkOneToManyRelation is now only displayed if the user has
+  add access on the destination node. (bug #499) [Yury]
 * Made atkTextAttribute not display rows or columns property if it doesn't
   have any value. [Boy]
 * Function isSessionIdValid() now returns true for empty sessionid's. [Ivo]

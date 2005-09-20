@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,24 +14,24 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * @internal Include base class.
-   */   
+   */
   userelation("atkrelation");
-  
+
   /**
-   * flag(s) specific for atkManyToOneRelation 
+   * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RESTRICTED_DELETE", AF_SPECIFIC_1); // Only allow deletion of master item when there are no child records
   define("AF_ONETOMANY_EMBED", AF_SPECIFIC_2);
-  
+
   /**
    * Implementation of one-to-many relationships.
-   * 
+   *
    * Can be used to create one to many relations ('1 library has N books').
    * A common term for this type of relation is a master-detail relationship.
-   * The detailrecords can be edited inline.  
+   * The detailrecords can be edited inline.
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
@@ -39,20 +39,20 @@
    *
    */
   class atkOneToManyRelation extends atkRelation
-  {    
+  {
     var $m_recordlist;
-    
+
     /**
      * Instance of atk.recordlist.atkrecordlistcache
-     * @access private 
+     * @access private
      * @var Object
      */
     var $m_recordlistcache;
-    
+
     /**
      * List of keys from the destination node that refer to the master record.
      * @access private
-     * @var array 
+     * @var array
      */
     var $m_refKey=array();
 
@@ -62,8 +62,8 @@
      * @var int
      */
     var $m_maxRecords = 0;
-    
-    
+
+
     /**
      * The load method might build a custom filter. When it does, we might want
      * to use it again in other methods.
@@ -74,7 +74,7 @@
     /**
      * Default constructor.
      *
-     * <b>Example: </b> Suppose a department has many employees. To edit the 
+     * <b>Example: </b> Suppose a department has many employees. To edit the
      * list of employees in a department, this relationship can be built like
      * this, in the department node:
      * <code>
@@ -86,26 +86,26 @@
      *                     does not correspond to a database field. (Because
      *                     in one2many relations, the databasefield that
      *                     stores the link, is in the destination node and not
-     *                     in the owner node).     
+     *                     in the owner node).
      * @param String $destination The node to which the relationship is made
      *                            (in module.nodename notation).
-     * @param mixed $refKey For regular oneToMany relationships, $refKey is 
+     * @param mixed $refKey For regular oneToMany relationships, $refKey is
      *                      name of the referential key in the destination
      *                      node. In the case of multi-foreign key
      *                      relationships, $refKey can be an array of fields.
      * @param int $flags Attribute flags that influence this attributes'
-     *                   behavior.     
+     *                   behavior.
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
-        
-      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT); 
-      // 1toM Relations are NEVER edited when adding a rec. And for now, we 
+
+      $this->atkRelation($name, $destination, $flags|AF_HIDE_ADD|AF_NO_SORT);
+      // 1toM Relations are NEVER edited when adding a rec. And for now, we
       // cannot search or sort them.
-                                                                                 
+
       if (is_array($refKey))
       {
         $this->m_refKey = $refKey;
@@ -119,24 +119,24 @@
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * The atkOneToManyRelation displays a list of detail records in "view" 
+     * The atkOneToManyRelation displays a list of detail records in "view"
      * mode, in the form of a readonly recordlist. In "list" mode, a plain
      * list of detail record descriptors is displayed.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists)
-     * @return String HTML String 
+     * @return String HTML String
      */
     function display($record, $mode="list")
-    {      
+    {
       $myrecords = $record[$this->fieldName()];
-      
+
       if (!is_array($myrecords))
       {
         $myrecords = $this->load(NULL, $record, "admin");
       }
-      
+
       $result = text("none","","atk"); // default result
 
       if ($this->createDestination())
@@ -167,9 +167,9 @@
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value. 
+     * attribute's value.
      *
-     * The atkOneToManyRelation's edit method returns a recordlist in which 
+     * The atkOneToManyRelation's edit method returns a recordlist in which
      * detail records can be removed, added and edited.
      *
      * @param array $record The record that holds the value for this attribute.
@@ -182,7 +182,7 @@
       if ($this && $this->createDestination())
       {
         $error = $this->_checkIntegratedSave();
-        
+
         if ($this->m_destInstance->hasFlag(NF_CACHE_RECORDLIST))
         {
           $this->_setRecordlistCache();
@@ -199,7 +199,7 @@
       }
       return "";
     }
-    
+
     function _getEditOutput($record="", $fieldprefix="")
     {
       $myrecords = $this->_getRecords($record,true);
@@ -211,11 +211,14 @@
 
       $output.=$this->editFooter($record, $myrecords);
       $this->_fetchNavigationLinks($output);
-      
-      $this->_addAddToEditOutput($output, $myrecords, $record);
+
+      if($this->m_destInstance->allowed("add"))
+      {
+        $this->_addAddToEditOutput($output, $myrecords, $record);
+      }
       return $output;
     }
-    
+
     /**
      * Checks for an added integrated record and adds it
      * @return String An error, if one occured
@@ -248,7 +251,7 @@
           {
             $this->m_destInstance->addDb($this->m_ownerInstance->m_postvars[$this->fieldName()]);
           }
-          else 
+          else
           {
             $error = "<span class='error'>".$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
           }
@@ -256,10 +259,10 @@
       }
       return $error;
     }
-    
+
     /**
      * Adds the 'add' option to the onetomany, either integrated or as a link
-     * 
+     *
      * @param String $output   The HTML output of the edit function
      * @param Array $myrecords The records that are loaded into the recordlist
      * @param array $record The master record that is being edited.
@@ -277,16 +280,16 @@
       {
         if ($this->hasFlag(AF_ONETOMANY_EMBED))
           $output.=$this->_getEmbededOutput();
-        else 
+        else
           $output.=$this->_addAddLink($myrecords, $record)."<br />";
       }
     }
-    
+
     /**
      * Returns the HTML for the embedded form for the OneToMany
      * @return String The embeded form
      * @todo Move the HTML to a template
-     * @todo Expand this to make this integrate editting as well and 
+     * @todo Expand this to make this integrate editting as well and
      *        make it respect an editafteradd
      * @todo Make this work with an atkManyToOne
      */
@@ -309,7 +312,7 @@
           }
         }
         $fname = $this->fieldName();
-        
+
         atkimport("atk.handlers.atkedithandler");
         $handler = new atkEditHandler();
         $handler->m_node = &$destInstanceCopy;
@@ -321,12 +324,12 @@
                                        class=\"otm_add\" name=\"".$fname."_cancel\" value=\"".atktext("cancel").'">';
         $text = atktext("link_".$fname."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
         if (!$text) $text = atktext($fname,$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
-        $output.="\n </div> <a id=\"".$fname."_integrated_link\" 
+        $output.="\n </div> <a id=\"".$fname."_integrated_link\"
                                 href=\"javascript:toggleAddForm('".$fname."_integrated','".$fname."_integrated_link');\">$text</a>";
       }
       else
         atkerror("Could not create destination for ". $this->fieldName()."!");
-      
+
       return $output;
     }
 
@@ -349,18 +352,18 @@
       if (isset($this->m_ownerInstance->m_postvars['atkorderby']))
       {
         $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
-        if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))      
+        if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
           $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
       }
-      
+
       $myrecords = $this->load(atkGetDb(), $record, "admin", $paging);
-      
+
       $this->m_ownerInstance->m_postvars['atkorderby'] = $ownerorderby;
       return $myrecords;
     }
-    
+
     /**
-     * Gets the recordlist.     
+     * Gets the recordlist.
      * @param Array $myrecords The records that are loaded into the recordlist
      * @return String The generated recordlist
      */
@@ -378,32 +381,32 @@
           $params["atkfilter"]=$this->m_destinationFilter;
         }
 
-        $actions = $this->m_destInstance->defaultActions("relation", $params);      
-        
+        $actions = $this->m_destInstance->defaultActions("relation", $params);
+
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
-        
+
         $flags = $this->_getRecordListFlags();
-      
-        if (isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))        
+
+        if (isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
           $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
-        
-        if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))        
+
+        if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
           $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-          
-        if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))        
+
+        if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
           $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
-        
-           
-        $output = $recordlist->render($this->m_destInstance, $myrecords, 
-                                    $actions,              $flags, 
+
+
+        $output = $recordlist->render($this->m_destInstance, $myrecords,
+                                    $actions,              $flags,
                                     $this->m_refKey,       "entryform",
-                                    array(),               $embedprefix);                                            
+                                    array(),               $embedprefix);
         $this->m_recordlist = $recordlist;
         return $output;
-      }            
+      }
       return "";
-    }        
-    
+    }
+
     /**
      * Determine the flags that the embedded recordlist should have.
      * @return int The flags for the recordlist.
@@ -413,10 +416,10 @@
       // for now, we don't support extended search in embedded one2many recordlists.
       $flags=RL_EMBED|RL_NO_EXTENDED_SEARCH;
       $flags|= ($this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA  : 0);
-      $flags|= ($this->m_destInstance->hasFlag(NF_MRPA)? RL_MRPA : 0);      
+      $flags|= ($this->m_destInstance->hasFlag(NF_MRPA)? RL_MRPA : 0);
       return $flags;
     }
-    
+
     /**
      * Internal function to get the add link for a atkOneToManyRelation
      * @param Array $myrecords  The load of all attributes (see comment in edit() code)
@@ -471,12 +474,12 @@
       }
       return $url;
     }
-    
+
     /**
      * Retrieve header for the recordlist.
-     * 
-     * The regular atkOneToManyRelation has no implementation for this method, 
-     * but it may be overridden in derived classes to add extra information 
+     *
+     * The regular atkOneToManyRelation has no implementation for this method,
+     * but it may be overridden in derived classes to add extra information
      * (text, links, whatever) to the top of the attribute, right before the
      * recordlist. This is similar to the adminHeader() method in atkNode.
      *
@@ -489,12 +492,12 @@
     {
       return "";
     }
-    
+
     /**
      * Retrieve footer for the recordlist.
-     * 
-     * The regular atkOneToManyRelation has no implementation for this method, 
-     * but it may be overridden in derived classes to add extra information 
+     *
+     * The regular atkOneToManyRelation has no implementation for this method,
+     * but it may be overridden in derived classes to add extra information
      * (text, links, whatever) to the bottom of the attribute, just after the
      * recordlist. This is similar to the adminFooter() method in atkNode.
      *
@@ -513,14 +516,14 @@
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node. 
+     * @param atkDb $db The database used by the node.
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
      * @param bool $paging divide the result records on multiple pages ($config_recordsperpage)
-     * 
+     *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
-     *               method will always return NULL. This is a framework 
+     *               method will always return NULL. This is a framework
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
@@ -538,13 +541,13 @@
         if ($this->createDestination())
         {
           if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
-          
+
           for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
           {
             $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
             $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
-          }          
-          
+          }
+
           $where = implode(" AND ", $whereelems);
 
           if ($this->m_destinationFilter!="")
@@ -580,7 +583,7 @@
       }
       return NULL;
     }
-    
+
     /**
      * Override isEmpty function - in a oneToMany relation we should check if the
      * relation contains any records. When there aren't any, the relation is empty,
@@ -590,11 +593,11 @@
      * @return bool true if a destination record is present. False if not.
      */
     function isEmpty($record)
-    {    
+    {
       return (!isset($record[$this->fieldName()])
-              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0));	    	    
+              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0));
     }
-    
+
     /**
      * Returns an array to pass as limit parameter to the selectdb function
      *
@@ -633,7 +636,7 @@
       return $retArray;
     }
 
-    /** 
+    /**
      * The delete method is called by the framework to inform the attribute
      * that the master record is deleted.
      *
@@ -649,10 +652,10 @@
       $classname = $this->m_destination;
       $cache_id = $this->m_owner.".".$this->m_name;
       $rel = &getNode($classname,$cache_id);
-      
+
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
-         $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]]; 
+         $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
          $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
       }
       $where = implode(" AND ", $whereelems);
@@ -666,16 +669,16 @@
 
     /**
      * Store detail records in the database.
-     *     
+     *
      * For onetomanyrelation, this function does not have much use, since it
      * stores records using its 'add link'. Thehe copyDb function however uses
      * this method to clone detail records.
      * If mode is anything other than "copy" this method does not do anything.
      *
-     * @param atkDb $db The database used by the node. 
+     * @param atkDb $db The database used by the node.
      * @param array $record The master record which has the detail records
      *                      embedded.
-     * @return boolean true if store was successful, false otherwise. 
+     * @return boolean true if store was successful, false otherwise.
      */
     function store(&$db, $record, $mode)
     {
@@ -697,15 +700,15 @@
                 {
                   $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$this->m_ownerInstance->m_primaryKey[$j]];
                 }
-              }  
+              }
               else
               {
                 for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
                 {
                    $onetomanyrecs[$i][$this->m_refKey[0]][$this->m_ownerInstance->m_primaryKey[$j]] = $record[$this->m_ownerInstance->m_primaryKey[$j]];
-                }                              
-              }        
-              
+                }
+              }
+
               if (!$this->m_destInstance->addDb($onetomanyrecs[$i], true, $mode))
               {
                 // error
@@ -718,7 +721,7 @@
       }
       return true;
     }
-    
+
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form.
      *
@@ -728,11 +731,11 @@
      * @return String An empty string.
      */
     function hide()
-    {    
+    {
       //Nothing to hide..
       return "";
     }
-    
+
     /**
      * Returns a piece of html code that can be used to get search terms input
      * from the user.
@@ -745,9 +748,9 @@
      *
      * @param array   $record   Array with values
      * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the 
+     *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended' 
+     *                          search may be returned for the 'extended'
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
@@ -757,13 +760,13 @@
     function search($record="", $extended=false, $fieldprefix="")
     {
       $id = "atksearch[".$fieldprefix.$this->formName()."]";
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
     }
-    
+
     /**
      * Adds a search condition for a given search value
      * @param $table the table name
@@ -783,7 +786,7 @@
          }
        }
      }
-     
+
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
        $usedfields = array();
@@ -809,7 +812,7 @@
          }
        }
      }
-     
+
      /**
       * Calls searchCondition on an attribute in the destination
       * To hook the destination attribute on the query
@@ -848,7 +851,7 @@
       }
       return false;
     }
-    
+
     function deleteAllowed()
     {
       if ($this->hasFlag(AF_RESTRICTED_DELETE))
@@ -858,7 +861,7 @@
       	$cache_id = $this->m_owner.".".$this->m_name;
       	$rel = &getNode($classname,$cache_id);
       	// Get the current atkselector
-      	$where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);      	
+      	$where = $this->translateSelector($this->m_ownerInstance->m_postvars['atkselector']);
       	if ($where)
       	{
       		$childrecords = $rel->selectDb($where);
@@ -868,7 +871,7 @@
       }
       return true;
     }
-    
+
     /**
      * Here we check if the selector is on the owner or on the destination
      * if it's on the destination, we leave it alone.
@@ -884,14 +887,14 @@
       // All standard SQL operators
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
       $this->createDestination();
-      
+
       // Check the filter for every SQL operators
       for ($counter=0;$counter<count($sqloperators);$counter++)
       {
         if ($sqloperators[$counter])
         {
           list($key, $value) = explode($sqloperators[$counter], $selector);
-          
+
           // if the operator is in the filter
           if ($value)
           {
@@ -899,7 +902,7 @@
             for ($refkeycount=0;$refkeycount<count($this->m_refKey);$refkeycount++)
             {
               $destinationkey = $this->m_destInstance->m_table.".".$this->m_refKey[$refkeycount];
-              
+
               // if the selector is on the destination, we pass it back
               if ($key ==  $destinationkey || $key == $this->m_refKey[$refkeycount])
               {
@@ -914,7 +917,7 @@
       // We never found a value, something is wrong with the filter
       return "";
     }
-    
+
    /**
     * Retrieves navigation links (prev/pagenumbers/next) and puts it
     * on the top and the bottom of the output string
@@ -933,7 +936,7 @@
       $this->m_destInstance->m_postvars["atkstartat"]   = $limitArray["offset"];
       $this->m_destInstance->m_postvars["limitPostfix"] = $this->fieldName();
       $this->m_destInstance->m_action                   = $ATK_VARS["atkaction"];
-      
+
       // If we build a custom loadFilter (in the load method), use this filter
       if ($this->m_loadFilter) $destfilter=$this->m_loadFilter;
       // If not, a destinationFilter takes precedense over all other filters
@@ -942,7 +945,7 @@
       elseif ($ATK_VARS['atkselector'])
       {
         // if the filter is valid on the destination (highly unlikely) we just use it
-        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector'])) 
+        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector']))
         {
           $destfilter = $ATK_VARS['atkselector'];
         }
@@ -963,7 +966,7 @@
       if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
       else return $output;
     }
-    
+
     function _setRecordlistCache()
     {
       if (!$this->m_recordlistcache && $this->createDestination())
