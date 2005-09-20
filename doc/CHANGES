@@ -23,8 +23,6 @@ Changes in ATK 5.3
 + Added $config_javascript_confirmation, setting this to true will
   make ATK use javascript for the confirmation dialogue when deleting. [Boy]
 + Added NF_CACHE_RECORDLIST which makes ATK cache all the recordlists. [Boy]
-+ Extended the getSearchCondition of atkDateAttribute so it handles none
-  complete and empty requests. [Wouter]
 + Added $format parameter to func_datetochar. [Ivo]
 + Added venderDateFormat method to abstraction layer for database specific
   date formatting strings. [Ivo]
@@ -161,7 +159,10 @@ Changes in ATK 5.3
 * Made it possible to pass a day/month/year array as min/max to date 
   attribute. [Sandy]
 * Made it possible to set the maximum amount of years for the year dropdown
-  field of the date attribute. [Boy]
+  field of the atkDateAttribute. [Boy]
+* getSearchCondition of atkDateAttribute can now handle incomplete and empty 
+  requests. [Wouter]
+* Fixed extended search for atkDateAttribute. (bug #510) [Yury]
 * Fixed some atktext() calls to improve perfomance of atkLanguage. [Boy]
 * Updated documenation of the currencyattrbite class constructor and made
   the flags parameter optional. [Martin]

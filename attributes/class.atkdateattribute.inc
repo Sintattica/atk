@@ -110,16 +110,25 @@
     }
 
     /**
-     * Converts a date string (YYYMMDD) to an
+     * Converts a date string (YYYYMMDD) to an
      * array with 3 fields (day, month, year).
      * @param date the date string
      * @return array with 3 fields (day, month, year)
      */
     function dateArray($date)
     {
+      if(strstr($date,'-'))
+      {
+        return array("day" => substr($date, 8, 2),
+                     "month" => substr($date, 5, 2),
+                     "year" => substr($date, 0, 4));
+      }
+      else 
+      {
       return array("day" => substr($date, 6, 2),
                    "month" => substr($date, 4, 2),
                    "year" => substr($date, 0, 4));
+      }
     }
     
     /**
@@ -511,8 +520,8 @@
       $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
 
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
-      $res = $this->draw($record, "atksearch".$fieldprefix, "_AE_from");
-      $res.= "&nbsp;".text("until").": ".$this->draw($record, "atksearch".$fieldprefix, "_AE_to");
+      $res = $this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_from");
+      $res.= "&nbsp;".text("until").": ".$this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_to");
       return $res;
     }
 
