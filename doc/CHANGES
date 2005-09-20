@@ -138,7 +138,7 @@ Changes in ATK 5.3
 * The atkMetaPolicy now knows the difference between time, date and datetime
   fields (required some changes in various atkDB classes). [Peter]
 * The atkNode::add method now returns the added attribute/relation. [Peter]
-* Fixed 0 value check in atkNumberAttribute. [Peter]
+* Fixed 0 value check in atkNumberAttribute. (bug #500) [Peter]
 * Fixed reference bug in the atkModule::newNode method which caused the
   newNode method to always return a copy of the newly created node. [Peter]
 * Changed actiontitle to return descriptor trace when appropriate [Boy]
