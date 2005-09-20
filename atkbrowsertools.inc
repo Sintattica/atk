@@ -117,7 +117,8 @@
    // actual detection
     function detectAgent()
     {
-     //MSIE
+      //MSIE
+      $info=array();
       if (eregi( 'MSIE ([0-9].[0-9a-zA-Z]{1,4})',$this->ua,$info) ||  eregi( 'Microsoft Internet Explorer ([0-9].[0-9a-zA-Z]{1,4})',$this->ua,$info))
       {  
        $this->full_version = $info[1];
@@ -148,7 +149,7 @@
         {
          $ver                = $this->full_version;
          $this->full_version = $info[1];
-         $this->browser      = 'AOL (MSIE $ver)'; 
+         $this->browser      = 'AOL (MSIE '.$ver.')'; 
          $this->brName       = "AOL"; 
          $this->hasGui       = 1;
         }        
@@ -389,8 +390,10 @@
        if (eregi( 'Mozilla/([0-9].[0-9a-zA-Z]{1,4})',$this->ua,$info))
        {
         // if it also contains Gecko/ then it's a new Mozilla
+        $dummy=array();
         if (eregi( 'Gecko/([0-9].[0-9a-zA-Z]{1,4})',$this->ua,$dummy))
         {
+         $info_1=array();
          eregi('rv:([0-9].[0-9a-zA-Z].[0-9]{1,4})', $this->ua, $info_1);
          $this->full_version = $info_1[1];  
          $this->browser      = 'Mozilla';
