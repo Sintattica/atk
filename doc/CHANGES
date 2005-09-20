@@ -164,6 +164,7 @@ Changes in ATK 5.3
   as alphanumeric characters. [Boy]
 * Made documentation of defaultconfig PHPDoc compatible. [Boy]
 * Fixed ability to search for 'No' with atkBoolAttribute. [Boy]
+* Fixed searching with atkBoolAttribute within relations. (bug #482) [Yury]
 * Made colorpicker path to dummy image more dynamic. [Boy]
 * Fixed getDestinationFilterCondition() when we pass 
   a fieldalias prefix. [Boy]

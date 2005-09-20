@@ -226,7 +226,7 @@
      * @param $maxsize Maxsize of the editbox
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record="", $extended=false)
+    function search($record="", $extended=false, $fieldprefix="")
     {
       $this->createDestination();
 
@@ -238,8 +238,12 @@
         {
           $result.='multiple size="'.min(5,count($recordset)+1).'"';
         }
-        $result.='name="atksearch['.$this->fieldName().'][]">';
 
+        if (strstr($fieldprefix,"]["))
+          $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
+        else
+          $result.='name="atksearch'.$fieldprefix.'['. $this->fieldName().'][]">';
+        
         $pkfield = $this->m_destInstance->primaryKeyField();
 
         $result.= '<option value="">'.text('search_all');
