@@ -179,6 +179,7 @@ Changes in ATK 5.3
   * user() is now atkConfig::addUser(). [Ivo]
 * Moved obligatory asterisk from HTML attribute to label and removed colon
   from default editform template. [Boy]
+* PostgreSQL driver metadata() method is now schema-aware. (bug #384) [Thom]
 * PASS is no longer stored in session unless $config_enable_ssl_encryption 
   is turned on. [Boy]
 * Added 'include' global, using this in your URL when summoning test.php 
