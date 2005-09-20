@@ -174,7 +174,7 @@ Changes in ATK 5.3
 * Made Smarty param[0] (unnamed param) accept forward slash and dot as well
   as alphanumeric characters. [Boy]
 * Made documentation of defaultconfig PHPDoc compatible. [Boy]
-* Fixed ability to search for 'No' with atkBoolAttribute. [Boy]
+* Fixed ability to search for 'No' in atkBoolAttribute. (bug #520) [Boy, Yury]
 * Fixed searching with atkBoolAttribute within relations. (bug #482) [Yury]
 * Made colorpicker path to dummy image more dynamic. [Boy]
 * Fixed getDestinationFilterCondition() when we pass 
