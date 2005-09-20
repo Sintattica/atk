@@ -1169,12 +1169,12 @@
 		}
 		else if($compression=="gzip")
 		{
-		  $mime_type='application/x-gzip';
+		  $mime='application/x-gzip';
 		  $filename.= ".gz";
 		}
     else if($compression=="zip")
 		{
-		  $mime_type='application/x-zip';
+		  $mime='application/x-zip';
 		  $filename.= ".zip";
 		}
 
