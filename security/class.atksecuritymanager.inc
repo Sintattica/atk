@@ -353,7 +353,7 @@
         else
         {
           header('WWW-Authenticate: Basic realm="'.text("app_title").' - '.strftime("%c",time()).'"');
-          if (ereg("Microsoft", $SERVER_SOFTWARE)) header("Status: 401 Unauthorized");
+          if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE'])) header("Status: 401 Unauthorized");
           else header("HTTP/1.0 401 Unauthorized");
           return false;
         }
