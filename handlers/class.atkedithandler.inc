@@ -269,11 +269,12 @@
           if ($node->m_attribList[$field['name']]->m_ownerInstance->m_module) $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;
           else $module = "atk";
           $ttip = atktext($node->m_type."_".$field["name"]."_tooltip", $module, "", "", "", true);
-          atk_var_dump($ttip, 'tip');
 
           if ($ttip)
           {
-            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$ttip.'" onClick="javascript:alert(\''.preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\')" onMouseOver="javascript:window.status=\''. preg_replace('/([\r\n])/e',"",addslashes($ttip)).'\';">';
+            $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
+            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
+                                    '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
             $tplfield["tooltip"] = $tooltip;
             $editsrc.=$tooltip."&nbsp;";
           }
