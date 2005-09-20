@@ -353,7 +353,9 @@
         JOIN pg_attribute a ON (a.attrelid = c.oid AND a.attnum > 0)
         JOIN pg_type t ON (t.oid = a.atttypid)
         LEFT JOIN pg_attrdef ad ON (ad.adrelid = c.oid AND ad.adnum = a.attnum)
+        $schema_join
         WHERE c.relname = '$table'
+        $schema_condition
         ORDER BY a.attnum";
 
       $meta = array();
