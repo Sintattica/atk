@@ -228,7 +228,7 @@ Changes in ATK 5.2.1
 * postUpdate atkorgrec now also works if a filter was set. (bug #469) [Thom]
 - Removed $m_critical_error lists from the db drivers. Anything that's not a
   userlevel error should be considered critical. [Ivo]
-- Removed atkAttribute::display_plain(). [Ivo]
+- Removed atkAttribute::display_plain(). (bug #388) [Ivo]
 
 Changes in ATK 5.2.0
 --------------------
