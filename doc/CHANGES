@@ -138,12 +138,13 @@ Changes in ATK 5.3
 * Fixed reference bug in the atkModule::newNode method which caused the
   newNode method to always return a copy of the newly created node. [Peter]
 * Changed actiontitle to return descriptor trace when appropriate [Boy]
-* Moved javascript get_object() function from dhtml_tabs.js to seperate
+* Moved javascript get_object() function from dhtml_tabs.js to separate
   tools.inc.php file. [Boy]
 * Made value part of addSearchFilter optional, as it was intended to be. [Boy]
 * Made tabbing more robust, tabs may not always exist for every action
   so when the remembered tab isn't present, the default tab is selected. [Boy]
 * Fixed cartesian product when searchcondition is missing in OneToMany. [Yury]
+* Fixed rendering of tooltips. [Ivo]
 * Made atkEditHandler pass the proper module to atktext() when looking 
   for a tooltip. [Boy]
 * Fixed DNS lookup feature of atkEmailAttribute. [Ivo]
