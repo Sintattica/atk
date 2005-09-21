@@ -42,7 +42,7 @@ Changes in ATK 5.3
 + Added multiple named db connections ability. Note that this requires a
   change in all config.inc.php files. See atk/skel/config.inc.php for
   examples. [Ivo]
-+ Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
++ Added atkTmpFile for easier manipulation of temporary files. [Ivo, Sandy]
 + Added support for preloading only certain parts of a module using a 
   module_preload.inc file. If this file exists it will be loaded instead of 
   module.inc and module.inc will only be loaded once a call to getModule(...) 
@@ -93,7 +93,6 @@ Changes in ATK 5.3
   includes. [Peter, Boy, Ivo]
 * Changing the gui language through the url should now be done using ?atklng
   instead of ?lng. [Ivo]
-* Fixed al lot of PHP notices (error_reporting set to E_ALL). [Martin]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
 * Fixed atkonetoonerelation::load() wich didn't set the destination filter 
   when using master mode. [Martin]
@@ -114,7 +113,7 @@ Changes in ATK 5.3
 * Fixed extended searching on OneToOne relations. [Boy]
 * Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
 * Fixed numerous php notices. (ATK now runs better when error_reporting set to
-  E_ALL). [Ivo]
+  E_ALL). [Ivo, Martin]
 * The alphabetical index no longer breaks the search button. (bug #415) [Ivo]
 * Made atkListAttribute searchable in embedded atkOneToManyRelation. [Yury]
 * atkListAttribute now gets item translations from the correct module. [Ivo]
