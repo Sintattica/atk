@@ -17,7 +17,7 @@
 			  <tr>
 			    <td align="left" width="30%"></td>
 			    <td align="right" width="30%"><br />{$logintext}: 
-<b>{$user}</b> &nbsp; <a href="{$logoutlink}" target="{$logouttarget}">{$logouttext} </a>&nbsp;
+<b>{$user}</b> &nbsp; <a href="{$logoutlink}" target="{$logouttarget}">{$logouttext}</a> &nbsp;
 			    {if $centerpiece}{$centerpiece}{/if}</td>
                 <td align="right">{if $searchpiece}{$searchpiece}</span>{/if}</td>
               </tr>
