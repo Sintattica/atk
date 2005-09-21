@@ -22,16 +22,34 @@
    * defined by this interface.
    *
    * @author Ivo Jansch <ivo@ibuildings.nl>
+   * @author Sandy Pleyte <sandy@ibuildings.nl>
    * @package atk
    * @subpackage menu
    */
 	class atkmenuinterface
 	{
+	  var $m_height;
+	  
 	  /**
 	   * Render the menu
 	   * @return String HTML fragment containing the menu.
 	   */
 		function render()
+		{
+		}
+		
+		
+		/**
+		 * Return the menu header
+		 */
+	  function getHeader($atkmenutop)
+	  {
+	  }
+	  
+	  /**
+	   * Return the menu footer
+	   */
+		function getFooter($atkmenutop)
 		{
 		}
 		
