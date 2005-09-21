@@ -24,7 +24,7 @@ Changes in ATK 5.3
   use javascript for the confirmation dialogue when deleting. [Boy]
 + Added NF_CACHE_RECORDLIST which makes ATK cache all the recordlists. [Boy]
 + Added $format parameter to func_datetochar. [Ivo]
-+ Added venderDateFormat method to abstraction layer for database specific
++ Added vendorDateFormat method to abstraction layer for database specific
   date formatting strings. [Ivo]
 + Added atkLiveTextPreview attribute to preview html content of atkAttributes
   and atkTextAttributes in realtime. [Ivo]
@@ -43,7 +43,7 @@ Changes in ATK 5.3
   change in all config.inc.php files. See atk/skel/config.inc.php for
   examples. [Ivo]
 + Added atkTmpFile class for easier manipulation of temporary files. [Ivo]
-+ Added support for preloading only certain parts of a module using s 
++ Added support for preloading only certain parts of a module using a 
   module_preload.inc file. If this file exists it will be loaded instead of 
   module.inc and module.inc will only be loaded once a call to getModule(...) 
   has been made. NOTE: this means modules are *not* loaded in the global space
