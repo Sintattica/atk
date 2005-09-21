@@ -115,6 +115,8 @@ Changes in ATK 5.3
 * Fixed numerous php notices. (ATK now runs better when error_reporting set to
   E_ALL). [Ivo, Martin]
 * The alphabetical index no longer breaks the search button. (bug #415) [Ivo]
+* atkTableRenderer now uses 'row1' class for all rows if TBL_ALTERNATE is not
+  specified. [Ivo]
 * Made atkListAttribute searchable in embedded atkOneToManyRelation. [Yury]
 * atkListAttribute now gets item translations from the correct module. [Ivo]
 * Test fix: atkTextAttribute's unit testcase did not do a proper roundtrip

@@ -148,7 +148,7 @@
       
       for ($row=0, $_row=count($data); $row<$_row; $row++)
       {
-        $output.="<tr".(hasFlag($flags, TBL_ALTERNATE)?' class="row'.(($row%2)==0?1:2).'"':"").">";        
+        $output.='<tr class="row'.(hasFlag($flags, TBL_ALTERNATE)?(($row%2)==0?1:2):1).'">';        
         
         if (($row==0&&hasFlag($flags, TBL_HEADER)) || ($row==$_row-1&&hasFlag($flags, TBL_FOOTER)))
         {
