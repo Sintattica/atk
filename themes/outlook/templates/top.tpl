@@ -21,7 +21,7 @@
 			    {if $centerpiece}{$centerpiece}{/if}</td>
                 <td align="right">{if $searchpiece}{$searchpiece}</span>{/if}</td>
               </tr>
-            </table>
+            </table><br/>
           </td>
         </tr>
       </table>
