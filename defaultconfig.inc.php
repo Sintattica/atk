@@ -47,6 +47,7 @@
   $config_module_path = $config_atkroot."modules";
   
   $config_corporate_node_base = "";
+  $config_corporate_module_base = "";
 
   /**
    * The location of a directory that is writable to ATK and that ATK can store it's
@@ -384,7 +385,7 @@
    * 
    * @var String
    */
-  $config_menu_layout = "default";
+  $config_menu_layout = "plain";
   
   /**
    * 
