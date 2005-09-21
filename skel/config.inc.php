@@ -41,6 +41,7 @@
   // "oci8"    - All Oracle 8i versions
   // "oci9"    - Oracle9i+ (also works for 10G)
   // "pgsql"   - PostgreSQL 7.1+
+  // "mssql"   - Microsoft SQL Server
   $config_db["default"]["driver"]   = "mysql";
   $config_db["default"]["host"]     = "localhost";
   $config_db["default"]["db"]       = "";

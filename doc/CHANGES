@@ -82,6 +82,7 @@ Changes in ATK 5.3
 + atkDateAttribute now accepts a day/month/year array as min/max. [Sandy]
 + Added ability to set the maximum amount of years for the year dropdown field
   of the atkDateAttribute. [Boy]
++ Added unstable implementation for MSSQL support. [Harrie]
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
   returned a maximum records of config_recordsperpage. [Martin] 
 * Layout improvements on the o2m embedded add form. [Martin]
