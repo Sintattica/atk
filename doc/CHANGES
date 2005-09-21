@@ -196,7 +196,7 @@ Changes in ATK 5.3
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
 - Removed $g_layout. The (deprecated) global $g_layout object is no longer
-  present. Use atkimport("atk.layout"); $layout = layout::getInstance()
+  present. Use atkimport("atk.layout"); $layout = &layout::getInstance()
   instead. Note though, that the layout class is still deprecated and should
   not be used. [Ivo]
 - Removed $g_db. Db connections should be retrieved using &atkGetDb() or
