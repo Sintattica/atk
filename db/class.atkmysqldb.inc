@@ -112,9 +112,8 @@
         $query .= " LIMIT $offset, $limit";  
       if (atkconfig("debug")>0)
       {               
-        atkimport("atk.utils.atkdebugger");
-        $debugger = &atkDebugger::getInstance();
-        $debugger->addQuery($query);
+        atkimport("atk.utils.atkdebugger");        
+        atkDebugger::addQuery($query);
       }
 
       /* connect to database */
