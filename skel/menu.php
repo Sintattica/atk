@@ -31,13 +31,20 @@
   atksession();
   atksecure();
 
+  $output = &atkOutput::getInstance();
+  $page = &atknew("atk.ui.atkpage");
+  $theme = &atkTheme::getInstance();  
+  $ui = &atknew("atk.ui.atkui");
+        
+        
   /* general menu stuff */
-  include_once($config_atkroot."atk/menu/general.inc");
-
   /* load menu layout */
   atkimport("atk.menu.atkmenu");
   $menu = &atkMenu::getMenu();
-
-  $menu->render();
-
+                  
+  if (is_object($menu)) $output->output($menu->render());
+  else atkerror("no menu object created!");;
+              
+  $output->outputFlush();
+                        
 ?>
