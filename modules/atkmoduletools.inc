@@ -384,6 +384,11 @@
         {
           atkdebug("Loading module - $modname");
           atkimport("atk.modules.atkmodule");
+          $corporate_base = atkconfig("corporate_module_base");
+          if ($corporate_base!="")
+          {
+            atkimport($corporate_base);
+          }
         }
         
         // the include file may specify modifiers.
