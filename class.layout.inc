@@ -286,6 +286,7 @@
     // Dummy, creates an atkPage if one does not exist (for backward compatibility).
     function &getPage()
     {
+      atkimport("atk.ui.atkpage");
       $page = &atkPage::getInstance();
       return $page;
     }
