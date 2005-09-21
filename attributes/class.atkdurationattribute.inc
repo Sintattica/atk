@@ -21,8 +21,14 @@
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   *
    */
+   
+  /* flag(s) specific for atkDurationAttribute */
+  define("AF_DURATION_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
+
+  define("DURATIONFORMAT_TIME",0);
+  define("DURATIONFORMAT_DECIMAL",1);
+  
   class atkDurationAttribute extends atkAttribute
   {    
     /** member vars **/
@@ -57,6 +63,13 @@
       
       $this->m_maxtime_min = $maxtime*$factor;
     }
+    
+    function hide($record, $fieldprefix="")
+    {
+      // hide as a parseable string
+      $record[$this->fieldName()] = $this->_minutes2string($record[$this->fieldName()]);
+      return parent::hide($record, $fieldprefix);
+    }
 
     /**   
      * Returns a piece of html code that can be used in a form to edit this
@@ -67,57 +80,61 @@
     function edit($record="", $fieldprefix="")
     {  
       $id = $fieldprefix.$this->formName();
-      if ($this->m_maxtime_min>=60)
-      {      
-        $this->registerKeyListener($id.'_hours', KB_CTRLCURSOR|KB_LEFTRIGHT);  
-        $result.= '<select id="'.$id.'_hours" name="'.$id.'[hours]">';
-        for ($h=0;$h<=$this->m_maxtime_min/60;)
-        { 
-          $result .= '<option value="'.$h.'" ';         
-          if ($record[$this->fieldName()]['hours']==$h) $result.= "selected";
-          $result .='>'.$h.' '.text('hours');
-          if ($this->m_resolution_min<=60)
-          {
-            $h++;
-          }
-          else
-          {
-            $h = floor($h+$this->m_resolution_min/60);
-          }
-        }
-      }
-      $result.='</select>';
-      
-      if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
+      if(!$this->hasFlag(AF_DURATION_STRING))
       {
-        $this->registerKeyListener($id.'_minutes', KB_CTRLCURSOR|KB_LEFTRIGHT);  
-        $result.= '<select id="'.$id.'_minutes" name="'.$id.'[minutes]">';
-        for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
-        { 
-          $result .= '<option value="'.$m.'" ';
-          if ($record[$this->fieldName()]['minutes']==$m) $result.= "selected";
-          $result.='>'.$m.' '.text('minutes');
-          if ($this->m_resolution_min<=1)
-          {
-            $m++;
-          }
-          else
-          {
-            $m = $m+$this->m_resolution_min;
+        if ($this->m_maxtime_min>=60)
+        {
+          $curhours = $this->_getHourPart($record[$this->fieldName()]);
+          $curminutes = $this->_getMinutePart($record[$this->fieldName()]);
+          $result.= '<select id="'.$id.'_hours" name="'.$fieldprefix.$this->formName().'[hours]">';
+          $this->registerKeyListener($id.'_hours', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+          for ($h=0;$h<=$this->m_maxtime_min/60;)
+          { 
+            $result .= '<option value="'.$h.'" ';         
+            if ($curhours==$h) $result.= "selected";
+            $result .='>'.$h.' '.text('hours');
+            if ($this->m_resolution_min<=60)
+            {
+              $h++;
+            }
+            else
+            {
+              $h = floor($h+$this->m_resolution_min/60);
+            }
           }
         }
+        $result.='</select>';
+        
+        if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
+        {
+          $this->registerKeyListener($id.'_minutes', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+          $result.= '<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->formName().'[minutes]">';
+          for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
+          { 
+            $result .= '<option value="'.$m.'" ';
+            if ($curminutes==$m) $result.= "selected";
+            $result.='>'.$m.' '.text('minutes');
+            if ($this->m_resolution_min<=1)
+            {
+              $m++;
+            }
+            else
+            {
+              $m = $m+$this->m_resolution_min;
+            }
+          }
+        }
+        $result.='</select>';   
       }
-      $result.='</select>';   
-      
+      else
+      {
+        $curval = ($record[$this->fieldName()]>0?$this->_minutes2string($record[$this->fieldName()]):"");
+        $result = '<input type="text" name="'.$fieldprefix.$this->formName().
+                '" value="'.$curval.'"'.
+                ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';        
+      }
       return $result;
-    }
-    
-    function hide($record="", $fieldprefix="")
-    {
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().'[hours]" value="'.$record[$this->fieldName()]["hours"].'">';
-      $result.= '<input type="hidden" name="'.$fieldprefix.$this->formName().'[minutes]" value="'.$record[$this->fieldName()]["minutes"].'">';
-      return $result;
-    }
+    }        
     
     /**   
      * Returns a piece of html code that can be used in a form to search values.    
@@ -127,79 +144,20 @@
     function search($record="")
     {
       return "&nbsp;"; // currently not searchable.
-    }
-    
-    
-
-    /**
-     * Convert Time Array to minutes
-     * @param $rec Array with 2 fields (hours, minutes)
-     * @return integer indicating the number of minutes
-     */
-    function value2db($rec)
-    {
-        return $rec[$this->fieldName()]["hours"]*60+$rec[$this->fieldName()]["minutes"];
-    }
-
-    /**
-     * Convert time to Array
-     * @param $rec contains the time in minute format
-     * @return Array with 2 fields (hours, minutes)
-     */
-    function db2value($rec)
-    {
-      $hours = floor($rec[$this->fieldName()]/60);
-      return Array("hours"=>$hours,
-                   "minutes"=>$rec[$this->fieldName()]-($hours*60)
-                   );
-    }
+    }        
 
     /**
      * Function display's the time
      * @param $record Array with time
      * @return String with YYYY-MM-DD
      */
-    function display($record)
+    function display($rec)
     {
-      $value=$record[$this->fieldName()];
-
-      return sprintf("%02d",$value["hours"]).":".sprintf("%02d",$value["minutes"]);
-    }
-    
-    /**
-     * Check if the attribute is empty
-     * @return true if it's empty
-     */
-    function isEmpty($postvars)
-    {
-      return ($postvars[$this->fieldName()]["hours"]==0&&$postvars[$this->fieldName()]["minutes"]==0);
-    }
-    
-    function sum($rec1, $rec2)
-    {                  
-      if (!is_array($rec1))
-      {   
-        $a=Array("hours"=>0,"minutes"=>0);       
-      }
-      else
-      {        
-        $a = $rec1[$this->fieldName()];
-      }      
-      
-      $b = $rec2[$this->fieldName()];              
-      
-      $total = ($a["hours"]*60)+$a["minutes"]+($b["hours"]*60)+$b["minutes"];      
-         
-      return Array($this->fieldName()=>Array("hours"=>(floor($total/60)),"minutes"=>$total%60));
-    }
+      return $this->_minutes2string($rec[$this->fieldName()]);
+    }        
     
     function getSearchModes()
-    {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
+    {      
       return array("exact");
     }
     
@@ -207,5 +165,84 @@
     {
       return "number";
     }
+    
+    function _string2minutes($value)
+    {     
+      if(strpos($value,':')===false)
+      {
+        // decimal format
+        $tmp = explode('.',$value);
+        if(strlen($tmp[1])==1) $tmp[1]=$tmp[1]*10;
+        return $tmp[0]*60+$tmp[1]*(60/100);
+      }
+      else
+      {
+        // hh:mm format
+        $tmp = explode(':',$value);
+        return $tmp[0]*60+$tmp[1];
+      }    
+    }
+    
+    function _minutes2string($minutes)
+    {
+      $prefix = "";
+      if($minutes<0)
+      {
+        $prefix="- ";
+        $minutes = abs($minutes);
+      }
+      
+      if(atkconfig("durationformat",0)==DURATIONFORMAT_DECIMAL)
+      {        
+        $decimalvalue = $this->_getHourPart($minutes) + ($this->_getMinutePart($minutes)/60);
+        return $prefix.sprintf("%02.02f", $decimalvalue);
+      }
+      elseif(atkconfig("durationformat",0)==DURATIONFORMAT_TIME)
+      {        
+        return $prefix.sprintf("%02d:%02d",$this->_getHourPart($minutes), $this->_getMinutePart($minutes));        
+      }
+    }   
+    
+    function _getHourPart($minutes)
+    {
+      if(!is_array($minutes))
+      {
+        return floor($minutes/60);
+      }
+      else
+      {
+        return $minutes["hours"]; 
+      }
+    }
+    
+    function _getMinutePart($minutes)
+    {
+      if(!is_array($minutes))
+      {
+        return ($minutes-(floor($minutes/60)*60));
+      }
+      else 
+      {
+        return $minutes["minutes"]; 
+      }
+    }
+    
+    /**
+     * Fetch values
+     * @param $rec Array with values
+     * @return String without slashes
+     */
+    function fetchValue($rec)
+    {
+      if ($this->hasFlag(AF_DURATION_STRING))
+      {
+        return $this->_string2minutes($rec[$this->fieldName()]);       
+      }
+      else 
+      {
+        return $rec[$this->fieldName()]["hours"]*60 + $rec[$this->fieldName()]["minutes"];
+      }
+    }
+    
   }
 ?>
