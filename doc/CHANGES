@@ -91,6 +91,7 @@ Changes in ATK 5.3
   getMenuItems() call. [Ivo]
 * ATK now has a smaller memory footprint and less overhead, due to cleanup of 
   includes. [Peter, Boy, Ivo]
+* Cleaned up and improved code structure of all supported atkMenu's. [Sandy]
 * Changing the gui language through the url should now be done using ?atklng
   instead of ?lng. [Ivo]
 * Fixed mlsplitter::getInstance wich always created a new instance. [Martin]
