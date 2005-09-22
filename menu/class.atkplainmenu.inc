@@ -103,6 +103,7 @@
         }      
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
+        atkimport("atk.ui.atktheme");
         $theme = &atkTheme::getInstance();  
         $page->register_style($theme->stylePath("style.css"));
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");

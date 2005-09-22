@@ -34,6 +34,7 @@
     {
       global $g_menu,$ATK_VARS,$g_modules;
       $page = &atkPage::getInstance();
+      atkimport("atk.ui.atktheme");
     	$theme = &atkTheme::getInstance();
     	$atkmenutop = $ATK_VARS["atkmenutop"];
        if($atkmenutop=="") $atkmenutop="main";

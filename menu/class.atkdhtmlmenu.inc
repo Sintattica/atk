@@ -111,6 +111,7 @@
       $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.text("logout").'</a></div>'."\n";  
        
       $page = &atknew("atk.ui.atkpage");
+      atkimport("atk.ui.atktheme");
       $theme = &atkTheme::getInstance();  
       $page->register_style($theme->stylePath("style.css"));
       $page->register_style($theme->stylePath("dhtmlmenu.css"));
