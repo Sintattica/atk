@@ -32,10 +32,6 @@
   atksecure();
 
   $output = &atkOutput::getInstance();
-  $page = &atknew("atk.ui.atkpage");
-  $theme = &atkTheme::getInstance();  
-  $ui = &atknew("atk.ui.atkui");
-        
         
   /* general menu stuff */
   /* load menu layout */
