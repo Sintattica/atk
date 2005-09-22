@@ -77,7 +77,7 @@
       {
         if (!isset($g_moduleflags[$modname])||!hasFlag($g_moduleflags[$modname], MF_NOMENU))
         {
-          $mod = getModule($modname);
+          $mod = &getModule($modname);
           if (method_exists($mod,"getMenuItems")) $mod->getMenuItems();
         }
       }
