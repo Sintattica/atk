@@ -52,6 +52,7 @@
             $menuitems[$i]["name"]=$name;
             $url = $g_menu[$atkmenutop][$i]["url"];
             $enable = $g_menu[$atkmenutop][$i]["enable"];
+            $modname = $g_menu[$atkmenutop][$i]["module"];
       
             if (is_array($enable))
             {
@@ -84,12 +85,12 @@
                 {
                   $menuurl = session_url('menu.php?atkmenutop='.$name);
                   $mainurl = session_url($url,SESSION_NEW);
-                  $menu.= '<a href="javascript:menuload(\''.$menuurl.'\', \''.$mainurl.'\');">'.text("menu_$name").'</a>'.$delimiter;
+                  $menu.= '<a href="javascript:menuload(\''.$menuurl.'\', \''.$mainurl.'\');">'.atktext("menu_$name",$modname).'</a>'.$delimiter;
                 }
               }
               else // normal menuitem
               {
-                $menu .= href($url,text("menu_$name"),SESSION_NEW,false,'target="main"').$delimiter;
+                $menu .= href($url,atktext("menu_$name",$modname),SESSION_NEW,false,'target="main"').$delimiter;
               }
             }
           }
@@ -99,7 +100,7 @@
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,text("back_to").' '.text("menu_$parent"),SESSION_DEFAULT).'<br>';  
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent"),SESSION_DEFAULT).'<br>';  
         }      
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
@@ -110,7 +111,7 @@
         atkimport("atk.ui.atkui");
         $ui = &atkUI::getInstance();
 
-        $box = $ui->renderBox(array("title"=>text("menu_".$atkmenutop),
+        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,"core"),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
        
