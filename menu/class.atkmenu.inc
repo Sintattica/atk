@@ -52,7 +52,7 @@
      */
     function getMenu()
     {
-      atkMenu::harvestMenus();
+      //atkMenu::harvestMenus();
       // Check if the menu config is one of the defail atk menus
       if(!in_array(atkconfig("menu_layout"),array("plain","frames","outlook","dhtml")))
       { 
