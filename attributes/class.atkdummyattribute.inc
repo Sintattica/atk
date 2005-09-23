@@ -33,6 +33,7 @@
    * @subpackage attributes
    *
    */
+  atkimport("atk.attributes.atkattribute");
   class atkDummyAttribute extends atkAttribute
   {
     var $m_text;
