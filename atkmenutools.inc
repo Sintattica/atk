@@ -90,7 +90,7 @@
       $s_dupelookup[$parent][$name] = isset($g_menu[$parent])?count($g_menu[$parent]):0;
       $g_menu[$parent][] = $item;
     }
-    if (empty($url)) $g_menu_parent[$name] = $parent;
+    $g_menu_parent[$name] = $parent;
   }
 
   /**
