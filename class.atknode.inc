@@ -1373,8 +1373,8 @@
             $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
           }
 
-          /* we let the attribute add itself to the edit array */
-          $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
+          /* we let the attribute add itself to the edit array */          
+          $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);          
         }
         else
         {
@@ -1806,7 +1806,7 @@
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
 
-      $this->m_initialised = true;
+      $this->m_initialised = true;      
     }
 
     /**
@@ -2585,6 +2585,7 @@
       $preloadlist = array();
       $loadlist = array();
       $postloadlist = array();
+      $cpylist = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -2603,6 +2604,12 @@
           {
             $querylist[]=$attribname;
           }
+        }
+        
+        // ML hack
+        if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+        {
+          $cpylist[]=$attribname;
         }
       }
 
@@ -2722,7 +2729,7 @@
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
 
-      $recordset = array();
+      $recordset = array();      
       for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
       {
         $therecord = array();
@@ -2732,11 +2739,11 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+          if(in_array($attribname, $cpylist))
           {
             $therecord[$attribname] = $recordcopy[$attribname];
           }
-          else if ($p_attrib && method_exists($p_attrib, "db2value"))
+          else if ($p_attrib)
           {
             $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
           }
@@ -2754,7 +2761,7 @@
         $therecord["atkprimkey"] = $this->primaryKey($therecord);
 
         $recordset[] = $therecord;
-      }
+      }      
 
       // also load special storage attributes. (POST)
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -2765,7 +2772,7 @@
 
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
         }
-      }
+      }      
       return $recordset;
     }
 
