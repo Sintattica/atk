@@ -97,10 +97,10 @@
         }
         /* previous */  
         if ($atkmenutop != "main")
-        {
+        {          
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent"),SESSION_DEFAULT).'<br>';  
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).'<br>';  
         }      
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
