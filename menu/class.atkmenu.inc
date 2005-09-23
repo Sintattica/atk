@@ -50,7 +50,7 @@
      * 
      * @return object Menu class object
      */
-    function getMenu()
+    function &getMenu()
     { 
       static $s_instance = NULL;
       if ($s_instance==NULL)
