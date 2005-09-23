@@ -15,8 +15,8 @@
     function getMenuItems()
     {    
       /* add menuitems */     
-      menuitem("test");
-      menuitem("test_admin", dispatch_url("test.test", "admin"), "test", array("test.test", "admin"));
+      $this->menuitem("test");
+      $this->menuitem("test_admin", dispatch_url("test.test", "admin"), "test", array("test.test", "admin"));
     }
   }
 
