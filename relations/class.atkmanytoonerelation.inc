@@ -72,6 +72,20 @@
      */
     var $m_joinFilter = ""; 
     
+    /**
+     * Hide the relation when there are no records to select.
+     * @access private
+     * @var boolean
+     */   
+    var $m_hidewhenempty = false; 
+    
+    /**
+     * Variable for caching records
+     * @access private
+     * @var array
+     */
+    var $m_selectableRecords = array();
+    
     
     /**
      * Constructor.
@@ -279,7 +293,7 @@
           $currentPk = $this->m_destInstance->primaryKey($value);
           $this->m_destInstance->addFilter($filter);
           
-          $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+          $recordset = $this->getSelectableRecords();
 
           if(count($recordset)==0) $editflag = false;
 
@@ -731,6 +745,18 @@
       return 0;
     }
     
+    function getSelectableRecords()
+    {
+      if (!count($this->m_selectableRecords))
+      {
+        if ($this->createDestination())
+        {
+          $this->m_selectableRecords = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        }
+      }
+      return $this->m_selectableRecords;
+    }
+    
       
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's
@@ -765,6 +791,30 @@
         $joinconditions[] = $this->m_joinFilter;
       }
       return implode(" AND ",$joinconditions);
+    }
+   
+    /**
+     * Make this relation hide itself from the form when there are no items to select
+     * @param boolean $hidewhenempty true - hide when empty, false - always show
+     */ 
+    function setHideWhenEmpty($hidewhenempty)
+    {
+      $this->m_hidewhenempty = $hidewhenempty; 
+    }
+    
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {      
+      if ($this->createDestination())
+      {
+        // check if destination table is empty
+        // only check if hidewhenempty is set to true
+        if ($this->m_hidewhenempty)
+        {
+          $recs = $this->getSelectableRecords();          
+          if (count($recs)==0) return $this->hide($defaults, $fieldprefix);
+        }
+      }
+      return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
   }
 
