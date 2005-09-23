@@ -15,11 +15,11 @@
           <td bgcolor="#EEEEE0" align="center" class="block">
 			<table width="100%">
 			  <tr>
-			    <td align="left" width="30%"></td>
-			    <td align="right" width="30%"><br />{$logintext}: 
+			    <td align="left" width="20%"></td>
+			    <td align="center" width="60%"><br />{$logintext}: 
 <b>{$user}</b> &nbsp; <a href="{$logoutlink}" target="{$logouttarget}">{$logouttext}</a> &nbsp;
 			    {if $centerpiece}{$centerpiece}{/if}</td>
-                <td align="right">{if $searchpiece}{$searchpiece}</span>{/if}</td>
+                <td align="right" width="20%">{if $searchpiece}{$searchpiece}</span>{/if}</td>
               </tr>
             </table><br/>
           </td>
