@@ -134,7 +134,7 @@
 
       if (!is_array($myrecords))
       {
-        $myrecords = $this->load(NULL, $record, "admin");
+        $myrecords = $this->load(atkGetDb(), $record, "admin");
       }
 
       $result = text("none","","atk"); // default result
