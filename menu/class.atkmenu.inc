@@ -51,37 +51,27 @@
      * @return object Menu class object
      */
     function getMenu()
-    {
-      //atkMenu::harvestMenus();
-      // Check if the menu config is one of the defail atk menus
-      if(!in_array(atkconfig("menu_layout"),array("plain","frames","outlook","dhtml")))
-      { 
-        // Check the application menu dir for a class.[menu_layout].inc file
-        $menuclass = &atknew("menu.".atkconfig("menu_layout"));
-        if(!is_object($menuclass)) echo "Error menu class.".atkconfig("menu_layout").".inc doesn't exist"; 
-      }
-      else
-      {
-        $menuclass = &atknew("atk.menu."."atk".atkconfig("menu_layout")."menu");
-      }
-      return $menuclass;
-    }
-    
-    /**
-     * Harvest for menus in all modules
-     */
-    function harvestMenus()
-    {
-      global $g_modules,$g_moduleflags;
-      foreach ($g_modules as $modname => $modpath)
-      {
-        if (!isset($g_moduleflags[$modname])||!hasFlag($g_moduleflags[$modname], MF_NOMENU))
-        {
-          $mod = &getModule($modname);
-          if (method_exists($mod,"getMenuItems")) $mod->getMenuItems();
+    { 
+      static $s_instance = NULL;
+      if ($s_instance==NULL)
+      {     
+        atkdebug("Creating a new menu instance");                
+        // Check if the menu config is one of the detail atk menus
+        if(!in_array(atkconfig("menu_layout"),array("plain","frames","outlook","dhtml")))
+        { 
+          // Check the application menu dir for a class.[menu_layout].inc file
+          $classname = "menu.".atkconfig("menu_layout");          
         }
+        else
+        {
+          $classname = "atk.menu.atk".atkconfig("menu_layout")."menu";
+        }
+        $s_instance = atknew($classname);
+        atkHarvestModules("getMenuItems");        
       }
+      return $s_instance;
     }
+        
   }
 
 ?>
