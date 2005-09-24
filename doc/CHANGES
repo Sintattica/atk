@@ -84,6 +84,8 @@ Changes in ATK 5.3
   of the atkDateAttribute. [Boy]
 + Added preliminary MS SQL database driver (test version). [Harrie]
 + Added setHideWhenEmpty() method to atkManyToOneRelation. [Ivo]
+* Renamed anoying isSessionIdValid() to isValidSessionId() to make
+   Zend Studio's autocompletion defaults to isset(). [Martin]    
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
   returned a maximum records of config_recordsperpage. [Martin] 
 * Layout improvements on the o2m embedded add form. [Martin]

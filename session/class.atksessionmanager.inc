@@ -34,7 +34,7 @@
 
   // If somehow the sessionid is unclean (searchengine bots have been known to mangle sessionids)
   // we don't have a session...
-  if (isSessionIdValid())
+  if (isValidSessionId())
   {
     session_name(atkconfig("identifier"));
     session_start();
@@ -790,7 +790,7 @@
    * simply because there is no session yet
    * @return bool Wether or not the sessionid is valid
    */
-  function isSessionIdValid()
+  function isValidSessionId()
   {
   	$name = atkconfig("identifier");
   	$sessionid = "";
