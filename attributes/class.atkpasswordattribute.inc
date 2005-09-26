@@ -33,6 +33,7 @@
    * @subpackage attributes
    *
    */
+  atkimport("atk.attributes.atkattribute");
   class atkPasswordAttribute extends atkAttribute
   {
     /* generate? */
