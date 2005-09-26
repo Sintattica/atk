@@ -32,6 +32,7 @@
    * @subpackage attributes
    *
    */
+  atkimport("atk.attributes.atkattribute");
   class atkListAttribute extends atkAttribute
   {
     /**
