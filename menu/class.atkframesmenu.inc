@@ -79,7 +79,7 @@
               {
                 if (empty($url)) // normal submenu
                 {
-                  $menu .= href('menu.php?atkmenutop='.$name,text("menu_$name")).$delimiter;
+                  $menu .= href('menu.php?atkmenutop='.$name,atktext("menu_$name", $modname)).$delimiter;
                 }
                 else // submenu AND a default url.
                 {
@@ -112,7 +112,7 @@
         atkimport("atk.ui.atkui");
         $ui = &atkUI::getInstance();
 
-        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,"core"),
+        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,$modname),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
        
