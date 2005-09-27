@@ -39,7 +39,7 @@
         @include(atkconfig("configdir").$section.".inc.php");        
         if (isset($config)) $s_configs[$section] = $config;
       }
-      return (isset($s_configs[$section][$tag])?$s_configs[$section][$tag]:$default);
+      return (isset($s_configs[$section][$tag])&&$s_configs[$section][$tag]!==""?$s_configs[$section][$tag]:$default);
     }
     
     /**
