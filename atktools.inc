@@ -327,7 +327,7 @@
    * @return String the string from the languagefile
    * @deprecated Use atktext instead
    */
-  function text($string, $node="", $module="atk", $lng="", $firstfallback="", $nodefaulttext=false)
+  function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
@@ -349,7 +349,7 @@
    *                                when looking for strings
    * @return String the string from the languagefile
    */
-  function atktext($string, $module="atk",$node="", $lng="", $firstfallback="", $nodefaulttext=false, $modulefallback=false)
+  function atktext($string, $module="",$node="", $lng="", $firstfallback="", $nodefaulttext=false, $modulefallback=false)
   {
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext,$modulefallback);
