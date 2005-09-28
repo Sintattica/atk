@@ -87,6 +87,7 @@ Changes in ATK 5.3
 + Added renderbox attribute (boolean, set to true by default) to function
   action_view. This enables you to optionally turn off the rendering of a box
   surrounding the view. [Guido]
++ Added Traditional Chinese translation. [Chin-Tang]
 * Renamed anoying isSessionIdValid() to isValidSessionId() to make
    Zend Studio's autocompletion defaults to isset(). [Martin]    
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
@@ -205,6 +206,9 @@ Changes in ATK 5.3
 * Fixed mimetype for gzip and zip export. [Sandy]
 * Fixed detection of MS IIS so ATK can sent the correct 401 header. [Sandy]
 * Fixed missing stylesheet in select pages. [Ivo]
+* Updated Norwegian translation. [Olav]
+* Updated French translation. [Benjamin, Antoine]
+* Updated Brazilian Portuguese translation. [Roberto]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
