@@ -27,11 +27,14 @@
    */
   class atkViewHandler extends atkActionHandler
   {
+    var $m_renderbox=true;
+    
     /**
      * The action handler method.
      */
-    function action_view()
+    function action_view($renderbox=true)
     {
+      $this->$m_renderbox = $renderbox;
       atkdebug("Action view");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_viewExcludes,"","view");
       
@@ -132,6 +135,11 @@
         
         $output = $ui->renderAction("view", $params);
         
+        if (!$this->$m_renderbox)
+        {
+          return $output;
+        }
+
         $total = $ui->renderBox(array("title"=>$node->actionTitle('view', $record),
                                       "content"=>$output));
         return $total;
