@@ -27,20 +27,17 @@
    */
   class atkViewHandler extends atkActionHandler
   {
-    var $m_renderbox=true;
-    
     /**
      * The action handler method.
      */
     function action_view($renderbox=true)
     {
-      $this->$m_renderbox = $renderbox;
       atkdebug("Action view");
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_viewExcludes,"","view");
       
       $page = &$this->getPage();
             
-      $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $recordset[0], $this->m_node)));
+      $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $recordset[0], $this->m_node, $renderbox)));
     }
     
     /**
@@ -49,7 +46,7 @@
      * @param atkNode $node The node for which a viewPage is displayed.
      * @return String The html page with a reaonly view of relevant fields.
      */
-    function viewPage($record, $node)
+    function viewPage($record, $node, $renderbox=true)
     {            
       $ui = &$this->getUi();
       $node->addStyle("style.css");
@@ -135,7 +132,7 @@
         
         $output = $ui->renderAction("view", $params);
         
-        if (!$this->$m_renderbox)
+        if (!$renderbox)
         {
           return $output;
         }
