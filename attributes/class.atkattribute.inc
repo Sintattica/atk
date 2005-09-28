@@ -707,36 +707,31 @@
      * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {
+    {      
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
-      {
+      {        
         /* when adding, there's nothing to hide... */
         if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
-          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);          
       }
 
       /* edit */
       else
-      {
-        $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
-        
+      {        
+        $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);        
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
         /* label? */        
         $entry["label"] = $this->getLabel($defaults);
-
         /* error? */
         $entry["error"] = $this->getError($error);
-
         // on which tab?
         $entry["tabs"] = $this->m_tabs;     
-
         /* the actual edit contents */
         $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
-
         $arr["fields"][] = $entry;
-      }
+      }      
     }
     
     /**
@@ -781,7 +776,7 @@
       $result = "";
       if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
-        $result.= $this->hide($defaults, $fieldprefix);
+        $result.= $this->hide($defaults, $fieldprefix);        
         $funcname = $this->m_name."_display";
         if (method_exists($this->m_ownerInstance, $funcname))
         {
@@ -803,7 +798,7 @@
         }
         else 
         {
-          $result .= $this->edit($defaults, $fieldprefix, $mode);
+          $result .= $this->edit($defaults, $fieldprefix, $mode);          
         }
       }
       return $result;
