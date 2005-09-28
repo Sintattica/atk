@@ -52,6 +52,7 @@
     {
      atkimport("atk.utils.atkstringparser");
       $node = &$this->m_node;
+      $node->addStyle("style.css");
       // When there's a lot of data, records will be spread across multiple pages.
       if ($node->m_postvars['atklimit']=="") $node->m_postvars['atklimit']=atkconfig("recordsperpage");
       if ($node->m_postvars['atkstartat']=="") $node->m_postvars['atkstartat']=0;
