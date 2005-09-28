@@ -84,6 +84,9 @@ Changes in ATK 5.3
   of the atkDateAttribute. [Boy]
 + Added preliminary MS SQL database driver (test version). [Harrie]
 + Added setHideWhenEmpty() method to atkManyToOneRelation. [Ivo]
++ Added renderbox attribute (boolean, set to true by default) to function
+  action_view. This enables you to optionally turn off the rendering of a box
+  surrounding the view. [Guido]
 * Renamed anoying isSessionIdValid() to isValidSessionId() to make
    Zend Studio's autocompletion defaults to isset(). [Martin]    
 * Fixed a bug in the paging feature of an o2m relation. A selectDb always 
