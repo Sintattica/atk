@@ -62,7 +62,7 @@
      * @access private
      * @var array
      */
-    var $m_overridemodules = array();            
+    var $m_overridemodules = array("langoverrides");            
   
     /**
      * Default Constructor
@@ -96,7 +96,7 @@
      */
     function addOverrideModule($module)
     {
-      $this->m_overridemodules[] = $module;      
+      array_unshift($this->m_overridemodules,$module);      
     }
     
     /**
@@ -105,19 +105,23 @@
      */
     function _getFallbackModules($modulefallback)
     {
-      global $g_modules;
-            
-      $modules = array();
-      if (is_array($g_modules) && ($modulefallback|| atkconfig("language_modulefallback",false)))
-      { 
-        foreach ($g_modules as $modname => $modpath)
+      static $s_fallbackmodules=array();
+      if (count($s_fallbackmodules)<1)
+      {
+        global $g_modules;
+
+        $modules = array();
+        if (is_array($g_modules) && ($modulefallback|| atkconfig("language_modulefallback",false)))
         {
-          $modules[] = $modname;
+          foreach ($g_modules as $modname => $modpath)
+          {
+            $modules[] = $modname;
+          }
         }
+        $modules[] = "atk";
+        $s_fallbackmodules = array_merge($this->m_fallbackmodules, $modules);
       }
-      $modules[] = "langoverrides";
-      $modules[] = "atk";
-      return array_merge($this->m_fallbackmodules, $modules);
+      return $s_fallbackmodules;
     }
     
     /**
@@ -172,14 +176,10 @@
      */
     function _getModules($module, $firstfallback="", $modulefallback=false)
     {
-      static $s_modules = array();
-      if (count($s_modules)==0)
-      {
-        $arr = array($module);
-        if ($firstfallback!="") $arr[] = $firstfallback;
-        $s_modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
-      }
-      return $s_modules;
+      $arr = array($module);
+      if ($firstfallback!="") $arr[] = $firstfallback;
+      $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
+      return $modules;
     }
     
     /**     
@@ -228,6 +228,7 @@
       
       if (!$nodefaulttext)
       {
+        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text");
         // Still nothing found. return default string
         return $this->defaultText($key); 
       }
@@ -303,7 +304,8 @@
      */
     function _getStringFromFile($key, $module, $lng)
     {       
-      $this->_includeLanguage($module, $lng);      
+      $this->_includeLanguage($module, $lng);
+      
       if (is_array($this->m_cachedlang[$module][$lng])
           && isset($this->m_cachedlang[$module][$lng][$key]))
       {        
