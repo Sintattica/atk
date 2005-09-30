@@ -368,9 +368,12 @@
      * @return String The generated recordlist
      */
     function _getRecordList($myrecords)
-    {
+    {      
+      atk_var_dump($myrecords, 'get recordlist');
+      atk_var_dump($this->m_ownerInstance->m_postvars['atksearch'], 'search recordlist');
       if (count($myrecords)!=0 || isset($this->m_ownerInstance->m_postvars['atksearch']))
       {
+        atkdebug("hoi");
         $actions = array();
         $params = array();
 
@@ -594,8 +597,15 @@
      */
     function isEmpty($record)
     {
-      return (!isset($record[$this->fieldName()])
-              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0));
+      if (!isset($record[$this->fieldName()])
+              || (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])==0))
+      {
+        // empty. It might be that the record has not yet been fetched. In this case, we do
+        // a forced load to see if it's really empty.
+        $recs = $this->load(atkGetDb(), $record);
+        return (count($recs)==0);
+      }
+      return false;
     }
 
     /**

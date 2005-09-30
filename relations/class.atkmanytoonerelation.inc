@@ -287,14 +287,12 @@
         if (!$this->hasFlag(AF_LARGE))
         {
           // normal dropdown..
-          $value=NULL;
+          $value=NULL;          
           if(isset($record[$this->fieldName()]))
             $value = $record[$this->fieldName()];
           $currentPk = $this->m_destInstance->primaryKey($value);
           $this->m_destInstance->addFilter($filter);
-          
           $recordset = $this->getSelectableRecords();
-
           if(count($recordset)==0) $editflag = false;
 
           // autoselect if there is only one record (if obligatory is not set,
@@ -316,22 +314,20 @@
               $nodename = $this->m_destInstance->m_type;
               $modulename = $this->m_destInstance->m_module;;
               $nonetext = atktext('select_none', $modulename, $nodename);
-
               // Relation may be empty, so we must provide an empty selectable..
               $result.= '<option value="">'.$nonetext;
             }
-          
             // Newly added check
             $newlyadded = "";
             if (isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
             {
               $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
             }
-            for ($i=0;$i<count($recordset);$i++)
-            {
+            for ($i=0, $_i=count($recordset);$i<$_i;$i++)
+            {              
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-              $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);             
             }
             $result.='</select>';
           }
@@ -408,7 +404,6 @@
         }
         
         if($editflag) $result.=$autolink['edit'];
-        
         $result.= $autolink['add'];
         return $result;
       }
@@ -748,10 +743,10 @@
     function getSelectableRecords()
     {
       if (!count($this->m_selectableRecords))
-      {
+      {        
         if ($this->createDestination())
-        {
-          $this->m_selectableRecords = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        {          
+          $this->m_selectableRecords = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));          
         }
       }
       return $this->m_selectableRecords;
@@ -803,7 +798,7 @@
     }
     
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {      
+    {          
       if ($this->createDestination())
       {
         // check if destination table is empty
