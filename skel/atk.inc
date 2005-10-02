@@ -30,6 +30,4 @@
   
   include_once($config_atkroot."atk/include/initial.inc");
   
-  // This one may be removed, but why would you wanna do that? :)
-  include_once($config_atkroot."atk/class.atkmetanode.inc");  
 ?>
