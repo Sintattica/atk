@@ -16,6 +16,7 @@
   // Translation Tool.
   //
   $nl = array(
+  "above_maximum_value" => "Boven de maximum toegestane waarde",
   "access_denied" => "Toegang geweigerd",
   "add" => "Toevoegen",
   "admin" => "Administratie",
@@ -37,6 +38,7 @@
   "auth_unable_to_connect" => "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).",
   "back" => "Terug",
   "back_to" => "Terug naar",
+  "below_minimum_value" => "Onder de minimum toegestane waarde",
   "cancel" => "Annuleren",
   "cannot create directory" => "Kan de volgende map niet aanmaken: ",
   "cannot make file" => "Kan het volgende bestand niet aanmaken: ",

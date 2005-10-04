@@ -16,6 +16,7 @@
   // Translation Tool.
   //
   $en = array(
+  "above_maximum_value" => "Above the maximum allowed value",
   "access_denied" => "Access denied",
   "add" => "Add",
   "admin" => "Administration",
@@ -37,6 +38,7 @@
   "auth_unable_to_connect" => "Unable to connect to server for authentication (please consult your system administrator).",
   "back" => "Back",
   "back_to" => "Back to",
+  "below_minimum_value" => "Below the minimum allowed value",
   "cancel" => "Cancel",
   "cannot create directory" => "Cannot create directory: ",
   "cannot make file" => "Cannot create file: ",

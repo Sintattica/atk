@@ -27,6 +27,8 @@
   class atkNumberAttribute extends atkAttribute
   {
     var $m_decimals=0; // The number of decimals of the number. 
+    var $m_minvalue=false; // The minimum value of the number.
+    var $m_maxvalue=false; // The maximum value of the number.
   
     /**
      * Constructor
@@ -40,6 +42,17 @@
     {
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
+    }
+    
+    /**
+     * Set the minimum and maximum value of the number. Violations of this range
+     * @param $minvalue Minimum value of the number.
+     * @param $maxvalue Maximum value of the number.
+     */
+    function setRange($minvalue, $maxvalue)
+    {
+      $this->m_minvalue = $minvalue;
+      $this->m_maxvalue = $maxvalue;
     }
     
     function display($record, $mode="")
@@ -87,7 +100,15 @@
     function validate(&$record, $mode)
     {            
       if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
-         triggerError($record, $this->fieldName(), 'error_notnumeric');
+        triggerError($record, $this->fieldName(), 'error_notnumeric');
+      echo $this->m_maxvalue ."<br>\n";
+      echo $this->m_minvalue ."<br>\n";
+      echo $record[$this->fieldName()] ."<br>\n";
+      
+      if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
+        triggerError($record, $this->fieldName(), 'above_maximum_value');
+      if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
+        triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
     
     /**
