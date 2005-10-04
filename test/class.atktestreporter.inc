@@ -8,13 +8,13 @@
    * @package atk
    * @subpackage test
    *
-   * @copyright (c)2005 Ivo Jansch   
-   * @copyright (c)2005 Marcus Baker 
+   * @copyright (c)2005 Ivo Jansch
+   * @copyright (c)2005 Marcus Baker
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
-   */  
+   */
 
   /**
    * This class is an extension to the default HtmlReporter of the SimpleTest
@@ -27,12 +27,13 @@
    * @package atk
    * @subpackage utils
    *
-   */  
-  class atkTestReporter extends HtmlReporter 
-  {   
-    function paintPass($message) 
+   */
+  class atkTestReporter extends HtmlReporter
+  {
+    function paintPass($message)
     {
       parent::paintPass($message);
+      print "<i>".date('Y-m-d H:i:s')."</i>";
       print "<span class=\"pass\">[PASS]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
@@ -43,6 +44,7 @@
      function paintFail($message)
     {
       SimpleReporter::paintFail($message);
+      print "<i>".date('Y-m-d H:i:s')."</i>";
       print "<b><span class=\"fail\">[FAIL]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
@@ -50,8 +52,8 @@
       print "-&gt;$message</b><br />\n";
     }
 
-    
-    function _getCss() 
+
+    function _getCss()
     {
       return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
     }
