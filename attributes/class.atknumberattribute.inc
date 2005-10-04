@@ -101,10 +101,6 @@
     {            
       if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
         triggerError($record, $this->fieldName(), 'error_notnumeric');
-      echo $this->m_maxvalue ."<br>\n";
-      echo $this->m_minvalue ."<br>\n";
-      echo $record[$this->fieldName()] ."<br>\n";
-      
       if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
         triggerError($record, $this->fieldName(), 'above_maximum_value');
       if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
