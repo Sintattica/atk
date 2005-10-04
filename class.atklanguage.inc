@@ -156,6 +156,7 @@
     {
       global $ATK_VARS;
       if (isset($ATK_VARS["atklng"])) { $lng = $ATK_VARS["atklng"]; } // we first check for an atklng variable
+      elseif (isset($ATK_VARS["lng"])) { $lng = $ATK_VARS["lng"]; } // next we check for an lng variable
       else { $lng = atkconfig("language", atkconfig("lang")); }
       return strtolower($lng);
     }              
