@@ -680,6 +680,7 @@
     function &createQuery()
     {      
       $query = &atknew("atk.db.atk".$this->m_type."query");
+      $query->m_db = &$this;
       return $query;
     }
     

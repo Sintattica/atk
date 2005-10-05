@@ -98,6 +98,11 @@
     * Oracle has a problem when aliases are too long
     */
     var $m_generatedAlias;
+    
+    /**
+     * The database that this query does it's thing on
+     */
+    var $m_db;
 
     /**
     * Initialize all variables
@@ -310,10 +315,9 @@
      */
     function executeSelect($distinct = FALSE)
     {
-      $db = &atkGetDb();
-       
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildSelect($distinct);
-      return $db->getrows($query);      
+      return $this->m_db->getrows($query);      
     }
     
     /**
@@ -412,10 +416,10 @@
      * Wrapper function to execute an update query 
      */
     function executeUpdate()
-    {      
-      $db = &atkGetDb(); 
+    {  
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildUpdate();
-      return $db->query($query);      
+      return $this->m_db->query($query);      
     }
 
     /**  
@@ -423,9 +427,9 @@
      */
     function executeInsert()
     {
-      $db = &atkGetDb();      
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildInsert(true);
-      return $db->query($query);      
+      return $this->m_db->query($query);      
     }
 
     /**
@@ -476,9 +480,9 @@
      */
     function executeDelete()
     {
-      $db = &atkGetDb();            
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildDelete();
-      return $db->query($query);      
+      return $this->m_db->query($query);      
     }
 
     /**
