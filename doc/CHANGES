@@ -88,6 +88,7 @@ Changes in ATK 5.3
   action_view. This enables you to optionally turn off the rendering of a box
   surrounding the view. [Guido]
 + Added Traditional Chinese translation. [Chin-Tang]
+* Fixed translation for multi record actions. [Martin]
 * Introduced db member variable for atkQuery which is needed when using
   multiple connections. [Harrie, Boy]
 * Renamed anoying isSessionIdValid() to isValidSessionId() to make

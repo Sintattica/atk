@@ -325,7 +325,7 @@
 	    if($icons == true)
 	    {
 	      $icon = $theme->iconPath($name,"recordlist");
-  	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.text($name,$this->m_node->m_type).'">';
+  	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.text($name,$this->m_node->m_type,$this->m_node->m_module).'">';
 	    }
 	    else
 	    {
@@ -440,7 +440,7 @@
                        '<option value="">'.text("with_selected").':</option>';
 
             foreach ($list["mra"] as $name)
-              $mra .= '<option value="'.$name.'">'.text($name).'</option>';
+              $mra .= '<option value="'.$name.'">'.text($name,$this->m_node->m_type,$this->m_node->m_module).'</option>';
 
             $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
                        '<input type="button" class="btn" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
