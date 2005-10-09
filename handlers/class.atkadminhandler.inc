@@ -244,7 +244,7 @@
         else
         {
           // generic text
-          $label = text(getNodeType($this->m_node->m_type))." ".text("add","","atk");
+          $label = text(getNodeType($this->m_node->m_type),$this->m_node->m_type,$this->m_node->m_module)." ".text("add","","atk");
         }
         return href($addurl,$label,SESSION_NESTED);
       }

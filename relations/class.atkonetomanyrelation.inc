@@ -369,11 +369,8 @@
      */
     function _getRecordList($myrecords)
     {      
-      atk_var_dump($myrecords, 'get recordlist');
-      atk_var_dump($this->m_ownerInstance->m_postvars['atksearch'], 'search recordlist');
       if (count($myrecords)!=0 || isset($this->m_ownerInstance->m_postvars['atksearch']))
       {
-        atkdebug("hoi");
         $actions = array();
         $params = array();
 
