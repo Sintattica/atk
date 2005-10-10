@@ -8,24 +8,24 @@
    * @package atk
    * @subpackage test
    *
-   * @copyright (c)2005 Ivo Jansch   
+   * @copyright (c)2005 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
-   */  
+   */
 
   /**
-   * Includes   
-   */  
+   * Includes
+   */
   require_once(atkconfig("atkroot")."atk/atktools.inc");
-  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");  
-  require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");  
-  atkimport("atk.test.atktestreporter");  
-  atkimport("atk.test.atkattributetestcase");  
-  
+  require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
+  require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
+  atkimport("atk.test.atktestreporter");
+  atkimport("atk.test.atkattributetestcase");
+
   /**
-   * atkTestCaseCollector is a visitor that can be passed to an 
+   * atkTestCaseCollector is a visitor that can be passed to an
    * atkDirecoryTraverser. It detects if a file is a suitable testcase and if
    * so, adds it to the testsuite.
    * This class is used by the atkTestSuite. It should not be necessary to use
@@ -35,35 +35,35 @@
    * @package atk
    * @subpackage test
    *
-   */  
+   */
   class atkTestCaseCollector
   {
     var $m_grouptest = null;
-    
+
     function atkTestCaseCollector(&$grouptest)
     {
       $this->m_grouptest = &$grouptest;
     }
-    
+
     function visitFile($fullpath)
-    { 
+    {
       global $include;
       $includefiles = explode("|",$include);
       $filename = basename($fullpath);
       if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))))
       {
         $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
-        $testclassname = $elems[1]; 
-        include_once($fullpath);        
+        $testclassname = $elems[1];
+        include_once($fullpath);
         $this->m_grouptest->addTestClass($testclassname);
       }
     }
-        
+
   }
-  
+
   /**
    * The atkTestSuite is a SimpleTest framework wrapper that auto-detects
-   * testcases in the entire atk application and atk itself. By running 
+   * testcases in the entire atk application and atk itself. By running
    * test.php from the ATK skel (place test.php in your application root if
    * it's not there already), you can test both ATK and your own application.
    *
@@ -75,7 +75,7 @@
    * @package atk
    * @subpackage test
    *
-   */  
+   */
   class atkTestSuite
   {
     /**
@@ -83,8 +83,8 @@
      */
     function atkTestSuite()
     {
-    } 
-    
+    }
+
     /**
      * Detect, and run, all available tests.
      * @param string $reporttype Simpletest report type, can be 'text' or 'html'
@@ -92,21 +92,28 @@
      *                           text automaticly
      */
     function run($reporttype="html")
-    {           
+    {
+      global $g_modules, $config_module_path;
+
       $test = &new GroupTest("Full ATK test");
-      
+
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
-      $traverser->traverse(".");     
+      $traverser->traverse(".");
+      foreach ($g_modules as $name => $path) {
+        if (strpos($path, $config_module_path . "/") !== 0) {
+          $traverser->traverse($path);
+        }
+      }
       if($reporttype=="html")
       {
         $test->run(atknew("atk.test.atktestreporter"));
       }
       else
       {
-        $test->run(new TextReporter());        
+        $test->run(new TextReporter());
       }
     }
   }
-  
+
 ?>
