@@ -33,25 +33,28 @@
     function paintPass($message)
     {
       parent::paintPass($message);
-      print "<i>".date('Y-m-d H:i:s')."</i>";
-      print "<span class=\"pass\">[PASS]</span> ";
+      $passline = "<i>".date('Y-m-d H:i:s')."</i>";
+      $passline.= "<span class=\"pass\">[PASS]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
-      print implode("-&gt;", $breadcrumb);
-      print "-&gt;$message<br />\n";
+      $passline.= implode("-&gt;", $breadcrumb);
+      $passline.= "-&gt;$message<br />\n";
+      echo str_pad($passline, 4096);
+      flush();
     }
 
-     function paintFail($message)
+    function paintFail($message)
     {
       SimpleReporter::paintFail($message);
-      print "<i>".date('Y-m-d H:i:s')."</i>";
-      print "<b><span class=\"fail\">[FAIL]</span> ";
+      $failline = "<i>".date('Y-m-d H:i:s')."</i>";
+      $failline.= "<b><span class=\"fail\">[FAIL]</span> ";
       $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
-      print implode("-&gt;", $breadcrumb);
-      print "-&gt;$message</b><br />\n";
+      $failline.= implode("-&gt;", $breadcrumb);
+      $failline.= "-&gt;$message</b><br />\n";
+      echo str_pad($failline, 4096);
+      flush();
     }
-
 
     function _getCss()
     {
