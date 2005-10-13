@@ -74,7 +74,7 @@
     {
       $elems = $this->_breakDown();
       $values = $this->_valueBreakDown($record[$this->fieldName()]);
-      $usrcnt = 0;
+      $usercnt = 0;
       for($i=0, $_i=count($values); $i<$_i; $i++)
       {
         if ($elems[$i]['type']!='/')
@@ -246,7 +246,7 @@
 
       foreach ($elems as $elem)
       {
-        if ($type!='/')
+        if ($elem['type']!='/')
         {
           $values[] = trim(substr($valuestr, $pos, $elem['size']));
         }
