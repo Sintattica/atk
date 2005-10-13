@@ -216,6 +216,10 @@ Changes in ATK 5.3
 * Fixed bug in _valueBreakDown function of atkFormatAttribute. [Sandy]
 * Fixed return in getLabel function of atkAttribute. [Sandy]
 * Fixed bug in menuitems of atkMenuTools (wrong var was used). [Sandy]
+* Changed atkCurrencyAttribute constructor (not backwards compatible)
+  by adding 3 new params for formating the currency value.
+  If no values are given to the params it will check the 
+  language file for default values. [Arnold,Sandy]
 * Updated Norwegian translation. [Olav]
 * Updated French translation. [Benjamin, Antoine]
 * Updated Brazilian Portuguese translation. [Roberto]
