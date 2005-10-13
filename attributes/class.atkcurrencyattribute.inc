@@ -25,37 +25,48 @@ useattrib("atknumberattribute");
    */
 class atkCurrencyAttribute extends atkNumberAttribute
 {
-  var $m_valutasymbol;
-
+  var $m_currencysymbol;
+  var $m_decimalseparator;
+  var $m_thousandsseparator;
+  
   /**
     * Constructor
-    * @param $name  Name of the attribute
-    * @param $valutasymbol The symbol which is printed in front of the value.
-    * @param $flags Flags for this attribute
-    * @param $size  The size(s) for this attribute (default 10)
-    * @param $decimals The number of decimals
+    * @param string $name  Name of the attribute
+    * @param int $flags Flags for this attribute
+    * @param int $size  The size(s) for this attribute (default 10)
+    * @param int $decimals The number of decimals (default 2)
+    * @param string $currencysymbol The symbol which is printed in front of the value.
+    * @param string $decimalseparator The separator which is printed for the decimals.
+    * @param string $thousandsseparator The separator which is printed for the thousands.
     *
     */
-  function atkCurrencyAttribute ($name,$valutasymbol,$size,$flags=0,$decimals=2)
+  function atkCurrencyAttribute($name,$flags,$size=10,$decimals=2,$currencysymbol="",$decimalseparator="",$thousandsseparator="")
   {
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
-    $this->m_valutasymbol = $valutasymbol;
+    
+    if($currencysymbol=="") $currencysymbol=atktext("currencysymbol");
+    if($decimalseparator=="") $decimalseperator=atktext("decimal_separator");
+    if($thousandsseparator=="") $thousandsseparator=atktext("thousands_separator");
+
+    $this->m_currencysymbol = $currencysymbol;
+    $this->m_decimalseperator = $decimalseperator;
+    $this->m_thousandsseparator = $thousandsseparator;
   }
   
   /**
-   * overrides the edit function to put the currencysymbol in from of the input field
+   * overrides the edit function to put the currencysymbol in front of the input field
    */
   function edit($record="", $fieldprefix="")
   {
-    return $this->m_valutasymbol." ".parent::edit($record,$fieldprefix);
+    return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix);
   }
   
   /**
-   * overrides the display function to put the currencysymbol in from of the input field
+   * overrides the display function to put the currencysymbol in front of the input field
    */
   function display($record, $mode="")
   {
-    return $this->m_valutasymbol.parent::display($record,$mode);
+    return $this->m_currencysymbol." ".number_format(parent::display($record,$mode),$this->m_decimals,$this->m_decimalseparator,$this->m_thousandsseparator);
   }
 }
 
