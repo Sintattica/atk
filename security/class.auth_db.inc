@@ -85,9 +85,14 @@
 
        $usertable = atkconfig("auth_usertable");
        $leveltable = atkconfig("auth_leveltable");
+       $levelfield = atkconfig("auth_levelfield");
        $userfield = atkconfig("auth_userfield");
        $userpk = atkconfig("auth_userpk");
        $userfk = atkconfig("auth_userfk", $userpk);
+       $grouptable = atkconfig("auth_grouptable");         
+       $groupfield = atkconfig("auth_groupfield");         
+       $groupparentfield = atkconfig("auth_groupparentfield");         
+       
        if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
@@ -101,9 +106,16 @@
          // level.	       
 	       $qryobj =&$db->createQuery();
 	       $qryobj->addTable($usertable);
-	       $qryobj->addField("*");
+	       $qryobj->addField("$usertable.*");
+	       $qryobj->addField("usergroup.*");
 	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userfk", true);
 	       $qryobj->addCondition("$usertable.$userfield = '$user'");
+	       
+	       if (!empty($groupparentfield))
+	       {
+	         $qryobj->addField("grp.$groupparentfield");
+	         $qryobj->addJoin($grouptable, "grp", "usergroup.$levelfield = grp.$groupfield", true);
+	       }
 	       $query = $qryobj->buildSelect();
        }
 
@@ -112,20 +124,43 @@
        $groups = array();
 
        // We might have more then one level, so we loop the result.
-       if (count($recs)>1)
+       if (count($recs)>0)
        {
          $level = array();
+         
+         $parents = array();
+
          for ($i=0;$i<count($recs);$i++)
          {
            $level[] = $recs[$i][atkconfig("auth_levelfield")];
            $groups[] = $recs[$i][atkconfig("auth_levelfield")];
+           
+           if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")
+             $parents[] = $recs[$i][$groupparentfield];
          }
+
+         $groups = array_merge($groups, $parents);
+         while (count($parents) > 0)
+         {
+  	       $query = &$db->createQuery();
+  	       $query->addField($groupparentfield);  	    
+    	     $query->addTable($grouptable);
+  	       $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).")");
+  	       $precs = $db->getrows($query->buildSelect(TRUE));  
+  	       
+           $parents = array();  	       
+  	       foreach ($precs as $prec)
+  	         if ($prec[$groupparentfield] != "")
+  	           $parents[] = $prec[$groupparentfield];         
+  	         
+           $groups = array_merge($groups, $parents);  	         
+         }
+         
+         $groups = array_unique($groups);
        }
-       else
-       {
-         $level = $recs[0][atkconfig("auth_levelfield")];
-         $groups = array($recs[0][atkconfig("auth_levelfield")]);
-       }
+       
+       if (count($level) == 1)
+         $level = $level[0];
 
        // We might have more then one access level, so we loop the result.
        if (count($recs)>1)
@@ -151,6 +186,7 @@
        $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
        $userinfo["groups"]=$groups;
        $userinfo["access_level"]=$access;
+       atk_var_dump($userinfo, "<b>USER DATA</b>");
        return $userinfo;
      }
 

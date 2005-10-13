@@ -258,6 +258,27 @@
    * @var String
    */
   $config_auth_levelfield = "entity";
+
+  /**
+   * Name of table containing the groups.
+   * (only necessary to support hierarchical groups!).
+   * @var String   
+   */
+  $config_auth_grouptable = "";
+  
+  /**
+   * Name of primary key attribute in group table.
+   * (only necessary to support hierarchical groups!)
+   * @var String
+   */
+  $config_auth_groupfield = "";
+  
+  /**
+   * Name of parent attribute in group table.
+   * (only necessary to support hierarchical groups!)
+   * @var String
+   */
+  $config_auth_groupparentfield = "";  
   
   /**
    * Default pop3 port
