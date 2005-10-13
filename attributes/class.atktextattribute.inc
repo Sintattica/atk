@@ -182,8 +182,8 @@
      */
     function doAutoAdjust($data, &$rows, &$cols)
     {    	
-  	$browser = new browserInfo; 
-    	
+    	$browser = new browserInfo; 
+    	$maxlinechars = 0;
     	for ($counter = 0, $linecharacters=0, $rowsrequired=1; 
     	     $counter<strlen($data); 
     	     $counter++, $linecharacters++)
