@@ -398,7 +398,7 @@
 
       $searchConditions = array();
       $descfields = $this->m_destInstance->descriptorFields();
-      
+      $prevdescfield = "";
       foreach($descfields as $descField)
       {
         if ($descField !== $prevdescfield && $descField !== $this->m_owner)
