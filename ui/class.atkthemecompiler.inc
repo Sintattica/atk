@@ -259,6 +259,7 @@
      */
     function _compileThemedef()
     {
+      $file = "";
       $this->_compileBegin($file);
       
       foreach ($this->m_def as $themedefitemname => $themedefitem)
