@@ -69,9 +69,8 @@
        else 
        {
        	 // regular match, perhaps with md5.
-     	 return (strtoupper($dbpasswd)==strtoupper($userpasswd));
+     	   return (strtoupper($dbpasswd)==strtoupper($userpasswd));
        }
-       return false;
      }
 
      function canMd5()
