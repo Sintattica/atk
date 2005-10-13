@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,9 @@
    *
    * @version $Revision$
    * $Id$
-   */  
+   */
+
+  useattrib("atkattribute");
 
   /**
    * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color
@@ -98,7 +100,7 @@
       $matrix_blue  .= drawTD($field, "#0000".$webColors[$i], $colHeight, $colWidth, $extern);
       $matrix_grey  .= drawTD($field, "#".$webColors[$i].$webColors[$i].$webColors[$i], $colHeight, $colWidth, $extern);
     }
- 
+
     $matrix_red   = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_red.'</tr></table>';
     $matrix_green = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_green.'</tr></table>';
     $matrix_blue  = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_blue.'</tr></table>';
@@ -109,8 +111,8 @@
     {
       $tmpColors = explode("|", $userColors);
 
-      for ($i=0;$i<=count($tmpColors)-1;$i++)  
-      {  
+      for ($i=0;$i<=count($tmpColors)-1;$i++)
+      {
         $dummy = $tmpColors[$i];
         if (substr($dummy,0,1) != "#")
         {
@@ -139,7 +141,7 @@
     $colors = func_get_arg(0);
     if($numargs == 2) { $type = func_get_arg(1); }else{ $type = "hex"; }
     if($numargs > 2) { atkerror("Error in function check_color(): Too many arguments passed to function."); return false; }
-  
+
     // color types -
     //          hex - hexidecimal value in form of #XXX, XXX, #XXXXXX, or XXXXXX
     //          rgb - rgb value in form of rgb(X,Y,Z);
@@ -149,7 +151,7 @@
       // \d is all decimal digits (0-9)
       $t = preg_match_all("([\da-f])", $colors, $matches);
       $length = strlen($colors);
-  
+
       // Have to match the preg_match_all with the length to prevent incorrect results
       // else 3 matches in a 6 character code would make something like 123x98 valid
       if(($t == 3 and $length == 3) or ($t == 6 and $length == 6)){ return true; } else { return false; }
@@ -164,30 +166,30 @@
         $len = strlen($colors);
         // the full length - 5 characters to make up for the "rgb(" and the ")" - 5 characters total
         $lenone = $len - 5;
-  
+
         // $colors is now only the values and the commas (",") that seperate them
         // rgb(51,102,153) is now 51,102,153 - we need this to explode the data in the next step
         $colors = substr($colors, 4, $lenone);
-  
+
         // explode the color substring - should be in X,Y,Z format now.
         // $extras takes any characters more than the X,Y,Z format.
         list($r, $g, $b, $extras) = explode(",",$colors);
-  
+
         // Check the rgb values that were just exploded.
         if($r < 0 or $r > 255 or $g < 0 or $g > 255 or $b < 0 or $b > 255) { $error++; }
-  
+
         // Make sure that none of the values are blank  - prevents rgb(12) or rgb(12,12) from being valid
         if($r == "" or $g == "" or $b == ""){ $error++; }
-  
+
         // \D in the character class means any non-decimal character except newline
         $rt = preg_match_all("[\D]", $r, $matches);
         $gt = preg_match_all("[\D]", $g, $matches);
         $bt = preg_match_all("[\D]", $b, $matches);
-  
+
         // If we matched any characters above the values are not valid.
         // Also is there is anything in $extras - the whole color code is an invalid form!
         if($rt > 0 or $gt > 0 or $bt > 0 or $extras != ""){ $error++; }
-  
+
         // If there are any errors then the color is not valid, return false, otherwise
         // we're okay and we retun true
         if($error > 0) { return false; } else { return true; }
@@ -200,11 +202,11 @@
     }
   }
 
-  /**  
+  /**
    * The atkColorPickerAttribute class represents an attribute of an atkNode.
    * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
    * from wich the user can select a color or enter the hexcode in a textfield
-   * 
+   *
    * flags: AF_POPUP  opens a popup screen with colorpicker instead of drawing under the input field
    * @todo There are many global functions in the class file
    *       class.atkcolorpickerattribute.inc. These should be moved to private
@@ -218,25 +220,25 @@
   {
     var $m_userColors;
     var $m_currentColor;
- 
+
     /**
      * Constructor
      *
      * <b>Example:</b>
      * $this->add(new atkColorPickerAttribute("naam",Array,AF_OBLIGATORY|AF_POPUP));
      * @param $name Name of the attribute
-     * @param $array   Array with max. 12 user defined colors 
+     * @param $array   Array with max. 12 user defined colors
      * @param $flags Flags for the attribute
      */
 
     function atkColorPickerAttribute($name ,$userColors="", $flags = 0)
     {
       global $config_atkroot;
-      
-      // Call baseclass constructor. We set 10 as default size. An html 
+
+      // Call baseclass constructor. We set 10 as default size. An html
       // colorvalue (#ffffaa) is 7 chars, but with 10 chars, we can also
       // save named colors like 'white' etc.
-      $this->atkAttribute($name, $flags, 10);     
+      $this->atkAttribute($name, $flags, 10);
 
       $this->m_userColors = $userColors;
     }
@@ -250,15 +252,15 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array();
     }
-  
+
 
     function edit($record="", $fieldprefix="")
     {
       global $config_atkroot;
-      
+
       $page = &atkPage::getInstance();
-      $page->register_script($config_atkroot."atk/javascript/newwindow.js");      
-      $page->register_script($config_atkroot."atk/javascript/colorpicker.js");            
+      $page->register_script($config_atkroot."atk/javascript/newwindow.js");
+      $page->register_script($config_atkroot."atk/javascript/colorpicker.js");
 
       $colHeight  = "11";
       $colWidth   = "11";
@@ -266,11 +268,11 @@
 
       if ($this->m_currentColor == "")
       {
-         $this->m_currentColor = $record[$this->fieldName()];	
+         $this->m_currentColor = $record[$this->fieldName()];
       }
 
       $colorField = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_currentColor.'" size="7" maxlength="7">';
-      
+
       if ($this->m_userColors !="")
       {
         $temp    = $this->m_userColors;
@@ -299,25 +301,25 @@
       }
 
       $url     = atkPopup('atk/popups/colorpicker.inc','field='.$fieldprefix.$this->fieldName().'&activecolor='.$urlColor.'&usercol='.$userCol,'colorPicker',315,600,'no','no');
-      $text    = '<a href ="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField; 
-      $result  = "<table><tr><td valign='top' align='left'>";  
+      $text    = '<a href ="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField;
+      $result  = "<table><tr><td valign='top' align='left'>";
       $result .= " <table cellpadding='0' cellspacing='0' border='0' width='35' height='21'><tr><td id='example_".$fieldprefix.$this->fieldName()."' name='example_".$fieldprefix.$this->fieldName()."' valign='top' align='left' bgcolor='".$this->m_currentColor."'>".$text."</td></tr></table>";
-      $result .= "</td><tr></table>";      
+      $result .= "</td><tr></table>";
 
       return $result;
     }
-    
+
     function validate(&$record, $mode)
     {
       $color = $record[$this->fieldName()];
       if(!check_color($color))
         triggerError($record, $this->fieldName(), 'error_invalid_color');
     }
-    
+
     function dbFieldType()
-    { 
+    {
       return "string";
     }
-  } 
-  
+  }
+
 ?>
