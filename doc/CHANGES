@@ -212,6 +212,7 @@ Changes in ATK 5.3
 * Fixed mimetype for gzip and zip export. [Sandy]
 * Fixed detection of MS IIS so ATK can sent the correct 401 header. [Sandy]
 * Fixed missing stylesheet in select pages. [Ivo]
+* Fixed menu positions right and bottom. [Sandy]
 * Updated Norwegian translation. [Olav]
 * Updated French translation. [Benjamin, Antoine]
 * Updated Brazilian Portuguese translation. [Roberto]
