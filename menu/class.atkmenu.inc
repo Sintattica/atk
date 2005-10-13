@@ -21,8 +21,8 @@
    */
   define("MENU_TOP", 1);
   define("MENU_LEFT", 2);
-  define("MENU_BOTTOM", 1);
-  define("MENU_RIGHT", 1);
+  define("MENU_BOTTOM", 3);
+  define("MENU_RIGHT", 4);
   define("MENU_SCROLLABLE", 1);
   define("MENU_UNSCROLLABLE", 2);
 	define("MENU_MULTILEVEL", 1); //More then 2 levels supported
