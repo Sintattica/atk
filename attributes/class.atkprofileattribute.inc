@@ -27,9 +27,18 @@
    */  
   class atkProfileAttribute extends atkAttribute
   {
-    function atkProfileAttribute($name, $flags=0)
+    var $m_parentAttrName;
+    
+    function atkProfileAttribute($name, $parentAttrName="", $flags=0)
     {
+      if (is_numeric($parentAttrName))
+      {
+        $flags = $parentAttrName;
+        $parentAttrName = "";
+      }
+      
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH|AF_HIDE_LIST);
+      $this->m_parentAttrName = $parentAttrName;
     }
 
     function load($db, $record)
@@ -46,28 +55,82 @@
       }
       return $result;
     }
+    
+    function getChildGroups(&$db, $id)
+    {
+      $result = array();
+      if (!is_numeric($id))
+        return $result;
+      
+      $query = "SELECT ".$this->m_ownerInstance->primaryKeyField()." ".
+               "FROM ".$this->m_ownerInstance->m_table." ".
+               "WHERE ".$this->m_parentAttrName." = $id";
+      
+               
+      $rows = $db->getRows($query);               
+      foreach ($rows as $row)
+      {
+        $id = $row[$this->m_ownerInstance->primaryKeyField()];
+        $result = array_merge($result, array($id), $this->getChildGroups($db, $id));
+      }
+      
+      return $result;
+    }
 
     function store($db, $record, $mode)
     {
+      global $g_user;
+      
       $delquery = "DELETE FROM ".atkconfig("auth_accesstable")."
                    WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       if ($db->query($delquery))
-      {      
+      { 
+        $isAdmin = $g_user['name'] == 'administrator';
+        $allActions = $this->getAllActions($record);
+        $editableActions = $this->getEditableActions($record);        
+        
         $checked = $record[$this->fieldName()];
+        
+        $children = array();
+        if (!empty($this->m_parentAttrName))
+          $children = $this->getChildGroups($db, $record[$this->m_ownerInstance->primaryKeyField()]);
 
-        while (list($node, $actions)=each($checked))
+        foreach ($checked as $node => $actions)
         {
-          for ($i=0;$i<count($actions);$i++)
+          $nodeModule = getNodeModule($node);
+          $nodeType = getNodeType($node);
+          
+          $validActions = array();
+          if (is_array($allActions[$nodeModule][$nodeType]))
+            $validActions = array_intersect($actions, $allActions[$nodeModule][$nodeType]);
+          if (!$isAdmin && is_array($editActions[$nodeModule][$nodeType]))
+            $validActions = array_intersect($validActions, $editActions[$nodeModule][$nodeType]);
+          
+          foreach ($validActions as $action)
           {
             $query = "INSERT INTO ".atkconfig("auth_accesstable")." (node, action, ".atkconfig("auth_levelfield").") ";
-            $query.= "VALUES ('".$node."','".$actions[$i]."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
+            $query.= "VALUES ('".escapeSQL($node)."','".escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
   
             if (!$db->query($query))
             {
               // error.
               return false;
             }
+          }
+          
+          if (count($children) > 0 && count($validActions) > 0)
+          {
+            $query = "DELETE FROM ".atkconfig("auth_accesstable")." ".
+                     "WHERE ".atkconfig("auth_levelfield")." IN (".implode(",", $children).") ".
+                     "AND node = '".escapeSQL($node)."' ".
+                     "AND action NOT IN ('".implode("','", $validActions)."')";       
+                     
+            if (!$db->query($query))
+            {
+              // error.
+              return false;
+            }                        
           }
         }        
       }
@@ -92,32 +155,116 @@
       }
       return $rights;
     }
+ 
+    /**
+     * Retrieve all possible module/node actions.
+     */
+    function getAllActions($record)
+    {
+      global $g_modules, $g_moduleflags, $g_nodes;
 
+      $result = array();      
+      
+      // hierarchic groups, only return actions of parent (if this record has a parent)
+      $parentAttr = $this->m_parentAttrName;
+      if (!empty($parentAttr) && is_numeric($record[$parentAttr]))
+      {
+        $db = &atkGetDb();      
+        $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable")." ". 
+                 "WHERE ".atkconfig("auth_levelfield")." = ".$record[$parentAttr];
+        $rows = $db->getRows($query);
+        
+        foreach ($rows as $row)
+        {
+          $module = getNodeModule($row['node']);
+          $node = getNodeType($row['node']);
+          $result[$module][$node][] = $row['action'];
+        }        
+      }
+      
+      // non-hierarchic groups, or root
+      else
+      {
+        // include node information
+        require_once(atkconfig("atkroot")."atk/atknodetools.inc");
+        if (file_exists("config.nodes.inc"))
+          include_once("config.nodes.inc");
+  
+        // get nodes for each module
+        foreach (array_keys($g_modules) as $module)
+        {        
+          if (!isset($g_moduleflags[$module]) || !hasFlag($g_moduleflags[$module], MF_NORIGHTS))
+          {
+            $instance = &getModule($module);
+            if (method_exists($instance, "getNodes")) 
+              $instance->getNodes();          
+          }
+          
+          // retrieve actions for each node
+          $nodes = isset($g_nodes[$module]) ? $g_nodes[$module] : array();        
+          foreach ($nodes as $node => $actions)
+            if (is_array($actions))
+              $result[$module][$node] = $actions;
+        }   
+      }
+      
+      return $result;
+    }
+    
+    /**
+     * Returns a list of actions that should be edittable by the user.
+     */
+    function getEditableActions($record)
+    {
+      global $g_user;
+
+      $levels = "";
+      if (!is_array($g_user['level']))
+        $levels = "'".$g_user['level']."'";
+      else $levels = "'".implode("','",$g_user['level'])."'";
+      
+      // retrieve editable actions by user's levels
+      $db = &atkGetDb();      
+      $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+      $rows = $db->getRows($query);
+      
+      $result = array();
+      foreach ($rows as $row)
+      {
+        $module = getNodeModule($row['node']);
+        $node = getNodeType($row['node']);
+        $result[$module][$node][] = $row['action'];
+      }
+        
+      return $result;
+    }
+    
+    /**
+     * Returns the currently selected actions.
+     */
+    function getSelectedActions($record)
+    {
+      $selected = $record[$this->fieldName()];
+      
+      $result = array();
+      foreach ($selected as $node => $actions)
+      {
+        $module = getNodeModule($node);
+        $node = getNodeType($node);
+        $result[$module][$node] = $actions;        
+      }
+      
+      return $result;
+    }
+    
 
     function edit($record)
     {
-      global $g_modules, $g_nodes, $config_atkroot,$g_moduleflags;
-      global $g_user;            
-
-      $page = &atkPage::getInstance();
-      $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
+      global $g_user;
       
-      /* get nodes */
-      require_once($config_atkroot."atk/atknodetools.inc");
-
-      if (file_exists("config.nodes.inc"))
-      {
-        include_once("config.nodes.inc");
-      }
-      foreach ($g_modules as $modname => $pathname)
-      {        
-        if (!isset($g_moduleflags[$modname])||!hasFlag($g_moduleflags[$modname], MF_NORIGHTS))
-        {
-          $mod_inst = &getModule($modname);
-          if (method_exists($mod_inst, "getNodes")) $mod_inst->getNodes();          
-        }
-      }
-
+      $page = &atkPage::getInstance();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
+      
       $result='<div align="right">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
                     text("check_all").
@@ -126,97 +273,45 @@
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     text("invert_selection").'</a>]</div>';
                     
-      /* get permissions group*/
-      $checked = $record[$this->fieldName()];
+      $isAdmin = $g_user['name'] == 'administrator';
+      $allActions = $this->getAllActions($record);
+      $editableActions = $this->getEditableActions($record);
+      $selectedActions = $this->getSelectedActions($record);
 
-      /*get permission of user to find out which permission may be changed*/
-      if(!is_array($g_user['level']))
-        $levels = "'".$g_user['level']."'";
-      else
-        $levels = "'".implode("','",$g_user['level'])."'";
-      $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+      $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
       
-      $db = &atkGetDb();
-      $activeNodeActions = $db->getrows($query);
-
-      foreach( $activeNodeActions as $a)
+      foreach ($allActions as $module => $nodes)
       {
-        $active[$a['node']][] = $a['action'];
-      }
+        if ($showModule)
+          $result .= "<br><hr><b>".text("title_$module")."</b><br><br>";          
 
-      /*** per module ***/      
-      
-      $modcopy = $g_modules;
-      
-      foreach ($modcopy as $modname => $pathname)
-      {
-        $nodes = (isset($g_nodes[$modname])?$g_nodes[$modname]:array());
-        
-        $mainHtml="";
-        
-        if (count($nodes) > 0)
-        {                  
-          $showModule=false;
+        foreach ($nodes as $node => $actions)
+        {
+          $showBox = $isAdmin || count(array_intersect($actions, $editableActions[$module][$node])) > 0;
           
-          foreach($nodes as $node => $actionarr)
-          {            
-            $checked_actions = isset($checked["$modname.$node"])?$checked["$modname.$node"]:array();
-            $active_actions = isset($active["$modname.$node"])?$active["$modname.$node"]:array();
-            if (is_array($actionarr))
-            {              
-              
-              $nodename = getNodeType($node);              
-              $html="";
-              $boxActive=false;
-              for ($i=0;$i<count($actionarr);$i++)
-              {                                                
-                $action = $actionarr[$i];
-                if (substr($action,0,1)=="*") $action=substr($action,1);                                
-
-                if ((is_array($active_actions) && in_array($action, $active_actions)) || $g_user['name']=='administrator')
-                {  
-                  $showModule=true;
-                  $boxActive=true;
-                  $html.='<input  type="checkbox" name="'.$this->formName().'[]" value="'.$modname.".".$node.".".$action.'" ';
-                  if (is_array($checked_actions)&&in_array($action, $checked_actions)) $html.=" checked";
-
-                  $label = $this->permissionName($action, $node, $modname);
-                  $html.='> '.$label.'&nbsp;&nbsp;&nbsp;'; 
-                }
-                else
-                {
-                  
-                  if (is_array($checked_actions)&&in_array($action, $checked_actions))
-                  {
-                    $html .= '<input type="hidden" name="'.$this->formName().'[]'.
-                      '" value="'.$modname.".".$node.".".$action.'">';
-                  }
-                }
-                                
-              }              
-              if($boxActive)  
-              {
-                $mainHtml .="<b>".text(getNodeType($nodename))."</b><br>";
-                $mainHtml .=$html;
-                $mainHtml .="<br><br>\n";
-              }
-              else 
-              {
-                $mainHtml.=$html;
-              }
-              
+          if ($showBox)
+            $result .= "<b>".text($node)."</b><br>";
+          
+          foreach ($actions as $action)
+          {
+            $isEditable = $isAdmin || in_array($action, $editableActions[$module][$node]);
+            $isSelected = is_array($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+            
+            if ($isEditable)
+            {
+              $result .= '<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
+              $result .= ($isSelected ? ' checked="checked"' : '').'></input> ';
+              $result .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
             }
-          }          
-          if ($showModule)
-          {
-            // only show the header if there are more than only the main module.
-            $result .= "<br><hr><b>".text("title_$modname")."</b><br><br>".$mainHtml;
-          } 
-          else
-          {
-            $result .= $mainHtml;
+            else 
+            {
+              $result .= '<input type="hidden" name="'.$this->formName().'[]'.'" value="'.$module.".".$node.".".$action.'"></input>';              
+            }
           }
-        }        
+          
+          if ($showBox)
+            $result .= "<br /><br />\n"; 
+        }
       }
       
       return $result;

@@ -164,7 +164,7 @@
           $actions = $node->defaultActions("admin");
         }
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
-        $flags = ($node->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node->hasFlag(NF_LOCK) ? RL_LOCK : 0);
+        $flags = atkRecordList::convertFlags($node->getFlags());
         $params["list"] = $recordlist->render($node, $recordset, $actions, $flags, "", "", $navigation);
                  
         $params["footer"] = $this->invoke("adminFooter");

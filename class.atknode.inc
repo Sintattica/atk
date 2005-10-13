@@ -830,7 +830,16 @@
     {
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
-
+    
+    /**
+     * Returns the node flags.
+     * @return Integer  node flags 
+     */
+    function getFlags()
+    {
+      return $this->m_flags;
+    }
+    
     /**
      * Returns the primary key sql expression of a record.
      * @param array $rec The record for which the primary key is calculated.

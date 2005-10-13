@@ -88,6 +88,7 @@ Changes in ATK 5.3
   action_view. This enables you to optionally turn off the rendering of a box
   surrounding the view. [Guido]
 + Added Traditional Chinese translation. [Chin-Tang]
++ Added hierarchical group support to atkProfileAttribute. [Peter]
 * Removed some useless debug and fixed translation for add links
    (NF_ADD_LINK). [Martin]
 * Fixed translation for multi record actions. [Martin]
@@ -214,6 +215,8 @@ Changes in ATK 5.3
 * Updated Norwegian translation. [Olav]
 * Updated French translation. [Benjamin, Antoine]
 * Updated Brazilian Portuguese translation. [Roberto]
+* Fixed bug in atkAdminHandler and atkOneToManyRelation for converting
+  node flags to recordlist flags. [Peter]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]

@@ -414,9 +414,9 @@
     function _getRecordListFlags()
     {
       // for now, we don't support extended search in embedded one2many recordlists.
-      $flags=RL_EMBED|RL_NO_EXTENDED_SEARCH;
-      $flags|= ($this->m_destInstance->hasFlag(NF_MRA) ? RL_MRA  : 0);
-      $flags|= ($this->m_destInstance->hasFlag(NF_MRPA)? RL_MRPA : 0);
+      atkimport("atk.recordlist.atkrecordlist");
+      $flags  = atkRecordList::convertFlags($this->m_destInstance->getFlags());
+      $flags |= RL_EMBED|RL_NO_EXTENDED_SEARCH;
       return $flags;
     }
 
