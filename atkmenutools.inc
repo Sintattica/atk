@@ -106,7 +106,7 @@
       for ($i = 0; $i < count($items); $i++)
       {
         $GLOBALS["g_menu"][$parent][] = $items[$i];
-        if (empty($item["url"])) $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;      
+        if (empty($items[$i]["url"])) $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;      
       }
   }
 
