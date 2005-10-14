@@ -137,7 +137,7 @@
         $myrecords = $this->load(atkGetDb(), $record, "admin");
       }
 
-      $result = text("none","","atk"); // default result
+      $result = atktext("none"); // default result
 
       if ($this->createDestination())
       {
@@ -459,15 +459,15 @@
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
         $key = "link_".$this->fieldName()."_add";
 
-        $label = text($key);
+        $label = atktext($key,$this->m_destInstance->m_module);
         if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
         {
           $key = "link_".getNodeType($this->m_destination)."_add";
-          $label = text($key);
+          $label = atktext($key,$this->m_destInstance->m_module);
           if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
           {
-            $key = text(getNodeType($this->m_destination))." ".strtolower(text("add","","atk"));
-            $label = text($key);
+            $key = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add"));
+            $label = atktext($key,$this->m_destInstance->m_module);
           }
         }
         $url = href($add_url,$label,SESSION_NESTED,true);
