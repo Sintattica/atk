@@ -257,8 +257,10 @@
 
         if ($value=="")
         {
-          if (isset($_REQUEST[$var]) && !empty($_REQUEST[$var]))
+          atk_var_dump($_REQUEST, 'request');
+          if (isset($_REQUEST[$var]))
           {
+            atkdebug("Setting current item");
             $currentitem[$var] = $_REQUEST[$var];
           }
         }
