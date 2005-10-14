@@ -256,8 +256,7 @@
         $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
 
         if ($value=="")
-        {
-          atk_var_dump($_REQUEST, 'request');
+        {          
           if (isset($_REQUEST[$var]))
           {
             atkdebug("Setting current item");
