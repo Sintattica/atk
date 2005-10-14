@@ -43,6 +43,9 @@
     var $m_flags=0;
     var $m_actionloader;
 
+    /**
+     * @access private
+     */
     function setNode(&$node)
     {
       $this->m_node = &$node;
