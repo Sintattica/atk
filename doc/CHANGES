@@ -91,6 +91,8 @@ Changes in ATK 5.3
 + Added hierarchical group support to atkProfileAttribute. [Peter]
 + Added generic factory method for an atkDDL instance for the
   current database to atkDb class. [Peter]
++ Added addFields method to atkDDL class for adding multiple fields at once 
+  based on table metadata (for example from another database). [Peter]
 * Removed some useless debug and fixed translation for add links
    (NF_ADD_LINK). [Martin]
 * Fixed translation for multi record actions. [Martin]
