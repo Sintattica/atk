@@ -684,6 +684,19 @@
       return $query;
     }
     
+
+    /**
+     * Create an atkDDL object for constructing ddl queries.
+     * @return atkDDL DDL object
+     */
+    function &createDDL()
+    {      
+      atkimport("atk.db.atkddl");
+      $ddl = &atkDDL::create($this->m_type);
+      $ddl->m_db = &$this;
+      return $ddl;
+    }    
+    
     /**
      * Get database instance.
      *

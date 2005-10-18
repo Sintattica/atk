@@ -83,5 +83,28 @@
       }
       return ""; // in case we have an unsupported type.      
     }
+    
+    /**
+     * Generate a string for a field, to be used inside a CREATE TABLE
+     * statement. 
+     * This function tries to be generic, so it will work in the largest
+     * number of databases. Databases that won't work with this syntax,
+     * should override this method in the database specific ddl class.
+     *
+     * @param $name        The name of the field 
+     * @param $generictype The datatype of the field (should be one of the 
+     *                     generic types supported by ATK).
+     * @param $size        The size of the field (if appropriate)
+     * @param $flags       The DDL_ flags for this field. 
+     * @param $default     The default value to be used when inserting new
+     *                     rows.
+     */
+    function buildField($name, $generictype, $size=0, $flags=0, $default=NULL)
+    {
+      if ($generictype == "string" && $size > 255)
+        $generictype = "text";
+        
+      return parent::buildField($name, $generictype, $size, $flags, $default);
+    }
   }
 ?>

@@ -80,8 +80,14 @@
         case "clob":
           return "text";
         case "date":
-          return "date";                
+          return "date";     
+        case "timestamp":  
+          return "datetime";           
       }
+      
+      if (preg_match('/^timestamp\([0-9]\)$/', $type))
+        return "datetime";
+      
       return ""; // in case we have an unsupported type.      
     }
   }

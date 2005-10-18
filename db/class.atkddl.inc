@@ -42,7 +42,8 @@
     var $m_fields = array();    
     var $m_indexes = array(); // not yet implemented
     var $m_primarykey = array();
-  
+    var $m_db;
+    
     /** 
      * Default constructor
      */
@@ -95,6 +96,26 @@
                                      "size"=>$size,
                                      "flags"=>$flags,
                                      "default"=>$default);      
+    }
+    
+    /**
+     * Add multiple fields at once using the given metadata.
+     *
+     * NOTE: defaults are not supported yet!
+     *
+     * @param $meta   The fields meta data.
+     */
+    function addFields($meta)
+    {
+      foreach ($meta as $field)
+      {
+        $flags  = hasFlag($field["flags"], MF_PRIMARY)  ? DDL_PRIMARY : 0;
+        $flags |= hasFlag($field["flags"], MF_UNIQUE)   ? DDL_UNIQUE  : 0;
+        $flags |= hasFlag($field["flags"], MF_NOT_NULL) ? DDL_NOTNULL : 0;
+        // $flags |= hasFlag($field["flags"], MF_AUTO_INCREMENT) ? DDL_AUTO_INCREMENT : 0;
+
+        $this->addField($field["name"], $field["gentype"], $field["len"], $flags);
+      }
     }
     
    /**
@@ -368,13 +389,13 @@
      *         false if anything went wrong, or if no table could be created.
      */
     function executeCreate()
-    {      
+    { 
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+           
       $query = $this->buildCreate();
       if ($query!="")
       {
-        $db = &atkGetDb();
-        $db->query($query);        
-        return true;
+        return $this->m_db->query($query);
       }
       else
       {
@@ -395,16 +416,18 @@
      *         false if anything went wrong, or if no table could be altered.
      */
     function executeAlter()
-    {      
+    { 
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();           
+      
       $queries = $this->buildAlter();            
       if (count($queries)>0)
       {
-        $db = &atkGetDb();
         for ($i=0, $_i=count($queries); $i<$_i; $i++)
         {
           if ($queries[$i]!="")
           {            
-            $db->query($queries[$i]);
+            if (!$this->m_db->query($queries[$i]))
+              return false;
           }
         }
         return true;
