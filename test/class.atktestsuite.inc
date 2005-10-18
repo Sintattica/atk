@@ -47,7 +47,7 @@
 
     function visitFile($fullpath)
     {
-      global $include;
+      $include = $_REQUEST["include"];
       $includefiles = explode("|",$include);
       $filename = basename($fullpath);
       if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))))
