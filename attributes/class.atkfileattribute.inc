@@ -107,13 +107,9 @@
      * @return string piece of html code with a browsebox
      */
     function edit($record="", $fieldprefix="")
-    { 
-      $result=""; 
-      if (isset($_REQUEST["del"][$this->fieldName()]) && $_REQUEST["del"][$this->fieldName()]!="on")
-      {
-        $result=$this->display($record);
-      }
-
+    {   
+      $result=$this->display($record);
+  
       if(is_dir($this->m_dir))
       {
         $file_arr=array();
