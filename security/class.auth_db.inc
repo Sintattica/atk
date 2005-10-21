@@ -185,7 +185,7 @@
        $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
        $userinfo["groups"]=$groups;
        $userinfo["access_level"]=$access;
-       atk_var_dump($userinfo, "<b>USER DATA</b>");
+       
        return $userinfo;
      }
 
