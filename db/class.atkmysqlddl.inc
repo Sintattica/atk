@@ -104,7 +104,14 @@
       if ($generictype == "string" && $size > 255)
         $generictype = "text";
         
-      return parent::buildField($name, $generictype, $size, $flags, $default);
+      $result = parent::buildField($name, $generictype, $size, $flags, $default);
+      
+      // add binary option after varchar declaration to make sure field
+      // values are compared in case-sensitive fashion
+      if ($generictype == "string")
+        $result = preg_replace('/VARCHAR\(([0-9]+)\)/i', 'VARCHAR(\1) BINARY', $result);
+        
+      return $result;
     }
   }
 ?>
