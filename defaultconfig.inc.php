@@ -81,25 +81,25 @@
    * The IP or hostname of the database host
    * @var String
    */
-  $config_databasehost = "localhost";
+  $config_db["default"]["host"] = "localhost";
   
   /**
    * The name of the database to use
    * @var String
    */
-  $config_databasename = "";
+  $config_db["default"]["db"] = "";
   
   /**
    * The name of the database user with which to connect to the host
    * @var String
    */
-  $config_databaseuser = "";
+  $config_db["default"]["user"] = "";
   
   /**
    * The password for the database user, used to connect to the databasehost
    * @var String
    */
-  $config_databasepassword = "";
+  $config_db["default"]["password"] = "";
   
   /**
    * Wether or not to use a persistent connection.
@@ -124,7 +124,7 @@
    *   mssql:   Microsoft SQL Server
    * @var String
    */
-  $config_database="mysql";
+  $config_db["default"]["driver"]="mysql";
   
   /**
    * Backwardscompatibility setting. Set this to MYSQL_BOTH if your
