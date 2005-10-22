@@ -37,7 +37,7 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
    */
   function atkMetaManyToOneRelation($name, $accessor, $template, $options, $flags)
   {
-    $this->atkManyToOneRelation($name, $acccessor, $flags);
+    $this->atkManyToOneRelation($name, $accessor, $flags);
     $this->m_accessor = $accessor;
     $this->m_options = $options;
     
