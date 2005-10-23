@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -31,11 +31,14 @@
    *
    */
   class atkOci9Db extends atkOci8Db
-  {        
+  {
     var $m_bindresult = array();
 
     var $m_type = "oci9";
-    
+
+    // Defaults
+    var $m_port = "1521";
+
     /**
      * Base constructor
      */
@@ -46,37 +49,42 @@
 
     /**
      * Connect to the database
-     * @param $database the database name
-     * @param $host database hostname
-     * @param $user database username
-     * @param $password database password
-     * @return link identifier
+     * @return int One of the generic DB_ connection statusses.
      */
     function connect()
-    {              
+    {
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
         $connectfunc = (atkconfig("databasepersistent")?"OCIPlogon":"OCILogon");
         atkdebug("Connectiontype: ".$connectfunc);
-        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $this->m_database);
-        if (!$this->m_link_id) 
+
+        if ($this->m_host!="") // host based connect
+        {
+          $db = "(DESCRIPTION=(ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = ".$this->m_host.")(PORT = ".$this->m_port.")))(CONNECT_DATA=(SID=".$this->m_database.")))";
+        }
+        else
+        {
+          $db = $this->m_database; // tnsnames based connect
+        }
+        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db);
+        if (!$this->m_link_id)
         {
           $err = OCIError();
           $this->halt($this->_translateError($err));
         }
-  
-        /* set default date format for Oracle */ 
+
+        /* set default date format for Oracle */
         $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
         $myresult = OCIExecute($nls);
         $error = OCIError($this->m_link_id);
         if ($err["code"]!="")
         {
-          $this->halt("Invalid SQL: $query"); 
+          $this->halt("Invalid SQL: $query");
           return $this->_translateError($err);
         }
-        
-        /* set default timestamp format for Oracle */ 
+
+        /* set default timestamp format for Oracle */
         // This should work, because it works in sqlplus
         // Is this a PHP bug
         // Workarround: see class.atkoci9query.inc and class.atkdatetimeattribute.inc
@@ -85,12 +93,12 @@
         $err = OCIError($this->m_link_id);
         if ($err["code"]!="")
         {
-          $this->halt("Invalid SQL: $query"); 
+          $this->halt("Invalid SQL: $query");
           return $this->_translateError($err);
         }
       }
       return DB_SUCCESS;
-    }  
+    }
 
     /**
      * Performs a query
@@ -99,18 +107,18 @@
      * @param $limit maximum number of records
      */
     function query($query, $offset=-1, $limit=-1, $bindLobs=array(), $bindVars=array())
-    {    
+    {
       /* limit? */
       if ($offset >= 0 && $limit > 0)
       {
         /* row id's start at 1! */
 	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (".$query.
                 ") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
-      }	
-      
+      }
+
       /* query */
-      atkdebug("atkoci9db.query(): ".$query);   
-      
+      atkdebug("atkoci9db.query(): ".$query);
+
       /* connect to database */
       if ($this->connect()==DB_SUCCESS)
       {
@@ -118,48 +126,48 @@
         if ($this->m_query_id)
         {
           @OCIFreeStatement($this->m_query_id);
-          $this->m_query_id = 0;    
+          $this->m_query_id = 0;
           $this->m_bindresult = array();
-        }      
+        }
 
-        /* query database */     
+        /* query database */
         if (count($bindLobs))
-        {      
+        {
           $i=0;
           foreach($bindLobs as $bind => $value)
-          {          
+          {
             $clobVar = $bind.$i;
-            $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);                  
-            $i++;          
+            $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);
+            $i++;
             atkdebug("NewDescriptor for ".$bind);
           }
           $fieldNames = array();
           $bindNames = array();
           $fieldNames = array_keys($bindLobs);
-          foreach($fieldNames as $name) $bindNames[] = ":".$name;        
-          $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);        
-        }      
-      
+          foreach($fieldNames as $name) $bindNames[] = ":".$name;
+          $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);
+        }
+
         $this->m_query_id = OCIParse($this->m_link_id, $query);
-        if ($this->m_query_id) 
-        {              
+        if ($this->m_query_id)
+        {
           if (count($bindLobs))
-          {        
+          {
             $i=0;
             foreach($bindLobs as $bind => $value)
-            {          
+            {
               $clobVar = $bind.$i;
               OCIBindByName($this->m_query_id, $bind, $$clobVar, -1, OCI_B_CLOB);
-              $i++;          
+              $i++;
               atkdebug("Binding CLOB ".$bind);
-            }          
-          }    
-        
-          for ($i=0, $_i=count($bindVars);$i<$_i;$i++)   
-          {          
+            }
+          }
+
+          for ($i=0, $_i=count($bindVars);$i<$_i;$i++)
+          {
             OCIBindByName($this->m_query_id, $bindVars[$i], $this->m_bindresult[$bindVars[$i]], 32);
-          }    
-        
+          }
+
           if (!@OCIExecute($this->m_query_id,OCI_DEFAULT))
           {
             /* error in query */
@@ -168,46 +176,46 @@
             return false;
           }
           else
-          {        
+          {
             if (count($bindLobs))
             {
               $i=0;
               foreach($bindLobs as $bind => $value)
-              {      
-                $clobVar = $bind.$i;                      
+              {
+                $clobVar = $bind.$i;
                 if (!@$$clobVar->save($value))
                   atkerror("Error bind save: empty value");
                 $i++;
               }
-            }          
+            }
           }
           if (count($bindLobs))
           {
             $i=0;
             foreach($bindLobs as $bind => $value)
-            {   
-              $clobVar = $bind.$i;                                
+            {
+              $clobVar = $bind.$i;
               OCIFreeDesc($$clobVar);
               $i++;
             }
 
-          }          
-                    
+          }
+
           $this->m_row = 0;
-        
+
           return true;
         }
         else
         {
           /* error in query */
           $error = OCIError($this->m_query_id);
-          $this->halt("Invalid SQL: $query"); 
+          $this->halt("Invalid SQL: $query");
           $this->halt($this->_translateError($error));
           return false;
-        }          
-      
+        }
+
       }
       return false;
-    }    
+    }
   }
 ?>
