@@ -16,7 +16,7 @@ Boy Baukema        <boy@ibuildings.nl>
 Dennis-Jan Broerse <dennisjan@ibuildings.nl>
 
 
-Marketing 
+Marketing
 ----------
 Jeroen Stephan       <jeroen@ibuildings.nl>
 Jasper van der Hulst <jasper@ibuildings.nl>
@@ -28,25 +28,25 @@ ATK grows not only through contributions from the Open Source community,
 but also through financial donations from sponsors, who finance the
 development of new features.
 
-* Ibuildings.nl BV, Netherlands (http://www.ibuildings.nl) sponsors the 
+* Ibuildings.nl BV, Netherlands (http://www.ibuildings.nl) sponsors the
   development of ATK and sponsors ATK's hosting and development
   facilities (site, mailinglists, cvs etc).
 
 * Cendris BV, Netherlands (http://www.cendris.com) sponsored the development
-  of keyboard navigation, some parts of the oracle driver and field range 
+  of keyboard navigation, some parts of the oracle driver and field range
   search support.
 
 * Prosa.dk, Denmark (http://www.prosa.dk) sponsored the development of the
   multi-sort and subtotals/aggregation features.
-  
-* Petrosys Pty, Australia (http://www.petrosys.com.au) sponsored the 
+
+* Petrosys Pty, Australia (http://www.petrosys.com.au) sponsored the
   fix for bug #269.
 
 * For Funding BV, The Netherlands (http://www.funding.nl), we developed
   the Privacy Enhancing Technologies extensions, the atkCurrencyAttribute,
   the atkFormatAttribute and improvements to the CSV import feature.
 
-* For Dataroomservices, The Netherlands (http://www.dataroomservices.nl), we 
+* For Dataroomservices, The Netherlands (http://www.dataroomservices.nl), we
   added PDA detection support.
 
 To become a sponsor, please read http://www.achievo.org/support/sponsor.
@@ -104,7 +104,7 @@ Norwegian       : Stein Bjorndal       <stein@proact.no>
 Polish          : Lech Nowak           <lechnowak@op.pl>
 Portuguese      : Pedro Vieira         <pedro.vieira@filbox.com>
 Russian         : Vitaliy Perekupka    <vit@uptsoft.com>
-                  Maryia I. Davidouskaia <maryia@iatp.by> 
+                  Maryia I. Davidouskaia <maryia@iatp.by>
                   Konstantin Starodubtsev <kostya@ptc.spbu.ru>
 Slovak          : Daniel Kulifaj [danielk] <kulifaj@emark.sk>
 Spanish         : Jorge Ibsen          <jibsen@eso.org>
@@ -125,7 +125,7 @@ significant contributions to the ATK project.
 
 Stefan Niederhauser <sn@atelier-w.ch>
 
-  Stefan came up with the idea of the 'node' concept, which later 
+  Stefan came up with the idea of the 'node' concept, which later
   became the basis of the ATK backend.
 
 William Rhee <willrhee@umich.edu>
@@ -136,11 +136,11 @@ William Rhee <willrhee@umich.edu>
 Ber Dohmen <info@ibuildings.nl>
 
   Ber developed the DHTML menu, and created a menu abstraction layer,
-  during an internship at ibuildings.nl. 
+  during an internship at ibuildings.nl.
 
 Boy Baukema <info@ibuildings.nl>
- 
-  Boy revised internationalization features, to improve overall 
+
+  Boy revised internationalization features, to improve overall
   application performance through dynamic includes, during an internship
   at ibuildings.nl.
 
@@ -182,6 +182,7 @@ Danny Peeters                         <danny@ibuildings.nl>
 Alberto Galanti                       <alberto@officinadigitale.it>
 Bas de Nooijer                        <bas@ibuildings.nl>
 Guido van Biemen                      <guido@ibuildings.nl>
+Tjeerd Bijlsma                        <tjeerd@ibuildings.nl>
 
 Names between [] are the names they are refered by in the CHANGES file. (If
 different from their first name).

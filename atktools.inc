@@ -1586,6 +1586,27 @@
   }
 
   /**
+   * Return a singleton instance of the specified class.
+   *
+   * This works for all singletons that implement the getInstance() method.
+   *
+   * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
+   * @return obj instance of the class
+   * */
+  function &atkinstance($fullclassname)
+  {
+    static $s_instances = array();
+    if (!isset($s_instances[$fullclassname]))
+    {
+      atkimport($fullclassname);
+      atkdebug("Getting singleton instance $fullclassname");
+      eval ("\$s_instances[\$fullclassname] =
+             &".getClassName($fullclassname)."::getInstance();");
+    }
+    return $s_instances[$fullclassname];
+  }
+
+  /**
    * Compares two assosiative multi dimensonal array's
    * if arrays differ, differences are returned otherwise it returns false
    * @param array $array1 original array
