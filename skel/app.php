@@ -53,7 +53,7 @@
     $destination = "welcome.php";
   }
 
-  $topframe = &new atkFrame("70", "top", "top.php", FRAME_SCROLL_NO, true);
+  $topframe = &new atkFrame("75", "top", "top.php", FRAME_SCROLL_NO, true);
   $mainframe = &new atkFrame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
   $menuframe = &new atkFrame(($position==MENU_LEFT||$position==MENU_RIGHT?190:$menu->getHeight()), "menu", "menu.php", $scrolling);
   $noframes = '<p>Your browser doesnt support frames, but this is required to run '.text('app_title')."</p>\n";
