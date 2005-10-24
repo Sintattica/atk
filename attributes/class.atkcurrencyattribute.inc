@@ -32,21 +32,21 @@ class atkCurrencyAttribute extends atkNumberAttribute
   /**
     * Constructor
     * @param string $name  Name of the attribute
-    * @param int $flags Flags for this attribute
-    * @param int $size  The size(s) for this attribute (default 10)
-    * @param int $decimals The number of decimals (default 2)
+    * @param int    $flags Flags for this attribute
+    * @param int    $size  The size(s) for this attribute (default 10)
     * @param string $currencysymbol The symbol which is printed in front of the value.
+    * @param int    $decimals The number of decimals (default 2)
     * @param string $decimalseparator The separator which is printed for the decimals.
     * @param string $thousandsseparator The separator which is printed for the thousands.
     *
     */
-  function atkCurrencyAttribute($name,$flags,$size=10,$decimals=2,$currencysymbol="",$decimalseparator="",$thousandsseparator="")
+  function atkCurrencyAttribute($name,$flags,$size=10,$currencysymbol="",$decimals=2,$decimalseparator="",$thousandsseparator="")
   {
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
     
-    if($currencysymbol=="") $currencysymbol=atktext("currencysymbol");
-    if($decimalseparator=="") $decimalseperator=atktext("decimal_separator");
-    if($thousandsseparator=="") $thousandsseparator=atktext("thousands_separator");
+    if($currencysymbol=="") $currencysymbol=atktext("currencysymbol","atk","","","",true);
+    if($decimalseparator=="") $decimalseperator=atktext("decimal_separator","atk","","","",true);
+    if($thousandsseparator=="") $thousandsseparator=atktext("thousands_separator","atk","","","",true);
 
     $this->m_currencysymbol = $currencysymbol;
     $this->m_decimalseperator = $decimalseperator;
