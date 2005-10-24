@@ -256,7 +256,7 @@
         $currentitem = &$g_sessionData[$this->m_namespace]["stack"][atkStackID()][atkLevel()];
 
         if ($value=="")
-        {          
+        {
           if (isset($_REQUEST[$var]))
           {
             atkdebug("Setting current item");
@@ -503,8 +503,7 @@
     {
       global $g_sessionData;
 
-      atkimport("atk.ui.atkui");
-      $ui = &atkUI::getInstance();
+      $ui = &atkinstance("atk.ui.atkui");
 
       $res = array();
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];

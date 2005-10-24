@@ -75,8 +75,7 @@
 
       if ($this->m_id > 0)
       {
-        atkimport("atk.ui.atkpage");
-        $page = &atkPage::getInstance();
+        $page = &atkinstance("atk.ui.atkpage");
         $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");
         $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
       }

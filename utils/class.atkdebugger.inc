@@ -141,10 +141,8 @@
 
     function renderConsole()
     {
-      atkimport("atk.ui.atkpage");
-      $page = &atkPage::getInstance();
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      $page = &atkinstance("atk.ui.atkpage");
+      $theme = &atkinstance("atk.ui.atktheme");
       $page->register_style($theme->stylePath("debugger.css"));
       $data = &$this->getDebuggerData();
       $res = $this->consoleControls().'<br/><br/>';

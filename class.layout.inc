@@ -78,8 +78,7 @@
     {
       if ($this->m_atkui==NULL)
       {
-        atkimport("atk.ui.atkui");
-        $this->m_atkui = &atkUI::getInstance();
+        $this->m_atkui = &atkinstance("atk.ui.atkui");
       }
     }
 
@@ -286,8 +285,7 @@
     // Dummy, creates an atkPage if one does not exist (for backward compatibility).
     function &getPage()
     {
-      atkimport("atk.ui.atkpage");
-      $page = &atkPage::getInstance();
+      $page = &atkinstance("atk.ui.atkpage");
       return $page;
     }
 
@@ -338,9 +336,6 @@
       atkdebug("Obsolete use of layout::ui_top()!");
       $this->m_saved = $this->m_atkoutput->m_content;
       $this->m_atkoutput->m_content = "";
-      //atkimport("atk.ui.atksmarty");
-      //$smarty = &atkSmarty::getInstance();
-      //$smarty->assign("title", $title);
       $this->m_lasttitle = $title;
 
     }
@@ -780,8 +775,7 @@
     function initTheme()
     {
       atkdebug("Obsolete use of layout::initTheme()!");
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      $theme = &atkinstance("atk.ui.atktheme");
       $this->m_tpldir = $theme->themeDir();
     }
 

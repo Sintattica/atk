@@ -50,11 +50,11 @@
     {
       $this->m_node = &$node;
     }
-    
+
     /**
      * Converts the given node flags to recordlist flags where possible.
      *
-     * @param Integer $flags 
+     * @param Integer $flags
      * @static
      */
     function convertFlags($flags)
@@ -63,7 +63,7 @@
       $result |= hasFlag($flags, NF_MRPA) ? RL_MRPA : 0;
       $result |= hasFlag($flags, NF_LOCK) ? RL_LOCK : 0;
       $result |= hasFlag($flags, NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
-      $result |= hasFlag($flags, NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH : 0;      
+      $result |= hasFlag($flags, NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH : 0;
       return $result;
     }
 
@@ -83,8 +83,7 @@
       $this->setNode($node);
       $this->m_flags = $flags;
 
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      $theme = &atkinstance("atk.ui.atktheme");
       $page = &atkPage::getInstance();
       $page->register_style($theme->stylePath("recordlist.css"));
 
@@ -96,7 +95,7 @@
 
       /* retrieve list array */
       $list = $this->listArray($recordset, $flags, "", $actions, $suppressList, $embedprefix);
-      
+
       /* Check if some flags are still valid or not... */
       if (hasFlag($flags, RL_MRA) && (count($list["mra"]) == 0 || count($list["rows"]) == 0)) $flags ^= RL_MRA;
       if (!hasFlag($flags, RL_NO_SEARCH) && count($list["search"]) == 0) $flags |= RL_NO_SEARCH;

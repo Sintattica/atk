@@ -43,11 +43,8 @@
      */
     function atkUI()
     {
-      atkimport("atk.ui.atktheme");
-      $this->m_theme = &atkTheme::getInstance();
-
-      atkimport("atk.ui.atksmarty");
-      $this->m_smarty = &atkSmarty::getInstance();
+      $this->m_theme = &atkinstance("atk.ui.atktheme");
+      $this->m_smarty = &atkinstance("atk.ui.atksmarty");
     }
 
     /**

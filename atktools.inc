@@ -1599,9 +1599,10 @@
     if (!isset($s_instances[$fullclassname]))
     {
       atkimport($fullclassname);
+      $elems = explode(".", strtolower($fullclassname));
+      $classname = $elems[count($elems)-1];
       atkdebug("Getting singleton instance $fullclassname");
-      eval ("\$s_instances[\$fullclassname] =
-             &".getClassName($fullclassname)."::getInstance();");
+      eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance();");
     }
     return $s_instances[$fullclassname];
   }

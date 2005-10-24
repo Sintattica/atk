@@ -830,16 +830,16 @@
     {
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
-    
+
     /**
      * Returns the node flags.
-     * @return Integer  node flags 
+     * @return Integer  node flags
      */
     function getFlags()
     {
       return $this->m_flags;
     }
-    
+
     /**
      * Returns the primary key sql expression of a record.
      * @param array $rec The record for which the primary key is calculated.
@@ -1149,8 +1149,7 @@
      */
     function &getUi()
     {
-      atkimport("atk.ui.atkui");
-      $ui = &atkUI::getInstance();
+      $ui = &atkinstance("atk.ui.atkui");
       return $ui;
     }
 
@@ -1374,8 +1373,7 @@
           /* sometimes a field is hidden although not specified by the field itself */
           $tabs = $this->m_attribIndexList[$r]["tabs"];
 
-          atkimport("atk.ui.atktheme");
-          $theme = &atkTheme::getInstance();
+          $theme = &atkinstance("atk.ui.atktheme");
           if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
 
           if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)
@@ -1383,8 +1381,8 @@
             $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
           }
 
-          /* we let the attribute add itself to the edit array */          
-          $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);          
+          /* we let the attribute add itself to the edit array */
+          $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
         else
         {
@@ -1816,7 +1814,7 @@
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
 
-      $this->m_initialised = true;      
+      $this->m_initialised = true;
     }
 
     /**
@@ -1981,8 +1979,7 @@
      */
     function &getPage()
     {
-      atkimport("atk.ui.atkpage");
-      $page = &atkPage::getInstance();
+      $page = &atkinstance("atk.ui.atkpage");
       return $page;
     }
 
@@ -2309,8 +2306,8 @@
         if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
         {
           $record["atkmlsplit"]=1;
-          atkimport("atk.utils.atkmlsplitter");
-          $mltool = &atkmlsplitter::getInstance();
+
+          $mltool = &atkinstance("atk.utils.atkmlsplitter");
           $mltool->updateMlRecords($this, $record,"update");
         }
 
@@ -2396,8 +2393,7 @@
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
-      atkimport("atk.utils.atkmlsplitter");
-      $mltool = &atkmlsplitter::getInstance();
+      $mltool = &atkinstance("atk.utils.atkmlsplitter");
       $db = &$this->getDb();
       $query = &$db->createQuery();
 
@@ -2555,8 +2551,7 @@
       $db = &$this->getDb();
       $query = &$db->createQuery();
 
-      atkimport("atk.utils.atkmlsplitter");
-      $mltool = &atkmlsplitter::getInstance();
+      $mltool = &atkinstance("atk.utils.atkmlsplitter");
 
       $query->addTable($this->m_table);
       $query->addCondition($selector);
@@ -2615,7 +2610,7 @@
             $querylist[]=$attribname;
           }
         }
-        
+
         // ML hack
         if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
         {
@@ -2739,7 +2734,7 @@
         $mltool->combineMlRecordSet($this, $dbrecords,$query);
       }
 
-      $recordset = array();      
+      $recordset = array();
       for ($i = 0, $_i = count($dbrecords); $i < $_i; $i++)
       {
         $therecord = array();
@@ -2771,7 +2766,7 @@
         $therecord["atkprimkey"] = $this->primaryKey($therecord);
 
         $recordset[] = $therecord;
-      }      
+      }
 
       // also load special storage attributes. (POST)
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -2782,7 +2777,7 @@
 
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
         }
-      }      
+      }
       return $recordset;
     }
 
@@ -2906,8 +2901,7 @@
       if($this->hasFlag(NF_ML)&&$record["atkmlsplit"]=="")
       {
         $record["atkmlsplit"]=1;
-        atkimport("atk.utils.atkmlsplitter");
-        $mltool = &atkmlsplitter::getInstance();
+        $mltool = &atkinstance("atk.utils.atkmlsplitter");
         $mltool->updateMlRecords($this, $record,"add");
       }
 
@@ -3528,8 +3522,7 @@
      */
     function addStyle($style)
     {
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      $theme = &atkinstance("atk.ui.atktheme");
       $page = &$this->getPage();
       $page->register_style($theme->stylePath($style));
     }

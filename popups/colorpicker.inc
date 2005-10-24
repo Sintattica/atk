@@ -63,8 +63,7 @@
 
   //  Display's the picker in the current ATK style-template
   $page = &atknew("atk.ui.atkpage");
-  atkimport("atk.ui.atktheme");
-  $theme = &atkTheme::getInstance();
+  $theme = &atkinstance("atk.ui.atktheme");
   $output = &atkOutput::getInstance();
 
   $page->register_style($theme->stylePath("style.css"));

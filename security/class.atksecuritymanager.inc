@@ -420,8 +420,7 @@
       atkdebug('LoginAttempts: '.$loginattempts);
 
       $page = &atknew("atk.ui.atkpage");
-      atkimport("atk.ui.atkui");
-      $ui = &atkUI::getInstance();
+      $ui = &atkinstance("atk.ui.atkui");
 
       $page->register_style($ui->stylePath("style.css"));
       $page->register_style($ui->stylePath("login.css"));

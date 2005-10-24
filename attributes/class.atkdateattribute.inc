@@ -1,9 +1,9 @@
 <?php
-  
+
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -21,7 +21,7 @@
   define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
   define("AF_DATE_NO_CALENDAR",         AF_SPECIFIC_3); // Do not append the popup calendar.
   define("AF_DATE_DISPLAY_DAY",         AF_SPECIFIC_4); // Show the day of the week in the display
-  
+
   // Include adodb workarounds for <1970 dates on windows.
   $config_atkroot = atkconfig("atkroot");
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
@@ -55,7 +55,7 @@
     function formatDate($date, $format, $weekday=1)
     {
       static $langcache = array();
-            
+
       /* format month */
       $format = str_replace("M", "%-%",   $format);
       $format = str_replace("F", "%=%",   $format);
@@ -69,21 +69,21 @@
 
       /* get date string */
       $str_date = adodb_date($format, $date[0]);
-      
+
       $month = $date['month'];
       $shortmonth = substr(strtolower($date["month"]), 0, 3);
-      
+
       /* store the text calls */
       if(!isset($langcache[$month]))
       {
         $langcache[$month]= text(strtolower($month),"","atk");
       }
-      
+
       if(!isset($langcache[$shortmonth]))
       {
         $langcache[$shortmonth] = text($shortmonth,"","atk");
       }
-      
+
       /* replace month/week name */
       $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
       $str_date = str_replace("%=%", $langcache[$month], $str_date);
@@ -123,14 +123,14 @@
                      "month" => substr($date, 5, 2),
                      "year" => substr($date, 0, 4));
       }
-      else 
+      else
       {
       return array("day" => substr($date, 6, 2),
                    "month" => substr($date, 4, 2),
                    "year" => substr($date, 0, 4));
       }
     }
-    
+
     /**
      * Converts a date array to a timestamp
      * year, month, day are obligatory !!
@@ -144,7 +144,7 @@
       $min = 0;
       $sec = 0;
       $dateValid = true;
-      
+
       if(!empty($dateArray["hour"])) $hour = $dateArray["hour"];
       if(!empty($dateArray["min"])) $min = $dateArray["min"];
       if(!empty($dateArray["sec"])) $sec = $dateArray["sec"];
@@ -153,9 +153,9 @@
       if(!empty($dateArray["month"])) $month = $dateArray["month"];
       else $dateValid = false;
       if(!empty($dateArray["year"])) $year = $dateArray["year"];
-      else $dateValid = false; 
+      else $dateValid = false;
 
-      if($dateValid) return adodb_mktime($hour,$min,$sec,$month,$day,$year); 
+      if($dateValid) return adodb_mktime($hour,$min,$sec,$month,$day,$year);
       else return adodb_mktime(0,0,0);
     }
 
@@ -177,7 +177,7 @@
     {
       $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
       $txt_date_format_view = atktext("date_format_view","atk","","","",true);
-      
+
       /* *** API SUPPORT HACK ***
        * Because of backwards compatability and because of the number
        * of arguments this method has we also support the old API: ($name, $flags=0).
@@ -210,9 +210,9 @@
       else $this->m_date_max = strtotime($max);
 
       /* base class constructor */
-      $this->atkAttribute($name, $flags); 
+      $this->atkAttribute($name, $flags);
     }
-    
+
     function edit($record="", $fieldprefix="", $mode="")
     {
       return $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
@@ -229,14 +229,14 @@
     function draw($record="", $fieldprefix="", $postfix="", $mode="", $obligatory=false)
     {
       $result = "";
-      
+
       $pda = browserInfo::detectPDA();
       $yeardropdown = false;
-      
+
       if (!$pda) $this->_registerScripts();
-      
+
       $fieldname = $fieldprefix.$this->fieldName().$postfix;
-      
+
       /* text mode? */
       if ($this->hasFlag(AF_DATE_STRING))
       {
@@ -245,9 +245,9 @@
         if (is_array($value)) $value = adodb_date("Y-m-d", adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
         elseif ($obligatory) $value = adodb_date("Y-m-d");
         else $value = "";
-        $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$fieldname.'" name="'.$fieldname.'" value="'.$value.'" size="10">';
-        
+
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
         {
           $result.=' <input type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \'y-mm-dd\', false);">';
@@ -289,7 +289,7 @@
       $minimum = $this->m_date_min;
       if ($minimum != 0) $str_min = adodb_date("Ymd", $minimum);
       else $str_min = 0;
-      
+
       /* maximum date */
       $maximum = $this->m_date_max;
       if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
@@ -315,12 +315,12 @@
       $current["m_max"] = (!empty($maximum) && $current["year"] == $maximum["year"] ? $maximum["mon"] : 12);
       $current["y_min"] = (!empty($minimum) ? $minimum["year"] : 0);
       $current["y_max"] = (!empty($maximum) ? $maximum["year"] : 0);
-      
+
       /* small date selections, never possible is field isn't obligatory (no min/max date) */
-            
+
       if (!empty($maximum) && !empty($minimum) && $str_max - $str_min < 25)
       {
-        $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_LEFTRIGHT);  
+        $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_LEFTRIGHT);
         $result = '<select id="'.$fieldname.'" name="'.$fieldname.'">';
         for ($i = $str_min; $i <= $str_max; $i++)
         {
@@ -330,20 +330,20 @@
         $result .= '</select>';
         return $result;
       }
-      
+
       if (!$pda) $result.='<script language="javascript"> var '.$fieldname.'_fmt = \''.$str_format.'\';</script>';
 
       /* other date selections */
       for($i = 0; $i < strlen($str_format); $i++)
       {
-      
+
         if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
         else if (!$obligatory) $emptyfield=true;
         else $emptyfield=false;
-        
+
         /* javascript method */
         if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
-        
+
         if (count($this->m_onchangecode))
         {
           $this->renderChangeHandler($fieldprefix);
@@ -356,7 +356,7 @@
           /* date must be within specified (default: 25) years */
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears)
           {
-            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);
             $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
               $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
@@ -373,9 +373,9 @@
           }
 
           /* normal input box */
-          else  
+          else
           {
-            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);  
+            $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);
             $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
         }
@@ -383,9 +383,9 @@
         /* day input box */
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
-          $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+          $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);
           $result .= '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" onChange="'.$str_script.'">';
-          if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD)) 
+          if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           if (!$pda)
           {
@@ -403,7 +403,7 @@
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
             }
           }
-          else 
+          else
           {
             for ($j = 0; $j <= 31; $j++)
             {
@@ -425,20 +425,20 @@
         /* month input box */
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
-          $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+          $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);
           $result .= '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" onChange="'.$str_script.'">';
           if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           if (!$pda)
           {
             for ($j = $current["m_min"]; $j <= $current["m_max"]; $j++)
-            {              
+            {
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $j,1, (isset($current["year"])?$current["year"]:0)));
               $str_month = $this->formatDate($tmp_date, $str_format[$i]);
               $result .= '<option value="'.$j.'" '.(isset($current["mon"]) && $j == $current["mon"] ? "selected" : "").'>'.$str_month.'</option>';
             }
           }
-          else 
+          else
           {
             for ($j = 0; $j <= 12; $j++)
             {
@@ -453,7 +453,7 @@
         /* other characters */
         else $result .= $str_format[$i];
       }
-      
+
       if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$pda)
       {
         $result.=' <input type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
@@ -462,7 +462,7 @@
       /* return result */
       return $result;
     }
-    
+
     /**
     * Registers the javascripts (and 1 stylesheet) for the atkDateAttribute
     */
@@ -472,16 +472,15 @@
 
       /* register javascript */
       $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
-      
+
       if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
       {
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("language").".js");    
-        
-        atkimport("atk.ui.atktheme");
-        $theme = &atkTheme::getInstance();        
-        $page->register_style($theme->stylePath("atkdateattribute.css"));        
+        $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("language").".js");
+
+        $theme = &atkinstance("atk.ui.atktheme");
+        $page->register_style($theme->stylePath("atkdateattribute.css"));
       }
     }
 
@@ -513,8 +512,8 @@
      * @return piece of HTML code
      */
     function search($record="", $extended=false, $fieldprefix="")
-    {    
-      if (!$extended) 
+    {
+      if (!$extended)
       {
         // plain text search
         return parent::search($record, $extended, $fieldprefix);
@@ -530,32 +529,32 @@
     }
 
     function searchCondition(&$query, $table, $value, $searchmode)
-    {  
+    {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
     	$db = &atkGetDb();
       // We only support searchmode 'between' for now.
-      
+
       $fromval = $this->value2db(array($this->fieldName()=>$value["from"]));
-      $toval   = $this->value2db(array($this->fieldName()=>$value["to"]));            
+      $toval   = $this->value2db(array($this->fieldName()=>$value["to"]));
 
       $field = $db->func_datetochar($table.".".$this->fieldName());
 
       if ($fromval!="NULL" && $toval!="NULL")
-      {     
+      {
         if ($fromval>$toval)
-        {        
+        {
           // User entered dates in wrong order. Let's put them in the right order.
           $tmp=$fromval; $fromval=$toval; $toval=$tmp;
-        } 
+        }
         $searchcondition =
                    $query->betweenCondition(
-                      $field, 
-                      $fromval, 
-                      $toval);  
+                      $field,
+                      $fromval,
+                      $toval);
       }
       else if ($fromval!="NULL" && $toval=="NULL")
       {
@@ -603,7 +602,7 @@
              sprintf("%02d", $elems[1])."-".
              ($elems[2]<100?($elems[2]<50?"20":"19"):"").sprintf("%02d", $elems[2]);
     }
-    
+
     /**
      * Makes the search conditions if the normal conditions are
      * not met and if given date is an array,
@@ -618,22 +617,22 @@
       $db = &atkGetDb();
       $fromvalue = $this->_MakeDateForCondition($value["from"]);
       $tovalue   = $this->_MakeDateForCondition($value["to"]);
-        
-      if ($fromvalue!="") 
+
+      if ($fromvalue!="")
       {
         $field = $db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["from"]));
         $datearraysearchcondition = $query->greaterthanequalCondition($field,$fromvalue);
-        // check if tovalue is set, if so add the AND                               
-        if ($tovalue!="") $datearraysearchcondition.=" AND "; 
+        // check if tovalue is set, if so add the AND
+        if ($tovalue!="") $datearraysearchcondition.=" AND ";
       }
-      if ($tovalue!="") 
+      if ($tovalue!="")
       {
         $field = $db->func_datetochar($table.".".$this->fieldName(),$this->_SetDateFormat($value["to"]));
-        $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue); 
+        $datearraysearchcondition.= $query->lessthanequalCondition($field,$tovalue);
       }
       return $datearraysearchcondition;
     }
-    
+
     /**
      * Checks which of the two values are filled in the array
      * and returns them
@@ -674,7 +673,7 @@
       $month = $rec[$this->fieldName()]["month"];
       $day = $rec[$this->fieldName()]["day"];
 
-      if (empty($year) || empty($month) || empty($day)) return "NULL";      
+      if (empty($year) || empty($month) || empty($day)) return "NULL";
       if ($year=='' || $month==0 || $day==0) return "NULL"; //one of the fields is left empty
 
       $result = $year."-".sprintf("%02d",$month)."-".sprintf("%02d",$day);
@@ -700,7 +699,7 @@
      * @return array with 3 fields (year, month, day)
      */
     function fetchValue($postvars)
-    {      
+    {
       if (is_array($postvars))
       {
         if (is_array($postvars[$this->formName()])) return $postvars[$this->formName()];
@@ -726,9 +725,9 @@
 
       /* if not obligatory and one of the fields is null then the date will be saved as null */
       if (!$this->hasFlag(AF_OBLIGATORY) && (empty($value["year"]) || empty($value["month"]) || empty($value["day"]))) return;
-      
+
       // If one of the fields is not filled, we don't check
-      if(!($value["year"]=='' || $value['month']==0 || $value['day']==0)) 
+      if(!($value["year"]=='' || $value['month']==0 || $value['day']==0))
       {
         /* currently selected date */
         if (checkdate($value["month"], $value["day"], $value["year"]))
@@ -794,7 +793,7 @@
     {
       $value = $record[$this->fieldName()];
       if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
-      $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));      
+      $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
       if (!empty($tmp_date))
       {
         if ($this->hasFlag(AF_DATE_DISPLAY_DAY)) return $this->formatDate($tmp_date, $this->m_date_format_view, 1);
@@ -804,7 +803,7 @@
     }
 
     function getSearchModes()
-    {      
+    {
       return array("between");
     }
 
@@ -835,13 +834,13 @@
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES));
       }
     }
-    
+
     function dbFieldType()
-    {    
+    {
       return "date";
-    }  
-    
-    /** 
+    }
+
+    /**
      * Add a javascript onchange event handler.
      * @param $jscode A block of valid javascript code.
      */
@@ -849,7 +848,7 @@
     {
       $this->m_onchangecode[] = $jscode;
     }
-    
+
     function renderChangeHandler($fieldprefix)
     {
       if (count($this->m_onchangecode))
@@ -861,11 +860,11 @@
                                     }\n");
       }
     }
-    
+
     /**
      * Convert a String representation into an internal value.
      *
-     * This implementation converts datestring to a array with day, month and 
+     * This implementation converts datestring to a array with day, month and
      * year separated
      *
      * @param String $stringvalue The value to parse.
@@ -877,7 +876,7 @@
 
       return $this->parseDate($stringvalue,$formats);
     }
-    
+
     function parseDate($stringvalue, $formats){
       //looking in witch format the stringvalue match and then get the data
       foreach($formats as $format){
@@ -939,7 +938,7 @@
 
       return array('day'=>0,'month'=>0,'year'=>0);
     }
-    
+
     /**
      * Setter for max years, this specifies the maximum amount of years in the dropdown
      * if the amount is more than specified in the max years the years field is shown
@@ -953,13 +952,13 @@
       {
         $this->m_maxyears = (int)$maxyears;
       }
-      else 
+      else
       {
         return false;
       }
       return true;
     }
-    
+
     /**
      * Getter for max years, this specifies the maximum amount of years in the dropdown
      * if the amount is more than specified in the max years the years field is shown

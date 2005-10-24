@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Implementation of the plaintext menu.
    *
@@ -27,7 +27,7 @@
   {
     var $m_height;
 
-    function atkPlainMenu() 
+    function atkPlainMenu()
     {
       $this->m_height = "50";
     }
@@ -37,12 +37,12 @@
        global $ATK_VARS, $g_menu, $g_menu_parent;
        $atkmenutop = $ATK_VARS["atkmenutop"];
        if($atkmenutop=="") $atkmenutop="main";
-       
-       $menu = "<div align='".atkconfig("menu_align", "center")."'>"; 
+
+       $menu = "<div align='".atkconfig("menu_align", "center")."'>";
        $menu.=$this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop]))
         {
-          usort($g_menu[$atkmenutop],array("atkplainmenu","menu_cmp"));   
+          usort($g_menu[$atkmenutop],array("atkplainmenu","menu_cmp"));
           $menuitems = array();
           for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
           {
@@ -59,7 +59,7 @@
             $url = $g_menu[$atkmenutop][$i]["url"];
             $enable = $g_menu[$atkmenutop][$i]["enable"];
             $modname = $g_menu[$atkmenutop][$i]["module"];
-      
+
             if (is_array($enable))
             {
               $enabled = false;
@@ -69,12 +69,12 @@
               }
               $enable = $enabled;
             }
-      
+
             $menuitems[$i]["enable"]=$enable;
-        
+
             /* delimiter ? */
             if ($name == "-") $menu .= "<br>";
-            
+
             /* submenu ? */
             else if (empty($url) && $enable)
             {
@@ -87,39 +87,37 @@
             }
             /* normal menu item */
             else if ($enable) $menu .= href($url,atktext("menu_$name",$modname),SESSION_NEW,false,'target="main"').$delimiter;
-            else 
+            else
             {
-              //$menu .= text("menu_$name").$config_menu_delimiter;    
+              //$menu .= text("menu_$name").$config_menu_delimiter;
             }
             $menuitems[$i]["url"]=session_url($url);
           }
         }
-        /* previous */  
+        /* previous */
         if ($atkmenutop != "main")
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).'<br>';  
-        }      
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).'<br>';
+        }
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
-        atkimport("atk.ui.atktheme");
-        $theme = &atkTheme::getInstance();  
+        $theme = &atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
-        atkimport("atk.ui.atkui");
-        $ui = &atkUI::getInstance();
+        $ui = &atkinstance("atk.ui.atkui");
 
         $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
-       
+
         $page->addContent($box);
-      			
-        return $page->render("Menu", true);  
-             
+
+        return $page->render("Menu", true);
+
     }
-    
+
     function menu_cmp($a,$b)
     {
       if ($a["order"] == $b["order"]) return 0;
@@ -130,7 +128,7 @@
     function getHeight()
     {
       return $this->m_height;
-    }	
+    }
 
     function getPosition()
     {

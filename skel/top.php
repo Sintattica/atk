@@ -32,8 +32,7 @@
   atksecure();
 
   $page = &atknew("atk.ui.atkpage");
-  atkimport("atk.ui.atkui");
-  $ui = &atkUI::getInstance();
+  $ui = &atkinstance("atk.ui.atkui");
   $theme = &atkTheme::getInstance();
   $output = &atkOutput::getInstance();
 

@@ -187,8 +187,7 @@
 
       // Handle fields
       // load images
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      $theme = &atkinstance("atk.ui.atktheme");
       $tipimg = $theme->imgPath("help.gif");
       $reqimg = '<img align="top" onMouseOver="javascript:window.status=\''.
                    addslashes(text("field_obligatory")).'\';" src="'.$theme->imgPath("required_field.gif").'" border="0" alt="'.

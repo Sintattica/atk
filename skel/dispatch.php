@@ -38,8 +38,7 @@
     // no nodetype passed, or session expired
 
     $page = &atknew("atk.ui.atkpage");
-    atkimport("atk.ui.atkui");
-    $ui = &atkUI::getInstance();
+    $ui = &atkinstance("atk.ui.atkui");
     $theme = &atkTheme::getInstance();
     $output = &atkOutput::getInstance();
 
@@ -51,7 +50,7 @@
       $destination = "&atknodetype=".$ATK_VARS["atknodetype"]."&atkaction=".$ATK_VARS["atkaction"];
       if (isset($ATK_VARS["atkselector"])) $destination.="&atkselector=".$ATK_VARS["atkselector"];
     }
-    
+
     $box = $ui->renderBox(array("title"=>text("title_session_expired"),
                                 "content"=>'<br><br>'.text("explain_session_expired").'<br><br><br><br>
                                            <a href="index.php?atklogout=true'.$destination.'" target="_top">'.text("relogin").'<a/><br><br>'));
