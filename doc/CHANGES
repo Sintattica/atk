@@ -4,8 +4,8 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changes in ATK 5.3
-------------------
+Changes in ATK 5.3RC1
+---------------------
 + Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
 + Added support for default values to the atkMetaNode (only numerics and
   strings at this time and only on PostgreSQL and Oracle). [Peter]
@@ -236,7 +236,7 @@ Changes in ATK 5.3
   fields with a size > 255 characters. [Peter]
 * Now supporting timestamp column type for oci8/9. [Peter]
 * Fixed bug in error handling code of atkDDL execute methods. [Peter]
-* Calendar is turned off if we have a year dropdown for atkDateAttrib [Boy]
+* atkDateAttribute calendar is turned off when year dropdown is active. [Boy]
 - atkTextAttribute::value2db no longer does addslashes in Oracle 9/10. [Ivo]
 - atkTextAttribute::db2value no longer does stripslashes on db data. [Ivo]
 - Removed fallback of all modules for atkLanguage. [Boy]
