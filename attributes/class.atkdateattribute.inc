@@ -221,6 +221,8 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
+     * @todo We can't show a calendar when we have a year dropdown?
+     * @todo The calendar doesn't use the min/max values?
      * @param array $record Array with 3 fields (year, month, day)
      * @return Piece a of HTML Code
      */
@@ -348,6 +350,7 @@
         }
 
         /* year input box */
+        $yeardropdown = false;
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
         {
           /* date must be within specified (default: 25) years */
@@ -366,6 +369,7 @@
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["year"] ? "selected" : "").'>'.$str_year.'</option>';
             }
             $result .= '</select>';
+            $yeardropdown = true;
           }
 
           /* normal input box */
@@ -449,8 +453,8 @@
         /* other characters */
         else $result .= $str_format[$i];
       }
-            
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$pda)
+      
+      if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$pda)
       {
         $result.=' <input type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
       }
