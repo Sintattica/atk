@@ -231,6 +231,7 @@
       $result = "";
       
       $pda = browserInfo::detectPDA();
+      $yeardropdown = false;
       
       if (!$pda) $this->_registerScripts();
       
@@ -350,7 +351,6 @@
         }
 
         /* year input box */
-        $yeardropdown = false;
         if ($str_format[$i] == "y" || $str_format[$i] == "Y")
         {
           /* date must be within specified (default: 25) years */
