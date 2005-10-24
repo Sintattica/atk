@@ -17,6 +17,6 @@
   /** 
    * The current atk version
    */
-  $atk_version = "5.3";
-  $atk_state   = "development";
+  $atk_version = "5.3RC1";
+  $atk_state   = "release-candidate";
 ?>
