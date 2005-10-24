@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.3RC2
+---------------------
+
 Changes in ATK 5.3RC1
 ---------------------
 + Added support for the atkMetaNode to the Oracle (OCI) driver. [Peter]
