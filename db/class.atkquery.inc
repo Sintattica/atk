@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,10 +16,10 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Abstract baseclass for SQL query builder drivers.
-   * 
+   *
    * All db drivers should derive a class from this baseclass and implement
    * the necessary methods.
    *
@@ -81,12 +81,12 @@
      * Array with order by statements
      */
     var $m_orderbys;
-    
+
     /**
      * Do we need to perform a DISTINCT query?
      */
-    var $m_distinct=false;    
-    
+    var $m_distinct=false;
+
     /**
       * Do we need to fetch only a specific set of records?
       */
@@ -98,7 +98,7 @@
     * Oracle has a problem when aliases are too long
     */
     var $m_generatedAlias;
-    
+
     /**
      * The database that this query does it's thing on
      */
@@ -181,7 +181,7 @@
       {
         $jointype="LEFT JOIN ";
         $join = " ".$jointype.$table." ".$alias." ON ".$condition." ";
-        
+
         if (!in_array($join, $this->m_joins)) $this->m_joins[]= $join;
       }
       else
@@ -215,7 +215,7 @@
     {
       if ($condition!="") $this->m_conditions[] = $condition;
     }
-        
+
 
    /**
     * Add search condition to search condition Array
@@ -225,7 +225,7 @@
     {
       if ($condition!="") $this->m_searchconditions[] = $condition;
     }
-    
+
     /**
      * Set the 'distinct' mode for the query.
      * If set to true, a 'SELECT DISTINCT' will be performed. If set to false,
@@ -235,7 +235,7 @@
     {
       $this->m_distinct = $distinct;
     }
-    
+
     function setLimit($offset, $limit)
     {
       $this->m_offset = $offset;
@@ -252,7 +252,7 @@
       $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
-        $result.= $this->m_fields[$i];        
+        $result.= $this->m_fields[$i];
         $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]])?$this->m_fieldaliases[$this->m_fields[$i]]:"");
         if ($fieldalias!="") $result.=" AS ".$fieldalias;
         if ($i < count($this->m_fields)-1) $result.=",";
@@ -297,16 +297,16 @@
       if (count($this->m_orderbys)>0)
       {
         $this->_addOrderBy($result);
-      }          
-      
+      }
+
       if ($this->m_limit>0)
       {
         $this->_addLimiter($result);
       }
-      
+
       return $result;
     }
-    
+
     /**
      * Wrapper function to execute a select query.
      * @param boolean $distinct Set to true to perform a distinct select,
@@ -317,9 +317,9 @@
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildSelect($distinct);
-      return $this->m_db->getrows($query);      
+      return $this->m_db->getrows($query);
     }
-    
+
     /**
       * Add limiting clauses to the query.
       * Default implementation: no limit supported. Derived classes should implement this.
@@ -328,7 +328,7 @@
     {
       // not supported..
     }
-    
+
     function _addOrderBy(&$query)
     {
       if (count($this->m_orderbys)>0)
@@ -336,7 +336,7 @@
         $query.= " ORDER BY ".implode(", ",$this->m_orderbys);
       }
     }
-    
+
 
     /**
      * Builds the SQL Select COUNT(*) query. This is different from select,
@@ -413,23 +413,23 @@
     }
 
     /**
-     * Wrapper function to execute an update query 
+     * Wrapper function to execute an update query
      */
     function executeUpdate()
-    {  
+    {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildUpdate();
-      return $this->m_db->query($query);      
+      return $this->m_db->query($query);
     }
 
-    /**  
-     * Wrapper function to execute an insert query 
+    /**
+     * Wrapper function to execute an insert query
      */
     function executeInsert()
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildInsert(true);
-      return $this->m_db->query($query);      
+      return $this->m_db->query($query);
     }
 
     /**
@@ -474,20 +474,20 @@
 
       return $result;
     }
-    
+
     /**
-     * Wrapper function to execute a delete query 
+     * Wrapper function to execute a delete query
      */
     function executeDelete()
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildDelete();
-      return $this->m_db->query($query);      
+      return $this->m_db->query($query);
     }
 
     /**
      * Search Alias in alias array
-     * @param array $record Array with fields     
+     * @param array $record Array with fields
      */
     function deAlias(&$record)
     {
@@ -605,21 +605,22 @@
         return $field." <= '".$value."'";
       }
     }
-    
+
     function betweenCondition($field, $value1, $value2)
     {
       return $field." BETWEEN '".$value1."' AND '".$value2."'";
     }
-    
+
     /**
-     * Static factory method. This method returns a new instance of a query 
+     * Static factory method. This method returns a new instance of a query
      * object for the current database.
      */
     function &create()
     {
-      $name = "atk".atkconfig("database")."query";
+      $dbconfig = atkconfig("db");
+      $name = "atk" . $dbconfig["default"]["driver"] . "query";
       return new $name();
     }
-  }  
+  }
 
 ?>

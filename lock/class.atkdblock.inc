@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Locking driver that used a database table to store the locks.
    *
@@ -32,56 +32,56 @@
     function atkDbLock()
     {
       global $ATK_VARS;
-  
+
       $atklockList = $this->loadLockList();
       if (!is_array($atklockList)) $atklockList = array();
-  
+
       /* first time (session or stack)! */
       if (!is_array($atklockList[atkStackID()]) || count($atklockList[atkStackID()]["stack"]) == 0)
       {
         $atklockList[atkStackID()] = array("id" => 0, "stack" => array());
         $atklock = &$atklockList[atkStackID()];
       }
-  
+
       /* check if some locks need to be removed */
       else
       {
         $atklock = &$atklockList[atkStackID()];
         $this->m_id = (int)$atklock["id"];
-  
+
         for ($i = 0, $_i = count($atklock["stack"]) - atkLevel(); $i < $_i; $i++)
         {
           $selectorList = array_pop($atklock["stack"]);
           if (is_array($selectorList))
             foreach ($selectorList as $selector => $table) $this->unlock($selector, $table);
         }
-        
+
         if ($ATK_VARS["atklevel"] == -2)
         {
           $selectorList = array_pop($atklock["stack"]);
           if (is_array($selectorList))
             foreach ($selectorList as $selector => $table) $this->unlock($selector, $table);
         }
-  
+
         $empty = TRUE;
         for ($i = 0, $_i = count($atklock["stack"]); $i < $_i; $i++)
           if (count($atklock["stack"][$i]) > 0) $empty = FALSE;
         if ($empty) $atklock["id"] = 0;
       }
-  
+
       for ($i = count($atklock["stack"]); $i < atkLevel(); $i++) $atklock["stack"][] = array();
       $this->m_id = (int)$atklock["id"];
       $this->storeLockList($atklockList);
-  
+
       if ($this->m_id > 0)
       {
         atkimport("atk.ui.atkpage");
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");    
+        $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");
         $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
       }
     }
-  
+
     /**
      * Load lock data from session.
      */
@@ -91,7 +91,7 @@
       $atklockList = $g_sessionManager->getValue("atklock", "globals");
       return $atklockList;
     }
-  
+
     /**
      * Store lock data in session.
      */
@@ -100,7 +100,7 @@
       global $g_sessionManager;
       $g_sessionManager->globalVar("atklock", $list, TRUE);
     }
-  
+
     /**
      * Locks the record with the given primary key / selector. If the
      * record is already locked the method will fail!
@@ -114,7 +114,7 @@
     {
       global $g_sessionManager;
       $success = FALSE;
-  
+
       /* first check if we haven't locked the item already */
       $atklockList = $this->loadLockList();
       if (is_array($atklockList))
@@ -123,11 +123,11 @@
         for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
           if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) return TRUE;
       }
-  
+
       /* lock the lock table :) */
       $db = &atkGetDb();
       $db->lock("db_lock");
-  
+
       /* check if the item can be locked */
       $query = &$db->createQuery();
       $query->addField("*");
@@ -135,9 +135,9 @@
       $query->addCondition("lock_table = '".escapeSQL($table)."'");
       $query->addCondition("lock_record = '".escapeSQL($selector)."'");
       $query->addCondition("lock_lease >= ".$db->func_now());
-      $query->addCondition("session_id <> '".escapeSQL(session_id())."'");    
+      $query->addCondition("session_id <> '".escapeSQL(session_id())."'");
       $result = $db->getRows($query->buildCount());
-  
+
       /* lock item */
       if ((int)$result[0]["count"] == 0)
       {
@@ -145,13 +145,13 @@
         {
           $this->m_id = $db->nextid("db_lock");
           $page = &atkPage::getInstance();
-          $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");            
+          $page->register_script(atkconfig("atkroot")."atk/javascript/xml.js");
           $page->register_script(session_url("include.php?file=atk/lock/lock.js.php&stack=".atkStackID()."&id=".$this->m_id, SESSION_NEW));
         }
-  
+
         $user = getUser();
         if (is_array($user)) $user = $user['name'];
-  
+
         $query = &$db->createQuery();
         $query->addField("lock_id", $this->m_id);
         $query->addField("lock_table", escapeSQL($table));
@@ -159,14 +159,15 @@
         $query->addField("user_id", escapeSQL($user));
         $query->addField("user_ip", escapeSQL($_SERVER["REMOTE_ADDR"]));
         $query->addField("lock_stamp", $db->func_now(), "", "", FALSE);
-        if (substr(atkconfig("database"),0,3) != 'oci')
+        $dbconfig = atkconfig("db");
+        if (substr($dbconfig["default"]["driver"],0,3) != 'oci')
           $query->addField("lock_lease", $db->func_now()." + INTERVAL 60 SECOND", "", "", FALSE);
         else $query->addField("lock_lease", $db->func_now()." +  ".(60/86400), "", "", FALSE);
         $query->addField("lock_lease_count", "0");
         $query->addField("session_id", escapeSQL(session_id()));
         $query->addTable("db_lock");
         $query->executeInsert();
-  
+
         $atklockList = $this->loadLockList();
         $atklock = &$atklockList[atkStackID()];
         $atklock["id"] = (int)$this->m_id;
@@ -174,17 +175,17 @@
         $selectorList[$selector] = $table;
         $atklock["stack"][] = $selectorList;
         $this->storeLockList($atklockList);
-  
+
         $success = TRUE;
       }
-  
+
       /* unlock the lock table */
       $db->unlock("db_lock");
-  
+
       /* return */
       return $success;
     }
-  
+
     /**
      * Tries to remove a lock from a certain record. Ofcourse this
      * method will fail if the lock isn't entirely ours. We also try
@@ -196,14 +197,14 @@
     function unlock($selector, $table)
     {
       $db = &atkGetDb();
-  
+
       $user = getUser();
       if (is_array($user))
         $user = $user['name'];
-  
+
       /* lock the lock table :) */
       $db->lock("db_lock");
-  
+
       /* extend lock lease */
       $query = &$db->createQuery();
       $query->addTable("db_lock");
@@ -221,11 +222,11 @@
         ")"
       );
       $result = $db->query($query->buildDelete());
-  
+
       /* unlock the lock table */
       $db->unlock("db_lock");
     }
-  
+
     /**
      * Extends the lock lease with the given ID. (This can mean multiple lock
      * leases will be extended, if there are multiple locks with the given ID!)
@@ -237,20 +238,21 @@
     function extend($identifier)
     {
       global $ATK_VARS;
-  
+
       if (!empty($ATK_VARS["stack"])) $atkstackid = $ATK_VARS["stack"];
       else $atkstackid = atkStackID();
-  
+
       $user = getUser();
       if (is_array($user)) $user = $user['name'];
-  
+
       /* lock the lock table :) */
       $db = &atkGetDb();
       $db->lock("db_lock");
-  
+
       /* extend lock lease */
       $query = &$db->createQuery();
-      if (substr(atkconfig("database"),0,3) != 'oci')
+      $dbconfig = atkconfig("db");
+      if (substr($dbconfig["default"]["driver"],0,3) != 'oci')
         $query->addField("lock_lease", $db->func_now()." + INTERVAL 60 SECOND", "", "", FALSE);
       else $query->addField("lock_lease", $db->func_now()." +  ".(60/86400), "", "", FALSE);
       $query->addField("lock_lease_count", "lock_lease_count + 1", "", "", FALSE);
@@ -262,10 +264,10 @@
       $query->addCondition("lock_lease >= ".$db->func_now());
       $query->executeUpdate();
       $result = $db->affected_rows();
-      
+
       /* unlock the lock table */
       $db->unlock("db_lock");
-  
+
       /* reset lock ID in session */
       if ($result <= 0)
       {
@@ -273,11 +275,11 @@
         if (is_array($atklockList)) unset($atklockList[$atkstackid]);
         $this->storeLockList($atklockList);
       }
-      
+
       /* return */
       return $result > 0;
     }
-  
+
     /**
      * Checks if a certain item / record is locked or not. If so
      * we return an array with lock information. If not we return NULL.
@@ -288,9 +290,9 @@
      * @return lock information
      */
     function isLocked($selector, $table)
-    {      
+    {
       static $_cache = array();
-  
+
       /* first check if we haven't locked the item ourselves already */
       $atklockList = $this->loadLockList();
       if (is_array($atklockList))
@@ -299,7 +301,7 @@
         for ($i = atkLevel() - 1, $_i = count($atklock["stack"]); $i < $_i; $i++)
           if (is_array($atklock["stack"][$i]) && in_array($selector, array_keys($atklock["stack"][$i]))) return NULL;
       }
-      
+
       /* select all locks for the node table -> cache */
       if (!is_array($_cache[$table]))
       {
@@ -314,14 +316,14 @@
         $query->addTable("db_lock");
         $query->addCondition("lock_table = '".escapeSQL($table)."'");
         $query->addCondition("lock_lease >= ".$db->func_now());
-        $query->addCondition("session_id <> '".escapeSQL(session_id())."'");          
+        $query->addCondition("session_id <> '".escapeSQL(session_id())."'");
         $_cache[$table] = $query->executeSelect();
       }
-  
+
       /* search for lock */
       for ($i = 0, $_i = count($_cache[$table]); $i < $_i; $i++)
         if ($_cache[$table][$i]["lock_record"] == $selector) return $_cache[$table][$i];
-  
+
       /* not found */
       return NULL;
     }
