@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,13 +15,13 @@
    *
    * @version $Revision$
    * $Id$
-   */   
+   */
 
   /**
-   * flag(s) specific for atkManyToOneRelation 
+   * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
-  
+
   /**
    * @internal include base class
    */
@@ -31,7 +31,7 @@
    * @internal include used utility class(es)
    */
   atkimport("atk.utils.atkstringparser");
-  
+
   /**
    * A N:1 relation between two classes.
    *
@@ -46,9 +46,9 @@
    * @package atk
    * @subpackage relations
    *
-   */         
+   */
   class atkManyToOneRelation extends atkRelation
-  {  
+  {
     /**
      * By default, we do a left join. this means that records that don't have
      * a record in this relation, will be displayed anyway. NOTE: set  this to
@@ -56,42 +56,42 @@
      * usually the best option.
      * @var boolean
      */
-    var $m_leftjoin = true; 
-                            
+    var $m_leftjoin = true;
+
     /**
      * The array of referential key fields.
      * @access private
      * @var array
      */
-    var $m_refKey = array(); 
-               
+    var $m_refKey = array();
+
     /**
      * SQL statement with extra filter for the join that retrieves the
      * selected record.
      * @var String
      */
-    var $m_joinFilter = ""; 
-    
+    var $m_joinFilter = "";
+
     /**
      * Hide the relation when there are no records to select.
      * @access private
      * @var boolean
-     */   
-    var $m_hidewhenempty = false; 
-    
+     */
+    var $m_hidewhenempty = false;
+
     /**
      * Variable for caching records
      * @access private
      * @var array
      */
     var $m_selectableRecords = array();
-    
-    
+
+
     /**
      * Constructor.
      * @param String $name The name of the attribute. This is the name of the
      *                     field that is the referential key to the
-     *                     destination. 
+     *                     destination.
      *                     For relations with more than one field in the
      *                     foreign key, you should pass an array of
      *                     referential key fields. The order of the fields
@@ -105,11 +105,11 @@
       if (is_array($name))
       {
         $this->m_refKey = $name;
-        
+
         // ATK can't handle an array as name, so we initialize the
         // underlying attribute with the first name of the referential
         // keys.
-        // Languagefiles, overrides, etc should use this first name to 
+        // Languagefiles, overrides, etc should use this first name to
         // override the relation.
         $this->atkRelation($name[0], $destination, $flags);
       }
@@ -121,9 +121,9 @@
     }
 
     /**
-     * Convert value to DataBase value     
-     * @param $rec
-     * @return
+     * Convert value to DataBase value
+     * @param array $rec Record to convert
+     * @return int Database safe value
      */
     function value2db($rec)
     {
@@ -137,15 +137,15 @@
         if ($this->createDestination())
         {
           if (is_array($rec[$this->fieldName()]))
-          {                 
+          {
             $pkfield = $this->m_destInstance->m_primaryKey[0];
-            //return $rec[$this->fieldName()][$pkfield];           
+            //return $rec[$this->fieldName()][$pkfield];
             $pkattr = &$this->m_destInstance->getAttribute($pkfield);
             return $pkattr->value2db($rec[$this->fieldName()]);
           }
           else
           {
-            return $rec[$this->fieldName()];           
+            return $rec[$this->fieldName()];
           }
         }
       }
@@ -159,20 +159,20 @@
      * @return decoded value
      */
     function fetchValue($rec)
-    {      
+    {
       if ($rec[$this->fieldName()]!="")
-      {      
-        // Split the primary key of the selected record into its 
+      {
+        // Split the primary key of the selected record into its
         // referential key elements.
         $keyelements = decodeKeyValueSet($rec[$this->fieldName()]);
-      
+
         $result = array();
-      
+
         foreach ($keyelements as $key=>$value)
         {
           // Tablename must be stripped out because it is in the way..
           if (strpos($key,'.')>0)
-          {            
+          {
             $field = substr($key,strrpos($key,'.')+1);
           }
           else
@@ -180,9 +180,9 @@
             $field = $key;
           }
           $result[$field] = $value;
-        }        
+        }
         return $result;
-      }            
+      }
       return NULL;
     }
 
@@ -193,11 +193,11 @@
      * @return decoded value
      */
     function db2value($rec)
-    {    
+    {
       if (isset($rec[$this->fieldName()]))
-      { 
+      {
         $myrec = $rec[$this->fieldName()];
-            
+
         if (is_array($myrec)) return $myrec;
         else
         {
@@ -205,7 +205,7 @@
           // This workaround only works for single-field primary keys.
           if ($this->createDestination())
             return array($this->m_destInstance->primaryKeyField() => $myrec);
-        }      
+        }
       }
     }
 
@@ -215,20 +215,20 @@
      * @return a displayable string
      */
     function display($record)
-    {      
-      if ($this->createDestination())      
-      {        
+    {
+      if ($this->createDestination())
+      {
         if (count($record[$this->fieldName()])==1)
         {
           // The record consist of only one field, which is the primary key.
-          // This means we have to load the rest of the data, in order to 
-          // load a descriptor. 
+          // This means we have to load the rest of the data, in order to
+          // load a descriptor.
           atkdebug("Delayed loading of descriptor fields for ".$this->m_name);
           $recs = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $this->m_destInstance->descriptorFields());
           $title = $this->m_destInstance->descriptor($recs[0]);
         }
         else
-        {        
+        {
           if(!$this->isEmpty($record))
           {
             $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
@@ -240,9 +240,9 @@
         }
 
         $result = $title; // default result is just the title.
- 
+
         if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
-        {                                      
+        {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$title!="")
           {
             $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
@@ -280,14 +280,14 @@
           $parser = new atkStringParser($this->m_destinationFilter);
           $filter = $parser->parse($record);
         }
-        
+
         $autolink = $this->getRelationAutolink($id, $filter);
         $editflag = true;
-        
+
         if (!$this->hasFlag(AF_LARGE))
         {
           // normal dropdown..
-          $value=NULL;          
+          $value=NULL;
           if(isset($record[$this->fieldName()]))
             $value = $record[$this->fieldName()];
           $currentPk = $this->m_destInstance->primaryKey($value);
@@ -324,10 +324,10 @@
               $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
             }
             for ($i=0, $_i=count($recordset);$i<$_i;$i++)
-            {              
+            {
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-              $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);             
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
             }
             $result.='</select>';
           }
@@ -336,52 +336,52 @@
         {
           // Large mode
           // TODO: Fill a dropdown box with recent records..
-          $selname = $fieldprefix.$this->fieldName()."_newsel";        
+          $selname = $fieldprefix.$this->fieldName()."_newsel";
 
           $id = $fieldprefix.$this->fieldName();
           $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
-          
-          if ($ATK_VARS[$selname]!="") 
+
+          if ($ATK_VARS[$selname]!="")
           // new record selected
-          {          
+          {
             // $ATK_VARS[$selname] contains full primary key of selected record.
             $recset = $this->m_destInstance->selectDb($ATK_VARS[$selname],"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-            $destrecord = $recset[0];          
+            $destrecord = $recset[0];
             $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
           }
           elseif ($newlyadded!="")
           {
             $recset = $this->m_destInstance->selectDb($newlyadded,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-            $destrecord = $recset[0];          
+            $destrecord = $recset[0];
             $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
 		      }
-          elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey)) 
-          // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)                                                                
+          elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey))
+          // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)
           {
             $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
             $recset = $this->m_destInstance->selectDb($currentPk,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-            $destrecord = $recset[0];          
+            $destrecord = $recset[0];
             $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
           }
-          elseif (is_array($record[$this->fieldName()]) && !$this->isEmpty($record)) 
+          elseif (is_array($record[$this->fieldName()]) && !$this->isEmpty($record))
           // complete old record present
-          {        
-            $destrecord = $record[$this->fieldName()];        
+          {
+            $destrecord = $record[$this->fieldName()];
           }
-          else 
+          else
           // no record yet, empty value.
-          { 
+          {
             $destrecord = array();
-            $editflag = false;          
+            $editflag = false;
           }
-        
+
           if (count($destrecord))
-          {          
-            $result.= $this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";            
-          }                
-        
+          {
+            $result.= $this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
+          }
+
           $result.=$this->hide($record, $fieldprefix);
-          
+
           // we use the current level to automatically return to this page
           // when we come from the select..
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
@@ -402,7 +402,7 @@
                            true);
           }
         }
-        
+
         if($editflag) $result.=$autolink['edit'];
         $result.= $autolink['add'];
         return $result;
@@ -445,7 +445,7 @@
     function hide($record="", $fieldprefix="")
     {
       if ($this->createDestination())
-      {              
+      {
         $currentPk = "";
         if (count($record[$this->fieldName()]))
         {
@@ -487,26 +487,26 @@
             $this->m_destInstance->addFilter($filter);
           }
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-          
+
           $result = '<select ';
           if ($extended)
           {
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
           }
-          
+
           if (strstr($fieldprefix,"]["))
             $result.='name="atksearch['. $fieldprefix.$this->fieldName().'][]">';
           else
             $result.='name="atksearch'.$fieldprefix.'['. $this->fieldName().'][]">';
-  
+
           $pkfield = $this->m_destInstance->primaryKeyField();
-  
+
           $result.= '<option value="">'.atktext('search_all');
-  
+
           for ($i=0;$i<count($recordset);$i++)
           {
             $pk = $recordset[$i][$pkfield];
-            
+
             if (is_array($record)&&isset($record[$this->fieldName()])&&
                        atk_in_array($pk, $record[$this->fieldName()])) $sel = "selected"; else $sel = "";
             $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
@@ -539,9 +539,9 @@
     {
       $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
       $query->addSearchCondition($searchcondition);
-     
+
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
     	if (!$this->hasFlag(AF_LARGE) || !$this->createDestination())
@@ -624,7 +624,7 @@
     		return "(".implode(" OR ",$searchConditions).")";
     	}
     }
-    
+
     /**
      * Gets the searchcondition of an attribute or adds it if it can't return it's searchcondition
      * also takes care the attribute get's it's own searchmode if it is set
@@ -668,9 +668,9 @@
       if ($this->createDestination())
       {
         if ($mode != "update" && $mode != "add")
-        {              
-          $alias = $fieldaliasprefix . $this->fieldName(); 
-          $query->addJoin($this->m_destInstance->m_table, 
+        {
+          $alias = $fieldaliasprefix . $this->fieldName();
+          $query->addJoin($this->m_destInstance->m_table,
                           $alias,
                           $this->getJoinCondition($query, $tablename, $alias),
                           $this->m_leftjoin);
@@ -681,16 +681,16 @@
           for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
           {
             if ($rec[$this->fieldName()]==NULL)
-            {            
-              $query->addField($this->m_refKey[$i],"NULL","","",false); 
+            {
+              $query->addField($this->m_refKey[$i],"NULL","","",false);
             }
             else
-            {         
+            {
               $fk = &$this->m_destInstance->getAttribute($this->m_destInstance->m_primaryKey[$i]);
               $query->addField($this->m_refKey[$i],$fk->value2db($rec[$this->fieldName()]),"","",!$this->hasFlag(AF_NO_QUOTES));
             }
-          }    
-        } 
+          }
+        }
       }
     }
 
@@ -715,11 +715,11 @@
       }
       return false;
     }
-    
+
     function dbFieldType()
     {
-      // The type of field that we need to store the foreign key, is equal to 
-      // the type of field of the primary key of the node we have a 
+      // The type of field that we need to store the foreign key, is equal to
+      // the type of field of the primary key of the node we have a
       // relationship with.
       if ($this->createDestination())
       {
@@ -727,11 +727,11 @@
       }
       return "";
     }
-    
+
     function dbFieldSize()
     {
-      // The size of the field we need to store the foreign key, is equal to 
-      // the size of the field of the primary key of the node we have a 
+      // The size of the field we need to store the foreign key, is equal to
+      // the size of the field of the primary key of the node we have a
       // relationship with.
       if ($this->createDestination())
       {
@@ -739,25 +739,25 @@
       }
       return 0;
     }
-    
+
     function getSelectableRecords()
     {
       if (!count($this->m_selectableRecords))
-      {        
+      {
         if ($this->createDestination())
-        {          
-          $this->m_selectableRecords = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));          
+        {
+          $this->m_selectableRecords = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
         }
       }
       return $this->m_selectableRecords;
     }
-    
-      
+
+
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's
     * owner node with the parent node.
     * @param String $tablename=""  the tablename on which
-    * @param String $fieldalias="" 
+    * @param String $fieldalias=""
     * @return String SQL string for joining the owner with the destination.
     *                Returns false when impossible (f.e. attrib is not a relation).
     */
@@ -768,12 +768,12 @@
       if ($tablename!="") $realtablename=$tablename;
       else $realtablename = $this->m_ownerInstance->m_table;
       $joinconditions = array();
-      
+
       if ($fieldalias) $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $fieldalias;
       else $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $this->m_destInstance->m_table;
-      
+
       $alias = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
-      
+
       for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
       {
         $joinconditions[] = $realtablename.".".$this->m_refKey[$i].
@@ -787,25 +787,25 @@
       }
       return implode(" AND ",$joinconditions);
     }
-   
+
     /**
      * Make this relation hide itself from the form when there are no items to select
      * @param boolean $hidewhenempty true - hide when empty, false - always show
-     */ 
+     */
     function setHideWhenEmpty($hidewhenempty)
     {
-      $this->m_hidewhenempty = $hidewhenempty; 
+      $this->m_hidewhenempty = $hidewhenempty;
     }
-    
+
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {          
+    {
       if ($this->createDestination())
       {
         // check if destination table is empty
         // only check if hidewhenempty is set to true
         if ($this->m_hidewhenempty)
         {
-          $recs = $this->getSelectableRecords();          
+          $recs = $this->getSelectableRecords();
           if (count($recs)==0) return $this->hide($defaults, $fieldprefix);
         }
       }

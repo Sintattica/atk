@@ -15,20 +15,19 @@
    * $Id$
    */
    
-  /**
-   * The atkDurationAttribute is an attribute for entering a length of time.
-   *
-   * @author Ivo Jansch <ivo@achievo.org>
-   * @package atk
-   * @subpackage attributes
-   */
-   
   /* flag(s) specific for atkDurationAttribute */
   define("AF_DURATION_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
 
   define("DURATIONFORMAT_TIME",0);
   define("DURATIONFORMAT_DECIMAL",1);
   
+  /**
+   * The atkDurationAttribute is an attribute for entering a length of time.
+   *
+   * @@author Ivo Jansch <ivo@ibuildings.nl>  Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
+   */
   class atkDurationAttribute extends atkAttribute
   {    
     /** member vars **/

@@ -1,5 +1,21 @@
 <?php
- 
+
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage include
+   *
+   * @copyright (c)2005 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
+
    // Global theme variable, must be declared before the includes
   $g_theme = array();
 
@@ -20,7 +36,7 @@
   // need to make it global ourselves. Todo: replace EVERY reference to
   // PHP_SELF with _SERVER["PHP_SELF"] eventually.
   $PHP_SELF = $_SERVER["PHP_SELF"];
-  
+
   require_once($config_atkroot."atk/class.atkconfig.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
@@ -30,27 +46,27 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
-  
+
   // Once atktools is loaded, we can register our own error handler.
   //set_error_handler("atkErrorHandler");
   //error_reporting(E_ALL);
 
-  require_once($config_atkroot."atk/ui/class.atkoutput.inc");  
+  require_once($config_atkroot."atk/ui/class.atkoutput.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
   require_once($config_atkroot."atk/include/security.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
 
   if (is_array($config_smart_debug))
     $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
-  
-  // Include locking functionality?  
+
+  // Include locking functionality?
   $lockType = atkconfig("lock_type");
   if (!empty($lockType))
-    require_once($config_atkroot."atk/lock/class.atklock.inc");      
-  
+    require_once($config_atkroot."atk/lock/class.atklock.inc");
+
   $g_stickyurl = array();
 
   // preload modules
   atkPreloadModules();
-  
+
 ?>

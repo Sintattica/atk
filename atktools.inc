@@ -1677,7 +1677,7 @@
    * you may spend a loooong time waiting on your application
    *
    * @param String $needle The value which will be searched in the haystack
-   * @package Array $haystack Array with values
+   * @param Array $haystack Array with values
    * @return Boolean True if needle exists in haystack
    */
   function atk_in_array_recursive($needle, $haystack)

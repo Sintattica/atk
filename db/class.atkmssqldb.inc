@@ -32,13 +32,12 @@
   * - atkManyToOneRelation
   * - atkBoolAttribute
   *
-  * @todo
-  * - LIMIT and OFFSET support
-  * - REGEX support
-  * - SOUNDEX support
-  * - Support for DATE attribute
-  * - Support for TIME attribute
-  * - Support for DATETIME attribute
+  * @todo - LIMIT and OFFSET support
+  *       - REGEX support
+  *       - SOUNDEX support
+  *       - Support for DATE attribute
+  *       - Support for TIME attribute
+  *       - Support for DATETIME attribute
   *
   * Attributes and database functions not stated above are untested
   *

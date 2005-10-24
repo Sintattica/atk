@@ -210,7 +210,7 @@
     return (isset($GLOBALS["config_".$tag])?$GLOBALS["config_".$tag]:$default);
   }    
   
-  /** @todo: module() and the MF_ flags should be moved to moduletools, but these are
+  /** @todo module() and the MF_ flags should be moved to moduletools, but these are
    * not present yet at configfile load time.
    */
   

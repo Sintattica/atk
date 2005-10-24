@@ -17,19 +17,18 @@
    */
    
   /**
-   * Query build for Oracle 8i databases.
-   *
-   * @author Sandy Pleyte <sandy@ibuildings.nl>
-   * @package atk
-   * @subpackage db
-   *
-   */
-
-  /**
    * Base include
    */
   atkimport("atk.db.atkquery");
  
+ /**
+   * Query build for Oracle 8i databases.
+   *
+   * @@author Ivo Jansch <ivo@ibuildings.nl>  Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   *
+   */
   class atkOci8Query extends atkQuery
   {
 
