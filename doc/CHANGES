@@ -94,6 +94,7 @@ Changes in ATK 5.3
 + Added addFields method to atkDDL class for adding multiple fields at once
   based on table metadata (for example from another database). [Peter]
 + Added atkgetinstance() method for retrieval of singletons. [Tjeerd, Ivo]
++ oci9 driver now supports connections on custom port numbers. [Ivo]
 * Removed some useless debug and fixed translation for add links
   (NF_ADD_LINK). [Martin]
 * Fixed translation for multi record actions. [Martin]

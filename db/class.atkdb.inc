@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -22,20 +22,20 @@
   define("DB_SUCCESS"           , 0);
   define("DB_UNKNOWNERROR"      , 1);
   define("DB_UNKNOWNHOST"       , 2);
-  define("DB_UNKNOWNDATABASE"   , 3);  
+  define("DB_UNKNOWNDATABASE"   , 3);
   define("DB_ACCESSDENIED_USER" , 4);
   define("DB_ACCESSDENIED_DB"   , 5);
-  
+
   /**
    * Meta flags.
    */
   define('MF_PRIMARY',        1);
   define('MF_UNIQUE',         2);
   define('MF_NOT_NULL',       4);
-  define('MF_AUTO_INCREMENT', 8);  
+  define('MF_AUTO_INCREMENT', 8);
 
   /**
-   * Abstract baseclass for ATK database drivers. 
+   * Abstract baseclass for ATK database drivers.
    *
    * Implements some custom functionality and defines some methods that
    * derived classes should override.
@@ -54,21 +54,21 @@
      * @var String
      */
     var $m_host     = "";
-    
-    /** 
+
+    /**
      * The name of the database/schema to use.
      * @access private
      * @var String
      */
     var $m_database = "";
-    
-    /** 
+
+    /**
      * The username for the connection.
-     * @access private 
+     * @access private
      * @var String
      */
     var $m_user     = "";
-    
+
     /**
      * The password for the connection.
      * @access private
@@ -78,14 +78,14 @@
 
     /**
      * Contains the current record from the result set.
-     * @access private 
+     * @access private
      * @var array
      */
     var $m_record = array();
-    
+
     /**
      * Current row number
-     * @access private 
+     * @access private
      * @var int
      */
     var $m_row = 0;
@@ -96,55 +96,55 @@
      * @var int
      */
     var $m_errno = 0;
-    
-    /** 
+
+    /**
      * Contains textual error message, in case an error occurred.
-     * @access private 
+     * @access private
      * @var String
      */
     var $m_error = "";
-    
+
     /**
      * If true, an atkerror is raised when an error occurred.
      *
      * The calling script can use this to stop execution and rollback.
-     * If false, the error will be ignored and script execution 
+     * If false, the error will be ignored and script execution
      * continues. Use this only for queries that may fail but still
      * be valid.
      * @access private
      * @var boolean
      */
     var $m_haltonerror = true;
-    
+
     /**
      * Driver name.
-     * 
+     *
      * Derived classes should add their own m_type var to the class
      * definition and put the correct name in it. (e.g. "mysql" etc.)
      * @abstract
-     * @access private 
+     * @access private
      * @var String
      */
     var $m_type = "";
-    
-    /** 
-     * Vendor. 
+
+    /**
+     * Vendor.
      *
-     * This is mainly used to retrieve things like error messages that are 
+     * This is mainly used to retrieve things like error messages that are
      * common for a vendor (i.e., they do not differ between versions).
-     * @abstract 
+     * @abstract
      * @access private
      * @var String
-     */ 
+     */
     var $m_vendor = "";
-    
-    /** 
-     * number of affected rows after an update/delete/insert query 
+
+    /**
+     * number of affected rows after an update/delete/insert query
      * @access private
      * @var int
      */
-    var $m_affected_rows = 0;      
-    
+    var $m_affected_rows = 0;
+
     /**
      * array to cache meta-information about tables.
      * @access private
@@ -158,7 +158,7 @@
      * @var Resource
      */
     var $m_link_id  = 0;
-    
+
     /**
      * The query statement is stored in this variable.
      * @access private
@@ -173,9 +173,9 @@
      * executed. It should generally not be necessary to put this to false.
      * @access private
      * @var boolean
-     */    
+     */
     var $m_auto_free = true;
-    
+
     /**
      * List of error codes that could be caused by an end-user.
      *
@@ -183,15 +183,15 @@
      * unique constraint.
      * @access private
      * @var array
-     */    
+     */
     var $m_user_error = array();
-    
+
     /**
      * Internal use; error messages from language files are cached here
      * @access private
      */
-    var $m_errorLookup = array();    
-    
+    var $m_errorLookup = array();
+
     /**
      * Get the current connection.
      * @return Connection resource id
@@ -200,7 +200,7 @@
     {
       return $this->m_link_id;
     }
-    
+
     /**
      * Determine whether an error that occurred is a recoverable (user) error
      * or a system error.
@@ -210,11 +210,11 @@
     {
       if(in_array($this->m_errno,$this->m_user_error))
       {
-        return "user";   
+        return "user";
       }
       return "system";
     }
-    
+
     /*
      * Get generic atk errorccode
      * @return int One of the ATK DB_* codes.
@@ -223,7 +223,7 @@
     {
       return $this->_translateError();
     }
-    
+
     /**
      * Get vendor-dependent database error number.
      *
@@ -247,9 +247,9 @@
     {
       return $this->m_error;
     }
-    
+
     /**
-     * Define custom user error codes. 
+     * Define custom user error codes.
      *
      * Error codes passed to this method will be treated as recoverable user
      * errors.
@@ -260,7 +260,7 @@
       atkdebug("atkdb::setUserError() -> ".$errno);
       $this->m_user_error[]=$errno;
     }
-    
+
     function errorLookup($errno)
     {
       if (count($this->m_errorLookup)==0)
@@ -275,24 +275,24 @@
       }
       return "";
     }
-    
+
     /**
      * Get localized error message (for display in the application)
      * @return String Error message
      */
     function getErrorMsg()
     {
-      $errno = $this->getAtkDbErrno(); 
+      $errno = $this->getAtkDbErrno();
       if($errno==DB_UNKNOWNERROR)
       {
         $errstr = $this->errorLookup($this->getDbErrno());
-        if($errstr=="") 
-        { 
-          $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")"; 
-        } 
-        else 
-        { 
-          $this->m_error=$errstr.($this->getErrorType()=="system"?" (".$this->getDbError().")":""); 
+        if($errstr=="")
+        {
+          $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")";
+        }
+        else
+        {
+          $this->m_error=$errstr.($this->getErrorType()=="system"?" (".$this->getDbError().")":"");
         }
         return $this->m_error;
       }
@@ -314,11 +314,11 @@
         return $this->m_error;
       }
     }
-    
+
     /**
      * If haltonerror is set, this will raise an atkerror. If not, it will
      * place the error in atkdebug and continue.
-     * @access protected     
+     * @access protected
      */
     function halt()
     {
@@ -346,7 +346,7 @@
     {
       return $this->m_query_id;
     }
-    
+
     /**
      * Connect to the database.
      * @return int Connection status
@@ -357,7 +357,7 @@
       return DB_UNKNOWNERROR;
     }
 
-    
+
     /**
      * Translate database-vendor dependent error messages into an ATK generic
      * error code.
@@ -369,8 +369,8 @@
      * @return int ATK error code
      */
     function _translateError($errno)
-    {      
-      return DB_UNKNOWNERROR;     
+    {
+      return DB_UNKNOWNERROR;
     }
 
     /**
@@ -401,19 +401,19 @@
      * Parse and execute a query.
      *
      * If the query is a select query, the rows can be retrieved using the
-     * next_record() method. 
+     * next_record() method.
      *
      * @param String $query The SQL query to execute
      * @param int $offset Retrieve the results starting at the specified
      *                    record number. Pass -1 or 0 to start at the first
      *                    record.
-     * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
+     * @param int $limit Indicates how many rows to retrieve. Pass -1 to
      *                   retrieve all rows.
      * @abstract
      */
     function query($query, $offset=-1, $limit=-1)
     {
-      return true;    
+      return true;
     }
 
     /**
@@ -426,12 +426,12 @@
     {
       return 0;
     }
- 
+
     /**
      * Lock a table in the database.
      *
      * @param String $table The name of the table to lock.
-     * @param String $mode The lock type. 
+     * @param String $mode The lock type.
      * @return boolean True if succesful, false if not.
      * @abstract
      */
@@ -439,9 +439,9 @@
     {
       return 0;
     }
-  
+
     /**
-     * Relieve all locks. 
+     * Relieve all locks.
      *
      * @return boolean True if succesful, false if not.
      * @abstract
@@ -463,12 +463,12 @@
     function affected_rows()
     {
       return array();
-    }    
+    }
 
     /**
      * Get the next sequence number of a certain sequence.
      *
-     * If the sequence does not exist, it is created automatically. 
+     * If the sequence does not exist, it is created automatically.
      *
      * @param $sequence The sequence name
      * @return int The next sequence value
@@ -489,7 +489,7 @@
      *     [0]["type"]   field type
      *     [0]["len"]    field length
      *     [0]["flags"]  field flags
-     * 
+     *
      *  -full is true:
      *   $result[]:
      *     ["num_fields"] number of metadata records
@@ -503,13 +503,13 @@
      *
      * @param $table the table name
      * @param $full all meta data or not
-     * @return array with meta data    
+     * @return array with meta data
      */
     function metadata($table, $full=false)
-    {            
-    
+    {
+
       return array();
-    }   
+    }
 
     /**
      * Return the available table names
@@ -519,19 +519,19 @@
     {
       return array();
     }
-  
+
    /**
-     * This function checks the database for a table with 
+     * This function checks the database for a table with
      * the provide name
      *
      * @param String $tableName the table to find
      * @return boolean true if found, false if not found
-     */  
+     */
     function tableExists($tableName)
     {
       return false;
-    } 
-  
+    }
+
     /**
      * Get all rows that are the result
      * of a certain specified query
@@ -548,13 +548,13 @@
     {
       $result = array();
 
-      $this->query($query, $offset, $limit);    
+      $this->query($query, $offset, $limit);
       while ($this->next_record())
         $result[] = $this->m_record;
-      
+
       return $result;
     }
-    
+
     /**
      * This function indicates what searchmodes the database supports.
      * @return array with search modes
@@ -566,7 +566,7 @@
       // searches can be implemented using LIKE)
       return array("exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
-    
+
     function tableMeta($table)
     {
       if (!isset($this->m_tableMeta[$table]))
@@ -579,10 +579,10 @@
           $this->m_tableMeta[$table][$meta[$i]['name']] = &$meta[$i];
         }
       }
-      
+
       return $this->m_tableMeta[$table];
     }
-    
+
     /**
       * get NOW() or SYSDATE() equivalent for the current database
       *
@@ -593,7 +593,7 @@
     {
       return "NOW()";
     }
-    
+
     /**
       * get SUBSTRING() equivalent for the current database.
       */
@@ -601,18 +601,18 @@
     {
       return "SUBSTRING($fieldname, $startat".($length!=0?", $length":"").")";
     }
-    
-    /** 
+
+    /**
      * Get TO_CHAR() equivalent for the current database.
      * Each database driver should override this method to perform vendor
      * specific conversion.
-     *     
+     *
      * @param String $fieldname The field to generate the to_char for.
      * @param String $format Format specifier. The format is compatible with
      *                       php's date() function (http://www.php.net/date)
-     *                       The default is what's specified by 
+     *                       The default is what's specified by
      *                       $config_date_to_char, or "Y-m-d" if not
-     *                       set in the configuration.     
+     *                       set in the configuration.
      * @return String Piece of sql query that converts a date field to char
      *                for the current database
      */
@@ -621,10 +621,10 @@
       if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
       return "TO_CHAR($fieldname, ".$this->venderDateFormat($format).")";
     }
-    
+
     /**
      * Convert a php date() format specifier to a vendor specific format
-     * specifier. 
+     * specifier.
      * The default implementation returns the format as used by many
      * database vendors ('YYYYMMDD HH24:MI'). Databases that use different
      * formatting, should override this method.
@@ -638,12 +638,12 @@
     function vendorDateFormat($format)
     {
       $php_fmt = array("Y", "m", "d", "H", "h", "i", "s");
-      $db_fmt  = array("YYYY", "MM", "DD", "HH24", "HH12", "MI", "SS");      
+      $db_fmt  = array("YYYY", "MM", "DD", "HH24", "HH12", "MI", "SS");
       return str_replace($php_fmt, $db_fmt, $format);
     }
-      
-      
-    /** 
+
+
+    /**
      * Get TO_CHAR() equivalent for the current database.
      *
      * TODO/FIXME: add format paramater. Current format is always yyyy-mm-dd hh:mi.
@@ -651,22 +651,22 @@
     function func_datetimetochar($fieldname)
     {
       return "TO_CHAR($fieldname, 'YYYY-MM-DD hh:mi')";
-    }      
-    
+    }
+
     /**
       * Returns the maximum length an identifier (tablename, columnname, etc) may have
-      *      
+      *
       */
     function maxIdentifierLength()
     {
       return 64;
     }
-       
+
     /**
      * escapes quotes for use in SQL: ' -> '' (and sometimes % -> %%)
      */
     function escapeSQL($string, $wildcard=false)
-    {    
+    {
       $result = str_replace("'","''",$string);
       $result = str_replace("\\","\\\\",$result);
       if ($wildcard == true) $result = str_replace("%","%%",$result);
@@ -678,53 +678,55 @@
      * @return atkQuery Query class.
      */
     function &createQuery()
-    {      
+    {
       $query = &atknew("atk.db.atk".$this->m_type."query");
       $query->m_db = &$this;
       return $query;
     }
-    
+
 
     /**
      * Create an atkDDL object for constructing ddl queries.
      * @return atkDDL DDL object
      */
     function &createDDL()
-    {      
+    {
       atkimport("atk.db.atkddl");
       $ddl = &atkDDL::create($this->m_type);
       $ddl->m_db = &$this;
       return $ddl;
-    }    
-    
+    }
+
     /**
      * Get database instance.
      *
      * This method instantiates and returns the correct (vendor specific)
      * database instance, depending on the configuration.
      *
-     * @static 
+     * @static
      * @param String $conn The name of the connection as defined in the
      *                     config.inc.php file (defaults to 'default')
-     * @return atkDb Instance of the database class. 
+     * @return atkDb Instance of the database class.
      */
     function &getInstance($conn="default")
     {
       static $s_instances = array();
       if (!isset($s_instances[$conn]))
-      {        
-        atkdebug("Creating new db instance for connection $conn");  
+      {
+        atkdebug("Creating new db instance for connection $conn");
         $dbconfig = atkconfig("db");
          // include DB stuff
-        $s_instances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");                     
+        $s_instances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");
         $s_instances[$conn]->m_database = $dbconfig[$conn]["db"];
         $s_instances[$conn]->m_user     = $dbconfig[$conn]["user"];
         $s_instances[$conn]->m_password = $dbconfig[$conn]["password"];
-        $s_instances[$conn]->m_host     = $dbconfig[$conn]["host"];        
+        $s_instances[$conn]->m_host     = $dbconfig[$conn]["host"];
+        if (isset($dbconfig[$conn]["port"]))
+          $s_instances[$conn]->m_port     = $dbconfig[$conn]["port"];
       }
       return $s_instances[$conn];
     }
 
-  }  
+  }
 
 ?>

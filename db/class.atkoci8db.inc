@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -25,21 +25,21 @@
    *
    */
   class atkOci8Db extends atkDb
-  {    
+  {
     /**
      * @var String
      * @access private
      */
     var $m_type = "oci8";
     var $m_vendor = "oracle";
-    
+
     /**
      * Default constructor
      */
     function atkOci8Db()
     {
       // set the user error's
-      $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);   
+      $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);
       // Other errors are assumed to be critical errors
     }
 
@@ -48,7 +48,7 @@
      * @return int One of the generic DB_ connection statusses.
      */
     function connect()
-    {      
+    {
       /* establish connection to database */
       if (empty($this->m_link_id))
       {
@@ -62,25 +62,25 @@
           $this->halt($this->_translateError($error));
         }
 
-        /* set default date format for Oracle */ 
+        /* set default date format for Oracle */
         $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
         $myresult = OCIExecute($nls);
         $error = OCIError($this->m_link_id);
         if ($error["code"]!="")
         {
-          $this->halt("Invalid SQL: $query"); 
+          $this->halt("Invalid SQL: $query");
           return $this->_translateError($error);
         }
 
       }
       return DB_SUCCESS;
     }
-    
+
     /**
      * Get last error code.
      *
      * If an error occurred, this method can be called to retrieve
-     * the generic error code. 
+     * the generic error code.
      * @return int One of the generic DB_* statusses.
      */
     function getAtkDbErrno()
@@ -88,7 +88,7 @@
       atkdebug("atkoci8db::getAtkDbErrno() -> ".$this->getDbErrno());
       return $this->_translateError(array('code'=>$this->getDbErrno(),'error'=>$this->getDbError()));
     }
-  
+
     /**
      * Translate a driver specific error to a generic ATK db error code.
      * @access private
@@ -104,7 +104,7 @@
         case     0: return DB_SUCCESS;
         case  1017: return DB_ACCESSDENIED_USER;
         case 12154: return DB_UNKNOWNDATABASE;
-        default: 
+        default:
                     return DB_UNKNOWNERROR;
       }
     }
@@ -130,7 +130,7 @@
       {
         atkdebug("OCICommit");
         OCICommit($this->m_link_id);
-      }    
+      }
       return true;
     }
 
@@ -151,13 +151,13 @@
      * Parse and execute a query.
      *
      * If the query is a select query, the rows can be retrieved using the
-     * next_record() method. 
+     * next_record() method.
      *
      * @param String $query The SQL query to execute
      * @param int $offset Retrieve the results starting at the specified
      *                    record number. Pass -1 or 0 to start at the first
      *                    record.
-     * @param int $limit Indicates how many rows to retrieve. Pass -1 to 
+     * @param int $limit Indicates how many rows to retrieve. Pass -1 to
      *                   retrieve all rows.
      */
     function query($query, $offset=-1, $limit=-1)
@@ -166,10 +166,10 @@
       if ($offset >= 0 && $limit > 0)
       {
         /* row id's start at 1! */
-	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (". 
+	      $query="SELECT * FROM (SELECT rownum AS rid, XX.* FROM (".
         $query.") XX) YY  WHERE YY.rid >= ".($offset+1)." AND YY.rid <= ".($offset + $limit);
-      }	
-      
+      }
+
       /* query */
       atkdebug("atkoci8db.query(): ".$query);
 
@@ -181,34 +181,34 @@
         {
           @OCIFreeStatement($this->m_query_id);
           $this->m_query_id = 0;
-        }                    
+        }
 
         /* query database */
         $execresult = false;
-        $this->m_query_id = @OCIParse($this->m_link_id, $query);              
-        
-        if ($this->m_query_id) 
-        {                
+        $this->m_query_id = @OCIParse($this->m_link_id, $query);
+
+        if ($this->m_query_id)
+        {
           if(!@OCIExecute($this->m_query_id,OCI_DEFAULT))
-          {         
+          {
             $error = OCIError($this->m_query_id);
-            atkerror("Invalid SQL: $query");    
+            atkerror("Invalid SQL: $query");
             $this->halt($this->_translateError($error));
             return false;
-          }          
+          }
         }
         else
-        {        
-          /* error in query */          
+        {
+          /* error in query */
           $error = OCIError($this->m_link_id);
-          atkerror("Invalid SQL: $query");    
-          $this->halt($this->_translateError($error));          
+          atkerror("Invalid SQL: $query");
+          $this->halt($this->_translateError($error));
           return false;
         }
-        
+
         $this->m_row = 0;
-               
-        /* return query id */                        
+
+        /* return query id */
         return true;
       }
       return false;
@@ -246,8 +246,8 @@
         $this->m_error = $error["message"];
 
         /* no more records, no problem */
-        if(1403 == $this->m_errno) 
-        { 
+        if(1403 == $this->m_errno)
+        {
           $this->m_errno = 0;
           $this->m_error = "";
           $this->disconnect();
@@ -259,12 +259,12 @@
 
     /**
      * Skip to a certain position in the result set for subsequent calls to
-     * next_record().     
+     * next_record().
      *
      * Calling seek() with no parameters places the pointer to the first
      * record in the resultset.
-     * 
-     * @param int $position The number of the record to skip to. 
+     *
+     * @param int $position The number of the record to skip to.
      */
     function seek($position=0)
     {
@@ -276,7 +276,7 @@
      * Lock a table in the database.
      *
      * @param String $table The name of the table to lock.
-     * @param String $mode The lock type. Note that this driver only supports 
+     * @param String $mode The lock type. Note that this driver only supports
      *                     "write".
      *
      * @return boolean True if succesful, false if not.
@@ -292,7 +292,7 @@
         {
           $m_query_id = OCIParse($this->m_link_id, "lock table $table in row exclusive mode");
           $result = @OCIExecute($m_query_id);
-          if (!$result) 
+          if (!$result)
           {
             $this->halt("$mode lock on $table failed.");
             return 0;
@@ -306,7 +306,7 @@
     }
 
     /**
-     * Relieve all locks. 
+     * Relieve all locks.
      *
      * The oracle 8i driver has no way to unlock other than committing the
      * current transaction. So be careful with calling this function; any
@@ -334,8 +334,8 @@
 
     /**
      * Retrieve the number of rows in the resultset.
-     * 
-     * After calling query() to perform a select statement, this method will 
+     *
+     * After calling query() to perform a select statement, this method will
      * return the number of rows in the resultset.
      *
      * @return int The number of rows in the resultset.
@@ -361,13 +361,13 @@
      *
      * If the sequence does not exist, it is created automatically. For this
      * to work, the database user should have the 'create sequence' privilege.
-     * The name of the sequence in the database is prefixed with 
+     * The name of the sequence in the database is prefixed with
      * the string that's configured in $config_database_sequenceprefix.
      *
      * <b>Example</b>
      * If the database contains a sequence named "seq_employees", the following
      * call will retrieve the next value from the sequence:
-     * <code> 
+     * <code>
      *   $id = $db->nextid("employees");
      * </code>
      *
@@ -383,11 +383,11 @@
 
         /* get sequence number and increment */
         $query = "SELECT ".$sequencename.".nextval AS nextid FROM dual";
-  
+
         /* execute query */
         $m_query_id = OCIParse($this->m_link_id, $query);
         $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
-  
+
         /* error? */
         if (empty($id))
         {
@@ -395,24 +395,24 @@
           $query = "CREATE SEQUENCE ".$sequencename." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
           $m_query_id = OCIParse($this->m_link_id, $query);
           $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create '$sequencename'");
-          
+
           /* try again */
           $query = "SELECT ".$sequencename.".nextval AS nextid FROM dual";
           $m_query_id = OCIParse($this->m_link_id, $query);
           $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence '$sequencename'");
-          
+
           /* empty? */
           if (empty($id)) return 0;
         }
-  
+
         /* get nextid */
         OCIFetchInto($m_query_id, $result);
-  
+
         /* return id */
         return $result[0];
       }
       return 0;
-    }        
+    }
 
     /**
      * Return the meta data of a certain table
@@ -428,8 +428,8 @@
     {
       atkimport("atk.db.atkddl");
       $type = substr(substr(get_class($this), 3), 0, -2);
-      $ddl = &atkDDL::create($type);    
-    
+      $ddl = &atkDDL::create($type);
+
       // retrieve meta data
       $sql = "
         SELECT
@@ -473,7 +473,7 @@
          WHERE c.table_name = UPPER('$table')
          AND c.hidden_column <> 'YES'
          ORDER BY c.column_id";
-         
+
       $meta = array();
       $rows = $this->getRows($sql);
 
@@ -489,21 +489,21 @@
           ($row['is_unique'] == 1 ? MF_UNIQUE : 0) |
           ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
           ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
-        
+
         if ($row['is_auto_inc'] == 1)
-          $meta[$i]['sequence'] = $row['sequence'];    
+          $meta[$i]['sequence'] = $row['sequence'];
         else if ($row['default_value'] !== NULL)
         {
           if (in_array($meta[$i]['gentype'], array('string', 'text')))
             $meta[$i]['default'] = substr(substr($row['default_value'], 1), 0, -1);
-          else if (in_array($meta[$i]['gentype'], array('number', 'decimal'))) 
+          else if (in_array($meta[$i]['gentype'], array('number', 'decimal')))
             $meta[$i]['default'] = $row['default_value'];
         }
-          
+
         if ($full)
           $meta["meta"][$row['name']] = &$meta[$i];
       }
-      
+
       if ($full)
         $meta['num_fields'] = count($rows);
 
@@ -532,28 +532,28 @@
       /* return result */
       return $result;
     }
-    
+
     /**
-     * This function checks in the database if a table exists.     
+     * This function checks in the database if a table exists.
      *
      * @param String $tableName The name of the table to check.
      * @return boolean True if the table exists, false if not.
-     */  
+     */
     function tableExists($table)
-    {                  
-      $found = $this->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");      
+    {
+      $found = $this->getrows("SELECT count(*) as found FROM cat WHERE table_name='".strtoupper($table)."'");
       return ($found[0]['found']==0 ? false : true);
-    }    
-    
-    /** 
+    }
+
+    /**
      * Retrieve this drivers' specific SQL implementation of a now() function.
      * @return String
      */
     function func_now()
     {
       return "SYSDATE";
-    }  
-    
+    }
+
     /**
       * Retrieve this drivers' specific SQL implementation of a substring
       * function.
@@ -571,7 +571,7 @@
     {
       return "SUBSTR($fieldname, $startat".($length!=0?", $length":"").")";
     }
-    
+
     /**
       * Returns the maximum length an identifier (tablename, columnname, etc)
       * for this driver may have.
@@ -581,28 +581,28 @@
     {
       return 30;
     }
-    
+
     /**
      * Escape a string for use in SQL queries.
      *
      * This driver's implementation escapes single quotes and optionally,
-     * wildcards. Wildcards should be escaped if they appear as regular 
-     * characters inside a string. When actually searching for wildcards, 
+     * wildcards. Wildcards should be escaped if they appear as regular
+     * characters inside a string. When actually searching for wildcards,
      * those wildcards should not be escaped.
-     * 
+     *
      * @param String $string The string to escape.
-     * @param boolean $wildcard Set to true to convert wildcard chars ('%'). 
+     * @param boolean $wildcard Set to true to convert wildcard chars ('%').
      *                          False will leave them unescaped.
      * @return String A SQL compatible version of the input string.
-     
+
      */
     function escapeSQL($string, $wildcard=false)
-    {    
+    {
       $result = str_replace("'","''",$string);
       if ($wildcard == true) $result = str_replace("%","%%",$result);
       return $result;
     }
-    
+
   }
 
 ?>
