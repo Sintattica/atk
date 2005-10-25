@@ -105,8 +105,10 @@
      */
     function _getFallbackModules($modulefallback)
     {
-      static $s_fallbackmodules=array();
-      if (count($s_fallbackmodules)<1)
+      static $s_fallbackmodules = array();
+      $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
+      
+      if (!array_key_exists($key, $s_fallbackmodules))
       {
         global $g_modules;
 
@@ -119,9 +121,11 @@
           }
         }
         $modules[] = "atk";
-        $s_fallbackmodules = array_merge($this->m_fallbackmodules, $modules);
+        
+        $s_fallbackmodules[$key] = array_merge($this->m_fallbackmodules, $modules);
       }
-      return $s_fallbackmodules;
+      
+      return $s_fallbackmodules[$key];
     }
     
     /**
