@@ -57,14 +57,16 @@
 
   /**
    * Get an instance of a node. If an instance doesn't exist, it is created.
-   * @param $node the node string
-   * @param $init initialize the node?
+   * @param String $node     The node string
+   * @param bool   $init     Initialize the node?
+   * @param String $cache_id The cache id in the node repository
+   * @param bool   $reset    Wether or not to reset the particulair node in the repository
    * @return the created instance
    */
-  function &getNode($node, $init=TRUE, $cache_id="default")
+  function &getNode($node, $init=TRUE, $cache_id="default", $reset=false)
   {
     global $g_nodeRepository;
-    if (!isset($g_nodeRepository[$cache_id][$node])||!is_object($g_nodeRepository[$cache_id][$node]))
+    if (!isset($g_nodeRepository[$cache_id][$node])||!is_object($g_nodeRepository[$cache_id][$node]) || $reset)
     {
       atkdebug("Constructing a new node - $node");
       $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
