@@ -81,7 +81,7 @@
 
       if(!isset($langcache[$shortmonth]))
       {
-        $langcache[$shortmonth] = text($shortmonth,"","atk");
+        $langcache[$shortmonth] = atktext($shortmonth);
       }
 
       /* replace month/week name */
