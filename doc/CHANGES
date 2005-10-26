@@ -15,6 +15,9 @@ Changes in ATK 5.3RC2
   structure itsself, making it possible to use theme elements from outside
   the ATK application root. [Boy]
 * Fixed php errors in atkProfileAttribute. [Ivo]
+* Added 'grantall' privilege; if users have a privilege defined by 
+  $config_auth_grantall_privilege, they can grant privileges that they do not
+  explicitly have themselves. [Ivo]
 
 Changes in ATK 5.3RC1
 ---------------------

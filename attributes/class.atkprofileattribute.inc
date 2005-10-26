@@ -86,7 +86,7 @@
 
       if ($db->query($delquery))
       {
-        $isAdmin = $g_user['name'] == 'administrator';
+        $isAdmin =  ($g_user['name']=='administrator' || $this->canGrantAll());
         $allActions = $this->getAllActions($record);
         $editableActions = $this->getEditableActions($record);
 
@@ -273,7 +273,7 @@
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     text("invert_selection").'</a>]</div>';
 
-      $isAdmin = $g_user['name'] == 'administrator';
+      $isAdmin =  ($g_user['name']=='administrator' || $this->canGrantAll());
       $allActions = $this->getAllActions($record);
       $editableActions = $this->getEditableActions($record);
       $selectedActions = $this->getSelectedActions($record);
@@ -374,6 +374,26 @@
     function dbFieldType()
     {
       return "";
+    }
+
+    /**
+     * Checks whether the current user has the 'grantall' privilege (if such a
+     * privilege exists; this is determined by the application by setting
+     * $config_auth_grantall_privilege.
+     *
+     * @return boolean
+     */
+    function canGrantAll()
+    {
+      $privilege_setting = atkconfig("auth_grantall_privilege");
+
+      if ($privilege_setting!="")
+      {
+        global $g_securityManager;
+        list($mod, $node, $priv) = explode(".", $privilege_setting);
+        return $g_securityManager->allowed($mod.".".$node, $priv);
+      }
+      return false;
     }
 
   }
