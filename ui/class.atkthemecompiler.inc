@@ -144,18 +144,15 @@
     }
 
     /**
-     * Extracts the director(y/ies) we need to scan, checks wether the user set the slashes
+     * Checks wether the user set the slashes and how many dirs we need to scan
      * Multiple directories are seperated with a ;
-     * @param array &$theme the current themedefinition
-     * @param string $from the directory of the current themedefinition
+     * @param string $themedata The theme data for this paricular entry
      * @return array an array with the directories
      */
     function _getAutodetectdirectories($themedata)
     {
-      $begindirs = strpos($themedata, "'");
-      $enddirs = strrpos($themedata, "'");
-      $dirnamelength = $enddirs - $begindirs;
-      $directories = substr($themedata, $begindirs+1, $dirnamelength-1);
+      $directories = $this->_getAutodetectData($themedata);
+            
       $directories = explode(";", $directories);
       foreach ($directories as $dirid => $directory)
       {
@@ -166,6 +163,29 @@
     }
     
     /**
+     * Extracts the director(y/ies) we need to scan
+     * @param string $themedata The theme data for this paricular entry
+     * @return String The data that was passed to us (example: icons/recordlist/;icons/something/)
+     */
+    function _getAutodetectData($themedata)
+    {
+      $begindirs = strpos($themedata, "'");
+      if ($begindirs) 
+      {
+        $enddirs = strrpos($themedata, "'");
+      }
+      else 
+      {
+        // The user didn't use slashes, guess he did "scan dir1/dir2/"
+        $begindirs = 4;
+        $enddirs = strlen($themedata)-1;
+      }
+      $dirnamelength = $enddirs - $begindirs;
+      
+      return trim(substr($themedata, $begindirs+1, $dirnamelength-1));
+    }
+    
+    /**
      * Scans the directory given to it and returns the files it finds
      * @param string $directory the directory we need to scan
      * @param string $from the directory of the current themedefinition
@@ -173,7 +193,13 @@
      */
     function _scanAutodetectdirectory($directory, $from)
     {
+      if (!file_exists(atkconfig("atkroot").$from.$directory))
+      {
+         atkerror("Scan of ".atkconfig("atkroot").$from.$directory." failed! Invalid directory passed. Skipping...");
+         return array();
+      }
       $handle=opendir(atkconfig("atkroot").$from.$directory);
+      
       while (($file = readdir($handle))!==false) 
       {
         if ($file != "." && $file != ".." && $file != "CVS") 
@@ -181,7 +207,7 @@
           $detectedfiles[] = $file;
         }
       }
-	  closedir($handle); 
+	    closedir($handle); 
       return $detectedfiles;
     }
     

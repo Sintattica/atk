@@ -118,7 +118,7 @@
      */
     function renderBox($vars, $name="")
     {
-      if (file_exists($this->m_theme->tplPath($name.".tpl")))
+      if ($name && file_exists($this->m_theme->tplPath($name.".tpl")))
       {
         return $this->render($name.".tpl", $vars);
       }
