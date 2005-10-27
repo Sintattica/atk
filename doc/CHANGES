@@ -20,6 +20,11 @@ Changes in ATK 5.3RC2
   explicitly have themselves. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
+* Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
+  retrieved. Also, both thousands- and decimal separator now have a default 
+  value if none is set in the language file. [Ivo]
+* Set search portion of the top frame in outlook theme to 'nowrap'. [Ivo]
+* Fixed atkProfileAttribute translations. [Ivo]
 
 Changes in ATK 5.3RC1
 ---------------------

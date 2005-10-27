@@ -283,14 +283,14 @@
       foreach ($allActions as $module => $nodes)
       {
         if ($showModule)
-          $result .= "<br><hr><b>".text("title_$module")."</b><br><br>";
+          $result .= "<br><hr><b>".atktext("title_$module", $module)."</b><br><br>";
 
         foreach ($nodes as $node => $actions)
         {
           $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
 
           if ($showBox)
-            $result .= "<b>".text($node)."</b><br>";
+            $result .= "<b>".atktext($node, $module)."</b><br>";
 
           foreach ($actions as $action)
           {
@@ -322,10 +322,10 @@
      */
     function permissionName($action, $nodename="", $modulename="")
     {
-      $label = text("permission_".$action, $nodename, $modulename); // module/node specific text
+      $label = atktext("permission_".$action, $modulename, $nodename); // module/node specific text
       if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
       {
-        $label = text($action, $nodename, $modulename); // generic action text.
+        $label = atktext($action, $modulename, $nodename); // generic action text.
       }
       return $label;
     }

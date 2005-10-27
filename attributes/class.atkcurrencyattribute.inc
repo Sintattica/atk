@@ -28,7 +28,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
   var $m_currencysymbol;
   var $m_decimalseparator;
   var $m_thousandsseparator;
-  
+
   /**
     * Constructor
     * @param string $name  Name of the attribute
@@ -43,16 +43,16 @@ class atkCurrencyAttribute extends atkNumberAttribute
   function atkCurrencyAttribute($name,$flags,$size=10,$currencysymbol="",$decimals=2,$decimalseparator="",$thousandsseparator="")
   {
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
-    
+
     if($currencysymbol=="") $currencysymbol=atktext("currencysymbol","atk","","","",true);
-    if($decimalseparator=="") $decimalseperator=atktext("decimal_separator","atk","","","",true);
+    if($decimalseparator=="") $decimalseparator=atktext("decimal_separator","atk","","","",true);
     if($thousandsseparator=="") $thousandsseparator=atktext("thousands_separator","atk","","","",true);
 
     $this->m_currencysymbol = $currencysymbol;
-    $this->m_decimalseperator = $decimalseperator;
-    $this->m_thousandsseparator = $thousandsseparator;
+    $this->m_decimalseparator = ($decimalseparator!=""?$decimalseparator:".");
+    $this->m_thousandsseparator = ($thousandsseparator!=""?$thousandsseparator:",");
   }
-  
+
   /**
    * overrides the edit function to put the currencysymbol in front of the input field
    */
@@ -60,7 +60,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
   {
     return $this->m_currencysymbol." ".parent::edit($record,$fieldprefix);
   }
-  
+
   /**
    * overrides the display function to put the currencysymbol in front of the input field
    */
