@@ -1170,6 +1170,12 @@
 
       $res = "";
 
+      if ($record!="")
+      {
+        $descr = $this->descriptor($record);
+        $g_sessionManager->pageVar("descriptor",$descr);
+      }
+      
       $descriptortrace = $g_sessionManager->descriptorTrace();
       $nomodule=false;
       if (!empty($descriptortrace))
@@ -1185,12 +1191,6 @@
       if (is_object($ui))
       {
         $res.= $ui->title($this->m_module, $this->m_type, $action,$nomodule);
-      }
-      if ($record!="")
-      {
-        $descr = $this->descriptor($record);
-        $g_sessionManager->pageVar("descriptor",$descr);
-        if ($descr!="") $res= $res."&nbsp; [".$descr."]";
       }
 
       return $res;

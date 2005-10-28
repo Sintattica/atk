@@ -541,7 +541,9 @@
 
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       $res = array();
-      for ($i=0;$i<count($stack)-1;$i++)
+      
+      $stackcount = count($stack);
+      for ($i=0;$i<$stackcount;$i++)
       {
         if (isset($stack[$i]["descriptor"]))
         {

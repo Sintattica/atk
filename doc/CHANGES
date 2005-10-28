@@ -28,6 +28,8 @@ Changes in ATK 5.3RC2
 * Set search portion of the top frame in outlook theme to 'nowrap'. [Ivo]
 * Fixed atkProfileAttribute translations. [Ivo]
 * atkLanguage no longer tries to include languagefiles it can't find. [Yury]
+* Descriptortrace (breadcrumbtrail top of page) now also shows what node
+  you are currently preforming an action in [Boy]
 
 Changes in ATK 5.3RC1
 ---------------------
