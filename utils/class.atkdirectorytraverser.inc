@@ -9,7 +9,7 @@
    * @package atk
    * @subpackage utils
    *
-   * @copyright (c)2005 Ivo Jansch   
+   * @copyright (c)2005 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -18,8 +18,8 @@
 
   /**
    * This class can be used to recursively traverse a directory structure.
-   * For each dir or file encountered, it calls callback methods on 
-   * callbackobjects. 
+   * For each dir or file encountered, it calls callback methods on
+   * callbackobjects.
    * This is similar to the unix 'find' command with an execute option.
    * You pass a callbackobject that performs the actual action. The
    * full pathname of the file is passed as a parameter to the callback
@@ -29,18 +29,18 @@
    * @package atk
    * @subpackage utils
    *
-   */  
+   */
   class atkDirectoryTraverser
   {
-    var $m_callbackObjects = array();    
-    
+    var $m_callbackObjects = array();
+
     /**
      * Constructor
      */
     function atkDirectoryTraverser()
-    {      
+    {
     }
-    
+
     /**
      * Add a callback object.
      *
@@ -68,8 +68,8 @@
     function clearCallbackObjects()
     {
       $this->m_callbackObjects = array();
-    }   
-    
+    }
+
     /**
      * Traverse a path.
      *
@@ -90,26 +90,25 @@
       elseif (is_dir($path))
       {
         $this->_callback("visitDir", $path);
-        $filenames = $this->_getDirContents($path);        
+        $filenames = $this->getDirContents($path);
         foreach ($filenames as $file)
         {
           if ($file!=".."&&$file!=".")
           {
             if (!$this->traverse($path."/".$file)) return false;
           }
-        }                  
+        }
         return true;
-      }    
+      }
       return false;
-    }        
-    
+    }
+
     /**
      * Read all the entries of a directory.
-     * @access private
      * @param String $path The path to read the contents from.
      * @return array Array containing the contents of the directory.
      */
-    function _getDirContents($path)
+    function getDirContents($path)
     {
       $result = array();
       $dir = opendir($path);
@@ -117,7 +116,7 @@
       closedir($dir);
       return $result;
     }
-    
+
     /**
      * Perform a callback on all callbackobjects.
      * @access private
