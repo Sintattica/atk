@@ -256,6 +256,7 @@
     {
       if (!isset($this->m_cachedlangfiles[$module][$lng])||$this->m_cachedlangfiles[$module][$lng] != 1)
       {
+        $this->m_cachedlangfiles[$module][$lng] = 1;
         if ($module=="atk")
         {
           $path = atkconfig("atkroot")."atk/".$this->LANGDIR;
@@ -274,7 +275,6 @@
         if (file_exists($file))
         {
           include($file);
-          $this->m_cachedlangfiles[$module][$lng] = 1;
           $this->m_cachedlang[$module][$lng] = $$lng;        
           return true;
         }

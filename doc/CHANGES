@@ -9,8 +9,7 @@ Changes in ATK 5.3RC2
 + Made it possible to reset a node in the node repository by adding a
   fourth param to getNode(). [Boy]
 + If newNode() calls the missing class handler it passes along a module 
-  to the params too, to distinguish between ATK calling the missing class 
-  handler and Smarty (which does not pass along a module) [Boy]
+  to the params. [Boy]
 * Improved errorhandeling in themecompiling. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
@@ -28,6 +27,7 @@ Changes in ATK 5.3RC2
   value if none is set in the language file. [Ivo]
 * Set search portion of the top frame in outlook theme to 'nowrap'. [Ivo]
 * Fixed atkProfileAttribute translations. [Ivo]
+* atkLanguage no longer tries to include languagefiles it can't find. [Yury]
 
 Changes in ATK 5.3RC1
 ---------------------
