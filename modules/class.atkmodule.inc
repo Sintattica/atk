@@ -142,7 +142,7 @@
       if (!file_exists($file))
       {        
         atkimport("atk.utils.atkclassloader");
-        $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array("node"=>$node));
+        $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array("node"=>$node,"module"=>$this->m_name));
         if ($res!==false)
         {
           return $res;
