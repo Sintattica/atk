@@ -67,7 +67,7 @@
             $menuitems[$i]["enable"]=$enable;
 
             /* delimiter ? */
-            if ($name == "-") $menu .= "<br>";
+            if ($name == "-") $menu .= $delimiter;
 
             else if ($enable) // don't show menu items we don't have access to.
             {
@@ -100,7 +100,7 @@
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).'<br>';
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).$delimiter;
         }
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
