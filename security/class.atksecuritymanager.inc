@@ -423,7 +423,6 @@
       $ui = &atkinstance("atk.ui.atkui");
 
       $page->register_style($ui->stylePath("style.css"));
-      $page->register_style($ui->stylePath("login.css"));
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
 
@@ -480,7 +479,7 @@
       $tplvars["content"]=$output;
       $page->addContent($ui->render("login.tpl", $tplvars));
       $o = &atkOutput::getInstance();
-      $o->output($page->render(text("login_form")));
+      $o->output($page->render(text("app_title")));
     }
 
     /**
