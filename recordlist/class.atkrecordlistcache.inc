@@ -204,7 +204,7 @@
 
       $identifiers = $this->getIdentifiers();
 
-      foreach ($atkdirtrav->_getDirContents($cachedir) as $cachefile)
+      foreach ($atkdirtrav->getDirContents($cachedir) as $cachefile)
       {
         $unsignificant=false;
         if (!empty($identifiers))
