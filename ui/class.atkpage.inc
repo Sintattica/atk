@@ -210,6 +210,7 @@
      */
     function head($title)
     {
+      atkdebug("HEAD TITLE: $title");
       $res = "<head>\n  <title>$title</title>\n";
       
       // $Name$ is the CVS tag.
@@ -223,8 +224,15 @@
         $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
 				
       for ($i = 0; $i < count($this->m_stylecode); $i++)
-	$res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
+	      $res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
 
+	    $favico = atkconfig("defaultfavico");
+      if ($favico!="")
+      {
+        $res.= '<link rel="icon" href="'.$favico.'" type="image/x-icon">
+                <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon">'."\n";
+      }
+	
       $res.="</head>\n";
       return $res;
     }
