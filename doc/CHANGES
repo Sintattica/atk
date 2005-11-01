@@ -10,6 +10,8 @@ Changes in ATK 5.3RC2
   fourth param to getNode(). [Boy]
 + If newNode() calls the missing class handler it passes along a module 
   to the params. [Boy]
++ Added utils/langconvert.sh, a bash shell script that converts ATK4 style
+  language files to ATK5 style. [Boy]
 * Improved errorhandeling in themecompiling. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
@@ -29,9 +31,9 @@ Changes in ATK 5.3RC2
 * Fixed atkProfileAttribute translations. [Ivo]
 * atkLanguage no longer tries to include languagefiles it can't find. [Yury]
 * Descriptortrace (breadcrumbtrail top of page) now also shows what node
-  you are currently preforming an action in [Boy]
+  you are currently preforming an action in. [Boy]
 * Calling text() without module would cause unnecessary call 
-  to filesystem [Yury]
+  to filesystem. [Yury]
 
 Changes in ATK 5.3RC1
 ---------------------

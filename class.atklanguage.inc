@@ -181,7 +181,7 @@
     function _getModules($module, $firstfallback="", $modulefallback=false)
     {
       $arr = array();
-      $arr[] = $module;
+      if ($module) $arr[] = $module;
       if ($firstfallback!="") $arr[] = $firstfallback;
       $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
       return $modules;
