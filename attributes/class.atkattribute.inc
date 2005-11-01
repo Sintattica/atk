@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,326 +14,326 @@
    *
    * @version $Revision$
    * $Id$
-   */     
+   */
 
   /**
    * Attributeflags. The following flags can be used for attributes
    * @internal WARNING: flags may *not* exceed 2^31 (2147483648), because
-   * that's the integer limit beyond which the bitwise operators won't 
+   * that's the integer limit beyond which the bitwise operators won't
    * work anymore!
    */
-  
+
   /**
    * Value must be entered
    *
    * "database-level" processing flag
    */
   define("AF_OBLIGATORY",                           1);
-  
+
   /**
    * Value must be unique
-   * 
+   *
    * "database-level" processing flag
    */
   define("AF_UNIQUE",                               2);
-  
+
   /**
    * Part of the primary-key node, also makes it obligatory
-   * 
+   *
    * "database-level" processing flag
    */
   define("AF_PRIMARY",                4|AF_OBLIGATORY);
-  
+
   /**
    * Auto-increment field
-   * 
+   *
    * "database-level" processing flag
    */
   define("AF_AUTO_INCREMENT",                       8);
-  
+
   /**
    * Alias for AF_AUTO_INCREMENT (auto-increment flag is often mistyped)
    *
    * "database-level" processing flag
    */
   define("AF_AUTOINCREMENT",        AF_AUTO_INCREMENT);
-  
+
   /**
    * Don't show in record lists
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_LIST",                           16);
-  
+
   /**
    * Don't show on add pages (unless obligatory)
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_ADD",                            32);
-  
+
   /**
    * Don't show on edit pages
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_EDIT" ,                          64); // don't show on edit pages
-  
+
   /**
    * Don't show on select pages
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_SELECT",                        128); // don't show on select pages.
-  
+
   /**
    * Don't show on view pages
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_VIEW"	 ,                        256); // don't show on view pages
-  
+
   /**
    * Not searchable in extended search
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE_SEARCH",                        512); // not searchable in extended search
-  
+
   /**
    * Load always, even if not displayed anywhere
-   * 
+   *
    * hide flag
    */
   define("AF_FORCE_LOAD",                        1024); // load always, even if not displayed anywhere
-  
+
   /**
    * Attribute is totally hidden
-   * 
+   *
    * hide flag
    */
   define("AF_HIDE",          AF_HIDE_EDIT|AF_HIDE_ADD|  // attribute is totally hidden
                           AF_HIDE_LIST|AF_HIDE_SEARCH|
                           AF_HIDE_VIEW|AF_HIDE_SELECT);
-  
+
   /**
    * Readonly in add
-   * 
+   *
    * readonly flag
    */
   define("AF_READONLY_ADD",                      2048); // readonly in add
-  
+
   /**
    * Readonly when edited
-   * 
+   *
    * readonly flag
    */
   define("AF_READONLY_EDIT",                     4096); // readonly when edited
-  
+
   /**
    * Always readonly
-   * 
+   *
    * readonly flag
    */
   define("AF_READONLY",              AF_READONLY_EDIT|
                                       AF_READONLY_ADD); // always readonly
-  
+
   /**
    * No label in forms
-   * 
+   *
    * display-related processing flag
    */
   define("AF_NO_LABEL",                          8192); // no label in forms
-  
+
   /**
    * Alias for AF_NO_LABEL (mistyped)
-   * 
+   *
    * display-related processing flag
    */
   define("AF_NOLABEL",                    AF_NO_LABEL); // no label (mistyped)
-  
+
   /**
    * Blank label in forms
-   * 
+   *
    * display-related processing flag
    */
   define("AF_BLANK_LABEL",                      16384); // blank label in forms
-  
+
   /**
    * Alias for AF_BLANK_LABEL (mistyped)
-   * 
+   *
    * display-related processing flag
    */
   define("AF_BLANKLABEL",              AF_BLANK_LABEL); // blank label (mistyped)
-  
+
   /**
    * Cannot be sorted in recordlists
-   * 
+   *
    * display-related processing flag
    */
   define("AF_NO_SORT",                          32768); // cannot be sorted in recordlists.
-  
+
   /**
    * Alias for AF_NO_SORT (mistyped)
-   * 
+   *
    * display-related processing flag
    */
   define("AF_NOSORT",                      AF_NO_SORT); // no-sort flag is often mistyped
-  
+
   /**
    * Attribute is searchable in list views
-   * 
+   *
    * display-related processing flag
    */
   define("AF_SEARCHABLE",                       65536); // Attribute is searchable in list views
-  
+
   /**
    * The attribute will have a 'total' column in lists
-   * 
+   *
    * display-related processing flag
    */
   define("AF_TOTAL",                           131072); // The attribute will have a 'total' column in lists.
-  
+
   /**
    * If supported, use pop-up window
-   * 
+   *
    * display-related processing flag
    */
   define("AF_POPUP",                           262144); // if supported, use pop-up window
-  
+
   /**
    * Delete function is called when owning node is deleted
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_CASCADE_DELETE",                  524288); // delete function is called when owning node is deleted
-  
+
   /**
    * Will have a large amount of recors (relation)
    *
    * Instead of showing a listbox with all the records it will show an add link to a select page
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_LARGE",                          1048576); // will have a large ammount of records (relation)
-  
+
   /**
    * Ignore filters when selecting records (relation)
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_NO_FILTER",                      2097152); // ignore filters when selecting records (relation)
-  
+
   /**
    * Parent field for parent child relations (treeview)
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_PARENT",                         4194304); // parent field for parent child relations (treeview)
-  
+
   /**
    * No quotes are used when adding to the database
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_NO_QUOTES",                      8388608); // no quotes are used when adding to database
-  
+
   /**
    * Multi-language field
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_ML",                            16777216); // multi-language field
-  
+
   /**
    * Alias for AF_ML (spelled out)
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_MULTILANGUAGE",                    AF_ML);
-  
+
   /**
    * Shortcut for hidden auto-incremented primary key
-   * 
+   *
    * miscellaneous processing flag
    */
   define("AF_AUTOKEY",             AF_PRIMARY|AF_HIDE|  // shortcut for hidden auto-incremented primary-key
                                      AF_AUTOINCREMENT);
-                                     
-  /*                                     
+
+  /*
    * flag (values) that can be used for attribute specific flags
-   * NOTE: Attribute specific flags aren't good behaviour, but for 
-   * compatibility reasons we support them anyway. Newly derived attributes 
+   * NOTE: Attribute specific flags aren't good behaviour, but for
+   * compatibility reasons we support them anyway. Newly derived attributes
    * should not use these specific flags, but work with extra parameters.
    */
-  
+
    /**
     * Specific attribute flag 1
     */
-   define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1 	
-   
+   define("AF_SPECIFIC_1",                    33554432); // specific attribute flag 1
+
    /**
     * Specific attribute flag 2
     */
    define("AF_SPECIFIC_2",                    67108864); // specific attribute flag 2
-   
+
    /**
     * Specific attribute flag 3
     */
    define("AF_SPECIFIC_3",                   134217728); // specific attribute flag 3
-   
+
    /**
     * Specific attribute flag 4
     */
    define("AF_SPECIFIC_4",                   268435456); // specific attribute flag 4
-   
+
    /**
     * Specific attribute flag 5
     */
    define("AF_SPECIFIC_5",                   536870912); // specific attribute flag 5
-  
+
   /**
    * Do not store this attribute
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
   define("NOSTORE"   ,0);
-  
+
   /**
    * Store before all other ('normal') attributes (?)
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
   define("PRESTORE"  ,1);
-  
+
   /**
    * Call load before selectDb()
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
   define("PRELOAD",   1);
-  
+
   /**
    * Store after all other ('normal') attributes (?)
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
   define("POSTSTORE" ,2);
-  
+
   /**
    * Call load after selectDb()
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
-  define("POSTLOAD", 2);  
-  
+  define("POSTLOAD", 2);
+
   /**
    * Do addToQuery() of this attribute
-   * 
+   *
    * Storage type flag, used by the storageType() and related methods
    */
-  define("ADDTOQUERY",4);  
-  
+  define("ADDTOQUERY",4);
+
   /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
@@ -343,26 +343,26 @@
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   */  
+   */
   class atkAttribute
   {
     /**
      * The name of the attribute
-     * @var String 
+     * @var String
      * @access private
      */
     var $m_name;
 
     /**
      * The attribute flags (see above)
-     * @var int 
+     * @var int
      * @access private
      */
     var $m_flags = 0;
 
     /**
      * The owner of the attribute (set by atknode)
-     * @var String 
+     * @var String
      */
     var $m_owner = "";
 
@@ -378,55 +378,55 @@
      * @var int
      */
     var $m_size = 0;
-    
+
     /**
      * The size the attribute's search input field.
      * @access private
      * @var int
      */
     var $m_searchsize = 0;
-    
+
     /**
      * The maximum size the attribute's value may have in the database.
      * @access private
      * @var int
      */
     var $m_maxsize = 0;
-    
+
     /**
      * The database fieldtype.
      * @access private
-     * @var String 
+     * @var String
      */
     var $m_dbfieldtype = "";
 
     /**
      * The order of the attribute within its node.
-     * @var int 
+     * @var int
      */
     var $m_order = 0;
-    
+
     /**
      * Index of the attribute within its node. (I'm not sure this is still used)
-     * @var int 
+     * @var int
      * @access private
      */
     var $m_index = 0;
-        
+
     /**
      * The tab(s) on which the attribute lives.
      * @access private
-     * @var mixed 
+     * @var mixed
      */
     var $m_tabs="*";
-    
+
     /**
      * The id of the attribute in the HTML
      * @access private
      * @var String
      */
     var $m_htmlid;
-    
+
     /**
      * The searchmode for this attribute
      *
@@ -441,27 +441,27 @@
      * <b>Example:</b>
      *        $this->add(new atkAttribute("name",AF_OBLIGATORY, 30));
      *
-     * Note: If you want to use the db/ddl utility class to 
-     *       automatically generate the table, the $size parameter must be 
-     *       set, for it will use the size specified here to determine the 
+     * Note: If you want to use the db/ddl utility class to
+     *       automatically generate the table, the $size parameter must be
+     *       set, for it will use the size specified here to determine the
      *       field length. (Derived classes might have reasonable default
      *        values, but the standard atkAttribute doesn't.)
      *
      * @param String $name Name of the attribute (unique within a node, and
-     *                     for most attributes, corresponds to a field in 
-     *                     the database. 
+     *                     for most attributes, corresponds to a field in
+     *                     the database.
      * @param int $flags Flags for the attribute.
      * @param mixed $size  The size(s) of the attribute. See the $size
-     *                     parameter of the setAttribSize() method for more 
+     *                     parameter of the setAttribSize() method for more
      *                     information on the possible values of this
      *                     parameter.
-     *     
+     *
      */
     function atkAttribute($name, $flags = 0, $size = 0)
     {
       $this->m_name = $name;
       $this->m_flags = (double)$flags;
-      $this->setAttribSize($size);      
+      $this->setAttribSize($size);
       atkimport("atk.keyboard.atkkeyboard");
     }
 
@@ -471,23 +471,23 @@
      * @return boolean
      */
     function hasFlag($flag)
-    {      
+    {
       return (($this->m_flags & $flag) == $flag);
     }
-    
+
     /**
      * Returns the full set of flags of the attribute.
      * @return int $m_flags The full set of flags
      */
     function getFlags()
-    {      
+    {
       return $this->m_flags;
     }
 
     /**
      * Adds a flag to the attribute.
-     * Note that adding flags at any time after the constructor might not 
-     * always work. There are flags that are processed only at 
+     * Note that adding flags at any time after the constructor might not
+     * always work. There are flags that are processed only at
      * constructor time.
      * @param int $flag The flag to add to the attribute
      */
@@ -495,11 +495,11 @@
     {
       $this->m_flags |= $flag;
     }
-    
+
     /**
      * Sets the flags of the attribute
      *
-     * Note that if you assign nothing or 0, this will remove all the flags 
+     * Note that if you assign nothing or 0, this will remove all the flags
      * from the attribute. You can assign multiple flags by using the pipe
      * symbol. Setting the flags will overwrite all previous flag-settings.
      * @param int $flags The flags to be set to the attribute.
@@ -513,7 +513,7 @@
      * Removes a flag from the attribute.
      *
      * Note that removing flags at any time after the constructor might not
-     * always work. There are flags that have already been processed at 
+     * always work. There are flags that have already been processed at
      * constructor time, so removing them will be futile.
      * @param int $flag The flag to remove from the attribute
      */
@@ -521,11 +521,11 @@
     {
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
-    
-    
+
+
 
     /**
-     * Returns the name of the attribute. 
+     * Returns the name of the attribute.
      *
      * For most attributes, this corresponds to the name of the field in the
      * database. For some attributes though (like one2many relations), the
@@ -541,7 +541,7 @@
 
     /**
      * Retrieve the name of the attribute in HTML forms.
-     * @deprecated HTML formname and fieldname are equal, use fieldName 
+     * @deprecated HTML formname and fieldname are equal, use fieldName
      *                  instead.
      * @return String Name of the attribute in HTML forms
      */
@@ -556,7 +556,7 @@
      * @return boolean
      */
     function isEmpty($record)
-    {      
+    {
       return (!isset($record[$this->fieldName()])||$record[$this->fieldName()]=="");
     }
 
@@ -566,9 +566,9 @@
      *
      * For the regular atkAttribute, this means escaping things like
      * quotes and slashes. Derived attributes may reimplement this for their
-     * own conversion. 
+     * own conversion.
      * This is the exact opposite of the db2value method.
-     * 
+     *
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
@@ -582,12 +582,12 @@
     }
 
     /**
-     * Converts a database value to an internal value. 
+     * Converts a database value to an internal value.
      *
      * For the regular atkAttribute, this means stripping slashes.
      * Derived attributes may reimplement this for their own conversion.
      * (In which case, the return type might be 'mixed')
-     * 
+     *
      * This is the exact opposite of the value2db method.
      *
      * @param array $rec The database record that holds this attribute's value
@@ -603,18 +603,18 @@
     }
 
     /**
-     * Convert values from an HTML form posting to an internal value for 
-     * this attribute. 
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
      *
      * For the regular atkAttribute, this means getting the field with the
-     * same name as the attribute from the html posting. 
+     * same name as the attribute from the html posting.
      *
-     * @param array $postvars The array with html posted values ($_POST, for 
+     * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
     function fetchValue($postvars)
-    {      
+    {
       if (is_array($postvars)&&isset($postvars[$this->fieldName()]))
       {
         return $postvars[$this->fieldName()];
@@ -634,8 +634,8 @@
     function edit($record="", $fieldprefix="", $mode="")
     {
       $id = $this->getHtmlId($fieldprefix);
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
-    
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+
       $result = '<input type="text" id="'.$id.'" name="'.$id.
                 '" value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
@@ -657,9 +657,9 @@
     function hide($record="", $fieldprefix="")
     {
       // the next if-statement is a workaround for derived attributes which do
-      // not override the hide() method properly. This will not give them a 
+      // not override the hide() method properly. This will not give them a
       // working hide() functionality but at least it will not give error messages.
-      if (!is_array($record[$this->fieldName()])) 
+      if (!is_array($record[$this->fieldName()]))
       {
         $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
                   '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
@@ -667,7 +667,7 @@
       }
       else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
     }
-    
+
     /**
      * Return the html identifier (id="") of the attribute. (unique within a
      * page)
@@ -680,7 +680,7 @@
       $this->m_htmlid = $fieldprefix.$this->fieldName();
       return $this->m_htmlid;
     }
-    
+
     /**
      * Returns the html identifier of the attribute without setting it
      * Created because getHtmlId would always SET the htmlid while getting it.
@@ -697,7 +697,7 @@
      *
      * This method is called by the node if it wants the data needed to create
      * an edit form.
-     * 
+     *
      * This is a framework method, it should never be called directly.
      *
      * @param String $mode     the edit mode ("add" or "edit")
@@ -707,40 +707,40 @@
      * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {      
+    {
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
-      {        
+      {
         /* when adding, there's nothing to hide... */
         if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
-          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);          
+          $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
       }
 
       /* edit */
       else
-      {        
-        $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);        
+      {
+        $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
-        /* label? */        
+        /* label? */
         $entry["label"] = $this->getLabel($defaults);
         /* error? */
         $entry["error"] = $this->getError($error);
         // on which tab?
-        $entry["tabs"] = $this->m_tabs;     
+        $entry["tabs"] = $this->m_tabs;
         /* the actual edit contents */
         $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
         $arr["fields"][] = $entry;
-      }      
+      }
     }
-    
+
     /**
      * Put the attribute on one or more tabs.
      * @param array $tabs An array of tabs on which the attribute should
      *                    be displayed.
      */
     function setTabs($tabs)
-    {      
+    {
       if ($tabs==NULL)
       {
         $this->m_tabs = array("default");
@@ -749,15 +749,15 @@
       {
         $this->m_tabs = $tabs;
       }
-    }        
-    
+    }
+
     /**
      * Retrieve the html code for placing this attribute in an edit page.
      *
      * The difference with the edit() method is that the edit() method just
      * generates the HTML code for editing the attribute, while the getEdit()
      * method is 'smart', and implements a hide/readonly policy based on
-     * flags and/or custom override methodes in the node. 
+     * flags and/or custom override methodes in the node.
      * (<attributename>_edit() and <attributename>_display() methods)
      *
      * Framework method, it should not be necessary to call this method
@@ -776,13 +776,13 @@
       $result = "";
       if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
-        $result.= $this->hide($defaults, $fieldprefix);        
+        $result.= $this->hide($defaults, $fieldprefix);
         $funcname = $this->m_name."_display";
         if (method_exists($this->m_ownerInstance, $funcname))
         {
           $result.= $this->m_ownerInstance->$funcname($defaults, $mode);
         }
-        else 
+        else
         {
           $result.= $this->display($defaults, $mode);
         }
@@ -796,24 +796,24 @@
         {
           $result .= $this->m_ownerInstance->$funcname($defaults, $fieldprefix, $mode);
         }
-        else 
+        else
         {
-          $result .= $this->edit($defaults, $fieldprefix, $mode);          
+          $result .= $this->edit($defaults, $fieldprefix, $mode);
         }
       }
       return $result;
     }
-    
+
     /**
-     * Check if this attribute has errors in the specified error list.     
+     * Check if this attribute has errors in the specified error list.
      *
-     * @param array $errors The error list is one that is stored in the 
+     * @param array $errors The error list is one that is stored in the
      *                      "atkerror" section of a record, for example
      *                      generated by validate() methods.
-     * @return boolean 
+     * @return boolean
      */
     function getError($errors)
-    {      
+    {
       for ($i = 0; $i < count($errors); $i++)
       {
         if ($errors[$i]['attrib_name'] == $this->fieldName() ||
@@ -841,7 +841,7 @@
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
     {
       global $g_sessionManager, $ATK_VARS;
-      
+
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
         $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = atktext($this->fieldName(), $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type);
@@ -906,9 +906,9 @@
      *        something evil in atkAttribute
      * @param array $record Array with values
      * @param boolean $extended if set to false, a simple search input is
-     *                          returned for use in the searchbar of the 
+     *                          returned for use in the searchbar of the
      *                          recordlist. If set to true, a more extended
-     *                          search may be returned for the 'extended' 
+     *                          search may be returned for the 'extended'
      *                          search page. The atkAttribute does not
      *                          make a difference for $extended is true, but
      *                          derived attributes may reimplement this.
@@ -916,25 +916,25 @@
      * @return String A piece of html-code
      */
     function search($record=array(), $extended=false, $fieldprefix="")
-    {      
+    {
       // Evil bit to get searching in one-to-manys to work alongside
       // searching on normal recordlists.
       if (strstr($fieldprefix, "]["))
         $id = "atksearch[".$fieldprefix.$this->formName()."]";
       else
         $id = "atksearch$fieldprefix"."[".$this->formName()."]";
-        
+
       $value="";
       if (is_array($record)&&isset($record[$this->fieldName()]))
       {
         $value=$record[$this->fieldName()];
       }
-      
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
       $result= '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$value.'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-      
+
       return $result;
     }
 
@@ -962,10 +962,10 @@
         atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
       }
     }
-    
+
     /**
      * Creates a searchcondition for the field,
-     * was once part of searchCondition, however, 
+     * was once part of searchCondition, however,
      * searchcondition() also immediately adds the search condition.
      *
      * @param atkQuery $query     The query object where the search condition should be placed on
@@ -981,9 +981,9 @@
       // If we are accidentally mistaken for a relation and passed an array
       // we only take our own attribute value from the array
       if (is_array($value)) $value = $value[$this->fieldName()];
-      
+
       if ($this->m_searchmode) $searchmode = $this->m_searchmode;
-           
+
       $func = $searchmode."Condition";
       if (method_exists($query,$func) && $value)
       {
@@ -994,7 +994,7 @@
         return false;
       }
     }
-    
+
     /**
      * Sets the searchmode for an attribute
      * This will cause attributes that respect this
@@ -1006,63 +1006,63 @@
     {
       $this->m_searchmode = $searchmode;
     }
-    
+
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
-     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars() 
+     * The regular atkAttribute uses PHP's nl2br() and htmlspecialchars()
      * methods to prepare a value for display, unless $mode is "cvs".
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists, "edit" for
-     *                     displaying in editscreens, "add" for displaying in 
+     *                     displaying in editscreens, "add" for displaying in
      *                     add screens. "csv" for csv files. Applications can
      *                     use additional modes.
-     * @return String HTML String 
+     * @return String HTML String
      */
     function display($record, $mode="")
     {
       // the next if-statement is a workaround for derived attributes which do
-      // not override the display() method properly. This will not give them a 
+      // not override the display() method properly. This will not give them a
       // working display() functionality but at least it will not give error messages.
-      if (!is_array($record[$this->fieldName()])) 
+      if (!is_array($record[$this->fieldName()]))
       {
         // default behaviour is that we display a value 'as is'.
-        if ($mode=="csv") return $record[$this->fieldName()];
+        if (($mode=="csv")||($mode=="plain")) return $record[$this->fieldName()];
         return nl2br(htmlspecialchars($record[$this->fieldName()]));
       }
     }
 
-    /**    
-     * Checks if a value is valid. 
+    /**
+     * Checks if a value is valid.
      *
      * The regular atkAttribute has no specific validation. Derived attributes
      * may override this method to perform custom validation.
      * Note that obligatory and unique fields are checked by the
      * atkNodeValidator, and not by the validate() method itself.
      *
-     * @param array $record The record that holds the value for this 
-     *                      attribute. If an error occurs, the error will  
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
      * @param String $mode The mode for which should be validated ("add" or
      *                     "update")
-     */     
+     */
     function validate(&$record, $mode)
     {
     }
 
     /**
-     * Adds this attribute to database queries. 
+     * Adds this attribute to database queries.
      *
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * Framework method. It should not be necessary to call this method 
+     * Framework method. It should not be necessary to call this method
      * directly. Derived attributes that consist of more than a single simple
      * database field (like relations for example), may have to reimplement
      * this method.
-     *     
+     *
      * @param atkQuery $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
@@ -1072,11 +1072,11 @@
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:     
+     * @param String $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.     
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
@@ -1097,7 +1097,7 @@
      * the AF_CASCADE_DELETE flag.
      *
      * @param array $record The record that is deleted.
-     * @return boolean true if cleanup was successful, false otherwise. 
+     * @return boolean true if cleanup was successful, false otherwise.
      */
     function delete($record)
     {
@@ -1106,14 +1106,14 @@
     }
 
     /**
-     * Calculate the sum of 2 records. 
+     * Calculate the sum of 2 records.
      *
      * This is called by the framework for the auto-totalling feature. Two
      * records are passed, and a record is returned. The reason that the
      * params are entire records instead of plain values, is that derived
      * classes or custom attributes may need information from other attributes
      * too.
-     * 
+     *
      * @param array $rec1 The first record
      * @param array $rec2 The second record
      * @param String $fieldprefix The prefix that values in $rec1
@@ -1129,7 +1129,7 @@
 
     /**
      * Fetch the metadata about this attrib from the table metadata, and
-     * process it. 
+     * process it.
      *
      * Lengths for the edit and searchboxes, and maximum lengths are retrieved
      * from the table metadata by this method.
@@ -1138,7 +1138,7 @@
      *                        attribute.
      */
     function fetchMeta($metadata)
-    {      
+    {
 
       $attribname = $this->fieldName();
       // Only use meta info if size is not already set manual. (constructor or setAttribSize)
@@ -1147,17 +1147,17 @@
       {
         if ($this->m_size > 0) $this->m_size = min($this->m_size, $metadata[$attribname]['len'], $this->maxInputSize());
         else $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
-        
+
         if ($this->m_searchsize > 0) $this->m_searchsize = min($this->m_searchsize, $metadata[$attribname]['len'], 20);
-        else $this->m_searchsize = min($metadata[$attribname]['len'], 20);   
-        
+        else $this->m_searchsize = min($metadata[$attribname]['len'], 20);
+
         if ($this->m_maxsize > 0) $this->m_maxsize = min($this->m_maxsize, $metadata[$attribname]['len']);
         else $this->m_maxsize = $metadata[$attribname]['len'];
       }
-      
+
       // TODO FIXME: The metadata contains the real field type. $this->m_dbfieldtype should be
       // set accordingly. Currently the metadata contains database specific types, so this
-      // feature is not yet implemented, until metadata contains generic field types.      
+      // feature is not yet implemented, until metadata contains generic field types.
     }
 
     /**
@@ -1173,11 +1173,11 @@
 
     /**
      * This function is called to compare if two records are considered equal
-     * by this attribute. 
+     * by this attribute.
      *
      * The regular atkAttribute performs a simple string match; derived
      * classes may override this method to perform more complex comparisons.
-     * 
+     *
      * @param array $recA The first record holding a value for this attribute.
      * @param array $recB The second record holding a value for the attribute.
      * @return boolean True if the attribute considers the records equal,
@@ -1220,8 +1220,8 @@
      */
     function needsInsert($record)
     {
-      return (!$this->hasFlag(AF_HIDE_ADD) || 
-              $this->hasFlag(AF_AUTO_INCREMENT) || 
+      return (!$this->hasFlag(AF_HIDE_ADD) ||
+              $this->hasFlag(AF_AUTO_INCREMENT) ||
               !$this->isEmpty($record));
 
       // If we are set to hide_add, we will only insert into the
@@ -1231,10 +1231,10 @@
     }
 
     /**
-     * Retrieve the list of searchmodes supported by the attribute. 
+     * Retrieve the list of searchmodes supported by the attribute.
      *
      * Note that not all modes may be supported by the database driver.
-     * Compare this list to the one returned by the databasedriver, to 
+     * Compare this list to the one returned by the databasedriver, to
      * determine which searchmodes may be used.
      *
      * @return array List of supported searchmodes
@@ -1243,29 +1243,29 @@
     {
       // exact match and substring search should be supported by any database.
       // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)      
+      // searches can be implemented using LIKE)
       return array("exact","substring","wildcard","regexp");
     }
 
     /**
      * Set the size(s) of the attribute
-     *     
-     * @param mixed $size The max. number of characters that can be entered.
-     *        If not specified, or set to 0, the max. size is automatically 
-     *        retrieved from the table metadata.      
      *
-     *        By default, the size of the edit box is the same as the maximum 
-     *        number of chars that can be entered (as long as it fits on 
-     *        screen). You can however pass an array of 2 or 3 numbers instead 
-     *        of a single number. In this case, the array is interpreted as 
+     * @param mixed $size The max. number of characters that can be entered.
+     *        If not specified, or set to 0, the max. size is automatically
+     *        retrieved from the table metadata.
+     *
+     *        By default, the size of the edit box is the same as the maximum
+     *        number of chars that can be entered (as long as it fits on
+     *        screen). You can however pass an array of 2 or 3 numbers instead
+     *        of a single number. In this case, the array is interpreted as
      *        follows:
      *        - $size[0] - The maximum size that can be entered
      *        - $size[1] - The size of the input box in add/edit forms
      *        - $size[2] - The size of the search box
      *
-     *        If $size[2] is not specified, $size[1] will be used instead. 
-     *        If $size[1] is not specified, or the passed value is not an 
-     *        array, all 3 sizes will default to the first value.     
+     *        If $size[2] is not specified, $size[1] will be used instead.
+     *        If $size[1] is not specified, or the passed value is not an
+     *        array, all 3 sizes will default to the first value.
      *
      *        Note: The sizes that are actually used depend both on the
      *        specified size and the size of the field in the database.
@@ -1278,14 +1278,14 @@
       {
         if (!empty($size[2]))
         {
-          $this->m_searchsize = $size[2]; 
+          $this->m_searchsize = $size[2];
         }
         else
         {
           $this->m_searchsize = (empty($size[1])?$size[0]:$size[1]);
         }
         $this->m_size = (empty($size[1])?$size[0]:$size[1]);
-        $this->m_maxsize = $size[0];        
+        $this->m_maxsize = $size[0];
       }
       else
       {
@@ -1295,48 +1295,48 @@
         }
       }
     }
-    
+
     /**
      * Return the database field type of the attribute.
-     * 
+     *
      * Note that the type returned is a 'generic' type. Each database
      * vendor might have his own types, therefor, the type should be
      * converted to a database specific type using $db->fieldType().
      *
-     * If the type was read from the table metadata, that value will 
-     * be used. Else, the attribute will analyze its flags to guess 
+     * If the type was read from the table metadata, that value will
+     * be used. Else, the attribute will analyze its flags to guess
      * what type it should be. If AF_AUTO_INCREMENT is set, the field
      * is probaly "number". If not, it's probably "string".
      *
-     * Note: Derived attributes should override this method if they 
-     *       use other field types than string or number. If the 
+     * Note: Derived attributes should override this method if they
+     *       use other field types than string or number. If the
      *       derived attribute is one that can not be stored in the
      *       database, an empty string should be returned.
      *
      * @return String The 'generic' type of the database field for this
-     *                attribute.      
+     *                attribute.
      */
     function dbFieldType()
     {
-      if ($this->m_dbfieldtype=="")      
-      {        
-        $this->m_dbfieldtype = ($this->hasFlag(AF_AUTO_INCREMENT)?"number":"string");       
+      if ($this->m_dbfieldtype=="")
+      {
+        $this->m_dbfieldtype = ($this->hasFlag(AF_AUTO_INCREMENT)?"number":"string");
       }
       return $this->m_dbfieldtype;
     }
-    
+
     /**
      * Return the size of the field in the database.
      *
      * If 0 is returned, the size is unknown. In this case, the
-     * return value should not be used to create table columns. 
+     * return value should not be used to create table columns.
      *
-     * Ofcourse, the size does not make sense for every field type. 
+     * Ofcourse, the size does not make sense for every field type.
      * So only interpret the result if a size has meaning for
-     * the field type of this attribute. (For example, if the 
+     * the field type of this attribute. (For example, if the
      * database field is of type 'date', the size has no meaning)
-     * 
-     * Note that derived attributes might set a dot separated size, 
+     *
+     * Note that derived attributes might set a dot separated size,
      * for example to store decimal numbers. The number after the dot
      * should be interpreted as the number of decimals.
      *
@@ -1357,24 +1357,24 @@
         }
       }
     }
-    
+
     /**
-     * Return the label of the attribute. 
+     * Return the label of the attribute.
      *
-     * The regular atkAttribute does not make use of the $record parameter; 
+     * The regular atkAttribute does not make use of the $record parameter;
      * The label is based on the attribute name, but is automatically
      * translated. Derived attributes may override this behavior.
-     * 
+     *
      * @param array $record The record holding the value for this attribute.
      * @return String HTML compatible label for this attribute
      */
     function label($record = array())
-    {          
-      return text($this->fieldName(),$this->m_ownerInstance->m_type, 
+    {
+      return text($this->fieldName(),$this->m_ownerInstance->m_type,
                   $this->m_ownerInstance->m_module);
     }
-    
-    /** 
+
+    /**
      * Get the HTML label of the attribute.
      *
      * The difference with the label() method is that the label method always
@@ -1382,7 +1382,7 @@
      * taking the AF_NOLABEL and AF_BLANKLABEL flags into account.
      *
      * @param array $record The record holding the value for this attribute.
-     * @return String The HTML compatible label for this attribute, or an 
+     * @return String The HTML compatible label for this attribute, or an
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
@@ -1390,7 +1390,7 @@
     {
       if ($this->hasFlag(AF_NOLABEL)) return "AF_NO_LABEL";
       else if ($this->hasFlag(AF_BLANKLABEL)) return NULL;
-      else 
+      else
       {
         return $this->label($record);
       }
@@ -1400,7 +1400,7 @@
      * This function is used to check whether a attribute has a store function
      * or not.
      *
-     * It can be overridden to determine when to use store() and when not to 
+     * It can be overridden to determine when to use store() and when not to
      * use it.
      * @return boolean true if it has a store method or false if it hasn't.
      * @deprecated Use storageType($mode) instead, which has more detailed
@@ -1414,7 +1414,7 @@
               ||hasFlag($storagetype, PRESTORE)
               );
     }
-    
+
     /*
      * Determine the storage type of this attribute.
      *
@@ -1424,7 +1424,7 @@
      * a store() method is present, and returns POSTSTORE in this case, or
      * ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
-     * Framework method. It should not be necesary to call this method 
+     * Framework method. It should not be necesary to call this method
      * directly.
      *
      * @param String $mode The type of storage ("add" or "update")
@@ -1434,9 +1434,9 @@
      *             could be returned at once.
      *             POSTSTORE  - store() method must be called, after the
      *                          master record is saved.
-     *             PRESTORE   - store() must be called, before the master 
+     *             PRESTORE   - store() must be called, before the master
      *                          record is saved.
-     *             ADDTOQUERY - addtoquery() must be called, so the attribute 
+     *             ADDTOQUERY - addtoquery() must be called, so the attribute
      *                          can nest itself in the master query.
      *             NOSTORE    - nor store(), nor addtoquery() should be
      *                          called (attribute can not be stored in the
@@ -1450,17 +1450,17 @@
       else
         return ADDTOQUERY;
     }
-    
+
     /*
-     * Determine the load type of this attribute. 
+     * Determine the load type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
-     * to be loaded in the main query (addToQuery) or whether the attribute 
+     * to be loaded in the main query (addToQuery) or whether the attribute
      * has its own load() implementation. The regular atkAttribute checks if a
      * load() method is present, and returns POSTLOAD in this case, or
      * ADDTOQUERY otherwise. Derived attributes may override this behavior.
      *
-     * Framework method. It should not be necesary to call this method 
+     * Framework method. It should not be necesary to call this method
      * directly.
      *
      * @param String $mode The type of load (view,admin,edit etc)
@@ -1470,20 +1470,20 @@
      *             could be returned at once.
      *             POSTLOAD   - load() method must be called, after the
      *                          master record is loaded.
-     *             PRELOAD    - load() must be called, before the master 
+     *             PRELOAD    - load() must be called, before the master
      *                          record is loaded.
-     *             ADDTOQUERY - addtoquery() must be called, so the attribute 
+     *             ADDTOQUERY - addtoquery() must be called, so the attribute
      *                          can nest itself in the master query.
      */
     function loadType($mode, $searching=false)
     {
       // Default backwardscompatible behaviour:
-      if (method_exists($this,"load"))      
+      if (method_exists($this,"load"))
         return POSTLOAD;
       else
         return ADDTOQUERY;
     }
-    
+
     /**
      * Determine the maximum length an input field may be.
      * @return int
@@ -1493,15 +1493,15 @@
       $configsize = atkconfig("max_input_size");
       return ($configsize==""?70:$configsize);
     }
-    
+
     /**
      * Get list of additional tabs.
-     * 
+     *
      * Attributes can add new tabs to tabbed screens. This method will be
      * called to retrieve the tabs. The regular atkAttribute has no
      * implementation for this method. Derived attributes may override this.
      *
-     * @param String $action The action for which additional tabs should be 
+     * @param String $action The action for which additional tabs should be
      *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
@@ -1509,7 +1509,7 @@
     {
       return array();
     }
-    
+
     /**
      * Register keyboard navigation for this attribute.
      *
@@ -1524,7 +1524,7 @@
      *                     navigation.
      */
     function registerKeyListener($id, $navkeys=KB_CTRLCURSOR)
-    {      
+    {
       if (atkconfig("use_keyboard_handler"))
       {
         $kb = &atkKeyboard::getInstance();
@@ -1542,14 +1542,14 @@
     {
       return ($this->m_tabs == "*" || atk_in_array($tab, $this->m_tabs));
     }
-    
+
     /**
-     * Check if delete of the record is allowed. 
+     * Check if delete of the record is allowed.
      *
      * This method is called by the framework to check if the attribute
      * allows the record to be deleted. The default implementation always
-     * returns true, but derived attributes may implement their own 
-     * logic to prevent deletion of the record. 
+     * returns true, but derived attributes may implement their own
+     * logic to prevent deletion of the record.
      *
      * @return boolean True if delete is allowed, false if not.
      */
@@ -1557,13 +1557,13 @@
     {
       return true;
     }
-    
+
     /**
      * Convert a String representation into an internal value.
      *
      * Used by CSV imports and the like, to convert string values to internal
      * values. This is somewhat similar to db2value, but this method should,
-     * when derived in other attributes, act 'smart' and treat the 
+     * when derived in other attributes, act 'smart' and treat the
      * value as a user string.
      * The default implementation returns the string unmodified, but derived
      * classes may override this method to alter that behaviour.
@@ -1575,7 +1575,7 @@
     {
       return $stringvalue;
     }
-    
+
     /**
     * Adds the needed searchbox(es) for this attribute to the fields array. This
     * method should only be called by the atkSearchHandler.
