@@ -42,6 +42,8 @@ Changes in ATK 5.3RC2
   you are currently preforming an action in. [Boy]
 * Calling text() without module would cause unnecessary call 
   to filesystem. [Yury]
+* Fixed bug in findDestinationAttribute method of atkMetaPolicy. [Peter]
+  
 
 Changes in ATK 5.3RC1
 ---------------------

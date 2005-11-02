@@ -400,9 +400,9 @@ class atkMetaPolicy
 
     $attr = NULL;
     if (array_key_exists("dest", $relation->m_options))
-      $attr = $this->m_options["dest"];
+      $attr = $relation->m_options["dest"];
     else if (array_key_exists("destination", $relation->m_options))
-      $attr = $this->m_options["destination"];      
+      $attr = $relation->m_options["destination"];      
     else if (in_array("{$table}_id", $attrs))
       $attr = "{$table}_id";
     else if (in_array("{$node}_id", $attrs))
