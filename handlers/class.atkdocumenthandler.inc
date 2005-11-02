@@ -50,7 +50,7 @@
       $tpl_file = $basepath  . $module . "/" . $node . "/" . $this->m_postvars["atkdoctpl"];
 
       // Check for invalid characters in filename, modulename and nodename in order to prevent hacking
-      if (ereg("[<>\\/|]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false)
+      if (ereg("[<>\\/|;]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false)
       {
         atkerror("Invalid filename given.");
         return;
