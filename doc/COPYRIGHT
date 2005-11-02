@@ -19,7 +19,7 @@ ATK uses the Smarty template engine by Ispi. The Smarty template engine
 under the Library General Public License (LGPL).
 
 ATK uses the DHTML Calendar Widget by Mihai Bazon. The DHTML Calendar Widget
-(http://dynarch.com/mishoo/calendar.epl) is Copyright (c) 2002—2004 Mihai
+(http://dynarch.com/mishoo/calendar.epl) is Copyright (c) 2002-2004 Mihai
 Bazon and made available under the Library General Public License (LGPL). 
 
 ATK uses modified versions of PHPLIB's database abstraction classes for
@@ -41,3 +41,9 @@ ATK uses the FCKEditor (http://www.fckeditor.net) for wysiwyg editing.
 fckEditor is Copyright (c)2003-2005 Frederico Caldeira Knabben and made 
 available under the LGPL license. The full version of fckEditor including full
 documentation can be found on its homepage.
+
+ATK uses TinyButStrong OOo (http://www.tinybutstrong.com/apps/tbsooo/)
+for parsing OpenOffice.org and OpenDocument template files. TinyButStrong
+OOo is Copyright (c) 2005 Olivier LOYNET and released under the GNU Lesser
+General Public License (LGPL). The full version including examples
+and documentation can be downloaded from its homepage.
