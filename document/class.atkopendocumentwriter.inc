@@ -42,6 +42,7 @@
     function atkOpenDocumentWriter()
     {
       $this->m_tbsooo = new clsTinyButStrongOOo;
+      $this->m_tbsooo->VarPrefix = "documentvar_";
       $this->m_tbsooo->SetZipBinary(atkconfig("ziplocation", "zip"));
       $this->m_tbsooo->SetUnzipBinary(atkconfig("unziplocation", "unzip"));
       $this->m_tbsooo->SetProcessDir(atkconfig("atktempdir"));
