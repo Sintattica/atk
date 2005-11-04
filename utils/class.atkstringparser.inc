@@ -38,6 +38,9 @@
     
     /**
      * Parse data into the string.
+     * @param array The data to parse in the string
+     * @param bool Wether or not to do a rawurlencode
+     * @return String The parsed string
      */
     function parse($data, $encode=false)
     {
