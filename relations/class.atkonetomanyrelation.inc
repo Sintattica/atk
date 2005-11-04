@@ -833,8 +833,17 @@
      {
        if ($this->createDestination())
        {
+         $alias = $this->fieldName() . "_AE_" . $this->m_destInstance->m_table;
          $attr = &$this->m_destInstance->getAttribute($field);
-         $attr->searchCondition($query, $table, $value, $searchmode);
+         $attr->searchCondition($query, $alias, $value, $searchmode);
+         
+         $condition = array();
+         for ($i = 0; $i < sizeof($this->m_ownerInstance->m_primaryKey); $i++)
+         {
+            $condition[] = $this->m_ownerInstance->m_table . "." . $this->m_ownerInstance->m_primaryKey[$i] . "=". $alias . "." . $this->m_refKey[$i];
+         }
+         
+         $query->addJoin($table,$alias,implode(" AND ",$condition),false);
        }
      }
 

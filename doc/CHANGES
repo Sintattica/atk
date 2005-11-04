@@ -43,7 +43,8 @@ Changes in ATK 5.3RC2
 * Calling text() without module would cause unnecessary call 
   to filesystem. [Yury]
 * Fixed bug in findDestinationAttribute method of atkMetaPolicy. [Peter]
-  
+* Fixed bug when searching in an embedded recordlist containing an
+  oneToManyRelation [Harrie]
 
 Changes in ATK 5.3RC1
 ---------------------
