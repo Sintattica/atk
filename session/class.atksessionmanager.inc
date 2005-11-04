@@ -512,7 +512,7 @@
       {
         $mod = getNodeModule($stack[$i]["atknodetype"]);
         $node = getNodeType($stack[$i]["atknodetype"]);
-        $title = text($ui->title($mod, $node, $stack[$i]["atkaction"]));
+        $title = $ui->title($mod, $node, $stack[$i]["atkaction"]);
         if ($i<count($stack)-1)
         {
           $res[]=array("url"=>session_url('dispatch.php?atklevel='.$i),
