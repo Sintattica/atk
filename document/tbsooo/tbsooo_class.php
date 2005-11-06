@@ -164,9 +164,6 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
   function GetPathnameDoc()
   {
-    // remove tmp dir
-    $this->_RemoveTmpBasenameDir();
-
     // return path
     return $this->_ooo_basename.'.'.$this->_ooo_file_ext;
   }
@@ -214,6 +211,8 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   {
     // remove file
     unlink($this->GetPathnameDoc());
+    // remove tmp dir
+    $this->_RemoveTmpBasenameDir();
   }
 
   function ClearProcessDir($hour = '2', $minut = '0')
