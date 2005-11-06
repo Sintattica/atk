@@ -108,7 +108,7 @@
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
         $ui = &atkinstance("atk.ui.atkui");
 
-        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop),
+        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,$modname),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
 
