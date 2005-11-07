@@ -179,6 +179,7 @@
   "no_valid_directory" => "There is no valid directory",
   "oct" => "Oct",
   "october" => "October",
+  "open" => "Open",
   "password" => "Password",
   "password_again" => "Again",
   "password_current" => "Current",
