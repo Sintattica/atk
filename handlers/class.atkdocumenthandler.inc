@@ -40,7 +40,7 @@
       if ($this->m_postvars["atkselector"] == "")
       {
         atkerror("Selector parameter not available.");
-        return;
+        return false;
       }
 
       // Compose the filename to be used (doctemplatedir/module/node/<docmentfilename)
@@ -53,21 +53,22 @@
       if (ereg("[<>\\/|;]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false)
       {
         atkerror("Invalid filename given.");
-        return;
+        return false;
       }
 
       // Check if the file exists
       if (!is_file($tpl_file))
       {
         atkerror("Given file does not exist.");
-        return;
+        return false;
       }
 
       // Assign the record variables to the OpenOffice.org DocumentWriter
       $this->assignRecordVars($openDocumentWriter);
 
       // Send the document to the browser
-      $openDocumentWriter->display($tpl_file, $this->m_postvars["atkdoctpl"]);
+      if (!$openDocumentWriter->display($tpl_file, $this->m_postvars["atkdoctpl"]))
+        return false;
 
       // Halt further execution to prevent atk rendering it's interface causing to corrupt the opendocument file
       exit;

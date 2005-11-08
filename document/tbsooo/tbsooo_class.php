@@ -73,7 +73,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     }
     // add a trailing / at the path
     $this->_process_path = $process_path.(substr($process_path, -1, 1) == '/' ? '' : '/');
-    
+
     // test if 'dir' exists
     if (!is_dir($this->_process_path)) {
       $this->meth_Misc_Alert('SetProcessDir method', 'Directory not found : '.$this->_process_path);
@@ -122,7 +122,12 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     $this->_xml_filename = $xml_file;
 
     // unzip the XML files
-    exec($this->_unzip_bin.' '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' -d '.$this->_ooo_basename.' '.$this->_xml_filename);
+    exec($this->_unzip_bin.' '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' -d '.$this->_ooo_basename.' '.$this->_xml_filename, $results, $return_code);
+
+    if ($return_code!=0) {
+      atkerror(sprintf("Error while extracting zip file (return code %s), please check if the unzip executable is in your path", $return_code));
+      return false;
+    }
 
     // test if XML file exist
     if (!file_exists($this->_ooo_basename.'/'.$this->_xml_filename)) {
@@ -157,7 +162,12 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     }
 
     // zip and remove the file
-    exec($this->_zip_bin.' -u -j -m '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename);
+    exec($this->_zip_bin.' -u -j -m '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
+
+    if ($return_code!=0) {
+      atkerror(sprintf("Error while adding to zip file (return code %s), please check if the zip executable is in your path", $return_code));
+      return false;
+    }
 
     return true;
   }

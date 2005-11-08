@@ -65,7 +65,8 @@
       $this->m_tbsooo->NewDocFromTpl($tpl_file);
 
       // Extract content.xml from the template document
-      $this->m_tbsooo->LoadXmlFromDoc('content.xml');
+      if (!$this->m_tbsooo->LoadXmlFromDoc('content.xml'))
+        return false;
 
       // Merge template vars with the content.xml file
       foreach($use_vars as $key => $value)
@@ -80,7 +81,10 @@
       }
 
       // Save the content.xml back to the copied document
-      $this->m_tbsooo->SaveXmlToDoc();
+      if (!$this->m_tbsooo->SaveXmlToDoc())
+        return false;
+
+      return true;
     }
 
     /**
@@ -94,7 +98,8 @@
     function display($tpl_file, $outputfilename, $tpl_vars = null, $forcedownload = false)
     {
       // Parse template
-      $this->_parse($tpl_file, $tpl_vars);
+      if (!$this->_parse($tpl_file, $tpl_vars))
+        return false;
 
       // Fix for internet explorer misbehaviour when using attachment as content disposition
       $useragent = getenv("HTTP_USER_AGENT");
@@ -111,6 +116,8 @@
 
       // Remove the document from disk
       $this->m_tbsooo->RemoveDoc();
+
+      return true;
     }
 
     /**
@@ -123,10 +130,13 @@
     function store($tpl_file, $outputfilename, $tpl_vars = null)
     {
       // Parse template
-      $this->_parse($tpl_file, $tpl_vars);
+      if (!$this->_parse($tpl_file, $tpl_vars))
+        return false;
 
       // Add additional headers to set proper content type, filename and filesize
       rename($this->m_tbsooo->GetPathnameDoc(), $outputfilename);
+
+      return true;
     }
   }
 
