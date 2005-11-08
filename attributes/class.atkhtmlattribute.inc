@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,18 +14,20 @@
    * @version $Revision$
    * $Id$
    */
-   
+
+  // Load used attribute class
+  useattrib("atktextattribute");
 
   /**
-   * The atkHtmlAttribute class is the same as a normal atkAttribute. It only 
+   * The atkHtmlAttribute class is the same as a normal atkAttribute. It only
    * (has a different display function. For this attribute, the value is
    * rendered as-is, which means you can use html codes in the text.
-   *  
+   *
    * There might me times where you want the user to be able to use html tags,
    * but you don't want to have the inconvenience of using br's for each line.
-   * For this reason the constructor accepts a parameter which tells it to do 
+   * For this reason the constructor accepts a parameter which tells it to do
    * a newline-to-br conversion.
-   *   
+   *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
@@ -38,12 +40,12 @@
      */
     var $nl2br = false;
 
-    /** 
+    /**
      * Constructor
      * @param $name Name of the attribute
      * @param $flags Flags of the attribute
      * @param $nl2br nl2br boolean
-     */    
+     */
     function atkHtmlAttribute($name, $flags=0, $nl2br = false)
     {
       $this->atkAttribute($name,$flags); // base class constructor
