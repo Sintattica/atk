@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Handler for the 'admin' action of a node. It displays a recordlist with
    * existing records, and links to view/edit/delete them (or custom actions
@@ -28,16 +28,16 @@
    *
    */
   atkimport("atk.handlers.atkactionhandler");
-   
+
   class atkAdminHandler extends atkActionHandler
-  {    
+  {
     /**
      * The action method
      */
     function action_admin()
-    {      
+    {
       $page = &$this->getPage();
-      
+
       $res = array();
       if ($this->m_node->hasFlag(NF_NO_ADD)==false&&$this->m_node->allowed("add"))
       {
@@ -47,10 +47,10 @@
         }
       }
       $res[] = $this->invoke("adminPage");
-                        
+
       $page->addContent($this->m_node->renderActionPage("admin", $res));
     }
-    
+
     /**
      * Draws the form for adding new records.
      *
@@ -65,7 +65,7 @@
       $handler->setNode($this->m_node);
       return $handler->invoke("addPage");
     }
-    
+
     /**
      * Admin page displays records and the actions that can be performed on
      * them (edit, delete)
@@ -78,26 +78,26 @@
      *                which is added later.
      */
     function adminPage($actions="")
-    {     
+    {
       $node = &$this->m_node;
       $node->addStyle("style.css");
-      
+
       $recordlistcache = $this->getRecordlistCache();
       $cached = "";
       if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST) && $recordlistcache)
       {
         $cached = $recordlistcache->getCache();
       }
-           
+
       if ($cached)
       {
         atkdebug("Using recordlist cache: {$recordlistcache->m_cacheid}");
         return $cached;
       }
-      
+
       $ui = &$this->getUi();
       if (is_object($ui))
-      {        
+      {
         $params = array();
 
         // When there's a lot of data, records will be spread across multiple
@@ -123,10 +123,10 @@
                                      "",
                                      "admin");
         }
-        
+
 
         // check for search-action (if search returns only one record!)
-        if (isset($node->m_postvars["atksearch"]) && is_array($node->m_postvars['atksearch']) 
+        if (isset($node->m_postvars["atksearch"]) && is_array($node->m_postvars['atksearch'])
             && count($node->m_postvars['atksearch']) > 0 && is_array($node->m_search_action) && count($recordset) == 1)
         {
           for ($i = 0, $_i = count($node->m_search_action); $i < $_i; $i++)
@@ -138,27 +138,27 @@
                                SESSION_REPLACE));
               break;
             }
-        }                
+        }
 
-        $params["header"] = $this->invoke("adminHeader");      
-        
-        if ($this->getHeaderLinks()) $params["header"].= $this->getHeaderLinks();                
+        $params["header"] = $this->invoke("adminHeader");
+
+        if ($this->getHeaderLinks()) $params["header"].= $this->getHeaderLinks();
 
         // create index and navigation bar
         $navigator = &atknew("atk.utils.atknavigator");
-        if ($node->m_index != "") 
+        if ($node->m_index != "")
         {
           $params["index"] = $navigator->buildIndex($node, (count($recordset)>0?$recordset[0][$node->m_index]:""));
-        }        
-        
+        }
+
         $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
-     
+
         if ($navigation)
         {
           if (isset($params["index"])) $params["index"].="<br />";
           $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
         }
-        
+
         if(!is_array($actions))
         {
           $actions = $node->defaultActions("admin");
@@ -166,29 +166,29 @@
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
         $flags = atkRecordList::convertFlags($node->getFlags());
         $params["list"] = $recordlist->render($node, $recordset, $actions, $flags, "", "", $navigation);
-                 
+
         $params["footer"] = $this->invoke("adminFooter");
-        
-        $output = $ui->renderList("admin", $params);   
-      
+
+        $output = $ui->renderList("admin", $params);
+
         $output = $ui->renderBox(array("title"=>$node->actionTitle('admin'),
                                     "content"=>$output));
         if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $recordlistcache->writeCache($output, $recordlist->m_actionloader);
-      }                 
+      }
       else
       {
         atkerror("Failed to create ui object");
-      } 
-      return $output;     
+      }
+      return $output;
     }
-    
+
     /**
      * Function that is called when creating an adminPage.
      *
-     * The default implementation returns an empty string, but developers can 
-     * override this function in their custom handlers or directly in the 
+     * The default implementation returns an empty string, but developers can
+     * override this function in their custom handlers or directly in the
      * node class.
-     * 
+     *
      * @return String A string that is displayed above the recordlist.
      */
     function adminHeader()
@@ -200,8 +200,8 @@
      * Function that is called when creating an adminPage.
      *
      * The default implementation returns an empty string, but developers can
-     * override this function in their custom handlers or directly in the 
-     * node class. 
+     * override this function in their custom handlers or directly in the
+     * node class.
      *
      * @return String A string that is displayed below the recordlist.
      */
@@ -209,7 +209,7 @@
     {
       return "";
     }
-    
+
     function getImportLink()
     {
       $link = "";
@@ -219,7 +219,7 @@
       }
       return $link;
     }
-    
+
     function getExportLink()
     {
       $link = "";
@@ -229,7 +229,7 @@
       }
       return $link;
     }
-    
+
     function getAddLink()
     {
       if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
@@ -239,18 +239,18 @@
         if (isset($GLOBALS[$lngkey]))
         {
           // specific text
-          $label = text("link_".getNodeType($this->m_node->m_type)."_add");
+          $label = atktext("link_".getNodeType($this->m_node->m_type)."_add");
         }
         else
         {
           // generic text
-          $label = text(getNodeType($this->m_node->m_type),$this->m_node->m_type,$this->m_node->m_module)." ".text("add","","atk");
+          $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
         }
         return href($addurl,$label,SESSION_NESTED);
       }
       return "";
     }
-    
+
     function getHeaderLinks()
     {
       $links = array();
