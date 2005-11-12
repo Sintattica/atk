@@ -329,11 +329,12 @@
 
        while ($finfo = mysqli_fetch_field($id))
        {
+         atk_var_dump($finfo,"FIELDINFO");
 		      $result[$i]["table"]   = $finfo->table;
 	        $result[$i]["name"]    = $finfo->name;
 	        $result[$i]["type"]    = $finfo->type;
 	        $result[$i]["gentype"] = $ddl->getGenericType($finfo->type);
-	        $result[$i]["len"]     = $finfo->max_length;
+	        $result[$i]["len"]     = $finfo->length;
 	        
 	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
 	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
