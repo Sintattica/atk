@@ -329,7 +329,6 @@
 
        while ($finfo = mysqli_fetch_field($id))
        {
-         atk_var_dump($finfo,"FIELDINFO");
 		      $result[$i]["table"]   = $finfo->table;
 	        $result[$i]["name"]    = $finfo->name;
 	        $result[$i]["type"]    = $finfo->type;
