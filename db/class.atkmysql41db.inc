@@ -312,7 +312,7 @@
      if ($this->connect()==DB_SUCCESS)
      {
        atkimport("atk.db.atkddl");
-       $ddl = &atkDDL::create("mysqli");
+       $ddl = &atkDDL::create("mysql41");
 
        /* list fields */
        atkdebug("Retrieving metadata for $table");
@@ -329,26 +329,24 @@
 
        while ($finfo = mysqli_fetch_field($id))
        {
-		$result[$i]["table"]   = $finfo->table;
+		      $result[$i]["table"]   = $finfo->table;
 	        $result[$i]["name"]    = $finfo->name;
 	        $result[$i]["type"]    = $finfo->type;
 	        $result[$i]["gentype"] = $ddl->getGenericType($finfo->type);
 	        $result[$i]["len"]     = $finfo->max_length;
-	        $result[$i]["flags"]   = explode(' ', $finfo->flags);
-
-	        $result[$i]["flags"] =
-	           	(in_array('primary_key',    $result[$i]["flags"]) ? MF_PRIMARY        : 0) |
-	           	(in_array('unique_key',     $result[$i]["flags"]) ? MF_UNIQUE         : 0) |
-	           	(in_array('not_null',       $result[$i]["flags"]) ? MF_NOT_NULL       : 0) |
-	           	(in_array('auto_increment', $result[$i]["flags"]) ? MF_AUTO_INCREMENT : 0);
-
+	        
+	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
+	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
+	        if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
+	        if($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) $result[$i]["flags"]|= MF_AUTO_INCREMENT;
+	    
          	if ($full)
            		$result["meta"][$result[$i]["name"]] = $i;
-		$i++;
-	}
+	      	$i++;
+      	}
         $result["num_fields"] = $i;
-	mysqli_free_result($id);
-
+      	mysqli_free_result($id);
+        
         atkdebug("Metadata for $table complete");
         return $result;
      }
