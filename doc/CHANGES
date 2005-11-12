@@ -47,6 +47,14 @@ Changes in ATK 5.3RC2
   oneToManyRelation [Harrie]
 * Fixed: atkhtmlattribute now executes useattrib("atktextattribute") to
   load its parent class file [Yury]
+* Fixed MySQLi driver:
+  * Fixed the atkDDL call, it now creates the correct one (mysql41 instead
+    of mysqli) [Sandy]
+  * Fixed retrieving the correct field types [Sandy]
+  * Fixed retrieving the correct field flags [Sandy]
+
+
+
 
 Changes in ATK 5.3RC1
 ---------------------
