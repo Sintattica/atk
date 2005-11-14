@@ -197,7 +197,7 @@
       atkSmarty::addBlock($module, $tag, $tag, false);
     }
     
-    function addOutputFilter()
+    function addOutputFilter($function)
     {
       $smarty = &atkSmarty::getInstance();
       $smarty->register_outputfilter($function);
