@@ -115,7 +115,7 @@
      * NOTE: you should only use this function for
      *       tags with special names!
      */
-    function addFunction($module, $tag, $name="", $cacheable=true)
+    function addFunction($module, $tag, $name="", $cacheable=true, $cache_attrs=null)
     {
       $smarty = &atkSmarty::getInstance();        
       
@@ -130,15 +130,15 @@
         }
       ');
       
-      $smarty->register_function($tag, $function, $cacheable);
+      $smarty->register_function($tag, $function, $cacheable,$cache_attrs);
     }
     
     /**
      * Register dynamic function / tag.
      */
-    function addDynamicFunction($module, $tag)
+    function addDynamicFunction($module, $tag,$cache_attrs=null)
     {
-      atkSmarty::addFunction($module, $tag, $tag, false);
+      atkSmarty::addFunction($module, $tag, $tag, false,$cache_attrs);
     }
 
     /**
@@ -163,7 +163,45 @@
       ');
       
       $smarty->register_compiler_function($tag, $function, $cacheable);
-    }  
+    }
+    
+    /**
+     * Register block / tag.
+     *
+     * NOTE: you should only use this function for
+     *       tags with special names!
+     */
+    function addBlock($module, $tag, $name="", $cacheable=true)
+    {
+      $smarty = &atkSmarty::getInstance();        
+      
+      $name = empty($name) ? $tag : $name;
+      $function = "__smarty_block_$name";
+         
+      eval('
+        function '.$function.'($params, $content, &$smarty, &$repeat)
+        {
+          include_once(moduleDir("'.$module.'")."plugins/block.'.$name.'.php");
+          return smarty_block_'.$name.'($params, $content, $smarty, $repeat);
+        }
+      ');
+      
+      $smarty->register_block($tag, $function, $cacheable);
+    }
+    
+    /**
+     * Register dynamic function / tag.
+     */
+    function addDynamicBlock($module, $tag)
+    {
+      atkSmarty::addBlock($module, $tag, $tag, false);
+    }
+    
+    function addOutputFilter()
+    {
+      $smarty = &atkSmarty::getInstance();
+      $smarty->register_outputfilter($function);
+    }
   }
 
 ?>
