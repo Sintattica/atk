@@ -23,6 +23,7 @@ Changes in ATK 5.3RC2
 + Ability to register dynamic block Smarty plugins. [Boy]
 + Ability to add output filter to Smarty. [Ivo,Boy]
 + Ability to add cache attributes to dynamic function Smarty function. [Boy]
++ Added AF_LIST_NO_NULL_ITEM flag for atkListAttribute. [Ivo]
 * Improved errorhandeling in themecompiling. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
