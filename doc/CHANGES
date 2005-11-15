@@ -14,12 +14,15 @@ Changes in ATK 5.3RC2
   language files to ATK5 style. [Boy]
 + Document directory containing generic DocumentWriter class and
   OpenDocumentWriter implementation (which wraps the TinyButStrong
-  OpenOffice.org template engine) [Guido]
+  OpenOffice.org template engine). [Guido]
 + Document action handler (and action icon in default theme for use in
-  recordlists) [Guido]
+  recordlists). [Guido]
 + DocumentAttribute class for offering access to the Document action through
   a document selector, which is displayed as an attribute in the list, edit
-  or view screen of a node [Guido]
+  or view screen of a node. [Guido]
++ Ability to register dynamic block Smarty plugins. [Boy]
++ Ability to add output filter to Smarty. [Ivo,Boy]
++ Ability to add cache attributes to dynamic function Smarty function. [Boy]
 * Improved errorhandeling in themecompiling. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
