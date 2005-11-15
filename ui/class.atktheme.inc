@@ -1,8 +1,8 @@
-<?php  
+<?php
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Theme loader
    *
@@ -24,7 +24,7 @@
    * @package atk
    * @subpackage ui
    *
-   */   
+   */
   class atkTheme
   {
    /**
@@ -33,42 +33,42 @@
     * @access private
     */
     var $m_initialized = false;
-    
+
     /**
     * Constant with the directoryname where the themes can be found
     * @var string
     * @access public
     */
-    var $THEMEDIRNAME = "themes";   
-    
+    var $THEMEDIRNAME = "themes";
+
     /**
     * Constant with the filename where themedefinitions are stored
     * @var string
     * @access public
     */
     var $THEMEFILE = "themedef.inc";
-    
+
     /**
     * Variable containing the name of the current theme
     * @var string
     * @access private
     */
     var $m_curtheme;
-    
+
     /**
     * Directoryname where the current theme can be found
     * @var string
     * @access private
     */
     var $m_curthemedir;
-    
+
     /**
     * Array with the entire current themedefinition
     * @var array
     * @access private
     */
     var $m_def = array();
-    
+
     /**
      * Function to get an Instance of the atkTheme class,
      * ensures that there is never more than one instance (Singleton pattern)
@@ -83,19 +83,27 @@
       }
       return $s_instance;
     }
-    
+
     /**
      * Constructor, initializes class and certain values
      * @access private
      */
     function atkTheme()
     {
+      global $g_theme;
       atkdebug("Created a new atkTheme instance");
-      $this->m_curtheme = atkconfig("defaulttheme");
+      if ($g_theme["Name"]!="")
+      {
+        $this->m_curtheme = $g_theme["Name"];
+      }
+      else
+      {
+        $this->m_curtheme = atkconfig("defaulttheme");
+      }
       $this->_setCurThemedir();
       $this->_initTheme();
     }
-    
+
     /**
      * Initialiser for the atkTheme class
      * @access private
@@ -110,12 +118,12 @@
           global $g_theme;
           include_once($this->m_curthemedir."layout.inc");
         }
-        
+
         //$this->_getCachedTheme();
         $this->m_initialized = true;
       }
     }
-    
+
     /**
      * Checks wether the current theme is cached yet, if not it calls the compiler and compiles it
      * @access private
@@ -125,15 +133,16 @@
       if (count($this->m_def)==0)
       {
         if (atkconfig("force_theme_recompile")||!$this->_loadThemedef())
-        {        
+        {
           atkdebug("Cached themedefinition was not found, compiling one");
           $compiler = &atknew("atk.ui.atkthemecompiler");
+          $compiler->setTheme($this->m_curtheme);
           $compiler->compile();
           $this->_loadThemedef();
         }
      }
     }
-    
+
     /**
      * Includes and loads the current themedefinition
      * @access private
@@ -141,7 +150,7 @@
     function _loadThemedef()
     {
       $filelocation = atkconfig("atktempdir").$this->THEMEDIRNAME."/".$this->m_curtheme;
-      
+
       if (file_exists($filelocation))
       {
         include_once($filelocation);
@@ -150,7 +159,7 @@
       }
       return false;
     }
-    
+
     /**
      * Gets the location of the themedefinition for the current theme
      * @access private
@@ -162,7 +171,7 @@
       atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/".$this->m_curtheme,
       atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/default",
       );
-      
+
       foreach ($themedefs as $themedef)
       {
         if (file_exists($themedef."/".$this->THEMEFILE))
@@ -172,7 +181,7 @@
         }
       }
     }
-    
+
     /**
      * Gets an attribute from the stacked array with all the themedefinitions
      * @access private
@@ -201,7 +210,7 @@
       }
      atkdebug("Couldn't find $searchfor in stack: $name");
     }
-    
+
     /**
      * Gets an attribute from the current themedefinition
      * example: getAttribute("images", "teknoman.jpg", "/images");
@@ -211,12 +220,12 @@
      * @param string $defaultreturnpath the path where the attribute can be found in the default ATK theme, will default to the normal returnpath
      */
     function _getAttribute($attribname, $attribvalue="", $returnpath="", $defaultreturnpath="")
-    { 
+    {
       global $PHP_SELF;
       $this->_getCachedTheme();
-      
+
       if (!$defaultreturnpath) $defaultreturnpath = $returnpath;
-      
+
       if(is_array($this->m_def[$attribname]))
       {
         $attrib = $this->_getStackedItem($attribname,$attribvalue);
@@ -231,7 +240,7 @@
         return $this->m_def[$attribname];
       }
     }
-    
+
     /**
      * Returns the value for themevalue
      * Example: getAttribute("highlight");
@@ -243,7 +252,7 @@
     {
       return $this->_getAttribute($attribname);
     }
-    
+
     /**
      * Returns full path for themed template file, interface to the _getAttribute function
      * @param string $tpl the template name
@@ -253,7 +262,7 @@
     {
       return $this->_getAttribute("customtpls",$tpl, "/templates/".$tpl);
     }
-    
+
     /**
      * Returns full path for themed image file, interface to the _getAttribute function
      * @param string $img the image name
@@ -263,17 +272,17 @@
     {
       return $this->_getAttribute("customimgs", $img, "/images/".$img);
     }
-    
+
     /**
      * Returns full path for themed stylefile file, interface to the _getAttribute function
      * @param string $style the name of the CSS file
      * @return string the full path of the style file
      */
     function stylePath($style)
-    { 
+    {
       return $this->_getAttribute("customstyles", $style, "/styles/".$style);
     }
-    
+
     /**
      * Returns full path for themed icon file, interface to the _getAttribute function
      * @param string $icon      the icon name (no extension)
@@ -290,7 +299,7 @@
       }
       return $iconpath;
     }
-      
+
     /**
      * Gets the directory of the current theme
      * @return string full path of the current theme

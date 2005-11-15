@@ -1,8 +1,8 @@
-<?php 
+<?php
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Compiles cache for current theme.
    *
@@ -34,22 +34,22 @@
      * @var array
      * @access private
      */
-    var $m_themedefs; 
-  
+    var $m_themedefs;
+
     /**
      * String with the indentation to use for the cache file
      * @var string
      * @access private
      */
     var $indentation;
-  
+
     /**
      * Directory where we make a template directory and store the cachefile
      * @var bool
      * @access private
      */
     var $m_cachedir;
-    
+
     /**
     * Constructor, initialises several values
     */
@@ -57,29 +57,39 @@
     {
       $this->m_cachedir = atkconfig("atktempdir");
       $this->m_curtheme = atkconfig("defaulttheme");
+    }
+
+    /**
+     * Set the theme to compile
+     *
+     * @param String $theme The theme to set
+     */
+    function setTheme($theme)
+    {
+      $this->m_curtheme = $theme;
       $this->_fillThemedefs();
     }
-    
+
     /**
      * Fills a stack with all fallback locations for themedefinitions
      */
     function _fillThemedefs()
     {
       global $g_modules;
-      
+
       $this->m_themedefs[] = $this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = $this->THEMEDIRNAME."/default/".$this->THEMEFILE;    
-      
+      $this->m_themedefs[] = $this->THEMEDIRNAME."/default/".$this->THEMEFILE;
+
       foreach ($g_modules as $modname => $modpath)
       {
         $this->m_themedefs[] = moduleDir($modname).$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
         $this->m_themedefs[] = moduleDir($modname).$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
       }
-      
+
       $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;    
+      $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
     }
-        
+
     /**
      * Function responsible for getting the themedefinitions
      * @return void
@@ -93,15 +103,15 @@
         atkdebug("Found $file, going to compile it");
         $fromlength = strrpos($file, "/");
         $from = substr($file, 0, $fromlength);
-        
-        $this->_checkForBase($theme, $from);      
+
+        $this->_checkForBase($theme, $from);
         $this->_checkForAutodetect($theme, $from);
-        
+
         $this->_addThemedef($theme, $from);
       }
       if ($this->m_themedefs[0]) { $this->getThemedef();}
     }
-    
+
     /**
      * If the theme has a base, we go back and do that one first
      * @param array $theme the current themedefinition
@@ -115,15 +125,15 @@
         array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->THEMEFILE);
       }
     }
-    
+
     /**
-     * If a theme has attributes with a "scan 'somedir/'" 
+     * If a theme has attributes with a "scan 'somedir/'"
      * it will scan the files in that dir
      * @param array &$theme the current themedefinition
      * @param string $from the directory of the current themedefinition
      */
     function _checkForAutodetect(&$theme, $from)
-    {      
+    {
       foreach ($theme as $themename => $themedata)
       {
         if (!is_array($themedata))
@@ -150,16 +160,16 @@
     function _getAutodetectdirectories($themedata)
     {
       $directories = $this->_getAutodetectData($themedata);
-            
+
       $directories = explode(";", $directories);
       foreach ($directories as $dirid => $directory)
       {
         if (substr($directory, 0, 1) !== "/") $directories[$dirid] = "/$directory";
         if (substr($directory, -1, 1) !== "/") $directories[$dirid] .= "/";
       }
-      return $directories;  
+      return $directories;
     }
-    
+
     /**
      * Extracts the director(y/ies) we need to scan
      * @param string $themedata The theme data for this paricular entry
@@ -168,21 +178,21 @@
     function _getAutodetectData($themedata)
     {
       $begindirs = strpos($themedata, "'");
-      if ($begindirs) 
+      if ($begindirs)
       {
         $enddirs = strrpos($themedata, "'");
       }
-      else 
+      else
       {
         // The user didn't use slashes, guess he did "scan dir1/dir2/"
         $begindirs = 4;
         $enddirs = strlen($themedata)-1;
       }
       $dirnamelength = $enddirs - $begindirs;
-      
+
       return trim(substr($themedata, $begindirs+1, $dirnamelength-1));
     }
-    
+
     /**
      * Scans the directory given to it and returns the files it finds
      * @param string $directory the directory we need to scan
@@ -197,19 +207,19 @@
          return array();
       }
       $handle=opendir(atkconfig("atkroot").$from.$directory);
-      
-      while (($file = readdir($handle))!==false) 
+
+      while (($file = readdir($handle))!==false)
       {
-        if ($file != "." && $file != ".." && $file != "CVS") 
+        if ($file != "." && $file != ".." && $file != "CVS")
         {
           $detectedfiles[] = $file;
         }
       }
-	    closedir($handle); 
+	    closedir($handle);
       return $detectedfiles;
     }
-    
-    
+
+
     /**
      * This function adds themedefitems from initialisation to the central themedef
      * If the item is an array it unshifts in on a queue.
@@ -234,19 +244,19 @@
         }
       }
     }
-    
+
     /**
      * The compiler, compiles the cache for the current theme
      */
     function compile()
     {
       $this->getThemedef();
-      
+
       $compiled = $this->_compileThemedef();
       $this->_checkLocation();
       $this->_writeCache($compiled);
     }
-    
+
     /**
      * Writes the cache to a file
      * @param string $compiled the cache
@@ -254,14 +264,14 @@
     function _writeCache($compiled)
     {
       $filename = $this->m_cachedir.$this->THEMEDIRNAME."/".$this->m_curtheme;
-      
+
       if($filepointer = fopen($filename,"w"))
       {
         fwrite($filepointer, $compiled);
         fclose($filepointer);
       } else atkerror("Unable to write theme cache file! Permission denied!");
     }
-    
+
     /**
      * Takes care of indentation, though not absolutely necessary for the system,
      * it makes the compiled cachefile easier to read for humans
@@ -276,7 +286,7 @@
       }
       return $dent;
     }
-    
+
     /**
      * Transforms the themedefinition to a php file compatible format
      * @return string the compiled themedefinition
@@ -285,7 +295,7 @@
     {
       $file = "";
       $this->_compileBegin($file);
-      
+
       foreach ($this->m_def as $themedefitemname => $themedefitem)
       {
         $this->_compileItem($themedefitemname, $themedefitem, $file);
@@ -293,7 +303,7 @@
       $this->_compileEnd($file);
       return $file;
     }
-    
+
     /**
      * Adds a beginning to the compiling file
      * @param string &$file the compiled cache so far
@@ -304,7 +314,7 @@
       $this->indentation += 2;
       $file.=$this->_getIndentation()."\$theme = array(\n";
     }
-    
+
     /**
      * Parses an array for the themecompiler
      * @param string $themedefitemname the name of the item
@@ -322,7 +332,7 @@
         $this->_compileArray($themedefitem, $themedefitemname, $file);
       }
     }
-    
+
     /**
      * Compiles an array
      * @param var $array        the array to be compiled
@@ -332,17 +342,17 @@
     function _compileArray($array, $arrayname, &$file)
     {
       $file.=$this->_getIndentation().'"'.$arrayname."\" => array(\n";
-      
+
       foreach ($array as $themedefitemname => $themedefitem)
       {
         $this->indentation += 2;
         $this->_compileItem($themedefitemname, $themedefitem, $file);
         $this->indentation -= 2;
       }
-      
+
       $file .= $this->_getIndentation()."),\n";
     }
-    
+
     /**
      * Adds an ending to the compiling file
      * @param string &$file the compiled cache so far
@@ -353,7 +363,7 @@
       $this->indentation -= 2;
       $file .= "?".">";
     }
-    
+
     /**
      * Checks if the directory and file we want to write to actually exist,
      * if not we create them and check again.
@@ -366,7 +376,7 @@
     {
       $dir = $this->m_cachedir.$this->THEMEDIRNAME;
       $file = $dir."/".$this->m_curtheme;
-      
+
       if (is_dir($dir))
       {
         if (is_file($file))
@@ -380,5 +390,5 @@
       return $this->_checkLocation();
     }
   }
-  
+
 ?>
