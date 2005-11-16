@@ -208,6 +208,11 @@
           $recordlistcache->clearCache($this->m_node->atkNodeType());
       }
     }
+    
+    function notify($action, $record)
+    {
+      $this->m_node->notify($action, $record);
+    }
   }
 
 ?>
