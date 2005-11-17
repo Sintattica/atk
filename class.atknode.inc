@@ -586,7 +586,7 @@
      * @var String
      */
     var $m_descTemplate = NULL;
-    
+
     /**
      * List of action listeners
      */
@@ -1180,7 +1180,7 @@
         $descr = $this->descriptor($record);
         $g_sessionManager->pageVar("descriptor",$descr);
       }
-      
+
       $descriptortrace = $g_sessionManager->descriptorTrace();
       $nomodule=false;
       if (!empty($descriptortrace))
@@ -1274,7 +1274,7 @@
         atkdebug("Restoring formdata from session");
         $this->modifyRecord($defaults, $this->m_postvars["atkformdata"]);
         $this->m_postvars["atkformdata"]="";
-        $g_sessionData["default"]["stack"][atkStackID()][atkLevel()]["atkformdata"]="";
+        $g_sessionData[$this->m_action]['stack'][atkStackID()][atkLevel()]['atkformdata']="";
       }
 
       /* edit mode */
@@ -3597,7 +3597,7 @@
           $this->m_securityMap[$key] = $newmapped;
       }
     }
-    
+
     function addListener(&$listener)
     {
       $listener->setNode($this);
@@ -3610,7 +3610,7 @@
       {
         $this->m_listeners[$i]->notify($action, $record);
       }
-    } 
-    
+    }
+
   }
 ?>
