@@ -94,7 +94,7 @@
    function disconnect()
    {
      atkdebug("Disconnecting from database...");
-     mysqli_close($this->m_link_id);
+     if($this->m_link_id) mysqli_close($this->m_link_id);
    }
 
    /**
@@ -108,7 +108,12 @@
      /* limit? */
      if ($offset >= 0 && $limit > 0)
        $query .= " LIMIT $offset, $limit";
-     atkdebug("atkmysqldb.query(): ".$query);
+     
+     if (atkconfig("debug")>0)
+     {               
+       atkimport("atk.utils.atkdebugger");        
+       atkDebugger::addQuery($query);
+     }
 
      /* connect to database */
      if ($this->connect()==DB_SUCCESS)
