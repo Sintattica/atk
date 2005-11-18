@@ -58,6 +58,7 @@ Changes in ATK 5.3RC2
   * Fixed retrieving the correct field flags [Sandy]
 * Fixed bug in atkThemeCompiler, theme is now set from atkTheme instead of
   retrieved from the config. [Ivo]
+* Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed php error message in atkImportHandler. [Ivo]
 
 Changes in ATK 5.3RC1

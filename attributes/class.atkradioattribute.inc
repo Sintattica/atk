@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,10 +16,10 @@
    * $Id$
    */
 
-  /** 
-   * Flag(s) specific for atkRadioAttribute 
+  /**
+   * Flag(s) specific for atkRadioAttribute
    */
-  
+
   /**
    * Displays the set of radio buttons vertically
    */
@@ -32,7 +32,7 @@
    * The atkRadioAttribute class represents an attribute of a node
    * that has a field with radio button  to select from predefined values.
    *
-   * This attribute is almost identical to atkListAttribute, 
+   * This attribute is almost identical to atkListAttribute,
    * with some slight modification to show radiobuttons instead of a listbox
    *
    * @author Rene Bakx <rene@ibuildings.nl>
@@ -41,24 +41,24 @@
    *
    */
   class atkRadioAttribute extends atkListAttribute
-  {  
-    // Default number of cols / rows  
+  {
+    // Default number of cols / rows
     var $m_amount = 1;
     var $m_cols=false;
     var $m_rows=false;
-    
+
     /**
      * Constructor
      * @param $name Name of the attribute
      * @param $flags Flags for this attribute
      * @param $optionArray Array with options
-     * @param $valueArray Array with values. If you don't use this parameter, 
+     * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
-     *            
+     *
      */
     function atkRadioAttribute($name, $optionArray, $valueArray="", $flags=0, $size=0)
-    {            
+    {
       if (is_array($size) and count($size)>1)
       {
         $lastchar = strtolower(substr($size[1],-1,1));
@@ -76,12 +76,12 @@
         else
         {
           // Default options
-          if($this->hasFlag(AF_DISPLAY_VERT)) { $this->m_rows=true; } else { $this->m_cols=true; } 
+          if($this->hasFlag(AF_DISPLAY_VERT)) { $this->m_rows=true; } else { $this->m_cols=true; }
           $this->m_amount=$size[1];
         }
       }
-      $this->atkListAttribute($name, $optionArray, $valueArray, $flags,$size); // base class constructor      
-    }    
+      $this->atkListAttribute($name, $optionArray, $valueArray, $flags,$size); // base class constructor
+    }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
@@ -91,7 +91,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      
+
       $total_items = count($this->m_values);
       if($this->m_cols && !$this->hasFlag(AF_DISPLAY_VERT))
       {
@@ -111,7 +111,7 @@
         $items = $this->m_amount;
         $total_items=$this->m_amount;
       }
-      
+
       $result ='<table class="table">';
       if(!$this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
       $item_count=0;
@@ -119,7 +119,7 @@
       {
         if ($this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
         {
-          $sel = "checked"; 
+          $sel = "checked";
         }
         else
         {
@@ -130,11 +130,11 @@
         if($this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
         $this->registerKeyListener($labelID, KB_CTRLCURSOR|KB_CURSOR);
         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>
-        <label for="'.$labelID.'">'.text($this->m_options[$i]).'</label></td>';
+        <label for="'.$labelID.'">'.atktext($this->m_options[$i], $this->m_ownerInstance->m_module).'</label></td>';
         if($this->hasflag(AF_DISPLAY_VERT))
         {
           $tmp_items=$items;
-          if($this->hasFlag(AF_DISPLAY_VERT)&&$this->m_rows) 
+          if($this->hasFlag(AF_DISPLAY_VERT)&&$this->m_rows)
           {
             $tmp_items=count($this->m_values);
           }
@@ -142,12 +142,12 @@
           {
             $tmp_items = $items*$this->m_amount;
           }
-          
+
           for($j=($items+$i);$j<$tmp_items;$j=$j+$items)
           {
             if ($this->m_values[$j] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
             {
-              $sel = "checked"; 
+              $sel = "checked";
             }
             else
             {
@@ -156,7 +156,7 @@
             if($this->m_values[$j]!="")
             {
               $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$j].'" '.$sel.'>
-              <label for="'.$labelID.'">'.text($this->m_options[$j]).'</label></td>';
+              <label for="'.$labelID.'">'.atktext($this->m_options[$j], $this->m_ownerInstance->m_module).'</label></td>';
             }
             else
             {
@@ -165,18 +165,18 @@
           }
           $result.='</tr>';
         }
-       
+
         $item_count++;
         if($item_count==$items && !$this->hasFlag(AF_DISPLAY_VERT))
         {
           $result.='</tr><tr>';
           $item_count=0;
         }
-        
+
       }
       // Fill with empty boxes when we have a horizontal display
       if(!$this->hasFlag(AF_DISPLAY_VERT))
-      {      
+      {
         for($i=0;$i<($items-$item_count);$i++) $result.='<td>&nbsp;</td>';
         $result.='</tr>';
       }
