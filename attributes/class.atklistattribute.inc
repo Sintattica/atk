@@ -134,7 +134,10 @@
     {
       if(isset($this->m_lookup[$record[$this->fieldName()]]))
       {
-        return text($this->m_lookup[$record[$this->fieldName()]], $this->m_ownerInstance->m_type, $this->m_ownerInstance->m_module);
+        if($this->hasFlag(AF_NO_TRANSLATION)) $res = $this->m_lookup[$record[$this->fieldName()]];
+        else $res = atktext($this->m_lookup[$record[$this->fieldName()]],$this->m_ownerInstance->m_module);
+
+        return $res;
       }
     }
     
@@ -175,7 +178,7 @@
           $sel = "";
         }
         if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
-        else $option=atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
+        else $option = atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
         
         $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option;
       }
@@ -214,7 +217,10 @@
         {
           $sel = "";
         }
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.text($this->m_options[$i], $this->m_ownerInstance->m_type);
+        if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
+        else $string = atktext($this->m_options[$i], $this->m_ownerInstance->m_module);
+        
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$string;
       }
       $result.='</select>';
       return $result;
