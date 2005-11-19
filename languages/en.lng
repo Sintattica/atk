@@ -251,6 +251,7 @@
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
   "thousands_separator" => ",",
+  "relogin" => "Log in again",
 );
 
 ?>

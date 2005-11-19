@@ -63,6 +63,7 @@ Changes in ATK 5.3RC2
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed translations in atkManyToOneRelation. (bug #540) [Olav]
 * Fixed translation of error messages in edit screens. (bug #541) [Yury]
+* Fixed translations in 'session expired' screen. (bug #554) [Ivo]
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]

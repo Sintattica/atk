@@ -51,13 +51,13 @@
       if (isset($ATK_VARS["atkselector"])) $destination.="&atkselector=".$ATK_VARS["atkselector"];
     }
 
-    $box = $ui->renderBox(array("title"=>text("title_session_expired"),
-                                "content"=>'<br><br>'.text("explain_session_expired").'<br><br><br><br>
-                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.text("relogin").'<a/><br><br>'));
+    $box = $ui->renderBox(array("title"=>atktext("title_session_expired"),
+                                "content"=>'<br><br>'.atktext("explain_session_expired").'<br><br><br><br>
+                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.atktext("relogin").'<a/><br><br>'));
 
     $page->addContent($box);
 
-    $output->output($page->render(text("title_session_expired"), true));
+    $output->output($page->render(atktext("title_session_expired"), true));
   }
   else
   {
