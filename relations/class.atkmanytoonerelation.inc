@@ -384,7 +384,7 @@
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
-                           text("link_select_".getNodeType($this->m_destination)),
+                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination)),
                            SESSION_NESTED,
                            true);
           }
@@ -392,7 +392,7 @@
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atktarget=".$atktarget,
-                           text("link_select_".getNodeType($this->m_destination)),
+                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination)),
                            SESSION_NESTED,
                            true);
           }
@@ -421,11 +421,11 @@
         if ($this->m_destInstance->allowed("edit"))
         {
           $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
-          $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".text('edit')."</a>";
+          $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a>";
         }
         if ($this->m_destInstance->allowed("add"))
         {
-          $autolink['add'] = "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),text("new"),SESSION_NESTED,true);
+          $autolink['add'] = "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),atktext("new"),SESSION_NESTED,true);
         }
       }
       return $autolink;

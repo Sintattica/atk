@@ -61,6 +61,7 @@ Changes in ATK 5.3RC2
 * Fixed bug in atkThemeCompiler, theme is now set from atkTheme instead of
   retrieved from the config. [Ivo]
 * Fixed translation of options in atkRadioAttribute. [Ivo]
+* Fixed translations in atkManyToOneRelation. (bug #540) [Olav]
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
