@@ -60,6 +60,7 @@ Changes in ATK 5.3RC2
   retrieved from the config. [Ivo]
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed php error message in atkImportHandler. [Ivo]
+* Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 
 Changes in ATK 5.3RC1
 ---------------------

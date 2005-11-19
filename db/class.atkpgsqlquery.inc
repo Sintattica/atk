@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,12 @@
    * @version $Revision$
    * $Id$
    */
-   
+
+  /**
+   * Base include
+   */
+  atkimport("atk.db.atkquery");
+
   /**
    * SQL query builder for PostgreSQL.
    *
@@ -31,26 +36,26 @@
      * @param $table the table name
      * @param $alias alias for the table
      * @param $condition join condition
-     */ 
+     */
     function addJoin($table, $alias, $condition, $outer)
     {
-      if ($outer) 
+      if ($outer)
       {
         $join="LEFT JOIN ";
       }
-      else 
+      else
       {
         $join="JOIN ";
       }
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
     }
-    
+
     function _addLimiter(&$query)
     {
       if ($this->m_offset >= 0 && $this->m_limit > 0)
       {
         $query .= " LIMIT ".$this->m_limit." OFFSET ".$this->m_offset;
-      }      
+      }
     }
 
     /**
