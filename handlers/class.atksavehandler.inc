@@ -3,7 +3,7 @@
  /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,16 +16,16 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
-   * Handler class for the save action of a node. The action saves a 
+   * Handler class for the save action of a node. The action saves a
    * new record to the database. The data is retrieved from the postvars.
    * This is the action that follows an 'add' action. The 'add' action
    * draws the add form, the 'save' action saves the data to the database.
    * Validation of the record is performed before storage. If validation
    * fails, the add handler is invoked again.
    *
-   * @author Ivo Jansch <ivo@achievo.org>   
+   * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage handlers
    *
@@ -36,11 +36,11 @@
      * The action handler method
      */
     function action_save()
-    {      
-      $record = $this->m_node->updateRecord();   
-      
+    {
+      $record = $this->m_node->updateRecord();
+
       if (!isset($this->m_postvars['atkcancel']))
-      {      
+      {
 
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
         $this->m_node->preAdd($record);
@@ -64,7 +64,7 @@
           $this->m_node->m_action = "add";
           $page = &$this->getPage();
           $addhandler = &$this->m_node->getHandler("add");
-          $page->addContent($addhandler->invoke("addPage", $record));
+          $page->addContent($this->m_node->renderActionPage("add", $addhandler->invoke("addPage", $record)));
         }
         else
         {
@@ -92,7 +92,7 @@
             $db->commit();
 //            $this->notify("save", $record);
             $this->clearCache();
-            
+
             $location="";
             if ($this->m_node->hasFlag(NF_EDITAFTERADD))
             {

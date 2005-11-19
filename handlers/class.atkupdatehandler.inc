@@ -2,7 +2,7 @@
  /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Handler class for the update action of a node. The action saves an
    * existing record to the database. The data is retrieved from the postvars.
@@ -24,13 +24,13 @@
    * Validation of the record is performed before storage. If validation
    * fails, the edit handler is invoked again.
    *
-   * @author Ivo Jansch <ivo@achievo.org>   
+   * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage handlers
    * @todo Add locking check for when an application calls an action_update on a locked node
    */
-  class atkUpdatehandler extends atkActionHandler 
-  {    
+  class atkUpdatehandler extends atkActionHandler
+  {
     /**
      * The action handler method.
      */
@@ -39,7 +39,7 @@
       $record = $this->m_node->updateRecord();
 
       if (isset($this->m_postvars['atknoclose'])||isset($this->m_postvars['atksaveandclose']))
-      {      
+      {
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
         $this->m_node->preUpdate($record);
@@ -59,7 +59,7 @@
           $this->m_node->m_action="edit";
           $page = &$this->getPage();
           $edithandler = $this->m_node->getHandler("edit");
-          $page->addContent($edithandler->invoke("editPage", $record));
+          $page->addContent($this->m_node->renderActionPage("edit", $edithandler->invoke("editPage", $record)));
         }
         else
         {
@@ -84,7 +84,7 @@
           }
           else
           {
-            $db->commit();            
+            $db->commit();
 //            $this->notify("update", $record);
             $this->clearCache();
             if (!isset($this->m_postvars['atknoclose']))
@@ -108,24 +108,24 @@
         $location = $this->m_node->feedbackUrl("update", ACTION_CANCELLED, $record);
         $this->m_node->redirect($location);
       }
-      else 
-      {        
+      else
+      {
         // something other than one of the three buttons was pressed. Let's just refresh.
         $this->renderEditPage($record);
       }
     }
-    
+
     function renderEditPage(&$record)
     {
        $page = &$this->getPage();
     //  $this->m_action="edit";
       //update succesful, pk value might be changed so update m_orgkey
       $record["atkprimkey"] = $this->m_node->primaryKey($record);
-      
-      $locked = ($this->m_node->hasFlag(NF_LOCK));      
-      
+
+      $locked = ($this->m_node->hasFlag(NF_LOCK));
+
       //$this->setOrgKeyValue($record);
-      $this->m_node->m_action = "edit";              
+      $this->m_node->m_action = "edit";
       // we have to make the entire system think we are in edit mode again.
       global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
       $edithandler = $this->m_node->getHandler("edit");

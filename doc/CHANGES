@@ -64,6 +64,8 @@ Changes in ATK 5.3RC2
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
+* Fixed missing stack trace in add/edit pages when displaying errors. 
+  (bug #523) [Ivo]
 
 Changes in ATK 5.3RC1
 ---------------------
