@@ -61,6 +61,7 @@ Changes in ATK 5.3RC2
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
+* Fixex searching in atkManyBoolRelation. (bug #546) [Yury]
 
 Changes in ATK 5.3RC1
 ---------------------

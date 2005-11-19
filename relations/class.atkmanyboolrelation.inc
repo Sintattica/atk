@@ -272,15 +272,15 @@
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
     		$this->createLink();
-    		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(),$table.".id"."=".$this->m_linkInstance->m_table.".".$this->getLocalKey(),FALSE );//!$this->hasFlag(AF_OBLIGATORY)
+    		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );//!$this->hasFlag(AF_OBLIGATORY)
     		$query->setDistinct(TRUE);
         if (count($value)==1) // exactly one value
         {
-          $query->addSearchCondition($query->exactCondition($this->m_linkInstance->m_table.".".$this->getRemoteKey(),escapeSQL($value[0])));
+          $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),escapeSQL($value[0])));
         }
         else // search for more values using IN()
         {
-          $query->addSearchCondition($this->m_linkInstance->m_table.".".$this->remoteKey()." IN ('".implode("','",$value)."')");
+          $query->addSearchCondition($this->fieldName().".".$this->remoteKey()." IN ('".implode("','",$value)."')");
         }
       }
     }
