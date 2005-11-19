@@ -28,11 +28,6 @@
   userelation("atkrelation");
 
   /**
-   * @internal include used utility class(es)
-   */
-  atkimport("atk.utils.atkstringparser");
-
-  /**
    * A N:1 relation between two classes.
    *
    * For example, projects all have one coordinator, but one
@@ -264,7 +259,6 @@
     function edit(&$record, $fieldprefix="")
     {
       global $ATK_VARS;
-      atkimport("atk.utils.atkstringparser");
 
       // Two variances.. one with a dropdownbox containing all records,
       // and one with a dropdownbox that contains the last 10 used records,
@@ -277,6 +271,7 @@
         $filter="";
         if ($this->m_destinationFilter!="")
         {
+          atkimport("atk.utils.atkstringparser");
           $parser = new atkStringParser($this->m_destinationFilter);
           $filter = $parser->parse($record);
         }
@@ -482,6 +477,7 @@
         {
           if ($this->m_destinationFilter!="")
           {
+            atkimport("atk.utils.atkstringparser");
             $parser = new atkStringParser($this->m_destinationFilter);
             $filter = $parser->parse($record);
             $this->m_destInstance->addFilter($filter);
