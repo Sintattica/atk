@@ -153,6 +153,10 @@ Yury Golovnya <YGolovnya@kyiv.utel.com.ua>
 
   Yury contributed a large number of patches for numerous errors and features.
 
+Guido van Biemen <guido@ibuildings.nl>
+
+  Guido, among other things, integrated the TinyButStrong Open Office
+  template engine in ATK.
 
 Other Contributors
 ------------------
@@ -183,6 +187,7 @@ Alberto Galanti                       <alberto@officinadigitale.it>
 Bas de Nooijer                        <bas@ibuildings.nl>
 Guido van Biemen                      <guido@ibuildings.nl>
 Tjeerd Bijlsma                        <tjeerd@ibuildings.nl>
+Przemek Piotrowski                    <przemek.piotrowski@nic.com.pl>
 
 Names between [] are the names they are refered by in the CHANGES file. (If
 different from their first name).
