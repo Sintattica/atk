@@ -27,6 +27,9 @@ Changes in ATK 5.3RC2
 + Added AF_NO_TRANSLATION support to atkMultiSelectAttribute and to
   atkListAttribute's display method. (bug #539, #545) [Yury]
 + atkEmailAttribute's DNS lookup now also works on Windows. (bug #549) [Olav]
++ Added 'grantall' privilege; if users have a privilege defined by
+  $config_auth_grantall_privilege, they can grant privileges that they do not
+  explicitly have themselves. [Ivo]
 * Improved errorhandling in atkThemeCompiler. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
@@ -34,9 +37,6 @@ Changes in ATK 5.3RC2
   structure itsself, making it possible to use theme elements from outside
   the ATK application root. [Boy]
 * Fixed php errors in atkProfileAttribute. [Ivo]
-* Added 'grantall' privilege; if users have a privilege defined by 
-  $config_auth_grantall_privilege, they can grant privileges that they do not
-  explicitly have themselves. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
 * Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
@@ -60,7 +60,7 @@ Changes in ATK 5.3RC2
   * Fixed retrieving the correct field flags [Sandy]
 * Fixed bug in atkThemeCompiler, theme is now set from atkTheme instead of
   retrieved from the config. [Ivo]
-* Fixed atkProfileAttribute translations. [Ivo]  
+* Fixed atkProfileAttribute translations. (bug #550) [Olav, Ivo]  
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed translations in atkManyToOneRelation. (bug #540) [Olav]
 * Fixed translation of error messages in edit screens. (bug #541) [Yury]

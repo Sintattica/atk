@@ -267,11 +267,11 @@
 
       $result='<div align="right">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
-                    text("check_all").
+                    atktext("check_all").
              '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
-                    text("check_none").
+                    atktext("check_none").
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
-                    text("invert_selection").'</a>]</div>';
+                    atktext("invert_selection").'</a>]</div>';
 
       $isAdmin =  ($g_user['name']=='administrator' || $this->canGrantAll());
       $allActions = $this->getAllActions($record);
