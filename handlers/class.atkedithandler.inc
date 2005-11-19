@@ -139,7 +139,7 @@
       $errors = array();
       if (count($data['error']) > 0)
       {
-        $error_title = '<b>'.text('error_formdataerror').'</b>';
+        $error_title = '<b>'.atktext('error_formdataerror').'</b>';
 
         foreach ($data["error"] as $error)
         {
@@ -151,22 +151,21 @@
           {
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
-            if (count($node->getTabs($node->m_action)) > 1
-                 && $error["tab"])
-              $error_tab = ' ('.text("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.text("tab_".$error["tab"]).'</a> )';
+            if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
+              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atktext("tab_".$error["tab"],$node->m_module).'</a> )';
             else $error_tab = "";
 
             if(!is_array($error['attrib_name']))
             {
-              $label = text($error['attrib_name'], $type);
+              $label = atktext($error['attrib_name'], $node->m_module, $type);
             }
             else
             {
               $label = array();
               foreach($error['attrib_name'] as $attrib)
-                $label[] = text($attrib, $type);
+                $label[] = atktext($attrib, $node->m_module, $type);
 
-                $label= implode(", ", $label);
+              $label= implode(", ", $label);
             }
 
             $errors[] = array("msg"=>$error['msg'].$error_tab, "label"=>$label);
@@ -176,10 +175,10 @@
         {
           for($i=0;$i<count($pk_err_attrib); $i++)
           {
-            $pk_err_msg .= text($pk_err_attrib[$i]);
+            $pk_err_msg .= atktext($pk_err_attrib[$i], $node->m_module);
             if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
           }
-          $errors[] = array("label"=>text("error_primarykey_exists"),
+          $errors[] = array("label"=>atktext("error_primarykey_exists"),
                             "msg"=>$pk_err_msg);
         }
 
@@ -190,8 +189,8 @@
       $theme = &atkinstance("atk.ui.atktheme");
       $tipimg = $theme->imgPath("help.gif");
       $reqimg = '<img align="top" onMouseOver="javascript:window.status=\''.
-                   addslashes(text("field_obligatory")).'\';" src="'.$theme->imgPath("required_field.gif").'" border="0" alt="'.
-                   text("field_obligatory").'">';
+                   addslashes(atktext("field_obligatory")).'\';" src="'.$theme->imgPath("required_field.gif").'" border="0" alt="'.
+                   atktext("field_obligatory").'">';
 
       /* display the edit fields */
       $fields = array();

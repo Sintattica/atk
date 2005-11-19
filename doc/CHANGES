@@ -42,7 +42,6 @@ Changes in ATK 5.3RC2
   retrieved. Also, both thousands- and decimal separator now have a default 
   value if none is set in the language file. [Ivo]
 * Set search portion of the top frame in outlook theme to 'nowrap'. [Ivo]
-* Fixed atkProfileAttribute translations. [Ivo]
 * atkLanguage no longer tries to include languagefiles it can't find. [Yury]
 * Descriptortrace (breadcrumbtrail top of page) now also shows what node
   you are currently preforming an action in. [Boy]
@@ -60,8 +59,10 @@ Changes in ATK 5.3RC2
   * Fixed retrieving the correct field flags [Sandy]
 * Fixed bug in atkThemeCompiler, theme is now set from atkTheme instead of
   retrieved from the config. [Ivo]
+* Fixed atkProfileAttribute translations. [Ivo]  
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed translations in atkManyToOneRelation. (bug #540) [Olav]
+* Fixed translation of error messages in edit screens. (bug #541) [Yury]
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
