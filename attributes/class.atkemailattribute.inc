@@ -3,12 +3,12 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
-   * The file contains the default values for most configuration 
+   * The file contains the default values for most configuration
    * settings.
-   * 
+   *
    * @package atk
    * @subpackage attributes
    *
@@ -18,7 +18,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Attribute for editing email fields.
    *
@@ -29,7 +29,7 @@
    *
    */
   class atkEmailAttribute extends atkAttribute
-  {    
+  {
 
     /**
      * @var boolean Bool to set DNS search in validate function
@@ -52,17 +52,17 @@
      */
     function atkEmailAttribute($name, $search = false, $flags = 0, $size=0)
     {
-      $this->m_dnsSearch = $search;      
+      $this->m_dnsSearch = $search;
       $this->atkAttribute($name, $flags, $size);
     }
 
     /**
-     * Returns a displayable string for this value.          
+     * Returns a displayable string for this value.
      * @param array $record The record to display
-     * @return String      
+     * @return String
      */
     function display($record)
-    {  
+    {
       if ($record[$this->fieldName()]!="")
       {
         return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';
@@ -95,10 +95,10 @@
           {
             triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
           }
-        }       
-      } 
+        }
+      }
     }
-    
+
     /**
      * Called by the framework to determine the database field datatype.
      * @return String The databasefield datatype.
@@ -107,7 +107,39 @@
     {
       return "string";
     }
-    
+
   }
-  
+
+  if (!function_exists("checkdnsrr"))
+  {
+    /**
+     * Check an e-mail do main in DNS using nslookup.
+     *
+     * This is only used on Windows as on Linux environments this function
+     * is native in PHP.
+     * @access private
+     */
+    function checkdnsrr($hostName, $recType = 'MX')
+    {
+      if(!empty($hostName))
+      {
+        $recType = escapeshellarg($recType);
+        $hostName = escapeshellarg(($hostName);
+        exec("nslookup -type=$recType $hostName", $result);
+        // check each line to find the one that starts with the host
+        // name. If it exists then the function succeeded.
+        foreach ($result as $line)
+        {
+          if(eregi("^$hostName",$line))
+          {
+            return true;
+          }
+        }
+        // otherwise there was no mail handler for the domain
+        return false;
+      }
+      return false;
+    }
+  }
+
 ?>
