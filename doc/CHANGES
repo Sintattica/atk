@@ -30,6 +30,7 @@ Changes in ATK 5.3RC2
 + Added 'grantall' privilege; if users have a privilege defined by
   $config_auth_grantall_privilege, they can grant privileges that they do not
   explicitly have themselves. [Ivo]
++ Added Polish language file for atkDateAttribute. (bug #560) [Przemek]
 * Improved errorhandling in atkThemeCompiler. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
