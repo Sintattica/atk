@@ -166,7 +166,7 @@
         }
         else
         {
-          $db = &$this->m_ownerInstance->m_db;
+          $db = &$this->m_ownerInstance->getDb();
           if ($db->getType() != 'oci9')
             $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
           else
