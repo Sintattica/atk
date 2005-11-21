@@ -193,6 +193,15 @@
     var $m_errorLookup = array();
 
     /**
+     * Get the database driver type.
+     * @return String driver type
+     */
+    function getType()
+    {
+      return $this->m_type;
+    }
+
+    /**
      * Get the current connection.
      * @return Connection resource id
      */

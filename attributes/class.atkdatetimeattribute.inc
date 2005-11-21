@@ -166,7 +166,8 @@
         }
         else
         {
-          if (atkconfig('database') != 'oci9')
+          $db = &this->m_ownerInstance->m_db;
+          if ($db->getType() != 'oci9')
             $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES));
           else
           {
