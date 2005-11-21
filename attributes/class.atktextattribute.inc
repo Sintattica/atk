@@ -139,7 +139,7 @@
      */
     function value2db($rec)
     {
-      $db = &$this->m_ownerInstance->m_db;
+      $db = &$this->m_ownerInstance->getDb();
       if ($db->getType() != "oci9")
         return escapeSQL($rec[$this->fieldName()]);
       else 
