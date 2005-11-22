@@ -121,10 +121,11 @@
       /**
        * RecordlistCache must call getUniqueId() too, or the counter will be off.
        */
-       getUniqueId("normalRecordList");
-
-        $page->register_loadscript(file_get_contents($this->m_cacheid."_actionloader"));
-        $output = str_replace(atkStackID(),"*|REPLACESTACKID|*",file_get_contents(atkconfig("atkroot").$this->m_cacheid));
+       getUniqueId("normalRecordList");    
+        
+        $stackID = atkStackID();
+        $page->register_loadscript(str_replace("*|REPLACESTACKID|*",$stackID,file_get_contents($this->m_cacheid."_actionloader")));
+        $output = str_replace("*|REPLACESTACKID|*",$stackID,file_get_contents(atkconfig("atkroot").$this->m_cacheid));
       }
       return $output;
     }
@@ -150,8 +151,10 @@
     {
       if (!$this->noCaching())
       {
-        str_replace("*|REPLACESTACKID|*",atkStackID(),$output);
-
+        $stackID = atkStackID();
+      	$output = str_replace($stackID,"*|REPLACESTACKID|*",$output);
+      	$actionloader = str_replace($stackID,"*|REPLACESTACKID|*",$actionloader);
+        
         if (file_exists($this->m_cacheid)) unlink($this->m_cacheid);
         $fp = &fopen($this->m_cacheid,"a+");
 
@@ -249,11 +252,14 @@
      */
     function _formatIdentifiers($identifiers, &$output)
     {
-      foreach ($identifiers as $identifier)
+      if (count($identifiers)>0)
       {
-        $output[]="_".$identifier['key'].$identifier['value'];
+        foreach ($identifiers as $identifier)
+        {
+          $output[]="_".$identifier['key'].$identifier['value'];
+        }
+        return $output;
       }
-      return $output;
     }
 
     /**

@@ -75,6 +75,7 @@ Changes in ATK 5.3RC2
   and atkDateTimeAttribute. (bug #552) [Renato, Peter]
 * Attributes added by modifier modules now retrieve their translation from
   the modifying module. [Ivo]
+* Fixed replacing of stackid in recordlist cache (bug #548)[Yury]
 
 Changes in ATK 5.3RC1
 ---------------------
