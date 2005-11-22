@@ -583,14 +583,26 @@
 
     /**
      * Descriptor template.
+     * @access protected
      * @var String
      */
     var $m_descTemplate = NULL;
 
     /**
      * List of action listeners
+     * @access protected
+     * @var Array
      */
     var $m_listeners = array();
+
+    /**
+     * Tracker variable to see if we are currently in 'modifier mode' (running inside
+     * the scope of a modname_nodename_modifier() method). The variable contains the
+     * name of the modifying module.
+     * @access private
+     * @var String
+     */
+    var $m_modifier = "";
 
     /**
      * Constructor.
@@ -629,6 +641,10 @@
       static $attrib_order = 100;
       static $attrib_index = 0;
       $attribute->m_owner = $this->m_type;
+
+      // If we're running inside modifier scope, we have to tell the attribute
+      // what module he originated from.
+      if ($this->m_modifier!="") $attribute->m_module = $this->m_modifier;
 
       // *** API HACK ***
       // Because tabs will probably be used more than the order override option
@@ -1778,7 +1794,9 @@
           if (method_exists($mod,$modifiername))
           {
             atkdebug("Applying modifier from module $modname to ".$this->m_type);
+            $this->m_modifier = $modname;
             $mod->$modifiername($this);
+            $this->m_modifier = "";
           }
           else
           {
@@ -1798,7 +1816,9 @@
           if (method_exists($mod,$modifiername))
           {
             atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
+            $this->m_modifier = $modname;
             $mod->$modifiername($this);
+            $this->m_modifier = "";
           }
         }
       }
@@ -1817,7 +1837,6 @@
       else $this->removeFlag(NF_LOCK);
 
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
-
 
       $this->m_initialised = true;
     }

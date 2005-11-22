@@ -73,6 +73,8 @@ Changes in ATK 5.3RC2
   (bug #523) [Ivo]
 * Fixed bug in checking the database driver type in atkTextAttribute
   and atkDateTimeAttribute. (bug #552) [Renato, Peter]
+* Attributes added by modifier modules now retrieve their translation from
+  the modifying module. [Ivo]
 
 Changes in ATK 5.3RC1
 ---------------------

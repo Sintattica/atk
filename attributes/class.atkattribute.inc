@@ -367,6 +367,13 @@
     var $m_owner = "";
 
     /**
+     * The module of the attribute (if empty, the module from the owner node
+     * should be assumed).
+     * @var String
+     */
+    var $m_module = "";
+
+    /**
      * Instance that owns this attribute
      * @var atkNode
      */
@@ -1370,8 +1377,22 @@
      */
     function label($record = array())
     {
-      return text($this->fieldName(),$this->m_ownerInstance->m_type,
-                  $this->m_ownerInstance->m_module);
+      return atktext($this->fieldName(),$this->getModule(), $this->m_ownerInstance->m_type);
+    }
+
+    /**
+     * Get the module that this attribute originated from.
+     *
+     * By default, this is the module of the owning node of this attribute.
+     * However, if the attribute was added using a modifier from a different
+     * module, then the module that added the attribute is returned.
+     *
+     * @return String The name of the module of this attribute
+     */
+    function getModule()
+    {
+      if ($this->m_module!="") return $this->m_module;
+      return $this->m_ownerInstance->m_module;
     }
 
     /**
