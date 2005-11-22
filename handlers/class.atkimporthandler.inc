@@ -721,7 +721,7 @@
      * @param String $name    name of the attribute
      * @return object         instance of the attribute
      */
-    function getUsableAttribute($name)
+    function &getUsableAttribute($name)
     {
       if(array_key_exists($name,$this->m_node->m_attribList))
         return $this->m_node->getAttribute($name);
@@ -744,7 +744,7 @@
      */
     function addToRecord(&$record,$attrname,$value)
     {
-      $attr = $this->getUsableAttribute($attrname);
+      $attr = &$this->getUsableAttribute($attrname);
 
       if(!is_object($attr)) return;
 
@@ -906,7 +906,7 @@
 
       if ($allField!="")
       {
-        $attr = $this->getUsableAttribute($allField);
+        $attr = &$this->getUsableAttribute($allField);
         if($attr)
         {
           $col_map[] = $allField;
@@ -973,8 +973,7 @@
           {
             if($i != $_i-1 || $col_map[$i] != $allField)// column is mapped
             {
-              $value = $data[$i];
-              $value = $this->_getAttributeValue($col_map[$i], $allField, $value, $importerrors,$counter,$rec);
+              $value = $this->_getAttributeValue($col_map[$i], $allField, $data[$i], $importerrors,$counter,$rec);
             }
             else //this is the allField
             {
@@ -1001,7 +1000,7 @@
     function _getAttributeValue($attributename, $allField, $value, &$importerrors, $counter, $rec)
     {
       $updatekey1 =     $this->m_postvars['updatekey1'];
-      $attr = $this->getUsableAttribute($attributename);
+      $attr = &$this->getUsableAttribute($attributename);
 
       if (method_exists($attr, "createDestination") && $attr->createDestination() && $attributename!==$allField)
       {
@@ -1034,7 +1033,7 @@
         }
         else
         {
-          $value = $attr->fetchValue($value);
+          $value = $attr->fetchValue(array($attributename=>$value));
         }
       }
       else
@@ -1240,7 +1239,7 @@
      */
     function checkAllField($field, &$value)
     {
-      $attr = $this->getUsableAttribute($field);
+      $attr = &$this->getUsableAttribute($field);
       if(!$attr)
         return;
 
@@ -1361,7 +1360,7 @@
      */
     function getValueFromRecord($record, $fieldname)
     {
-      $attr = $this->getUsableAttribute($fieldname);
+      $attr = &$this->getUsableAttribute($fieldname);
       if(!$this->isRelationAttribute($fieldname))
       {
         if(!$this->hasRelationAttribute($fieldname))

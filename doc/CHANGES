@@ -67,6 +67,7 @@ Changes in ATK 5.3RC2
 * Fixed translation of error messages in edit screens. (bug #541) [Yury]
 * Fixed translations in 'session expired' screen. (bug #554) [Ivo]
 * Fixed php error message in atkImportHandler. [Ivo]
+* Fixed date insertion bug in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
 * Fixed missing stack trace in add/edit pages when displaying errors. 
