@@ -1692,4 +1692,27 @@
     }
     return false;
   }
+
+  /**
+   * Escapes the predefined characters
+   *
+   * When there are predefined characters used this function will escape them
+   * and returns right pattern.
+   *
+   * @param String $pattern Raw string to be escaped
+   * @return String Returns a pattern with the predefined pattern escaped
+   */     
+  function escapeForRegex($pattern)
+  {
+    $escapechars = array("/","?",'"', "(", ")", "'","*",".","[","]");
+    for ($counter = 0; $counter<strlen($pattern);$counter++)
+    {
+      $curchar = substr($pattern, $counter, 1);
+      if (in_array($curchar,$escapechars))
+      $escaped .= "\\";
+      $escaped.=$curchar;
+    }
+    return $escaped;
+  }
+
 ?>
