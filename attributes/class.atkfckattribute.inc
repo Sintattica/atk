@@ -98,7 +98,16 @@
 		
 		  return $oFCKeditor->CreateHtml();	
     }
-        
+    
+    function value2db($rec)
+    {
+      if (is_array($rec)&&isset($rec[$this->fieldName()]))
+      {
+        $dbval = escapeSQL(preg_replace("/\&quot;/Ui","\"",$rec[$this->fieldName()]));
+        return $dbval;
+      }
+      return NULL;
+    }
   }
 
 ?>
