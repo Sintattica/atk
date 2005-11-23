@@ -79,6 +79,7 @@ Changes in ATK 5.3RC2
 * Attributes added by modifier modules now retrieve their translation from
   the modifying module. [Ivo]
 * Fixed replacing of stackid in recordlist cache (bug #548)[Yury]
+* Updated FCK's mcpuk browser for improved filebrowsing [Harrie]
 
 Changes in ATK 5.3RC1
 ---------------------
