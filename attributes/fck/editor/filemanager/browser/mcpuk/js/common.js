@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FCKeditor - The text editor for internet
  * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
@@ -54,6 +54,7 @@ var oConnector = new Object() ;
 oConnector.CurrentFolder	= '/' ;
 oConnector.UploadHandler	= GetUrlParam( 'UploadHandler' );
 oConnector.ConnectorUrl		= GetUrlParam( 'Connector' ) ;
+//alert("Connectorurl=" . oConnector.ConnectorUrl);
 oConnector.ResourceType		= GetUrlParam( 'Type' ) ;
 oConnector.ExtraParams		= GetUrlParam( 'ExtraParams' ) ;
 

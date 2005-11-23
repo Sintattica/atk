@@ -28,7 +28,11 @@ class FileUpload {
 		$this->fckphp_config=$fckphp_config;
 		$this->type=$type;
 		$this->raw_cwd=$cwd;
-		$this->actual_cwd=str_replace("//","/",($this->fckphp_config['UserFilesPath']."/$type/".$this->raw_cwd));
+		//HARRIEHACK
+		if ($fckphp_config['UseTypeDirs'])
+		  $this->actual_cwd=str_replace("//","/",($fckphp_config['UserFilesPath']."/$type/".$this->raw_cwd));
+		else 
+		  $this->actual_cwd=str_replace("//","/",($fckphp_config['UserFilesPath']."/".$this->raw_cwd));
 		$this->real_cwd=str_replace("//","/",($this->fckphp_config['basedir']."/".$this->actual_cwd));
 	}
 	
@@ -86,9 +90,15 @@ class FileUpload {
 							if ($this->fckphp_config['DiskQuota']['Global']!=-1) {
 								foreach ($this->fckphp_config['ResourceTypes'] as $resType) {
 									
-									$dirSizes[$resType]=
-										$this->getDirSize(
-											$this->fckphp_config['basedir']."/".$this->fckphp_config['UserFilesPath']."/$resType");
+								  // HARRIEHACK
+								  if ($this->fckphp_config['UseTypeDirs'])
+								  {
+									  $dirSizes[$resType]= $this->getDirSize($this->fckphp_config['basedir']."/".$this->fckphp_config['UserFilesPath']."/$resType");
+								  }
+								  else 
+								  {
+								    $dirSizes[$resType]= $this->getDirSize($this->fckphp_config['basedir']."/".$this->fckphp_config['UserFilesPath']); 
+								  }
 									
 									if ($dirSizes[$resType]===false) {
 										//Failed to stat a directory, fall out
@@ -112,8 +122,8 @@ class FileUpload {
 							if (($typeconfig['DiskQuota']!=-1)&&(!$failSizeCheck)) {
 								if ($this->fckphp_config['DiskQuota']['Global']==-1) {
 									$dirSizes[$this->type]=
-										$this->getDirSize(
-											$this->fckphp_config['basedir']."/".$this->fckphp_config['UserFilesPath']."/".$this->type);
+										$this->getDirSize(                                                        // v HARRIEHACK
+											$this->fckphp_config['basedir']."/".$this->fckphp_config['UserFilesPath']. ($this->fckphp_config['UseTypeDirs'] ? "/".$this->type : ""));
 								}
 								
 								if (($dirSizes[$this->type]+$_FILES['NewFile']['size'])>

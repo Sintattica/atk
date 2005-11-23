@@ -18,7 +18,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
 	<head>
-		<link href="browser.css" type="text/css" rel="stylesheet">
+		<link href="browser.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript" src="js/fckxml.js"></script>
 		<script type="text/javascript" src="js/common.js"></script>
 		<script language="javascript">
@@ -226,7 +226,7 @@ function LoadResources( resourceType, folderPath )
 {
 	oListManager.Clear() ;
 	oConnector.ResourceType = resourceType ;
-	oConnector.CurrentFolder = folderPath
+	oConnector.CurrentFolder = folderPath;
 	oConnector.SendCommand( 'GetFoldersAndFiles', null, GetFoldersAndFilesCallBack ) ;
 }
 
@@ -238,7 +238,7 @@ function Refresh()
 function GetFoldersAndFilesCallBack( fckXml )
 {
 	// Get the current folder path.
-	var oNode = fckXml.SelectSingleNode( 'Connector/CurrentFolder' ) ;
+	var oNode = fckXml.SelectSingleNode( 'Connector/CurrentFolder' ) ; //<-- DIT GAAT MIS!
 	var sCurrentFolderPath	= oNode.attributes.getNamedItem('path').value ;
 	var sCurrentFolderUrl	= oNode.attributes.getNamedItem('url').value ;
 

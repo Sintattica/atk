@@ -16,7 +16,10 @@
  * 		Grant French (grant@mcpuk.net)
  */
 session_start();
-
+//include_once("../../../../../../../../configs/fck.inc.php");
+if (file_exists("../../../../../../../../../../configs/fck.inc.php"))
+  include_once ("../../../../../../../../../../configs/fck.inc.php");
+  
 /*------------------------------------------------------------------------------*/
 /* HTTP over SSL Detection (shouldnt require changing)				*/
 /*------------------------------------------------------------------------------*/
@@ -29,30 +32,36 @@ $fckphp_config['prot'].="://";
 /*------------------------------------------------------------------------------*/
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
-//$fckphp_config['basedir']=$_SERVER['DOCUMENT_ROOT'];
-$fckphp_config['basedir'] = 'D:\Work\FCKEditor\www\FCKeditor.V2\editor\filemanager\browser\mcpuk' ;
+$fckphp_config['basedir']=$config_fck_documentroot_path;
+//$fckphp_config['basedir'] = 'D:\Work\FCKEditor\www\FCKeditor.V2\editor\filemanager\browser\mcpuk' ;
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'];
+$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Path to user files relative to the document root (no trailing slash)		*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['UserFilesPath'] = "/UserFiles" ;
+$fckphp_config['UserFilesPath'] = $config_fck_uploads_dir;
+
+//HARRIEHACK
+$fckphp_config['UseTypeDirs'] = false;
+// when set to true images will be in <userfilespath>/Image/, flash in <userfilespath>/Flash/ etc.
+// when set to false we will just have one big folder with all types in <userfilespath>
+
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Progressbar handler (script that monitors upload progress) (''=none)
 /*------------------------------------------------------------------------------*/
-// $fckphp_config['uploadProgressHandler']=''; //No upload progress handler
-$fckphp_config['uploadProgressHandler']=$fckphp_config['prot'].$_SERVER['SERVER_NAME']."/cgi-bin/progress.cgi"; //Perl upload progress handler
+ $fckphp_config['uploadProgressHandler']=''; //No upload progress handler
+//$fckphp_config['uploadProgressHandler']=$fckphp_config['prot'].$_SERVER['SERVER_NAME']."/cgi-bin/progress.cgi"; //Perl upload progress handler
 /*==============================================================================*/
 
 
@@ -190,7 +199,7 @@ array_push($fckphp_config['FileNameAllowedChars'],')','(','[',']','~');
 /*------------------------------------------------------------------------------*/
 
 $fckphp_config['Debug']=false;
-$fckphp_config['DebugOutput']="/var/www/fckeditor/htdocs/FCKeditor/data/fck_conn_dbg";
+$fckphp_config['DebugOutput']="";
 
 #Log PHP errors
 $fckphp_config['Debug_Errors']=false;

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
  * FCKeditor - The text editor for internet
  * Copyright (C) 2003-2005 Frederico Caldeira Knabben
@@ -24,15 +24,26 @@ class GetFoldersAndFiles {
 	var $actual_cwd;
 	
 	function GetFoldersAndFiles($fckphp_config,$type,$cwd) {
+	  
+	  
 		$this->fckphp_config=$fckphp_config;
 		$this->type=$type;
 		$this->raw_cwd=$cwd;
-		$this->actual_cwd=str_replace("//","/",($fckphp_config['UserFilesPath']."/$type/".$this->raw_cwd));
+		//HARRIEHACK
+		if ($fckphp_config['UseTypeDirs'])
+		  $this->actual_cwd=str_replace("//","/",($fckphp_config['UserFilesPath']."/$type/".$this->raw_cwd));
+		else 
+		  $this->actual_cwd=str_replace("//","/",($fckphp_config['UserFilesPath']."/".$this->raw_cwd));
 		$this->real_cwd=str_replace("//","/",($this->fckphp_config['basedir']."/".$this->actual_cwd));
 	}
 	
 	function run() {
 
+	  $fp = fopen("/home/harrie/www_schrijfbaar/fckdebug.txt","a");
+	  fwrite($fp,"<CurrentFolder path=". $this->raw_cwd." url=". $this->fckphp_config['urlprefix'] . $this->actual_cwd." />\n");
+    fwrite($fp,"Request uri = " . $_SERVER['REQUEST_URI'] . "\n");
+	  fclose($fp);
+	  
 		header ("Content-Type: application/xml; charset=utf-8");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
 		?>

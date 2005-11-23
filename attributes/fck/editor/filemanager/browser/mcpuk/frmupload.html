@@ -35,6 +35,8 @@ function SetCurrentFolder( resourceType, folderPath )
 	sUrl += '&ExtraParams=' + oConnector.ExtraParams ;
 	document.getElementById('frmUpload').action = sUrl ;
 	
+//	alert("Form action is " + sUrl);
+	
 	oConnector.ResourceType = resourceType ;
 	oConnector.CurrentFolder = folderPath ;
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FCKeditor - The text editor for internet
  * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
@@ -37,6 +37,11 @@ FCKXml.prototype.GetHttpRequest = function()
 		return new ActiveXObject("MsXml2.XmlHttp") ;
 }
 
+FCKXml.prototype.LoadUrl = function( urlToCall)
+{
+  return this.LoadUrl(urlToCall,null);
+}
+
 FCKXml.prototype.LoadUrl = function( urlToCall, asyncFunctionPointer )
 {
 	var oFCKXml = this ;
@@ -44,8 +49,13 @@ FCKXml.prototype.LoadUrl = function( urlToCall, asyncFunctionPointer )
 	var bAsync = ( typeof(asyncFunctionPointer) == 'function' ) ;
 
 	var oXmlHttp = this.GetHttpRequest() ;
-	oXmlHttp.open( "GET", urlToCall, bAsync ) ;
 	
+	// <HARRIEHACK>
+	// make absolute url out of relative url
+	myAbsoluteUrl = window.location.toString().substring(0,window.location.toString().lastIndexOf('/')) + '/';
+	oXmlHttp.open( "GET", myAbsoluteUrl + urlToCall, bAsync ) ;
+	// </HARRIEHACK>
+
 	if ( bAsync )
 	{	
 		oXmlHttp.onreadystatechange = function() 
