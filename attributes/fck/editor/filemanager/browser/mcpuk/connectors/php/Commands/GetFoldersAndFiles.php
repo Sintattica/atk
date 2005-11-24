@@ -39,11 +39,6 @@ class GetFoldersAndFiles {
 	
 	function run() {
 
-	  $fp = fopen("/home/harrie/www_schrijfbaar/fckdebug.txt","a");
-	  fwrite($fp,"<CurrentFolder path=". $this->raw_cwd." url=". $this->fckphp_config['urlprefix'] . $this->actual_cwd." />\n");
-    fwrite($fp,"Request uri = " . $_SERVER['REQUEST_URI'] . "\n");
-	  fclose($fp);
-	  
 		header ("Content-Type: application/xml; charset=utf-8");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
 		?>
