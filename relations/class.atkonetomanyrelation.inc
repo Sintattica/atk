@@ -368,7 +368,7 @@
      * @return String The generated recordlist
      */
     function _getRecordList($myrecords)
-    {      
+    {
       if (count($myrecords)!=0 || isset($this->m_ownerInstance->m_postvars['atksearch']))
       {
         $actions = array();
@@ -542,43 +542,50 @@
         {
           if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
 
+          $continue = false;
           for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
           {
             $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
+
+            if (!$primkeyattr->isEmpty($record)) $continue=true;
+
             $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
           }
 
-          $where = implode(" AND ", $whereelems);
+          if ($continue)
+          {
+            $where = implode(" AND ", $whereelems);
 
-          if ($this->m_destinationFilter!="")
-          {
-            $this->m_destInstance->addFilter($this->m_destinationFilter);
-          }
+            if ($this->m_destinationFilter!="")
+            {
+              $this->m_destInstance->addFilter($this->m_destinationFilter);
+            }
 
-          if ($mode=="admin" || $mode=="select" || $mode=="view")
-          {
-            // we only need fields that are displayed in the descriptor.
-            $excludes = $this->m_destInstance->m_listExcludes;
-          }
-          else
-          {
-            // we probably need everything
-            $excludes = "";
-          }
-          if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
-          {
-            $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-          }
-          if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
-          {
-            $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-          }
-          ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-          $recordset = $this->m_destInstance->selectDb($where,@$this->m_ownerInstance->m_postvars['atkorderby'],
-                                                       $limitarray,$excludes,"",$mode);
+            if ($mode=="admin" || $mode=="select" || $mode=="view")
+            {
+              // we only need fields that are displayed in the descriptor.
+              $excludes = $this->m_destInstance->m_listExcludes;
+            }
+            else
+            {
+              // we probably need everything
+              $excludes = "";
+            }
+            if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
+            {
+              $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+            }
+            if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
+            {
+              $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+            }
+            ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
+            $recordset = $this->m_destInstance->selectDb($where,@$this->m_ownerInstance->m_postvars['atkorderby'],
+                                                         $limitarray,$excludes,"",$mode);
 
-          $this->m_loadFilter = $where;
-          return $recordset;
+            $this->m_loadFilter = $where;
+            return $recordset;
+          }
         }
       }
       return NULL;
@@ -599,6 +606,8 @@
       {
         // empty. It might be that the record has not yet been fetched. In this case, we do
         // a forced load to see if it's really empty.
+        atkdebug("hier dan?");
+        atk_var_dump(atk_get_trace());
         $recs = $this->load(atkGetDb(), $record);
         return (count($recs)==0);
       }
@@ -836,13 +845,13 @@
          $alias = $this->fieldName() . "_AE_" . $this->m_destInstance->m_table;
          $attr = &$this->m_destInstance->getAttribute($field);
          $attr->searchCondition($query, $alias, $value, $searchmode);
-         
+
          $condition = array();
          for ($i = 0; $i < sizeof($this->m_ownerInstance->m_primaryKey); $i++)
          {
             $condition[] = $this->m_ownerInstance->m_table . "." . $this->m_ownerInstance->m_primaryKey[$i] . "=". $alias . "." . $this->m_refKey[$i];
          }
-         
+
          $query->addJoin($table,$alias,implode(" AND ",$condition),false);
        }
      }
