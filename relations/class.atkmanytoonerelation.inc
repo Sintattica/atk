@@ -384,7 +384,7 @@
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
-                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination)),
+                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
                            SESSION_NESTED,
                            true);
           }
@@ -392,7 +392,7 @@
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atktarget=".$atktarget,
-                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination)),
+                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
                            SESSION_NESTED,
                            true);
           }
