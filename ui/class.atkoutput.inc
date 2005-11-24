@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -19,7 +19,7 @@
   /**
    * Outputbuffering class.
    *
-   * Any output sent to the browser should be directed through the atkOutput 
+   * Any output sent to the browser should be directed through the atkOutput
    * class. Among other things, it buffers debugging output and errormessages,
    * and displays them below the actual output. If $config_output_gzip is set
    * to true, all output is sent gzipped to the browser (saves bandwith).
@@ -37,19 +37,19 @@
    *
    */
   class atkOutput
-  {    
+  {
     /**
      * Store raw output data.
      * @access private
      */
-    var $m_raw = ""; 
-    
-    /** 
+    var $m_raw = "";
+
+    /**
      * Store regular output data.
      * @access private
      */
-    var $m_content = "";        
-  
+    var $m_content = "";
+
     /**
      * Retrieve the one-and-only atkOutput instance.
      * @return atkOutput The instance.
@@ -61,7 +61,7 @@
       {
         atkdebug("Created a new atkOutput instance");
         $s_instance = new atkOutput();
-      }   
+      }
       return $s_instance;
     }
 
@@ -78,17 +78,17 @@
       header("Cache-Control: post-check=0, pre-check=0", false);
       header ("Pragma: no-cache");                          // HTTP/1.0
     }
-    
+
     /**
      * Send all output to the browser.
      * @param boolean $nocache If true, sends no-cache headers to the browser,
      *                         so the browser will not cache the output in its
      *                         browsercache.
-     * @param int $lastmodificationstamp Timestamp of last modification. If 
+     * @param int $lastmodificationstamp Timestamp of last modification. If
      *                                   set, a last-modified header
      *                                   containing this stamp will be sent to
      *                                   the browser. If $nocache is true,
-     *                                   this parameter is ignored.     
+     *                                   this parameter is ignored.
      */
     function outputFlush($nocache=true, $lastmodificationstamp="", $charset="")
     {
@@ -124,11 +124,11 @@
         }
 
         // Set the content type.
-        header ("Content-Type: text/html; charset=".($charset==""?text('charset'):$charset)); // The character set (defined
+        header ("Content-Type: text/html; charset=".($charset==""?atktext("charset","atk"):$charset)); // The character set (defined
                                                                       // in the language files
 
-        $res = $this->m_content;            
-        
+        $res = $this->m_content;
+
         if (count($g_error_msg)>0)
         {
           if (atkconfig("display_errors")||atkconfig("debug")>0)
@@ -147,21 +147,21 @@
         }
       }
 
-      if (atkconfig("output_gzip") && 
-          phpversion() >= '4.0.4pl1' && 
-          (strstr($_SERVER["HTTP_USER_AGENT"],'compatible') || strstr($_SERVER["HTTP_USER_AGENT"],'Gecko')) && 
+      if (atkconfig("output_gzip") &&
+          phpversion() >= '4.0.4pl1' &&
+          (strstr($_SERVER["HTTP_USER_AGENT"],'compatible') || strstr($_SERVER["HTTP_USER_AGENT"],'Gecko')) &&
           strstr($_SERVER['HTTP_ACCEPT_ENCODING'], 'gzip')
          )
       {
-        header('Content-Encoding: gzip');  
+        header('Content-Encoding: gzip');
         echo $this->gzip($res);
       }
       else
-      {    
-        echo $res;        
-      }      
+      {
+        echo $res;
+      }
     }
-    
+
     /**
      * Output raw, headerless text to the browser. If this method is called,
      * all regular output is suppressed and the contents of the rawoutput
@@ -173,7 +173,7 @@
     {
       $this->m_raw.= $txt."\n";
     }
-    
+
     /**
      * Output regular text to the browser.
      * @param String $txt The text to output.
@@ -182,7 +182,7 @@
     {
       $this->m_content.= $txt."\n";
     }
-    
+
     /**
      * Gzip a piece of text.
      *
@@ -190,9 +190,9 @@
      * but can be used by other scripts too, if they need to gzip some data.
      * @param String $contents The string to gzip.
      * @return String The gzipped string.
-     */ 
+     */
     function gzip($contents)
-    {        
+    {
       $gzip_size = strlen($contents);
       $gzip_crc  = crc32($contents);
 
@@ -203,11 +203,11 @@
       $res.= $contents;
       $res.= pack('V', $gzip_crc);
       $res.= pack('V', $gzip_size);
-      
+
       return $res;
-      
+
     }
-        
+
   }
 
 ?>

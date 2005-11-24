@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -25,13 +25,13 @@
   define("HTML_ALL",HTML_BODY|HTML_HEADER);     // Shortcut
   define("HTML_STRICT",HTML_ALL|HTML_DOCTYPE);  // Shortcut
 
-   
+
   /**
-   * Page renderer. 
+   * Page renderer.
    *
    * This class is used to render output as an html page. It takes care of
    * creating a header, loading javascripts and loading stylesheets.
-   * Since any script will output exactly one page to the browser, this is 
+   * Since any script will output exactly one page to the browser, this is
    * a singleton. Use getInstance() to retrieve the one-and-only instance.
    *
    * @todo This should actually not be a singleton. HTML file generation
@@ -42,7 +42,7 @@
    * @subpackage ui
    *
    */
-  class atkPage 
+  class atkPage
   {
     /**
      * The list of javascript files to load.
@@ -50,14 +50,14 @@
      * @var array
      */
     var $m_scriptfiles = array();
-    
+
     /**
      * List of javascript code statements to include in the header.
      * @access private
      * @var array
      */
     var $m_scriptcode = array();
-    
+
     /**
      * List of javascript code statements to execute when a form on
      * the page is submitted.
@@ -65,7 +65,7 @@
      * @var array
      */
     var $m_submitscripts = array();
-    
+
     /**
      * List of javascript code statements to execute when the page
      * is loaded.
@@ -73,35 +73,35 @@
      * @var array
      */
     var $m_loadscripts = array();
-    
+
     /**
      * List of stylesheet files to load.
      * @access private
      * @var array
      */
     var $m_stylesheets = array();
-    
-    /** 
+
+    /**
      * List of style statements to include in the header.
      * @access private
      * @var array
      */
     var $m_stylecode = array();
-		
+
     /**
      * The content to put on the page.
      * @access private
      * @var String
      */
     var $m_content = "";
-    
+
     /**
      * The hidden variables for the page
      * @access private
      * @var Array
      */
     var $m_hiddenvars = array();
-    
+
     /**
      * Retrieve the one-and-only atkPage instance.
      * @return atkPage
@@ -112,11 +112,11 @@
       if ($s_page == NULL)
       {
         $s_page = new atkPage();
-        atkdebug("Created a new atkPage instance");        
+        atkdebug("Created a new atkPage instance");
       }
       return $s_page;
     }
-            
+
     /**
      * Register a javascript file to be included.
      *
@@ -128,7 +128,7 @@
     {
       if (!in_array($file, $this->m_scriptfiles)) $this->m_scriptfiles[] = $file;
     }
-    
+
     /**
      * Register a javascript code statement which will be rendered in the
      * header.
@@ -142,7 +142,7 @@
     {
       if (!in_array($code, $this->m_scriptcode)) $this->m_scriptcode[] = $code;
     }
-    
+
     /**
      * Register a javascript code statement that is executed when a form on
      * the page is submitted.
@@ -151,11 +151,11 @@
      * @param String $code The javascript code fragment to execute on submit.
      */
     function register_submitscript($code)
-    {      
+    {
       if (!in_array($code, $this->m_submitscripts)) $this->m_submitscripts[] = $code;
     }
-    
-    /** 
+
+    /**
      * Register a javascript code statement that is executed on pageload.
      * @param String $code The javascript code fragment to execute on load.
      */
@@ -163,20 +163,20 @@
    {
      if (!in_array($code, $this->m_loadscripts)) $this->m_loadscripts[] = $code;
    }
-    
+
     /**
      * Register a Cascading Style Sheet.
-     * 
+     *
      * This method has a duplicate check. Calling it with the same stylesheet
      * more than once, will still result in only one single include of the
      * stylesheet.
      * @param String $file The (relative path and) filename of the stylesheet.
      */
     function register_style($file)
-    {    
+    {
       if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
     }
-		
+
     /**
      * Register Cascading Style Sheet fragment that will be included in the
      * page header.
@@ -187,10 +187,10 @@
      {
        if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
      }
-     
+
      /**
       * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
-      * but will not be shown to the user unless he/she has a very, very old browser 
+      * but will not be shown to the user unless he/she has a very, very old browser
       * that is not capable of rendering CSS
       * @param array $hiddenvars the hiddenvariables we want to register
       */
@@ -201,7 +201,7 @@
      	 	 $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
      	 }
      }
-    
+
     /**
      * Generate the HTML header (<head></head>) statement for the page,
      * including all scripts and styles.
@@ -212,17 +212,17 @@
     {
       atkdebug("HEAD TITLE: $title");
       $res = "<head>\n  <title>$title</title>\n";
-      
+
       // $Name$ is the CVS tag.
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <META NAME="atkversion" CONTENT="'.$version.'">'."\n";
-      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.text("charset","","atk").'">'."\n";         
+      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atktext("charset","atk").'">'."\n";
       $this->addScripts($res);
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
         $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
-				
+
       for ($i = 0; $i < count($this->m_stylecode); $i++)
 	      $res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
 
@@ -232,11 +232,11 @@
         $res.= '<link rel="icon" href="'.$favico.'" type="image/x-icon">
                 <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon">'."\n";
       }
-	
+
       $res.="</head>\n";
       return $res;
     }
-    
+
     /**
      * Adds javascripts from the member variables to HTML output
      * @param String $res The HTML output
@@ -252,16 +252,16 @@
   function globalSubmit(form)
   {
      var retval = true;\n";
-      
+
       for ($i=0, $_i = count($this->m_submitscripts); $i<$_i; $i++)
       {
         $res.="    retval = ".$this->m_submitscripts[$i]."\n";
         $res.="    if (retval!=true) return false;\n";
       }
-      
+
       $res.="    return retval;
    }\n";
-      
+
       if (count($this->m_loadscripts))
       {
         $res.="  function globalLoad()
@@ -272,26 +272,26 @@
         }
         $res.="  }\n";
       }
-      
-      // javascript code.   
+
+      // javascript code.
       for ($i=0, $_i=count($this->m_scriptcode); $i<$_i; $i++)
       {
         $res.= $this->m_scriptcode[$i]."\n";
       }
-      
+
       $res.= "  </script>\n\n";
     }
-    
-    
+
+
     /**
      * Add content to the page.
      * @param String $content The content to add to the page.
      */
     function addContent($content)
-    {      
+    {
       $this->m_content.=$content;
     }
-    
+
     /**
      * Generate the HTML body (<body></body>) statement for the page.
      * @param String $extraprops Extra attributes to add to the <body> tag.
@@ -302,7 +302,7 @@
       global $ATK_VARS;
 
       $res = '<body ';
-      if (count($this->m_loadscripts)) 
+      if (count($this->m_loadscripts))
       {
         $res.='onLoad="globalLoad(); if ( window.showTab ) {showTab(\'';
         if (isset($ATK_VARS['atktab'])) $res.=$ATK_VARS['atktab'];
@@ -311,7 +311,7 @@
       $res.= $extraprops.">\n";
       return $res;
     }
-    
+
     /**
      * Render the complete page, including head and body.
      * @param String $title Title of the HTML page.
@@ -325,10 +325,10 @@
      * @return String The HTML page, including <html> and </html> tags.
      */
     function render($title, $flags=7,$extrabodyprops="")
-    { 
-      if(is_bool($flags) && $flags==true) 
-      { 
-        $flags=HTML_STRICT; 
+    {
+      if(is_bool($flags) && $flags==true)
+      {
+        $flags=HTML_STRICT;
       }
       elseif(is_bool($flags) && $flags==false)
       {
@@ -342,18 +342,18 @@
       $page.= $this->m_content."\n";
       $page.= $this->renderHiddenVars();
       if (hasFlag($flags,HTML_BODY)) $page.= "</body>\n";
-      $page.= "</html>\n";            
-     
+      $page.= "</html>\n";
+
       return $page;
     }
-    
+
     /**
      * Here we render a hidden div in the page with hidden variables
      * that we want to make accessible to client side scripts
      * @return string a hidden div with the selected ATK variabels
      */
     function renderHiddenVars()
-    {  	
+    {
       $page = "";
     	if ($this->m_hiddenvars)
     	{
@@ -366,7 +366,7 @@
     	}
     	return $page;
     }
-    
+
     /**
      * Default constructor.
      * @access private
@@ -374,9 +374,9 @@
     function atkPage()
     {
       // Load default app-level stylesheet.
-      $this->register_style((file_exists(atkconfig("atkroot")."./style.css") ? "." : atkconfig("atkroot")."atk").'/style.css');  
+      $this->register_style((file_exists(atkconfig("atkroot")."./style.css") ? "." : atkconfig("atkroot")."atk").'/style.css');
     }
-        
+
   }
 
 ?>
