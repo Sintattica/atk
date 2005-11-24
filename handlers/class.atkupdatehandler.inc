@@ -85,7 +85,7 @@
           else
           {
             $db->commit();
-//            $this->notify("update", $record);
+            $this->notify("update", $record);
             $this->clearCache();
             if (!isset($this->m_postvars['atknoclose']))
             {

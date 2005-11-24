@@ -90,7 +90,7 @@
           else
           {
             $db->commit();
-//            $this->notify("save", $record);
+            $this->notify("save", $record);
             $this->clearCache();
 
             $location="";
