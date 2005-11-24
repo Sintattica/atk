@@ -180,11 +180,11 @@
             $searchmode = $searchmode[$keys[0]];
           }
 
-          $button = '<input type="submit" class="btn_search" value="'.text("search").'">';
+          $button = '<input type="submit" class="btn_search" value="'.atktext("search").'">';
           if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
           {
             $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->m_node->atkNodeType()."&atkaction=search&atksearchmode=".
-                                               $searchmode,"(".text("search_extended").")",SESSION_NESTED);
+                                               $searchmode,"(".atktext("search_extended").")",SESSION_NESTED);
           }
 
           $searchstart = '<a name="searchform"></a>';
@@ -343,11 +343,11 @@
 	    if($icons == true)
 	    {
 	      $icon = $theme->iconPath($name,"recordlist");
-  	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.text($name,$this->m_node->m_type,$this->m_node->m_module).'">';
+  	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'">';
 	    }
 	    else
 	    {
-	      $link = text($name);
+	      $link = atktext($name);
 	    }
             $confirmtext= "false";
             if (atkconfig("recordlist_javascript_delete") && $name=="delete")
@@ -415,20 +415,20 @@
           if (count($this->m_node->m_priority_actions) > 1)
           {
             $mra = '<select name="'.$listName.'_atkaction">'.
-                         '<option value="">'.text("with_selected").':</option>';
+                         '<option value="">'.atktext("with_selected").':</option>';
 
             foreach ($this->m_node->m_priority_actions as $name)
-              $mra .= '<option value="'.$name.'">'.text($name).'</option>';
+              $mra .= '<option value="'.$name.'">'.atktext($name).'</option>';
 
             $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
-                       '<input type="button" class="btn" value="'.text("submit").'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
+                       '<input type="button" class="btn" value="'.atktext("submit").'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
 
           /* one action -> only the submit button */
           else
           {
             $mra= $this->getCustomMraHtml().'<input type="hidden" name="'.$listName.'_atkaction" value="'.$this->m_node->m_priority_actions[0].'">'.
-                       '<input type="button" class="btn" value="'.text($this->m_node->m_priority_actions[0]).'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
+                       '<input type="button" class="btn" value="'.atktext($this->m_node->m_priority_actions[0]).'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
 
           if (!hasFlag($flags, RL_EMBED))
@@ -445,9 +445,9 @@
           $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType(), SESSION_NESTED);
 
           $mra = (count($list["rows"]) > 1 ?
-                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.text("select_all").'</a> / '.
-                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.text("deselect_all").'</a> / '.
-                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.text("select_invert").'</a>'
+                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.atktext("select_all").'</a> / '.
+                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.atktext("deselect_all").'</a> / '.
+                      '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.atktext("select_invert").'</a>'
                      :
                       '<img src="'.atkconfig("atkroot").'atk/images/dummy.gif" border="0" height="1" width="1">');
 
@@ -455,13 +455,13 @@
           if (count($list["mra"]) > 1)
           {
             $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)">'.
-                       '<option value="">'.text("with_selected").':</option>';
+                       '<option value="">'.atktext("with_selected").':</option>';
 
             foreach ($list["mra"] as $name)
-              $mra .= '<option value="'.$name.'">'.text($name,$this->m_node->m_type,$this->m_node->m_module).'</option>';
+              $mra .= '<option value="'.$name.'">'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'</option>';
 
             $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
-                       '<input type="button" class="btn" value="'.text("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
+                       '<input type="button" class="btn" value="'.atktext("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
 
           /* one action -> only the submit button */
@@ -469,7 +469,7 @@
           {
             $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$list["mra"][0].'">'.
             $this->getCustomMraHtml().
-                       '<input type="button" class="btn" value="'.text($list["mra"][0]).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
+                       '<input type="button" class="btn" value="'.atktext($list["mra"][0]).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
 
           if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';

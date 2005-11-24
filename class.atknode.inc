@@ -1132,10 +1132,10 @@
         // the 'saveandclose' button. Unless, a feedback screen is configured.
         if (atkLevel() >0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
         {
-          $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.text('saveandclose').'">';
+          $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.atktext('saveandclose').'">';
         }
-        $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="'.text('save').'">';
-        $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.text('cancel').'">';
+        $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="'.atktext('save').'">';
+        $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext('cancel').'">';
       }
 
       return $result;
@@ -1149,9 +1149,9 @@
     function lockPage()
     {
       $output = $this->statusbar();
-      $output.= '<img src="'.atkconfig("atkroot").'atk/images/lock.gif"><br><br>'.text("lock_locked").'<br>';
+      $output.= '<img src="'.atkconfig("atkroot").'atk/images/lock.gif"><br><br>'.atktext("lock_locked").'<br>';
       $output.= '<br><form method="get">'.session_form(SESSION_BACK).
-                        '<input type="submit" class="btn_cancel" value="&lt;&lt; '.text('back').'"></form>';
+                        '<input type="submit" class="btn_cancel" value="&lt;&lt; '.atktext('back').'"></form>';
 
       $ui = &$this->getUi();
       if (is_object($ui))
@@ -1692,8 +1692,8 @@
       $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
 
       $buttons = array();
-      $buttons[] = '<input name="confirm" class="btn" type="submit" value="'.text('yes').'">';
-      $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.text('no').'">';
+      $buttons[] = '<input name="confirm" class="btn" type="submit" value="'.atktext('yes').'">';
+      $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.atktext('no').'">';
 
       $content = "";
       $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());
@@ -1742,7 +1742,7 @@
     {
       $method = 'confirm'.$action.'text';
       if ($checkoverride && method_exists($this, $method)) return $this->$method($atkselector);
-      else return text("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_type, $this->m_module);
+      else return atktext("confirm_$action".(is_array($atkselector) && count($atkselector) > 1 ? '_multi' : ''), $this->m_module, $this->m_type);
     }
 
     /**
@@ -1908,11 +1908,11 @@
       }
       else
       {
-        $page->addContent($this->genericPage(text('access_denied'), "<br><br>".text("error_node_action_access_denied", $this->m_type)."<br><br><br>"));
+        $page->addContent($this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $this->m_type)."<br><br><br>"));
       }
 
       $ui = &$this->getUi();
-      $screen = $page->render(text('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
+      $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
 
       $output = &atkOutput::getInstance();
       $output->output($screen);
@@ -3309,7 +3309,7 @@
       {
         $page = &$this->getPage();
         $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
-        $res["helplabel"] = text("help");
+        $res["helplabel"] = atktext("help");
         $res["helplink"] = '<a href="'.$res["helpurl"].'">'.$res["helplabel"].'</a>';
       }
       return $res;
@@ -3348,7 +3348,7 @@
       }
       else
       {
-       $name = text("help");
+       $name = atktext("help");
        $node = $this->m_type;
        return atkPopup('atk/popups/help.inc','node='.$node,$name,650,650,'yes','no');
       }

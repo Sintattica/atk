@@ -629,7 +629,7 @@
       if (count($data['error']) > 0)
       {
         $form .= '<tr>';
-        $error_title = '<b>'.text('error_formdataerror').'</b>';
+        $error_title = '<b>'.atktext('error_formdataerror').'</b>';
         $errormsg = "";
 
         $pk_err = array();
@@ -647,21 +647,21 @@
             if (count($node->m_tabList[$node->m_action]) > 1 &&
                  $tabs != "*" && !atk_in_array($tab, $tabs))
             {
-              $error_tab = ' ('.text("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],text("tab_".$tabs[0], $node->m_type),SESSION_DEFAULT,true).')';
+              $error_tab = ' ('.atktext("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],atktext("tab_".$tabs[0], "", $node->m_type),SESSION_DEFAULT,true).')';
             }
             else
             {
               $error_tab = "";
             }
-            $errormsg.="<br>".text($error['attrib_name'], $type).': '.$error['msg'].$error_tab;
+            $errormsg.="<br>".atktext($error['attrib_name'], "", $type).': '.$error['msg'].$error_tab;
           }
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
         {
-          $pk_err_msg = "<br>".text(error_primarykey_exists).": ";
+          $pk_err_msg = "<br>".atktext(error_primarykey_exists).": ";
           for($i=0;$i<count($pk_err_attrib); $i++)
           {
-            $pk_err_msg .= text($pk_err_attrib[$i]);
+            $pk_err_msg .= atktext($pk_err_attrib[$i]);
             if (($i+1) < count($pk_err_attrib)) $pk_err_msg .= ", ";
           }
           $form.=$this->ret_td($error_title.$pk_err_msg.$errormsg.'<br><br>','colspan="2"');
@@ -675,7 +675,7 @@
       }
 
       // load images
-      $reqimg = '<img align="top" onMouseOver="javascript:window.status=\''.addslashes(text("field_obligatory")).'\';" src="'.$this->getImgSrc("required_field.gif").'" border="0" alt="'.text("field_obligatory").'">&nbsp;';
+      $reqimg = '<img align="top" onMouseOver="javascript:window.status=\''.addslashes(atktext("field_obligatory")).'\';" src="'.$this->getImgSrc("required_field.gif").'" border="0" alt="'.atktext("field_obligatory").'">&nbsp;';
       $tipimg = $this->getImgSrc("help.gif");
 
       /* display the edit fields */

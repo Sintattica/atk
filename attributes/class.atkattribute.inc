@@ -1634,7 +1634,7 @@
 
       // set "searchmode" value:
       if(count($searchModes)==1)
-      $field["searchmode"] = '<input type="hidden" name="atksearchmode['.$this->m_name.']" value="'.$searchModes[0].'">'.text("search_".$searchModes[0]);
+      $field["searchmode"] = '<input type="hidden" name="atksearchmode['.$this->m_name.']" value="'.$searchModes[0].'">'.atktext("search_".$searchModes[0]);
       else
       {
         $sel = '<select name="atksearchmode['.$this->m_name.']">';
@@ -1645,7 +1645,7 @@
           if ($node->m_postvars["atksearchmode"][$this->m_name]==$searchMode||
           ((!is_array($node->m_postvars["atksearchmode"]) || $node->m_postvars["atksearchmode"][$this->m_name]=="")&&
           $searchMode=="substring")) $selected="selected";
-          $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.text("search_".$searchMode);
+          $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.atktext("search_".$searchMode);
         }
         $sel.= '</select>';
         $field["searchmode"] = $sel;

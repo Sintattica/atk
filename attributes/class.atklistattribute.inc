@@ -164,7 +164,7 @@
 
       if(!$this->hasFlag(AF_OBLIGATORY)&&!$this->hasFlag(AF_LIST_NO_NULL_ITEM)||(atkconfig("list_obligatory_null_item")&&$record[$this->fieldName()]==""&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM)))
       {
-        $result.= '<option value="'.$this->m_emptyvalue.'">'.text('list_null_value', $this->m_ownerInstance->m_type);
+        $result.= '<option value="'.$this->m_emptyvalue.'">'.atktext('list_null_value', '', $this->m_ownerInstance->m_type);
       }
 
       for ($i=0;$i<count($this->m_values);$i++)
@@ -205,7 +205,7 @@
       else
         $result.='name="atksearch'.$fieldprefix.'['.$this->formName().'][]">';
 
-      $result.= '<option value="">'.text('search_all');
+      $result.= '<option value="">'.atktext('search_all');
 
       for ($i=0,$_i=count($this->m_values);$i<$_i;$i++)
       {
@@ -363,7 +363,7 @@
         if(strtolower($stringvalue) == strtolower($option))
           return $this->m_values[$i];
 
-        if(strtolower(text($stringvalue)) == strtolower($option))
+        if(strtolower(atktext($stringvalue)) == strtolower($option))
           return $this->m_values[$i];
         $i++;
       }

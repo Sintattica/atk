@@ -76,7 +76,7 @@
       /* store the text calls */
       if(!isset($langcache[$month]))
       {
-        $langcache[$month]= text(strtolower($month),"","atk");
+        $langcache[$month]= atktext(strtolower($month),"atk");
       }
 
       if(!isset($langcache[$shortmonth]))
@@ -87,7 +87,7 @@
       /* replace month/week name */
       $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
       $str_date = str_replace("%=%", $langcache[$month], $str_date);
-      if ($weekday) $str_date = str_replace("%*%", text(strtolower($date["weekday"]),"","atk"), $str_date);
+      if ($weekday) $str_date = str_replace("%*%", atktext(strtolower($date["weekday"]),"atk"), $str_date);
 
       /* return string */
       return $str_date;
@@ -524,7 +524,7 @@
 
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
       $res = $this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_from");
-      $res.= "&nbsp;".text("until").": ".$this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_to");
+      $res.= "&nbsp;".atktext("until").": ".$this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_to");
       return $res;
     }
 
@@ -775,13 +775,13 @@
       /* date < minimum */
       if (!empty($minimum) && $current < $minimum)
       {
-        triggerError($record, $this->fieldName(), 'error_date_minimum', text("error_date_minimum")." ". $this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_minimum', atktext("error_date_minimum")." ". $this->formatDate(adodb_getdate($minimum), $this->m_date_format_view, 0));
         return;
       }
 
       /* date > maximum */
       if (!empty($maximum) && $current > $maximum)
-        triggerError($record, $this->fieldName(), 'error_date_maximum', text("error_date_maximum")." ". $this->formatDate(adodb_getdate($maximum), $this->m_date_format_view, 0));
+        triggerError($record, $this->fieldName(), 'error_date_maximum', atktext("error_date_maximum")." ". $this->formatDate(adodb_getdate($maximum), $this->m_date_format_view, 0));
     }
 
     /**
