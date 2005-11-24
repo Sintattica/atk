@@ -40,7 +40,7 @@ class atkCurrencyAttribute extends atkNumberAttribute
     * @param string $thousandsseparator The separator which is printed for the thousands.
     *
     */
-  function atkCurrencyAttribute($name,$flags,$size=10,$currencysymbol="",$decimals=2,$decimalseparator="",$thousandsseparator="")
+  function atkCurrencyAttribute($name,$flags=0,$size=10,$currencysymbol="",$decimals=2,$decimalseparator="",$thousandsseparator="")
   {
     $this->atkNumberAttribute($name,$flags,$size,$decimals); // base class constructor
 
