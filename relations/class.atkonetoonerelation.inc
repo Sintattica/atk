@@ -486,7 +486,7 @@
           {
             //if the a onetoonerelation has no relation on the other side the m_refKey is not an array          
             // experimental, will the next line always work?
-            $vars[$this->m_refKey] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+            $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($vars[$this->m_refKey]);
           }
         }
         else
