@@ -606,8 +606,6 @@
       {
         // empty. It might be that the record has not yet been fetched. In this case, we do
         // a forced load to see if it's really empty.
-        atkdebug("hier dan?");
-        atk_var_dump(atk_get_trace());
         $recs = $this->load(atkGetDb(), $record);
         return (count($recs)==0);
       }
