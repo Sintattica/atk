@@ -82,6 +82,8 @@ Changes in ATK 5.3RC2
   the modifying module. [Ivo]
 * Fixed replacing of stackid in recordlist cache (bug #548)[Yury]
 * Updated FCK's mcpuk browser for improved filebrowsing [Harrie]
+* Fixed bug in o2o relation that caused the foreign key in the record
+  to be a value instead of an array [Harrie]
 
 Changes in ATK 5.3RC1
 ---------------------
