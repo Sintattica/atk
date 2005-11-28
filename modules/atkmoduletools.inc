@@ -173,7 +173,7 @@
     {
       $module_inst = &getModule(getNodeModule($node));
     }
-    if (is_object($module_inst))
+    if (is_object($module_inst) && method_exists($module_inst,'newNode'))
     {
       $node = &$module_inst->newNode($node);
       if ($init && $node != NULL) $node->init();
