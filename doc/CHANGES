@@ -84,6 +84,11 @@ Changes in ATK 5.3RC2
 * Updated FCK's mcpuk browser for improved filebrowsing [Harrie]
 * Fixed bug in o2o relation that caused the foreign key in the record
   to be a value instead of an array [Harrie]
+* NewNode() is not called on a module instance if the method doesn't exist
+  this makes ATK less likely to throw a PHP error 
+  when the module is flawed. [Boy]
+* Made OneToMany::load() return nothing if it can't find a load filter instead
+  of every single destination record. [Ivo]
 
 Changes in ATK 5.3RC1
 ---------------------

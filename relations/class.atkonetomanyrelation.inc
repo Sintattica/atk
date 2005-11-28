@@ -542,17 +542,17 @@
         {
           if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
 
-          $continue = false;
           for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
           {
             $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
 
-            if (!$primkeyattr->isEmpty($record)) $continue=true;
-
-            $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
+            if (!$primkeyattr->isEmpty($record))
+            {
+              $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
+            }
           }
 
-          if ($continue)
+          if (count($whereelems)>0)
           {
             $where = implode(" AND ", $whereelems);
 
