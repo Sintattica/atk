@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Driver for authentication and authorization using tables in the database.
    *
@@ -25,8 +25,8 @@
    */
    class auth_db extends auth_interface
    {
-     var $m_rightscache = array();  
-   
+     var $m_rightscache = array();
+
      function validateUser($user, $passwd)
      {
        $db = &atkGetDb();
@@ -49,7 +49,7 @@
 
        return ((count($recs)>0 && $user!="" && $this->matchPasswords($recs[0][atkconfig("auth_passwordfield")], $passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
      }
-     
+
      /**
       * Match 2 passwords.
       * In normal situations, $dbpassword and $userpasswd are considered equal
@@ -59,14 +59,14 @@
       * (This method is used by Bugzilla, among other apps)
       */
      function matchPasswords($dbpasswd, $userpasswd)
-     {     
+     {
        // crypt password method, like in bugzilla
        if (atkconfig("auth_usecryptedpassword", false))
        {
-       	 // password is stored using the crypt method, using the cryptedpassword itself as the salt.      
+       	 // password is stored using the crypt method, using the cryptedpassword itself as the salt.
        	 return (crypt($userpasswd, $dbpasswd)==$dbpasswd);
        }
-       else 
+       else
        {
        	 // regular match, perhaps with md5.
      	   return (strtoupper($dbpasswd)==strtoupper($userpasswd));
@@ -88,10 +88,10 @@
        $userfield = atkconfig("auth_userfield");
        $userpk = atkconfig("auth_userpk");
        $userfk = atkconfig("auth_userfk", $userpk);
-       $grouptable = atkconfig("auth_grouptable");         
-       $groupfield = atkconfig("auth_groupfield");         
-       $groupparentfield = atkconfig("auth_groupparentfield");         
-       
+       $grouptable = atkconfig("auth_grouptable");
+       $groupfield = atkconfig("auth_groupfield");
+       $groupparentfield = atkconfig("auth_groupparentfield");
+
        if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
@@ -102,14 +102,14 @@
        {
          // Level and userid are stored in two separate tables. This could
          // mean (but doesn't have to) that a user can have more than one
-         // level.	       
+         // level.
 	       $qryobj =&$db->createQuery();
 	       $qryobj->addTable($usertable);
 	       $qryobj->addField("$usertable.*");
 	       $qryobj->addField("usergroup.*");
 	       $qryobj->addJoin($leveltable, "usergroup", "$usertable.$userpk = usergroup.$userfk", true);
 	       $qryobj->addCondition("$usertable.$userfield = '$user'");
-	       
+
 	       if (!empty($groupparentfield))
 	       {
 	         $qryobj->addField("grp.$groupparentfield");
@@ -126,14 +126,14 @@
        if (count($recs)>0)
        {
          $level = array();
-         
+
          $parents = array();
 
          for ($i=0;$i<count($recs);$i++)
          {
            $level[] = $recs[$i][atkconfig("auth_levelfield")];
            $groups[] = $recs[$i][atkconfig("auth_levelfield")];
-           
+
            if (!empty($groupparentfield) && $recs[$i][$groupparentfield] != "")
              $parents[] = $recs[$i][$groupparentfield];
          }
@@ -142,22 +142,22 @@
          while (count($parents) > 0)
          {
   	       $query = &$db->createQuery();
-  	       $query->addField($groupparentfield);  	    
+  	       $query->addField($groupparentfield);
     	     $query->addTable($grouptable);
   	       $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).")");
-  	       $precs = $db->getrows($query->buildSelect(TRUE));  
-  	       
-           $parents = array();  	       
+  	       $precs = $db->getrows($query->buildSelect(TRUE));
+
+           $parents = array();
   	       foreach ($precs as $prec)
   	         if ($prec[$groupparentfield] != "")
-  	           $parents[] = $prec[$groupparentfield];         
-  	         
-           $groups = array_merge($groups, $parents);  	         
+  	           $parents[] = $prec[$groupparentfield];
+
+           $groups = array_merge($groups, $parents);
          }
-         
+
          $groups = array_unique($groups);
        }
-       
+
        if (count($level) == 1)
          $level = $level[0];
 
@@ -185,7 +185,7 @@
        $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
        $userinfo["groups"]=$groups;
        $userinfo["access_level"]=$access;
-       
+
        return $userinfo;
      }
 
@@ -201,7 +201,7 @@
        }
 
        $result = Array();
-       
+
        $rights = $this->m_rightscache[$node];
 
        for ($i=0, $_i=count($rights); $i<$_i; $i++)
@@ -264,12 +264,12 @@
        return $userlist;
 
      }
-     
+
      function setPasswordAllowed()
      {
         return true;
      }
-     
+
    }
 
 ?>

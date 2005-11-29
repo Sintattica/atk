@@ -157,7 +157,7 @@
         // destroy cookie
         if (atkconfig("authentication_cookie") && $auth_user!="administrator")
         {
-          $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
+          $cookiename = "atkauth_".str_replace(" ","_",atktext("app_title"));
           if (!empty($_COOKIE[$cookiename])) setcookie($cookiename, "", 0);
         }
         if($ATK_VARS["atklogout"]>1)
@@ -190,7 +190,7 @@
         {
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
-          $cookiename = "atkauth_".str_replace(" ","_",text("app_title"));
+          $cookiename = "atkauth_".str_replace(" ","_",atktext("app_title"));
           list($enc, $user, $passwd) = split("\.",base64_decode($_COOKIE[$cookiename]));
 
           // for security reasons administrator will never be cookied..
@@ -352,7 +352,7 @@
         }
         else
         {
-          header('WWW-Authenticate: Basic realm="'.text("app_title").' - '.strftime("%c",time()).'"');
+          header('WWW-Authenticate: Basic realm="'.atktext("app_title").' - '.strftime("%c",time()).'"');
           if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE'])) header("Status: 401 Unauthorized");
           else header("HTTP/1.0 401 Unauthorized");
           return false;
@@ -438,37 +438,37 @@
       // max_loginattempts of 0 means no maximum.
       if(atkconfig('max_loginattempts')>0 && $loginattempts>atkconfig('max_loginattempts'))
       {
-        $output.="<tr><td class=table>".text('auth_max_loginattempts_exceeded')."<br><br></td></tr>";
-        $tplvars["auth_max_loginattempts_exceeded"] = text('auth_max_loginattempts_exceeded');
+        $output.="<tr><td class=table>".atktext('auth_max_loginattempts_exceeded')."<br><br></td></tr>";
+        $tplvars["auth_max_loginattempts_exceeded"] = atktext('auth_max_loginattempts_exceeded');
       }
       else
       {
         // generate the username input field
         // based upon the config_authdropdown and auth. method
         $userField = $this->auth_userField($defaultname);
-        $tplvars["username"] = text("username");
-        $tplvars["password"] = text("password");
+        $tplvars["username"] = atktext("username");
+        $tplvars["password"] = atktext("password");
         $tplvars["userfield"] = $userField;
         $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="">';
-        $tplvars["submitbutton"] = '<input class="loginform" type="submit" value="'.text('login').'">';
-        $tplvars["title"] = text('login_form');
+        $tplvars["submitbutton"] = '<input class="loginform" type="submit" value="'.atktext('login').'">';
+        $tplvars["title"] = atktext('login_form');
 
         if ($lastresponse == AUTH_LOCKED)
         {
-          $output.="<tr><td colspan=3 class=error>".text('auth_account_locked')."<br><br></td></tr>";
-          $tplvars["auth_account_locked"] = text('auth_account_locked');
+          $output.="<tr><td colspan=3 class=error>".atktext('auth_account_locked')."<br><br></td></tr>";
+          $tplvars["auth_account_locked"] = atktext('auth_account_locked');
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
-          $output.='<tr><td colspan=3 class=error>'.text('auth_mismatch').'<br><br></td></tr>';
-          $tplvars["auth_mismatch"] = text('auth_mismatch');
+          $output.='<tr><td colspan=3 class=error>'.atktext('auth_mismatch').'<br><br></td></tr>';
+          $tplvars["auth_mismatch"] = atktext('auth_mismatch');
         }
 
         // generate the form
-        $output.="<tr><td valign=top>".text('username')."</td><td>:</td><td>".$userField."</td></tr>";
+        $output.="<tr><td valign=top>".atktext('username')."</td><td>:</td><td>".$userField."</td></tr>";
         $output.="<tr><td colspan=3 height=6></td></tr>";
-        $output.="<tr><td valign=top>".text('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
-        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input type=submit value=".text('login')."></td></tr>";
+        $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
+        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input type=submit value=".atktext('login')."></td></tr>";
 
       }
 
@@ -479,7 +479,7 @@
       $tplvars["content"]=$output;
       $page->addContent($ui->render("login.tpl", $tplvars));
       $o = &atkOutput::getInstance();
-      $o->output($page->render(text("app_title")));
+      $o->output($page->render(atktext("app_title")));
     }
 
     /**
