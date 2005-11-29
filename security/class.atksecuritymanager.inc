@@ -450,7 +450,7 @@
         $tplvars["password"] = atktext("password");
         $tplvars["userfield"] = $userField;
         $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="">';
-        $tplvars["submitbutton"] = '<input class="loginform" type="submit" value="'.atktext('login').'">';
+        $tplvars["submitbutton"] = '<input class="button" type="submit" value="'.atktext('login').'">';
         $tplvars["title"] = atktext('login_form');
 
         if ($lastresponse == AUTH_LOCKED)
@@ -468,7 +468,7 @@
         $output.="<tr><td valign=top>".atktext('username')."</td><td>:</td><td>".$userField."</td></tr>";
         $output.="<tr><td colspan=3 height=6></td></tr>";
         $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
-        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input type=submit value=".atktext('login')."></td></tr>";
+        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input class=button type=submit value=".atktext('login')."></td></tr>";
 
       }
 
