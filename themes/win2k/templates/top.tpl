@@ -6,7 +6,7 @@
     <td align="center" class="block" >
       <table width="100%" bgcolor="#FFFFFF">
 	<tr>
-	  <td align="left" width="20%"><a href="http://localhost/achievo" target="{$logouttarget}">Home</a></td>
+	  <td align="left" width="20%"></td>
 	  <td align="center" width="60%">
             <br />{$logintext}:
 	    <b>{$user}</b> &nbsp; <a href="{$logoutlink}" target="{$logouttarget}">{$logouttext}</a> &nbsp;
