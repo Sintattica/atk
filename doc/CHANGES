@@ -75,6 +75,7 @@ Changes in ATK 5.3RC2
 * Fixed date insertion bug in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
+* atkBoolAttribute now correctly remembers the last search setting. [Stefano]
 * Fixed missing stack trace in add/edit pages when displaying errors.
   (bug #523) [Ivo]
 * Fixed bug in checking the database driver type in atkTextAttribute

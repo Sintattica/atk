@@ -78,10 +78,10 @@
       $result = '<select name="atksearch['.$this->formName().']">';
       $result.= '<option value="">'.text('search_all');
       $result.= '<option value="0" ';
-      if($record[$this->fieldName()]==0 && !empty($record)) $result.="selected";
+      if($record[$this->fieldName()]==='0' && !empty($record)) $result.="selected";
       $result.= '>'.text('no');
       $result.= '<option value="1" ';
-      if($record[$this->fieldName()]==1) $result.="selected";
+      if($record[$this->fieldName()]==='1') $result.="selected";
       $result.= '>'.text('yes');
       $result.='</select>';
       return $result;
