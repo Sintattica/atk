@@ -69,7 +69,7 @@
      */
     function setMode($mode)
     {	
-      $this->m_mode = &$mode;
+      $this->m_mode = $mode;
     }
 
     /**
@@ -79,7 +79,7 @@
      */
     function setNode(&$nodeObj)
     {	
-      $this->m_nodeObj = $nodeObj;
+      $this->m_nodeObj = &$nodeObj;
     }
 
     /**
@@ -101,14 +101,14 @@
      */
     function validate($mode="", $ignoreList=array())
     {	
-      atkdebug("validate() with mode $mode for node ".$this->m_nodeObj->atkNodeType());
-
       // check overrides
       if(count($ignoreList))
         $this->setIgnoreList($ignoreList);
 
       if($mode != "")
         $this->setMode($mode);
+
+       atkdebug("validate() with mode ".$this->m_mode." for node ".$this->m_nodeObj->atkNodeType());
       
       // set the record
       $record = &$this->m_record;
