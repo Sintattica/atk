@@ -45,6 +45,8 @@ Changes in ATK 5.3RC2
 * Fixed php errors in atkProfileAttribute. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
+* Fixed several smaller issues in the demo application. (bug #563, #565) 
+  [Przemek, Ivo]
 * Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
   retrieved. Also, both thousands- and decimal separator now have a default
   value if none is set in the language file. [Ivo]
@@ -78,6 +80,7 @@ Changes in ATK 5.3RC2
 * Fixed php error message in atkImportHandler. [Ivo]
 * Fixed date insertion bug in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
+* Fixed detecion of 'numeric' type in atkPgsqlDDL class. (bug #566) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
 * atkBoolAttribute now correctly remembers the last search setting. [Stefano]
 * Fixed missing stack trace in add/edit pages when displaying errors.

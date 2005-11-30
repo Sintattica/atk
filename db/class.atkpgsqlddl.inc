@@ -68,6 +68,7 @@
         case "float":
         case "float8":
         case "float16":
+        case "numeric":
           return "decimal";        
         case "varchar":
         case "char":
