@@ -91,6 +91,8 @@ Changes in ATK 5.3RC2
   when the module is flawed. [Boy]
 * Made OneToMany::load() return nothing if it can't find a load filter instead
   of every single destination record. [Ivo]
+* Updated Norwegian translation. [Olav]
+* Updated Brazilian Portuguese translation. [Elton]
 
 Changes in ATK 5.3RC1
 ---------------------
