@@ -45,7 +45,7 @@ Changes in ATK 5.3RC2
 * Fixed php errors in atkProfileAttribute. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
-* Fixed several smaller issues in the demo application. (bug #563, #565) 
+* Fixed several smaller issues in the demo application. (bug #563, #565, #573) 
   [Przemek, Ivo]
 * Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
   retrieved. Also, both thousands- and decimal separator now have a default
