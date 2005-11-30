@@ -8,7 +8,7 @@ Changes in ATK 5.3RC2
 ---------------------
 + Made it possible to reset a node in the node repository by adding a
   fourth param to getNode(). [Boy]
-+ If newNode() calls the missing class handler it passes along a module 
++ If newNode() calls the missing class handler it passes along a module
   to the params. [Boy]
 + Added utils/langconvert.sh, a bash shell script that converts ATK4 style
   language files to ATK5 style. [Boy]
@@ -36,28 +36,23 @@ Changes in ATK 5.3RC2
 + Added atkActionListener API for listening to node actions. [Ivo]
 + Added atkEventLog for tracking record changes. [Ivo]
 + Added 'win2k' theme. [Markus]
-+ Added Lesson 6 about the atkMetaNode to the demo application. [Sandy]
-+ Added Lesson 7 about the atkTreeNode and data internationalisation to the
-  demo application. [Sandy]
-+ Added Lesson 8 about the Open Office template engine to the demo 
-  application. [Sandy]
 * Improved errorhandling in atkThemeCompiler. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
-* Made themecomiler use moduleDir() instead of figuring out the directory 
+* Made atkThemeCompiler use moduleDir() instead of figuring out the directory
   structure itsself, making it possible to use theme elements from outside
   the ATK application root. [Boy]
 * Fixed php errors in atkProfileAttribute. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
 * Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
-  retrieved. Also, both thousands- and decimal separator now have a default 
+  retrieved. Also, both thousands- and decimal separator now have a default
   value if none is set in the language file. [Ivo]
 * Set search portion of the top frame in outlook theme to 'nowrap'. [Ivo]
 * atkLanguage no longer tries to include languagefiles it can't find. [Yury]
 * Descriptortrace (breadcrumbtrail top of page) now also shows what node
   you are currently preforming an action in. [Boy]
-* Calling text() without module would cause unnecessary call 
+* Calling text() without module would cause unnecessary call
   to filesystem. [Yury]
 * Fixed bug in findDestinationAttribute method of atkMetaPolicy. [Peter]
 * Fixed bug when searching in an embedded recordlist containing an
@@ -71,7 +66,7 @@ Changes in ATK 5.3RC2
   * Fixed retrieving the correct field flags [Sandy]
 * Fixed bug in atkThemeCompiler, theme is now set from atkTheme instead of
   retrieved from the config. [Ivo]
-* Fixed atkProfileAttribute translations. (bug #550) [Olav, Ivo]  
+* Fixed atkProfileAttribute translations. (bug #550) [Olav, Ivo]
 * Fixed translation of options in atkRadioAttribute. [Ivo]
 * Fixed translations in atkManyToOneRelation. (bug #540) [Olav]
 * Fixed translation of error messages in edit screens. (bug #541) [Yury]
@@ -80,7 +75,7 @@ Changes in ATK 5.3RC2
 * Fixed date insertion bug in atkImportHandler. [Ivo]
 * Fixed missing import in atkPgsqlQuery class. (bug #555) [Przemek]
 * Fixed searching in atkManyBoolRelation. (bug #546) [Yury]
-* Fixed missing stack trace in add/edit pages when displaying errors. 
+* Fixed missing stack trace in add/edit pages when displaying errors.
   (bug #523) [Ivo]
 * Fixed bug in checking the database driver type in atkTextAttribute
   and atkDateTimeAttribute. (bug #552) [Renato, Peter]
@@ -91,7 +86,7 @@ Changes in ATK 5.3RC2
 * Fixed bug in o2o relation that caused the foreign key in the record
   to be a value instead of an array [Harrie]
 * NewNode() is not called on a module instance if the method doesn't exist
-  this makes ATK less likely to throw a PHP error 
+  this makes ATK less likely to throw a PHP error
   when the module is flawed. [Boy]
 * Made OneToMany::load() return nothing if it can't find a load filter instead
   of every single destination record. [Ivo]
@@ -246,7 +241,7 @@ Changes in ATK 5.3RC1
 * Add link in atkOneToManyRelation is now only displayed if the user has add
   privilege on the destination node. (bug #499) [Yury]
 * Fix in atkOneToManyRelation, if the referential keys are empty, it no
-  longer performs invalid queries without refkey values. [Ivo]    
+  longer performs invalid queries without refkey values. [Ivo]
 * Edit link in atkManyToOneRelation is now only displayed if there are records
   to be edited. (bug #516) [Yury]
 * Made atkTextAttribute not display rows or columns property if it doesn't
@@ -317,9 +312,9 @@ Changes in ATK 5.3RC1
 * Fixed bug in _valueBreakDown function of atkFormatAttribute. [Sandy]
 * Fixed return in getLabel function of atkAttribute. [Sandy]
 * Fixed bug in menuitems of atkMenuTools (wrong var was used). [Sandy]
-* Changed atkCurrencyAttribute constructor (not backwards compatible) by 
+* Changed atkCurrencyAttribute constructor (not backwards compatible) by
   adding 3 new params for formating the currency value. If no values are given
-  to the params it will check the language file for default values. 
+  to the params it will check the language file for default values.
   [Arnold, Sandy]
 * Updated Norwegian translation. [Olav]
 * Updated French translation. [Benjamin, Antoine]
