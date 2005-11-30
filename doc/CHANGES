@@ -56,7 +56,11 @@ Changes in ATK 5.3RC2
   to filesystem. [Yury]
 * Fixed bug in findDestinationAttribute method of atkMetaPolicy. [Peter]
 * Fixed bug when searching in an embedded recordlist containing an
-  oneToManyRelation [Harrie]
+  atkOneToManyRelation. [Harrie]
+* Made atkOneToMany::load() return $nothing if it can't find a load filter
+  instead of every single destination record. [Ivo]
+* Fixed atkOneToManyRelation error when returning from the edit page of a
+  subform that has a filter set. (bug #547) [Yury]
 * Fixed: atkhtmlattribute now executes useattrib("atktextattribute") to
   load its parent class file [Yury]
 * Fixed MySQLi driver:
@@ -89,8 +93,6 @@ Changes in ATK 5.3RC2
 * NewNode() is not called on a module instance if the method doesn't exist
   this makes ATK less likely to throw a PHP error
   when the module is flawed. [Boy]
-* Made OneToMany::load() return nothing if it can't find a load filter instead
-  of every single destination record. [Ivo]
 * Debug console now works in frame environment, each frame can be debugged 
   separately. (bug #532) [Ivo]
 * Updated Norwegian translation. [Olav]
