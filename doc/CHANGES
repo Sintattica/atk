@@ -232,6 +232,7 @@ Changes in ATK 5.3RC1
 * Fixed extended searching on OneToOne relations. [Boy]
 * Removed a call-time-pass-by-reference from the oci9 driver. [Ivo]
 * Fixed host based connect in oci9 driver. [Ivo]
+* Fixed metadata retrieval in oci8/oci9 drivers. (bug #569) [Ivo]
 * Fixed numerous php notices. (ATK now runs better when error_reporting set to
   E_ALL). [Ivo, Martin]
 * The alphabetical index no longer breaks the search button. (bug #415) [Ivo]

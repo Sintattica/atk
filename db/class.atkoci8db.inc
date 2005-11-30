@@ -427,8 +427,8 @@
     function metadata($table, $full=false)
     {
       atkimport("atk.db.atkddl");
-      $type = substr(substr(get_class($this), 3), 0, -2);
-      $ddl = &atkDDL::create($type);
+      
+      $ddl = &$this->createDDL();
 
       // retrieve meta data
       $sql = "
