@@ -73,7 +73,7 @@
             $menuitems[$i]["enable"]=$enable;
 
             /* delimiter ? */
-            if ($name == "-") $menu .= "<br>";
+            if ($name == "-") $menu .= $delimiter;
 
             /* submenu ? */
             else if (empty($url) && $enable)
