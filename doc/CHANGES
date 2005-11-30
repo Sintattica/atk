@@ -605,7 +605,7 @@ Changes in ATK 5.0.5
 * Fixed DHTML tab functionality (last tab is now remembered). (bug #301) [Boy]
 * Fixed SQL errors in atkNavigator when when AF_LARGE is set and an atkfilter
   is used [Boy, Yury]
-* Fixed bug in oneToManyRelation's isEmpty() method. [Harrie]
+* Fixed bug in oneToManyRelation's isEmpty() method. (bug #542) [Harrie]
 * Fixed the outlook menu. (bug #352) [Sandy]
 * Fixed the help popup. (bug #347) [Thom]
 * Fixed help link in default view template. (bug #353) [Thom]
