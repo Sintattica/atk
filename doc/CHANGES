@@ -62,7 +62,7 @@ Changes in ATK 5.3RC2
 * Made atkOneToMany::load() return $nothing if it can't find a load filter
   instead of every single destination record. [Ivo]
 * Fixed atkOneToManyRelation error when returning from the edit page of a
-  subform that has a filter set. (bug #547) [Yury]
+  subform that has a filter set. (bug #547, #567) [Yury]
 * Fixed: atkhtmlattribute now executes useattrib("atktextattribute") to
   load its parent class file [Yury]
 * Fixed MySQLi driver:
