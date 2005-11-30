@@ -99,6 +99,7 @@ Changes in ATK 5.3RC2
 * Debug console now works in frame environment, each frame can be debugged 
   separately. (bug #532) [Ivo]
 * Fixed wrong menu delimiter for menu spacers. (bug #574) [Przemek]
+* Fixed authentication example in skel config.inc.php. (bug #579) [Przemek]
 * Updated Norwegian translation. [Olav]
 * Updated Brazilian Portuguese translation. [Elton]
 

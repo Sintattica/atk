@@ -239,12 +239,12 @@
   // If you have config_authentication set to "config", you may now specify
   // a set of usernames and passwords (in plain text). 
   // Example:
-  // user("harry","password");
+  // atkConfig::addUser("harry","password");
   
   // If securityscheme is "level" or "group", you may also specify the 
   // level or group as third parameter:
-  // user("harry","password",3);
-  // user("harry","password","admins");  
+  // atkConfig::addUser("harry","password",3);
+  // atkConfig::addUser("harry","password","admins");  
 
  // -------------- DOCUMENT WRITER CONFIGURATION ---------------
 
