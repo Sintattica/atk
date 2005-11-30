@@ -81,7 +81,7 @@ Changes in ATK 5.3RC2
 * Fixed bug in checking the database driver type in atkTextAttribute
   and atkDateTimeAttribute. (bug #552) [Renato, Peter]
 * Attributes added by modifier modules now retrieve their translation from
-  the modifying module. [Ivo]
+  the modifying module. (bug #533) [Ivo]
 * Fixed replacing of stackid in recordlist cache (bug #548)[Yury]
 * Updated FCK's mcpuk browser for improved filebrowsing [Harrie]
 * Fixed bug in o2o relation that caused the foreign key in the record
