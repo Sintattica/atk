@@ -36,6 +36,11 @@ Changes in ATK 5.3RC2
 + Added atkActionListener API for listening to node actions. [Ivo]
 + Added atkEventLog for tracking record changes. [Ivo]
 + Added 'win2k' theme. [Markus]
++ Added Lesson 6 about the atkMetaNode to the demo application. [Sandy]
++ Added Lesson 7 about the atkTreeNode and data internationalisation to the
+  demo application. [Sandy]
++ Added Lesson 8 about the Open Office template engine to the demo 
+  application. [Sandy]
 * Improved errorhandling in atkThemeCompiler. [Boy]
 * Made it possible to use 'scan dir1/dir2;dir1/dir3' without wrapping the
   directories in single quotes. [Boy]
