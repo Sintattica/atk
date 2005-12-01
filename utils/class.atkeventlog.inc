@@ -15,6 +15,7 @@
       
       $db->query("INSERT INTO atkeventlog (id, userid, stamp, node, action, primarykey)
                     VALUES(".$db->nextid("atkeventlog").", $userid, ".$db->func_now().", '$node', '$action', '$primarykey')");
+      $db->commit();
     }
   }
 
