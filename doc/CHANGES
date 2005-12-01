@@ -12,9 +12,8 @@ Changes in ATK 5.3
   to the params. [Boy]
 + Added utils/langconvert.sh, a bash shell script that converts ATK4 style
   language files to ATK5 style. [Boy]
-+ Document directory containing generic DocumentWriter class and
-  OpenDocumentWriter implementation (which wraps the TinyButStrong
-  OpenOffice.org template engine). [Guido]
++ added atkDocumentWriter and atkOpenDocumentWriter (which wraps the  
+  TinyButStrong OpenOffice template engine). [Guido]
 + Document action handler (and action icon in default theme for use in
   recordlists). [Guido]
 + DocumentAttribute class for offering access to the Document action through
