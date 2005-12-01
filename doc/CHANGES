@@ -12,13 +12,12 @@ Changes in ATK 5.3
   to the params. [Boy]
 + Added utils/langconvert.sh, a bash shell script that converts ATK4 style
   language files to ATK5 style. [Boy]
-+ added atkDocumentWriter and atkOpenDocumentWriter (which wraps the  
++ added atkDocumentWriter and atkOpenDocumentWriter (which wraps the
   TinyButStrong OpenOffice template engine). [Guido]
-+ Document action handler (and action icon in default theme for use in
++ Added atkDocumentHandler (and action icon in default theme for use in
   recordlists). [Guido]
-+ DocumentAttribute class for offering access to the Document action through
-  a document selector, which is displayed as an attribute in the list, edit
-  or view screen of a node. [Guido]
++ Added atkDocumentAttribute for offering access to the Document action
+  through a document selector. [Guido]
 + Ability to register dynamic block Smarty plugins. [Boy]
 + Ability to add output filter to Smarty. [Ivo,Boy]
 + Ability to add cache attributes to dynamic function Smarty function. [Boy]
@@ -44,7 +43,7 @@ Changes in ATK 5.3
 * Fixed php errors in atkProfileAttribute. [Ivo]
 * Fixed Local File Include Vulnerability in sourceviewer of the demo
   application. [Ivo]
-* Fixed several smaller issues in the demo application. (bug #563, #565, #573) 
+* Fixed several smaller issues in the demo application. (bug #563, #565, #573)
   [Przemek, Ivo]
 * Fixed bug in atkCurrencyAttribute, decimal separator was not correctly
   retrieved. Also, both thousands- and decimal separator now have a default
@@ -95,7 +94,7 @@ Changes in ATK 5.3
 * NewNode() is not called on a module instance if the method doesn't exist
   this makes ATK less likely to throw a PHP error
   when the module is flawed. [Boy]
-* Debug console now works in frame environment, each frame can be debugged 
+* Debug console now works in frame environment, each frame can be debugged
   separately. (bug #532) [Ivo]
 * Fixed wrong menu delimiter for menu spacers. (bug #574) [Przemek]
 * Fixed authentication example in skel config.inc.php. (bug #579) [Przemek]
