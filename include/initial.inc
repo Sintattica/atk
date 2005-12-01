@@ -16,7 +16,9 @@
    * $Id$
    */
 
-   // Global theme variable, must be declared before the includes
+  /**
+   * Global theme variable, must be declared before the includes
+   */
   $g_theme = array();
 
   // Global node list

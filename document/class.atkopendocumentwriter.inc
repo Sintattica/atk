@@ -14,7 +14,9 @@
    * $Id$
    */
 
-  // Include the TinyButStrong OpenOffice.org library:
+  /**
+   * @internal  Include the TinyButStrong OpenOffice.org library:
+   */
   include_once('tbsooo/tbs_class.php');
   include_once('tbsooo/tbsooo_class.php');
 
