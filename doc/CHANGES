@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changes in ATK 5.3.1
+--------------------
+
 Changes in ATK 5.3
 ------------------
 + Made it possible to reset a node in the node repository by adding a
