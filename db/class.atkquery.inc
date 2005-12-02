@@ -103,6 +103,14 @@
      * The database that this query does it's thing on
      */
     var $m_db;
+    
+    /**
+     * Quote to put around fields
+     * @example `
+     * @var String
+     * @access private
+     */
+    var $m_fieldquote;
 
     /**
     * Initialize all variables
@@ -252,7 +260,7 @@
       $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
-        $result.= $this->m_fields[$i];
+        $result.= $this->quoteField($this->m_fields[$i]);
         $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]])?$this->m_fieldaliases[$this->m_fields[$i]]:"");
         if ($fieldalias!="") $result.=" AS ".$fieldalias;
         if ($i < count($this->m_fields)-1) $result.=",";
@@ -260,7 +268,7 @@
       $result.= " FROM ";
       for ($i=0;$i<count($this->m_tables);$i++)
       {
-        $result.= $this->m_tables[$i];
+        $result.= $this->quoteField($this->m_tables[$i]);
         if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
         if ($i < count($this->m_tables)-1) $result.=",";
       }
@@ -350,12 +358,16 @@
      function buildCount($distinct = FALSE)
      {
        if ($distinct && count($this->m_fields) > 0)
-        $result = "SELECT COUNT(DISTINCT ".implode($this->m_fields, ",").") as count FROM ";
+       {
+        $result = "SELECT COUNT(DISTINCT ";
+        $result.=implode($this->quoteFields($this->m_fields),",");
+        $result.=") as count FROM ";
+       }
        else $result = "SELECT COUNT(*) as count FROM ";
 
        for ($i=0;$i<count($this->m_tables);$i++)
        {
-         $result.= $this->m_tables[$i];
+         $result.= $this->quoteField($this->m_tables[$i]);
          if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
          if ($i < count($this->m_tables)-1) $result.=",";
        }
@@ -398,11 +410,11 @@
      */
     function buildUpdate()
     {
-      $result = "UPDATE ".$this->m_tables[0]." SET ";
+      $result = "UPDATE ".$this->quoteField($this->m_tables[0])." SET ";
 
       for ($i=0;$i<count($this->m_fields);$i++)
       {
-        $result.= $this->m_fields[$i]."=".$this->m_values[$this->m_fields[$i]];
+        $result.= $this->quoteField($this->m_fields[$i])."=".$this->m_values[$this->m_fields[$i]];
         if ($i < count($this->m_fields)-1) $result.=",";
       }
       if (count($this->m_conditions)>0)
@@ -438,11 +450,11 @@
      */
     function buildInsert()
     {
-      $result = "INSERT INTO ".$this->m_tables[0]." (";
+      $result = "INSERT INTO ".$this->quoteField($this->m_tables[0])." (";
 
       for ($i=0;$i<count($this->m_fields);$i++)
       {
-        $result.= $this->m_fields[$i];
+        $result.= $this->quoteField($this->m_fields[$i]);
         if ($i < count($this->m_fields)-1) $result.=",";
       }
 
@@ -465,7 +477,7 @@
      */
     function buildDelete()
     {
-      $result = "DELETE FROM ".$this->m_tables[0];
+      $result = "DELETE FROM ".$this->quoteField($this->m_tables[0]);
 
       if (count($this->m_conditions)>0)
       {
@@ -620,6 +632,47 @@
       $dbconfig = atkconfig("db");
       $name = "atk" . $dbconfig["default"]["driver"] . "query";
       return new $name();
+    }
+    
+    /**
+     * If we set a m_fieldquote you can pass a field to this function and it will
+     * quote all the identifiers (db, table, column, etc...) in the field.
+     *
+     * @param String $field The field to add quotes too
+     * @return The quoted field, if we have a fieldquote
+     */
+    function quoteField($field)
+    {
+      if ($this->m_fieldquote)
+      {
+        $exploded = explode('.',$field);
+        foreach ($exploded as $identifier)
+        {
+          $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+        }
+        $field = implode('.',$quoted);
+      }
+      return $field;
+    }
+    
+    /**
+     * Quote an array of fields if m_fieldquote is set.
+     * Uses $this->quoteField($field)
+     *
+     * @param Array $fields The fields to add quotes to
+     * @return Array The quoted fields
+     */
+    function quoteFields($fields)
+    {
+      if ($this->m_fieldquote)
+      {
+        foreach ($fields as $key => $field)
+        {
+          $quoted[$key] = $this->quoteField($field);
+        }
+        $fields = $quoted;
+      }
+      return $fields;
     }
   }
 
