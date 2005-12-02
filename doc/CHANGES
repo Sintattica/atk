@@ -8,6 +8,7 @@ Changes in ATK 5.3.1
 --------------------
 + Added ability to wrap fields and tables in quotes and turned this on
   for MySQL. [Boy]
+* Moved addOnChangeHandler() to atkAttribute [Boy]
 
 Changes in ATK 5.3
 ------------------

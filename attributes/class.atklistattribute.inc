@@ -52,11 +52,6 @@
     var $m_lookup = array();
 
     /**
-     * Array for onchange code
-     */
-    var $m_onchangecode = array();
-
-    /**
      * Attribute that is to be selected
      */
     var $m_selected;
@@ -71,6 +66,8 @@
       * @var int
       */
      var $m_width;
+     
+     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
     /**
      * Constructor.
@@ -270,15 +267,6 @@
     {
       // Fieldtype was determined in the constructor.
       return $this->m_dbfieldtype;
-    }
-
-    /**
-     * Add a javascript onchange event handler.
-     * @param $jscode A block of valid javascript code.
-     */
-    function addOnChangeHandler($jscode)
-    {
-      $this->m_onchangecode[] = $jscode;
     }
 
     function renderChangeHandler($fieldprefix)

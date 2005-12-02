@@ -80,6 +80,8 @@
      * @var array
      */
     var $m_selectableRecords = array();
+    
+    var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
 
     /**
@@ -301,8 +303,15 @@
           }
           else
           {
+            $onchange='';
+            if (count($this->m_onchangecode))
+            {
+              $onchange = 'onChange="'.$id.'_onChange(this);"';
+              $this->renderChangeHandler($fieldprefix);
+            }
+
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
-            $result.= '<select id="'.$id.'" name="'.$id.'">';
+            $result.= '<select id="'.$id.'" name="'.$id.'" '.$onchange.'>';
             if (!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&!is_array($value)))
             {
               //get the select_none string

@@ -439,8 +439,25 @@
      *
      * This var exists so that you can assign searchmodes to specific attributes
      * instead of having a general searchmode for the entire search
+     * @access private
+     * @var String     
      */
     var $m_searchmode = "";
+    
+    /**
+     * Array for onchange code
+     * @access private
+     * @var Array
+     */
+    var $m_onchangecode = array();
+    
+    /**
+     * Variable to store initialisation javascript code
+     * in for the changehandler.
+     * @access private
+     * @var String     
+     */
+    var $m_onchangehandler_init = "";
 
     /**
      * Constructor
@@ -528,8 +545,6 @@
     {
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
-
-
 
     /**
      * Returns the name of the attribute.
@@ -642,13 +657,48 @@
     {
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
+      
+      if (count($this->m_onchangecode))
+      {
+        $onchange = 'onChange="'.$id.'_onChange(this);"';
+        $this->_renderChangeHandler($fieldprefix);
+      }
 
       $result = '<input type="text" id="'.$id.'" name="'.$id.
                 '" value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.'.>';
 
       return $result;
+    }
+    
+    /**
+     * Add a javascript onchange event handler.
+     * @param $jscode A block of valid javascript code.
+     * @return bool Returns wether or not it was possible to set the onchange code
+     */
+    function addOnChangeHandler($jscode)
+    {
+      $this->m_onchangecode[] = $jscode;
+      return true;
+    }
+
+    /**
+     * Renders the onchange code on the page
+     *
+     * @param String $fieldprefix The prefix to the field
+     */
+    function _renderChangeHandler($fieldprefix)
+    {
+      if (count($this->m_onchangecode))
+      {
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_scriptcode("function ".$this->getHtmlId($fieldprefix)."_onChange(el)
+                                    {
+                                      {$this->m_onchangehandler_init}
+                                      ".implode("\n", $this->m_onchangecode)."
+                                    }\n");
+      }
     }
 
     /**
