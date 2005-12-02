@@ -650,10 +650,19 @@
     $items=split(" AND ",$set);
     for ($i=0;$i<count($items);$i++)
     {
-      list($key,$value)=split("=",$items[$i]);
+      if (strstr($items[$i], '=') !== false)
+      {
+        list($key,$value) = explode("=",$items[$i]);
+        $result[$key] = stripQuotes($value);
+      }
 
-      $result[$key] = stripQuotes($value);
+      elseif (stristr($items[$i], 'IS NULL') !== false)
+      {
+        list($key) = spliti('IS NULL', $items[$i]);
+        $result[trim($key)] = NULL;
+      }
     }
+
     return $result;
   }
 
@@ -1701,7 +1710,7 @@
    *
    * @param String $pattern Raw string to be escaped
    * @return String Returns a pattern with the predefined pattern escaped
-   */     
+   */
   function escapeForRegex($pattern)
   {
     $escapechars = array("/","?",'"', "(", ")", "'","*",".","[","]");
