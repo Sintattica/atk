@@ -36,6 +36,14 @@
 
     /**
      * Constructor
+     *
+     * @todo I don't know who added the default_date and default_time parameters,
+     *       but at least the atkDateAttribute doesn't support a default date. if
+     *       you want to set a default date you should use initial_values anyways
+     *       so I think the default_date / default_time parameters should be removed.
+     *       But can we keep this backwards compatible somehow? At least now we
+     *       are certain it doesn't work. ;) (PCV)
+     *
      * @param $name        Name of the attribute
      * @param $default_date   start date
      * @param $default_time     start time
@@ -43,33 +51,40 @@
      */
     function atkDateTimeAttribute($name, $default_date="",$default_time="",$flags=0)
     {
-		  $default_steps = array();
-			for($i=0;$i<60;$i++)
-			{
-			  $default_steps[$i] = $i;
-			}
-			if($default_date=="") { $default_date = ""; }
-			if($default_time=="") { $default_time = date("H:i"); }
+      $default_steps = array();
+      for($i=0;$i<60;$i++)
+      {
+        $default_steps[$i] = $i;
+      }
+      if($default_date=="") { $default_date = ""; }
+      if($default_time=="") { $default_time = date("H:i"); }
 
-		  $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time);
-			$this->m_date = new atkDateattribute($name,$default_date);
+      $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time, $flags);
+      $this->m_date = new atkDateattribute($name,'','',0,0,$flags);
+
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
-    function init()
-		{
+    function validate(&$record, $mode)
+    {
+      $this->m_date->validate($record,$mode);
+      $this->m_time->validate($record,$mode);
+    }
 
-		  $this->m_time->m_owner=$this->m_owner;
-		  $this->m_date->m_owner=$this->m_owner;
-		  $this->m_time->m_ownerInstance=&$this->m_ownerInstance;
-		  $this->m_date->m_ownerInstance=&$this->m_ownerInstance;
-		}
+    function init()
+    {
+
+      $this->m_time->m_owner=$this->m_owner;
+      $this->m_date->m_owner=$this->m_owner;
+      $this->m_time->m_ownerInstance=&$this->m_ownerInstance;
+      $this->m_date->m_ownerInstance=&$this->m_ownerInstance;
+    }
 
 
     function fetchMeta($metadata)
     {
-		  $this->m_date->fetchMeta($metadata);
-		  $this->m_time->fetchMeta($metadata);
+      $this->m_date->fetchMeta($metadata);
+      $this->m_time->fetchMeta($metadata);
     }
 
     /**
@@ -110,13 +125,13 @@
     function value2db($rec)
     {
       //$datetime = split(" ",$rec[$this->fieldname()]);
-			//$tmp_rec = $rec;
-			//$tmp_rec[$this->fieldname()]=$datetime[0];
+      //$tmp_rec = $rec;
+      //$tmp_rec[$this->fieldname()]=$datetime[0];
       $date=$this->m_date->value2db($rec);
 
-			//$tmp_rec = $rec;
-			//$tmp_rec[$this->fieldname()]=$datetime[1];
-			$time=$this->m_time->value2db($rec);
+      //$tmp_rec = $rec;
+      //$tmp_rec[$this->fieldname()]=$datetime[1];
+      $time=$this->m_time->value2db($rec);
 
       if($time!='NULL' && $date!='NULL')
         $result = $date." ".$time;
@@ -124,27 +139,28 @@
         $result = 'NULL';
      return $result;
     }
-		/**
+    /**
      * Convert database value to datetime array
      * @param $rec database record with date field
      * @return array with 3 fields (hours:minutes:seconds)
      */
     function db2value($rec)
     {
-		  if(isset($rec[$this->fieldName()]))
-		  {
-  			$datetime = split(" ",$rec[$this->fieldname()]);
+      if(isset($rec[$this->fieldName()]))
+      {
+        $datetime = split(" ",$rec[$this->fieldname()]);
 
-  			$tmp_rec = $rec;
-  			$tmp_rec[$this->fieldname()]=$datetime[0];
+        $tmp_rec = $rec;
+        $tmp_rec[$this->fieldname()]=$datetime[0];
+
         $result_date=$this->m_date->db2value($tmp_rec);
 
-  			$tmp_rec = $rec;
-  			$tmp_rec[$this->fieldname()]=$datetime[1];
-  			$result_time = $this->m_time->db2value($tmp_rec);
+        $tmp_rec = $rec;
+        $tmp_rec[$this->fieldname()]=$datetime[1];
+        $result_time = $this->m_time->db2value($tmp_rec);
 
-  			return array_merge($result_date,$result_time);
-		  }
+        return array_merge($result_date,$result_time);
+      }
     }
 
     /**
