@@ -111,6 +111,13 @@
      * @access private
      */
     var $m_fieldquote;
+    
+    /**
+     * Fields that should not be quoted
+     *
+     * @var Array
+     */
+    var $m_fieldquote_exceptions = array();
 
     /**
     * Initialize all variables
@@ -344,7 +351,6 @@
         $query.= " ORDER BY ".implode(", ",$this->m_orderbys);
       }
     }
-
 
     /**
      * Builds the SQL Select COUNT(*) query. This is different from select,
@@ -648,7 +654,7 @@
         $exploded = explode('.',$field);
         foreach ($exploded as $identifier)
         {
-          if ($identifier!='*') $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+          if (!in_array($identifier,$this->m_fieldquote_exceptions)) $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
           else $quoted[] = $identifier;
         }
         $field = implode('.',$quoted);
