@@ -8,7 +8,8 @@ Changes in ATK 5.3.1
 --------------------
 + Added ability to wrap fields and tables in quotes and turned this on
   for MySQL. [Boy]
-* Moved addOnChangeHandler() to atkAttribute [Boy]
+* Moved addOnChangeHandler() to atkAttribute. [Boy]
+* atkNumberAttributes now renders NULL values as "" instead of 0. [Ivo]
 
 Changes in ATK 5.3
 ------------------

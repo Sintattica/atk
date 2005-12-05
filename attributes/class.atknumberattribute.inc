@@ -57,8 +57,8 @@
     
     function display($record, $mode="")
     {      
-      if (isset($record[$this->fieldName()]))
-      {
+      if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]!=="")
+      {        
         return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
       }
       return "";
