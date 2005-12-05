@@ -648,7 +648,8 @@
         $exploded = explode('.',$field);
         foreach ($exploded as $identifier)
         {
-          $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+          if ($identifier!='*') $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+          else $quoted[] = $identifier;
         }
         $field = implode('.',$quoted);
       }
