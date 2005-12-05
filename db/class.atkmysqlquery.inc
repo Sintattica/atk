@@ -32,7 +32,6 @@
   class atkMysqlQuery extends atkQuery
   {
     var $m_fieldquote='`';
-    var $m_fieldquote_exceptions = array('*');
     
     /**
      * Generate an SQL searchcondition for a regular expression match.

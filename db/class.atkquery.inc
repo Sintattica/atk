@@ -112,12 +112,7 @@
      */
     var $m_fieldquote;
     
-    /**
-     * Fields that should not be quoted
-     *
-     * @var Array
-     */
-    var $m_fieldquote_exceptions = array();
+    var $m_quotedfields=array();
 
     /**
     * Initialize all variables
@@ -152,13 +147,14 @@
     * @param $quote If this parameter is true, stuff is inserted into the db
     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
     *               done without quotes, e.d. SET number = 4.
+    * @param $quotefield 
     */
-    function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true)
+    function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
     {
-      //$this->m_fields[] = strtr($name,"_",".");
       if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;
       $this->m_fields[] = $fieldname;
+      if ($quotefield) $this->m_quotedfields[] = $fieldname;
 
       if ($quote||$value=="") $value = "'".$value."'";
 
@@ -648,20 +644,19 @@
      * @return The quoted field, if we have a fieldquote
      */
     function quoteField($field)
-    {
-      if ($this->m_fieldquote)
+    {      
+      if ((in_array($field,$this->m_quotedfields) || in_array($field, $this->m_tables)) && preg_match('/(^[\w\.]+)/',$field)."'")
       {
         $exploded = explode('.',$field);
         foreach ($exploded as $identifier)
-        {
-          if (!in_array($identifier,$this->m_fieldquote_exceptions)) $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
-          else $quoted[] = $identifier;
+        {          
+          $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
         }
         $field = implode('.',$quoted);
       }
       return $field;
     }
-    
+
     /**
      * Quote an array of fields if m_fieldquote is set.
      * Uses $this->quoteField($field)

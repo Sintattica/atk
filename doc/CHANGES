@@ -6,8 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3.1
 --------------------
-+ Added ability to wrap fields and tables in quotes and turned this on
-  for MySQL. [Boy]
++ Added ability for attributes to define if they want to wrap fields and tables 
+  in quotes and turned this on for MySQL and make atkAttribute do it. [Boy]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttributes now renders NULL values as "" instead of 0. [Ivo]
 
