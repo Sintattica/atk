@@ -36,9 +36,9 @@
     */
    function atkmysql41db()
    {
-       // set type       
+       // set type
        parent::atkmysqldb();
-       $this->m_type = "mysql41";       
+       $this->m_type = "mysql41";
    }
 
    /**
@@ -73,8 +73,16 @@
 
    function _translateError()
    {
-     $this->m_errno = mysqli_errno($this->m_link_id);
-     $this->m_error = mysqli_error($this->m_link_id);
+     if($this->m_link_id!="")
+     {
+       $this->m_errno = mysqli_errno($this->m_link_id);
+       $this->m_error = mysqli_error($this->m_link_id);
+     }
+     else
+     {
+       $this->m_errno = mysqli_connect_errno();
+       $this->m_error = mysqli_connect_error();
+     }
      switch ($this->m_errno)
      {
        case    0: return DB_SUCCESS;
@@ -108,10 +116,10 @@
      /* limit? */
      if ($offset >= 0 && $limit > 0)
        $query .= " LIMIT $offset, $limit";
-     
+
      if (atkconfig("debug")>0)
-     {               
-       atkimport("atk.utils.atkdebugger");        
+     {
+       atkimport("atk.utils.atkdebugger");
        atkDebugger::addQuery($query);
      }
 
@@ -128,10 +136,10 @@
        $this->m_affected_rows = 0;
 
        /* query database */
-       $this->m_query_id = @mysqli_query($this->m_link_id, $query);       
-       
+       $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+
        $this->m_row = 0;
-        
+
        $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
 
        /* invalid query */
@@ -339,19 +347,19 @@
 	        $result[$i]["type"]    = $finfo->type;
 	        $result[$i]["gentype"] = $ddl->getGenericType($finfo->type);
 	        $result[$i]["len"]     = $finfo->length;
-	        
+
 	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
 	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
 	        if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
 	        if($finfo->flags & MYSQLI_AUTO_INCREMENT_FLAG) $result[$i]["flags"]|= MF_AUTO_INCREMENT;
-	    
+
          	if ($full)
            		$result["meta"][$result[$i]["name"]] = $i;
 	      	$i++;
       	}
         $result["num_fields"] = $i;
       	mysqli_free_result($id);
-        
+
         atkdebug("Metadata for $table complete");
         return $result;
      }
