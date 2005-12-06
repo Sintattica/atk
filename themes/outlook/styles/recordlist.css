@@ -32,12 +32,6 @@ TABLE.recordlist TH
   
 }
 
-TABLE.inner TD,
-TABLE.inner TH,
-{
-  border-width: 1px;
-}
-
 TABLE.recordlist .row1
 {
   background-color: #ffffff;
