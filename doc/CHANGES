@@ -10,6 +10,7 @@ Changes in ATK 5.3.1
   in quotes and turned this on for MySQL and make atkAttribute do it. [Boy]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttributes now renders NULL values as "" instead of 0. [Ivo]
+* Replaced some deprecated text() calls with atktext(). [Yury, Guido]. 
 
 Changes in ATK 5.3
 ------------------
