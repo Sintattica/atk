@@ -46,7 +46,7 @@
                    onmouseout="resetrow(this)"
                    onclick="selectrow(this, '{$listid}', {$row.rownum})">
               {foreach from=$row.cols item=col}
-                <td valign="{$vorientation}" {$col.htmlattributes}>
+                <{if $row.type == "subtotal"}th{else}td{/if} valign="{$vorientation}" {$col.htmlattributes}>
                   {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                 </td>
               {/foreach}

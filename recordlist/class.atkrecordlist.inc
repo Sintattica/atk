@@ -337,6 +337,7 @@
           $record["highlight"] = $bgh;
           $record["rownum"] = $i;
           $record["id"] = $listName.'_'.$i;
+          $record["type"] = $list["rows"][$i]["type"];
 
           /* multi-record-priority-actions -> priority selection */
           if (hasFlag($flags, RL_MRPA))
@@ -609,6 +610,7 @@
       {
         $result["rows"][$i] = array("columns" => array(), "actions" => $actions, "mra" => $mra, "record" => &$recordset[$i], "data" => array());
         $result["rows"][$i]["selector"] = $this->m_node->primaryKey($recordset[$i]);
+        $result["rows"][$i]["type"]="data";
         $row = &$result["rows"][$i];
 
         /* locked */
@@ -666,7 +668,7 @@
       if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals())
       {
         atkimport("atk.recordlist.atktotalizer");
-        $totalizer = &new atkTotalizer($this, $columnConfig);
+        $totalizer = &new atkTotalizer($this->m_node, $columnConfig);
         $result["rows"] = $totalizer->totalize($result["rows"]);
       }
 
