@@ -24,6 +24,7 @@
   define("RL_MRA",                            16); // multi-record-actions enabled
   define("RL_MRPA",                           32); // multi-record-priority-actions enabled
   define("RL_LOCK",                           64); // records can be locked
+  define("RL_EXT_SORT",                      128); // extended sort feature
 
   atkimport("atk.utils.atkstringparser");
 
@@ -64,6 +65,7 @@
       $result |= hasFlag($flags, NF_LOCK) ? RL_LOCK : 0;
       $result |= hasFlag($flags, NF_NO_SEARCH) ? RL_NO_SEARCH : 0;
       $result |= hasFlag($flags, NF_NO_EXTENDED_SEARCH) ? RL_NO_EXTENDED_SEARCH : 0;
+      $result |= hasFlag($flags, NF_EXT_SORT) ? RL_EXT_SORT : 0;
       return $result;
     }
 
@@ -155,6 +157,45 @@
         if ($orientation == "right" || $orientation == "both")
         {
           $headercols[] = array("content"=>"");
+        }
+
+        /**************/
+        /* SORT   ROW */
+        /**************/
+        $sortcols = array();
+        $sortstart=""; $sortend="";
+        if (hasFlag($flags, RL_EXT_SORT))
+        {
+          $button = '<input type="submit" value="'.text("sort").'">';
+          if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
+          {
+            $sortcols[] = array("content"=>""); // Empty leader on top of mra action list.
+          }
+          if (hasFlag($flags, RL_LOCK))
+          {
+            $sortcols[] = array("content"=>"");
+          }
+          if ($orientation == "left" || $orientation == "both")
+          {
+            $sortcols[] = array("content"=>$button);
+          }
+
+          $sortstart = '<a name="sortform"></a>'.
+                         '<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.
+                         session_form().
+                           '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new sort
+
+          foreach (array_keys($list["heading"]) as $key)
+          {
+            if (isset($list["sort"][$key])) $sortcols[] = array("content"=>$list["sort"][$key]);
+          }
+
+          $sortend = '</form>';
+
+          if ($orientation == "right" || $orientation == "both")
+          {
+            $headercols[] = array("content"=>$button);
+          }
         }
 
         /**************/
@@ -485,9 +526,12 @@
                                                    "rows"=>$records,
                                                    "header"=>$headercols,
                                                    "search"=>$searchcols,
+                                                   "sort"=>$sortcols,
                                                    "total"=>$totalcols,
                                                    "searchstart"=>$searchstart,
                                                    "searchend"=>$searchend,
+                                                   "sortstart"=>$sortstart,
+                                                   "sortend"=>$sortend,
                                                    "liststart"=>$liststart,
                                                    "listend"=>$listend,
                                                    "listid"=>$listName,
@@ -536,6 +580,8 @@
         $prefix = $embedprefix."][";
       }
 
+      $columnConfig = &$this->m_node->getColumnConfig();
+
       /* get the heading and search columns */
       if (!hasFlag($flags, RL_NO_SEARCH)) $this->m_node->setAttribSizes();
       foreach (array_keys($this->m_node->m_attribIndexList) as $r)
@@ -545,7 +591,7 @@
         {
           $attribute = &$this->m_node->m_attribList[$name];
           $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags,
-                                           @$this->m_node->m_postvars["atksearch"], @$this->m_node->m_postvars["atkorderby"]);
+                                           @$this->m_node->m_postvars["atksearch"], $columnConfig);
         }
       }
 
@@ -615,6 +661,13 @@
             $attribute->addToListArrayRow($this->m_node->m_action, $result, $i, $prefix, $flags);
           }
         }
+      }
+
+      if (hasFlag($flags, RL_EXT_SORT) && $columnConfig->hasSubTotals())
+      {
+        atkimport("atk.recordlist.atktotalizer");
+        $totalizer = &new atkTotalizer($this, $columnConfig);
+        $result["rows"] = $totalizer->totalize($result["rows"]);
       }
 
       if (hasFlag($flags, RL_MRA))

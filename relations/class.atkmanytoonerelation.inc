@@ -80,7 +80,7 @@
      * @var array
      */
     var $m_selectableRecords = array();
-    
+
     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
 
@@ -815,6 +815,16 @@
         }
       }
       return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+    }
+
+    function getOrderByStatement()
+    {
+      if ($this->createDestination())
+      {
+        // In queries, relations are alias'd by their attribute name, so we use that for the sort prefix here.
+        return $this->fieldName().".".$this->m_destInstance->m_default_order;
+      }
+      return parent::getOrderByStatement();
     }
   }
 

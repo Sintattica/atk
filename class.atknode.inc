@@ -127,7 +127,7 @@
   /**
    * Add CSV export ability to the node.
    */
-  define("NF_EXPORT",         1073741824);
+  define("NF_EXPORT",             262144);
 
   /**
    * Disable csv import feature
@@ -136,9 +136,14 @@
   define("NF_NO_IMPORT",               0);
 
   /**
+   * Enable extended sorting (multicolumn sort)
+   */
+  define("NF_EXT_SORT",           524288);
+
+  /**
    * Makes a node cache it's recordlist
    */
-  define("NF_CACHE_RECORDLIST",   262144);
+  define("NF_CACHE_RECORDLIST",  1048576);
 
   /**
    * Specific node flag 1
@@ -3617,18 +3622,41 @@
       }
     }
 
+    /**
+     * Add an atkActionListener to the node.
+     *
+     * @param atkActionListener $listener
+     */
     function addListener(&$listener)
     {
       $listener->setNode($this);
       $this->m_listeners[] = $listener;
     }
 
+    /**
+     * Notify all listeners of the occurance of a certain action.
+     *
+     * @param String $action The action that occurred
+     * @param array $record The record on which the action was performed
+     */
     function notify($action, $record)
     {
       for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
       {
         $this->m_listeners[$i]->notify($action, $record);
       }
+    }
+
+    /**
+     * Get the column configuration object
+     *
+     * @return atkColumnConfig
+     */
+    function &getColumnConfig()
+    {
+      atkimport("atk.recordlist.atkcolumnconfig");
+      $columnConfig = &atkColumnConfig::getConfig($this);
+      return $columnConfig;
     }
 
   }

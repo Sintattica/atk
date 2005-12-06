@@ -8,6 +8,11 @@ Changes in ATK 5.3.1
 --------------------
 + Added ability for attributes to define if they want to wrap fields and tables 
   in quotes and turned this on for MySQL and make atkAttribute do it. [Boy]
++ Added atkColumnConfig class for elaborate sorting options in recordlists.
+  (multi column sort, determinable sort direction per column, NF_EXT_SORT
+  flag for adding a sort toolbar to recordlist). [Ivo]
+* Sorting on atkManyToOneRelation columns now sorts on the actual value
+  instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttributes now renders NULL values as "" instead of 0. [Ivo]
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido]. 

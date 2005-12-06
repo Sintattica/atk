@@ -440,22 +440,22 @@
      * This var exists so that you can assign searchmodes to specific attributes
      * instead of having a general searchmode for the entire search
      * @access private
-     * @var String     
+     * @var String
      */
     var $m_searchmode = "";
-    
+
     /**
      * Array for onchange code
      * @access private
      * @var Array
      */
     var $m_onchangecode = array();
-    
+
     /**
      * Variable to store initialisation javascript code
      * in for the changehandler.
      * @access private
-     * @var String     
+     * @var String
      */
     var $m_onchangehandler_init = "";
 
@@ -657,7 +657,7 @@
     {
       $id = $this->getHtmlId($fieldprefix);
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-      
+
       if (count($this->m_onchangecode))
       {
         $onchange = 'onChange="'.$id.'_onChange(this);"';
@@ -671,7 +671,7 @@
 
       return $result;
     }
-    
+
     /**
      * Add a javascript onchange event handler.
      * @param $jscode A block of valid javascript code.
@@ -892,27 +892,31 @@
      * @param String $fieldprefix the fieldprefix
      * @param int    $flags the recordlist flags
      * @param array  $atksearch the current ATK search list (if not empty)
-     * @param String $atkorderby the current ATK orderby string (if not empty)
+     * @param atkColumnConfig $columnConfig Column configuration object
      * @see atkNode::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig)
     {
       global $g_sessionManager, $ATK_VARS;
 
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
-        $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = $this->label();
+        $key = $fieldprefix.$this->fieldName();
+
+        $arr["heading"][$key]["title"] = $this->label();
 
         if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT))
         {
-          $order = $this->m_ownerInstance->m_table.".".$this->fieldName();
-          if ($atkorderby == $order) $order .= " DESC";
-          $arr["heading"][$fieldprefix.$this->fieldName()]["url"] =
-            session_url($_SERVER["PHP_SELF"].'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($order));
+          $arr["heading"][$key]["url"] = $this->listHeaderSortUrl($columnConfig);
+        }
+
+        if (hasFlag($flags, RL_EXT_SORT))
+        {
+          $arr["sort"][$key] = $this->extendedSort($columnConfig);
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
-          $arr["search"][$fieldprefix.$this->fieldName()] = $this->search($atksearch,null,$fieldprefix);
+          $arr["search"][$key] = $this->search($atksearch,null,$fieldprefix);
       }
     }
 
@@ -1717,6 +1721,77 @@
 
       // add $field to fields array
       $fields[] = $field;
+    }
+
+    function extendedSort(&$columnConfig)
+    {
+      $specificOptions = $this->sortOptions($columnConfig);
+      if ($specificOptions!="")
+      {
+        $res.= $specificOptions;
+      }
+      $res.= ' '.$this->sortOrder($columnConfig);
+      return $res;
+    }
+
+    /**
+     * Default atkAttribute does not have fancy sort options.
+     */
+    function sortOptions(&$columnConfig)
+    {
+      if (!$this->hasFlag(AF_TOTAL) && $columnConfig->totalizable())
+      {
+        // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
+        $cmd = ($columnConfig->hasSubTotal($this->fieldName())?"unsubtotal":"subtotal");
+        return href('dispatch.php?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
+      }
+      return "";
+    }
+
+    function sortOrder(&$columnConfig)
+    {
+      $fieldname = $this->fieldName();
+      $currentOrder = $columnConfig->getOrder($fieldname);
+
+      $res="";
+      if ($currentOrder>0)
+      {
+        $direction = ($columnConfig->getSortDirection($this->fieldName())=="desc" ? "asc":"desc");
+        $res= href('dispatch.php?'.$columnConfig->getUrlCommand($fieldname, $direction), atktext("column_".$direction)).' ';
+      }
+
+      $res.= '<select name="atkcolcmd[][setorder]['.$fieldname.']">';
+      $res.= '<option value="">';
+      for ($i=1; $i<6; $i++)
+      {
+        $selected = ($currentOrder==$i?"selected":"");
+        $res.='<option value="'.$i.'" '.$selected.'>'.$i;
+      }
+      $res.= '</select>';
+
+      return $res;
+    }
+
+    function listHeaderSortUrl(&$columnConfig)
+    {
+      global $ATK_VARS;
+
+      $order = $this->fieldName();
+
+      if (isset($columnConfig->m_colcfg[$order]))
+      {
+        $direction = $columnConfig->getDirection($order);
+        if ($direction=="asc") $order.=" desc";
+      }
+
+      //if ($columnConfig->getDirection($order) != "asc") $order .= " ASC";
+
+      return session_url($_SERVER["PHP_SELF"].'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($order));
+    }
+
+    function getOrderByStatement()
+    {
+      return $this->m_ownerInstance->m_table.".".$this->fieldName();
     }
   }
 ?>

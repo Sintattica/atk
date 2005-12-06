@@ -105,8 +105,10 @@
         if (!isset($node->m_postvars['atklimit'])) $node->m_postvars['atklimit']=atkconfig("recordsperpage");
         if (!isset($node->m_postvars['atkstartat'])) $node->m_postvars['atkstartat']=0;
 
+        $columnConfig = &$node->getColumnConfig();
+
         $recordset = $node->selectDb(@$node->m_postvars['atkfilter'],
-                                     @$node->m_postvars['atkorderby'],
+                                     $columnConfig->getOrderByStatement(),
                                      array("offset" => $node->m_postvars['atkstartat'], "limit" => $node->m_postvars['atklimit']),
                                      $node->m_listExcludes,
                                      "",
