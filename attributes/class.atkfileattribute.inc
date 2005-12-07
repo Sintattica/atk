@@ -268,7 +268,7 @@
           $error = $_FILES[$postfiles_basename]['error'];
 
           // don't complain on no file errors if not obligatory
-          if ($this->hasFlag(AF_OBLIGATORY) && $error == UPLOAD_ERR_NO_FILE) return array();
+          if (!$this->hasFlag(AF_OBLIGATORY) && $error == UPLOAD_ERR_NO_FILE) return array();
 
           // else return the error (which is handled by the validate function)
           else return array('error' => $_FILES[$postfiles_basename]['error']);
