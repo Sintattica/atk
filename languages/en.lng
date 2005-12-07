@@ -6,7 +6,7 @@
   // Language: English (en)
   //
   // Translated by:
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -93,6 +93,8 @@
   "error_uniquefieldset" => "The values for the combination of this fields must be unique",
   "error_unkown_domain" => "Unkown domain",
   "explain_session_expired" => "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
+  "error_file_size" => "File is too big",
+  "error_file_unknown" => "Unknown error during upload of file",
   "export" => "Export",
   "feb" => "Feb",
   "february" => "February",
