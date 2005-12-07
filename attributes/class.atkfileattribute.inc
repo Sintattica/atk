@@ -263,15 +263,10 @@
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
         // if an error occured during the upload process
-        if ($_FILES[$postfiles_basename]['error'] > 0)
+        // and the error is not 'no file' while the field is obligatory
+        if ($_FILES[$postfiles_basename]['error'] > 0 && !(!$this->hasFlag(AF_OBLIGATORY) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE))
         {
-          $error = $_FILES[$postfiles_basename]['error'];
-
-          // don't complain on no file errors if not obligatory
-          if (!$this->hasFlag(AF_OBLIGATORY) && $error == UPLOAD_ERR_NO_FILE) return array();
-
-          // else return the error (which is handled by the validate function)
-          else return array('error' => $_FILES[$postfiles_basename]['error']);
+          return array('error' => $_FILES[$postfiles_basename]['error']);
         }
 
         // if no new file has been uploaded..
