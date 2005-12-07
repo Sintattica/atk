@@ -16,6 +16,9 @@ Changes in ATK 5.3.1
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttributes now renders NULL values as "" instead of 0. [Ivo]
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido]. 
+* atkNode::dispatch() now has a render param which defaults to true
+  in case you want to add the content to the page, 
+  but don't want to render it. [Boy]
 
 Changes in ATK 5.3
 ------------------
