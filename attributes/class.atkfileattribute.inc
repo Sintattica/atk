@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,14 +14,14 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /** flag(s) specific for the atkFileAttribute */
   define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1); // unable to upload files
   define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2); // unable to select files
   define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3); // unable to delete files
   define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4); // don't try to detect the file type (shows only filename)
   define("AF_FILE_PHYSICAL_DELETE",     AF_SPECIFIC_5); // removes the file physically
-  define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline  
+  define("AF_FILE_POPUP",                    AF_POPUP); // show preview in popup instead of inline
 
   /**
    * With this you can upload, select and remove files in a given directory.
@@ -36,8 +36,8 @@
    */
   class atkFileAttribute extends atkAttribute
   {
-    /** 
-     * Directory with images  
+    /**
+     * Directory with images
      */
     var $m_dir = "";
     var $m_url = "";
@@ -50,11 +50,11 @@
      *
      * This is useful in the following case:
      * Say, you have a class for managing users. Each user has a photo associated
-     * with them. Now, if two users would upload 'gandalf.gif', then you would 
+     * with them. Now, if two users would upload 'gandalf.gif', then you would
      * have a naming conflicht and the picture of one user is overwritten with the
      * one from the other user.
      * If you set m_filenameTpl to "picture_[name]", then the file is renamed before
-     * it is stored. If the user's name is 'Ivo Jansch', and he uploads 'gandalf.gif', 
+     * it is stored. If the user's name is 'Ivo Jansch', and he uploads 'gandalf.gif',
      * then the file that is stored is picture_Ivo_Jansch.gif. This way, you have a
      * unique filename per user.
      */
@@ -68,12 +68,12 @@
      * @param int $size Filename size
      */
     function atkFileAttribute($name, $dir, $flags=0, $size=0)
-    {          
+    {
       // We use 255 as default filename size if no size specified.
       if ($size==0) $size = 255;
-      
-      // Call base class constructor. 
-      $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size); 
+
+      // Call base class constructor.
+      $this->atkAttribute($name,$flags|AF_CASCADE_DELETE, $size);
       if(is_array($dir))
       {
         $this->m_dir = $this->AddSlash($dir[0]);
@@ -83,7 +83,7 @@
       {
         $this->m_dir = $this->AddSlash($dir);
 	      $this->m_url = $this->AddSlash($dir);
-      }      
+      }
     }
 
 
@@ -107,9 +107,9 @@
      * @return string piece of html code with a browsebox
      */
     function edit($record="", $fieldprefix="")
-    {   
+    {
       $result=$this->display($record);
-  
+
       if(is_dir($this->m_dir))
       {
         $file_arr=array();
@@ -125,7 +125,7 @@
       {
         return text("no_valid_directory");
       }
-      
+
       $id = $fieldprefix.$this->fieldName();
 
       if ($result!="")
@@ -133,18 +133,18 @@
         $result.="<br>";
         $result.='<input type="hidden" name="'.$id.'_orgfilename" value="'.$record[$this->fieldName()]['orgfilename'].'">';
       }
-      
+
       $result.='<input type="hidden" name="'.$id.'_postfileskey" value="'.$id.'">';
 
-      if(!$this->hasFlag(AF_FILE_NO_UPLOAD)) 
+      if(!$this->hasFlag(AF_FILE_NO_UPLOAD))
       {
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result .= '<input type="file" id="'.$id.'" name="'.$id.'">';
       }
 
       if(!$this->hasFlag(AF_FILE_NO_SELECT) AND count($file_arr) > 0)
       {
-        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+        $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
         $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
         $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
@@ -157,7 +157,7 @@
       if(!$this->hasFlag(AF_FILE_NO_DELETE)
          && isset($record[$this->fieldname()]['filename'])
          && $record[$this->fieldname()]['filename']!='')
-      {      
+      {
        $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
        $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
       }
@@ -183,7 +183,7 @@
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
 
       if(isset($del[$this->fieldName()]) && $del[$this->fieldName()] == "on")
-      {    
+      {
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
         {
           unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
@@ -194,7 +194,7 @@
       {
         $filename = $rec[$this->fieldName()]["filename"];
         // why copy if the files are the same?
-        
+
         if ($this->m_dir.$filename != $rec[$this->fieldName()]["tmpfile"])
         {
             if ($filename!="")
@@ -215,8 +215,8 @@
         return $rec[$this->fieldName()]["orgfilename"];
       }
     }
-    
-    /** 
+
+    /**
      * Convert value to string
      * @param array $rec Array with fields
      * @return array Array with tmpfile, orgfilename,filesize
@@ -226,23 +226,56 @@
       return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],"orgfilename"=>$rec[$this->fieldName()],"filename"=>$rec[$this->fieldName()],"filesize"=>"?");
     }
 
+    function validate(&$record, $mode)
+    {
+      parent::validate($record, $mode);
+
+      $error = $record[$this->fieldName()]['error'];
+      if ($error > 0)
+      {
+        switch ($error)
+        {
+          case UPLOAD_ERR_INI_SIZE:
+          case UPLOAD_ERR_FORM_SIZE:
+            triggerError($record, $this->fieldName(), 'error_file_size', atktext('error_file_size'));
+            break;
+
+          case UPLOAD_ERR_NO_TMP_DIR:
+          case UPLOAD_ERR_PARTIAL:
+          default:
+            triggerError($record, $this->fieldName(), 'error_file_unknown', atktext('error_file_unknown'));
+        }
+      }
+    }
+
     /**
      * Get filename out of Array
      * @param array $rec Record
      * @return array Array with tmpfile,filename,filesize,orgfilename
      */
     function fetchValue($rec)
-    {    
+    {
       if(isset($_REQUEST["del"])) $del=$_REQUEST["del"];
 
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
-     
-      $basename = $this->fieldName();      
-      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
-      { 
-        // if no new file has been uploaded..    
 
-        if (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
+      $basename = $this->fieldName();
+      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
+      {
+        // if an error occured during the upload process
+        if ($_FILES[$postfiles_basename]['error'] > 0)
+        {
+          $error = $_FILES[$postfiles_basename]['error'];
+
+          // don't complain on no file errors if not obligatory
+          if ($this->hasFlag(AF_OBLIGATORY) && $error == UPLOAD_ERR_NO_FILE) return array();
+
+          // else return the error (which is handled by the validate function)
+          else return array('error' => $_FILES[$postfiles_basename]['error']);
+        }
+
+        // if no new file has been uploaded..
+        elseif (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         {
            // No file to upload, then check if the select box is filled
           if(isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != ""
@@ -269,24 +302,25 @@
           }
         }
         else
-        {    
+        {
           $realname = $this->_filenameMangle($rec, $_FILES[$postfiles_basename]["name"]);
           $result = array("tmpfile"=>$_FILES[$postfiles_basename]["tmp_name"],
                           "filename"=>$realname,
                           "filesize"=>$_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$realname);
         }
+
         return $result;
-      }      
+      }
     }
-    
+
     /**
      * Check if the attribute is empty..
      * @param array $postvars Array with the postvars
      * @return boolean true if no image was uploaded
-     */    
+     */
     function isEmpty($postvars)
-    {      
+    {
       if (is_array($_FILES))
       {
         // php4
@@ -297,7 +331,7 @@
         // php3
         return ($postvars[$this->fieldName()]=="none");
       }
-    }   
+    }
 
     /**
      * Deletes file from HD
@@ -322,8 +356,8 @@
      * @return string Filename or Nothing
      */
     function display($record)
-    {      
-            
+    {
+
       $filename    = $record[$this->fieldName()]["orgfilename"];
       atkdebug($this->fieldname()." - File: $filename");
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
@@ -334,13 +368,13 @@
         {
           $ext = strtolower(substr($filename, strrpos($filename,'.')+1,strlen($filename)));
           if((in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_NO_AUTOPREVIEW))||(!in_array($ext, $prev_type)))
-          { 
+          {
             return "<a href=\"".$this->m_url."$filename\" target=\"_blank\">$filename</a>";
           }
           elseif(in_array($ext, $prev_type) && $this->hasFlag(AF_FILE_POPUP))
           {
             if(in_array($ext, $imgtype_prev))
-            { 
+            {
               $imagehw = GetImageSize($this->m_dir.$filename);
             }
             else
@@ -359,7 +393,7 @@
         }
       }
     }
-  
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -374,19 +408,19 @@
      * Determine the real filename of a file (based on m_filenameTpl).
      */
     function _filenameMangle($rec, $default)
-    {    
+    {
       if ($this->m_filenameTpl == "")
       {
         $filename = $default;
       }
       else
-      {        
+      {
         $ext = strtolower(substr($default, strrpos($default,'.')+1));
         $filename = stringparse($this->m_filenameTpl, $rec).".".$ext;
       }
       return str_replace(' ','_',$filename);
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
@@ -406,7 +440,7 @@
 
       return $result;
     }
-    
+
     function dbFieldType()
     {
       return "string";
