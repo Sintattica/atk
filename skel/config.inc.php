@@ -87,12 +87,7 @@
   // a language file is present in the atk/languages directory.
   $config_language="en";
   
-  // Menu configuration. You can have a menu at "top", "left", "right" or 
-  // "bottom". If you use a horizontal menu (top or bottom, you may want
-  // to change the menu_delimiter to " " (menu_delimiter is what atk
-  // puts between menu items).
-  $config_menu_pos = "left"; 
-  $config_menu_delimiter = "<br>";
+  // Menu configuration.
   $config_menu_layout = "plain";
   
   // If you have a menu at either left or right, you can add an

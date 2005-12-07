@@ -334,7 +334,8 @@
         $flags=HTML_HEADER|HTML_DOCTYPE;
       }
       $page = '';
-      if(hasFlag($flags,HTML_DOCTYPE)) $page.=atkconfig("doctype");
+      $theme = &atkinstance("atk.ui.atktheme"); 
+      if(hasFlag($flags,HTML_DOCTYPE)) $page.=$theme->getAttribute("doctype");
       $page.= "\n<html>\n";
       if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);

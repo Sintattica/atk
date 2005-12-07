@@ -57,14 +57,16 @@
       {     
         atkdebug("Creating a new menu instance");                
         // Check if the menu config is one of the detail atk menus
-        if(!in_array(atkconfig("menu_layout"),array("plain","frames","outlook","dhtml")))
+        $theme = &atkinstance("atk.ui.atktheme");
+        $menulayout = $theme->getAttribute("menu_layout");
+        if(!in_array($menulayout,array("plain","frames","outlook","dhtml")))
         { 
           // Check the application menu dir for a class.[menu_layout].inc file
-          $classname = "menu.".atkconfig("menu_layout");          
+          $classname = "menu.".$menulayout;          
         }
         else
         {
-          $classname = "atk.menu.atk".atkconfig("menu_layout")."menu";
+          $classname = "atk.menu.atk".$menulayout."menu";
         }
         $s_instance = atknew($classname);
         atkHarvestModules("getMenuItems");        

@@ -394,44 +394,7 @@
   /************************************ LAYOUT *******************************/
 
   /**
-   *
-   * @var String
-   */
-  $config_doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">';
-
-  /**
-   *
-   * @var String
-   */
-  $config_menu_delimiter = "<br>";
-
-  /**
-   *
-   * @var String
-   */
-  $config_menu_pos = "left";
-
-  /**
-   *
-   * @var String
-   */
-  $config_menu_layout = "plain";
-
-  /**
-   *
-   * @var String
-   */
-  $config_menu_align = "center";
-
-  /**
-   * 0 = no   - 1 = yes
-   * @var int
-   */
-  $config_top_frame = 0;
-
-  /**
-   *
+   * The default theme to use
    * @var String
    */
   $config_defaulttheme = "default";
@@ -441,24 +404,6 @@
    * @var String
    */
   $config_fullscreen = false;
-
-  /**
-   * Whether the action links in a recordlist appear left or right
-   * @var String
-   */
-  $config_recordlist_orientation  = "left";
-
-  /**
-   *
-   * @var String
-   */
-  $config_recordlist_vorientation = "middle";
-
-  /**
-   * Use icons for action links or not
-   * @var String
-   */
-   $config_recordlist_icons = "true";
 
   /**
    * Whatever tabs are enabled or not
@@ -488,19 +433,19 @@
   /********************************** LANGUAGE *******************************/
 
   /**
-   *
+   * The language to use for the application
    * @var String
    */
   $config_language="en";
 
   /**
-   *
+   * The default language for the application
    * @var String
    */
   $config_defaultlanguage = "en";
 
   /**
-   *
+   * The name of the directory atkLanguage can find it's languages in.
    * @var String
    */
   $config_language_basedir = "languages/";
