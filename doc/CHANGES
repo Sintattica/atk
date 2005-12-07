@@ -11,6 +11,7 @@ Changes in ATK 5.3.1
 + Added atkColumnConfig class for elaborate sorting options in recordlists.
   (multi column sort, determinable sort direction per column, NF_EXT_SORT
   flag for adding a sort toolbar to recordlist). [Ivo]
++ Added correct errorhandling for atkFileAttribute [Peter]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
