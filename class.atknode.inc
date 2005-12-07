@@ -1888,7 +1888,30 @@
      *                          etc. (When $fullpage is true, these are
      *                          automatically included in the page header.
      */
-    function dispatch($postvars, $fullpage=true, $render=true)
+    function dispatch($postvars, $fullpage=true)
+    {
+      $this->loadDispatchPage($postvars);
+
+      $ui = &$this->getUi();
+      $page = &$this->getPage();
+      $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
+
+      $output = &atkOutput::getInstance();
+      $output->output($screen);
+
+      // This is the end of all things for this page..
+      // so we clean up some resources..
+      $db = &$this->getDb();
+      if (is_object($db)) $db->disconnect();
+      atkdebug("disconnected from the database");
+    }
+    
+    /**
+     * Does the actual loading of the dispatch page 
+     * And adds it to the page for the dispatch() method to render.
+     * @param array $postvars The request variables for the node.
+     */
+    function loadDispatchPage($postvars)
     {
       $this->m_postvars = $postvars;
 
@@ -1915,20 +1938,6 @@
       {
         $page->addContent($this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $this->m_type)."<br><br><br>"));
       }
-
-      if ($render)
-      {
-        $ui = &$this->getUi();
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
-
-        $output = &atkOutput::getInstance();
-        $output->output($screen);
-      }
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $db = &$this->getDb();
-      if (is_object($db)) $db->disconnect();
-      atkdebug("disconnected from the database");
     }
 
     /**
