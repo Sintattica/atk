@@ -200,7 +200,32 @@
       }
       return "";
     }
+    
+    function getIconPath()
+    {
+      static $s_icon_path = NULL;
+      
+      if ($s_icon_path === NULL) 
+      {
+        global $g_theme;
 
+        if($g_theme["TreeIcon_dir"]!=""&&is_dir(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
+        {
+          $s_icon_path = atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
+        }
+        else
+        {
+          $s_icon_path = atkconfig("atkroot")."atk/themes/default/icons/tree/";
+        }
+      }
+      
+      return $s_icon_path;
+    }
+    
+    function getIcon($type)
+    {
+      return $this->getIconPath()."tree_$type.gif";
+    }
 
     /**
      * Recursive funtion which fills an array with all the items of the tree.
@@ -212,28 +237,19 @@
       global $g_maxlevel,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
       if(count($this->m_tree)==1) return "";
 
-      if ($expandAll) $this->m_tree[0]["expand"] = 1;
-      if($g_theme["TreeIcon_dir"]!=""&&is_dir($config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
-      {
-        $icon_path =$config_atkroot."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
-      }
-      else
-      {
-        $icon_path =$config_atkroot."atk/themes/default/icons/tree/";
-      }
-      $img_expand   = $icon_path."tree_expand.gif";
-      $img_collapse = $icon_path."tree_collapse.gif";
-      $img_line     = $icon_path."tree_vertline.gif";
-      $img_split    = $icon_path."tree_split.gif";
-      $img_plus     = $icon_path."tree_split_plus.gif";
-      $img_minus    = $icon_path."tree_split_minus.gif";
-      $img_end      = $icon_path."tree_end.gif";
-      $img_end_plus = $icon_path."tree_end_plus.gif";
-      $img_end_minus= $icon_path."tree_end_minus.gif";
-      $img_leaf     = $icon_path."tree_leaf.gif";
-      $img_leaflink = $icon_path."tree_leaf_link.gif";
-      $img_spc      = $icon_path."tree_space.gif";
-      $img_extfile  = $icon_path."tree_extfile.gif";
+      $img_expand   = $this->getIcon('expand');
+      $img_collapse = $this->getIcon('collapse');
+      $img_line     = $this->getIcon('vertline');
+      $img_split    = $this->getIcon('split');
+      $img_plus     = $this->getIcon('split_plus');
+      $img_minus    = $this->getIcon('split_minus');
+      $img_end      = $this->getIcon('end');
+      $img_end_plus = $this->getIcon('end_plus');
+      $img_end_minus= $this->getIcon('end_minus');
+      $img_leaf     = $this->getIcon('leaf');
+      $img_leaflink = $this->getIcon('leaf_link');
+      $img_spc      = $this->getIcon('space');
+      $img_extfile  = $this->getIcon('extfile');
 
       $res="";
       $lastlevel=0;

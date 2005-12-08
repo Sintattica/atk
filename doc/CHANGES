@@ -11,7 +11,9 @@ Changes in ATK 5.3.1
 + Added atkColumnConfig class for elaborate sorting options in recordlists.
   (multi column sort, determinable sort direction per column, NF_EXT_SORT
   flag for adding a sort toolbar to recordlist). [Ivo]
-+ Added correct errorhandling for atkFileAttribute [Peter]
++ Added correct error handling for atkFileAttribute. [Peter]
++ Added getIcon/getIconPath methods to atkTreeNode to override icons
+  more easily (without the need for creating a separate theme). [Peter]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
@@ -19,6 +21,8 @@ Changes in ATK 5.3.1
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido]. 
 * Decomposed atkNode::dispatch() to loadDispatchPage() which does the actual
   loading of the page for dispatch() to render. [Boy]
+* Fixed bug in atkTreeNode that didn't allow the usage of string based
+  key and parent fields. [Peter]
 
 Changes in ATK 5.3
 ------------------
