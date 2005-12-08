@@ -265,7 +265,6 @@
             $condition .= " AND ".$this->m_destInstance->m_table.".".$destfilter;
           }
         }
-        $fields = atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey);
         $recs = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
         return $recs[0];
       }
@@ -474,35 +473,15 @@
     {
       if ($this->createDestination())
       {
-        $vars = &$record[$this->fieldName()];
-        if ($this->m_refKey!="")
-        {
-          // Foreign key is in destination node                  
-          if ($this->destinationHasRelation())
-          {
-            $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];          
-          }
-          else
-          {
-            //if the a onetoonerelation has no relation on the other side the m_refKey is not an array          
-            // experimental, will the next line always work?
-            $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($vars[$this->m_refKey]);
-          }
-        }
-        else
-        {
-          // Foreign key is in source node
-          // After add, we must store the key value.
-        }
-        
-          
+        $vars = &$this->_getStoreValue($record);
+                  
         if ($vars["mode"]=="edit")
         {
           atkdebug("Updating existing one2one record");
           // we put the vars in the postvars, because there is information
           // like atkorgkey in it that is vital.
           // but we restore the postvars after we're done updating          
-	  $oldpost = $this->m_destInstance->m_postvars;
+	         $oldpost = $this->m_destInstance->m_postvars;
           $this->m_destInstance->m_postvars = $vars;
           $res = $this->m_destInstance->updateDb($vars);
           $this->m_destInstance->m_postvars = $oldpost;
@@ -527,6 +506,52 @@
           return true;
         }
       }
+    }
+    
+    /**
+     * Gets the value to store for the onetoonerelation
+     *
+     * @param Array &$record The record to get the value from
+     * @return mixed The value to store
+     */
+    function &_getStoreValue(&$record)
+    {
+      $vars = &$record[$this->fieldName()];
+      if ($this->m_refKey!="")
+      {
+        // Foreign key is in destination node
+        if ($this->destinationHasRelation())
+        {
+          $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+        }
+        else
+        {
+          //if the a onetoonerelation has no relation on the other side the m_refKey is not an array
+          // experimental, will the next line always work?
+          $refattr = $this->m_destInstance->getAttribute($this->m_refKey);
+          if ($refattr->m_destination)
+          {
+            /**
+               * If we have a destination, the ref key is a non-onetoone relation!
+               * So we have to treat the record as such... this is specifically geared towards
+               * the manytoone relation and may not work for others
+               * A way should be found to make this work for whatever
+               * maybe use value2db and db2value on eachother or something?
+               */
+            $vars[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($vars[$this->m_refKey]);
+          }
+          else
+          {
+            $vars[$this->m_refKey] = $this->m_ownerInstance->m_attribList[$this->m_ownerInstance->primaryKeyField()]->value2db($record);
+          }
+        }
+      }
+      else
+      {
+        // Foreign key is in source node
+        // After add, we must store the key value.
+      }
+      return $vars;
     }
         
     /**
