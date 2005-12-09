@@ -1400,12 +1400,13 @@
    * @param string $node the (module.)node name
    * @param string $action the atk action the link will perform
    * @param string $params: A key/value array with extra options for the url
+   * @param string $phpfile The php file to use for dispatching, defaults to dispatch.php
    * @return string url for the node with the action
    */
-  function dispatch_url($node, $action, $params="")
+  function dispatch_url($node, $action, $params="",$phpfile='dispatch.php')
   {
     /* create url */
-    $url = "dispatch.php?atknodetype=".$node."&atkaction=".$action;
+    $url = $phpfile."?atknodetype=".$node."&atkaction=".$action;
     if ($params!=""&&is_array($params))
     {
       foreach ($params as $key => $value)
@@ -1602,16 +1603,16 @@
    * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
    * @return obj instance of the class
    * */
-  function &atkinstance($fullclassname)
+  function &atkinstance($fullclassname, $reset=false)
   {
     static $s_instances = array();
-    if (!isset($s_instances[$fullclassname]))
+    if (!isset($s_instances[$fullclassname]) || $reset)
     {
       atkimport($fullclassname);
       $elems = explode(".", strtolower($fullclassname));
       $classname = $elems[count($elems)-1];
       atkdebug("Getting singleton instance $fullclassname");
-      eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance();");
+      eval("\$s_instances[\$fullclassname] = &".$classname."::getInstance($reset);");
     }
     return $s_instances[$fullclassname];
   }
