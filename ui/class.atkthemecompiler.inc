@@ -77,8 +77,8 @@
     {
       global $g_modules;
 
-      $this->m_themedefs[] = $this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = $this->THEMEDIRNAME."/default/".$this->THEMEFILE;
+      $this->m_themedefs[] = atkconfig("atkroot").$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+      $this->m_themedefs[] = atkconfig("atkroot").$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
 
       foreach ($g_modules as $modname => $modpath)
       {
@@ -86,8 +86,8 @@
         $this->m_themedefs[] = moduleDir($modname).$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
       }
 
-      $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = "atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
+      $this->m_themedefs[] = atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
+      $this->m_themedefs[] = atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
     }
 
     /**
@@ -97,9 +97,9 @@
     function getThemedef()
     {
       $file = array_shift($this->m_themedefs);
-      if (file_exists(atkconfig("atkroot").$file))
+      if (file_exists($file))
       {
-        include(atkconfig("atkroot").$file);
+        include($file);
         atkdebug("Found $file, going to compile it");
         $fromlength = strrpos($file, "/");
         $from = substr($file, 0, $fromlength);
@@ -201,12 +201,12 @@
      */
     function _scanAutodetectdirectory($directory, $from)
     {
-      if (!file_exists(atkconfig("atkroot").$from.$directory))
+      if (!file_exists($from.$directory))
       {
-         atkerror("Scan of ".atkconfig("atkroot").$from.$directory." failed! Invalid directory passed. Skipping...");
+         atkerror("Scan of ".$from.$directory." failed! Invalid directory passed. Skipping...");
          return array();
       }
-      $handle=opendir(atkconfig("atkroot").$from.$directory);
+      $handle=opendir($from.$directory);
 
       while (($file = readdir($handle))!==false)
       {
