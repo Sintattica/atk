@@ -28,6 +28,12 @@ Changes in ATK 5.3.1
 * Made themecompiler able to handle modules not located in the atkroot. [Boy]
 * Added ability to reset instances created by atkinstance if supported by the
   node and added support for atkTheme. [Boy]
+* Fixed error reporting for embeded atkOneToMany. [Boy]
+* atkOneToMany navigation links are not shown if there is no filter. [Boy]
+* Upon validating we don't check in the postvars for the value of the id
+  but in the record we are passed. [Boy]
+* Added new param to dispatch_url allowing you to dispatch 
+  to other php files then dispatch.php. [Boy]
 
 Changes in ATK 5.3
 ------------------
