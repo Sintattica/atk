@@ -62,7 +62,7 @@
         unset($this->m_parentless[$id]);        
       }
       
-      if ($parent===0 || $parent===NULL || $parent==="0")
+      if (empty($parent))
       {
         $this->m_tree[] = &$n;
         }
