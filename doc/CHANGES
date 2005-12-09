@@ -25,7 +25,9 @@ Changes in ATK 5.3.1
   key and parent fields. [Peter]
 * Fixed bug in o2o relation that caused the foreign key in the record to be 
   stored to be an array instead of a value. [Boy]
-* Made themecompiler able to handle modules not located in the atkroot [Boy]
+* Made themecompiler able to handle modules not located in the atkroot. [Boy]
+* Added ability to reset instances created by atkinstance if supported by the
+  node and added support for atkTheme. [Boy]
 
 Changes in ATK 5.3
 ------------------

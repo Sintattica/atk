@@ -74,10 +74,10 @@
      * ensures that there is never more than one instance (Singleton pattern)
      * @return obj atkTheme instance
      */
-    function &getInstance()
+    function &getInstance($reset=false)
     {
       static $s_instance = NULL;
-      if ($s_instance == NULL)
+      if ($s_instance == NULL || $reset)
       {
         $s_instance = new atkTheme();
       }
@@ -231,7 +231,7 @@
         $attrib = $this->_getStackedItem($attribname,$attribvalue);
         if ($attrib)
         {
-          return atkconfig("atkroot").$attrib["dir"].$returnpath;
+          return $attrib["dir"].$returnpath;
         }
         return atkconfig("atkroot")."atk/themes/default/".$defaultreturnpath;
       }
