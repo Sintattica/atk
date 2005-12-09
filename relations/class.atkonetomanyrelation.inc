@@ -193,7 +193,8 @@
             return $cache;
           }
         }
-        $output = $this->_getEditOutput($record,$fieldprefix);
+        $output = $error;
+        $output .= $this->_getEditOutput($record,$fieldprefix);
         if ($this->m_recordlistcache) $this->m_recordlistcache->writeCache($output, $this->m_recordlist->m_actionloader);
         return $output;
       }
@@ -246,6 +247,7 @@
               }
             }
           }
+          
           $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
           if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
           {
@@ -253,7 +255,7 @@
           }
           else
           {
-            $error = "<span class='error'>".$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
+            $error = "<span class='error'>".$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['attrib_name'].': '.$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
           }
         }
       }
@@ -426,10 +428,10 @@
      * @param Array $record     The record that holds the value for this attribute.
      * @return String  The link to add records to the onetomany
      */
-    function _addAddLink($myrecords, $record)
+    function _addAddLink($myrecords, $record,$saveform=true)
     {
       $url = "";
-      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&!$this->m_destInstance->hasFlag(NF_NO_ADD))
+      if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&$this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         if ($this->destinationHasRelation())
         {
@@ -457,22 +459,33 @@
           $strfilter.=' AND '.$this->m_destinationFilter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
-        $key = "link_".$this->fieldName()."_add";
-
+        $label = $this->getAddLabel();
+        
+        if (count($this->m_onchangecode))
+        {
+          $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
+          $this->_renderChangeHandler($fieldprefix);
+        }
+        $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange);
+      }
+      return $url;
+    }
+    
+    function getAddLabel()
+    {
+      $key = "link_".$this->fieldName()."_add";
+      $label = atktext($key,$this->m_destInstance->m_module);
+      if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+      {
+        $key = "link_".getNodeType($this->m_destination)."_add";
         $label = atktext($key,$this->m_destInstance->m_module);
         if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
         {
-          $key = "link_".getNodeType($this->m_destination)."_add";
+          $key = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add"));
           $label = atktext($key,$this->m_destInstance->m_module);
-          if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
-          {
-            $key = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add"));
-            $label = atktext($key,$this->m_destInstance->m_module);
-          }
         }
-        $url = href($add_url,$label,SESSION_NESTED,true);
       }
-      return $url;
+      return $label;
     }
 
     /**
@@ -980,10 +993,13 @@
         // otherwise we just don't set a filter
       }
 
-      // create a navigator and let it create the navigation links using the temporary node
-      $navigator  = &atknew("atk.utils.atknavigator");
-      $navigation = $navigator->getNavigationUrls($this->m_destInstance,"admin", $destfilter);
-      $navstr     = $navigator->buildNavigation($this->m_destInstance,"admin",$navigation, true);
+      if ($destfilter)
+      {
+        // create a navigator and let it create the navigation links using the temporary node
+        $navigator  = &atknew("atk.utils.atknavigator");
+        $navigation = $navigator->getNavigationUrls($this->m_destInstance,"admin", $destfilter);
+        $navstr     = $navigator->buildNavigation($this->m_destInstance,"admin",$navigation, true);
+      }
 
       // add the navigation to the top and bottom of the page
       if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
