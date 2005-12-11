@@ -21,20 +21,21 @@ Changes in ATK 5.3.1
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido] 
 * Decomposed atkNode::dispatch() to loadDispatchPage() which does the actual
   loading of the page for dispatch() to render. [Boy]
-* Fixed bug in atkTreeNode that didn't allow the usage of string based
-  key and parent fields. [Peter]
+* Fixed bug in atkTreeNode that didn't allow the usage of string based key and
+  parent fields. [Peter]
 * Fixed bug in atkOneToOneRelation that caused the foreign key in the record 
   to be stored to be an array instead of a value. [Boy]
-* Made atkThemeCompiler able to handle modules not located in the atkroot. [Boy]
+* Made atkThemeCompiler able to handle modules not located in the atkroot. i
+  [Boy]
 * Added ability to reset instances created by atkinstance if supported by the
   node and added support for atkTheme. [Boy]
 * Fixed error reporting for embeded atkOneToManyRelation. [Boy]
 * atkOneToManyRelation navigation links are not shown if there is no 
   filter. [Boy]
-* Upon validating we don't check in the postvars for the value of the id
-  but in the record that is passed. [Boy]
-* Added new param to dispatch_url allowing you to dispatch 
-  to other php files than dispatch.php. [Boy]
+* Upon validating we don't check in the postvars for the value of the id but 
+  in the record that is passed. [Boy]
+* Added new param to dispatch_url allowing you to dispatch to other php files 
+  than dispatch.php. [Boy]
 
 Changes in ATK 5.3
 ------------------
