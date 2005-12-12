@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -20,12 +20,12 @@
     * Custom flags
     */
    define("AF_DUMMY_SHOW_LABEL", AF_SPECIFIC_1); // make the dummy label its fields
-   
+
   /**
    * With the atkDummyAttribute class you can place comments between other
    * attributes.
    *
-   * Use the flag AF_NOLABEL if you want to start at the beginning of the 
+   * Use the flag AF_NOLABEL if you want to start at the beginning of the
    * line.
    *
    * @author Sandy Pleyte <sandy@ibuildings.nl>
@@ -46,9 +46,9 @@
      */
     function atkDummyAttribute($name, $text="", $flags=0)
     {
-    	if (hasFlag($flags, AF_DUMMY_SHOW_LABEL))$flags=$flags|AF_HIDE_SEARCH;
-    	else $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH;
-    	
+    	if (hasFlag($flags, AF_DUMMY_SHOW_LABEL))$flags=$flags|AF_HIDE_SEARCH|AF_NO_SORT;
+    	else $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH|AF_NO_SORT;
+
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
     }
@@ -91,7 +91,7 @@
     {
       return true;
     }
-    
+
     function db2value($record)
     {
       return NULL;
@@ -113,7 +113,7 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array();
     }
-    
+
     function dbFieldType()
     {
       return "";
