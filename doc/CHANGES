@@ -14,6 +14,7 @@ Changes in ATK 5.3.1
 + Added correct error handling for atkFileAttribute. [Peter]
 + Added getIcon/getIconPath methods to atkTreeNode to override icons
   more easily (without the need for creating a separate theme). [Peter]
++ Added atkGetSessionManager function. [Peter]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
