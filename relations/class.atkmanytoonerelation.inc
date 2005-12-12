@@ -493,7 +493,7 @@
           }
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
 
-          $result = '<select ';
+          $result = '<select class="'.get_class($this).'" ';
           if ($extended)
           {
             $result.='multiple size="'.min(5,count($recordset)+1).'"';
@@ -525,7 +525,7 @@
       {
         $id = "atksearch[".$fieldprefix.$this->fieldName()."]";
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
-        $result = '<input type="text" id="'.$id.'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+        $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
           ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
           ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
         return $result;

@@ -246,11 +246,11 @@
         elseif ($obligatory) $value = adodb_date("Y-m-d");
         else $value = "";
         $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_UPDOWN);
-        $result = '<input type="text" id="'.$fieldname.'" name="'.$fieldname.'" value="'.$value.'" size="10">';
+        $result = '<input type="text" id="'.$fieldname.'" class="atkdateattribute" name="'.$fieldname.'" value="'.$value.'" size="10">';
 
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
         {
-          $result.=' <input class="button" type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \'y-mm-dd\', false);">';
+          $result.=' <input class="button" class="atkdateattribute" type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \'y-mm-dd\', false);">';
         }
         return $result;
       }
