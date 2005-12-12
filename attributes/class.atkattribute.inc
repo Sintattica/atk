@@ -664,10 +664,10 @@
         $this->_renderChangeHandler($fieldprefix);
       }
 
-      $result = '<input type="text" id="'.$id.'" name="'.$id.
+      $result = '<input type="text" id="'.$id.'" name="'.$id.'" class="atkattribute"'.
                 '" value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.'.>';
+                ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
       return $result;
     }

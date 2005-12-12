@@ -357,7 +357,7 @@
           if(!empty($current["y_max"]) && !empty($current["y_min"]) && $current["y_max"] - $current["y_min"] <= $this->m_maxyears)
           {
             $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-            $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" onChange="'.$str_script.'">';
+            $result .= '<select id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" onChange="'.$str_script.'">';
             if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
               $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
             for($j = $current["y_min"]; $j <= $current["y_max"]; $j++)
@@ -376,7 +376,7 @@
           else
           {
             $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);
-            $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
+            $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
         }
 
@@ -384,7 +384,7 @@
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
         {
           $this->registerKeyListener($fieldname.'[day]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result .= '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" onChange="'.$str_script.'">';
+          $result .= '<select id="'.$fieldname.'[day]" name="'.$fieldname.'[day]" class="atkdateattribute" onChange="'.$str_script.'">';
           if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           if (!$pda)
@@ -426,7 +426,7 @@
         elseif($str_format[$i] == "m" || $str_format[$i] == "n" || $str_format[$i] == "M" || $str_format[$i] == "F")
         {
           $this->registerKeyListener($fieldname.'[month]', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result .= '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" onChange="'.$str_script.'">';
+          $result .= '<select id="'.$fieldname.'[month]" name="'.$fieldname.'[month]" class="atkdateattribute" onChange="'.$str_script.'">';
           if (!$obligatory || $this->hasflag(AF_DATE_EMPTYFIELD))
             $result .= '<option value="0"'.($current === NULL ? ' selected' : '').'></option>';
           if (!$pda)

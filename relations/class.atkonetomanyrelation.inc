@@ -466,7 +466,7 @@
           $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
           $this->_renderChangeHandler($fieldprefix);
         }
-        $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange);
+        $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange.' class="atkonetomanyrelation"');
       }
       return $url;
     }

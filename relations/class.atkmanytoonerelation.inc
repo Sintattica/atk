@@ -311,7 +311,7 @@
             }
 
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
-            $result.= '<select id="'.$id.'" name="'.$id.'" '.$onchange.'>';
+            $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
             if (!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&!is_array($value)))
             {
               //get the select_none string
@@ -395,7 +395,7 @@
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
                            atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
                            SESSION_NESTED,
-                           true);
+                           true,'class="atkmanytoonerelation"');
           }
           else
           {
@@ -403,7 +403,7 @@
                            "&atkaction=select&atktarget=".$atktarget,
                            atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
                            SESSION_NESTED,
-                           true);
+                           true,'class="atkmanytoonerelation"');
           }
         }
 
