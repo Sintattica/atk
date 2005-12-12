@@ -20,11 +20,18 @@ function placeFocus()
   {
     var field = document.forms[0];
     for (i = 0; i < field.length; i++) 
-    {
-      if ((field.elements[i].type == "text") || (field.elements[i].type =="textarea") || (field.elements[i].type.toString().charAt(0) == "s")) 
+    {      
+      if (((field.elements[i].type == "text") || (field.elements[i].type =="textarea") || (field.elements[i].type.toString().charAt(0) == "s"))) 
       {
-        document.forms[0].elements[i].focus();
-        break;
+        if (field.elements[i].id) 
+        {
+          obj = get_object('ar_'+field.elements[i].id);
+          if (obj && obj.style.display!=='none')
+          {
+            document.forms[0].elements[i].focus();
+            break;
+          }
+        }
       }
     }
   }
