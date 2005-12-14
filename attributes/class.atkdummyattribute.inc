@@ -46,8 +46,12 @@
      */
     function atkDummyAttribute($name, $text="", $flags=0)
     {
-    	if (hasFlag($flags, AF_DUMMY_SHOW_LABEL))$flags=$flags|AF_HIDE_SEARCH|AF_NO_SORT;
-    	else $flags=$flags|AF_BLANKLABEL|AF_HIDE_SEARCH|AF_NO_SORT;
+    	// A Dummy attrikbute should not be searchable and sortable
+      $flags |= AF_HIDE_SEARCH | AF_NO_SORT;
+
+      // Add the AF_BLANKLABEL flag unless the AF_DUMMY_SHOW_LABEL flag wasn't present
+      if (!hasFlag($flags, AF_DUMMY_SHOW_LABEL))
+    	  $flags |= AF_BLANKLABEL;
 
       $this->atkAttribute($name,$flags); // base class constructor
       $this->m_text = $text;
