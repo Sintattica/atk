@@ -27,7 +27,7 @@
  * @author Monte Ohrt <monte at ohrt dot com>
  * @author Andrei Zmievski <andrei@php.net>
  * @package Smarty
- * @version 2.6.9
+ * @version 2.6.11
  */
 
 /* $Id$ */
@@ -50,7 +50,7 @@ if (!defined('SMARTY_DIR')) {
 }
 
 if (!defined('SMARTY_CORE_DIR')) {
-    define('SMARTY_CORE_DIR', SMARTY_DIR . 'core' . DIRECTORY_SEPARATOR);
+    define('SMARTY_CORE_DIR', SMARTY_DIR . 'internals' . DIRECTORY_SEPARATOR);
 }
 
 define('SMARTY_PHP_PASSTHRU',   0);
@@ -464,7 +464,7 @@ class Smarty
      *
      * @var string
      */
-    var $_version              = '2.6.9';
+    var $_version              = '2.6.11';
 
     /**
      * current template inclusion depth
@@ -1055,9 +1055,12 @@ class Smarty
     {
         if(!isset($name)) {
             return $this->_tpl_vars;
-        }
-        if(isset($this->_tpl_vars[$name])) {
+        } elseif(isset($this->_tpl_vars[$name])) {
             return $this->_tpl_vars[$name];
+        } else {
+            // var non-existant, return valid reference
+            $_tmp = null;
+            return $_tmp;   
         }
     }
 
@@ -1074,6 +1077,10 @@ class Smarty
             return $this->_config[0]['vars'];
         } else if(isset($this->_config[0]['vars'][$name])) {
             return $this->_config[0]['vars'][$name];
+        } else {
+            // var non-existant, return valid reference
+            $_tmp = null;
+            return $_tmp;
         }
     }
 
@@ -1244,7 +1251,7 @@ class Smarty
         // buffering - for speed
         $_cache_including = $this->_cache_including;
         $this->_cache_including = false;
-        if ($display && !$this->caching && count($this->_plugins['outputfilter']) == 0) {            
+        if ($display && !$this->caching && count($this->_plugins['outputfilter']) == 0) {
             if ($this->_is_compiled($resource_name, $_smarty_compile_path)
                     || $this->_compile_resource($resource_name, $_smarty_compile_path))
             {
@@ -1405,6 +1412,7 @@ class Smarty
      */
     function _compile_resource($resource_name, $compile_path)
     {
+
         $_params = array('resource_name' => $resource_name);
         if (!$this->_fetch_resource_info($_params)) {
             return false;
@@ -1690,8 +1698,8 @@ class Smarty
      */
     function _dequote($string)
     {
-        if (($string{0} == "'" || $string{0} == '"') &&
-            $string{strlen($string)-1} == $string{0})
+        if ((substr($string, 0, 1) == "'" || substr($string, 0, 1) == '"') &&
+            substr($string, -1) == substr($string, 0, 1))
             return substr($string, 1, -1);
         else
             return $string;
@@ -1738,11 +1746,11 @@ class Smarty
         }
 
         if(isset($auto_source)) {
-            // make source name safe for filename            
-            $_filename = urlencode(basename($auto_source));            
+            // make source name safe for filename
+            $_filename = urlencode(basename($auto_source));
             $_crc32 = sprintf('%08X', crc32($auto_source));
             // prepend %% to avoid name conflicts with
-            // with $params['auto_id'] names                                    
+            // with $params['auto_id'] names
             $_crc32 = substr($_crc32, 0, 2) . $_compile_dir_sep .
                       substr($_crc32, 0, 3) . $_compile_dir_sep . $_crc32;
                       
@@ -1751,7 +1759,8 @@ class Smarty
               $_filename = crc32($_filename);
             }
             // end ivo hack                      
-            $_return .= '%%' . $_crc32 . '%%' . $_filename;            
+            
+            $_return .= '%%' . $_crc32 . '%%' . $_filename;
         }
 
         return $_return;
@@ -1859,6 +1868,7 @@ class Smarty
 
         $_smarty_compile_path = $this->_get_compile_path($params['smarty_include_tpl_file']);
 
+
         if ($this->_is_compiled($params['smarty_include_tpl_file'], $_smarty_compile_path)
             || $this->_compile_resource($params['smarty_include_tpl_file'], $_smarty_compile_path))
         {
@@ -1893,7 +1903,7 @@ class Smarty
 
         if ($this->_cache_including) {
             /* return next set of cache_attrs */
-            $_return =& current($_cache_attrs);
+            $_return = current($_cache_attrs);
             next($_cache_attrs);
             return $_return;
 
@@ -1913,7 +1923,7 @@ class Smarty
      */
     function _include($filename, $once=false, $params=null)
     {
-        if ($once) {          
+        if ($once) {
             return include_once($filename);
         } else {
             return include($filename);
