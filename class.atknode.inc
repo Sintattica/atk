@@ -1905,9 +1905,9 @@
       if (is_object($db)) $db->disconnect();
       atkdebug("disconnected from the database");
     }
-
+    
     /**
-     * Does the actual loading of the dispatch page
+     * Does the actual loading of the dispatch page 
      * And adds it to the page for the dispatch() method to render.
      * @param array $postvars The request variables for the node.
      */
@@ -3654,10 +3654,7 @@
     {
       for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
       {
-        if (atk_in_array($action, $this->m_listeners[$i]->m_actionfilter))
-        {
-          $this->m_listeners[$i]->notify($action, $record);
-        }
+        $this->m_listeners[$i]->notify($action, $record);
       }
     }
 
