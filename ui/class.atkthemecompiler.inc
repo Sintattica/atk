@@ -15,6 +15,8 @@
    * $Id$
    */
 
+  atkimport('atk.ui.atktheme');
+  
   /**
    * Compiles cache for current theme.
    *
