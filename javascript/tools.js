@@ -41,3 +41,23 @@ function ucfirst(stringtt)
 {
   return stringtt.charAt(0).toUpperCase()+stringtt.substring(1,stringtt.length)
 }
+
+/**
+ * Replace an occurrence of a string 
+ */
+function str_replace(haystack,needle,replace,casesensitive)
+{
+	if(casesensitive) return(haystack.split(needle)).join(replace);
+
+	needle=needle.toLowerCase();
+
+	var replaced="";
+	var needleindex=haystack.toLowerCase().indexOf(needle);
+	while(needleindex>-1)
+	{
+		replaced+=haystack.substring(0,needleindex)+replace;
+		haystack=haystack.substring(needleindex+needle.length);
+		needleindex=haystack.toLowerCase().indexOf(find);
+	}
+	return(replaced+haystack);
+}
