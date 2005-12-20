@@ -17,6 +17,7 @@ Changes in ATK 5.3.1
 + Added atkGetSessionManager function. [Peter]
 + Added default configs/ directory to skel, including readme file. [Ivo]
 + Added str_replace javascript function to ATK javascript tools. [Boy]
++ Added html2specialchars function. [Boy]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
@@ -45,6 +46,8 @@ Changes in ATK 5.3.1
 * Fixed ATK sometimes placing focus on hidden objects. [Boy]
 * Upgraded Smarty to 2.6.11. [Boy]
 * Fixed problem with session expiring on some servers. [Ivo]
+* Mailreporting removes JS debugger links from debug output and transforms
+  html special chars to normal special chars. [Boy]
 
 Changes in ATK 5.3
 ------------------

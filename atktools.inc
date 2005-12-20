@@ -909,7 +909,7 @@
 
       for($i=0, $_=count($g_debug_msg);$i<$_;$i++)
       {
-        $lines[] = _wordwrap($g_debug_msg[$i]);
+        $lines[] = _wordwrap(html2specialchars(preg_replace('(\[<a.*</a>\])','',$g_debug_msg[$i])));
       }
       $body.= implode("\n",$lines);
 
@@ -918,7 +918,7 @@
         $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
         foreach ($_GET as $key=>$value)
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
 
@@ -927,7 +927,7 @@
         $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
         foreach ($_GET as $key=>$value)
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
 
@@ -939,7 +939,7 @@
           $body.= "\n\nREQUEST INFORMATION\n".str_repeat("-",70)."\n";
           foreach($request as $key=>$value)
           {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
           }
         }
       }
@@ -949,7 +949,7 @@
         $body.= "\n\n_POST\n".str_repeat("-",70)."\n";
         foreach ($_POST as $key=>$value)
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
       $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
@@ -957,7 +957,7 @@
       {
         if (substr($key,0,7)=="config_")
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
 
@@ -966,7 +966,7 @@
       {
         foreach($g_user as $key => $value)
         {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+          $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
       else $body.= "Not known\n";
@@ -984,7 +984,7 @@
 	       {
             foreach ($item as $key=>$value)
             {
-              $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+              $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
             }
           }
         }
@@ -994,7 +994,7 @@
           $body.="\nNamespace globals:\n";
           foreach ($ns_globals as $key=>$value)
           {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
           }
         }
         $globals = $g_sessionData["globals"];
@@ -1003,7 +1003,7 @@
           $body.="\nGlobals:\n";
           foreach ($globals as $key=>$value)
           {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".$value)."\n";
+            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
           }
         }
       }
@@ -1012,7 +1012,7 @@
 
       foreach ($_SERVER as $key=>$value)
       {
-        $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".$value)."\n";
+        $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
       }
 
       mail($config_mailreport,$subject,$body,"From: $from <atkinfo@ibuildings.nl>");
@@ -1723,6 +1723,18 @@
       $escaped.=$curchar;
     }
     return $escaped;
+  }
+  
+  /**
+   * Translate HTML characters back to special characters
+   *
+   * @param String $str The string to translate the characters of
+   * @return String The translated String
+   */
+  function html2specialchars($str)
+  {
+    $trans_table = array_flip(get_html_translation_table(HTML_ENTITIES));
+    return strtr($str, $trans_table);
   }
 
 ?>
