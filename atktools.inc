@@ -1274,7 +1274,24 @@
     return false;
   }
 
+  /**
+   * Includes the file containing the specified attribute
+   *
+   * @param string $attribute The attribute to include in the format "module.attribute". ATK will
+   *                          search in <moduledir>/attributes/ for the attribute file.
+   *                          When no modulename is specified ATK will search for the attribute
+   *                          in <atkdir>/attributes/
+   */
   function useattrib($attribute)  { atkuse("attribute", $attribute); }
+  
+  /**
+   * Includes the file containing the specified relation
+   *
+   * @param string $relation  The relation to include in the format "module.relation". ATK will
+   *                          search in <moduledir>/relations/ for the relation file.
+   *                          When no modulename is specified ATK will search for the relation
+   *                          in <atkdir>/relations/
+   */  
   function userelation($relation) { atkuse("relation" , $relation);  }
   function usefilter($filter)     { atkuse("filter"   , $filter);    }
 
