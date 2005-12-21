@@ -54,6 +54,7 @@ Changes in ATK 5.3.1
   html special chars to normal special chars. [Boy]
 * Login screen is now skipped when $config_authentication is "none". (bug #585) 
   [Ivo]
+* Fixed a php error in atkMatrixRelation. (bug #587) [Roberto]
 
 Changes in ATK 5.3
 ------------------

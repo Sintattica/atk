@@ -18,6 +18,9 @@
   /** flag(s) specific for atkMatrixRelation */
   define("AF_MATRIX_ACYCLIC", AF_SPECIFIC_1); // checks if a matrix is acyclic
 
+  /** @internal include base class */
+  userelation("atkrelation");
+
   /**
    * Many2Many relation that is represented by a clickable matrix.
    *   
