@@ -41,6 +41,7 @@ Changes in ATK 5.3.1
   filter. [Boy]
 * AF_UNIQUE validation is no longer performed on the postvars, but on the 
   record passed. [Boy]
+* AF_UNIQUE can now handle values that contain quotes. (bug #600) [Yury]
 * Added new param to dispatch_url allowing you to dispatch to other php files 
   than dispatch.php. [Boy]
 * Added 'class' HTML attribute with name of attribute for atkAttribute,
