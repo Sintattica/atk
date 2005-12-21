@@ -59,7 +59,7 @@ Changes in ATK 5.3.1
   mode so they do not add html to CSV exports. (bug #589) [Yury]
 * Fixed a reference copy bug in the atkActionListener and added a unittest to
   prevent future breakage. (bug #591) [Yury]
-* Tooltips for fields added by a modified are now retrieved from the correct
+* Tooltips for fields added by a modifier are now retrieved from the correct
   language file (the module that applied the modifier). (bug #594) [Yury]
 * Mailreports now show whats in arrays, remove javascript debugger
   links from debugging info and remove HTML entities so traces are human 
