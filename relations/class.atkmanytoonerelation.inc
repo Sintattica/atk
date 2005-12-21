@@ -211,7 +211,7 @@
      * @param $record Record
      * @return a displayable string
      */
-    function display($record)
+    function display($record, $mode)
     {
       if ($this->createDestination())
       {
@@ -238,7 +238,7 @@
 
         $result = $title; // default result is just the title.
 
-        if ($this->hasFlag(AF_RELATION_AUTOLINK)) // create link to edit/view screen
+        if ($this->hasFlag(AF_RELATION_AUTOLINK) && $mode<>"csv") // create link to edit/view screen
         {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$title!="")
           {

@@ -55,6 +55,8 @@ Changes in ATK 5.3.1
 * Login screen is now skipped when $config_authentication is "none". (bug #585) 
   [Ivo]
 * Fixed a php error in atkMatrixRelation. (bug #587) [Roberto]
+* atkManyToOneRelation and atkOneToManyRelation now recognise 'csv' display
+  mode so they do not add html to CSV exports. (bug #589) [Yury]
 
 Changes in ATK 5.3
 ------------------

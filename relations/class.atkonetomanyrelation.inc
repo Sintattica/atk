@@ -146,7 +146,7 @@
         {
           $result = "";
           /* display in list mode */
-          if ($mode == "list")
+          if (($mode == "list") || ($mode == "csv"))
             for ($i = 0; $i < count($myrecords);$i++)
               $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
 
