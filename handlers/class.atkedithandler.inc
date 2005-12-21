@@ -265,8 +265,8 @@
           $editsrc = $field["html"];
 
           /* tooltip */
-          if ($node->m_attribList[$field['name']]->m_ownerInstance->m_module) $module = $node->m_attribList[$field['name']]->m_ownerInstance->m_module;
-          else $module = "atk";
+          $module = $node->m_attribList[$field['name']]->getModule();
+          if (!$module) $module = "atk";
           $ttip = atktext($node->m_type."_".$field["name"]."_tooltip", $module, "", "", "", true);
 
           if ($ttip)
