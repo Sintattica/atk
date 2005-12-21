@@ -33,7 +33,7 @@
     function action_export()
     {
       global $ATK_VARS;
-    
+
       //need to keep the postdata after a AF_LARGE selection in the allfield
       if(!isset($this->m_postvars["phase"]) && isset($ATK_VARS['atkformdata']))
         foreach($ATK_VARS['atkformdata'] as $key=>$value)
@@ -60,7 +60,7 @@
       $page->addContent($this->m_node->genericPage(atktext("export", "atk"), $content));
       return true;
     }
-    
+
     /**
      * Gets the HTML for the initial mode of the exporthandler
      * @return String The HTML for the screen
@@ -73,8 +73,8 @@
                                   ' method="post">'.session_form();
       $content.= '<input type="hidden" name="phase" value="process">';
       $content.= $this->_getOptions();
-            
-      $content.= '<br><br><input type="submit" value="'.atktext("export_upload","atk").'"> ';
+
+      $content.= '<br><br><input type="submit" value="'.atktext("export","atk").'"> ';
       $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
 
       $content.= '</form><br><br>';
@@ -90,98 +90,130 @@
       return $this->doExport($filename);
     }
 
-    
-    
-    /**
-     * Returns the HTML header for the 'analyse' mode of the import handler
-     * @param String $fileid      The 'id' (name) of the file we are importing
-     * @param String $columncount The number of columns we have
-     * @param String $delimiter   The delimiter in the file
-     * @param String $enclosure   The enclosure in the file
-     * @return String The HTML header
-     */
     function _getOptions()
     {
-      $content.= '<table border="0">';
+      $content.= '<table border="0" width="100%">';
       $content.= '<tr><td>'.text("delimiter").': </td><td><input type="text" size="2" name="delimiter" value=";"></td></tr>';
       $content.= '<tr><td>'.text("enclosure").': </td><td><input type="text" size="2" name="enclosure" value="&quot;"></td></tr>';
-      $content.= '<tr><td>'.atktext("export_selectcolumns").': </td><td>'.$this->getAttributeSelect().'</td></tr>'; 
+      $content.= '<tr><td valign="top">'.atktext("export_selectcolumns").': </td><td>'.$this->getAttributeSelect().'</td></tr>';
       $content.= '<tr><td>';
       $content.= atktext("export_generatetitlerow").': </td><td><input type="checkbox" name="generatetitlerow" value="1" />';
       $content.= '</td></tr>';
       $content.= '</table><br /><br />';
       return $content;
     }
-    
+
     function getAttributeSelect()
     {
-      return "";
+      $cols = 5;
+
+      $atts = $this->getUsableAttributes();
+
+      foreach($atts as $tab => $group){
+        $content .= '<TABLE style="border: 1px solid #d8d8d8; width: 90%">';
+        if($tab != 'default')
+          $content .= '<TR><TD colspan="'.$cols.'"><div style="background-color: #ccc; color: #00366E; font-weight: bold">'.text('tab_'.$tab).'</div></TD></TR><TR>';
+        $idx = 0;
+        foreach($group as $item){
+          if($item['checked'])
+            $checked = 'CHECKED';
+          else
+            $checked = '';
+          $content.= '<TD align="left" width="'.(90/$cols).'%"><LABEL><INPUT TYPE="checkbox" NAME="export_'.$item['name'].'" VALUE="export_'.$group[$i]['name'].'" '.$checked.'>'.text($item['name']).'</LABEL></TD>';
+          $idx++;
+          if($idx%$cols == 0)
+            $content .= '</TR><TR>';
+        }
+        while($idx%$cols != 0){
+          $content .= '<TD width="'.(90/$cols).'%">&nbsp;</TD>';
+          $idx++;
+        }
+        $content .= "</TR></TABLE><BR/>";
+      }
+      return $content;
     }
-   
+
     /**
      * Gives all the attributes that can be used for the import
-     * @param $obligatoryOnly     if false then give all attributes, if true then give only the obligatory ones
      * @return array              the attributes
      */
-    function getUsableAttributes($obligatoryOnly=false)
+    function getUsableAttributes()
     {
-      $attrs = array();
-      foreach (array_keys($this->m_node->m_attribList) as $attribname)
-      {
-        $attrib = &$this->m_node->getAttribute($attribname);
+      $node = &$this->m_node;
+      $atts = array();
+      $tabs = array();
+      foreach($node->m_attribList as $key => $value){
+        $flags = $value->m_flags;
+        $class = get_class($value);
+        if($value->hasFlag(AF_AUTOKEY) ||
+           $value->hasFlag(AF_HIDE_VIEW) ||
+           !(strpos($class, "dummy") === FALSE) ||
+           !(strpos($class, "image") === FALSE))
+          continue;
+        if(in_array($value->m_tabs[0], $tabs)){
+          $tabs[] = $value->m_tabs[0];
+          $atts[$value->m_tabs[0]] = array();
+        }
 
-        if($this->integrateAttribute($attrib))
-        {
-          $attrib->createDestination();
-          foreach(array_keys($attrib->m_destInstance->m_attribList) as $relattribname)
-          {
-            $relattrib = &$attrib->m_destInstance->getAttribute($relattribname);
-            
-            if ($this->_usableForImport($obligatoryOnly, $relattrib))
-            {
-              $attrs[] = $relattribname;
-            }
-          }
-        }
-        else
-        {        
-          if ($this->_usableForImport($obligatoryOnly, $attrib))
-          {
-            $attrs[] = $attribname;
-          }
-        }
+        $atts[$value->m_tabs[0]][] = array('name' => $key, 'checked' => !$value->hasFlag(AF_HIDE_LIST));
       }
-      return $attrs;
+      return $atts;
     }
-       
-    //make a record of translations of the given attributes
-    function getAttributesTranslation($attributes){
-      $result = array();
-      
-      foreach($attributes as $attribute)
-      {
-        $result[] = atktext($attribute, $this->m_node->m_module, $this->m_node->m_type);
-      }
-      
-      return $result;
-    }
-    
+
     /**
      * the real import function
      * import the uploaded csv file for real
      */
     function doExport()
     {
-      $col_map =      $this->m_postvars["col_map"];
-      $enclosure =    $this->m_postvars["enclosure"];
-      $delimiter =    $this->m_postvars["delimiter"];
-      
-      $skipfirstrow = $this->m_postvars['generatetitlerow'];
-      $rl = atknew("atk.recordlist.atkcustomrecordlist");
-      $records = $this->m_node->selectDb();
-      $rl->render($this->m_node, $records, "", $enclosure, $enclosure.$delimiter, "\r\n", 1, "", "", array(), "csv");
-      
-      return true; 
+      $enclosure = $this->m_postvars["enclosure"];
+      $delimiter = $this->m_postvars["delimiter"];
+      $source = $this->m_postvars;
+      $list_includes = array();
+      foreach($source as $name => $value) {
+          $pos = strpos($name, 'export_');
+          if (is_integer($pos) and $pos == 0)
+            $list_includes[] = substr($name, strlen('export_'));
+        }
+        global $g_sessionData;
+        $session_back = $g_sessionData["default"]["stack"][atkStackID()][atkLevel()-1];
+        $atkorderby = $session_back['atkorderby'];
+
+        $node = &$this->m_node;
+        $node_bk = $node;
+        $num_atts = count($node_bk->m_attribList);
+        $atts = &$node_bk->m_attribList;
+
+        foreach($atts as $name => $object){
+          $att = &$node_bk->getAttribute($name);
+          if(in_array($name, $list_includes))
+            $att->m_flags &= !AF_HIDE_LIST;
+          else
+            $att->addFlag(AF_HIDE_LIST);
+        }
+
+        if (!is_array($actions)) {
+            $actions = $node->defaultActions("export");
+        }
+        $rl = &atknew("atk.recordlist.atkcustomrecordlist");
+        $flags = ($node_bk->hasFlag(NF_MRA) ? RL_MRA : 0) | ($node_bk->hasFlag(NF_MRPA) ? RL_MRPA : 0) | ($node_bk->hasFlag(NF_LOCK) ? RL_LOCK : 0);
+        $node_bk->m_postvars = $session_back;
+        $recordset = $node_bk->selectDb($session_back['atkselector'], $atkorderby, "" ,array(), $list_includes, "export");
+        $recordset_new = array();
+
+        foreach($recordset as $row){
+          foreach($row as $name => $value){
+            $value = str_replace("\r\n", "\\n", $value);
+            $value = str_replace("\n", "\\n", $value);
+            $value = str_replace("\t", "\\t", $value);
+            $row[$name] = $value;
+          }
+          $recordset_new[] = $row;
+        }
+
+        $rl->render($node_bk, $recordset_new, "", $enclosure, $enclosure.$delimiter, "\r\n", 1, "", "", array('filename' => 'export_'.$node->m_type), "csv");
+
+        return true;
+      }
     }
-  }
 ?>
