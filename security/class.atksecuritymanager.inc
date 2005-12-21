@@ -203,7 +203,6 @@
           }
         }
 
-        atkdebug("1");
         $authenticated = false;
 
         // check superuser
