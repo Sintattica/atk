@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
   /**
    * This file is part of the Achievo ATK distribution.
