@@ -909,7 +909,7 @@
 
       for($i=0, $_=count($g_debug_msg);$i<$_;$i++)
       {
-        $lines[] = _wordwrap(html2specialchars(preg_replace('(\[<a.*</a>\])','',$g_debug_msg[$i])));
+        $lines[] = _wordwrap(html_entity_decode(preg_replace('(\[<a.*</a>\])','',$g_debug_msg[$i])));
       }
       $body.= implode("\n",$lines);
 
@@ -1742,16 +1742,26 @@
     return $escaped;
   }
   
-  /**
-   * Translate HTML characters back to special characters
-   *
-   * @param String $str The string to translate the characters of
-   * @return String The translated String
-   */
-  function html2specialchars($str)
+  if (!function_exists('html_entity_decode'))
   {
-    $trans_table = array_flip(get_html_translation_table(HTML_ENTITIES));
-    return strtr($str, $trans_table);
+    /**
+     * Convert all HTML entities to their applicable characters.
+     * Reverse of htmlspecialchars. 
+     * Standard PHP function in PHP >= 4.3.0.
+     * Taken from http://www.php.net/manual/en/function.html-entity-decode.php.
+     *
+     * @param String $str The string to translate the characters of
+     * @return String The translated String
+     */
+    function html_entity_decode($str)
+    {
+      // replace numeric entities
+      $str = preg_replace('~&#x([0-9a-f]+);~ei', 'chr(hexdec("\\1"))', $str);
+      $str = preg_replace('~&#([0-9]+);~e', 'chr(\\1)', $str);
+      // replace literal entities
+      $trans_table = array_flip(get_html_translation_table(HTML_ENTITIES));
+      return strtr($str, $trans_table);
+    }
   }
 
 ?>

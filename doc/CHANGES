@@ -61,6 +61,10 @@ Changes in ATK 5.3.1
   prevent future breakage. (bug #591) [Yury]
 * Tooltips for fields added by a modified are now retrieved from the correct
   language file (the module that applied the modifier). (bug #594) [Yury]
+* Mailreports now show whats in arrays, remove javascript debugger
+  links from debugging info and remove HTML entities so traces are human 
+  readable. [Boy]
+* Added html_entity_decode for PHP versions lacking it. [PHP.net,Boy]
 
 Changes in ATK 5.3
 ------------------
