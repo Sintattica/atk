@@ -57,6 +57,8 @@ Changes in ATK 5.3.1
 * Fixed a php error in atkMatrixRelation. (bug #587) [Roberto]
 * atkManyToOneRelation and atkOneToManyRelation now recognise 'csv' display
   mode so they do not add html to CSV exports. (bug #589) [Yury]
+* Fixed a reference copy bug in the atkActionListener and added a unittest to
+  prevent future breakage. (bug #591) [Yury]
 
 Changes in ATK 5.3
 ------------------

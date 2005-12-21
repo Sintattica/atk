@@ -67,7 +67,7 @@
      */
     function setNode(&$node)
     {
-      $this->m_node = $node;
+      $this->m_node = &$node;
     }
 
     /**
@@ -84,7 +84,7 @@
     {
       if (count($this->m_actionfilter)==0 || atk_in_array($action, $this->m_actionfilter))
       {
-        atkdebug("Action $action performed on ".$this->m_node->atkNodeType()." (".$this->m_node->primaryKey($record));
+        atkdebug("Action $action performed on ".$this->m_node->atkNodeType()." (".$this->m_node->primaryKey($record).")");
         $this->actionPerformed($action, $record);
       }
     }
