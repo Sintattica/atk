@@ -200,12 +200,12 @@
       }
       return "";
     }
-    
+
     function getIconPath()
     {
       static $s_icon_path = NULL;
-      
-      if ($s_icon_path === NULL) 
+
+      if ($s_icon_path === NULL)
       {
         global $g_theme;
 
@@ -218,10 +218,10 @@
           $s_icon_path = atkconfig("atkroot")."atk/themes/default/icons/tree/";
         }
       }
-      
+
       return $s_icon_path;
     }
-    
+
     function getIcon($type)
     {
       return $this->getIconPath()."tree_$type.gif";
@@ -650,6 +650,7 @@
     function copyDb($record)
     {
       $oldparent=$record[$this->m_primaryKey[0]];
+      $this->preCopy($record);
       $this->addDb($record, true, "copy");
       if(!empty($this->m_parent))
       {
@@ -677,6 +678,7 @@
         {
           $recordset[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);
           $oldrec = $recordset[$i];
+          $this->preCopy($recordset[$i]);
           $this->addDb($recordset[$i], true, "copy");
 
           atkdebug("Child Record added");
