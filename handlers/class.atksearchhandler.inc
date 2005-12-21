@@ -60,6 +60,7 @@
       $node->addStyle("style.css");      
       
       $page = &$this->getPage();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");      
       $ui = &$this->getUi();
       if (is_object($ui))

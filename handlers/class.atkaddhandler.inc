@@ -53,6 +53,7 @@
       // Utility.
       $edithandler = &$node->getHandler("edit");
 
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $node->addStyle("style.css");
 
