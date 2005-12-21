@@ -65,6 +65,8 @@ Changes in ATK 5.3.1
   links from debugging info and remove HTML entities so traces are human 
   readable. [Boy]
 * Added html_entity_decode for PHP versions lacking it. [PHP.net,Boy]
+* atkSelectHandler now properly parses [pk] template variable in select links.
+  (bug #597) [Yury]
 
 Changes in ATK 5.3
 ------------------

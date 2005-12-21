@@ -50,7 +50,6 @@
      */
     function selectPage()
     {
-     atkimport("atk.utils.atkstringparser");
       $node = &$this->m_node;
       $node->addStyle("style.css");
       // When there's a lot of data, records will be spread across multiple pages.
@@ -72,8 +71,8 @@
       {
         // There's only one record and the autoselect flag is set, so we
         // automatically go to the target.
-        $parser = new atkStringParser(rawurldecode(atkurldecode($node->m_postvars['atktarget'])));
-        $target = $parser->parse($recordset[0],true);
+        $target = str_replace('[pk]', $node->primaryKey($recordset[0]), rawurldecode(atkurldecode($node->m_postvars['atktarget'])));
+
         $node->redirect(session_url($target, SESSION_NESTED));
         return "";
       }
