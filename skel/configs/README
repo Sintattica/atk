@@ -1,0 +1,19 @@
+Module specific configuration files can be placed in this directory.
+
+They should have the following naming convention:
+
+<modulename>.inc.php
+
+The contents of each file should look like:
+
+<?php
+  
+  $config["key"] = "value";
+
+?>
+
+Values can be retrieved using:
+
+$value = atkConfig::get("modname", "key", "defaultvalue");
+
+atkConfig takes care of including the file when it needs to.
