@@ -82,8 +82,10 @@
         $params["buttons"][] = '<input type="submit" class="btn_save" value="'.atktext('save').'">';
         if ($node->m_action=="add")
         {
-          // if action is admin, we don't show the cancelbutton..
-          $params["buttons"][] ='<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext('cancel').'">';
+          // if action is admin, we don't show the cancelbutton or the add next button
+          if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
+            $params["buttons"][] = '<input type="submit" class="btn_saveandnext" name="atksaveandnext" value="'.atktext('saveandnext').'">';
+          $params["buttons"][] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext('cancel').'">';
         }
         $params["formend"] = '</form><SCRIPT type="text/javascript" language="JavaScript">placeFocus()</SCRIPT>';
 

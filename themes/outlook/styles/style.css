@@ -72,7 +72,8 @@ TEXTAREA
 INPUT.btn,
 INPUT.btn_save,
 INPUT.btn_cancel,
-INPUT.btn_saveandclose
+INPUT.btn_saveandclose,
+INPUT.btn_saveandnext
 {
   background-color: #CCCCCC;
   height: 25px;

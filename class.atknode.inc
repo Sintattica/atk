@@ -128,7 +128,8 @@
    * Add CSV export ability to the node.
    */
   define("NF_EXPORT",             262144);
-
+  
+  
   /**
    * Disable csv import feature
    * @deprecated since ATK 5.2
@@ -145,6 +146,13 @@
    */
   define("NF_CACHE_RECORDLIST",  1048576);
 
+
+  /**
+   * After adding a new record add another one instantaniously.
+   */
+  define("NF_ADDAFTERADD",       2097152);  
+
+  
   /**
    * Specific node flag 1
    */

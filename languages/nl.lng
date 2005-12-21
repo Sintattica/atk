@@ -198,6 +198,7 @@
   "saturday" => "zaterdag",
   "save" => "Opslaan",
   "saveandclose" => "Opslaan en sluiten",
+  "saveandnext" => "Opslaan en volgende",
   "search" => "Zoeken",
   "search_all" => "Alles zoeken",
   "search_and" => "Alle criteria voldoen",

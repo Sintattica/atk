@@ -98,6 +98,10 @@
             {
               $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)), SESSION_REPLACE);
             }
+            else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
+            {
+              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add', SESSION_REPLACE);              
+            }
             else
             {
               $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record);
