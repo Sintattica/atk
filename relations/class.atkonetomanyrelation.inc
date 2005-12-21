@@ -456,7 +456,10 @@
         $strfilter = implode(" AND ", $filterelems);
         if ($this->m_destinationFilter!="")
         {
-          $strfilter.=' AND '.$this->m_destinationFilter;
+	        atkimport("atk.utils.atkstringparser");
+	        $parser = new atkStringParser($this->m_destinationFilter);
+	        $filter = $parser->parse($record);
+        	$strfilter.=' AND '.$filter;
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
         $label = $this->getAddLabel();
@@ -571,7 +574,10 @@
 
             if ($this->m_destinationFilter!="")
             {
-              $this->m_destInstance->addFilter($this->m_destinationFilter);
+		          atkimport("atk.utils.atkstringparser");
+		          $parser = new atkStringParser($this->m_destinationFilter);
+		          $filter = $parser->parse($record);
+              $this->m_destInstance->addFilter($filter);
             }
 
             if ($mode=="admin" || $mode=="select" || $mode=="view")

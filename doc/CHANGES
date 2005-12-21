@@ -20,6 +20,8 @@ Changes in ATK 5.3.1
 + Added html2specialchars function. [Boy]
 + Added NF_ADDAFTERADD node flag to continue adding records after
   adding a record. [Peter]
++ atkOneToManyRelation filters are now parsed so values from the current
+  record can be used in the filter. (bug #584) [Yury]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
