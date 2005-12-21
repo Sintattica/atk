@@ -82,6 +82,23 @@
             if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
             else $editsrc=$p_attrib->display($record, "view");
 
+            /* tooltip */
+            $module = $node->m_attribList[$field_name]->getModule();
+            if (!$module) $module = "atk";
+            $ttip = atktext($node->m_type."_".$field_name."_tooltip", $module, "", "", "", true);
+  
+            if ($ttip)
+            {
+              $theme = &atkinstance("atk.ui.atktheme");
+              $tipimg = $theme->imgPath("help.gif");
+
+              $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
+              $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
+                                      '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
+              $tplfield["tooltip"] = $tooltip;
+              $editsrc.=$tooltip."&nbsp;";
+            }
+
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
             $tplfield["rowid"] = "ar_".$field_name; // The id of the containing row
