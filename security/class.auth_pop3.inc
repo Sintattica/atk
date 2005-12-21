@@ -35,6 +35,8 @@
      */
     function validateUser($user, $passwd)
     {
+      if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
+
       global $g_pop3_responses;
 
       /* if it's a virtual mail server add @<domain> to the username */

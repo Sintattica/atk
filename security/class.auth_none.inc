@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Dummy driver for non-authentication. When using 'none' as authentication
    * method, any loginname and any password will be accepted.
@@ -23,14 +23,14 @@
    * @package atk
    * @subpackage security
    *
-   */  
+   */
    class auth_none extends auth_interface
    {
      function validateUser($user, $passwd)
      {
        return AUTH_SUCCESS;
-     }          
-     
+     }
+
      function canMd5()
      {
        return false;

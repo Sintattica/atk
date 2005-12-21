@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,9 +14,9 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
-   * Driver for authentication using an ldap server. 
+   * Driver for authentication using an ldap server.
    *
    * Does not support authorization.
    *
@@ -28,7 +28,9 @@
   class auth_ldap extends auth_interface
   {
     function validateUser($user, $passwd)
-    { 
+    {
+       if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
+
        $ldap = ldap_connect(atkconfig("authentication_ldap_host"));
 
        // find the dn for this uid, the uid is not always in the dn
@@ -42,12 +44,12 @@
          $userDN = $allValues[0]["dn"];
 
          // generate a bogus password to pass if the user doesn't give us one
-         // this gets around systems that are anonymous search enabled 
-         if (empty($passwd)) $passwd = crypt(microtime()); 
+         // this gets around systems that are anonymous search enabled
+         if (empty($passwd)) $passwd = crypt(microtime());
 
          // try to bind as the user with user suplied password
          $bound  = @ldap_bind($ldap, $userDN, $passwd);
- 
+
          if ($bound)
          {
            ldap_close($ldap);
@@ -65,7 +67,7 @@
          return AUTH_MISMATCH;
        }
     }
-                         
+
     function canMd5()
     {
       return false; // ?? Is this correct? can we store passwords as md5 in ldap?

@@ -29,6 +29,8 @@
 
      function validateUser($user, $passwd)
      {
+       if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
+
        $db = &atkGetDb();
        $userexpr = $db->escapeSql($user);
        if (atkconfig("auth_accountdisablefield")!="")

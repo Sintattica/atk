@@ -29,6 +29,8 @@
   {
     function validateUser($user, $passwd)
     {
+      if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
+
       // if it's a virtual mail server add @<domain> to the username
       if(atkconfig("auth_mail_login_type") == "vmailmgr")
       {

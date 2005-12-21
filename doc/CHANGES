@@ -6,12 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3.1
 --------------------
-+ Added ability for attributes to define if they want to wrap fields and tables 
-  in quotes and turned this on for MySQL and make atkAttribute do it. [Boy]
 + Added atkColumnConfig class for elaborate sorting options in recordlists.
   (multi column sort, determinable sort direction per column, NF_EXT_SORT
   flag for adding a sort toolbar to recordlist). [Ivo]
-+ Added correct error handling for atkFileAttribute. [Peter]
 + Added getIcon/getIconPath methods to atkTreeNode to override icons
   more easily (without the need for creating a separate theme). [Peter]
 + Added atkGetSessionManager function. [Peter]
@@ -22,6 +19,8 @@ Changes in ATK 5.3.1
   adding a record. [Peter]
 + atkOneToManyRelation filters are now parsed so values from the current
   record can be used in the filter. (bug #584) [Yury]
+* Attributes can now define if they want to quote field- and tablenames.
+  atkAttribute does this by default now. [Boy]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
@@ -40,18 +39,21 @@ Changes in ATK 5.3.1
 * Fixed error reporting for embeded atkOneToManyRelation. [Boy]
 * atkOneToManyRelation navigation links are not shown if there is no 
   filter. [Boy]
-* Upon validating we don't check in the postvars for the value of the id but 
-  in the record that is passed. [Boy]
+* AF_UNIQUE validation is no longer performed on the postvars, but on the 
+  record passed. [Boy]
 * Added new param to dispatch_url allowing you to dispatch to other php files 
   than dispatch.php. [Boy]
 * Added 'class' HTML attribute with name of attribute for atkAttribute,
   atkDateAttribute, atkListAttribute, atkNumberAttribute, atkOneToManyRelation 
   and atkManyToOnerelation. [Boy] 
 * Fixed ATK sometimes placing focus on hidden objects. [Boy]
-* Upgraded Smarty to 2.6.11. [Boy]
-* Fixed problem with session expiring on some servers. [Ivo]
+* Upgraded Smarty to version 2.6.11. [Boy]
+* Fixed error handling for atkFileAttribute. [Peter]
+* Fixed problem with the session expiring at login on some servers. [Ivo]
 * Mailreporting removes JS debugger links from debug output and transforms
   html special chars to normal special chars. [Boy]
+* Login screen is now skipped when $config_authentication is "none". (bug #585) 
+  [Ivo]
 
 Changes in ATK 5.3
 ------------------
