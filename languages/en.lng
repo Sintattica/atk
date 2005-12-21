@@ -254,6 +254,7 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
+  "saveandnext" => "Save and next",
 );
 
 ?>
