@@ -14,7 +14,6 @@ Changes in ATK 5.3.1
 + Added atkGetSessionManager function. [Peter]
 + Added default configs/ directory to skel, including readme file. [Ivo]
 + Added str_replace javascript function to ATK javascript tools. [Boy]
-+ Added html2specialchars function. [Boy]
 + Added NF_ADDAFTERADD node flag to continue adding records after
   adding a record. [Peter]
 + atkOneToManyRelation filters are now parsed so values from the current
