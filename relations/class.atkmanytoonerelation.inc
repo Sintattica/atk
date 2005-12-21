@@ -307,7 +307,7 @@
             if (count($this->m_onchangecode))
             {
               $onchange = 'onChange="'.$id.'_onChange(this);"';
-              $this->renderChangeHandler($fieldprefix);
+              $this->_renderChangeHandler($fieldprefix);
             }
 
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
