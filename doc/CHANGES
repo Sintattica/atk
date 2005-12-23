@@ -31,6 +31,7 @@ Changes in ATK 5.3.1
 + Attribute tooltips are now displayed in view pages. (bug #595) [Yury]
 + The preCopy() trigger is now called when a record is copied in the
   atkTreeNode. (bug #602) [Olav]
+* atkaddhandler now uses getFormButtons.[Guido]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
