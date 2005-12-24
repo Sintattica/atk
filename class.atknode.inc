@@ -128,8 +128,8 @@
    * Add CSV export ability to the node.
    */
   define("NF_EXPORT",             262144);
-  
-  
+
+
   /**
    * Disable csv import feature
    * @deprecated since ATK 5.2
@@ -150,9 +150,9 @@
   /**
    * After adding a new record add another one instantaniously.
    */
-  define("NF_ADDAFTERADD",       2097152);  
+  define("NF_ADDAFTERADD",       2097152);
 
-  
+
   /**
    * Specific node flag 1
    */
@@ -1136,7 +1136,7 @@
     function getFormButtons($mode, $record)
     {
       $result = array();
-      
+
       // edit mode
       if ($mode == "edit")
       {
@@ -1161,7 +1161,7 @@
 
       return $result;
     }
-    
+
     /**
      * Generate a box displaying a message that the current record is locked.
      * @return String The HTML fragment containing a box with the message and
@@ -1921,9 +1921,9 @@
       if (is_object($db)) $db->disconnect();
       atkdebug("disconnected from the database");
     }
-    
+
     /**
-     * Does the actual loading of the dispatch page 
+     * Does the actual loading of the dispatch page
      * And adds it to the page for the dispatch() method to render.
      * @param array $postvars The request variables for the node.
      */
@@ -2374,7 +2374,7 @@
         $return =  $this->postUpdate($record);
         if(!isSet($return))
         {
-          atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!</font>");
+          atkdebug("Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!", DEBUG_WARNING);
           $return = true;
         }
         return $return;
@@ -2975,7 +2975,7 @@
         $return = $this->postAdd($record, $mode);
         if(!isSet($return))
         {
-          atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!</font>");
+          atkdebug("Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!", DEBUG_WARNING);
           $return = true;
         }
         if (!$return)
@@ -3035,7 +3035,7 @@
           $return = $this->postDel($recordset[$i]);
           if(!isSet($return))
           {
-            atkdebug("<font color=red>Undefined return:".$this->atkNodeType().".postDel doesn't return anything, it should return a boolean!</font>");
+            atkdebug("Undefined return:".$this->atkNodeType().".postDel doesn't return anything, it should return a boolean!", DEBUG_WARNING);
             $return = true;
           }
 
@@ -3564,7 +3564,7 @@
         list($relation_new, $dummy) = explode($sqloperator, $relation);
 
         // check if the fieldname is in the attriblist
-      	if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
+        if (in_array(trim($relation_new), array_keys($this->m_attribList))) return $filter;
       }
       return "";
     }
