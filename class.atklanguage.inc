@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -17,7 +17,7 @@
 
   /**
    * Class that handles userinterface internationalization.
-   * 
+   *
    * This class is used to retrieve the proper translations for any string
    * displayed in the userinterface. It includes only those language files
    * that are actually used, and has several fallback systems to find
@@ -33,37 +33,37 @@
      * Directory where language files are stored.
      * @access private
      * @var String
-     */ 
+     */
     var $LANGDIR = "languages/";
-    
+
     /**
      * Contains all currently loaded language strings.
      * @access private
      * @var array
      */
     var $m_cachedlang = array();
-    
+
     /**
      * List of currently loaded language files
      * @access private
      * @var array
      */
     var $m_cachedlangfiles = array();
-    
-    /** 
+
+    /**
      * List of fallback modules
      * @access private
      * @var array
      */
     var $m_fallbackmodules = array();
-    
-    /** 
+
+    /**
      * List of override modules
      * @access private
      * @var array
      */
-    var $m_overridemodules = array("langoverrides");            
-  
+    var $m_overridemodules = array("langoverrides");
+
     /**
      * Default Constructor
      * @access private
@@ -72,11 +72,11 @@
     {
       atkdebug("New instance made of atkLanguage");
     }
-       
+
     /**
      * Gets an instance of the atkLanguage class
      *
-     * Using this function will ensure that only 1 instance ever exists 
+     * Using this function will ensure that only 1 instance ever exists
      * (singleton).
      *
      * @return atkLanguage Instance of the atkLanguage class
@@ -86,19 +86,19 @@
       static $s_atklanguage;
       if (!is_object($s_atklanguage))
       {
-        $s_atklanguage = new atkLanguage();        
+        $s_atklanguage = new atkLanguage();
       }
       return $s_atklanguage;
     }
-    
+
     /**
-     * Add a module that serves as an override for language strings.     
+     * Add a module that serves as an override for language strings.
      */
     function addOverrideModule($module)
     {
-      array_unshift($this->m_overridemodules,$module);      
+      array_unshift($this->m_overridemodules,$module);
     }
-    
+
     /**
      * Calculate the list of fallbackmodules.
      * @access private
@@ -107,7 +107,7 @@
     {
       static $s_fallbackmodules = array();
       $key = $modulefallback ? 1 : 0; // we can be called with true or false, cache both results
-      
+
       if (!array_key_exists($key, $s_fallbackmodules))
       {
         global $g_modules;
@@ -121,39 +121,39 @@
           }
         }
         $modules[] = "atk";
-        
+
         $s_fallbackmodules[$key] = array_merge($this->m_fallbackmodules, $modules);
       }
-      
+
       return $s_fallbackmodules[$key];
     }
-    
+
     /**
      * Text function, retrieves a translation for a certain string.
      *
-     * @static 
+     * @static
      * @param String $string          the name of the string to return
-     * @param String $module          module in which the language file should be looked for, 
+     * @param String $module          module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
      * @param String $node            the node to which the string belongs
      * @param String $lng             ISO 639-1 language code, defaults to config variable
      * @param String $firstfallback   the first module to check as part of the fallback
      * @param boolean $nodefaulttext  if true, then it doesn't returns false when it can't find a translation
-     * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback, 
+     * @param boolean $modulefallback Wether or not to use all the modules of the application in the fallback,
      *                                when looking for strings
      * @return String the string from the languagefile
      */
     function text($string, $module, $node="", $lng="", $firstfallback="", $nodefaulttext=false,$modulefallback=false)
     {
       if ($lng=="") $lng = atkLanguage::getLanguage();
-      $atklanguage =& atkLanguage::getInstance();      
-            
-      return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);            
+      $atklanguage =& atkLanguage::getInstance();
+
+      return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
     }
-    
+
     /**
      * Get the current language, either from url or if that's not present, from the config.
-     * @static 
+     * @static
      * @return String current language.
      */
     function getLanguage()
@@ -162,17 +162,17 @@
       if (isset($ATK_VARS["atklng"])) { $lng = $ATK_VARS["atklng"]; } // we first check for an atklng variable
       else { $lng = atkconfig("language", atkconfig("lang")); }
       return strtolower($lng);
-    }              
-    
+    }
+
     /**
-     * Determine the list of modules we need to go through to check 
-     * language strings. Overrides have precedence, then the 
+     * Determine the list of modules we need to go through to check
+     * language strings. Overrides have precedence, then the
      * passed module is considered, finally if no string is found
      * the fallbacks are checked.
      *
      * @access private
      * @param String $module manually passed module
-     * @param String $firstfallback an additional module in which the 
+     * @param String $firstfallback an additional module in which the
      *        translation will be searched first, if not found in the
      *        module itself.
      * @param Boolean $modulefallback If true, *all* modules are checked.
@@ -186,18 +186,18 @@
       $modules = array_merge($this->m_overridemodules, $arr, $this->_getFallbackModules($modulefallback));
       return $modules;
     }
-    
-    /**     
+
+    /**
      * This function takes care of the fallbacks when retrieving a string ids.
      * It is as following:
      * First we check for a string specific to both the module and the node
      * (module_node_key).
-     * If that isn't found we check for a node specific string (node_key).     
+     * If that isn't found we check for a node specific string (node_key).
      * And if all that fails we look for a general string in the module.
      *
      * @access private
      * @param string $string        the name of the string to return
-     * @param string $module        module in which the language file should be looked for, 
+     * @param string $module        module in which the language file should be looked for,
      *                              defaults to core module with fallback to ATK
      * @param string $node          the node to which the string belongs
      * @param string $lng           ISO 639-1 language code, defaults to config variable
@@ -205,42 +205,42 @@
      * @return string the name with which to call the string we want from the languagefile
      */
     function _getString($key, $module, $lng, $node="", $nodefaulttext=false, $firstfallback="", $modulefallback=false)
-    {      
+    {
       // first find node specific string.
       $modules = $this->_getModules($module, $firstfallback, $modulefallback);
-                        
+
       if ($node!="")
       {
         foreach ($modules as $modname)
-        {          
+        {
           $text = $this->_getStringFromFile($module."_".$node."_".$key, $modname, $lng);
           if ($text!="") return $text;
         }
-        
+
         foreach ($modules as $modname)
-        {          
+        {
           $text = $this->_getStringFromFile($node."_".$key, $modname, $lng);
           if ($text!="") return $text;
         }
       }
-      
+
       // find generic module string
       foreach ($modules as $modname)
       {
         $text = $this->_getStringFromFile($key, $modname, $lng);
         if ($text!="") return $text;
       }
-      
+
       if (!$nodefaulttext)
       {
-        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text");
+        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text", DEBUG_WARNING);
         // Still nothing found. return default string
-        return $this->defaultText($key); 
+        return $this->defaultText($key);
       }
-      return "";      
-    }                
-        
-    
+      return "";
+    }
+
+
     /**
      * Checks wether the language is set or not
      *
@@ -270,20 +270,20 @@
         {
           $path = moduleDir($module).$this->LANGDIR;
         }
-        
+
         $file = $path.$lng.".lng";
 
         if (file_exists($file))
         {
           include($file);
-          $this->m_cachedlang[$module][$lng] = $$lng;        
+          $this->m_cachedlang[$module][$lng] = $$lng;
           return true;
         }
         return false;
       }
       return true;
     }
-    
+
     /**
      * A function to change the original "$something_text" string to
      * "Something text"
@@ -295,7 +295,7 @@
     {
       return ucfirst(str_replace("_"," ",str_replace('title_','',$string)));
     }
-    
+
     /**
      * Gets the string from the languagefile or, if we failed, returns ""
      *
@@ -308,16 +308,16 @@
      * @return var the true name by which the txt is called or "" if we can't find any entry
      */
     function _getStringFromFile($key, $module, $lng)
-    {       
+    {
       $this->_includeLanguage($module, $lng);
-      
+
       if (is_array($this->m_cachedlang[$module][$lng])
           && isset($this->m_cachedlang[$module][$lng][$key]))
-      {        
-        return $this->m_cachedlang[$module][$lng][$key];      
+      {
+        return $this->m_cachedlang[$module][$lng][$key];
       }
       return "";
     }
-        
+
   }
 ?>
