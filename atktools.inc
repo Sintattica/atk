@@ -145,7 +145,9 @@
    */
   function atkdebug($txt, $viewhtml=false)
   {
-    if (atkconfig("debug")>0)
+    global $g_debug_msg;
+    $level = atkconfig("debug");
+    if ($level>0)
     {
       if($viewhtml)
         $txt = htmlentities($txt);
@@ -153,20 +155,23 @@
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
 
-      if (atkconfig("debug")>1)
+      if ($level>1)
       {
         atkimport("atk.utils.atkdebugger");
         if (!atkDebugger::addStatement($line))
         {
-          global $g_debug_msg;
           $g_debug_msg[]=$line;
         }
       }
       else
       {
-        global $g_debug_msg;
         $g_debug_msg[]=$line;
       }
+    }
+    else if ($level>-1) // at 0 we still collect the info so we
+                        // have it in error reports. At -1, we don't collect
+    {
+      $g_debug_msg[]=$txt;
     }
   }
 
@@ -1283,7 +1288,7 @@
    *                          in [atkdir]/attributes/
    */
   function useattrib($attribute)  { atkuse("attribute", $attribute); }
-  
+
   /**
    * Includes the file containing the specified relation
    *
@@ -1291,7 +1296,7 @@
    *                          search in [moduledir]/relations/ for the relation file.
    *                          When no modulename is specified ATK will search for the relation
    *                          in [atkdir]/relations/
-   */  
+   */
   function userelation($relation) { atkuse("relation" , $relation);  }
   function usefilter($filter)     { atkuse("filter"   , $filter);    }
 
@@ -1741,12 +1746,12 @@
     }
     return $escaped;
   }
-  
+
   if (!function_exists('html_entity_decode'))
   {
     /**
      * Convert all HTML entities to their applicable characters.
-     * Reverse of htmlspecialchars. 
+     * Reverse of htmlspecialchars.
      * Standard PHP function in PHP >= 4.3.0.
      * Taken from http://www.php.net/manual/en/function.html-entity-decode.php.
      *
