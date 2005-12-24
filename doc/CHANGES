@@ -29,8 +29,6 @@ Changes in ATK 5.3.1
 + atkOneToManyRelation filters are now parsed so values from the current
   record can be used in the filter. (bug #584) [Yury]
 + Attribute tooltips are now displayed in view pages. (bug #595) [Yury]
-+ The preCopy() trigger is now called when a record is copied in the
-  atkTreeNode. (bug #602) [Olav]
 * atkaddhandler now uses getFormButtons.[Guido]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
@@ -81,6 +79,10 @@ Changes in ATK 5.3.1
 * Added html_entity_decode for PHP versions lacking it. [PHP.net,Boy]
 * atkSelectHandler now properly parses [pk] template variable in select links.
   (bug #597) [Yury, Ivo]
+* The preCopy() trigger is now called when a record is copied in the
+  atkTreeNode. (bug #602) [Olav]
+* The preAdd() trigger is now called when records are added through an
+  atkOneToOneRelation. [Ivo]
 * Mail Error reports at debuglevel 0 now contain the debugoutput again. Use
   $config_debug = -1 to prevent collection and save some memory. [Ivo]
 

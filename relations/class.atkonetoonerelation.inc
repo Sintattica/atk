@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -17,18 +17,18 @@
    */
 
   /**
-   * flags specific for atkOneToOneRelation 
+   * flags specific for atkOneToOneRelation
    */
   define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
-  define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.  
+  define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.
   define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4); // use lazy loading instead of query addition.
-  
+
   /**
    * @internal Include the base class.
    */
   userelation("atkrelation");
-  
+
   /**
    * Implementation of one-to-one relationships.
    *
@@ -45,7 +45,7 @@
    * @package atk
    * @subpackage relations
    *
-   */        
+   */
   class atkOneToOneRelation extends atkRelation
   {
     /**
@@ -59,23 +59,23 @@
      * Default Constructor
      *
      * The atkOneToOneRelation supports two configurations:
-     * - Master mode: The current node is considered the master, and the 
+     * - Master mode: The current node is considered the master, and the
      *                referential key pointing to the master record is in the
      *                destination node.
      * - Slave mode: The current node is considered the child, and the
-     *               referential key pointing to the master record is in the 
+     *               referential key pointing to the master record is in the
      *               current node.
      * The mode to use is detected automatically based on the value of the
      * $refKey parameter.
      *
-     * <b>Example:</b> 
+     * <b>Example:</b>
      * <code>
      * $this->add(new atkOneToOneRelation("child", "mymod.childnode", "parent_id"));
      * </code>
      *
-     * @param String $name The unique name of the attribute. In slave mode, 
+     * @param String $name The unique name of the attribute. In slave mode,
      *                     this corresponds to the foreign key field in the
-     *                     database table. 
+     *                     database table.
      * @param String $destination the destination node (in module.nodename
      *                            notation)
      * @param String $refKey In master mode, this specifies the foreign key
@@ -83,7 +83,7 @@
      *                       the master record. In slave mode, this parameter
      *                       should be empty.
      * @param int $flags Attribute flags that influence this attributes'
-     *                   behavior.     
+     *                   behavior.
      */
     function atkOneToOneRelation($name, $destination, $refKey="", $flags=0)
     {
@@ -100,9 +100,9 @@
      * target record is displayed.
      *
      * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list" 
+     * @param String $mode The display mode ("view" for viewpages, or "list"
      *                     for displaying in recordlists)
-     * @return String HTML String 
+     * @return String HTML String
      */
     function display($record, $mode="list")
     {
@@ -110,7 +110,7 @@
 
       // default result
       $result = text("none");
-      
+
       if ($this->createDestination())
       {
 
@@ -119,7 +119,7 @@
           /* display in list mode */
           if ($mode == "list")
             $result = $this->m_destInstance->descriptor($myrecord);
-  
+
           /* display in view mode */
           else
           {
@@ -146,28 +146,28 @@
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
-     * attribute's value. 
+     * attribute's value.
      *
      * Because of the AF_INTEGRATE feature, the edit() method has a void
      * implementation. The actual edit code is handled by addToEditArray().
      */
     function edit()
-    {      
+    {
     }
 
     /**
-     * Adds this attribute to database queries. 
+     * Adds this attribute to database queries.
      *
      * Database queries (select, insert and update) are passed to this method
      * so the attribute can 'hook' itself into the query.
      *
-     * Framework method. It should not be necessary to call this method 
-     * directly. This implementation performs a join to retrieve the 
+     * Framework method. It should not be necessary to call this method
+     * directly. This implementation performs a join to retrieve the
      * target records' data, unless AF_ONETOONE_LAZY is set, in which case
      * loading is delayed and performed later using the load() method.
      * For update and insert queries, this method does nothing. These are
      * handled by the store() method.
-     *     
+     *
      * @param atkQuery $query The SQL query object
      * @param String $tablename The name of the table of this attribute
      * @param String $fieldaliasprefix Prefix to use in front of the alias
@@ -177,14 +177,14 @@
      *                   eachothers data. The $level is used to detect this
      *                   loop. If overriden in a derived class, any subcall to
      *                   an addToQuery method should pass the $level+1.
-     * @param String $mode Indicates what kind of query is being processing:     
+     * @param String $mode Indicates what kind of query is being processing:
      *                     This can be any action performed on a node (edit,
      *                     add, etc) Mind you that "add" and "update" are the
      *                     actions that store something in the database,
-     *                     whereas the rest are probably select queries.     
+     *                     whereas the rest are probably select queries.
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
-    {   
+    {
       if ($this->createDestination())
       {
         if ($mode!= "update" && $mode!="add")
@@ -196,9 +196,9 @@
               return parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
             }
           }
-          
-          if ($tablename!="") $tablename.=".";  
-         
+
+          if ($tablename!="") $tablename.=".";
+
           if ($this->m_refKey!="")
           {
             // Foreign key is in the destination node.
@@ -209,47 +209,47 @@
             // Foreign key is in the source node
             $condition = $tablename.$this->fieldName()."=".$fieldaliasprefix.$this->fieldName().".".$this->m_destInstance->m_primaryKey[0];
           }
-          
+
           $condition.= $this->getDestinationFilterCondition($fieldaliasprefix);
-          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);  
-          
+          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
+
           // we pass true as the last param to addToQuery, because we need all fields..
           $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
         }
-  
+
         // When storing, we don't add to the query.. we have our own store() method..
         // With one exception. If the foreign key is in the source node, we also need to update
         // the refkey value.
         if ($this->m_refKey=="")// && $mode=="add")
-        {       
+        {
           $query->addField($this->fieldName(),$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],"","",!$this->hasFlag(AF_NO_QUOTES));
         }
       }
     }
-    
+
     /**
      * Retrieve detail records from the database.
      *
      * Called by the framework to load the detail records.
      *
-     * @param atkDb $db The database used by the node. 
+     * @param atkDb $db The database used by the node.
      * @param array $record The master record
      * @param String $mode The mode for loading (admin, select, copy, etc)
-     * 
+     *
      * @return array Recordset containing detailrecords, or NULL if no detail
      *               records are present. Note: when $mode is edit, this
-     *               method will always return NULL. This is a framework 
+     *               method will always return NULL. This is a framework
      *               optimization because in edit pages, the records are
      *               loaded on the fly.
      */
     function load(&$db, $record, $mode)
     {
       if ($this->createDestination())
-      {              
+      {
         if ($this->m_refKey=="")
         {
-          // Foreign key in owner          
-          //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];        
+          // Foreign key in owner
+          //$condition = $this->m_destInstance->m_primaryKey[0]."=".$record[$this->fieldName()];
           $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->m_primaryKey[0].
                       "='".$record[$this->fieldName()]."'";
         }
@@ -269,7 +269,7 @@
         return $recs[0];
       }
     }
-    
+
     /**
      * Construct the filter statement for filters that are set for the
      * destination node (m_destinationFilter).
@@ -277,7 +277,7 @@
      * @return String A where clause condition.
      */
     function getDestinationFilterCondition($fieldaliasprefix="")
-    {        
+    {
       $condition="";
       if(is_array($this->m_destinationFilter))
       {
@@ -293,7 +293,7 @@
       return $condition;
     }
 
-    /** 
+    /**
      * The delete method is called by the framework to inform the attribute
      * that the master record is deleted.
      *
@@ -319,7 +319,7 @@
       }
       else
       {
-       // Foreign key is in the source node.        
+       // Foreign key is in the source node.
        $condition = $rel->m_table.'.'.$rel->m_primaryKey[0]."=".$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
       }
       return $rel->deleteDb($condition);
@@ -331,9 +331,9 @@
      *
      * For the regular atkAttribute, this means escaping things like
      * quotes and slashes. Derived attributes may reimplement this for their
-     * own conversion. 
+     * own conversion.
      * This is the exact opposite of the db2value method.
-     * 
+     *
      * @param array $rec The record that holds this attribute's value.
      * @return String The database compatible value
      */
@@ -367,13 +367,13 @@
     }
 
     /**
-     * Convert values from an HTML form posting to an internal value for 
-     * this attribute. 
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
      *
      * This implementation uses the destination node to fetch any field that
      * belongs to the other side of the relation.
      *
-     * @param array $postvars The array with html posted values ($_POST, for 
+     * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
@@ -394,27 +394,27 @@
         }
       }
     }
-    
+
     /*
      * Determine the storage type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
      * to be stored in the main query (addToQuery) or whether the attribute
-     * has its own store() implementation. 
-     * For the atkOneToOneRelation, the results depends on whether the 
+     * has its own store() implementation.
+     * For the atkOneToOneRelation, the results depends on whether the
      * relation is used in master or slave mode.
      *
-     * Framework method. It should not be necesary to call this method 
+     * Framework method. It should not be necesary to call this method
      * directly.
      *
      * @param String $mode The type of storage ("add" or "update")
      *
-     * @return int Bitmask containing information about storage requirements.     
+     * @return int Bitmask containing information about storage requirements.
      *             POSTSTORE  when in master mode.
      *             PRESTORE|ADDTOQUERY when in slave mode.
      */
     function storageType($mode)
-    {      
+    {
       if ($this->m_refKey!="")
       {
         // foreign key is in destination node, so we must store the
@@ -430,17 +430,17 @@
         return PRESTORE|ADDTOQUERY;
       }
     }
-    
+
       /*
-     * Determine the load type of this attribute. 
+     * Determine the load type of this attribute.
      *
      * With this method, the attribute tells the framework whether it wants
-     * to be loaded in the main query (addToQuery) or whether the attribute 
-     * has its own load() implementation. 
+     * to be loaded in the main query (addToQuery) or whether the attribute
+     * has its own load() implementation.
      * For the atkOneToOneRelation, this depends on the presence of the
      * AF_ONETOONE_LAZY flag.
      *
-     * Framework method. It should not be necesary to call this method 
+     * Framework method. It should not be necesary to call this method
      * directly.
      *
      * @param String $mode The type of load (view,admin,edit etc)
@@ -463,24 +463,24 @@
 
     /**
      * Store detail record in the database.
-     *          
-     * @param atkDb $db The database used by the node. 
+     *
+     * @param atkDb $db The database used by the node.
      * @param array $record The master record which has the detail records
      *                      embedded.
-     * @return boolean true if store was successful, false otherwise. 
+     * @return boolean true if store was successful, false otherwise.
      */
     function store(&$db, &$record, $mode)
     {
       if ($this->createDestination())
       {
         $vars = &$this->_getStoreValue($record);
-                  
+
         if ($vars["mode"]=="edit")
         {
           atkdebug("Updating existing one2one record");
           // we put the vars in the postvars, because there is information
           // like atkorgkey in it that is vital.
-          // but we restore the postvars after we're done updating          
+          // but we restore the postvars after we're done updating
 	         $oldpost = $this->m_destInstance->m_postvars;
           $this->m_destInstance->m_postvars = $vars;
           $res = $this->m_destInstance->updateDb($vars);
@@ -490,14 +490,15 @@
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
           atkdebug("Adding new one2one record for mode $mode");
+          $this->m_destInstance->preAdd($vars);
           $result = $this->m_destInstance->addDb($vars, true, $mode);
-          
+
           if ($this->m_refKey=="")
           {
-            // Foreign key is in source node, so we must update the record value with 
+            // Foreign key is in source node, so we must update the record value with
             $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $vars[$this->m_destInstance->m_primaryKey[0]];
           }
-          
+
           return $result;
         }
         else
@@ -507,7 +508,7 @@
         }
       }
     }
-    
+
     /**
      * Gets the value to store for the onetoonerelation
      *
@@ -553,7 +554,7 @@
       }
       return $vars;
     }
-        
+
     /**
      * Determine the type of the attribute on the other side.
      *
@@ -569,9 +570,9 @@
       if ($this->createDestination())
       {
         if (isset($this->m_refKey) && !empty($this->m_refkey))
-        { 
-          // foreign key is in the destination node.            
-          $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];                  
+        {
+          // foreign key is in the destination node.
+          $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];
         }
         else
         {
@@ -583,7 +584,7 @@
       }
       return false;
     }
-    
+
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its values. (<input type="hidden">)
@@ -602,7 +603,7 @@
         if ($record[$this->fieldName()]!=NULL)
         {
           $myrecord = $record[$this->fieldName()];
-  
+
           if ($myrecord[$this->m_destInstance->primaryKeyField()]==NULL)
           {
             // rec has no primkey yet, so we must add instead of update..
@@ -626,17 +627,17 @@
       }
       return "";
     }
-    
+
     /**
      * Put the attribute on one or more tabs.
      * @param array $tabs An array of tabs on which the attribute should
      *                    be displayed.
      */
     function setTabs($tab)
-    {      
+    {
       // normally, we would fill m_tabs with $tab
       parent::setTabs($tab);
-      
+
       // but we also need to pass this on to our destinstance.
       $this->createDestination();
       if(is_array($this->m_destInstance->m_attribList))
@@ -657,9 +658,9 @@
      *
      * This method is called by the node if it wants the data needed to create
      * an edit form. The method is an override of atkAttribute's method,
-     * because in the atkOneToOneRelation, we need to implement the 
+     * because in the atkOneToOneRelation, we need to implement the
      * AF_ONETOONE_INTEGRATE feature.
-     * 
+     *
      * This is a framework method, it should never be called directly.
      *
      * @param String $mode     the edit mode ("add" or "edit")
@@ -669,7 +670,7 @@
      * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {     
+    {
       /* hide */
       if (($mode == "edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode == "add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -708,7 +709,7 @@
             {
               /* record has no primarykey yet, so we must add instead of update */
               $myrecord = $defaults[$this->fieldName()];
-                                    
+
               if (empty($myrecord[$this->m_destInstance->primaryKeyField()]))
               {
                 $mode = "add";
@@ -726,7 +727,7 @@
             {
                $mode = "add";
             }
-  
+
             /* mode */
             $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
 
@@ -734,7 +735,7 @@
 
             $forceList = decodeKeyValueSet($this->m_destinationFilter);
             if ($this->m_refKey!="")
-            {            
+            {
               if($this->destinationHasRelation())
               {
                 $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
@@ -745,7 +746,7 @@
                  $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
               }
             }
-            
+
             $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
 
             /* errors and hidden fields */
@@ -761,9 +762,9 @@
               /* separator and name */
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
               $arr["fields"][] = array("line"=>"<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
-            }              
-            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);            
-            
+            }
+            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* separator */
@@ -782,24 +783,24 @@
      * @return boolean
      */
     function isEmpty($record)
-    {	      
+    {
       return false;
     }
 
-    /**    
-     * Checks if a value is valid. 
+    /**
+     * Checks if a value is valid.
      *
      * For the atkOneToOneRelation, this method delegates the actual
      * validation of values to the destination node.
      *
-     * @param array $record The record that holds the value for this 
-     *                      attribute. If an error occurs, the error will  
+     * @param array $record The record that holds the value for this
+     *                      attribute. If an error occurs, the error will
      *                      be stored in the 'atkerror' field of the record.
      * @param String $mode The mode for which should be validated ("add" or
      *                     "update")
-     */     
+     */
     function validate(&$record, $mode)
-    {      
+    {
       // zitten AF_ONETOONE_ERROR en AF_OBLIGATORY elkaar soms in de weg
       if ($this->hasFlag(AF_ONETOONE_ERROR)&&($mode!="add" || !$this->hasFlag(AF_HIDE_ADD)))
       {
@@ -809,7 +810,7 @@
 	      }
       }
     }
-    
+
     /**
      * @deprecated Use getDestinationFilterCondition() instead.
      */
@@ -831,17 +832,17 @@
         return $filter;
       }
     }
-    
+
     /**
      * Get list of additional tabs.
-     * 
+     *
      * Attributes can add new tabs to tabbed screens. This method will be
-     * called to retrieve the tabs. When AF_ONETOONE_INTEGRATE is set, the 
-     * atkOneToOneRelation adds tabs from the destination node to the tab 
+     * called to retrieve the tabs. When AF_ONETOONE_INTEGRATE is set, the
+     * atkOneToOneRelation adds tabs from the destination node to the tab
      * screen, so the attributes are seamlessly integrated but still on their
      * own tabs.
      *
-     * @param String $action The action for which additional tabs should be 
+     * @param String $action The action for which additional tabs should be
      *                       loaded.
      * @return array The list of tabs to add to the screen.
      */
@@ -860,7 +861,7 @@
       }
       return parent::getAdditionalTabs($action);
     }
-    
+
     /**
      * Check if the attribute wants to be shown on a certain tab.
      *
@@ -868,7 +869,7 @@
      * @return boolean
      */
     function showOnTab($tab)
-    {         
+    {
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
@@ -877,13 +878,13 @@
           if ($p_attrib->showOnTab($tab)) return true; // If we have one match, we can return true.
         }
         // None of the destionation attributes wants to be displayed on the tab.
-        // If the entire onetoone itself is on that tab however, we should put all attribs on 
+        // If the entire onetoone itself is on that tab however, we should put all attribs on
         // this tab.
         return parent::showOnTab($tab);
       }
-      return parent::showOnTab($tab);      
-    }        
-    
+      return parent::showOnTab($tab);
+    }
+
     /**
      * Adds the attribute / field to the list header. This includes the column name and search field.
      *
@@ -898,7 +899,7 @@
      * @see atkNode::listArray
      */
     function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
-    {      
+    {
       if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
       {
         // regular behaviour.
@@ -914,9 +915,9 @@
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
             $pref = $fieldprefix . "_AE_" .$this->fieldName();
             $p_attrib->addToListArrayHeader($action, $arr, $pref, $flags, $atksearch[$this->fieldName()], $atkorderby);
-            
-            $fieldPointer = &$arr["search"][$pref.$p_attrib->fieldName()];            
-            $fieldPointer = 
+
+            $fieldPointer = &$arr["search"][$pref.$p_attrib->fieldName()];
+            $fieldPointer =
               str_replace(
                 "atksearch[".$p_attrib->fieldName()."]",
                 "atksearch_" . $pref . "[" . $p_attrib->fieldName()."]",
@@ -926,7 +927,7 @@
         }
       }
     }
-    
+
     /**
      * Adds the attribute / field to the list row. And if the row is totalisable also to the total.
      *
@@ -940,7 +941,7 @@
      * @see atkNode::listArray
      */
     function addToListArrayRow($action, &$arr, $nr, $fieldprefix, $flags)
-    {    
+    {
       if (!$this->hasFlag(AF_ONETOONE_INTEGRATE))
       {
         parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
@@ -956,18 +957,18 @@
           $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
-            $p_attrib = &$this->m_destInstance->getAttribute($attribname);            
+            $p_attrib = &$this->m_destInstance->getAttribute($attribname);
             $p_attrib->addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
           }
         }
       }
-    }        
-    
+    }
+
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $this->getSearchCondition($query, $table, $value, $searchmode);
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value))
@@ -979,7 +980,7 @@
           // if we aren't searching for anything in this field, there is no need
           // to look any further:
           if (!$val) continue;
-        
+
           $p_attrib = &$this->m_destInstance->m_attribList[$key];
           if (is_object($p_attrib))
           {
@@ -992,7 +993,7 @@
             {
               // slave mode
               $new_table = &$this->m_destInstance->m_table;
-            
+
               // we need to left join the destination table into the query
               // (don't worry ATK won't add it when it's already there)
               $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
@@ -1009,11 +1010,11 @@
             {
               $p_attrib->searchCondition($query,$p_attrib->getTable($key),$val,$searchmode);
             }
-            else atkdebug("Field $key was not found in this relation (this is very weird)"); 
+            else atkdebug("Field $key was not found in this relation (this is very weird)");
           }
         }
       }
-      else 
+      else
       {
         // we were passed a value that is not an array, so appearantly the function calling us
         // does not know we are a relation, not just another attrib
@@ -1035,7 +1036,7 @@
               {
                 // slave mode
                 $new_table = &$this->m_destInstance->m_table;
-            
+
                 // we need to left join the destination table into the query
                 // (don't worry ATK won't add it when it's already there)
                 $query->addJoin($new_table,$new_table,($this->getJoinCondition()),false);
@@ -1046,20 +1047,20 @@
         }
       }
     }
-    
+
     /**
      * Returns the condition which can be used when calling atkQuery's addJoin() method
      * Joins the relation's owner with the destination
      * @return  string  condition the condition that can be pasted into the query
      */
     function getJoinCondition(&$query, $tablename="",$fieldalias="")
-    {     
+    {
       $condition = $this->m_ownerInstance->m_table . "." . $this->fieldName();
       $condition .= "=";
       $condition .= $this->m_destInstance->m_table . "." . $this->m_destInstance->primaryKeyField();
       return $condition;
     }
-    
+
     /**
      * Overridden method; in the integrated version, we should let the destination
      * attributes hook themselves into the fieldlist instead of hooking the relation
@@ -1073,7 +1074,7 @@
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_destInstance->m_attribList[$attribname];
-          
+
           if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
           {
             // TODO: This is an ugly way to make sure date attributes are changed as well
@@ -1082,16 +1083,16 @@
             //       be implemented and used.
             if (method_exists($p_attrib, "atkDateAttribute"))
               $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName()."_AE_");
-            else 
+            else
               $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName());
           }
         }
       }
       else
       {
-        parent::addToSearchformFields($fields,$node,$record, $fieldprefix); 
+        parent::addToSearchformFields($fields,$node,$record, $fieldprefix);
       }
     }
   }
-  
+
 ?>
