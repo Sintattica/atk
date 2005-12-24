@@ -20,6 +20,9 @@
    * $Id$
    */
 
+  define("DEBUG_HTML", 1);
+  define("DEBUG_WARNING", 2);
+
   /**
    * Function atkErrorHandler
    * This function catches PHP parse errors etc, and passes
@@ -139,18 +142,26 @@
   /**
    * Function atkdebug
    *
-   * Adds the debug txt to the debug log
-   * @param txt the text to send to the log
-   * @param bool viewhtml: make viewable in html
+   * Adds debug text to the debug log
+   * @param String $txt The text that will be added to the log
+   * @param Integer $flags An optional combination of the folowing flags
+   *                       DEBUG_HTML:    Converts applicable characters to
+   *                                      html entities so they aren't
+   *                                      interpreted by the browser.
+   *                       DEBUG_WARNING: Wraps the text into html bold
+   *                                      tags in order to make warnings
+   *                                      more clearly visible.
    */
-  function atkdebug($txt, $viewhtml=false)
+  function atkdebug($txt, $flags = 0)
   {
     global $g_debug_msg;
     $level = atkconfig("debug");
     if ($level>0)
     {
-      if($viewhtml)
+      if (hasFlag($flags, DEBUG_HTML))
         $txt = htmlentities($txt);
+      if (hasFlag($flags, DEBUG_WARNING))
+        $txt = "<b>" . $txt . "</b>";
 
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
@@ -334,6 +345,7 @@
    */
   function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
+    atkdebug("Call to deprecated text() function", DEBUG_WARNING);
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
   }
@@ -986,7 +998,7 @@
           $body.="\nStack level $i:\n";
           $item = $stack[$i];
           if (is_array($stack[$i]))
-	       {
+         {
             foreach ($item as $key=>$value)
             {
               $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
@@ -1177,20 +1189,20 @@
     }
 
     if($compression=="bzip")
-		{
-		  $mime='application/x-bzip';
-		 $filename.= ".bz2";
-		}
-		else if($compression=="gzip")
-		{
-		  $mime='application/x-gzip';
-		  $filename.= ".gz";
-		}
+    {
+      $mime='application/x-bzip';
+     $filename.= ".bz2";
+    }
+    else if($compression=="gzip")
+    {
+      $mime='application/x-gzip';
+      $filename.= ".gz";
+    }
     else if($compression=="zip")
-		{
-		  $mime='application/x-zip';
-		  $filename.= ".zip";
-		}
+    {
+      $mime='application/x-zip';
+      $filename.= ".zip";
+    }
 
     header('Content-Type: '. $mime);
     header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
@@ -1198,32 +1210,32 @@
     header('Pragma: no-cache');
     header('Expires: 0');
 
-		// 1. as a bzipped file
-	  if($compression=="bzip")
-		{
-		  if (@function_exists('bzcompress'))
-			{
+    // 1. as a bzipped file
+    if($compression=="bzip")
+    {
+      if (@function_exists('bzcompress'))
+      {
         echo bzcompress($data);
       }
-		}
-		// 2. as a gzipped file
-		else if ($compression == 'gzip')
-		{
+    }
+    // 2. as a gzipped file
+    else if ($compression == 'gzip')
+    {
       if (@function_exists('gzencode'))
-			{
+      {
         echo gzencode($data);
       }
     }
     else if ($compression == 'zip')
-		{
+    {
       if (@function_exists('gzcompress'))
-			{
+      {
         echo gzcompress($data);
       }
     }
     // 3. on screen
     else
-		{
+    {
       echo $data;
     }
     exit;
@@ -1273,7 +1285,7 @@
         header('Pragma: no-cache');
       }
       header('Expires: 0');
-		  fpassthru($fp);
+      fpassthru($fp);
       return true;
     }
     return false;
@@ -1546,8 +1558,8 @@
     $elems = explode(".", strtolower($fullclassname));
     if($elems["0"] == "module")
     {
-  	  array_shift($elems);
-	    $prefix = moduleDir(array_shift($elems));
+      array_shift($elems);
+      $prefix = moduleDir(array_shift($elems));
     }
     else
      $prefix = atkconfig("atkroot");
@@ -1574,7 +1586,7 @@
     {
       if($elems[$counter] == "../")
       {
-  	    array_shift($elems);
+        array_shift($elems);
       }
     }
 
@@ -1698,7 +1710,7 @@
         else if($value) return true;
       }
     }
-  	return false;
+    return false;
   }
 
   /**
