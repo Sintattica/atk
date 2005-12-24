@@ -20,7 +20,16 @@
    * $Id$
    */
 
+  /**
+   * Converts applicable characters to html entities so they aren't
+   * interpreted by the browser.
+   */
   define("DEBUG_HTML", 1);
+
+  /**
+   * Wraps the text into html bold tags in order to make warnings more
+   * clearly visible.
+   */
   define("DEBUG_WARNING", 2);
 
   /**
@@ -144,13 +153,7 @@
    *
    * Adds debug text to the debug log
    * @param String $txt The text that will be added to the log
-   * @param Integer $flags An optional combination of the folowing flags
-   *                       DEBUG_HTML:    Converts applicable characters to
-   *                                      html entities so they aren't
-   *                                      interpreted by the browser.
-   *                       DEBUG_WARNING: Wraps the text into html bold
-   *                                      tags in order to make warnings
-   *                                      more clearly visible.
+   * @param Integer $flags An optional combination of DEBUG_ flags
    */
   function atkdebug($txt, $flags = 0)
   {
