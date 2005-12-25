@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,9 +16,9 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
-   * This class creates record navigation for nodes. 
+   * This class creates record navigation for nodes.
    *
    * It can generate paging links, previous/next links and alphabetical
    * indexes.
@@ -31,39 +31,39 @@
   class atkNavigator
   {
     function buildNavigation(&$node, $mode="", $navurls="", $embedded=false)
-  	{
-  	  if ($navurls=="")
-  	  {
-  	    // Have to determine navurls ourselves.
-  	    $navurls = $this->getNavigationUrls($node, $mode);
-  	  }
-  	  $links=array();
-  	  foreach ($navurls as $key=>$nav)
-  	  {
-				$links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, $embedded);
-  	  }
-  	  return implode("&nbsp;|&nbsp;", $links);
-  	}
-  	
+    {
+      if ($navurls=="")
+      {
+        // Have to determine navurls ourselves.
+        $navurls = $this->getNavigationUrls($node, $mode);
+      }
+      $links=array();
+      foreach ($navurls as $key=>$nav)
+      {
+        $links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, $embedded);
+      }
+      return implode("&nbsp;|&nbsp;", $links);
+    }
+
     /**
      * Creates a navigation bar, for browsing through the record pages
      * (if a limit is set, and there are more records)
      * If an owner node is passed along, then we use the atkselector
      * on the owner as the navigator is used on a relation
-     * @param obj 	&$node   instance of the node we create the navigation bar for
+     * @param obj   &$node   instance of the node we create the navigation bar for
      * @param string $mode   the mode we are in, defaults to ""
      * @param string $filter a filter for the destination node
      * @return string a HTML string for navigating through records
      */
     function getNavigationUrls(&$node, $mode="", $filter="")
-    {	 
+    {
       global $ATK_VARS;
-    	    
-  	  $res = array();
+
+      $res = array();
       $limit = (int)$node->m_postvars['atklimit'];
-     
+
       if (!$filter && isset($node->m_postvars["atkfilter"])) $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
-      
+
       $count = (int)$node->countDb($filter, $node->m_listExcludes, "", $mode);
 
       // maximum number of bookmarks to pages.
@@ -92,18 +92,18 @@
       // through something we're not updating any more so we set the action to edit
       if ($node->m_action == "update" || $node->m_action=="save") $action ="edit";
       else $action = $node->m_action;
-      
+
       if ($curr > 1)
       {
         $newstart = $node->m_postvars['atkstartat'] - $limit;
-        $res['previous'] = array(	"title"=>text("previous"), 
+        $res['previous'] = array( "title"=>atktext("previous", "atk"),
                                   "url"=>$_SERVER["PHP_SELF"].
                                           "?atknodetype=".$ATK_VARS["atknodetype"].
                                           "&atkaction=".$action.
                                           (isset($ATK_VARS["atktarget"])?"&atktarget=".rawurlencode($ATK_VARS["atktarget"]):"").
                                           "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".$newstart);
       }
-      
+
       for ($i = $begpg; $i <= $endpg; $i++)
       {
          if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
@@ -119,7 +119,7 @@
       if ($curr < $pages)
       {
         $newstart = $node->m_postvars['atkstartat'] + $limit;
-        $res['next'] = array("title"=>text("next"), 
+        $res['next'] = array("title"=>atktext("next", "atk"),
                               "url"=>$_SERVER["PHP_SELF"].
                                       "?atknodetype=".$ATK_VARS["atknodetype"].
                                       "&atkaction=".$node->m_action.
@@ -138,7 +138,7 @@
     function buildIndex(&$node, $selected="")
     {
       $nav = "";
-      
+
       // TODO: show only those letters that are present in the database.
       // e.g. don't show the letter Q if there aren't any records starting
       // with a Q.
@@ -160,12 +160,12 @@
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
         if ($i!=$count-1) $nav.=" ";
       }
-      
-      if (isset($node->m_postvars['atksearch'])) 
-        $nav.=" - ".href(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"")), atktext("view_all"));
+
+      if (isset($node->m_postvars['atksearch']))
+        $nav.=" - ".href(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"")), atktext("view_all", "atk"));
 
       return $nav;
-    }  
+    }
   }
 
 ?>
