@@ -151,7 +151,7 @@
       $content.= $this->GraphTreeRender();
       $content.= "</table><br>";
 
-      atkdebug("Generating treeview finished!");
+      atkdebug("Generated treeview");
 
       return $ui->renderBox(array("title"=>atktext('title_'.$this->m_type.'_tree', $this->m_module),
                            "content"=>$content));
@@ -235,6 +235,7 @@
     function GraphTreeRender($showactions=true, $expandAll=false, $foldable=true)
     {
       global $g_maxlevel,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
+      atkimport("atk.utils.atkstringparser");
       if(count($this->m_tree)==1) return "";
 
       $img_expand   = $this->getIcon('expand');
@@ -626,9 +627,10 @@
                 if ($atkencoded) $url = str_replace('[pk]', atkurlencode(rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), false), $url);
                 else $url = str_replace('[pk]', rawurlencode($this->primaryKey($this->m_tree[$cnt]["label"])), $url);
 
-                $url = stringparse($url, $this->m_tree[$cnt]["label"], true);
+                $stringparser = new atkStringParser($url);
+                $url = $stringparser->parse($this->m_tree[$cnt]["label"], true);
 
-                $res.=href($url, text($name), SESSION_NESTED)."&nbsp;";
+                $res.=href($url, atktext($name), SESSION_NESTED)."&nbsp;";
               }
             }
 
