@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3.1
 --------------------
+* Fixed display bug in atkCurrencyAttribute: a number with comma 
+  was given to the number_format function: number was rounded .[Nico]
 + Significantly enhanced the CSV export feature (atkExportHandler) (bug #603)
   + The user can now select which columns to export. [Stefano]
   + Attributes which are hidden in the list can be exported now. [Stefano]
