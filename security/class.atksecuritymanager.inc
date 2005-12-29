@@ -157,7 +157,7 @@
         // destroy cookie
         if (atkconfig("authentication_cookie") && $auth_user!="administrator")
         {
-          $cookiename = "atkauth_".str_replace(" ","_",atktext("app_title"));
+          $cookiename = $this->_getAuthCookieName();
           if (!empty($_COOKIE[$cookiename])) setcookie($cookiename, "", 0);
         }
         if($ATK_VARS["atklogout"]>1)
@@ -190,7 +190,7 @@
         {
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
-          $cookiename = "atkauth_".str_replace(" ","_",atktext("app_title"));
+          $cookiename = $this->_getAuthCookieName();
           list($enc, $user, $passwd) = split("\.",base64_decode($_COOKIE[$cookiename]));
 
           // for security reasons administrator will never be cookied..
@@ -710,6 +710,11 @@
           atkdebug("error opening logfile");
         }
       }
+    }
+
+    function _getAuthCookieName()
+    {
+      return "atkauth_3".str_replace(" ","_",atktext("app_title"));
     }
   }
 
