@@ -31,9 +31,13 @@ Changes in ATK 5.3.1
 + atkOneToManyRelation filters are now parsed so values from the current
   record can be used in the filter. (bug #584) [Yury]
 + Attribute tooltips are now displayed in view pages. (bug #595) [Yury]
-* atkaddhandler now uses getFormButtons.[Guido]
++ Buttons in the add screen can now be extended by implementing the 
+  getFormButtons method. [Guido]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
+* Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to 
+  visualize warnings and DEBUG_HTML to convert the debug string to html
+  entities. [Guido]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
