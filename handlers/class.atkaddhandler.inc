@@ -66,6 +66,11 @@
       if ($node->m_action == "admin") $formstart.=session_form(SESSION_NESTED);
       else $formstart.=session_form();
 
+      if (isset($node->m_postvars['atkfilter']))
+      {
+        $formstart .= '<input type="hidden" name="atkfilter" value="'.$node->m_postvars['atkfilter'].'">';
+      }
+      
       $params["formstart"] = $formstart;
 
       $ui = &$node->getUi();
