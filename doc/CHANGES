@@ -6,7 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3.1
 --------------------
-* Fixed display bug in atkCurrencyAttribute: a number with comma 
+* Fixed display bug in atkCurrencyAttribute: a number with comma
   was given to the number_format function: number was rounded .[Nico]
 + Significantly enhanced the CSV export feature (atkExportHandler) (bug #603)
   + The user can now select which columns to export. [Stefano]
@@ -31,46 +31,46 @@ Changes in ATK 5.3.1
 + atkOneToManyRelation filters are now parsed so values from the current
   record can be used in the filter. (bug #584) [Yury]
 + Attribute tooltips are now displayed in view pages. (bug #595) [Yury]
-+ Buttons in the add screen can now be extended by implementing the 
++ Buttons in the add screen can now be extended by implementing the
   getFormButtons method. [Guido]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
-* Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to 
+* Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
   visualize warnings and DEBUG_HTML to convert the debug string to html
   entities. [Guido]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
   instead of on the id. [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttribute now renders NULL values as "" instead of 0. [Ivo]
-* Replaced some deprecated text() calls with atktext(). [Yury, Guido] 
+* Replaced some deprecated text() calls with atktext(). [Yury, Guido]
 * Decomposed atkNode::dispatch() to loadDispatchPage() which does the actual
   loading of the page for dispatch() to render. [Boy]
 * Fixed bug in atkTreeNode that didn't allow the usage of string based key and
   parent fields. [Peter]
-* Fixed bug in atkOneToOneRelation that caused the foreign key in the record 
+* Fixed bug in atkOneToOneRelation that caused the foreign key in the record
   to be stored to be an array instead of a value. [Boy]
 * Made atkThemeCompiler able to handle modules not located in the atkroot. i
   [Boy]
 * Added ability to reset instances created by atkinstance if supported by the
   node and added support for atkTheme. [Boy]
 * Fixed error reporting for embeded atkOneToManyRelation. [Boy]
-* atkOneToManyRelation navigation links are not shown if there is no 
+* atkOneToManyRelation navigation links are not shown if there is no
   filter. [Boy]
-* AF_UNIQUE validation is no longer performed on the postvars, but on the 
+* AF_UNIQUE validation is no longer performed on the postvars, but on the
   record passed. [Boy]
 * AF_UNIQUE can now handle values that contain quotes. (bug #600) [Yury]
-* Added new param to dispatch_url allowing you to dispatch to other php files 
+* Added new param to dispatch_url allowing you to dispatch to other php files
   than dispatch.php. [Boy]
 * Added 'class' HTML attribute with name of attribute for atkAttribute,
-  atkDateAttribute, atkListAttribute, atkNumberAttribute, atkOneToManyRelation 
-  and atkManyToOnerelation. [Boy] 
+  atkDateAttribute, atkListAttribute, atkNumberAttribute, atkOneToManyRelation
+  and atkManyToOnerelation. [Boy]
 * Fixed ATK sometimes placing focus on hidden objects. [Boy]
 * Upgraded Smarty to version 2.6.11. [Boy]
 * Fixed error handling for atkFileAttribute. [Peter]
 * Fixed problem with the session expiring at login on some servers. [Ivo]
 * Mailreporting removes JS debugger links from debug output and transforms
   html special chars to normal special chars. [Boy]
-* Login screen is now skipped when $config_authentication is "none". (bug #585) 
+* Login screen is now skipped when $config_authentication is "none". (bug #585)
   [Ivo]
 * Fixed a php error in atkMatrixRelation. (bug #587) [Roberto]
 * atkManyToOneRelation and atkOneToManyRelation now recognise 'csv' display
@@ -80,7 +80,7 @@ Changes in ATK 5.3.1
 * Tooltips for fields added by a modifier are now retrieved from the correct
   language file (the module that applied the modifier). (bug #594) [Yury]
 * Mailreports now show whats in arrays, remove javascript debugger
-  links from debugging info and remove HTML entities so traces are human 
+  links from debugging info and remove HTML entities so traces are human
   readable. [Boy]
 * Added html_entity_decode for PHP versions lacking it. [PHP.net,Boy]
 * atkSelectHandler now properly parses [pk] template variable in select links.
@@ -92,6 +92,13 @@ Changes in ATK 5.3.1
 * Mail Error reports at debuglevel 0 now contain the debugoutput again. Use
   $config_debug = -1 to prevent collection and save some memory. [Ivo]
 * Fixed a bug in logout link. [Ivo]
+* When translation for tab_tabname wasn't found, tab_tabname was returned.
+  Now an attempt to translate tabname without the tab_ prefix is also made
+  (with the plain tabname as fallback). [Guido]
+* When displaying an atkManyToOneRelation that has the AF_RELATION_AUTOLINK
+  flag in "plain" mode (for example when using the documentwriter), the
+  return value won't be wrapped in a html link anymore. [Guido]
+* Fixed the use of deprecated stringparse() function in atkTreeNode. [Guido]
 
 Changes in ATK 5.3
 ------------------
