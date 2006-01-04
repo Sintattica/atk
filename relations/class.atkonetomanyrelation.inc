@@ -247,7 +247,7 @@
               }
             }
           }
-          
+
           $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
           if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
           {
@@ -463,7 +463,7 @@
         }
         $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
         $label = $this->getAddLabel();
-        
+
         if (count($this->m_onchangecode))
         {
           $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
@@ -473,19 +473,23 @@
       }
       return $url;
     }
-    
+
+    /**
+     * Attempts to get a translated label which can be used when composing an "add" link
+     *
+     * @return String Localised "add" label
+     */
     function getAddLabel()
     {
       $key = "link_".$this->fieldName()."_add";
-      $label = atktext($key,$this->m_destInstance->m_module);
-      if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+      $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+      if ($label=="")
       {
         $key = "link_".getNodeType($this->m_destination)."_add";
-        $label = atktext($key,$this->m_destInstance->m_module);
-        if ($label==""||strtolower($label)==str_replace('_',' ',strtolower($key)))
+        $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+        if ($label=="")
         {
-          $key = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add"));
-          $label = atktext($key,$this->m_destInstance->m_module);
+          $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
         }
       }
       return $label;
