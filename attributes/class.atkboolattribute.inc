@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -34,10 +34,10 @@
     function atkBoolAttribute($name, $flags=0)
     {
       //Setting AF_OBLIGATORY has no use, so prevent setting it.
-      if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY) $flags &= (~ AF_OBLIGATORY);          
-            
+      if (($flags & AF_OBLIGATORY) == AF_OBLIGATORY) $flags &= (~ AF_OBLIGATORY);
+
      // Call base class constructor. Size of boolean value is always 1.
-      $this->atkAttribute($name,$flags, 1); 
+      $this->atkAttribute($name,$flags, 1);
     }
 
     /**
@@ -51,10 +51,10 @@
       $checked = "";
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]>0) $checked="checked";
       $id = $fieldprefix.$this->fieldName();
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);  
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);
       return '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$checked.'>';
     }
-    
+
 
     /**
      * Get the value if it exits, otherwise return 0
@@ -62,31 +62,31 @@
      * @return String with slashes
      */
     function value2db($rec)
-    {   
+    {
       (isset($rec[$this->fieldName()]) ? $ret =  $rec[$this->fieldName()]: $ret = 0);
       return $ret;
     }
 
 
     /**
-     * Returns a piece of html code that can be used in a form to search for values   
+     * Returns a piece of html code that can be used in a form to search for values
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
     function search($record="")
     {
       $result = '<select name="atksearch['.$this->formName().']">';
-      $result.= '<option value="">'.text('search_all');
+      $result.= '<option value="">'.atktext("search_all", "atk");
       $result.= '<option value="0" ';
       if($record[$this->fieldName()]==='0' && !empty($record)) $result.="selected";
-      $result.= '>'.text('no');
+      $result.= '>'.atktext("no", "atk");
       $result.= '<option value="1" ';
       if($record[$this->fieldName()]==='1') $result.="selected";
-      $result.= '>'.text('yes');
+      $result.= '>'.atktext("yes", "atk");
       $result.='</select>';
       return $result;
-    }   
-    
+    }
+
    /**
      * Creates an search condition for a given search value
      * @param $table the table name
@@ -96,8 +96,8 @@
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
-    }     
-    
+    }
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value)) $value = $value[$this->fieldName()];
@@ -112,10 +112,10 @@
     function display($record)
     {
 	    // We display true (1) as 'Yes' and false as 'No'
-	    if ($record[$this->fieldName()]>0) return text("yes");
-	    return text("no");
+	    if ($record[$this->fieldName()]>0) return atktext("yes", "atk");
+	    return atktext("no", "atk");
     }
-  
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -135,11 +135,11 @@
      * Return the label of the field.
      */
     function label($record = array())
-    { 
+    {
       $label_txt = parent::label($record);
       return '<label for="'.$this->m_name.'">'.$label_txt.'</label>';
     }
-    
+
     /**
      * Convert a String representation into an internal value.
      *
@@ -155,6 +155,6 @@
       return 0;
     }
 
-    
+
   }
 ?>
