@@ -1543,6 +1543,7 @@
      * tab etc).
      * @param String $action The action for which the tabs should be generated.
      * @return array List of tabs
+     * @todo Make translation of tabs module aware
      */
     function buildTabs($action="")
     {
@@ -1565,7 +1566,9 @@
         $newtab["total"] = count($list);
         foreach ($list as $t)
         {
-          $newtab["title"] = atktext("tab_$t",$this->m_module,$this->m_type);
+          $newtab["title"] = atktext("tab_$t",$this->m_module,$this->m_type, "", "", true);
+          if ($newtab["title"] == "")
+            $newtab["title"] = atktext($t,$this->m_module,$this->m_type);
           $newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")
