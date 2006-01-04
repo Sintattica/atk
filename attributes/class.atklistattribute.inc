@@ -163,10 +163,11 @@
       {
         $result.= '<option value="'.$this->m_emptyvalue.'">'.atktext('list_null_value', '', $this->m_ownerInstance->m_type);
       }
-
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        if ($this->m_values[$i] == $this->m_selected || $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!="")
+        // If the current value is selected or occurs in the record
+        if ((!is_null($this->m_selected) && $this->m_values[$i] == $this->m_selected) || 
+            ( is_null($this->m_selected) && $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=""))
         {
           $sel = "selected";
         }
