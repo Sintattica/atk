@@ -118,6 +118,9 @@
 
       // Remove the document from disk
       $this->m_tbsooo->RemoveDoc();
+      
+      // Remove old unremoved documents
+      $this->m_tbsooo->ClearProcessDir();
 
       return true;
     }
@@ -137,6 +140,9 @@
 
       // Add additional headers to set proper content type, filename and filesize
       rename($this->m_tbsooo->GetPathnameDoc(), $outputfilename);
+
+      // Remove old unremoved documents
+      $this->m_tbsooo->ClearProcessDir();
 
       return true;
     }
