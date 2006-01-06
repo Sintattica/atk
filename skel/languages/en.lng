@@ -1,5 +1,7 @@
 <?php
 $en=array(
+  "app_description" => "Welcome to this ATK application.",
+  "app_shorttitle" => "ATKApp",
   "app_title" =>  "Application name",
 
   // Menu Items
