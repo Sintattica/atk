@@ -101,6 +101,7 @@ Changes in ATK 5.3.1
 * Fixed the use of deprecated stringparse() function in atkTreeNode. [Guido]
 * In atkListAttribute added extra check on m_selected to make sure the correct 
   item is selected when one item in the option list has a value of '0' [Guido, Boy, Dennis].
+* Added shorttitle and description to default application languages. [Boy]
 
 Changes in ATK 5.3
 ------------------
