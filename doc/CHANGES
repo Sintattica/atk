@@ -34,6 +34,12 @@ Changes in ATK 5.3.1
 + Buttons in the add screen can now be extended by implementing the
   getFormButtons method. [Guido]
 + Added support for inclusion/exclusion of attributes using a regex. [Peter]
++ Added support for specifying a different type and optionally it's
+  parameters to atkMetaPolicy (using setType and setTypeAndParams). [Peter]
++ Added support for specifying a descriptor for meta nodes using
+  the instance variable $descriptor. [Peter]
++ Added auto-detection of e-mail fields to atkMetaPolicy (at this
+  time only for columns with the name 'email' or 'e-mail'). [Peter]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
@@ -104,6 +110,7 @@ Changes in ATK 5.3.1
   item is selected when one item in the option list has a value of '0' [Guido, Boy, Dennis].
 * Added shorttitle and description to default application languages. [Boy]
 * Fixed reference bug in several atkMetaPolicy methods. [Peter]
+* Fixed exclusion/inclusion of a single attribute in atkMetaPolicy. [Peter]
 
 Changes in ATK 5.3
 ------------------

@@ -43,13 +43,14 @@ class atkMetaNode extends atkNode
    * To make this possible (and for supporting passing parameters by reference)
    * the constructor accepts an array which may contain the following fields:
    *
-   * - type      node type
-   * - table     table name
-   * - sequence  sequence name
-   * - db        database instance
-   * - policy    meta policy, the meta policy to use ((sub-)class atkMetaPolicy instance)
-   * - handler   meta handler, the meta handler to use ((sub-)class atkMetaPolicy instance)   
-   * - flags     node flags
+   * - type        node type
+   * - table       table name
+   * - sequence    sequence name
+   * - db          database instance
+   * - policy      meta policy, the meta policy to use ((sub-)class atkMetaPolicy instance)
+   * - handler     meta handler, the meta handler to use ((sub-)class atkMetaPolicy instance)   
+   * - flags       node flags
+   * - descriptor  descriptor template for this node
    */
   function atkMetaNode($args=array())
   {
@@ -98,6 +99,11 @@ class atkMetaNode extends atkNode
     else if (array_key_exists("db", $args))
       $this->m_db = &$args["db"];
     else $this->m_db = &atkGetDb();  
+    
+    if (isset($this->descriptor))
+      $this->setDescriptorTemplate($this->descriptor);
+    else if (array_key_exists("descriptor", $args))
+      $this->setDescriptorTemplate($args["descriptor"]);
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }

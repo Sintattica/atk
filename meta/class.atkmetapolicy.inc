@@ -27,8 +27,6 @@ atkimport("atk.meta.atkmetatools");
  */
 class atkMetaPolicy
 {
-  var $x = 1;
-  
   var $m_node = NULL;
   
   var $m_includes = NULL;
@@ -107,6 +105,12 @@ class atkMetaPolicy
     
     if (in_array($name, array("passw", "password")))
       $type = "atk.attributes.atkpasswordattribute";
+      
+    else if (in_array($name, array("email", "e-mail")))
+    {
+      $type = "atk.attributes.atkemailattribute";    
+      $params = array(false);
+    }
       
     else
     {
@@ -231,7 +235,7 @@ class atkMetaPolicy
    */
   function setIncludes($attrs)
   {
-    if (func_num_args() > 1)
+    if (!is_array($attrs))
       $attrs = func_get_args();
   
     $this->m_includes = $attrs;
@@ -245,7 +249,7 @@ class atkMetaPolicy
    */
   function setExcludes($attrs)
   {
-    if (func_num_args() > 1)
+    if (!is_array($attrs))
       $attrs = func_get_args();
   
     $this->m_excludes = $attrs;
@@ -349,6 +353,30 @@ class atkMetaPolicy
     foreach ($attrs as $attr)
       if (array_key_exists($attr, $this->m_attrs))
         $this->m_attrs[$attr]["tabs"] = $tabs;
+  }
+
+  /**
+   * Sets the attribute type. Parameters will be (re-)set to none.
+   * 
+   * @param $attr  the attribute name
+   * @param $type  full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   */
+  function setType($attr, $type)
+  {
+    $this->setTypeAndParams($attr, $type);
+  }
+  
+  /**
+   * Sets the attribute type and parameters.
+   * 
+   * @param $attr    the attribute name
+   * @param $type    full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   * @param $params  parameters for the attribute (optional)
+   */
+  function setTypeAndParams($attr, $type, $params=array())
+  {
+    $this->m_attrs[$attr]["type"] = $type;
+    $this->m_attrs[$attr]["params"] = $params;
   }
   
   /**
@@ -613,6 +641,8 @@ class atkMetaPolicy
         if ($exclude{0} == '/' && preg_match($exclude, $name)) return false;
       return true;
     }
+    
+    return true;
   }
   
   /**
