@@ -40,6 +40,7 @@ Changes in ATK 5.3.1
   the instance variable $descriptor. [Peter]
 + Added auto-detection of e-mail fields to atkMetaPolicy (at this
   time only for columns with the name 'email' or 'e-mail'). [Peter]
++ Added atkCountryAttribute. [Boy]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
@@ -56,8 +57,7 @@ Changes in ATK 5.3.1
   parent fields. [Peter]
 * Fixed bug in atkOneToOneRelation that caused the foreign key in the record
   to be stored to be an array instead of a value. [Boy]
-* Made atkThemeCompiler able to handle modules not located in the atkroot. i
-  [Boy]
+* Made atkThemeCompiler able to handle modules not located in the atkroot.[Boy]
 * Added ability to reset instances created by atkinstance if supported by the
   node and added support for atkTheme. [Boy]
 * Fixed error reporting for embeded atkOneToManyRelation. [Boy]
