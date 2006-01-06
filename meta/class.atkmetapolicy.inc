@@ -27,6 +27,8 @@ atkimport("atk.meta.atkmetatools");
  */
 class atkMetaPolicy
 {
+  var $x = 1;
+  
   var $m_node = NULL;
   
   var $m_includes = NULL;
@@ -54,6 +56,25 @@ class atkMetaPolicy
       
     return new atkMetaPolicy();
   }
+  
+  /**
+   * Calls a method of this object with the given parameters.
+   *
+   * @param String $method the method name
+   * @param Array $params the method parameters
+   * @return unknown
+   */
+  function _call($method, $params)
+  {
+    // unfortunately call_user_func_array(array($this, $method), $params) makes
+    // a copy of $this, instead of calling the method on the original $this
+    // so we use eval instead...
+    $call = "\$this->$method(";
+    foreach (array_keys($params) as $i)
+      $call .= ($i > 0 ? ", " : "")."\$params[$i]";
+    $call .= ");";  
+    return eval($call);    
+  }  
   
   /**
    * Get auto-detected flags for the given attribute.
@@ -254,7 +275,7 @@ class atkMetaPolicy
    * auto-detected flags will be added later on.
    */
 
-  function setFlag($attrs, $flag) { call_user_func_array(array($this, "setFlags"), func_get_args()); }   
+  function setFlag($attrs, $flag) { $params = func_get_args(); $this->_call("setFlags", $params); }   
   function setFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
@@ -274,7 +295,7 @@ class atkMetaPolicy
   /**
    * Add flag(s) to the given attribute or list of attributes.
    */
-  function addFlag($attrs, $flag) { $args = func_get_args(); call_user_func_array(array($this, "addFlags"), $args); }
+  function addFlag($attrs, $flag) { $params = func_get_args(); $this->_call("addFlags", $params); }
   function addFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
@@ -282,7 +303,6 @@ class atkMetaPolicy
       $attrs = func_get_args();
       $flags = array_pop($attrs);
     }
-    
     else if (!is_array($attrs))
       $attrs = array($attrs);
 
@@ -294,7 +314,7 @@ class atkMetaPolicy
   /**
    * Remove flag(s) from the given attribute or list of attributes.
    */
-  function removeFlag($attrs, $flag) { $args = func_get_args(); call_user_func_array(array($this, "removeFlags"), $args); }   
+  function removeFlag($attrs, $flag) { $params = func_get_args(); $this->_call("removeFlags", $params); }   
   function removeFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
@@ -314,7 +334,7 @@ class atkMetaPolicy
   /**
    * Set the tab(s) for the given attribute or list of attributes.
    */
-  function setTab($attrs, $tab) { $args = func_get_args(); call_user_func_array(array(&$this, "setTabs"), $args); }
+  function setTab($attrs, $tab) { $params = func_get_args(); $this->_call("setTabs", $params); }
   function setTabs($attrs, $tabs)
   {
     if (func_num_args() > 2)
@@ -569,12 +589,38 @@ class atkMetaPolicy
   }  
   
   /**
+   * Checks if a certain attribute should be included or not.
+   * Checks both the include and exclude lists.
+   *
+   * @param String $name
+   * @return Boolean attribute included?
+   */
+  function _isAttributeIncluded($name)
+  {
+    if ($this->m_includes !== NULL && in_array($name, $this->m_includes)) return true;
+    if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return false;
+    
+    if ($this->m_includes !== NULL)
+    {
+      foreach ($this->m_includes as $include)
+        if ($include{0} == '/' && preg_match($include, $name)) return true;
+      return false;
+    }
+    
+    if ($this->m_excludes !== NULL)
+    {
+      foreach ($this->m_excludes as $exclude)
+        if ($exclude{0} == '/' && preg_match($exclude, $name)) return false;
+      return true;
+    }
+  }
+  
+  /**
    * Apply attribute.
    */
   function _applyAttribute($name, $type, $params, $flags, $tabs, $order)
   {
-    if ($this->m_includes !== NULL && !in_array($name, $this->m_includes)) return;
-    if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return;
+    if (!$this->_isAttributeIncluded($name)) return;
   
     atkimport($type);
     if (strrpos($type, ".") !== FALSE)

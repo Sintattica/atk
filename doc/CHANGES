@@ -33,6 +33,7 @@ Changes in ATK 5.3.1
 + Attribute tooltips are now displayed in view pages. (bug #595) [Yury]
 + Buttons in the add screen can now be extended by implementing the
   getFormButtons method. [Guido]
++ Added support for inclusion/exclusion of attributes using a regex. [Peter]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
@@ -102,6 +103,7 @@ Changes in ATK 5.3.1
 * In atkListAttribute added extra check on m_selected to make sure the correct 
   item is selected when one item in the option list has a value of '0' [Guido, Boy, Dennis].
 * Added shorttitle and description to default application languages. [Boy]
+* Fixed reference bug in several atkMetaPolicy methods. [Peter]
 
 Changes in ATK 5.3
 ------------------
