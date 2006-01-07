@@ -88,11 +88,11 @@
 	  
       $result ='<div align="left"><font size="-2">
                 [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
-                     text("check_all").
+                     atktext("check_all", "atk").
                 '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
-                     text("check_none").
+                     atktext("check_none", "atk").
                 '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
-                     text("invert_selection").'</a>]</font></div>';
+                     atktext("invert_selection", "atk").'</a>]</font></div>';
        	
       $result.= '<table border="0"><tr>';
       for ($i=0;$i<count($recordset);$i++)
@@ -110,7 +110,7 @@
 
             // Create link to details.
             $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
-              "[".text("details")."]",
+              "[".atktext("details", "atk")."]",
               SESSION_NESTED,
               true);
           }
@@ -246,7 +246,7 @@
         
         $pkfield = $this->m_destInstance->primaryKeyField();
 
-        $result.= '<option value="">'.text('search_all');
+        $result.= '<option value="">'.atktext("search_all", "atk");
 
         for ($i=0;$i<count($recordset);$i++)
         {
