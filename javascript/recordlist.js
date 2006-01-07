@@ -31,7 +31,7 @@ function resetrow(row)
 function selectrow(row, rlId, rownum)
 {
   table = document.getElementById(rlId);  
-  if (table.listener.setRow(rownum, row.oldcolor))
+  if (table.listener && table.listener.setRow(rownum, row.oldcolor))
   {
     row.oldcolor = row.style.backgroundColor;    
   }
