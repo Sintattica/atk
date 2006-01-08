@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,15 +16,15 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Handler class for the search action of a node. The handler draws a
    * generic search form for the given node.
    *
    * The actual search is not performed by this handler. The search values are
    * stored in the default atksearch variables, which the admin page uses to
-   * perform the actual search. The search form by default redirects to 
-   * the adminpage to display searchresults.  
+   * perform the actual search. The search form by default redirects to
+   * the adminpage to display searchresults.
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @author Sandy Pleyte <sandy@achievo.org>
@@ -37,7 +37,7 @@
   class atkSearchHandler extends atkActionHandler
   {
     /**
-     * The action handler method. 
+     * The action handler method.
      */
     function action_search()
     {
@@ -46,25 +46,25 @@
       if (isset($this->m_postvars["atksearch"])) $searcharray = $this->m_postvars["atksearch"];
       $page->addcontent($this->m_node->renderActionPage("search", $this->invoke("searchPage", $searcharray)));
     }
-    
+
     /**
-     * This method returns an html page that can be used as a search form.     
+     * This method returns an html page that can be used as a search form.
      * @param array $record A record containing default values that will be
      *                      entered in the searchform.
      * @return String The html search page.
      */
     function searchPage($record=NULL)
-    {         
+    {
       $node = &$this->m_node;
-      
-      $node->addStyle("style.css");      
-      
+
+      $node->addStyle("style.css");
+
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $ui = &$this->getUi();
       if (is_object($ui))
-      {        
+      {
         $params = array();
         $params["formstart"] = '<form name="entryform" action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="post">';
 
@@ -81,30 +81,30 @@
           $params["formstart"].=session_form(SESSION_DEFAULT);
           $params["formstart"].='<input type="hidden" name="atkaction" value="admin">';
         }
-        $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$node->atknodetype().'">';        
+        $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$node->atknodetype().'">';
         $params["formstart"].='<input type="hidden" name="atkstartat" value="0">'; // start at first page after new search
 
         $params["content"] = $this->invoke("searchForm", $record);
-        $params["buttons"][] = '<input type="submit" class="btn_search" value="'.text('search').'">';
-        $params["formend"] = '</form><SCRIPT type="text/javascript" LANGUAGE="JavaScript">placeFocus()</SCRIPT>';      
-      
+        $params["buttons"][] = '<input type="submit" class="btn_search" value="'.atktext("search", "atk").'">';
+        $params["formend"] = '</form><SCRIPT type="text/javascript" LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
+
         $output = $ui->renderAction("search", $params);
-              
+
         $total = $ui->renderBox(array("title"=>$node->actionTitle('search'),
                                       "content"=>$output));
-        
-        return $total;               
-      }      
+
+        return $total;
+      }
       else
       {
         atkerror("ui object failure");
       }
     }
-    
+
     /**
      * This method returns a form that the user can use to search records.
-     * 
-     * @param array $record A record containing default values to put into 
+     *
+     * @param array $record A record containing default values to put into
      *                      the search fields.
      * @return String The searchform in html form.
      */
@@ -112,26 +112,26 @@
     {
       $node = &$this->m_node;
       $ui = &$this->getUi();
-      
+
       if (is_object($ui))
       {
         $node->setAttribSizes();
-        
+
         $params = array();
-        $params['searchmode_title'] = text("search_mode");
-        $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" value="AND" checked>'.text("search_and");
-        $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" value="OR">'.text("search_or");      
-        $params["fields"] = array();                
-  
+        $params['searchmode_title'] = atktext("search_mode", "atk");
+        $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" value="AND" checked>'.atktext("search_and", "atk");
+        $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" value="OR">'.atktext("search_or", "atk");
+        $params["fields"] = array();
+
         foreach (array_keys($node->m_attribList) as $attribname)
         {
           $p_attrib = &$node->m_attribList[$attribname];
-           
+
           if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
             $p_attrib->addToSearchformFields($params["fields"], $node, $record);
         }
         return $ui->render($node->getTemplate("search", $record), $params);
-      }    
+      }
       else atkerror("ui object error");
     }
   }
