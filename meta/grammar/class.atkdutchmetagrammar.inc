@@ -34,6 +34,8 @@ class atkDutchMetaGrammar extends atkMetaGrammar
   {
     return array(
       '/ven$/i' => 'f',    
+      '/ium$/i' => 'ia',
+      '/onen$/i' => 'oon',
       '/([aoeiu])s$/i' => '\1',
       '/([^aoeiu])en$/i' => '\1'
     );
@@ -48,6 +50,8 @@ class atkDutchMetaGrammar extends atkMetaGrammar
   {
     return array(
       '/f$/i' => '\1ven',
+      '/ia$/i' => '\1ium',
+      '/oon$/i' => '\1onen',
       '/([aoeiu])$/i' => '\1s',
       '/([^aoeiu])$/i' => '\1en'
     );

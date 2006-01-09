@@ -208,13 +208,17 @@ class atkMetaPolicy
     // table is already set
     if ($this->m_node->getTable() !== NULL)
       return $this->m_node->getTable();
+    
+    $type = $this->m_node->m_type;
+    if ($type == NULL)  
+      $type = get_class($this->m_node);
       
-    // type is already set
-    if ($this->m_node->m_type !== NULL)
-      return $this->m_node->m_type;
-      
-    // by class
-    return get_class($this->m_node);
+    $db = $this->m_node->getDb();
+    if ($db->tableExists($type)) return $type;
+    elseif ($db->tableExists($this->m_grammar->singularize($type))) 
+      return $this->m_grammar->singularize($type);
+    elseif ($db->tableExists($this->m_grammar->pluralize($type))) 
+      return $this->m_grammar->pluralize($type);
   }
   
   /**
@@ -474,16 +478,28 @@ class atkMetaPolicy
       $attr = $relation->m_options["destination"];      
     else if (in_array("{$table}_id", $attrs))
       $attr = "{$table}_id";
+    else if (in_array($this->m_grammar->singularize($table)."_id", $attrs))
+      $attr = $this->m_grammar->singularize($table)."_id";
     else if (in_array("{$node}_id", $attrs))
       $attr = "{$node}_id";
+    else if (in_array($this->m_grammar->singularize($node)."_id", $attrs))
+      $attr = $this->m_grammar->singularize($node)."_id";      
     else if (in_array("{$table}id", $attrs))
       $attr = "{$table}id";
+    else if (in_array($this->m_grammar->singularize($table)."id", $attrs))
+      $attr = $this->m_grammar->singularize($table)."id";      
     else if (in_array("{$node}id", $attrs))
       $attr = "{$node}id";
+    else if (in_array($this->m_grammar->singularize($node)."id", $attrs))
+      $attr = $this->m_grammar->singularize($node)."id";      
     else if (in_array($table, $attrs))
       $attr = $table;
+    else if (in_array($this->m_grammar->singularize($table), $attrs))
+      $attr = $this->m_grammar->singularize($table);
     else if (in_array($node, $attrs))
       $attr = $node;
+    else if (in_array($this->m_grammar->singularize($node), $attrs))
+      $attr = $this->m_grammar->singularize($node);
       
     return $attr;
   }
