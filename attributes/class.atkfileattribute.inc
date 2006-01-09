@@ -123,7 +123,7 @@
       }
       else
       {
-        return text("no_valid_directory");
+        return atktext("no_valid_directory", "atk");
       }
 
       $id = $fieldprefix.$this->fieldName();
@@ -159,7 +159,7 @@
          && $record[$this->fieldname()]['filename']!='')
       {
        $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
-       $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.text("remove_current_file");
+       $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.atktext("remove_current_file", "atk");
       }
       return $result;
     }
@@ -237,13 +237,13 @@
         {
           case UPLOAD_ERR_INI_SIZE:
           case UPLOAD_ERR_FORM_SIZE:
-            triggerError($record, $this->fieldName(), 'error_file_size', atktext('error_file_size'));
+            triggerError($record, $this->fieldName(), 'error_file_size', atktext("error_file_size", "atk"));
             break;
 
           case UPLOAD_ERR_NO_TMP_DIR:
           case UPLOAD_ERR_PARTIAL:
           default:
-            triggerError($record, $this->fieldName(), 'error_file_unknown', atktext('error_file_unknown'));
+            triggerError($record, $this->fieldName(), 'error_file_unknown', atktext("error_file_unknown", "atk"));
         }
       }
     }
@@ -384,7 +384,7 @@
         }
         else
         {
-          return $filename."(<font color=\"#ff0000\">".text("file_not_exist")."</font>)";
+          return $filename."(<font color=\"#ff0000\">".atktext("file_not_exist", "atk")."</font>)";
         }
       }
     }
