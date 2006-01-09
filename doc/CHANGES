@@ -43,6 +43,8 @@ Changes in ATK 5.3.1
 + Added atkCountryAttribute. [Boy]
 + Meta grammar rules (singular <=> plural) can now be overruled.
   Added initial Dutch rules (far from complete!) [Peter]
++ Added atkexists function to check if an attribute, relation
+  or filter class exists. [Peter]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to

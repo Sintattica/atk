@@ -673,7 +673,12 @@ class atkMetaPolicy
   {
     if (!$this->_isAttributeIncluded($name)) return;
   
-    atkimport($type);
+    if (atkexists("attribute", $name))
+      atkuse("attribute", $name);
+    elseif (atkexists("relation", $name))
+      atkuse("relation", $name);
+    else atkimport($type);
+    
     if (strrpos($type, ".") !== FALSE)
       $type = substr($type, strrpos($type, ".") + 1);
 

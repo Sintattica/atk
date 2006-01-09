@@ -1316,19 +1316,38 @@
   function usefilter($filter)     { atkuse("filter"   , $filter);    }
 
   /**
-   * Use an atk class (attribute, relation or filter)
+   * Returns the include file for an atk class (attribute, relation or filter)
    * @param string $type the type of the class (attribute|relation|filter)
    * @param string $name the name of the class
    */
-  function atkuse($type, $name)
+  function atkgetinclude($type, $name)
   {
     global $config_atkroot;
     $a = explode(".", $name);
     if (count($a) == 2)
       $include = moduleDir(strtolower($a[0])).$type."s/class.".strtolower($a[1]).".inc";
     else $include = $config_atkroot."atk/".$type."s/class.".strtolower($name).".inc";
-
-    include_once($include);
+    return $include;    
+  }
+  
+  /**
+   * Check if an atk class exists (attribute, relation or filter)
+   * @param string $type the type of the class (attribute|relation|filter)
+   * @param string $name the name of the class
+   */
+  function atkexists($type, $name)
+  {
+    return file_exists(atkgetinclude($type, $name));
+  }  
+  
+  /**
+   * Use an atk class (attribute, relation or filter)
+   * @param string $type the type of the class (attribute|relation|filter)
+   * @param string $name the name of the class
+   */
+  function atkuse($type, $name)
+  {
+    include_once(atkgetinclude($type, $name));
   }
 
   /**
