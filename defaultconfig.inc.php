@@ -74,6 +74,12 @@
    * @var String
    */
   $config_meta_handler = "atk.meta.atkmetahandler";
+  
+  /**
+   * Use the given meta grammar as the default meta grammar
+   * @var String
+   */
+  $config_meta_grammar = "atk.meta.grammar.atkgrammar";
 
   /************************** DATABASE SETTINGS ******************************/
 

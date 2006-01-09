@@ -28,6 +28,7 @@ atkimport("atk.meta.atkmetatools");
 class atkMetaPolicy
 {
   var $m_node = NULL;
+  var $m_grammar = NULL;
   
   var $m_includes = NULL;
   var $m_excludes = NULL;
@@ -53,6 +54,26 @@ class atkMetaPolicy
     }
       
     return new atkMetaPolicy();
+  }
+  
+  /**
+   * Returns the meta grammar.
+   * 
+   * @return atkMetaGrammar the meta grammar
+   */
+  function &getGrammar()
+  {
+    return $this->m_grammar;
+  }
+    
+  /**
+   * Sets the meta grammar.
+   * 
+   * @param atkMetaGrammar $grammar the meta grammar
+   */
+  function setGrammar(&$grammar)
+  {
+    $this->m_grammar = &$grammar;
   }
   
   /**
@@ -414,21 +435,21 @@ class atkMetaPolicy
       if (nodeExists("$module.$node"))
         return "$module.$node";
         
-      if ($toMany && nodeExists("$module.".atkMetaTools::singularize($node)))
-        return "$module.".atkMetaTools::singularize($node);
+      if ($toMany && nodeExists("$module.".$this->m_grammar->singularize($node)))
+        return "$module.".$this->m_grammar->singularize($node);
 
-      if (!$toMany && nodeExists("$module.".atkMetaTools::pluralize($node)))
-        return "$module.".atkMetaTools::pluralize($node);
+      if (!$toMany && nodeExists("$module.".$this->m_grammar->pluralize($node)))
+        return "$module.".$this->m_grammar->pluralize($node);
     }
     
     if (nodeExists($node))
       return $node;
     
-    if ($toMany && nodeExists(atkMetaTools::singularize($node)))
-      return atkMetaTools::singularize($node);
+    if ($toMany && nodeExists($this->m_grammar->singularize($node)))
+      return $this->m_grammar->singularize($node);
 
-    if (!$toMany && nodeExists(atkMetaTools::pluralize($node)))
-      return atkMetaTools::pluralize($node);
+    if (!$toMany && nodeExists($this->m_grammar->pluralize($node)))
+      return $this->m_grammar->pluralize($node);
       
     return NULL;
   }
@@ -560,14 +581,14 @@ class atkMetaPolicy
           $attr = "{$node}_id";
         else if ($name == "{$node}id")
           $attr = "{$node}id";
-        else if ($name == atkMetaTools::singularize($node)."_id")
-          $attr = atkMetaTools::singularize($node)."_id";
-        else if ($name == atkMetaTools::singularize($node)."id")
-          $attr = atkMetaTools::singularize($node)."id";
+        else if ($name == $this->m_grammar->singularize($node)."_id")
+          $attr = $this->m_grammar->singularize($node)."_id";
+        else if ($name == $this->m_grammar->singularize($node)."id")
+          $attr = $this->m_grammar->singularize($node)."id";
         else if ($name == $node)
           $attr = $node;
-        else if ($name == atkMetaTools::singularize($node))
-          $attr = atkMetaTools::singularize($node);
+        else if ($name == $this->m_grammar->singularize($node))
+          $attr = $this->m_grammar->singularize($node);
           
         if ($attr != NULL) break;
       }

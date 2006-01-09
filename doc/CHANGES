@@ -41,6 +41,8 @@ Changes in ATK 5.3.1
 + Added auto-detection of e-mail fields to atkMetaPolicy (at this
   time only for columns with the name 'email' or 'e-mail'). [Peter]
 + Added atkCountryAttribute. [Boy]
++ Meta grammar rules (singular <=> plural) can now be overruled.
+  Added initial Dutch rules (far from complete!) [Peter]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to

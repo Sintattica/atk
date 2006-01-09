@@ -18,6 +18,7 @@
  * imports..
  */
 atkimport("atk.atknode");
+atkimport("atk.meta.grammar.atkmetagrammar");
 atkimport("atk.meta.atkmetapolicy");
 atkimport("atk.meta.atkmetahandler");
 
@@ -49,6 +50,7 @@ class atkMetaNode extends atkNode
    * - db          database instance
    * - policy      meta policy, the meta policy to use ((sub-)class atkMetaPolicy instance)
    * - handler     meta handler, the meta handler to use ((sub-)class atkMetaPolicy instance)   
+   * - grammar     meta grammar, the meta grammar to use ((sub-)class atkMetaGrammar instance)
    * - flags       node flags
    * - descriptor  descriptor template for this node
    */
@@ -81,6 +83,17 @@ class atkMetaNode extends atkNode
       $handler = &$args["handler"];
     else $handler = &$this->_defaultMetaHandler();
     $this->setMetaHandler($handler);
+    
+    if (isset($this->meta_grammar) && is_object($this->meta_grammar))
+      $grammar = &$this->meta_grammar;
+    else if (isset($this->meta_grammar))    
+      $grammar = &atkMetaGrammar::getInstance($this->meta_grammar);
+    else if (array_key_exists("grammar", $args) && is_object($args["grammar"]))
+      $grammar = &$args["grammar"];
+    else if (array_key_exists("grammar", $args))
+      $grammar = &atkMetaGrammar::getInstance($args["grammar"]);      
+    else $grammar = &atkMetaGrammar::getInstance();      
+    $this->m_metaPolicy->setGrammar($grammar);    
 
     if (isset($this->table)) 
       $this->m_table = $this->table;
@@ -125,6 +138,14 @@ class atkMetaNode extends atkNode
   }
   
   /**
+   * Returns the default meta grammar.
+   */
+  function &_defaultMetaGrammar()
+  {
+    return atkMetaGrammar::defaultInstance($this);  
+  }  
+  
+  /**
    * Returns the table.
    */
   function getTable()
@@ -156,6 +177,14 @@ class atkMetaNode extends atkNode
   {
     $this->m_metaHandler = &$metaHandler;
   }  
+  
+  /**
+   * Sets the meta grammar.
+   */
+  function setMetaGrammar(&$metaGrammar)
+  {
+    $this->m_metaGrammar = &$metaGrammar;
+  }    
   
   /**
    * Initialize the meta policy data.
