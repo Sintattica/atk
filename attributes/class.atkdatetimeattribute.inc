@@ -17,8 +17,8 @@
    */
 
   /** @internal Includes */
-  include_once($config_atkroot."atk/attributes/class.atkdateattribute.inc");
-  include_once($config_atkroot."atk/attributes/class.atktimeattribute.inc");
+  include_once(atkconfig("atkroot")."atk/attributes/class.atkdateattribute.inc");
+  include_once(atkconfig("atkroot")."atk/attributes/class.atktimeattribute.inc");
 
   /**
    * The atkDateTimeAttribute class can be used for date and time entry.
