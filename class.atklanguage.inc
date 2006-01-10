@@ -132,7 +132,9 @@
      * Text function, retrieves a translation for a certain string.
      *
      * @static
-     * @param String $string          the name of the string to return
+     * @param mixed $string           string or array of strings containing the name(s) of the string to return
+     *                                when an array of strings is passed, the second will be the fallback if
+     *                                the first one isn't found, and so forth
      * @param String $module          module in which the language file should be looked for,
      *                                defaults to core module with fallback to ATK
      * @param String $node            the node to which the string belongs
@@ -148,7 +150,20 @@
       if ($lng=="") $lng = atkLanguage::getLanguage();
       $atklanguage =& atkLanguage::getInstance();
 
-      return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
+      // If only one string given, process it immediatly
+      if (!is_array($string))
+        return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
+
+      // If multiple strings given, iterate through all strings and return the translation if found
+      for ($i = 0, $_i = count($string)-1; $i <= $_i; $i++)
+      {
+        // Try to get the translation
+        $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < $_i), $firstfallback, $modulefallback);
+
+        // Return the translation if found
+        if ($translation != "")
+          return $translation;
+      }
     }
 
     /**
@@ -240,7 +255,6 @@
       return "";
     }
 
-
     /**
      * Checks wether the language is set or not
      *
@@ -311,7 +325,8 @@
     {
       $this->_includeLanguage($module, $lng);
 
-      if (is_array($this->m_cachedlang[$module][$lng])
+      if (isset($this->m_cachedlang[$module])
+          && is_array($this->m_cachedlang[$module][$lng])
           && isset($this->m_cachedlang[$module][$lng][$key]))
       {
         return $this->m_cachedlang[$module][$lng][$key];
