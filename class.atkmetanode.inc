@@ -54,6 +54,10 @@ class atkMetaNode extends atkNode
    * - flags       node flags
    * - descriptor  descriptor template for this node
    * - order       (default) order to sort fields
+   * 
+   * All of these variables can also be specified by creating a class variable with
+   * the same name. If you do so for flags, and have to use multiple flags, use
+   * an array of flags.
    */
   function atkMetaNode($args=array())
   {
@@ -65,7 +69,16 @@ class atkMetaNode extends atkNode
     
     $flags = 0;
     if (isset($this->flags))
+    {
       $flags = $this->flags;
+      if (is_array($flags))
+      {
+        $flagList = $flags;
+        $flags = 0;
+        foreach ($flagList as $flag)
+          $flags |= $flag;        
+      }
+    }
     else if (array_key_exists("flags", $args))
       $flags = $args["flags"]; 
 
