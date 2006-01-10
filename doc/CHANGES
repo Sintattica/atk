@@ -122,7 +122,8 @@ Changes in ATK 5.3.1
   functions for creating time / datetime arrays. [Peter]
 * Fixed display bug in atkCurrencyAttribute: a number with comma
   was given to the number_format function: number was rounded. [Nico]
-
+* Attributes without searchModes no longer display an empty searchmode 
+  dropdown in the extended search. [Ivo]
 
 Changes in ATK 5.3
 ------------------
