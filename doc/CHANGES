@@ -6,8 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.3.1
 --------------------
-* Fixed display bug in atkCurrencyAttribute: a number with comma
-  was given to the number_format function: number was rounded .[Nico]
 + Significantly enhanced the CSV export feature (atkExportHandler) (bug #603)
   + The user can now select which columns to export. [Stefano]
   + Attributes which are hidden in the list can be exported now. [Stefano]
@@ -111,15 +109,20 @@ Changes in ATK 5.3.1
   return value won't be wrapped in a html link anymore. [Guido]
 * Fixed the use of deprecated stringparse() function in atkTreeNode. [Guido]
 * In atkListAttribute added extra check on m_selected to make sure the correct 
-  item is selected when one item in the option list has a value of '0' [Guido, Boy, Dennis].
+  item is selected when one item in the option list has a value of '0'.
+   [Guido, Boy, Dennis].
 * Added shorttitle and description to default application languages. [Boy]
 * Fixed reference bug in several atkMetaPolicy methods. [Peter]
 * Fixed exclusion/inclusion of a single attribute in atkMetaPolicy. [Peter]
-* Allow flags to be specified as second argument for atkDateTimeAttribute. [Peter]
+* Allow flags to be specified as second argument for atkDateTimeAttribute. 
+  [Peter]
 * Added support for specifying the order of an atkMetaNode without 
   implementing a constructor (var $order = ...). [Peter]
 * Added atkTimeAttribute::timeArray and atkDateTimeAttribute::datetimeArray
   functions for creating time / datetime arrays. [Peter]
+* Fixed display bug in atkCurrencyAttribute: a number with comma
+  was given to the number_format function: number was rounded. [Nico]
+
 
 Changes in ATK 5.3
 ------------------
