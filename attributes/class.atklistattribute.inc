@@ -17,12 +17,19 @@
    */
 
    /**
-    * Flags for the attribute
+    * Do not translate the options
     */
-   define("AF_NO_TRANSLATION", AF_SPECIFIC_1); // Do not translate the options
-   define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2); // Do not add a default
-                                                             // null option.
-   define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3); // do not add null option ever
+   define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
+   
+   /**
+    * Do not add a default null option.
+    */
+   define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
+   
+   /**
+    * Do not add null option ever
+    */
+   define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
 
   /**
    * The atkListAttribute class represents an attribute of a node
