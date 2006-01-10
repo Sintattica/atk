@@ -82,7 +82,7 @@
 
   /**
    * If set, atk stores the old values of
-   * a record as ["atkold"] in the $rec that
+   * a record as ["atkorgrec"] in the $rec that
    * gets passed to the postUpdate
    */
   define("NF_TRACK_CHANGES",        1024);
@@ -2888,15 +2888,18 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib)) $loadmode = $p_attrib->loadType("");
-        else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
-        if ($loadmode && hasFlag($loadmode, ADDTOQUERY))
+        if (is_object($p_attrib)) 
         {
-          if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
+          $loadmode = $p_attrib->loadType("");
 
-          $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
+          if ($loadmode && hasFlag($loadmode, ADDTOQUERY))
+          {
+            if ($usefieldalias) $fieldaliasprefix = $alias."_AE_";
+
+            $p_attrib->addToQuery($query,$alias, $fieldaliasprefix,"",$level+1, "select");
+          }
         }
-
+        else atkdebug("$attribname is not an object?! Check your descriptor_def for non-existant fields");
       }
     }
 
