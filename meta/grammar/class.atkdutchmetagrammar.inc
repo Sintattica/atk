@@ -34,7 +34,7 @@ class atkDutchMetaGrammar extends atkMetaGrammar
   {
     return array(
       '/ven$/i' => 'f',    
-      '/ium$/i' => 'ia',
+      '/ia$/i' => 'ium',
       '/onen$/i' => 'oon',
       '/([aoeiu])s$/i' => '\1',
       '/([^aoeiu])en$/i' => '\1'
@@ -49,9 +49,9 @@ class atkDutchMetaGrammar extends atkMetaGrammar
   function getPluralRules()
   {
     return array(
-      '/f$/i' => '\1ven',
-      '/ia$/i' => '\1ium',
-      '/oon$/i' => '\1onen',
+      '/f$/i' => 'ven',
+      '/ium$/i' => 'ia',
+      '/oon$/i' => 'onen',
       '/([aoeiu])$/i' => '\1s',
       '/([^aoeiu])$/i' => '\1en'
     );

@@ -64,6 +64,7 @@ class atkMetaOneToOneRelation extends atkOneToOneRelation
     else if (!parent::createDestination()) return FALSE;
     
     $this->m_refKey = $policy->findDestinationAttribute($this);
+    atkdebug("atkMetaOneToManyRelation: {$this->m_accessor} reference key {$this->m_refKey}");        
     if ($this->m_refKey == NULL)
       $this->m_destInstance = NULL;
       

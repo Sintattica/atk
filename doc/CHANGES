@@ -115,6 +115,7 @@ Changes in ATK 5.3.1
 * Added shorttitle and description to default application languages. [Boy]
 * Fixed reference bug in several atkMetaPolicy methods. [Peter]
 * Fixed exclusion/inclusion of a single attribute in atkMetaPolicy. [Peter]
+* Allow flags to be specified as second argument for atkDateTimeAttribute. [Peter]
 
 Changes in ATK 5.3
 ------------------

@@ -56,6 +56,14 @@
       {
         $default_steps[$i] = $i;
       }
+      
+      if (is_numeric($default_date))
+      {
+        $flags = $default_date;
+        $default_date = "";
+      }
+        
+      
       if($default_date=="") { $default_date = ""; }
       if($default_time=="") { $default_time = date("H:i"); }
 

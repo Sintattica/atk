@@ -53,6 +53,12 @@
     */
     function atkCountryAttribute($name,$switch="world",$optionArray="", $valueArray="", $flags = 0,$defaulttocurrent=true)
     {
+      if (is_numeric($switch))
+      {
+        $switch = "world";
+        $flags = $switch;
+      }
+      
       // When switch is not user get country options
       atkdebug("CountryAttribute - $name - $switch");
       if($switch!="user")

@@ -381,14 +381,20 @@ class atkMetaPolicy
   }
 
   /**
-   * Sets the attribute type. Parameters will be (re-)set to none.
+   * Sets the attribute type. All extra arguments after the two
+   * standard arguments will be threated as parameters for the
+   * attribute. If you need to pass arguments by reference you can
+   * better use the setTypeAndParams method.
    * 
    * @param $attr  the attribute name
    * @param $type  full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   * @param $...   all other arguments will be threated as parameters
    */
   function setType($attr, $type)
   {
-    $this->setTypeAndParams($attr, $type);
+    $params = func_get_args();
+    $params = array_slice($params, 2);
+    $this->setTypeAndParams($attr, $type, $params);
   }
   
   /**
