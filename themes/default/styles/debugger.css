@@ -4,7 +4,7 @@ BODY
   color: #000000;
   font-size: 11px;
   font-family: Verdana,Helvetica,Arial;
-  font-weight: none;  
+  font-weight: normal;
 }
 
 A:link,
@@ -20,7 +20,7 @@ A:hover
 {
   color: #660000;
   font-size: 10px;
-}  
+}
 
 TH
 {
