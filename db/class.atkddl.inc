@@ -40,6 +40,7 @@
   {
     var $m_table = array();
     var $m_fields = array();
+    var $m_remove_field;
     var $m_indexes = array(); // not yet implemented
     var $m_primarykey = array();
     var $m_db;
@@ -55,6 +56,7 @@
      * Static factory method for creating a new atkDDL instance. This static
      * method will determine the database type (mysql, oci, etc) and
      * instantiate the correct DDL class.
+     * @return atkDDL instance of db specific DDL driver
      */
     function &create($database=NULL)
     {
@@ -97,6 +99,11 @@
                                      "size"=>$size,
                                      "flags"=>$flags,
                                      "default"=>$default);
+    }
+    
+    function dropField($name)
+    {
+      $this->m_remove_field=$name;
     }
 
     /**
@@ -204,24 +211,36 @@
      */
     function buildAlter()
     {
+      atkimport('atk.db.atkquery');
+      $query = &atkQuery::create();
       if ($this->m_table!="")
       {
         $fields = $this->buildFields();
 
-        if ($fields!="")
+        if ($fields!="" || $this->m_remove_field)
         {
-          $q = "ALTER TABLE ".$this->m_table." ADD\n (";
-
-          $q.= $fields;
-
-          $constraints = $this->buildConstraints();
-
-          if ($constraints!="")
+          $q = "ALTER TABLE ".$this->m_table;
+          
+          if ($this->m_remove_field)
           {
-            $q.= ",\n".$constraints;
+            $q.=" DROP\n {$query->m_fieldquote}$this->m_remove_field{$query->m_fieldquote}";
           }
+          else 
+          {
+            $q.=" ADD\n (";
 
-          $q.= ")";
+
+            $q.= $fields;
+
+            $constraints = $this->buildConstraints();
+
+            if ($constraints!="")
+            {
+              $q.= ",\n".$constraints;
+            }
+
+            $q.= ")";
+          }
           return array($q);
         }
       }
