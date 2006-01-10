@@ -61,7 +61,7 @@
    * @param bool   $init     Initialize the node?
    * @param String $cache_id The cache id in the node repository
    * @param bool   $reset    Wether or not to reset the particulair node in the repository
-   * @return the created instance
+   * @return atkNode the created instance
    */
   function &getNode($node, $init=TRUE, $cache_id="default", $reset=false)
   {
