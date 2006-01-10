@@ -11,6 +11,7 @@
    *   
    */
 
+  atkimport("atk.atklanguage");
   useattrib("atklistattribute");
   class atkCountryAttribute extends atkListAttribute 
   {
@@ -55,8 +56,8 @@
     {
       if (is_numeric($switch))
       {
+        $flags = $switch;        
         $switch = "world";
-        $flags = $switch;
       }
       
       // When switch is not user get country options
@@ -64,7 +65,7 @@
       if($switch!="user")
       {
         //we assume that the 3 param is flags
-         if(is_int($optionArray)) $flags = $optionArray;
+         if(is_numeric($optionArray)) $flags = $optionArray;
 
          if ($switch != "world")
          {
