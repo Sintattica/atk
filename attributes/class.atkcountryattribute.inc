@@ -80,7 +80,7 @@
          $valueArray   = $this->getCountryValueArray($switch);
       }
       $this->m_defaulttocurrent = $defaulttocurrent;
-      $this->atkListAttribute($name,$optionsArray,$valueArray, $flags, 0);
+      $this->atkListAttribute($name,$optionsArray,$valueArray, $flags|AF_NO_TRANSLATION, 0);
     }
     
     function edit($record="",$fieldprefix="")
