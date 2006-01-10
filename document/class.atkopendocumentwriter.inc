@@ -118,7 +118,7 @@
 
       // Remove the document from disk
       $this->m_tbsooo->RemoveDoc();
-      
+
       // Remove old unremoved documents
       $this->m_tbsooo->ClearProcessDir();
 
