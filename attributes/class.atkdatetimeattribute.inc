@@ -73,6 +73,24 @@
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
+    /**
+     * Converts a date/time string (YYYYMMDDHHMISS) to an
+     * array with 5 fields (day, month, year, hours, minutes, seconds).
+     * Defaults to current date/time.
+     * 
+     * @param $datetime the time string
+     * @return array with 6 fields (day, month, year, hours, minutes, seconds)
+     */
+    function datetimeArray($datetime=NULL)
+    {
+      if ($datetime == NULL)
+        $datetime = date("YmdHi");
+      $date = substr($datetime, 0, 8);
+      $time = substr($datetime, 8, 6);
+      return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
+    }       
+
+
     function validate(&$record, $mode)
     {
       $this->m_date->validate($record,$mode);

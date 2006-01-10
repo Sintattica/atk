@@ -53,6 +53,7 @@ class atkMetaNode extends atkNode
    * - grammar     meta grammar, the meta grammar to use ((sub-)class atkMetaGrammar instance)
    * - flags       node flags
    * - descriptor  descriptor template for this node
+   * - order       (default) order to sort fields
    */
   function atkMetaNode($args=array())
   {
@@ -117,6 +118,11 @@ class atkMetaNode extends atkNode
       $this->setDescriptorTemplate($this->descriptor);
     else if (array_key_exists("descriptor", $args))
       $this->setDescriptorTemplate($args["descriptor"]);
+      
+    if (isset($this->order))
+      $this->setOrder($this->order);
+    else if (array_key_exists("order", $args))
+      $this->setOrder($args["order"]);      
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }
