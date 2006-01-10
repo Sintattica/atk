@@ -761,7 +761,7 @@
             {
               /* separator and name */
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
-              $arr["fields"][] = array("line"=>"<b>".text($this->m_name, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+              $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
             }
             $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
 
