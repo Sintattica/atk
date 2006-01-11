@@ -3014,6 +3014,11 @@
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
 
+      if (method_exists($this,'preDelete')) 
+      {        
+        if (!$this->preDelete()) return atkerror('preDelete failed!');
+      }
+      
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -3038,10 +3043,10 @@
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
-          $return = $this->postDel($recordset[$i]);
+          $return = ($this->postDel($recordset[$i]) && $this->postDelete($recordset[$i]));
           if(!isSet($return))
           {
-            atkdebug("Undefined return:".$this->atkNodeType().".postDel doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+            atkdebug("Undefined return:".$this->atkNodeType().".postDel and postDelete don't return anything, they should return a boolean!", DEBUG_WARNING);
             $return = true;
           }
 
@@ -3128,6 +3133,23 @@
     function preUpdate(&$record)
     {
       // Do nothing
+    }    
+    
+    /**
+     * Function that is called by the framework, right before a record will be
+     * deleted.
+     *
+     * This function does essentially nothing, but it can be overriden in
+     * derived classes if you want to do something special after a record is
+     * deleted.
+     * 
+     * If this function returns false the delete action will not continue.
+     *
+     * @param array $record The record that has just been deleted.
+     */
+    function preDelete()
+    {
+      return true;
     }
 
     /**
@@ -3141,6 +3163,22 @@
      * @param array $record The record that has just been deleted.
      */
     function postDel($record)
+    {
+      // Do nothing
+      return true;
+    }
+    
+    /**
+     * Function that is called by the framework, right after a record has been
+     * deleted.
+     *
+     * This function does essentially nothing, but it can be overriden in
+     * derived classes if you want to do something special after a record is
+     * deleted.
+     *
+     * @param array $record The record that has just been deleted.
+     */
+    function postDelete($record)
     {
       // Do nothing
       return true;
