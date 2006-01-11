@@ -155,7 +155,7 @@
     function assignDocumentMultiRecord(&$node, $records, $prefix = "")
     {
       // Assign all labels to the documentwriter
-      $this->_assignLabels(&$node, $prefix);
+      $this->_assignLabels($node, $prefix);
 
       // Initialize the displayvalues array
       $displayvalues = array();
@@ -178,7 +178,7 @@
     function assignDocumentSingleRecord(&$node, $record, $prefix = "")
     {
       // Assign all labels to the documentwriter
-      $this->_assignLabels(&$node, $prefix);
+      $this->_assignLabels($node, $prefix);
 
       // Get all display values from the given record
       $displayvalues = $this->getRecordDisplayValues($node, $record);
