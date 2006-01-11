@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,12 +16,12 @@
    *
    * @version $Revision$
    * $Id$
-   */    
+   */
 
   /**
    * @internal Includes, global definitions etc.
    */
-   
+
   // A repository of node instances..
   $g_nodeRepository = array();
 
@@ -70,7 +70,7 @@
     {
       atkdebug("Constructing a new node - $node");
       $g_nodeRepository[$cache_id][$node] = &newNode($node, $init);
-    }    
+    }
     return $g_nodeRepository[$cache_id][$node];
   }
 
@@ -84,8 +84,8 @@
       if ($corporate_base!="")
       {
         atkimport($corporate_base);
-      }      
-      
+      }
+
       $filename = moduleDir($modname)."module.inc";
       if (file_exists($filename))
       {
@@ -94,8 +94,8 @@
       else
       {
         atkdebug("Couldn't find module.inc for module '$modname' in '".moduleDir($modname)."'");
-      }            
-            
+      }
+
       atkdebug("Constructing a new module - $modname");
       if (class_exists("mod_".$modname))
       {
@@ -108,11 +108,11 @@
         $mod = new $modname();
       }
       else
-      {    
-        atkimport("atk.utils.atkclassloader");              
+      {
+        atkimport("atk.utils.atkclassloader");
         $mod = atkClassLoader::invokeFromString(atkconfig("missing_module_handler"), array("module"=>$modname));
-        if ($mod===false)        
-        {               
+        if ($mod===false)
+        {
           // Changed by Ivo: This used to construct a dummy module, so
           // modules could exist that didn't have a module.inc file.
           // We no longer support this (2003-01-11)
@@ -181,7 +181,7 @@
     }
     return NULL;
   }
-  
+
   /**
    * Checks if a certain node exists.
    * @param $node the node type
@@ -190,13 +190,13 @@
   function nodeExists($node)
   {
     static $existence = array();
-    if (array_key_exists($node, $existence)) 
+    if (array_key_exists($node, $existence))
       return $existence[$node];
-      
+
     $module = getNodeModule($node);
     if ($module == "") $module = &new atkModule();
     else $module = &getModule(getNodeModule($node));
-    
+
     $exists = is_object($module) && $module->nodeExists($node);
     $existence[$node] = $exists;
     return $exists;
@@ -210,7 +210,7 @@
     global $g_modules;
     if (isset($g_modules[$module]))
     {
-      $dir = $g_modules[$module];     
+      $dir = $g_modules[$module];
       if (substr($dir,-1)!='/') return $dir."/";
       return $dir;
     }
@@ -264,9 +264,9 @@
     else $g_nodeHandler[$node][$action] = $handler;
     return TRUE;
   }
- 
+
   /**
-   * Perform a member function on all active modules, and return the 
+   * Perform a member function on all active modules, and return the
    * collective result.
    *
    * <b>Example:</b>
@@ -275,7 +275,7 @@
    * </code>
    * This will return the result of the getStuff calls for all modules in a
    * single array.
-   * 
+   *
    * @param String $function The name of the module member function to be
    *                         called. The function does not have to exist for
    *                         all modules, as atkHarvestModules will check if
@@ -290,15 +290,15 @@
   function atkHarvestModules($function, $param="", $associative=false)
   {
     global $g_modules;
-		
+
     $modulekeys = array_keys($g_modules);
     $total = array();
 
     foreach ($modulekeys as $modname)
     {
-      $module = &getModule($modname);      
+      $module = &getModule($modname);
       if (is_object($module) && method_exists($module, $function))
-      {          
+      {
         $res = $module->$function($param);
         if (!empty($res))
         {
@@ -307,7 +307,7 @@
             $total[$modname] = $res;
           }
           else
-          {                          
+          {
             if (is_array($res))
             {
               $total = array_merge($total, $res);
@@ -322,7 +322,7 @@
     }
     return $total;
   }
-  
+
   /**
    * Get/set the status of the readoptimizer.
    * If you need the dataread-functionality of atkNode but don't need
@@ -343,46 +343,46 @@
    */
   function atkReadOptimizer($newvalue=NULL)
   {
-    static $s_optimized=false;    
-    
+    static $s_optimized=false;
+
     if (!($newvalue===NULL)) // New value was set
     {
       $oldvalue = $s_optimized;
-      $s_optimized=$newvalue; 
+      $s_optimized=$newvalue;
       return $oldvalue;
     }
     else
     {
       return $s_optimized; // Return current value.
-    }        
+    }
   }
-  
+
   /**
    * Preloads all modules. If a module_preload.inc file exists in the
    * module directory, this file will be included. If no module_preload.inc
-   * file exists in the module directory the module.inc file will be used 
+   * file exists in the module directory the module.inc file will be used
    * instead (to remain backwards compatible).
    */
   function atkPreloadModules()
   {
     global $g_modules, $g_modifiers, $g_overloaders, $g_moduleflags;
-    
+
     foreach ($g_modules as $modname => $modpath)
     {
-      if (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD))
+      if ((!isset($g_moduleflags[$modname])) || (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD)))
       {
         $preload = "$modpath/module_preload.inc";
         $module = "$modpath/module.inc";
         $filename = file_exists($preload) ? $preload : $module;
-  
+
         // no module file exists
         if (!file_exists($filename))
         {
           atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
           continue;
         }
-        
-        if ($filename != $preload)        
+
+        if ($filename != $preload)
         {
           atkdebug("Loading module - $modname");
           atkimport("atk.modules.atkmodule");
@@ -392,15 +392,15 @@
             atkimport($corporate_base);
           }
         }
-        
+
         // the include file may specify modifiers.
         $modifiers = array();
         $overloaders = array();
         include_once($filename);
-        
+
         for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
           $g_modifiers[$modifiers[$i]][] = $modname;
-  
+
         if (count($overloaders) > 0)
           $g_overloaders = array_merge($g_overloaders, $overloaders);
       }
