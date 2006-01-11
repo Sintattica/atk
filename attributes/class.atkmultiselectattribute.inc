@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,15 +14,15 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /** Defines */
-  define(AF_NO_TOGGLELINKS, AF_SPECIFIC_2);
-  define(AF_CHECK_ALL, AF_SPECIFIC_3);
-  define(AF_LINKS_BOTTOM, AF_SPECIFIC_4);
-  
+  define("AF_NO_TOGGLELINKS", AF_SPECIFIC_2);
+  define("AF_CHECK_ALL", AF_SPECIFIC_3);
+  define("AF_LINKS_BOTTOM", AF_SPECIFIC_4);
+
   /** @internal Include base class */
   useattrib("atklistattribute");
-  
+
   /**
    * The atkMultiboolAttribute class represents an attribute of a node
    * that has a field with checkboxes, and stores the input seperated by a '|'
@@ -33,22 +33,22 @@
    *
    */
   class atkMultiSelectAttribute extends atkListAttribute
-  {    
-   
+  {
+
     // number of cols
     var $m_cols;
 
     /**
-     * Constructor 
+     * Constructor
      * @param $name Name of the attribute
      * @param $optionArray Array with options
-     * @param $valueArray Array with values. If you don't use this parameter, 
+     * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
      * @param $flags Flags for this attribute
      * @param $size  Size of the attribute.
      */
     function atkMultiSelectAttribute($name, $optionArray, $valueArray="", $cols="", $flags=0, $size="")
-    {            
+    {
       if (!is_array($valueArray) || count($valueArray)==0)
       {
         $valueArray = $optionArray;
@@ -60,12 +60,12 @@
         for ($i=0, $_i=count($valueArray); $i<$_i; $i++)
         {
           $size+=(strlen($valueArray[$i])+1); // 1 extra for the '|' symbol
-        }        
+        }
       }
-      $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor      
+      $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
       $this->m_dbfieldtype = "string"; // since we store values separated by '|', we always store as string.
       ($cols<1)?$this->m_cols=3:$this->m_cols=$cols;
-    }    
+    }
 
     function hide($record="", $fieldprefix="")
     {
@@ -90,14 +90,14 @@
       }
       else return "";
     }
-    
+
     function db2value($rec)
     {
       if($rec[$this->fieldName()]!="")
         return explode("|",$rec[$this->fieldName()]);
       else return array();
     }
-    
+
     function display($record)
     {
        $values = $record[$this->fieldName()];
@@ -122,49 +122,49 @@
       $this->m_record = $record;
       $cols = $this->m_cols;
       $modcols =$cols-1;
-   
-      $id = $fieldprefix.$this->fieldName();   
-      
+
+      $id = $fieldprefix.$this->fieldName();
+
       $page = &atkPage::getInstance();
-      $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");      
+      $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
 
       if (!$this->hasFlag(AF_LINKS_BOTTOM)) $result.=$this->_addLinks($fieldprefix);
-      
-      $result .="\n<table><tr>\n";  
-      
+
+      $result .="\n<table><tr>\n";
+
       for ($i=0;$i<count($this->m_values);$i++)
       {
-        if (!$this->hasFlag(AF_CHECK_ALL)) 
+        if (!$this->hasFlag(AF_CHECK_ALL))
         {
           (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
         }
-        else 
+        else
         {
           $sel = "checked";
         }
         if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
         else $string = atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
-        
-        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.$string.'</td>';
-        $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);  
 
-        if ($i%$cols == $modcols) $result .="</tr><tr>\n";        
+        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.$string.'</td>';
+        $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);
+
+        if ($i%$cols == $modcols) $result .="</tr><tr>\n";
       }
       $result.="</tr></table>\n";
       if ($this->hasFlag(AF_LINKS_BOTTOM))$result.=$this->_addLinks($fieldprefix);
-    
+
       return $result;
     }
-    
+
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
     	// Multiselect attribute has only 1 searchmode, and that is substring.
-      
+
       if(is_array($value) && $value[0]!="" && count($value)>0)
       {
         if (count($value)==1)
@@ -181,7 +181,7 @@
       }
       return $searchcondition;
     }
-    
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.
@@ -190,8 +190,8 @@
       // Possible values
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("substring");
-    }  
-    
+    }
+
     function _addLinks($fieldprefix)
     {
       if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
@@ -203,7 +203,7 @@
                        atktext("check_none").
                   '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
                        atktext("invert_selection").'</a>]</font></div>';
-      } 
+      }
     }
   }
 ?>
