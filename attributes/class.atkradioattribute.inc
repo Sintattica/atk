@@ -25,8 +25,10 @@
    */
   define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
 
-  /** @internal Include base class */
-  include_once($config_atkroot."atk/attributes/class.atklistattribute.inc");
+  /**
+   * @internal Include base class
+   */
+  atkimport("atk.attributes.atklistattribute");
 
   /**
    * The atkRadioAttribute class represents an attribute of a node
