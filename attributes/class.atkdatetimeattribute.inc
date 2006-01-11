@@ -16,9 +16,11 @@
    * $Id$
    */
 
-  /** @internal Includes */
-  include_once(atkconfig("atkroot")."atk/attributes/class.atkdateattribute.inc");
-  include_once(atkconfig("atkroot")."atk/attributes/class.atktimeattribute.inc");
+  /**
+   * @internal Includes
+   */
+  atkimport("atk.attributes.atkdateattribute");
+  atkimport("atk.attributes.atktimeattribute");
 
   /**
    * The atkDateTimeAttribute class can be used for date and time entry.
@@ -56,14 +58,14 @@
       {
         $default_steps[$i] = $i;
       }
-      
+
       if (is_numeric($default_date))
       {
         $flags = $default_date;
         $default_date = "";
       }
-        
-      
+
+
       if($default_date=="") { $default_date = ""; }
       if($default_time=="") { $default_time = date("H:i"); }
 
