@@ -3016,7 +3016,7 @@
 
       if (method_exists($this,'preDelete')) 
       {        
-        if (!$this->preDelete()) return atkerror('preDelete failed!');
+        if (!$this->preDelete($recordset)) return atkerror('preDelete failed!');
       }
       
       if (count($this->m_cascadingAttribs)>0)
