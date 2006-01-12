@@ -386,7 +386,7 @@
     function addToQuery() {}
     function hide() {}
     function search() {}
-    function getSearchModes() {}
+    function getSearchModes() { return array();}
     function searchCondition() {}
     function getSearchCondition() {}
     function fetchMeta() {}
