@@ -2503,7 +2503,8 @@
       if (isset($this->m_postvars['atksearch']) && is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch'])>0)
       {
         $searchArray = $this->m_postvars['atksearch'];
-        $searchmode = $this->m_postvars["atksearchmode"];
+        //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
+        $searchmode = (@$this->m_postvars["atksinglesearchmode"]?@$this->m_postvars["atksinglesearchmode"]:@$this->m_postvars["atksearchmode"]);
         if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         while (list($key,$value) = each($searchArray))
         {
@@ -2626,7 +2627,9 @@
         if (is_array($searchArray) && count($searchArray)>0)
         {
           $searching = true;
-          $searchmode = @$this->m_postvars["atksearchmode"];
+          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
+          $searchmode = (@$this->m_postvars["atksinglesearchmode"]?@$this->m_postvars["atksinglesearchmode"]:@$this->m_postvars["atksearchmode"]);
+          
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         }
       }
