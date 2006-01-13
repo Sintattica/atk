@@ -124,6 +124,10 @@ Changes in ATK 5.3.1
   was given to the number_format function: number was rounded. [Nico]
 * Attributes without searchModes no longer display an empty searchmode 
   dropdown in the extended search. [Ivo]
+* Clicking on an index changed the atksearchmode to 'wildcard' but we
+  could not change it back to 'substring'. Indexes now use the
+  var 'atksinglesearchmode' which keeps the searchmode on 'substring'.
+  [Boy, Dennis]
 
 Changes in ATK 5.3
 ------------------
