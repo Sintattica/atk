@@ -3125,13 +3125,14 @@
 
     /**
      * Function that is called by the framework, just before an existing
-     * record will be saved to the database.
+     * record will be saved to the database. 
      *
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to modify the record just before it will
      * be saved.
      *
      * @param array $record The record that will be updated in the database.
+     * @return bool Wether or not we succeeded in what we wanted to do.
      */
     function preUpdate(&$record)
     {
@@ -3140,7 +3141,7 @@
     
     /**
      * Function that is called by the framework, right before a record will be
-     * deleted.
+     * deleted. Should this method return false the deleting will halt.
      *
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to do something special after a record is
@@ -3156,14 +3157,11 @@
     }
 
     /**
-     * Function that is called by the framework, right after a record has been
-     * deleted.
-     *
-     * This function does essentially nothing, but it can be overriden in
-     * derived classes if you want to do something special after a record is
-     * deleted.
-     *
+     * Deprecated function that is called by the framework, 
+     * right after a record has been deleted.
+     * Please use postDelete() instead.
      * @param array $record The record that has just been deleted.
+     * @return bool Wether or not we succeeded in what we wanted to do.
      */
     function postDel($record)
     {
@@ -3180,6 +3178,7 @@
      * deleted.
      *
      * @param array $record The record that has just been deleted.
+     * @return bool Wether or not we succeeded in what we wanted to do.
      */
     function postDelete($record)
     {

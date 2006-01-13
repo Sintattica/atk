@@ -43,6 +43,9 @@ Changes in ATK 5.3.1
   Added initial Dutch rules (far from complete!) [Peter]
 + Added atkexists function to check if an attribute, relation
   or filter class exists. [Peter]
++ Added postDelete function to replace postDel
+  and added preDelete function. [Boy]
++ Added ability to drop a field in atkDDL. [Boy]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
@@ -124,6 +127,7 @@ Changes in ATK 5.3.1
   was given to the number_format function: number was rounded. [Nico]
 * Attributes without searchModes no longer display an empty searchmode 
   dropdown in the extended search. [Ivo]
+* Initial fix for AF_UNIQUE on relations. [Boy]
 * Clicking on an index changed the atksearchmode to 'wildcard' but we
   could not change it back to 'substring'. Indexes now use the
   var 'atksinglesearchmode' which keeps the searchmode on 'substring'.
