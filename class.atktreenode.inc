@@ -736,6 +736,7 @@
       for ($i=0;$i<count($recordset);$i++)
       {
         $this->postDel($recordset[$i]);
+        $this->postDelete($recordset[$i]);
       }
 
       return $recordset;
