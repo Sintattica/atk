@@ -143,7 +143,7 @@
         }
         if (atkconfig("debug")>0)
         {
-          $res.='<br><div style="font-family: courier; font-size: 11px;" align="left">'.implode("<br>\n ",$g_debug_msg).'</div>';
+          $res.='<br><div style="font-family: monospace; font-size: 11px;" align="left">'.implode("<br>\n ",$g_debug_msg).'</div>';
         }
       }
 
