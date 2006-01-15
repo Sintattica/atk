@@ -918,7 +918,9 @@
     if ($config_mailreport!="") // only if enabled..
     {
       $subject = "[".$_SERVER["SERVER_NAME"]."] $txt_app_title error";
-      $from = $txt_app_title;
+
+      $defaultfrom = sprintf("%s <%s@%s>", $txt_app_title, atkconfig("identifier", "atk"), $_SERVER["SERVER_NAME"]);
+      $from = atkconfig("mail_sender", $defaultfrom);
 
       $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
       $body.= "\nThe errormessage was:\n\n".implode("\n",$g_error_msg)."\n";
@@ -1035,7 +1037,7 @@
         $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
       }
 
-      mail($config_mailreport,$subject,$body,"From: $from <atkinfo@ibuildings.nl>");
+      mail($config_mailreport,$subject,$body,"From: $from");
     }
   }
 
