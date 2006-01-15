@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -18,8 +18,8 @@
 
   /** flag(s) specific for atkPasswordAttribute */
   define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
-  define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field  
-  
+  define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
+
   /**
    * The atkPasswordAttribute class represents an attribute of a node
    * that is a password field. It automatically encrypts passwords
@@ -56,7 +56,7 @@
       }
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH, $size); // you can't search by password.
     }
-  
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -73,23 +73,23 @@
       {
         if (!$this->m_generate)
         {
-          $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
-          $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
-          $result = text("password_new").':<br>'.
+          $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
+          $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
+          $result = atktext("password_new", "atk").':<br>'.
                     '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                     ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                     ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '')."><br><br>".
-  
-                    text("password_again").':<br>'.
+
+                    atktext("password_again", "atk").':<br>'.
                     '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                     ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                     ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').">";
         }
         else
         {
-          $password = $this->makePassword();        
-          $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
-          $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
+          $password = $this->makePassword();
+          $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
+          $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
           $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.
                     ' value ="'.$password.'">'.
                     '<input type="text" id="'.$id.'[new]" name="'.$id.'[new]"'.
@@ -97,38 +97,38 @@
                     ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').' value ="'.$password.'" onchange="this.form.elements[\''.$fieldprefix.$this->fieldName().'[again]\'].value=this.value">';
         }
       }
-  
+
       /* edit */
       else
       {
         $result = '<input type="hidden" name="'.$id.'[hash]"'.
                   ' value="'.$record[$this->fieldName()]["hash"].'">';
-  
-  
+
+
         if (!$this->hasFlag(AF_PASSWORD_NOVALIDATE))
         {
-          $this->registerKeyListener($id.'[current]', KB_CTRLCURSOR|KB_UPDOWN);  
-          $result .= text("password_current").':<br>'.
+          $this->registerKeyListener($id.'[current]', KB_CTRLCURSOR|KB_UPDOWN);
+          $result .= atktext("password_current", "atk").':<br>'.
                      '<input type="password" id="'.$id.'[current]" name="'.$id.'[current]"'.
                      ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                      ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>';
         }
-        $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);  
-        $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);  
-        $result .= text("password_new").':<br>'.
+        $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
+        $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
+        $result .= atktext("password_new", "atk").':<br>'.
                    '<input type="password" id="'.$id.'[new]" name="'.$id.'[new]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'><br><br>'.
-  
-                   text("password_again").':<br>'.
+
+                   atktext("password_again", "atk").':<br>'.
                    '<input type="password" id="'.$id.'[again]" name="'.$id.'[again]"'.
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';
       }
-  
+
       return $result;
     }
-  
+
     /**
      * We don't support searching for passwords!
      * @param $record array with fields
@@ -138,7 +138,7 @@
     {
       return "&nbsp;";
     }
-  
+
     /**
      * Add's slashes to the string for the database
      * @param $rec Array with values
@@ -148,7 +148,7 @@
     {
       return addslashes($rec[$this->fieldName()]["hash"]);
     }
-  
+
     /**
      * Removes slashes from the string and save to array
      * @param $rec array with values
@@ -158,7 +158,7 @@
     {
       return array("hash" => stripslashes($rec[$this->fieldName()]));
     }
-  
+
     /**
      * Validates the supplied passwords
      * @param &$record Record that contains value to be validated.
@@ -169,7 +169,7 @@
     {
       $error = FALSE;
       $value = $record[$this->fieldName()];
-      
+
       if ($mode == 'update'
           && (strlen($value["new"]) > 0 || strlen($value["again"]) > 0)
           && !$this->hasFlag(AF_PASSWORD_NOVALIDATE)
@@ -178,24 +178,24 @@
         $error = TRUE;
         triggerError($record, $this->fieldName(), 'error_password_incorrect');
       }
-  
+
       if ($value["new"] != $value["again"])
       {
         $error = TRUE;
         triggerError($record, $this->fieldName(), 'error_password_nomatch');
       }
-  
+
       if ($mode =="add" && $this->hasFlag(AF_OBLIGATORY) && strlen($value["new"]) == 0)
       {
         $error = TRUE;
         triggerError($record, $this->fieldName(), 'error_obligatoryfield');
       }
-  
+
       /* new password? */
       if (!$error && strlen($value["new"]) > 0)
       $record[$this->fieldName()]["hash"] = $record[$this->fieldName()]["new"];
     }
-  
+
     /**
      * Check if the attribute is empty
      * @return true if it's empty
@@ -205,7 +205,7 @@
       /* unfortunately we cannot check this here */
       return FALSE;
     }
-  
+
     /**
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
@@ -218,7 +218,7 @@
                 ' value="'.$record[$this->fieldName()]["hash"].'">';
       return $result;
     }
-  
+
     /**
      * We don't display the password
      * @param $rec the record with display data
@@ -226,9 +226,9 @@
      */
     function display($rec)
     {
-      return text("password_hidden");
+      return atktext("password_hidden", "atk");
     }
-  
+
     /**
      * There can not be searched for passwords!
      */
@@ -236,7 +236,7 @@
     {
       return array();
     }
-  
+
     /**
      * Generates a random password which isn't to bad to remember.
      * @param $times number of syllables
@@ -256,10 +256,10 @@
       }
       return $out;
     }
-    
+
     /**
     * Overwriting the fetchValue to ensure all passwords are hashed
-    */    
+    */
     function fetchValue($rec)
     {
       if ($rec[$this->fieldName()]["current"])
@@ -276,8 +276,8 @@
       }
       return $rec[$this->fieldName()];
     }
-    
-    
+
+
     // Due to the new storeType functions
     // password field is not allways saved from within the password attrib
     //
@@ -286,15 +286,15 @@
     function needsUpdate($record)
     {
       $value = $record[$this->fieldName()];
-      
-      // new is set from an update using the password attrib edit() function      
-      
+
+      // new is set from an update using the password attrib edit() function
+
       if ($value["new"] != "" || $value["hash"] != "")
       {
       	return true;
       }
       return false;
     }
-    
+
   }
 ?>
