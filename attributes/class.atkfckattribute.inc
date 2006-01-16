@@ -19,7 +19,6 @@
   /** 
    * @internal include baseclass.
    */    
-  include_once($config_atkroot."atk/attributes/class.atktextattribute.inc"); 
   useattrib("atktextattribute");
 
   /**
