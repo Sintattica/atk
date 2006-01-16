@@ -1182,10 +1182,10 @@
      * @return array A record containing the sum of $rec1 and $rec2
      */
     function sum($rec1, $rec2, $fieldprefix="")
-    {
-      $value1 = (isset($rec1[$fieldprefix.$this->fieldName()])?$rec1[$fieldprefix.$this->fieldName()]:0);
-      $value2 = (isset($rec2[$fieldprefix.$this->fieldName()])?$rec2[$fieldprefix.$this->fieldName()]:0);
-      return array($fieldprefix.$this->fieldName() => ($value1+$value2));
+    {            
+      $value1 = (isset($rec1[$this->fieldName()])?$rec1[$this->fieldName()]:0);
+      $value2 = (isset($rec2[$this->fieldName()])?$rec2[$this->fieldName()]:0);      
+      return array($this->fieldName() => ($value1+$value2));
     }
 
     /**
