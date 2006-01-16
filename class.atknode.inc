@@ -1778,6 +1778,20 @@
     }
 
     /**
+     * Calls a modifier function from the given module to modify this node
+     *
+     * @param atkModule $module Module containing the modifier function
+     * @param String $modifiername Name of the modifier function
+     */
+    function applyModifierFrom(&$module, $modifiername)
+    {
+      atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $module->m_name, $this->m_type));
+      $this->m_modifier = $module->m_name;
+      $module->$modifiername($this);
+      $this->m_modifier = "";
+    }
+
+    /**
      * This function initialises certain elements of the node.
      *
      * This must be called right after the constructor. The function has a
@@ -1802,48 +1816,37 @@
         $p_attrib->m_ownerInstance = &$this;
       }
 
-      // See if there are modules active that modify all nodes with the same name
-      // for example, modules modifying all classes in all modules with the
-      // name 'bill'.
+      // See if there are modules active that modify this node, and apply the
+      // modifiers if found.
       if (isset($g_modifiers[$this->atknodetype()]))
       {
         for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
         {
           $modname = $g_modifiers[$this->atknodetype()][$i];
           $mod = &getModule($modname);
-          $modifiername = $this->m_type."_modifier";
 
-          if (method_exists($mod,$modifiername))
-          {
-            atkdebug("Applying modifier from module $modname to ".$this->m_type);
-            $this->m_modifier = $modname;
-            $mod->$modifiername($this);
-            $this->m_modifier = "";
-          }
-          else
-          {
-            atkdebug("Modifier function for $modifiername not found!");
+          // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
+          $modifiernameglobal = $this->m_type."_modifier";
+          $modifierglobalexists = method_exists($mod, $modifiernameglobal);
+
+          // Determine the modifier name and existance for the modifier specific for this node and node's module
+          $modifiernamespecific = str_replace(".","_",$this->atknodetype())."_modifier";
+          $modifierspecificexists = method_exists($mod, $modifiernamespecific);
+
+          // Apply the global type modifier if it exists
+          if ($modifierglobalexists)
+            $this->applyModifierFrom($mod, $modifiernameglobal);
+
+          // Apply the specific type modifier if it exists
+          if ($modifierspecificexists)
+            $this->applyModifierFrom($mod, $modifiernamespecific);
+
+          // If none of the modifier types exist, add a warning to the debug log
+          if (!$modifierglobalexists && !$modifierspecificexists)
+            atkdebug(sprintf("Failed to apply modifier function %s or %s from module %s to node %s; modifier function not found", $modifiernameglobal, $modifiernamespecific, $modname, $this->m_type), DEBUG_WARNING);
         }
       }
 
-        // See if there are modules active that modify this module.node..
-        // for example, modules modifying 'finance.bill'
-        for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
-        {
-          $modname = $g_modifiers[$this->atknodetype()][$i];
-
-          $mod = &getModule($modname);
-          $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
-
-          if (method_exists($mod,$modifiername))
-          {
-            atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
-            $this->m_modifier = $modname;
-            $mod->$modifiername($this);
-            $this->m_modifier = "";
-          }
-        }
-      }
       // We set the tabs for the attributes
       foreach (array_keys($this->m_attribList) as $attribname)
       {
