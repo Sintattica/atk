@@ -771,9 +771,9 @@
           if (!is_array($tab) && $tab != "*") $tab = array($tab);
           if ($tab != "*")
           {
-            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = atk_array_merge(@$this->m_tabList["add"], $tab);
-            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = atk_array_merge(@$this->m_tabList["edit"], $tab);
-            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = atk_array_merge(@$this->m_tabList["view"], $tab);
+            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = isset($this->m_tabList["add"]) ? atk_array_merge($this->m_tabList["add"], $tab) : $tab;
+            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = isset($this->m_tabList["edit"]) ? atk_array_merge($this->m_tabList["edit"], $tab) : $tab;
+            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = isset($this->m_tabList["view"]) ? atk_array_merge($this->m_tabList["view"], $tab) : $tab;
           }
         }
 
@@ -1566,9 +1566,7 @@
         $newtab["total"] = count($list);
         foreach ($list as $t)
         {
-          $newtab["title"] = atktext("tab_$t",$this->m_module,$this->m_type, "", "", true);
-          if ($newtab["title"] == "")
-            $newtab["title"] = atktext($t,$this->m_module,$this->m_type);
+          $newtab["title"] = atktext(array("tab_$t", $t),$this->m_module,$this->m_type);
           $newtab["tab"] = $t;
           $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")
@@ -1825,8 +1823,8 @@
           else
           {
             atkdebug("Modifier function for $modifiername not found!");
-          }
         }
+      }
 
         // See if there are modules active that modify this module.node..
         // for example, modules modifying 'finance.bill'
@@ -2616,20 +2614,20 @@
       $query->addTable($this->m_table);
       $query->addCondition($selector);
 
-      $query->m_searchmethod = @$this->m_postvars['atksearchmethod'];
+      $query->m_searchmethod = isset($this->m_postvars['atksearchmethod']) ? $this->m_postvars['atksearchmethod'] : null;
 
       // First we check if we are about to search and set a few things
       // if we are
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = @$this->m_postvars['atksearch'];
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
         if (is_array($searchArray) && count($searchArray)>0)
         {
           $searching = true;
           //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-          $searchmode = (@$this->m_postvars["atksinglesearchmode"]?@$this->m_postvars["atksinglesearchmode"]:@$this->m_postvars["atksearchmode"]);
-          
+          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
+
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         }
       }
@@ -2891,7 +2889,7 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib)) 
+        if (is_object($p_attrib))
         {
           $loadmode = $p_attrib->loadType("");
 
@@ -3017,11 +3015,11 @@
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
 
-      if (method_exists($this,'preDelete')) 
-      {        
+      if (method_exists($this,'preDelete'))
+      {
         if (!$this->preDelete($recordset)) return atkerror('preDelete failed!');
       }
-      
+
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -3125,7 +3123,7 @@
 
     /**
      * Function that is called by the framework, just before an existing
-     * record will be saved to the database. 
+     * record will be saved to the database.
      *
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to modify the record just before it will
@@ -3137,8 +3135,8 @@
     function preUpdate(&$record)
     {
       // Do nothing
-    }    
-    
+    }
+
     /**
      * Function that is called by the framework, right before a record will be
      * deleted. Should this method return false the deleting will halt.
@@ -3146,7 +3144,7 @@
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to do something special after a record is
      * deleted.
-     * 
+     *
      * If this function returns false the delete action will not continue.
      *
      * @param array $record The record that has just been deleted.
@@ -3157,7 +3155,7 @@
     }
 
     /**
-     * Deprecated function that is called by the framework, 
+     * Deprecated function that is called by the framework,
      * right after a record has been deleted.
      * Please use postDelete() instead.
      * @param array $record The record that has just been deleted.
@@ -3168,7 +3166,7 @@
       // Do nothing
       return true;
     }
-    
+
     /**
      * Function that is called by the framework, right after a record has been
      * deleted.
@@ -3232,7 +3230,6 @@
     {
       // Do nothing.
     }
-
 
     /**
      * Retrieve the security key of an action.
