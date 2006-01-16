@@ -46,6 +46,10 @@ Changes in ATK 5.3.1
 + Added postDelete function to replace postDel
   and added preDelete function. [Boy]
 + Added ability to drop a field in atkDDL. [Boy]
++ Address in mailreports is now configurable using the $config_mail_sender
+  variable. [Guido]
++ atktext() and text() now support multiple fallback strings (to be supplied
+  as array as first parameter). [Guido]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to
@@ -56,6 +60,7 @@ Changes in ATK 5.3.1
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttribute now renders NULL values as "" instead of 0. [Ivo]
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido]
+* Fixed some atktext() calls without atk specified as module. [Guido]
 * Decomposed atkNode::dispatch() to loadDispatchPage() which does the actual
   loading of the page for dispatch() to render. [Boy]
 * Fixed bug in atkTreeNode that didn't allow the usage of string based key and
@@ -107,31 +112,48 @@ Changes in ATK 5.3.1
 * When translation for tab_tabname wasn't found, tab_tabname was returned.
   Now an attempt to translate tabname without the tab_ prefix is also made
   (with the plain tabname as fallback). [Guido]
+* When translation for menu_menuname wasn't found, menu_menuname was
+  returned. Now, just like the tab translation, menuname is used as fallback
+  when translating menuitems. [Guido]
 * When displaying an atkManyToOneRelation that has the AF_RELATION_AUTOLINK
   flag in "plain" mode (for example when using the documentwriter), the
   return value won't be wrapped in a html link anymore. [Guido]
 * Fixed the use of deprecated stringparse() function in atkTreeNode. [Guido]
-* In atkListAttribute added extra check on m_selected to make sure the correct 
+* In atkListAttribute added extra check on m_selected to make sure the correct
   item is selected when one item in the option list has a value of '0'.
    [Guido, Boy, Dennis].
 * Added shorttitle and description to default application languages. [Boy]
 * Fixed reference bug in several atkMetaPolicy methods. [Peter]
 * Fixed exclusion/inclusion of a single attribute in atkMetaPolicy. [Peter]
-* Allow flags to be specified as second argument for atkDateTimeAttribute. 
+* Allow flags to be specified as second argument for atkDateTimeAttribute.
   [Peter]
-* Added support for specifying the order of an atkMetaNode without 
+* Added support for specifying the order of an atkMetaNode without
   implementing a constructor (var $order = ...). [Peter]
 * Added atkTimeAttribute::timeArray and atkDateTimeAttribute::datetimeArray
   functions for creating time / datetime arrays. [Peter]
 * Fixed display bug in atkCurrencyAttribute: a number with comma
   was given to the number_format function: number was rounded. [Nico]
-* Attributes without searchModes no longer display an empty searchmode 
+* Attributes without searchModes no longer display an empty searchmode
   dropdown in the extended search. [Ivo]
 * Initial fix for AF_UNIQUE on relations. [Boy]
 * Clicking on an index changed the atksearchmode to 'wildcard' but we
   could not change it back to 'substring'. Indexes now use the
   var 'atksinglesearchmode' which keeps the searchmode on 'substring'.
   [Boy, Dennis]
+* Fixed numerous PHP notices. [Guido]
+* Fixed modifier not found messages showing up when modifier is implemented.
+  [Guido]
+* Changed default from address to represent the application at the server
+  instead of a fixed address (applicationidentifier@servername instead of
+  atkinfo@ibuildings.nl). [Guido]
+* Changed the asterisk image representing an obligatory field to use the HTML
+  title attribute (resulting in a tooltip) instead of javascript (which
+  modifies the window statusbar text) for showing a hint about the field being
+  obligatory. [Guido]
+* Changed the font used for debug output from the OS specific Courier font to
+  the generic Monospace font family. [Guido]
+* Fixed failure to translate the action performed on a node sometimes when
+  determining a title for user interface purposes. [Guido]
 
 Changes in ATK 5.3
 ------------------
