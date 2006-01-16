@@ -233,7 +233,7 @@
         if (atktext($key,$module,"","","","",true))
         {
           if ($nomodule) return atktext($action, "",$nodetype);
-          else return atktext($key,$module)." - ".atktext($action, $module,$nodetype);
+          else return atktext($key,$module)." - ".atktext($action, $module, $nodetype, "", "atk");
         }
         else
         {
