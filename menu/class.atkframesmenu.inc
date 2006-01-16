@@ -79,18 +79,18 @@
               {
                 if (empty($url)) // normal submenu
                 {
-                  $menu .= href('menu.php?atkmenutop='.$name,atktext("menu_$name", $modname)).$delimiter;
+                  $menu .= href('menu.php?atkmenutop='.$name,$this->getMenuTranslation($name, $modname)).$delimiter;
                 }
                 else // submenu AND a default url.
                 {
                   $menuurl = session_url('menu.php?atkmenutop='.$name);
                   $mainurl = session_url($url,SESSION_NEW);
-                  $menu.= '<a href="javascript:menuload(\''.$menuurl.'\', \''.$mainurl.'\');">'.atktext("menu_$name",$modname).'</a>'.$delimiter;
+                  $menu.= '<a href="javascript:menuload(\''.$menuurl.'\', \''.$mainurl.'\');">'.$this->getMenuTranslation($name,$modname).'</a>'.$delimiter;
                 }
               }
               else // normal menuitem
               {
-                $menu .= href($url,atktext("menu_$name",$modname),SESSION_NEW,false,'target="main"').$delimiter;
+                $menu .= href($url,$this->getMenuTranslation($name,$modname),SESSION_NEW,false,'target="main"').$delimiter;
               }
             }
           }
@@ -100,7 +100,7 @@
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).$delimiter;
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to", "atk").' '.$this->getMenuTranslation($parent, $modname),SESSION_DEFAULT).$delimiter;
         }
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
@@ -110,7 +110,7 @@
 
         $ui = &atkinstance("atk.ui.atkui");
 
-        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,$modname),
+        $box = $ui->renderBox(array("title"=>$this->getMenuTranslation($atkmenutop,$modname),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
 

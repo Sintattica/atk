@@ -79,14 +79,14 @@
             else if (empty($url) && $enable)
             {
               $url = 'menu.php?atkmenutop='.$name;
-              $menu .= href($url,atktext("menu_$name",$modname),SESSION_DEFAULT).$delimiter;
+              $menu .= href($url,$this->getMenuTranslation($name,$modname),SESSION_DEFAULT).$delimiter;
             }
             else if (empty($url) && !$enable)
             {
               //$menu .=text("menu_$name").$config_menu_delimiter;
             }
             /* normal menu item */
-            else if ($enable) $menu .= href($url,atktext("menu_$name",$modname),SESSION_NEW,false,'target="main"').$delimiter;
+            else if ($enable) $menu .= href($url,$this->getMenuTranslation($name,$modname),SESSION_NEW,false,'target="main"').$delimiter;
             else
             {
               //$menu .= text("menu_$name").$config_menu_delimiter;
@@ -99,7 +99,7 @@
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).'<br>';
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to", "atk").' '.$this->getMenuTranslation($parent, $modname),SESSION_DEFAULT).'<br>';
         }
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
@@ -108,7 +108,7 @@
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
         $ui = &atkinstance("atk.ui.atkui");
 
-        $box = $ui->renderBox(array("title"=>atktext("menu_".$atkmenutop,$modname),
+        $box = $ui->renderBox(array("title"=>$this->getMenuTranslation($atkmenutop,$modname),
                                                "content"=>$menu,
                                                "menuitems"=>$menuitems),"menu");
 
