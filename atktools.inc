@@ -246,6 +246,7 @@
     }
     for($i=0; $i < count($traceArr); $i++)
     {
+      if (empty($traceArr[$i])) continue;
       if ($traceArr[$i]["function"]=="atkerror") continue; // don't display error itself.
       $theSpacer = str_repeat($spacer, ($i*2)+3)."";
 
@@ -335,7 +336,9 @@
    * Replaces the [vars] with the values from the language files
    * Please note that it is important, for performance reasons,
    * that you pass along the module where the language files can be found
-   * @param String $string          the name of the string to return
+   * @param mixed $string           string or array of strings containing the name(s) of the string to return
+   *                                when an array of strings is passed, the second will be the fallback if
+   *                                the first one isn't found, and so forth
    * @param String $module          module in which the language file should be looked for,
    *                                defaults to core module with fallback to ATK
    * @param String $node            the node to which the string belongs
@@ -357,7 +360,9 @@
    * Replaces the [vars] with the values from the language files
    * Please note that it is important, for performance reasons,
    * that you pass along the module where the language files can be found
-   * @param String $string          the name of the string to return
+   * @param mixed $string           string or array of strings containing the name(s) of the string to return
+   *                                when an array of strings is passed, the second will be the fallback if
+   *                                the first one isn't found, and so forth
    * @param String $module          module in which the language file should be looked for,
    *                                defaults to core module with fallback to ATK
    * @param String $node            the node to which the string belongs
@@ -374,8 +379,6 @@
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext,$modulefallback);
   }
-
-
 
   /**
    * Calculate a new session level based on current level and
@@ -1001,9 +1004,9 @@
         for($i=0;$i<count($stack);$i++)
         {
           $body.="\nStack level $i:\n";
-          $item = $stack[$i];
-          if (is_array($stack[$i]))
-         {
+          $item = isset($stack[$i]) ? $stack[$i] : null;
+          if (is_array($item))
+          {
             foreach ($item as $key=>$value)
             {
               $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
@@ -1329,9 +1332,9 @@
     if (count($a) == 2)
       $include = moduleDir(strtolower($a[0])).$type."s/class.".strtolower($a[1]).".inc";
     else $include = $config_atkroot."atk/".$type."s/class.".strtolower($name).".inc";
-    return $include;    
+    return $include;
   }
-  
+
   /**
    * Check if an atk class exists (attribute, relation or filter)
    * @param string $type the type of the class (attribute|relation|filter)
@@ -1340,8 +1343,8 @@
   function atkexists($type, $name)
   {
     return file_exists(atkgetinclude($type, $name));
-  }  
-  
+  }
+
   /**
    * Use an atk class (attribute, relation or filter)
    * @param string $type the type of the class (attribute|relation|filter)
