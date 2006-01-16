@@ -97,7 +97,7 @@
     			/* submenu ? */
     			else if (empty($url) && $enable)
     			{
-    				$menu .= href('menu.php?atkmenutop='.$name,atktext("menu_$name",$modname),SESSION_DEFAULT).atkconfig("menu_delimiter");
+    				$menu .= href('menu.php?atkmenutop='.$name,$this->getMenuTranslation($name,$modname),SESSION_DEFAULT).atkconfig("menu_delimiter");
     			}
     			else if (empty($url) && !$enable)
     			{
@@ -122,11 +122,11 @@
 
     					if(file_exists($menu_icon))
     					{
-    						$panelbuttons .= "p.addButton('".$menu_icon."','".addslashes(atktext("menu_$name",$modname))."','parent.main.location.href = \""."".$url."\"');\n";
+    						$panelbuttons .= "p.addButton('".$menu_icon."','".addslashes($this->getMenuTranslation($name,$modname))."','parent.main.location.href = \""."".$url."\"');\n";
     					}
     					else
     					{
-    						$panelbuttons .= "p.addButton('".$theme->imgPath('empty.gif')."','".addslashes(text("menu_$name",$modname))."','parent.main.location.href = \""."".$url."\"');\n";
+    						$panelbuttons .= "p.addButton('".$theme->imgPath('empty.gif')."','".addslashes($this->getMenuTranslation($name,$modname))."','parent.main.location.href = \""."".$url."\"');\n";
     					}
     				}
     			}
@@ -140,7 +140,7 @@
     		// When there no panelbuttons, don't show the panel
     		if ($panelbuttons!="")
     		{
-    			$menucode .= "p = new createPanel('".addslashes($atkmenutop)."','".addslashes(text("menu_".$atkmenutop))."');\n";
+    			$menucode .= "p = new createPanel('".addslashes($atkmenutop)."','".addslashes($this->getMenuTranslation($atkmenutop))."');\n";
     			$menucode .= $panelbuttons;
     			$menucode .= "o.addPanel(p);\n";
     		}
