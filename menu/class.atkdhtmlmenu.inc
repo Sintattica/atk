@@ -51,7 +51,7 @@
       {
        $tabContent = "";
        $atkmenutop = $name;
-       $tabName    = addslashes(text($atkmenutop, "menu"));
+       $tabName    = addslashes(atktext($atkmenutop, "", "menu"));
        $items      = 0;
 
        for ($i = 0; $i < count($g_menu[$atkmenutop]); $i++)
@@ -86,11 +86,11 @@
         {
          if($g_menu[$atkmenutop][$i]["url"]!="")
          {
-          $tabContent .= "<a target='main' class='tablink' href='$url'>".text("$name", "menu")."</a>";
+          $tabContent .= "<a target='main' class='tablink' href='$url'>".atktext($name, "", "menu")."</a>";
 
           if ($i < count($g_menu[$atkmenutop])-1)
           {
-           $tabContent .= "&nbsp;|&nbsp;";
+            $tabContent .= "&nbsp;|&nbsp;";
           }
 
           $items++;
@@ -108,7 +108,7 @@
 
       // add options tab containing logout
       $tabs   .= '   rows[1]['.$tab.'] = "Opties"'."\n";
-      $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.text("logout").'</a></div>'."\n";
+      $divs   .= '<div id="T1'.$tab.'" class="tab-body"><a class="tablink" href="index.php?atklogout=1" target="_top">'.atktext("logout", "atk").'</a></div>'."\n";
 
       $page = &atknew("atk.ui.atkpage");
       $theme = &atkinstance("atk.ui.atktheme");
