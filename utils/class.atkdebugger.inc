@@ -52,7 +52,7 @@
         $data = &$this->getDebuggerData();
         $data = array(); // start clean
         global $g_debug_msg;
-        $g_debug_msg[] = atkGetTimingInfo().$res."Debugger initialized. [".$link."]";
+        $g_debug_msg[] = atkGetTimingInfo()."Debugger initialized. [".$link."]";
       }
     }
 
@@ -130,11 +130,11 @@
     {
       if (count($params))
       {
-        foreach($params as $key=>$value)
-        {
-          $res.='&'.$key."=".rawurlencode($value);
-        }
-        return $res;
+      foreach($params as $key=>$value)
+      {
+        $res.='&'.$key."=".rawurlencode($value);
+      }
+      return $res;
       }
       return "";
     }
