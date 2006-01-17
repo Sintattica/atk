@@ -16,7 +16,7 @@
    */
 
   atkimport('atk.ui.atktheme');
-  
+
   /**
    * Compiles cache for current theme.
    *
@@ -231,8 +231,9 @@
     function _addThemedef($themedef, $from)
     {
       // Stripping the atkroot so we store it atkroot independent
-      $from = substr($from, strlen(atkconfig('atkroot')));
-      
+      if (substr($from, 0, strlen(atkconfig('atkroot')))==atkconfig('atkroot'))
+        $from = substr($from, strlen(atkconfig('atkroot')));
+
       foreach ($themedef as $themedefitemname => $themedefitem)
       {
         if (!is_array($themedef[$themedefitemname]))
