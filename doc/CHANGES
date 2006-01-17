@@ -67,7 +67,9 @@ Changes in ATK 5.3.1
   parent fields. [Peter]
 * Fixed bug in atkOneToOneRelation that caused the foreign key in the record
   to be stored to be an array instead of a value. [Boy]
-* Made atkThemeCompiler able to handle modules not located in the atkroot.[Boy]
+* Made atkThemeCompiler able to handle modules not located in the atkroot.
+  WARNING: when upgrading you must recompile your compiled theme by throwing
+  away atktempdir/themes directory or its contents. [Boy]
 * Added ability to reset instances created by atkinstance if supported by the
   node and added support for atkTheme. [Boy]
 * Fixed error reporting for embeded atkOneToManyRelation. [Boy]

@@ -230,6 +230,9 @@
      */
     function _addThemedef($themedef, $from)
     {
+      // Stripping the atkroot so we store it atkroot independent
+      $from = substr($from, strlen(atkconfig('atkroot')));
+      
       foreach ($themedef as $themedefitemname => $themedefitem)
       {
         if (!is_array($themedef[$themedefitemname]))
