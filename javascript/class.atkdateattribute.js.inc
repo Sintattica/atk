@@ -68,9 +68,9 @@ function getDays(date)
 /**
  * Wrapper function for ReadAdjustDate, since it's crashing in some IE 6.0 browsers
  */
-function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
+function AdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday)
 {
-  setTimeout(function() { RealAdjustDate(el, arr, format, str_min, str_max, emptyfield) }, 1);
+  setTimeout(function() { RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday) }, 1);
 }
 
 /**
@@ -82,7 +82,7 @@ function AdjustDate(el, arr, format, str_min, str_max, emptyfield)
  * @param str_max the maximum valid date
  * @param obligatory is the date field obligatory
  */
-function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield)
+function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday)
 {
   var format_month, format_day, array_months;
   var frm = el.form;
@@ -94,7 +94,7 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield)
   input["m"] = frm.elements[arr + "[month]"];
   input["y"] = frm.elements[arr + "[year]"];
 
-    /* check if valid date attribute inputs */
+  /* check if valid date attribute inputs */
   if (input["d"] == null || input["m"] == null || input["y"] == null) return;
 
   /* currently selected date */
@@ -236,7 +236,7 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield)
     else
     {
       date = new Date(current["y"], current["m"]-1, i);
-      value = m_weekdays[date.getDay()] + " " + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
+      value = (weekday ? m_weekdays[date.getDay()] + " " : "") + (("d" == format_day) ? (i < 10 ? "0" : "") + i : i);
     }
     input["d"].options[input["d"].options.length] = new Option(value, i);
     if (i == current["d"])

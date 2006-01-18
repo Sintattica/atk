@@ -49,6 +49,8 @@ Changes in ATK 5.3.1
   variable. [Guido]
 + atktext() and text() now support multiple fallback strings (to be supplied
   as array as first parameter). [Guido]
++ Added flag AF_DATE_EDIT_NO_DAY for date attribute to force not
+  prefixing the days with the weekday. [Peter]
 * Attributes can now define if they want to quote field- and tablenames.
   atkAttribute does this by default now. [Boy]
 * Second parameter of atkdebug() method now accepts flags DEBUG_WARNING to

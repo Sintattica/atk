@@ -50,7 +50,7 @@ class atkMetaPolicy
       atkimport($class);
       $class = strrchr($class, ".") ? substr(strrchr($class, "."), 1) : $class;
       if ($class != "atkmetapolicy")
-        return new $class($node);
+        return new $class();
     }
       
     return new atkMetaPolicy();

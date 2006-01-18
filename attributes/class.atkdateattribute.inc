@@ -21,6 +21,7 @@
   define("AF_DATE_EMPTYFIELD",          AF_SPECIFIC_2); // Fields have one empty option
   define("AF_DATE_NO_CALENDAR",         AF_SPECIFIC_3); // Do not append the popup calendar.
   define("AF_DATE_DISPLAY_DAY",         AF_SPECIFIC_4); // Show the day of the week in the display
+  define("AF_DATE_EDIT_NO_DAY",         AF_SPECIFIC_5); // Don't display the day of the week in edit mode
 
   // Include adodb workarounds for <1970 dates on windows.
   $config_atkroot = atkconfig("atkroot");
@@ -325,7 +326,7 @@
         for ($i = $str_min; $i <= $str_max; $i++)
         {
           $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, substr($i, 4, 2), substr($i, 6, 2), substr($i, 0, 4)));
-          $result .= '<option value="'.$i.'"'.($current !== NULL && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format).'</option>';
+          $result .= '<option value="'.$i.'"'.($current !== NULL && $tmp_date[0] == $current[0] ? ' selected' : '').'>'.$this->formatDate($tmp_date, $str_format, !$this->hasFlag(AF_DATE_EDIT_NO_DAY)).'</option>';
         }
         $result .= '</select>';
         return $result;
@@ -342,7 +343,7 @@
         else $emptyfield=false;
 
         /* javascript method */
-        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").");";
+        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").", ".($this->hasFlag(AF_DATE_EDIT_NO_DAY) ? "false" : "true").");";
 
         if (count($this->m_onchangecode))
         {
@@ -394,7 +395,7 @@
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
               if (($current['year']!="") && ($current['mon']!=""))
               {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+                $str_day = $this->formatDate($tmp_date, $str_format[$i], !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
               }
               else
               {
@@ -410,7 +411,7 @@
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
               if (($current['year']!="") && ($current['mon']!=""))
               {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i]);
+                $str_day = $this->formatDate($tmp_date, $str_format[$i], !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
               }
               else
               {
