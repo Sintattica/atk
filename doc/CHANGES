@@ -4,8 +4,8 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changes in ATK 5.3.1
---------------------
+Changes in ATK 5.4
+------------------
 + Significantly enhanced the CSV export feature (atkExportHandler) (bug #603):
   + The user can now select which columns to export. [Stefano]
   + Attributes which are hidden in the list can be exported now. [Stefano]
