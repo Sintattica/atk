@@ -262,7 +262,7 @@
   // "doctemplates/modulename/nodename/".
   $config_doctemplatedir = "doctemplates/";
 
-  // --------- DATE INTERNATIONALISATION CONFIGURATION ---------
+  // --------- DATA INTERNATIONALISATION CONFIGURATION ---------
 
   $config_supported_languages = array("EN","NL","DE");
   $config_defaultlanguage="EN";
