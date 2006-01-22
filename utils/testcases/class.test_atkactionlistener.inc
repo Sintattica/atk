@@ -19,13 +19,13 @@
 
 
   /**
-   * Includes
+   * @internal includes
    */
   atkimport("atk.atknode");
   atkimport("atk.utils.atkactionlistener");
 
   /**
-   * Testcases for class atkActionListener
+   * Utility node for the listener testcases
    *
    * @author Yury Golovnya <ygolovnya@kyiv.utel.com.ua>
    * @package atk
@@ -44,6 +44,15 @@
     }
   }
 
+
+  /**
+   * Testcases for class atkActionListener
+   *
+   * @author Yury Golovnya <ygolovnya@kyiv.utel.com.ua>
+   * @package atk
+   * @subpackage utils
+   * @access private
+   */
   class test_atkactionlistener extends UnitTestCase
   {
     var $m_node = null;

@@ -29,11 +29,9 @@
   atkimport("atk.utils.atkstringparser");
 
   /**
-   * Handler for the 'editcopy' action of a node. It copies the selected
-   * record, and then redirects to the edit action for the copied record.
+   * The recordlist class is used to render tables containing records.
    *
    * @author Ivo Jansch <ivo@achievo.org>
-   * @author Peter C. Verhage <peter@ibuildings.nl>
    * @package atk
    * @subpackage recordlist
    *

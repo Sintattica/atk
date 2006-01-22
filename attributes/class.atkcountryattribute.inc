@@ -1,44 +1,58 @@
 <?php
 
-  /**
-   * The atkCountry class represents an attribute to handle ISO Countrys in a listbox.
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
    *
-   * @author Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
-   *
    * $Id$
-   *   
    */
 
+  /** @internal includes **/
   atkimport("atk.atklanguage");
   useattrib("atklistattribute");
-  class atkCountryAttribute extends atkListAttribute 
+
+  /**
+   * The atkCountry class represents an attribute to handle ISO Countries in a listbox.
+   *
+   * @author Sandy Pleyte <sandy@ibuildings.nl>
+   * @package atk
+   * @subpackage attributes
+   */
+  class atkCountryAttribute extends atkListAttribute
   {
     var $m_countries           = array();
     var $m_europe_countries    = array('AL','AT','BE','BA','BG','HR','CY','CZ','CS','DK','DE','FI','FR','GB','GR','HU','IE','IT','LI','LU','MC','NL','NO','PL','PT','RO','SK','SI','ES','SE','CH','TR','YU');
     var $m_benelux_countries   = array('NL','BE','LU');
 
 
-    var $m_world_countries     = array('AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ', 
-                                       'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN', 
-                                       'BG', 'BF', 'BI', 'BT', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO', 
-                                       'KM', 'CG', 'CK', 'CR', 'HR', 'CU', 'CY', 'CZ', 'CS', 'DK', 'DE', 'DJ', 'DM', 'DO', 'TP', 'EC', 
-                                       'EG', 'SV', 'GQ', 'EE', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'FX', 'TF', 'GA', 'GM', 'GE', 'GH', 
-                                       'GI', 'GB', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GN', 'GW', 'GY', 'GF', 'HT', 'HM', 'HN', 'HK', 
-                                       'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI', 'JM', 'JP', 'JO', 'KZ', 'KE', 'KG', 
-                                       'KI', 'KP', 'KR', 'KW', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW', 
-                                       'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'MX', 'FM', 'MD', 'MC', 'MN', 'MS', 'MA', 'MZ', 
-                                       'MM', 'NA', 'NR', 'NL', 'AN', 'NP', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MP', 'NO', 'OM', 
-                                       'PK', 'PW', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PF', 'PT', 'PR', 'QA', 'RE', 'RO', 'RU', 
-                                       'RW', 'LC', 'WS', 'SM', 'SA', 'SN', 'SC', 'SL', 'SG', 'SK', 'SI', 'SB', 'SO', 'ZA', 'SU', 'ES', 
-                                       'LK', 'SH', 'PM', 'ST', 'KN', 'VC', 'SD', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'SY', 'TJ', 'TW', 'TZ', 
-                                       'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UM', 'UG', 'UA', 'AE', 'UK', 'US', 
+    var $m_world_countries     = array('AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
+                                       'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
+                                       'BG', 'BF', 'BI', 'BT', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO',
+                                       'KM', 'CG', 'CK', 'CR', 'HR', 'CU', 'CY', 'CZ', 'CS', 'DK', 'DE', 'DJ', 'DM', 'DO', 'TP', 'EC',
+                                       'EG', 'SV', 'GQ', 'EE', 'ET', 'FK', 'FO', 'FJ', 'FI', 'FR', 'FX', 'TF', 'GA', 'GM', 'GE', 'GH',
+                                       'GI', 'GB', 'GR', 'GL', 'GD', 'GP', 'GU', 'GT', 'GN', 'GW', 'GY', 'GF', 'HT', 'HM', 'HN', 'HK',
+                                       'HU', 'IS', 'IN', 'ID', 'IR', 'IQ', 'IE', 'IL', 'IT', 'CI', 'JM', 'JP', 'JO', 'KZ', 'KE', 'KG',
+                                       'KI', 'KP', 'KR', 'KW', 'LA', 'LV', 'LB', 'LS', 'LR', 'LY', 'LI', 'LT', 'LU', 'MO', 'MG', 'MW',
+                                       'MY', 'MV', 'ML', 'MT', 'MH', 'MQ', 'MR', 'MU', 'MX', 'FM', 'MD', 'MC', 'MN', 'MS', 'MA', 'MZ',
+                                       'MM', 'NA', 'NR', 'NL', 'AN', 'NP', 'NC', 'NZ', 'NI', 'NE', 'NG', 'NU', 'NF', 'MP', 'NO', 'OM',
+                                       'PK', 'PW', 'PA', 'PG', 'PY', 'PE', 'PH', 'PN', 'PL', 'PF', 'PT', 'PR', 'QA', 'RE', 'RO', 'RU',
+                                       'RW', 'LC', 'WS', 'SM', 'SA', 'SN', 'SC', 'SL', 'SG', 'SK', 'SI', 'SB', 'SO', 'ZA', 'SU', 'ES',
+                                       'LK', 'SH', 'PM', 'ST', 'KN', 'VC', 'SD', 'SR', 'SJ', 'SZ', 'SE', 'CH', 'SY', 'TJ', 'TW', 'TZ',
+                                       'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UM', 'UG', 'UA', 'AE', 'UK', 'US',
                                        'UY', 'UZ', 'VU', 'VA', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'YU', 'ZR', 'ZM', 'ZW');
-                                       
+
    var $m_defaulttocurrent=true;
 
-    
+
    /**
     * Constructor
     *
@@ -56,10 +70,10 @@
     {
       if (is_numeric($switch))
       {
-        $flags = $switch;        
+        $flags = $switch;
         $switch = "world";
       }
-      
+
       // When switch is not user get country options
       atkdebug("CountryAttribute - $name - $switch");
       if($switch!="user")
@@ -82,13 +96,13 @@
       $this->m_defaulttocurrent = $defaulttocurrent;
       $this->atkListAttribute($name,$optionsArray,$valueArray, $flags|AF_NO_TRANSLATION, 0);
     }
-    
+
     function edit($record="",$fieldprefix="")
     {
       if ($this->m_defaulttocurrent && !$record[$this->fieldName()]) $record[$this->fieldName()] = strtoupper(atkLanguage::getLanguage());
       return parent::edit($record,$fieldprefix);
     }
-    
+
     function getCountryOptionArray($switch)
     {
       $tmp_array = array();
@@ -114,16 +128,16 @@
       }
       return $tmp_array;
     }
-    
+
     function getCountryValueArray($switch)
     {
       if($switch=="benelux")
       {
-         return $this->m_benelux_countries; 
-      } 
+         return $this->m_benelux_countries;
+      }
       elseif($switch=="europe")
       {
-         return $this->m_europe_countries; 
+         return $this->m_europe_countries;
       }
       elseif($switch=="world")
       {
@@ -134,15 +148,15 @@
          $tmp_array=array();
          foreach($this->m_country as $iso => $value)
            $tmp_array[]=$iso;
-         return $tmp_array; 
+         return $tmp_array;
       }
     }
-    
+
     function getCountryOption($iso_code)
     {
        return $this->m_country[$iso_code][atkLanguage::getLanguage()];
     }
-    
+
     function fillCountriesArray()
     {
       $this->m_country['BE']['nl'] = "Belgiï¿½";
