@@ -156,6 +156,7 @@ Changes in ATK 5.4
 * Changed the font used for debug output to generic 'Monospace'. [Guido]
 * Fixed failure to translate the node action sometimes when determining a 
   title for user interface purposes. [Guido]
+* Fixed a typo in the atkDb::func_datetochar() method. (bug #605) [Renato]
 
 Changes in ATK 5.3
 ------------------
