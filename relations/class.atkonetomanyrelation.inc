@@ -469,6 +469,10 @@
           $onchange = 'onChange="'.$this->fieldName().'_onChange(this);"';
           $this->_renderChangeHandler($fieldprefix);
         }
+        else
+        {
+          $onchange = '';
+        }
         $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange.' class="atkonetomanyrelation"');
       }
       return $url;
@@ -481,17 +485,15 @@
      */
     function getAddLabel()
     {
-      $key = "link_".$this->fieldName()."_add";
-      $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+      // Try to get a translation for link_fieldname_add (or if not found, a translation for link_destination_add)
+      $keys = array("link_".$this->fieldName()."_add", "link_".getNodeType($this->m_destination)."_add");
+      $label = atktext($keys,$this->m_destInstance->m_module, "", "", "", true);
+
+      // If translation not found, then use a concatenation of translations of the destination and the word "add" as default
       if ($label=="")
-      {
-        $key = "link_".getNodeType($this->m_destination)."_add";
-        $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
-        if ($label=="")
-        {
-          $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
-        }
-      }
+        $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
+
+      // Return the translation
       return $label;
     }
 
@@ -603,7 +605,8 @@
               $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
             }
             ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-            $recordset = $this->m_destInstance->selectDb($where,@$this->m_ownerInstance->m_postvars['atkorderby'],
+            $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
+            $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
                                                          $limitarray,$excludes,"",$mode);
 
             $this->m_loadFilter = $where;
