@@ -297,7 +297,7 @@
         $errstr = $this->errorLookup($this->getDbErrno());
         if($errstr=="")
         {
-          $this->m_error = text('unknown_error').": ".$this->getDbErrno()." (".$this->getDbError().")";
+          $this->m_error = atktext("unknown_error", "atk").": ".$this->getDbErrno()." (".$this->getDbError().")";
         }
         else
         {
@@ -310,13 +310,13 @@
         $tmp_error='';
         switch ($errno)
         {
-          case DB_ACCESSDENIED_DB: $tmp_error = sprintf(text("db_access_denied_database"),$this->m_user,$this->m_database);
+          case DB_ACCESSDENIED_DB: $tmp_error = sprintf(atktext("db_access_denied_database", "atk"),$this->m_user,$this->m_database);
                                 break;
-          case DB_ACCESSDENIED_USER: $tmp_error = sprintf(text("db_access_denied_user"),$this->m_user,$this->m_database);
+          case DB_ACCESSDENIED_USER: $tmp_error = sprintf(atktext("db_access_denied_user", "atk"),$this->m_user,$this->m_database);
                                      break;
-          case DB_UNKNOWNDATABASE: $tmp_error = sprintf(text("db_unknown_database"),$this->m_database);
+          case DB_UNKNOWNDATABASE: $tmp_error = sprintf(atktext("db_unknown_database", "atk"),$this->m_database);
                                    break;
-          case DB_UNKNOWNHOST: $tmp_error = sprintf(text("db_unknown_host"),$this->m_host);
+          case DB_UNKNOWNHOST: $tmp_error = sprintf(atktext("db_unknown_host", "atk"),$this->m_host);
                                break;
         }
         $this->m_error = $tmp_error;
