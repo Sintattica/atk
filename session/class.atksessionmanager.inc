@@ -26,8 +26,11 @@
   $cookiepath = atkconfig("application_root");
   session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
 
-  // set cache expire
-  session_cache_expire(atkconfig("session_cache_expire"));
+  // set cache expire (if function exists, or show upgrade hint if not)
+  if (function_exists("session_cache_expire"))
+    session_cache_expire(atkconfig("session_cache_expire"));
+  else
+    atkdebug("session_cache_expire function does not exist, please upgrade to the latest stable php version (at least 4.2.x)", DEBUG_WARNING);
 
   // set the cache limiter (used for caching)
   session_cache_limiter(atkconfig("session_cache_limiter"));
@@ -262,6 +265,8 @@
             atkdebug("Setting current item");
             $currentitem[$var] = $_REQUEST[$var];
           }
+          else
+            $currentitem[$var] = "";
         }
         else
         {
@@ -541,14 +546,14 @@
 
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       $res = array();
-      
+
       $stackcount = count($stack);
       for ($i=0;$i<$stackcount;$i++)
       {
         if (isset($stack[$i]["descriptor"]) || $i == ($stackcount-1))
         {
           $node = explode(".",$stack[$i]["atknodetype"]);
-          $res[] = atktext($node[1],$node[0]).($stack[$i]["descriptor"]?" [ {$stack[$i]['descriptor']} ] ":"");
+          $res[] = atktext($node[1],$node[0]).(isset($stack[$i]["descriptor"])?" [ {$stack[$i]['descriptor']} ] ":"");
         }
       }
       return $res;
@@ -815,7 +820,7 @@
     }
     return true;
   }
-  
+
   /**
    * Returns the sessionmanager.
    * @return atkSessionManager  session manager
