@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * The atkModule abstract base class.
    *
@@ -127,20 +127,20 @@
     function &newNode($node)
     {
       global $g_modules, $config_atkroot, $g_overloaders;
-      
+
       /* include the base file */
       atkimport("atk.atknode");
-      
+
       $corporate_base = atkconfig("corporate_node_base");
       if ($corporate_base!="")
       {
         atkimport($corporate_base);
-      }      
+      }
 
       /* check for file */
       $file = nodeFile($node);
       if (!file_exists($file))
-      {        
+      {
         atkimport("atk.utils.atkclassloader");
         $res = atkClassLoader::invokeFromString(atkconfig("missing_class_handler"), array("node"=>$node,"module"=>$this->m_name));
         if ($res!==false)
@@ -176,17 +176,54 @@
       $node->m_module = $module;
       return $node;
     }
-    
+
     /**
      * Checks if a certain node exists for this module.
      * @param $node the node type
      * @return node exists?
-     */    
+     */
     function nodeExists($node)
     {
       // check for file
       $file = nodeFile($node);
       return file_exists($file);
+    }
+
+    /**
+     * Modifies the given node
+     *
+     * @param atkNode $node Node to be modified
+     */
+    function modifier(&$node)
+    {
+      // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
+      $specificmodifiers = array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
+
+      // Set the number of applied modifiers to zero
+      $appliedmodifiers = 0;
+
+      // Loop through the possible modifiers and apply them if found
+      foreach ($specificmodifiers as $modifiername)
+      {
+        // If the modifiers is found
+        if (method_exists($this, $modifiername))
+        {
+          // Add a debug line so we know, the modifier is applied
+          atkdebug(sprintf("Applying modifier %s from module %s to node %s", $modifiername, $this->m_name, $node->m_type));
+
+          // Apply the modifier
+          $node->m_modifier = $this->m_name;
+          $this->$modifiername($node);
+          $node->m_modifier = "";
+
+          // Increase the number of applied modifiers
+          $appliedmodifiers++;
+        }
+      }
+
+      // If none of the modifiers was found, add a warning to the debug log
+      if ($appliedmodifiers == 0)
+        atkdebug(sprintf("Failed to apply modifier function %s from module %s to node %s; modifier function not found", implode(" or ", $specificmodifiers), $this->m_name, $node->m_type), DEBUG_WARNING);
     }
   }
 ?>

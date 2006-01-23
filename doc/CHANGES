@@ -12,6 +12,9 @@ Changes in ATK 5.4.1
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
   if not present. [Guido]
+* Moved the modifier calling functionallity as much as possible to atkModule.
+  This enables you to implement a generic modifier in a module that can
+  handle any node from any module. [Ivo, Guido]
 
 Changes in ATK 5.4
 ------------------
