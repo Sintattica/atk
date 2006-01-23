@@ -55,6 +55,8 @@ Changes in ATK 5.4
   as array as first parameter). [Guido]
 + Added flag AF_DATE_EDIT_NO_DAY for date attribute to force not
   prefixing the days with the weekday. [Peter]
++ Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide
+  the select_none option. [Dennis]
 * The atkKeyboardHandler is now turned off by default, because cursor 
   behaviour conflicts with standard web application behaviour. [Ivo]
 * Attributes can now define if they want to quote field- and tablenames.

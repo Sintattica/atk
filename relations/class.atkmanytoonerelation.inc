@@ -21,7 +21,12 @@
    * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
-
+  
+  /**
+    * Do not add null option ever
+    */
+  define("AF_RELATION_NO_NULL_ITEM", 1073741824);
+  
   /**
    * @internal include base class
    */
@@ -312,7 +317,7 @@
 
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
             $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
-            if (!$this->hasFlag(AF_OBLIGATORY)||(atkconfig("list_obligatory_null_item")&&!is_array($value)))
+            if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))
             {
               //get the select_none string
               $nodename = $this->m_destInstance->m_type;
