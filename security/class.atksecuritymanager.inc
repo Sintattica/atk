@@ -135,8 +135,8 @@
 
       if (atkconfig("auth_loginform")==true) // form login
       {
-        $auth_user = @$ATK_VARS["auth_user"];
-        $auth_pw = @$ATK_VARS["auth_pw"];
+        $auth_user = isset($ATK_VARS["auth_user"]) ? $ATK_VARS["auth_user"] : null;
+        $auth_pw = isset($ATK_VARS["auth_pw"]) ? $ATK_VARS["auth_pw"] : null;
       }
       else // HTTP login
       {
