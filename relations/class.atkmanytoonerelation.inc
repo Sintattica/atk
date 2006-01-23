@@ -21,11 +21,7 @@
    * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
-  
-  /**
-    * Do not add null option ever
-    */
-  define("AF_RELATION_NO_NULL_ITEM", 1073741824);
+  define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2);// Do not add null option ever
   
   /**
    * @internal include base class
