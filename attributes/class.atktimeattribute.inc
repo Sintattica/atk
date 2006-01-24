@@ -134,7 +134,7 @@
       // generate hour dropdown     
       if (!$this->hasflag(AF_OBLIGATORY))
         $m_hourBox .= '<option value=""'.($m_defHour == "" ? ' selected' : '').'></option>';
-      for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
+      for ($i=$this->m_beginTime;$i<$this->m_endTime;$i++)
       {
         if ($i == $m_defHour)
         {
