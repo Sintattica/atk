@@ -280,7 +280,7 @@
         }
         else // search for more values using IN()
         {
-          $query->addSearchCondition($this->fieldName().".".$this->remoteKey()." IN ('".implode("','",$value)."')");
+          $query->addSearchCondition($this->fieldName().".".$this->getRemoteKey()." IN ('".implode("','",$value)."')");
         }
       }
     }

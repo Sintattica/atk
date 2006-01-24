@@ -15,6 +15,7 @@ Changes in ATK 5.4.1
 * Moved the modifier calling functionallity as much as possible to atkModule.
   This enables you to implement a generic modifier in a module that can
   handle any node from any module. [Ivo, Guido]
+* Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
 
 Changes in ATK 5.4
 ------------------
