@@ -17,6 +17,8 @@ Changes in ATK 5.4.1
   This enables you to implement a generic modifier in a module that can
   handle any node from any module. [Ivo, Guido]
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
+* Passed along atkprevlevel to debugger window so the stack doesn't get forked
+  causing the console to draw a blank. [Boy]
 
 Changes in ATK 5.4
 ------------------

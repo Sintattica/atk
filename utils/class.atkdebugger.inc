@@ -108,7 +108,7 @@
     {
       static $s_first = true;
       $res = "";
-      $url = atkconfig("atkroot").'debugger.php?atkstackid='.atkStackID().'&action='.$action.$this->urlParams($params);
+      $url = atkconfig("atkroot").'debugger.php?atkstackid='.atkStackID().'&action='.$action.'&atkprevlevel='.atkLevel().$this->urlParams($params);
 
       if ($popup)
       {
