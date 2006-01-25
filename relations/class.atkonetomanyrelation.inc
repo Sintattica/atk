@@ -479,25 +479,6 @@
     }
 
     /**
-     * Attempts to get a translated label which can be used when composing an "add" link
-     *
-     * @return String Localised "add" label
-     */
-    function getAddLabel()
-    {
-      // Try to get a translation for link_fieldname_add (or if not found, a translation for link_destination_add)
-      $keys = array("link_".$this->fieldName()."_add", "link_".getNodeType($this->m_destination)."_add");
-      $label = atktext($keys,$this->m_destInstance->m_module, "", "", "", true);
-
-      // If translation not found, then use a concatenation of translations of the destination and the word "add" as default
-      if ($label=="")
-        $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
-
-      // Return the translation
-      return $label;
-    }
-
-    /**
      * Retrieve header for the recordlist.
      *
      * The regular atkOneToManyRelation has no implementation for this method,
