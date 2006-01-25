@@ -6,19 +6,21 @@ TABLE.recordlist
 
 TABLE.recordlist TH,
 TABLE.recordlist TD,
-TABLE.recordlist A
+TABLE.recordlist A,
+TABLE.recordlist A:hover
 {
   font-family: Verdana,Helvetica,Arial;
-  font-size: 11px;    
+  font-size: 11px;
   border-width: 1px;
 }
 
 TABLE.recordlist TH,
-TABLE.recordlist TH A
+TABLE.recordlist TH A,
+TABLE.recordlist TH A:hover
 {
-  background-color: #269BF7; 
-  color: #ffffff; 
-  font-weight: bold;  
+  background-color: #269BF7;
+  color: #ffffff;
+  font-weight: bold;
 }
 
 TABLE.recordlist TD,
@@ -26,10 +28,10 @@ TABLE.recordlist TH
 {
   border-width: 1px;
   border-color: #000000;
-  border-style: solid;  
+  border-style: solid;
   padding: 3px;
   margin: 0px;
-  
+
 }
 
 TABLE.recordlist .row1
