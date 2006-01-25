@@ -21,6 +21,10 @@ Changes in ATK 5.4.1
   causing the console to draw a blank. [Boy]
 * If no link_select_node translation is found atkManyToOneRelation tries
   translation of select_a and node. [Boy]
+* If extended searching is called directly the resultlist is nested
+  in the session so after editting we return to the results, not the search
+  page. [Boy]
+  
 
 Changes in ATK 5.4
 ------------------

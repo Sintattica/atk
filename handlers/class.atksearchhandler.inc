@@ -78,7 +78,7 @@
         // we reload the adminpage with the searched items.
         else
         {
-          $params["formstart"].=session_form(SESSION_DEFAULT);
+          $params["formstart"].=session_form(SESSION_NESTED);
           $params["formstart"].='<input type="hidden" name="atkaction" value="admin">';
         }
         $params["formstart"].='<input type="hidden" name="atknodetype" value="'.$node->atknodetype().'">';
