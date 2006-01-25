@@ -1529,7 +1529,7 @@ class Smarty_Compiler extends Smarty {
                     // in unnamed params and paramnames we support:
                     // first character: word characters[a-zA-Z0-9_], /, $  
                     // next characters: word characters[a-zA-Z0-9_], /, .
-                    if (preg_match('~^(?>\w|/|\$)(\w|/|\.)*$~', $token)) {
+                    if (preg_match('~^(?>\w|/|\$)(\w|/|\.|_|\-)*$~', $token)) {
                         $attr_name = $token;
                         $state = 1;
                     } else
