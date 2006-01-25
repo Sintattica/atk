@@ -16,8 +16,6 @@ Changes in ATK 5.4.1
   This enables you to implement a generic modifier in a module that can
   handle any node from any module. [Ivo, Guido]
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
-* Fixed bug: atkTimeAttribute hour dropdown contained one hour too many 
-  (24:55). [Ivo]
 
 Changes in ATK 5.4
 ------------------
