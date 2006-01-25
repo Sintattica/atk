@@ -390,11 +390,13 @@
           // we use the current level to automatically return to this page
           // when we come from the select..
           $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[pk]");
+          $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
+          if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
           if ($this->m_destinationFilter!="")
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
-                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
+                           $linkname,
                            SESSION_NESTED,
                            true,'class="atkmanytoonerelation"');
           }
@@ -402,7 +404,7 @@
           {
             $result.= href("dispatch.php?atknodetype=".$this->m_destination.
                            "&atkaction=select&atktarget=".$atktarget,
-                           atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)),
+                           $linkname,
                            SESSION_NESTED,
                            true,'class="atkmanytoonerelation"');
           }

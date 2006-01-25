@@ -19,6 +19,8 @@ Changes in ATK 5.4.1
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
 * Passed along atkprevlevel to debugger window so the stack doesn't get forked
   causing the console to draw a blank. [Boy]
+* If no link_select_node translation is found atkManyToOneRelation tries
+  translation of select_a and node. [Boy]
 
 Changes in ATK 5.4
 ------------------
