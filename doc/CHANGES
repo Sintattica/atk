@@ -8,6 +8,7 @@ Changes in ATK 5.4.1
 --------------------
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]
++ Added flag AF_MANYBOOLRELATION_ADDLINK to atkManyBoolRelation. [Guido]
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
