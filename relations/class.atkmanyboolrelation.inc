@@ -22,7 +22,7 @@
   /**
    * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
    */
-  define("AF_MANYBOOLRELATION_ADDLINK", AF_SPECIFIC_1);
+  define("AF_MANYBOOL_AUTOLINK", AF_SPECIFIC_1);
 
   /**
    * Many-to-many relation.
