@@ -416,6 +416,7 @@
 
       $page->register_style($ui->stylePath("style.css"));
 
+      $page->register_script(atkConfig('atkroot')."atk/javascript/tools.js");
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
 
       $tplvars = Array();
