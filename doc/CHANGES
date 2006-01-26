@@ -8,6 +8,8 @@ Changes in ATK 5.4.1
 --------------------
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]
++ The atktext smarty plugin now parses the translated string to a stringparser
+  with values passed in the tag. [Ivo]
 + Added flag AF_MANYBOOLRELATION_ADDLINK to atkManyBoolRelation. [Guido]
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
 * Fixed numerous php notices. [Guido]

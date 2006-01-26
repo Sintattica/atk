@@ -36,15 +36,22 @@
      case 1:
      {
        list($module, $id) = explode(".", $params["id"]);
-       return atktext($id, $module, $params["node"]);
+       $str = atktext($id, $module, $params["node"]);
+       break;
      }
      case 2:
      {
        list($module, $node, $id) = explode(".", $params["id"]);
-       return atktext($id, $module, $node);
+       $str = atktext($id, $module, $node);
+       break;
      }
-     default: return atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
+     default: $str = atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
    }
+
+   // parse the rest of the params in the string
+   atkimport("atk.utils.atkstringparser");
+   $parser = &new atkStringParser($str);
+   return $parser->parse($params);
   }
 
 ?>
