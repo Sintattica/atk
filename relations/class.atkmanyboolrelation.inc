@@ -137,8 +137,8 @@
       }
       $result.="</tr></table>\n";
 
-      // Add the add link if AF_MANYBOOLRELATION_ADDLINK used
-      if ($this->hasFlag(AF_MANYBOOLRELATION_ADDLINK))
+      // Add the add link if AF_MANYBOOL_AUTOLINK used
+      if ($this->hasFlag(AF_MANYBOOL_AUTOLINK))
         $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
       return $result;
