@@ -96,9 +96,10 @@
       {
         $data = &$this->getDebuggerData();
 
-        atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])), true)."] ".$query);
-
         $data["queries"][] = array("query"=>$query, "trace"=>atk_get_trace());
+
+        atkdebug("[".$this->consoleLink("query&nbsp;details", "query", array("query_id"=>count($data["queries"])-1), true)."] ".$query);
+
         return true;
       }
       return false;
@@ -130,11 +131,12 @@
     {
       if (count($params))
       {
-      foreach($params as $key=>$value)
-      {
-        $res.='&'.$key."=".rawurlencode($value);
-      }
-      return $res;
+        $res = "";
+        foreach($params as $key=>$value)
+        {
+          $res.='&'.$key."=".rawurlencode($value);
+        }
+        return $res;
       }
       return "";
     }
