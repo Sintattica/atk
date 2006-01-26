@@ -10,7 +10,8 @@ Changes in ATK 5.4.1
   select_none option. [Dennis]
 + The atktext smarty plugin now parses the translated string to a stringparser
   with values passed in the tag. [Ivo]
-+ Added flag AF_MANYBOOLRELATION_ADDLINK to atkManyBoolRelation. [Guido]
++ Added flag AF_MANYBOOL_AUTOLINK to atkManyBoolRelation. [Guido]
++ Added translations for critical, unknown_error and update. [Guido]
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
@@ -26,7 +27,8 @@ Changes in ATK 5.4.1
 * If extended searching is called directly the resultlist is nested
   in the session so after editting we return to the results, not the search
   page. [Boy]
-  
+* Fixed font size/color change of clickable recordlist headers when hovering
+  over them using the mouse. [Guido]
 
 Changes in ATK 5.4
 ------------------
