@@ -57,7 +57,7 @@
 
       $id = $node->atkNodeType();
 
-      if (!is_object($s_instances[$id]))
+      if (!isset($s_instances[$id]))
       {
         $s_instances[$id] = &new atkColumnConfig();
         $s_instances[$id]->setNode($node);

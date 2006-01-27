@@ -156,7 +156,8 @@
      */
     function db2value($rec)
     {
-      return array("hash" => stripslashes($rec[$this->fieldName()]));
+      $value = isset($rec[$this->fieldName()]) ? stripslashes($rec[$this->fieldName()]) : null;
+      return array("hash" => $value);
     }
 
     /**
