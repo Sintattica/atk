@@ -81,9 +81,9 @@
 
       if ($this->m_destinationFilter!="")
       {
-	      $parser = new atkStringParser($this->m_destinationFilter);
-	      $filter = $parser->parse($record);
-	      $recordset = $this->m_destInstance->selectDb($filter);
+        $parser = new atkStringParser($this->m_destinationFilter);
+        $filter = $parser->parse($record);
+        $recordset = $this->m_destInstance->selectDb($filter);
       }
       else
       // now select all records
@@ -138,7 +138,7 @@
       $result.="</tr></table>\n";
 
       // Add the add link if AF_MANYBOOL_AUTOLINK used
-      if ($this->hasFlag(AF_MANYBOOL_AUTOLINK))
+      if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
         $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
       return $result;
@@ -280,9 +280,9 @@
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
-    		$this->createLink();
-    		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );//!$this->hasFlag(AF_OBLIGATORY)
-    		$query->setDistinct(TRUE);
+        $this->createLink();
+        $query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );//!$this->hasFlag(AF_OBLIGATORY)
+        $query->setDistinct(TRUE);
         if (count($value)==1) // exactly one value
         {
           $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),escapeSQL($value[0])));
