@@ -27,6 +27,8 @@ Changes in ATK 5.4.1
 * If extended searching is called directly the resultlist is nested
   in the session so after editting we return to the results, not the search
   page. [Boy]
+* atkTimeAttribute now properly distinguishes between '0:00' hours and empty
+  values. [Ivo]
 * Fixed font size/color change of clickable recordlist headers when hovering
   over them using the mouse. [Guido]
 

@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * The atkTimeAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined time values.
@@ -23,7 +23,7 @@
    * @package atk
    * @subpackage attributes
    *
-   */   
+   */
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
@@ -48,7 +48,7 @@
       $this->m_steps     = $steps;
       $this->m_default   = $default;
     }
-    
+
     /**
      * Converts a date string (HHMISS) to an
      * array with 2 fields (hours, minutes, seconds).
@@ -60,7 +60,7 @@
       return array("hours" => substr($time, 0, 2),
                    "minutes" => substr($time, 2, 2),
                    "seconds" => substr($time, 4, 2));
-    }    
+    }
 
 
     /**
@@ -73,14 +73,14 @@
 	  	$value = $record[$this->fieldName()];
       if (empty($value["hours"]) ) return "";
       $tmp_time = $value["hours"].":".$value["minutes"];
-      if ($value["seconds"]) $tmp_time.=":".$value["seconds"];			
+      if ($value["seconds"]) $tmp_time.=":".$value["seconds"];
       return $tmp_time;
     }
 
     function fetchValue($postvars)
     {
       $result = $postvars[$this->fieldName()];
-        
+
       if(!is_array($result))
       {
         $exploded = explode(":",$postvars[$this->fieldName()]);
@@ -100,7 +100,7 @@
      * @return piece of html code with a checkbox
      */
     function edit($record="", $fieldprefix="")
-    {    
+    {
       if(($this->m_default=="NOW" && $this->m_ownerInstance->m_action=="add") ||
          ($this->m_default=="" && $this->hasFlag(AF_OBLIGATORY)))
       {
@@ -112,8 +112,8 @@
       $field = $record[$this->fieldName()];
 
       // set vars for hour / minutes dropdowns
-      $this->registerKeyListener($id.'[hours]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
-      $this->registerKeyListener($id.'[minutes]', KB_CTRLCURSOR|KB_LEFTRIGHT);  
+      $this->registerKeyListener($id.'[hours]', KB_CTRLCURSOR|KB_LEFTRIGHT);
+      $this->registerKeyListener($id.'[minutes]', KB_CTRLCURSOR|KB_LEFTRIGHT);
       $m_hourBox = '<select id="'.$id.'[hours]" name="'.$id."[hours]\">\n";
       $m_minBox  = '<select id="'.$id.'[minutes]" name="'.$id."[minutes]\">\n";
       // set default values for both boxes
@@ -131,12 +131,12 @@
       }
 
       atkdebug("defhour=$m_defHour   defmin=$m_defMin");
-      // generate hour dropdown     
+      // generate hour dropdown
       if (!$this->hasflag(AF_OBLIGATORY))
-        $m_hourBox .= '<option value=""'.($m_defHour == "" ? ' selected' : '').'></option>';
+        $m_hourBox .= '<option value=""'.($m_defHour === "" ? ' selected' : '').'></option>';
       for ($i=$this->m_beginTime;$i<=$this->m_endTime;$i++)
       {
-        if ($i == $m_defHour)
+        if ($m_defHour!=="" && ($i == $m_defHour))
         {
           $sel = " selected";
         }
@@ -149,7 +149,7 @@
 
       // generate minute dropdown
       if (!$this->hasflag(AF_OBLIGATORY))
-        $m_minBox .= '<option value=""'.($m_defMin == "" ? ' selected' : '').'></option>';
+        $m_minBox .= '<option value=""'.($m_defMin === "" ? ' selected' : '').'></option>';
       for ($i=0;$i<=count($this->m_steps)-1;$i++)
       {
        if($i!=0) $prev = $this->m_steps[$i-1];
@@ -170,7 +170,7 @@
       $m_hourBox .= "</select>";
       $m_minBox  .= "</select>";
       $m_secBox  .= "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
-      
+
       // assemble display version
       return $m_hourBox.":".$m_minBox.$m_secBox;
     }
@@ -201,13 +201,13 @@
       {
         $retval=NULL;
       }
-      else 
+      else
       {
          $retval = array("hours"=>substr($rec[$this->fieldName()], 0, 2),
                    "minutes"=>substr($rec[$this->fieldName()], 3, 2),
                    "seconds"=>substr($rec[$this->fieldName()], 6, 2));
       }
-      return $retval;     
+      return $retval;
     }
 
     /**
@@ -229,7 +229,7 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("exact");
     }
-    
+
     function validate(&$rec, $mode)
     {
       $value = $rec[$this->fieldName()];
@@ -237,7 +237,7 @@
       {
         triggerError($rec, $this->fieldName(), 'error_obligatoryfield');
       }
-      
+
     }
 
    /**
@@ -291,7 +291,7 @@
 
       return $result;
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       // When we get $value as a substring, we autocomplete the time
@@ -301,14 +301,14 @@
         $retval = array("hours"=>substr($value, 0, 2),
                    "minutes"=>substr($value, 3, 2),
                    "seconds"=>substr($value, 6, 2));
-        
+
         if (!$retval["seconds"]) $retval["seconds"]="00";
         if (!$retval["minutes"]) $retval["minutes"]="00";
 
         if (strlen($retval["hours"])==1)   $retval["hours"] =   "0".$retval["hours"];
         if (strlen($retval["minutes"])==1) $retval["minutes"] = "0".$retval["minutes"];
-        if (strlen($retval["seconds"])==1) $retval["seconds"] = "0".$retval["seconds"]; 
-         
+        if (strlen($retval["seconds"])==1) $retval["seconds"] = "0".$retval["seconds"];
+
         $value = implode(":",$retval);
       }
       return parent::getSearchCondition($query, $table, $value, $searchmode);
