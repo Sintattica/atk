@@ -467,21 +467,6 @@
     var $m_onchangehandler_init = "";
 
     /**
-     * Array for onchange code
-     * @access private
-     * @var Array
-     */
-    var $m_onchangecode = array();
-
-    /**
-     * Variable to store initialisation javascript code
-     * in for the changehandler.
-     * @access private
-     * @var String
-     */
-    var $m_onchangehandler_init = "";
-
-    /**
      * Constructor
      *
      * <b>Example:</b>
