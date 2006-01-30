@@ -545,6 +545,8 @@
      */
     function _getLoadWhereClause($record)
     {
+      $whereelems = array();
+ 
       if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
 
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
