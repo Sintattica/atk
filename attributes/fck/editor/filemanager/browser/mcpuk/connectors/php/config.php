@@ -111,7 +111,7 @@ $fckphp_config['ResourceAreas']['File'] =array(
 	'DiskQuota'		=>	20,
 	
 	//By Default hide all folders starting with a . (Unix standard)
-	'HideFolders'		=>	array("^\."), 
+	'HideFolders'		=>	array("^\.|^CVS"), 
 	
 	//By Default hide all files starting with a . (Unix standard)
 	'HideFiles'		=>	array("^\."), 
@@ -126,7 +126,7 @@ $fckphp_config['ResourceAreas']['Image'] =array(
 	'AllowedMIME'		=>	array(),
 	'MaxSize'		=>	1024,
 	'DiskQuota'		=>	5,
-	'HideFolders'		=>	array("^\."),
+	'HideFolders'		=>	array("^\.|^CVS"),
 	'HideFiles'		=>	array("^\."),
 	'AllowImageEditing'	=>	false //Not yet complete, but you can take a look and see
 	);
@@ -137,7 +137,7 @@ $fckphp_config['ResourceAreas']['Flash'] =array(
 	'AllowedMIME'		=>	array(),
 	'MaxSize'		=>	1024,
 	'DiskQuota'		=>	5,
-	'HideFolders'		=>	array("^\."),
+	'HideFolders'		=>	array("^\.|^CVS"),
 	'HideFiles'		=>	array("^\."),
 	'AllowImageEditing'	=>	false
 	);
@@ -148,7 +148,7 @@ $fckphp_config['ResourceAreas']['Media'] =array(
 	'AllowedMIME'		=>	array(),
 	'MaxSize'		=>	5120,
 	'DiskQuota'		=>	20,
-	'HideFolders'		=>	array("^\."),
+	'HideFolders'		=>	array("^\.|^CVS"),
 	'HideFiles'		=>	array("^\."),
 	'AllowImageEditing'	=>	false
 	);
