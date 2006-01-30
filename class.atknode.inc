@@ -1934,7 +1934,8 @@
      * A listener can be defined either by placing an instantiated object
      * or the full location in atkimport style notation, in a global array
      * called $g_nodeListeners (useful for example for adding listeners
-     * to nodes from another module's module.inc file.
+     * to nodes from another module's module.inc file. in module.inc files,
+     * $listeners can be used to add listeners to a node.
      * @access private
      */
     function _addListeners()
