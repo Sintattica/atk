@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,26 +15,26 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * This class is responsible for managing multilanguage nodes which have
    * multiple records per occurance.
    * It updates/saves or merges multiple records.
-   * This is used by multilingual atkNodes. It should generally not be 
+   * This is used by multilingual atkNodes. It should generally not be
    * necessary to use this class directly.
    *
    * @author Martin Roest <martin@ibuildings.nl>
    * @package atk
    * @subpackage utils
    *
-   */  
+   */
   class atkmlsplitter
   {
     function atkMlSplitter()
     {
       // constructor
     }
-    
+
     /**
     * Retrieve the mlsplitter instance
     * @return atkOutput The instance.
@@ -46,10 +46,10 @@
       {
         $s_mlsplitter = new atkmlsplitter();
         atkdebug("Created a new atkmlsplitter instance");
-      }   
+      }
       return $s_mlsplitter;
     }
-    
+
     function getLanguages(&$node)
     {
       if(method_exists($node,"getLanguages"))
@@ -60,7 +60,7 @@
       for($i=0, $_i=count($lngs); $i<$_i; $i++) $lngs[$i]=strtoupper($lngs[$i]);
       return $lngs;
     }
-    
+
     function updateLngField(&$node,&$record)
     {
       // blegh
@@ -69,7 +69,7 @@
                WHERE ".$node->m_lngfield."='' AND ".$record["atkprimkey"];
       return $db->query($sql);
     }
-    
+
     /**
     * add/update multiple language records
     * because nodes are cached and we have to make some attribute modifications you
@@ -81,7 +81,7 @@
       atkdebug("atkmlsplitter::updateMlRecords() for mode $mode");
       $excludelist = array();
       $relations = array();
-             
+
       foreach($node->m_attribList as $attribname=>$attrib)
       {
         if(is_subclass_of($node->m_attribList[$attribname],"atkRelation"))
@@ -94,7 +94,7 @@
              || is_a($node->m_attribList[$attribname],"atkOneToOneRelation"))
           {
           	$relations[$attribname] = $node->m_attribList[$attribname];
-            
+
           	$p_attrib = &$node->m_attribList[$attribname];
             $p_attrib->createDestination();
             $attribvalue=$p_attrib->m_destInstance->m_attribList[$p_attrib->m_destInstance->primaryKeyField()]->value2db($record[$attribname]);
@@ -104,19 +104,19 @@
           else  $excludelist[] = $attribname;
         }
       }
-           
-      $languages = $this->getLanguages($node);      
+
+      $languages = $this->getLanguages($node);
       $atklngrecordmodes = sessionLoad("atklng_".$node->m_type);
 
-      $autoincrementflags=Array();            
+      $autoincrementflags=Array();
       foreach($node->m_primaryKey as $primkey)
       {
         // Make sure we don't increment the primkey
         if($node->m_attribList[$primkey]->hasFlag(AF_AUTOINCREMENT))
         $node->m_attribList[$primkey]->removeFlag(AF_AUTO_INCREMENT);
         $autoincrementflags[]=$primkey;
-      }      
-       
+      }
+
       foreach($languages as $language)
       {
         if($atklngrecordmodes[$language]["mode"]=="updatelngfield")
@@ -134,7 +134,7 @@
           }
         }
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
-        
+
         if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
         switch($mode)
         {
@@ -161,25 +161,25 @@
         // restore the attrib flags
         $node->m_attribList[$primkey]->addFlag(AF_AUTO_INCREMENT);
       }
-      
+
       foreach($relations as $attribname=>$relation)
-      { 
+      {
       	// restore the relations
       	$node->m_attribList[$attribname]=$relation;
       }
-      
-      sessionStore("atklng_".$node->m_type,NULL); // deleting modes      
+
+      sessionStore("atklng_".$node->m_type,NULL); // deleting modes
     }
-    
+
     /**
     * Adds language condition
     */
     function addMlCondition(&$query,&$node,$mode,$excludeList=NULL,$includeList=NULL)
     {
       global $ATK_VARS;
-     
+
       $lng = (isset($ATK_VARS["lng"])?$ATK_VARS["lng"]:"");
-      
+
       if (!$lng) $lng = $node->m_defaultlanguage;
 
       if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
@@ -192,7 +192,7 @@
         }
         $query->addCondition("UPPER({$fieldname})='{$lng}'");
       }
-      
+
       $relations=&$node->m_relations["atkmanytoonerelation"];
       if(is_array($relations) && count($relations)>0)
       {
@@ -232,7 +232,7 @@
         }
       }
     }
-    
+
     /**
      * checks if the attribute is included in de selectDb
      *
@@ -242,20 +242,19 @@
      * @param string attribname name of the attribute
      * @return bool true in case the attribute is loaded in the selectdb
      */
-     
     function needsMlCondition(&$node,&$query,$attribname,$excludeList=NULL,$includeList=NULL)
     {
       $p_attrib =& $node->m_attribList[$attribname];
       if(is_object($p_attrib)
           && $p_attrib->createDestination()
-          && $node->isAllowedQueryList($attribname,$excludeList,$includeList)) 
+          && $node->isAllowedQueryList($attribname,$excludeList,$includeList))
       {
-        $loadType = $node->m_attribList[$attribname]->loadType($mode);
+        $loadType = $node->m_attribList[$attribname]->loadType("");
         return hasFlag($loadType, ADDTOQUERY);
       }
       return false;
     }
-    
+
     /**
     * merges multiple multilanguage records to one record with fields containing arrays needed by mlattributes
     */
@@ -270,7 +269,7 @@
       $this->mergeMlRecords($node,$recordset);
       sessionStore("atklng_".$node->m_type,$recordset[0]["atklngrecordmodes"]);
     }
-    
+
    /**
     * this is used to find 1:1 relations with multilanguage support
     * we need these relation because the recordlist will have them included
@@ -292,9 +291,9 @@
        }
      }
      return $hasrelationwithmlnode;
-   }     
+   }
 
-    
+
    function hasLngRecord(&$node,&$recordset,$lng,&$index)
    {
      $index=0;
@@ -306,7 +305,7 @@
      }
      return false;
    }
-   
+
    function addLngRecords(&$node,&$recordset)
    {
      $newrecordset=Array();
@@ -320,7 +319,7 @@
          $recordcount=count($newrecordset);
          $newrecordset[$recordcount]=$recordset[0]; // assume that the first record is OK.
          $newrecordset[$recordcount][$node->m_lngfield]=$languages[$i];
-         
+
          if($languages[$i]!=$node->m_defaultlanguage) // saving atkaction
            $newrecordset[$recordcount]["atklngrecordmodes"][$languages[$i]]["mode"]="add";
          else
@@ -330,7 +329,7 @@
      }
      return $newrecordset;
     }
-   
+
     function mergeMlRecords(&$node, &$recordset)
     {
       $lngattribs=array();
@@ -357,7 +356,7 @@
       }
       $recordset=$ml_record;
     }
-    
+
     function searchRecordDefaultLanguage($recordset, $defaultlanguage)
     {
       for ($i=0;$i<count($recordset);$i++)
