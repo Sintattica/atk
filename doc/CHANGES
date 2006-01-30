@@ -94,6 +94,8 @@ Changes in ATK 5.4.1
 * AtkManyToOneRelation now uses primary key field as default order if not 
   specified. [Lineke]
 * Remembering tabs should be per record. [Lineke]
+* Fixed translation of atkDateAttribute when the current language was changed
+  at runtime. [Ivo]
 
 Changes in ATK 5.4
 ------------------
