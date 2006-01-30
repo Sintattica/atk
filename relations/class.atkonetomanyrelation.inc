@@ -534,7 +534,7 @@
     {
       return "";
     }
-    
+
     /**
      * Create the where clause for the referential key that is used to
      * retrieve the destination records.
@@ -544,13 +544,13 @@
      * @return String SQL where clause
      */
     function _getLoadWhereClause($record)
-    {      
+    {
       if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
 
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
         $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
-        
+
         if (!$primkeyattr->isEmpty($record))
         {
           $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
@@ -591,38 +591,42 @@
         {
           $where = $this->_getLoadWhereClause($record);
 
-          if ($this->m_destinationFilter!="")
+          if ($where!="")
           {
-            atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_destinationFilter);
-            $filter = $parser->parse($record);
-            $this->m_destInstance->addFilter($filter);
-          }
 
-          if ($mode=="admin" || $mode=="select" || $mode=="view")
-          {
-            // we only need fields that are displayed in the descriptor.
-            $excludes = $this->m_destInstance->m_listExcludes;
+            if ($this->m_destinationFilter!="")
+            {
+              atkimport("atk.utils.atkstringparser");
+              $parser = new atkStringParser($this->m_destinationFilter);
+              $filter = $parser->parse($record);
+              $this->m_destInstance->addFilter($filter);
+            }
+
+            if ($mode=="admin" || $mode=="select" || $mode=="view")
+            {
+              // we only need fields that are displayed in the descriptor.
+              $excludes = $this->m_destInstance->m_listExcludes;
+            }
+            else
+            {
+              // we probably need everything
+              $excludes = "";
+            }
+            if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
+            {
+              $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+            }
+            if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
+            {
+              $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+            }
+            ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
+            $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
+            $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
+            $limitarray,$excludes,"",$mode);
+            $this->m_loadFilter = $where;
+            return $recordset;
           }
-          else
-          {
-            // we probably need everything
-            $excludes = "";
-          }
-          if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
-          {
-            $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-          }
-          if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
-          {
-            $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-          }
-          ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-          $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
-          $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
-          $limitarray,$excludes,"",$mode);
-          $this->m_loadFilter = $where;
-          return $recordset;
         }
       }
       return NULL;
