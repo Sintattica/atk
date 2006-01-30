@@ -726,21 +726,21 @@
      */
     function &getInstance($conn="default", $reset=false)
     {      
-      static $s_instances = array();
-      if (!isset($s_instances[$conn]) || $reset)
+      global $g_dbinstances;
+      if (!isset($g_dbinstances[$conn]) || $reset)
       {
         atkdebug("Creating new db instance for connection $conn");
         $dbconfig = atkconfig("db");
          // include DB stuff
-        $s_instances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");
-        $s_instances[$conn]->m_database = $dbconfig[$conn]["db"];
-        $s_instances[$conn]->m_user     = $dbconfig[$conn]["user"];
-        $s_instances[$conn]->m_password = $dbconfig[$conn]["password"];
-        $s_instances[$conn]->m_host     = $dbconfig[$conn]["host"];
+        $g_dbinstances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");
+        $g_dbinstances[$conn]->m_database = $dbconfig[$conn]["db"];
+        $g_dbinstances[$conn]->m_user     = $dbconfig[$conn]["user"];
+        $g_dbinstances[$conn]->m_password = $dbconfig[$conn]["password"];
+        $g_dbinstances[$conn]->m_host     = $dbconfig[$conn]["host"];
         if (isset($dbconfig[$conn]["port"]))
-          $s_instances[$conn]->m_port     = $dbconfig[$conn]["port"];
+          $g_dbinstances[$conn]->m_port     = $dbconfig[$conn]["port"];
       }
-      return $s_instances[$conn];
+      return $g_dbinstances[$conn];
     }
     
     /**
