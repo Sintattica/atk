@@ -202,7 +202,7 @@
           if($p_attrib->createDestination()
               && $p_attrib->m_destInstance->hasFlag(NF_ML)
               && (!$p_attrib->hasFlag(AF_HIDE_LIST) || $p_attrib->hasFlag(AF_FORCE_LOAD))
-              && $this->needsMlCondition($node,$query,$attribname,$excludeList,$includeList))
+              && $this->needsMlCondition($node,$query,$attribname,$excludeList,$includeList, $mode))
           {
             $dest = $p_attrib->m_destInstance;
             $fieldname = $attribname.".".$dest->m_lngfield;
@@ -242,14 +242,14 @@
      * @param string attribname name of the attribute
      * @return bool true in case the attribute is loaded in the selectdb
      */
-    function needsMlCondition(&$node,&$query,$attribname,$excludeList=NULL,$includeList=NULL)
+    function needsMlCondition(&$node,&$query,$attribname,$excludeList=NULL,$includeList=NULL, $mode="")
     {
       $p_attrib =& $node->m_attribList[$attribname];
       if(is_object($p_attrib)
           && $p_attrib->createDestination()
           && $node->isAllowedQueryList($attribname,$excludeList,$includeList))
       {
-        $loadType = $node->m_attribList[$attribname]->loadType("");
+        $loadType = $node->m_attribList[$attribname]->loadType($mode);
         return hasFlag($loadType, ADDTOQUERY);
       }
       return false;
