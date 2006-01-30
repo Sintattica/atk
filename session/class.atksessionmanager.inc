@@ -831,14 +831,4 @@
     return $g_sessionManager;
   }
 
-  /**
-   * Returns the sessionmanager.
-   * @return atkSessionManager  session manager
-   */
-  function &atkGetSessionManager()
-  {
-    global $g_sessionManager;
-    return $g_sessionManager;
-  }
-
 ?>

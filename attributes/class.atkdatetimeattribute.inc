@@ -98,13 +98,6 @@
       return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
     }       
 
-
-    function validate(&$record, $mode)
-    {
-      $this->m_date->validate($record,$mode);
-      $this->m_time->validate($record,$mode);
-    }
-
     function init()
     {
 
