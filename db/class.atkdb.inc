@@ -727,7 +727,7 @@
     function &getInstance($conn="default", $reset=false)
     {      
       static $s_instances = array();
-      if (!isset($s_dbinstances[$conn]) || $reset)
+      if (!isset($s_instances[$conn]) || $reset)
       {
         atkdebug("Creating new db instance for connection $conn");
         $dbconfig = atkconfig("db");
