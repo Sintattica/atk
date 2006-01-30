@@ -22,15 +22,18 @@
    * Register a node in the main application
    * @param $node name of the node
    * @param $action array with actions that can be performed on the node
+   * @param $tabs array of tabnames for which security should be handled.
+   *              Note that tabs that every user may see need not be
+   *              registered.
    */
-  function registerNode($node, $action, $tabs=null)
+  function registerNode($node, $action, $tabs=array())
   {
     global $g_nodes;
     $module = getNodeModule($node);
     $type = getNodeType($node);
     
     // prefix tabs with tab_
-    for($i = 0; $i < sizeof($tabs); $i++)
+    for($i=0, $_i=count($tabs); $i<$_i; $i++)
       $tabs[$i] = "tab_" . $tabs[$i];
     
     if ($module=="") $module="main"; 
