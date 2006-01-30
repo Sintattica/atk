@@ -3,9 +3,9 @@
 ********************************************************
 TinyButStrongOOo (extend TinyButStrong to process OOo doc)
 Author   : Olivier LOYNET (tbsooo@free.fr)
-Version  : 0.7.7
+Version  : 0.7.8
 Require  : PHP >= 4.0.6 and TBS >= 2.0.4
-Date     : 2005-09-28
+Date     : 2005-12-12
 Web site : www.tinybutstrong.com
 Doc      : http://www.tinybutstrong.com/apps/tbsooo/doc.html
 Download : http://www.tinybutstrong.com/download/download.php?file=tbsooo.zip
@@ -22,6 +22,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   var $_process_path = 'tmp/';
   var $_zip_bin = '';
   var $_unzip_bin = '';
+  var $_charset = '';
   var $_ooo_basename = '';
   var $_ooo_file_ext = '';
   var $_xml_filename = '';
@@ -73,7 +74,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     }
     // add a trailing / at the path
     $this->_process_path = $process_path.(substr($process_path, -1, 1) == '/' ? '' : '/');
-
+    
     // test if 'dir' exists
     if (!is_dir($this->_process_path)) {
       $this->meth_Misc_Alert('SetProcessDir method', 'Directory not found : '.$this->_process_path);
@@ -86,6 +87,11 @@ class clsTinyButStrongOOo extends clsTinyButStrong
       return false;
     }
     return true;
+  }
+
+  function SetDataCharset($charset)
+  {
+    $this->_charset = strtoupper($charset);
   }
 
   function NewDocFromTpl($ooo_template_filename)
@@ -261,8 +267,16 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     $string_encode = str_replace('>'   ,'&gt;',  $string_encode);
     //$string_encode = str_replace("\n", '</text:p><text:p>', $string_encode); // '\n' by XML tags
     $string_encode = str_replace("\n", '<text:line-break/>', $string_encode); // '\n' by XML tags
-    $string_encode = utf8_encode($string_encode); // OOo XML charset is utf8
 
+    switch($this->_charset) {
+      // OOo XML charset is utf8
+      case 'UTF8': // no encode
+        break;
+      case 'ISO 8859-1': // encode ISO 8859-1 to UTF8
+      default:
+        $string_encode = utf8_encode($string_encode); 
+        break;
+    }
     return $string_encode;
   }
 
