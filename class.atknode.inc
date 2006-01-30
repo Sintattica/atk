@@ -1931,8 +1931,10 @@
 
     /**
      * Add the listeners for the current node
-     * A listener can be defined either by passing it as an instantiated object
-     * or by passing the full location in atkimport style notation
+     * A listener can be defined either by placing an instantiated object
+     * or the full location in atkimport style notation, in a global array
+     * called $g_nodeListeners (useful for example for adding listeners
+     * to nodes from another module's module.inc file.
      * @access private
      */
     function _addListeners()
@@ -1950,13 +1952,10 @@
           {
             if (is_string($listener))
             {
-              atkimport($listener);
-              $exploded = explode(".",$listener);
-              $classname = array_pop($exploded);
-              if ($classname)
+              $listenerobj = &atknew($listener);
+              if (is_object($listenerobj))
               {
-                $listener = &new $classname();
-                $this->addListener($listener);
+                $this->addListener($listenerobj);
               }
               else
                 atkdebug("We couldn't find a classname for listener with supposed nodetype: '$listener'");
