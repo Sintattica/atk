@@ -51,6 +51,8 @@ Changes in ATK 5.4.1
   causing the console to draw a blank. [Boy]
 * If no link_select_node translation is found atkManyToOneRelation tries
   translation of select_a and node. [Boy]
+* If no title_module translation is found, atkProfileAttribute will use
+  module name as translation. [Ivo]
 * If extended searching is called directly the resultlist is nested
   in the session so after editting we return to the results, not the search
   page. [Boy]

@@ -292,7 +292,7 @@
             $firstModule = false;
           else
             $result .= "</div><br>";
-          $result .= "<b><a href=\"javascript:profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."');\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext("title_$module", $module)."<br>";
+          $result .= "<b><a href=\"javascript:profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."');\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext(array("title_$module", $module), $module)."<br>";
           $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
           $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
           $result.='<div>
