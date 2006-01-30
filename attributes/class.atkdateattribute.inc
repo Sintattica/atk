@@ -472,7 +472,8 @@
       $page = &atkPage::getInstance();
 
       /* register javascript */
-      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc", SESSION_NEW));
+      atkimport("atk.atklanguage");
+      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc&atklng=".atkLanguage::getLanguage(), SESSION_NEW));
 
       if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
       {
