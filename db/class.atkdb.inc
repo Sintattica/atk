@@ -740,7 +740,7 @@
         if (isset($dbconfig[$conn]["port"]))
           $s_instances[$conn]->m_port     = $dbconfig[$conn]["port"];
       }
-      return $g_dbinstances[$conn];
+      return $s_instances[$conn];
     }
     
     /**
