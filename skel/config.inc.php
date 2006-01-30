@@ -283,22 +283,4 @@
   $config_supported_languages = array("EN","NL","DE");
   $config_defaultlanguage="EN";
 
-  // For document attributes, ATK automatically searches for template
-  // documents in a specific directory. The base directory to search in
-  // can be specified below. The document templates must be put in a
-  // specific directory structure under this base directory: first of all
-  // a subdirectory must be made for every module for which you want to
-  // include document templates (equal to the modulename of that module, as
-  // set in config.inc.php). Then a subdirectory in that directory must be
-  // made according to the name of the node for which you want to include
-  // document templates. In this subdirectory you can put your document
-  // template files. So if you have $config_doctemplatedir set to
-  // "doctemplates/", then you can put your documents in
-  // "doctemplates/modulename/nodename/".
-  $config_doctemplatedir = "doctemplates/";
-
-  // --------- DATE INTERNATIONALISATION CONFIGURATION ---------
-
-  $config_supported_languages = array("EN","NL","DE");
-  $config_defaultlanguage="EN";
 ?>
