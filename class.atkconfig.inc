@@ -73,7 +73,7 @@
       
       if ($_REQUEST["atkdebug"]["key"])
         $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
-      return $session["debug"]["key"] == $params["key"];
+      return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
     }
 
     /**
