@@ -30,6 +30,9 @@
 
   // registered node action handlers
   $g_nodeHandlers = array();
+  
+  // registered node listeners
+  $g_nodeListeners = array();
 
   /**
    * Gets the node type of a node string
@@ -57,6 +60,7 @@
 
   /**
    * Get an instance of a node. If an instance doesn't exist, it is created.
+   * @deprecated Use atkGetNode instead.
    * @param String $node     The node string
    * @param bool   $init     Initialize the node?
    * @param String $cache_id The cache id in the node repository
@@ -64,6 +68,19 @@
    * @return atkNode the created instance
    */
   function &getNode($node, $init=TRUE, $cache_id="default", $reset=false)
+  {
+    return atkGetNode($node, $init, $cache_id, $reset);
+  }
+
+  /**
+   * Get an instance of a node. If an instance doesn't exist, it is created.
+   * @param String $node     The node string
+   * @param bool   $init     Initialize the node?
+   * @param String $cache_id The cache id in the node repository
+   * @param bool   $reset    Wether or not to reset the particulair node in the repository
+   * @return atkNode the created instance
+   */
+  function &atkGetNode($node, $init=TRUE, $cache_id="default", $reset=false)
   {
     global $g_nodeRepository;
     if (!isset($g_nodeRepository[$cache_id][$node])||!is_object($g_nodeRepository[$cache_id][$node]) || $reset)
@@ -73,10 +90,33 @@
     }
     return $g_nodeRepository[$cache_id][$node];
   }
+  
+  /**
+   * Replace, at runtime, the in-memory instance of a node.
+   * 
+   * This is useful to replace nodes with mocks for testing purposes.
+   *
+   * @param String $nodename The full name of the node (module.nodename)
+   * @param atkNode $node The node instance to replace the current one
+   * @param String $cache_id If set, replaces only the instance with a certain
+   *                         cache_id
+   * @return atkNode The current node, useful to restore afterwards. Can be
+   *                 NULL.
+   */
+  function &atkSetNode($nodename, &$node, $cache_id="default")
+  {
+    global $g_nodeRepository;    
+    $org = &$g_nodeRepository[$cache_id][$nodename];
+    $g_nodeRepository[$cache_id][$nodename] = &$node;
+    return $org;
+  }
 
   function &getModule($modname)
   {
     global $g_moduleRepository, $g_modules;
+    
+    atkimport("atk.atknode");
+    
     if (!isset($g_moduleRepository[$modname])||!is_object($g_moduleRepository[$modname]))
     {
       atkimport("atk.modules.atkmodule");
@@ -365,8 +405,8 @@
    */
   function atkPreloadModules()
   {
-    global $g_modules, $g_modifiers, $g_overloaders, $g_moduleflags;
-
+    global $g_modules, $g_modifiers, $g_overloaders, $g_moduleflags, $g_nodeListeners;
+    
     foreach ($g_modules as $modname => $modpath)
     {
       if ((!isset($g_moduleflags[$modname])) || (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD)))
@@ -396,6 +436,7 @@
         // the include file may specify modifiers.
         $modifiers = array();
         $overloaders = array();
+        $listeners = array();
         include_once($filename);
 
         for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
@@ -403,6 +444,9 @@
 
         if (count($overloaders) > 0)
           $g_overloaders = array_merge($g_overloaders, $overloaders);
+        
+        if (count($listeners) > 0)  
+          $g_nodeListeners = array_merge_recursive($g_nodeListeners, $listeners);
       }
     }
   }

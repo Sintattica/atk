@@ -156,5 +156,19 @@
     }
 
 
+    function hide($record="", $fieldprefix="")
+    {
+      // the next if-statement is a workaround for derived attributes which do
+      // not override the hide() method properly. This will not give them a
+      // working hide() functionality but at least it will not give error messages.
+      if ($record[$this->fieldName()]=="")$record[$this->fieldName()] = "0";
+      if (!is_array($record[$this->fieldName()]))
+      {
+        $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
+                  '" value="'.htmlspecialchars($record[$this->fieldName()]).'">';
+        return $result;
+      }
+      else atkdebug("Warning attribute ".$this->m_name." has no proper hide method!");
+    }
   }
 ?>

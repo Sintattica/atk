@@ -70,7 +70,7 @@
                                // In ATK5 we must create a clean singleton with
                                // a static instance.
     if (!is_object($g_securityManager))
-    {
+    {      
       atkimport("atk.security.atksecuritymanager");
       // The one and only security manager.
       $authentication = atkconfig("authentication", "none");
@@ -79,6 +79,22 @@
       $g_securityManager = new atkSecurityManager($authentication, $authorization, $scheme);
     }
     return $g_securityManager;
+  }
+  
+  /**
+   * Replaced the securitymanager at runtime with a different instance.
+   * 
+   * Useful for testing, for example replacing the security manager with a
+   * mock version.
+   * @param atkSecurityManager Securitymanager instance
+   * @return atkSecurityManager The original instance
+   */
+  function &atkSetSecurityManager(&$mgr)
+  {
+    global $g_securityManager;
+    $obj = $g_securityManager;
+    $g_securityManager = $mgr;
+    return $obj;
   }
 
 

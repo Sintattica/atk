@@ -19,8 +19,8 @@
   /** 
    * @internal include baseclass.
    */  
-  include_once($config_atkroot."atk/atkbrowsertools.inc");
-  include_once($config_atkroot."atk/attributes/class.atktextattribute.inc");
+  include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
+  include_once(atkconfig("atkroot")."atk/attributes/class.atktextattribute.inc");
 
   /**
    * These defines control the behaviour of the contenteditable html control. You can

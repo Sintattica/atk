@@ -200,7 +200,7 @@
           {
             foreach($itemarray as $item)
             {
-              if ($item == $searchfor)
+              if (strtolower($item) == strtolower($searchfor))
               {
                 return array("dir" => $from, "item" => isset($itemarray[$searchfor])?$itemarray[$searchfor]:NULL);
               }

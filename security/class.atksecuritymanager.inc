@@ -61,28 +61,7 @@
 
       $atkroot = atkconfig("atkroot");
       require_once($atkroot."atk/security/class.auth_interface.inc");
-
-      $authentication = explode(",",trim(atkconfig("authentication", "none")));
-      if(is_array($authentication))
-      {
-        foreach($authentication as $value)
-        {
-          $value = trim($value);
-          if(is_file($atkroot."atk/security/class.auth_".$value.".inc"))
-          {
-            include_once($atkroot."atk/security/class.auth_".$value.".inc");
-          }
-        }
-      }
-      else
-      {
-        if(is_file($atkroot."atk/security/class.auth_".$authentication.".inc"))
-        {
-          include_once($atkroot."atk/security/class.auth_".$authentication.".inc");
-        }
-      }
-
-      include_once($atkroot."atk/security/class.auth_".atkconfig("authorization", atkconfig("authentication", "none")).".inc");
+      
 
       /* authentication class */
       $authentication = explode(",",trim($authentication_type));
@@ -94,9 +73,10 @@
           if($class!="")
           {
             $classname = "auth_".$class;
+            include_once($atkroot."atk/security/class.".$classname.".inc");
             if(class_exists($classname))
             {
-              atkdebug("atkSecurityManager() constructing class $classname");
+              atkdebug("atkSecurityManager() constructing class $classname");              
               $this->m_authentication[$class] = new $classname;
             }
           }
@@ -105,16 +85,18 @@
       else
       {
         $classname = "auth_".$authentication;
+        include_once($atkroot."atk/security/class.".$classname.".inc");
         if(class_exists($classname))
         {
-          atkdebug("atkSecurityManager() constructing class $classname");
+          atkdebug("atkSecurityManager() constructing class $classname");          
           $this->m_authentication[$authentication] = new $classname;
         }
       }
 
       /* authorization class */
       $classname = "auth_".$authorization_type;
-      $this->m_authorization = new $classname;
+      include_once($atkroot."atk/security/class.auth_".$authorization_type.".inc");
+      $this->m_authorization = new $classname;           
 
       /* security scheme */
       $this->m_scheme = $securityscheme;

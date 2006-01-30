@@ -20,7 +20,8 @@ function showTab(tab)
 {  
 	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
-	var tabidobj = get_object("atknodetype");
+	var tabidobj  = get_object("atknodetype");
+	var tabselobj = get_object("atkselector");
 	
 	// IE works with .value, while the Gecko engine uses .innerHTML
 	if (tabidobj.value) 
@@ -30,6 +31,15 @@ function showTab(tab)
 	else if (tabidobj.innerHTML)
 	{
 	  var tabid = tabidobj.innerHTML;
+	}
+	
+	if (tabselobj.value) 
+	{ 
+	   var tabsel = tabselobj.value;
+	}
+	else if (tabselobj.innerHTML)
+	{
+	  var tabsel = tabselobj.innerHTML;
 	}
 	
 	// Next, check wether the parent tab array has been set
@@ -42,9 +52,9 @@ function showTab(tab)
 	// If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
 	if (!tab)
 	{
-	  if (parent.document.tab[tabid])
+	  if (parent.document.tab[tabid][tabsel])
     {
-      tab = parent.document.tab[tabid];
+      tab = parent.document.tab[tabid][tabsel];
       // However if for some reason this tab does not exist, we switch to the default tab
       if (!document.getElementById('tab_'+tab)) tab = tabs[0];
     }
@@ -55,7 +65,8 @@ function showTab(tab)
   }
   
   // Then we store what tab we are going to visit in the parent
-	parent.document.tab[tabid] = tab;
+	parent.document.tab[tabid] = Array();
+	parent.document.tab[tabid][tabsel] = tab;
 	
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none

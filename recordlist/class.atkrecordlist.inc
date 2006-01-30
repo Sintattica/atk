@@ -232,7 +232,8 @@
             $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();
             $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                            '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
-                           '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">';
+                           '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">'.
+                           '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
           }
 
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
@@ -376,24 +377,26 @@
 
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
-  	    $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
-
-	    $link = $name;
-
-	    if($icons == true)
-	    {
-	      $icon = $theme->iconPath($name,"recordlist");
-  	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'">';
-	    }
-	    else
-	    {
-	      $link = atktext($name);
-	    }
+      	    $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
+    
+    	      $link = $name;
+    
+    	      if($icons == true)
+    	      {
+    	        $icon = $theme->iconPath(strtolower($name),"recordlist");
+      	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'">';
+    	      }
+    	      else
+    	      {
+    	        $link = atktext($name);
+	          }
+	          
             $confirmtext= "false";
             if (atkconfig("recordlist_javascript_delete") && $name=="delete")
             $confirmtext = "'".$this->m_node->confirmActionText($name)."'";
             $str_actions.='<a href="'."javascript:rl_do('$listName',$i,'$name',$confirmtext);".'">'.$link.'</a>&nbsp;';
           }
+          
           $str_actions.="</span>";
           /* actions (left) */
           if ($orientation == "left" || $orientation == "both")

@@ -1524,16 +1524,16 @@ class Smarty_Compiler extends Smarty {
                 case 0:
                       /* If the token is a valid identifier, we set attribute name
                        and go to state 1. */
-                    // SANDY && BOY HACK, the regular expression is changed, org was: ~^\w+$~
-                    // Changed to accomodate unnamed params
-                    // in unnamed params and paramnames we support:
-                    // first character: word characters[a-zA-Z0-9_], /, $  
-                    // next characters: word characters[a-zA-Z0-9_], /, .
-                    if (preg_match('~^(?>\w|/|\$)(\w|/|\.|_|\-)*$~', $token)) {
-                        $attr_name = $token;
-                        $state = 1;
-                    } else
-                        $this->_syntax_error("invalid attribute name: '$token' for tokens: ".var_export($tokens,1)." with key: $key", E_USER_ERROR, __FILE__, __LINE__);
+
+                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!
+                    if (preg_match('!^((?>\w|#|/|\$)(\w|@|-|_|:|#|/|\.)*|[\'"](?>\w|/|\$)(\w|@|-|_|\?|&|=|:|#|/|\.|\s)*[\'"])$!', $token)) 
+                    {
+                      $attr_name = str_replace(array("'", '"'), '', $token);
+                      $state = 1;
+                    } 
+                    else
+                      $this->_syntax_error("invalid attribute name: '$token' for tokens: ".var_export($tokens,1)." with key: $key", E_USER_ERROR, __FILE__, __LINE__);
+                      
                     break;
 
                 case 1:

@@ -15,12 +15,12 @@
    * $Id$
    */
 
-
-   /**
-    * include
-    */
-   include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
-
+  /**
+   * include
+   */
+  include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
+  atkimport("atk.attributes.atkattribute");
+   
   /**
    * The atkTextAttribute class represents an attribute of a node
    * that is a big text field.

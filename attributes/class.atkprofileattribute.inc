@@ -134,9 +134,10 @@
           }
         }
       }
+      
       return true;
     }
-
+    
     function hide($record="", $fieldprefix="")
     {
       // get checks
@@ -199,7 +200,6 @@
             if (method_exists($instance, "getNodes"))
               $instance->getNodes();
           }
-
           // retrieve actions for each node
           $nodes = isset($g_nodes[$module]) ? $g_nodes[$module] : array();
           foreach ($nodes as $node => $actions)
@@ -257,13 +257,14 @@
       return $result;
     }
 
-
     function edit($record)
     {
       global $g_user;
 
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
+      
+      $this->_restoreDivStates($page);
 
       $result='<div align="right">
                   [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
@@ -279,11 +280,30 @@
       $selectedActions = $this->getSelectedActions($record);
 
       $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
+      
+      $firstModule = true;
 
       foreach ($allActions as $module => $nodes)
       {
         if ($showModule)
-          $result .= "<br><hr><b>".atktext("title_$module", $module)."</b><br><br>";
+        {
+          $result .= "<br><hr>";
+          if ($firstModule)
+            $firstModule = false;
+          else
+            $result .= "</div><br>";
+          $result .= "<b><a href=\"javascript:profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."');\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext("title_$module", $module)."<br>";
+          $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
+          $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
+          $result.='<div>
+                  [<a href="javascript:profile_checkAllByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+                    text("check_all").
+             '</a> <a href="javascript:profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+                    text("check_none").
+             '</a> <a href="javascript:profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+                    text("invert_selection").'</a>]</div>';          
+          $result .= "<br>";
+        }
 
         foreach ($nodes as $node => $actions)
         {
@@ -291,27 +311,48 @@
 
           if ($showBox)
             $result .= "<b>".atktext($node, $module)."</b><br>";
-
+            
+          $tabs_str = "";
+          $display_tabs_str = false;
+            
+          // Draw action checkboxes
           foreach ($actions as $action)
           {
+            $temp_str = "";
+             
             $isEditable = $isAdmin || atk_in_array($action, $editableActions[$module][$node]);
             $isSelected = is_array($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
             if ($isEditable)
             {
-              $result .= '<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
-              $result .= ($isSelected ? ' checked="checked"' : '').'></input> ';
-              $result .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
+              if (substr($action,0,4) == "tab_")
+                $display_tabs_str = true;
+                
+              $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
+              $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
+              $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
             }
             else
             {
               $result .= '<input type="hidden" name="'.$this->formName().'[]'.'" value="'.$module.".".$node.".".$action.'"></input>';
             }
+            
+            if (substr($action,0,4) == "tab_")
+              $tabs_str .= $temp_str;
+            else 
+              $result .= $temp_str;
           }
-
+          
+          if ($display_tabs_str)
+            $result .= "<br>Tabs:&nbsp;";
+            
+          $result .= $tabs_str;
+          
           if ($showBox)
             $result .= "<br /><br />\n";
         }
+        
+        
       }
 
       return $result;
@@ -396,6 +437,23 @@
       return false;
     }
 
+    function _restoreDivStates(&$page)
+    {
+      $postvars = &$this->m_ownerInstance->m_postvars;
+      if (!$postvars['divstate'] || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0)
+        return;
+        
+      $divstate = $postvars['divstate'];
+      $onLoadScript = "";
+      
+      foreach($divstate as $key => $value)
+      {
+        $key = substr($key,2,-2);
+        if ($value == "opened")
+          $onLoadScript .= "profile_swapProfileDiv('$key','".atkConfig("atkroot")."');";
+      }
+      $page->register_loadscript($onLoadScript);
+    }
   }
 
 ?>

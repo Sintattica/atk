@@ -23,14 +23,18 @@
    * @param $node name of the node
    * @param $action array with actions that can be performed on the node
    */
-  function registerNode($node, $action)
+  function registerNode($node, $action, $tabs=null)
   {
     global $g_nodes;
     $module = getNodeModule($node);
     $type = getNodeType($node);
     
-    if ($module=="") $module="main";    
-    $g_nodes[$module][$type] = $action;
+    // prefix tabs with tab_
+    for($i = 0; $i < sizeof($tabs); $i++)
+      $tabs[$i] = "tab_" . $tabs[$i];
+    
+    if ($module=="") $module="main"; 
+    $g_nodes[$module][$type] = array_merge($action,$tabs);
   }
 
 ?>

@@ -33,6 +33,13 @@
   define('MF_UNIQUE',         2);
   define('MF_NOT_NULL',       4);
   define('MF_AUTO_INCREMENT', 8);
+  
+  /**
+   * Global array containing database instances. Global is necessary because
+   * PHP4 doesn't support static class members.
+   */
+  global $g_dbinstances;
+  
 
   /**
    * Abstract baseclass for ATK database drivers.
@@ -297,7 +304,7 @@
         $errstr = $this->errorLookup($this->getDbErrno());
         if($errstr=="")
         {
-          $this->m_error = atktext("unknown_error", "atk").": ".$this->getDbErrno()." (".$this->getDbError().")";
+          $this->m_error = atktext("unknown_error").": ".$this->getDbErrno()." (".$this->getDbError().")";
         }
         else
         {
@@ -717,10 +724,10 @@
      *                     config.inc.php file (defaults to 'default')
      * @return atkDb Instance of the database class.
      */
-    function &getInstance($conn="default")
-    {
+    function &getInstance($conn="default", $reset=false)
+    {      
       static $s_instances = array();
-      if (!isset($s_instances[$conn]))
+      if (!isset($s_dbinstances[$conn]) || $reset)
       {
         atkdebug("Creating new db instance for connection $conn");
         $dbconfig = atkconfig("db");
@@ -733,7 +740,23 @@
         if (isset($dbconfig[$conn]["port"]))
           $s_instances[$conn]->m_port     = $dbconfig[$conn]["port"];
       }
-      return $s_instances[$conn];
+      return $g_dbinstances[$conn];
+    }
+    
+    /**
+     * Replace the current instance of a named connection at runtime with a
+     * different connection. This is useful for example for replacing a
+     * named database instance with a mock object for testing purposes.
+     *
+     * @param unknown_type $name
+     * @param unknown_type $db
+     */
+    function &setInstance($name, &$db)
+    {
+      global $g_dbinstances;
+      $olddb = &$g_dbinstances[$name];
+      $g_dbinstances[$name] = &$db;      
+      return $olddb;
     }
 
   }

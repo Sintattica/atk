@@ -233,6 +233,7 @@
   "thu" => "Thu",
   "thursday" => "Thursday",
   "title_delete" => "Confirm delete",
+  "title_select" => "Select",
   "title_session_expired" => "Session expired",
   "today" => "Today",
   "tue" => "Tue",

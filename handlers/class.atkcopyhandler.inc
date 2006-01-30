@@ -56,7 +56,7 @@
         else
         {
           $db->commit();
-//          $this->notify("copy", $recordset[0]);
+          $this->notify("copy", $recordset[0]);
           $this->clearCache();
         }
       }

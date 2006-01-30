@@ -142,6 +142,7 @@
         {
           $sel = "checked";
         }
+        
         if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
         else $string = atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
 

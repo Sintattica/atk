@@ -92,11 +92,23 @@
     }
 
     /**
-     * Add a module that serves as an override for language strings.
+     * Add a module that serves as an override for language strings.     
+     *
+     * @param String $module Name of the module to add.
      */
     function addOverrideModule($module)
     {
       array_unshift($this->m_overridemodules,$module);
+    }
+
+    /**
+     * Add a module that servers as a fallback for language strings.
+     *
+     * @param String $module Name of the module to add.
+     */
+    function addFallbackModule($module)
+    {
+      $this->m_fallbackmodules[] = $module;
     }
 
     /**

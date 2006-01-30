@@ -74,6 +74,12 @@
 
       $this->atkAttribute($name,$flags); // base class constructor
     }
+    
+    function validate(&$record, $mode)
+    {
+      $this->m_date->validate($record,$mode);
+      $this->m_time->validate($record,$mode);
+    }
 
     /**
      * Converts a date/time string (YYYYMMDDHHMISS) to an
@@ -180,7 +186,7 @@
 
         $tmp_rec = $rec;
         $tmp_rec[$this->fieldname()]=$datetime[0];
-
+        
         $result_date=$this->m_date->db2value($tmp_rec);
 
         $tmp_rec = $rec;

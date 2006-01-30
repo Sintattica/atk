@@ -443,6 +443,28 @@
      * @var String
      */
     var $m_searchmode = "";
+    
+    /**
+     * Wether to force an update of the attribute
+     * @access private
+     * @var bool
+     */
+    var $m_forceupdate=false;
+
+    /**
+     * Array for onchange code
+     * @access private
+     * @var Array
+     */
+    var $m_onchangecode = array();
+
+    /**
+     * Variable to store initialisation javascript code
+     * in for the changehandler.
+     * @access private
+     * @var String
+     */
+    var $m_onchangehandler_init = "";
 
     /**
      * Array for onchange code
@@ -1263,7 +1285,25 @@
      */
     function needsUpdate($record)
     {
-      return (!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT));
+      return ((!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT)) || $this->m_forceupdate);
+    }
+    
+    /**
+     * Used to force an attribute to update with every updateDb() call
+     * @param bool $force Wether or not to force the attribute to update
+     */
+    function setForceUpdate($force)
+    {
+      $this->m_forceupdate = $force;
+    }
+    
+    /**
+     * Getter for wether or not an attribute is forced to update
+     * @return bool Wether or not an attribute is forced to update
+     */
+    function getForceUpdate()
+    {
+      return $this->m_forceupdate;
     }
 
     /**

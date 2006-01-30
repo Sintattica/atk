@@ -304,7 +304,7 @@
       $text    = '<a href ="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField;
       $result  = "<table><tr><td valign='top' align='left'>";
       $result .= " <table cellpadding='0' cellspacing='0' border='0' width='35' height='21'><tr><td id='example_".$fieldprefix.$this->fieldName()."' name='example_".$fieldprefix.$this->fieldName()."' valign='top' align='left' bgcolor='".$this->m_currentColor."'>".$text."</td></tr></table>";
-      $result .= "</td><tr></table>";
+      $result .= "</td><td width=\"100%\">&nbsp;</td></tr></table>";
 
       return $result;
     }

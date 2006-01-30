@@ -790,6 +790,8 @@
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
 
+
+      $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
       return $attribute;
     }
 
@@ -937,6 +939,16 @@
     {
       $this->m_default_order = $orderby;
     }
+    
+    /**
+     * Get default sort order for the node.
+     * @return String $orderby Default order by. Can be an attribute name or a
+     *                        SQL expression.
+     */
+    function getOrder()
+    {
+      return $this->m_default_order;
+    }
 
 
     /**
@@ -1021,6 +1033,9 @@
     function getTabs($action)
     {
       $list = &$this->m_tabList[$action];
+      
+      $this->checkTabRights($list);
+      
       $tabAttribSet = array();
       $tabCode = "";
 
@@ -1034,6 +1049,21 @@
       foreach(array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
+        
+        // Only display the attribute if the attribute
+        // resides on at least on visible tab
+        $hideme = true;
+        for($i=0;$i <= sizeof($p_attrib->m_tabList);$i++)
+        {
+          if (in_array($p_attrib->m_tabs[$i],$list))
+          {
+            $hideme = false;
+            break;
+          }
+        }
+        if ($hideme)
+          $p_attrib->m_flags |= AF_HIDE_LIST;
+        
         if(is_object($p_attrib))
         {
           $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
@@ -1057,6 +1087,54 @@
       $tabList = $this->checkEmptyTabs($list);
       return $tabList;
     }
+    
+    /**
+     * Check if the user has the rights to access existing tabs and
+     * removes tabs from the list that may not be accessed
+     *
+     * @param array $tablist Array containing the current tablist
+     */
+    function checkTabRights(&$tablist)
+    {
+      global $g_nodes;      
+      for ($i=0, $_i=count($tablist); $i<$_i; $i++)
+      {
+        if ($tablist[$i] == "" || $tablist[$i] == "default") continue;
+        $secMgr = &atkGetSecurityManager();        
+        
+        // load the $g_nodes array to find out what tabs are required
+        if (!is_array($g_nodes[$this->m_module][$this->m_type]))
+        {      
+          include_once(atkconfig("atkroot") . "atk/atknodetools.inc");  
+          $module = &getModule($this->m_module);
+          $module->getNodes();
+        }
+        
+        $priv = "tab_" . $tablist[$i];
+        if (atk_in_array($priv,$g_nodes[$this->m_module][$this->m_type]))
+        {
+          // authorisation is required
+          if (!$secMgr->allowed($this->m_module.".".$this->m_type,"tab_" . $tablist[$i]))
+          {            
+            atkdebug("Removing TAB ". $tablist[$i] . " because access to this tab was denied</b>");
+            unset($tablist[$i]);
+          }
+        }
+        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation");
+      }            
+      
+      if (is_array($tablist))
+      {
+        // we might have now something like:
+        // [0]=>tabA,[3]=>tabD
+        // we convert this to a 'normal' array:
+        // [0]=>tabA,[1]=>tabD;
+        $newarray = array();
+        foreach($tablist as $tab)
+          $newarray[] = $tab;
+        $tablist = $newarray;       
+      }
+    }
 
     /**
      * Remove tabs without attribs from the tablist
@@ -1068,15 +1146,18 @@
     {
       $tabList = array();
 
-      foreach ($list AS $tabEntry)
+      if (is_array($list))
       {
-        if (isset($this->m_filledTabs[$tabEntry]))
+        foreach ($list AS $tabEntry)
         {
-          $tabList[] = $tabEntry;
-        }
-        else
-        {
-          atkdebug("Removing TAB ".$tabEntry." because it had no attributes assigned");
+          if (isset($this->m_filledTabs[$tabEntry]))
+          {
+            $tabList[] = $tabEntry;
+          }
+          else
+          {
+            atkdebug("Removing TAB ".$tabEntry." because it had no attributes assigned");
+          }
         }
       }
 
@@ -1136,7 +1217,7 @@
     function getFormButtons($mode, $record)
     {
       $result = array();
-
+      
       // edit mode
       if ($mode == "edit")
       {
@@ -1157,6 +1238,18 @@
         if ($this->hasFlag(NF_ADDAFTERADD) && !$this->hasFlag(NF_EDITAFTERADD))
           $result[] = '<input type="submit" class="btn_saveandnext" name="atksaveandnext" value="'.atktext("saveandnext", "atk").'">';
         $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext("cancel", "atk").'">';
+      }
+      elseif ($mode == "view")
+      {
+        if(atkLevel() > 0)
+          $result[] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.atktext('back').'">';
+        // if appropriate, display an edit button.
+        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit", $record))
+        {
+          $result[] = '<input type="hidden" name="atkaction" value="edit">'.
+                      '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
+                      '&nbsp;<input type="submit" class="btn_save" value="'.atktext('edit').'">&nbsp;';
+        }              
       }
 
       return $result;
@@ -1808,11 +1901,43 @@
       {
         foreach ($g_modifiers[$this->atknodetype()] as $modulename)
         {
-          $module = &getModule($modulename);
-          $module->modifier($this);
+          $mod = &getModule($modulename);
+          $modifiername = $this->m_type."_modifier";
+
+          if (method_exists($mod,$modifiername))
+          {
+            atkdebug("Applying modifier from module $modname to ".$this->m_type);
+            $this->m_modifier = $modname;
+            $mod->$modifiername($this);
+            $this->m_modifier = "";
+          }
+          else
+          {
+            atkdebug("Modifier function for $modifiername not found!");
+          }
         }
       }
 
+      // See if there are modules active that modify this module.node..
+      // for example, modules modifying 'finance.bill'
+      for ($i = 0, $_i = count($g_modifiers[$this->atknodetype()]); $i < $_i; $i++)
+      {
+        $modname = $g_modifiers[$this->atknodetype()][$i];
+
+        $mod = &getModule($modname);
+        $modifiername = str_replace(".","_",$this->atknodetype())."_modifier";
+
+        if (method_exists($mod,$modifiername))
+        {
+          atkdebug("Applying modifier from module $modname to ".$this->atknodetype());
+          $this->m_modifier = $modname;
+          $mod->$modifiername($this);
+          $this->m_modifier = "";
+        }
+      }
+      
+      $this->_addListeners();
+      
       // We set the tabs for the attributes
       foreach (array_keys($this->m_attribList) as $attribname)
       {
@@ -1824,12 +1949,55 @@
 
       $lockType = atkconfig("lock_type");
       if (!empty($lockType) && $this->hasFlag(NF_LOCK))
-        $this->m_lock = &atkLock::getInstance();
+      {
+        $this->m_lock = &atkinstance("atk.lock.atklock");
+      }  
       else $this->removeFlag(NF_LOCK);
 
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
       $this->m_initialised = true;
+    }
+    
+    /**
+     * Add the listeners for the current node
+     * A listener can be defined either by passing it as an instantiated object
+     * or by passing the full location in atkimport style notation
+     * @access private
+     */
+    function _addListeners()
+    {
+      global $g_nodeListeners;
+      if (isset($g_nodeListeners[$this->atknodetype()]))
+      {
+        foreach ($g_nodeListeners[$this->atknodetype()] as $listener)
+        {          
+          if (is_object($listener))
+          {
+            $this->addListener($listenerinst);
+          }
+          else 
+          {
+            if (is_string($listener))
+            {
+              atkimport($listener);
+              $exploded = explode(".",$listener);
+              $classname = array_pop($exploded);
+              if ($classname)
+              {
+                $listener = &new $classname();
+                $this->addListener($listener);
+              }
+              else 
+                atkdebug("We couldn't find a classname for listener with supposed nodetype: '$listener'");
+            }
+            else 
+            {
+              atkdebug("Failed to add listener with supposed nodetype: '$listener'");
+            }
+          }
+        }
+      }
     }
 
     /**
@@ -1918,7 +2086,9 @@
         $secMgr = &atkGetSecurityManager();
         $secMgr->logAction($this->m_type, $this->m_action);
         $this->callHandler($this->m_action);
-        $page->register_hiddenvars(array("atknodetype"=>$this->m_module.".".$this->m_type));
+        
+        list($selector,$id) = explode("=", $this->m_postvars["atkselector"]);
+        $page->register_hiddenvars(array("atknodetype"=>$this->m_module.".".$this->m_type, "atkselector"=>str_replace("'", "", $id)));
       }
       else
       {
@@ -2858,7 +3028,7 @@
       {
         list($attribname) = explode(".", $usedfield);
         $p_attrib = &$this->m_attribList[$attribname];
-        if (is_object($p_attrib))
+        if (is_object($p_attrib)) 
         {
           $loadmode = $p_attrib->loadType("");
 
@@ -2984,11 +3154,11 @@
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
 
-      if (method_exists($this,'preDelete'))
-      {
+      if (method_exists($this,'preDelete')) 
+      {        
         if (!$this->preDelete($recordset)) return atkerror('preDelete failed!');
       }
-
+      
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -3092,7 +3262,7 @@
 
     /**
      * Function that is called by the framework, just before an existing
-     * record will be saved to the database.
+     * record will be saved to the database. 
      *
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to modify the record just before it will
@@ -3104,8 +3274,8 @@
     function preUpdate(&$record)
     {
       // Do nothing
-    }
-
+    }    
+    
     /**
      * Function that is called by the framework, right before a record will be
      * deleted. Should this method return false the deleting will halt.
@@ -3113,7 +3283,7 @@
      * This function does essentially nothing, but it can be overriden in
      * derived classes if you want to do something special after a record is
      * deleted.
-     *
+     * 
      * If this function returns false the delete action will not continue.
      *
      * @param array $record The record that has just been deleted.
@@ -3124,7 +3294,7 @@
     }
 
     /**
-     * Deprecated function that is called by the framework,
+     * Deprecated function that is called by the framework, 
      * right after a record has been deleted.
      * Please use postDelete() instead.
      * @param array $record The record that has just been deleted.
@@ -3135,7 +3305,7 @@
       // Do nothing
       return true;
     }
-
+    
     /**
      * Function that is called by the framework, right after a record has been
      * deleted.

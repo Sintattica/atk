@@ -825,7 +825,20 @@
       if ($this->createDestination())
       {
         // In queries, relations are alias'd by their attribute name, so we use that for the sort prefix here.
-        return $this->fieldName().".".$this->m_destInstance->m_default_order;
+        $order = $this->m_destInstance->getOrder();
+        if ($order == "")
+        {
+          foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
+          {
+            $attrib = &$this->m_destInstance->m_attribList[$attribname];
+            if ($attrib->hasFlag(AF_PRIMARY)) 
+            {
+              $order = $attrib->m_name;
+              break;
+            }  
+          }
+        }
+        return $this->fieldName().".".$order;
       }
       return parent::getOrderByStatement();
     }

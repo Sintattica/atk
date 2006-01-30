@@ -479,6 +479,27 @@
     }
 
     /**
+     * Attempts to get a translated label which can be used when composing an "add" link
+     *
+     * @return String Localised "add" label
+     */
+    function getAddLabel()
+    {
+      $key = "link_".$this->fieldName()."_add";
+      $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+      if ($label=="")
+      {
+        $key = "link_".getNodeType($this->m_destination)."_add";
+        $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+        if ($label=="")
+        {
+          $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
+        }
+      }
+      return $label;
+    }
+
+    /**
      * Retrieve header for the recordlist.
      *
      * The regular atkOneToManyRelation has no implementation for this method,
@@ -513,6 +534,31 @@
     {
       return "";
     }
+    
+    /**
+     * Create the where clause for the referential key that is used to
+     * retrieve the destination records.
+     * @access private
+     *
+     * @param array $record The master record
+     * @return String SQL where clause
+     */
+    function _getLoadWhereClause($record)
+    {      
+      if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
+
+      for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
+      {
+        $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
+        
+        if (!$primkeyattr->isEmpty($record))
+        {
+          $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
+        }
+      }
+
+      return implode(" AND ", $whereelems);
+    }
 
     /**
      * Retrieve detail records from the database.
@@ -543,56 +589,40 @@
       {
         if ($this->createDestination())
         {
-          if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
+          $where = $this->_getLoadWhereClause($record);
 
-          for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
+          if ($this->m_destinationFilter!="")
           {
-            $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
-
-            if (!$primkeyattr->isEmpty($record))
-            {
-              $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
-            }
+            atkimport("atk.utils.atkstringparser");
+            $parser = new atkStringParser($this->m_destinationFilter);
+            $filter = $parser->parse($record);
+            $this->m_destInstance->addFilter($filter);
           }
 
-          if (count($whereelems)>0)
+          if ($mode=="admin" || $mode=="select" || $mode=="view")
           {
-            $where = implode(" AND ", $whereelems);
-
-            if ($this->m_destinationFilter!="")
-            {
-		          atkimport("atk.utils.atkstringparser");
-		          $parser = new atkStringParser($this->m_destinationFilter);
-		          $filter = $parser->parse($record);
-              $this->m_destInstance->addFilter($filter);
-            }
-
-            if ($mode=="admin" || $mode=="select" || $mode=="view")
-            {
-              // we only need fields that are displayed in the descriptor.
-              $excludes = $this->m_destInstance->m_listExcludes;
-            }
-            else
-            {
-              // we probably need everything
-              $excludes = "";
-            }
-            if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
-            {
-              $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-            }
-            if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
-            {
-              $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-            }
-            ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-            $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
-            $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
-                                                         $limitarray,$excludes,"",$mode);
-
-            $this->m_loadFilter = $where;
-            return $recordset;
+            // we only need fields that are displayed in the descriptor.
+            $excludes = $this->m_destInstance->m_listExcludes;
           }
+          else
+          {
+            // we probably need everything
+            $excludes = "";
+          }
+          if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
+          {
+            $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
+          }
+          if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
+          {
+            $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
+          }
+          ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
+          $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
+          $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
+          $limitarray,$excludes,"",$mode);
+          $this->m_loadFilter = $where;
+          return $recordset;
         }
       }
       return NULL;

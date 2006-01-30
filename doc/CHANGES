@@ -6,6 +6,33 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changes in ATK 5.4.1
 --------------------
++ Added class atkMail for sending e-mails just like the normal mail function 
+  does, but with the ability to disable the sending of e-mails (and in the 
+  future send e-mails to other addresses etc.) [Peter]
++ Added support for configuration file overrides by other sections. [Peter]
++ Added hide() function for atkboolattribute. [Lineke]
++ Added validate method to atkDateTimeAttribute which calls the validate 
+  method of the atkDateAttribute and the atkTimeAttribute. [Lineke]
++ Flags for the atkDateTimeAttribute are now also passed to the 
+  atkDateAttribute and the atkTimeAttribute. [Lineke]
++ Added translation for title_select. [Lineke]
++ Added ability to force update on attribute with setForceUpdate(). [Boy]
++ Added 'mock' database drivers for testing purposes. [Boy]
++ Added atkMockNode to emulate a node, for testing purposes. [Ivo]
++ Added ability to pass atkmodule=modname to test.php to run only the tests of
+  a specified module. [Ivo]
++ Added atkTestCase baseclass for unittests, that features the ability to
+  replace database connections, nodes and the securitymanager with mock 
+  objects. [Ivo, Boy]
++ Added addFallbackModule method to atkLanguage. [Ivo]
++ Added collapsable groups in atkProfileAttribute. [Harrie]
++ Added 'select all'/'select none' buttons per group 
+  in atkProfileAttribute. [Harrie]
++ Added possibility to authorize usergroups for seeing tabs [Harrie]
++ Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
+  instance at runtime. [Ivo]
++ Added atkSetSecurityManager() counterpart for atkGetSecurityManager(), to set
+  the securitymanager to a different instance at runtime. [Ivo]
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]
 + The atktext smarty plugin now parses the translated string to a stringparser
@@ -31,6 +58,40 @@ Changes in ATK 5.4.1
   values. [Ivo]
 * Fixed font size/color change of clickable recordlist headers when hovering
   over them using the mouse. [Guido]
+* Fixed setTabs call for attributes. [Peter]
+* getNode() is now called atkGetNode to be more consistent with naming
+  convention. (getNode() is still present as deprecated function). [Ivo]
+* Bugfix in atkListAttribute. All quotes in options are now replaced with
+  &quot;. [Lineke]
+* Bugfix in atkMultiSelectattribute. Always add escapeSql to value in 
+  checkbox. [Lineke]
+* Include atkattribute in atkTextAttribute. [Lineke]
+* View action now uses getFormButtons to get the appropriate buttons. 
+  [Lineke]
+* Reset atkstartat to zero after a new search in recordList. [Lineke]
+* Ldap changes to get the authorization through ldap work better. [Lineke]
+* Added extra header option for layout. [Lineke]
+* Initialised $lines in mailreport because this can cause warnings using
+  implode. [Lineke]
+* Smarty changes in regular expression for detecting 0th param. [Lineke]
+* Smarty bugfix in core.read_cache_file.php. More information:
+  http://www.phpinsider.com/smarty-forum/viewtopic.php?t=4188&highlight=
+  smartytplfunc. [Lineke]
+* Added ability to reset database connection. [Boy]
+* Fixed AF_UNIQUE check in atkNodeValidator (used postvars instead of record
+  for validation)i. [Peter]
+* Fixed some outlook tree icons that were corrupted. [Lineke]
+* Recordlist icon names are now assumed to be lowercase. [Ivo]
+* atkTheme attributes are now case insensitive. [Ivo]
+* atkOneToManyRelation now builds the referential where clause in a separate
+  overridable method _getLoadWhereClause(). [Ivo]
+* Using single quotes in smarty tags is now also allowed. [Lineke]
+* Fixed securityissue atkProfileAttribute. [Harrie]
+* atkNode::getTabs can now handle actions without tabs. [Ivo]
+* Cleanup of atkSecurityManager constructor. [Ivo]
+* AtkManyToOneRelation now uses primary key field as default order if not 
+  specified. [Lineke]
+* Remembering tabs should be per record. [Lineke]
 
 Changes in ATK 5.4
 ------------------

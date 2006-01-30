@@ -16,21 +16,23 @@
    * $Id$
    */
 
-   /**
-    * Do not translate the options
-    */
-   define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
+  /**
+   * Do not translate the options
+   */
+  define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
    
    /**
     * Do not add a default null option.
     */
    define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
    
-   /**
-    * Do not add null option ever
-    */
-   define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
+  /**
+   * Do not add null option ever
+   */
+  define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
 
+  atkimport("atk.attributes.atkattribute");   
+   
   /**
    * The atkListAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined values.
@@ -40,7 +42,6 @@
    * @subpackage attributes
    *
    */
-  atkimport("atk.attributes.atkattribute");
   class atkListAttribute extends atkAttribute
   {
     /**
@@ -57,6 +58,11 @@
      * Array for fast lookup of what value belongs to what option.
      */
     var $m_lookup = array();
+
+    /**
+     * Array for onchange code
+     */
+    var $m_onchangecode = array();
 
     /**
      * Attribute that is to be selected

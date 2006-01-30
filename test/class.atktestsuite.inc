@@ -23,6 +23,7 @@
   require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
   atkimport("atk.test.atktestreporter");
   atkimport("atk.test.atkattributetestcase");
+  atkimport("atk.test.atktestcase");
 
   /**
    * atkTestCaseCollector is a visitor that can be passed to an
@@ -90,8 +91,11 @@
      * @param string $reporttype Simpletest report type, can be 'text' or 'html'
      *                           If you are running it in cli mode, it will select
      *                           text automaticly
+     * @param string $module Run only tests from a single module. Passing an
+     *                       empty string (default) will run all available tests.
+     *                       passing "atk" will only run atk's own tests.
      */
-    function run($reporttype="html")
+    function run($reporttype="html", $module="")
     {
       global $g_modules, $config_module_path;
 
@@ -99,10 +103,26 @@
 
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
-      $traverser->traverse(".");
-      foreach ($g_modules as $name => $path) {
-        if (strpos($path, $config_module_path . "/") !== 0) {
-          $traverser->traverse($path);
+      
+      if ($module!="")
+      {        
+        if ($module=="atk") // make it possible to only test atk.
+        {
+          $dir = atkconfig("atkroot")."atk/";
+        }
+        else 
+        {
+          $dir = moduleDir($module);
+        }
+        $traverser->traverse($dir);
+      }
+      else 
+      {
+        $traverser->traverse(".");
+        foreach ($g_modules as $name => $path) {
+          if (strpos($path, $config_module_path . "/") !== 0) {
+            $traverser->traverse($path);
+          }
         }
       }
       if($reporttype=="html")

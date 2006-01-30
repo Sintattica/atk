@@ -134,7 +134,13 @@
           }
         }
       }
-      if(isset($record['atkerror'])&&count($record['atkerror']) > 0) return false;
+      
+      if(isset($record['atkerror'])&&count($record['atkerror']) > 0)
+      {
+        for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
+          $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;        
+        return false;
+      }
 
       // After the values check, we check the Flags.
       $db = &$this->m_nodeObj->getDb();
@@ -182,8 +188,11 @@
       if (isset($record['atkerror']))
       {
         for ($i = 0, $_i = count($record["atkerror"]); $i < $_i; $i++)
-          $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;
+          $record["atkerror"][$i]["node"] = $this->m_nodeObj->m_type;        
+        return false;
       }
+      
+      return true;
     }
 
     /**

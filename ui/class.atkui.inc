@@ -174,7 +174,7 @@
       if (strpos($tplname, "/")===false)
       {
         // lookup template in theme.
-        $tplname = $this->m_theme->tplPath($tplname);
+        $tplname = $this->m_theme->tplPath($tplname);        
       }
 
       // Smarty fetches templates relative from the template_dir setting.

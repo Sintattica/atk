@@ -231,6 +231,7 @@
   "thu" => "Don",
   "thursday" => "donderdag",
   "title_delete" => "Bevestig verwijderen",
+  "title_select" => "Selecteer",
   "title_session_expired" => "Sessie verlopen",
   "today" => "Vandaag",
   "tue" => "Din",
@@ -258,7 +259,6 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
-  "tab_default" => "Algemeen",
   
   'select_a'=>'Selecteer een',
 );

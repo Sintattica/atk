@@ -1,4 +1,5 @@
 <?php
+
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -47,7 +48,6 @@
      }
      default: $str = atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
    }
-
    // parse the rest of the params in the string
    atkimport("atk.utils.atkstringparser");
    $parser = &new atkStringParser($str);

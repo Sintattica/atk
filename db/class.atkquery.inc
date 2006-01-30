@@ -103,6 +103,16 @@
      * The database that this query does it's thing on
      */
     var $m_db;
+    
+    /**
+     * Quote to put around fields
+     * @example `
+     * @var String
+     * @access private
+     */
+    var $m_fieldquote;
+    
+    var $m_quotedfields=array();
 
     /**
      * Quote to put around fields
@@ -139,14 +149,14 @@
 
     /**
     * Add's a field to the query
-    * @param $name Field name
-    * @param $value Field value
-    * @param $table Table name
-    * @param $fieldaliasprefix Field alias prefix
-    * @param $quote If this parameter is true, stuff is inserted into the db
+    * @param $name String Field name
+    * @param $value String Field value
+    * @param $table String Table name
+    * @param $fieldaliasprefix String Field alias prefix
+    * @param $quote bool If this parameter is true, stuff is inserted into the db
     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
     *               done without quotes, e.d. SET number = 4.
-    * @param $quotefield
+    * @param $quotefield bool Wether or not to quote the fieldname
     */
     function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $quotefield=false)
     {
@@ -634,7 +644,48 @@
       $name = "atk" . $dbconfig["default"]["driver"] . "query";
       return new $name();
     }
+    
+    /**
+     * If we set a m_fieldquote you can pass a field to this function and it will
+     * quote all the identifiers (db, table, column, etc...) in the field.
+     *
+     * @param String $field The field to add quotes too
+     * @return The quoted field, if we have a fieldquote
+     */
+    function quoteField($field)
+    {      
+      if ((in_array($field,$this->m_quotedfields) || in_array($field, $this->m_tables)) && preg_match('/(^[\w\.]+)/',$field)."'")
+      {
+        $exploded = explode('.',$field);
+        foreach ($exploded as $identifier)
+        {          
+          $quoted[] = $this->m_fieldquote.$identifier.$this->m_fieldquote;
+        }
+        $field = implode('.',$quoted);
+      }
+      return $field;
+    }
 
+    /**
+     * Quote an array of fields if m_fieldquote is set.
+     * Uses $this->quoteField($field)
+     *
+     * @param Array $fields The fields to add quotes to
+     * @return Array The quoted fields
+     */
+    function quoteFields($fields)
+    {
+      if ($this->m_fieldquote)
+      {
+        foreach ($fields as $key => $field)
+        {
+          $quoted[$key] = $this->quoteField($field);
+        }
+        $fields = $quoted;
+      }
+      return $fields;
+    }
+  }
     /**
      * If we set a m_fieldquote you can pass a field to this function and it will
      * quote all the identifiers (db, table, column, etc...) in the field.

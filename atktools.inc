@@ -932,6 +932,7 @@
 
       $body.= "\nDEBUGMESSAGES\n".str_repeat("-",70)."\n";
 
+      $lines = array();
       for($i=0, $_=count($g_debug_msg);$i<$_;$i++)
       {
         $lines[] = _wordwrap(html_entity_decode(preg_replace('(\[<a.*</a>\])','',$g_debug_msg[$i])));
@@ -1073,10 +1074,10 @@
    * @param String $conn The name of the connection to retrieve
    * @return atkDb Database connection instance
    */
-  function &atkGetDb($conn="default")
+  function &atkGetDb($conn="default", $reset=false)
   {
     atkimport("atk.db.atkdb");
-    $db = &atkDb::getInstance($conn);
+    $db = &atkDb::getInstance($conn, $reset);
     return $db;
   }
 
@@ -1332,9 +1333,9 @@
     if (count($a) == 2)
       $include = moduleDir(strtolower($a[0])).$type."s/class.".strtolower($a[1]).".inc";
     else $include = $config_atkroot."atk/".$type."s/class.".strtolower($name).".inc";
-    return $include;
+    return $include;    
   }
-
+  
   /**
    * Check if an atk class exists (attribute, relation or filter)
    * @param string $type the type of the class (attribute|relation|filter)
@@ -1343,8 +1344,8 @@
   function atkexists($type, $name)
   {
     return file_exists(atkgetinclude($type, $name));
-  }
-
+  }  
+  
   /**
    * Use an atk class (attribute, relation or filter)
    * @param string $type the type of the class (attribute|relation|filter)

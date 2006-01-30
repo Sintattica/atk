@@ -37,6 +37,8 @@
         atkdebug("Loading config file for section $section");
         $config = array();
         @include(atkconfig("configdir").$section.".inc.php");        
+        $other = glob(atkconfig("configdir")."{$section}.*.inc.php");
+        if (is_array($other)) foreach ($other as $file) { @include($file); }
         if (isset($config)) $s_configs[$section] = $config;
       }
       return (isset($s_configs[$section][$tag])&&$s_configs[$section][$tag]!==""?$s_configs[$section][$tag]:$default);

@@ -546,7 +546,7 @@
 
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       $res = array();
-
+      
       $stackcount = count($stack);
       for ($i=0;$i<$stackcount;$i++)
       {
@@ -819,6 +819,16 @@
       if (!eregi('[a-zA-Z0-9]', $sessionid[$position])) return false;
     }
     return true;
+  }
+  
+  /**
+   * Returns the sessionmanager.
+   * @return atkSessionManager  session manager
+   */
+  function &atkGetSessionManager()
+  {
+    global $g_sessionManager;
+    return $g_sessionManager;
   }
 
   /**

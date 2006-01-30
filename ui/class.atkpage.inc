@@ -208,7 +208,7 @@
      * @param String $title Title of the html page.
      * @return String The HTML pageheader, including <head> and </head> tags.
      */
-    function head($title)
+    function head($title, $extra_header="")
     {
       $res = "<head>\n  <title>$title</title>\n";
 
@@ -216,7 +216,10 @@
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
       $res.= '  <META NAME="atkversion" CONTENT="'.$version.'">'."\n";
+
       $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atktext("charset","atk").'">'."\n";
+      if ($extra_header != "") $res.= $extra_header."\n";
+      
       $this->addScripts($res);
 
       for ($i = 0; $i < count($this->m_stylesheets); $i++)
@@ -323,7 +326,8 @@
      * @param string $extrabodyprops  Extra attributes to add to the <body> tag.
      * @return String The HTML page, including <html> and </html> tags.
      */
-    function render($title, $flags=7,$extrabodyprops="")
+
+    function render($title, $flags=7,$extrabodyprops="", $extra_header="")
     {
       if(is_bool($flags) && $flags==true)
       {
@@ -336,7 +340,7 @@
       $page = '';
       if(hasFlag($flags,HTML_DOCTYPE)) $page.=atkconfig("doctype");
       $page.= "\n<html>\n";
-      if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title);
+      if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title, $extra_header);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
       $page.= $this->m_content."\n";
       $page.= $this->renderHiddenVars();

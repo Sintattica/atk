@@ -25,7 +25,6 @@
   atkimport("atk.menu.atkplainmenu");
   class atkFramesMenu extends atkPlainMenu
   {
-
     function render()
     {
        global $ATK_VARS,$g_menu, $g_menu_parent;
@@ -100,7 +99,7 @@
         {
           $parent = $g_menu_parent[$atkmenutop];
           $menu .= atkconfig("menu_delimiter");
-          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to", "atk").' '.$this->getMenuTranslation($parent, $modname),SESSION_DEFAULT).$delimiter;
+          $menu .= href('menu.php?atkmenutop='.$parent,atktext("back_to").' '.atktext("menu_$parent", $modname),SESSION_DEFAULT).$delimiter;
         }
         $menu.=$this->getFooter($atkmenutop);
         $page = &atknew("atk.ui.atkpage");
@@ -117,9 +116,6 @@
         $page->addContent($box);
 
         return $page->render("Menu", true);
-
     }
-
-
   }
 ?>
