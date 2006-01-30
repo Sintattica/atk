@@ -262,8 +262,8 @@
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
   "saveandnext" => "Save and next",
-  
-  'select_a'=>'Select a',
+  "select_a"=>"Select a",
+  "tab_default"=>"General",
 );
 
 ?>

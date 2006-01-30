@@ -259,8 +259,8 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
-  
-  'select_a'=>'Selecteer een',
+  "select_a"=>"Selecteer een",
+  "tab_default"=>"Algemeen", 
 );
 
 ?>
