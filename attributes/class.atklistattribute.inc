@@ -60,11 +60,6 @@
     var $m_lookup = array();
 
     /**
-     * Array for onchange code
-     */
-    var $m_onchangecode = array();
-
-    /**
      * Attribute that is to be selected
      */
     var $m_selected;
