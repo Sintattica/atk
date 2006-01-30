@@ -71,7 +71,7 @@
     {
       $session = &atkSessionManager::getSession();      
       
-      if ($_REQUEST["atkdebug"]["key"])
+      if (isset($_REQUEST["atkdebug"]["key"]))
         $session["debug"]["key"] = $_REQUEST["atkdebug"]["key"];
       return (isset($session["debug"]["key"]) && $session["debug"]["key"] == $params["key"]);
     }
