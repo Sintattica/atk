@@ -332,10 +332,10 @@
               $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
               $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
             }
-            else
-            {
-              $result .= '<input type="hidden" name="'.$this->formName().'[]'.'" value="'.$module.".".$node.".".$action.'"></input>';
-            }
+            //else
+            //{
+            //  $result .= '<input type="hidden" name="'.$this->formName().'[]'.'" value="'.$module.".".$node.".".$action.'"></input>';
+            //}
             
             if (substr($action,0,4) == "tab_")
               $tabs_str .= $temp_str;
