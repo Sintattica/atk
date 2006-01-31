@@ -49,7 +49,7 @@
       if (!$this->m_isconsole)
       {
         $link = $this->consoleLink('Open console', '', array(), true);
-        $data = &$this->getDebuggerData();
+        $data = &$this->getDebuggerData(true);
         $data = array(); // start clean
         global $g_debug_msg;
         $g_debug_msg[] = atkGetTimingInfo()."Debugger initialized. [".$link."]";
@@ -254,12 +254,13 @@
     }
 
 
-    function &getDebuggerData()
+    function &getDebuggerData($clean=false)
     {
       global $g_sessionManager;
       if (is_object($g_sessionManager))
       {
         $session = &$g_sessionManager->getSession();
+        if ($clean) $session['debugger'] = array();        
         $var= &$session["debugger"][atkStackID()];
         return $var;
       }

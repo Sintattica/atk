@@ -96,6 +96,8 @@ Changes in ATK 5.4.1
 * Remembering tabs should be per record. [Lineke]
 * Fixed translation of atkDateAttribute when the current language was changed
   at runtime. [Ivo]
+* Fixed memory leak with debugger set at level 2 where session would be stuffed
+  with debug data. [Boy,Sandy]
 
 Changes in ATK 5.4
 ------------------
