@@ -5,7 +5,7 @@
             <!-- header -->
             <tr>
               {foreach from=$header item=col}
-                <th valign="{$vorientation}" {$col.htmlattributes}>
+                <th valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                   {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                 </th>
               {/foreach}
@@ -16,7 +16,7 @@
               <tr>
               {$sortstart}
               {foreach from=$sort item=col}
-                  <th valign="{$vorientation}" {$col.htmlattributes} align="right">
+                  <th valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if} align="right">
                     {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                   </th>
               {/foreach}
@@ -29,7 +29,7 @@
               <tr>
               {$searchstart}
               {foreach from=$search item=col}
-                  <th valign="{$vorientation}" {$col.htmlattributes}>
+                  <th valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                     {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                   </th>
               {/foreach}
@@ -46,7 +46,7 @@
                    onmouseout="resetrow(this)"
                    onclick="selectrow(this, '{$listid}', {$row.rownum})">
               {foreach from=$row.cols item=col}
-                <{if $row.type == "subtotal"}th{else}td{/if} valign="{$vorientation}" {$col.htmlattributes}>
+                <{if $row.type == "subtotal"}th{else}td{/if} valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                   {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                 </td>
               {/foreach}
@@ -57,7 +57,7 @@
             <!-- totals row -->
               <tr>
               {foreach from=$total item=col}
-                  <th valign="{$vorientation}" {$col.htmlattributes}>
+                  <th valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                     {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                   </th>
               {/foreach}

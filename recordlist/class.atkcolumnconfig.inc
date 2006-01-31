@@ -111,7 +111,7 @@
     {
       foreach (array_keys($this->m_node->m_attribIndexList) as $i)
       {
-        if ($this->m_attribIndexList[$i]["name"]!="")
+        if (isset($this->m_attribIndexList[$i]["name"]) && ($this->m_attribIndexList[$i]["name"]!=""))
         {
           $this->m_colcfg[$this->m_attribIndexList[$i]["name"]] = array();
         }
@@ -260,14 +260,14 @@
     {
       global $ATK_VARS;
 
-      if (is_array($ATK_VARS["atkcolcmd"]))
+      if (isset($ATK_VARS["atkcolcmd"]) && is_array($ATK_VARS["atkcolcmd"]))
       {
         foreach($ATK_VARS["atkcolcmd"] as $command)
         {
           $this->doUrlCommand($command);
         }
       }
-      else if ($ATK_VARS["atkorderby"]!="")
+      else if (isset($ATK_VARS["atkorderby"]) && ($ATK_VARS["atkorderby"]!=""))
       {
         // oldfashioned order by.
         $this->m_custom_atkorderby = $ATK_VARS["atkorderby"];
