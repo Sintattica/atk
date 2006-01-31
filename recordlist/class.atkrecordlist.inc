@@ -378,9 +378,9 @@
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
       	    $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
-    
+
     	      $link = $name;
-    
+
     	      if($icons == true)
     	      {
     	        $icon = $theme->iconPath(strtolower($name),"recordlist");
@@ -390,13 +390,13 @@
     	      {
     	        $link = atktext($name);
 	          }
-	          
+
             $confirmtext= "false";
             if (atkconfig("recordlist_javascript_delete") && $name=="delete")
             $confirmtext = "'".$this->m_node->confirmActionText($name)."'";
             $str_actions.='<a href="'."javascript:rl_do('$listName',$i,'$name',$confirmtext);".'">'.$link.'</a>&nbsp;';
           }
-          
+
           $str_actions.="</span>";
           /* actions (left) */
           if ($orientation == "left" || $orientation == "both")
@@ -592,8 +592,8 @@
         if (!in_array($name, $suppress))
         {
           $attribute = &$this->m_node->m_attribList[$name];
-          $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags,
-                                           @$this->m_node->m_postvars["atksearch"], $columnConfig);
+          $atksearchpostvar = isset($this->m_node->m_postvars["atksearch"]) ? $this->m_node->m_postvars["atksearch"] : null;
+          $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags, $atksearchpostvar, $columnConfig);
         }
       }
 
