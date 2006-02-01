@@ -72,7 +72,3 @@ var tabSelectedColor = "#000000";
     </td>
   </tr>
 </table>
-
-<script language="JavaScript" type="text/javascript">
-showTab();
-</script>
