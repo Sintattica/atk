@@ -50,8 +50,11 @@
   require_once($config_atkroot."atk/atktools.inc");
 
   // Once atktools is loaded, we can register our own error handler.
-  //set_error_handler("atkErrorHandler");
-  //error_reporting(E_ALL);
+  if (atkconfig("use_atkerrorhandler", true))
+  {
+    set_error_handler("atkErrorHandler");
+    error_reporting(E_ALL);
+  }
 
   require_once($config_atkroot."atk/ui/class.atkoutput.inc");
   require_once($config_atkroot."atk/session/class.atksessionmanager.inc");
