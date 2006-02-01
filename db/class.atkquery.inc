@@ -115,15 +115,6 @@
     var $m_quotedfields=array();
 
     /**
-     * Quote to put around fields
-     * @var String
-     * @access private
-     */
-    var $m_fieldquote;
-
-    var $m_quotedfields=array();
-
-    /**
     * Initialize all variables
     */
     function atkquery()
