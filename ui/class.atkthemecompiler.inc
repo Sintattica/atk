@@ -15,7 +15,7 @@
    * $Id$
    */
   atkimport('atk.ui.atktheme');
-  
+
   /**
    * Compiles cache for current theme.
    *
@@ -110,7 +110,7 @@
 
         $this->_addThemedef($theme, $from);
       }
-      if ($this->m_themedefs[0]) { $this->getThemedef();}
+      if (isset($this->m_themedefs[0]) && (!empty($this->m_themedefs[0]))) { $this->getThemedef();}
     }
 
     /**
@@ -121,7 +121,7 @@
      */
     function _checkForBase($theme, $from)
     {
-      if ($theme["base"])
+      if (isset($theme["base"]) && (!empty($theme["base"])))
       {
         array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->THEMEFILE);
       }
@@ -241,7 +241,7 @@
         }
         else
         {
-          if (!is_array($this->m_def[$themedefitemname]))
+          if ((!isset($this->m_def[$themedefitemname])) || (!is_array($this->m_def[$themedefitemname])))
           {
             $this->m_def[$themedefitemname] = array();
           }
