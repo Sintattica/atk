@@ -1319,7 +1319,7 @@
         $descrtrace = "";
         foreach ($descriptortrace as $desc)
         {
-          $descrtrace.= $desc." - ";
+          $descrtrace.= htmlentities($desc)." - ";
         }
         $res= $descrtrace . $res;
       }
