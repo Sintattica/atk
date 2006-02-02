@@ -114,6 +114,7 @@ Changes in ATK 5.4.1
 * Fixed cross-browser cursor behaviour when hovering over tabs. [Guido]
 * Updated tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
 * Added htmlentities to actionTitle function. [Sandy]
+* Added useattrib("atkattribute") to atkdateattribute. [Lineke]
 
 Changes in ATK 5.4
 ------------------

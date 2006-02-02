@@ -28,6 +28,8 @@
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
   // Include browsertools for PDA detection
   include_once($config_atkroot."atk/atkbrowsertools.inc");
+  
+  useattrib("atkattribute");
 
   /**
    * The atkDateAttribute class offers a date widget for date fields.
