@@ -113,6 +113,7 @@ Changes in ATK 5.4.1
   resulted in all tabs being showed as active. [Guido]
 * Fixed cross-browser cursor behaviour when hovering over tabs. [Guido]
 * Updated tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
+* Added htmlentities to actionTitle function. [Sandy]
 
 Changes in ATK 5.4
 ------------------
