@@ -81,14 +81,16 @@
     {
       global $g_user;
 
+      // Read the current actions available/editable and user rights before changing them
+      $isAdmin = ($g_user['name']=='administrator' || $this->canGrantAll());
+      $allActions = $this->getAllActions($record);
+      $editableActions = $this->getEditableActions($record);
+
       $delquery = "DELETE FROM ".atkconfig("auth_accesstable")."
                    WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       if ($db->query($delquery))
       {
-        $isAdmin =  ($g_user['name']=='administrator' || $this->canGrantAll());
-        $allActions = $this->getAllActions($record);
-        $editableActions = $this->getEditableActions($record);
 
         $checked = $record[$this->fieldName()];
 
@@ -102,10 +104,13 @@
           $nodeType = getNodeType($node);
 
           $validActions = array();
+
           if (is_array($allActions[$nodeModule][$nodeType]))
             $validActions = array_intersect($actions, $allActions[$nodeModule][$nodeType]);
-          if (!$isAdmin && is_array($editActions[$nodeModule][$nodeType]))
-            $validActions = array_intersect($validActions, $editActions[$nodeModule][$nodeType]);
+
+          // If you're not an admin, leave out all actions which are not editable (none if no editable actions available)
+          if (!$isAdmin)
+            $validActions = isset($editableActions[$nodeModule][$nodeType]) ? array_intersect($validActions, $editableActions[$nodeModule][$nodeType]) : array();
 
           foreach ($validActions as $action)
           {
@@ -134,10 +139,10 @@
           }
         }
       }
-      
+
       return true;
     }
-    
+
     function hide($record="", $fieldprefix="")
     {
       // get checks
@@ -263,7 +268,7 @@
 
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
-      
+
       $this->_restoreDivStates($page);
 
       $result='<div align="right">
@@ -280,7 +285,7 @@
       $selectedActions = $this->getSelectedActions($record);
 
       $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
-      
+
       $firstModule = true;
 
       foreach ($allActions as $module => $nodes)
@@ -297,11 +302,11 @@
           $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
           $result.='<div>
                   [<a href="javascript:profile_checkAllByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
-                    text("check_all").
+                    atktext("check_all", "atk").
              '</a> <a href="javascript:profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
-                    text("check_none").
+                    atktext("check_none", "atk").
              '</a> <a href="javascript:profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
-                    text("invert_selection").'</a>]</div>';          
+                    atktext("invert_selection", "atk").'</a>]</div>';
           $result .= "<br>";
         }
 
@@ -311,48 +316,44 @@
 
           if ($showBox)
             $result .= "<b>".atktext($node, $module)."</b><br>";
-            
+
           $tabs_str = "";
           $display_tabs_str = false;
-            
+
           // Draw action checkboxes
           foreach ($actions as $action)
           {
             $temp_str = "";
-             
+
             $isEditable = $isAdmin || atk_in_array($action, $editableActions[$module][$node]);
-            $isSelected = is_array($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
+            $isSelected = isset($selectedActions[$module][$node]) && in_array($action, $selectedActions[$module][$node]);
 
             if ($isEditable)
             {
               if (substr($action,0,4) == "tab_")
                 $display_tabs_str = true;
-                
+
               $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
               $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
               $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
             }
-            //else
-            //{
-            //  $result .= '<input type="hidden" name="'.$this->formName().'[]'.'" value="'.$module.".".$node.".".$action.'"></input>';
-            //}
-            
+
             if (substr($action,0,4) == "tab_")
               $tabs_str .= $temp_str;
-            else 
+            else
               $result .= $temp_str;
           }
-          
+
           if ($display_tabs_str)
             $result .= "<br>Tabs:&nbsp;";
-            
+
           $result .= $tabs_str;
-          
+
           if ($showBox)
             $result .= "<br /><br />\n";
         }
-        
-        
+
+
       }
 
       return $result;
@@ -363,11 +364,7 @@
      */
     function permissionName($action, $nodename="", $modulename="")
     {
-      $label = atktext("permission_".$action, $modulename, $nodename); // module/node specific text
-      if (strtolower(substr($label,0,10))=="permission") // no suitable translation found
-      {
-        $label = atktext($action, $modulename, $nodename); // generic action text.
-      }
+      $label = atktext(array("permission_".$action, $action), $modulename, $nodename);
       return $label;
     }
 
@@ -440,12 +437,12 @@
     function _restoreDivStates(&$page)
     {
       $postvars = &$this->m_ownerInstance->m_postvars;
-      if (!$postvars['divstate'] || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0)
+      if (!isset($postvars['divstate']) || !is_array($postvars['divstate']) || sizeof($postvars['divstate']) == 0)
         return;
-        
+
       $divstate = $postvars['divstate'];
       $onLoadScript = "";
-      
+
       foreach($divstate as $key => $value)
       {
         $key = substr($key,2,-2);
