@@ -92,7 +92,7 @@
     {
       global $g_theme;
       atkdebug("Created a new atkTheme instance");
-      if ($g_theme["Name"]!="")
+      if (array_key_exists("Name",$g_theme) && $g_theme["Name"]!="")
       {
         $this->m_curtheme = $g_theme["Name"];
       }
