@@ -1786,6 +1786,7 @@
    */
   function escapeForRegex($pattern)
   {
+    $escaped='';
     $escapechars = array("/","?",'"', "(", ")", "'","*",".","[","]");
     for ($counter = 0; $counter<strlen($pattern);$counter++)
     {
