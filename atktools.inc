@@ -164,8 +164,6 @@
     {
       if (hasFlag($flags, DEBUG_HTML))
         $txt = htmlentities($txt);
-      if (hasFlag($flags, DEBUG_WARNING))
-        $txt = "<b>" . $txt . "</b>";
 
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
