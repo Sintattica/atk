@@ -2415,9 +2415,10 @@
      * The record should already exist in the database, or this method will
      * fail.
      * @param array $record The record to update in the database.
+     * @param bool wether to execute the pre/post update triggers
      * @return boolean True if succesful, false if not.
      */
-    function updateDb(&$record)
+    function updateDb(&$record,$exectrigger=true)
     {
       $db = &$this->getDb();
       $query = &$db->createQuery();
@@ -2466,6 +2467,8 @@
           $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
           $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
+        
+        if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
         if (count($query->m_fields) && !$query->executeUpdate()) return false;
 
@@ -2481,13 +2484,10 @@
 
         // Now we call a postUpdate function, that can be used to do some processing after the record
         // has been saved.
-        $return =  $this->postUpdate($record);
-        if(!isSet($return))
-        {
-          atkdebug("Undefined return:".$this->atkNodeType().".postUpdate doesn't return anything, it should return a boolean!", DEBUG_WARNING);
-          $return = true;
-        }
-        return $return;
+        if($exectrigger)
+          return $this->executeTrigger("postUpdate",$record);
+        else
+          return true;
       }
       else
       {
@@ -3029,6 +3029,9 @@
      */
     function addDb(&$record, $exectrigger=true, $mode="add", $excludelist=array())
     {
+      if ($exectrigger)
+       if(!$this->executeTrigger("preAdd",$record,$mode)) return atkerror("preAdd() failed!");
+
       $db = &$this->getDb();
       $query = &$db->createQuery();
 
@@ -3086,26 +3089,31 @@
 
       // Now we call a postAdd function, that can be used to do some processing after the record
       // has been saved.
-      if ($exectrigger)
-      {
-        $return = $this->postAdd($record, $mode);
-        if(!isSet($return))
-        {
-          atkdebug("Undefined return:".$this->atkNodeType().".postAdd doesn't return anything, it should return a boolean!", DEBUG_WARNING);
-          $return = true;
-        }
-        if (!$return)
-        {
-          atkdebug("postAdd failed..");
-        }
-        return $return;
+      if ($exectrigger && !$this->executeTrigger("postAdd",$record,$mode)) return false;
 
-      }
-
-      atkdebug($db->m_error);
-      return false;
+      return true;
     }
 
+    /**
+     * Executes a trigger on a add,update or delete action
+     *
+     * @param string $trigger funcname like 'postUpdate'
+     * @param array $record record on which action is performed
+     * @param string $mode mode like add or update (isn't this useless??)
+     * @return bool true on case of success or when the trigger isn't returning anything (old atk apps may do that:()
+     */
+    function executeTrigger($trigger,&$record,$mode=null)
+    {
+      $return = $this->$trigger($record);
+      if(!isSet($return))
+      {
+        atkdebug("Undefined return:".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+        $return = true;
+      }
+      if(!$return) atkdebug("$trigger failed!");
+      return $return;
+    }
+    
     /**
      * Delete record(s) from the database.
      *
@@ -3118,16 +3126,15 @@
      *       of a selector.
      * @param String $selector SQL expression used as where-clause that
      *                         indicates which records to delete.
+     * @param bool $exectrigger wether to execute the pre/post triggers
      * @returns boolean True if successful, false if not.
      */
-    function deleteDb($selector)
+    function deleteDb($selector,$exectrigger=true)
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
 
-      if (method_exists($this,'preDelete'))
-      {
-        if (!$this->preDelete($recordset)) return atkerror('preDelete failed!');
-      }
+      if($exectrigger)
+        if (!$this->executeTrigger("preDelete",$recordset)) return atkerror('preDelete failed!');
 
       if (count($this->m_cascadingAttribs)>0)
       {
@@ -3151,20 +3158,13 @@
       $db = &$this->getDb();
       if ($db->query("DELETE FROM ".$this->m_table." WHERE ".$selector))
       {
-        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
+        if($exectrigger)
         {
-          $return = ($this->postDel($recordset[$i]) && $this->postDelete($recordset[$i]));
-          if(!isSet($return))
+          for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
           {
-            atkdebug("Undefined return:".$this->atkNodeType().".postDel and postDelete don't return anything, they should return a boolean!", DEBUG_WARNING);
-            $return = true;
+            $return = ($this->executeTrigger("postDel",$recordset[$i]) && $this->executeTrigger("postDelete",$recordset[$i]));
+            if (!$return) return false;
           }
-
-          if (!$return)
-          {
-            // error.
-            return false;
-          };
         }
         return true;
       }
@@ -3206,6 +3206,7 @@
     function preAdd(&$record)
     {
       // Do nothing
+      return true;
     }
 
     /**
@@ -3244,6 +3245,7 @@
     function preUpdate(&$record)
     {
       // Do nothing
+      return true;
     }
 
     /**
