@@ -117,6 +117,7 @@ Changes in ATK 5.4.1
 * Updated tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
 * Added htmlentities to actionTitle function. [Sandy]
 * Added useattrib("atkattribute") to atkdateattribute. [Lineke]
+* Fixed (extended) searching in atkonetomanyrelation. [Tjeerd]
 
 Changes in ATK 5.4
 ------------------
