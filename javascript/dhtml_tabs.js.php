@@ -83,15 +83,12 @@ function showTab(tab)
 
 function getCurrentTab()
 {
-  tab = getTab(getCurrentNodetype(), getCurrentSelector());
-  alert('getCurrentTab: '+tab);
-  return tab;
+  return getTab(getCurrentNodetype(), getCurrentSelector());
 }
 
 function getTab(nodetype, selector)
 {
   _initTabArray(nodetype, selector);
-  alert('parent.document.tab['+nodetype+']['+selector+']: '+parent.document.tab[nodetype][selector]);
   return parent.document.tab[nodetype][selector];
 }
 
@@ -103,7 +100,6 @@ function setCurrentTab(value)
 function setTab(nodetype, selector, value)
 {
   _initTabArray(nodetype, selector);
-  alert('parent.document.tab['+nodetype+']['+selector+'] = '+value);
   parent.document.tab[nodetype][selector] = value;
 }
 
@@ -113,6 +109,6 @@ function setTab(nodetype, selector, value)
  */
 function _initTabArray(nodetype, selector)
 {
-	if (!parent.document.tab) {parent.document.tab=Array(); alert('initialising parent');};
-	if (!parent.document.tab[nodetype]) {parent.document.tab[nodetype]=Array(); alert('initialising nodetype');}
+	if (!parent.document.tab) parent.document.tab=Array();
+	if (!parent.document.tab[nodetype]) parent.document.tab[nodetype]=Array();
 }
