@@ -16,45 +16,21 @@
    */
 ?>
 
+/**
+ * Sets the current tab 
+ */
 function showTab(tab)
 {
 	// First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
-	var tabidobj  = get_object("atknodetype");
-	var tabselobj = get_object("atkselector");
-
-	// IE works with .value, while the Gecko engine uses .innerHTML
-  if (tabidobj.value)
-	{
-	  var tabid = tabidobj.value;
-	}
-	else if (tabidobj.innerHTML)
-	{
-	  var tabid = tabidobj.innerHTML;
-	}
-
-	if (tabselobj.value)
-	{
-	  var tabsel = tabselobj.value;
-	}
-	else if (tabselobj.innerHTML)
-	{
-	  var tabsel = tabselobj.innerHTML;
-	}
-
-	// Next, check wether the parent tab array has been set
-	if (!parent.document.tab)
-	{
-	  parent.document.tab=Array();
-	}
 
 	// If we are called without a name, we check if the parent has a stored tab for our page
 	// If so, then we go there, else we go to the first tab (most of the time the 'default' tab)
 	if (!tab)
 	{
-	  if ((parent.document.tab[tabid]) && (parent.document.tab[tabid][tabsel]))
-    {
-      tab = parent.document.tab[tabid][tabsel];
+	  tab = getCurrentTab();
+	  if (tab)
+	  {
       // However if for some reason this tab does not exist, we switch to the default tab
       if (!document.getElementById('tab_'+tab)) tab = tabs[0];
     }
@@ -65,8 +41,7 @@ function showTab(tab)
   }
 
   // Then we store what tab we are going to visit in the parent
-	parent.document.tab[tabid] = Array();
-	parent.document.tab[tabid][tabsel] = tab;
+	setCurrentTab(tab);
 
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none
@@ -104,4 +79,40 @@ function showTab(tab)
 		  document.getElementById('tab_'+tabs[j]).className = 'passivetab';
 		}
 	}
+}
+
+function getCurrentTab()
+{
+  tab = getTab(getCurrentNodetype(), getCurrentSelector());
+  alert('getCurrentTab: '+tab);
+  return tab;
+}
+
+function getTab(nodetype, selector)
+{
+  _initTabArray(nodetype, selector);
+  alert('parent.document.tab['+nodetype+']['+selector+']: '+parent.document.tab[nodetype][selector]);
+  return parent.document.tab[nodetype][selector];
+}
+
+function setCurrentTab(value)
+{
+  return setTab(getCurrentNodetype(), getCurrentSelector(), value);
+}
+
+function setTab(nodetype, selector, value)
+{
+  _initTabArray(nodetype, selector);
+  alert('parent.document.tab['+nodetype+']['+selector+'] = '+value);
+  parent.document.tab[nodetype][selector] = value;
+}
+
+/**
+ * Makes sure we don't get any nasty JS errors by making sure
+ * the arrays we use are always set before using them.
+ */
+function _initTabArray(nodetype, selector)
+{
+	if (!parent.document.tab) {parent.document.tab=Array(); alert('initialising parent');};
+	if (!parent.document.tab[nodetype]) {parent.document.tab[nodetype]=Array(); alert('initialising nodetype');}
 }

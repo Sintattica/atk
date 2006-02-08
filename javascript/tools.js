@@ -61,3 +61,41 @@ function str_replace(haystack,needle,replace,casesensitive)
 	}
 	return(replaced+haystack);
 }
+
+/**
+ * Gets the atkselector of the current node
+ */
+function getCurrentSelector()
+{
+  var selectorobj = get_object("atkselector");
+
+  if (selectorobj.value)
+  {
+    var selector = selectorobj.value;
+  }
+  else if (selectorobj.innerHTML)
+  {
+    var selector = selectorobj.innerHTML;
+  }
+  return selector;
+}
+
+
+/**
+ * Gets the atknodetype of the current node
+ */
+function getCurrentNodetype()
+{
+  var nodetypeobj  = get_object("atknodetype");
+
+  // IE works with .value, while the Gecko engine uses .innerHTML
+  if (nodetypeobj.value)
+  {
+    var nodetype = nodetypeobj.value;
+  }
+  else if (nodetypeobj.innerHTML)
+  {
+    var nodetype = nodetypeobj.innerHTML;
+  }
+  return nodetype;
+}
