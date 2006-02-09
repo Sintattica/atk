@@ -265,8 +265,6 @@
             atkdebug("Setting current item");
             $currentitem[$var] = $_REQUEST[$var];
           }
-          else
-            $currentitem[$var] = "";
         }
         else
         {
