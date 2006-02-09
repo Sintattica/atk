@@ -275,7 +275,11 @@
           $currentitem["defined_pagevars"][] = $var;
         }
         // We always return the current value..
-        return $currentitem[$var];
+        if (isset($currentitem[$var]))
+        {
+          return $currentitem[$var];
+        }
+        return "";
       }
     }
 
