@@ -118,6 +118,7 @@ Changes in ATK 5.4.1
 * Added htmlentities to actionTitle function. [Sandy]
 * Added useattrib("atkattribute") to atkdateattribute. [Lineke]
 * Fixed (extended) searching in atkonetomanyrelation. [Tjeerd]
+* Fixed translating of html entities in other charsets. [Yury]
 
 Changes in ATK 5.4
 ------------------

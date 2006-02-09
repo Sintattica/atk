@@ -1319,7 +1319,7 @@
         $descrtrace = "";
         foreach ($descriptortrace as $desc)
         {
-          $descrtrace.= htmlentities($desc)." - ";
+          $descrtrace.= htmlentities($desc, ENT_COMPAT,atktext('charset'))." - ";
         }
         $res= $descrtrace . $res;
       }
