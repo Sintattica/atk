@@ -585,6 +585,7 @@
       $columnConfig = &$this->m_node->getColumnConfig();
 
       /* get the heading and search columns */
+      $atksearchpostvar = isset($this->m_node->m_postvars["atksearch"]) ? $this->m_node->m_postvars["atksearch"] : null;
       if (!hasFlag($flags, RL_NO_SEARCH)) $this->m_node->setAttribSizes();
       foreach (array_keys($this->m_node->m_attribIndexList) as $r)
       {
@@ -592,7 +593,6 @@
         if (!in_array($name, $suppress))
         {
           $attribute = &$this->m_node->m_attribList[$name];
-          $atksearchpostvar = isset($this->m_node->m_postvars["atksearch"]) ? $this->m_node->m_postvars["atksearch"] : null;
           $attribute->addToListArrayHeader($this->m_node->m_action, $result, $prefix, $flags, $atksearchpostvar, $columnConfig);
         }
       }
