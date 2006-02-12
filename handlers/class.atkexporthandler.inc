@@ -93,8 +93,8 @@
     function _getOptions()
     {
       $content.= '<table border="0" width="100%">';
-      $content.= '<tr><td>'.text("delimiter").': </td><td><input type="text" size="2" name="delimiter" value=";"></td></tr>';
-      $content.= '<tr><td>'.text("enclosure").': </td><td><input type="text" size="2" name="enclosure" value="&quot;"></td></tr>';
+      $content.= '<tr><td>'.atktext("delimiter").': </td><td><input type="text" size="2" name="delimiter" value=";"></td></tr>';
+      $content.= '<tr><td>'.atktext("enclosure").': </td><td><input type="text" size="2" name="enclosure" value="&quot;"></td></tr>';
       $content.= '<tr><td valign="top">'.atktext("export_selectcolumns").': </td><td>'.$this->getAttributeSelect().'</td></tr>';
       $content.= '<tr><td>';
       $content.= atktext("export_generatetitlerow").': </td><td><input type="checkbox" name="generatetitlerow" value="1" />';
@@ -109,20 +109,26 @@
 
       $atts = $this->getUsableAttributes();
 
-      foreach($atts as $tab => $group){
+      foreach($atts as $tab => $group)
+      {
         $content .= '<TABLE style="border: 1px solid #d8d8d8; width: 90%">';
         if($tab != 'default')
-          $content .= '<TR><TD colspan="'.$cols.'"><div style="background-color: #ccc; color: #00366E; font-weight: bold">'.text('tab_'.$tab).'</div></TD></TR><TR>';
+        {
+          $content .= '<TR><TD colspan="'.$cols.'"><div style="background-color: #ccc; color: #00366E; font-weight: bold">'.atktext(array("tab_$tab", $tab),$this->m_node->m_module,$this->m_node->m_type).'</div></TD></TR><TR>';
+        }
         $idx = 0;
-        foreach($group as $item){
-          if($item['checked'])
-            $checked = 'CHECKED';
-          else
-            $checked = '';
-          $content.= '<TD align="left" width="'.(90/$cols).'%"><LABEL><INPUT TYPE="checkbox" NAME="export_'.$item['name'].'" VALUE="export_'.$group[$i]['name'].'" '.$checked.'>'.text($item['name']).'</LABEL></TD>';
+        foreach($group as $item)
+        {
+          if($item['checked']) $checked = 'CHECKED';
+          else $checked = '';
+          
+          $p_attr = &$this->m_node->getAttribute($item['name']);
+          $content.= '<TD align="left" width="'.(90/$cols).'%"><LABEL><INPUT TYPE="checkbox" NAME="export_'.$item['name'].'" VALUE="export_'.$group[$i]['name'].'" '.$checked.'>'.atktext($item['name'],$p_attr->getModule(),$this->m_node->m_type).'</LABEL></TD>';
           $idx++;
           if($idx%$cols == 0)
+          {
             $content .= '</TR><TR>';
+          }
         }
         while($idx%$cols != 0){
           $content .= '<TD width="'.(90/$cols).'%">&nbsp;</TD>';
