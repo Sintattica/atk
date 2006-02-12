@@ -953,7 +953,7 @@
         if ($this->hasFlag(AF_TOTAL))
         {
           $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"], $fieldprefix);
-          $arr["totalraw"][$fieldprefix.$this->fieldName()] = $sum[$fieldprefix.$this->fieldName()];
+          $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
           if (method_exists($this->m_ownerInstance, $function))
             $arr["total"][$fieldprefix.$this->fieldName()] = $this->m_ownerInstance->$function($sum, "list");
           else $arr["total"][$fieldprefix.$this->fieldName()] = $this->display($sum, "list");
