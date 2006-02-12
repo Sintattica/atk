@@ -1071,7 +1071,7 @@
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
-          if (!isset($this->m_filled[$tabCode]))
+          if (!isset($this->m_filledTabs[$tabCode]))
           {
             $this->m_filledTabs[$tabCode] = true;
           }
