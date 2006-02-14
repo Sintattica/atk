@@ -74,7 +74,7 @@
 
       $this->atkAttribute($name,$flags); // base class constructor
     }
-    
+
     function validate(&$record, $mode)
     {
       $this->m_date->validate($record,$mode);
@@ -85,7 +85,7 @@
      * Converts a date/time string (YYYYMMDDHHMISS) to an
      * array with 5 fields (day, month, year, hours, minutes, seconds).
      * Defaults to current date/time.
-     * 
+     *
      * @param $datetime the time string
      * @return array with 6 fields (day, month, year, hours, minutes, seconds)
      */
@@ -96,7 +96,7 @@
       $date = substr($datetime, 0, 8);
       $time = substr($datetime, 8, 6);
       return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
-    }       
+    }
 
     function init()
     {
@@ -175,11 +175,21 @@
     {
       if(isset($rec[$this->fieldName()]))
       {
+        /**
+         * @todo Fix handling of 0 and NULL db values in the date, time and datetime attributes
+         * Currently the date attribute gives an empty string when parsing 0000-00-00,
+         * the time attribute gives an array with all three values set to 00,
+         * and the datetimeattribute gives an empty string now (previously it gave a php warning
+         * because it was trying to array_merge the empty string from the date attribute with the
+         * array of the time attribute).
+         */
+        if ($rec[$this->fieldName()] == "0000-00-00 00:00:00")
+          return "";
+
         $datetime = split(" ",$rec[$this->fieldname()]);
 
         $tmp_rec = $rec;
         $tmp_rec[$this->fieldname()]=$datetime[0];
-        
         $result_date=$this->m_date->db2value($tmp_rec);
 
         $tmp_rec = $rec;
