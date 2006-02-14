@@ -22,7 +22,7 @@
    */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
   define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2);// Do not add null option ever
-  
+
   /**
    * @internal include base class
    */
@@ -410,8 +410,8 @@
           }
         }
 
-        if($editflag) $result.=$autolink['edit'];
-        $result.= $autolink['add'];
+        if($editflag) $result.= isset($autolink['edit']) ? $autolink['edit'] : "";
+        $result.= isset($autolink['add']) ? $autolink['add'] : "";
         return $result;
       }
       return atkerror("Could not create destination for $this->m_destination!");
@@ -831,11 +831,11 @@
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $attrib = &$this->m_destInstance->m_attribList[$attribname];
-            if ($attrib->hasFlag(AF_PRIMARY)) 
+            if ($attrib->hasFlag(AF_PRIMARY))
             {
               $order = $attrib->m_name;
               break;
-            }  
+            }
           }
         }
         return $this->fieldName().".".$order;
