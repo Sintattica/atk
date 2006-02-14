@@ -443,7 +443,7 @@
      * @var String
      */
     var $m_searchmode = "";
-    
+
     /**
      * Wether to force an update of the attribute
      * @access private
@@ -669,6 +669,10 @@
       {
         $onchange = 'onChange="'.$id.'_onChange(this);"';
         $this->_renderChangeHandler($fieldprefix);
+      }
+      else
+      {
+        $onchange = '';
       }
 
       $result = '<input type="text" id="'.$id.'" name="'.$id.'" class="atkattribute"'.
@@ -1272,7 +1276,7 @@
     {
       return ((!$this->hasFlag(AF_READONLY_EDIT) && !$this->hasFlag(AF_HIDE_EDIT)) || $this->m_forceupdate);
     }
-    
+
     /**
      * Used to force an attribute to update with every updateDb() call
      * @param bool $force Wether or not to force the attribute to update
@@ -1281,7 +1285,7 @@
     {
       $this->m_forceupdate = $force;
     }
-    
+
     /**
      * Getter for wether or not an attribute is forced to update
      * @return bool Wether or not an attribute is forced to update
