@@ -59,7 +59,7 @@
      */
     function _parse($tpl_file, $tpl_vars = null)
     {
-      // Determin which template vars to use (use supplied vars if
+      // Determine which template vars to use (use supplied vars if
       // available, else use m_tpl_vars (can be set using assign())
       $use_vars = is_null($tpl_vars) ? $this->m_tpl_vars : $tpl_vars;
 
