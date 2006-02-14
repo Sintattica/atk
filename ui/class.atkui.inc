@@ -174,7 +174,7 @@
       if (strpos($tplname, "/")===false)
       {
         // lookup template in theme.
-        $tplname = $this->m_theme->tplPath($tplname);        
+        $tplname = $this->m_theme->tplPath($tplname);
       }
 
       // Smarty fetches templates relative from the template_dir setting.
@@ -186,7 +186,7 @@
       // disable smarty caching for ui purposes.
       $old_caching = $this->m_smarty->caching;
       $this->m_smarty->caching = false;
-      $this->m_smarty->template_dir = "./"; // current dir, becaue tplname already contains full relative path.
+      $this->m_smarty->template_dir = "./"; // current dir, because tplname already contains full relative path.
       $res = &$this->m_smarty->fetch($tplname);
       $this->m_smarty->template_dir = $old;
       $this->m_smarty->caching = $old_caching;
