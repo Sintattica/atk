@@ -811,17 +811,17 @@
         $listindex = $this->m_attribList[$attribname]->m_index;
 
         unset($this->m_attribList[$attribname]);
-        for ($i=0, $_i=count($this->m_listExcludes); $i<$_i; $i++)
+        foreach($this->m_listExcludes as $i => $name)
         {
-          if ($this->m_listExcludes[$i] == $attribname) unset($this->m_listExcludes[$i]);
+          if ($name == $attribname) unset($this->m_listExcludes[$i]);
         }
-        for ($i=0, $_i=count($this->m_viewExcludes); $i<$_i; $i++)
+        foreach($this->m_viewExcludes as $i => $name)
         {
-          if ($this->m_viewExcludes[$i] == $attribname) unset($this->m_viewExcludes[$i]);
+          if ($name == $attribname) unset($this->m_viewExcludes[$i]);
         }
-        for ($i=0, $_i=count($this->m_cascadingAttribs); $i<$_i; $i++)
+        foreach($this->m_cascadingAttribs as $i => $name)
         {
-          if ($this->m_cascadingAttribs[$i] == $attribname) unset($this->m_cascadingAttribs[$i]);
+          if ($name == $attribname) unset($this->m_cascadingAttribs[$i]);
         }
 
         unset($this->m_attribIndexList[$listindex]);
