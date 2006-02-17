@@ -61,7 +61,7 @@
 
       $atkroot = atkconfig("atkroot");
       require_once($atkroot."atk/security/class.auth_interface.inc");
-      
+
 
       /* authentication class */
       $authentication = explode(",",trim($authentication_type));
@@ -76,7 +76,7 @@
             include_once($atkroot."atk/security/class.".$classname.".inc");
             if(class_exists($classname))
             {
-              atkdebug("atkSecurityManager() constructing class $classname");              
+              atkdebug("atkSecurityManager() constructing class $classname");
               $this->m_authentication[$class] = new $classname;
             }
           }
@@ -88,7 +88,7 @@
         include_once($atkroot."atk/security/class.".$classname.".inc");
         if(class_exists($classname))
         {
-          atkdebug("atkSecurityManager() constructing class $classname");          
+          atkdebug("atkSecurityManager() constructing class $classname");
           $this->m_authentication[$authentication] = new $classname;
         }
       }
@@ -96,7 +96,7 @@
       /* authorization class */
       $classname = "auth_".$authorization_type;
       include_once($atkroot."atk/security/class.auth_".$authorization_type.".inc");
-      $this->m_authorization = new $classname;           
+      $this->m_authorization = new $classname;
 
       /* security scheme */
       $this->m_scheme = $securityscheme;
@@ -150,14 +150,14 @@
         }
       }
       // do we need to login?
-      else if (@$session["login"]!=1)
+      else if ((!array_key_exists("login", $session)) || ($session["login"]!=1))
       {
         // authenticated?
         $authenticated = false;
 
         // sometimes we manually have to set the PHP_AUTH vars
         // old style http_authorization
-        if (empty($auth_user) && empty($auth_pw) && ereg("^Basic ", @$_SERVER["HTTP_AUTHORIZATION"]))
+        if (empty($auth_user) && empty($auth_pw) && array_key_exists("HTTP_AUTHORIZATION", $_SERVER) && ereg("^Basic ", $_SERVER["HTTP_AUTHORIZATION"]))
         {
           list($auth_user, $auth_pw) = explode(":", base64_decode(substr($_SERVER["HTTP_AUTHORIZATION"], 6)));
         }
