@@ -94,8 +94,8 @@ Changes in ATK 5.4.1
 * atkOneToManyRelation now builds the referential where clause in a separate
   overridable method _getLoadWhereClause(). [Ivo]
 * Using single quotes in smarty tags is now also allowed. [Lineke]
-* Fixed securityissue atkProfileAttribute. (Giving groups rights on nodes
-  you don't have admin rights on) [Harrie]
+* Fixed securityissue in atkProfileAttribute. (Giving groups rights on nodes
+  you don't have rights on) [Harrie, Guido]
 * atkNode::getTabs can now handle actions without tabs. [Ivo]
 * Cleanup of atkSecurityManager constructor. [Ivo]
 * AtkManyToOneRelation now uses primary key field as default order if not
@@ -119,6 +119,16 @@ Changes in ATK 5.4.1
 * Added useattrib("atkattribute") to atkdateattribute. [Lineke]
 * Fixed (extended) searching in atkonetomanyrelation. [Tjeerd]
 * Fixed translating of html entities in other charsets. [Yury]
+* Changed longdate format (does no longer contain the weekday). [Guido]
+* Fixed selection of the interface language in the fckattribute. [Guido]
+* Fixed warning generated when interpreting a NULL value in the
+  atkDateTimeAttribute. [Guido]
+* Fixed HTML typo (<a/> instead of </a>) in dispatch.php. [Guido]
+* Removed DEBUG_WARNING from atkdebug calls concerning missing
+  translations, php notices and deprecated text() calls. [Guido]
+* Fixed selection of the interface language in the fckattribute. [Guido]
+* Changed permission_action translation in atkProfileAttribute to use the
+  atktext fallback feature. [Guido]
 
 Changes in ATK 5.4
 ------------------
