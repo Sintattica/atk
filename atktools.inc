@@ -47,22 +47,41 @@
    */
   function atkErrorHandler($errtype, $errstr, $errfile, $errline)
   {
+    // Compose an array of possible error types
+    $errortype = array (
+      E_ERROR           => "Error",
+      E_WARNING         => "Warning",
+      E_PARSE           => "Parsing Error",
+      E_NOTICE          => "Notice",
+      E_CORE_ERROR      => "Core Error",
+      E_CORE_WARNING    => "Core Warning",
+      E_COMPILE_ERROR   => "Compile Error",
+      E_COMPILE_WARNING => "Compile Warning",
+      E_USER_ERROR      => "User Error",
+      E_USER_WARNING    => "User Warning",
+      E_USER_NOTICE     => "User Notice",
+    );
+    if (version_compare(phpversion(), "5.0.0")>=0) $errortype[E_STRICT] = "Strict Notice";
+
+    // Translate the given errortype into a string
+    $errortypestring = $errortype[$errtype];
+
     // Just show notices and strict errors, but don't influence the program flow
     if ($errtype==E_NOTICE || (version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT) ||
         error_reporting()==0)
     {
-      atkdebug("[$errtype] $errstr in $errfile (line $errline)", DEBUG_WARNING);
+      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
       return;
     }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
     {
       // This is something we should pay attention to, but we don't need to die.
-      atkerror("[$errtype] $errstr in $errfile (line $errline)");
+      atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
       return;
     }
     else
     {
-      atkerror("[$errtype] $errstr in $errfile (line $errline)");
+      atkerror("[$errortypestring] $errstr in $errfile (line $errline)");
 
       // we must die. we can't even output anything anymore..
       // we can mail though.
@@ -164,6 +183,8 @@
     {
       if (hasFlag($flags, DEBUG_HTML))
         $txt = htmlentities($txt);
+      if (hasFlag($flags, DEBUG_WARNING))
+        $txt = "<b>" . $txt . "</b>";
 
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
@@ -359,7 +380,7 @@
    */
   function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
-    atkdebug("Call to deprecated text() function", DEBUG_WARNING);
+    atkdebug("Call to deprecated text() function");
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
   }
