@@ -201,7 +201,7 @@
 
       // Assign the date in short and long format as [shortdate] and [longdate]
       $this->Assign($prefix . "shortdate", $dateattribute->formatDate($date, "d-m-Y", 0));
-      $this->Assign($prefix . "longdate", $dateattribute->formatDate($date, "d F Y", 1));
+      $this->Assign($prefix . "longdate", $dateattribute->formatDate($date, "d F Y", 0));
     }
 
     /**
