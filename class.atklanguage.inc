@@ -92,7 +92,7 @@
     }
 
     /**
-     * Add a module that serves as an override for language strings.     
+     * Add a module that serves as an override for language strings.
      *
      * @param String $module Name of the module to add.
      */
@@ -260,7 +260,7 @@
 
       if (!$nodefaulttext)
       {
-        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text", DEBUG_WARNING);
+        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text");
         // Still nothing found. return default string
         return $this->defaultText($key);
       }
