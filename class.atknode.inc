@@ -1053,7 +1053,7 @@
         // Only display the attribute if the attribute
         // resides on at least on visible tab
         $hideme = true;
-        for($i=0;$i <= sizeof($p_attrib->m_tabList);$i++)
+        for($i=0, $_i=sizeof($p_attrib->m_tabs); $i<$_i; $i++)
         {
           if (in_array($p_attrib->m_tabs[$i],$list))
           {
@@ -2467,7 +2467,7 @@
           $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
           $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
-        
+
         if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
         if (count($query->m_fields) && !$query->executeUpdate()) return false;
@@ -3113,7 +3113,7 @@
       if(!$return) atkdebug("$trigger failed!");
       return $return;
     }
-    
+
     /**
      * Delete record(s) from the database.
      *
