@@ -117,18 +117,19 @@ Changes in ATK 5.4.1
 * Updated tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
 * Added htmlentities to actionTitle function. [Sandy]
 * Added useattrib("atkattribute") to atkdateattribute. [Lineke]
-* Fixed (extended) searching in atkonetomanyrelation. [Tjeerd]
+* Fixed (extended) searching in atkOneToManyRelation. [Tjeerd]
 * Fixed translating of html entities in other charsets. [Yury]
 * Changed longdate format (does no longer contain the weekday). [Guido]
-* Fixed selection of the interface language in the fckattribute. [Guido]
+* Fixed selection of the interface language in the atkFCKAttribute. [Guido]
 * Fixed warning generated when interpreting a NULL value in the
   atkDateTimeAttribute. [Guido]
 * Fixed HTML typo (<a/> instead of </a>) in dispatch.php. [Guido]
 * Removed DEBUG_WARNING from atkdebug calls concerning missing
   translations, php notices and deprecated text() calls. [Guido]
-* Fixed selection of the interface language in the fckattribute. [Guido]
+* Fixed selection of the interface language in the atkFCKAttribute. [Guido]
 * Changed permission_action translation in atkProfileAttribute to use the
   atktext fallback feature. [Guido]
+* Fixed bug in Oracle demo installation file (lesson6_deparment table). [Ivo]
 
 Changes in ATK 5.4
 ------------------
