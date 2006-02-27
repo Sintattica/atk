@@ -131,6 +131,9 @@ Changes in ATK 5.4.1
 * Fixed bug in Oracle demo installation file (lesson6_deparment table). [Ivo]
 * Fixed hardcoded translations in atkFileAttribute. [Ivo]
 * Mentioned PHP5 requirement for mysql41 driver. [Ivo]
+* Also validate filter if table is an attrib of this node. [Lineke]
+* Reset record in atkonetoonerelation when displaying relation integrated.
+  [Lineke]
 
 Changes in ATK 5.4
 ------------------
