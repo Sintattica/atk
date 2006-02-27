@@ -36,7 +36,7 @@
   // Currently supported drivers are:
   // "mysql"   - All MySQL versions since 3.23
   // "mysql41" - MySQL 4.1+. On top of the "mysql" driver, this one
-  //             has transaction support.
+  //             has transaction support. (requires PHP5, mysqli extension)
   // "oci805"  - Oracle 8.0.5
   // "oci8"    - All Oracle 8i versions
   // "oci9"    - Oracle9i+ (also works for 10G)
