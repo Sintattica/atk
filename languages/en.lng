@@ -264,6 +264,7 @@
   "saveandnext" => "Save and next",
   "select_a"=>"Select a",
   "tab_default"=>"General",
+  "selection"=>"Selection",
 );
 
 ?>

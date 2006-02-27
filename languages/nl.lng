@@ -261,6 +261,7 @@
   "yes" => "Ja",
   "select_a"=>"Selecteer een",
   "tab_default"=>"Algemeen", 
+  "selection" => "Selectie",
 );
 
 ?>

@@ -10,26 +10,25 @@ Changes in ATK 5.4.1
   does, but with the ability to disable the sending of e-mails (and in the
   future send e-mails to other addresses etc.) [Peter]
 + Added support for configuration file overrides by other sections. [Peter]
-+ Made atkErrorHandler put notices and php5 strict errors into the
-  atk debug log so developers can see them. [Guido]
++ Made atkErrorHandler put notices and php5 strict errors into the atk debug 
+  log so developers can see them. [Guido]
 + Added hide() function for atkboolattribute. [Lineke]
 + Added validate method to atkDateTimeAttribute which calls the validate
   method of the atkDateAttribute and the atkTimeAttribute. [Lineke]
 + Flags for the atkDateTimeAttribute are now also passed to the
   atkDateAttribute and the atkTimeAttribute. [Lineke]
-+ Added translation for title_select. [Lineke]
 + Added ability to force update on attribute with setForceUpdate(). [Boy]
 + Added 'mock' database drivers for testing purposes. [Boy]
 + Added atkMockNode to emulate a node, for testing purposes. [Ivo]
 + Added ability to pass atkmodule=modname to test.php to run only the tests of
   a specified module. [Ivo]
 + Added atkTestCase baseclass for unittests, that features the ability to
-  replace database connections, nodes and the securitymanager with mock
+  replace database connections, nodes and the securitymanager with mock 
   objects. [Ivo, Boy]
 + Added addFallbackModule method to atkLanguage. [Ivo]
 + Added collapsable groups in atkProfileAttribute. [Harrie]
-+ Added 'select all'/'select none' buttons per group
-  in atkProfileAttribute. [Harrie]
++ Added 'select all'/'select none' buttons per group in atkProfileAttribute. 
+  [Harrie]
 + Added possibility to authorize usergroups for seeing tabs [Harrie]
 + Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
   instance at runtime. [Ivo]
@@ -47,21 +46,21 @@ Changes in ATK 5.4.1
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
   if not present. [Guido]
-* code improvement of post/pre triggers and fixed preAdd() call which
-  wasn't executed. [Martin]
+* code improvement of post/pre triggers and fixed preAdd() call which wasn't 
+  executed. [Martin]
 * Moved the modifier calling functionallity as much as possible to atkModule.
   This enables you to implement a generic modifier in a module that can
   handle any node from any module. [Ivo, Guido]
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
+* Fixed translation for title_select. [Lineke]
 * Passed along atkprevlevel to debugger window so the stack doesn't get forked
   causing the console to draw a blank. [Boy]
 * If no link_select_node translation is found atkManyToOneRelation tries
   translation of select_a and node. [Boy]
 * If no title_module translation is found, atkProfileAttribute will use
   module name as translation. [Ivo]
-* If extended searching is called directly the resultlist is nested
-  in the session so after editting we return to the results, not the search
-  page. [Boy]
+* If extended searching is called directly the resultlist is nested in the 
+  session so after editting we return directly to the results. [Boy]
 * atkTimeAttribute now properly distinguishes between '0:00' hours and empty
   values. [Ivo]
 * Fixed font size/color change of clickable recordlist headers when hovering
@@ -71,7 +70,7 @@ Changes in ATK 5.4.1
   convention. (getNode() is still present as deprecated function). [Ivo]
 * Bugfix in atkListAttribute. All quotes in options are now replaced with
   &quot;. [Lineke]
-* Bugfix in atkMultiSelectattribute. Always add escapeSql to value in
+* Bugfix in atkMultiSelectattribute. Always add escapeSql to value in 
   checkbox. [Lineke]
 * Include atkattribute in atkTextAttribute. [Lineke]
 * View action now uses getFormButtons to get the appropriate buttons.
@@ -130,6 +129,7 @@ Changes in ATK 5.4.1
 * Changed permission_action translation in atkProfileAttribute to use the
   atktext fallback feature. [Guido]
 * Fixed bug in Oracle demo installation file (lesson6_deparment table). [Ivo]
+* Fixed hardcoded translations in atkFileAttribute. [Ivo]
 
 Changes in ATK 5.4
 ------------------

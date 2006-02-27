@@ -146,7 +146,7 @@
       {
         $this->registerKeyListener($id.'_select', KB_CTRLCURSOR|KB_LEFTRIGHT);
         $result .= '<select id="'.$id.'_select" name="'.$id.'[select]">';
-        $result .= "<option value=\"\" selected>Selectie";                    // Zorg voor een default met waarde NULL
+        $result .= "<option value=\"\" selected>".atktext('selection', 'atk');                    // Zorg voor een default met waarde NULL
         while (list ($key, $val) = each ($file_arr))
         {
           (isset($record[$this->fieldName()]['filename']) && $record[$this->fieldName()]['filename']==$val) ? $selected = "selected" : $selected = '';
@@ -207,7 +207,7 @@
               else
               {
                 atkdebug("tmp file ".$rec[$this->fieldName()]["tmpfile"]." dir ".$this->m_dir.$filename);
-                atkerror("File kon niet worden opgeslagen");
+                atkerror("File could not be saved");
                 return "";
               }
             }
