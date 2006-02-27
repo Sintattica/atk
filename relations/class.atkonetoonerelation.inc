@@ -954,12 +954,14 @@
           // small trick, the destination record is in a subarray. The destination
           // addToListArrayRow will not expect this though, so we have to modify the
           // record a bit before passing it to the detail columns.
+          $oldrecord = $arr["rows"][$nr]["record"];
           $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
             $p_attrib->addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
           }
+          $arr["rows"][$nr]["record"] = $oldrecord;
         }
       }
     }
