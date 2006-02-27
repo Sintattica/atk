@@ -3697,12 +3697,12 @@
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
-
+      
       // if the filter includes a tablename
       if ($field != "")
       {
         // check if the filter table is the same as the nodes table
-        if (strtolower(trim($relation)) !== strtolower($this->m_table)) return "";
+        if (strtolower(trim($relation)) !== strtolower($this->m_table) && !in_array($relation, array_keys($this->m_attribList))) return "";
 
         // go on to check the field
         $relation = $field;
@@ -3710,7 +3710,7 @@
 
       // All standard SQL operators
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
-
+      
       // Check the filter for every operator
       foreach ($sqloperators as $sqloperator)
       {
