@@ -168,7 +168,7 @@
     function getAllActions($record)
     {
       global $g_modules, $g_moduleflags, $g_nodes;
-
+      
       $result = array();
 
       // hierarchic groups, only return actions of parent (if this record has a parent)
@@ -205,6 +205,10 @@
             if (method_exists($instance, "getNodes"))
               $instance->getNodes();
           }
+        }
+        // retrieve all actions after we registered all actions
+        foreach (array_keys($g_modules) as $module)
+        {
           // retrieve actions for each node
           $nodes = isset($g_nodes[$module]) ? $g_nodes[$module] : array();
           foreach ($nodes as $node => $actions)
@@ -287,7 +291,7 @@
       $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
 
       $firstModule = true;
-
+      
       foreach ($allActions as $module => $nodes)
       {
         if ($showModule)
@@ -309,7 +313,7 @@
                     atktext("invert_selection", "atk").'</a>]</div>';
           $result .= "<br>";
         }
-
+        
         foreach ($nodes as $node => $actions)
         {
           $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
