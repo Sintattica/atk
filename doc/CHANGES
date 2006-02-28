@@ -134,6 +134,9 @@ Changes in ATK 5.4.1
 * Also validate filter if table is an attrib of this node. [Lineke]
 * Reset record in atkonetoonerelation when displaying relation integrated.
   [Lineke]
+* Bugfix in resolving actions that are registered in a module for a node of 
+a different module. [Lineke]
+
 
 Changes in ATK 5.4
 ------------------
