@@ -1120,7 +1120,7 @@
             unset($tablist[$i]);
           }
         }
-        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation");
+        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation",DEBUG_WARNING);
       }
 
       if (is_array($tablist))
