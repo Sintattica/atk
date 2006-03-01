@@ -134,7 +134,7 @@
 
       if (!is_array($myrecords))
       {
-        $myrecords = $this->load(atkGetDb(), $record, "admin");
+        $myrecords = $this->load(atkGetDb(), $record, "admin",true);
       }
 
       $result = atktext("none"); // default result
@@ -595,7 +595,6 @@
 
           if ($where!="")
           {
-
             if ($this->m_destinationFilter!="")
             {
               atkimport("atk.utils.atkstringparser");
