@@ -66,10 +66,14 @@
     // Translate the given errortype into a string
     $errortypestring = $errortype[$errtype];
 
-    // Just show notices and strict errors, but don't influence the program flow
-    if ($errtype==E_NOTICE || (version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT) ||
-        error_reporting()==0)
+    if ((version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT))
     {
+      // Ignore strict notices for now
+      return;
+    }
+    if ($errtype==E_NOTICE || error_reporting()==0)
+    {
+      // Just show notices in the debug log, but don't influence the program flow
       atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
       return;
     }
