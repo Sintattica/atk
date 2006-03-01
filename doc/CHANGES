@@ -135,7 +135,11 @@ Changes in ATK 5.4.1
 * Reset record in atkonetoonerelation when displaying relation integrated.
   [Lineke]
 * Bugfix in resolving actions that are registered in a module for a node of 
-a different module. [Lineke]
+  a different module. [Lineke]
+* Debugging with the DEBUG_WARNING flag no longer gets logged/shown 
+  in debuglevel 1 or lower. [Boy]
+* Added DEBUG_WARNING flag to debugging about deprecated functions, 
+  translations and tabrights. [Boy]
 
 
 Changes in ATK 5.4
