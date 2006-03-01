@@ -260,7 +260,7 @@
 
       if (!$nodefaulttext)
       {
-        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text");
+        atkdebug("atkLanguage: translation for '$key' with module: '$module' and node: '$node' not found, returning default text",DEBUG_WARNING);
         // Still nothing found. return default string
         return $this->defaultText($key);
       }

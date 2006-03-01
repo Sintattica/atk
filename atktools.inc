@@ -74,7 +74,7 @@
     if ($errtype==E_NOTICE || error_reporting()==0)
     {
       // Just show notices in the debug log, but don't influence the program flow
-      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
+      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)",DEBUG_WARNING);
       return;
     }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
@@ -387,7 +387,7 @@
    */
   function text($string, $node="", $module="", $lng="", $firstfallback="", $nodefaulttext=false)
   {
-    atkdebug("Call to deprecated text() function");
+    atkdebug("Call to deprecated text() function",DEBUG_WARNING);
     atkimport("atk.atklanguage");
     return atkLanguage::text($string, $module, $node, $lng, $firstfallback, $nodefaulttext);
   }
