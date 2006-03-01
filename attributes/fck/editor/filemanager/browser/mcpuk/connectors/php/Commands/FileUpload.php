@@ -87,7 +87,7 @@ class FileUpload {
 							$dirSizes=array();
 							$globalSize=0;
 							$failSizeCheck=false;
-							if ($this->fckphp_config['DiskQuota']['Global']!=-1) {
+							if ($this->fckphp_config['DiskQuota']['Global']!=-1 && false) {
 								foreach ($this->fckphp_config['ResourceTypes'] as $resType) {
 									
 								  // HARRIEHACK
@@ -119,7 +119,7 @@ class FileUpload {
 								}
 							}
 							
-							if (($typeconfig['DiskQuota']!=-1)&&(!$failSizeCheck)) {
+							if (false && ($typeconfig['DiskQuota']!=-1)&&(!$failSizeCheck)) {
 								if ($this->fckphp_config['DiskQuota']['Global']==-1) {
 									$dirSizes[$this->type]=
 										$this->getDirSize(                                                        // v HARRIEHACK
@@ -133,7 +133,7 @@ class FileUpload {
 								}
 							}
 							
-							if ((($this->fckphp_config['DiskQuota']['Global']!=-1)||($typeconfig['DiskQuota']!=-1))&&$failSizeCheck) {
+							if ($false && (($this->fckphp_config['DiskQuota']['Global']!=-1)||($typeconfig['DiskQuota']!=-1))&&$failSizeCheck) {
 								//Disk Quota over
 								$disp="202,'Over disk quota, ".$msg."'";
 							} else {
