@@ -185,25 +185,28 @@
     $level = atkconfig("debug");
     if ($level>0)
     {
-      if (hasFlag($flags, DEBUG_HTML))
+      if (!hasFlag($flags,DEBUG_WARNING) || $level>1)
+      {
+        if (hasFlag($flags, DEBUG_HTML))
         $txt = htmlentities($txt);
       if (hasFlag($flags, DEBUG_WARNING))
         $txt = "<b>" . $txt . "</b>";
 
-      atkWriteLog($txt);
-      $line = atkGetTimingInfo().$txt;
+        atkWriteLog($txt);
+        $line = atkGetTimingInfo().$txt;
 
-      if ($level>1)
-      {
-        atkimport("atk.utils.atkdebugger");
-        if (!atkDebugger::addStatement($line))
+        if ($level>1)
+        {
+          atkimport("atk.utils.atkdebugger");
+          if (!atkDebugger::addStatement($line))
+          {
+            $g_debug_msg[]=$line;
+          }
+        }
+        else
         {
           $g_debug_msg[]=$line;
         }
-      }
-      else
-      {
-        $g_debug_msg[]=$line;
       }
     }
     else if ($level>-1) // at 0 we still collect the info so we
