@@ -42,6 +42,7 @@ Changes in ATK 5.4.1
   link which can be used to add records to the referenced node (if the user
   is allowed to do so). [Guido]
 + Added translations for critical, unknown_error and update. [Guido]
++ Added convenience methods text() to atkNode and atkAttribute. [Ivo, Peter]
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
