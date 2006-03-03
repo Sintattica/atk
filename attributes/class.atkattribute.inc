@@ -1460,7 +1460,7 @@
      */
     function label($record = array())
     {
-      return atktext($this->fieldName(),$this->getModule(), $this->m_ownerInstance->m_type);
+      return $this->text($this->fieldName());
     }
 
     /**

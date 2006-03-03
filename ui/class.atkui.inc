@@ -215,41 +215,30 @@
      * @param String $module   the module in which to look
      * @param String $nodetype the nodetype of the action
      * @param String $action   the action that we are trying to find a title for
-     * @param bool   $nomodule wether or not to return a translation of the module
+     * @param bool   $actiononly wether or not to return a name of the node
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action, $nomodule=false)
+    function title($module, $nodetype, $action, $actiononly=false)
     {
-      // first look for specific text.
-      $key = 'title_'.$module.'_'.$nodetype.'_'.$action;
-      if (atktext($key,$module,"","","",true))
+      $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
+                    'title_'.$nodetype.'_'.$action);
+
+      $node = &atkGetNode($module.'.'.$nodetype);
+
+      $label = $node->text($keys, NULL, "", "", true);
+      if ($label=="")
       {
-        return atktext($key,$module);
-      }
-      else
-      {
-        $key = $nodetype;
-        if (atktext($key,$module,"","","","",true))
+        if ($actiononly)
         {
-          if ($nomodule) return atktext($action, "",$nodetype);
-          else return atktext($key,$module)." - ".atktext($action, $module, $nodetype, "", "atk");
+          return atktext($action, "atk");
         }
         else
         {
-          $key = 'title_'.$nodetype.'_'.$action;
-          if (atktext($key,"","","","",true))
-          {
-            return atktext($key);
-          }
-          else
-          {
-            // if no specific text available for this node,
-            // generate a generic title
-            return atktext($nodetype, $module)." - ".atktext($action, $nodetype);
-          }
+          $label = $node->text($nodetype)." - ".atktext($action, "atk");
         }
       }
+      return $label;
     }
   }
 ?>

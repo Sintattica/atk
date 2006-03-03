@@ -3697,7 +3697,7 @@
       // Get the field that it applies to
       // $relation holds the tablename and $field holds the field
       list($relation, $field) = explode('.', $filter);
-      
+
       // if the filter includes a tablename
       if ($field != "")
       {
@@ -3710,7 +3710,7 @@
 
       // All standard SQL operators
       $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN');
-      
+
       // Check the filter for every operator
       foreach ($sqloperators as $sqloperator)
       {
@@ -3843,10 +3843,10 @@
     /**
      * Translate using this node's module and type.
      */
-    function text($string, $module=NULL)
+    function text($string, $module=NULL, $lng="", $firstfallback="", $nodefaulttext=false)
     {
       if ($module==NULL) $module = $this->m_module;
-      return atktext($string, $module, $this->m_type);
+      return atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
     }
 
   }

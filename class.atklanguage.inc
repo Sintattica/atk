@@ -167,7 +167,7 @@
         return $atklanguage->_getString($string, $module, $lng, $node, $nodefaulttext, $firstfallback, $modulefallback);
 
       // If multiple strings given, iterate through all strings and return the translation if found
-      for ($i = 0, $_i = count($string)-1; $i <= $_i; $i++)
+      for ($i = 0, $_i = count($string); $i < $_i; $i++)
       {
         // Try to get the translation
         $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < $_i), $firstfallback, $modulefallback);

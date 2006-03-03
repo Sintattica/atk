@@ -548,14 +548,24 @@
 
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       $res = array();
-      
+
       $stackcount = count($stack);
       for ($i=0;$i<$stackcount;$i++)
       {
         if (isset($stack[$i]["descriptor"]) || $i == ($stackcount-1))
         {
-          $node = explode(".",$stack[$i]["atknodetype"]);
-          $res[] = atktext($node[1],$node[0]).(isset($stack[$i]["descriptor"])?" [ {$stack[$i]['descriptor']} ] ":"");
+          $node = &getNode($stack[$i]["atknodetype"]);
+          list($module, $nodename) = explode(".",$stack[$i]["atknodetype"]);
+          if (is_object($node))
+          {
+            $txt = $node->text($nodename);
+          }
+          else
+          {
+            $txt = atktext($nodename,$module);
+          }
+
+          $res[] = $txt.(isset($stack[$i]["descriptor"])?" [ {$stack[$i]['descriptor']} ] ":"");
         }
       }
       return $res;
@@ -822,7 +832,7 @@
     }
     return true;
   }
-  
+
   /**
    * Returns the sessionmanager.
    * @return atkSessionManager  session manager
