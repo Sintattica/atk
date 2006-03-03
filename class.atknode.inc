@@ -3840,5 +3840,14 @@
       return $columnConfig;
     }
 
+    /**
+     * Translate using this node's module and type.
+     */
+    function text($string, $module=NULL)
+    {
+      if ($module==NULL) $module = $this->m_module;
+      return atktext($string, $module, $this->m_type);
+    }
+
   }
 ?>
