@@ -128,7 +128,6 @@ Changes in ATK 5.4.1
 * Fixed HTML typo (<a/> instead of </a>) in dispatch.php. [Guido]
 * Removed DEBUG_WARNING from atkdebug calls concerning missing
   translations, php notices and deprecated text() calls. [Guido]
-* Fixed selection of the interface language in the atkFCKAttribute. [Guido]
 * Changed permission_action translation in atkProfileAttribute to use the
   atktext fallback feature. [Guido]
 * Fixed bug in Oracle demo installation file (lesson6_deparment table). [Ivo]
