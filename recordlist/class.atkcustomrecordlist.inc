@@ -41,9 +41,9 @@
      * @param String $eol         String to use at end of each row
      * @param int $type           0=Render rows in simple html tabl; 1= raw export
      * @param $compression        Compression technique (bzip / gzip)
+     * @param array $suppressList List of attributes from $node that should be ignored  
      * @param array $outputparams Key-Value parameters for output. Currently existing: 
      *                               filename - the name of the file (without extension .csv)     
-     * @param array $suppressList List of attributes from $node that should be ignored     
      * @param String $mode	      The mode that is passed to attributes' display() method 
      *                            (for overrides). Defaults to 'list'.
     */
@@ -91,7 +91,7 @@
             &&$musthide==false
            )
         {
-          $output.=$sof.text($p_attrib->fieldName(),$this->m_node->m_type).$eof;
+          $output.=$sof.atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type).$eof;
 
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))

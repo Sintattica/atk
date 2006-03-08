@@ -1055,7 +1055,7 @@
         $hideme = true;
         for($i=0, $_i=sizeof($p_attrib->m_tabs); $i<$_i; $i++)
         {
-          if (in_array($p_attrib->m_tabs[$i],$list))
+          if (is_array($list) && in_array($p_attrib->m_tabs[$i],$list))
           {
             $hideme = false;
             break;

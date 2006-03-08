@@ -142,8 +142,10 @@ Changes in ATK 5.4.1
   in debuglevel 1 or lower. [Boy]
 * Added DEBUG_WARNING flag to debugging about deprecated functions, 
   translations and tabrights. [Boy]
-* Fixed javascript bug in atkDateAttribute when using German language. [Klaus]
-
+* Fixed javascript bug in atkDateAttribute when using German language.
+[Klaus]
+* Added is_array check in atknode function getTabs. [Lineke]
+* Changed text call to atktextcall in atkcustomrecordlist. [Lineke]
 
 Changes in ATK 5.4
 ------------------
