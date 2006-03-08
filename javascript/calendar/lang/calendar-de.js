@@ -11,7 +11,7 @@ Calendar._DN = new Array
 Calendar._MN = new Array
 ("Januar",
  "Februar",
- "M&auml;rz",
+ "Maerz",
  "April",
  "Mai",
  "Juni",
