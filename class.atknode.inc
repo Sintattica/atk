@@ -2018,10 +2018,13 @@
 
       $ui = &$this->getUi();
       $page = &$this->getPage();
-      $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
+      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
+      {
+        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $fullpage);
 
-      $output = &atkOutput::getInstance();
-      $output->output($screen);
+        $output = &atkOutput::getInstance();
+        $output->output($screen);
+      }
 
       // This is the end of all things for this page..
       // so we clean up some resources..

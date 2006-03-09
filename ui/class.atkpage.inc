@@ -382,6 +382,18 @@
       $this->register_loadscript('if ( window.showTab ) {showTab(\'' . (isset($ATK_VARS['atktab']) ? $res.=$ATK_VARS['atktab'] : '') . '\');}');
     }
 
+    /**
+     * Check if the page is empty (no content).
+     *
+     * This is useful to check at the rendering stage of scripts whether there is something to render.
+     *
+     * @return boolean true if there is no content in the page, false if there is
+     */
+    function isEmpty()
+    {
+      return ($this->m_content=="");
+    }
+
   }
 
 ?>

@@ -54,6 +54,9 @@ Changes in ATK 5.4.1
 * Moved the modifier calling functionallity as much as possible to atkModule.
   This enables you to implement a generic modifier in a module that can
   handle any node from any module. [Ivo, Guido]
+* If an action has no html output, the dispatcher no longer renders an html
+  page. This reduces some overhead on output-less actions such as save/update/
+  delete. [Ivo]
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
 * Fixed translation for title_select. [Lineke]
 * Passed along atkprevlevel to debugger window so the stack doesn't get forked
