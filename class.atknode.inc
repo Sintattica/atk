@@ -3551,7 +3551,7 @@
      */
     function callHandler($action)
     {
-      $handler = getNodeHandler($this->m_type, $action);
+      $handler = &getNodeHandler($this->m_type, $action);
 
       // handler function
       if ($handler != NULL && function_exists($handler))
