@@ -170,12 +170,13 @@
       for ($i = 0, $_i = count($string); $i < $_i; $i++)
       {
         // Try to get the translation
-        $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < $_i), $firstfallback, $modulefallback);
+        $translation = $atklanguage->_getString($string[$i], $module, $lng, $node, $nodefaulttext || ($i < ($_i-1)), $firstfallback, $modulefallback);
 
         // Return the translation if found
         if ($translation != "")
           return $translation;
       }
+      return "";
     }
 
     /**
