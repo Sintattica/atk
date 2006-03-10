@@ -1144,8 +1144,7 @@
    */
   function triggerError(&$rec, $attrib, $err, $msg="", $tab="")
   {
-    global $lng;
-    if($msg=="")  $msg = atktext($err,"atk","",$lng);
+    if($msg=="")  $msg = atktext($err,"atk","",atkLanguage::getLanguage());
 
     $rec['atkerror'][] = array( "attrib_name"=> $attrib, "err" => $err, "msg" => $msg, "tab"=>$tab);
   }
