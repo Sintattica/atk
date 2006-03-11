@@ -43,6 +43,8 @@ Changes in ATK 5.4.1
   is allowed to do so). [Guido]
 + Added translations for critical, unknown_error and update. [Guido]
 + Added convenience methods text() to atkNode and atkAttribute. [Ivo, Peter]
++ Added $config["automenu"] for meta module. If set to false, the meta module
+  does not add any default menuitems. Defaults to true. [Ivo]
 * Several parts of ATK now make use of atkNode::text() method, to support
   node overridable texts. [Sandy, Ivo] 
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
