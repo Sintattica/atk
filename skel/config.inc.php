@@ -65,7 +65,7 @@
   // 0 - No debug information
   // 1 - Print some debug information at the bottom of each screen
   // 2 - Print debug information, and pause before redirects
-  $config_debug = 1;
+  $config_debug = 0;
 
   // Smart debug parameters. Is used to dynamically enable debugging for
   // certain IP addresses or if for example the special atkdebug[key] request
