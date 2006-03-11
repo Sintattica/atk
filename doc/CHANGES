@@ -45,12 +45,14 @@ Changes in ATK 5.4.1
 + Added convenience methods text() to atkNode and atkAttribute. [Ivo, Peter]
 + Added $config["automenu"] for meta module. If set to false, the meta module
   does not add any default menuitems. Defaults to true. [Ivo]
+* The atkNode constructors $type parameter is now optional and defaults to the
+  class name. [Ivo]
 * Several parts of ATK now make use of atkNode::text() method, to support
   node overridable texts. [Sandy, Ivo] 
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
 * Fixed numerous php notices. [Guido]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
-  if not present. [Guido]
+  if not present. Minimum requirement is now PHP 4.1. [Guido]
 * code improvement of post/pre triggers and fixed preAdd() call which wasn't 
   executed. [Martin]
 * Moved the modifier calling functionallity as much as possible to atkModule.

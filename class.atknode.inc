@@ -626,11 +626,12 @@
      * <br>
      * <b>Example:</b>
      * <code>$this->atkNode('test',NF_NO_EDIT);</code>
-     * @param String $type The nodetype (usually equal to the classname)
+     * @param String $type The nodetype (by default equal to the classname)
      * @param int $flags Bitmask of node flags (NF_*).
      */
-    function atkNode($type, $flags=0)
+    function atkNode($type="", $flags=0)
     {
+      if ($type=="") $type = get_class($this);
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
       $this->m_flags = $flags;
