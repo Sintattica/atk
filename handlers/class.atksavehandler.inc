@@ -69,7 +69,7 @@
         else
         {
           $db = &$this->m_node->getDb();
-          if(!$this->m_node->addDb($record, true, "add"))
+          if(!$this->m_node->addDb($record, false, "add"))
           {
             $db->rollback();
             if($db->getErrorType()=="user")
