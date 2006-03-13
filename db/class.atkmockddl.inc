@@ -25,7 +25,6 @@
    * @package atk
    * @subpackage db
    */
-
   class atkMockDDL extends atkDDL
   {
   }
