@@ -45,6 +45,8 @@ Changes in ATK 5.5
 + Added convenience methods text() to atkNode and atkAttribute. [Ivo, Peter]
 + Added $config["automenu"] for meta module. If set to false, the meta module
   does not add any default menuitems. Defaults to true. [Ivo]
++ atkNode now has build in detection of trigger reruns, so even if triggers
+  such as postAdd are called twice, it only runs on the first call. [Ivo]
 * The atkNode constructors $type parameter is now optional and defaults to the
   class name. [Ivo]
 * Several parts of ATK now make use of atkNode::text() method, to support
