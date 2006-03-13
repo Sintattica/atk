@@ -733,7 +733,7 @@
         $dbconfig = atkconfig("db");
          // include DB stuff
         $g_dbinstances[$conn] = &atknew("atk.db.atk".$dbconfig[$conn]["driver"]."db");
-        if (isset($dbconfit[$conn]))
+        if (isset($dbconfig[$conn]))
         {
           $g_dbinstances[$conn]->m_database = $dbconfig[$conn]["db"];
           $g_dbinstances[$conn]->m_user     = $dbconfig[$conn]["user"];
