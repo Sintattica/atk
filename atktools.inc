@@ -74,7 +74,7 @@
     if ($errtype==E_NOTICE || error_reporting()==0)
     {
       // Just show notices in the debug log, but don't influence the program flow
-      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)",DEBUG_WARNING);
+      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
       return;
     }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
