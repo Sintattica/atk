@@ -2,9 +2,9 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
-   * 
+   *
    * @package atk
    * @subpackage utils
    *
@@ -31,7 +31,7 @@
   {
     /**
      * Invoke a method on a class based on a string definition.
-     * The string must be in the format 
+     * The string must be in the format
      * "packagename.subpackage.classname#methodname"
      *
      * @static
@@ -39,12 +39,14 @@
      * @param String $str The "classname#method" to invoke.
      * @param array  $params Any params to be passed to the invoked method.
      *
-     * @return boolean false if the call failed. In all other cases, it 
-     *                 returns the output of the invoked method. (be 
+     * @return boolean false if the call failed. In all other cases, it
+     *                 returns the output of the invoked method. (be
      *                 careful with methods that return false).
      */
     function invokeFromString($str, $params=array())
     {
+      if (strpos($str, "#")===false) return false;
+
       list($class, $method) = explode("#", $str);
       if ($class!="" && $method!="")
       {
@@ -56,8 +58,8 @@
         return false;
       }
       else
-      {        
-        return false;       
+      {
+        return false;
       }
     }
   }
