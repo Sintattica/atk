@@ -222,6 +222,14 @@
    */
   define("ACTION_SUCCESS", 4);
 
+  /**
+   * Trigger flags
+   */
+  define("TRIGGER_NONE", 0);
+  define("TRIGGER_AUTO", 1);
+  define("TRIGGER_PRE",  2);
+  define("TRIGGER_POST", 4);
+  define("TRIGGER_ALL", TRIGGER_PRE|TRIGGER_POST);
 
   /**
    * The atkNode class represents a piece of information that is part of an
@@ -3101,21 +3109,32 @@
     /**
      * Executes a trigger on a add,update or delete action
      *
-     * @param string $trigger funcname like 'postUpdate'
+     * To prevent triggers from executing twice, the method stores an
+     * indication in the record when a trigger is executed.
+     * ('__executed<triggername>')
+     *
+     * @param string $trigger function, such as 'postUpdate'
      * @param array $record record on which action is performed
-     * @param string $mode mode like add or update (isn't this useless??)
-     * @return bool true on case of success or when the trigger isn't returning anything (old atk apps may do that:()
+     * @param string $mode mode like add or update
+     * @return bool true on case of success or when the trigger isn't returning anything (assumes success)
      */
     function executeTrigger($trigger,&$record,$mode=null)
     {
-      $return = $this->$trigger($record);
-      if(!isSet($return))
+      if (!isset($record["__executed".$trigger]))
       {
-        atkdebug("Undefined return:".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
-        $return = true;
+        $return = $this->$trigger($record, $mode);
+
+        $record["__executed".$trigger]=true;
+
+        if(!isset($return))
+        {
+          atkdebug("Undefined return:".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+          $return = true;
+        }
+        if(!$return) atkdebug("$trigger failed!");
+        return $return;
       }
-      if(!$return) atkdebug("$trigger failed!");
-      return $return;
+      return true;
     }
 
     /**

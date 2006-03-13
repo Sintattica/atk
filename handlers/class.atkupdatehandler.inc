@@ -42,7 +42,7 @@
       {
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
-        $this->m_node->preUpdate($record);
+        $this->m_node->executeTrigger("preUpdate", $record);
 
         $this->m_node->validate($record, "update");
 
