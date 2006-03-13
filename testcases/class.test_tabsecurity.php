@@ -23,6 +23,7 @@
    * ATK has now seperate security settings for different tabs within
    * a node. This testcase tests the functionality.
    *
+   * @access private
    * @author harrie <harrie@ibuildings.nl>
    */
   class test_tabsecurity extends atkTestCase

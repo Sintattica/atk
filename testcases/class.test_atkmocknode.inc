@@ -16,6 +16,13 @@
    * $Id$
    */
 
+  /**
+   * Testcases for class atkMockNode.
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @access private
+   */
   class test_atkMockNode extends atkTestCase
   {
     function test_mocknode()
