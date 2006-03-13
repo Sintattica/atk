@@ -48,7 +48,7 @@
       $this->m_steps     = $steps;
       $this->m_default   = $default;
     }
-    
+
     /**
      * Converts a date string (HHMISS) to an
      * array with 2 fields (hours, minutes, seconds).
@@ -60,7 +60,7 @@
       return array("hours" => substr($time, 0, 2),
                    "minutes" => substr($time, 2, 2),
                    "seconds" => substr($time, 4, 2));
-    }    
+    }
 
 
     /**
@@ -313,5 +313,21 @@
       }
       return parent::getSearchCondition($query, $table, $value, $searchmode);
     }
+
+    function parseTime($stringvalue)
+    {
+  		//Assuming hh:mm:ss
+		  $retval = array("hours"=>substr($stringvalue, 0, 2),
+		     "minutes"=>substr($stringvalue, 3, 2),
+		     "seconds"=>substr($stringvalue, 6, 2));
+
+		  if (!$retval["seconds"]) $retval["seconds"]="00";
+		  if (!$retval["minutes"]) $retval["minutes"]="00";
+
+		  if (strlen($retval["hours"])==1)   $retval["hours"] =   "0".$retval["hours"];
+		  if (strlen($retval["minutes"])==1) $retval["minutes"] = "0".$retval["minutes"];
+		  if (strlen($retval["seconds"])==1) $retval["seconds"] = "0".$retval["seconds"];
+		  return $retval;
+	  }
   }
 ?>

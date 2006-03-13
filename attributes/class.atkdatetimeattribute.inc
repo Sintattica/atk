@@ -275,6 +275,14 @@
       return "datetime";
     }
 
+    function parseStringValue($stringvalue)
+    {
+	    $datetime = split(" ",$stringvalue);
+		  $formatsdate = array("dd-mm-yyyy","dd-mm-yy","d-mm-yyyy","dd-m-yyyy","d-m-yyyy","yyyy-mm-dd","yyyy-mm-d","yyyy-m-dd","yyyy-m-d");
+		  $retval=array_merge(atkDateAttribute::parseDate($datetime[0],$formatsdate),
+		                      atkTimeAttribute::parseTime($datetime[1]));
+		  return $retval;
+    }
 
   }
 ?>

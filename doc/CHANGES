@@ -156,6 +156,8 @@ Changes in ATK 5.5
 * Changed text call to atktextcall in atkcustomrecordlist. [Lineke]
 * Added $config_output_gzip to the default configuration file. [Ivo]
 * atkClassLoader::invokeFromString now handles empty strings gracefully. [Ivo]
+* CSV import now decodes datetime values for atkDateTimeAttributes. (bug #590) 
+  [Gabriel]
 
 Changes in ATK 5.4
 ------------------
