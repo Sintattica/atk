@@ -491,6 +491,14 @@
    */
   $config_max_input_size = 70;
 
+  /*********************************** OUTPUT ********************************/
+
+  /**
+   * Set to true, to output pages gzip compressed to the browser if the 
+   * browser supports it.
+   */
+  $config_output_gzip = false;
+
   /********************************** LANGUAGE *******************************/
 
   /**

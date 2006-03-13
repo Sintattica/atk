@@ -31,6 +31,7 @@
    */
   $config_identifier = "atkapp";
 
+
   //----------------- DATABASE CONFIGURATION --------------------
 
   // Currently supported drivers are:
@@ -76,6 +77,7 @@
   // $config_smart_debug[] = array("type" => "request", "key" => "test");
   // $config_smart_debug[] = array("type" => "ip", "list" => array("10.0.0.4"));
   $config_smart_debug = array();
+
 
   //----------------- LAYOUT CONFIGURATION --------------------
 
@@ -126,6 +128,14 @@
   // cursor for paging. Note however, that using cursor keys to navigate
   // through fields is not standard web application behaviour.
   $config_use_keyboard_handler = false;
+
+
+  /*********************************** OUTPUT ********************************/
+
+  // Set to true, to output pages gzip compressed to the browser if the
+  // browser supports it.
+  $config_output_gzip = false;
+
 
   //----------------- SECURITY CONFIGURATION --------------------
 
