@@ -51,11 +51,12 @@
 
     /**
      * Constructor
+     *
      * @param $name Name of the attribute
-     * @param $flags Flags for this attribute
      * @param $optionArray Array with options
      * @param $valueArray Array with values. If you don't use this parameter,
      *                    values are assumed to be the same as the options.
+     * @param $flags Flags for this attribute
      * @param $size database field size ($size[1] can be used for the amount of cols / rows to display, for example: 3c or 5r or just 4)
      *
      */
