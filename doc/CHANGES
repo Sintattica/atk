@@ -50,7 +50,7 @@ Changes in ATK 5.5
 * Several parts of ATK now make use of atkNode::text() method, to support
   node overridable texts. [Sandy, Ivo] 
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
-* Fixed numerous php notices. [Guido]
+* Fixed numerous php notices. [Guido, Ivo]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
   if not present. Minimum requirement is now PHP 4.1. [Guido]
 * code improvement of post/pre triggers and fixed preAdd() call which wasn't 
