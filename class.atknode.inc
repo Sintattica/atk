@@ -1956,7 +1956,7 @@
         {
           if (is_object($listener))
           {
-            $this->addListener($listenerinst);
+            $this->addListener($listener);
           }
           else
           {
