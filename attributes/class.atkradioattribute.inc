@@ -88,8 +88,8 @@
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
-     * @param $record Array with fields
-     * @return piece of html code with radioboxes
+     * @param array $record Array with fields
+     * @return String piece of html code with radioboxes
      */
     function edit($record="", $fieldprefix="")
     {
