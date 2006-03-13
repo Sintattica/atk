@@ -1,12 +1,38 @@
 <?php
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
-  class atkMockDb extends atkDb 
+  /**
+   * A mock database driver.
+   *
+   * This is a dummy database driver that can be used in testcases. The
+   * results that should be returned upon a call to getrows() can be
+   * influenced.
+   *
+   * @author Boy Baukema <boy@ibuildings.nl>
+   * @package atk
+   * @subpackage db
+   */
+  class atkMockDb extends atkDb
   {
     var $m_type = "mock";
     var $m_results = array();
     var $m_regex_results = array();
     var $m_query_history = array();
-          
+
     /**
      * Connect to the database.
      * @return int Connection status
@@ -34,7 +60,7 @@
     function query($query, $offset=-1, $limit=-1)
     {
       $this->m_query_history[] = $query;
-      
+
       if ($this->m_results[$offset][$limit][$query]) return $this->m_results[$offset][$limit][$query];
       if (!empty($this->m_regex_results))
       {
@@ -45,8 +71,8 @@
       }
       return true;
     }
-    
-    
+
+
     /**
      * Get all rows that are the result
      * of a certain specified query
@@ -66,12 +92,12 @@
         return $res;
       return array();
     }
-    
+
     function setResult($result, $query, $offset=-1, $limit=-1)
     {
       $this->m_results[$offset][$limit][$query] = $result;
     }
-    
+
     function setRegexResult($result, $regex, $offset=-1, $limit=-1)
     {
       $this->m_regex_results[$offset][$limit][$regex] = $result;
