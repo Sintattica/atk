@@ -158,6 +158,13 @@ Changes in ATK 5.5
 * atkClassLoader::invokeFromString now handles empty strings gracefully. [Ivo]
 * CSV import now decodes datetime values for atkDateTimeAttributes. (bug #590) 
   [Gabriel]
+* Updated Polish translation. [Przemek]
+* Updated Brazilian Portuguese translation. (bug #614) [Roberto]
+* Updated Spanish translation. [Gabriel, Pedro]
+* Updated French translation. [Joseph]
+* Updated Norwegian translation. [Olav]
+* Updated Italian translation. [Fabio]
+* Updated Dutch translation. [Ivo]
 
 Changes in ATK 5.4
 ------------------
