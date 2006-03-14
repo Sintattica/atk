@@ -8,157 +8,150 @@ Changes in ATK 5.5
 ------------------
 + Added class atkMail for sending e-mails just like the normal mail function
   does, but with the ability to disable the sending of e-mails (and in the
-  future send e-mails to other addresses etc.) [Peter]
+  future send e-mails to other addresses etc.) for debugging purposes. [Peter]
 + Added support for configuration file overrides by other sections. [Peter]
-+ Made atkErrorHandler put notices and php5 strict errors into the atk debug 
++ Made atkErrorHandler put notices and php5 strict errors into the atk debug
   log so developers can see them. [Guido]
-+ Added hide() function for atkboolattribute. [Lineke]
-+ Added validate method to atkDateTimeAttribute which calls the validate
-  method of the atkDateAttribute and the atkTimeAttribute. [Lineke]
-+ Flags for the atkDateTimeAttribute are now also passed to the
++ Added validate() method to atkDateTimeAttribute so both the date and time
+  parts can be validated upon input. [Lineke]
++ Flags for the atkDateTimeAttribute are now also passed to its internal
   atkDateAttribute and the atkTimeAttribute. [Lineke]
-+ Added ability to force update on attribute with setForceUpdate(). [Boy]
++ Added setForceUpdate() method to atkAttribute to force update of its value
+  upon save. [Boy]
 + Added 'mock' database drivers for testing purposes. [Boy]
 + Added atkMockNode to emulate a node, for testing purposes. [Ivo]
-+ Added ability to pass atkmodule=modname to test.php to run only the tests of
-  a specified module. [Ivo]
 + Added atkTestCase baseclass for unittests, that features the ability to
-  replace database connections, nodes and the securitymanager with mock 
+  replace database connections, nodes and the securitymanager with mock
   objects. [Ivo, Boy]
-+ Added addFallbackModule method to atkLanguage. [Ivo]
-+ Added collapsable groups in atkProfileAttribute. [Harrie]
-+ Added 'select all'/'select none' buttons per group in atkProfileAttribute. 
++ Added ability to pass ?atkmodule=modname to test.php to run only the tests
+  of a specified module. [Ivo]
++ Added addFallbackModule() method to atkLanguage. [Ivo]
++ Added collapsible groups feature to atkProfileAttribute. [Harrie]
++ Added 'select all/select none' buttons per group in atkProfileAttribute.
   [Harrie]
-+ Added possibility to authorize usergroups for seeing tabs [Harrie]
++ Added tab security. It is now possible to grant/prevent access to a single
+  tab of a node. [Harrie]
 + Added atkSetNode() counterpart for atkGetNode(), to set nodes to a different
   instance at runtime. [Ivo]
 + Added atkSetSecurityManager() counterpart for atkGetSecurityManager(), to set
   the securitymanager to a different instance at runtime. [Ivo]
 + Added flag AF_RELATION_NO_NULL_ITEM for atkManyToOneRelation to hide the
   select_none option. [Dennis]
-+ The atktext smarty plugin now parses the translated string to a stringparser
-  with values passed in the tag. [Ivo]
++ The {atktext} smarty plugin now features parsing in arbitrary values into a
+  translation by passing the translated string to a stringparser. [Ivo]
 + Added flag AF_MANYBOOL_AUTOLINK to atkManyBoolRelation which shows an add
   link which can be used to add records to the referenced node (if the user
   is allowed to do so). [Guido]
-+ Added translations for critical, unknown_error and update. [Guido]
++ Added translations for critical and unknown errors. [Guido]
 + Added convenience methods text() to atkNode and atkAttribute. [Ivo, Peter]
 + Added $config["automenu"] for meta module. If set to false, the meta module
   does not add any default menuitems. Defaults to true. [Ivo]
-+ atkNode now has build in detection of trigger reruns, so even if triggers
++ atkNode now has built-in detection of trigger reruns, so even if triggers
   such as postAdd are called twice, it only runs on the first call. [Ivo]
-+ Added $config_auth_changerealm to influence whether http authentication 
++ Added $config_auth_changerealm to influence whether http authentication
   should change its realm to allow logout. [ChristianH, Ivo]
-* The atkNode constructors $type parameter is now optional and defaults to the
-  class name. [Ivo]
-* Several parts of ATK now make use of atkNode::text() method, to support
-  node overridable texts. [Sandy, Ivo] 
-* Replaced numerous deprecated text() calls with atktext(). [Guido]
++ Added the ability to reset a database connection. [Boy]
+* The atkNode constructor's $type parameter is now optional and defaults to
+  the class name. [Ivo]
+* Several parts of ATK now make use of the new atkNode::text() method, to
+  support node overridable texts. [Sandy, Ivo]
+* Replaced numerous deprecated text() calls with atktext(). [Guido, Lineke]
 * Fixed numerous php notices. [Guido, Ivo]
 * Fixed PHP pre-4.2.x support by not using the session_cache_expire function
   if not present. Minimum requirement is now PHP 4.1. [Guido]
-* code improvement of post/pre triggers and fixed preAdd() call which wasn't 
-  executed. [Martin]
-* Moved the modifier calling functionallity as much as possible to atkModule.
-  This enables you to implement a generic modifier in a module that can
-  handle any node from any module. [Ivo, Guido]
+* Code improvement of pre/post triggers. Also preAdd() is now properly called
+  from the addDb() method. [Martin]
+* Moved the modifier calling functionality to atkModule. This makes it
+  possible to implement a generic modifier in a module that can handle any
+  node from any module. [Ivo, Guido]
 * If an action has no html output, the dispatcher no longer renders an html
   page. This reduces some overhead on output-less actions such as save/update/
   delete. [Ivo]
 * Fixed bug in the search functionality of the atkManyBoolRelation. [Stefano]
-* Fixed translation for title_select. [Lineke]
+* Fixed translation for the title of the 'select' action. [Lineke]
 * Passed along atkprevlevel to debugger window so the stack doesn't get forked
-  causing the console to draw a blank. [Boy]
-* If no link_select_node translation is found atkManyToOneRelation tries
-  translation of select_a and node. [Boy]
+  causing the console window to draw a blank page. [Boy]
+* If no link_select_node translation is found atkManyToOneRelation tries a
+  generic translation of 'select_a' followed by the node name. [Boy]
 * If no title_module translation is found, atkProfileAttribute will use
-  module name as translation. [Ivo]
-* If extended searching is called directly the resultlist is nested in the 
-  session so after editting we return directly to the results. [Boy]
+  the module name itself as translation. [Ivo]
+* If extended searching is called directly the resultlist is nested in the
+  session so after editing we return directly to the results. [Boy]
 * atkTimeAttribute now properly distinguishes between '0:00' hours and empty
   values. [Ivo]
-* Fixed font size/color change of clickable recordlist headers when hovering
-  over them using the mouse. [Guido]
-* Fixed setTabs call for attributes. [Peter]
+* Fixed a stylesheet problem when using Internet Explorer; the font size and
+  color of clickable recordlist headers would change when hovering over them
+  with the mousepointer. [Guido]
+* Fixed a bug in atkAtttribute's setTabs() method. [Peter]
 * getNode() is now called atkGetNode to be more consistent with naming
   convention. (getNode() is still present as deprecated function). [Ivo]
-* Bugfix in atkListAttribute. All quotes in options are now replaced with
+* Bugfix in atkListAttribute: All quotes in options are now replaced with
   &quot;. [Lineke]
-* Bugfix in atkMultiSelectattribute. Always add escapeSql to value in 
+* Bugfix in atkMultiSelectattribute: always add escapeSql to value in
   checkbox. [Lineke]
-* Include atkattribute in atkTextAttribute. [Lineke]
-* View action now uses getFormButtons to get the appropriate buttons.
+* The 'view' action now uses atkNode's getFormButtons() method to get the
+  appropriate buttons. [Lineke]
+* Fixed a bug when hiding an atkBoolAttribute. [Lineke]
+* When a new search is performed in a recordlist, the screen now jumps to
+  the first page. [Lineke]
+* Fixed several issues in LDAP authentication. [Lineke]
+* Added the ability to add additional headers to a page rendered with atkPage.
   [Lineke]
-* Reset atkstartat to zero after a new search in recordList. [Lineke]
-* Ldap changes to get the authorization through ldap work better. [Lineke]
-* Added extra header option for layout. [Lineke]
-* Initialised $lines in mailreport because this can cause warnings using
-  implode. [Lineke]
-* Smarty changes in regular expression for detecting 0th param. [Lineke]
-* Smarty bugfix in core.read_cache_file.php. More information:
+* Fixed a Smarty regular expression to support '0 params'. [Lineke]
+* Fixed a bug in Smarty's core.read_cache_file.php. More information:
   http://www.phpinsider.com/smarty-forum/viewtopic.php?t=4188&highlight=
   smartytplfunc. [Lineke]
-* Added ability to reset database connection. [Boy]
 * Fixed AF_UNIQUE check in atkNodeValidator (used postvars instead of record
-  for validation)i. [Peter]
+  for validation). [Peter]
 * Fixed some outlook tree icons that were corrupted. [Lineke]
 * Recordlist icon names are now assumed to be lowercase. [Ivo]
 * atkTheme attributes are now case insensitive. [Ivo]
 * atkOneToManyRelation now builds the referential where clause in a separate
   overridable method _getLoadWhereClause(). [Ivo]
-* Using single quotes in smarty tags is now also allowed. [Lineke]
-* Fixed securityissue in atkProfileAttribute. (Giving groups rights on nodes
-  you don't have rights on) [Harrie, Guido]
+* Using single quotes in smarty tags is now allowed. [Lineke]
+* Fixed security issue in atkProfileAttribute. Users can no longer grant
+  privileges they don't have themeselves. [Harrie, Guido]
 * atkNode::getTabs can now handle actions without tabs. [Ivo]
-* Cleanup of atkSecurityManager constructor. [Ivo]
-* AtkManyToOneRelation now uses primary key field as default order if not
-  specified. [Lineke]
-* Remembering tabs should be per record. [Lineke]
+* Cleaned up the atkSecurityManager constructor. [Ivo]
+* atkManyToOneRelation now uses primary key field as default order if no order
+  was specified. [Lineke]
+* The edit screen now remembers the tab the user was on for the current record
+  (used to be record-independent). [Lineke]
 * Fixed translation of atkDateAttribute when the current language was changed
   at runtime. [Ivo]
 * Fixed memory leak with debugger set at level 2 where session would be
   stuffed with debug data. [Boy,Sandy]
-* Fixed php notices being generated by atk_get_trace. [Guido]
-* Reduced memory consumption of traces by removing &nbsp; with plain space
+* Reduced memory consumption of traces by replacing &nbsp; with plain space
   as the preformat tag already takes care of proper formatting. [Guido]
-* Fixed html characters (< and > for example) in traces being interpreted
+* Fixed html tag delimiters ('<' and '>') in traces being interpreted
   by the browser when present in atk_get_trace("html") output. Now they
-  are replaced by html entities (&gt; and &lt; for example). [Guido]
+  are replaced by html entities (&gt; and &lt; respectively). [Guido]
 * Fixed various javascript errors related to showtab which sometimes
-  resulted in all tabs being showed as active. [Guido]
+  resulted in all tabs being displayed as active. [Guido]
 * Fixed cross-browser cursor behaviour when hovering over tabs. [Guido]
-* Updated tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
-* Added htmlentities to actionTitle function. [Sandy]
-* Added useattrib("atkattribute") to atkdateattribute. [Lineke]
-* Fixed (extended) searching in atkOneToManyRelation. [Tjeerd]
-* Fixed translating of html entities in other charsets. [Yury]
-* Changed longdate format (does no longer contain the weekday). [Guido]
+* Upgraded tbsooo opendocument parser from version 0.7.7 to 0.7.8. [Guido]
+* Added htmlentities to atkNode's actionTitle function. [Sandy]
+* Fixed (extended) searching in atkOneToManyRelations. [Tjeerd]
+* Fixed translation of html entities in other charsets. [Yury]
+* Changed longdate format for atkDateAttribute (does no longer contain the
+  weekday by default). [Guido]
 * Fixed selection of the interface language in the atkFCKAttribute. [Guido]
 * Fixed warning generated when interpreting a NULL value in the
   atkDateTimeAttribute. [Guido]
 * Fixed HTML typo (<a/> instead of </a>) in dispatch.php. [Guido]
-* Removed DEBUG_WARNING from atkdebug calls concerning missing
-  translations, php notices and deprecated text() calls. [Guido]
 * Changed permission_action translation in atkProfileAttribute to use the
   atktext fallback feature. [Guido]
 * Fixed bug in Oracle demo installation file (lesson6_deparment table). [Ivo]
 * Fixed hardcoded translations in atkFileAttribute. [Ivo]
-* Mentioned PHP5 requirement for mysql41 driver. [Ivo]
-* Also validate filter if table is an attrib of this node. [Lineke]
-* Reset record in atkonetoonerelation when displaying relation integrated.
+* Mentioned PHP5 requirement for mysql41 driver in the config file. [Ivo]
+* Bugfix when using a filter on an attribute with the same name as the table.
   [Lineke]
-* Bugfix in resolving actions that are registered in a module for a node of 
-  a different module. [Lineke]
-* Debugging with the DEBUG_WARNING flag no longer gets logged/shown 
-  in debuglevel 1 or lower. [Boy]
-* Added DEBUG_WARNING flag to debugging about deprecated functions, 
-  translations and tabrights. [Boy]
+* registerNode can now register additional actions for nodes from other
+  modules. [Lineke]
 * Fixed javascript bug in atkDateAttribute when using German language. [Klaus]
-* Added is_array check in atknode function getTabs. [Lineke]
-* Changed text call to atktextcall in atkcustomrecordlist. [Lineke]
 * Added $config_output_gzip to the default configuration file. [Ivo]
 * atkClassLoader::invokeFromString now handles empty strings gracefully. [Ivo]
-* CSV import now decodes datetime values for atkDateTimeAttributes. (bug #590) 
+* CSV import now decodes datetime values for atkDateTimeAttributes. (bug #590)
   [Gabriel]
 * Updated Polish translation. [Przemek]
 * Updated Brazilian Portuguese translation. (bug #614) [Roberto]
