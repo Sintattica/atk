@@ -207,7 +207,7 @@
   $config_auth_usertable   = "user";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";
-  
+
   // If you work with groups/levels  you need these parameters
   $config_auth_leveltable  = "users";
   $config_auth_levelfield  = "entity";
@@ -216,6 +216,13 @@
   // popup.
   $config_auth_loginform = true;
   $config_max_loginattempts = 5;
+
+  // When changerealm is true, the authentication realm is changed on every login.
+  // Advantage: the user is able to logout using the logout link.
+  // Disadvantage: browser's 'remember password' feature won't work.
+  // This setting only affects the http login box, so it is only relevant if
+  // $config_auth_loginform is set to false.
+  $config_auth_changerealm = false;
 
   // if you use "pop3" or "imap" as authentication, you have to fill in
   // these parameters:
