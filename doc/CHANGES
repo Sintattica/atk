@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changed in ATK 5.5.1
+--------------------
+
 Changes in ATK 5.5
 ------------------
 + Added class atkMail for sending e-mails just like the normal mail function
