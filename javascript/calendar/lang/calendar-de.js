@@ -1,4 +1,5 @@
 // ** I18N
+
 Calendar._DN = new Array
 ("Sonntag",
  "Montag",
@@ -24,18 +25,18 @@ Calendar._MN = new Array
 
 // tooltips
 Calendar._TT = {};
-Calendar._TT["TOGGLE"] = "Wählen Sie den ersten Tag der Woche";
-Calendar._TT["PREV_YEAR"] = "Letztes Jahr (halten Sie für Menü)";
-Calendar._TT["PREV_MONTH"] = "Letzter Monat (halten Sie für Menü)";
+Calendar._TT["TOGGLE"] = "Auswahl Wochentag";
+Calendar._TT["PREV_YEAR"] = "Letztes Jahr (halten Sie für Menu)";
+Calendar._TT["PREV_MONTH"] = "Letzter Monat (halten Sie für Menu)";
 Calendar._TT["GO_TODAY"] = "Zu heute";
-Calendar._TT["NEXT_MONTH"] = "Folgendes Monat (halten Sie für Menü)";
-Calendar._TT["NEXT_YEAR"] = "Folgendes Jahr (halten Sie für Menü)";
-Calendar._TT["SEL_DATE"] = "Wählen Sie Datum";
+Calendar._TT["NEXT_MONTH"] = "Folgendes Monat (halten Sie für Menu)";
+Calendar._TT["NEXT_YEAR"] = "Folgendes Jahr (halten Sie für Menu)";
+Calendar._TT["SEL_DATE"] = "Auswahl Datum";
 Calendar._TT["DRAG_TO_MOVE"] = "Gegenkraft zum Bewegen";
 Calendar._TT["PART_TODAY"] = " (heute)";
 Calendar._TT["MON_FIRST"] = "Zeigen Sie Montag ersten";
 Calendar._TT["SUN_FIRST"] = "zeigen Sie Sonntag ersten";
-Calendar._TT["CLOSE"] = "Einde";
+Calendar._TT["CLOSE"] = "Ende";
 Calendar._TT["TODAY"] = "Heute";
 
 // date formats
