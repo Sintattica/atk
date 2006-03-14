@@ -326,7 +326,7 @@
         }
         else
         {
-          header('WWW-Authenticate: Basic realm="'.atktext("app_title").' - '.strftime("%c",time()).'"');
+          header('WWW-Authenticate: Basic realm="'.atktext("app_title").(atkconfig("auth_changerealm", true)?' - '.strftime("%c",time()):"").'"');
           if (ereg("Microsoft", $_SERVER['SERVER_SOFTWARE'])) header("Status: 401 Unauthorized");
           else header("HTTP/1.0 401 Unauthorized");
           return false;

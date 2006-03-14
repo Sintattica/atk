@@ -47,6 +47,8 @@ Changes in ATK 5.5
   does not add any default menuitems. Defaults to true. [Ivo]
 + atkNode now has build in detection of trigger reruns, so even if triggers
   such as postAdd are called twice, it only runs on the first call. [Ivo]
++ Added $config_auth_changerealm to influence whether http authentication 
+  should change its realm to allow logout. [ChristianH, Ivo]
 * The atkNode constructors $type parameter is now optional and defaults to the
   class name. [Ivo]
 * Several parts of ATK now make use of atkNode::text() method, to support
