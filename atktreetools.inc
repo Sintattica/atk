@@ -55,7 +55,7 @@
       $n = new node($id, $naam, $img);
       $this->m_allnodes[$id] = &$n;
             
-      if (is_array($this->m_parentless[$id]))
+      if (array_key_exists($id,$this->m_parentless) && is_array($this->m_parentless[$id]))
       {
         // In the parentless array, there are children that belong to this new record.
         $n->m_sub = &$this->m_parentless[$id];
