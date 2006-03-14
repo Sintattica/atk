@@ -74,7 +74,7 @@
    * @var String
    */
   $config_meta_handler = "atk.meta.atkmetahandler";
-  
+
   /**
    * Use the given meta grammar as the default meta grammar
    * @var String
@@ -114,7 +114,7 @@
    * this as the application won't constantly have to connect to the database.
    * However, the database server won't be able to handle a lot of persistent
    * connections.
-   * @var bool
+   * @var boolean
    */
   $config_databasepersistent = true;
 
@@ -163,13 +163,13 @@
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_authentication_md5 = true;
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_authentication_cookie = false;
 
@@ -181,7 +181,7 @@
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_authentication_session = true;
 
@@ -193,13 +193,13 @@
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_restrictive = true;
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_security_attributes = false;
 
@@ -300,15 +300,32 @@
 
   /**
    * No vmail.
-   * @var bool
+   * @var boolean
    */
   $config_auth_mail_virtual = false;
 
   /**
    * Use bugzilla-style crypted password storage
-   * @var bool
+   * @var boolean
    */
   $config_auth_usecryptedpassword = false;
+
+  /**
+   * When changerealm is true, the authentication realm is changed on every
+   * login.
+   *
+   * Advantage: the user is able to logout using the logout link.
+   * Disadvantage: browser's 'remember password' feature won't work.
+   *
+   * This setting only affects the http login box, so it is only relevant if
+   * $config_auth_loginform is set to false.
+   *
+   * The default is true for backwardscompatibility reasons. For new
+   * applications, it defaults to false since the skel setting is set to false
+   * by default.
+   * @var boolean
+   */
+  $config_auth_changerealm = true;
 
   /**
    * 0 = no maximum.
@@ -316,9 +333,10 @@
    */
   $config_max_loginattempts = 5;
 
+
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_auth_dropdown = false;
 
@@ -381,7 +399,7 @@
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_display_errors = true;
 
@@ -468,7 +486,7 @@
 
   /**
    * Whatever tabs are enabled or not
-   * @var bool
+   * @var boolean
    */
   $config_tabs = true;
 
@@ -480,7 +498,7 @@
 
   /**
    * Display a 'stack' of the user activities in the top right corner.
-   * @var bool
+   * @var boolean
    */
   $config_stacktrace = true;
 
@@ -494,7 +512,7 @@
   /*********************************** OUTPUT ********************************/
 
   /**
-   * Set to true, to output pages gzip compressed to the browser if the 
+   * Set to true, to output pages gzip compressed to the browser if the
    * browser supports it.
    */
   $config_output_gzip = false;
@@ -523,7 +541,7 @@
    * True: one language switch attributes automatically switches all others on
    * screen.
    * False: each language switch attributes operates only on it's own node
-   * @var bool
+   * @var boolean
    */
   $config_multilanguage_linked = true;
 
@@ -548,7 +566,7 @@
 
   /**
    *
-   * @var bool
+   * @var boolean
    */
   $config_tplcaching = false;
 
@@ -613,7 +631,7 @@
 
   /**
    * Wether or not to enable Internet Explorer extensions
-   * @var bool
+   * @var boolean
    * @todo update this bit of documentation as it doesn't really say much
    */
   $config_enable_ie_extensions = false;
@@ -629,7 +647,7 @@
   /**
    * Forces the themecompiler to recompile the theme all the time
    * This can be handy when working on themes.
-   * @var bool
+   * @var boolean
    */
   $config_force_theme_recompile = false;
 
@@ -671,7 +689,7 @@
   /**
    * Make the recordlist use a javascript
    * confirm box for deleting instead of a seperate page
-   * @var bool
+   * @var boolean
    */
   $config_javascript_confirmation = false;
 
@@ -680,14 +698,14 @@
    * of OpenSSL encryption (atk.security.encryption.atkopensslencryption)
    * It makes sure that the user password is available in the session
    * for the private key.
-   * @var bool
+   * @var boolean
    */
   $config_enable_ssl_encryption = false;
-  
+
   /**
-   * Enable / disable sending of e-mails (works only if the atk.utils.atkMail::mail 
+   * Enable / disable sending of e-mails (works only if the atk.utils.atkMail::mail
    * function has been used for sending e-mails).
-   * @var bool
+   * @var boolean
    */
   $config_mail_enabled = true;
 ?>
