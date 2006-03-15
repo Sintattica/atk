@@ -47,14 +47,14 @@
   
       /* first selected other language */
       //$formname = $prefix.'[multilanguage_current]';
-      $result = '<input id="'.$prefix.'_current" type="hidden" name="'.$formname.'" value="'.$languages[1].'">';
+      $result = '<input id="'.$prefix.'_current" type="hidden" name="'.$formname.'" value="'.($this->m_ownerInstance->m_postvars['atkeditlng']?$this->m_ownerInstance->m_postvars['atkeditlng']:$languages[1]).'">';
   
       /* build selection list */
       $result .= '<select id="'.$prefix.'_lgswitch" name="'.$prefix.'_lgswitch" onchange="changeLanguage(this, \''.$prefix.'\', '.(atkconfig("multilanguage_linked")?'true':'false').')">';    
   
       /* options */
       for ($i = 1; $i < sizeof($languages); $i++)
-        $result .= '<option value="'.$languages[$i].'">'.text('language_'.strtolower($languages[$i])).'</option>';
+        $result .= '<option value="'.$languages[$i].'" '.(strtolower($languages[$i])==strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])?'selected':'').'>'.text('language_'.strtolower($languages[$i])).'</option>';
   
       /* close */
       $result .= '</select>';
