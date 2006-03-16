@@ -319,7 +319,7 @@
       if (is_array($_FILES))
       {
         // php4
-        return ($_FILES[$this->fieldName()]["tmp_name"]=="none");
+        return (!isset($_FILES[$this->fieldName()])||$_FILES[$this->fieldName()]["tmp_name"]=="none");
       }
       else
       {
