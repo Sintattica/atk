@@ -8,6 +8,8 @@ Changed in ATK 5.5.1
 --------------------
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
+* Fixed a bug in the 'remove current file' feature of atkFileAttribute when
+  AF_FILE_PHYSICAL_DELETE was set. [Ivo]
 
 Changes in ATK 5.5
 ------------------

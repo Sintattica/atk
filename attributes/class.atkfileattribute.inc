@@ -171,6 +171,7 @@
      */
     function value2db($rec)
     {
+      atk_var_dump($rec, "this is the file");
       if(isset($_REQUEST["del"])) $del = $_REQUEST["del"];
 
       if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!=""
@@ -186,7 +187,22 @@
       {
         if($this->hasFlag(AF_FILE_PHYSICAL_DELETE))
         {
-          unlink($this->m_dir.$rec[$this->fieldName()]["orgfilename"]);
+          $file = "";
+          if (isset($rec[$this->fieldName()]["postdel"]) && $rec[$this->fieldName()]["postdel"]!="")
+          {
+            atkdebug("postdel set");
+            $file = $rec[$this->fieldName()]["postdel"];
+          }
+          else if ( isset($rec[$this->fieldName()]["orgfilename"]))
+          {
+            atkdebug("postdel not set");
+            $file = $rec[$this->fieldName()]["orgfilename"];
+          }
+          atkdebug("file is now ".$file);
+          if ($file!="")
+          {
+            unlink($this->m_dir.$file);
+          }
         }
         return '';
       }
@@ -277,12 +293,20 @@
              && !$this->hasFlag(AF_FILE_NO_SELECT))
           {
             atkdebug("file selected!");
-            (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on") ? $filename='' : $filename=$rec[$this->fieldName()]["select"];
+            $filename=$rec[$this->fieldName()]["select"];
+            $orgfilename = $filename;
+            $postdel = '';
+            if (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on")
+            {
+              $filename = '';
+              $orgfilename='';
+              $postdel = $rec[$this->fieldName()]["select"];
+            }
             $result = array("tmpfile"=>"",
-
                           "filename"=>$filename,
                           "filesize"=>0,
-                          "orgfilename"=>$filename);
+                          "orgfilename"=>$orgfilename,
+                          "postdel"=>$postdel);
           }  // maybe we atk restored data from session
           elseif(isset($rec[$this->fieldName()]["filename"]) && $rec[$this->fieldName()]["filename"]!="")
           {
