@@ -116,7 +116,11 @@
       }
 
       /* no overloader */
-      else return NULL;
+      else 
+      {
+        $tmp = NULL;
+        return $tmp;
+      }
     }
 
     /**
