@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.5.1
 --------------------
++ Added atkMessageQueue for user notification messages, which can be shown
+  via the atkmessages plugin. [Patrick]  
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
@@ -13,8 +15,6 @@ Changed in ATK 5.5.1
 
 Changes in ATK 5.5
 ------------------
-+ Added atkMessageQueue for user notification messages, which can be shown
-  via the atkmessages plugin. [Patrick]
 + Added class atkMail for sending e-mails just like the normal mail function
   does, but with the ability to disable the sending of e-mails (and in the
   future send e-mails to other addresses etc.) for debugging purposes. [Peter]
