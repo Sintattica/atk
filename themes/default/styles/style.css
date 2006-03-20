@@ -4,7 +4,7 @@ BODY
   color: #000000;
   font-size: 10px;
   font-family: Verdana,Helvetica,Arial;
-  font-weight: none;  
+  font-weight: none;
 }
 
 A:link,
@@ -20,7 +20,7 @@ A:hover
 {
   color: #660000;
   font-size: 10px;
-}  
+}
 
 .stacktrace,
 A.stacktrace:link,
@@ -43,7 +43,7 @@ A.stacktrace:visited
 .fieldlabel
 {
   font-family: verdana, helvetica, arial;
-  font-size: 12px;  
+  font-size: 12px;
   color: #000000;
   text-align: left;
 }
@@ -51,7 +51,7 @@ A.stacktrace:visited
 .field
 {
   font-family: verdana, helvetica, arial;
-  font-size: 12px;  
+  font-size: 12px;
   color: #000000;
   text-align: left;
 }
@@ -59,7 +59,7 @@ A.stacktrace:visited
 .tab
 {
   font-family: verdana, helvetica, arial;
-  font-size: 12px;  
+  font-size: 12px;
   font-weight: bold;
   color: #ffffff;
 }
@@ -67,7 +67,7 @@ A.stacktrace:visited
 .tab_selected
 {
   font-family: verdana, helvetica, arial;
-  font-size: 12px;  
+  font-size: 12px;
   font-weight: bold;
   color: #000000;
 }
@@ -79,7 +79,7 @@ TEXTAREA
   background-color: #eeeeee;
   color: #000000;
   font-family: verdana, helvetica, arial;
-  font-size: 11px;  
+  font-size: 11px;
 }
 
 INPUT.btn,
@@ -100,19 +100,30 @@ INPUT.btn_saveandclose
 .topbg
 {
   background: #52006A;
- 
+
 }
 
 .menubg
 {
-  background: #F00;  
+  background: #F00;
 }
 
 .error,
 .errorlabel
-{  
+{
   color: #FF0000;
   font-family: verdana, helvetica, arial;
-  font-size: 12px;   
+  font-size: 12px;
   text-align: left;
+}
+
+.atkmessages
+{
+  background-color: #EEEEEE;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+  line-height: 200%;
 }
