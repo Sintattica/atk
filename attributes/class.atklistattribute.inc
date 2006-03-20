@@ -186,7 +186,7 @@
         if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
         else $option = atktext($this->m_options[$i],$this->m_ownerInstance->m_module, $this->m_owner);
 
-        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option;
+        $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option.'</option>';
       }
       $result.='</select>';
       return $result;
