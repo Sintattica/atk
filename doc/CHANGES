@@ -12,6 +12,7 @@ Changed in ATK 5.5.1
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
   AF_FILE_PHYSICAL_DELETE was set. [Ivo]
+* atkNode's validateFilter method can now cope with sql 'IN' operator. [Yury]
 
 Changes in ATK 5.5
 ------------------
