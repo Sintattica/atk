@@ -1,6 +1,7 @@
 {$formstart}
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
   {if $helplink!=""}<tr><td align="right" class="helplink">{$helplink}</td></tr>{/if}
+  <tr>
     <td align="center" valign="top">
       <br>
       <div class="atkmessages">
@@ -10,6 +11,7 @@
         {/foreach}
       </div>
     </td>
+  </tr>
   <tr>
     <td valign="top" align="center">{$content}<br></td>
   </tr>
