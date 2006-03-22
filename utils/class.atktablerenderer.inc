@@ -239,8 +239,8 @@
     function getAlignment($row, $col)
     {
       if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col, $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col]!="") return $this->m_cellalignment[$row][$col];
-      if (array_key_exists($col, $this->m_cellalignment) && $this->m_colalignment[$col]!="") return $this->m_colalignment[$col];
-      if (array_key_exists($row, $this->m_cellalignment) && $this->m_rowalignment[$row]!="") return $this->m_rowalignment[$row];
+      if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col]!="") return $this->m_colalignment[$col];
+      if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row]!="") return $this->m_rowalignment[$row];
       return $this->m_defaultalignment;
     }
   }
