@@ -85,7 +85,7 @@
   "error_formdataerror" => "Save failed due to the following reason: ",
   "error_invalid_email" => "Invalid e-mail address",
   "error_node_action_access_denied" => "Sorry, you do not have permission to perform this action.",
-  "error_notnumeric" => "Value not a number",
+  "error_notnumeric" => "Value should be numeric",
   "error_obligatoryfield" => "This field is required",
   "error_password_incorrect" => "The password you entered is incorrect!",
   "error_password_invalid" => "The password you entered is not a valid password!",
