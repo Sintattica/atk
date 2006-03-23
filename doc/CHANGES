@@ -13,6 +13,7 @@ Changed in ATK 5.5.1
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
   AF_FILE_PHYSICAL_DELETE was set. [Ivo]
 * atkNode's validateFilter method can now cope with sql 'IN' operator. [Yury]
+* Also collect memory and timing info at debuglevel 0 for mailreports.[Boy]
 
 Changes in ATK 5.5
 ------------------
