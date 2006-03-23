@@ -184,7 +184,7 @@
   {
     global $g_debug_msg;
     $level = atkconfig("debug");
-    if ($level>0)
+    if ($level>=0)
     {
       if (hasFlag($flags, DEBUG_HTML))
         $txt = htmlentities($txt);
