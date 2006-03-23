@@ -8,6 +8,7 @@ Changed in ATK 5.5.1
 --------------------
 + Added atkMessageQueue for user notification messages, which can be shown
   via the atkmessages plugin. [Patrick]  
++ Added atkCalculatorAttribute for adding columns with calculated values. [Ivo]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
