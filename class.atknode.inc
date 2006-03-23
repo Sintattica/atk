@@ -3157,7 +3157,13 @@
       $recordset = $this->selectDb($selector,"","","","","delete");
 
       if($exectrigger)
-        if (!$this->executeTrigger("preDelete",$recordset)) return atkerror('preDelete failed!');
+      {
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
+  	    {
+  	      $return = $this->executeTrigger("preDelete",$recordset[$i]);
+  	      if (!$return) return false;
+  	    }
+      }
 
       if (count($this->m_cascadingAttribs)>0)
       {
@@ -3281,9 +3287,9 @@
      *
      * If this function returns false the delete action will not continue.
      *
-     * @param array $record The record that has just been deleted.
+     * @param array $record The record that will be deleted.
      */
-    function preDelete()
+    function preDelete($record)
     {
       return true;
     }
