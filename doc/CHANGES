@@ -15,6 +15,7 @@ Changed in ATK 5.5.1
   AF_FILE_PHYSICAL_DELETE was set. [Ivo]
 * atkNode's validateFilter method can now cope with sql 'IN' operator. [Yury]
 * Also collect memory and timing info at debuglevel 0 for mailreports.[Boy]
+* Fixed php warning in atkMlNumberAttribute. [Ivo]
 
 Changes in ATK 5.5
 ------------------

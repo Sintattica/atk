@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * The atkMlNumberAttribute class represents an multilanguage
    * attribute of a node that can have a numeric value.
@@ -46,15 +46,15 @@
      * @return $record
      */
     function validate(&$record, $mode)
-    {     
-      global $config_language;
-      
+    {
+      $languages = atkconfig("supported_languages");
       $value = $record[$this->fieldName()];
 
-      reset($config_language);
-      while (list($i, $language) = each($config_language))
+      foreach ($languages as $language)
+      {
         if (!is_numeric($value[$language]))
           triggerError($record, $this->fieldName(), 'error_notnumeric');
+      }
     }
   }
 ?>
