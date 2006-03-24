@@ -68,14 +68,41 @@
     }
     
     /**
-     * Prepare the query for a limit. 
+     * Prepare the query for a limit.
      * @access private
      * @param String $query The SQL query that is being constructed.
-     * @todo fixme
      */
     function _addLimiter(&$query)
     {
-      // void implementation
+      if ($this->m_offset >= 0 && $this->m_limit > 0)
+      {
+        // although MSSQL doesn't support the following LIMIT syntax, we add it anyway,
+        // in class.atkmssqldb.inc we remove this line and use it's values to limit
+        // the query in a somewhat different way
+        $query .= "\nLIMIT ".$this->m_limit." OFFSET ".$this->m_offset;
+      }
+    }
+    
+    function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true)
+    {
+      if (strstr($name," "))
+        $name = "[$name]";
+      
+      if ($table!="") $fieldname = $name;
+      else $fieldname = $name;
+      $this->m_fields[] = $fieldname;
+
+      if ($quote||$value=="") $value = "'".$value."'";
+
+      $this->m_values[$fieldname] = $value;
+
+      if ($fieldaliasprefix!="")
+      {
+        $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;
+        $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
+
+        $this->m_generatedAlias++;
+      }
     }
   }
 

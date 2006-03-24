@@ -32,12 +32,13 @@
   * - atkManyToOneRelation
   * - atkBoolAttribute
   *
-  * @todo - LIMIT and OFFSET support
-  *       - REGEX support
-  *       - SOUNDEX support
-  *       - Support for DATE attribute
-  *       - Support for TIME attribute
-  *       - Support for DATETIME attribute
+  * @todo
+  * - LIMIT and OFFSET support
+  * - REGEX support
+  * - SOUNDEX support
+  * - Support for DATE attribute
+  * - Support for TIME attribute
+  * - Support for DATETIME attribute
   *
   * Attributes and database functions not stated above are untested
   *
@@ -176,11 +177,12 @@
     * at the beginning of the result set.
     * @param $position the position
     */
-   function seek($position=0)
+   function seek($position=0, $haltOnError=true)
    {
      $result = @mssql_data_seek($this->m_query_id, $position);
      if ($result) $this->m_row = $position;
-     else $this->halt("seek($position) failed: result has ".$this->num_rows()." rows");
+     else if ($haltOnError) $this->halt("seek($position) failed: result has ".$this->num_rows()." rows");
+      return $result;
    }
 
    /**
@@ -410,6 +412,69 @@
    {
      return atktext("db_unknown_mssql_error");
    }
+
+
+    /**
+     * Get all rows that are the result
+     * of a certain specified query
+     *
+     * Note: This is not an efficient way to retrieve
+     * records, as this will load all records into one
+     * array into memory. If you retrieve a lot of records,
+     * you might hit the memory_limit and your script will die.
+     *
+     * @param $query the query
+     * @return array with rows
+     */
+    function getrows($query, $offset=-1, $limit=-1)
+    {
+      $result = array();
+
+      // MSSQL doesn't support LIMIT syntax as MySQL and PostgreSQL do.
+      // We have to seek through the results to go to a certain offset 
+      // and retrieve only the number of rows specified in the limit. 
+      // In class.atkmssqlquery.inc we add a fake LIMIT clause which we
+      // remove here and transform to values for the offset and limit
+      // parameters.
+      if ($offset == -1 && $limit == -1)
+      {
+        $lines = explode("\n", $query);
+        if (count($lines) > 0 && strpos($lines[count($lines) -1], 'LIMIT') === 0)
+        {
+          $last = array_pop($lines);
+          $query = implode("\n", $lines);
+          if (preg_match('/LIMIT ([0-9]+) OFFSET ([0-9]+)/', $last, $matches))
+          {
+            $limit = $matches[1];
+            $offset = $matches[2];
+          }
+        }
+      }
+
+      $this->query($query);
+      if ($offset > 0)
+      {
+        if (!$this->seek($offset, false)) 
+          return array();
+      }
+
+      if ($limit > 0)
+      {
+        for ($i = 0; $i < $limit; $i++)
+        {
+          if (!$this->next_record()) break;
+          $result[] = $this->m_record;
+        }
+      }
+      else
+      {
+        while ($this->next_record())
+          $result[] = $this->m_record;
+      }
+
+      return $result;
+    }
+
 
 
  }
