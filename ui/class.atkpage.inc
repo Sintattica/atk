@@ -374,9 +374,6 @@
      */
     function atkPage()
     {
-      // Load default app-level stylesheet.
-      $this->register_style((file_exists(atkconfig("atkroot")."./style.css") ? "." : atkconfig("atkroot")."atk").'/style.css');
-
       /** @todo: Move this to the places where the tabscript is registered. */
       // Load default tab show script.
       $this->register_loadscript('if ( window.showTab ) {showTab(\'' . (isset($ATK_VARS['atktab']) ? $res.=$ATK_VARS['atktab'] : '') . '\');}');
