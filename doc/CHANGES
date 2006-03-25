@@ -18,6 +18,9 @@ Changed in ATK 5.5.1
 * Fixed php warning in atkMlNumberAttribute. [Ivo]
 * Fixed error in triggerError method when atkLanguage was not imported. [Ivo]
 * Fixed table definition of lesson 7 of the demo application. [Ivo]
+* The preDelete trigger will now be called separately for each (to be) deleted
+  record (instead of being called only once with the complete recordset). THIS 
+  CHANGE IS NOT BACKWARDS COMPATIBLE! [Peter,Sandy]
 
 Changes in ATK 5.5
 ------------------
