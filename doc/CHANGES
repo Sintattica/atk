@@ -23,6 +23,8 @@ Changed in ATK 5.5.1
   record (instead of being called only once with the complete recordset). THIS 
   CHANGE IS NOT BACKWARDS COMPATIBLE! [Peter, Sandy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
+- Default styles.css file from an application's root is no longer loaded by 
+  default. [Ivo]
 
 Changes in ATK 5.5
 ------------------
