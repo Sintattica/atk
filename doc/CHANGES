@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.5.1
 --------------------
+* Temporarily disabled searching and sorting in the recordlist
+  of an 1:n relation. This feature is broken. [Martin] 
 + Added atkMessageQueue for user notification messages, which can be shown
   via the atkmessages plugin. [Patrick]  
 + Added atkCalculatorAttribute for adding columns with calculated values. [Ivo]
