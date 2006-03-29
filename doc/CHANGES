@@ -12,6 +12,7 @@ Changed in ATK 5.5.1
 + Added setText method to atkLanguage. [Sandy]
 + Added fetchvalues method to atkBoolRelation, it now returns 0 if nothing
   is checked instead of NULL (The atkOrgRec also gives 0). [Sandy]
++ Added atkPluginTestCase class for easier testing of Smarty plugins. [Ivo]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
