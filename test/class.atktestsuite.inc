@@ -16,7 +16,7 @@
    */
 
   /**
-   * Includes
+   * @internal Includes
    */
   require_once(atkconfig("atkroot")."atk/atktools.inc");
   require_once(atkconfig("atkroot")."atk/test/simpletest/unit_tester.php");
