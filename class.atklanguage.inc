@@ -65,6 +65,13 @@
     var $m_overridemodules = array("langoverrides");
 
     /**
+     * List of custum language string overrides
+     * @access private
+     * @var array
+     */
+    var $m_customStrings = array();
+
+    /**
      * Default Constructor
      * @access private
      */
@@ -237,6 +244,10 @@
       // first find node specific string.
       $modules = $this->_getModules($module, $firstfallback, $modulefallback);
 
+      // First check custom Strings
+      if(isset($this->m_customStrings[$lng]) && isset($this->m_customStrings[$lng][$key]))
+        return $this->m_customStrings[$lng][$key];
+
       if ($node!="")
       {
         foreach ($modules as $modname)
@@ -345,6 +356,19 @@
         return $this->m_cachedlang[$module][$lng][$key];
       }
       return "";
+    }
+
+    /**
+     * Set a custom language string
+     *
+     * @param string $code The code of the custom string
+     * @param string $text Text
+     * @param string $lng Language
+     */
+    function setText($code,$text,$lng)
+    {
+      if(!isset($this->m_customStrings[$lng])) $this->m_customStrings[$lng]=array();
+      $this->m_customStrings[$lng][$code]=$text;
     }
 
   }
