@@ -140,10 +140,10 @@
     {
       global $g_modules;
       $curdir = getcwd();
-      if ($chdir)
+      if (chdir(atkconfig('modulepath')))
       {
         $modulepath = getcwd();
-        if ($chdir)
+        if (chdir($curdir))
         {
           foreach ($g_modules as $name => $path)
           {
