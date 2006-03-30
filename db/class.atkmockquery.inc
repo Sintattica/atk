@@ -17,6 +17,11 @@
    */
 
   /**
+   * Base include
+   */
+  atkimport("atk.db.atkquery");
+
+  /**
    * A mock query abstraction.
    *
    * This is a dummy query abstraction that can be used in testcases.
