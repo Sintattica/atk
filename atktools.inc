@@ -216,7 +216,7 @@
 
   function atkGetTimingInfo()
   {
-    return "[".elapsed().(function_exists("memory_get_usage")?" / ".sprintf("%02.02f", (memory_get_usage()/1024/1024))."MB":"")."] ";
+    return "[".elapsed().(atkconfig('debug')>0 && function_exists("memory_get_usage")?" / ".sprintf("%02.02f", (memory_get_usage()/1024/1024))."MB":"")."] ";
   }
 
   /**
