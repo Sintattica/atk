@@ -97,8 +97,6 @@
      */
     function run($reporttype="html", $module="")
     {
-      global $g_modules, $config_module_path;
-
       $test = &new GroupTest("Full ATK test");
 
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
@@ -119,11 +117,7 @@
       else 
       {
         $traverser->traverse(".");
-        foreach ($g_modules as $name => $path) {
-          if (strpos($path, $config_module_path . "/") !== 0) {
-            $traverser->traverse($path);
-          }
-        }
+        $this->_traverseExtraModules();
       }
       if($reporttype=="html")
       {
@@ -132,6 +126,40 @@
       else
       {
         $test->run(new TextReporter());
+      }
+    }
+    
+    /**
+     * Traverse modules that are outside the root
+     * 
+     * Here we actually change directories to all the module directories
+     * then check if the directory is inside the application root.
+     * If it is, we leave it alone, otherwise we traverse that too.
+     */
+    function _traverseExtraModules()
+    {
+      global $g_modules;
+      $curdir = getcwd();
+      if ($chdir)
+      {
+        $modulepath = getcwd();
+        if ($chdir)
+        {
+          foreach ($g_modules as $name => $path)
+          {
+            if (chdir($path))
+            {
+              $fullpath = getcwd();
+              if (chdir($curdir))
+              {
+                if (substr($fullpath,0,strlen($curdir))!==$curdir)
+                {
+                  $traverser->traverse($path);
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
