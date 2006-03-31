@@ -61,7 +61,7 @@
     {
       $this->m_query_history[] = $query;
 
-      if ($this->m_results[$offset][$limit][$query]) return $this->m_results[$offset][$limit][$query];
+      if (isset($this->m_results[$offset][$limit][$query])) return $this->m_results[$offset][$limit][$query];
       if (!empty($this->m_regex_results))
       {
         foreach ($this->m_regex_results[$offset][$limit] as $regex => $result)
