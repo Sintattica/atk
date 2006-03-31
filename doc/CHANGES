@@ -32,6 +32,8 @@ Changed in ATK 5.5.1
 * Fixed loading of atktab from URL. [Boy]
 * Fixed loading of tests from modules outside the application root which would
   sometimes do tests twice, with special module paths. [Boy]
+* The atkdebugger is now passed an atkprevlevel of 0 instead of the originating
+  atklevel (which caused it to lose it's debugging info). [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by 
   default. [Ivo]
