@@ -7,13 +7,14 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changed in ATK 5.5.1
 --------------------
 + Added atkMessageQueue for user notification messages, which can be shown
-  via the atkmessages plugin. [Patrick]  
+  via the atkmessages plugin. [Patrick]
 + Added atkCalculatorAttribute for adding columns with calculated values. [Ivo]
 + Added setText method to atkLanguage. [Sandy]
 + Added fetchvalues method to atkBoolRelation, it now returns 0 if nothing
   is checked instead of NULL (The atkOrgRec also gives 0). [Sandy]
 + Added atkPluginTestCase class for easier testing of Smarty plugins. [Ivo]
 + Included parent class for the atkmockquery. [Martin]
++ Added type="text/css" attribute to <style> tags. [Guido]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
@@ -25,17 +26,17 @@ Changed in ATK 5.5.1
 * Fixed table definition of lesson 7 of the demo application. [Ivo]
 * Fixed bug where postDelete trigger would be called twice. [Peter, Sandy]
 * The preDelete trigger will now be called separately for each (to be) deleted
-  record (instead of being called only once with the complete recordset). THIS 
+  record (instead of being called only once with the complete recordset). THIS
   CHANGE IS NOT BACKWARDS COMPATIBLE! [Peter, Sandy]
 * Temporarily disabled searching and sorting in the recordlist
-  of an 1:n relation. This feature is broken. [Martin] 
+  of an 1:n relation. This feature is broken. [Martin]
 * Fixed loading of atktab from URL. [Boy]
 * Fixed loading of tests from modules outside the application root which would
   sometimes do tests twice, with special module paths. [Boy]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the originating
   atklevel (which caused it to lose it's debugging info). [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
-- Default styles.css file from an application's root is no longer loaded by 
+- Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
 
 Changes in ATK 5.5
