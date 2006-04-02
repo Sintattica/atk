@@ -196,10 +196,10 @@
       */
      function register_hiddenvars($hiddenvars)
      {
-     	 foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue)
-     	 {
-     	 	 $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
-     	 }
+       foreach ($hiddenvars as $hiddenvarname => $hiddenvarvalue)
+       {
+         $this->m_hiddenvars[$hiddenvarname] = $hiddenvarvalue;
+       }
      }
 
     /**
@@ -226,9 +226,9 @@
         $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
 
       for ($i = 0; $i < count($this->m_stylecode); $i++)
-	      $res.= '<style> '.$this->m_stylecode[$i].' </style>'."\n";
+        $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
 
-	    $favico = atkconfig("defaultfavico");
+      $favico = atkconfig("defaultfavico");
       if ($favico!="")
       {
         $res.= '<link rel="icon" href="'.$favico.'" type="image/x-icon">
@@ -356,16 +356,16 @@
     function renderHiddenVars()
     {
       $page = "";
-    	if ($this->m_hiddenvars)
-    	{
-    	  $page.= "\n".'<div id="hiddenvars" style="display: none">';
-    		foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue)
-    		{
-        	$page.="\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
-    		}
-    		$page.="\n</div>";
-    	}
-    	return $page;
+      if ($this->m_hiddenvars)
+      {
+        $page.= "\n".'<div id="hiddenvars" style="display: none">';
+        foreach ($this->m_hiddenvars as $hiddenvarname => $hiddenvarvalue)
+        {
+          $page.="\n <span id='$hiddenvarname'>$hiddenvarvalue</span>";
+        }
+        $page.="\n</div>";
+      }
+      return $page;
     }
 
     /**
