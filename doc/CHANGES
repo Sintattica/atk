@@ -15,6 +15,7 @@ Changed in ATK 5.5.1
 + Added atkPluginTestCase class for easier testing of Smarty plugins. [Ivo]
 + Included parent class for the atkmockquery. [Martin]
 + Added type="text/css" attribute to <style> tags. [Guido]
++ Added support for row and col span in the atkTableRenderer. [Sandy]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
