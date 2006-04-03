@@ -27,7 +27,11 @@
 
   define("TBL_LEFT", 1);
   define("TBL_RIGHT", 2);
-  define("TBL_CENTER", 3);
+  define("TBL_CENTER", 4);
+  define("TBL_TOP",8);
+  define("TBL_BOTTOM",16);
+  define("TBL_MIDDLE",32);
+
 
   /**
    * Table renderer class. Makes rendering of html tables easier.
@@ -45,6 +49,7 @@
     var $m_cellalignment = array();
     var $m_rowalignment = array();
     var $m_colalignment = array();
+    var $m_span = array();
     var $m_defaultalignment = TBL_LEFT;
 
     /**
@@ -100,6 +105,38 @@
     function setColAlignment($col, $alignment)
     {
       $this->m_colalignment[$col] = $alignment;
+    }
+
+    /**
+     * @access private
+     */
+    function _setSpan($row,$col,$span,$type="col")
+    {
+      $this->m_span[$row][$col] = array("span"=>$span,"type"=>$type);
+    }
+
+    /**
+     * Set the colspan for a cel
+     *
+     * @param int $row The row to set
+     * @param int $col The col to set
+     * @param int $span The span width
+     */
+    function setColSpan($row,$col,$span)
+    {
+      $this->_setSpan($row,$col,$span,"col");
+    }
+
+    /**
+     * Set the rowspan for a cel
+     *
+     * @param int $row The row to set
+     * @param int $col The col to set
+     * @param int $span The span width
+     */
+    function setRowSpan($row,$col,$span)
+    {
+      $this->_setSpan($row,$col,$span,"row");
     }
 
     /**
@@ -162,7 +199,8 @@
         for ($col=0, $_col=count($data[$row]); $col<$_col; $col++)
         {
           $align = $this->_alignmentStr($this->getAlignment($row, $col));
-          $output.=$pre." ".$align.">".$data[$row][$col].$post;
+          $colspan = $this->getSpan($row,$col);
+          $output.=$pre." ".$align.(!$colspan?"":" ".$this->_spanStr($colspan)).">".$data[$row][$col].$post;
         }
 
         // Check if we must pad
@@ -227,13 +265,16 @@
      */
     function _alignmentStr($alignment)
     {
-      switch ($alignment)
-      {
-        case TBL_LEFT: return 'align="left"';
-        case TBL_RIGHT: return 'align="right"';
-        case TBL_CENTER: return 'align="center"';
-        default: return '';
-      }
+      $ret='';
+      if(hasFlag($alignment,TBL_LEFT)) $ret.='align="left" ';
+      elseif(hasFLag($alignment,TBL_RIGHT)) $ret.='align="right" ';
+      elseif(hasFlag($alignment,TBL_CENTER)) $ret.='align="center" ';
+
+      if(hasFlag($alignment,TBL_TOP)) $ret.='valign="top" ';
+      elseif(hasFLag($alignment,TBL_BOTTOM)) $ret.='valign="bottom" ';
+      elseif(hasFlag($alignment,TBL_MIDDLE)) $ret.='valign="middle" ';
+
+      return $ret;
     }
 
     function getAlignment($row, $col)
@@ -242,6 +283,28 @@
       if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col]!="") return $this->m_colalignment[$col];
       if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row]!="") return $this->m_rowalignment[$row];
       return $this->m_defaultalignment;
+    }
+
+    /**
+     * @access private
+     */
+    function _spanStr($span)
+    {
+      if($span["type"]=="row")
+      {
+        return 'rowspan="'.$span["span"].'"';
+      }
+      else
+      {
+        return 'colspan="'.$span["span"].'"';
+      }
+    }
+    function getSpan($row,$col)
+    {
+      if(array_key_exists($row,$this->m_span) &&
+         array_key_exists($col,$this->m_span[$row]) &&
+         is_array($this->m_span[$row][$col])) return $this->m_span[$row][$col];
+      return false;
     }
   }
 
