@@ -300,6 +300,14 @@
   define("NOSTORE"   ,0);
 
   /**
+   * Do not load this attribute
+   *
+   * Storage type flag, used by the storageType() and related methods
+   */
+  define("NOLOAD"   ,0);
+
+
+  /**
    * Store before all other ('normal') attributes (?)
    *
    * Storage type flag, used by the storageType() and related methods
@@ -1578,6 +1586,9 @@
      *                          record is loaded.
      *             ADDTOQUERY - addtoquery() must be called, so the attribute
      *                          can nest itself in the master query.
+     *             NOLOAD     - nor load(), nor addtoquery() should be
+     *                          called (attribute can not be loaded from the
+     *                          database)
      */
     function loadType($mode, $searching=false)
     {
