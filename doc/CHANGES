@@ -36,6 +36,8 @@ Changed in ATK 5.5.1
   sometimes do tests twice, with special module paths. [Boy]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the originating
   atklevel (which caused it to lose it's debugging info). [Boy]
+* atkMLSplitter now uses atklng variable instead of 
+  deprecated lng variable. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]

@@ -177,8 +177,7 @@
     function addMlCondition(&$query,&$node,$mode,$excludeList=NULL,$includeList=NULL)
     {
       global $ATK_VARS;
-
-      $lng = (isset($ATK_VARS["lng"])?$ATK_VARS["lng"]:"");
+      $lng = (isset($ATK_VARS["atklng"])?$ATK_VARS["atklng"]:"");
 
       if (!$lng) $lng = $node->m_defaultlanguage;
 

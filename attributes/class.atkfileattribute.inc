@@ -171,7 +171,6 @@
      */
     function value2db($rec)
     {
-      atk_var_dump($rec, "this is the file");
       if(isset($_REQUEST["del"])) $del = $_REQUEST["del"];
 
       if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!=""
