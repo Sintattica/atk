@@ -116,6 +116,18 @@
 	    return atktext("no", "atk");
     }
 
+    function fetchValue($postvars)
+    {
+      if (is_array($postvars)&&isset($postvars[$this->fieldName()]))
+      {
+        return $postvars[$this->fieldName()];
+      }
+      else
+      {
+        return 0;
+      }
+    }
+
     function getSearchModes()
     {
       // exact match and substring search should be supported by any database.

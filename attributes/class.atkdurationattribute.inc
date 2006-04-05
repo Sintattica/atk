@@ -90,7 +90,7 @@
           {
             $result .= '<option value="'.$h.'" ';
             if ($curhours==$h) $result.= "selected";
-            $result .='>'.$h.' '.text('hours');
+            $result .='>'.$h.' '.atktext('hours','atk');
             if ($this->m_resolution_min<=60)
             {
               $h++;
@@ -111,7 +111,7 @@
           {
             $result .= '<option value="'.$m.'" ';
             if ($curminutes==$m) $result.= "selected";
-            $result.='>'.$m.' '.text('minutes');
+            $result.='>'.$m.' '.atktext('minutes','atk');
             if ($this->m_resolution_min<=1)
             {
               $m++;
