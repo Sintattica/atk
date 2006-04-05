@@ -17,6 +17,7 @@ Changed in ATK 5.5.1
 + Added type="text/css" attribute to <style> tags. [Guido]
 + Added support for row and col span in the atkTableRenderer. [Sandy]
 + Added NOLOAD constant for use in atkAttribute's loadType() method. [Ivo]
++ Added ability to set a CSS class per row, column or cell. [Guido]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when

@@ -51,6 +51,10 @@
     var $m_colalignment = array();
     var $m_span = array();
     var $m_defaultalignment = TBL_LEFT;
+    var $m_cellclass = array();
+    var $m_rowclass = array();
+    var $m_colclass = array();
+    var $m_defaultclass = "";
 
     /**
      * Default constructor
@@ -105,6 +109,50 @@
     function setColAlignment($col, $alignment)
     {
       $this->m_colalignment[$col] = $alignment;
+    }
+
+    /**
+     * Set the default class for all cells in the table.
+     *
+     * @param string $class Classname to be used by default for table cells
+     */
+    function setDefaultClass($class)
+    {
+      $this->m_defaultclass = $class;
+    }
+
+    /**
+     * Set the class for a particular cell.
+     *
+     * @param int $row The row to set.
+     * @param int $col The column to set.
+     * @param string $class Classname to be used by default for table cells
+     */
+    function setClass($row, $col, $class)
+    {
+      $this->m_cellclass[$row][$col] = $class;
+    }
+
+    /**
+     * Set the class for an entire row.
+     *
+     * @param int $row The row to set.
+     * @param string $class Classname to be used by default for table cells
+     */
+    function setRowClass($row, $class)
+    {
+      $this->m_rowclass[$row] = $class;
+    }
+
+    /**
+     * Set the class for an entire column.
+     *
+     * @param int $col The column to set.
+     * @param string $class Classname to be used by default for table cells
+     */
+    function setColClass($col, $class)
+    {
+      $this->m_colclass[$col] = $class;
     }
 
     /**
@@ -199,21 +247,23 @@
         for ($col=0, $_col=count($data[$row]); $col<$_col; $col++)
         {
           $align = $this->_alignmentStr($this->getAlignment($row, $col));
-          $colspan = $this->getSpan($row,$col);
-          $output.=$pre." ".$align.(!$colspan?"":" ".$this->_spanStr($colspan)).">".$data[$row][$col].$post;
+          $colspan = $this->_spanStr($this->getSpan($row, $col));
+          $class = $this->_classStr($this->getClass($row, $col));
+          $output.=$pre." ".$align." ".$class." ".$colspan.">" . $data[$row][$col] . $post;
         }
 
         // Check if we must pad
         $align = $this->_alignmentStr($this->getAlignment($row, $col));
+        $class = $this->_classStr($this->getClass($row, $col));
         if ($col==$max-2)
         {
           // Must add only one
-          $output.=$pre." ".$align.">&nbsp;".$post;
+          $output.=$pre." ".$align." ".$class.">&nbsp;".$post;
         }
         else if ($col<$max-2)
         {
           // Must add more
-          $output.=$pre." ".$align.' colspan="'.($max-$col-1).'">&nbsp;'.$post;
+          $output.=$pre." ".$align.' '.$class.' colspan="'.($max-$col-1).'">&nbsp;'.$post;
         }
 
         $output.="</tr>\n";
@@ -277,12 +327,42 @@
       return $ret;
     }
 
+    /**
+     * Constructs the html class attribute string using a classname
+     *
+     * @access private
+     * @param String $class Classname
+     * @return String HTML Class attribute string
+     */
+    function _classStr($class)
+    {
+      if (empty($class))
+        return "";
+      else
+        return 'class="'.$class.'"';
+    }
+
     function getAlignment($row, $col)
     {
       if (array_key_exists($row, $this->m_cellalignment) && array_key_exists($col, $this->m_cellalignment[$row]) && $this->m_cellalignment[$row][$col]!="") return $this->m_cellalignment[$row][$col];
       if (array_key_exists($col, $this->m_colalignment) && $this->m_colalignment[$col]!="") return $this->m_colalignment[$col];
       if (array_key_exists($row, $this->m_rowalignment) && $this->m_rowalignment[$row]!="") return $this->m_rowalignment[$row];
       return $this->m_defaultalignment;
+    }
+
+    /**
+     * Determines the class to be set for a specific cell
+     *
+     * @param Integer $row Row number of the cell
+     * @param Integer $col Column number of the cell
+     * @return String Class string of the cell
+     */
+    function getClass($row, $col)
+    {
+      if (array_key_exists($row, $this->m_cellclass) && array_key_exists($col, $this->m_cellclass[$row]) && $this->m_cellclass[$row][$col]!="") return $this->m_cellclass[$row][$col];
+      if (array_key_exists($col, $this->m_colclass) && $this->m_colclass[$col]!="") return $this->m_colclass[$col];
+      if (array_key_exists($row, $this->m_rowclass) && $this->m_rowclass[$row]!="") return $this->m_rowclass[$row];
+      return $this->m_defaultclass;
     }
 
     /**
@@ -299,6 +379,7 @@
         return 'colspan="'.$span["span"].'"';
       }
     }
+
     function getSpan($row,$col)
     {
       if(array_key_exists($row,$this->m_span) &&
