@@ -65,15 +65,14 @@
         $selectedPk[] = $newselected;
        }
 
+      $filter = "";
       if ($this->m_destinationFilter!="")
       {
         $parser = new atkStringParser($this->m_destinationFilter);
         $filter = $parser->parse($record);
-        $recordset = $this->m_destInstance->selectDb($filter);
       }
-      else
       // now select all records
-      $recordset = $this->m_destInstance->selectDb();
+      $recordset = $this->m_destInstance->selectDb($filter);
 
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
