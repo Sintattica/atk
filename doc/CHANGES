@@ -25,6 +25,8 @@ Changed in ATK 5.5.1
   and remoteKey detection. The use of setRemoteKey and setLocalKey is no
   longer necessary if the foreign keys have the same name with the relation
   with _id appended to it. [Ivo]
++ Added atkManyBoolRelation::setCols() method to set the number of columns
+  with checkboxes. [Ivo]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when

@@ -40,20 +40,6 @@
     var $m_cols=3;
 
     /**
-     * Constructor.
-     * @param String $name The name of the relation.
-     * @param String $link The full name of the node that is used as
-     *                     intermediairy node.
-     * @param String $destination The full name of the node that is the
-     *                            destination end of the relationship.
-     * @param int $flags Attribute flags.
-     */
-    function atkManyBoolRelation($name, $link, $destination, $flags=0)
-    {
-      $this->atkManyToManyRelation($name, $link, $destination, $flags);
-    }
-
-    /**
      * Return a piece of html code to edit the attribute
      * @param $record Current record
      * @return String piece of html code
@@ -99,7 +85,7 @@
                      atktext("check_none", "atk").
                 '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                      atktext("invert_selection", "atk").'</a>]</font></div>';
-       	
+
       $result.= '<table border="0"><tr>';
       for ($i=0;$i<count($recordset);$i++)
       {
@@ -142,6 +128,11 @@
         $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
 
       return $result;
+    }
+
+    function setCols($cols)
+    {
+      $this->m_cols = $cols;
     }
 
     /**
@@ -283,7 +274,7 @@
     		$this->createLink();
     		$query->addJoin($this->m_linkInstance->m_table, $this->fieldName(), $table.".".$this->m_ownerInstance->primaryKeyField()."=".$this->fieldName().".".$this->getLocalKey(),FALSE );
     		$query->setDistinct(TRUE);
-    		
+
         if (count($value)==1) // exactly one value
         {
           $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),escapeSQL($value[0])));
