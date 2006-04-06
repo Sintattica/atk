@@ -187,7 +187,7 @@
     }
 
     /**
-     * Get the current language, either from url or if that's not present, from the config.
+     * Get the current language, either from url, or if that's not present, from what the user has set.
      * @static
      * @return String current language.
      */
@@ -195,8 +195,77 @@
     {
       global $ATK_VARS;
       if (isset($ATK_VARS["atklng"])) { $lng = $ATK_VARS["atklng"]; } // we first check for an atklng variable
-      else { $lng = atkconfig("language", atkconfig("lang")); }
+      else { $lng = atkLanguage::getUserLanguage(); }
       return strtolower($lng);
+    }
+    
+    /**
+     * Get the selected language of the current user if he/she set one, 
+     * otherwise we try to get it from the browser settings and if even THAT
+     * fails, we return the default language.
+     *
+     * @static 
+     * @return unknown
+     */
+    function getUserLanguage()
+    {
+      $supported = atkLanguage::getSupportedLanguages();
+      
+      $sessionmanager = &atkGetSessionManager();
+      if (!empty($sessionmanager))
+      {
+        $userinfo = getUser();
+        $fieldname = atkconfig('auth_languagefield');
+        if ($userinfo[$fieldname] && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
+      }
+      
+      // Otherwise we check the headers
+      $headerlng = atkLanguage::getLanguageFromHeaders();
+      if ($headerlng && in_array($headerlng,$supported)) return $headerlng;
+      
+      // We give up and just return the default language
+      return atkconfig('language');
+    }
+    
+    /**
+     * Get the primary languagecode that the user has set in his/her browser
+     *
+     * @return String The languagecode
+     */
+    function getLanguageFromHeaders()
+    {
+      if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']))
+      {
+        $langs = split ('[,;]',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        if ($langs[0]!="")
+        {
+          $elems=explode("-", $langs[0]); // lng might contain a subset after the dash.
+          $autolng=$elems[0];
+        }
+      }
+      return $autolng;
+    }
+    
+    /**
+     * Get the languages supported by the application
+     *
+     * @return Array An array with the languages supported by the application.
+     */
+    function getSupportedLanguages()
+    {
+      static $s_supported = array();
+      
+      $supportedlanguagesdir = atkconfig('supported_languages_dir');
+      if (empty($s_supported) && $supportedlanguagesdir)
+      {
+        atkimport('atk.utils.atkdirectorytraverser');
+        $supportedlanguagescollector = new getSupportedLanguagesCollector();
+        $traverser = new atkDirectoryTraverser();
+        $traverser->addCallbackObject($supportedlanguagescollector);
+        $traverser->traverse($supportedlanguagesdir);
+        $s_supported = $supportedlanguagescollector->getLanguages();
+      }
+      return $s_supported;
     }
 
     /**
@@ -370,6 +439,30 @@
       if(!isset($this->m_customStrings[$lng])) $this->m_customStrings[$lng]=array();
       $this->m_customStrings[$lng][$code]=$text;
     }
-
+  }
+  
+  
+  /**
+   * A collector 
+   *
+   */
+  class getSupportedLanguagesCollector
+  {
+    var $m_languages=array();
+    
+    function visitFile($fullpath)
+    {
+      if (substr($fullpath,strlen($fullpath)-4)==='.lng')
+      {
+        $exploded = explode('/',$fullpath);
+        $lng = array_pop($exploded);
+        $this->m_languages[] = substr($lng,0,2);
+      }
+    }
+    
+    function getLanguages()
+    {
+      return $this->m_languages;
+    }
   }
 ?>

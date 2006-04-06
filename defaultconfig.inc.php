@@ -263,6 +263,12 @@
    *
    * @var String
    */
+  $config_auth_languagefield   = "lng";
+  
+  /**
+   *
+   * @var String
+   */
   $config_auth_accountdisablefield = "";
 
   /**
@@ -554,6 +560,20 @@
    * @var String
    */
   $config_atklangcheckmodule = 2;
+  
+  /**
+   * Where ATK should look for it's supported languages
+   * 
+   * In your own application you should probably make this point
+   * to the directory with the most language translations.
+   * Leaving this empty will turn off functionality where we check
+   * for the user language in the browser or in the user session and will
+   * make sure the application is always presented in the default language.
+   * 
+   * @var String
+   */
+   //$config_supported_languages_dir = $config_atkroot.'atk/languages/';
+   $config_supported_languages_dir = '';
 
   /********************* TEMPLATE ENGINE CONFIGURATION ***********************/
 
