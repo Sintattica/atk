@@ -99,3 +99,16 @@ function getCurrentNodetype()
   }
   return nodetype;
 }
+
+function reloadapp()
+{
+  if (!top.reloaded) top.reloaded = new Array();
+  for (i=0;i<top.frames.length;i++)
+  {
+    if (!top.reloaded[i])
+    {
+      top.frames[i].location.reload();
+      top.reloaded[i] = 1;
+    }
+  } 
+}
