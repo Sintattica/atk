@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   atkimport("atk.relations.atkrelation");   
+   atkimport("atk.relations.atkrelation");
 
   /**
    * Many to many relation. Should not be used directly.
@@ -30,7 +30,7 @@
    * @package atk
    * @subpackage relations
    *
-   */ 
+   */
   class atkManyToManyRelation extends atkRelation
   {
     var $m_localKey = "";
@@ -45,7 +45,7 @@
      *                     intermediairy node. The intermediairy node is
      *                     assumed to have 2 attributes that are named
      *                     after the nodes at both ends of the relation.
-     *                     For example, if node 'project' has a M2M relation 
+     *                     For example, if node 'project' has a M2M relation
      *                     with 'activity', then the intermediairy node
      *                     'project_activity' is assumed to have an attribute
      *                     named 'project' and one that is named 'activity'.
@@ -59,10 +59,7 @@
     {
       $this->m_link = $link;
       $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE);
-
-      $this->m_localKey = substr (strrchr ($this->m_owner, '.'), 1 );
-      $this->m_remoteKey = substr (strrchr ($this->m_destination, '.'), 1 );
-    }        
+    }
 
     /**
      * Create instance of the intermediairy link node.
@@ -96,10 +93,13 @@
      */
     function getLocalKey()
     {
-      if ($this->m_localKey=="") return $this->m_owner;
+      if ($this->m_localKey=="")
+      {
+        $this->m_localKey = $this->determineKeyName($this->m_owner);
+      }
       return $this->m_localKey;
     }
-    
+
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the master node.
@@ -117,10 +117,42 @@
      */
     function getRemoteKey()
     {
-      if ($this->m_remoteKey=="") return $this->m_destination;
+      if ($this->m_remoteKey=="")
+      {
+        list($module, $nodename) = explode(".", $this->m_destination);
+        $this->m_remoteKey = $this->determineKeyName($nodename);
+      }
       return $this->m_remoteKey;
     }
-    
+
+    /**
+     * Determine the name of the foreign key based on the name of the
+     *  relation.
+     *
+     * @param String $name the name of the relation
+     * @return the probable name of the foreign key
+     */
+    function determineKeyName($name)
+    {
+      if ($this->createLink())
+      {
+        if (isset($this->m_linkInstance->m_attribList[$name]))
+        {
+          // there's an attribute with the same name as the role.
+          return $name;
+        }
+        else
+        {
+          // find out if there's a field with the same name with _id appended to it
+          if (isset($this->m_linkInstance->m_attribList[$name."_id"]))
+          {
+            return $name."_id";
+          }
+        }
+      }
+      return $name;
+    }
+
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.

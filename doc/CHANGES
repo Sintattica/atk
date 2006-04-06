@@ -21,6 +21,10 @@ Changed in ATK 5.5.1
 + Added reloadapp(); function which can be used to reload all the frames in
   your application. [Boy]
 + Added support for user-level language support. [Boy]
++ All relationships based on atkManyToManyRelation now have better localKey
+  and remoteKey detection. The use of setRemoteKey and setLocalKey is no
+  longer necessary if the foreign keys have the same name with the relation
+  with _id appended to it. [Ivo]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
