@@ -34,6 +34,7 @@
 
       $left = array();
       $right = array();
+      $width=100;
       for ($i=0;$i<count($recordset);$i++)
       {
         if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
@@ -44,13 +45,16 @@
         {
           $left[] = $recordset[$i];
         }
+
+        // fancy autowidth detection
+        $width = max(strlen($this->m_destInstance->descriptor($recordset[$i]))*10, $width);
       }
 
-      $result = '<table border="0"><tr><td>';
+      $result = '<table border="0"><tr><td>'.atktext('available', 'atk').':<br/>';
 
       $leftname = $fieldprefix.$this->fieldName()."_sel";
       $rightname = $fieldprefix.$this->fieldName().'_AMDAE_'.$this->getRemoteKey();
-      $result.= $this->renderSelect($leftname, $left, $fieldprefix);
+      $result.= $this->renderSelect($leftname, $left, $fieldprefix, $width);
 
       $result.= '</td><td valign="center" align="center">';
 
@@ -59,9 +63,9 @@
       $result.= '<input type="button" value="&gt;&gt;" onClick="shuttle_moveall(\''.$leftname.'\', \''.$rightname.'\');"><br/>';
       $result.= '<input type="button" value="&lt;&lt;" onClick="shuttle_moveall(\''.$rightname.'\', \''.$leftname.'\');">';
 
-      $result.= '</td><td>';
+      $result.= '</td><td>'.atktext('selected', 'atk').':<br/>';
 
-      $result.= $this->renderSelect($rightname, $right, $fieldprefix);
+      $result.= $this->renderSelect($rightname, $right, $fieldprefix, $width);
 
       // on submit, we must select all items in the right selector, as unselected items
       // will not be posted.
@@ -74,9 +78,9 @@
       return $result;
     }
 
-    function renderSelect($name, $recordset, $prefix)
+    function renderSelect($name, $recordset, $prefix, $width)
     {
-      $result = '<select id="'.$name.'" name="'.$name.'[]" multiple size="10">';
+      $result = '<select id="'.$name.'" name="'.$name.'[]" multiple size="10" style="width: '.$width.'px;">';
       for($i=0, $_i=count($recordset); $i<$_i; $i++)
       {
         $result.= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
