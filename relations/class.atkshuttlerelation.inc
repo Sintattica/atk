@@ -54,7 +54,7 @@
 
       $leftname = $fieldprefix.$this->fieldName()."_sel";
       $rightname = $fieldprefix.$this->fieldName().'_AMDAE_'.$this->getRemoteKey();
-      $result.= $this->renderSelect($leftname, $left, $fieldprefix, $width);
+      $result.= $this->renderSelect($leftname, $left, $fieldprefix, $width, $rightname);
 
       $result.= '</td><td valign="center" align="center">';
 
@@ -65,7 +65,7 @@
 
       $result.= '</td><td>'.atktext('selected', 'atk').':<br/>';
 
-      $result.= $this->renderSelect($rightname, $right, $fieldprefix, $width);
+      $result.= $this->renderSelect($rightname, $right, $fieldprefix, $width, $leftname);
 
       // on submit, we must select all items in the right selector, as unselected items
       // will not be posted.
@@ -78,9 +78,9 @@
       return $result;
     }
 
-    function renderSelect($name, $recordset, $prefix, $width)
+    function renderSelect($name, $recordset, $prefix, $width, $opposite)
     {
-      $result = '<select id="'.$name.'" name="'.$name.'[]" multiple size="10" style="width: '.$width.'px;">';
+      $result = '<select id="'.$name.'" name="'.$name.'[]" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\')">';
       for($i=0, $_i=count($recordset); $i<$_i; $i++)
       {
         $result.= '<option value="'.$recordset[$i][$this->m_destInstance->primaryKeyField()].'">'.$this->m_destInstance->descriptor($recordset[$i]);
