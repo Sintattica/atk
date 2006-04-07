@@ -15,6 +15,8 @@
    * @version $Revision$
    * $Id$
    */
+
+   /** @internal base include */
    atkimport("atk.relations.atkrelation");
 
   /**
