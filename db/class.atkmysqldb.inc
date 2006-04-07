@@ -74,10 +74,14 @@
       return DB_SUCCESS;
     }
     
+    /**
+     * Translates known database errors to developer-friendly messages
+     *
+     * @return int Flag of the error
+     */
     function _translateError()
-    { 
-      $this->m_errno = mysql_errno($this->m_link_id);
-      $this->m_error = mysql_error($this->m_link_id);  
+    {
+      $this->_setErrorVariables();
       switch ($this->m_errno)
       {
         case    0: return DB_SUCCESS;
@@ -88,6 +92,24 @@
         case 2005: return DB_UNKNOWNHOST;
         default: 
                    return DB_UNKNOWNERROR;   
+      }
+    }
+    
+    /**
+     * Store MySQL errors in internal variables
+     * @access private
+     */
+    function _setErrorVariables()
+    {
+      if (!empty($this->m_link_id))
+      {
+        $this->m_errno = mysql_errno($this->m_link_id);
+        $this->m_error = mysql_error($this->m_link_id);
+      }
+      else 
+      {
+        $this->m_errno = mysql_errno();
+        $this->m_error = mysql_error();
       }
     }
     
