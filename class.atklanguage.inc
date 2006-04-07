@@ -230,6 +230,7 @@
     /**
      * Get the primary languagecode that the user has set in his/her browser
      *
+     * @static 
      * @return String The languagecode
      */
     function getLanguageFromHeaders()
@@ -249,15 +250,17 @@
     /**
      * Get the languages supported by the application
      *
+     * @static 
      * @return Array An array with the languages supported by the application.
      */
     function getSupportedLanguages()
     {
       static $s_supported = array();
       
-      $supportedlanguagesdir = atkconfig('supported_languages_dir');
-      if (empty($s_supported) && $supportedlanguagesdir)
+      $supportedlanguagesmodule = atkconfig('supported_languages_module');
+      if (empty($s_supported) && $supportedlanguagesmodule)
       {
+        $supportedlanguagesdir = atkLanguage::getLanguageDirForModule($supportedlanguagesmodule);
         atkimport('atk.utils.atkdirectorytraverser');
         $supportedlanguagescollector = new getSupportedLanguagesCollector();
         $traverser = new atkDirectoryTraverser();
@@ -365,18 +368,7 @@
       if (!isset($this->m_cachedlangfiles[$module][$lng])||$this->m_cachedlangfiles[$module][$lng] != 1)
       {
         $this->m_cachedlangfiles[$module][$lng] = 1;
-        if ($module=="atk")
-        {
-          $path = atkconfig("atkroot")."atk/".$this->LANGDIR;
-        }
-        else if ($module=="langoverrides")
-        {
-          $path = atkconfig("language_basedir",$this->LANGDIR);
-        }
-        else
-        {
-          $path = moduleDir($module).$this->LANGDIR;
-        }
+        $path = $this->getLanguageDirForModule($module);
 
         $file = $path.$lng.".lng";
 
@@ -389,6 +381,36 @@
         return false;
       }
       return true;
+    }
+    
+    /**
+     * Method for getting the relative path to the languagedirectory
+     * of a module.
+     * Supports 2 special modules:
+     * - atk (returns the path of the atk languagedir)
+     * - langoverrides (returns the path of the languageoverrides dir)
+     *
+     * Special method in that it can run both in static and non-static
+     * mode.
+     * 
+     * @param String $module The module to get the languagedir for
+     * @return String The relative path to the languagedir
+     */
+    function getLanguageDirForModule($module)
+    {
+      if ($module=="atk")
+      {
+        $path = atkconfig("atkroot")."atk/".($this?$this->LANGDIR:'languages/');
+      }
+      else if ($module=="langoverrides")
+      {
+        $path = atkconfig("language_basedir",($this?$this->LANGDIR:'languages/'));
+      }
+      else
+      {
+        $path = moduleDir($module).($this?$this->LANGDIR:'languages/');
+      }
+      return $path;
     }
 
     /**
@@ -443,8 +465,7 @@
   
   
   /**
-   * A collector 
-   *
+   * A collector for supported languages
    */
   class getSupportedLanguagesCollector
   {
