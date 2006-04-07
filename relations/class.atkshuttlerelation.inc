@@ -1,9 +1,42 @@
 <?php
 
-  userelation("atkmanytomanyrelation");
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage relations
+   *
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
+   /** @internal base include */
+   userelation("atkmanytomanyrelation");
+
+  /**
+    * Many-to-many relation.
+    *
+    * The relation shows two lists, one with elements that are currently
+    * linked to the master record, and one with available records to choose from
+    *
+    * @author Ivo Jansch <ivo@achievo.org>
+    * @package atk
+    * @subpackage relations
+    *
+    */
   class atkShuttleRelation extends atkManyToManyRelation
   {
+    /**
+     * Return a piece of html code to edit the attribute
+     * @param $record Current record
+     * @return String piece of html code
+     */
     function edit($record, $fieldprefix, $mode)
     {
       $this->createDestination();
@@ -54,7 +87,7 @@
 
       $leftname = $fieldprefix.$this->fieldName()."_sel";
       $rightname = $fieldprefix.$this->fieldName().'_AMDAE_'.$this->getRemoteKey();
-      $result.= $this->renderSelect($leftname, $left, $fieldprefix, $width, $rightname);
+      $result.= $this->_renderSelect($leftname, $left, $width, $rightname);
 
       $result.= '</td><td valign="center" align="center">';
 
@@ -65,7 +98,7 @@
 
       $result.= '</td><td>'.atktext('selected', 'atk').':<br/>';
 
-      $result.= $this->renderSelect($rightname, $right, $fieldprefix, $width, $leftname);
+      $result.= $this->_renderSelect($rightname, $right, $width, $leftname);
 
       // on submit, we must select all items in the right selector, as unselected items
       // will not be posted.
@@ -78,7 +111,16 @@
       return $result;
     }
 
-    function renderSelect($name, $recordset, $prefix, $width, $opposite)
+    /**
+     * Render the multiselect list control
+     * @access private
+     * @param String $name The name of the list control
+     * @param array $recordset The list of records to render in the control
+     * @param int $width The width of the control in pixels
+     * @param String $opposite The name of the list control connected to this list control for shuttle actions
+     * @return String piece of html code
+     */
+    function _renderSelect($name, $recordset, $width, $opposite)
     {
       $result = '<select id="'.$name.'" name="'.$name.'[]" multiple size="10" style="width: '.$width.'px;" onDblClick="shuttle_move(\''.$name.'\', \''.$opposite.'\')">';
       for($i=0, $_i=count($recordset); $i<$_i; $i++)
