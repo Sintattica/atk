@@ -138,6 +138,13 @@
    * @var int
    */
   $config_mysqlfetchmode = MYSQL_ASSOC;
+  
+  /**
+   * Backwardscompatibility setting. Set this to PGSQL_BOTH if your
+   * software relies on numerical indexes (WHICH IS A BAD IDEA!!)
+   * @var int
+   */
+  $config_pgsqlfetchmode = PGSQL_ACCOC;
 
   /********************************** SECURITY *******************************/
 

@@ -57,6 +57,10 @@ Changed in ATK 5.5.1
   are not atkManyBoolRelation specific. [Ivo]
 * Link id is no longer passed to mysql error functions if it is null. [Boy]
 * Fixed creating sequences in postgresql. [Sandy]
+* Postgresql records are now fetched in PGSQL_ASSOC mode (only associative
+  array instead of numerical indexes). This should save a lot of memory.
+  For applications that rely on the numerical record indexes (EVIL!) you
+  can set $config_pgsqlfetchmode = PGSQL_BOTH in your configfile.
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
