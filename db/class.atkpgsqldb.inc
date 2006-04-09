@@ -269,11 +269,12 @@
         if (empty($id))
         {
           /* create sequence */
-          $query = "CREATE SEQUENCE '".$sequencename."'";
+          $query = "CREATE SEQUENCE ".$sequencename;
           $id = @pg_exec($this->m_link_id, $query);
 
           /* try again */
           $query = "SELECT nextval('".$sequencename."') AS nextid";
+
           $id = @pg_exec($this->m_link_id, $query) or $this->halt("cannot get nextval() of sequence '$sequencename'");
 
           /* empty? */
