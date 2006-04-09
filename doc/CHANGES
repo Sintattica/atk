@@ -56,6 +56,7 @@ Changed in ATK 5.5.1
   search() and isEmpty() methods to atkManyToManyRelation as these methods
   are not atkManyBoolRelation specific. [Ivo]
 * Link id is no longer passed to mysql error functions if it is null. [Boy]
+* Fixed creating sequences in postgresql. [Sandy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
