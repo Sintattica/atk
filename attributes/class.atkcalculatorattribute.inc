@@ -75,7 +75,7 @@
      */
     function atkCalculatorAttribute($name, $calculation, $flags=0)
     {
-      $this->atkAttribute($name, $flags);
+      $this->atkAttribute($name, $flags|AF_NO_SORT|AF_HIDE_SEARCH|AF_READONLY);
 
       $this->m_calculation = $calculation;
     }
