@@ -144,7 +144,7 @@
    * software relies on numerical indexes (WHICH IS A BAD IDEA!!)
    * @var int
    */
-  $config_pgsqlfetchmode = PGSQL_ACCOC;
+  $config_pgsqlfetchmode = PGSQL_ASSOC;
 
   /********************************** SECURITY *******************************/
 
