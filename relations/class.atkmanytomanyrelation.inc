@@ -260,10 +260,11 @@
 
       }
 
+      $filter="";
       if(count($checked) > 0)
         $filter = "NOT IN ('".implode("','",$checked)."')";
 
-      if (is_object($rel) && $rel->deleteDb($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."' AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter"))
+      if (is_object($rel) && $rel->deleteDb($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"")))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
