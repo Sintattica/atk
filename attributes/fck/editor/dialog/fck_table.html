@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_table.html
  * 	Table dialog window.
  * 
@@ -31,7 +33,7 @@ var oDOM = oEditor.FCK.EditorDocument ;
 var table ;
 var e = oEditor.FCKSelection.GetSelectedElement() ;
 
-if ( ! e && document.location.search.substr(1) == 'Parent' )
+if ( ( !e && document.location.search.substr(1) == 'Parent' ) || ( e && e.tagName != 'TABLE' ) )
 	e = oEditor.FCKSelection.MoveToAncestorNode( 'TABLE' ) ;
 
 if ( e && e.tagName == "TABLE" )
@@ -73,9 +75,10 @@ window.onload = function()
 		document.getElementById('selAlignment').value	= table.align ;
 		document.getElementById('txtCellPadding').value	= table.cellPadding	;
 		document.getElementById('txtCellSpacing').value	= table.cellSpacing	;
+		document.getElementById('txtSummary').value     = table.summary;
 //		document.getElementById('cmbFontStyle').value	= table.className ;
 
-		if (table.caption) document.getElementById('txtCaption').value = table.caption.innerText ;		
+		if (table.caption) document.getElementById('txtCaption').value = table.caption.innerHTML ;
 		
 		document.getElementById('txtRows').disabled    = true ;
 		document.getElementById('txtColumns').disabled = true ;
@@ -105,15 +108,21 @@ function Ok()
 	table.align			= document.getElementById('selAlignment').value ;
 	table.cellPadding	= document.getElementById('txtCellPadding').value ;
 	table.cellSpacing	= document.getElementById('txtCellSpacing').value ;
+	table.summary       = document.getElementById('txtSummary').value ;
 //	table.className		= cmbFontStyle.value ;
 	
 	if ( document.getElementById('txtCaption').value != '')
 	{
 		if (! table.caption) table.createCaption() ;
-		table.caption.innerText = document.getElementById('txtCaption').value ;
+		table.caption.innerHTML = document.getElementById('txtCaption').value ;
 	}
-//	else if ( bExists && table.caption )
-//		table.deleteCaption() ;		// TODO: It causes an IE internal error.
+	else if ( bExists && table.caption )
+	{
+		if ( document.all )
+			table.caption.innerHTML = '' ;	// TODO: It causes an IE internal error if using removeChild.
+		else
+			table.caption.parentNode.removeChild( table.caption ) ;
+	}
 		
 	if (! bExists)
 	{
@@ -126,9 +135,26 @@ function Ok()
 			for ( var c = 0 ; c < iCols ; c++ )
 			{
 				var oCell = oRow.insertCell(-1) ;
-				oCell.innerHTML = "&nbsp;" ;
+				if ( oEditor.FCKBrowserInfo.IsGecko )
+					oCell.innerHTML = '<br _moz_editor_bogus_node="TRUE">' ;
+				//oCell.innerHTML = "&nbsp;" ;
 			}
 		}
+		
+		oEditor.FCKUndo.SaveUndoStep() ;
+		
+		// START iCM MODIFICATIONS	
+		// Amended to ensure that newly inserted tables are not incorrectly nested in P tags, etc
+		// We insert the table first and then rectify any nestings afterwards so we can re-use the
+		// FCKTablesProcessor function that corrects tables on SetHTML()
+		/*
+		table = oEditor.FCK.InsertElementAndGetIt( table ) ;
+		if ( !oEditor.FCKConfig.UseBROnCarriageReturn )
+		{
+			oEditor.FCKTablesProcessor.CheckTableNesting( table ) ;
+		}
+		*/
+		// END iCM MODIFICATIONS	
 		
 		oEditor.FCK.InsertElement( table ) ;
 	}
@@ -239,8 +265,14 @@ function IsDigit( e )
 						<tr>
 							<td nowrap><span fckLang="DlgTableCaption">Caption</span>:</td>
 							<td>&nbsp;</td>
-							<td width="100%">&nbsp;
+							<td width="100%" nowrap>&nbsp;
 								<input id="txtCaption" type="text" style="WIDTH: 100%"></td>
+						</tr>
+						<tr>
+							<td nowrap><span fckLang="DlgTableSummary">Summary</span>:</td>
+							<td>&nbsp;</td>
+							<td width="100%" nowrap>&nbsp;
+								<input id="txtSummary" type="text" style="WIDTH: 100%"></td>
 						</tr>
 					</table>
 				</td>

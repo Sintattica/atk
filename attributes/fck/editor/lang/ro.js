@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: ro.js
  * 	Romanian language file.
  * 
@@ -42,6 +44,8 @@ RemoveLink			: "Înlătură link (legătură web)",
 Anchor				: "Inserează/Editează ancoră",
 InsertImageLbl		: "Imagine",
 InsertImage			: "Inserează/Editează imagine",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Inserează/Editează flash",
 InsertTableLbl		: "Tabel",
 InsertTable			: "Inserează/Editează tabel",
 InsertLineLbl		: "Linie",
@@ -82,6 +86,8 @@ Find				: "Găseşte",
 Replace				: "Înlocuieşte",
 SpellCheck			: "Verifică text",
 UniversalKeyboard	: "Tastatură universală",
+PageBreakLbl		: "Separator de pagină (Page Break)",
+PageBreak			: "Inserează separator de pagină (Page Break)",
 
 Form			: "Formular (Form)",
 Checkbox		: "Bifă (Checkbox)",
@@ -103,9 +109,11 @@ InsertCell			: "Inserează Cell",
 DeleteCells			: "Şterge celule",
 MergeCells			: "Uneşte celule",
 SplitCell			: "Împarte celulă",
+TableDelete			: "Şterge tabel",
 CellProperties		: "Proprietăţile celulei",
 TableProperties		: "Proprietăţile tabelului",
 ImageProperties		: "Proprietăţile imaginii",
+FlashProperties		: "Proprietăţile flash-ului",
 
 AnchorProp			: "Proprietăţi ancoră",
 ButtonProp			: "Proprietăţi buton",
@@ -129,6 +137,9 @@ UnknownToolbarItem	: "Obiectul \"%1\" din bara cu opţiuni necunoscut",
 UnknownCommand		: "Comanda \"%1\" necunoscută",
 NotImplemented		: "Comandă neimplementată",
 UnknownToolbarSet	: "Grupul din bara cu opţiuni \"%1\" nu există",
+NoActiveX			: "Setările de securitate ale programului dvs. cu care navigaţi pe internet (browser) pot limita anumite funcţionalităţi ale editorului. Pentru a evita asta, trebuie să activaţi opţiunea \"Run ActiveX controls and plug-ins\". Poate veţi întâlni erori sau veţi observa funcţionalităţi lipsă.",
+BrowseServerBlocked : "The resources browser could not be opened. Asiguraţi-vă că nu e activ niciun \"popup blocker\" (funcţionalitate a programului de navigat (browser) sau a unui plug-in al acestuia de a bloca deschiderea unui noi ferestre).",
+DialogBlocked		: "Nu a fost posibilă deschiderea unei ferestre de dialog. Asiguraţi-vă că nu e activ niciun \"popup blocker\" (funcţionalitate a programului de navigat (browser) sau a unui plug-in al acestuia de a bloca deschiderea unui noi ferestre).",
 
 // Dialogs
 DlgBtnOK			: "Bine",
@@ -137,6 +148,8 @@ DlgBtnClose			: "Închidere",
 DlgBtnBrowseServer	: "Răsfoieşte server",
 DlgAdvancedTag		: "Avansat",
 DlgOpOther			: "&lt;Altul&gt;",
+DlgInfoTab			: "Informaţii",
+DlgAlertUrl			: "Vă rugăm să scrieţi URL-ul",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;nesetat&gt;",
@@ -183,6 +196,16 @@ DlgImgPreview		: "Previzualizare",
 DlgImgAlertUrl		: "Vă rugăm să scrieţi URL-ul imaginii",
 DlgImgLinkTab		: "Link (Legătură web)",
 
+// Flash Dialog
+DlgFlashTitle		: "Proprietăţile flash-ului",
+DlgFlashChkPlay		: "Rulează automat",
+DlgFlashChkLoop		: "Repetă (Loop)",
+DlgFlashChkMenu		: "Activează meniul flash",
+DlgFlashScale		: "Scală",
+DlgFlashScaleAll	: "Arată tot",
+DlgFlashScaleNoBorder	: "Fără margini (No border)",
+DlgFlashScaleFit	: "Potriveşte",
+
 // Link Dialog
 DlgLnkWindowTitle	: "Link (Legătură web)",
 DlgLnkInfoTab		: "Informaţii despre link (Legătură web)",
@@ -198,7 +221,7 @@ DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Selectaţi o ancoră",
 DlgLnkAnchorByName	: "după numele ancorei",
 DlgLnkAnchorById	: "după Id-ul elementului",
-DlgLnkNoAnchors		: "&lt;Nici o ancoră disponibilă în document&gt;",
+DlgLnkNoAnchors		: "&lt;Nicio ancoră disponibilă în document&gt;",
 DlgLnkEMail			: "Adresă de e-mail",
 DlgLnkEMailSubject	: "Subiectul mesajului",
 DlgLnkEMailBody		: "Conţinutul mesajului",
@@ -261,6 +284,7 @@ DlgTableHeight		: "Înălţime",
 DlgTableCellSpace	: "Spaţiu între celule",
 DlgTableCellPad		: "Spaţiu în cadrul celulei",
 DlgTableCaption		: "Titlu (Caption)",
+DlgTableSummary		: "Rezumat",
 
 // Table Cell Dialog
 DlgCellTitle		: "Proprietăţile celulei",
@@ -311,7 +335,11 @@ PasteErrorCopy	: "Setările de securitate ale navigatorului (browser) pe care î
 PasteAsText		: "Adaugă ca text simplu (Plain Text)",
 PasteFromWord	: "Adaugă din Word",
 
-DlgPasteMsg		: "Editor nu a putut executa automat adăugarea din cauza <STRONG>setărilor de securitate</STRONG> ale navigatorului (browser) dvs.<BR>Vă rugăm adăugaţi inăuntrul casuţei folosind tastatura (<STRONG>Ctrl+V</STRONG>) şi apăsaţi <STRONG>Bine</STRONG>.",
+DlgPasteMsg2	: "Vă rugăm adăugaţi în căsuţa următoare folosind tastatura (<STRONG>Ctrl+V</STRONG>) şi apăsaţi <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignoră definiţiile Font Face",
+DlgPasteRemoveStyles	: "Şterge definiţiile stilurilor",
+DlgPasteCleanBox		: "Şterge căsuţa",
+
 
 // Color Picker
 ColorAutomatic	: "Automatic",
@@ -335,12 +363,12 @@ DlgSpellBtnReplaceAll	: "Înlocuieşte tot",
 DlgSpellBtnUndo			: "Starea anterioară (undo)",
 DlgSpellNoSuggestions	: "- Fără sugestii -",
 DlgSpellProgress		: "Verificarea textului în desfăşurare...",
-DlgSpellNoMispell		: "Verificarea textului terminată: Nici o greşeală găsită",
-DlgSpellNoChanges		: "Verificarea textului terminată: Nici un cuvânt modificat",
+DlgSpellNoMispell		: "Verificarea textului terminată: Nicio greşeală găsită",
+DlgSpellNoChanges		: "Verificarea textului terminată: Niciun cuvânt modificat",
 DlgSpellOneChange		: "Verificarea textului terminată: Un cuvânt modificat",
 DlgSpellManyChanges		: "Verificarea textului terminată: 1% cuvinte modificate",
 
-IeSpellDownload			: "Spell checker not installed. Do you want to download it now?",
+IeSpellDownload			: "Unealta pentru verificat textul (Spell checker) neinstalată. Doriţi să o descărcaţi acum?",
 
 // Button Dialog
 DlgButtonText	: "Text (Valoare)",
@@ -395,7 +423,7 @@ BulletedListProp	: "Proprietăţile listei punctate (Bulleted List)",
 NumberedListProp	: "Proprietăţile listei numerotate (Numbered List)",
 DlgLstType			: "Tip",
 DlgLstTypeCircle	: "Cerc",
-DlgLstTypeDisk		: "Disc",
+DlgLstTypeDisc		: "Disc",
 DlgLstTypeSquare	: "Pătrat",
 DlgLstTypeNumbers	: "Numere (1, 2, 3)",
 DlgLstTypeLCase		: "Minuscule-litere mici (a, b, c)",
@@ -443,7 +471,7 @@ Templates			: "Template-uri (şabloane)",
 DlgTemplatesTitle	: "Template-uri (şabloane) de conţinut",
 DlgTemplatesSelMsg	: "Vă rugăm selectaţi template-ul (şablonul) ce se va deschide în editor<br>(conţinutul actual va fi pierdut):",
 DlgTemplatesLoading	: "Se încarcă lista cu template-uri (şabloane). Vă rugăm aşteptaţi...",
-DlgTemplatesNoTpl	: "(Nici un template (şablon) definit)",
+DlgTemplatesNoTpl	: "(Niciun template (şablon) definit)",
 
 // About Dialog
 DlgAboutAboutTab	: "Despre",

@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: sl.js
  * 	Slovenian language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Odstrani povezavo",
 Anchor				: "Vstavi/uredi zaznamek",
 InsertImageLbl		: "Slika",
 InsertImage			: "Vstavi/uredi sliko",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Vstavi/Uredi Flash",
 InsertTableLbl		: "Tabela",
 InsertTable			: "Vstavi/uredi tabelo",
 InsertLineLbl		: "Črta",
@@ -81,6 +85,8 @@ Find				: "Najdi",
 Replace				: "Zamenjaj",
 SpellCheck			: "Preveri črkovanje",
 UniversalKeyboard	: "Večjezična tipkovnica",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Obrazec",
 Checkbox		: "Potrditveno polje",
@@ -102,9 +108,11 @@ InsertCell			: "Vstavi celico",
 DeleteCells			: "Izbriši celice",
 MergeCells			: "Združi celice",
 SplitCell			: "Razdeli celico",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Lastnosti celice",
 TableProperties		: "Lastnosti tabele",
 ImageProperties		: "Lastnosti slike",
+FlashProperties		: "Lastnosti Flash",
 
 AnchorProp			: "Lastnosti zaznamka",
 ButtonProp			: "Lastnosti gumba",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Neznan element orodne vrstice \"%1\"",
 UnknownCommand		: "Neznano ime ukaza \"%1\"",
 NotImplemented		: "Ukaz ni izdelan",
 UnknownToolbarSet	: "Skupina orodnih vrstic \"%1\" ne obstoja",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "V redu",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Zapri",
 DlgBtnBrowseServer	: "Prebrskaj na strežniku",
 DlgAdvancedTag		: "Napredno",
 DlgOpOther			: "&lt;Ostalo&gt;",
+DlgInfoTab			: "Podatki",
+DlgAlertUrl			: "Prosim vpiši spletni naslov",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;ni postavljen&gt;",
@@ -180,7 +193,17 @@ DlgImgAlignTextTop	: "Besedilo na vrh",
 DlgImgAlignTop		: "Na vrh",
 DlgImgPreview		: "Predogled",
 DlgImgAlertUrl		: "Vnesite URL slike",
-DlgImgLinkTab		: "Link",	//MISSING
+DlgImgLinkTab		: "Povezava",
+
+// Flash Dialog
+DlgFlashTitle		: "Lastnosti Flash",
+DlgFlashChkPlay		: "Samodejno predvajaj",
+DlgFlashChkLoop		: "Ponavljanje",
+DlgFlashChkMenu		: "Omogoči Flash Meni",
+DlgFlashScale		: "Povečava",
+DlgFlashScaleAll	: "Pokaži vse",
+DlgFlashScaleNoBorder	: "Brez obrobe",
+DlgFlashScaleFit	: "Natančno prileganje",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Povezava",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Višina",
 DlgTableCellSpace	: "Razmik med celicami",
 DlgTableCellPad		: "Polnilo med celicami",
 DlgTableCaption		: "Naslov",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Lastnosti celice",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Varnostne nastavitve brskalnika ne dopuščajo samodejnega kop
 PasteAsText		: "Prilepi kot golo besedilo",
 PasteFromWord	: "Prilepi iz Worda",
 
-DlgPasteMsg		: "Ni bilo mogoče izvesti lepljenja zaradi <STRONG>varnostnih nastavitev</STRONG> vašega brskalnika.<BR>Prilepite v sledeče okno s kombinacijo tipk na tipkovnici (<STRONG>Ctrl+V</STRONG>) in pritisnite <STRONG>V redu</STRONG>.",
+DlgPasteMsg2	: "Prosim prilepite v sleči okvir s pomočjo tipkovnice (<STRONG>Ctrl+V</STRONG>) in pritisnite <STRONG>V redu</STRONG>.",
+DlgPasteIgnoreFont		: "Prezri obliko pisave",
+DlgPasteRemoveStyles	: "Odstrani nastavitve stila",
+DlgPasteCleanBox		: "Počisti okvir",
+
 
 // Color Picker
 ColorAutomatic	: "Samodejno",
@@ -394,7 +422,7 @@ BulletedListProp	: "Lastnosti označenega seznama",
 NumberedListProp	: "Lastnosti oštevilčenega seznama",
 DlgLstType			: "Tip",
 DlgLstTypeCircle	: "Pikica",
-DlgLstTypeDisk		: "Krožec",
+DlgLstTypeDisc		: "Disc",	//MISSING
 DlgLstTypeSquare	: "Kvadratek",
 DlgLstTypeNumbers	: "Številke (1, 2, 3)",
 DlgLstTypeLCase		: "Male črke (a, b, c)",
@@ -438,11 +466,11 @@ DlgDocMeCopy		: "Avtorske pravice",
 DlgDocPreview		: "Predogled",
 
 // Templates Dialog
-Templates			: "Templates",	//MISSING
-DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
-DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
-DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+Templates			: "Predloge",
+DlgTemplatesTitle	: "Vsebinske predloge",
+DlgTemplatesSelMsg	: "Izberite predlogo, ki jo želite odpreti v urejevalniku<br>(trenutna vsebina bo izgubljena):",
+DlgTemplatesLoading	: "Nalagam seznam predlog. Prosim počakajte...",
+DlgTemplatesNoTpl	: "(Ni pripravljenih predlog)",
 
 // About Dialog
 DlgAboutAboutTab	: "Vizitka",

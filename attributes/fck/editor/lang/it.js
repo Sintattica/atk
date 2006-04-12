@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: it.js
  * 	Italian language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Elimina collegamento",
 Anchor				: "Inserisci/Modifica Ancora",
 InsertImageLbl		: "Immagine",
 InsertImage			: "Inserisci/Modifica immagine",
+InsertFlashLbl		: "Oggetto Flash",
+InsertFlash			: "Inserisci/Modifica Oggetto Flash",
 InsertTableLbl		: "Tabella",
 InsertTable			: "Inserisci/Modifica tabella",
 InsertLineLbl		: "Riga orizzontale",
@@ -76,11 +80,13 @@ Font				: "Font",
 FontSize			: "Dimensione",
 TextColor			: "Colore testo",
 BGColor				: "Colore sfondo",
-Source				: "Codice",
+Source				: "Codice Sorgente",
 Find				: "Trova",
 Replace				: "Sostituisci",
 SpellCheck			: "Correttore ortografico",
 UniversalKeyboard	: "Tastiera univerale",
+PageBreakLbl		: "Interruzione di pagina",
+PageBreak			: "Inserisci interruzione di pagina",
 
 Form			: "Modulo",
 Checkbox		: "Checkbox",
@@ -102,9 +108,11 @@ InsertCell			: "Inserisci cella",
 DeleteCells			: "Elimina celle",
 MergeCells			: "Unisce celle",
 SplitCell			: "Dividi celle",
+TableDelete			: "Cancella Tabella",
 CellProperties		: "Proprietà cella",
 TableProperties		: "Proprietà tabella",
 ImageProperties		: "Proprietà immagine",
+FlashProperties		: "Proprietà Oggetto Flash",
 
 AnchorProp			: "Proprietà ancora",
 ButtonProp			: "Proprietà bottone",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Elemento della barra strumenti sconosciuto \"%1\"",
 UnknownCommand		: "Comando sconosciuto \"%1\"",
 NotImplemented		: "Commando non implementato",
 UnknownToolbarSet	: "La barra di strumenti \"%1\" non esiste",
+NoActiveX			: "Le impostazioni di sicurezza del tuo browser potrebbero limitare alcune funzionalità dell'editor. Devi abilitare l'opzione \"Esegui controlli e plug-in ActiveX\". Potresti avere errori e notare funzionalità mancanti.",
+BrowseServerBlocked : "Non è possibile aprire la finestra di espolorazione risorse. Verifica che tutti i blocca popup siano bloccati.",
+DialogBlocked		: "Non è possibile aprire la finestra di dialogo. Verifica che tutti i blocca popup siano bloccati.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Chiudi",
 DlgBtnBrowseServer	: "Cerca sul server",
 DlgAdvancedTag		: "Avanzate",
 DlgOpOther			: "&lt;Altro&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Devi inserire l'URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;non impostato&gt;",
@@ -179,8 +192,18 @@ DlgImgAlignRight	: "Destra",
 DlgImgAlignTextTop	: "In alto al testo",
 DlgImgAlignTop		: "In Alto",
 DlgImgPreview		: "Anteprima",
-DlgImgAlertUrl		: "Inserisci il tipo di URL per l'immagine",
+DlgImgAlertUrl		: "Devi inserire l'URL per l'immagine",
 DlgImgLinkTab		: "Collegamento",
+
+// Flash Dialog
+DlgFlashTitle		: "Proprietà Oggetto Flash",
+DlgFlashChkPlay		: "Avvio Automatico",
+DlgFlashChkLoop		: "Cicla",
+DlgFlashChkMenu		: "Abilita Menu di Flash",
+DlgFlashScale		: "Ridimensiona",
+DlgFlashScaleAll	: "Mostra Tutto",
+DlgFlashScaleNoBorder	: "Senza Bordo",
+DlgFlashScaleFit	: "Dimensione Esatta",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Collegamento",
@@ -260,9 +283,10 @@ DlgTableHeight		: "Altezza",
 DlgTableCellSpace	: "Spaziatura celle",
 DlgTableCellPad		: "Padding celle",
 DlgTableCaption		: "Intestazione",
+DlgTableSummary		: "Indice",
 
 // Table Cell Dialog
-DlgCellTitle		: "Proprietà cella",
+DlgCellTitle		: "Propriet cella",
 DlgCellWidth		: "Larghezza",
 DlgCellWidthPx		: "pixel",
 DlgCellWidthPc		: "percento",
@@ -291,7 +315,7 @@ DlgCellBtnSelect	: "Scegli...",
 // Find Dialog
 DlgFindTitle		: "Trova",
 DlgFindFindBtn		: "Trova",
-DlgFindNotFoundMsg	: "L'elemento cercato non è stato trovato.",
+DlgFindNotFoundMsg	: "L'elemento cercato non  stato trovato.",
 
 // Replace Dialog
 DlgReplaceTitle			: "Sostituisci",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Le impostazioni di sicurezza del browser non permettono di cop
 PasteAsText		: "Incolla come testo semplice",
 PasteFromWord	: "Incolla da Word",
 
-DlgPasteMsg		: "Impossibile incollare automaticamente a causa delle <STRONG>impostazioni di sicurezza</STRONG> del browser.<BR>Incolla nel riquadro sottostante (<STRONG>Ctrl+V</STRONG>) e premi <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Incolla il testo all'interno dell'area sottostante usando la scorciatoia di tastiere (<STRONG>Ctrl+V</STRONG>) e premi <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignora le definizioni di Font",
+DlgPasteRemoveStyles	: "Rimuovi le definizioni di Stile",
+DlgPasteCleanBox		: "Svuota area di testo",
+
 
 // Color Picker
 ColorAutomatic	: "Automatico",
@@ -367,7 +395,7 @@ DlgSelectOpValue	: "Valore",
 DlgSelectBtnAdd		: "Aggiungi",
 DlgSelectBtnModify	: "Modifica",
 DlgSelectBtnUp		: "Su",
-DlgSelectBtnDown	: "Giù",
+DlgSelectBtnDown	: "Gi",
 DlgSelectBtnSetValue : "Imposta come predefinito",
 DlgSelectBtnDelete	: "Rimuovi",
 
@@ -394,7 +422,7 @@ BulletedListProp	: "Proprietà lista puntata",
 NumberedListProp	: "Proprietà lista numerata",
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Tondo",
-DlgLstTypeDisk		: "Disco",
+DlgLstTypeDisc		: "Disco",
 DlgLstTypeSquare	: "Quadrato",
 DlgLstTypeNumbers	: "Numeri (1, 2, 3)",
 DlgLstTypeLCase		: "Caratteri minuscoli (a, b, c)",

@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: bg.js
  * 	Bulgarian language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Изтрий връзка",
 Anchor				: "Добави/Редактирай котва",
 InsertImageLbl		: "Изображение",
 InsertImage			: "Добави/Редактирай изображение",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Добави/Редактиай Flash обект",
 InsertTableLbl		: "Таблица",
 InsertTable			: "Добави/Редактирай таблица",
 InsertLineLbl		: "Линия",
@@ -81,6 +85,8 @@ Find				: "Търси",
 Replace				: "Замести",
 SpellCheck			: "Провери правописа",
 UniversalKeyboard	: "Универсална клавиатура",
+PageBreakLbl		: "Нов ред",
+PageBreak			: "Вмъкни нов ред",
 
 Form			: "Формуляр",
 Checkbox		: "Поле за отметка",
@@ -102,9 +108,11 @@ InsertCell			: "Добави клетка",
 DeleteCells			: "Изтрий клетките",
 MergeCells			: "Обедини клетките",
 SplitCell			: "Раздели клетката",
+TableDelete			: "Изтрий таблицата",
 CellProperties		: "Параметри на клетката",
 TableProperties		: "Параметри на таблицата",
 ImageProperties		: "Параметри на изображението",
+FlashProperties		: "Параметри на Flash обекта",
 
 AnchorProp			: "Параметри на котвата",
 ButtonProp			: "Параметри на бутона",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Непознат инструмент \"%1\"",
 UnknownCommand		: "Непозната команда \"%1\"",
 NotImplemented		: "Командата не е имплементирана",
 UnknownToolbarSet	: "Панелът \"%1\" не съществува",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "ОК",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Затвори",
 DlgBtnBrowseServer	: "Разгледай сървъра",
 DlgAdvancedTag		: "Подробности...",
 DlgOpOther			: "&lt;Друго&gt;",
+DlgInfoTab			: "Информация",
+DlgAlertUrl			: "Моля, въведете пълния път (URL)",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;не е настроен&gt;",
@@ -180,7 +193,17 @@ DlgImgAlignTextTop	: "Върху текста",
 DlgImgAlignTop		: "Отгоре",
 DlgImgPreview		: "Изглед",
 DlgImgAlertUrl		: "Моля, въведете пълния път до изображението",
-DlgImgLinkTab		: "Link",	//MISSING
+DlgImgLinkTab		: "Връзка",
+
+// Flash Dialog
+DlgFlashTitle		: "Параметри на Flash обекта",
+DlgFlashChkPlay		: "Автоматично стартиране",
+DlgFlashChkLoop		: "Ново стартиране след завършването",
+DlgFlashChkMenu		: "Разрешено Flash меню",
+DlgFlashScale		: "Оразмеряване",
+DlgFlashScaleAll	: "Покажи целия обект",
+DlgFlashScaleNoBorder	: "Без рамка",
+DlgFlashScaleFit	: "Според мястото",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Връзка",
@@ -191,7 +214,7 @@ DlgLnkType			: "Вид на връзката",
 DlgLnkTypeURL		: "Пълен път (URL)",
 DlgLnkTypeAnchor	: "Котва в текущата страница",
 DlgLnkTypeEMail		: "Е-поща",
-DlgLnkProto			: "Прокотол",
+DlgLnkProto			: "Протокол",
 DlgLnkProtoOther	: "&lt;друго&gt;",
 DlgLnkURL			: "Пълен път (URL)",
 DlgLnkAnchorSel		: "Изберете котва",
@@ -211,7 +234,7 @@ DlgLnkTargetBlank	: "Нов прозорец (_blank)",
 DlgLnkTargetParent	: "Родителски прозорец (_parent)",
 DlgLnkTargetSelf	: "Активния прозорец (_self)",
 DlgLnkTargetTop		: "Целия прозорец (_top)",
-DlgLnkTargetFrameName	: "Име на целиевия прозорец",
+DlgLnkTargetFrameName	: "Име на целевия прозорец",
 DlgLnkPopWinName	: "Име на дъщерния прозорец",
 DlgLnkPopWinFeat	: "Параметри на дъщерния прозорец",
 DlgLnkPopResize		: "С променливи размери",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Височина",
 DlgTableCellSpace	: "Разстояние между клетките",
 DlgTableCellPad		: "Отстъп на съдържанието в клетките",
 DlgTableCaption		: "Заглавие",
+DlgTableSummary		: "Резюме",
 
 // Table Cell Dialog
 DlgCellTitle		: "Параметри на клетката",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Настройките за сигурност на вашия
 PasteAsText		: "Вмъкни като чист текст",
 PasteFromWord	: "Вмъкни от MS Word",
 
-DlgPasteMsg		: "Редакторът не успя да изпълни автоматичното вмъкване заради <STRONG>настройките за сигурност</STRONG> на вашия браузър.<BR>Моля, изпълнете вмъкването, използвайки клавиатурата (<STRONG>Ctrl+V</STRONG>), след което изберете <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Вмъкнете тук съдъжанието с клавиатуарата (<STRONG>Ctrl+V</STRONG>) и натиснете <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Игнорирай шрифтовите дефиниции",
+DlgPasteRemoveStyles	: "Изтрий стиловите дефиниции",
+DlgPasteCleanBox		: "Изчисти",
+
 
 // Color Picker
 ColorAutomatic	: "По подразбиране",
@@ -394,7 +422,7 @@ BulletedListProp	: "Параметри на ненумерирания спис�
 NumberedListProp	: "Параметри на нумерирания списък",
 DlgLstType			: "Тип",
 DlgLstTypeCircle	: "Окръжност",
-DlgLstTypeDisk		: "Диск",
+DlgLstTypeDisc		: "Кръг",
 DlgLstTypeSquare	: "Квадрат",
 DlgLstTypeNumbers	: "Числа (1, 2, 3)",
 DlgLstTypeLCase		: "Малки букви (a, b, c)",
@@ -438,16 +466,16 @@ DlgDocMeCopy		: "Авторски права",
 DlgDocPreview		: "Изглед",
 
 // Templates Dialog
-Templates			: "Templates",	//MISSING
-DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
-DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
-DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+Templates			: "Шаблони",
+DlgTemplatesTitle	: "Шаблони",
+DlgTemplatesSelMsg	: "Изберете шаблон <br>(текущото съдържание на редактора ще бъде загубено):",
+DlgTemplatesLoading	: "Зареждане на списъка с шаблоните. Моля изчакайте...",
+DlgTemplatesNoTpl	: "(Няма дефинирани шаблони)",
 
 // About Dialog
 DlgAboutAboutTab	: "За",
 DlgAboutBrowserInfoTab	: "Информация за браузъра",
 DlgAboutVersion		: "версия",
 DlgAboutLicense		: "Лиценз по условията на GNU Lesser General Public License",
-DlgAboutInfo		: "За повече информация отидете на"
+DlgAboutInfo		: "За повече информация посетете"
 }

@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_editorarea.css
  * 	This is the default CSS file used by the editor area. It defines the
  * 	initial font of the editor and background color.
@@ -29,6 +31,18 @@ body
 	border-style: none;
 	background-color: #ffffff;
 }
+
+/* 
+	Just uncomment the following block if you want to avoid spaces between 
+	paragraphs. Remember to apply the same style in your output front end page.
+*/
+/*
+P, UL, LI
+{
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+*/
 
 .Bold
 {

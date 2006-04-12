@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_template.html
  * 	Template selection dialog window.
  * 
@@ -33,8 +35,6 @@
 				margin: 5px;
 				padding: 7px;
 				border: #eeeeee 1px solid;
-				behavior: url(fck_template/fck_templateitem.htc);
-				-moz-binding:url(fck_template/fck_template_moz-bindings.xml#templateitem);
 			}
 
 			.TplItem TABLE
@@ -141,18 +141,37 @@ function LoadTemplatesXml()
 			var sInner = '<table><tr>' ;
 
 			if ( oTemplate.Image )
-				sInner += '<td valign="top"><img src="' + oTemplate.Image + '"></td>' ;
+				sInner += '<td valign="top"><img src="' + oTemplate.Image + '"><\/td>' ;
 
-			sInner += '<td valign="top"><div class="TplTitle">' + oTemplate.Title + '</div>' ;
+			sInner += '<td valign="top"><div class="TplTitle">' + oTemplate.Title + '<\/div>' ;
 
 			if ( oTemplate.Description )
-				sInner += '<div>' + oTemplate.Description + '</div>' ;
+				sInner += '<div>' + oTemplate.Description + '<\/div>' ;
 
-			sInner += '</td></tr></table>' ;
+			sInner += '<\/td><\/tr><\/table>' ;
 
 			oItemDiv.innerHTML = sInner ;
+			
+			oItemDiv.onmouseover = ItemDiv_OnMouseOver ;
+			oItemDiv.onmouseout = ItemDiv_OnMouseOut ;
+			oItemDiv.onclick = ItemDiv_OnClick ;
 		}
 	}
+}
+
+function ItemDiv_OnMouseOver()
+{
+	this.className += ' PopupSelectionBox' ;
+}
+
+function ItemDiv_OnMouseOut()
+{
+	this.className = this.className.replace( /\s*PopupSelectionBox\s*/, '' ) ;
+}
+
+function ItemDiv_OnClick()
+{
+	SelectTemplate( this.TplIndex ) ;
 }
 
 function SelectTemplate( index )

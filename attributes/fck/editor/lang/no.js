@@ -8,11 +8,13 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: no.js
  * 	Norwegian language file.
  * 
  * File Authors:
- * 		Martin Kronstad (www.siteman.no) (martin.kronstad@broadpark.no)
+ * 		Martin Kronstad (www.siteman.no) (martin.kronstad@gmail.com)
  */
 
 var FCKLang =
@@ -41,6 +43,8 @@ RemoveLink			: "Fjern lenke",
 Anchor				: "Sett inn/Rediger anker",
 InsertImageLbl		: "Bilde",
 InsertImage			: "Sett inn/Rediger bilde",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Sett inn/Rediger Flash",
 InsertTableLbl		: "Tabell",
 InsertTable			: "Sett inn/Rediger tabell",
 InsertLineLbl		: "Linje",
@@ -81,6 +85,8 @@ Find				: "Finn",
 Replace				: "Erstatt",
 SpellCheck			: "Stavekontroll",
 UniversalKeyboard	: "Universelt tastatur",
+PageBreakLbl		: "Sideskift",
+PageBreak			: "Sett inn sideskift",
 
 Form			: "Skjema",
 Checkbox		: "Sjekkboks",
@@ -102,9 +108,11 @@ InsertCell			: "Sett inn celle",
 DeleteCells			: "Slett celler",
 MergeCells			: "Slå sammen celler",
 SplitCell			: "Splitt celler",
+TableDelete			: "Slett tabell",
 CellProperties		: "Celleegenskaper",
 TableProperties		: "Tabellegenskaper",
 ImageProperties		: "Bildeegenskaper",
+FlashProperties		: "Flash Egenskaper",
 
 AnchorProp			: "Ankeregenskaper",
 ButtonProp			: "Knappegenskaper",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Ukjent menyvalg \"%1\"",
 UnknownCommand		: "Ukjent kommando \"%1\"",
 NotImplemented		: "Kommando ikke ennå implimentert",
 UnknownToolbarSet	: "Verktøylinjesett \"%1\" finnes ikke",
+NoActiveX			: "Din nettleser's sikkerhetsinstillinger kan begrense noen av funksjonene i redigeringsverktøyet. Du må aktivere \"Kjør ActiveXkontroller og plugins\". Du kan oppleve feil og advarsler om manglende funksjoner",
+BrowseServerBlocked : "Kunne ikke åpne dialogboksen for filarkiv. Pass på at du har slått av popupstoppere.",
+DialogBlocked		: "Kunne ikke åpne dialogboksen. Pass på at du har slått av popupstoppere.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Lukk",
 DlgBtnBrowseServer	: "Bla igjennom server",
 DlgAdvancedTag		: "Avansert",
 DlgOpOther			: "&lt;Annet&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Vennligst skriv inn URL'en",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;ikke satt&gt;",
@@ -181,6 +194,16 @@ DlgImgAlignTop		: "Topp",
 DlgImgPreview		: "Forhåndsvis",
 DlgImgAlertUrl		: "Vennligst skriv bildeurlen",
 DlgImgLinkTab		: "Lenke",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash Egenskaper",
+DlgFlashChkPlay		: "Auto Spill",
+DlgFlashChkLoop		: "Loop",
+DlgFlashChkMenu		: "Slå på Flash meny",
+DlgFlashScale		: "Skaler",
+DlgFlashScaleAll	: "Vis alt",
+DlgFlashScaleNoBorder	: "Ingen ramme",
+DlgFlashScaleFit	: "Skaler til å passeExact Fit",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Lenke",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Høyde",
 DlgTableCellSpace	: "Celle marg",
 DlgTableCellPad		: "Celle polstring",
 DlgTableCaption		: "Tittel",
+DlgTableSummary		: "Sammendrag",
 
 // Table Cell Dialog
 DlgCellTitle		: "Celle egenskaper",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Din nettlesers sikkerhetsinstillinger tillater ikke automatisk
 PasteAsText		: "Lim inn som ren tekst",
 PasteFromWord	: "Lim inn fra word",
 
-DlgPasteMsg		: "Programmet kan ikke lime inn tekst på grunn av din nettlesers <STRONG>sikkerhetsinstillinger</STRONG>.<BR>Vennligst lim inn teksten i boksen nedenfor med tastatursnareveien. (<STRONG>Ctrl+V</STRONG>) og trykk <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Vennligst lim inn i den følgende boksen med tastaturet (<STRONG>Ctrl+V</STRONG>) og trykk <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignorer fonter",
+DlgPasteRemoveStyles	: "Fjern stildefinisjoner",
+DlgPasteCleanBox		: "Tøm boksen",
+
 
 // Color Picker
 ColorAutomatic	: "Automatisk",
@@ -394,7 +422,7 @@ BulletedListProp	: "Uordnet listeegenskaper",
 NumberedListProp	: "Ordnet listeegenskaper",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Sirkel",
-DlgLstTypeDisk		: "Disk",
+DlgLstTypeDisc		: "Hel sirkel",
 DlgLstTypeSquare	: "Firkant",
 DlgLstTypeNumbers	: "Numre(1, 2, 3)",
 DlgLstTypeLCase		: "Små bokstaver (a, b, c)",

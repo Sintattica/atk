@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: tr.js
  * 	Turkish language file.
  * 
@@ -38,9 +40,11 @@ RemoveFormat		: "Biçimi Kaldir",
 InsertLinkLbl		: "Köprü",
 InsertLink			: "Köprü Ekle/Düzenle",
 RemoveLink			: "Köprü Kaldir",
-Anchor				: "Insert/Edit Anchor",	//MISSING
+Anchor				: "Çapa Ekle/Düzenle",
 InsertImageLbl		: "Resim",
 InsertImage			: "Resim Ekle/Düzenle",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Flash Ekle/Düzenle",
 InsertTableLbl		: "Tablo",
 InsertTable			: "Tablo Ekle/Düzenle",
 InsertLineLbl		: "Satir",
@@ -81,6 +85,8 @@ Find				: "Bul",
 Replace				: "Degistir",
 SpellCheck			: "Yazim Denetimi",
 UniversalKeyboard	: "Evrensel Klavye",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Form",
 Checkbox		: "Onay Kutusu",
@@ -102,9 +108,11 @@ InsertCell			: "Hücre Ekle",
 DeleteCells			: "Hücre Sil",
 MergeCells			: "Hücreleri Birlestir",
 SplitCell			: "Hücre Böl",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Hücre Özellikleri",
 TableProperties		: "Tablo Özellikleri",
 ImageProperties		: "Resim Özellikleri",
+FlashProperties		: "Flash Özellikleri",
 
 AnchorProp			: "Çapa Özellikleri",
 ButtonProp			: "Dügme Özellikleri",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Bilinmeyen araç çubugu ögesi \"%1\"",
 UnknownCommand		: "Bilinmeyen komut \"%1\"",
 NotImplemented		: "Komut uyarlanamadi",
 UnknownToolbarSet	: "\"%1\" araç çubugu ögesi mevcut degil",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "Tamam",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Kapat",
 DlgBtnBrowseServer	: "Sunucuyu Gez",
 DlgAdvancedTag		: "Gelismis",
 DlgOpOther			: "&lt;Diger&gt;",
+DlgInfoTab			: "Bilgi",
+DlgAlertUrl			: "Lütfen URL girin",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;tanimlanmamis&gt;",
@@ -180,7 +193,17 @@ DlgImgAlignTextTop	: "Yazi Tepeye",
 DlgImgAlignTop		: "Tepe",
 DlgImgPreview		: "Ön Izleme",
 DlgImgAlertUrl		: "Lütfen resimin URL'sini yaziniz",
-DlgImgLinkTab		: "Link",	//MISSING
+DlgImgLinkTab		: "Köprü",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash Özellikleri",
+DlgFlashChkPlay		: "Otomatik Oynat",
+DlgFlashChkLoop		: "Döngü",
+DlgFlashChkMenu		: "Flash Mönüsünü Kullan",
+DlgFlashScale		: "Boyutlandır",
+DlgFlashScaleAll	: "Hepsini Göster",
+DlgFlashScaleNoBorder	: "Kenar Yok",
+DlgFlashScaleFit	: "Tam Sığdır",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Köprü",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Yükseklik",
 DlgTableCellSpace	: "Izgara kalinligi",
 DlgTableCellPad		: "Izgara yazi arasi",
 DlgTableCaption		: "Baslik",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Hücre Özellikleri",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Gezgin yaziliminizin güvenlik ayarlari editörün otomatik ko
 PasteAsText		: "Düz Metin Olarak Yapistir",
 PasteFromWord	: "Word'den yapistir",
 
-DlgPasteMsg		: "Gezgin yaziliminizin <STRONG>güvenlik ayarlari</STRONG> editörün otomatik yapistirma islemine izin vermiyor.<BR>Lütfen yandaki kutuya klavyenin (<STRONG>Ctrl+V</STRONG>) tuslarini kullanarak yapistirin ve <STRONG>Tamam</STRONG>'a basin.",
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",	//MISSING
+DlgPasteIgnoreFont		: "Yazı Tipi tanımlarını yoksay",
+DlgPasteRemoveStyles	: "Sitil Tanımlarını çıkar",
+DlgPasteCleanBox		: "Temizlik Kutusu",
+
 
 // Color Picker
 ColorAutomatic	: "Otomatik",
@@ -394,7 +422,7 @@ BulletedListProp	: "Simgeli Liste Özellikleri",
 NumberedListProp	: "Numarali Liste Özellikleri",
 DlgLstType			: "Tip",
 DlgLstTypeCircle	: "Çember",
-DlgLstTypeDisk		: "Daire",
+DlgLstTypeDisc		: "Disc",	//MISSING
 DlgLstTypeSquare	: "Kare",
 DlgLstTypeNumbers	: "Sayilar (1, 2, 3)",
 DlgLstTypeLCase		: "Küçük Harfler (a, b, c)",
@@ -438,11 +466,11 @@ DlgDocMeCopy		: "Telif",
 DlgDocPreview		: "Ön Izleme",
 
 // Templates Dialog
-Templates			: "Templates",	//MISSING
-DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
-DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
-DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+Templates			: "Düzenler",
+DlgTemplatesTitle	: "İçerik Düzenleri",
+DlgTemplatesSelMsg	: "Editörde açmak için lütfen bir düzen seçin.<br>(hali hazırdaki içerik kaybolacaktır.):",
+DlgTemplatesLoading	: "Düzenler listesi yüklenmekte. Lütfen bekleyiniz...",
+DlgTemplatesNoTpl	: "(Belirli bir düzen seçilmedi)",
 
 // About Dialog
 DlgAboutAboutTab	: "Hakkinda",

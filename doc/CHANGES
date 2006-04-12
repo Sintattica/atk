@@ -28,6 +28,8 @@ Changed in ATK 5.5.1
   with _id appended to it. [Ivo]
 + Added atkManyBoolRelation::setCols() method to set the number of columns
   with checkboxes. [Ivo]
++ Added new lesson (9) to demo application to demonstrate many-to-many
+  relations. [Ivo]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to
@@ -64,6 +66,7 @@ Changed in ATK 5.5.1
   For applications that rely on the numerical record indexes (EVIL!) you
   can set $config_pgsqlfetchmode = PGSQL_BOTH in your configfile. [Sandy]
 * Fixed bug in the atkManyToManyRelation if the filter isn't set. [Sandy]
+* Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]

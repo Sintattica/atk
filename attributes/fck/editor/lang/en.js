@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: en.js
  * 	English language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Remove Link",
 Anchor				: "Insert/Edit Anchor",
 InsertImageLbl		: "Image",
 InsertImage			: "Insert/Edit Image",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Insert/Edit Flash",
 InsertTableLbl		: "Table",
 InsertTable			: "Insert/Edit Table",
 InsertLineLbl		: "Line",
@@ -81,6 +85,8 @@ Find				: "Find",
 Replace				: "Replace",
 SpellCheck			: "Check Spell",
 UniversalKeyboard	: "Universal Keyboard",
+PageBreakLbl		: "Page Break",
+PageBreak			: "Insert Page Break",
 
 Form			: "Form",
 Checkbox		: "Checkbox",
@@ -102,9 +108,11 @@ InsertCell			: "Insert Cell",
 DeleteCells			: "Delete Cells",
 MergeCells			: "Merge Cells",
 SplitCell			: "Split Cell",
+TableDelete			: "Delete Table",
 CellProperties		: "Cell Properties",
 TableProperties		: "Table Properties",
 ImageProperties		: "Image Properties",
+FlashProperties		: "Flash Properties",
 
 AnchorProp			: "Anchor Properties",
 ButtonProp			: "Button Properties",
@@ -117,7 +125,7 @@ SelectionFieldProp	: "Selection Field Properties",
 TextareaProp		: "Textarea Properties",
 FormProp			: "Form Properties",
 
-FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Paragraph (DIV)",
+FontFormats			: "Normal;Formatted;Address;Heading 1;Heading 2;Heading 3;Heading 4;Heading 5;Heading 6;Normal (DIV)",
 
 // Alerts and Messages
 ProcessingXHTML		: "Processing XHTML. Please wait...",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Unknown toolbar item \"%1\"",
 UnknownCommand		: "Unknown command name \"%1\"",
 NotImplemented		: "Command not implemented",
 UnknownToolbarSet	: "Toolbar set \"%1\" doesn't exist",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Close",
 DlgBtnBrowseServer	: "Browse Server",
 DlgAdvancedTag		: "Advanced",
 DlgOpOther			: "&lt;Other&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Please insert the URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;not set&gt;",
@@ -181,6 +194,16 @@ DlgImgAlignTop		: "Top",
 DlgImgPreview		: "Preview",
 DlgImgAlertUrl		: "Please type the image URL",
 DlgImgLinkTab		: "Link",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash Properties",
+DlgFlashChkPlay		: "Auto Play",
+DlgFlashChkLoop		: "Loop",
+DlgFlashChkMenu		: "Enable Flash Menu",
+DlgFlashScale		: "Scale",
+DlgFlashScaleAll	: "Show all",
+DlgFlashScaleNoBorder	: "No Border",
+DlgFlashScaleFit	: "Exact Fit",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Link",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Height",
 DlgTableCellSpace	: "Cell spacing",
 DlgTableCellPad		: "Cell padding",
 DlgTableCaption		: "Caption",
+DlgTableSummary		: "Summary",
 
 // Table Cell Dialog
 DlgCellTitle		: "Cell Properties",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Your browser security settings don't permit the editor to auto
 PasteAsText		: "Paste as Plain Text",
 PasteFromWord	: "Paste from Word",
 
-DlgPasteMsg		: "The editor was not able to automatically execute pasting because of the <STRONG>security settings</STRONG> of your browser.<BR>Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignore Font Face definitions",
+DlgPasteRemoveStyles	: "Remove Styles definitions",
+DlgPasteCleanBox		: "Clean Up Box",
+
 
 // Color Picker
 ColorAutomatic	: "Automatic",
@@ -394,7 +422,7 @@ BulletedListProp	: "Bulleted List Properties",
 NumberedListProp	: "Numbered List Properties",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Circle",
-DlgLstTypeDisk		: "Disk",
+DlgLstTypeDisc		: "Disc",
 DlgLstTypeSquare	: "Square",
 DlgLstTypeNumbers	: "Numbers (1, 2, 3)",
 DlgLstTypeLCase		: "Lowercase Letters (a, b, c)",

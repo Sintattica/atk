@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_dialog_common.css
  * 	This is the CSS file used for interface details in some dialog
  * 	windows.
@@ -17,6 +19,15 @@
  */
 
 .ImagePreviewArea
+{
+	border: #000000 1px solid;
+	overflow: auto;
+	width: 100%;
+	height: 170px;
+	background-color: #ffffff;
+}
+
+.FlashPreviewArea
 {
 	border: #000000 1px solid;
 	padding: 5px;
@@ -60,4 +71,9 @@
 	border: 1px outset;
 	cursor: pointer;
 	cursor: hand;
+}
+
+.FCK__FieldNumeric
+{
+	behavior: url(common/fcknumericfield.htc) ;
 }

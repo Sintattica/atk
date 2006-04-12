@@ -41,7 +41,7 @@
     var $m_urlpath = "";
     var $fck_opt=array(
                  'ToolbarSet'=>'Default',
-                 'Width'=>'100%',
+                 'Width'=>'98%',
                  'Height'=>'300px');
 
     /**

@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: gl.js
  * 	Galician language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Eliminar Ligazón",
 Anchor				: "Inserir/Editar Referencia",
 InsertImageLbl		: "Imaxe",
 InsertImage			: "Inserir/Editar Imaxe",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Inserir/Editar Flash",
 InsertTableLbl		: "Tabla",
 InsertTable			: "Inserir/Editar Tabla",
 InsertLineLbl		: "Liña",
@@ -81,6 +85,8 @@ Find				: "Procurar",
 Replace				: "Substituir",
 SpellCheck			: "Corrección Ortográfica",
 UniversalKeyboard	: "Teclado Universal",
+PageBreakLbl		: "Salto de Páxina",
+PageBreak			: "Inserir Salto de Páxina",
 
 Form			: "Formulario",
 Checkbox		: "Cadro de Verificación",
@@ -102,9 +108,11 @@ InsertCell			: "Inserir Cela",
 DeleteCells			: "Borrar Cela",
 MergeCells			: "Unir Celas",
 SplitCell			: "Partir Celas",
+TableDelete			: "Borrar Taboa",
 CellProperties		: "Propriedades da Cela",
 TableProperties		: "Propriedades da Taboa",
 ImageProperties		: "Propriedades Imaxe",
+FlashProperties		: "Propriedades Flash",
 
 AnchorProp			: "Propriedades da Referencia",
 ButtonProp			: "Propriedades do Botón",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Ítem de ferramentas descoñecido \"%1\"",
 UnknownCommand		: "Nome de comando descoñecido \"%1\"",
 NotImplemented		: "Comando non implementado",
 UnknownToolbarSet	: "O conxunto de ferramentas \"%1\" non existe",
+NoActiveX			: "As opcións de seguridade do seu navegador poderían limitar algunha das características de editor. Debe activar a opción \"Executar controis ActiveX e plug-ins\". Pode notar que faltan características e experimentar erros",
+BrowseServerBlocked : "Non se poido abrir o navegador de recursos. Asegúrese de que están desactivados os bloqueadores de xanelas emerxentes",
+DialogBlocked		: "Non foi posible abrir a xanela de diálogo. Asegúrese de que están desactivados os bloqueadores de xanelas emerxentes",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Pechar",
 DlgBtnBrowseServer	: "Navegar no Servidor",
 DlgAdvancedTag		: "Advanzado",
 DlgOpOther			: "&lt;Outro&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Por favor, insira a URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;non definido&gt;",
@@ -181,6 +194,16 @@ DlgImgAlignTop		: "Tope",
 DlgImgPreview		: "Vista Previa",
 DlgImgAlertUrl		: "Por favor, escriba a URL da imaxe",
 DlgImgLinkTab		: "Ligazón",
+
+// Flash Dialog
+DlgFlashTitle		: "Propriedades Flash",
+DlgFlashChkPlay		: "Auto Execución",
+DlgFlashChkLoop		: "Bucle",
+DlgFlashChkMenu		: "Activar Menú Flash",
+DlgFlashScale		: "Escalar",
+DlgFlashScaleAll	: "Amosar Todo",
+DlgFlashScaleNoBorder	: "Sen Borde",
+DlgFlashScaleFit	: "Encaixar axustando",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Ligazón",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Altura",
 DlgTableCellSpace	: "Marxe entre Celas",
 DlgTableCellPad		: "Marxe interior",
 DlgTableCaption		: "Título",
+DlgTableSummary		: "Sumario",
 
 // Table Cell Dialog
 DlgCellTitle		: "Propriedades da Cela",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Os axustes de seguridade do seu navegador non permiten que o e
 PasteAsText		: "Pegar como texto plano",
 PasteFromWord	: "Pegar dende Word",
 
-DlgPasteMsg		: "O editor non pode executar automáticamente o pegado debido ós <STRONG>axustes de seguridade</STRONG> do seu navegador.<BR>Por favor, pegue dentro do seguinte cadro usando o atallo de teclado (<STRONG>Ctrl+V</STRONG>) e pulse <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Por favor, pegue dentro do seguinte cadro usando o teclado (<STRONG>Ctrl+V</STRONG>) e pulse <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignorar as definicións de Tipografía",
+DlgPasteRemoveStyles	: "Eliminar as definicións de Estilos",
+DlgPasteCleanBox		: "Limpar o Cadro",
+
 
 // Color Picker
 ColorAutomatic	: "Automático",
@@ -394,7 +422,7 @@ BulletedListProp	: "Propriedades das Marcas",
 NumberedListProp	: "Propriedades da Lista de Numeración",
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Círculo",
-DlgLstTypeDisk		: "Disco",
+DlgLstTypeDisc		: "Disco",
 DlgLstTypeSquare	: "Cuadrado",
 DlgLstTypeNumbers	: "Números (1, 2, 3)",
 DlgLstTypeLCase		: "Letras Minúsculas (a, b, c)",

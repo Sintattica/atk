@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: da.js
  * 	Danish language file.
  * 
@@ -42,6 +44,8 @@ RemoveLink			: "Slet Link",
 Anchor				: "Insert/Rediger Anker",
 InsertImageLbl		: "Indsæt Billed",
 InsertImage			: "Indsæt/Rediger Billed",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Indsæt/rediger Flash",
 InsertTableLbl		: "Table",
 InsertTable			: "Indsæt/Rediger Tabel",
 InsertLineLbl		: "Linie",
@@ -61,8 +65,8 @@ LeftJustify			: "Venstrestillet",
 CenterJustify		: "Centreret",
 RightJustify		: "Højrestillet",
 BlockJustify		: "Lige margener",
-DecreaseIndent		: "Forøg indrykning",
-IncreaseIndent		: "Formindsk indrykning",
+DecreaseIndent		: "Formindsk indrykning",
+IncreaseIndent		: "Forøg indrykning",
 Undo				: "Fortryd",
 Redo				: "Anuller fortryd",
 NumberedListLbl		: "Tal opstilling",
@@ -82,6 +86,8 @@ Find				: "Søg",
 Replace				: "Erstat",
 SpellCheck			: "Stavekontrol",
 UniversalKeyboard	: "Universalt Tastatur",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Indsæt Form",
 Checkbox		: "Indsæt Afkrydsningsboks",
@@ -103,9 +109,11 @@ InsertCell			: "Indsæt celle",
 DeleteCells			: "Slet celle",
 MergeCells			: "Flet celler",
 SplitCell			: "Opdel celler",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Celle egenskaber",
 TableProperties		: "Tabel egenskaber",
 ImageProperties		: "Billed egenskaber",
+FlashProperties		: "Flash egenskaber",
 
 AnchorProp			: "Anker egenskaber",
 ButtonProp			: "Knap egenskaber",
@@ -129,6 +137,9 @@ UnknownToolbarItem	: "Ukendt værktøjslinje objekt \"%1\"",
 UnknownCommand		: "Ukendt kommando navn \"%1\"",
 NotImplemented		: "Kommandoen er ikke implementeret",
 UnknownToolbarSet	: "Værktøjslinjen \"%1\" eksisterer ikke",
+NoActiveX			: "Din browsers sikkerhedsindstillinger kan begrænse nogle af editorens muligheder. Du skal slå \"Kør ActiveX-objekter og plug-ins\" til. Du vil måske opleve fejl og manglende muligheder.",
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -137,6 +148,8 @@ DlgBtnClose			: "Luk",
 DlgBtnBrowseServer	: "Gennemse Server",
 DlgAdvancedTag		: "Avanceret",
 DlgOpOther			: "&lt;Andet&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Indtast URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;ikke sat&gt;",
@@ -182,6 +195,16 @@ DlgImgAlignTop		: "Top",
 DlgImgPreview		: "Vis eksempel",
 DlgImgAlertUrl		: "Indtast stien til billedet",
 DlgImgLinkTab		: "Link",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash egenskaber",
+DlgFlashChkPlay		: "Automatisk afspilning",
+DlgFlashChkLoop		: "Gentagelse",
+DlgFlashChkMenu		: "Vis Flash menu",
+DlgFlashScale		: "Skalér",
+DlgFlashScaleAll	: "Vis alt",
+DlgFlashScaleNoBorder	: "Ingen ramme",
+DlgFlashScaleFit	: "Tilpas størrelse",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Link",
@@ -261,6 +284,7 @@ DlgTableHeight		: "Højde",
 DlgTableCellSpace	: "Afstand mellem celler",
 DlgTableCellPad		: "Celle margin",
 DlgTableCaption		: "Titel",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Celle egenskaber",
@@ -311,7 +335,11 @@ PasteErrorCopy	: "Din browsers sikkerhedsindstillinger tillader ikke editoren at
 PasteAsText		: "Indsæt som ren tekst",
 PasteFromWord	: "Indsæt fra Word",
 
-DlgPasteMsg		: "Editoren kunne ikke indsætte teksten automatisk på grund af din browsers <STRONG>sikkerhedsindstillinger</STRONG>.<BR>Indsæt i stedet teksten i den følgende boks ved hjælp af tastaturet (<STRONG>Ctrl+V</STRONG>) og klik <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Indsæt i boksen herunder (<STRONG>Ctrl+V</STRONG>) og klik <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignorer font definitioner",
+DlgPasteRemoveStyles	: "Fjern typografi definitioner",
+DlgPasteCleanBox		: "Slet indhold",
+
 
 // Color Picker
 ColorAutomatic	: "Automatisk",
@@ -395,7 +423,7 @@ BulletedListProp	: "Punkttegnopstilling egenskaber",
 NumberedListProp	: "Talopstilling egenskaber",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Cirkel",
-DlgLstTypeDisk		: "Prik",
+DlgLstTypeDisc		: "Flade",
 DlgLstTypeSquare	: "Firkant",
 DlgLstTypeNumbers	: "Nummereret (1, 2, 3)",
 DlgLstTypeLCase		: "Små bogstaver (a, b, c)",

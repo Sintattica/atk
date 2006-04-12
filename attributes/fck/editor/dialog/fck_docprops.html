@@ -9,6 +9,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_docprops.html
  * 	Link dialog window.
  * 
@@ -146,6 +148,9 @@ function GetMetadata( name )
 
 window.onload = function ()
 {
+	// Show/Hide the "Browse Server" button.
+	GetE('tdBrowse').style.display = oEditor.FCKConfig.ImageBrowser ? "" : "none";
+
 	// First of all, translate the dialog box texts
 	oEditor.FCKLanguageManager.TranslatePage( document ) ;
 
@@ -370,16 +375,7 @@ function SelectColor( wich )
 
 function BrowseServerBack()
 {
-	var iLeft = (screen.width  - FCKConfig.ImageBrowserWindowWidth) / 2 ;
-	var iTop  = (screen.height - FCKConfig.ImageBrowserWindowHeight) / 2 ;
-
-	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
-	sOptions += ",width=" + FCKConfig.LinkBrowserWindowWidth ;
-	sOptions += ",height=" + FCKConfig.LinkBrowserWindowHeight ;
-	sOptions += ",left=" + iLeft ;
-	sOptions += ",top=" + iTop ;
-
-	var oWindow = window.open( FCKConfig.ImageBrowserURL, "FCKBrowseWindow", sOptions ) ;
+	OpenFileBrowser( FCKConfig.ImageBrowserURL, FCKConfig.ImageBrowserWindowWidth, FCKConfig.ImageBrowserWindowHeight ) ;
 }
 
 function SetUrl( url )
@@ -487,7 +483,7 @@ function SetUrl( url )
 						<table cellSpacing="0" cellPadding="0" width="100%" border="0">
 							<tr>
 								<td width="100%"><input id="txtBackImage" style="WIDTH: 100%" type="text" onchange="UpdatePreview();" onkeyup="UpdatePreview();"></td>
-								<td nowrap>&nbsp;<input id="btnBrowse" onclick="BrowseServerBack();" type="button" fckLang="DlgBtnBrowseServer" value="Browse Server" fckLang="DlgBtnBrowseServer"></td>
+								<td id="tdBrowse" nowrap>&nbsp;<input id="btnBrowse" onclick="BrowseServerBack();" type="button" fckLang="DlgBtnBrowseServer" value="Browse Server" fckLang="DlgBtnBrowseServer"></td>
 							</tr>
 						</table>
 						<input id="chkBackNoScroll" type="checkbox" onclick="UpdatePreview();"> <label for="chkBackNoScroll" fckLang="DlgDocBgNoScroll">Nonscrolling

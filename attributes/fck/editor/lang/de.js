@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: de.js
  * 	German language file.
  * 
@@ -42,6 +44,8 @@ RemoveLink			: "Link entfernen",
 Anchor				: "Anker einfügen/editieren",
 InsertImageLbl		: "Bild",
 InsertImage			: "Bild einfügen/editieren",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Flash einfügen/editieren",
 InsertTableLbl		: "Tabelle",
 InsertTable			: "Tabelle einfügen/editieren",
 InsertLineLbl		: "Linie",
@@ -80,8 +84,10 @@ BGColor				: "Hintergrundfarbe",
 Source				: "Quellcode",
 Find				: "Finden",
 Replace				: "Ersetzen",
-SpellCheck			: "Rechtschreibprü:fung",
+SpellCheck			: "Rechtschreibprüfung",
 UniversalKeyboard	: "Universal-Tastatur",
+PageBreakLbl		: "Seitenumbruch",
+PageBreak			: "Seitenumbruch einfügen",
 
 Form			: "Formular",
 Checkbox		: "Checkbox",
@@ -103,14 +109,16 @@ InsertCell			: "Zelle einfügen",
 DeleteCells			: "Zelle löschen",
 MergeCells			: "Zellen vereinen",
 SplitCell			: "Zelle teilen",
+TableDelete			: "Tabelle löschen",
 CellProperties		: "Zellen Eigenschaften",
 TableProperties		: "Tabellen Eigenschaften",
 ImageProperties		: "Bild Eigenschaften",
+FlashProperties		: "Flash Eigenschaften",
 
 AnchorProp			: "Anker Eigenschaften",
 ButtonProp			: "Button Eigenschaften",
 CheckboxProp		: "Checkbox Eigenschaften",
-HiddenFieldProp		: "verstecktes Feld Eigenschaften",
+HiddenFieldProp		: "Verstecktes Feld Eigenschaften",
 RadioButtonProp		: "Radiobutton Eigenschaften",
 ImageButtonProp		: "Bildbutton Eigenschaften",
 TextFieldProp		: "Textfeld einzeilig Eigenschaften",
@@ -129,6 +137,9 @@ UnknownToolbarItem	: "Unbekanntes Menüleisten-Objekt \"%1\"",
 UnknownCommand		: "Unbekannter Befehl \"%1\"",
 NotImplemented		: "Befehl nicht implementiert",
 UnknownToolbarSet	: "Menüleiste \"%1\" existiert nicht",
+NoActiveX			: "Die Sicherheitseinstellungen Ihres Browsers beschränken evtl. einige Funktionen des Editors. Aktivieren Sie \"ActiveX-Steuerelemente und Plugins ausführen\" in den Sicherheitseinstellungen, um diese Funktionen nutzen zu können",
+BrowseServerBlocked : "Ein Auswahlfenster konnte nicht geöffnet werden. Stellen Sie sicher, das alle Popup-Blocker ausgeschaltet sind.",
+DialogBlocked		: "Das Dialog-Fenster konnte nicht geöffnet werden. Stellen Sie sicher, das alle Popup-Blocker ausgeschaltet sind.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -137,6 +148,8 @@ DlgBtnClose			: "Schließen",
 DlgBtnBrowseServer	: "Server durchsuchen",
 DlgAdvancedTag		: "Erweitert",
 DlgOpOther			: "&lt;andere&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Bitte tragen Sie die URL ein",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt; nichts &gt;",
@@ -164,8 +177,8 @@ DlgImgUpload		: "Upload",
 DlgImgAlt			: "Alternativer Text",
 DlgImgWidth			: "Breite",
 DlgImgHeight		: "Höhe",
-DlgImgLockRatio		: "Größenverhaeltniss beibehalten",
-DlgBtnResetSize		: "Größe zuruecksetzen",
+DlgImgLockRatio		: "Größenverhältniss beibehalten",
+DlgBtnResetSize		: "Größe zurücksetzen",
 DlgImgBorder		: "Rahmen",
 DlgImgHSpace		: "H-Freiraum",
 DlgImgVSpace		: "V-Freiraum",
@@ -182,6 +195,16 @@ DlgImgAlignTop		: "Oben",
 DlgImgPreview		: "Vorschau",
 DlgImgAlertUrl		: "Bitte geben Sie die Bild-URL an",
 DlgImgLinkTab		: "Link",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash Eigenschaften",
+DlgFlashChkPlay		: "autom. Abspielen",
+DlgFlashChkLoop		: "Endlosschleife",
+DlgFlashChkMenu		: "Aktiviere Flash Menü",
+DlgFlashScale		: "Skalierung",
+DlgFlashScaleAll	: "Alles anzeigen",
+DlgFlashScaleNoBorder	: "ohne Rand",
+DlgFlashScaleFit	: "Passgenau",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Link",
@@ -203,7 +226,7 @@ DlgLnkEMail			: "E-Mail Addresse",
 DlgLnkEMailSubject	: "Betreffzeile",
 DlgLnkEMailBody		: "Nachrichtentext",
 DlgLnkUpload		: "Upload",
-DlgLnkBtnUpload		: "Uum Server senden",
+DlgLnkBtnUpload		: "Zum Server senden",
 
 DlgLnkTarget		: "Zielseite",
 DlgLnkTargetFrame	: "&lt;Frame&gt;",
@@ -230,7 +253,7 @@ DlgLnkPopTop		: "Obere Position",
 
 DlnLnkMsgNoUrl		: "Bitte geben Sie die Link-URL an",
 DlnLnkMsgNoEMail	: "Bitte geben Sie e-Mail Adresse an",
-DlnLnkMsgNoAnchor	: "Bitte waehlen Sie einen Anker aus",
+DlnLnkMsgNoAnchor	: "Bitte wählen Sie einen Anker aus",
 
 // Color Dialog
 DlgColorTitle		: "Farbauswahl",
@@ -260,7 +283,8 @@ DlgTableWidthPc		: "%",
 DlgTableHeight		: "Höhe",
 DlgTableCellSpace	: "Zellenabstand außen",
 DlgTableCellPad		: "Zellenabstand innen",
-DlgTableCaption		: "Üeberschrift",
+DlgTableCaption		: "Überschrift",
+DlgTableSummary		: "Inhaltsübersicht",
 
 // Table Cell Dialog
 DlgCellTitle		: "Zellen-Eigenschaften",
@@ -304,14 +328,18 @@ DlgReplaceReplAllBtn	: "Alle Ersetzen",
 DlgReplaceWordChk		: "Nur ganze Worte suchen",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch einzufügen. Bitte benutzen Sie die System-Zwischenablage ueber STRG-C (kopieren) und STRG-V (einfügen).",
-PasteErrorCut	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch auszuschneiden. Bitte benutzen Sie die System-Zwischenablage ueber STRG-X (ausschneiden) und STRG-V (einfügen).",
-PasteErrorCopy	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch kopieren. Bitte benutzen Sie die System-Zwischenablage ueber STRG-C (kopieren).",
+PasteErrorPaste	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch einzufügen. Bitte benutzen Sie die System-Zwischenablage über STRG-C (kopieren) und STRG-V (einfügen).",
+PasteErrorCut	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch auszuschneiden. Bitte benutzen Sie die System-Zwischenablage über STRG-X (ausschneiden) und STRG-V (einfügen).",
+PasteErrorCopy	: "Die Sicherheitseinstellungen Ihres Browsers lassen es nicht zu, den Text automatisch kopieren. Bitte benutzen Sie die System-Zwischenablage über STRG-C (kopieren).",
 
 PasteAsText		: "Als Text einfügen",
 PasteFromWord	: "Aus Word einfügen",
 
-DlgPasteMsg		: "Der Text konnte nicht automatisch eingefügt werden, da die Sicherheitseinstellungen Ihres Browsers dies nicht zulassen.<BR>Bitte nutzen Sie in der folgenden Box die System-Zwischenablage ueber STRG-C (kopieren) und STRG-V (einfügen).",
+DlgPasteMsg2	: "Bitte fügen Sie den Text in der folgenden Box über die Tastatur (mit <STRONG>Ctrl+V</STRONG>) ein und bestätigen Sie mit <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignoriere Schriftart-Definitionen",
+DlgPasteRemoveStyles	: "Entferne Style-Definitionen",
+DlgPasteCleanBox		: "Inhalt aufräumen",
+
 
 // Color Picker
 ColorAutomatic	: "Automatisch",
@@ -327,7 +355,7 @@ DlgAnchorErrorName	: "Bitte geben Sie den Namen des Ankers ein",
 
 // Speller Pages Dialog
 DlgSpellNotInDic		: "Nicht im Wörterbuch",
-DlgSpellChangeTo		: "Äendern in",
+DlgSpellChangeTo		: "Ändern in",
 DlgSpellBtnIgnore		: "Ignorieren",
 DlgSpellBtnIgnoreAll	: "Alle Ignorieren",
 DlgSpellBtnReplace		: "Ersetzen",
@@ -366,7 +394,7 @@ DlgSelectOpAvail	: "Mögliche Optionen",
 DlgSelectOpText		: "Text",
 DlgSelectOpValue	: "Wert",
 DlgSelectBtnAdd		: "Hinzufügen",
-DlgSelectBtnModify	: "Äendern",
+DlgSelectBtnModify	: "Ändern",
 DlgSelectBtnUp		: "Hoch",
 DlgSelectBtnDown	: "Runter",
 DlgSelectBtnSetValue : "Setze als Standardwert",
@@ -395,7 +423,7 @@ BulletedListProp	: "Listen-Eigenschaften",
 NumberedListProp	: "Nummerierte Listen-Eigenschaften",
 DlgLstType			: "Typ",
 DlgLstTypeCircle	: "Kreis",
-DlgLstTypeDisk		: "Disk",
+DlgLstTypeDisc		: "Disc",	//MISSING
 DlgLstTypeSquare	: "Quadrat",
 DlgLstTypeNumbers	: "Nummern (1, 2, 3)",
 DlgLstTypeLCase		: "Kleinbuchstaben (a, b, c)",
@@ -441,7 +469,7 @@ DlgDocPreview		: "Vorschau",
 // Templates Dialog
 Templates			: "Vorlagen",
 DlgTemplatesTitle	: "Vorlagen",
-DlgTemplatesSelMsg	: "Klicken Sie auf eine Vorlage, um sie im Editor zu öffnen(der aktuelle Inhalt wird dabei gelöscht!):",
+DlgTemplatesSelMsg	: "Klicken Sie auf eine Vorlage, um sie im Editor zu öffnen (der aktuelle Inhalt wird dabei gelöscht!):",
 DlgTemplatesLoading	: "Liste der Vorlagen wird geladen. Bitte warten...",
 DlgTemplatesNoTpl	: "(keine Vorlagen definiert)",
 

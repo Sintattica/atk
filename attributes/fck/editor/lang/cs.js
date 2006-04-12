@@ -8,12 +8,15 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: cs.js
  * 	Czech language file.
  * 
  * File Authors:
  * 		David Horák (david.horak@email.cz)
  * 		Petr Plavjaník (plavjanik@gmail.com)
+ * 		Dave MacBlack (davemacblack@users.sourceforge.net)
  */
 
 var FCKLang =
@@ -42,6 +45,8 @@ RemoveLink			: "Odstranit odkaz",
 Anchor				: "Vložít/změnit záložku",
 InsertImageLbl		: "Obrázek",
 InsertImage			: "Vložit/změnit obrázek",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Vložit/Upravit Flash",
 InsertTableLbl		: "Tabulka",
 InsertTable			: "Vložit/změnit tabulku",
 InsertLineLbl		: "Linka",
@@ -69,7 +74,7 @@ NumberedListLbl		: "Číslování",
 NumberedList		: "Vložit/odstranit číslovaný seznam",
 BulletedListLbl		: "Odrážky",
 BulletedList		: "Vložit/odstranit odrážky",
-ShowTableBorders	: "Zobrzit okraje tabulek",
+ShowTableBorders	: "Zobrazit okraje tabulek",
 ShowDetails			: "Zobrazit podrobnosti",
 Style				: "Styl",
 FontFormat			: "Formát",
@@ -82,6 +87,8 @@ Find				: "Hledat",
 Replace				: "Nahradit",
 SpellCheck			: "Zkontrolovat pravopis",
 UniversalKeyboard	: "Univerzální klávesnice",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Formulář",
 Checkbox		: "Zaškrtávací políčko",
@@ -103,9 +110,11 @@ InsertCell			: "Vložit buňku",
 DeleteCells			: "Smazat buňky",
 MergeCells			: "Sloučit buňky",
 SplitCell			: "Rozdělit buňku",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Vlastnosti buňky",
 TableProperties		: "Vlastnosti tabulky",
 ImageProperties		: "Vlastnosti obrázku",
+FlashProperties		: "Vlastnosti Flashe",
 
 AnchorProp			: "Vlastnosti záložky",
 ButtonProp			: "Vlastnosti tlačítka",
@@ -123,12 +132,15 @@ FontFormats			: "Normální;Formátovaný;Adresa;Nadpis 1;Nadpis 2;Nadpis 3;Nadp
 // Alerts and Messages
 ProcessingXHTML		: "Probíhá zpracování XHTML. Prosím čekejte...",
 Done				: "Hotovo",
-PasteWordConfirm	: "Jak je vidět, vkládaný text je kopírován z Wordu. Chceet jej před vložením vyčistit?",
+PasteWordConfirm	: "Jak je vidět, vkládaný text je kopírován z Wordu. Chcete jej před vložením vyčistit?",
 NotCompatiblePaste	: "Tento příkaz je dostupný pouze v Internet Exploreru verze 5.5 nebo vyšší. Chcete vložit text bez vyčištění?",
 UnknownToolbarItem	: "Neznámá položka panelu nástrojů \"%1\"",
 UnknownCommand		: "Neznámý příkaz \"%1\"",
 NotImplemented		: "Příkaz není implementován",
 UnknownToolbarSet	: "Panel nástrojů \"%1\" neexistuje",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -137,6 +149,8 @@ DlgBtnClose			: "Zavřít",
 DlgBtnBrowseServer	: "Vybrat na serveru",
 DlgAdvancedTag		: "Rozšířené",
 DlgOpOther			: "&lt;Ostatní&gt;",
+DlgInfoTab			: "Info",
+DlgAlertUrl			: "Prosím vložte URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;nenastaveno&gt;",
@@ -156,7 +170,7 @@ DlgGenLinkCharset	: "Přiřazená znaková sada",
 DlgGenStyle			: "Styl",
 
 // Image Dialog
-DlgImgTitle			: "Vlastosti obrázku",
+DlgImgTitle			: "Vlastnosti obrázku",
 DlgImgInfoTab		: "Informace o obrázku",
 DlgImgBtnUpload		: "Odeslat na server",
 DlgImgURL			: "URL",
@@ -181,7 +195,17 @@ DlgImgAlignTextTop	: "Na horní okraj textu",
 DlgImgAlignTop		: "Nahoru",
 DlgImgPreview		: "Náhled",
 DlgImgAlertUrl		: "Zadejte prosím URL obrázku",
-DlgImgLinkTab		: "Link",	//MISSING
+DlgImgLinkTab		: "Odkaz",
+
+// Flash Dialog
+DlgFlashTitle		: "Vlastnosti Flashe",
+DlgFlashChkPlay		: "Automatické spuštění",
+DlgFlashChkLoop		: "Opakování",
+DlgFlashChkMenu		: "Nabídka Flash",
+DlgFlashScale		: "Zobrazit",
+DlgFlashScaleAll	: "Zobrazit vše",
+DlgFlashScaleNoBorder	: "Bez okraje",
+DlgFlashScaleFit	: "Přizpůsobit",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Odkaz",
@@ -261,6 +285,7 @@ DlgTableHeight		: "Výška",
 DlgTableCellSpace	: "Vzdálenost buněk",
 DlgTableCellPad		: "Odsazení obsahu",
 DlgTableCaption		: "Popis",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Vlastnosti buňky",
@@ -286,7 +311,7 @@ DlgCellVerAlignBaseline	: "Na účaří",
 DlgCellRowSpan		: "Sloučené řádky",
 DlgCellCollSpan		: "Sloučené sloupce",
 DlgCellBackColor	: "Barva pozadí",
-DlgCellBorderColor	: "Rarva ohraničení",
+DlgCellBorderColor	: "Barva ohraničení",
 DlgCellBtnSelect	: "Výběr...",
 
 // Find Dialog
@@ -311,7 +336,11 @@ PasteErrorCopy	: "Bezpečnostní nastavení Vašeho prohlížeče nedovolují ed
 PasteAsText		: "Vložit jako čistý text",
 PasteFromWord	: "Vložit text z Wordu",
 
-DlgPasteMsg		: "<STRONG>Bezpečnostní nastavení</STRONG> Vašeho prohlížeče nedovolují editoru spustit funkci pro vložení textu ze schránky.<BR>Text ze schránky prosím vložte pomocí klávesnice do tohoto pole (<STRONG>Ctrl+V</STRONG>) a pak stiskněte tlačítko <STRONG>OK</STRONG>.",
+DlgPasteMsg2	: "Do následujícího pole vložte požadovaný obsah pomocí klávesnice (<STRONG>Ctrl+V</STRONG>) a stiskněte <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Ignorovat písmo",
+DlgPasteRemoveStyles	: "Odstranit styly",
+DlgPasteCleanBox		: "Vyčistit",
+
 
 // Color Picker
 ColorAutomatic	: "Automaticky",
@@ -360,7 +389,7 @@ DlgFormMethod	: "Metoda",
 DlgSelectName		: "Název",
 DlgSelectValue		: "Hodnota",
 DlgSelectSize		: "Velikost",
-DlgSelectLines		: "řádků",
+DlgSelectLines		: "Řádků",
 DlgSelectChkMulti	: "Povolit mnohonásobné výběry",
 DlgSelectOpAvail	: "Dostupná nastavení",
 DlgSelectOpText		: "Text",
@@ -395,7 +424,7 @@ BulletedListProp	: "Vlastnosti odrážek",
 NumberedListProp	: "Vlastnosti číslovaného seznamu",
 DlgLstType			: "Typ",
 DlgLstTypeCircle	: "Kružnice",
-DlgLstTypeDisk		: "Plný kruh",
+DlgLstTypeDisc		: "Kruh",
 DlgLstTypeSquare	: "Čtverec",
 DlgLstTypeNumbers	: "Čísla (1, 2, 3)",
 DlgLstTypeLCase		: "Malá písmena (a, b, c)",
@@ -439,16 +468,16 @@ DlgDocMeCopy		: "Autorská práva",
 DlgDocPreview		: "Náhled",
 
 // Templates Dialog
-Templates			: "Templates",	//MISSING
-DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
-DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
-DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+Templates			: "Šablony",
+DlgTemplatesTitle	: "Šablony obsahu",
+DlgTemplatesSelMsg	: "Prosím zvolte šablonu pro otevření v editoru<br>(aktuální obsah editoru bude ztracen):",
+DlgTemplatesLoading	: "Nahrávám přeheld šablon. Prosím čekejte...",
+DlgTemplatesNoTpl	: "(Není definována žádná šablona)",
 
 // About Dialog
 DlgAboutAboutTab	: "O aplikaci",
 DlgAboutBrowserInfoTab	: "Informace o prohlížeči",
 DlgAboutVersion		: "verze",
-DlgAboutLicense		: "Licencováno pomocí GNU Lesser General Public License",
+DlgAboutLicense		: "Licencováno pod GNU Lesser General Public License",
 DlgAboutInfo		: "Více informací získáte na"
 }

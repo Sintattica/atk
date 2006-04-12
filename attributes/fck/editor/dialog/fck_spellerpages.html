@@ -9,6 +9,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fck_spellerpages.html
  * 	Spell Check dialog window.
  * 
@@ -28,7 +30,7 @@ var FCKLang = oEditor.FCKLang ;
 
 window.onload = function()
 {
-	document.getElementById('txtHtml').value = oEditor.FCK.GetHTML() ;
+	document.getElementById('txtHtml').value = oEditor.FCK.EditorDocument.body.innerHTML ;
 
 	var oSpeller = new spellChecker( document.getElementById('txtHtml') ) ;
 	oSpeller.OnFinished = oSpeller_OnFinished ;

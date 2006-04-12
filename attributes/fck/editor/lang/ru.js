@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: ru.js
  * 	Russian language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "Убрать ссылку",
 Anchor				: "Вставить/Редактировать якорь",
 InsertImageLbl		: "Изображение",
 InsertImage			: "Вставить/Редактировать изображение",
+InsertFlashLbl		: "Flash",
+InsertFlash			: "Вставить/Редактировать Flash",
 InsertTableLbl		: "Таблица",
 InsertTable			: "Вставить/Редактировать таблицу",
 InsertLineLbl		: "Линия",
@@ -81,6 +85,8 @@ Find				: "Найти",
 Replace				: "Заменить",
 SpellCheck			: "Проверить орфографию",
 UniversalKeyboard	: "Универсальная клавиатура",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Форма",
 Checkbox		: "Флаговая кнопка",
@@ -102,9 +108,11 @@ InsertCell			: "Вставить ячейку",
 DeleteCells			: "Удалить ячейки",
 MergeCells			: "Соединить ячейки",
 SplitCell			: "Разбить ячейку",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Свойства ячейки",
 TableProperties		: "Свойства таблицы",
 ImageProperties		: "Свойства изображения",
+FlashProperties		: "Свойства Flash",
 
 AnchorProp			: "Свойства якоря",
 ButtonProp			: "Свойства кнопки",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "Не известный элемент панели инс
 UnknownCommand		: "Не известное имя команды \"%1\"",
 NotImplemented		: "Команда не реализована",
 UnknownToolbarSet	: "Панель инструментов \"%1\" не существует",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "ОК",
@@ -136,6 +147,8 @@ DlgBtnClose			: "Закрыть",
 DlgBtnBrowseServer	: "Просмотреть на сервере",
 DlgAdvancedTag		: "Расширенный",
 DlgOpOther			: "&lt;Другое&gt;",
+DlgInfoTab			: "Информация",
+DlgAlertUrl			: "Пожалуйста вставьте URL",
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;не определено&gt;",
@@ -181,6 +194,16 @@ DlgImgAlignTop		: "По верху",
 DlgImgPreview		: "Предварительный просмотр",
 DlgImgAlertUrl		: "Пожалуйста введите URL изображения",
 DlgImgLinkTab		: "Ссылка",
+
+// Flash Dialog
+DlgFlashTitle		: "Свойства Flash",
+DlgFlashChkPlay		: "Авто проигрывание",
+DlgFlashChkLoop		: "Повтор",
+DlgFlashChkMenu		: "Включить меню Flash",
+DlgFlashScale		: "Масштабировать",
+DlgFlashScaleAll	: "Показывать все",
+DlgFlashScaleNoBorder	: "Без бордюра",
+DlgFlashScaleFit	: "Точное совпадение",
 
 // Link Dialog
 DlgLnkWindowTitle	: "Ссылка",
@@ -260,6 +283,7 @@ DlgTableHeight		: "Высота",
 DlgTableCellSpace	: "Промежуток (spacing)",
 DlgTableCellPad		: "Отступ (padding)",
 DlgTableCaption		: "Заголовок",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Свойства ячейки",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "Настройки безопасности вашего бр�
 PasteAsText		: "Вставить только текст",
 PasteFromWord	: "Вставить из Word",
 
-DlgPasteMsg		: "Редактор не может автоматически выполнить операцию вставки, по причине <STRONG>настроек безопасности</STRONG> вашего браузера.<BR>Пожалуйста вставьте текст в следующее поле ввода, используя клавиатуру (<STRONG>Ctrl+V</STRONG>) и нажмите <STRONG>ОК</STRONG>.",
+DlgPasteMsg2	: "Пожалуйста вставьте текст в прямоугольник используя сочетание клавиш (<STRONG>Ctrl+V</STRONG>) и нажмите <STRONG>OK</STRONG>.",
+DlgPasteIgnoreFont		: "Игнорировать определения гарнитуры",
+DlgPasteRemoveStyles	: "Убрать определения стилей",
+DlgPasteCleanBox		: "Очистить",
+
 
 // Color Picker
 ColorAutomatic	: "Автоматический",
@@ -394,7 +422,7 @@ BulletedListProp	: "Свойства маркированного списка",
 NumberedListProp	: "Свойства нумерованного списка",
 DlgLstType			: "Тип",
 DlgLstTypeCircle	: "Круг",
-DlgLstTypeDisk		: "Диск",
+DlgLstTypeDisc		: "Disc",	//MISSING
 DlgLstTypeSquare	: "Квадрат",
 DlgLstTypeNumbers	: "Номера (1, 2, 3)",
 DlgLstTypeLCase		: "Буквы нижнего регистра (a, b, c)",

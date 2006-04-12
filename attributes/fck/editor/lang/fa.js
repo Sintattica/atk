@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fa.js
  * 	Persian language file.
  * 
@@ -41,6 +43,8 @@ RemoveLink			: "برداشتن لينک",
 Anchor				: "درج/ويرايش لنگر",
 InsertImageLbl		: "تصوير",
 InsertImage			: "درج/ويرايش تصوير",
+InsertFlashLbl		: "Flash",	//MISSING
+InsertFlash			: "Insert/Edit Flash",	//MISSING
 InsertTableLbl		: "جدول",
 InsertTable			: "درج/ويرايش جدول",
 InsertLineLbl		: "خط",
@@ -81,6 +85,8 @@ Find				: "جستجو",
 Replace				: "جايگزينی",
 SpellCheck			: "کنترل املا",
 UniversalKeyboard	: "صفحه کليد جهانی",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "فرم",
 Checkbox		: "دکمه گزينه ای",
@@ -102,9 +108,11 @@ InsertCell			: "درج سلول",
 DeleteCells			: "حذف سلولها",
 MergeCells			: "ادغام سلولها",
 SplitCell			: "تفکيک سلول",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "ويژگيهای سلول",
 TableProperties		: "ويژگيهای جدول",
 ImageProperties		: "ويژگيهای تصوير",
+FlashProperties		: "Flash Properties",	//MISSING
 
 AnchorProp			: "ويژگيهای لنگر",
 ButtonProp			: "ويژگيهای دکمه",
@@ -128,6 +136,9 @@ UnknownToolbarItem	: "فقره منوابزار ناشناخته \"%1\"",
 UnknownCommand		: "نام دستور ناشناخته \"%1\"",
 NotImplemented		: "دستور اجرا نشد",
 UnknownToolbarSet	: "مجموعه منوابزار \"%1\" وجود ندارد",
+NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "تائيد",
@@ -136,6 +147,8 @@ DlgBtnClose			: "بستن",
 DlgBtnBrowseServer	: "فهرست نمايی سرور",
 DlgAdvancedTag		: "پيشرفته",
 DlgOpOther			: "&lt;غيره&gt;",
+DlgInfoTab			: "Info",	//MISSING
+DlgAlertUrl			: "Please insert the URL",	//MISSING
 
 // General Dialogs Labels
 DlgGenNotSet		: "&lt;تعين نشده&gt;",
@@ -181,6 +194,16 @@ DlgImgAlignTop		: "بالا",
 DlgImgPreview		: "پيش نمايش",
 DlgImgAlertUrl		: "لطفا URL تصوير را انتخاب کنيد",
 DlgImgLinkTab		: "لينک",
+
+// Flash Dialog
+DlgFlashTitle		: "Flash Properties",	//MISSING
+DlgFlashChkPlay		: "Auto Play",	//MISSING
+DlgFlashChkLoop		: "Loop",	//MISSING
+DlgFlashChkMenu		: "Enable Flash Menu",	//MISSING
+DlgFlashScale		: "Scale",	//MISSING
+DlgFlashScaleAll	: "Show all",	//MISSING
+DlgFlashScaleNoBorder	: "No Border",	//MISSING
+DlgFlashScaleFit	: "Exact Fit",	//MISSING
 
 // Link Dialog
 DlgLnkWindowTitle	: "لينک",
@@ -260,6 +283,7 @@ DlgTableHeight		: "درازا",
 DlgTableCellSpace	: "فاصله ميان سلولها",
 DlgTableCellPad		: "فاصله پرشده در سلول",
 DlgTableCaption		: "عنوان",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "ويژگيهای سلول",
@@ -310,7 +334,11 @@ PasteErrorCopy	: "تنظيمات امنيتی مرورگر شما اجازه ن�
 PasteAsText		: "چسباندن به عنوان متن ساده",
 PasteFromWord	: "چسباندن از Word",
 
-DlgPasteMsg		: "به خاطر <STRONG>تنظيمات امنيتی</STRONG> مرورگر شما، ويرايشگر نتوانست به طور خودکار عملکرد چسباندن را به انجام برساند.<BR>لطفا به کمک کليد  (<STRONG>Ctrl+V</STRONG>) متن را درون جهبه زير بچسبانيد و دکمه <STRONG>تائيد</STRONG> را فشار دهيد.",
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",	//MISSING
+DlgPasteIgnoreFont		: "Ignore Font Face definitions",	//MISSING
+DlgPasteRemoveStyles	: "Remove Styles definitions",	//MISSING
+DlgPasteCleanBox		: "Clean Up Box",	//MISSING
+
 
 // Color Picker
 ColorAutomatic	: "خودکار",
@@ -394,7 +422,7 @@ BulletedListProp	: "ويژگيهای فهرست دکمه ای",
 NumberedListProp	: "ويژگيهای فهرست عددی",
 DlgLstType			: "نوع",
 DlgLstTypeCircle	: "دايره",
-DlgLstTypeDisk		: "قرص",
+DlgLstTypeDisc		: "Disc",	//MISSING
 DlgLstTypeSquare	: "مربع",
 DlgLstTypeNumbers	: "شماره ها (1، 2، 3)",
 DlgLstTypeLCase		: "حروف کوچک (a، b، c)",

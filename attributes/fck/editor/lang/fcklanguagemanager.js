@@ -8,6 +8,8 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: fcklanguagemanager.js
  * 	This file list all available languages in the editor.
  * 
@@ -36,15 +38,20 @@ FCKLanguageManager.AvailableLanguages =
 	'eu'		: 'Basque',
 	'fa'		: 'Persian',
 	'fi'		: 'Finnish',
+	'fo'		: 'Faroese',
 	'fr'		: 'French',
 	'gl'		: 'Galician',
 	'he'		: 'Hebrew',
+	'hi'		: 'Hindi',
 	'hr'		: 'Croatian',
 	'hu'		: 'Hungarian',
 	'it'		: 'Italian',
 	'ja'		: 'Japanese',
 	'ko'		: 'Korean',
 	'lt'		: 'Lithuanian',
+	'lv'		: 'Latvian',
+	'mn'		: 'Mongolian',
+	'ms'		: 'Malay',
 	'nl'		: 'Dutch',
 	'no'		: 'Norwegian',
 	'pl'		: 'Polish',
@@ -60,6 +67,7 @@ FCKLanguageManager.AvailableLanguages =
 	'th'		: 'Thai',
 	'tr'		: 'Turkish',
 	'uk'		: 'Ukrainian',
+	'vi'		: 'Vietnamese',
 	'zh'		: 'Chinese Traditional',
 	'zh-cn'		: 'Chinese Simplified'
 }
