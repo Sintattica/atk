@@ -32,6 +32,9 @@ Changed in ATK 5.5.1
   relations. [Ivo]
 + Added setToolbarSet() method to atkFckAttribute to change the displayed
   toolbars. [Ivo]
++ Added setAutonumbering() method to atkFileAttribute to turn on autonumbering
+  of files when files with the same name as that of a different record are
+  uploaded. [Ivo]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to

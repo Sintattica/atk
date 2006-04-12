@@ -61,6 +61,14 @@
     var $m_filenameTpl = "";
 
     /**
+     * When set to true, a file is auto-renumbered if another record exists with the
+     * same filename.
+     *
+     * @var boolean
+     */
+    var $m_autonumbering = false;
+
+    /**
      * Constructor
      * @param string $name Name of the attribute
      * @param array $dir Can be a string with the Directory with images/files or an array with a Directory and a Display Url
@@ -84,6 +92,20 @@
         $this->m_dir = $this->AddSlash($dir);
 	      $this->m_url = $this->AddSlash($dir);
       }
+    }
+
+    /**
+     * Turn auto-numbering of filenames on/off.
+     *
+     * When autonumbering is turned on, uploading a file with the same name as
+     * the file of another record, will result in the file getting a unique
+     * sequence number.
+     *
+     * @param unknown_type $autonumbering
+     */
+    function setAutonumbering($autonumbering=true)
+    {
+      $this->m_autonumbering = $autonumbering;
     }
 
 
@@ -322,6 +344,12 @@
         else
         {
           $realname = $this->_filenameMangle($rec, $_FILES[$postfiles_basename]["name"]);
+
+          if ($this->m_autonumbering)
+          {
+            $realname = $this->_filenameUnique($rec, $realname);
+          }
+
           $result = array("tmpfile"=>$_FILES[$postfiles_basename]["tmp_name"],
                           "filename"=>$realname,
                           "filesize"=>$_FILES[$postfiles_basename]["size"],
@@ -424,6 +452,7 @@
 
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
+     * @access private
      */
     function _filenameMangle($rec, $default)
     {
@@ -437,6 +466,41 @@
         $filename = stringparse($this->m_filenameTpl, $rec).".".$ext;
       }
       return str_replace(' ','_',$filename);
+    }
+
+    /**
+     * Give the file a uniquely numbered filename.
+     *
+     * @access private
+     * @param array $rec The record for thish the file was uploaded
+     * @param String $filename The name of the uploaded file
+     * @return String The name of the uploaded file, renumbered if necessary
+     */
+    function _filenameUnique($rec, $filename)
+    {
+      // check if there's another record using this same name. If so, (re)number the filename.
+      atkdebug("unique check");
+
+      $name = substr($filename, 0, strrpos($filename,'.'));
+      $ext = substr($filename, strrpos($filename,'.')+1);
+
+      $selector = "(".$this->fieldName()."='$filename' OR ".$this->fieldName()." LIKE '$name-_.$ext')";
+      if ($rec[$this->m_ownerInstance->primaryKeyField()]!="")
+      {
+        $selector.= " AND NOT (".$this->m_ownerInstance->primaryKey($rec).")";
+      }
+
+      $count = $this->m_ownerInstance->countDb("($selector)", "", array($this->fieldName()));
+
+      atkdebug("count ".$count);
+
+      if ($count>0)
+      {
+        // file name exists, so mangle it with a number.
+        $filename = $name."-".$count.".".$ext;
+      }
+
+      return $filename;
     }
 
     /**
