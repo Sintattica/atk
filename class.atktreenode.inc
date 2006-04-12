@@ -649,17 +649,18 @@
      *
      *@param $selector The 'where' clause that indicates which records to select.
      */
-    function copyDb($record)
+    function copyDb($record, $mode="copy")
     {
       $oldparent=$record[$this->m_primaryKey[0]];
-      $this->preCopy($record);
-      $this->addDb($record, true, "copy");
+      
+      parent::copyDb($record, $mode);
+      
       if(!empty($this->m_parent))
       {
         atkdebug("copyDb - Main Record added");
         $newparent=$record[$this->m_primaryKey[0]];
         atkdebug('CopyDbCopychildren('.$this->m_parent.'='.$oldparent.','.$newparent.')');
-        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent);
+        $this->copyChildren($this->m_table.'.'.$this->m_parent.'='.$oldparent, $newparent, $mode);
       }
       return true;
     }
@@ -667,10 +668,12 @@
     /**
      * This is a recursive function to copy the children from a parent.
      *
+     * @todo shouldn't we recursively call copyDb here? instead of ourselves
+     * 
      * @param $selector Selector
      * @param $parent Parent ID
      */
-    function copyChildren($selector, $parent="")
+    function copyChildren($selector, $parent="", $mode="copy")
     {
       $recordset = $this->selectDb($selector,"","","","","copy");
 
@@ -680,8 +683,7 @@
         {
           $recordset[$i][$this->m_parent] = array(""=>"",$this->m_primaryKey[0]=>$parent);
           $oldrec = $recordset[$i];
-          $this->preCopy($recordset[$i]);
-          $this->addDb($recordset[$i], true, "copy");
+          parent::copyDb($recordset[$i], $mode);
 
           atkdebug("Child Record added");
           $newparent=$recordset[$i][$this->m_primaryKey[0]];

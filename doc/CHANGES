@@ -28,6 +28,8 @@ Changed in ATK 5.5.1
   with _id appended to it. [Ivo]
 + Added atkManyBoolRelation::setCols() method to set the number of columns
   with checkboxes. [Ivo]
+* Changed the copydb method by filtering the executetriggers and added 
+  support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when

@@ -2676,19 +2676,20 @@
      * @param array $record The record to copy.
      * @return boolean True if succesful, false if not.
      */
-    function copyDb(&$record)
+    function copyDb(&$record, $mode="copy")
     {
       // remove primarykey (copied record will get a new primary key)
       unset($record["atkprimkey"]);
+
+      // remove trigger has been executed references
+      foreach (array_keys($record) as $key)
+      {
+        if (preg_match('/^__executed.*$/', $key))
+          unset($record[$key]);
+      }      
+      
       $this->preCopy($record);
-      if(!$this->addDb($record, true, "copy"))
-      {
-        return false;
-      }
-      else
-      {
-        return true;
-      }
+      return $this->addDb($record, true, $mode);
     }
 
     /**
