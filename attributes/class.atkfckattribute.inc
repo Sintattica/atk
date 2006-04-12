@@ -41,7 +41,7 @@
     var $m_urlpath = "";
     var $fck_opt=array(
                  'ToolbarSet'=>'Default',
-                 'Width'=>'98%',
+                 'Width'=>'100%',
                  'Height'=>'300px');
 
     /**
@@ -67,6 +67,18 @@
       $this->atkTextAttribute($name,$size,$flags);
     }
 
+    /**
+     * Change the toolbar that FCKEditor uses. The default supported
+     * toolbarsets are 'Default' and 'Basic'. You can define additional
+     * sets in atk/attributes/fck/fckconfig.js, but please keep in mind
+     * that upon upgrade of the atk directory, you may lose these changes.
+     *
+     * @param String $toolbarset The FCK toolbarset to use.
+     */
+    function setToolbarSet($toolbarset)
+    {
+      $this->fck_opt['ToolbarSet'] = $toolbarset;
+    }
 
     /**
      * Returns a piece of html code that can be used in a form to edit this
