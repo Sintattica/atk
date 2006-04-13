@@ -137,14 +137,14 @@
    * software relies on numerical indexes (WHICH IS A BAD IDEA!!)
    * @var int
    */
-  $config_mysqlfetchmode = MYSQL_ASSOC;
-  
+  $config_mysqlfetchmode = defined("MYSQL_ASSOC") ? MYSQL_ASSOC : 0;
+
   /**
    * Backwardscompatibility setting. Set this to PGSQL_BOTH if your
    * software relies on numerical indexes (WHICH IS A BAD IDEA!!)
    * @var int
    */
-  $config_pgsqlfetchmode = PGSQL_ASSOC;
+  $config_pgsqlfetchmode = defined("PGSQL_ASSOC") ? PGSQL_ASSOC : 0;
 
   /********************************** SECURITY *******************************/
 
@@ -271,7 +271,7 @@
    * @var String
    */
   $config_auth_languagefield   = "lng";
-  
+
   /**
    *
    * @var String
@@ -567,10 +567,10 @@
    * @var String
    */
   $config_atklangcheckmodule = 2;
-  
+
   /**
    * Where ATK should look for it's supported languages
-   * 
+   *
    * In your own application you should probably make this the module
    * with the most language translations.
    * Leaving this empty will turn off functionality where we check
@@ -579,7 +579,7 @@
    * This config var also accepts 2 'special' modules:
    * - atk (making it use the languages of ATK)
    * - langoverrides (making it use the language overrides directory)
-   * 
+   *
    * @var String
    */
    //$config_supported_languages_module = $config_atkroot.'atk/languages/';
