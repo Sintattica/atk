@@ -1,5 +1,5 @@
 <div style="padding: 4px;">
-<table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="100%" align="center" valign="top">
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="98%" align="center" valign="top">
   <tr>
     <td width="100%">
       <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#00309C">
