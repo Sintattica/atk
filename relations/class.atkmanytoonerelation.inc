@@ -195,8 +195,20 @@
       if (isset($rec[$this->fieldName()]))
       {
         $myrec = $rec[$this->fieldName()];
+        if (is_array($myrec))
+  	    {
+  	      $result = array();
+  	      if ($this->createDestination())
+  	      {
+  	        foreach (array_keys($this->m_destInstance->m_attribList) as $attrName)
+  	        {
+  	          $attr = &$this->m_destInstance->m_attribList[$attrName];
+  	          $result[$attrName] = $attr->db2value($myrec);
+  	        }
+  	      }
 
-        if (is_array($myrec)) return $myrec;
+          return $result;
+  	    }
         else
         {
           // if the record is not an array, probably only the value of the primary key was loaded.

@@ -72,6 +72,9 @@ Changed in ATK 5.5.1
   can set $config_pgsqlfetchmode = PGSQL_BOTH in your configfile. [Sandy]
 * Fixed bug in the atkManyToManyRelation if the filter isn't set. [Sandy]
 * Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
+* Fixed db2value method of atkManyToOneRelation (now calls db2value on
+  destination attributes). Warning: this change might give you problems if 
+  you depend on the old (incorrect) behaviour! [Peter]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
