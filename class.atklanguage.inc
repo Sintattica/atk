@@ -198,39 +198,39 @@
       else { $lng = atkLanguage::getUserLanguage(); }
       return strtolower($lng);
     }
-    
+
     /**
-     * Get the selected language of the current user if he/she set one, 
+     * Get the selected language of the current user if he/she set one,
      * otherwise we try to get it from the browser settings and if even THAT
      * fails, we return the default language.
      *
-     * @static 
+     * @static
      * @return unknown
      */
     function getUserLanguage()
     {
       $supported = atkLanguage::getSupportedLanguages();
-      
+
       $sessionmanager = &atkGetSessionManager();
       if (!empty($sessionmanager))
       {
         $userinfo = getUser();
         $fieldname = atkconfig('auth_languagefield');
-        if ($userinfo[$fieldname] && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
+        if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
       }
-      
+
       // Otherwise we check the headers
       $headerlng = atkLanguage::getLanguageFromHeaders();
       if ($headerlng && in_array($headerlng,$supported)) return $headerlng;
-      
+
       // We give up and just return the default language
       return atkconfig('language');
     }
-    
+
     /**
      * Get the primary languagecode that the user has set in his/her browser
      *
-     * @static 
+     * @static
      * @return String The languagecode
      */
     function getLanguageFromHeaders()
@@ -246,17 +246,17 @@
       }
       return $autolng;
     }
-    
+
     /**
      * Get the languages supported by the application
      *
-     * @static 
+     * @static
      * @return Array An array with the languages supported by the application.
      */
     function getSupportedLanguages()
     {
       static $s_supported = array();
-      
+
       $supportedlanguagesmodule = atkconfig('supported_languages_module');
       if (empty($s_supported) && $supportedlanguagesmodule)
       {
@@ -382,7 +382,7 @@
       }
       return true;
     }
-    
+
     /**
      * Method for getting the relative path to the languagedirectory
      * of a module.
@@ -392,7 +392,7 @@
      *
      * Special method in that it can run both in static and non-static
      * mode.
-     * 
+     *
      * @param String $module The module to get the languagedir for
      * @return String The relative path to the languagedir
      */
@@ -462,15 +462,15 @@
       $this->m_customStrings[$lng][$code]=$text;
     }
   }
-  
-  
+
+
   /**
    * A collector for supported languages
    */
   class getSupportedLanguagesCollector
   {
     var $m_languages=array();
-    
+
     function visitFile($fullpath)
     {
       if (substr($fullpath,strlen($fullpath)-4)==='.lng')
@@ -480,7 +480,7 @@
         $this->m_languages[] = substr($lng,0,2);
       }
     }
-    
+
     function getLanguages()
     {
       return $this->m_languages;
