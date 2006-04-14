@@ -17,7 +17,7 @@
 
   /** Theme definition */
 
-  $theme["customtpls"] = array("action.tpl","action_view.tpl","actionpage.tpl","box.tpl","editform.tpl", "integratededitform.tpl", "list.tpl","login.tpl","recordlist.tpl","searchform.tpl","statusbar.tpl","tabs.tpl","viewform.tpl");  
+  $theme["customtpls"] = array("action.tpl","action_view.tpl","actionpage.tpl","box.tpl","editform.tpl", "integratededitform.tpl", "list.tpl","login.tpl","recordlist.tpl","searchform.tpl","smartsearchform.tpl","smartcriterium.tpl","statusbar.tpl","tabs.tpl","viewform.tpl");  
   $theme["customimgs"] = array("help.gif", "required_field.gif", "arrowup.gif","arrowdown.gif","empty.gif");
   $theme["customstyles"] = array("atkdateattribute.css","dhtml_dropdown.css","recordlist.css", "style.css", "tabs.css");
   

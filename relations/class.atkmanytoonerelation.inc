@@ -546,6 +546,46 @@
         return $result;
       }
     }
+    
+    /**
+     * Creates a smart search condition for a given search value, and adds it
+     * to the query that will be used for performing the actual search.
+     * 
+     * @param Integer  $id         The unique smart search criterium identifier.
+     * @param Integer  $nr         The element number in the path.
+     * @param Array    $path       The remaining attribute path.
+     * @param atkQuery $query      The query to which the condition will be added.
+     * @param String   $ownerAlias The owner table alias to use.
+     * @param Mixed    $value      The value the user has entered in the searchbox.
+     * @param String   $mode       The searchmode to use.
+     */
+    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    {
+      if (count($path) > 0)
+      {
+        $this->createDestination();
+        
+        $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
+        
+        $query->addJoin(
+          $this->m_destInstance->m_table, $destAlias,
+          $this->getJoinCondition($query, $ownerAlias, $destAlias),
+          false
+        );
+
+        $attrName = array_shift($path);
+        $attr = &$this->m_destInstance->getAttribute($attrName);
+        
+        if (is_object($attr))
+        {
+          $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
+        }
+      }
+      else 
+      {
+        $this->searchCondition($query, $ownerAlias, $value, $mode);
+      }
+    }       
 
     /**
      * Creates an search condition for a given search value
@@ -559,7 +599,6 @@
     {
       $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
       $query->addSearchCondition($searchcondition);
-
     }
 
     function getSearchCondition(&$query, $table, $value, $searchmode)

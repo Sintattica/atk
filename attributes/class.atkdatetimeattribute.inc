@@ -35,6 +35,35 @@
   {
     var $m_time = "";
     var $m_date = "";
+    
+
+    /**
+     * Converts a date array to a timestamp
+     * year, month, day are obligatory !!
+     *
+     * @param array $dateArray Date Array
+     * @return int Timestamp
+     */
+    function arrayToDateTime($dateArray)
+    {
+      $hour = 0;
+      $min = 0;
+      $sec = 0;
+      $dateValid = true;
+
+      if(!empty($dateArray["hours"])) $hour = $dateArray["hours"];
+      if(!empty($dateArray["minutes"])) $min = $dateArray["minutes"];
+      if(!empty($dateArray["seconds"])) $sec = $dateArray["seconds"];
+      if(!empty($dateArray["day"])) $day = $dateArray["day"];
+      else $dateValid = false;
+      if(!empty($dateArray["month"])) $month = $dateArray["month"];
+      else $dateValid = false;
+      if(!empty($dateArray["year"])) $year = $dateArray["year"];
+      else $dateValid = false;
+
+      if($dateValid) return adodb_mktime($hour,$min,$sec,$month,$day,$year);
+      else return adodb_mktime(0,0,0);
+    }    
 
     /**
      * Constructor
@@ -131,10 +160,11 @@
 
     function fetchValue($postvars)
     {
-      $result=NULL;
-      if(isset($postvars[$this->formName()]))
-        $result = $postvars[$this->formName()];
-      return $result;
+      $date = $this->m_date->fetchValue($postvars);
+      $time = $this->m_time->fetchValue($postvars);
+      if ($date == NULL) return NULL;
+      if ($time == NULL) $time = array('hours' => 0, 'minutes' => 0, 'seconds' => 0);
+      else return array_merge($date, $time);
     }
 
     /**
@@ -173,7 +203,7 @@
      */
     function db2value($rec)
     {
-      if(isset($rec[$this->fieldName()]))
+      if(isset($rec[$this->fieldName()]) && $rec[$this->fieldName()] != NULL)
       {
         /**
          * @todo Fix handling of 0 and NULL db values in the date, time and datetime attributes
@@ -191,13 +221,17 @@
         $tmp_rec = $rec;
         $tmp_rec[$this->fieldname()]=$datetime[0];
         $result_date=$this->m_date->db2value($tmp_rec);
+        if ($result_date == NULL) return NULL;
 
         $tmp_rec = $rec;
         $tmp_rec[$this->fieldname()]=$datetime[1];
         $result_time = $this->m_time->db2value($tmp_rec);
+        if ($result_time == NULL)
+          $result_time = array('hours' => 0, 'minutes' => 0, 'seconds' => 0);
 
         return array_merge($result_date,$result_time);
       }
+      else return NULL;
     }
 
     /**
@@ -245,10 +279,16 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function search($record="")
+    function search($record="", $extended=false, $fieldprefix="")
     {
-     return "";
+     return $this->m_date->search($record, $extended, $fieldprefix);
     }
+    
+    function searchCondition(&$query, $table, $value, $searchmode)
+    {
+      $this->m_date->searchCondition($query, $table, $value, $searchmode);
+    }    
+    
 
     function hide($record="", $fieldprefix="")
     {
@@ -260,13 +300,7 @@
 
     function getSearchModes()
     {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      //return array("exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
-      return array();
+      return $this->m_date->getSearchModes();
     }
 
     function dbFieldType()

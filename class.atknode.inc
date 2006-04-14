@@ -624,6 +624,15 @@
      * @var String
      */
     var $m_modifier = "";
+    
+    /**
+     * Extended search action. The action which is called if the user
+     * wants to perform an extended search.
+     * 
+     * @access private
+     * @var String
+     */
+    var $m_extended_search_action = 'search';
 
     /**
      * Constructor.
@@ -844,7 +853,9 @@
      */
     function &getAttribute($name)
     {
-      return $this->m_attribList[$name];
+      if (isset($this->m_attribList[$name]))
+        return $this->m_attribList[$name];
+      else return NULL;
     }
 
     /**
@@ -1603,6 +1614,7 @@
         case "edit": return "editform.tpl";
         case "view": return "viewform.tpl";
         case "search": return "searchform.tpl";
+        case "smartsearch": return "smartsearchform.tpl";        
       }
     }
 
@@ -1773,6 +1785,26 @@
     {
       if (!is_array($actions)) $this->m_priority_actions = array();
       else $this->m_priority_actions = $actions;
+    }
+    
+    /**
+     * Get extended search action.
+     * 
+     * @return extended search action
+     */
+    function getExtendedSearchAction()
+    {
+      return $this->m_extended_search_action;
+    }
+    
+    /**
+     * Set extended search action.
+     * 
+     * @param $action extended search action
+     */
+    function setExtendedSearchAction($action)
+    {
+      $this->m_extended_search_action = $action;
     }
 
     /**
@@ -2571,6 +2603,7 @@
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
+      $searching = false;
       $mltool = &atkinstance("atk.utils.atkmlsplitter");
       $db = &$this->getDb();
       $query = &$db->createQuery();
@@ -2581,6 +2614,23 @@
       {
         $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
       }
+      
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        {
+          $searching = true;
+          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
+          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
+
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        }
+      }      
 
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
@@ -2616,22 +2666,22 @@
         $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
       }
 
-      /* there may be search criteria, which we also filter */
-
-
-      if (isset($this->m_postvars['atksearch']) && is_array($this->m_postvars['atksearch']) && count($this->m_postvars['atksearch'])>0)
+      // there may be search criteria, which we also filter
+      if (is_array($searchArray) && count($searchArray)>0)
       {
-        $searchArray = $this->m_postvars['atksearch'];
-        //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-        $searchmode = (@$this->m_postvars["atksinglesearchmode"]?@$this->m_postvars["atksinglesearchmode"]:@$this->m_postvars["atksearchmode"]);
-        if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         while (list($key,$value) = each($searchArray))
         {
-          if ($value!="")
+          if( (($value!="") && ($mode=="admin")) || (($value!="") && in_array($key,$querylist)) )
           {
-            $p_attrib = &$this->m_attribList[$key];
+            $p_attrib = &$this->getAttribute($key);
+
             if (is_object($p_attrib))
             {
+              if (is_array($value) && isset($value[$key]))
+              {
+                $value = $value[$key];
+              }
+
               if(is_array($searchmode))
               {
                 $search = $searchmode[$key];
@@ -2651,6 +2701,12 @@
           }
         }
       }
+      
+      // there may be smart search criteria which we need to apply
+      if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+      {
+        $this->applySmartSearchCriteria($query, $smartSearchCriteria);
+      }     
 
       $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
 
@@ -2744,7 +2800,8 @@
       {
         /* there may be search criteria, which we also filter */
         $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        if (is_array($searchArray) && count($searchArray)>0)
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
         {
           $searching = true;
           //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
@@ -2822,14 +2879,14 @@
 
       if (!atkReadOptimizer())
       {
-        /* there may be search criteria, which we also filter */
+        // there may be search criteria, which we also filter
         if (is_array($searchArray) && count($searchArray)>0)
         {
           while (list($key,$value) = each($searchArray))
           {
             if( (($value!="") && ($mode=="admin")) || (($value!="") && in_array($key,$querylist)) )
             {
-              $p_attrib = &$this->m_attribList[$key];
+              $p_attrib = &$this->getAttribute($key);
 
               if (is_object($p_attrib))
               {
@@ -2856,6 +2913,12 @@
               }
             }
           }
+        }
+        
+        // there may be smart search criteria which we need to apply
+        if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        {
+          $this->applySmartSearchCriteria($query, $smartSearchCriteria);
         }
       }
 
@@ -2961,6 +3024,31 @@
         }
       }
       return $recordset;
+    }
+    
+    /**
+     * Apply the given smart search criteria to the
+     * given query object.
+     * 
+     * @param atkQuery $query    The query object.
+     * @param Array    $criteria The smart search criteria.
+     */
+    function applySmartSearchCriteria(&$query, $criteria)
+    {
+      foreach ($criteria as $id => $criterium)
+      {
+        $path = $criterium['attrs'];
+        $value = $criterium['value'];
+        $mode = $criterium['mode'];
+        
+        $attrName = array_shift($path);
+        $attr = &$this->getAttribute($attrName);
+        
+        if (is_object($attr))
+        {
+          $attr->smartSearchCondition($id, 0, $path, $query, $this->m_table, $value, $mode);
+        }
+      }
     }
 
     /**

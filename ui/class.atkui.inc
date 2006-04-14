@@ -167,15 +167,7 @@
 
       $this->m_smarty->assign($vars);
 
-      // if $tplname contains a full pathname, the template
-      // is rendered as is.
-      // If it's just a filename, we lookup the template in
-      // the theme directory.
-      if (strpos($tplname, "/")===false)
-      {
-        // lookup template in theme.
-        $tplname = $this->m_theme->tplPath($tplname);
-      }
+      $tplname = $this->templatePath($tplname);
 
       // Smarty fetches templates relative from the template_dir setting.
       // Since that is an application directory, and themes reside in
@@ -192,6 +184,29 @@
       $this->m_smarty->caching = $old_caching;
 
       return $res;
+    }
+
+    /**
+     * This function returns a complete themed path for a given template.
+     * This is a convenience method, which calls the tplPath method on
+     * the theme instance. However, if the template name contains a '/',
+     * we assume the full template path is already given and we simply
+     * return it.
+     * 
+     * @param String $template  The filename (without path) of the template
+     *                          for which you want to complete the path.
+     * 
+     * @return String the template path
+     */
+    function templatePath($template)
+    {
+      if (strpos($template, "/")===false)
+      {
+        // lookup template in theme.
+        $template = $this->m_theme->tplPath($template);
+      }    
+      
+      return $template;
     }
 
     /**
@@ -219,14 +234,19 @@
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action, $actiononly=false)
+    function title($module, $nodetype, $action=NULL, $actiononly=false)
     {
-      $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
-                    'title_'.$nodetype.'_'.$action);
+      if ($module == NULL || $nodetype == NULL) return "";
+      $node = &atkGetNode($module.'.'.$nodetype);      
+      
+      if ($action != NULL)
+      {
+        $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
+                      'title_'.$nodetype.'_'.$action);
 
-      $node = &atkGetNode($module.'.'.$nodetype);
-
-      $label = $node->text($keys, NULL, "", "", true);
+        $label = $node->text($keys, NULL, "", "", true);
+      }
+      
       if ($label=="")
       {
         if ($actiononly)
@@ -235,7 +255,12 @@
         }
         else
         {
-          $label = $node->text($nodetype)." - ".atktext($action, "atk");
+          $keys = array('title_'.$module.'_'.$nodetype, 'title_'.$nodetype);
+          $label = $node->text($keys, NULL, "", "", true);
+          if ($label == "")          
+            $label = $node->text($nodetype);
+          if ($action != NULL)
+            $label .= " - ".atktext($action, "atk");
         }
       }
       return $label;

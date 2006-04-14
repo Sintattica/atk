@@ -265,6 +265,16 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
+  'criterium_field' => 'Field', 
+  'criterium_value' => 'Value', 
+  'criterium_mode' => 'Mode', 
+  'add_criterium' => 'Add', 
+  'remove_criterium' => 'Remove', 
+  'load_criteria' => 'Load saved search', 
+  'save_criteria' => 'Save search as', 
+  'forget_criteria' => 'Remove selected search', 
+  'reset_criteria' => 'New search',
+  'smartsearch' => 'Smart search'  
 );
 
 ?>

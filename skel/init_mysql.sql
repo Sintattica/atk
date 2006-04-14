@@ -4,3 +4,10 @@ CREATE TABLE db_sequence (
   PRIMARY KEY  (seq_name)
 );
 
+CREATE TABLE atk_smartsearchcriteria 
+(
+  nodetype VARCHAR(100) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  criteria TEXT NOT NULL,
+  PRIMARY KEY (nodetype, name)
+);

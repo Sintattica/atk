@@ -73,9 +73,9 @@
      * @param $record Array with fields
      * @return piece of html code with a checkbox
      */
-    function search($record="")
+    function search($record="", $extended=false, $fieldprefix="")
     {
-      $result = '<select name="atksearch['.$this->formName().']">';
+      $result = '<select name="atksearch'.$fieldprefix.'['.$this->formName().']">';
       $result.= '<option value="">'.atktext("search_all", "atk");
       $result.= '<option value="0" ';
       if($record[$this->fieldName()]==='0' && !empty($record)) $result.="selected";

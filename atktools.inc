@@ -1493,6 +1493,36 @@
   }
 
   /**
+   * Build query string based on an array of parameters.
+   * 
+   * @param array $params array of parameters
+   */
+  function buildQueryString($params, $parent="")
+  {
+    $query = "";
+    
+    foreach ($params as $key => $value)
+    {
+      if (!empty($query))
+        $query .= '&';
+
+      if (!empty($parent))
+        $key = "{$parent}[{$key}]";
+         
+      if (!is_array($value))
+      {
+        $query .= "$key=".rawurlencode($value);
+      }
+      else 
+      {
+        $query .= buildQueryString($value, $key);
+      }
+    }
+    
+    return $query;
+  }
+
+  /**
    * Generate a dispatch menu URL for use with nodes
    * and their specific actions.
    * @param string $node the (module.)node name
@@ -1503,17 +1533,9 @@
    */
   function dispatch_url($node, $action, $params="",$phpfile='dispatch.php')
   {
-    /* create url */
     $url = $phpfile."?atknodetype=".$node."&atkaction=".$action;
-    if ($params!=""&&is_array($params))
-    {
-      foreach ($params as $key => $value)
-      {
-        $url .= "&$key=".rawurlencode($value);
-      }
-    }
-
-    /* return url */
+    if ($params != "" && is_array($params) && count($params) > 0)
+      $url .= '&'.buildQueryString($params);
     return $url;
   }
 

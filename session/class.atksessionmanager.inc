@@ -329,7 +329,7 @@
 
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return.
-      $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress","atktab");
+      $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch");
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
@@ -555,10 +555,13 @@
         if (isset($stack[$i]["descriptor"]) || $i == ($stackcount-1))
         {
           $node = &getNode($stack[$i]["atknodetype"]);
-          list($module, $nodename) = explode(".",$stack[$i]["atknodetype"]);
+          $module = getNodeModule($stack[$i]["atknodetype"]);
+          $nodename = getNodeType($stack[$i]["atknodetype"]);  
+                    
           if (is_object($node))
           {
-            $txt = $node->text($nodename);
+            $ui = &atkinstance("atk.ui.atkui");
+            $txt = $ui->title($module, $nodename);
           }
           else
           {

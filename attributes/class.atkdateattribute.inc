@@ -524,11 +524,14 @@
       }
 
       // Set default values to null.
-      $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
+      if (!isset($record[$this->fieldName()]) || empty($record[$this->fieldName()]))
+        $record[$this->fieldName()]=array("year"=>0, "month"=>0, "day"=>0);
 
       // FIXME, we need a way to set the date to 'nothing' (i.e., unselected)
-      $res = $this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_from");
-      $res.= "&nbsp;".atktext("until").": ".$this->draw($record, "atksearch_AE_".$fieldprefix, "_AE_to");
+      $rec = isset($record[$this->fieldName()]['from']) ? array($this->fieldName() => $record[$this->fieldName()]['from']) : $record;
+      $res = $this->draw($rec, "atksearch_AE_".$fieldprefix, "_AE_from");
+      $rec = isset($record[$this->fieldName()]['to']) ? array($this->fieldName() => $record[$this->fieldName()]['to']) : $record;
+      $res.= "&nbsp;".atktext("until").": ".$this->draw($rec, "atksearch_AE_".$fieldprefix, "_AE_to");
       return $res;
     }
 

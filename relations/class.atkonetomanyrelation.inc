@@ -486,14 +486,19 @@
     function getAddLabel()
     {
       $key = "link_".$this->fieldName()."_add";
-      $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+      $label = atktext($key,$this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type, "", "", true);
       if ($label=="")
       {
-        $key = "link_".getNodeType($this->m_destination)."_add";
+        $key = "link_".$this->fieldName()."_add";
         $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
         if ($label=="")
         {
-          $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
+          $key = "link_".getNodeType($this->m_destination)."_add";
+          $label = atktext($key,$this->m_destInstance->m_module, "", "", "", true);
+          if ($label=="")
+          {
+            $label = atktext(getNodeType($this->m_destination),$this->m_destInstance->m_module)." ".strtolower(atktext("add", "atk"));
+          }
         }
       }
       return $label;
@@ -822,6 +827,80 @@
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
     }
+    
+    
+    /**
+     * Returns the condition (SQL) that should be used when we want to join an owner
+     * node with the destination node of the atkOneToManyRelation.
+     * 
+     * @param atkQuery $query      The query object.
+     * @param String   $ownerAlias The owner table alias.
+     * @param String   $destAlias  The destination table alias.
+     * 
+     * @return String SQL string for joining the owner with the destination.
+     */
+    function getJoinCondition(&$query, $ownerAlias="", $destAlias="")
+    {
+      if (!$this->createDestination()) return false;
+
+      if ($ownerAlias == "")
+        $ownerAlias = $this->m_ownerInstance->m_table;
+        
+      if ($destAlias == "")
+        $destAlias = $this->m_destInstance->m_table;
+        
+      $conditions = array();
+
+      for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++)
+      {
+        $conditions[] = $destAlias.".".$this->m_refKey[$i]."=".$ownerAlias.".".$this->m_ownerInstance->m_primaryKey[$i];
+      }
+
+      return implode(" AND ", $conditions);
+    }     
+
+    /**
+     * Creates a smart search condition for a given search value, and adds it
+     * to the query that will be used for performing the actual search.
+     * 
+     * @param Integer  $id         The unique smart search criterium identifier.
+     * @param Integer  $nr         The element number in the path.
+     * @param Array    $path       The remaining attribute path.
+     * @param atkQuery $query      The query to which the condition will be added.
+     * @param String   $ownerAlias The owner table alias to use.
+     * @param Mixed    $value      The value the user has entered in the searchbox.
+     * @param String   $mode       The searchmode to use.
+     */
+    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    {
+      // one-to-many join means we need to perform a distinct select
+      $query->setDistinct(true);
+      
+      if (count($path) > 0)
+      {
+        $this->createDestination();
+        
+        $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
+        
+        $query->addJoin(
+          $this->m_destInstance->m_table, $destAlias,
+          $this->getJoinCondition($query, $ownerAlias, $destAlias),
+          false
+        );
+
+        $attrName = array_shift($path);
+        $attr = &$this->m_destInstance->getAttribute($attrName);
+        
+        if (is_object($attr))
+        {
+          $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
+        }
+      }
+      else 
+      {
+        $this->searchCondition($query, $ownerAlias, $value, $mode);
+      }
+    }    
 
     /**
      * Adds a search condition for a given search value
@@ -842,6 +921,7 @@
          }
        }
      }
+     
 
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {

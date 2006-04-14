@@ -1069,8 +1069,11 @@
      * in it.
      * For original documentation for this method, please see the atkAttribute class
      */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode=array())
     {
+      if (!is_array($currentSearchMode))
+        $currentSearchMode = array();
+      
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
@@ -1084,15 +1087,15 @@
             //       (which completely breaks) in searching a onetoone something like a 'searchname' should
             //       be implemented and used.
             if (method_exists($p_attrib, "atkDateAttribute"))
-              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName()."_AE_");
+              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName()."_AE_", $currentSearchMode[$this->fieldName()]);
             else
-              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName());
+              $p_attrib->addToSearchformFields($fields,$node,$record[$this->fieldName()], "_AE_".$this->fieldName(), $currentSearchMode[$this->fieldName()]);
           }
         }
       }
       else
       {
-        parent::addToSearchformFields($fields,$node,$record, $fieldprefix);
+        parent::addToSearchformFields($fields,$node,$record, $fieldprefix, $currentSearchMode);
       }
     }
   }

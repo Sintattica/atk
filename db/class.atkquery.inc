@@ -358,7 +358,7 @@
      */
      function buildCount($distinct = FALSE)
      {
-       if ($distinct && count($this->m_fields) > 0)
+       if (($distinct||$this->m_distinct) && count($this->m_fields) > 0)
        {
         $result = "SELECT COUNT(DISTINCT ";
         $result.=implode($this->quoteFields($this->m_fields),",");

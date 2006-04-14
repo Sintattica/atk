@@ -265,6 +265,16 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
+  'criterium_field' => 'Veld', 
+  'criterium_value' => 'Waarde', 
+  'criterium_mode' => 'Mode', 
+  'add_criterium' => 'Toevoegen', 
+  'remove_criterium' => 'Verwijderen', 
+  'load_criteria' => 'Laden opgeslagen zoekopdracht', 
+  'save_criteria' => 'Opslaan zoekopdracht als', 
+  'forget_criteria' => 'Verwijder geselecteerde zoekopdracht', 
+  'reset_criteria' => 'Nieuwe zoekopdracht',
+  'smartsearch' => 'Slim zoeken'
 );
 
 ?>

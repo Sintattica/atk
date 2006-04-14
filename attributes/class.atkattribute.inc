@@ -1019,6 +1019,31 @@
     }
 
     /**
+     * Creates a smart search condition for a given search value, and adds it
+     * to the query that will be used for performing the actual search.
+     * 
+     * @param Integer  $id         The unique smart search criterium identifier.
+     * @param Integer  $nr         The element number in the path.
+     * @param Array    $path       The remaining attribute path.
+     * @param atkQuery $query      The query to which the condition will be added.
+     * @param String   $ownerAlias The owner table alias to use.
+     * @param Mixed    $value      The value the user has entered in the searchbox.
+     * @param String   $mode       The searchmode to use.
+     */
+    function smartSearchCondition($id, $nr, $path, &$query, $ownerAlias, $value, $mode)
+    {
+      // default implementation doesn't supported nested paths, this method
+      // should be overriden by relations etc. if they want to support this
+      if (count($path) > 0)
+      {
+        atk_var_dump($path, 'Invalid search path for '.$this->m_ownerInstance->atkNodeType().'#'.$this->fieldName().', ignoring criterium!');
+        return;
+      }
+      
+      $this->searchCondition($query, $ownerAlias, $value, $mode);
+    }
+    
+    /**
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
      *
@@ -1695,13 +1720,15 @@
     * Adds the needed searchbox(es) for this attribute to the fields array. This
     * method should only be called by the atkSearchHandler.
     *
-    * @param array     $fields   The array containing fields to use in the
-    *                            extended search
-    * @param atkNode   $node     The node where the field is in
-    * @param array     $record   A record containing default values to put
-    *                            into the search fields.
+    * @param array   $fields            The array containing fields to use in the
+    *                                   extended search
+    * @param atkNode $node              The node where the field is in
+    * @param array   $record            A record containing default values to put
+    *                                   into the search fields.
+    * @param array   $fieldprefix       search / mode field prefix
+    * @param array   $currentSearchMode current search mode
     */
-    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "")
+    function addToSearchformFields(&$fields, &$node, &$record, $fieldprefix = "", $currentSearchMode=array())
     {
       $field = array();
       $defaults = $record;
@@ -1710,8 +1737,7 @@
       $dbSearchModes = $db->getSearchModes();
       $attribSearchModes = $this->getSearchModes();
       $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
-
-
+      
       // set "widget" value:
       $funcname = $this->m_name."_search";
 
@@ -1729,17 +1755,17 @@
       // set "searchmode" value:
       if(count($searchModes)==1)
       {
-        $field["searchmode"] = '<input type="hidden" name="atksearchmode['.$this->m_name.']" value="'.$searchModes[0].'">'.atktext("search_".$searchModes[0]);
+        $field["searchmode"] = '<input type="hidden" name="atksearchmode'.$fieldprefix.'['.$this->m_name.']" value="'.$searchModes[0].'">'.atktext("search_".$searchModes[0]);
       }
       else if (count($searchModes)>1)
       {
-        $sel = '<select name="atksearchmode['.$this->m_name.']">';
+        $sel = '<select name="atksearchmode'.$fieldprefix.'['.$this->m_name.']">';
         foreach (array_values($searchModes) as $searchMode)
         {
           // if supported, we select the 'like' searchmode by default
           $selected="";
-          if ($node->m_postvars["atksearchmode"][$this->m_name]==$searchMode||
-          ((!is_array($node->m_postvars["atksearchmode"]) || $node->m_postvars["atksearchmode"][$this->m_name]=="")&&
+          if ($currentSearchMode[$this->m_name]==$searchMode||
+          ((!is_array($currentSearchMode) || $currentSearchMode[$this->m_name]=="")&&
           $searchMode=="substring")) $selected="selected";
           $sel.= '<option value="'.$searchMode.'" '.$selected.'>'.atktext("search_".$searchMode);
         }
