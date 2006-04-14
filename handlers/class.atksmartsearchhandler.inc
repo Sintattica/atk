@@ -263,7 +263,7 @@
      */
     function getAttributeList($entry)
     {
-      if (count($entry['attrs']) == 1)
+      if (count($entry['attrs']) == 1 && !$entry['includeSelf'])
       {
         $attr = &$entry['attrs'][0];
         $label = is_a($attr,'atkmanytoonerelation') ? '' : htmlentities(strip_tags($attr->label()));        
@@ -325,7 +325,7 @@
       $nr = count($path);
       $attrs = $this->getSearchableAttributes($node, $excludes);          
       
-      if (count($attrs) == 1)
+      if (count($attrs) == 1 && !$includeSelf)
       {
         $attr = &$attrs[0];
       }
@@ -403,7 +403,7 @@
       {
         $entry = &$path[$i];
         $fieldName = "criterium_{$id}_{$entry[nr]}_other";  
-        $readOnly = count($entry['attrs']) == 1;
+        $readOnly = count($entry['attrs']) == 1 && !$entry['includeSelf'];
         $hasLabel = !$readOnly || !is_a($entry['attr'], 'atkmanytoonerelation');
         
         if (!$readOnly)
