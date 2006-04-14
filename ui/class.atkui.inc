@@ -237,7 +237,8 @@
     function title($module, $nodetype, $action=NULL, $actiononly=false)
     {
       if ($module == NULL || $nodetype == NULL) return "";
-      $node = &atkGetNode($module.'.'.$nodetype);      
+      $node = &atkGetNode($module.'.'.$nodetype); 
+      if ($node == NULL) return "";     
       
       if ($action != NULL)
       {

@@ -274,7 +274,8 @@
   'save_criteria' => 'Save search as', 
   'forget_criteria' => 'Remove selected search', 
   'reset_criteria' => 'New search',
-  'smartsearch' => 'Smart search'  
+  'smartsearch' => 'Smart search',
+  'self' => 'Self'  
 );
 
 ?>

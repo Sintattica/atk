@@ -274,7 +274,8 @@
   'save_criteria' => 'Opslaan zoekopdracht als', 
   'forget_criteria' => 'Verwijder geselecteerde zoekopdracht', 
   'reset_criteria' => 'Nieuwe zoekopdracht',
-  'smartsearch' => 'Slim zoeken'
+  'smartsearch' => 'Slim zoeken',
+  'self' => 'Zelf'
 );
 
 ?>

@@ -185,6 +185,13 @@
      */
     function redirectToResults($criteria)
     {
+      for ($i = 0, $_i = count($criteria); $i < $_i; $i++)
+      {
+        $attrs = &$criteria[$i]['attrs'];
+        if ($attrs[count($attrs) - 1] == '.')
+          array_pop($attrs);
+      }
+      
       $params = array('atksmartsearch' => $criteria);
       $url = dispatch_url($this->m_node->atkNodeType(), 'admin', $params, $PHP_SELF);
       $this->m_node->redirect(session_url($url, atkLevel() == 0 ? SESSION_REPLACE : SESSION_BACK));
