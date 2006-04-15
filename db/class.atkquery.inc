@@ -265,14 +265,14 @@
         $result.= $this->quoteField($this->m_fields[$i]);
         $fieldalias = (isset($this->m_fieldaliases[$this->m_fields[$i]])?$this->m_fieldaliases[$this->m_fields[$i]]:"");
         if ($fieldalias!="") $result.=" AS ".$fieldalias;
-        if ($i < count($this->m_fields)-1) $result.=",";
+        if ($i < count($this->m_fields)-1) $result.=", ";
       }
       $result.= " FROM ";
       for ($i=0;$i<count($this->m_tables);$i++)
       {
         $result.= $this->quoteField($this->m_tables[$i]);
         if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
-        if ($i < count($this->m_tables)-1) $result.=",";
+        if ($i < count($this->m_tables)-1) $result.=", ";
       }
 
       for ($i=0;$i<count($this->m_joins);$i++)
@@ -361,7 +361,7 @@
        if (($distinct||$this->m_distinct) && count($this->m_fields) > 0)
        {
         $result = "SELECT COUNT(DISTINCT ";
-        $result.=implode($this->quoteFields($this->m_fields),",");
+        $result.=implode($this->quoteFields($this->m_fields),", ");
         $result.=") as count FROM ";
        }
        else $result = "SELECT COUNT(*) as count FROM ";
@@ -370,7 +370,7 @@
        {
          $result.= $this->quoteField($this->m_tables[$i]);
          if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
-         if ($i < count($this->m_tables)-1) $result.=",";
+         if ($i < count($this->m_tables)-1) $result.=", ";
        }
 
        for ($i=0;$i<count($this->m_joins);$i++)

@@ -84,6 +84,9 @@ Changed in ATK 5.5.1
 * Backported prototype/scriptaculous JavaScript libs. [Peter]
 * Fixed the width of forms inside tabs to be 100%, for 'outlook', 'win2k' and 
   'modern' themes. [Ivo]
+* Generated select/count queries now have spaces between the field- and table
+  names for improved readability. Side effect is that the debugoutput no longer
+  causes the screen to have an overly large scrollbar. [Ivo]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
