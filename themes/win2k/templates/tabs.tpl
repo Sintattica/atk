@@ -19,7 +19,7 @@ var tabSelectedColor = "#000000";
       <table border="0" cellpadding="0" cellspacing="0">
         <tr>
           {section name=i loop=$tabs}
-          
+
           <td valign="bottom">
           <div style="position: relative;">
             <div id="tab_{$tabs[i].tab}" style="position: absolute;">
@@ -41,7 +41,7 @@ var tabSelectedColor = "#000000";
                 </td>
                 <td><img src="{$themedir}images/tab_right.gif"></td>
               </tr>
-            </table>  
+            </table>
           </div>
           </td>
           {/section}
@@ -56,7 +56,7 @@ var tabSelectedColor = "#000000";
         <tr>
           <td bgcolor="White" width="1"><img src="{$themedir}images/blank.gif" width="1"></td>
           <td bgcolor="#E3E0DB" align="left" class="block">
-            <table border="0" cellspacing="5" cellpadding="5">
+            <table border="0" cellspacing="5" cellpadding="5" width="100%">
               <tr>
                 <td>
                   {$content}

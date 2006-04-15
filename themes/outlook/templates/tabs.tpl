@@ -55,7 +55,7 @@ var tabSelectedColor = "#000000";
         <tr>
           <td bgcolor="#00309c" width="2"><img src="{$themedir}images/blank.gif" width="2"></td>
           <td bgcolor="#EEEEE0" align="left" class="block">
-            <table border="0" cellspacing="5" cellpadding="5">
+            <table border="0" cellspacing="5" cellpadding="5" width="100%">
               <tr>
                 <td>
                   {$content}
