@@ -799,7 +799,7 @@
     function display($record)
     {
       $value = $record[$this->fieldName()];
-      if (empty($value["month"]) or empty($value["day"]) or empty( $value["year"])) return "";
+      if (!is_array($value) || empty($value["month"]) || empty($value["day"]) || empty( $value["year"])) return "";
       $tmp_date = adodb_getdate(adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
       if (!empty($tmp_date))
       {
