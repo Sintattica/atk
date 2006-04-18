@@ -87,6 +87,10 @@ Changed in ATK 5.5.1
 * Generated select/count queries now have spaces between the field- and table
   names for improved readability. Side effect is that the debugoutput no longer
   causes the screen to have an overly large scrollbar. [Ivo]
+* Made the colorpicker popup multilanguage. [Sandy]
+* Added extra is_array check to they display function the atkdateattribute
+  because the empty function doesn't work correct in the php 5.0.5 version
+  (this is fixed in the php 5.1.1 as far as i can see). [Sandy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
