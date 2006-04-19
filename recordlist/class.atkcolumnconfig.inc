@@ -111,9 +111,9 @@
     {
       foreach (array_keys($this->m_node->m_attribIndexList) as $i)
       {
-        if (isset($this->m_attribIndexList[$i]["name"]) && ($this->m_attribIndexList[$i]["name"]!=""))
+        if (isset($this->m_node->m_attribIndexList[$i]["name"]) && ($this->m_node->m_attribIndexList[$i]["name"]!=""))
         {
-          $this->m_colcfg[$this->m_attribIndexList[$i]["name"]] = array();
+          $this->m_colcfg[$this->m_node->m_attribIndexList[$i]["name"]] = array();
         }
       }
     }
@@ -214,7 +214,6 @@
     function getOrderFields()
     {
       $result = array();
-
       foreach($this->m_colcfg as $field=>$config)
       {
         if (is_object($this->m_node->m_attribList[$field]))
