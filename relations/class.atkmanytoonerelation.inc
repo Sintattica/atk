@@ -224,7 +224,7 @@
      * @param $record Record
      * @return a displayable string
      */
-    function display($record, $mode)
+    function display($record, $mode="")
     {
       if ($this->createDestination())
       {

@@ -91,6 +91,7 @@ Changed in ATK 5.5.1
 * Added extra is_array check to they display function the atkdateattribute
   because the empty function doesn't work correct in the php 5.0.5 version
   (this is fixed in the php 5.1.1 as far as i can see). [Sandy]
+* Added ability to call display on atkManyToOneRelation without mode. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
