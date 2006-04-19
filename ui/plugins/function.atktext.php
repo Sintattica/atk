@@ -48,6 +48,12 @@
      }
      default: $str = atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
    }
+
+   if (isset($params["filter"]))
+   {
+     $fn = $params["filter"];
+     $str = $fn($str);
+   }
    // parse the rest of the params in the string
    atkimport("atk.utils.atkstringparser");
    $parser = &new atkStringParser($str);
