@@ -238,7 +238,7 @@
             {
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
-                $this->processFile($this->m_dir.$filename);
+                $this->processFile($this->m_dir, $filename);
                 return $filename;
               }
               else
@@ -254,14 +254,15 @@
 
     /**
      * Perform processing on an image right after it is uploaded.
-     * 
+     *
      * If you need any resizing or other postprocessing to be done on a file
      * after it is uploaded, you can create a derived attribute that
-     * implements the processFile($filepath) method. 
+     * implements the processFile($filepath) method.
      * The default implementation does not do any processing.
-     * @param String $filepath The full path of the uploaded file.
-     */     
-    function processFile($filepath)
+     * @param String $filepath The path of the uploaded file.
+     * @param String $filename The name of the uploaded file.
+     */
+    function processFile($filepath, $filename)
     {
     }
 
