@@ -35,9 +35,13 @@ Changed in ATK 5.5.1
 + Added setAutonumbering() method to atkFileAttribute to turn on autonumbering
   of files when files with the same name as that of a different record are
   uploaded. [Ivo]
-+ Added smart search handler. [Peter]
++ Added ajax powered smart search functionality for performing arbitraty 
+  searches on any node. [Peter]
 + atkPage::register_style() and the {atkstyle} now accept a 'media' parameter.
   [Peter]
++ Added processFile() method to atkFileAttribute, to override in derived 
+  classes when processing (such as resizing) needs to be done on uploaded 
+  files. [Ivo]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to

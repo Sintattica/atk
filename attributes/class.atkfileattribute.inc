@@ -238,12 +238,11 @@
             {
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
-                atkdebug("COPY: ".$rec[$this->fieldName()]["tmpfile"]." -> ".$this->m_dir.$filename);
+                $this->processFile($this->m_dir.$filename);
                 return $filename;
               }
               else
               {
-                atkdebug("tmp file ".$rec[$this->fieldName()]["tmpfile"]." dir ".$this->m_dir.$filename);
                 atkerror("File could not be saved");
                 return "";
               }
@@ -251,6 +250,19 @@
         }
         return $rec[$this->fieldName()]["orgfilename"];
       }
+    }
+
+    /**
+     * Perform processing on an image right after it is uploaded.
+     * 
+     * If you need any resizing or other postprocessing to be done on a file
+     * after it is uploaded, you can create a derived attribute that
+     * implements the processFile($filepath) method. 
+     * The default implementation does not do any processing.
+     * @param String $filepath The full path of the uploaded file.
+     */     
+    function processFile($filepath)
+    {
     }
 
     /**
