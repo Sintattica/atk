@@ -15,6 +15,11 @@
    * @version $Revision$
    * $Id$
    */
+  
+  /**
+   * @internal baseclass include
+   */
+  useattrib("atkattribute");
 
   /** flag(s) specific for atkDateAttribute */
   define("AF_DATE_STRING",              AF_SPECIFIC_1); // date must be entered as an english date string (strtotime)
@@ -27,9 +32,7 @@
   $config_atkroot = atkconfig("atkroot");
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
   // Include browsertools for PDA detection
-  include_once($config_atkroot."atk/atkbrowsertools.inc");
-  
-  useattrib("atkattribute");
+  include_once($config_atkroot."atk/atkbrowsertools.inc"); 
 
   /**
    * The atkDateAttribute class offers a date widget for date fields.

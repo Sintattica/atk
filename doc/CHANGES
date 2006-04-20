@@ -92,6 +92,8 @@ Changed in ATK 5.5.1
   because the empty function doesn't work correct in the php 5.0.5 version
   (this is fixed in the php 5.1.1 as far as i can see). [Sandy]
 * Added ability to call display on atkManyToOneRelation without mode. [Boy]
+* Fixed include order in atkDateAttribute that could cause it to be displayed
+  as a text input when included before atkAttribute. [Ivo]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
