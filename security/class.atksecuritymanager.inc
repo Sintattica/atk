@@ -134,7 +134,7 @@
         $cookie_params = session_get_cookie_params();
         session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
         @session_start();
-        unset($session);
+        $session = array();
         $session["relogin"]=1;
 
         // destroy cookie
