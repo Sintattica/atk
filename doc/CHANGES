@@ -36,6 +36,8 @@ Changed in ATK 5.5.1
   of files when files with the same name as that of a different record are
   uploaded. [Ivo]
 + Added smart search handler. [Peter]
++ atkPage::register_style() and the {atkstyle} now accept a 'media' parameter.
+  [Peter]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to

@@ -170,11 +170,20 @@
      * This method has a duplicate check. Calling it with the same stylesheet
      * more than once, will still result in only one single include of the
      * stylesheet.
-     * @param String $file The (relative path and) filename of the stylesheet.
+     * @param String $file  The (relative path and) filename of the stylesheet.
+     * @param String $media The stylesheet media (defaults to 'all').
      */
-    function register_style($file)
+    function register_style($file, $media='all')
     {
-      if (!in_array($file, $this->m_stylesheets)) $this->m_stylesheets[] = $file;
+      if (empty($media))
+      {
+        $media = 'all';
+      }
+
+      if (!array_key_exists($file, $this->m_stylesheets)) 
+      {
+        $this->m_stylesheets[$file] = $media;
+      }
     }
 
     /**
@@ -222,8 +231,10 @@
 
       $this->addScripts($res);
 
-      for ($i = 0; $i < count($this->m_stylesheets); $i++)
-        $res.='  <link href="'.$this->m_stylesheets[$i].'" rel="stylesheet" type="text/css">'."\n";
+      foreach ($this->m_stylesheets as $file => $media)
+      {
+        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+      }
 
       for ($i = 0; $i < count($this->m_stylecode); $i++)
         $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
