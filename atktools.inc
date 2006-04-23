@@ -1038,35 +1038,44 @@
       {
         $body.= "\n\nATK SESSION\n".str_repeat("-",70);
         $body.= "\nNamespace: ".$g_sessionManager->m_namespace."\n";
-        $stack = $g_sessionData[$g_sessionManager->m_namespace]["stack"];
-        for($i=0;$i<count($stack);$i++)
+        if (isset($g_sessionData[$g_sessionManager->m_namespace]["stack"]))
         {
-          $body.="\nStack level $i:\n";
-          $item = isset($stack[$i]) ? $stack[$i] : null;
-          if (is_array($item))
+          $stack = $g_sessionData[$g_sessionManager->m_namespace]["stack"];
+          for($i=0;$i<count($stack);$i++)
           {
-            foreach ($item as $key=>$value)
+            $body.="\nStack level $i:\n";
+            $item = isset($stack[$i]) ? $stack[$i] : null;
+            if (is_array($item))
+            {
+              foreach ($item as $key=>$value)
+              {
+                $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
+              }
+            }
+          }
+        }
+        if (isset($g_sessionData[$g_sessionManager->m_namespace]["globals"]))
+        {
+          $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
+          if(count($ns_globals)>0)
+          {
+            $body.="\nNamespace globals:\n";
+            foreach ($ns_globals as $key=>$value)
             {
               $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
             }
           }
         }
-        $ns_globals = $g_sessionData[$g_sessionManager->m_namespace]["globals"];
-        if(count($ns_globals)>0)
+        if (isset($g_sessionData["globals"]))
         {
-          $body.="\nNamespace globals:\n";
-          foreach ($ns_globals as $key=>$value)
+          $globals = $g_sessionData["globals"];
+          if (count($globals)>0)
           {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
-          }
-        }
-        $globals = $g_sessionData["globals"];
-        if (count($globals)>0)
-        {
-          $body.="\nGlobals:\n";
-          foreach ($globals as $key=>$value)
-          {
-            $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
+            $body.="\nGlobals:\n";
+            foreach ($globals as $key=>$value)
+            {
+              $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
+            }
           }
         }
       }
@@ -1494,13 +1503,13 @@
 
   /**
    * Build query string based on an array of parameters.
-   * 
+   *
    * @param array $params array of parameters
    */
   function buildQueryString($params, $parent="")
   {
     $query = "";
-    
+
     foreach ($params as $key => $value)
     {
       if (!empty($query))
@@ -1508,17 +1517,17 @@
 
       if (!empty($parent))
         $key = "{$parent}[{$key}]";
-         
+
       if (!is_array($value))
       {
         $query .= "$key=".rawurlencode($value);
       }
-      else 
+      else
       {
         $query .= buildQueryString($value, $key);
       }
     }
-    
+
     return $query;
   }
 
