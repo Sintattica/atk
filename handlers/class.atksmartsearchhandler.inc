@@ -266,7 +266,7 @@
       if (count($entry['attrs']) == 1 && !$entry['includeSelf'])
       {
         $attr = &$entry['attrs'][0];
-        $label = is_a($attr,'atkmanytoonerelation') ? '' : htmlentities(strip_tags($attr->label()));        
+        $label = is_a($attr,'atkmanytoonerelation') ? '' : atk_htmlentities(strip_tags($attr->label()));        
         return $label.'<input type="hidden" name="'.$entry['name'].'" value="'.$attr->fieldName().'">';
       }
       
@@ -286,7 +286,7 @@
       {
         $attr = &$entry['attrs'][$i];
         $selected = $current != NULL && $attr->fieldName() == $current->fieldName() ? ' selected="selected"' : '';
-        $label = htmlentities(strip_tags($attr->label()));
+        $label = atk_htmlentities(strip_tags($attr->label()));
         $result .= '<option value="'.$attr->fieldName().'"'.$selected.'>'.$label.'</option>';
       }
       
@@ -628,7 +628,7 @@
           <option value=""></option>';
       
       foreach ($criteria as $name)
-        $result .= '<option value="'.htmlentities($name).'"'.($name == $current ? ' selected' : '').'>'.htmlentities($name).'</option>';
+        $result .= '<option value="'.atk_htmlentities($name).'"'.($name == $current ? ' selected' : '').'>'.atk_htmlentities($name).'</option>';
         
       $result .= '</select>';
       return $result;    
@@ -675,7 +675,7 @@
      */
     function getSaveCriteria($current)
     {
-      return '<input type="text" size="30" name="save_criteria" value="'.htmlentities($current).'" disabled="disabled">';
+      return '<input type="text" size="30" name="save_criteria" value="'.atk_htmlentities($current).'" disabled="disabled">';
     }    
     
     /**

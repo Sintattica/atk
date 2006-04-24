@@ -1878,5 +1878,26 @@
       return strtr($str, $trans_table);
     }
   }
-
+  
+  /**
+   * ATK version of the PHP htmlentities function. Works just like PHP's
+   * htmlentities function, but falls back to the in the language file 
+   * configured charset instead of PHP's default charset, if no 
+   * charset is given.
+   * 
+   * @param String $string    string to convert
+   * @param int $quote_style  quote style (defaults to ENT_COMPAT)
+   * @param String $charset   character set to use (default to atktext('charset', 'atk'))
+   * 
+   * @return String encoded string
+   */
+  function atk_htmlentities($string, $quote_style=null, $charset=null)
+  {
+    if (empty($charset))
+    {
+      $charset = atktext('charset', 'atk');
+    }
+    
+    return htmlentities($string, $quote_style, $charset);
+  }
 ?>

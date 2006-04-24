@@ -497,7 +497,8 @@
                                "copy"=>"add",
                                "import"=>"add",
                                "editcopy"=>"add",
-                               "search"=>"admin");
+                               "search"=>"admin",
+                               "smartsearch"=>"admin");
 
     /**
      * The right to execute certain actions can be implied by the fact that you
@@ -1794,7 +1795,9 @@
      */
     function getExtendedSearchAction()
     {
-      return $this->m_extended_search_action;
+      if (empty($this->m_extended_search_action))
+        return atkconfig('extended_search_action');
+      else return $this->m_extended_search_action;
     }
     
     /**

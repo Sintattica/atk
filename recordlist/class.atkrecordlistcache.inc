@@ -190,10 +190,10 @@
      */
     function noCaching()
     {
-      if ($this->m_postvars['atkorderby'] || ($this->m_postvars['atksearch'] && atk_value_in_array($this->m_postvars['atksearch'])))
-        return true;
-      else
-        return false;
+      return
+        $this->m_postvars['atkorderby'] || 
+        ($this->m_postvars['atksearch'] && atk_value_in_array($this->m_postvars['atksearch'])) || 
+        ($this->m_postvars['atksmartsearch'] && atk_value_in_array($this->m_postvars['atksmartsearch']));       
     }
 
     /**
