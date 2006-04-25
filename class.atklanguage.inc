@@ -214,9 +214,12 @@
       $sessionmanager = &atkGetSessionManager();
       if (!empty($sessionmanager))
       {
-        $userinfo = getUser();
-        $fieldname = atkconfig('auth_languagefield');
-        if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
+        if (function_exists("getUser"))
+        {
+          $userinfo = getUser();
+          $fieldname = atkconfig('auth_languagefield');
+          if (isset($userinfo[$fieldname]) && in_array($userinfo[$fieldname],$supported)) return $userinfo[$fieldname];
+        }
       }
 
       // Otherwise we check the headers
