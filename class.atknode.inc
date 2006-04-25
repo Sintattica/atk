@@ -633,7 +633,7 @@
      * @access private
      * @var String
      */
-    var $m_extended_search_action = 'search';
+    var $m_extended_search_action = NULL; 
 
     /**
      * Constructor.
