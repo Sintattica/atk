@@ -1527,7 +1527,6 @@
           }
 
           /* sometimes a field is hidden although not specified by the field itself */
-          $tabs = $this->m_attribIndexList[$r]["tabs"];
 
           $theme = &atkinstance("atk.ui.atktheme");
           if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
@@ -2607,6 +2606,7 @@
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
       $searching = false;
+      $loadlist = array();
       $mltool = &atkinstance("atk.utils.atkmlsplitter");
       $db = &$this->getDb();
       $query = &$db->createQuery();
@@ -2674,7 +2674,7 @@
       {
         while (list($key,$value) = each($searchArray))
         {
-          if( (($value!="") && ($mode=="admin")) || (($value!="") && in_array($key,$querylist)) )
+          if( (($value!="") && ($mode=="admin")) || (($value!="") && in_array($key,$loadlist["query"])) )
           {
             $p_attrib = &$this->getAttribute($key);
 
@@ -2833,6 +2833,7 @@
       $loadlist = array();
       $postloadlist = array();
       $cpylist = array();
+      $querylist = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
