@@ -102,6 +102,7 @@ Changed in ATK 5.5.1
   as a text input when included before atkAttribute. [Ivo]
 * Updated Dutch translation. [Peter]
 * Fixed double cursor declaration in tabs css file of outlook theme. [Yury]
+* Fixed bug in the countDb that used wrong var in the in_array. [Sandy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
