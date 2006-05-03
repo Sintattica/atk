@@ -16,23 +16,24 @@
    * $Id$
    */
 
+  atkimport("atk.attributes.atkattribute");
+
   /**
    * Do not translate the options
    */
   define("AF_NO_TRANSLATION", AF_SPECIFIC_1);
-   
+
    /**
     * Do not add a default null option.
     */
    define("AF_LIST_NO_OBLIGATORY_NULL_ITEM", AF_SPECIFIC_2);
-   
+
   /**
    * Do not add null option ever
    */
   define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
 
-  atkimport("atk.attributes.atkattribute");   
-   
+
   /**
    * The atkListAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined values.
@@ -74,7 +75,7 @@
       * @var int
       */
      var $m_width;
-     
+
      var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
 
     /**
@@ -174,7 +175,7 @@
       for ($i=0;$i<count($this->m_values);$i++)
       {
         // If the current value is selected or occurs in the record
-        if ((!is_null($this->m_selected) && $this->m_values[$i] == $this->m_selected) || 
+        if ((!is_null($this->m_selected) && $this->m_values[$i] == $this->m_selected) ||
             ( is_null($this->m_selected) && $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=""))
         {
           $sel = "selected";

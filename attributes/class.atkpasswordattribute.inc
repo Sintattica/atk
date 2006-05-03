@@ -16,6 +16,8 @@
    * $Id$
    */
 
+   atkimport("atk.attributes.atkattribute");
+
   /** flag(s) specific for atkPasswordAttribute */
   define("AF_PASSWORD_NOVALIDATE",      AF_SPECIFIC_1); // disables password check when editing password field
   define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
@@ -33,7 +35,6 @@
    * @subpackage attributes
    *
    */
-  atkimport("atk.attributes.atkattribute");
   class atkPasswordAttribute extends atkAttribute
   {
     /* generate? */

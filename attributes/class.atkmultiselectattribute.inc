@@ -15,13 +15,13 @@
    * $Id$
    */
 
+  /** @internal Include base class */
+  useattrib("atklistattribute");
+
   /** Defines */
   define("AF_NO_TOGGLELINKS", AF_SPECIFIC_2);
   define("AF_CHECK_ALL", AF_SPECIFIC_3);
   define("AF_LINKS_BOTTOM", AF_SPECIFIC_4);
-
-  /** @internal Include base class */
-  useattrib("atklistattribute");
 
   /**
    * The atkMultiboolAttribute class represents an attribute of a node
@@ -142,7 +142,7 @@
         {
           $sel = "checked";
         }
-        
+
         if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
         else $string = atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
 

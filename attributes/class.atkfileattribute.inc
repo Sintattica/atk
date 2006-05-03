@@ -15,33 +15,35 @@
    * $Id$
    */
 
+  useattrib("atkattribute");
+
   /** flag(s) specific for the atkFileAttribute */
-  
+
   /**
    * Disable uploading of files
    */
   define("AF_FILE_NO_UPLOAD",           AF_SPECIFIC_1);
-  
+
   /**
    * Disable selecting of files
    */
   define("AF_FILE_NO_SELECT",           AF_SPECIFIC_2);
-  
+
   /**
    * Disable deleting of files
    */
   define("AF_FILE_NO_DELETE",           AF_SPECIFIC_3);
-  
+
   /**
    * Don't try to detect the file type (shows only filename)
    */
-  define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4); 
-  
+  define("AF_FILE_NO_AUTOPREVIEW",      AF_SPECIFIC_4);
+
   /**
    * Removed the files physically
    */
   define("AF_FILE_PHYSICAL_DELETE",     AF_SPECIFIC_5);
-  
+
   /**
    * Show preview in popup instead of inline
    */
@@ -334,7 +336,7 @@
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
 
       $basename = $this->fieldName();
-      
+
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
         // if an error occured during the upload process
@@ -476,7 +478,7 @@
         }
       }
     }
-    
+
     function getFileExtension($filename)
     {
       return strtolower(substr($filename, strrpos($filename,'.')+1,strlen($filename)));

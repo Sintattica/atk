@@ -17,6 +17,11 @@
    */
 
   /**
+   * @internal Include base class
+   */
+  atkimport("atk.attributes.atklistattribute");
+
+  /**
    * Flag(s) specific for atkRadioAttribute
    */
 
@@ -24,11 +29,6 @@
    * Displays the set of radio buttons vertically
    */
   define("AF_DISPLAY_VERT", AF_SPECIFIC_2);
-
-  /**
-   * @internal Include base class
-   */
-  atkimport("atk.attributes.atklistattribute");
 
   /**
    * The atkRadioAttribute class represents an attribute of a node
