@@ -71,8 +71,8 @@
   "confirm_delete_multi" => "Voulez-vous vraiment supprimer ces informations?",
   "copy" => "Copier",
   "critical" => "Critical", // Missing string!!!
-  "date_format_edit" => "j M A",
-  "date_format_view" => "j M A",
+  "date_format_edit" => "j M Y",
+  "date_format_view" => "j M Y",
   "db_access_denied_database" => "L'utilisateur '%s' ne possede pas de droits sur la base de donnees '%s'",
   "db_access_denied_user" => "Les Utilisateurs '%s' ne peuvent pas se connecter a la base de donnees '%s'",
   "db_unknown_database" => "Connexion impossible a la base de donnees '%s'",
