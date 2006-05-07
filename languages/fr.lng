@@ -79,7 +79,7 @@
   "db_unknown_host" => "Serveur introuvable '%s'",
   "dec" => "Dec", // Missing string!!!
   "december" => "Decembre",
-  "decimal_separator" => "séparateur de décimale", // toine : Value ou translation ?",
+  "decimal_separator" => ",",
   "delete" => "Effacer",
   "deselect_all" => "Deselectionner tous",
   "edit" => "Editer",
