@@ -108,6 +108,7 @@ Changed in ATK 5.5.1
 * Updated atkFileAttribute phpdoc, updated some deprecated elements and did
   some functional decomposition. [Boy]
 * Updated date format and decimal seperator in french language file. [Sandy]
+* Fixed bug in form rendering when AF_NO_LABEL was used. [Ivo, Dennis]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
