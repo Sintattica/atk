@@ -16,7 +16,7 @@
         <td colspan="2" valign="top">{$field.line}</td>      
       {else}
       {if $field.label!=="AF_NO_LABEL"}<td valign="top" class="{if $field.error!=""}errorlabel{else}fieldlabel{/if}">{if $field.label!=""}{$field.label}: {/if}</td>{/if}
-        <td valign="top" class="field">{$field.full}</td>
+        <td valign="top" {if $field.label==="AF_NO_LABEL"}colspan="2"{/if} class="field">{$field.full}</td>
       {/if}
     </tr>
   {/foreach}
