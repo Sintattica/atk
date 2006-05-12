@@ -506,7 +506,7 @@
       }
       else
       {
-        atkimport("atk.utils.stringparser");
+        atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_filenameTpl);
         $ext = strtolower(substr($default, strrpos($default,'.')+1));
         $filename = $parser->parse($rec).".".$ext;
