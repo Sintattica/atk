@@ -234,6 +234,23 @@
       // Return the translation
       return $label;
     }
+    
+    /**
+     * Parses the destination filter
+     * 
+     * @param $destfilter sting filter to parse
+     * @param $record the current record
+     * @return $filter string filter.
+     */
+    function parseFilter($destFilter,$record)
+    {
+      if($destFilter!="")
+      {
+        atkimport("atk.utils.atkstringparser");
+        $parser = new atkStringParser($destFilter);
+        return $parser->parse($record);
+      }
+      return "";
+    }
   }
-
 ?>

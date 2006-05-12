@@ -283,14 +283,8 @@
       if ($this->createDestination())
       {
         $id = $fieldprefix.$this->fieldName();
-        $filter="";
-        if ($this->m_destinationFilter!="")
-        {
-          atkimport("atk.utils.atkstringparser");
-          $parser = new atkStringParser($this->m_destinationFilter);
-          $filter = $parser->parse($record);
-        }
 
+        $filter=$this->parseFilter($this->m_destinationFilter,$record);
         $autolink = $this->getRelationAutolink($id, $filter);
         $editflag = true;
 
@@ -501,9 +495,7 @@
         {
           if ($this->m_destinationFilter!="")
           {
-            atkimport("atk.utils.atkstringparser");
-            $parser = new atkStringParser($this->m_destinationFilter);
-            $filter = $parser->parse($record);
+            $filter = $this->parseFilter($this->m_destinationFilter,$record);
             $this->m_destInstance->addFilter($filter);
           }
           $recordset = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));

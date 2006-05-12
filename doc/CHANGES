@@ -110,6 +110,10 @@ Changed in ATK 5.5.1
 * Updated date format and decimal seperator in french language file. [Sandy]
 * Fixed bug in form rendering when AF_NO_LABEL was used. [Ivo, Dennis]
 * Fixed translation of links in atkAdminHandler. [Peter]
+* Fixed a bug in the m2m relation that lacked passing the table name to the 
+  deleteDb() and not being able to delete the record. [Martin]
+* Did some code cleanup and fixed the manybool and shuttle relation by including
+  the required stringparser. [Martin] 
 * atkLanguage now transforms language param to lowercase, thus always 
   expecting languagefiles to be lowercase and have a lowercase var. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
