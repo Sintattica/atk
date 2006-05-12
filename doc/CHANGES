@@ -110,6 +110,8 @@ Changed in ATK 5.5.1
 * Updated date format and decimal seperator in french language file. [Sandy]
 * Fixed bug in form rendering when AF_NO_LABEL was used. [Ivo, Dennis]
 * Fixed translation of links in atkAdminHandler. [Peter]
+* atkLanguage now transforms language param to lowercase, thus always 
+  expecting languagefiles to be lowercase and have a lowercase var. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
