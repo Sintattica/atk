@@ -237,13 +237,8 @@
       if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
       {
         $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-        $lngkey = "txt_link_".getNodeType($this->m_node->m_type)."_add";
-        if (isset($GLOBALS[$lngkey]))
-        {
-          // specific text
-          $label = atktext("link_".getNodeType($this->m_node->m_type)."_add");
-        }
-        else
+        $label = atktext("link_".$this->m_node->m_type."_add", $this->m_node->m_module, "", "", "", true);
+        if (empty($label))
         {
           // generic text
           $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
