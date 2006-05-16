@@ -186,6 +186,7 @@
   "oct" => "Oct",
   "october" => "October",
   "open" => "Open",
+  "or" => "Or",
   "password" => "Password",
   "password_again" => "Again",
   "password_current" => "Current",
