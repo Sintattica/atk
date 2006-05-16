@@ -197,6 +197,7 @@
   "previous" => "Previous",
   "relogin" => "Log in again",
   "remove_current_file" => "Remove current file",
+  "replace_by" => "Replace by",
   "restricted_delete_error" => "There is detail information below this record that needs to be deleted first.",
   "sat" => "Sat",
   "saturday" => "Saturday",
