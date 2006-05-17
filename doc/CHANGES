@@ -10,6 +10,7 @@ Changed in ATK 5.5.1
   via the atkmessages plugin. [Patrick]
 + Added atkCalculatorAttribute for adding columns with calculated values. [Ivo]
 + Added atkShuttleRelation. [Ivo]
++ Added 'macoslike' theme. [Marcel]
 + Added setText method to atkLanguage. [Sandy]
 + Added fetchvalues method to atkBoolRelation, it now returns 0 if nothing
   is checked instead of NULL (The atkOrgRec also gives 0). [Sandy]
