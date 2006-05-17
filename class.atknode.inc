@@ -3744,7 +3744,11 @@
      * This function searches in all fields that are not AF_HIDE_SEARCH, for
      * a certain expression (substring match). The search performed is an
      * 'or' search. If any of the fields contains the expression, the record
-     * is added to the resultset.
+     * is added to the resultset.\
+     * 
+     * Currently, searchDb only searches those attributes that are of type
+     * string or text.
+     * 
      * @param String $epxression The keyword to search for.
      * @return array Set of records matching the keyword.
      */
@@ -3764,7 +3768,7 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         // Only search in fields that aren't explicitly hidden from search
-        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH))
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH) && in_array($p_attrib->dbFieldType(), array("string", "text")))
         {
            $this->m_postvars['atksearch'][$attribname]=$expression;
         }
