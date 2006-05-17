@@ -42,6 +42,9 @@ Changed in ATK 5.5.1
 + Added processFile() method to atkFileAttribute, to override in derived 
   classes when processing (such as resizing) needs to be done on uploaded 
   files. [Ivo]
++ atkNode::selectDb now performs a distinct select by default to prevent
+  duplicate records from being retrieved. The $distinct parameter can be set
+  to false to revert to the old behaviour. [Ivo]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to

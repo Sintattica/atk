@@ -2777,9 +2777,11 @@
      * @param String $mode The action for which the selectDb is called.
      *                     This param is used to determine which attributes
      *                     to include in the query and which not to include.
+     * @param boolean $distinct Perform a distinct selection (no duplicate 
+     *                          records). Defaults to true.
      * @return array Array containing the retrieved records
      */
-    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
+    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=true)
     {
       $searching=false;
       $selectlist = array();
@@ -2942,7 +2944,7 @@
         $query->setLimit(0, $limit);
       }
 
-      $querystring = $query->buildSelect();
+      $querystring = $query->buildSelect($distinct);
 
       $db = &$this->getDb();
       $dbrecords = $db->getrows($querystring);
