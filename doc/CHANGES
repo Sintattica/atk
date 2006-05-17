@@ -47,6 +47,8 @@ Changed in ATK 5.5.1
   to false to revert to the old behaviour. [Ivo]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
   type fields are searched now. [Ivo]
++ Added ability to use overloaders for normal classes instantiated 
+  with atknew(). [Boy]
 * Changed the copydb method by filtering the executetriggers and added 
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to

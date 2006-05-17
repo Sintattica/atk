@@ -1708,6 +1708,7 @@
    */
   function &atknew($fullclassname)
   {
+    $fullclassname = getClassOverloaderForClass($fullclassname);
     atkimport($fullclassname, true);
 
     $elems = explode(".", strtolower($fullclassname));
@@ -1725,7 +1726,13 @@
       return $tmp;
     }
   }
-
+  
+  function getClassOverloaderForClass($class)
+  {
+    global $g_overloaders;
+    if ($g_overloaders[$class]) return $g_overloaders[$class];
+    else return $class;
+  }
   /**
    * Return a singleton instance of the specified class.
    *
