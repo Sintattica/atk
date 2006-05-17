@@ -1708,7 +1708,7 @@
    */
   function &atknew($fullclassname)
   {
-    $fullclassname = getClassOverloaderForClass($fullclassname);
+    $fullclassname = atkResolveClass($fullclassname);
     atkimport($fullclassname, true);
 
     $elems = explode(".", strtolower($fullclassname));
@@ -1727,11 +1727,21 @@
     }
   }
   
-  function getClassOverloaderForClass($class)
+  /**
+   * Resolve a classname to its final classname.
+   *
+   * An application can overload a class with a custom version. This 
+   * method resolves the initial classname to its overloaded version
+   * (if any).
+   *
+   * @param String $class The name of the class to resolve
+   * @return String The resolved classname
+   */
+  function atkResolveClass($class)
   {
     global $g_overloaders;
-    if ($g_overloaders[$class]) return $g_overloaders[$class];
-    else return $class;
+    if (isset($g_overloaders[$class])) return $g_overloaders[$class];
+    return $class;
   }
   /**
    * Return a singleton instance of the specified class.
