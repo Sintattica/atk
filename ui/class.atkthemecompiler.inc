@@ -8,7 +8,8 @@
    * @package atk
    * @subpackage ui
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @copyright (c)2004-2006 Ibuildings.nl BV
+   * @copyright (c)2004-2006 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -19,381 +20,158 @@
   /**
    * Compiles cache for current theme.
    *
-   * Can be seen as two parts, everything above the compile function takes
-   * care of assembling the themedefinition and everything below takes care
-   * of actually compiling it.
+   * The compiler scans the theme directory and file structure and builds a
+   * compiled file that contains the exact location of every themeable
+   * element.
+   *
+   * If a theme is derived from another theme, the compiled theme contains the
+   * sum of the parts, so a single compiled theme file contains every
+   * information that ATK needs about the theme.
    *
    * @author Boy Baukema <boy@ibuildings.nl>
+   * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage ui
    *
    */
-  class atkThemeCompiler extends atkTheme
+  class atkThemeCompiler
   {
     /**
-     * Stack with all (fallback) directories to check for themefiles
-     * @var array
-     * @access private
-     */
-    var $m_themedefs;
-
-    /**
-     * String with the indentation to use for the cache file
-     * @var string
-     * @access private
-     */
-    var $indentation;
-
-    /**
-     * Directory where we make a template directory and store the cachefile
-     * @var bool
-     * @access private
-     */
-    var $m_cachedir;
-
-    /**
-    * Constructor, initialises several values
-    */
-    function atkThemeCompiler()
-    {
-      $this->m_cachedir = atkconfig("atktempdir");
-      $this->m_curtheme = atkconfig("defaulttheme");
-    }
-
-    /**
-     * Set the theme to compile
+     * Compile a theme file for a certain theme.
      *
-     * @param String $theme The theme to set
+     * @param String $name The name of the theme to compile.
      */
-    function setTheme($theme)
+    function compile($name)
     {
-      $this->m_curtheme = $theme;
-      $this->_fillThemedefs();
-    }
+      // Process theme directory structure into data array.
+      $data = $this->readStructure($name);
 
-    /**
-     * Fills a stack with all fallback locations for themedefinitions
-     */
-    function _fillThemedefs()
-    {
-      global $g_modules;
-
-      $this->m_themedefs[] = atkconfig("atkroot").$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = atkconfig("atkroot").$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
-
-      foreach ($g_modules as $modname => $modpath)
+      // Write it to the compiled theme file
+      if (count($data))
       {
-        $this->m_themedefs[] = moduleDir($modname).$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-        $this->m_themedefs[] = moduleDir($modname).$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
-      }
-
-      $this->m_themedefs[] = atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/".$this->m_curtheme."/".$this->THEMEFILE;
-      $this->m_themedefs[] = atkconfig("atkroot")."atk/".$this->THEMEDIRNAME."/default/".$this->THEMEFILE;
-    }
-
-    /**
-     * Function responsible for getting the themedefinitions
-     * @return void
-     */
-    function getThemedef()
-    {
-      $file = array_shift($this->m_themedefs);
-      if (file_exists($file))
-      {
-        include($file);
-        atkdebug("Found $file, going to compile it");
-        $fromlength = strrpos($file, "/");
-        $from = substr($file, 0, $fromlength);
-
-        $this->_checkForBase($theme, $from);
-        $this->_checkForAutodetect($theme, $from);
-
-        $this->_addThemedef($theme, $from);
-      }
-      if (isset($this->m_themedefs[0]) && (!empty($this->m_themedefs[0]))) { $this->getThemedef();}
-    }
-
-    /**
-     * If the theme has a base, we go back and do that one first
-     * @param array $theme the current themedefinition
-     * @param string $from the directory of the current themedefinition
-     * @return void
-     */
-    function _checkForBase($theme, $from)
-    {
-      if (isset($theme["base"]) && (!empty($theme["base"])))
-      {
-        array_unshift($this->m_themedefs, "$from/../".$theme["base"]."/".$this->THEMEFILE);
+        atkimport("atk.utils.atktmpfile");
+        $tmpfile = new atkTmpFile("themes/$name.inc");
+        $tmpfile->writeAsPhp("theme", $data);
       }
     }
 
     /**
-     * If a theme has attributes with a "scan 'somedir/'"
-     * it will scan the files in that dir
-     * @param array &$theme the current themedefinition
-     * @param string $from the directory of the current themedefinition
+     * Parse theme structure.
+     *
+     * This method parses the themes directory and file structure and
+     * converts it to a dataset containing all theme attributes and the
+     * exact location of all themable files.
+     *
+     * This method also takes inheritance into account. If the theme derives
+     * from another theme, the info for said theme is included too. This is
+     * done recursively so themes can derive from any number of base themes.
+     *
+     * All themes are implicitly derived from the 'default' theme unless they
+     * specify otherwise in their themedef.inc file.
+     *
+     * @param String $name The name of the theme
+     * @return array Theme dData structure
      */
-    function _checkForAutodetect(&$theme, $from)
+    function readStructure($name)
     {
-      foreach ($theme as $themename => $themedata)
+      $data = array();
+
+      $path = $this->findTheme($name);
+
+      // First parse the themedef file for attributes
+      if (file_exists(atkconfig("atkroot").$path."themedef.inc"))
       {
-        if (!is_array($themedata))
+        include(atkconfig("atkroot").$path."themedef.inc");
+
+        if (isset($theme["basetheme"])) // If theme is derived from another theme, use that other theme as basis
         {
-          if (substr($themedata, 0, 4) == "scan")
+          $data = $this->readStructure($theme["basetheme"]);
+        }
+        else if ($name!="default") // no basetheme set, assume 'default' theme as basetheme (but not for default itself)
+        {
+          $data = $this->readStructure("default");
+        }
+
+        foreach($theme as $key=>$value) $data["attributes"][$key] = $value;
+      }
+
+      // Second scan all files in the theme path
+      $this->scanThemePath($path, $data);
+
+      $data["attributes"]["basepath"] = $path;
+      return $data;
+    }
+
+    /**
+     * Find the location on disk of a theme with a certain name.
+     *
+     * @param String $name Name of the theme
+     * @return String The path, relative to $config_atkroot, where the theme is located
+     */
+    function findTheme($name)
+    {
+      if (file_exists(atkconfig("atkroot")."themes/$name")) return "themes/$name/";
+      else if (file_exists(atkconfig("atkroot")."atk/themes/$name")) return "atk/themes/$name/";
+    }
+
+    /**
+     * Traverse theme path.
+     *
+     * Traverses the theme path and remembers the physical location of all theme files.
+     *
+     * @param String $path The path of the theme, relative to atkroot.
+     * @param String $data Reference to the data array in which to report the file locations
+     */
+    function scanThemePath($path, &$data)
+    {
+      $traverser = &atknew("atk.utils.atkdirectorytraverser");
+      $subitems = $traverser->getDirContents(atkconfig("atkroot").$path);
+      foreach($subitems as $name)
+      {
+        if (in_array($name, array("images", "styles", "templates"))) // images, styles and templates are compiled the same
+        {
+          $files = $traverser->getDirContents($path.$name);
+          foreach($files as $file)
           {
-            $directories = $this->_getAutodetectdirectories($themedata);
-            foreach ($directories as $dir)
+            if (!in_array($file, array(".", "..", "CVS")))
             {
-              $files = $this->_scanAutodetectdirectory($dir, $from);
-              $theme[$themename] = $files;
+              $data["files"][$name][$file] = $path.$name."/".$file;
+            }
+          }
+        }
+        else if ($name=="icons") // New ATK5 style icon theme dirs
+        {
+          $subs = $traverser->getDirContents($path.$name);
+          foreach($subs as $type)
+          {
+            if (!in_array($type, array(".", "..", "CVS")))
+            {
+              $files = $traverser->getDirContents($path.$name."/".$type);
+              foreach($files as $file)
+              {
+                if (!in_array($file, array(".", "..", "CVS")))
+                {
+                  $data["files"]["icons"][$type][$file] = $path.$name."/".$type."/".$file;
+                }
+              }
+            }
+          }
+        }
+        else if (in_array($name, array("tree_icons", "recordlist_icons", "toolbar_icons"))) // Old ATK5 style icon theme dirs
+        {
+          $type = substr($name, 0, -6);
+          $files = $traverser->getDirContents($path.$name);
+          foreach($files as $file)
+          {
+            if (!in_array($file, array(".", "..", "CVS")))
+            {
+              $data["files"]["icons"][$type][$file] = $path.$name."/".$file;
             }
           }
         }
       }
     }
 
-    /**
-     * Checks wether the user set the slashes and how many dirs we need to scan
-     * Multiple directories are seperated with a ;
-     * @param string $themedata The theme data for this paricular entry
-     * @return array an array with the directories
-     */
-    function _getAutodetectdirectories($themedata)
-    {
-      $directories = $this->_getAutodetectData($themedata);
-
-      $directories = explode(";", $directories);
-      foreach ($directories as $dirid => $directory)
-      {
-        if (substr($directory, 0, 1) !== "/") $directories[$dirid] = "/$directory";
-        if (substr($directory, -1, 1) !== "/") $directories[$dirid] .= "/";
-      }
-      return $directories;
-    }
-
-    /**
-     * Extracts the director(y/ies) we need to scan
-     * @param string $themedata The theme data for this paricular entry
-     * @return String The data that was passed to us (example: icons/recordlist/;icons/something/)
-     */
-    function _getAutodetectData($themedata)
-    {
-      $begindirs = strpos($themedata, "'");
-      if ($begindirs)
-      {
-        $enddirs = strrpos($themedata, "'");
-      }
-      else
-      {
-        // The user didn't use slashes, guess he did "scan dir1/dir2/"
-        $begindirs = 4;
-        $enddirs = strlen($themedata)-1;
-      }
-      $dirnamelength = $enddirs - $begindirs;
-
-      return trim(substr($themedata, $begindirs+1, $dirnamelength-1));
-    }
-
-    /**
-     * Scans the directory given to it and returns the files it finds
-     * @param string $directory the directory we need to scan
-     * @param string $from the directory of the current themedefinition
-     * @return array an array with the files we found
-     */
-    function _scanAutodetectdirectory($directory, $from)
-    {
-      if (!file_exists($from.$directory))
-      {
-         atkerror("Scan of ".$from.$directory." failed! Invalid directory passed. Skipping...");
-         return array();
-      }
-      $handle=opendir($from.$directory);
-
-      while (($file = readdir($handle))!==false)
-      {
-        if ($file != "." && $file != ".." && $file != "CVS")
-        {
-          $detectedfiles[] = $file;
-        }
-      }
-	    closedir($handle);
-      return $detectedfiles;
-    }
-
-
-    /**
-     * This function adds themedefitems from initialisation to the central themedef
-     * If the item is an array it unshifts in on a queue.
-     * @param array $themedef
-     * @param string $from
-     */
-    function _addThemedef($themedef, $from)
-    {
-      // Stripping the atkroot so we store it atkroot independent
-      if (substr($from, 0, strlen(atkconfig('atkroot')))==atkconfig('atkroot'))
-        $from = substr($from, strlen(atkconfig('atkroot')));
-
-      foreach ($themedef as $themedefitemname => $themedefitem)
-      {
-        if (!is_array($themedef[$themedefitemname]))
-        {
-          $this->m_def[$themedefitemname]=$themedefitem;
-        }
-        else
-        {
-          if ((!isset($this->m_def[$themedefitemname])) || (!is_array($this->m_def[$themedefitemname])))
-          {
-            $this->m_def[$themedefitemname] = array();
-          }
-          $this->m_def[$themedefitemname][]= array($from => $themedefitem);
-        }
-      }
-    }
-
-    /**
-     * The compiler, compiles the cache for the current theme
-     */
-    function compile()
-    {
-      $this->getThemedef();
-
-      $compiled = $this->_compileThemedef();
-      $this->_checkLocation();
-      $this->_writeCache($compiled);
-    }
-
-    /**
-     * Writes the cache to a file
-     * @param string $compiled the cache
-     */
-    function _writeCache($compiled)
-    {
-      $filename = $this->m_cachedir.$this->THEMEDIRNAME."/".$this->m_curtheme;
-
-      if($filepointer = fopen($filename,"w"))
-      {
-        fwrite($filepointer, $compiled);
-        fclose($filepointer);
-      } else atkerror("Unable to write theme cache file! Permission denied!");
-    }
-
-    /**
-     * Takes care of indentation, though not absolutely necessary for the system,
-     * it makes the compiled cachefile easier to read for humans
-     * @return string the indentation, a string with spaces
-     */
-    function _getIndentation()
-    {
-      $dent = "";
-      for ($counter = 0; $counter <= $this->indentation; $counter++)
-      {
-        $dent .= " ";
-      }
-      return $dent;
-    }
-
-    /**
-     * Transforms the themedefinition to a php file compatible format
-     * @return string the compiled themedefinition
-     */
-    function _compileThemedef()
-    {
-      $file = "";
-      $this->_compileBegin($file);
-
-      foreach ($this->m_def as $themedefitemname => $themedefitem)
-      {
-        $this->_compileItem($themedefitemname, $themedefitem, $file);
-      }
-      $this->_compileEnd($file);
-      return $file;
-    }
-
-    /**
-     * Adds a beginning to the compiling file
-     * @param string &$file the compiled cache so far
-     */
-    function _compileBegin(&$file)
-    {
-      $file.="<"."?php\n";
-      $this->indentation += 2;
-      $file.=$this->_getIndentation()."\$theme = array(\n";
-    }
-
-    /**
-     * Parses an array for the themecompiler
-     * @param string $themedefitemname the name of the item
-     * @param var $themedefitem        the value of the item
-     * @param string &$file            the compiled cache so far
-     */
-    function _compileItem($themedefitemname, $themedefitem, &$file)
-    {
-      if (!is_array($themedefitem))
-      {
-        $file.=$this->_getIndentation().'"'.$themedefitemname.'" => "'.$themedefitem."\",\n";
-      }
-      else
-      {
-        $this->_compileArray($themedefitem, $themedefitemname, $file);
-      }
-    }
-
-    /**
-     * Compiles an array
-     * @param var $array        the array to be compiled
-     * @param string $arrayname the item name
-     * @param string &$file     the compiled cache so far
-     */
-    function _compileArray($array, $arrayname, &$file)
-    {
-      $file.=$this->_getIndentation().'"'.$arrayname."\" => array(\n";
-
-      foreach ($array as $themedefitemname => $themedefitem)
-      {
-        $this->indentation += 2;
-        $this->_compileItem($themedefitemname, $themedefitem, $file);
-        $this->indentation -= 2;
-      }
-
-      $file .= $this->_getIndentation()."),\n";
-    }
-
-    /**
-     * Adds an ending to the compiling file
-     * @param string &$file the compiled cache so far
-     */
-    function _compileEnd(&$file)
-    {
-      $file .= $this->_getIndentation().");\n";
-      $this->indentation -= 2;
-      $file .= "?".">";
-    }
-
-    /**
-     * Checks if the directory and file we want to write to actually exist,
-     * if not we create them and check again.
-     * Please note that this function is not exited until the file and directory exist
-     * this might create trouble if we do not have the rights,
-     * but we should have the rights anyway.
-     * @return void
-     */
-    function _checkLocation()
-    {
-      $dir = $this->m_cachedir.$this->THEMEDIRNAME;
-      $file = $dir."/".$this->m_curtheme;
-
-      if (is_dir($dir))
-      {
-        if (is_file($file))
-        {
-          return;
-        }
-        if (!touch($file)){echo(text("cannot make file", "", "atk").$file.text("check rights to", "", "atk").$this->m_cachedir.$this->THEMEDIRNAME); exit;};
-        return $this->_checkLocation();
-      }
-      if (!mkdir($this->m_cachedir.$this->THEMEDIRNAME)){echo(text("cannot create directory", "", "atk").$this->m_cachedir.$this->THEMEDIRNAME." ".text("check rights to", "", "atk").$this->m_cachedir);exit;}
-      return $this->_checkLocation();
-    }
   }
 
 ?>
