@@ -49,6 +49,11 @@
       // Write it to the compiled theme file
       if (count($data))
       {
+        if (!file_exists(atkconfig("atktempdir")."themes/"))
+        {
+          mkdir(atkconfig("atktempdir")."themes/");
+        }
+
         atkimport("atk.utils.atktmpfile");
         $tmpfile = new atkTmpFile("themes/$name.inc");
         $tmpfile->writeAsPhp("theme", $data);
@@ -110,7 +115,7 @@
      */
     function findTheme($name)
     {
-      if (file_exists(atkconfig("atkroot")."themes/$name")) return "themes/$name/";
+      if (file_exists(atkconfig("atkroot")."themes/$name/themedef.inc")) return "themes/$name/";
       else if (file_exists(atkconfig("atkroot")."atk/themes/$name")) return "atk/themes/$name/";
     }
 
@@ -125,12 +130,13 @@
     function scanThemePath($path, &$data)
     {
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
-      $subitems = $traverser->getDirContents(atkconfig("atkroot").$path);
+      $abspath = atkconfig("atkroot").$path;
+      $subitems = $traverser->getDirContents($abspath);
       foreach($subitems as $name)
       {
         if (in_array($name, array("images", "styles", "templates"))) // images, styles and templates are compiled the same
         {
-          $files = $traverser->getDirContents($path.$name);
+          $files = $traverser->getDirContents($abspath.$name);
           foreach($files as $file)
           {
             if (!in_array($file, array(".", "..", "CVS")))
@@ -141,12 +147,12 @@
         }
         else if ($name=="icons") // New ATK5 style icon theme dirs
         {
-          $subs = $traverser->getDirContents($path.$name);
+          $subs = $traverser->getDirContents($abspath.$name);
           foreach($subs as $type)
           {
             if (!in_array($type, array(".", "..", "CVS")))
             {
-              $files = $traverser->getDirContents($path.$name."/".$type);
+              $files = $traverser->getDirContents($abspath.$name."/".$type);
               foreach($files as $file)
               {
                 if (!in_array($file, array(".", "..", "CVS")))
@@ -160,7 +166,7 @@
         else if (in_array($name, array("tree_icons", "recordlist_icons", "toolbar_icons"))) // Old ATK5 style icon theme dirs
         {
           $type = substr($name, 0, -6);
-          $files = $traverser->getDirContents($path.$name);
+          $files = $traverser->getDirContents($abspath.$name);
           foreach($files as $file)
           {
             if (!in_array($file, array(".", "..", "CVS")))
