@@ -99,7 +99,7 @@
 
     function getFileLocation($type, $name)
     {
-      return (isset($this->m_theme["files"][$type][$name])?$this->m_theme["files"][$type][$name]:"");
+      return (isset($this->m_theme["files"][$type][$name])?atkconfig("atkroot").$this->m_theme["files"][$type][$name]:"");
     }
 
 
@@ -143,7 +143,7 @@
     function iconPath($icon, $type, $extension=".gif")
     {
 
-      return (isset($this->m_theme["files"]["icons"][$type][$icon.$extension])?$this->m_theme["files"]["icons"][$type][$icon.$extension]:"");
+      return (isset($this->m_theme["files"]["icons"][$type][$icon.$extension])?atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.$extension]:"");
     }
 
     /**
