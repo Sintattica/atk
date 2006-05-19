@@ -143,7 +143,7 @@
     function iconPath($icon, $type, $extension=".gif")
     {
 
-      return (isset($this->m_theme["files"]["icons"][$type][$icon.$extension])?atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.$extension]:"");
+      return (isset($this->m_theme["files"]["icons"][$type][$icon.$extension])?atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.$extension]:atkconfig("atkroot").$this->m_theme["files"]["icons"][$type]["default".$extension]);
     }
 
     /**

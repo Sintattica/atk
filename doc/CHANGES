@@ -1127,6 +1127,8 @@ Changes in ATK 5.0.3
   same type this could lead to not updating the attribute correctly. [Martin]
 * Bugfix in the onetoonerelation. Changed the behaviour of the addtoquery.
   When empty the refkey is now always updated. [Martin]
+* atkTheme will load the default icon when no icon is found for 
+  a certain action. [Maurice]
 
 Changes in ATK 5.0.2
 --------------------
