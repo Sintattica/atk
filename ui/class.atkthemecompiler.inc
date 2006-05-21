@@ -57,7 +57,9 @@
         atkimport("atk.utils.atktmpfile");
         $tmpfile = new atkTmpFile("themes/$name.inc");
         $tmpfile->writeAsPhp("theme", $data);
+        return true;
       }
+      return false;
     }
 
     /**
@@ -75,16 +77,17 @@
      * specify otherwise in their themedef.inc file.
      *
      * @param String $name The name of the theme
+     * @param String $location The location of the theme ("atk", "app" or "auto")
      * @return array Theme dData structure
      */
-    function readStructure($name)
+    function readStructure($name, $location="auto")
     {
       $data = array();
 
-      $path = $this->findTheme($name);
+      $path = $this->findTheme($name, $location);
 
       // First parse the themedef file for attributes
-      if (file_exists(atkconfig("atkroot").$path."themedef.inc"))
+      if ($path!="" && file_exists(atkconfig("atkroot").$path."themedef.inc"))
       {
         include(atkconfig("atkroot").$path."themedef.inc");
 
@@ -92,18 +95,21 @@
         {
           $data = $this->readStructure($theme["basetheme"]);
         }
-        else if ($name!="default") // no basetheme set, assume 'default' theme as basetheme (but not for default itself)
+        else if ($name!="default" || $location!="atk") // no basetheme set, assume 'default' theme as basetheme (but not for default itself)
         {
-          $data = $this->readStructure("default");
+          $data = $this->readStructure("default", "atk");
         }
 
-        foreach($theme as $key=>$value) $data["attributes"][$key] = $value;
+        if (isset($theme))
+        {
+          foreach($theme as $key=>$value) $data["attributes"][$key] = $value;
+        }
+
+        // Second scan all files in the theme path
+        $this->scanThemePath($path, $data);
+
+        $data["attributes"]["basepath"] = $path;
       }
-
-      // Second scan all files in the theme path
-      $this->scanThemePath($path, $data);
-
-      $data["attributes"]["basepath"] = $path;
       return $data;
     }
 
@@ -111,12 +117,15 @@
      * Find the location on disk of a theme with a certain name.
      *
      * @param String $name Name of the theme
+     * @param String $location The location of the theme ("atk", "app" or "auto")
      * @return String The path, relative to $config_atkroot, where the theme is located
      */
-    function findTheme($name)
+    function findTheme($name, $location="auto")
     {
-      if (file_exists(atkconfig("atkroot")."themes/$name/themedef.inc")) return "themes/$name/";
-      else if (file_exists(atkconfig("atkroot")."atk/themes/$name")) return "atk/themes/$name/";
+      if ($location!="atk"&&file_exists(atkconfig("atkroot")."themes/$name/themedef.inc")) return "themes/$name/";
+      else if ($location!="app"&&file_exists(atkconfig("atkroot")."atk/themes/$name")) return "atk/themes/$name/";
+      atkerror("Thene $name not found");
+      return "";
     }
 
     /**
