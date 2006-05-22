@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -23,13 +23,13 @@
    */
 
   /**
-   * Create a new menu item 
+   * Create a new menu item
    *
    * Both main menu items, separators, submenus or submenu items can be
    * created, depending on the parameters passed.
    *
    * @param String $name The menuitem name. The name that is displayed in the
-   *                     userinterface can be influenced by putting 
+   *                     userinterface can be influenced by putting
    *                     "menu_something" in the language files, where 'something'
    *                     is equal to the $name parameter.
    *                     If "-" is specified as name, the item is a separator.
@@ -49,7 +49,7 @@
    *                         enabled. If the function returns 1 or 0, it can
    *                         directly be passed to this method in the $enable
    *                         parameter.
-   *                      array: when an array is passed, it should have the 
+   *                      array: when an array is passed, it should have the
    *                             following format:
    *                             array("node","action","node","action",...)
    *                             When an array is passed, the menu checks user
@@ -57,7 +57,7 @@
    *                             node/action privileges, the menuitem is
    *                             enabled. Otherwise, it's disabled.
    * @param int $order The order in which the menuitem appears. If omitted,
-   *                   the items appear in the order in which they are added 
+   *                   the items appear in the order in which they are added
    *                   to the menu, with steps of 100. So, if you have a menu
    *                   with default ordering and you want to place a new
    *                   menuitem at the third position, pass 250 for $order.
@@ -66,27 +66,27 @@
    *                backwardscompatibility reasons.
    */
   function menuitem($name="", $url="", $parent="main", $enable=1, $order=0, $module="")
-  { 
+  {
     global $g_menu, $g_menu_parent;
-    static $order_value=100, $s_dupelookup;
-    if($order==0) 
+    static $order_value=100, $s_dupelookup=array();
+    if($order==0)
     {
       $order=$order_value;
       $order_value+=100;
     }
-    
-    $item = array("name" => $name, 
-                  "url" => $url, 
-                  "enable" => $enable, 
+
+    $item = array("name" => $name,
+                  "url" => $url,
+                  "enable" => $enable,
                   "order"=> $order,
                   "module"=> $module);
-        
-    if (isset($s_dupelookup[$parent][$name])&&$s_dupelookup[$parent][$name]!=""&&$name!="-")
+
+    if (isset($s_dupelookup[$parent][$name]) && ($name != "-"))
     {
       $g_menu[$parent][$s_dupelookup[$parent][$name]] = $item;
     }
     else
-    {    
+    {
       $s_dupelookup[$parent][$name] = isset($g_menu[$parent])?count($g_menu[$parent]):0;
       $g_menu[$parent][] = $item;
     }
@@ -95,7 +95,7 @@
 
   /**
    * Creates multiple (sub)menu items and/or submenu(s) at once.
-   * @param array $menu Array with menu/submenu items, in the following 
+   * @param array $menu Array with menu/submenu items, in the following
    *                    format: array($parent=>array(0=>
    *                                              array("url"=>$url,
    *                                                    "name"=>$name)))
@@ -106,7 +106,7 @@
       for ($i = 0; $i < count($items); $i++)
       {
         $GLOBALS["g_menu"][$parent][] = $items[$i];
-        if (empty($items[$i]["url"])) $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;      
+        if (empty($items[$i]["url"])) $GLOBALS["g_menu_parent"][$items[$i]["name"]] = $parent;
       }
   }
 

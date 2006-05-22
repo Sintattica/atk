@@ -37,12 +37,12 @@ Changed in ATK 5.5.1
 + Added setAutonumbering() method to atkFileAttribute to turn on autonumbering
   of files when files with the same name as that of a different record are
   uploaded. [Ivo]
-+ Added ajax powered smart search functionality for performing arbitraty 
++ Added ajax powered smart search functionality for performing arbitraty
   searches on any node. [Peter]
 + atkPage::register_style() and the {atkstyle} now accept a 'media' parameter.
   [Peter]
-+ Added processFile() method to atkFileAttribute, to override in derived 
-  classes when processing (such as resizing) needs to be done on uploaded 
++ Added processFile() method to atkFileAttribute, to override in derived
+  classes when processing (such as resizing) needs to be done on uploaded
   files. [Ivo]
 + atkNode::selectDb now performs a distinct select by default to prevent
   duplicate records from being retrieved. The $distinct parameter can be set
@@ -55,11 +55,11 @@ Changed in ATK 5.5.1
    + Full inheritance: themes can now derive from eachother so they only need
      to define the differences from the base theme.
    + Fully automatic theme structure scanning. Themedef.inc no longer needs to
-     define which templates/styles/images etc. it implements. 
+     define which templates/styles/images etc. it implements.
    * atkTheme/atkThemeCompiler codebase is about half as big.
    * Compiled themefiles are now better human readable.
    * Bug where "highlight" attribute definitions would not be loaded is fixed.
-* Changed the copydb method by filtering the executetriggers and added 
+* Changed the copydb method by filtering the executetriggers and added
   support for different modes. [dennisjan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
@@ -81,11 +81,11 @@ Changed in ATK 5.5.1
   sometimes do tests twice, with special module paths. [Boy]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the originating
   atklevel (which caused it to lose it's debugging info). [Boy]
-* atkMLSplitter now uses atklng variable instead of 
+* atkMLSplitter now uses atklng variable instead of
   deprecated lng variable. [Boy]
 * Fixed a notice that users with Norton Internet Security or other popup
   blockers that remove headers may see. [Ivo]
-* Refactored atkManyBoolRelation's store(), hide(), searchCondition(), 
+* Refactored atkManyBoolRelation's store(), hide(), searchCondition(),
   search() and isEmpty() methods to atkManyToManyRelation as these methods
   are not atkManyBoolRelation specific. [Ivo]
 * Link id is no longer passed to mysql error functions if it is null. [Boy]
@@ -97,7 +97,7 @@ Changed in ATK 5.5.1
 * Fixed bug in the atkManyToManyRelation if the filter isn't set. [Sandy]
 * Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
 * Fixed db2value method of atkManyToOneRelation (now calls db2value on
-  destination attributes). Warning: this change might give you problems if 
+  destination attributes). Warning: this change might give you problems if
   you depend on the old (incorrect) behaviour! [Peter]
 * Fixed loading existing search in atkDateAttribute. [Peter]
 * Improved title support (stack trace and action title). [Peter]
@@ -105,7 +105,7 @@ Changed in ATK 5.5.1
 * Backported array support for $params parameter dispatch_url. [Peter]
 * Backported atkDateTimeAttribute search support. [Peter]
 * Backported prototype/scriptaculous JavaScript libs. [Peter]
-* Fixed the width of forms inside tabs to be 100%, for 'outlook', 'win2k' and 
+* Fixed the width of forms inside tabs to be 100%, for 'outlook', 'win2k' and
   'modern' themes. [Ivo]
 * Generated select/count queries now have spaces between the field- and table
   names for improved readability. Side effect is that the debugoutput no longer
@@ -127,15 +127,17 @@ Changed in ATK 5.5.1
 * Updated date format and decimal seperator in french language file. [Sandy]
 * Fixed bug in form rendering when AF_NO_LABEL was used. [Ivo, Dennis]
 * Fixed translation of links in atkAdminHandler. [Peter]
-* Fixed a bug in the m2m relation that lacked passing the table name to the 
+* Fixed a bug in the m2m relation that lacked passing the table name to the
   deleteDb() and not being able to delete the record. [Martin]
 * Did some code cleanup and fixed the manybool and shuttle relation by including
-  the required stringparser. [Martin] 
-* atkLanguage now transforms language param to lowercase, thus always 
+  the required stringparser. [Martin]
+* atkLanguage now transforms language param to lowercase, thus always
   expecting languagefiles to be lowercase and have a lowercase var. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
+* Fixed duplicates lookup which didn't work when replacing the first
+  menuitem withing a submenu. [Guido]
 
 Changes in ATK 5.5
 ------------------
@@ -1128,7 +1130,7 @@ Changes in ATK 5.0.3
   same type this could lead to not updating the attribute correctly. [Martin]
 * Bugfix in the onetoonerelation. Changed the behaviour of the addtoquery.
   When empty the refkey is now always updated. [Martin]
-* atkTheme will load the default icon when no icon is found for 
+* atkTheme will load the default icon when no icon is found for
   a certain action. [Maurice]
 
 Changes in ATK 5.0.2
