@@ -774,7 +774,17 @@
       // relationship with.
       if ($this->createDestination())
       {
-        return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
+        if(count($this->m_refKey)>1)
+        {
+          $keys = array();
+          for($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldType();
+          }
+          return $keys;
+        }
+        else 
+          return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
       }
       return "";
     }
@@ -786,7 +796,17 @@
       // relationship with.
       if ($this->createDestination())
       {
-        return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
+        if(count($this->m_refKey)>1)
+        {
+          $keys = array();
+          for($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+          {
+            $keys [] = $this->m_destInstance->m_attribList[$this->m_destInstance->m_primaryKey[$i]]->dbFieldSize();
+          }
+          return $keys;
+        }
+        else 
+          return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
       }
       return 0;
     }
