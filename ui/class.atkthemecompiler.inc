@@ -95,9 +95,17 @@
         {
           $data = $this->readStructure($theme["basetheme"]);
         }
-        else if ($name!="default" || $location!="atk") // no basetheme set, assume 'default' theme as basetheme (but not for default itself)
+        else if ($name!="default") // If basetheme is not explicitly defined, use default as base theme
+        {
+          $data = $this->readStructure("default", "auto");
+        }
+        else if ($name=="default" && $location=="app") // if this theme is the app's default theme, use atk default as base
         {
           $data = $this->readStructure("default", "atk");
+        }
+        else
+        {
+          // end of the pipeline
         }
 
         if (isset($theme))
@@ -118,13 +126,24 @@
      *
      * @param String $name Name of the theme
      * @param String $location The location of the theme ("atk", "app" or "auto")
+     *                         If set to auto, the method changes the $location
+     *                         value to the actual location.
      * @return String The path, relative to $config_atkroot, where the theme is located
      */
-    function findTheme($name, $location="auto")
+    function findTheme($name, &$location)
     {
-      if ($location!="atk"&&file_exists(atkconfig("atkroot")."themes/$name/themedef.inc")) return "themes/$name/";
-      else if ($location!="app"&&file_exists(atkconfig("atkroot")."atk/themes/$name")) return "atk/themes/$name/";
+      if ($location!="atk"&&file_exists(atkconfig("atkroot")."themes/$name/themedef.inc"))
+      {
+        $location = "app";
+        return "themes/$name/";
+      }
+      else if ($location!="app"&&file_exists(atkconfig("atkroot")."atk/themes/$name"))
+      {
+        $location = "atk";
+        return "atk/themes/$name/";
+      }
       atkerror("Thene $name not found");
+      $location = "";
       return "";
     }
 
