@@ -1883,7 +1883,7 @@
                                                 "formstart"=>$formstart,
                                                 "formend"=>'</form>',
                                                 "buttons"=>$buttons));
-      return $ui->renderBox(array("title"=>$this->actionTitle('delete', $record),
+      return $ui->renderBox(array("title"=>$this->actionTitle($action, $record),
                                   "content"=>$output));
     }
 

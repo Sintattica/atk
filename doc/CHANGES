@@ -136,6 +136,7 @@ Changed in ATK 5.5.1
   default. [Ivo]
 * Fixed duplicates lookup which didn't work when replacing the first
   menuitem withing a submenu. [Guido]
+* Fixed wrong title in confirmAction dialogs. [KevinLW]
 
 Changes in ATK 5.5
 ------------------
