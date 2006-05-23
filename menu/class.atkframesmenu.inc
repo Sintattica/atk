@@ -30,7 +30,6 @@
        global $ATK_VARS,$g_menu, $g_menu_parent;
        $atkmenutop = $ATK_VARS["atkmenutop"];
        if($atkmenutop=="") $atkmenutop="main";
-
        $menu = "<div align='".atkconfig("menu_align", "center")."'>";
        $menu.=$this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop]))
@@ -71,7 +70,7 @@
             else if ($enable) // don't show menu items we don't have access to.
             {
 
-              $hassub = (is_array($g_menu[$g_menu[$atkmenutop][$i]["name"]]));
+              $hassub = isset($g_menu[$g_menu[$atkmenutop][$i]["name"]]);
 
               /* submenu ? */
               if ($hassub)
