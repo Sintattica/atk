@@ -172,7 +172,7 @@
       $i=1;
       foreach ($this->m_colcfg as $field=>$config)
       {
-        if ($this->m_colcfg[$field]["sortorder"]>0)
+        if (array_key_exists("sortorder", $this->m_colcfg[$field]) && ($this->m_colcfg[$field]["sortorder"]>0))
         {
           $this->m_colcfg[$field]["sortorder"] = $i;
           $i++;
@@ -318,7 +318,7 @@
 
     function getDirection($attribute)
     {
-      return ($this->m_colcfg[$attribute]["direction"]!=""?$this->m_colcfg[$attribute]["direction"]:"asc");
+      return (array_key_exists("direction", $this->m_colcfg[$attribute])?$this->m_colcfg[$attribute]["direction"]:"asc");
     }
 
     function getAttributeByOrder($order)
@@ -387,7 +387,9 @@
 
     function _compareSortAttrs($a, $b)
     {
-      return ($a["sortorder"]<=$b["sortorder"]?-1:1);
+      $asortorder = isset($a["sortorder"]) ? $a["sortorder"] : 0;
+      $bsortorder = isset($b["sortorder"]) ? $b["sortorder"] : 0;
+      return ($asortorder<=$bsortorder?-1:1);
     }
 
     function totalizable()
