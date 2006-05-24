@@ -229,7 +229,7 @@
       $max = $this->_getMaxCols($data);
 
       // Render
-      $output.= $this->_start($style);
+      $output = $this->_start($style);
 
       for ($row=0, $_row=count($data); $row<$_row; $row++)
       {
