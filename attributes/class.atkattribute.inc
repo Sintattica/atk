@@ -443,6 +443,13 @@
     var $m_htmlid;
 
     /**
+     * The label of the attribute.
+     * @access private
+     * @var String
+     */
+    var $m_label = "";
+
+    /**
      * The searchmode for this attribute
      *
      * This var exists so that you can assign searchmodes to specific attributes
@@ -1021,7 +1028,7 @@
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
-     * 
+     *
      * @param Integer  $id         The unique smart search criterium identifier.
      * @param Integer  $nr         The element number in the path.
      * @param Array    $path       The remaining attribute path.
@@ -1039,10 +1046,10 @@
         atk_var_dump($path, 'Invalid search path for '.$this->m_ownerInstance->atkNodeType().'#'.$this->fieldName().', ignoring criterium!');
         return;
       }
-      
+
       $this->searchCondition($query, $ownerAlias, $value, $mode);
     }
-    
+
     /**
      * Creates a search condition for a given search value, and adds it to the
      * query that will be used for performing the actual search.
@@ -1245,7 +1252,7 @@
     function fetchMeta($metadata)
     {
 
-      $attribname = $this->fieldName();
+      $attribname = strtolower($this->fieldName());
       // Only use meta info if size is not already set manual. (constructor or setAttribSize)
       // If both are set, use the smallest value.
       if (isset($metadata[$attribname]))
@@ -1493,7 +1500,12 @@
      */
     function label($record = array())
     {
-      return $this->text($this->fieldName());
+      return ($this->m_label!=""?$this->m_label:$this->text($this->fieldName()));
+    }
+
+    function setLabel($label)
+    {
+      $this->m_label = $label;
     }
 
     /**
@@ -1737,7 +1749,7 @@
       $dbSearchModes = $db->getSearchModes();
       $attribSearchModes = $this->getSearchModes();
       $searchModes = array_values(array_intersect($attribSearchModes, $dbSearchModes));
-      
+
       // set "widget" value:
       $funcname = $this->m_name."_search";
 
