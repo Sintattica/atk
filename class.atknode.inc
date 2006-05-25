@@ -625,15 +625,15 @@
      * @var String
      */
     var $m_modifier = "";
-    
+
     /**
      * Extended search action. The action which is called if the user
      * wants to perform an extended search.
-     * 
+     *
      * @access private
      * @var String
      */
-    var $m_extended_search_action = NULL; 
+    var $m_extended_search_action = NULL;
 
     /**
      * Constructor.
@@ -1614,7 +1614,7 @@
         case "edit": return "editform.tpl";
         case "view": return "viewform.tpl";
         case "search": return "searchform.tpl";
-        case "smartsearch": return "smartsearchform.tpl";        
+        case "smartsearch": return "smartsearchform.tpl";
       }
     }
 
@@ -1786,10 +1786,10 @@
       if (!is_array($actions)) $this->m_priority_actions = array();
       else $this->m_priority_actions = $actions;
     }
-    
+
     /**
      * Get extended search action.
-     * 
+     *
      * @return extended search action
      */
     function getExtendedSearchAction()
@@ -1798,10 +1798,10 @@
         return atkconfig('extended_search_action');
       else return $this->m_extended_search_action;
     }
-    
+
     /**
      * Set extended search action.
-     * 
+     *
      * @param $action extended search action
      */
     function setExtendedSearchAction($action)
@@ -2103,7 +2103,7 @@
         $secMgr->logAction($this->m_type, $this->m_action);
         $this->callHandler($this->m_action);
 
-        list($selector,$id) = explode("=", $this->m_postvars["atkselector"]);
+        list($selector,$id) = explode("=", atkarraynvl($this->m_postvars, "atkselector", "="));
         $page->register_hiddenvars(array("atknodetype"=>$this->m_module.".".$this->m_type, "atkselector"=>str_replace("'", "", $id)));
       }
       else
@@ -2617,7 +2617,7 @@
       {
         $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
       }
-      
+
       // First we check if we are about to search and set a few things
       // if we are
       if (!atkReadOptimizer())
@@ -2633,7 +2633,7 @@
 
           if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
         }
-      }      
+      }
 
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
@@ -2704,12 +2704,12 @@
           }
         }
       }
-      
+
       // there may be smart search criteria which we need to apply
       if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
       {
         $this->applySmartSearchCriteria($query, $smartSearchCriteria);
-      }     
+      }
 
       $mltool->addMlCondition($query,$this,$mode,$excludeList,$includeList);
 
@@ -2745,8 +2745,8 @@
       {
         if (preg_match('/^__executed.*$/', $key))
           unset($record[$key]);
-      }      
-      
+      }
+
       $this->preCopy($record);
       return $this->addDb($record, true, $mode);
     }
@@ -2777,7 +2777,7 @@
      * @param String $mode The action for which the selectDb is called.
      *                     This param is used to determine which attributes
      *                     to include in the query and which not to include.
-     * @param boolean $distinct Perform a distinct selection (no duplicate 
+     * @param boolean $distinct Perform a distinct selection (no duplicate
      *                          records). Defaults to true.
      * @return array Array containing the retrieved records
      */
@@ -2920,7 +2920,7 @@
             }
           }
         }
-        
+
         // there may be smart search criteria which we need to apply
         if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
         {
@@ -3031,11 +3031,11 @@
       }
       return $recordset;
     }
-    
+
     /**
      * Apply the given smart search criteria to the
      * given query object.
-     * 
+     *
      * @param atkQuery $query    The query object.
      * @param Array    $criteria The smart search criteria.
      */
@@ -3046,10 +3046,10 @@
         $path = $criterium['attrs'];
         $value = $criterium['value'];
         $mode = $criterium['mode'];
-        
+
         $attrName = array_shift($path);
         $attr = &$this->getAttribute($attrName);
-        
+
         if (is_object($attr))
         {
           $attr->smartSearchCondition($id, 0, $path, $query, $this->m_table, $value, $mode);
@@ -3745,10 +3745,10 @@
      * a certain expression (substring match). The search performed is an
      * 'or' search. If any of the fields contains the expression, the record
      * is added to the resultset.\
-     * 
+     *
      * Currently, searchDb only searches those attributes that are of type
      * string or text.
-     * 
+     *
      * @param String $epxression The keyword to search for.
      * @return array Set of records matching the keyword.
      */

@@ -107,7 +107,8 @@
 
         $columnConfig = &$node->getColumnConfig();
 
-        $recordset = $node->selectDb(@$node->m_postvars['atkfilter'],
+        $atkfilter = atkArrayNvl($node->m_postvars, 'atkfilter', "");
+        $recordset = $node->selectDb($atkfilter,
                                      $columnConfig->getOrderByStatement(),
                                      array("offset" => $node->m_postvars['atkstartat'], "limit" => $node->m_postvars['atklimit']),
                                      $node->m_listExcludes,
@@ -118,7 +119,7 @@
         if(count($recordset) == 0 && $node->m_postvars['atkstartat'] != 0)
         {
           $node->m_postvars['atkstartat'] = 0;
-          $recordset = $node->selectDb($node->m_postvars['atkfilter'],
+          $recordset = $node->selectDb($atkfilter,
                                      $node->m_postvars['atkorderby'],
                                      array("offset" => $node->m_postvars['atkstartat'], "limit" => $node->m_postvars['atklimit']),
                                      $node->m_listExcludes,
