@@ -115,6 +115,7 @@
 
         // Second scan all files in the theme path
         $this->scanThemePath($path, $data);
+        $this->scanModulePath($name, $data);
 
         $data["attributes"]["basepath"] = $path;
       }
@@ -164,46 +165,87 @@
       {
         if (in_array($name, array("images", "styles", "templates"))) // images, styles and templates are compiled the same
         {
-          $files = $traverser->getDirContents($abspath.$name);
+          $files = $this->_dirContents($abspath.$name);
           foreach($files as $file)
           {
-            if (!in_array($file, array(".", "..", "CVS")))
-            {
-              $data["files"][$name][$file] = $path.$name."/".$file;
-            }
+            $data["files"][$name][$file] = $path.$name."/".$file;
           }
         }
         else if ($name=="icons") // New ATK5 style icon theme dirs
         {
-          $subs = $traverser->getDirContents($abspath.$name);
+          $subs = $this->_dirContents($abspath.$name);
           foreach($subs as $type)
           {
-            if (!in_array($type, array(".", "..", "CVS")))
+            $files = $this->_dirContents($abspath.$name."/".$type);
+            foreach($files as $file)
             {
-              $files = $traverser->getDirContents($abspath.$name."/".$type);
-              foreach($files as $file)
-              {
-                if (!in_array($file, array(".", "..", "CVS")))
-                {
-                  $data["files"]["icons"][$type][$file] = $path.$name."/".$type."/".$file;
-                }
-              }
+              $data["files"]["icons"][$type][$file] = $path.$name."/".$type."/".$file;
             }
           }
         }
         else if (in_array($name, array("tree_icons", "recordlist_icons", "toolbar_icons"))) // Old ATK5 style icon theme dirs
         {
           $type = substr($name, 0, -6);
-          $files = $traverser->getDirContents($abspath.$name);
+          $files = $this->_dirContents($abspath.$name);
           foreach($files as $file)
           {
-            if (!in_array($file, array(".", "..", "CVS")))
+            $data["files"]["icons"][$type][$file] = $path.$name."/".$file;
+          }
+        }
+      }
+    }
+
+    function scanModulePath($theme, &$data)
+    {
+      global $g_modules;
+
+      $traverser = &atknew("atk.utils.atkdirectorytraverser");
+atkdebug("scanModulePath for theme $theme");
+      foreach ($g_modules as $module=>$modpath)
+      {
+        atkdebug("Now traversing module $module");
+        $abspath = $modpath."themes/".$theme."/";
+
+        if (is_dir($abspath))
+        {
+          $subitems = $traverser->getDirContents($abspath);
+          foreach($subitems as $name)
+          {
+            if (in_array($name, array("images", "styles", "templates"))) // images, styles and templates are compiled the same
             {
-              $data["files"]["icons"][$type][$file] = $path.$name."/".$file;
+              $files = $this->_dirContents($abspath.$name);
+              foreach($files as $file)
+              {
+                $data["modulefiles"][$module][$name][$file] = $theme."/".$name."/".$file;
+              }
+            }
+            else if ($name=="icons") // New ATK5 style icon theme dirs
+            {
+              $subs = $this->_dirContents($abspath.$name);
+              foreach($subs as $type)
+              {
+                $files = $this->_dirContents($abspath.$name."/".$type);
+                foreach($files as $file)
+                {
+                  $data["modulefiles"][$module]["icons"][$type][$file] = $theme."/".$name."/".$type."/".$file;
+                }
+              }
             }
           }
         }
       }
+    }
+
+    function _dirContents($path)
+    {
+      $result = array();
+      $traverser = &atknew("atk.utils.atkdirectorytraverser");
+      $files = $traverser->getDirContents($path);
+      foreach($files as $file)
+      {
+        if (!in_array($file, array(".", "..", "CVS"))) $result[] = $file;
+      }
+      return $result;
     }
 
   }

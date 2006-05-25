@@ -233,7 +233,7 @@
             $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                            '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
                            '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">'.
-                           '<input type="hidden" name="atksmartsearch" value="clear">'.                           
+                           '<input type="hidden" name="atksmartsearch" value="clear">'.
                            '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
           }
 
@@ -384,7 +384,7 @@
 
     	      if($icons == true)
     	      {
-    	        $icon = $theme->iconPath(strtolower($name),"recordlist");
+    	        $icon = $theme->iconPath(strtolower($name),"recordlist", $this->m_node->m_module);
       	      $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'">';
     	      }
     	      else

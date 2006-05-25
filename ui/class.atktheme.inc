@@ -97,53 +97,79 @@
       return (isset($this->m_theme["attributes"][$attribname])?$this->m_theme["attributes"][$attribname]:"");
     }
 
-    function getFileLocation($type, $name)
+    /**
+     * Retrieve the location of a file
+     * @access private
+     * @param string $module the name of the module requesting the file
+     */
+    function getFileLocation($type, $name, $module="")
     {
-      return (isset($this->m_theme["files"][$type][$name])?atkconfig("atkroot").$this->m_theme["files"][$type][$name]:"");
+      if ($module!="" & isset($this->m_theme["modulefiles"][$module][$type][$name]))
+      {
+        return moduleDir($module)."themes/".$this->m_theme["modulefiles"][$module][$type][$name];
+      }
+      if (isset($this->m_theme["files"][$type][$name]))
+      {
+        return atkconfig("atkroot").$this->m_theme["files"][$type][$name];
+      }
+      return "";
     }
 
 
     /**
      * Returns full path for themed template file
      * @param string $tpl the template name
+     * @param string $module the name of the module requesting the file
      * @return string the full path of the template file
      */
-    function tplPath($tpl)
+    function tplPath($tpl, $module="")
     {
-      return $this->getFileLocation("templates", $tpl);
+      return $this->getFileLocation("templates", $tpl, $module);
     }
 
     /**
      * Returns full path for themed image file
      * @param string $img the image name
+     * @param string $module the name of the module requesting the file
      * @return string the full path of the image file
      */
-    function imgPath($img)
+    function imgPath($img, $module="")
     {
-      return $this->getFileLocation("images", $img);
+      return $this->getFileLocation("images", $img, $module);
     }
 
     /**
      * Returns full path for themed style file
      * @param string $style the name of the CSS file
+     * @param string $module the name of the module requesting the file
      * @return string the full path of the style file
      */
-    function stylePath($style)
+    function stylePath($style, $module="")
     {
-      return $this->getFileLocation("styles", $style);
+      return $this->getFileLocation("styles", $style, $module);
     }
 
     /**
      * Returns full path for themed icon file
-     * @param string $icon      the icon name (no extension)
-     * @param string $type      the icon type (example: "recordlist")
-     * @param string $extension the icon extension, defaults to .gif
+     * @param string $icon   the icon name (no extension)
+     * @param string $type   the icon type (example: "recordlist")
+     * @param string $module the name of the module requesting the file
      * @return string the full path of the icon file
      */
-    function iconPath($icon, $type, $extension=".gif")
+    function iconPath($icon, $type, $module="")
     {
-
-      return (isset($this->m_theme["files"]["icons"][$type][$icon.$extension])?atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.$extension]:atkconfig("atkroot").$this->m_theme["files"]["icons"][$type]["default".$extension]);
+      if ($module!="" && isset($this->m_theme["modulefiles"][$module]["icons"][$type][$icon.".gif"]))
+      {
+        return moduleDir($module)."themes/".$this->m_theme["modulefiles"][$module]["icons"][$type][$icon.".gif"];
+      }
+      else if (isset($this->m_theme["files"]["icons"][$type][$icon.".gif"]))
+      {
+        return atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.".gif"];
+      }
+      else
+      {
+        return atkconfig("atkroot").$this->m_theme["files"]["icons"][$type]["default.gif"];
+      }
     }
 
     /**

@@ -154,8 +154,10 @@
      * Uses smarty to render a template.
      * @param String $tplname the name of the template to render
      * @param array $vars     the variables with which to render the template
+     * @param String $module  the name of the module requesting to render a template
+     * @return String rendered template
      */
-    function render($tplname, $vars=array())
+    function render($tplname, $vars=array(), $module="")
     {
       // First clear any existing smarty var.
       $this->m_smarty->clear_all_assign();
@@ -167,7 +169,7 @@
 
       $this->m_smarty->assign($vars);
 
-      $tplname = $this->templatePath($tplname);
+      $tplname = $this->templatePath($tplname, $module);
 
       // Smarty fetches templates relative from the template_dir setting.
       // Since that is an application directory, and themes reside in
@@ -195,15 +197,15 @@
      *
      * @param String $template  The filename (without path) of the template
      *                          for which you want to complete the path.
-     *
+     * @param String $module    The name of the module requesting to render a template
      * @return String the template path
      */
-    function templatePath($template)
+    function templatePath($template, $module="")
     {
       if (strpos($template, "/")===false)
       {
         // lookup template in theme.
-        $template = $this->m_theme->tplPath($template);
+        $template = $this->m_theme->tplPath($template, $module);
       }
 
       return $template;
@@ -216,11 +218,12 @@
      *
      * @param String $style The filename (without path) of the stylesheet for
      *                      which you want to complete the path.
+     * @param String $module  the name of the module requesting the style path
      * @return String the path of the style
      */
-    function stylePath($style)
+    function stylePath($style, $module="")
     {
-      return $this->m_theme->stylePath($style);
+      return $this->m_theme->stylePath($style, $module);
     }
 
     /**

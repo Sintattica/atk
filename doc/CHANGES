@@ -44,11 +44,14 @@ Changed in ATK 5.5.1
 + Added processFile() method to atkFileAttribute, to override in derived
   classes when processing (such as resizing) needs to be done on uploaded
   files. [Ivo]
++ Added setLabel() method to atkAttribute to override the default label. [Ivo]
 + atkNode::selectDb now performs a distinct select by default to prevent
   duplicate records from being retrieved. The $distinct parameter can be set
   to false to revert to the old behaviour. [Ivo]
 + Added ability to use overloaders for normal classes instantiated
   with atknew(). [Boy]
++ Added optional $module parameter to atkUI and atkTheme methods that retrieve 
+  path information about theme files. [Ivo]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
   type fields are searched now. [Ivo]
 * Rewrote theme engine, with the following improvements:
@@ -56,6 +59,7 @@ Changed in ATK 5.5.1
      to define the differences from the base theme.
    + Fully automatic theme structure scanning. Themedef.inc no longer needs to
      define which templates/styles/images etc. it implements.
+   + Support for module specific theme files.
    * atkTheme/atkThemeCompiler codebase is about half as big.
    * Compiled themefiles are now better human readable.
    * Bug where "highlight" attribute definitions would not be loaded is fixed.
