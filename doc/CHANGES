@@ -52,6 +52,8 @@ Changed in ATK 5.5.1
   with atknew(). [Boy]
 + Added optional $module parameter to atkUI and atkTheme methods that retrieve 
   path information about theme files. [Ivo]
+* Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
+  the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
   type fields are searched now. [Ivo]
 * Rewrote theme engine, with the following improvements:

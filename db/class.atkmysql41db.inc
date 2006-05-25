@@ -102,7 +102,11 @@
    function disconnect()
    {
      atkdebug("Disconnecting from database...");
-     if($this->m_link_id) mysqli_close($this->m_link_id);
+     if($this->m_link_id)
+     {
+       mysqli_close($this->m_link_id);
+       $this->m_link_id = 0;
+     }
    }
 
    /**
