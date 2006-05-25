@@ -212,7 +212,7 @@
         {
           if ($value=="")
           {
-            if ($_REQUEST[$var]!="")
+            if (atkarraynvl($_REQUEST, $var, "")!="")
             {
               $currentitem[$var] = $_REQUEST[$var];
             }
@@ -221,12 +221,12 @@
           {
             $currentitem[$var] = $value;
           }
-          if (!is_array($currentitem["defined_stackvars"])||!in_array($var, $currentitem["defined_stackvars"]))
+          if (!is_array(atkArrayNvl($currentitem, "defined_stackvars"))||!in_array($var, $currentitem["defined_stackvars"]))
           {
             $currentitem["defined_stackvars"][] = $var;
           }
           // We always return the current value..
-          return $currentitem[$var];
+          return atkarraynvl($currentitem, $var);
         }
       }
     }
@@ -556,8 +556,8 @@
         {
           $node = &getNode($stack[$i]["atknodetype"]);
           $module = getNodeModule($stack[$i]["atknodetype"]);
-          $nodename = getNodeType($stack[$i]["atknodetype"]);  
-                    
+          $nodename = getNodeType($stack[$i]["atknodetype"]);
+
           if (is_object($node))
           {
             $ui = &atkinstance("atk.ui.atkui");
