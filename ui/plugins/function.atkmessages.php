@@ -44,7 +44,14 @@
     {
       $msgs =  atkMessageQueue::getMessages();
       $smarty->assign("atkmessages", $msgs);
-      atk_var_dump($msgs, "Messages");
+      if (empty($msgs))
+      {
+        atkdebug("No messages in atkMessageQueue");
+      }
+      else
+      {
+        atk_var_dump($msgs, "Messages");
+      }
       return "";
     }
     return "";
