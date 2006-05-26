@@ -8,6 +8,8 @@ Changed in ATK 5.5.1
 --------------------
 + Added atkMessageQueue for user notification messages, which can be shown
   via the atkmessages plugin. [Patrick]
++ Added atkMlWrapper for turning any attribute into an internationalisation
+  enabled attribute. [Ivo]
 + Added atkCalculatorAttribute for adding columns with calculated values. [Ivo]
 + Added atkShuttleRelation. [Ivo]
 + Added 'macoslike' theme. [Marcel]
