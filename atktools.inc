@@ -707,19 +707,22 @@
     $items=split(" AND ",$set);
     for ($i=0;$i<count($items);$i++)
     {
-      if (strstr($items[$i], '=') !== false)
+      if (strstr($items[$i], '!=') !== false)
+      {
+        list($key,$value) = explode("!=",$items[$i]);
+        $result[trim($key)] = stripQuotes($value);
+      }
+      elseif (strstr($items[$i], '=') !== false)
       {
         list($key,$value) = explode("=",$items[$i]);
-        $result[$key] = stripQuotes($value);
+        $result[trim($key)] = stripQuotes($value);
       }
-
       elseif (stristr($items[$i], 'IS NULL') !== false)
       {
         list($key) = spliti('IS NULL', $items[$i]);
         $result[trim($key)] = NULL;
       }
     }
-
     return $result;
   }
 
