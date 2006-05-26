@@ -698,6 +698,7 @@
 
   /**
    * Translates a string like id='3 AND name='joe'' into Array("id"=>3,"name"=>"joe")
+   * @todo we should also support <=>, >=, >, <=, <, <>
    * @param string $set the string to decode
    * @return array the decoded array
    */
