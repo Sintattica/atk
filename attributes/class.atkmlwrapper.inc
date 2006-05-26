@@ -1,5 +1,38 @@
 <?php
+ /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage attributes
+   *
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
+  /**
+   * Wrapper for turning any attribute into a multilanguage enabled 
+   * attribute.
+   *
+   * This attribute implements the 'decorator' pattern. It takes an 
+   * attribute as constructor parameter, and turns that attribute into
+   * an internationalised attribute, compatible with the existing 
+   * atkMl*Attributes.
+   *
+   * <i>Example usages</i>
+   *
+   * $this->add(new atkMlWrapper(new atkAttribute("name")));
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage attributes
+   *
+   */
   class atkMlWrapper extends atkAttribute
   {
     var $m_childList = array();
