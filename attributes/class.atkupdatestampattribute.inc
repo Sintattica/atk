@@ -71,8 +71,14 @@
      */
     function value2db($rec)
     {
-      $stamp = date("Y-m-d H:i:s");
-      $this->m_stamp = $stamp;
+      $timestamp = mktime();
+      $stamp = date("Y-m-d H:i:s",$timestamp);
+      $this->m_stamp = array("year"=>date("Y",$timestamp),
+                 "month"=>date("m",$timestamp),
+                 "day"=>date("d",$timestamp),
+                 "hours"=>date("H",$timestamp),
+                 "minutes"=>date("i",$timestamp),
+                 "seconds"=>date("s",$timestamp));
       return $stamp;
     }
 
@@ -91,7 +97,7 @@
      */
     function display($rec, $mode="")
     {
-      $stamp = ($this->m_stamp != "" ? $this->m_stamp : parent::value2db($rec));
+      $stamp = ($this->m_stamp != "" ? parent::display(array($this->fieldName()=>$this->m_stamp)) : parent::display($rec,$mode));
       return $stamp;
     }
 
