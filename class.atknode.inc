@@ -1088,7 +1088,6 @@
         if(is_object($p_attrib))
         {
           $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
-
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
           $tabCode = $this->m_attributeTabs[$attribname][0];
@@ -1494,8 +1493,15 @@
 
             if($attribname!="")
             {
-              $p_attrib = &$this->m_attribList[$attribname];
-              if (is_object($p_attrib)&&(!$p_attrib->hasFlag(AF_NO_FILTER))) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+              if(isset($this->m_attribList[$attribname]))
+              {
+                $p_attrib = &$this->m_attribList[$attribname];
+                if (is_object($p_attrib)&&(!$p_attrib->hasFlag(AF_NO_FILTER))) $p_attrib->m_flags |= AF_READONLY|AF_HIDE_ADD;
+              }
+              else
+              {
+                atkerror("Attribute '$attribname' doens't exist in the attributelist");
+              }
             }
           }
         }
