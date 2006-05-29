@@ -141,6 +141,7 @@ Changed in ATK 5.5.1
   expecting languagefiles to be lowercase and have a lowercase var. [Boy]
 * atkUpdateAttribute now uses it's parent display function instead
   of the value2db. [Sandy]
+* decodeKeyValueSet in atktools now also supports != seperator. [Sandy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
