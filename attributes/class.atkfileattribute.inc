@@ -443,6 +443,10 @@
      */
     function display($record)
     {
+      // Get random number to use as param when displaying images
+      // while updating images was not allways visible due to caching
+      $randval = mt_rand();
+
       $filename    = $record[$this->fieldName()]["orgfilename"];
       atkdebug($this->fieldname()." - File: $filename");
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
@@ -470,7 +474,7 @@
             $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
             return '<a href="'.$this->m_url.$filename.'" alt="'.$filename.'" onclick="NewWindow(this.href,\'name\',\''.($imagehw[0]+50).'\',\''.($imagehw[1]+50).'\',\'yes\');return false;">'.$filename.'</a>';
           }
-          return '<img src="'.$this->m_url.$filename.'" alt="'.$filename.'">';
+          return '<img src="'.$this->m_url.$filename.'?b='.$randval.'" alt="'.$filename.'">';
         }
         else
         {
