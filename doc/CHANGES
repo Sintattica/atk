@@ -64,6 +64,7 @@ Changed in ATK 5.5.1
    + Fully automatic theme structure scanning. Themedef.inc no longer needs to
      define which templates/styles/images etc. it implements.
    + Support for module specific theme files.
+   + Supports themes in modules. ($config_defaulttheme = "modname.themename");
    * atkTheme/atkThemeCompiler codebase is about half as big.
    * Compiled themefiles are now better human readable.
    * Bug where "highlight" attribute definitions would not be loaded is fixed.

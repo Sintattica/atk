@@ -65,6 +65,26 @@
     }
 
     /**
+     * Convert a relative theme path to an absolute path.
+     * 
+     * If a relative path starts with 'module/something' this method converts
+     * the start of the path to the location where the module 'something' is
+     * actually installed.
+     *
+     * @static
+     * @param String $relpath The relative path to convert
+     * @return String The absolute path
+     */
+    function absPath($relpath)
+    {
+      if (preg_match("!module/(.*?)/(.*)!", $relpath, $matches))
+      {
+        return moduleDir($matches[1]).$matches[2];
+      }
+      else return atkconfig("atkroot").$relpath;
+    }
+
+    /**
      * Load the theme information into memory.
      *
      * If a cached file with theme information doesn't exist, it is compiled
@@ -110,7 +130,7 @@
       }
       if (isset($this->m_theme["files"][$type][$name]))
       {
-        return atkconfig("atkroot").$this->m_theme["files"][$type][$name];
+        return atkTheme::absPath($this->m_theme["files"][$type][$name]);
       }
       return "";
     }
@@ -164,11 +184,11 @@
       }
       else if (isset($this->m_theme["files"]["icons"][$type][$icon.".gif"]))
       {
-        return atkconfig("atkroot").$this->m_theme["files"]["icons"][$type][$icon.".gif"];
+        return atkTheme::absPath($this->m_theme["files"]["icons"][$type][$icon.".gif"]);
       }
       else
       {
-        return atkconfig("atkroot").$this->m_theme["files"]["icons"][$type]["default.gif"];
+        return atkTheme::absPath($this->m_theme["files"]["icons"][$type]["default.gif"]);
       }
     }
 
@@ -178,7 +198,7 @@
      */
     function themeDir()
     {
-      return atkconfig("atkroot").$this->getAttribute("basepath");
+      return atkTheme::absPath($this->getAttribute("basepath"));
     }
   }
 ?>
