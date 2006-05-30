@@ -209,7 +209,7 @@
       $labels = array('criterium_field', 'criterium_value', 'criterium_mode', 'add_criterium', 'remove_criterium', 'load_criteria', 'save_criteria', 'forget_criteria', 'reset_criteria');
       $result = array();
       foreach ($labels as $label)
-        $result[$label] = atktext($label, 'atk');
+        $result[$label] = atk_htmlentities(atktext($label, 'atk'));
       return $result;
     }
     
