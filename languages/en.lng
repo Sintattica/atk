@@ -6,7 +6,7 @@
   // Language: English (en)
   //
   // Translated by:
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -52,6 +52,7 @@
   "clickheretoadd_postfix" => ".",
   "clickheretoadd_prefix" => "Click here to add a new ",
   "close" => "Close",
+  "color" => "Color",
   "colorcode" => "Color code",
   "colorpicker_selectcolor" => "Select a color",
   "column" => "column",
@@ -178,6 +179,7 @@
   "new" => "New",
   "next" => "Next",
   "no" => "No",
+  "no_color_selected" => "No color selected",
   "none" => "None",
   "nov" => "Nov",
   "november" => "November",
@@ -267,17 +269,17 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
-  'criterium_field' => 'Field', 
-  'criterium_value' => 'Value', 
-  'criterium_mode' => 'Mode', 
-  'add_criterium' => 'Add', 
-  'remove_criterium' => 'Remove', 
-  'load_criteria' => 'Load saved search', 
-  'save_criteria' => 'Save search as', 
-  'forget_criteria' => 'Remove selected search', 
+  'criterium_field' => 'Field',
+  'criterium_value' => 'Value',
+  'criterium_mode' => 'Mode',
+  'add_criterium' => 'Add',
+  'remove_criterium' => 'Remove',
+  'load_criteria' => 'Load saved search',
+  'save_criteria' => 'Save search as',
+  'forget_criteria' => 'Remove selected search',
   'reset_criteria' => 'New search',
   'smartsearch' => 'Smart search',
-  'self' => 'Self'  
+  'self' => 'Self'
 );
 
 ?>
