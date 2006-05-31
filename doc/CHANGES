@@ -64,6 +64,10 @@ Changed in ATK 5.5.1
   is returned). [guido,ivo]
 + Added a '<< Back' button to the Select screen in order to give a user the
   ability to cancel the selection of a record. [Guido]
++ Added ability to set the following password restrictions: minimum length,
+  minimum number of uppercase characters, minimum number of lowercase
+  charactes, minimum number of uppercase and lowercase characters together,
+  number of numbers and the number of special characters. [Guido]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]

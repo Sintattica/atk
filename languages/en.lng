@@ -279,7 +279,14 @@
   'forget_criteria' => 'Remove selected search',
   'reset_criteria' => 'New search',
   'smartsearch' => 'Smart search',
-  'self' => 'Self'
+  'self' => 'Self',
+  "the_password_should_be_at_least_%d_characters_long" => "The password should be at least %d characters long.",
+  "the_password_should_at_least_contain_%d_%s" => "The password should at least contain %d %s.",
+  "upperchars" => "uppercase characters",
+  "lowerchars" => "lowercase characters",
+  "alphabeticchars" => "alphabetic characters",
+  "numbers" => "numbers",
+  "specialchars" => "special characters",
 );
 
 ?>

@@ -279,7 +279,14 @@
   'forget_criteria' => 'Verwijder geselecteerde zoekopdracht',
   'reset_criteria' => 'Nieuwe zoekopdracht',
   'smartsearch' => 'Slim zoeken',
-  'self' => 'Zelf'
+  'self' => 'Zelf',
+  "the_password_should_be_at_least_%d_characters_long" => "Het wachtwoord moet minimaal %d tekens lang zijn.",
+  "the_password_should_at_least_contain_%d_%s" => "Het wachtwoord moet minimaal %d %s bevatten.",
+  "upperchars" => "hoofdletters",
+  "lowerchars" => "kleine letters",
+  "alphabeticchars" => "letters",
+  "numbers" => "cijfers",
+  "specialchars" => "leestekens",
 );
 
 ?>
