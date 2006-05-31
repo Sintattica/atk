@@ -92,16 +92,19 @@
     function setRestrictions($restrictions)
     {
       $this->m_restrictions = array("minsize"=>0, "minupperchars"=>0, "minlowerchars"=>0, "minalphabeticchars"=>0, "minnumbers"=>0, "minspecialchars"=>0);
-      foreach($restrictions as $name=>$value)
+      if (is_array($restrictions))
       {
-        if (in_array(strtolower($name), array("minsize", "minupperchars", "minlowerchars", "minalphabeticchars", "minnumbers", "minspecialchars")))
+        foreach($restrictions as $name=>$value)
         {
-          $this->m_restrictions[strtolower($name)] = $value;
-          atkdebug("atkPasswordAttribute->setRestrictions(): Applying restriction: \"$name\"=\"$value\"");
-        }
-        else
-        {
-          atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", DEBUG_WARNING);
+          if (in_array(strtolower($name), array("minsize", "minupperchars", "minlowerchars", "minalphabeticchars", "minnumbers", "minspecialchars")))
+          {
+            $this->m_restrictions[strtolower($name)] = $value;
+            atkdebug("atkPasswordAttribute->setRestrictions(): Applying restriction: \"$name\"=\"$value\"");
+          }
+          else
+          {
+            atkdebug("atkPasswordAttribute->setRestrictions(): Unknown restriction: \"$name\"=\"$value\"", DEBUG_WARNING);
+          }
         }
       }
     }
@@ -392,26 +395,60 @@
       return array();
     }
 
+//    /**
+//     * Generates a random password which isn't to bad to remember.
+//     * @param $times number of syllables
+//     * @return generated password string
+//     * @todo makePassword does not respect the restrictions.
+//     */
+//    function makePassword($times = 2)
+//    {
+//      $vowels = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
+//      $consonants = array("a","e","y","u");
+//      $out = "";
+//      for ($i = 0; $i < $times; $i++)
+//      {
+//        srand((double)microtime()*1000000);
+//        mt_srand((double)microtime()*1000000);
+//        $out .= $vowels[rand()%count($vowels)];
+//        $out .= $consonants[mt_rand()%count($consonants)];
+//        $out .= $vowels[mt_rand()%count($vowels)];
+//      }
+//      return $out;
+//    }
+    function getRandomChars($chars, $count)
+    {
+      mt_srand((double)microtime()*1000000);
+      $randomchars = "";
+      for($i=0; $i<$count; $i++)
+      {
+        $randomchars .= substr($chars, mt_rand(0, strlen($chars)-1), 1);
+      }
+      return $randomchars;
+    }
+
     /**
      * Generates a random password which isn't to bad to remember.
-     * @param $times number of syllables
+     * @param $times length of password divided by 3 (to maintain backwards compatibility)
      * @return generated password string
-     * @todo makePassword does not respect the restrictions.
      */
     function makePassword($times = 2)
     {
-      $vowels = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
-      $consonants = array("a","e","y","u");
-      $out = "";
-      for ($i = 0; $i < $times; $i++)
-      {
-        srand((double)microtime()*1000000);
-        mt_srand((double)microtime()*1000000);
-        $out .= $vowels[rand()%count($vowels)];
-        $out .= $consonants[mt_rand()%count($consonants)];
-        $out .= $vowels[mt_rand()%count($vowels)];
-      }
-      return $out;
+      // Use short notation
+      $r = $this->m_restrictions;
+
+      // Compose a string that meets the minimum requirements
+      $tmp = $this->getRandomChars(LOWERCHARS, $r["minlowerchars"]);
+      $tmp.= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
+      $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp)) : 0;
+      $tmp.= $this->getRandomChars(LOWERCHARS.UPPERCHARS, $alphabeticchars);
+      $tmp.= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
+      $tmp.= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
+      $remainingchars = max($r["minsize"], $times * 3) > strlen($tmp) ? max($r["minsize"], $times * 3) : 0;
+      $tmp.= $this->getRandomChars(LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS, $remainingchars);
+
+      // Shuffle the password's characters and return it
+      return str_shuffle($tmp);
     }
 
     /**
@@ -447,7 +484,7 @@
 
       // new is set from an update using the password attrib edit() function
 
-      if ($value["new"] != "" || $value["hash"] != "")
+      if (atkArrayNvl($value, "new", "") != "" || atkArrayNvl($value, "hash", "") != "")
       {
       	return true;
       }

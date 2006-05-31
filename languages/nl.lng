@@ -35,7 +35,7 @@
   "august" => "augustus",
   "auth_account_locked" => "Dit account is vergrendeld. Probeer indien mogelijk een ander account, of neem contact op met uw systeembeheerder.",
   "auth_max_loginattempts_exceeded" => "Teveel pogingen. Aanmelden is geblokkeerd. Neem contact op met uw systeembeheerder.",
-  "auth_mismatch" => "Gebruikernaam en/of wachtwoord zijn niet juist. Probeert u het opnieuw.",
+  "auth_mismatch" => "Gebruikersnaam en/of wachtwoord zijn niet juist. Probeert u het opnieuw.",
   "auth_no_server" => "Geen server opgegeven. Geen authenticatie mogelijk (raadpleeg uw systeembeheerder).",
   "auth_unable_to_connect" => "Verbinden met server voor authenticatie mislukt (raadpleeg uw systeembeheerder).",
   "back" => "Terug",
@@ -287,6 +287,10 @@
   "alphabeticchars" => "letters",
   "numbers" => "cijfers",
   "specialchars" => "leestekens",
+  "password_forgotten" => "Wachtwoord vergeten",
+  "auth_passwordmail_sent" => "Een nieuw wachtwoord is verzonden naar uw email adres.",
+  "auth_passwordmail_subjectnew_password"=>"Nieuw wachtwoord",
+  "auth_passwordmail_explanation"=>"U ontvangt deze email omdat U de Wachtwoord vergeten functie gebruikt heeft. U kunt vanaf nu inloggen met de volgende gegevens:",
 );
 
 ?>

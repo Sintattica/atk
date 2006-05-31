@@ -287,6 +287,10 @@
   "alphabeticchars" => "alphabetic characters",
   "numbers" => "numbers",
   "specialchars" => "special characters",
+  "password_forgotten" => "Password forgotten",
+  "auth_passwordmail_sent" => "A new password was sent to your email address.",
+  "auth_passwordmail_subjectnew_password"=>"New password",
+  "auth_passwordmail_explanation"=>"You receive this e-mail because you used the password forgotten function. Below are your new login data:",
 );
 
 ?>

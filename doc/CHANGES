@@ -68,6 +68,12 @@ Changed in ATK 5.5.1
   minimum number of uppercase characters, minimum number of lowercase
   charactes, minimum number of uppercase and lowercase characters together,
   number of numbers and the number of special characters. [Guido]
++ Updated atkPasswordAttributes makePassword function to respect the
+  restrictions. [Guido]
++ Added Password forgotten option to allow users to regain access by asking
+  the atk application to mail back a new password. To enable this feature,
+  $config_auth_usernode, config_auth_emailfield and
+  $config_auth_enablepasswordmailer should be set. [Guido]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]

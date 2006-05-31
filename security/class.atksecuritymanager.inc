@@ -26,6 +26,7 @@
   define ("AUTH_SUCCESS", 1);
   define ("AUTH_LOCKED", 2);
   define ("AUTH_MISMATCH", 3);
+  define ("AUTH_PASSWORDSENT", 4);
   define ("AUTH_ERROR",-1);
 
   /**
@@ -100,6 +101,50 @@
 
       /* security scheme */
       $this->m_scheme = $securityscheme;
+    }
+
+    /**
+     * Regenerates a user password and sends it to his e-mail address
+     *
+     * @param string $username User for which the password should be regenerated
+     */
+    function mailPassword($username)
+    {
+      // Query the database for user records having the given username and return if not found
+      $usernode = &atkGetNode(atkconfig("auth_usernode"));
+      $selector = sprintf("%s.%s = '%s'", atkconfig("auth_usertable"), atkconfig("auth_userfield"), $username);
+      $userrecords = $usernode->selectDb($selector, "", "", "", "", "edit");
+      if (count($userrecords) != 1)
+      {
+        atkdebug("User '$username' not found.");
+        return false;
+      }
+
+      // Retrieve the email address
+      $email = $userrecords[0][atkconfig("auth_emailfield")];
+      if (empty($email))
+      {
+        atkdebug("Email address for '$username' not available.");
+        return false;
+      }
+
+      // Regenerate the password
+      $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
+      $newpassword = $passwordattr->makePassword();
+
+      // Update the record in the database
+      $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
+      $usernode->updateDb($userrecords[0]);
+
+      // Send an email containing the new password to user
+      $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
+      $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
+      $body.= atktext(atkconfig("auth_userfield")) . ": " . $userrecords[0][atkconfig("auth_userfield")] . "\n";
+      $body.= atktext(atkconfig("auth_passwordfield")) . ": " . $newpassword . "\n";
+      mail($email, $subject, $body);
+
+      // Return true
+      return true;
     }
 
     /**
@@ -188,8 +233,15 @@
 
         $authenticated = false;
 
+        // Email password if password forgotten and passwordmailer enabled
+        if ((atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
+        {
+          $this->mailPassword($auth_user);
+          $response = AUTH_PASSWORDSENT;
+        }
+
         // check superuser
-        if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
+        else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
         {
           $this->m_user = array("name"=>"administrator","level"=>-1, "access_level"=>9999999);
           // for convenience, we also store the user as a global variable.
@@ -402,8 +454,7 @@
       $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
 
       $tplvars = Array();
-      $output = "";
-      $output.='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
+      $output ='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));
       $output.='<br><br><table border=0 cellspacing=2 cellpadding=0 align=center>';
 
@@ -438,12 +489,23 @@
           $output.='<tr><td colspan=3 class=error>'.atktext('auth_mismatch').'<br><br></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_mismatch');
         }
+        else if ($lastresponse == AUTH_PASSWORDSENT)
+        {
+          $output.='<tr><td colspan="3">'.atktext('auth_passwordmail_sent').'<br /><br /></td></tr>';
+          $tplvars["auth_mismatch"] = atktext('auth_passwordmail_sent');
+        }
 
         // generate the form
         $output.="<tr><td valign=top>".atktext('username')."</td><td>:</td><td>".$userField."</td></tr>";
         $output.="<tr><td colspan=3 height=6></td></tr>";
         $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
-        $output.="<tr><td colspan=3 align=center height=50 valign=middle><input class=button type=submit value=".atktext('login')."></td></tr>";
+        $output.='<tr><td colspan="3" align="center" height="50" valign="middle">';
+        $output.='<input name="login" class="button" type="submit" value="'.atktext('login').'">';
+        if (atkconfig("auth_enablepasswordmailer", false))
+        {
+          $output.='&nbsp;&nbsp;<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
+        }
+        $output.='</td></tr>';
 
       }
 
