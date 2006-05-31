@@ -196,19 +196,19 @@
       {
         $myrec = $rec[$this->fieldName()];
         if (is_array($myrec))
-  	    {
-  	      $result = array();
-  	      if ($this->createDestination())
-  	      {
-  	        foreach (array_keys($this->m_destInstance->m_attribList) as $attrName)
-  	        {
-  	          $attr = &$this->m_destInstance->m_attribList[$attrName];
-  	          $result[$attrName] = $attr->db2value($myrec);
-  	        }
-  	      }
+        {
+          $result = array();
+          if ($this->createDestination())
+          {
+            foreach (array_keys($this->m_destInstance->m_attribList) as $attrName)
+            {
+              $attr = &$this->m_destInstance->m_attribList[$attrName];
+              $result[$attrName] = $attr->db2value($myrec);
+            }
+          }
 
           return $result;
-  	    }
+        }
         else
         {
           // if the record is not an array, probably only the value of the primary key was loaded.
@@ -228,11 +228,11 @@
     {
       if ($this->createDestination())
       {
-        if (count($record[$this->fieldName()])==1)
+        if (count($record[$this->fieldName()])==count($this->m_refKey))
         {
-          // The record consist of only one field, which is the primary key.
-          // This means we have to load the rest of the data, in order to
-          // load a descriptor.
+          // The record only contains the same amount of fields as the number
+          // of referential (primary) keys. This means we have to load the
+          // rest of the data, in order to load a descriptor.
           atkdebug("Delayed loading of descriptor fields for ".$this->m_name);
           $recs = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $this->m_destInstance->descriptorFields());
           $title = $this->m_destInstance->descriptor($recs[0]);
@@ -330,7 +330,7 @@
             }
             // Newly added check
             $newlyadded = "";
-            if (isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
+            if (is_object($this->m_ownerInstance) && isset($this->m_ownerInstance->m_postvars[$id."_ret"]))
             {
               $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
             }
@@ -365,7 +365,7 @@
             $recset = $this->m_destInstance->selectDb($newlyadded,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
             $destrecord = $recset[0];
             $record[$this->fieldName()] = $destrecord; // put destrecord inside original record.
-		      }
+          }
           elseif (is_array($record[$this->fieldName()]) && count($record[$this->fieldName()]) == count($this->m_destInstance->m_primaryKey))
           // old record present, but probably only primary key fields are loaded (this happens after pressing 'save' on a record)
           {
@@ -538,11 +538,11 @@
         return $result;
       }
     }
-    
+
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
-     * 
+     *
      * @param Integer  $id         The unique smart search criterium identifier.
      * @param Integer  $nr         The element number in the path.
      * @param Array    $path       The remaining attribute path.
@@ -556,9 +556,9 @@
       if (count($path) > 0)
       {
         $this->createDestination();
-        
+
         $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
-        
+
         $query->addJoin(
           $this->m_destInstance->m_table, $destAlias,
           $this->getJoinCondition($query, $ownerAlias, $destAlias),
@@ -567,23 +567,23 @@
 
         $attrName = array_shift($path);
         $attr = &$this->m_destInstance->getAttribute($attrName);
-        
+
         if (is_object($attr))
         {
           $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
         }
       }
-      else 
+      else
       {
         $this->searchCondition($query, $ownerAlias, $value, $mode);
       }
-    }       
+    }
 
     /**
      * Creates an search condition for a given search value
-     * @param  atkQuery $query 			query to hook ourselves in to
-     * @param  string   $table 			the table name
-     * @param  string   $value 			the search value
+     * @param  atkQuery $query      query to hook ourselves in to
+     * @param  string   $table      the table name
+     * @param  string   $value      the search value
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      * @return string          a piece of the SQL where clause
      */
@@ -595,116 +595,116 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	if (!$this->hasFlag(AF_LARGE) || !$this->createDestination())
-    	{
-    		// We only support 'exact' matches.
-    		// But you can select more than one value, which we search using the IN() statement,
-    		// which should work in any ansi compatible database.
-    		if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
-    		{
-    			if (count($value)==1) // exactly one value
-    			{
-    			  if ($value[0]!="")
-    			  {
-    			    return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
-    			  }
-    			}
-    			else // search for more values using IN()
-    			{
-    			  return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
-    			}
-    		}
-    		else
-    		{
-    			$cond= $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
-    			atkdebug($cond, "condition");
-    			return $cond;
-    		}
-    	}
-    	else // in theory, this never happens.
-    	{
-    		$descfields = array();
-    		$descfields = $this->m_destInstance->descriptorFields();
-    		//$this->addToQuery($query);
-    		return $this->_getSearchPerAttrib($descfields, $query, $value, $searchmode);
-    	}
-    	return;
+      if (!$this->hasFlag(AF_LARGE) || !$this->createDestination())
+      {
+        // We only support 'exact' matches.
+        // But you can select more than one value, which we search using the IN() statement,
+        // which should work in any ansi compatible database.
+        if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
+        {
+          if (count($value)==1) // exactly one value
+          {
+            if ($value[0]!="")
+            {
+              return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
+            }
+          }
+          else // search for more values using IN()
+          {
+            return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+          }
+        }
+        else
+        {
+          $cond= $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+          atkdebug($cond, "condition");
+          return $cond;
+        }
+      }
+      else // in theory, this never happens.
+      {
+        $descfields = array();
+        $descfields = $this->m_destInstance->descriptorFields();
+        //$this->addToQuery($query);
+        return $this->_getSearchPerAttrib($descfields, $query, $value, $searchmode);
+      }
+      return;
     }
 
     /**
      * Gets the searchconditions for attribute in the destination that we are searching on
      * @param  Array    $attribs    the names of the attributes we are searching on
-     * @param  atkQuery $query 			query to hook ourselves in to
-     * @param  string   $value 			the search value
+     * @param  atkQuery $query      query to hook ourselves in to
+     * @param  string   $value      the search value
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      */
     function _getSearchPerAttrib($attribs, &$query, $value, $searchmode)
     {
-    	$searchConditions = array();
-    	$prevfield = "";
+      $searchConditions = array();
+      $prevfield = "";
 
-    	foreach($attribs as $field)
-    	{
-    		if ($field !== $prevfield)
-    		{
-    			$p_attrib = &$this->m_destInstance->getAttribute($field);
-    			if (is_object($p_attrib))
-    			{
-    				if ($query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()])
-    				{
-    					$itsTable = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
-    				}
-    				else if ($p_attrib->m_destInstance)
-    				{
-    					$itsTable = $p_attrib->m_destInstance->m_table;
-    				}
-    				else
-    				{
-    					$itsTable = $p_attrib->m_ownerInstance->m_table;
-    				}
+      foreach($attribs as $field)
+      {
+        if ($field !== $prevfield)
+        {
+          $p_attrib = &$this->m_destInstance->getAttribute($field);
+          if (is_object($p_attrib))
+          {
+            if ($query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()])
+            {
+              $itsTable = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
+            }
+            else if ($p_attrib->m_destInstance)
+            {
+              $itsTable = $p_attrib->m_destInstance->m_table;
+            }
+            else
+            {
+              $itsTable = $p_attrib->m_ownerInstance->m_table;
+            }
 
-    				$searchcondition = $this->_getAttribSearchCondition($p_attrib, $query, $itsTable, $value, $searchmode);
-    				if ($searchcondition) $searchConditions[] = $searchcondition;
-    			}
-    			$prevfield = $field;
-    		}
-    	}
+            $searchcondition = $this->_getAttribSearchCondition($p_attrib, $query, $itsTable, $value, $searchmode);
+            if ($searchcondition) $searchConditions[] = $searchcondition;
+          }
+          $prevfield = $field;
+        }
+      }
 
-    	if (count($searchConditions))
-    	{
-    		return "(".implode(" OR ",$searchConditions).")";
-    	}
+      if (count($searchConditions))
+      {
+        return "(".implode(" OR ",$searchConditions).")";
+      }
     }
 
     /**
      * Gets the searchcondition of an attribute or adds it if it can't return it's searchcondition
      * also takes care the attribute get's it's own searchmode if it is set
-     * @param  Object   $p_attrib		An instance of the attribute that we want to the the searchcondition of
-     * @param  atkQuery $query 			query to hook ourselves in to
-     * @param  string   $table 			the table name where the attribute belongs to
-     * @param  string   $value 			the search value
+     * @param  Object   $p_attrib   An instance of the attribute that we want to the the searchcondition of
+     * @param  atkQuery $query      query to hook ourselves in to
+     * @param  string   $table      the table name where the attribute belongs to
+     * @param  string   $value      the search value
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      */
     function _getAttribSearchCondition($p_attrib, &$query, $table, $value, $searchmode)
     {
-    	// checking for the getSearchCondition
-    	// for backwards compatibility
-    	if (method_exists($p_attrib,"getSearchCondition"))
-    	{
-    		$attribsearchmode = $searchmode;
-    		if (is_array($searchmode))
-    		{
-    			$attribsearchmode = $attribsearchmode[$p_attrib->m_name];
-    		}
-    		$searchcondition = $p_attrib->getSearchCondition($query,$table,$value,$searchmode);
-    	}
-    	else
-    	{
-    		// if the attrib can't return it's searchcondition, we'll just add it to the query
-    		// and hope for the best
-    		$p_attrib->searchCondition($query,$table,$value,$searchmode);
-    	}
-    	return $searchcondition;
+      // checking for the getSearchCondition
+      // for backwards compatibility
+      if (method_exists($p_attrib,"getSearchCondition"))
+      {
+        $attribsearchmode = $searchmode;
+        if (is_array($searchmode))
+        {
+          $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
+        }
+        $searchcondition = $p_attrib->getSearchCondition($query,$table,$value,$searchmode);
+      }
+      else
+      {
+        // if the attrib can't return it's searchcondition, we'll just add it to the query
+        // and hope for the best
+        $p_attrib->searchCondition($query,$table,$value,$searchmode);
+      }
+      return $searchcondition;
     }
 
     /**
@@ -783,7 +783,7 @@
           }
           return $keys;
         }
-        else 
+        else
           return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldType();
       }
       return "";
@@ -805,7 +805,7 @@
           }
           return $keys;
         }
-        else 
+        else
           return $this->m_destInstance->m_attribList[$this->m_destInstance->primaryKeyField()]->dbFieldSize();
       }
       return 0;
