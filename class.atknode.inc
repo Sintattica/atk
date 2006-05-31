@@ -1123,7 +1123,7 @@
         $secMgr = &atkGetSecurityManager();
 
         // load the $g_nodes array to find out what tabs are required
-        if (!is_array($g_nodes[$this->m_module][$this->m_type]))
+        if (!isset($g_nodes[$this->m_module][$this->m_type]))
         {
           include_once(atkconfig("atkroot") . "atk/atknodetools.inc");
           $module = &getModule($this->m_module);
@@ -1136,11 +1136,11 @@
           // authorisation is required
           if (!$secMgr->allowed($this->m_module.".".$this->m_type,"tab_" . $tablist[$i]))
           {
-            atkdebug("Removing TAB ". $tablist[$i] . " because access to this tab was denied</b>");
+            atkdebug("Removing TAB ". $tablist[$i] . " because access to this tab was denied");
             unset($tablist[$i]);
           }
         }
-        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation",DEBUG_WARNING);
+        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation");
       }
 
       if (is_array($tablist))
@@ -1322,7 +1322,6 @@
     {
       global $g_sessionManager;
       $ui = &$this->getUi();
-
       $res = "";
 
       if ($record!="")
@@ -3260,10 +3259,10 @@
       if($exectrigger)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
-  	    {
-  	      $return = $this->executeTrigger("preDelete",$recordset[$i]);
-  	      if (!$return) return false;
-  	    }
+        {
+          $return = $this->executeTrigger("preDelete",$recordset[$i]);
+          if (!$return) return false;
+        }
       }
 
       if (count($this->m_cascadingAttribs)>0)
