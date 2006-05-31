@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,10 +15,10 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * The atkNumberAttribute can be used for numeric values.
-   *   
+   *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
@@ -26,24 +26,24 @@
    */
   class atkNumberAttribute extends atkAttribute
   {
-    var $m_decimals=0; // The number of decimals of the number. 
+    var $m_decimals=0; // The number of decimals of the number.
     var $m_minvalue=false; // The minimum value of the number.
     var $m_maxvalue=false; // The maximum value of the number.
-  
+
     /**
      * Constructor
      * @param $name  Name of the attribute
      * @param $flags Flags for this attribute
      * @param $size  The size(s) for this attribute (default 10)
-     * @param $decimals The number of decimals to use. 
-     *               
+     * @param $decimals The number of decimals to use.
+     *
      */
     function atkNumberAttribute($name, $flags=0, $size=10, $decimals=0)
     {
       $this->atkAttribute($name,$flags|AF_NO_QUOTES, $size); // base class constructor
       $this->m_decimals = $decimals;
     }
-    
+
     /**
      * Set the minimum and maximum value of the number. Violations of this range
      * @param $minvalue Minimum value of the number.
@@ -54,40 +54,40 @@
       $this->m_minvalue = $minvalue;
       $this->m_maxvalue = $maxvalue;
     }
-    
+
     function display($record, $mode="")
-    {      
+    {
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]!=="")
-      {        
+      {
         return atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
       }
       return "";
     }
-    
+
     /**
-     * Replace decimal separator (from the language file "decimal_separator") 
-     * with the standard separator ('.') so, for instance,  99,95 would become 
+     * Replace decimal separator (from the language file "decimal_separator")
+     * with the standard separator ('.') so, for instance,  99,95 would become
      * 99.95 when language is set to 'nl'.
      * @static
      * @param String $number The number that needs to be converted
-     * @return String The converted number 
+     * @return String The converted number
      */
     function standardiseSeparator($number)
-    {      
-      return str_replace(atktext("decimal_separator"),".",$number);     
+    {
+      return str_replace(atktext("decimal_separator"),".",$number);
     }
-    
+
     /**
-     * Replace standard decimal separator ('.') with the one from the language 
+     * Replace standard decimal separator ('.') with the one from the language
      * file so, for instance, 99.95 would be converted to 99,95 when language
      * is set to 'nl'.
      * @static
      * @param String $number The number that needs to be converted
-     * @return String The converted number 
+     * @return String The converted number
      */
     function translateSeparator($number)
     {
-      return str_replace(".", atktext("decimal_separator"), $number);      
+      return str_replace(".", atktext("decimal_separator"), $number);
     }
 
     /**
@@ -96,26 +96,26 @@
      *                 Errors are saved in this record
      * @param $mode can be either "add" or "update"
      * @return $record
-     */    
+     */
     function validate(&$record, $mode)
-    {            
-      if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="") 
+    {
+      if (!is_numeric($record[$this->fieldName()])&&$record[$this->fieldName()]!="")
         triggerError($record, $this->fieldName(), 'error_notnumeric');
       if (($this->m_maxvalue !== false) && ($record[$this->fieldName()] > $this->m_maxvalue))
         triggerError($record, $this->fieldName(), 'above_maximum_value');
       if (($this->m_minvalue !== false) && ($record[$this->fieldName()] < $this->m_minvalue))
         triggerError($record, $this->fieldName(), 'below_minimum_value');
     }
-    
+
     /**
-     * Convert values from an HTML form posting to an internal value for 
-     * this attribute. 
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
      *
      * If the user entered a number in his native language, he may have used
      * a different decimal separator, which we first convert to the '.'
      * standard separator (ATK uses the regular dot notation internally)
      *
-     * @param array $postvars The array with html posted values ($_POST, for 
+     * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
@@ -123,11 +123,11 @@
     {
       if (is_array($postvars))
       {
-        return atkNumberAttribute::standardiseSeparator($postvars[$this->fieldName()]);
-      } 
+        return atkNumberAttribute::standardiseSeparator(atkArrayNvl($postvars, $this->fieldName(), ""));
+      }
     }
-    
-    
+
+
     function value2db($rec)
     {
       if($rec[$this->fieldName()]==""&&!$this->hasFlag(AF_OBLIGATORY))
@@ -148,12 +148,12 @@
       //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
       return array("between", "exact","greaterthan","greaterthanequal","lessthan","lessthanequal");
     }
-  
+
     function dbFieldType()
     {
       return ($this->m_decimals>0?"decimal":"number");
     }
-    
+
     function dbFieldSize()
     {
       return $this->m_maxsize.($this->m_decimals>0?",".$this->m_decimals:"");
@@ -168,19 +168,19 @@
      * @return Piece of htmlcode
      */
     function edit($record="", $fieldprefix="")
-    {      
+    {
       $maxsize = $this->m_maxsize;
       if ($this->m_decimals>0)
       {
         $maxsize += ($this->m_decimals+1); // make room for the number of decimals
       }
-      
+
       $value = "";
       if (isset($record[$this->fieldName()]) && strlen($record[$this->fieldName()]) > 0)
         $value = atkNumberAttribute::translateSeparator(sprintf("%0.".$this->m_decimals."f", $record[$this->fieldName()]));
-      
-      $id = $fieldprefix.$this->fieldName();      
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+
+      $id = $fieldprefix.$this->fieldName();
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
       $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.
                 '" value="'.$value.'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
@@ -188,7 +188,7 @@
 
       return $result;
     }
-    
+
    /**
      * Returns a piece of html code that can be used to search for an
      * attribute's value.
@@ -199,8 +199,8 @@
     {
       $value = "";
       if (isset($record[$this->fieldName()])) $value = $record[$this->fieldName()];
-      
-      if (!$extended) 
+
+      if (!$extended)
       {
         if (is_array($value))
         {
@@ -219,20 +219,20 @@
       else
       {
         $id = "atksearch".$fieldprefix."[".$this->formName()."][from]";
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-                  
+
         $id = "atksearch".$fieldprefix."[".$this->formName()."][to]";
-        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);  
+        $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result.= " (".text("until").' <input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                   ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
-                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>)';                  
+                  ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>)';
         return $result;
       }
     }
-    
+
    /**
      * Creates an search condition for a given search value
      * @param $table the table name
@@ -240,23 +240,23 @@
      * @return a piece of the SQL where clause
      */
     function searchCondition(&$query, $table, $value, $searchmode)
-    {  
+    {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $searchcondition = "";
-    	if (!is_array($value))
-      {        
+      if (!is_array($value))
+      {
         $slash = strpos($value, "/"); // Support for 'from/to' searches.
         $str = $value;
         if ($slash!==false)
-        {                    
+        {
           $value = array();
           $value["from"]=substr($str, 0, $slash);
-          $value["to"]=substr($str,$slash+1);         
-          $searchmode="between";          
+          $value["to"]=substr($str,$slash+1);
+          $searchmode="between";
         }
         else
         {
@@ -264,13 +264,13 @@
           $value["from"] = $str; // quicksearch doesn't use an array.
         }
       }
-      if ($searchmode!="between") 
-      {        
+      if ($searchmode!="between")
+      {
         // Use default handler, and use only the first field.
         return parent::getSearchCondition($query, $table, $value["from"], $searchmode);
       }
       else
-      {       
+      {
         $fieldname = $table.".".$this->fieldName();
         if ($value["from"]!="" && $value["to"]!="")
         {
@@ -279,7 +279,7 @@
             // User entered fields in wrong order. Let's fix that.
             $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
           }
-          $searchcondition = $query->betweenCondition($fieldname,escapeSQL($value["from"]), escapeSQL($value["to"])); 
+          $searchcondition = $query->betweenCondition($fieldname,escapeSQL($value["from"]), escapeSQL($value["to"]));
         }
         else if ($value["from"]!="" && $value["to"]=="")
         {

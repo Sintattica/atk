@@ -185,7 +185,7 @@
           $sel = "";
         }
         if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
-        else $option = atktext($this->m_options[$i],$this->m_ownerInstance->m_module, $this->m_owner);
+        else $option = atktext($this->m_options[$i],is_object($this->m_ownerInstance) ? $this->m_ownerInstance->m_module : "", $this->m_owner);
 
         $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option.'</option>';
       }
@@ -246,7 +246,7 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	// We only support 'exact' matches.
+      // We only support 'exact' matches.
       // But you can select more than one value, which we search using the IN() statement,
       // which should work in any ansi compatible database.
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.

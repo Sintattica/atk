@@ -93,7 +93,7 @@
 
     function db2value($rec)
     {
-      if($rec[$this->fieldName()]!="")
+      if (isset($rec[$this->fieldName()]))
         return explode("|",$rec[$this->fieldName()]);
       else return array();
     }
@@ -164,7 +164,7 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	// Multiselect attribute has only 1 searchmode, and that is substring.
+      // Multiselect attribute has only 1 searchmode, and that is substring.
 
       if(is_array($value) && $value[0]!="" && count($value)>0)
       {
