@@ -4,7 +4,7 @@ BODY
   color: #000000;
   font-size: 10px;
   font-family: Verdana,Helvetica,Arial,serif;
-  font-weight: normal;  
+  font-weight: normal;
 }
 
 A:link,
@@ -20,7 +20,7 @@ A:hover
 {
   color: #660000;
   font-size: 10px;
-}  
+}
 
 .stacktrace,
 A.stacktrace:link,
@@ -43,7 +43,7 @@ A.stacktrace:visited
 .fieldlabel
 {
   font-family: verdana, helvetica, arial, serif;
-  font-size: 12px;  
+  font-size: 12px;
   color: #000000;
   text-align: left;
 }
@@ -51,7 +51,7 @@ A.stacktrace:visited
 .field
 {
   font-family: verdana, helvetica, arial, serif;
-  font-size: 12px;  
+  font-size: 12px;
   color: #000000;
   text-align: left;
 }
@@ -66,17 +66,7 @@ TEXTAREA
   background-color: #EFF6FF;
   color: #000000;
   font-family: verdana, helvetica, arial, serif;
-  font-size: 11px;  
-}
-
-INPUT.btn,
-INPUT.btn_save,
-INPUT.btn_cancel,
-INPUT.btn_saveandclose,
-INPUT.btn_saveandnext
-{
-  background-color: #CCCCCC;
-  height: 25px;
+  font-size: 11px;
 }
 
 INPUT.btn_saveandclose
@@ -85,10 +75,10 @@ INPUT.btn_saveandclose
 }
 
 .errorlabel
-{  
+{
   color: #FF0000;
   font-family: verdana, helvetica, arial, serif;
-  font-size: 12px;     
+  font-size: 12px;
   text-align: left;
 }
 
@@ -96,6 +86,6 @@ INPUT.btn_saveandclose
 {
   color: #FF0000;
   font-family: verdana, helvetica, arial, serif;
-  font-size: 12px;     
+  font-size: 12px;
   text-align: left;
 }
