@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,10 +14,10 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
-   * The atkParserAttribute can be used to create links or texts that 
-   * contain values, by supplying a template as parameter.   
+   * The atkParserAttribute can be used to create links or texts that
+   * contain values, by supplying a template as parameter.
    *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
@@ -47,7 +47,7 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      return stringparse($this->m_text,$record);
+      return $this->display($record);
     }
 
     /**
@@ -66,7 +66,9 @@
      */
     function display($record)
     {
-      return stringparse($this->m_text,$record);
+      atkimport("atk.utils.atkstringparser");
+      $stringparser = new atkStringParser($this->m_text);
+      return $stringparser->parse($record);
     }
 
     /**
@@ -83,7 +85,7 @@
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec, $level, $mode)
     {
     }
-    
+
     /**
      * Dummy imp
      */
