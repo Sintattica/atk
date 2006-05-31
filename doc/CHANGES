@@ -191,6 +191,7 @@ Changed in ATK 5.5.1
   [Guido]
 * Replaced usage of deprecated StringParse function by atkStringParser
   usage. [Guido]
+* Replaced numerous deprecated text() calls with atktext(). [Guido]
 
 Changes in ATK 5.5
 ------------------

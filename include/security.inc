@@ -31,7 +31,7 @@
 
     if (!$securityMgr->authenticate())
     {
-      echo '<b>'.text("login_failed").'</b>';
+      echo '<b>'.atktext("login_failed", "atk").'</b>';
       echo '<br><br>'.$securityMgr->m_fatalError;
       exit;
     }
