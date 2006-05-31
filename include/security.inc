@@ -48,7 +48,7 @@
     $user = "";
     $session_auth = $g_sessionManager->getValue("authentication", "globals");
     if (atkconfig("authentication_session") &&
-        $session["login"]==1 &&
+        atkArrayNvl($session, "login", 0)==1 &&
         $session_auth["authenticated"]==1 &&
         !empty($session_auth["user"]))
     {
@@ -70,7 +70,7 @@
                                // In ATK5 we must create a clean singleton with
                                // a static instance.
     if (!is_object($g_securityManager))
-    {      
+    {
       atkimport("atk.security.atksecuritymanager");
       // The one and only security manager.
       $authentication = atkconfig("authentication", "none");
@@ -80,10 +80,10 @@
     }
     return $g_securityManager;
   }
-  
+
   /**
    * Replaced the securitymanager at runtime with a different instance.
-   * 
+   *
    * Useful for testing, for example replacing the security manager with a
    * mock version.
    * @param atkSecurityManager Securitymanager instance

@@ -174,7 +174,7 @@
           // Cookiename is based on the app_title, for there may be more than 1 atk app running,
           // each with their own cookie..
           $cookiename = $this->_getAuthCookieName();
-          list($enc, $user, $passwd) = split("\.",base64_decode($_COOKIE[$cookiename]));
+          list($enc, $user, $passwd) = explode(".",base64_decode(atkArrayNvl($_COOKIE,$cookiename,"Li4=")));
 
           // for security reasons administrator will never be cookied..
           if ($auth_user=="" && $user!="" && $user!="administrator")
