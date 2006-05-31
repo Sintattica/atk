@@ -1,16 +1,16 @@
-{$formstart}
+{if isset($formstart)}{$formstart}{/if}
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
-  {if $header!=""}
+  {if (isset($header) && !empty($header))}
   <tr>
     <td valign="top" align="left">{$header}<br><br></td>
   </tr>
   {/if}
-  {if $index!=""}
+  {if (isset($index) && !empty($index))}
   <tr>
     <td valign="top" align="left">{$index}<br><br></td>
   </tr>
   {/if}
-  {if $navbar!=""}
+  {if (isset($navbar) && !empty($navbar))}
   <tr>
     <td valign="top" align="left">{$navbar}<br></td>
   </tr>
@@ -18,15 +18,15 @@
   <tr>
     <td valign="top" align="left">{$list}<br></td>
   </tr>
-  {if $navbar!=""}
+  {if (isset($navbar) && !empty($navbar))}
   <tr>
     <td valign="top" align="left">{$navbar}<br></td>
   </tr>
   {/if}
-  {if $footer!=""}
+  {if (isset($footer) && !empty($footer))}
   <tr>
-    <td valign="top" align="left">{$footer}<br><br></td>
+    <td valign="top" align="left">{$footer}<br></td>
   </tr>
   {/if}
 </table>
-{$formend}
+{if isset($formstart)}{$formend}{/if}

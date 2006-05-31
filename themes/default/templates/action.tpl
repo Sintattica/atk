@@ -1,6 +1,6 @@
 {$formstart}
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
-  {if $helplink!=""}<tr><td align="right" class="helplink">{$helplink}</td></tr>{/if}
+  {if isset($helplink)}<tr><td align="right" class="helplink">{$helplink}</td></tr>{/if}
   {atkmessages}
   {if count($atkmessages)}
     <tr>
