@@ -24,7 +24,7 @@
    */
   function drawTD($field,$color,$colHeight,$colWidth,$extern=0)
   {
-    $row .="<td width='".$colWidth."' bgcolor='$color'>";
+    $row  ="<td width='".$colWidth."' bgcolor='$color'>";
     if ($extern !=0)
     {
       $row .='<A href ="javascript:remotePicker';
@@ -34,7 +34,7 @@
       $row .='<A href ="javascript:picker';
     }
     $row .="('".$field."','".$color."')";
-    $row .='" title="'.text('color').': '.$color.'"><IMG SRC="'.atkconfig('atkroot').'atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' alt="-X-"></a></td>';
+    $row .='" title="'.atktext("color", "atk").': '.$color.'"><IMG SRC="'.atkconfig('atkroot').'atk/images/dummy.gif" border=0 width='.$colWidth.' height='.$colHeight.' alt="-X-"></a></td>';
     $row .= "\n";
 
     return $row;
@@ -92,7 +92,12 @@
     }
     $matrix_gb .= '</tr></table>';
 
-   // Primary color shades and grayscales
+    $matrix_red   = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>';
+    $matrix_green = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>';
+    $matrix_blue  = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>';
+    $matrix_grey  = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>';
+
+    // Primary color shades and grayscales
     for ($i=0;$i<$nrColors;$i++)
     {
       $matrix_red   .= drawTD($field, "#".$webColors[$i]."0000", $colHeight, $colWidth, $extern);
@@ -101,16 +106,17 @@
       $matrix_grey  .= drawTD($field, "#".$webColors[$i].$webColors[$i].$webColors[$i], $colHeight, $colWidth, $extern);
     }
 
-    $matrix_red   = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_red.'</tr></table>';
-    $matrix_green = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_green.'</tr></table>';
-    $matrix_blue  = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_blue.'</tr></table>';
-    $matrix_grey  = '<table width = "100%" border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_grey.'</tr></table>';
+    $matrix_red   .= '</tr></table>';
+    $matrix_green .= '</tr></table>';
+    $matrix_blue  .= '</tr></table>';
+    $matrix_grey  .= '</tr></table>';
 
     // Check optional user colors
     if (trim($userColors) != "")
     {
       $tmpColors = explode("|", $userColors);
 
+      $matrix_user = '<table border="0" cellspacing="1" cellpadding="0"><tr>';
       for ($i=0;$i<=count($tmpColors)-1;$i++)
       {
         $dummy = $tmpColors[$i];
@@ -120,7 +126,11 @@
         }
         $matrix_user .= drawTD($field, $dummy, $colHeight, $colWidth, $extern);
       }
-      $matrix_user = '<table border="0" cellspacing="1" cellpadding="0"><tr>'.$matrix_user.'</tr></table>';
+      $matrix_user .= '</tr></table>';
+    }
+    else
+    {
+      $matrix_user = '';
     }
 
     return array($matrix_rb, $matrix_rg, $matrix_gb, $matrix_red, $matrix_green, $matrix_blue, $matrix_grey, $matrix_user);
@@ -231,10 +241,8 @@
      * @param $flags Flags for the attribute
      */
 
-    function atkColorPickerAttribute($name ,$userColors="", $flags = 0)
+    function atkColorPickerAttribute($name, $userColors="", $flags = 0)
     {
-      global $config_atkroot;
-
       // Call baseclass constructor. We set 10 as default size. An html
       // colorvalue (#ffffaa) is 7 chars, but with 10 chars, we can also
       // save named colors like 'white' etc.
@@ -256,11 +264,9 @@
 
     function edit($record="", $fieldprefix="")
     {
-      global $config_atkroot;
-
       $page = &atkPage::getInstance();
-      $page->register_script($config_atkroot."atk/javascript/newwindow.js");
-      $page->register_script($config_atkroot."atk/javascript/colorpicker.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/newwindow.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/colorpicker.js");
 
       $colHeight  = "11";
       $colWidth   = "11";
@@ -268,7 +274,7 @@
 
       if ($this->m_currentColor == "")
       {
-         $this->m_currentColor = $record[$this->fieldName()];
+         $this->m_currentColor = atkArrayNvl($record, $this->fieldName(), "");
       }
 
       $colorField = '<input type="hidden" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_currentColor.'" size="7" maxlength="7">';
@@ -278,15 +284,19 @@
         $temp    = $this->m_userColors;
         $userCol = implode("|",$temp);
       }
+      else
+      {
+        $userCol = "";
+      }
 
       if (trim($this->m_currentColor) == "")
       {
-        $selectImg = $config_atkroot."atk/images/select_color_off.gif";
-        $alt       = text("no_color_selected");
+        $selectImg = atkconfig("atkroot")."atk/images/select_color_off.gif";
+        $alt       = atkText("no_color_selected", "atk");
       }
       else
       {
-        $selectImg = $config_atkroot."atk/images/select_color_on.gif";
+        $selectImg = atkconfig("atkroot")."atk/images/select_color_on.gif";
         $alt       = $this->m_currentColor;
       }
 
@@ -301,10 +311,10 @@
       }
 
       $url     = atkPopup('atk/popups/colorpicker.inc','field='.$fieldprefix.$this->fieldName().'&activecolor='.$urlColor.'&usercol='.$userCol,'colorPicker',315,600,'no','no');
-      $text    = '<a href ="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField;
-      $result  = "<table><tr><td valign='top' align='left'>";
-      $result .= " <table cellpadding='0' cellspacing='0' border='0' width='35' height='21'><tr><td id='example_".$fieldprefix.$this->fieldName()."' name='example_".$fieldprefix.$this->fieldName()."' valign='top' align='left' bgcolor='".$this->m_currentColor."'>".$text."</td></tr></table>";
-      $result .= "</td><td width=\"100%\">&nbsp;</td></tr></table>";
+      $text    = '<a href="'.$url.'"><img name="img_'.$fieldprefix.$this->fieldName().'" src="'.$selectImg.'" border="0" alt="'.$alt.'"></a>'.$colorField;
+      $result  = '<table><tr><td valign="top" align="left">';
+      $result .= '<table cellpadding="0" cellspacing="0" border="0" width="35" height="21"><tr><td id="example_'.$fieldprefix.$this->fieldName().'" name="example_'.$fieldprefix.$this->fieldName().'" valign="top" align="left" bgcolor="'.$this->m_currentColor.'">'.$text.'</td></tr></table>';
+      $result .= '</td><td width="100%">&nbsp;</td></tr></table>';
 
       return $result;
     }
