@@ -99,7 +99,6 @@
           if (in_array(strtolower($name), array("minsize", "minupperchars", "minlowerchars", "minalphabeticchars", "minnumbers", "minspecialchars")))
           {
             $this->m_restrictions[strtolower($name)] = $value;
-            atkdebug("atkPasswordAttribute->setRestrictions(): Applying restriction: \"$name\"=\"$value\"");
           }
           else
           {
