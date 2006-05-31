@@ -210,10 +210,8 @@
       global $g_modules;
 
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
-atkdebug("scanModulePath for theme $theme");
       foreach ($g_modules as $module=>$modpath)
       {
-        atkdebug("Now traversing module $module");
         $abspath = $modpath."themes/".$theme."/";
 
         if (is_dir($abspath))
