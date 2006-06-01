@@ -394,27 +394,14 @@
       return array();
     }
 
-//    /**
-//     * Generates a random password which isn't to bad to remember.
-//     * @param $times number of syllables
-//     * @return generated password string
-//     * @todo makePassword does not respect the restrictions.
-//     */
-//    function makePassword($times = 2)
-//    {
-//      $vowels = array("b","c","d","f","g","h","j","k","m","n","p","q","r","s","t","v","w","x","z");
-//      $consonants = array("a","e","y","u");
-//      $out = "";
-//      for ($i = 0; $i < $times; $i++)
-//      {
-//        srand((double)microtime()*1000000);
-//        mt_srand((double)microtime()*1000000);
-//        $out .= $vowels[rand()%count($vowels)];
-//        $out .= $consonants[mt_rand()%count($consonants)];
-//        $out .= $vowels[mt_rand()%count($vowels)];
-//      }
-//      return $out;
-//    }
+    /**
+     * Generates a random string using the given character set
+     * @static Some applications call this method statically, so to keep this function
+     *         backwards compatible it has to remain static.
+     * @param string $chars String containing the available characters to use
+     * @param int $count Length of the resulting string
+     * @return Generated random string
+     */
     function getRandomChars($chars, $count)
     {
       mt_srand((double)microtime()*1000000);
@@ -427,13 +414,14 @@
     }
 
     /**
-     * Generates a random password which isn't to bad to remember.
-     * @static Some applications calls this method statically, so to keep function backwards
-     *         compatible it has to remain static.
-     * @param $times length of password divided by 3 (to maintain backwards compatibility)
-     * @return generated password string
+     * Generates a random password
+     * @static Some applications call this method statically, so to keep this function
+     *         backwards compatible it has to remain static.
+     * @param int $times length of password divided by 3 (to maintain backwards compatibility)
+     * @param boolean $easytoremember If true, generated passwords are more easy to remember, but also easier to crack
+     * @return string Generated password
      */
-    function makePassword($times = 2)
+    function makePassword($times = 2, $easytoremember = true)
     {
       // Use short notation
       $r = $this->m_restrictions;
@@ -446,7 +434,8 @@
       $tmp.= atkPasswordAttribute::getRandomChars(NUMBERS, $r["minnumbers"]);
       $tmp.= atkPasswordAttribute::getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
       $remainingchars = max($r["minsize"], $times * 3) > strlen($tmp) ? max($r["minsize"], $times * 3) : 0;
-      $tmp.= atkPasswordAttribute::getRandomChars(LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS, $remainingchars);
+      $remainingcharscharset = $easytoremember ? LOWERCHARS : LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS;
+      $tmp.= atkPasswordAttribute::getRandomChars($remainingcharscharset, $remainingchars);
 
       // Shuffle the password's characters and return it
       return str_shuffle($tmp);
@@ -487,7 +476,7 @@
 
       if (atkArrayNvl($value, "new", "") != "" || atkArrayNvl($value, "hash", "") != "")
       {
-      	return true;
+        return true;
       }
       return false;
     }
