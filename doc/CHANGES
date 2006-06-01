@@ -6,6 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.5.1
 --------------------
+* Fixed backwards compatible bug in the atkpasswordattribute.
+  Some applications calls the makepassword method static, this gives
+  a fatal error if you call an object method. [dennisjan]
 + When displaying an image with the atkFileAttribute a random number
   is added to the img src tag in order to prevent local caching [Wim]
 + Added atkMessageQueue for user notification messages, which can be shown

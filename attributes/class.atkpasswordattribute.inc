@@ -437,14 +437,14 @@
       $r = $this->m_restrictions;
 
       // Compose a string that meets the minimum requirements
-      $tmp = $this->getRandomChars(LOWERCHARS, $r["minlowerchars"]);
-      $tmp.= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
+      $tmp = atkPasswordAttribute::getRandomChars(LOWERCHARS, $r["minlowerchars"]);
+      $tmp.= atkPasswordAttribute::getRandomChars(UPPERCHARS, $r["minupperchars"]);
       $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp)) : 0;
-      $tmp.= $this->getRandomChars(LOWERCHARS.UPPERCHARS, $alphabeticchars);
-      $tmp.= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
-      $tmp.= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
+      $tmp.= atkPasswordAttribute::getRandomChars(LOWERCHARS.UPPERCHARS, $alphabeticchars);
+      $tmp.= atkPasswordAttribute::getRandomChars(NUMBERS, $r["minnumbers"]);
+      $tmp.= atkPasswordAttribute::getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
       $remainingchars = max($r["minsize"], $times * 3) > strlen($tmp) ? max($r["minsize"], $times * 3) : 0;
-      $tmp.= $this->getRandomChars(LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS, $remainingchars);
+      $tmp.= atkPasswordAttribute::getRandomChars(LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS, $remainingchars);
 
       // Shuffle the password's characters and return it
       return str_shuffle($tmp);
