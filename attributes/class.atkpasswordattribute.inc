@@ -428,6 +428,8 @@
 
     /**
      * Generates a random password which isn't to bad to remember.
+     * @static Some applications calls this method statically, so to keep function backwards
+     *         compatible it has to remain static.
      * @param $times length of password divided by 3 (to maintain backwards compatibility)
      * @return generated password string
      */
