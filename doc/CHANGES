@@ -6,9 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.5.1
 --------------------
-* Fixed backwards compatible bug in the atkpasswordattribute.
-  Some applications calls the makepassword method static, this gives
-  a fatal error if you call an object method. [dennisjan]
++ Added the phpmailer extensie so we can send html mails. [dennisjan]
 + When displaying an image with the atkFileAttribute a random number
   is added to the img src tag in order to prevent local caching [Wim]
 + Added atkMessageQueue for user notification messages, which can be shown
@@ -80,6 +78,9 @@ Changed in ATK 5.5.1
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
+* Fixed backwards compatible bug in the atkpasswordattribute.
+  Some applications calls the makepassword method static, this gives
+  a fatal error if you call an object method. [dennisjan]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only
