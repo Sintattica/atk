@@ -62,6 +62,8 @@
             }
 
             $menuitems[$i]["enable"]=$enable;
+            $menuitems[$i]["url"]=$url;
+            $menuitems[$i]['module']=$modname;
 
             /* delimiter ? */
             if ($name == "-") $menu .= $delimiter;
@@ -103,13 +105,15 @@
         $page = &atknew("atk.ui.atkpage");
         $theme = &atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
+        $page->register_style($theme->stylePath("menu.css"));
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
 
         $ui = &atkinstance("atk.ui.atkui");
 
         $box = $ui->renderBox(array("title"=>$this->getMenuTranslation($atkmenutop,$modname),
                                                "content"=>$menu,
-                                               "menuitems"=>$menuitems),"menu");
+                                               "menuitems"=>$menuitems,
+                                               ),"menu");
 
         $page->addContent($box);
 

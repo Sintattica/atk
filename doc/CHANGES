@@ -4,7 +4,7 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changed in ATK 5.5.1
+Changed in ATK 5.6
 --------------------
 + Added the phpmailer extensie so we can send html mails. [dennisjan]
 + When displaying an image with the atkFileAttribute a random number is
@@ -204,6 +204,8 @@ Changed in ATK 5.5.1
   [Guido]
 * When translating a recordaction, the module and nodetype should also be
   passed to atktext when $config_recordlist_icons is set to false. [Guido]
+* Made atkFramesMenu pass along url and module name of item links 
+  to template and made it register menu.css. [Boy]
 
 Changes in ATK 5.5
 ------------------
