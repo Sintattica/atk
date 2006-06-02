@@ -7,8 +7,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changed in ATK 5.5.1
 --------------------
 + Added the phpmailer extensie so we can send html mails. [dennisjan]
-+ When displaying an image with the atkFileAttribute a random number
-  is added to the img src tag in order to prevent local caching [Wim]
++ When displaying an image with the atkFileAttribute a random number is
+  added to the img src tag in order to prevent local caching [Wim]
 + Added atkMessageQueue for user notification messages, which can be shown
   via the atkmessages plugin. [Patrick]
 + Added atkMlWrapper for turning any attribute into an internationalisation
@@ -53,8 +53,8 @@ Changed in ATK 5.5.1
 + Added setLabel() method to atkAttribute to override the default label.
   [Ivo]
 + atkNode::selectDb now performs a distinct select by default to prevent
-  duplicate records from being retrieved. The $distinct parameter can be set
-  to false to revert to the old behaviour. [Ivo]
+  duplicate records from being retrieved. The $distinct parameter can be
+  set to false to revert to the old behaviour. [Ivo]
 + Added ability to use overloaders for normal classes instantiated
   with atknew(). [Boy]
 + Added optional $module parameter to atkUI and atkTheme methods that
@@ -62,15 +62,18 @@ Changed in ATK 5.5.1
 + Added atkArrayNvl function allowing you to retrieve a value from
   an array when you're not sure whether it exists or not. If the
   value cannot be found, null (or an optional different default value
-  is returned). [guido,ivo]
+  is returned). [Guido,Ivo]
 + Added a '<< Back' button to the Select screen in order to give a user the
   ability to cancel the selection of a record. [Guido]
 + Added ability to set the following password restrictions: minimum length,
   minimum number of uppercase characters, minimum number of lowercase
   charactes, minimum number of uppercase and lowercase characters together,
   number of numbers and the number of special characters. [Guido]
-+ Updated atkPasswordAttributes makePassword function to respect the
-  restrictions. [Guido]
++ Added atkPasswordAttribute->generatePassword function which replaces the
+  deprecated makePassword function. generatePassword is an object-function
+  which generates passwords using the given length and restrictions set on
+  the attribute. It is also possible to specify wheter the generated
+  password should be easy to remember or as random as possible. [Guido]
 + Added Password forgotten option to allow users to regain access by asking
   the atk application to mail back a new password. To enable this feature,
   $config_auth_usernode, config_auth_emailfield and
@@ -78,9 +81,10 @@ Changed in ATK 5.5.1
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
-* Fixed backwards compatible bug in the atkpasswordattribute.
-  Some applications calls the makepassword method static, this gives
-  a fatal error if you call an object method. [dennisjan]
+- Deprecated the atkPasswordAttribute->makePassword function. [Guido]
+* Made atkPasswordAttribute::makePassword static because of backward
+  compatibility reasons (some applications call this function statically).
+  [dennisjan]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only
@@ -196,12 +200,17 @@ Changed in ATK 5.5.1
 * Replaced usage of deprecated StringParse function by atkStringParser
   usage. [Guido]
 * Replaced numerous deprecated text() calls with atktext(). [Guido]
+* In recordlists, the alt attribute of the recordaction img-tag is now set.
+  [Guido]
+* When translating a recordaction, the module and nodetype should also be
+  passed to atktext when $config_recordlist_icons is set to false. [Guido]
 
 Changes in ATK 5.5
 ------------------
 + Added class atkMail for sending e-mails just like the normal mail function
   does, but with the ability to disable the sending of e-mails (and in the
-  future send e-mails to other addresses etc.) for debugging purposes. [Peter]
+  future send e-mails to other addresses etc.) for debugging purposes.
+  [Peter]
 + Added support for configuration file overrides by other sections. [Peter]
 + Made atkErrorHandler put notices and php5 strict errors into the atk debug
   log so developers can see them. [Guido]
