@@ -386,11 +386,11 @@
             if($icons == true)
             {
               $icon = $theme->iconPath(strtolower($name),"recordlist", $this->m_node->m_module);
-              $link = '<img width="16" height="16" border="0" src="'.$icon.'" title="'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'">';
+              $link = sprintf('<img width="16" height="16" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, atktext($name, $this->m_node->m_module, $this->m_node->m_type));
             }
             else
             {
-              $link = atktext($name);
+              $link = atktext($name, $this->m_node->m_module, $this->m_node->m_type);
             }
 
             $confirmtext= "false";
