@@ -130,7 +130,7 @@
 
       // Regenerate the password
       $passwordattr = &$usernode->getAttribute(atkconfig("auth_passwordfield"));
-      $newpassword = $passwordattr->makePassword();
+      $newpassword = $passwordattr->generatePassword();
 
       // Update the record in the database
       $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
