@@ -25,13 +25,15 @@
   define("AF_PASSWORD_NO_VALIDATE",     AF_SPECIFIC_1); // disables password check when editing password field
 
   /**
-   * Categories of password restrictions
+   * Categories of password character categories
    */
   define("UPPERCHARS", "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
   define("LOWERCHARS", "abcdefghijklmnopqrstuvwxyz");
   define("ALPHABETICCHARS", UPPERCHARS.LOWERCHARS);
   define("NUMBERS", "0123456789");
   define("SPECIALCHARS", "!@#$%^&*()-+_=[]{}\|;:'\",.<>/?"); // <- only used when generating a password
+  define("EASYVOWELS", "bcdfghjkmnpqrstvwxz");
+  define("EASYCONSONANTS", "aeuy");
 
   /**
    * The atkPasswordAttribute class represents an attribute of a node
@@ -396,49 +398,101 @@
 
     /**
      * Generates a random string using the given character set
-     * @static Some applications call this method statically, so to keep this function
-     *         backwards compatible it has to remain static.
-     * @param string $chars String containing the available characters to use
+     *
+     * @param string/array $chars String or array of strings containing the available characters to use
      * @param int $count Length of the resulting string
      * @return Generated random string
      */
     function getRandomChars($chars, $count)
     {
+      // Always use an array
+      $charset = is_array($chars) ? $chars : array($chars);
+
+      // Seed the random generator using microseconds
       mt_srand((double)microtime()*1000000);
+
+      // Start with an empty result
       $randomchars = "";
+
+      // Add a character one by one
       for($i=0; $i<$count; $i++)
       {
+        // Pick the set of characters to be used from the array
+        $chars = $charset[$i % count($charset)];
+
+        // Choose a character randomly and add it to the result
         $randomchars .= substr($chars, mt_rand(0, strlen($chars)-1), 1);
       }
+
+      // Return the resulting random characters
       return $randomchars;
     }
 
     /**
-     * Generates a random password
-     * @static Some applications call this method statically, so to keep this function
-     *         backwards compatible it has to remain static.
-     * @param int $times length of password divided by 3 (to maintain backwards compatibility)
-     * @param boolean $easytoremember If true, generated passwords are more easy to remember, but also easier to crack
+     * Generates a random password which meets the restrictions
+     *
+     * @param int $length Length of the password (could be overridden by higher restrictions)
+     * @param boolean $easytoremember If true, generated passwords are more easy to remember, but also easier to crack. Defaults to false.
      * @return string Generated password
      */
-    function makePassword($times = 2, $easytoremember = true)
+    function generatePassword($length = 8, $easytoremember = false)
     {
       // Use short notation
       $r = $this->m_restrictions;
 
-      // Compose a string that meets the minimum requirements
-      $tmp = atkPasswordAttribute::getRandomChars(LOWERCHARS, $r["minlowerchars"]);
-      $tmp.= atkPasswordAttribute::getRandomChars(UPPERCHARS, $r["minupperchars"]);
+      // Compose a string that meets the character-specific minimum restrictions
+      $tmp = $this->getRandomChars(LOWERCHARS, $r["minlowerchars"]);
+      $tmp.= $this->getRandomChars(UPPERCHARS, $r["minupperchars"]);
       $alphabeticchars = ($r["minalphabeticchars"] > strlen($tmp)) ? ($r["minalphabeticchars"] - strlen($tmp)) : 0;
-      $tmp.= atkPasswordAttribute::getRandomChars(LOWERCHARS.UPPERCHARS, $alphabeticchars);
-      $tmp.= atkPasswordAttribute::getRandomChars(NUMBERS, $r["minnumbers"]);
-      $tmp.= atkPasswordAttribute::getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
-      $remainingchars = max($r["minsize"], $times * 3) > strlen($tmp) ? max($r["minsize"], $times * 3) : 0;
-      $remainingcharscharset = $easytoremember ? LOWERCHARS : LOWERCHARS.UPPERCHARS.NUMBERS.SPECIALCHARS;
-      $tmp.= atkPasswordAttribute::getRandomChars($remainingcharscharset, $remainingchars);
+      $tmp.= $this->getRandomChars(LOWERCHARS . UPPERCHARS, $alphabeticchars);
+      $tmp.= $this->getRandomChars(NUMBERS, $r["minnumbers"]);
+      $tmp.= $this->getRandomChars(SPECIALCHARS, $r["minspecialchars"]);
 
-      // Shuffle the password's characters and return it
-      return str_shuffle($tmp);
+      // Determine how many characters we still need to add to meet the overall minimum length
+      $remainingchars = max($r["minsize"], $length) > strlen($tmp) ? (max($r["minsize"], $length) - strlen($tmp)) : 0;
+
+      // At this point we have gathered the characters we need to meet the
+      // charactertype-specific restrictions. From now we can split ways to
+      // make the password either easy to remember or as random as possible.
+      if ($easytoremember)
+      {
+        // Add random characters to the string to fill up until the minimum size or passed length
+        $out = $this->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $remainingchars);
+
+        // Add the characters that make this password meet the restrictions
+        // at the end of the password, so we keep at least the most of it
+        // easy to remember.
+        $out.= $tmp;
+      }
+      else
+      {
+        // Add random characters to the string to fill up until the minimum size or passed length
+        $tmp.= $this->getRandomChars(LOWERCHARS . UPPERCHARS . NUMBERS . SPECIALCHARS, $remainingchars);
+
+        // The output should be a shuffled to make it really random
+        $out = str_shuffle($tmp);
+      }
+
+      // Return the output
+      return $out;
+    }
+
+    /**
+     * Generates a random password which isn't to bad to remember.
+     * @deprecated The object-function generatePassword should be used instead of this static function.
+     * @static Some applications still call this method statically, so to keep this function
+     *         backwards compatible it has to remain static.
+     * @param int $times Number of syllables (password length will be $times * 3)
+     * @return string Generated password
+     */
+    function makePassword($times = 2)
+    {
+      // Show a debugmessage about this function being deprecated
+      atkdebug("atkPasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
+
+      // Construct a new passwordattribute, generate the password and return it
+      $passwordattribute = new atkPasswordAttribute("dummy");
+      return $passwordattribute->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $times * 3);
     }
 
     /**
