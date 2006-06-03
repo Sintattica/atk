@@ -491,7 +491,7 @@
       atkdebug("atkPasswordAttribute::makePassword() is deprecated, use generatePassword() on an atkPasswordAttribute instead.");
 
       // Construct a new passwordattribute, generate the password and return it
-      $passwordattribute = new atkPasswordAttribute("dummy");
+      $passwordattribute = new atkPasswordAttribute("dummy",true);
       return $passwordattribute->getRandomChars(array(EASYVOWELS, EASYCONSONANTS, EASYVOWELS), $times * 3);
     }
 

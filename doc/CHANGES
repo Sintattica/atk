@@ -82,6 +82,8 @@ Changed in ATK 5.6
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
 - Deprecated the atkPasswordAttribute->makePassword function. [Guido]
+* Added required parameter $generate in atkpasswordattrib::makepassword().
+  [Martin] 
 * Made atkPasswordAttribute::makePassword static because of backward
   compatibility reasons (some applications call this function statically).
   [dennisjan]
