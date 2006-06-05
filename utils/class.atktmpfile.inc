@@ -97,6 +97,7 @@
       {
         fclose($this->m_fp);
         $this->m_mode="";
+        $this->m_fp = null;
       }
     }
 
