@@ -164,7 +164,7 @@
         $sortstart=""; $sortend="";
         if (hasFlag($flags, RL_EXT_SORT))
         {
-          $button = '<input type="submit" value="'.text("sort").'">';
+          $button = '<input type="submit" value="'.atktext("sort").'">';
           if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
           {
             $sortcols[] = array("content"=>""); // Empty leader on top of mra action list.
