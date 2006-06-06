@@ -2121,15 +2121,23 @@
      * Render a generic page, with a box, title, stacktrace etc.
      * @param String $title The title of the page. Appears in the box title
      *                      and in the page header.
-     * @param String $content The content to display in the box.
+     * @param mixed $content The content to display on the page. This can be:
+     *                       - A string which will be the content of a single
+     *                         box on the page.
+     *                       - An associative array of $title=>$content pairs.
+     *                         Each title/content pair will be rendered as a
+     *                         seperate box.
      * @return String A complete html page with the desired content.
      */
     function genericPage($title, $content)
     {
-       $ui = &$this->getUi();
-       $this->addStyle("style.css");
-       return $this->renderActionPage($title, $ui->renderBox(array("title"=>$title,
-                                                                   "content"=>$content)));
+      $ui = &$this->getUi();
+      $this->addStyle("style.css");
+      if (!is_array($content)) $content = array($title=>$content);
+      $box = '';
+      foreach($content as $itemtitle => $itemcontent)
+        $box.= $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent));
+      return $this->renderActionPage($title, $box);
     }
 
     /**
