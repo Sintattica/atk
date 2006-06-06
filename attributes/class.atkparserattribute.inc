@@ -36,7 +36,7 @@
      */
     function atkParserAttribute($name, $text, $flags=0)
     {
-      $this->atkAttribute($name,$flags|AF_HIDE_SEARCH); // base class constructor
+      $this->atkAttribute($name,$flags|AF_HIDE_SEARCH|AF_NO_SORT); // base class constructor
       $this->m_text = $text;
     }
 
