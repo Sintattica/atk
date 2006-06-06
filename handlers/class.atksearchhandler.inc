@@ -62,6 +62,7 @@
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
+      $page->register_loadscript("placeFocus();");
       $ui = &$this->getUi();
       if (is_object($ui))
       {
@@ -86,7 +87,7 @@
 
         $params["content"] = $this->invoke("searchForm", $record);
         $params["buttons"][] = '<input type="submit" class="btn_search" value="'.atktext("search", "atk").'">';
-        $params["formend"] = '</form><SCRIPT type="text/javascript" LANGUAGE="JavaScript">placeFocus()</SCRIPT>';
+        $params["formend"] = '</form>';
 
         $output = $ui->renderAction("search", $params);
 
