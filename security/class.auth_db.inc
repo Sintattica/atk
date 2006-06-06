@@ -258,10 +258,11 @@
        $recs = $db->getrows($query);
 
        $userlist = array();
+       atkimport("atk.utils.atkstringparser");
+       $stringparser = new atkStringParser(atkconfig("auth_userdescriptor"));
        for ($i=0, $_i=count($recs); $i<$_i; $i++)
        {
-         $userlist[] = array("userid"=>$recs[$i][atkconfig("auth_userfield")],
-                             "username"=>stringparse(atkconfig("auth_userdescriptor"), $recs[$i]));
+         $userlist[] = array("userid"=>$recs[$i][atkconfig("auth_userfield")], "username"=>$stringparser->parse($recs[$i]));
        }
        return $userlist;
 
