@@ -74,8 +74,7 @@
     if ($errtype==E_NOTICE || error_reporting()==0)
     {
       // Just show notices in the debug log, but don't influence the program flow
-//      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
-      //echo "[$errortypestring] $errstr in $errfile (line $errline)";
+      //atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
       return;
     }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
@@ -680,8 +679,8 @@
    */
   function stripQuotes($string)
   {
-    if ($string[0]=="'" && substr($string,-1)=="'") return substr($string,1,-1);
-    if ($string[0]=='"' && substr($string,-1)=='"') return substr($string,1,-1);
+    if (substr($string,0,1)=="'" && substr($string,-1)=="'") return substr($string,1,-1);
+    if (substr($string,0,1)=='"' && substr($string,-1)=='"') return substr($string,1,-1);
     return $string;
   }
 

@@ -1805,13 +1805,8 @@
 
     function extendedSort(&$columnConfig)
     {
-      $specificOptions = $this->sortOptions($columnConfig);
-      if ($specificOptions!="")
-      {
-        $res.= $specificOptions;
-      }
-      $res.= ' '.$this->sortOrder($columnConfig);
-      return $res;
+      $result = $this->sortOptions($columnConfig).' '.$this->sortOrder($columnConfig);
+      return $result;
     }
 
     /**
@@ -1874,7 +1869,7 @@
       return $this->m_ownerInstance->m_table.".".$this->fieldName();
     }
 
- /**
+    /**
      * Translate using the owner instance's module and type.
      */
     function text($string)

@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-  
+
   /**
    * @internal baseclass include
    */
@@ -32,7 +32,7 @@
   $config_atkroot = atkconfig("atkroot");
   require_once($config_atkroot."atk/utils/adodb-time.inc.php");
   // Include browsertools for PDA detection
-  include_once($config_atkroot."atk/atkbrowsertools.inc"); 
+  include_once($config_atkroot."atk/atkbrowsertools.inc");
 
   /**
    * The atkDateAttribute class offers a date widget for date fields.
@@ -262,33 +262,30 @@
       }
 
       /* this field */
-      $field = $record[$this->fieldName()];
+      $field = atkArrayNvl($record, $this->fieldName());
       $str_format = $this->m_date_format_edit;
 
       /* currently selected date */
-      if (isset($record[$this->fieldName()]))
+      if (is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
+        $current = NULL; /* NULL date selected (normal date selection) */
+      elseif (!is_array($field) && empty($field))
+        $current = NULL; /* NULL date selected (NULL value in database) */
+      elseif (is_array($field))
       {
-        if (is_array($field) && $field["year"] == 0 && $field["month"] == 0 && $field["day"] == 0)
-          $current = NULL; /* NULL date selected (normal date selection) */
-        elseif (!is_array($field) && empty($field))
-          $current = NULL; /* NULL date selected (NULL value in database) */
-        elseif (is_array($field))
+        if (checkdate($field["month"], $field["day"], $field["year"]))
         {
-          if (checkdate($field["month"], $field["day"], $field["year"]))
-          {
-            $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
-          }
-          else
-          {
-            triggerError($record, $this->fieldName(), "date_invalid");
-          }
+          $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
         }
         else
         {
-          $date = $this->dateArray($field);
-          if (checkdate($date["month"], $date["day"], $date["year"]))
-            $current = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+          triggerError($record, $this->fieldName(), "date_invalid");
         }
+      }
+      else
+      {
+        $date = $this->dateArray($field);
+        if (checkdate($date["month"], $date["day"], $date["year"]))
+          $current = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
       }
 
       /* minimum date */

@@ -313,7 +313,7 @@
 
     function getOrder($attribute)
     {
-      return $this->m_colcfg[$attribute]["sortorder"];
+      return isset($this->m_colcfg[$attribute]["sortorder"]) ? $this->m_colcfg[$attribute]["sortorder"] : 0;
     }
 
     function getDirection($attribute)
@@ -325,7 +325,7 @@
     {
       foreach($this->m_colcfg as $attrib=>$info)
       {
-        if ($info["sortorder"]==$order)
+        if (atkArrayNvl($info, "sortorder", 0)==$order)
         {
           return $attrib;
         }
@@ -338,7 +338,7 @@
       $total = 0;
       foreach ($this->m_colcfg as $attrib=>$info)
       {
-        if ($info["sortorder"]>0) $total++;
+        if (atkArrayNvl($info, "sortorder", 0)>0) $total++;
       }
       return $total;
     }
@@ -347,7 +347,7 @@
     {
       foreach($this->m_colcfg as $attrib=>$info)
       {
-        if ($info["sortorder"]==$order) return $this->getDirection($attrib);
+        if (atkArrayNvl($info, "sortorder", 0)==$order) return $this->getDirection($attrib);
       }
       return "asc";
     }
@@ -368,14 +368,14 @@
 
     function hasSubTotal($attribute)
     {
-      return ($this->m_colcfg[$attribute]["subtotal"]==1);
+      return ((isset($this->m_colcfg[$attribute]["subtotal"]) ? $this->m_colcfg[$attribute]["subtotal"] : 0)==1);
     }
 
     function hasSubTotalByOrder($order)
     {
       foreach($this->m_colcfg as $attrib=>$info)
       {
-        if ($info["sortorder"]==$order) return $this->hasSubTotal($attrib);
+        if (atkArrayNvl($info, "sortorder", 0)==$order) return $this->hasSubTotal($attrib);
       }
       return false;
     }
@@ -387,9 +387,7 @@
 
     function _compareSortAttrs($a, $b)
     {
-      $asortorder = isset($a["sortorder"]) ? $a["sortorder"] : 0;
-      $bsortorder = isset($b["sortorder"]) ? $b["sortorder"] : 0;
-      return ($asortorder<=$bsortorder?-1:1);
+      return (atkArrayNvl($a, "sortorder", 0) <= atkArrayNvl($b, "sortorder", 0) ? -1 : 1);
     }
 
     function totalizable()

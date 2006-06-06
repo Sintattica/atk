@@ -78,13 +78,15 @@
     function edit($record="", $fieldprefix="")
     {
       $id = $fieldprefix.$this->formName();
+      $fieldvalue = atkArrayNvl($record, $this->fieldName(), "");
       if(!$this->hasFlag(AF_DURATION_STRING))
       {
+        $result = '';
         if ($this->m_maxtime_min>=60)
         {
-          $curhours = $this->_getHourPart($record[$this->fieldName()]);
-          $curminutes = $this->_getMinutePart($record[$this->fieldName()]);
-          $result.= '<select id="'.$id.'_hours" name="'.$fieldprefix.$this->formName().'[hours]">';
+          $curhours = $this->_getHourPart($fieldvalue);
+          $curminutes = $this->_getMinutePart($fieldvalue);
+          $result .= '<select id="'.$id.'_hours" name="'.$fieldprefix.$this->formName().'[hours]">';
           $this->registerKeyListener($id.'_hours', KB_CTRLCURSOR|KB_LEFTRIGHT);
           for ($h=0;$h<=$this->m_maxtime_min/60;)
           {
@@ -100,18 +102,18 @@
               $h = floor($h+$this->m_resolution_min/60);
             }
           }
+          $result .= '</select>';
         }
-        $result.='</select>';
 
         if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
         {
           $this->registerKeyListener($id.'_minutes', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result.= '<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->formName().'[minutes]">';
+          $result .= '<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->formName().'[minutes]">';
           for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
           {
             $result .= '<option value="'.$m.'" ';
             if ($curminutes==$m) $result.= "selected";
-            $result.='>'.$m.' '.atktext('minutes','atk');
+            $result .='>'.$m.' '.atktext('minutes','atk');
             if ($this->m_resolution_min<=1)
             {
               $m++;
@@ -121,12 +123,12 @@
               $m = $m+$this->m_resolution_min;
             }
           }
+          $result .= '</select>';
         }
-        $result.='</select>';
       }
       else
       {
-        $curval = ($record[$this->fieldName()]>0?$this->_minutes2string($record[$this->fieldName()]):"");
+        $curval = ($fieldvalue > 0) ? $this->_minutes2string($fieldvalue) : '';
         $result = '<input type="text" name="'.$fieldprefix.$this->formName().
                 '" value="'.$curval.'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').'>';

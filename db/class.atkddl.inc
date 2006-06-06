@@ -68,7 +68,8 @@
       {
         include_once($filename);
         $classname = "atk".$database."DDL";
-        return new $classname;
+        $ddlobject = new $classname;
+        return $ddlobject;
       }
       else
       {
@@ -100,7 +101,7 @@
                                      "flags"=>$flags,
                                      "default"=>$default);
     }
-    
+
     function dropField($name)
     {
       $this->m_remove_field=$name;
@@ -220,12 +221,12 @@
         if ($fields!="" || $this->m_remove_field)
         {
           $q = "ALTER TABLE ".$this->m_table;
-          
+
           if ($this->m_remove_field)
           {
             $q.=" DROP\n {$query->m_fieldquote}$this->m_remove_field{$query->m_fieldquote}";
           }
-          else 
+          else
           {
             $q.=" ADD\n (";
 
