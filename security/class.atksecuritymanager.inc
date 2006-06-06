@@ -451,12 +451,11 @@
       $page->register_style($ui->stylePath("style.css"));
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/tools.js");
-      $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
 
       $tplvars = Array();
       $output ='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));
-      $output.='<br><br><table border=0 cellspacing=2 cellpadding=0 align=center>';
+      $output.='<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
       $tplvars["atksessionformvars"] = makeHiddenPostVars(array("atklogout", "loginattempts"));
       $tplvars["formurl"] = $_SERVER["PHP_SELF"];
@@ -469,6 +468,8 @@
       }
       else
       {
+        $page->register_loadscript("document.forms[0].auth_user.focus();");
+
         // generate the username input field
         // based upon the config_authdropdown and auth. method
         $userField = $this->auth_userField($defaultname);
@@ -510,8 +511,6 @@
       }
 
       $output.='</table></form>';
-
-      $output.='<SCRIPT type="text/javascript">placeFocus()</SCRIPT>';
 
       $tplvars["content"]=$output;
       $page->addContent($ui->render("login.tpl", $tplvars));
