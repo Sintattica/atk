@@ -105,7 +105,8 @@
         $page = &atknew("atk.ui.atkpage");
         $theme = &atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("style.css"));
-        $page->register_style($theme->stylePath("menu.css"));
+        $menustylepath = $theme->stylePath("menu.css");
+        if (!empty($menustylepath)) $page->register_style($menustylepath);
         $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
 
         $ui = &atkinstance("atk.ui.atkui");
