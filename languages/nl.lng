@@ -96,7 +96,7 @@
   "error_uniquefield" => "De waarde voor dit veld moet uniek zijn",
   "error_uniquefieldset" => "De waarden voor de combinaties tussen deze velden moeten uniek zijn",
   "error_unkown_domain" => "Onbekend domein",
-  "explain_session_expired" => "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw in te loggen.",
+  "explain_session_expired" => "Uw sessie is verlopen. Dit gebeurt als de applicatie een bepaalde tijd niet actief is. U kunt uw sessie hervatten door opnieuw aan te melden.",
   "export" => "Exporteren",
   "export_config_explanation" => "Selecteer de opties voor de CSV export.",
   "export_generatetitlerow" => "Voeg een rij met kolom titels toe",
