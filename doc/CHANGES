@@ -5,8 +5,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
 Changed in ATK 5.6
---------------------
-+ Added the phpmailer extensie so we can send html mails. [dennisjan]
+------------------
++ Added the phpmailer extension so we can send html mails. [dennisjan]
 + When displaying an image with the atkFileAttribute a random number is
   added to the img src tag in order to prevent local caching [Wim]
 + Added atkMessageQueue for user notification messages, which can be shown
@@ -26,7 +26,8 @@ Changed in ATK 5.6
 + Added type="text/css" attribute to <style> tags. [Guido]
 + Added support for row and col span in the atkTableRenderer. [Sandy]
 + Added NOLOAD constant for use in atkAttribute's loadType() method. [Ivo]
-+ Added ability to set a CSS class per row, column or cell. [Guido]
++ Added ability to set a CSS class per row, column or cell in
+  atkTableRenderer. [Guido]
 + Added reloadapp(); function which can be used to reload all the frames in
   your application. [Boy]
 + Added support for user-level language support. [Boy]
@@ -83,7 +84,7 @@ Changed in ATK 5.6
   default. [Ivo]
 - Deprecated the atkPasswordAttribute->makePassword function. [Guido]
 * Added required parameter $generate in atkpasswordattrib::makepassword().
-  [Martin] 
+  [Martin]
 * Made atkPasswordAttribute::makePassword static because of backward
   compatibility reasons (some applications call this function statically).
   [dennisjan]
@@ -206,8 +207,31 @@ Changed in ATK 5.6
   [Guido]
 * When translating a recordaction, the module and nodetype should also be
   passed to atktext when $config_recordlist_icons is set to false. [Guido]
-* Made atkFramesMenu pass along url and module name of item links 
+* Made atkFramesMenu pass along url and module name of item links
   to template and made it register menu.css. [Boy]
+* Changed atkNode->genericPage so it can draw multiple boxes on a page.
+  In to use this, you can pass an associative array of $title=>$content
+  pairs through the content parameter. Each $title=>$content pair in this
+  array will be drawn in a seperate box. [Guido]
+* Moved the placeFocus() javascript call from the body to the globalLoad
+  function. [Guido]
+* The edit handler now also automatically places focus on the first input
+  element available (just like the add handler does). [Guido]
+* Changed Dutch translation for "logging in again" in the session expired
+  explanation from "opnieuw in te loggen" to "opnieuw aan te melden".
+  [Guido]
+* The menu.css stylesheet should not be registered in atkFramesMenu when
+  the stylesheet could not be found. [Guido]
+* Replaced the formfocus.js script usage by a custom focus javascript in
+  the formslogin page because the formfocus.js script only works on
+  add/edit forms. [Guido]
+* Fixed a rendering inconsistency in the outlook login form between mozilla
+  and ie. [Guido]
+* HTML Forms should not have a margin above and below them by default.
+  [Guido]
+* Minor indentation adjustment of the generated HTML code. [Guido]
+* Added the AF_NO_SORT flag by default to the atkParserAttribute as it
+  should not be sortable. [Guido]
 
 Changes in ATK 5.5
 ------------------
