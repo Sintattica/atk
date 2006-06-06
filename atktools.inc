@@ -954,7 +954,7 @@
    */
   function mailreport()
   {
-    global $g_error_msg, $g_debug_msg, $g_sessionManager, $g_sessionData, $g_user;
+    global $g_error_msg, $g_debug_msg, $g_sessionManager, $g_sessionData, $g_user, $g_modules;
     $config_mailreport = atkconfig("mailreport");
     $txt_app_title = atktext("app_title");
 
@@ -1025,6 +1025,13 @@
         {
           $body.=_wordwrap($key.str_repeat(" ",max(1,30-strlen($key)))." = ".var_export($value,1))."\n";
         }
+      }
+
+      $body.= "\n\nMODULE CONFIGURATION\n".str_repeat("-",70)."\n";
+      foreach ($g_modules as $modname => $modpath)
+      {
+        $modexists = file_exists($modpath) ? " (path exists)" : " (PATH DOES NOT EXIST!)";
+        $body.=_wordwrap($modname.":".str_repeat(" ",max(1,20-strlen($modname))).var_export($modpath,1).$modexists)."\n";
       }
 
       $body.= "\n\nCurrent User:\n".str_repeat("-",70)."\n";
