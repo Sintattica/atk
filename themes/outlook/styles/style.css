@@ -56,8 +56,10 @@ A.stacktrace:visited
   text-align: left;
 }
 
-
-
+FORM
+{
+  margin: 0px;
+}
 
 INPUT,
 SELECT,
