@@ -103,11 +103,6 @@
   // your application directory.
   $config_top_frame = 1;
 
-  // This configures whether the action links (edit/delete) in a recordlist
-  // appear to the left or right of the records. If you are crazy, you
-  // might try the option "both".
-  $config_recordlist_orientation = "right";
-
   // Show icons in the recordlist or text?
   $config_recordlist_icons = true;
 

@@ -237,6 +237,11 @@ Changed in ATK 5.6
   should not be sortable. [Guido]
 * Fixed bug in atksearchhandler. Extended search crashed when using an 
   atkDateAttribute.  [Peter,Dennis]
+* Moved recordlist_orientation, recordlist_vorientation and recordlist_icons
+  configuration values to theme, so instead of being defined as:
+  $config_recordlist_orientation="left" it should be defined in the
+  appropriate theme as $theme['recordlist_orientation']='right'. [Boy]
+
 
 Changes in ATK 5.5
 ------------------

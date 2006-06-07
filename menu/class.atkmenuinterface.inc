@@ -45,7 +45,7 @@
 		 * @param String $modname Module to which the menuitem belongs
 		 * @return Translation of the given menuitem
 		 */
-		function getMenuTranslation($menuitem, $modname)
+		function getMenuTranslation($menuitem, $modname='atk')
 		{
 		  return atktext(array("menu_$menuitem", $menuitem), $modname);
 		}

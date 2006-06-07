@@ -480,24 +480,6 @@
   $config_fullscreen = false;
 
   /**
-   * Whether the action links in a recordlist appear left or right
-   * @var String
-   */
-  $config_recordlist_orientation  = "left";
-
-  /**
-   *
-   * @var String
-   */
-  $config_recordlist_vorientation = "middle";
-
-  /**
-   * Use icons for action links or not
-   * @var String
-   */
-   $config_recordlist_icons = "true";
-
-  /**
    * Whatever tabs are enabled or not
    * @var boolean
    */
