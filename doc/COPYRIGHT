@@ -47,3 +47,9 @@ for parsing OpenOffice.org and OpenDocument template files. TinyButStrong
 OOo is Copyright (c) 2005 Olivier LOYNET and released under the GNU Lesser
 General Public License (LGPL). The full version including examples
 and documentation can be downloaded from its homepage.
+
+ATK uses the PHPMailer class (http://phpmailer.sourceforge.net/) for HTML 
+email functionality. PHPMailer is Copyright (c) 2001-2003 Brent R. Matzelle
+and released under the GNU Lesser General Public License (LGPL). The full 
+version including examples and documentation can be downloaded from its 
+homepage.
