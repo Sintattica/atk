@@ -115,9 +115,11 @@ Changed in ATK 5.6
 * The preDelete trigger will now be called separately for each (to be)
   deleted record (instead of being called only once with the complete
   recordset). THIS CHANGE IS NOT BACKWARDS COMPATIBLE! [Peter, Sandy]
-* Fixed loading of the correct tab when 'atktab' was passed in the URL. [Boy]
+* Fixed loading of the correct tab when 'atktab' is passed in the URL. [Boy]
 * Fixed loading of tests from modules outside the application root which
   would sometimes do tests twice. [Boy]
+* atkManyToManyRelation based classes can now be properly hidden in forms.
+  (bug #666) [Yury]    
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the
   originating atklevel (which caused it to lose its debugging info). [Boy]
 * atkMLSplitter now uses atklng variable instead of deprecated lng variable.
