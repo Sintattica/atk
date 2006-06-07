@@ -6,9 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.6
 ------------------
-+ Added the phpmailer extension so we can send html mails. [dennisjan]
-+ When displaying an image with the atkFileAttribute a random number is
-  added to the img src tag in order to prevent local caching [Wim]
 + Added atkMessageQueue for user notification messages, which can be shown
   via the atkmessages plugin. [Patrick]
 + Added atkMlWrapper for turning any attribute into an internationalisation
@@ -20,6 +17,8 @@ Changed in ATK 5.6
 + Added 'macoslike' theme. [Marcel]
 + Added 't3skin' theme (Typo3 style). [Ivo]
 + Added setText method to atkLanguage. [Sandy]
++ Added atkMailer class for sending html mails (uses phpMailer software).
+  [Peter, Dennis-Jan]
 + Added fetchvalues method to atkBoolRelation, it now returns 0 if nothing
   is checked instead of NULL (The atkOrgRec also gives 0). [Sandy]
 + Added atkPluginTestCase class for easier testing of Smarty plugins. [Ivo]
@@ -90,7 +89,7 @@ Changed in ATK 5.6
   [Martin]
 * Made atkPasswordAttribute::makePassword static because of backward
   compatibility reasons (some applications call this function statically).
-  [dennisjan]
+  [Dennis-Jan]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only
@@ -107,8 +106,10 @@ Changed in ATK 5.6
    * Compiled themefiles are now better human readable.
    * Bug where "highlight" attribute definitions would not be loaded is
      fixed.
+* When displaying an image with the atkFileAttribute a random number is
+  added to the img src tag in order to prevent browser caching. [Wim]  
 * Changed the copydb method by filtering the executetriggers and added
-  support for different modes. [dennisjan, Peter]
+  support for different modes. [Dennis-Jan, Peter]
 * Introduced atkeditlng which can be passed along to force ML attributes to
   display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
