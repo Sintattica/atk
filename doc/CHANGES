@@ -120,6 +120,8 @@ Changed in ATK 5.6
   would sometimes do tests twice. [Boy]
 * atkManyToManyRelation based classes can now be properly hidden in forms.
   (bug #666) [Yury]    
+* atkManyToManyRelation based classes now only retrieve those fields 
+  used in the descriptor and primary key. (bug #666) [Yury]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the
   originating atklevel (which caused it to lose its debugging info). [Boy]
 * atkMLSplitter now uses atklng variable instead of deprecated lng variable.
