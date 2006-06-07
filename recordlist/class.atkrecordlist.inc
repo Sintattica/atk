@@ -107,10 +107,8 @@
           $this->m_node->m_priority_max = $this->m_node->m_priority_min + count($list["rows"]) - 1;
       }
 
-      $orientation  = atkconfig('recordlist_orientation',($theme->getAttribute("recordlist_orientation")?
-                        $theme->getAttribute("recordlist_orientation"):'left'));
-      $vorientation = atkconfig('recordlist_vorientation',(trim($theme->getAttribute("recordlist_vorientation")) != ""?
-                        $theme->getAttribute("recordlist_vorientation"):'top'));
+      $orientation  = atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
+      $vorientation = trim(atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_vorientation")));
 
       $ui = &$this->m_node->getUi();
 
@@ -375,10 +373,8 @@
 
           $str_actions = "<span class=\"actions\">";
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
-          $icons = (atkconfig('recordlist_icons')===false || 
-                    atkconfig('recordlist_icons')==='false' || 
-                    $theme->getAttribute("recordlist_icons")===false || 
-                    $theme->getAttribute("recordlist_icons")==='false'?false:true);
+          $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))===false || 
+                    atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))==='false'?false:true);
 
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
