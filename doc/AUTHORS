@@ -165,7 +165,8 @@ Yury Golovnya <YGolovnya@kyiv.utel.com.ua>
 Guido van Biemen <guido@ibuildings.nl>
 
   Guido, among other things, integrated the TinyButStrong Open Office
-  template engine in ATK.
+  template engine in ATK, made ATK largely notice free and fixed a significant
+  amount of bugs.
 
 
 Theme Designers
@@ -203,7 +204,6 @@ Arnold Cano                           <arnoldc@mcmservice.com>
 Danny Peeters                         <danny@ibuildings.nl>
 Alberto Galanti                       <alberto@officinadigitale.it>
 Bas de Nooijer                        <bas@ibuildings.nl>
-Guido van Biemen                      <guido@ibuildings.nl>
 Tjeerd Bijlsma                        <tjeerd@ibuildings.nl>
 Przemek Piotrowski                    <przemek.piotrowski@nic.com.pl>
 Olav B. Lygre                         <olav@lygre.no>
@@ -218,6 +218,7 @@ Ludo Beumer                           <ludo@ibuildings.nl>
 Dennis-Jan Broerse                    <dennisjan@ibuildings.nl>
 Patrick van der Velden                <patrick@ibuildings.nl>
 Kevin L. Winmoe [KevinLW]             <kevinlwinmoe@yahoo.com>
+Jorge Garifuna [JorgeG]               <info@GariDigital.com>
 
 Names between [] are the names they are refered by in the CHANGES file. (If
 different from their first name).
