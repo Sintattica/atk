@@ -81,15 +81,7 @@ Changed in ATK 5.6
   $config_auth_enablepasswordmailer should be set. [Guido]
 + Added module configuration (module name & path list) to mailreports.
   [Guido]
-- Removed atk/styles.css as this only belongs in themes. [Ivo]
-- Default styles.css file from an application's root is no longer loaded by
-  default. [Ivo]
-- Deprecated the atkPasswordAttribute->makePassword function. [Guido]
-* Added required parameter $generate in atkpasswordattrib::makepassword().
-  [Martin]
-* Made atkPasswordAttribute::makePassword static because of backward
-  compatibility reasons (some applications call this function statically).
-  [Dennis-Jan]
++ Added Greek translation (el.lng). [Velissariou]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only
@@ -242,6 +234,12 @@ Changed in ATK 5.6
   configuration values to theme, so instead of being defined as:
   $config_recordlist_orientation="left" it should be defined in the
   appropriate theme as $theme['recordlist_orientation']='right'. [Boy]
+* Updated Brazilian-Portuguese translation. [Carlisson]
+* Updated Spanish translation. [Gabriel]
+- Removed atk/styles.css as this only belongs in themes. [Ivo]
+- Default styles.css file from an application's root is no longer loaded by
+  default. [Ivo]
+- Deprecated the atkPasswordAttribute->makePassword function. [Guido]
 
 
 Changes in ATK 5.5
