@@ -15,7 +15,8 @@ Changed in ATK 5.6
   [Ivo]
 + Added atkShuttleRelation. [Ivo]
 + Added atkRowCounter for sequentially numbering rows. [Ivo, Przemek, JorgeG]
-+ Added atkUrlAttribute for representing urls in the database. [Przemek]
++ Added atkUrlAttribute for representing urls in the database. (bug #604) 
+  [Przemek]
 + Added 'macoslike' theme. [Marcel]
 + Added 't3skin' theme (Typo3 style). [Ivo]
 + Added setText method to atkLanguage. [Sandy]
