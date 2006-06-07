@@ -234,6 +234,8 @@ Changed in ATK 5.6
 * Minor indentation adjustment of the generated HTML code. [Guido]
 * Added the AF_NO_SORT flag by default to the atkParserAttribute as it
   should not be sortable. [Guido]
+* Fixed bug in atksearchhandler. Extended search crashed when using an 
+  atkDateAttribute.  [Peter,Dennis]
 
 Changes in ATK 5.5
 ------------------
