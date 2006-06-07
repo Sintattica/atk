@@ -66,7 +66,7 @@
 
     /**
      * Convert a relative theme path to an absolute path.
-     * 
+     *
      * If a relative path starts with 'module/something' this method converts
      * the start of the path to the location where the module 'something' is
      * actually installed.
@@ -77,11 +77,14 @@
      */
     function absPath($relpath)
     {
+      if ($relpath=="") return "";
+
       if (preg_match("!module/(.*?)/(.*)!", $relpath, $matches))
       {
         return moduleDir($matches[1]).$matches[2];
       }
-      else return atkconfig("atkroot").$relpath;
+
+      return atkconfig("atkroot").$relpath;
     }
 
     /**
