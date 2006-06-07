@@ -16,6 +16,7 @@ Changed in ATK 5.6
 + Added atkCalculatorAttribute for adding columns with calculated values.
   [Ivo]
 + Added atkShuttleRelation. [Ivo]
++ Added atkRowCounter for sequentially numbering rows. [Ivo, Przemek, JorgeG]
 + Added 'macoslike' theme. [Marcel]
 + Added 't3skin' theme (Typo3 style). [Ivo]
 + Added setText method to atkLanguage. [Sandy]
