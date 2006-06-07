@@ -40,7 +40,8 @@ $fckphp_config['basedir']=$config_fck_documentroot_path;
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
+// $fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
+$fckphp_config['urlprefix']=(substr($config_fck_documentroot_uri,0,1) == "/") ? substr($config_fck_documentroot_uri,1) : $config_fck_documentroot_uri;
 /*==============================================================================*/
 
 
