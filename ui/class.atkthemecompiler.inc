@@ -84,6 +84,23 @@
       $data = array();
 
       $path = $this->findTheme($name, $location);
+
+      if ($path=="")
+      {
+        // theme not found.
+        $defaulttheme = atkconfig("defaulttheme");
+        if ($name!=$defaulttheme)
+        {
+          // this is not the default theme, let's load that instead.
+          return $this->readStructure($defaulttheme, "auto");
+        }
+        else
+        {
+          // this is the default theme, set in the config. If this doesn't exist, fallback to default.
+          return $this->readStructure("default", "atk");
+        }
+      }
+
       $abspath = atkTheme::absPath($path);
 
       // First parse the themedef file for attributes
