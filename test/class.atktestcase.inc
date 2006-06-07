@@ -32,7 +32,7 @@
     var $m_restoreNode = array();
     var $m_restoreSecMgr = NULL;
     
-    function &setMockDb($conn="default")
+    function setMockDb($conn="default")
     {
       global $config_db;
 

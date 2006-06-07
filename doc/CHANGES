@@ -189,7 +189,7 @@ Changed in ATK 5.6
 * Fixed wrong title in confirmAction dialogs. [KevinLW]
 * Replaced atk_var_dump of atkMessages with a single atkdebug statement in
   case there are no messages. [Guido]
-* Fixed PHP notice(s). [Guido]
+* Fixed PHP notice(s). [Guido, Yury]
 * Fixed html error in tabsecurity debug info. [Guido]
 * All buttons now have the same background color and height by default in
   the outlook theme. [Guido]
