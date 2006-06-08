@@ -404,15 +404,15 @@
     {
       if ($module=="atk")
       {
-        $path = atkconfig("atkroot")."atk/".($this?$this->LANGDIR:'languages/');
+        $path = atkconfig("atkroot")."atk/".(isset($this)?$this->LANGDIR:'languages/');
       }
       else if ($module=="langoverrides")
       {
-        $path = atkconfig("language_basedir",($this?$this->LANGDIR:'languages/'));
+        $path = atkconfig("language_basedir",(isset($this)?$this->LANGDIR:'languages/'));
       }
       else
       {
-        $path = moduleDir($module).($this?$this->LANGDIR:'languages/');
+        $path = moduleDir($module).(isset($this)?$this->LANGDIR:'languages/');
       }
       return $path;
     }
