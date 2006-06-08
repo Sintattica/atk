@@ -226,6 +226,7 @@ Changed in ATK 5.6
 * Updated Brazilian-Portuguese translation. [Carlisson]
 * Updated Spanish translation. [Gabriel]
 * Updated Dutch translation. [Peter, Guido, Ivo]
+* Added AF_LIST_OBLIGATORY_NULL_ITEM flag to atkListAttribute. [Boy]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]
