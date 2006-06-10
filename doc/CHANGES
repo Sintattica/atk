@@ -145,6 +145,8 @@ Changed in ATK 5.6
   array instead of numerical indexes). This should save a lot of memory.
   For applications that rely on the numerical record indexes (EVIL!) you
   can set $config_pgsqlfetchmode = PGSQL_BOTH in your configfile. [Sandy]
+* Replaced deprecated postgresql function calls with the correct calls. Note
+  that the postgresql driver now requires PHP 4.2. (bug #349) [Thom]
 * Fixed bug in the atkManyToManyRelation if the filter isn't set. [Sandy]
 * Added type="text/css" attribute to <style> tags. [Guido]
 * Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
