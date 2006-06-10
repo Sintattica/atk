@@ -373,7 +373,7 @@
 
           $str_actions = "<span class=\"actions\">";
           $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
-          $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))===false || 
+          $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))===false ||
                     atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))==='false'?false:true);
 
           foreach ($list["rows"][$i]["actions"] as $name => $url)
@@ -502,7 +502,12 @@
                        '<option value="">'.atktext("with_selected").':</option>';
 
             foreach ($list["mra"] as $name)
-              $mra .= '<option value="'.$name.'">'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'</option>';
+            {
+              if ($this->m_node->allowed($name))
+              {
+                $mra .= '<option value="'.$name.'">'.atktext($name, $this->m_node->m_module, $this->m_node->m_type).'</option>';
+              }
+            }
 
             $mra .= '</select>&nbsp;'.$this->getCustomMraHtml().
                        '<input type="button" class="btn" value="'.atktext("submit").'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
@@ -511,9 +516,12 @@
           /* one action -> only the submit button */
           else
           {
-            $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$list["mra"][0].'">'.
-            $this->getCustomMraHtml().
-                       '<input type="button" class="btn" value="'.atktext($list["mra"][0],$this->m_node->m_module, $this->m_node->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
+            if ($this->m_node->allowed($list["mra"][0]))
+            {
+              $mra .= '&nbsp; <input type="hidden" name="'.$listName.'_atkaction" value="'.$list["mra"][0].'">'.
+              $this->getCustomMraHtml().
+                         '<input type="button" class="btn" value="'.atktext($list["mra"][0],$this->m_node->m_module, $this->m_node->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
+            }
           }
 
           if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';

@@ -173,6 +173,8 @@ Changed in ATK 5.6
 * Fixed double cursor declaration in tabs css file of outlook theme. [Yury]
 * Fixed bug in the countDb that used wrong var in the in_array. [Sandy]
 * Fixed MRA button translation when there is only one action. [Boy]
+* If an MRA action is not allowed, it is removed from the list of selectable
+  actions. (bug #390) [Ivo]
 * Improved error handling when module doesn't extend atkModule. [Boy]
 * Updated atkFileAttribute phpdoc, updated some deprecated elements and did
   some functional decomposition. [Boy]
