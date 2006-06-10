@@ -470,6 +470,8 @@
 
   /**
    * A collector for supported languages
+   * @author Boy Baukema <boy@ibuildings.nl>
+   * @package atk
    */
   class getSupportedLanguagesCollector
   {
