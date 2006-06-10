@@ -1336,8 +1336,12 @@
       {
         $nomodule=true;
         $descrtrace = "";
-        foreach ($descriptortrace as $desc)
+        // only show the last 3 elems
+        $cnt = count($descriptortrace);
+        if ($cnt>3) $descrtrace = "... - ";
+        for ($i=max(0, $cnt-3), $_i=$cnt; $i<$_i; $i++)
         {
+          $desc = $descriptortrace[$i];
           $descrtrace.= htmlentities($desc, ENT_COMPAT,atktext('charset'))." - ";
         }
         $res= $descrtrace . $res;

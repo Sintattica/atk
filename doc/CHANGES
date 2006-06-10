@@ -151,6 +151,8 @@ Changed in ATK 5.6
   you depend on the old (incorrect) behaviour! [Peter]
 * Fixed loading of existing search in atkDateAttribute. [Peter]
 * Improved title i18n support (stack trace and action title). [Peter]
+* The title bar of add/edit action now only shows the last 2 master record
+  descriptors to prevent the window from becoming too wide. [Ivo]
 * Fixed distinct count support in atkQuery (using setDistinct). [Peter]
 * Fixed the width of forms inside tabs to be 100%, for 'outlook', 'win2k'
   and 'modern' themes. [Ivo]
@@ -811,7 +813,7 @@ Changes in ATK 5.3RC1
 * Fixed 0 value check in atkNumberAttribute. (bug #500) [Peter]
 * Fixed reference bug in the atkModule::newNode method which caused the
   newNode method to always return a copy of the newly created node. [Peter]
-* Changed actiontitle to return descriptor trace when appropriate [Boy]
+* Changed actiontitle to return descriptor trace when appropriate. [Boy]
 * Moved javascript get_object() function from dhtml_tabs.js to separate
   tools.inc.php file. [Boy]
 * Made value part of addSearchFilter optional, as it was intended to be. [Boy]
