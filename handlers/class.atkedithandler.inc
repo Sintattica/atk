@@ -310,6 +310,7 @@
 
     /**
      * Adds numbering to the label of a field
+     * @access private
      * @param array $field    the currently handled attribute
      * @param array $tplfield the template data for the current attribute
      * @param int $i          the counter being used to loop the node for each attribute
