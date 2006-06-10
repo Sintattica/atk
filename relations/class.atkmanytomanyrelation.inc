@@ -276,7 +276,12 @@
 
           // First check if the record does not exist yet.
           /* @var $rel atkNode */
-          $existing = $rel->selectDb($rel->primaryKey($newrecord), "", "", "", $rel->m_primaryKey);
+          $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".
+                     $record[$this->m_ownerInstance->primaryKeyField()]."'".
+                     " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
+                     $record[$this->fieldName()][$i][$this->getRemoteKey()]."'";
+
+          $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {
             if (!$rel->addDb($newrecord, true, $mode))

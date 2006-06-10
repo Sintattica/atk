@@ -122,10 +122,12 @@ Changed in ATK 5.6
 * Fixed loading of the correct tab when 'atktab' is passed in the URL. [Boy]
 * Fixed loading of tests from modules outside the application root which
   would sometimes do tests twice. [Boy]
-* atkManyToManyRelation based classes can now be properly hidden in forms.
+* atkManyToManyRelation based relations can now be properly hidden in forms.
   (bug #666) [Yury]    
-* atkManyToManyRelation based classes now only retrieve those fields 
-  used in the descriptor and primary key. (bug #666) [Yury]
+* atkManyToManyRelation based relations now only retrieve those fields used
+  in the descriptor and primary key. (bug #666) [Yury]
+* atkManyToManyRelation based relations no longer insert bogus records when
+  the intermediary node had a separate primary key. (bug #338) [Ivo]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the
   originating atklevel (which caused it to lose its debugging info). [Boy]
 * atkMLSplitter now uses atklng variable instead of deprecated lng variable.
