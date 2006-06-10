@@ -269,6 +269,7 @@
   "tue" => "Τρι",
   "tuesday" => "Τρίτη",
   "unknown_error" => "Αγνωστο λάθος",
+  "unselect" => "Deselect", // Missing string!!!
   "until" => "μέχρι",
   "update" => "Update",
   "upperchars" => "uppercase characters", // Missing string!!!

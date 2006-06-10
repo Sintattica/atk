@@ -275,6 +275,7 @@
   "tue" => "Ter",
   "tuesday" => "Turça-feira",
   "unknown_error" => "Unknown error", // Missing string!!!
+  "unselect" => "Deselect", // Missing string!!!
   "until" => "enquanto",
   "update" => "Update", // Missing string!!!
   "upperchars" => "uppercase characters", // Missing string!!!

@@ -275,6 +275,7 @@
   "tue" => "tir",
   "tuesday" => "tirsdag",
   "unknown_error" => "Ukjent feil",
+  "unselect" => "Deselect", // Missing string!!!
   "until" => "til",
   "update" => "Oppdater",
   "upperchars" => "store bokstaver",

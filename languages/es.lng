@@ -279,6 +279,7 @@
   "tue" => "Mar",
   "tuesday" => "Martes",
   "unknown_error" => "Error desconocido",
+  "unselect" => "Deselect", // Missing string!!!
   "until" => "hasta",
   "update" => "Actualizar",
   "upperchars" => "uppercase characters", // Missing string!!!

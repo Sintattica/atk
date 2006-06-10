@@ -347,9 +347,8 @@
         {
           // Large mode
           // TODO: Fill a dropdown box with recent records..
-          $selname = $fieldprefix.$this->fieldName()."_newsel";
+          $selname = $id."_newsel";
 
-          $id = $fieldprefix.$this->fieldName();
           $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
 
           if ($ATK_VARS[$selname]!="")
@@ -388,7 +387,13 @@
 
           if (count($destrecord))
           {
-            $result.= $this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
+            $result.= '<span id="'.$id.'_current" >'.$this->m_destInstance->descriptor($destrecord)."&nbsp;&nbsp;";
+            if (!$this->hasFlag(AF_OBLIGATORY))
+            {
+              $result.= '<a href="#" onClick="document.getElementById(\''.
+                                    $id.'\').value=\'\'; document.getElementById(\''.$id.'_current\').style.display=\'none\'">'.atktext("unselect").'</a>&nbsp;&nbsp;';
+            }
+            $result.= '</span>';
           }
 
           $result.=$this->hide($record, $fieldprefix);
@@ -472,7 +477,7 @@
             $currentPk = $this->m_destInstance->primaryKey($newrecord);
           }
         }
-      $result = '<input type="hidden" name="'.$fieldprefix.$this->formName().
+      $result = '<input type="hidden" id="'.$fieldprefix.$this->formName().'" name="'.$fieldprefix.$this->formName().
       '" value="'.$currentPk.'">';
         return $result;
       }

@@ -85,6 +85,8 @@ Changed in ATK 5.6
 + Added prototype/scriptaculous js libraries for Ajax functionality. [Peter]
 + The atkNode->genericPage method can now draw multiple boxes at once. [Guido]
 + Added Greek translation (el.lng). [Velissariou]
++ Added 'deselect' link to atkManyToOneRelation to deselect the current record
+  when AF_LARGE is set. (bug #431) [Ivo]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
@@ -128,6 +130,10 @@ Changed in ATK 5.6
   in the descriptor and primary key. (bug #666) [Yury]
 * atkManyToManyRelation based relations no longer insert bogus records when
   the intermediary node had a separate primary key. (bug #338) [Ivo]
+* Refactored atkManyBoolRelation's store(), hide(), searchCondition(),
+  search() and isEmpty() methods to atkManyToManyRelation as these methods
+  are not atkManyBoolRelation specific. [Ivo]    
+* Fixed bug in the atkManyToManyRelation when the filter isn't set. [Sandy]
 * The atkdebugger is now passed an atkprevlevel of 0 instead of the
   originating atklevel (which caused it to lose its debugging info). [Boy]
 * atkMLSplitter now uses atklng variable instead of deprecated lng variable.
@@ -136,9 +142,6 @@ Changed in ATK 5.6
 * Added baseclass include for the atkMockQuery. [Martin]
 * Fixed a notice that users with Norton Internet Security or other popup
   blockers (that remove headers) may see. [Ivo]
-* Refactored atkManyBoolRelation's store(), hide(), searchCondition(),
-  search() and isEmpty() methods to atkManyToManyRelation as these methods
-  are not atkManyBoolRelation specific. [Ivo]
 * Link id is no longer passed to mysql error functions if it is null. [Boy]
 * Fixed creating sequences in postgresql. [Sandy]
 * Postgresql records are now fetched in PGSQL_ASSOC mode (only associative
@@ -147,12 +150,14 @@ Changed in ATK 5.6
   can set $config_pgsqlfetchmode = PGSQL_BOTH in your configfile. [Sandy]
 * Replaced deprecated postgresql function calls with the correct calls. Note
   that the postgresql driver now requires PHP 4.2. (bug #349) [Thom]
-* Fixed bug in the atkManyToManyRelation if the filter isn't set. [Sandy]
 * Added type="text/css" attribute to <style> tags. [Guido]
 * Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
 * Fixed db2value method of atkManyToOneRelation (now calls db2value on
   destination attributes). Warning: this change might cause problems if
   you depend on the old (incorrect) behaviour! [Peter]
+* Fixed reloading of descriptor fields for atkManyToOneRelations with a
+  combined foreign key. [Guido]   
+* Added ability to call display on atkManyToOneRelation without mode. [Boy]
 * Fixed loading of existing search in atkDateAttribute. [Peter]
 * Improved title i18n support (stack trace and action title). [Peter]
 * The title bar of add/edit action now only shows the last 2 master record
@@ -167,7 +172,6 @@ Changed in ATK 5.6
 * Added extra is_array check to the display function the atkdateattribute
   because the empty function doesn't work correct in the php 5.0.5 version
   (this is fixed in the php 5.1.1 as far as i can see). [Sandy]
-* Added ability to call display on atkManyToOneRelation without mode. [Boy]
 * Fixed include order in atkDateAttribute that could cause it to be
   displayed as a text input when included before atkAttribute. [Ivo]
 * Fixed double cursor declaration in tabs css file of outlook theme. [Yury]
@@ -198,8 +202,6 @@ Changed in ATK 5.6
 * All buttons now have the same background color and height by default in
   the outlook theme. [Guido]
 * Swapped select and cancel button in colorpicker. [Guido]
-* Fixed reloading of descriptor fields for atkManyToOneRelations with a
-  combined foreign key. [Guido]
 * Replaced usage of the global $config_atkroot variable by atkconfig calls.
   [Guido]
 * Replaced usage of deprecated StringParse function by atkStringParser

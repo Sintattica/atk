@@ -277,6 +277,7 @@
   "tue" => "Die",
   "tuesday" => "Dienstag",
   "unknown_error" => "Unknown error", // Missing string!!!
+  "unselect" => "Deselect", // Missing string!!!
   "until" => "bis",
   "update" => "Update", // Missing string!!!
   "upperchars" => "uppercase characters", // Missing string!!!
