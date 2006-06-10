@@ -17,10 +17,16 @@
 include_once(atkconfig("atkroot").'atk/ext/phpmailer/class.phpmailer.php');
 
 /**
- * ATK mailer.
+ * ATK mailer class
+ *
+ * This class can be used to send HTML e-mails.
  * 
- * Simple extension of phpmailer class, to override 
- * some basic settings etc.
+ * This is basically an extension of the PHPMailer class, to override some 
+ * basic settings.
+ * 
+ * This class also supports a $config_mail_enabled config setting, which can 
+ * be set to false to disable all outgoing emails. (useful for test 
+ * environments that shouldn't actually send the mails)
  * 
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @version $Revision$
@@ -28,7 +34,7 @@ include_once(atkconfig("atkroot").'atk/ext/phpmailer/class.phpmailer.php');
  * @package atk
  * @subpackage utils
  */
-class atkMailer extends phpmailer
+class atkMailer extends PHPMailer
 {
   var $Mailer   = "mail";
   var $WordWrap = 75;
