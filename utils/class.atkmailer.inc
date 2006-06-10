@@ -1,62 +1,67 @@
 <?php
-/**
- * This file is part of the Achievo ATK distribution.
- * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
- * included in the distribution.
- * 
- * @package atk
- * @subpackage utils
- *
- * @license http://www.achievo.org/atk/licensing ATK Open Source License
- *
- * @version $Revision:
- * $Id$
- */
-
-include_once(atkconfig("atkroot").'atk/ext/phpmailer/class.phpmailer.php');
-
-/**
- * ATK mailer class
- *
- * This class can be used to send HTML e-mails.
- * 
- * This is basically an extension of the PHPMailer class, to override some 
- * basic settings.
- * 
- * This class also supports a $config_mail_enabled config setting, which can 
- * be set to false to disable all outgoing emails. (useful for test 
- * environments that shouldn't actually send the mails)
- * 
- * @author Peter C. Verhage <peter@ibuildings.nl>
- * @version $Revision$
- * 
- * @package atk
- * @subpackage utils
- */
-class atkMailer extends PHPMailer
-{
-  var $Mailer   = "mail";
-  var $WordWrap = 75;
-
   /**
-   * Override error handler.
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * included in the distribution.
+   * 
+   * @package atk
+   * @subpackage utils
    *
-   * @param string $msg error message
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision:
+   * $Id$
    */
-  function error_handler($msg) 
-  {
-    atkerror($msg);
-  }   
   
   /**
-   * Send.
+   * @internal includes
    */
-  function Send()
+  include_once(atkconfig("atkroot").'atk/ext/phpmailer/class.phpmailer.php');
+
+ /**
+   * ATK mailer class
+   *
+   * This class can be used to send HTML e-mails.
+   * 
+   * This is basically an extension of the PHPMailer class, to override some 
+   * basic settings.
+   * 
+   * This class also supports a $config_mail_enabled config setting, which can 
+   * be set to false to disable all outgoing emails. (useful for test 
+   * environments that shouldn't actually send the mails)
+   * 
+   * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @version $Revision$
+   * 
+   * @package atk
+   * @subpackage utils
+   */
+  class atkMailer extends PHPMailer
   {
-    if (atkconfig("mail_enabled", true))
-      return parent::Send();
-    else return true;
+    var $Mailer   = "mail";
+    var $WordWrap = 75;
+  
+    /**
+     * Override error handler.
+     *
+     * @param string $msg error message
+     */
+    function error_handler($msg) 
+    {
+      atkerror($msg);
+    }   
+    
+    /**
+     * Send.
+     */
+    function Send()
+    {
+      if (atkconfig("mail_enabled", true))
+        return parent::Send();
+      else return true;
+    }
   }
-}
+
 ?>
