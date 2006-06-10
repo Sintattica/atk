@@ -199,6 +199,7 @@
 
   // If you use "db" as authentication type, you can set the table and fields
   // from which atk should read the username and password information.
+  $config_auth_usernode    = ""; // module.nodename 
   $config_auth_usertable   = "user";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";
