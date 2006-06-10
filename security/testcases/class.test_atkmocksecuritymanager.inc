@@ -1,5 +1,30 @@
 <?php
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage security
+   * @access private
+   *
+   * @copyright (c)2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
+
+  /**
+   * Testcases for the atkMockSecurityManager
+   *
+   * @author Ivo Jansch <ivo@achievo.org>
+   * @package atk
+   * @subpackage security
+   * @access private
+   */
   class test_atkMockSecurityManager extends atkTestCase
   {
     function test_mocksecuritymanager()
