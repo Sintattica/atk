@@ -58,7 +58,7 @@
 
       $filter = $this->parseFilter($this->m_destinationFilter,$record);
       // now select all records
-      $recordset = $this->m_destInstance->selectDb($filter);
+      $recordset = $this->m_destInstance->selectDb($filter, "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
 
       $left = array();
       $right = array();
