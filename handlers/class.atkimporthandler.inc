@@ -312,7 +312,7 @@
               if ($display) $sample.= $display;
               else $sample.= atktext($attr->m_name);
 
-              if ((string)$newval!==(string)$line[$j])
+              if ((string)$display!==(string)$line[$j])
               {
                 // Also display raw value so we can verify
                 $sample.= ' <i style="color: #777777">('.trim($line[$j]).")</i>";
@@ -361,7 +361,7 @@
       }
       else
       {
-        $atkval = array($attributename=>$attr->fetchValue(array($attributename=>$newval)));
+        $atkval = array($attributename=>$newval);
       }
       return $attr->display($atkval);
     }
@@ -1024,17 +1024,9 @@
           }
         }
       }
-      else if (is_object($attr) && method_exists($attr,"fetchValue"))
+      else if (is_object($attr) && method_exists($attr,"parseStringValue"))
       {
-        $relation = $this->isRelationAttribute($attributename);
-        if ($relation)
-        {
-          $value = $attr->fetchValue(array($attributename=>$value));
-        }
-        else
-        {
-          $value = $attr->fetchValue(array($attributename=>$value));
-        }
+        $value = $attr->parseStringValue($value);
       }
       else
       {

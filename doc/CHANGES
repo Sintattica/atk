@@ -113,6 +113,10 @@ Changed in ATK 5.6
   attributes to display a specific language. [Boy]
 * Fixed a bug in the 'remove current file' feature of atkFileAttribute when
   AF_FILE_PHYSICAL_DELETE was set. [Ivo]
+* Fixed CSV import handler for date values and other complexer attribute
+  types. (bug #502) [Ivo]
+* In CSV import sample, the raw value is no longer displayed if it is equal
+  to the parsed value. [Ivo]
 * atkNode's validateFilter method can now cope with sql 'IN' operator.
   [Yury]
 * Also collect timing info at debuglevel 0 for mailreports. [Boy]
