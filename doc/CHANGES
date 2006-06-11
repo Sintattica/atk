@@ -246,7 +246,7 @@ Changed in ATK 5.6
   appropriate theme as $theme['recordlist_orientation']='left'. [Boy]
 * Added AF_LIST_OBLIGATORY_NULL_ITEM flag to atkListAttribute. [Boy]
 * Fixed DNS lookup in email validation in atkEmailAttribute. (bug #549) [Olav]
-* Updated Brazilian-Portuguese translation. [Carlisson]
+* Updated Brazilian-Portuguese translation. (bug #612) [Carlisson, Roberto]
 * Updated Spanish translation. [Gabriel]
 * Updated Dutch translation. [Peter, Guido, Ivo]
 * Updated Norwegian translation. [Olav]
