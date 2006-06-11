@@ -165,8 +165,11 @@ Changed in ATK 5.6
 * The title bar of add/edit action now only shows the last 2 master record
   descriptors to prevent the window from becoming too wide. [Ivo]
 * Fixed distinct count support in atkQuery (using setDistinct). [Peter]
+* Fixed the ability to place an attribute on multiple tabs using the
+  array("tab1", "tab2") parameter. (bug #478) [Stefano]
 * Fixed the width of forms inside tabs to be 100%, for 'outlook', 'win2k'
   and 'modern' themes. [Ivo]
+* Fixed double cursor declaration in tabs css file of outlook theme. [Yury]
 * Generated select/count queries now have spaces between the field- and
   table names for improved readability. Side effect is that the debugoutput
   no longer causes the screen to have an overly large scrollbar. [Ivo]
@@ -176,7 +179,6 @@ Changed in ATK 5.6
   (this is fixed in the php 5.1.1 as far as i can see). [Sandy]
 * Fixed include order in atkDateAttribute that could cause it to be
   displayed as a text input when included before atkAttribute. [Ivo]
-* Fixed double cursor declaration in tabs css file of outlook theme. [Yury]
 * Fixed bug in the countDb that used wrong var in the in_array. [Sandy]
 * Fixed MRA button translation when there is only one action. [Boy]
 * If an MRA action is not allowed, it is removed from the list of selectable
