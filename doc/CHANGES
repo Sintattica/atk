@@ -97,7 +97,7 @@ Changed in ATK 5.6
    + Full inheritance: themes can now derive from eachother so they only
      need to define the differences from the base theme.
    + Fully automatic theme structure scanning. Themedef.inc no longer needs
-     to define which templates/styles/images etc. it implements.
+     to define which templates/styles/images etc. it implements. (bug #543)
    + Support for module specific theme files.
    + Supports themes in modules.
      ($config_defaulttheme = "modname.themename");
