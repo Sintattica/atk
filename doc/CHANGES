@@ -117,6 +117,7 @@ Changed in ATK 5.6
   types. (bug #502) [Ivo]
 * In CSV import sample, the raw value is no longer displayed if it is equal
   to the parsed value. [Ivo]
+* Fixed import of atkManyToOneRelation values from CSV files. (bug #669) [Ivo]
 * atkNode's validateFilter method can now cope with sql 'IN' operator.
   [Yury]
 * Also collect timing info at debuglevel 0 for mailreports. [Boy]
