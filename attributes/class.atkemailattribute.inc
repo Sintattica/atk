@@ -124,8 +124,8 @@
       if(!empty($hostName))
       {
         $recType = escapeshellarg($recType);
-        $hostName = escapeshellarg($hostName);
-        exec("nslookup -type=$recType $hostName", $result);
+        $hostNameArg = escapeshellarg($hostName);
+        exec("nslookup -type=$recType $hostNameArg", $result);
         // check each line to find the one that starts with the host
         // name. If it exists then the function succeeded.
         foreach ($result as $line)
