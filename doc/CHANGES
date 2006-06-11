@@ -165,6 +165,8 @@ Changed in ATK 5.6
 * Fixed reloading of descriptor fields for atkManyToOneRelations with a
   combined foreign key. [Guido]   
 * Added ability to call display on atkManyToOneRelation without mode. [Boy]
+* The search bar now honors <attribname>_search() overrides in nodes. 
+  (bug #513) [Ivo]
 * Fixed loading of existing search in atkDateAttribute. [Peter]
 * Improved title i18n support (stack trace and action title). [Peter]
 * The title bar of add/edit action now only shows the last 2 master record

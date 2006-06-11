@@ -942,7 +942,17 @@
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
-          $arr["search"][$key] = $this->search($atksearch,null,$fieldprefix);
+        {
+          $fn = $this->fieldName()."_search";
+          if (method_exists($this->m_ownerInstance, $fn))
+          {
+            $arr["search"][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix);
+          }
+          else
+          {
+            $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix);
+          }
+        }
       }
     }
 
@@ -1754,7 +1764,7 @@
       $funcname = $this->m_name."_search";
 
       if (method_exists($node,$funcname))
-      $field["widget"] = $node->$funcname($defaults, $fieldprefix);
+      $field["widget"] = $node->$funcname($defaults, true, $fieldprefix);
       else
       {
         $field["widget"] = $this->search($defaults, true, $fieldprefix); // second param indicates extended search.
