@@ -79,7 +79,7 @@ Changed in ATK 5.6
 + Added Password forgotten option to allow users to regain access by asking
   the atk application to mail back a new password. To enable this feature,
   $config_auth_usernode, config_auth_emailfield and
-  $config_auth_enablepasswordmailer should be set. [Guido]
+  $config_auth_enablepasswordmailer should be set. (bug #471) [Guido]
 + Added module configuration (module name & path list) to mailed error
   reports. [Guido]
 + Added array support for the $params parameter dispatch_url. [Peter]
