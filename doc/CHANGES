@@ -421,7 +421,7 @@ Changes in ATK 5.4
   + Configurable delimiter and enclosure. [Stefano]
   * The default export filename is now export_[node name].csv. [Stefano]
   * If the recordlist was filtered by searchcriteria, only those records
-    listed are displayed. [Stefano]
+    listed are displayed. (bug #525) [Stefano]
   * Records in export are now sorted according to the selected order from
     the recordlist. [Stefano]
   * Fixed some translations. [Ivo]
