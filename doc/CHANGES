@@ -518,7 +518,8 @@ Changes in ATK 5.4
   $config_debug = -1 to prevent collection and save some memory. [Ivo]
 * Fixed a bug in the logout link. [Ivo]
 * Fixed a bug in the sum() method of atkAttribute, causing totals to
-  disappear from atkOneToManyRelation's recordlist in editmode. [Ivo]
+  disappear from atkOneToManyRelation's recordlist in editmode. (bug #486) 
+  [Ivo, Yury]
 * When translation for tab_tabname wasn't found, tab_tabname was returned.
   Now an attempt to translate tabname without the tab_ prefix is also made
   (with the plain tabname as fallback). [Guido]
