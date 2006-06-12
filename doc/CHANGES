@@ -6,10 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.6
 ------------------
-+ Added auto wildcard detection in atkattribute which always allows you 
-  to search using a * like iv* [Ivo]
-+ Changed atkFckAttribute's HTML based resourcemanager into a PHP based
-  version to support themes [Wim]
 + Added ajax powered smart search functionality for performing arbitraty
   searches on any node. [Peter]
 + Added atkMessageQueue class for adding user notification messages. [Patrick]
@@ -91,6 +87,8 @@ Changed in ATK 5.6
 + Added Greek translation (el.lng). [Velissariou]
 + Added 'deselect' link to atkManyToOneRelation to deselect the current record
   when AF_LARGE is set. (bug #431) [Ivo]
++ Added auto wildcard detection in atkAttribute which allows the user to use
+  wildcards (*) in any search string. [Ivo]    
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
@@ -161,6 +159,8 @@ Changed in ATK 5.6
   that the postgresql driver now requires PHP 4.2. (bug #349) [Thom]
 * Added type="text/css" attribute to <style> tags. [Guido]
 * Upgrade FCKEditor (for atkFckAttribute) to version 2.2. [Ivo, Olav]
++ Changed atkFckAttribute's HTML based resourcemanager into a PHP based
+  version to support themes [Wim]  
 * Fixed db2value method of atkManyToOneRelation (now calls db2value on
   destination attributes). Warning: this change might cause problems if
   you depend on the old (incorrect) behaviour! [Peter]
@@ -248,6 +248,9 @@ Changed in ATK 5.6
   appropriate theme as $theme['recordlist_orientation']='left'. [Boy]
 * Added AF_LIST_OBLIGATORY_NULL_ITEM flag to atkListAttribute. [Boy]
 * Fixed DNS lookup in email validation in atkEmailAttribute. (bug #549) [Olav]
+* The NF_ADDAFTERADD flag now makes use of SESSION_DEFAULT instead of 
+  SESSION_REPLACE to fix a bug in session behaviour when using the cancel
+  button after a few adds. (bug #670) [Fabio]
 * Updated Brazilian-Portuguese translation. (bug #612) [Carlisson, Roberto]
 * Updated Spanish translation. [Gabriel]
 * Updated Dutch translation. [Peter, Guido, Ivo]
