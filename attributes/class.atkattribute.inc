@@ -1074,6 +1074,14 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode)
     {
+      /** @todo Move this to a higher level */
+      if (strpos($value, "*")!==false && strlen($value)>1)
+      {
+      	// auto wildcard detection
+      	$searchmode = "wildcard";
+      }
+    	
+    	
       $searchCondition = &$this->getSearchCondition($query, $table, $value, $searchmode);
       if ($searchCondition)
       {

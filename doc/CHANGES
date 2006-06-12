@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.6
 ------------------
++ Added auto wildcard detection in atkattribute which always allows you 
+  to search using a * like iv* [Ivo]
 + Changed atkFckAttribute's HTML based resourcemanager into a PHP based
   version to support themes [Wim]
 + Added ajax powered smart search functionality for performing arbitraty
