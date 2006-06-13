@@ -233,7 +233,7 @@
 
       foreach ($this->m_stylesheets as $file => $media)
       {
-        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'">'."\n";
       }
 
       for ($i = 0; $i < count($this->m_stylecode); $i++)
@@ -264,7 +264,7 @@
       $res.="  <script type=\"text/javascript\">
   function globalSubmit(form)
   {
-     var retval = true;\n";
+    var retval = true;\n";
 
       for ($i=0, $_i = count($this->m_submitscripts); $i<$_i; $i++)
       {
@@ -273,7 +273,7 @@
       }
 
       $res.="    return retval;
-   }\n";
+  }\n";
 
       if (count($this->m_loadscripts))
       {
