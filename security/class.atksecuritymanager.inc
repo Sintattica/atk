@@ -234,7 +234,7 @@
         $authenticated = false;
 
         // Email password if password forgotten and passwordmailer enabled
-        if ((atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
+        if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
         {
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
@@ -502,6 +502,7 @@
         $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
         $output.='<tr><td colspan="3" align="center" height="50" valign="middle">';
         $output.='<input name="login" class="button" type="submit" value="'.atktext('login').'">';
+        $tplvars["auth_enablepasswordmailer"] = atkconfig("auth_enablepasswordmailer", false);
         if (atkconfig("auth_enablepasswordmailer", false))
         {
           $output.='&nbsp;&nbsp;<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
