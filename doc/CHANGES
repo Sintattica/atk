@@ -106,7 +106,7 @@ Changed in ATK 5.6
 + Added 'deselect' link to atkManyToOneRelation to deselect the current record
   when AF_LARGE is set. (bug #431) [Ivo]
 + Added auto wildcard detection in atkAttribute which allows the user to use
-  wildcards (*) in any search string. [Ivo]
+  wildcards (*) in any search string. (bug #611) [Ivo]
 * Fixed bug in the mysql41 driver. The linkid wasn't cleared after closing
   the db connection which caused unexpected behaviour. [Martin]
 * Significant performance enhancement in atkNode::searchDb(). Only string/text
