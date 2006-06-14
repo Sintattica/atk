@@ -249,7 +249,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
         if ($file != ".." && $file != ".") {
           if (filemtime($this->_process_path.$file) < $now) {
             if (!(is_dir($this->_process_path.$file) ? @rmdir($this->_process_path.'/'.$file) : @unlink($this->_process_path.$file))) {
-              atkterror('clsTinyButStrongOOo->ClearProcessDir: Can\'t remove directory or file : '.$this->_process_path.$file);
+              atkerror('clsTinyButStrongOOo->ClearProcessDir: Can\'t remove directory or file : '.$this->_process_path.$file);
             }
           }
         }
