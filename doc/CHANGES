@@ -12,6 +12,11 @@ Changed in ATK 5.6.1
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl
   can now detect if it should show the Password forgotten button. [Guido]
+* Replaced tbsooo's meth_misc_alert calls by atkerror statements to
+  improve debugging. [Guido]
+* Fixed bug in tbsooo which caused the SaveXmlToDoc function to fail due to
+  the -u option in the zip command (thanks Dennis-Jan for pointing me into
+  this direction). [Guido]
 
 Changed in ATK 5.6
 ------------------
