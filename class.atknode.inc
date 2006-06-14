@@ -858,6 +858,17 @@
         return $this->m_attribList[$name];
       else return NULL;
     }
+    
+    /**
+     * Gets all the attributes.
+     * @return array Array with the attributes.
+     */
+    function &getAttributes()
+    {
+      if (isset($this->m_attribList))
+        return $this->m_attribList;
+      else return NULL;
+    }
 
     /**
      * Checks if the node has a certain flag set.
