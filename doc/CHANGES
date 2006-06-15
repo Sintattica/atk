@@ -8,6 +8,10 @@ Changed in ATK 5.6.1
 --------------------
 + Added the function getAttributes to get all the attributes of a node in
   an array. [dennisjan]
++ Added atkscript Smarty plug-in (can be used to register a JavaScript
+  file from within a template). [Peter]
++ Added atkdatefield Smarty plug-in (can be used to embed date controls
+  in pages, based on the atkDateAttribute). [Peter]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl
