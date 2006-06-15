@@ -88,7 +88,7 @@
       if (strstr($name," "))
         $name = "[$name]";
       
-      if ($table!="") $fieldname = $name;
+      if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;
       $this->m_fields[] = $fieldname;
 
