@@ -1764,6 +1764,7 @@
   function &atkinstance($fullclassname, $reset=false)
   {
     static $s_instances = array();
+    $fullclassname = atkResolveClass($fullclassname);
     if (!isset($s_instances[$fullclassname]) || $reset)
     {
       atkimport($fullclassname);
@@ -1940,5 +1941,57 @@
   function atkArrayNvl($array, $key, $defaultvalue=null)
   {
     return (isset($array[$key]) ? $array[$key] : $defaultvalue);
+  }
+  
+  /**
+   * Add a class overloader
+   *
+   * @param String $original
+   * @param String $overload
+   * @param bool $overwrite
+   * @return bool Wether or not we added the overloader
+   */
+  function addOverloader($original, $overload, $overwrite=true)
+  {
+    global $g_overloaders;
+    if (!array_key_exists($original, $g_overloaders) || $overwrite)
+    {
+      $g_overloaders[$class] = $overload;
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Remove a class overloader for a class
+   *
+   * @param String $original
+   * @return bool Wether or not we removed an overloader
+   */
+  function removeOverloader($original)
+  {
+    global $g_overloaders;
+    if (array_key_exists($original, $g_overloaders))
+    {
+      unset($g_overloaders[$original]);
+      return true;
+    }
+    return false;
+  }
+  
+  /**
+   * Checks wether or not a class has an overloader defined
+   *
+   * @param String $original The class to check for
+   * @return bool Wether or not the class has an overloader
+   */
+  function hasOverloader($original)
+  {
+    global $g_overloaders;
+    if (array_key_exists($original, $g_overloaders))
+    {
+      return true;
+    }
+    return false;
   }
 ?>

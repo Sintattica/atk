@@ -12,6 +12,9 @@ Changed in ATK 5.6.1
   file from within a template). [Peter]
 + Added atkdatefield Smarty plug-in (can be used to embed date controls
   in pages, based on the atkDateAttribute). [Peter]
++ Added addOverloader, removeOverloader and hasOverloader functions 
+  to atktools so overloaders can be added realtime instead of only in the
+  module_preload. [Boy]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl
@@ -24,6 +27,8 @@ Changed in ATK 5.6.1
 * Fixed bug in atkMssqlQuery, it no longer has an ambiguous column error  
   when fields in an atkManyToOneRelation have the same name as fields in
   the master node. [Ivo]
+* Made atkinstance resolve the classname before using it, thereby enabling
+  the use of overloaders for ATK singletons. [Boy]
 
 Changed in ATK 5.6
 ------------------
