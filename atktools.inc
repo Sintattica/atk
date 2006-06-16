@@ -1956,7 +1956,7 @@
     global $g_overloaders;
     if (!array_key_exists($original, $g_overloaders) || $overwrite)
     {
-      $g_overloaders[$class] = $overload;
+      $g_overloaders[$original] = $overload;
       return true;
     }
     return false;
