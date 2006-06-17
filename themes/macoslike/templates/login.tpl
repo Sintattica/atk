@@ -14,7 +14,7 @@
         <table width="100%" border="0" cellpadding="2" cellspacing="2" bgcolor="#00309C">
           <tr>
             <td bgcolor="#EEEEE0" align="left" class="block">
-              <img src="{$themedir}images/keys.gif" alt='' align=left hspace=7 vspace=7>
+              <img src="{atkthemeimg keys.gif}" alt='' align=left hspace=7 vspace=7>
                {$content}
             </td>            
           </tr>
