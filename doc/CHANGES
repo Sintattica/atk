@@ -12,11 +12,11 @@ Changed in ATK 5.6.1
   file from within a template). [Peter]
 + Added {atkdatefield} Smarty plug-in (can be used to embed date controls
   in pages, based on the atkDateAttribute). [Peter]
++ Added {atkthemeimg} Smarty plug-in (can be be used to retrieve the path of
+  theme images). [Ivo]
 + Added addOverloader, removeOverloader and hasOverloader functions 
   to atktools so overloaders can be added realtime instead of only in the
   module_preload. [Boy]
-+ Added {atkthemeimg} Smarty plug-in (can be be used to retrieve the path of
-  theme images). [Ivo]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl
@@ -34,6 +34,7 @@ Changed in ATK 5.6.1
 * Fixed the atkFormatAttribute, it can now handle multiple delimiters. [Ivo]
 * When encountering data that doesn't match the format in atkFormatAttribute, 
   the expected format is now displayed in the error message. [Ivo]
+* Fixed the login image of the macoslike theme. [Ivo]
 
 Changed in ATK 5.6
 ------------------
