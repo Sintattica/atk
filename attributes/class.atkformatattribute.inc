@@ -3,48 +3,48 @@
  /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
    * @subpackage attributes
    *
-   * @copyright (c)2004 Ivo Jansch    
+   * @copyright (c)2004 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
-   */     
-   
+   */
+
   /**
    * The atkFormatAttribute can be used to edit a formatted string.
-   * 
+   *
    * @author Ivo Jansch <ivo@achievo.org>
    * @package atk
    * @subpackage attributes
-   */  
-  class atkFormatAttribute extends atkAttribute 
+   */
+  class atkFormatAttribute extends atkAttribute
   {
     var $m_format = "";
-    var $m_breakdown = array();
-    
+    var $m_breakdownCached = array();
+
     /**
      * Constructor
      *
      * <b>Example:</b>
-     *        $this->add(new atkFormatAttribute("license", "AAA/##/##", 
+     *        $this->add(new atkFormatAttribute("license", "AAA/##/##",
      *                                                        AF_OBLIGATORY));
      *
-     * @todo Support for other types of input, upper/lowercase support, 
+     * @todo Support for other types of input, upper/lowercase support,
      *       escape possibility for using literal *'s.
-     *       Also, variable length parts would be nice.     
-     *       Finally, there should be an option if 'AA' accepts 'z' or only 
+     *       Also, variable length parts would be nice.
+     *       Finally, there should be an option if 'AA' accepts 'z' or only
      *       'zz'
      *
      * @param String $name Name of the attribute (unique within a node, and
-     *                     corresponds to a field in the database. 
-     * @param String $format The format specifier. Each character defines 
-     *                       what type of input is expected. 
+     *                     corresponds to a field in the database.
+     * @param String $format The format specifier. Each character defines
+     *                       what type of input is expected.
      *                       Currently supported format characters:
      *                       * - Accept any character
      *                       # - Accept letter or digit
@@ -52,20 +52,20 @@
      *                       9 - Accept a digit
      *                       Any other char is seen as a literal and displayed
      *                       literally as non-editable chars in the editor.
-     * @param int $flags Flags for the attribute.     
-     *     
+     * @param int $flags Flags for the attribute.
+     *
      */
     function atkFormatAttribute($name, $format, $flags=0)
     {
       $this->m_format = $format;
-      $this->atkAttribute($name, $flags, strlen($format));      
+      $this->atkAttribute($name, $flags, strlen($format));
     }
-    
+
     /**
      * Validate if all elements match the format specifier.
      *
      * Called by the framework for validation of a record. Raised an error
-     * with triggerError if a value is not valid. 
+     * with triggerError if a value is not valid.
      *
      * @param array $record The record to validate
      * @param String $mode Insert or update mode (ignored by this attribute)
@@ -74,20 +74,20 @@
     {
       $elems = $this->_breakDown();
       $values = $this->_valueBreakDown($record[$this->fieldName()]);
-      $usercnt = 0;
-      for($i=0, $_i=count($values); $i<$_i; $i++)
+
+      for($i=0, $j=0, $_i=count($elems); $i<$_i; $i++)
       {
         if ($elems[$i]['type']!='/')
         {
-          $usercnt++;
-          if (!$this->_checkString($elems[$i]['type'], $values[$i]))
+          if (!$this->_checkString($elems[$i]['type'], $values[$j]))
           {
-            triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString($usercnt, $elems[$i]['type']));
+            triggerError($record, $this->fieldName(), 'err', $this->_formatErrorString(($j+1), str_repeat($elems[$i]['type'], $elems[$i]['size'])));
           }
+          $j++;
         }
       }
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -98,26 +98,27 @@
      * @return String A piece of htmlcode for editing this attribute
      */
     function edit($record="", $fieldprefix="")
-    {            
+    {
       $elems = $this->_breakDown();
       $values = $this->_valueBreakdown($record[$this->fieldName()]);
-      
+
       $inputs=array(); $hints=array();
-      for ($i=0, $_i=count($elems); $i<$_i; $i++)
+      for ($i=0, $j=0, $_i=count($elems); $i<$_i; $i++)
       {
         if ($elems[$i]['type']=='/') // literal
         {
-          $inputs[]=$elems[$i]['mask']; 
+          $inputs[]=$elems[$i]['mask'];
         }
         else // format
         {
-         $inputs[]=$this->_inputField($elems[$i]['size'], $i, $fieldprefix, $values[$i]);         
+          $inputs[]=$this->_inputField($elems[$i]['size'], $i, $fieldprefix, $values[$j]);
+          $j++;
         }
         $hints[]=$elems[$i]['mask'];
-      }      
+      }
       return implode(' ', $inputs).'  ('.implode(' ',$hints).')';
     }
-    
+
     /**
      * Determine error message.
      * @access private
@@ -128,9 +129,9 @@
      */
     function _formatErrorString($pos, $specifier)
     {
-      return sprintf(atktext('error_format_mismatch', 'atk', $this->m_ownerInstance), $pos);
+      return sprintf(atktext('error_format_mismatch', 'atk', $this->m_owner), $pos, $specifier);
     }
-    
+
     /**
      * Generate an input box for one of the elements.
      * @access private
@@ -139,15 +140,15 @@
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of the html element.
      * @param String $value The current value.
-     * @return String An html input element string. 
+     * @return String An html input element string.
      */
     function _inputField($size, $elemnr, $fieldprefix, $value)
     {
       $id = $this->getHtmlId($fieldprefix).'['.$elemnr.']';
-      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN|KB_LEFTRIGHT);  
+      $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN|KB_LEFTRIGHT);
       return '<input type="text" name="'.$id.'" id="'.$id.'" size="'.$size.'" maxlength="'.$size.'" value="'.$value.'">';
     }
-    
+
     /**
      * Check if a string matches the format specifier.
      * @access private
@@ -157,14 +158,14 @@
      * @return boolean True if string matches the specifier, false if not.
      */
     function _checkString($specifier, $string)
-    {      
+    {
       for ($i=0, $_i=strlen($string); $i<$_i; $i++)
-      {        
+      {
         if (!$this->_checkChar($specifier, $string[$i])) return false;
-      }      
+      }
       return true;
     }
-    
+
     /**
      * Check if a char matches the format specifier.
      * @access private
@@ -183,7 +184,7 @@
       }
       return true;
     }
-    
+
     /**
      * Return an array containing a structural breakdown of the format string.
      * @access private
@@ -199,18 +200,18 @@
      */
     function _breakDown()
     {
-      if (count($this->m_breakdown)==0)
+      if (count($this->m_breakdownCached)==0)
       {
         $elems = array(); $elem = array(); $last = "";
-      
+
         for ($i=0, $_i=strlen($this->m_format); $i<$_i; $i++)
         {
           $char = $this->m_format[$i];
           if ($i==0||!$this->_equalSpecifiers($char, $last))
-          {            
+          {
             // add elem
             if ($i>0) $elems[] = $elem;
-            
+
             // create new
             $elem = array('size'=>1, 'type'=>($this->_isSpecifier($char)?$char:'/'), 'mask'=>$char);
           }
@@ -222,16 +223,17 @@
           }
           $last=$char;
         }
-      
+
         // leftover
         if ($elem['size']>0) $elems[] = $elem;
-        
-        $this->m_breakdown = $elems;
+
+        $this->m_breakdownCached = $elems;
       }
-      
-      return $this->m_breakdown;
+
+
+      return $this->m_breakdownCached;
     }
-    
+
     /**
      * Converts a string value into a structural breakdown into
      * elements of the format string.
@@ -252,9 +254,10 @@
         }
         $pos+=$elem['size'];
       }
+
       return $values;
     }
-    
+
     /**
      * Check if 2 specifiers are logically equal (i.e. they can be grouped
      * into one element)
@@ -268,7 +271,7 @@
     {
       return ((!$this->_isSpecifier($charA)&&!$this->_isSpecifier($charB)) || $charA==$charB);
     }
-    
+
     /**
      * Check if a character is a formatspecifier or a literal.
      * @access private
@@ -280,20 +283,20 @@
     {
       return ($char!=''&&(strpos("#9A*", $char)!==false));
     }
-    
+
     /**
-     * Convert values from an HTML form posting to an internal value for 
-     * this attribute. 
+     * Convert values from an HTML form posting to an internal value for
+     * this attribute.
      *
-     * @param array $postvars The array with html posted values ($_POST, for 
+     * @param array $postvars The array with html posted values ($_POST, for
      *                        example) that holds this attribute's value.
      * @return String The internal value
      */
     function fetchValue($postvars)
-    {      
+    {
       $masks = $this->_breakDown();
       $elems = $postvars[$this->fieldName()];
-            
+
       for ($i=0, $_i=count($masks); $i<$_i; $i++)
       {
         if ($masks[$i]['type']=='/') // literal
@@ -303,11 +306,11 @@
         else // mask
         {
           $result.=$this->_pad($masks[$i]['type'], $masks[$i]['size'], $elems[$i]);
-        }        
-      }       
-      return $result;    
+        }
+      }
+      return $result;
     }
-    
+
     /**
      * Pad a value according to its specifier.
      * @access private
@@ -321,7 +324,7 @@
     {
       return str_pad($value, $size);
     }
-    
+
     /**
      * Check if a record has an empty value for this attribute.
      *

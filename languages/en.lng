@@ -6,7 +6,7 @@
   // Language: English (en)
   //
   // Translated by:
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -90,7 +90,7 @@
   "error_fileexists" => "File already exists on server. Please rename the file.",
   "error_file_size" => "File is too big",
   "error_file_unknown" => "Unknown error during upload of file",
-  "error_format_mismatch" => "The element at position %d does not match the desired format",
+  "error_format_mismatch" => "The element at position %d does not match the desired format (%s)",
   "error_formdataerror" => "Save failed due to the following reason: ",
   "error_invalid_email" => "Invalid e-mail address",
   "error_node_action_access_denied" => "Sorry, you do not have permission to perform this action.",

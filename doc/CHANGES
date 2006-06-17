@@ -29,6 +29,9 @@ Changed in ATK 5.6.1
   the master node. [Ivo]
 * Made atkinstance resolve the classname before using it, thereby enabling
   the use of overloaders for ATK singletons. [Boy]
+* Fixed the atkFormatAttribute, it can now handle multiple delimiters. [Ivo]
+* When encountering data that doesn't match the format in atkFormatAttribute, 
+  the expected format is now displayed in the error message. [Ivo]
 
 Changed in ATK 5.6
 ------------------
