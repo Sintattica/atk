@@ -35,6 +35,9 @@ Changed in ATK 5.6.1
 * When encountering data that doesn't match the format in atkFormatAttribute, 
   the expected format is now displayed in the error message. [Ivo]
 * Fixed the login image of the macoslike theme. [Ivo]
+* Bugfix: filenames need to be escaped before they are added to the db in
+  the atkFileAttribute. [Sandy]
+
 
 Changed in ATK 5.6
 ------------------
