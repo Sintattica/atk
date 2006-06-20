@@ -14,7 +14,7 @@ Changed in ATK 5.6.1
   in pages, based on the atkDateAttribute). [Peter]
 + Added {atkthemeimg} Smarty plug-in (can be be used to retrieve the path of
   theme images). [Ivo]
-+ Added addOverloader, removeOverloader and hasOverloader functions 
++ Added addOverloader, removeOverloader and hasOverloader functions
   to atktools so overloaders can be added realtime instead of only in the
   module_preload. [Boy]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
@@ -26,18 +26,27 @@ Changed in ATK 5.6.1
 * Fixed bug in tbsooo which caused the SaveXmlToDoc function to fail due to
   the -u option in the zip command (thanks Dennis-Jan for pointing me into
   this direction). [Guido]
-* Fixed bug in atkMssqlQuery, it no longer has an ambiguous column error  
+* Fixed bug in atkMssqlQuery, it no longer has an ambiguous column error
   when fields in an atkManyToOneRelation have the same name as fields in
   the master node. [Ivo]
 * Made atkinstance resolve the classname before using it, thereby enabling
   the use of overloaders for ATK singletons. [Boy]
 * Fixed the atkFormatAttribute, it can now handle multiple delimiters. [Ivo]
-* When encountering data that doesn't match the format in atkFormatAttribute, 
+* When encountering data that doesn't match the format in atkFormatAttribute,
   the expected format is now displayed in the error message. [Ivo]
 * Fixed the login image of the macoslike theme. [Ivo]
 * Bugfix: filenames need to be escaped before they are added to the db in
   the atkFileAttribute. [Sandy]
-
+* When an atkFileAttribute is obligatory but somehow empty and no new file
+  is uploaded, but an existing file is selected, the atkFileAttribute won't
+  ignore this selection anymore. [Guido]
+* The themecompiler should not attempt to compile a theme without the
+  required themedef.inc file or without any files at all. [Guido]
+* Errors shown above the debug log now also use the monospace font. [Guido]
+* Entering a level in the sessionstack more than 1 level above the current
+  stack top is now prevented by changing the level to the
+  currenttoplevel + 1. This solves the occurance of mislocated stack data
+  and/or stack gaps in this scenario. [Guido]
 
 Changed in ATK 5.6
 ------------------
