@@ -84,7 +84,6 @@
       $data = array();
 
       $path = $this->findTheme($name, $location);
-
       if ($path=="")
       {
         // theme not found.
@@ -165,7 +164,7 @@
         $location = "app";
         return "themes/$name/";
       }
-      else if ($location!="app"&&file_exists(atkconfig("atkroot")."atk/themes/$name"))
+      else if ($location!="app"&&file_exists(atkconfig("atkroot")."atk/themes/$name/themedef.inc"))
       {
         $location = "atk";
         return "atk/themes/$name/";
