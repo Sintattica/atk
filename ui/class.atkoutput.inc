@@ -135,7 +135,7 @@
           {
             // only show errors in debugmode, or when display_errors is
             // true.
-            $res.='<br><font color="#FF0000">error: '.implode("<br>\nerror: ",$g_error_msg).'</font>';
+            $res.='<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
           }
           // also send a mail report with errormessages..
           // (even when display of errors is turned off)
