@@ -340,8 +340,9 @@
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
         // if an error occured during the upload process
-        // and the error is not 'no file' while the field is obligatory
-        if ($_FILES[$postfiles_basename]['error'] > 0 && !(!$this->hasFlag(AF_OBLIGATORY) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE))
+        // and the error is not 'no file' while the field isn't obligatory or a file was already selected
+        $fileselected = isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT);
+        if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE))
         {
           return array('error' => $_FILES[$postfiles_basename]['error']);
         }
@@ -350,8 +351,7 @@
         elseif (count($_FILES)==0||$_FILES[$postfiles_basename]["tmp_name"]=="none"||$_FILES[$postfiles_basename]["tmp_name"]=="")
         {
            // No file to upload, then check if the select box is filled
-          if(isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != ""
-             && !$this->hasFlag(AF_FILE_NO_SELECT))
+          if($fileselected)
           {
             atkdebug("file selected!");
             $filename=$rec[$this->fieldName()]["select"];
