@@ -93,7 +93,7 @@
       {
         $ui = &$this->getUi();
 
-        $params["header"] = text("title_select", $node->m_type);
+        $params["header"] = atktext("title_select", $node->m_module, $node->m_type);
 
         $navigator = &atknew("atk.utils.atknavigator");
         if ($node->m_index != "")
