@@ -345,6 +345,15 @@
 
       $stack = &$g_sessionData[$this->m_namespace]["stack"][$stackid];
 
+      // Prevent going more than 1 level above the current stack top which
+      // causes a new stackitem to be pushed onto the stack at the wrong
+      // location.
+      if ($atklevel > count($stack))
+      {
+        atkdebug("Requested ATKLevel (".$atklevel.") too high for stack, lowering to ".count($stack));
+        $atklevel = count($stack);
+      }
+
       if (isset($postvars["atkescape"]) && $postvars["atkescape"]!="")
       {
         $this->m_escapemode = true;
