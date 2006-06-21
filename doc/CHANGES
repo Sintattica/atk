@@ -17,6 +17,8 @@ Changed in ATK 5.6.1
 + Added addOverloader, removeOverloader and hasOverloader functions
   to atktools so overloaders can be added realtime instead of only in the
   module_preload. [Boy]
++ Added the ability to use a bracket-template in the value for default values 
+  in the atkImportHandler. [Ivo]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl

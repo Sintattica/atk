@@ -943,6 +943,7 @@
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
 
         $rec = $initial_values;
+        atkimport("atk.utils.atkstringparser");
 
         for ($i=0, $_i=count($col_map); $i<$_i; $i++)
         {
@@ -953,8 +954,14 @@
               $value = $this->_getAttributeValue($col_map[$i], $allField, $data[$i], $importerrors,$counter,$rec);
             }
             else //this is the allField
-            {
+            {                    
               $value = $allFieldValue;
+              if (strpos($value, "[")!==false)
+              { 
+                // USer can use [fieldname] template in the allfield value
+                $sp = &new atkStringParser($value); 
+                $value = $sp->parse($rec);
+              }
             }
 
             $this->addToRecord($rec,$col_map[$i],$value);
