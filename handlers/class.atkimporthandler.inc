@@ -623,7 +623,7 @@
     function _usableForImport($obligatoryOnly, &$attrib)
     {
       return ((!$obligatoryOnly || $this->isObligatory($attrib))
-              && $attrib->storageType("add")==ADDTOQUERY && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib));
+              && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib));
     }
 
     /**

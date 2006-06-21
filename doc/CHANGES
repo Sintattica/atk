@@ -47,6 +47,9 @@ Changed in ATK 5.6.1
   stack top is now prevented by changing the level to the
   currenttoplevel + 1. This solves the occurance of mislocated stack data
   and/or stack gaps in this scenario. [Guido]
+* The atkImportHandler would hide attributes that don't use addToQuery, but
+  as long as they properly handle parseStringValue, they are usable, so this
+  restriction is removed. [Ivo]
 
 Changed in ATK 5.6
 ------------------
