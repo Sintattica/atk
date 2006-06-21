@@ -369,9 +369,11 @@
      * Returns a piece of html code that can be used in a form to display
      * hidden values for this attribute.
      * @param $record Array with values
+     * @param String $fieldprefix The fieldprefix to put in front of the name
+     *                            of any html form element for this attribute.
      * @return Piece of htmlcode
      */
-    function hide($record="")
+    function hide($record="", $fieldprefix="")
     {
       $result = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[hash]"'.
                 ' value="'.$record[$this->fieldName()]["hash"].'">';
