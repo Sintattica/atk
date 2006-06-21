@@ -153,9 +153,8 @@
       {
         foreach($this->m_colcfg as $fld=>$config)
         {
-          if ($config["sortorder"]>0)
+          if (atkArrayNvl($config, "sortorder") > 0)
           {
-            //var_dump($this->m_colcfg[$fld]["sortorder"]);
             $this->m_colcfg[$fld]["sortorder"] = (int)($this->m_colcfg[$fld]["sortorder"])+1;
           }
         }
@@ -185,7 +184,7 @@
       $min = 999;
       foreach ($this->m_colcfg as $field=>$config)
       {
-        if ($config["sortorder"]>0)
+        if (atkArrayNvl($config, "sortorder")>0)
         {
           $min = min($min, $config["sortorder"]);
         }
@@ -276,7 +275,7 @@
         $lastattr="";
         foreach ($elems as $elem)
         {
-          if (is_object($this->m_node->m_attribList[$elem]))
+          if (isset($this->m_node->m_attribList[$elem]) && is_object($this->m_node->m_attribList[$elem]))
           {
             // attribute reference
             $lastattr=$elem;

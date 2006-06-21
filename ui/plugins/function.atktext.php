@@ -46,7 +46,7 @@
        $str = atktext($id, $module, $node);
        break;
      }
-     default: $str = atktext($params["id"], $params["module"], $params["node"], $params["lng"]);
+     default: $str = atktext($params["id"], atkArrayNvl($params, "module", ""), atkArrayNvl($params, "node", ""), atkArrayNvl($params, "lng", ""));
    }
 
    if (isset($params["filter"]))
