@@ -1315,7 +1315,8 @@
       $allFieldValue =  $this->m_postvars[$allField];
 
       $this->m_node->m_postvars["atksearchmode"] = "exact";
-      if (!in_array($allFieldValue)) $this->m_node->m_fuzzyFilters[] = $allFieldValue;
+      if (!in_array($allFieldValue,$this->m_node->m_fuzzyFilters)) 
+        $this->m_node->m_fuzzyFilters[] = $allFieldValue;
 
       $dbrec = $this->m_node->searchDb(array($updatekey1=>$updatekey1val));
 
