@@ -24,6 +24,8 @@ Changed in ATK 5.6.1
   underline are supported (any combination is possible with IE-generated html; 
   for now, only the italic/bold combination is supported for FireFox-generated
   html code). [Jeroen]  
++ Added JSON serialization/deserialization support, available as static 
+  methods of class atk.utils.atkJSON and available as Smarty modifier. [Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
