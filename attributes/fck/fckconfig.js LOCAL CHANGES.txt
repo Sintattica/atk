@@ -1,9 +1,0 @@
-LOCAL CHANGES
--------------
-For IJsselgroep some specific custom changes are made in "fckconfig.js". It 
-contains an "IJsselgroep" fck-toolbarset (with only bold, italic, underline 
-and Source-buttons).
-
-These changes should not be committed in the CVS repositiry.
-
-This adapted fckconfig.js file can be found in the ijdoc/doc/ directory.
