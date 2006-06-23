@@ -82,6 +82,11 @@
         }
       }
 
+      // add own style to xml file (just before </office:automatic-styles>)
+      // and use it for text that applies
+      $this->m_tbsooo->Source = $this->addAndApplyStyles($this->m_tbsooo->Source);
+      
+      
       // Save the content.xml back to the copied document
       if (!$this->m_tbsooo->SaveXmlToDoc())
         return false;
@@ -146,6 +151,108 @@
 
       return true;
     }
-  }
+    
+    /**
+     * Add predefined text-styles to xml file
+     * And replace html style tags by xml style-tags
+     */
+    function addAndApplyStyles($inputString)
+    {
+      $inputString = $this->addPredefinedStyles($inputString);
+      
+      $inputString = $this->convertFirefoxHtmlToXML($inputString);
+      
+      $inputString = $this->convertIEHtmlToXML($inputString);      
 
+      return $inputString;
+    }  
+    
+    function addPredefinedStyles($inputString)
+    {
+      // Add predefined styles to xml-file
+      $xmlAutomaticStyleTag = '</office:automatic-styles>';
+      $xmlBold       = '<style:style style:name="atkbold" style:family="text"><style:text-properties fo:font-weight="bold" style:font-weight-asian="bold" style:font-weight-complex="bold"/></style:style>';
+      $xmlItalic     = '<style:style style:name="atkitalic" style:family="text"><style:text-properties fo:font-style="italic" style:font-style-asian="italic" style:font-style-complex="italic"/></style:style>';
+      $xmlBoldItalic = '<style:style style:name="atkbolditalic" style:family="text"><style:text-properties fo:font-style="italic" fo:font-weight="bold" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-style-complex="italic" style:font-weight-complex="bold"/></style:style>';
+      $xmlUnderline  = '<style:style style:name="atkunderline" style:family="text"><style:text-properties style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color"/></style:style>';
+      
+      $inputString = str_replace($xmlAutomaticStyleTag , $xmlBold.$xmlItalic.$xmlBoldItalic.$xmlUnderline.$xmlAutomaticStyleTag, $inputString);      
+      
+      return $inputString;
+    }
+    
+    function convertFirefoxHtmlToXML($inputString)
+    {
+      /*****************************************
+       * Convert firefox-html tags to xml tags *
+       *****************************************/
+      
+      // for some reason, html code varies a little bit; changes will be applied to make uniform style conversions below
+      
+      // convert style param-names to lower case
+      $inputString = str_replace('FONT-WEIGHT',     'font-weight',     $inputString);
+      $inputString = str_replace('FONT-STYLE',      'font-style',      $inputString);
+      $inputString = str_replace('TEXT-DECORATION', 'text-decoration', $inputString);
+            
+      // the ; is missing sometimes at the end of a style-line
+      $inputString = str_replace('font-style: italic"&gt;', 'font-style: italic;"&gt;', $inputString);
+      $inputString = str_replace('font-weight: bold"&gt;', 'font-weight: bold;"&gt;', $inputString);
+      $inputString = str_replace('text-decoration: underline"&gt;', 'text-decoration: underline;"&gt;', $inputString);
+
+
+      // _underline_      
+      $inputString = str_replace('&lt;span style="text-decoration: underline;"&gt;', '<text:span text:style-name="atkunderline">', $inputString);
+      
+      // _underline_ - no combinations with other styles supported; remove from combinations with other styles to prevent xml-errors          
+      $inputString = str_replace('text-decoration: underline; ', '', $inputString);
+      $inputString = str_replace(' text-decoration: underline;', '', $inputString);
+      
+      // Combination of *BOLD* and /italic/
+      $inputString = str_replace('&lt;span style="font-weight: bold; font-style: italic;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);
+      $inputString = str_replace('&lt;span style="font-style: italic; font-weight: bold;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);      
+      
+      // *BOLD*
+      $inputString = str_replace('&lt;span style="font-weight: bold;"&gt;', '<text:span text:style-name="atkbold">', $inputString);
+                                   
+      // /italic/
+      $inputString = str_replace('&lt;span style="font-style: italic;"&gt;', '<text:span text:style-name="atkitalic">', $inputString);      
+            
+      // substitute html- by xml-'span' tags
+      $inputString = str_replace('&lt;/span&gt;' , '</text:span>', $inputString);
+      
+      // replace end-of-line/paragraph chars by xml-newline      
+      $inputString = str_replace('&lt;br /&gt;' , '<text:line-break/>', $inputString);
+
+      return $inputString;     
+    }
+    
+    function convertIEHtmlToXML($inputString)
+    {      
+      /***************************************************
+       * Convert internet explorer-html tags to xml tags *
+       ***************************************************/
+      
+      // Searching combinations it not needed, since xml-tags work the same as in html
+      //   HTML: <b><i>BLA</b></i> becomes 
+      //   XML:  <text:span text:style-name="atkbold"><text:span text:style-name="atkitalic">BLA</text:span></text:span>
+      
+      // *BOLD*                    
+      $inputString = str_replace('&lt;strong&gt;', '<text:span text:style-name="atkbold">', $inputString); 
+      $inputString = str_replace('&lt;/strong&gt;', '</text:span>', $inputString);
+      
+      // /italic/
+      $inputString = str_replace('&lt;em&gt;', '<text:span text:style-name="atkitalic">', $inputString); 
+      $inputString = str_replace('&lt;/em&gt;', '</text:span>', $inputString);
+      
+      // _underline_
+      $inputString = str_replace('&lt;u&gt;', '<text:span text:style-name="atkunderline">', $inputString);        
+      $inputString = str_replace('&lt;/u&gt;', '</text:span>', $inputString);
+          
+      // replace end-of-line/paragraph chars by xml-newline
+      $inputString = str_replace('&lt;p&gt;', '', $inputString);
+      $inputString = str_replace('&lt;/p&gt;', '<text:line-break/>', $inputString);      
+
+      return $inputString;
+    }
+  }
 ?>

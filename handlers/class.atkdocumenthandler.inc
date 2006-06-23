@@ -50,11 +50,7 @@
         return false;
       }
 
-      // Compose the filename to be used (doctemplatedir/module/node/<docmentfilename)
-      $basepath = atkconfig("doctemplatedir", "doctemplates/");
-      $module = $this->m_node->m_module;
-      $node = $this->m_node->m_type;
-      $tpl_file = $basepath  . $module . "/" . $node . "/" . $this->m_postvars["atkdoctpl"];
+      $tpl_file = $this->getFilenameForTemplate($this->m_postvars["atkdoctpl"]);
 
       // Check for invalid characters in filename, modulename and nodename in order to prevent hacking
       if (ereg("[<>\\/|;]", $module . $node . $this->m_postvars["atkdoctpl"]) !== false)
@@ -102,6 +98,20 @@
       // Also assign the generic (date) vars tot the documentWriter
       $documentWriter->assignDocumentGenericVars();
     }
-
+    
+    /**
+     * Compose the filename to be used (doctemplatedir/module/node/<docmentfilename)
+     *
+     * @param String $template
+     * @return String
+     */
+    function getFilenameForTemplate($template)
+    {
+      $basepath = atkconfig("doctemplatedir", "doctemplates/");
+      $module = $this->m_node->m_module;
+      $node = $this->m_node->m_type;
+      
+      return $basepath  . $module . "/" . $node . "/" . $template;
+    }
   }
 ?>
