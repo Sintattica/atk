@@ -191,13 +191,22 @@
         }
         $query->addCondition("UPPER({$fieldname})='{$lng}'");
       }
-
+      
       $relations=&$node->m_relations["atkmanytoonerelation"];
+      $this->_addMlRelationCondition($relations,$query,$node,$mode,$excludeList,$includeList,$lng);
+      
+      $relations=&$node->m_relations["atkmetamanytoonerelation"];
+      $this->_addMlRelationCondition($relations,$query,$node,$mode,$excludeList,$includeList,$lng);
+    }
+    
+    function _addMlRelationCondition(&$relations, &$query, &$node, $mode, $excludeList, $includeList,$lng)
+    {
       if(is_array($relations) && count($relations)>0)
       {
         foreach ($relations as $attribname=>$attribute)
         {
           $p_attrib = &$relations[$attribname];
+          
           if($p_attrib->createDestination()
               && $p_attrib->m_destInstance->hasFlag(NF_ML)
               && (!$p_attrib->hasFlag(AF_HIDE_LIST) || $p_attrib->hasFlag(AF_FORCE_LOAD))
@@ -205,7 +214,7 @@
           {
             $dest = $p_attrib->m_destInstance;
             $fieldname = $attribname.".".$dest->m_lngfield;
-            atkdebug("FIELDNAME: $fieldname");
+            
             $joinalias = $dest->m_module."_".$dest->m_type."*".$dest->primaryKeyField();
             if($query->m_joinaliases[$joinalias])
             {
@@ -214,19 +223,27 @@
             $query->addCondition("({$fieldname} IS NULL OR UPPER({$fieldname})='{$lng}')");
 
             $destrelations = &$p_attrib->m_destInstance->m_relations["atkmanytoonerelation"];
-            if(is_array($destrelations) && count($destrelations)>=1)
-            {
-              foreach (array_keys($destrelations) as $destattributename)
-              {
-                $destattribute = &$destrelations[$destattributename];
-                if(in_array($destattributename,atk_array_merge($destattribute->m_ownerInstance->descriptorFields(),
-                                                               $destattribute->m_ownerInstance->m_primaryKey))
-                   && $destattribute->m_destInstance->hasFlag(NF_ML))
-                {
-                  $this->addMlCondition($query,$p_attrib->m_destInstance,$mode);
-                }
-              }
-            }
+            $this->_addMlConditionForDestRelations($destrelations, $query, $p_attrib, $mode);
+            
+            $destrelations = &$p_attrib->m_destInstance->m_relations["atkmetamanytoonerelation"];
+            $this->_addMlConditionForDestRelations($destrelations, $query, $p_attrib, $mode);
+          }
+        }
+      }
+    }
+    
+    function _addMlConditionForDestRelations(&$destrelations, &$query, &$p_attrib, $mode)
+    {
+      if(is_array($destrelations) && count($destrelations)>=1)
+      {
+        foreach (array_keys($destrelations) as $destattributename)
+        {
+          $destattribute = &$destrelations[$destattributename];
+          if(in_array($destattributename,atk_array_merge($destattribute->m_ownerInstance->descriptorFields(),
+          $destattribute->m_ownerInstance->m_primaryKey))
+          && $destattribute->m_destInstance->hasFlag(NF_ML))
+          {
+            $this->addMlCondition($query,$p_attrib->m_destInstance,$mode);
           }
         }
       }
