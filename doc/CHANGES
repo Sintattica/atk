@@ -57,6 +57,8 @@ Changed in ATK 5.6.1
   atkMetaManyToOneRelation. [Boy]
 * Made debugger pass atkLevel() as prevlevel to debug window, thereby
   making it more likely to show debugging, although still not 100%. [Boy]
+* Performed some functional decomposition on atkOutput, adding the
+  getDebugging and sendCachingHeaders methods. [Boy]  
 
 Changed in ATK 5.6
 ------------------
