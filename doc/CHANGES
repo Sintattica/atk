@@ -55,6 +55,8 @@ Changed in ATK 5.6.1
   restriction is removed. [Ivo]
 * Multilanguage splitter now also works for the 
   atkMetaManyToOneRelation. [Boy]
+* Made debugger pass atkLevel() as prevlevel to debug window, thereby
+  making it more likely to show debugging, although still not 100%. [Boy]
 
 Changed in ATK 5.6
 ------------------
