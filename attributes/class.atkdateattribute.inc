@@ -181,9 +181,6 @@
      */
     function atkDateAttribute($name, $format_edit="", $format_view="", $min=0, $max=0, $flags=0)
     {
-      $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
-      $txt_date_format_view = atktext("date_format_view","atk","","","",true);
-
       /* *** API SUPPORT HACK ***
        * Because of backwards compatability and because of the number
        * of arguments this method has we also support the old API: ($name, $flags=0).
@@ -197,26 +194,78 @@
         $max = 0;
       }
 
-      /* edit date format */
-      if     (!empty($format_edit)) $this->m_date_format_edit = $format_edit;
-      elseif (!empty($txt_date_format_edit)) $this->m_date_format_edit = $txt_date_format_edit;
-      else   $this->m_date_format_edit = "F j Y";
-
-      /* display date format */
-      if     (!empty($format_view)) $this->m_date_format_view = $format_view;
-      elseif (!empty($txt_date_format_view)) $this->m_date_format_view = $txt_date_format_view;
-      else   $this->m_date_format_view = "F j Y";
+      /* edit and display date format */
+      $this->setFormatEdit($format_edit);
+      $this->setFormatView($format_view);      
 
       /* max / min date */
-      if ($min === 0) $this->m_date_min = 0;
-      else if (is_array($min)) $this->m_date_min = $this->_arrayToTime($min);
-      else $this->m_date_min = strtotime($min);
-      if ($max === 0) $this->m_date_max = 0;
-      else if (is_array($max)) $this->m_date_max = $this->_arrayToTime($max);
-      else $this->m_date_max = strtotime($max);
+      $this->setDateMin($min);
+      $this->setDateMax($max);      
 
       /* base class constructor */
       $this->atkAttribute($name, $flags);
+    }
+    
+    /**
+     * Set the format for the boxes in edit mode.
+     *
+     * @param String $format_edit The format (see format for date() function)
+     */
+    function setFormatEdit($format_edit)
+    {
+      $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
+      
+      if     (!empty($format_edit))           $this->m_date_format_edit = $format_edit;
+      elseif (!empty($txt_date_format_edit))  $this->m_date_format_edit = $txt_date_format_edit;
+      else                                    $this->m_date_format_edit = "F j Y";
+    }
+    
+    /**
+     * Set the format for the boxes in view mode.
+     *
+     * @param String $format_view The format (see format for date() function)
+     */
+    function setFormatView()
+    {
+      $txt_date_format_view = atktext("date_format_view","atk","","","",true);
+      
+      if     (!empty($format_view))           $this->m_date_format_view = $format_view;
+      elseif (!empty($txt_date_format_view))  $this->m_date_format_view = $txt_date_format_view;
+      else                                    $this->m_date_format_view = "F j Y";
+    }
+    
+    /**
+     * Set the maximum date that may be select (0 means unlimited).
+     * It can be set in 3 formats: 
+     * 1. Unix timestamp.
+     * 2. String (parsed by strtotime)
+     * 3. Array (with year,month,day,hour,min,sec)
+     *
+     * @param mixed $max The maximum date that may be selected.
+     */
+    function setDateMax($max=0)
+    {
+      if      ($max === 0)        $this->m_date_max = 0;
+      else if (is_array($max))    $this->m_date_max = $this->_arrayToTime($max);
+      else if (is_integer($max))  $this->m_date_max = $max;
+      else                        $this->m_date_max = strtotime($max);
+    }
+    
+    /**
+     * Set the minimum date that may be select (0 means unlimited).
+     * It can be set in 3 formats: 
+     * 1. Unix timestamp.
+     * 2. String (parsed by strtotime)
+     * 3. Array (with year,month,day,hour,min,sec)
+     *
+     * @param mixed $min The minimum date that may be selected.
+     */
+    function setDateMin($min=0)
+    {
+      if      ($min === 0)        $this->m_date_min = 0;
+      else if (is_array($min))    $this->m_date_min = $this->_arrayToTime($min);
+      else if (is_integer($min))  $this->m_date_min = $min;
+      else                        $this->m_date_min = strtotime($min);
     }
 
     function edit($record="", $fieldprefix="", $mode="")
@@ -471,7 +520,7 @@
     */
     function _registerScripts()
     {
-      $page = &atkPage::getInstance();
+      $page = &atkinstance('atk.ui.atkpage');
 
       /* register javascript */
       atkimport("atk.atklanguage");
