@@ -512,7 +512,7 @@
       {
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_filenameTpl);
-        $ext = $this->getFileExtension($filename);
+        $ext = $this->getFileExtension($default);
         $filename = $parser->parse($rec).".".$ext;
       }
       return str_replace(' ','_',$filename);

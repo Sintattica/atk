@@ -78,6 +78,7 @@ Changed in ATK 5.6.1
 * Made ATK ignore select queries that are built with an empty fieldset. [Boy]
 * Made ATK force quoting of field names that are reserved names 
   like 'from'. [Boy]
+* Fixed adding of extension after 'file mangle' of atkFileAttribute. [Boy]
 
 Changed in ATK 5.6
 ------------------
