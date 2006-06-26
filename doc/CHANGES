@@ -66,6 +66,7 @@ Changed in ATK 5.6.1
   making it more likely to show debugging, although still not 100%. [Boy]
 * Performed some functional decomposition on atkOutput, adding the
   getDebugging and sendCachingHeaders methods. [Boy]  
+* Fixed PHP5 issue in Smarty Compiler (block functions). [Peter]
 
 Changed in ATK 5.6
 ------------------
