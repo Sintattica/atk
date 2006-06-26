@@ -2976,6 +2976,7 @@
       }
 
       $querystring = $query->buildSelect($distinct);
+      if (!$querystring) return array();
 
       $db = &$this->getDb();
       $dbrecords = $db->getrows($querystring);
