@@ -1313,7 +1313,7 @@
    * @param string $mimetype the mimetype of the file
    * @return bool wether or not the export worked
    */
-  function exportFile($file, $filename,$mimetype="")
+  function exportFile($file, $filename,$mimetype="", $detectmime=true)
   {
     include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
     $browser = getBrowserInfo();
@@ -1333,11 +1333,14 @@
       $disp = 'attachment';
     }
     if($mimetype!="") $mime=$mimetype;
-
+    else if ($mimetype=="" && $detectmime && function_exists('mime_content_type')) 
+      $mime = mime_content_type($file);
+    
     $fp = @fopen($file,"rb");
     if ($fp!=NULL)
     {
-      header('Content-Type: '. $mime);
+      header('Content-Type: '. $ctype);
+      header("Content-Length: ".filesize($file));
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
       if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
       if ($_SERVER["SERVER_PORT"] == "443" AND eregi("msie", $_SERVER["HTTP_USER_AGENT"]))
@@ -1349,6 +1352,10 @@
         header('Pragma: no-cache');
       }
       header('Expires: 0');
+
+      header("Content-Description: File Transfer");
+      header("Content-Transfer-Encoding: binary");
+      
       fpassthru($fp);
       return true;
     }

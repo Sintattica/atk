@@ -67,6 +67,9 @@ Changed in ATK 5.6.1
 * Performed some functional decomposition on atkOutput, adding the
   getDebugging and sendCachingHeaders methods. [Boy]  
 * Fixed PHP5 issue in Smarty Compiler (block functions). [Peter]
+* The exportFile function now also sends content description, 
+  transfer encoding and content length headers. It also automatically
+  detects the correct mime type and sends that as a header. [Boy]
 
 Changed in ATK 5.6
 ------------------
