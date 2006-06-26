@@ -81,6 +81,9 @@ Changed in ATK 5.6.1
 * Fixed adding of extension after 'file mangle' of atkFileAttribute. [Boy]
 * Performed functional decomposition on date attribute, adding following
   methods to API: setFormatEdit, setFormatView, setDateMax, setDateMin. [Boy]
+* Replaced unused default config 'javascript_confirmation' with: 
+  'recordlist_javascript_delete'. [Boy]
+
 
 Changed in ATK 5.6
 ------------------

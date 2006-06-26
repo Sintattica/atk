@@ -703,7 +703,7 @@
    * confirm box for deleting instead of a seperate page
    * @var boolean
    */
-  $config_javascript_confirmation = false;
+  $config_recordlist_javascript_delete = false;
 
   /**
    * This should be turned on when an application makes use
