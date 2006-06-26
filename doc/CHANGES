@@ -70,6 +70,11 @@ Changed in ATK 5.6.1
 * The exportFile function now also sends content description, 
   transfer encoding and content length headers. It also automatically
   detects the correct mime type and sends that as a header. [Boy]
+* Fixed notices in meta relations, grammar and policy. [Boy]
+* Added policy detection of 'is_' and 'has_ 'integers with length of 1 being
+  of type atkBoolAttribute, fields named 'country' being of the 
+  atkCountryAttribute type and nodes with the NF_ML flag automatically
+  have a atkMlSelectorAttribute added. [Boy]
 
 Changed in ATK 5.6
 ------------------

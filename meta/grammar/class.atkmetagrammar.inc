@@ -20,7 +20,7 @@
  *
  * The singularize and pluralize methods are inspired by the methods with
  * the same name in the Inflector module of the Ruby on Rails framework
- * (Copyright © 2004 David Heinemeier Hansson). The Ruby on Rails framework
+ * (Copyright ï¿½ 2004 David Heinemeier Hansson). The Ruby on Rails framework
  * can be found at http://www.rubyonrails.com
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -44,7 +44,7 @@ class atkMetaGrammar
     if ($class == NULL)
       $class = atkconfig("meta_grammar");
 
-    if ($instances[$class] == NULL)
+    if (!isset($instances[$class]) || $instances[$class] == NULL)
       $instances[$class] = &atknew($class);
       
     return $instances[$class];

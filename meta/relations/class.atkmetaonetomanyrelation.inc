@@ -42,7 +42,7 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
     $this->m_options = $options;
     
     $this->setDescriptorTemplate($template);
-    $this->setDestinationFilter($options["filter"]);    
+    if (isset($options["filter"])) $this->setDestinationFilter($options["filter"]);
   }
   
   /**

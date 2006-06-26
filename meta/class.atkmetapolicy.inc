@@ -123,6 +123,15 @@ class atkMetaPolicy
       $type = "atk.attributes.atkemailattribute";
       $params = array(false);
     }
+    else if ($name==='country')
+    {
+      $result['type']='atkcountryattribute';
+    }
+    else if ($meta['type']==='int' && $meta['len']===1 && 
+             (substr($name,0,3)==='is_' ||substr($name,0,4)==='has_'))
+    {
+      $result['type']='atkboolattribute';
+    }
 
     else
     {
@@ -160,7 +169,12 @@ class atkMetaPolicy
           break;
       }
     }
-
+    
+    if ($this->m_node->hasFlag(NF_ML))
+    {
+      useattrib('atkmlselectorattribute');
+      $this->m_node->add(new atkMlSelectorAttribute());
+    }
     return array("type" => $type, "params" => $params);
   }
 
@@ -223,7 +237,7 @@ class atkMetaPolicy
     $cols = $db->tableMeta($this->getTable());
 
     foreach ($cols as $name => $meta)
-      if (strlen($meta['sequence']) > 0)
+      if (isset($meta['sequence']) && strlen($meta['sequence']) > 0)
         $sequence = $meta['sequence'];
 
     if ($sequence == NULL)
@@ -409,8 +423,12 @@ class atkMetaPolicy
     $max = 0;
 
     foreach (array_keys($this->m_attrs) as $key)
-      if ($this->m_attrs[$key]["order"] > $max)
+    {
+      if (isset($this->m_attrs[$key]["order"]) && $this->m_attrs[$key]["order"] > $max)
+      {
         $max = $this->m_attrs[$key]["order"];
+      }
+    }
 
     return $max;
   }
@@ -710,7 +728,12 @@ class atkMetaPolicy
   function apply()
   {
     foreach ($this->m_attrs as $name => $data)
-      $this->_applyAttribute($name, $data["type"], $data["params"], $data["flags"], $data["tabs"], $data["order"]);
+      $this->_applyAttribute($name, 
+                             (isset($data["type"])?$data["type"]:''), 
+                             (isset($data["params"])?$data["params"]:''), 
+                             (isset($data["flags"])?$data["flags"]:''), 
+                             (isset($data["tabs"])?$data["tabs"]:''), 
+                             (isset($data["order"])?$data["order"]:''));
   }
 }
 ?>
