@@ -26,6 +26,8 @@ Changed in ATK 5.6.1
   html code). [Jeroen]  
 + Added JSON serialization/deserialization support, available as static 
   methods of class atk.utils.atkJSON and available as Smarty modifier. [Peter]
++ atkButton now takes an optional parameter '$cssclass' that sets the css
+  class for the button. [Harrie]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]

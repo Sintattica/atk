@@ -1606,16 +1606,18 @@
    * @param var $sessionstatus the session flags
    *              (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
    *               SESSION_NESTED|SESSION_BACK)
+   * @param string $cssclass   the css class the button should get
    * @param bool $embeded      wether or not it's an embedded button
    */
-  function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT, $embedded=true)
+  function atkButton($text, $url="", $sessionstatus=SESSION_DEFAULT, $embedded=true, $cssclass="")
   {
     $page = &atkPage::getInstance();
     $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
     static $cnt=0;
 
+    if ($cssclass != "") $cssclass = ' class="'.$cssclass.'"';
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
-    $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\'>';
+    $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 
     if (!$embedded)
     {
