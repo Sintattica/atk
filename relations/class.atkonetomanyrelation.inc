@@ -98,7 +98,7 @@
      */
     function atkOneToManyRelation($name, $destination, $refKey="", $flags=0)
     {
-      $page = &atkPage::getInstance();
+      $page = &atkinstance('atk.ui.atkpage');
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkonetomanyrelation.js");
 
@@ -231,23 +231,27 @@
       {
         if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
         {
+          $this->m_ownerInstance->m_postvars[$this->fieldName()]['lng'] = $this->m_ownerInstance->m_postvars['lng'];
           foreach (array_keys($this->m_ownerInstance->m_postvars[$this->fieldName()]) as $fieldname)
           {
             if (!in_array($fieldname,array("atkaction","atknodetype","atkprimkey")))
             {
               $attribute = &$this->m_destInstance->getAttribute($fieldname);
-              if (is_object($attribute))
+             
+              if (in_array($fieldname,array('_lgswitch','lng')))
+              {
+                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$fieldname];
+              }
+              else if (is_object($attribute))
               {
                 $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $attribute->fetchValue($this->m_ownerInstance->m_postvars[$this->fieldName()]);
               }
               else
               {
-                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$this->fieldName()];
                 atkerror("$fieldname is no attribute for integrated save, is this correct?");
               }
             }
           }
-
           $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
           if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
           {
@@ -255,7 +259,7 @@
           }
           else
           {
-            $error = "<span class='error'>".$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['attrib_name'].': '.$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
+            $error = "<span class='error'>".atktext($this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['attrib_name'],$this->m_ownerInstance->m_module).': '.$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
           }
         }
       }
@@ -320,12 +324,9 @@
         $handler->m_node = &$destInstanceCopy;
         $output.=$handler->editForm("add",$editrecord,"","",$fname."_AE_","integratededitform.tpl");
 
-        $output.='<input type="submit" class="otm_add" name="'.$fname.'_save" value="'.atktext("add").'">';
-        $output.='<input type="button" onClick="toggleAddForm(\''.$fname."_integrated',
-                                                               '".$fname."_integrated_link');\"
-                                       class=\"otm_add\" name=\"".$fname."_cancel\" value=\"".atktext("cancel").'">';
+        $output.= $this->_getEmbeddedButtons($fname);
         $text = atktext("link_".$fname."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
-        if (!$text) $text = atktext($fname,$this->m_ownerInstance->m_module,$this->m_owner)." ".atktext("add");
+        if (!$text) $text = atktext($fname,$this->m_ownerInstance->m_module,$this->m_owner)." ".strtolower(atktext("add"));
         $output.="\n </div> <a id=\"".$fname."_integrated_link\"
                                 href=\"javascript:toggleAddForm('".$fname."_integrated','".$fname."_integrated_link');\">$text</a>";
       }
@@ -333,6 +334,20 @@
         atkerror("Could not create destination for ". $this->fieldName()."!");
 
       return $output;
+    }
+    
+    /**
+     * Get the buttons for the embedded mode of the onetomany relation.
+     * @todo Move this to a template
+     * @return String The HTML buttons
+     */
+    function _getEmbeddedButtons()
+    {
+      $fname = $this->fieldName();
+      $output.='<input type="submit" class="otm_add" name="'.$fname.'_save" value="'.atktext("add").'">';
+      return $output.'<input type="button" onClick="toggleAddForm(\''.$fname."_integrated',
+                                                               '".$fname."_integrated_link');\"
+                                       class=\"otm_add\" name=\"".$fname."_cancel\" value=\"".atktext("cancel").'">';
     }
 
     /**

@@ -83,7 +83,10 @@ Changed in ATK 5.6.1
   methods to API: setFormatEdit, setFormatView, setDateMax, setDateMin. [Boy]
 * Replaced unused default config 'javascript_confirmation' with: 
   'recordlist_javascript_delete'. [Boy]
-
+* Made embedded mode of atkOneToManyRelation work with 
+  multilanguage nodes. [Boy]
+* Decomposed getting of HTML for embedded buttons of atkOneToManyRelation
+  to _getEmbeddedButtons. [Boy]
 
 Changed in ATK 5.6
 ------------------
