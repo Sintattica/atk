@@ -1044,10 +1044,10 @@
 
     /**
      * Adds the validated records but checks for errors first
-     * @param Array  $importerrors    Errors that occurred during validation of importfile
+     * @param Array  $importerrors   Errors that occurred during validation of importfile
      * @param Array  $validatedrecs  Records that were validated
      * @param Object $fp             Pointer to the importfile
-     * @param String $file           Filenmae
+     * @param String $file           Filename
      */
     function addRecords($importerrors, $validatedrecs, $fp, $file)
     {
