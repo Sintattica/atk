@@ -138,6 +138,16 @@
     }
 
     /**
+     * Validates a given date array
+     * @param array Array with 3 fields (day, month, year)
+     * @return boolean True if valid, false if not.
+     */
+    function checkDateArray($datearray)
+    {
+      return checkdate((int)$datearray["month"], (int)$datearray["day"], (int)$datearray["year"]);
+    }
+
+    /**
      * Converts a date array to a timestamp
      * year, month, day are obligatory !!
      *
@@ -196,16 +206,16 @@
 
       /* edit and display date format */
       $this->setFormatEdit($format_edit);
-      $this->setFormatView($format_view);      
+      $this->setFormatView($format_view);
 
       /* max / min date */
       $this->setDateMin($min);
-      $this->setDateMax($max);      
+      $this->setDateMax($max);
 
       /* base class constructor */
       $this->atkAttribute($name, $flags);
     }
-    
+
     /**
      * Set the format for the boxes in edit mode.
      *
@@ -214,12 +224,12 @@
     function setFormatEdit($format_edit)
     {
       $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
-      
+
       if     (!empty($format_edit))           $this->m_date_format_edit = $format_edit;
       elseif (!empty($txt_date_format_edit))  $this->m_date_format_edit = $txt_date_format_edit;
       else                                    $this->m_date_format_edit = "F j Y";
     }
-    
+
     /**
      * Set the format for the boxes in view mode.
      *
@@ -228,15 +238,15 @@
     function setFormatView()
     {
       $txt_date_format_view = atktext("date_format_view","atk","","","",true);
-      
+
       if     (!empty($format_view))           $this->m_date_format_view = $format_view;
       elseif (!empty($txt_date_format_view))  $this->m_date_format_view = $txt_date_format_view;
       else                                    $this->m_date_format_view = "F j Y";
     }
-    
+
     /**
      * Set the maximum date that may be select (0 means unlimited).
-     * It can be set in 3 formats: 
+     * It can be set in 3 formats:
      * 1. Unix timestamp.
      * 2. String (parsed by strtotime)
      * 3. Array (with year,month,day,hour,min,sec)
@@ -250,10 +260,10 @@
       else if (is_integer($max))  $this->m_date_max = $max;
       else                        $this->m_date_max = strtotime($max);
     }
-    
+
     /**
      * Set the minimum date that may be select (0 means unlimited).
-     * It can be set in 3 formats: 
+     * It can be set in 3 formats:
      * 1. Unix timestamp.
      * 2. String (parsed by strtotime)
      * 3. Array (with year,month,day,hour,min,sec)
@@ -321,20 +331,27 @@
         $current = NULL; /* NULL date selected (NULL value in database) */
       elseif (is_array($field))
       {
-        if (checkdate($field["month"], $field["day"], $field["year"]))
+        if ($this->checkDateArray($field))
         {
           $current = adodb_mktime(0, 0, 0, $field["month"], $field["day"], $field["year"]);
         }
         else
         {
-          triggerError($record, $this->fieldName(), "date_invalid");
+          $current = NULL;
+          triggerError($record, $this->fieldName(), "error_date_invalid");
         }
       }
       else
       {
         $date = $this->dateArray($field);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
+        if ($this->checkDateArray($date))
+        {
           $current = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
+        }
+        else
+        {
+          $current = NULL;
+        }
       }
 
       /* minimum date */
@@ -786,7 +803,7 @@
       if(!($value["year"]=='' || $value['month']==0 || $value['day']==0))
       {
         /* currently selected date */
-        if (checkdate($value["month"], $value["day"], $value["year"]))
+        if ($this->checkDateArray($value))
           $current = adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]);
         else
         {
@@ -812,7 +829,7 @@
       if (strlen($str_min) == 8)
       {
         $date = $this->dateArray($str_min);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
+        if ($this->checkDateArray($date))
           $minimum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_min = 0;
       }
@@ -823,7 +840,7 @@
       if (strlen($str_max) == 8)
       {
         $date = $this->dateArray($str_max);
-        if (checkdate($date["month"], $date["day"], $date["year"]))
+        if ($this->checkDateArray($date))
           $maximum = adodb_mktime(0, 0, 0, $date["month"], $date["day"], $date["year"]);
         else $str_max = 0;
       }
