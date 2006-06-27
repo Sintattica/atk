@@ -17,14 +17,14 @@ Changed in ATK 5.6.1
 + Added addOverloader, removeOverloader and hasOverloader functions
   to atktools so overloaders can be added realtime instead of only in the
   module_preload. [Boy]
-+ Added the ability to use a bracket-template in the value for default values 
++ Added the ability to use a bracket-template in the value for default values
   in the atkImportHandler. [Ivo]
-+ Added functionalitiy to atkOpenDocumentWriter to support styles in tags of 
-  generated documents. Html styles are converted to to XML: bold, italic and 
-  underline are supported (any combination is possible with IE-generated html; 
++ Added functionalitiy to atkOpenDocumentWriter to support styles in tags of
+  generated documents. Html styles are converted to to XML: bold, italic and
+  underline are supported (any combination is possible with IE-generated html;
   for now, only the italic/bold combination is supported for FireFox-generated
-  html code). [Jeroen]  
-+ Added JSON serialization/deserialization support, available as static 
+  html code). [Jeroen]
++ Added JSON serialization/deserialization support, available as static
   methods of class atk.utils.atkJSON and available as Smarty modifier. [Peter]
 + atkButton now takes an optional parameter '$cssclass' that sets the css
   class for the button. [Harrie]
@@ -62,33 +62,36 @@ Changed in ATK 5.6.1
 * The atkImportHandler would hide attributes that don't use addToQuery, but
   as long as they properly handle parseStringValue, they are usable, so this
   restriction is removed. [Ivo]
-* Multilanguage splitter now also works for the 
+* Multilanguage splitter now also works for the
   atkMetaManyToOneRelation. [Boy]
 * Made debugger pass atkLevel() as prevlevel to debug window, thereby
   making it more likely to show debugging, although still not 100%. [Boy]
 * Performed some functional decomposition on atkOutput, adding the
-  getDebugging and sendCachingHeaders methods. [Boy]  
+  getDebugging and sendCachingHeaders methods. [Boy]
 * Fixed PHP5 issue in Smarty Compiler (block functions). [Peter]
-* The exportFile function now also sends content description, 
+* The exportFile function now also sends content description,
   transfer encoding and content length headers. It also automatically
   detects the correct mime type and sends that as a header. [Boy]
 * Fixed notices in meta relations, grammar and policy. [Boy]
 * Added policy detection of 'is_' and 'has_ 'integers with length of 1 being
-  of type atkBoolAttribute, fields named 'country' being of the 
+  of type atkBoolAttribute, fields named 'country' being of the
   atkCountryAttribute type and nodes with the NF_ML flag automatically
   have a atkMlSelectorAttribute added. [Boy]
 * Made ATK ignore select queries that are built with an empty fieldset. [Boy]
-* Made ATK force quoting of field names that are reserved names 
+* Made ATK force quoting of field names that are reserved names
   like 'from'. [Boy]
 * Fixed adding of extension after 'file mangle' of atkFileAttribute. [Boy]
 * Performed functional decomposition on date attribute, adding following
   methods to API: setFormatEdit, setFormatView, setDateMax, setDateMin. [Boy]
-* Replaced unused default config 'javascript_confirmation' with: 
+* Replaced unused default config 'javascript_confirmation' with:
   'recordlist_javascript_delete'. [Boy]
-* Made embedded mode of atkOneToManyRelation work with 
+* Made embedded mode of atkOneToManyRelation work with
   multilanguage nodes. [Boy]
 * Decomposed getting of HTML for embedded buttons of atkOneToManyRelation
   to _getEmbeddedButtons. [Boy]
+* Fixed PHP notices and a warning in atkDateAttribute. [Guido]
+* Fixed incorrect language identifier date_invalid (should be
+  error_date_invalid) in atkDateAttribute. [Guido]
 
 Changed in ATK 5.6
 ------------------
