@@ -168,8 +168,9 @@
       if (atkconfig("debug")>0)
       {
         $output = '<br><div style="font-family: monospace; font-size: 11px;" align="left">'.implode("<br>\n ",$g_debug_msg).'</div>';
-      }
       return $output;
+      }
+      return "";
     }
 
     /**
