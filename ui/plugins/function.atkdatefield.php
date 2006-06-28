@@ -38,10 +38,19 @@ function smarty_function_atkdatefield($params, &$smarty)
   {
     $date = NULL;
   }
-  else 
+  else if (is_numeric($time))
   {
     $date = getdate($time);
     $date = array('day' => $date['mday'], 'month' => $date['mon'], 'year' => $date['year']);
+  }
+  else if (preg_match('/([0-9]{1,2})-([0-9]{1,2})-([0-9]{4})/', $time, $matches))
+  {
+    $date = array('day' => (int)$matches[1], 'month' => (int)$matches[2], 'year' => $matches[3]);    
+  }
+  else 
+  {
+    $date = getdate(strtotime($time));
+    $date = array('day' => $date['mday'], 'month' => $date['mon'], 'year' => $date['year']);    
   }
   
   useattrib('atkdateattribute');
