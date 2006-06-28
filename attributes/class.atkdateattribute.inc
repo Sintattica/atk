@@ -416,6 +416,7 @@
         'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
       );
       
+      atkimport('atk.utils.atkjson');
       if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
 
       /* other date selections */
