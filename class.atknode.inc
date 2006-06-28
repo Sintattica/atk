@@ -858,7 +858,7 @@
         return $this->m_attribList[$name];
       else return NULL;
     }
-    
+
     /**
      * Gets all the attributes.
      * @return array Array with the attributes.
@@ -2493,9 +2493,11 @@
      * fail.
      * @param array $record The record to update in the database.
      * @param bool wether to execute the pre/post update triggers
+     * @param array $excludes exclude list (these attribute will *not* be updated)
+     * @param array $includes include list (only these attributes will be updated)
      * @return boolean True if succesful, false if not.
      */
-    function updateDb(&$record,$exectrigger=true)
+	  function updateDb(&$record, $exectrigger=true, $excludes="", $includes="")
     {
       $db = &$this->getDb();
       $query = &$db->createQuery();
@@ -2517,7 +2519,7 @@
           //Need to restore the NO_FILTER bit back to its original value.
           $flags = $this->m_flags;
           $this->addFlag(NF_NO_FILTER);
-          $recordset = $this->selectDb($pk,"","","","","edit"); // we need the same record we got when editing.
+          $recordset = $this->selectDb($pk,"","",$excludes,$includes,"edit"); // we need the same record we got when editing.
           $this->m_flags = $flags;
           $record["atkorgrec"] = $recordset[0];
         }
@@ -2527,13 +2529,17 @@
 
         foreach (array_keys($this->m_attribList) as $attribname)
         {
-          $p_attrib = &$this->m_attribList[$attribname];
-          if ($p_attrib->needsUpdate($record))
-          {
-            $storemode = $p_attrib->storageType("update");
-            if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
-            if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
-            if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
+	        if ((!is_array($excludes) || !in_array($attribname, $excludes)) &&
+  	          (!is_array($includes) || in_array($attribname, $includes)))
+  	      {
+  	        $p_attrib = &$this->m_attribList[$attribname];
+            if ($p_attrib->needsUpdate($record))
+            {
+              $storemode = $p_attrib->storageType("update");
+              if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
+              if (hasFlag($storemode, POSTSTORE)) $storelist["post"][]=$attribname;
+              if (hasFlag($storemode, ADDTOQUERY)) $storelist["query"][]=$attribname;
+            }
           }
         }
 
