@@ -344,7 +344,7 @@
 
       // Check if the password meets the restrictions. If not, set error to true and
       // triger an error with the human readable form of the restrictions as message.
-      if (!$error && !$this->validateRestrictions($value["newplain"]))
+      if ((strlen($value["new"]) > 0) && (!$this->validateRestrictions($value["newplain"])))
       {
         $error = TRUE;
         triggerError($record, $this->fieldName(), $this->getRestrictionsText());
