@@ -28,6 +28,8 @@ Changed in ATK 5.6.1
   methods of class atk.utils.atkJSON and available as Smarty modifier. [Peter]
 + atkButton now takes an optional parameter '$cssclass' that sets the css
   class for the button. [Harrie]
++ Backported include/exclude parameters for updateDb in atkNode from
+  tommorow branch. [Guido]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -96,6 +98,8 @@ Changed in ATK 5.6.1
   tested when a new password was entered. [Guido]
 * Improved debugging and error handling in atkOpenDocumentWriter->store()
   function. [Guido]
+* Only relevant attributes should be loaded/updated when generating/mailing
+  a new password. [Guido]
 
 Changed in ATK 5.6
 ------------------
