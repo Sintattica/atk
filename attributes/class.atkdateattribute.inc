@@ -482,11 +482,11 @@
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
               if (($current['year']!="") && ($current['mon']!=""))
               {
-                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? '' : "$weekdayFormat {$str_format[$i]}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
+                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $str_format[$i] : "$weekdayFormat {$str_format[$i]}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
               }
               else
               {
-                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? '' : "$weekdayFormat {$str_format[$i]}"), 0);
+                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? $str_format[$i] : "$weekdayFormat {$str_format[$i]}"), 0);
               }
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
             }
