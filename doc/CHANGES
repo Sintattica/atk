@@ -92,6 +92,10 @@ Changed in ATK 5.6.1
 * Fixed PHP notices and a warning in atkDateAttribute. [Guido]
 * Fixed incorrect language identifier date_invalid (should be
   error_date_invalid) in atkDateAttribute. [Guido]
+* The restrictions that apply to an atkPasswordAttribute should only be
+  tested when a new password was entered. [Guido]
+* Improved debugging and error handling in atkOpenDocumentWriter->store()
+  function. [Guido]
 
 Changed in ATK 5.6
 ------------------
