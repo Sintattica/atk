@@ -27,6 +27,7 @@
   define ("AUTH_LOCKED", 2);
   define ("AUTH_MISMATCH", 3);
   define ("AUTH_PASSWORDSENT", 4);
+  define ("AUTH_MISSINGUSERNAME", 5);
   define ("AUTH_ERROR",-1);
 
   /**
@@ -233,8 +234,14 @@
 
         $authenticated = false;
 
+        // Check if a username was entered
+        if ((atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user))
+        {
+          $response = AUTH_MISSINGUSERNAME;
+        }
+
         // Email password if password forgotten and passwordmailer enabled
-        if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
+        else if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
         {
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
@@ -489,6 +496,11 @@
         {
           $output.='<tr><td colspan=3 class=error>'.atktext('auth_mismatch').'<br><br></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_mismatch');
+        }
+        else if ($lastresponse == AUTH_MISSINGUSERNAME)
+        {
+          $output.='<tr><td colspan="3" class=error>'.atktext('auth_missingusername').'<br /><br /></td></tr>';
+          $tplvars["auth_mismatch"] = atktext('auth_missingusername');
         }
         else if ($lastresponse == AUTH_PASSWORDSENT)
         {
