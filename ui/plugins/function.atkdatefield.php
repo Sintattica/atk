@@ -27,10 +27,25 @@ function smarty_function_atkdatefield($params, &$smarty)
   $mandatory = isset($params['mandatory']) && $params['mandatory'] || isset($params['obligatory']) && $params['obligatory'];
   $calendar = isset($params['calendar']) && $params['calendar'];
   $time = isset($params['time']) ? $params['time'] : ($mandatory ? mktime() : NULL);
-  $date = $time == NULL ? NULL : getdate($time);
-  $date = $date == NULL ? NULL : array('day' => $date['mday'], 'month' => $date['mon'], 'year' => $date['year']);
+  $min = isset($params['min']) ? $params['min'] : 0;
+  $max = isset($params['max']) ? $params['max'] : 0;
+  
+  if (is_array($time))
+  {
+    $data = $time;
+  }
+  else if ($time == NULL)
+  {
+    $date = NULL;
+  }
+  else 
+  {
+    $date = getdate($time);
+    $date = array('day' => $date['mday'], 'month' => $date['mon'], 'year' => $date['year']);
+  }
+  
   useattrib('atkdateattribute');
-  $attr = new atkDateAttribute($name, $format, '', 0, 0, ($mandatory ? AF_OBLIGATORY : 0)|($calendar ? 0 : AF_DATE_NO_CALENDAR));
+  $attr = new atkDateAttribute($name, $format, '', $min, $max, ($mandatory ? AF_OBLIGATORY : 0)|($calendar ? 0 : AF_DATE_NO_CALENDAR));
   $html = $attr->edit(array($name => $date));
   return $html;
 }

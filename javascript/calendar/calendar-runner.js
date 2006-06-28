@@ -33,7 +33,8 @@ function showCalendar(id, bindname, format, dateattr)
   if (dateattr)
   {
     // get current value from dateattribute widgets
-    calendar.parseDate(dateAttribute_getValue(id));
+    var val = ATK.DateAttribute.getValue(id);
+    calendar.parseDate(val.year + '-' + val.month + '-' + val.day);
   }
   else
   {
@@ -50,8 +51,7 @@ function showCalendar(id, bindname, format, dateattr)
 // This function gets called when the end-user clicks on some date.
 function changeWidget(cal, date) 
 {
-  //cal.sel.value = date; // just update the date in the input field.  
-   dateAttribute_setValue(cal.dateattrId, date.substr(0,4), date.substr(5,2), date.substr(8,2));  
+  ATK.DateAttribute.setValue(cal.dateattrId, { year: date.substr(0,4), month: parseInt(date.substr(5,2), 10), day: parseInt(date.substr(8,2), 10) });  
 }
 
 function changeTextField(cal, date)

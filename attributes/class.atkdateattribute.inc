@@ -65,9 +65,12 @@
       /* format month */
       $format = str_replace("M", "%-%",   $format);
       $format = str_replace("F", "%=%",   $format);
-
+      
       /* format day */
-      if ($weekday)
+      $format = str_replace("D", "%&%", $format);      
+      $format = str_replace("l", "%*%", $format);      
+      
+      if ($weekday && strpos($format, '%&%') === FALSE && strpos($format, '%*%') === FALSE)
       {
         $format = str_replace("d", "%*% d", $format);
         $format = str_replace("j", "%*% j", $format);
@@ -89,11 +92,12 @@
       {
         $langcache[$shortmonth] = atktext($shortmonth);
       }
-
+      
       /* replace month/week name */
       $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
       $str_date = str_replace("%=%", $langcache[$month], $str_date);
-      if ($weekday) $str_date = str_replace("%*%", atktext(strtolower($date["weekday"]),"atk"), $str_date);
+      $str_date = str_replace("%*%", atktext(strtolower($date["weekday"]),"atk"), $str_date);
+      $str_date = str_replace("%&%", atktext(substr(strtolower($date["weekday"]), 0, 3),"atk"), $str_date);
 
       /* return string */
       return $str_date;
@@ -400,18 +404,26 @@
         return $result;
       }
 
-      if (!$pda) $result.='<script language="javascript"> var '.$fieldname.'_fmt = \''.$str_format.'\';</script>';
+      if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
+      else if (!$obligatory) $emptyfield=true;
+      else $emptyfield=false;      
+      
+      $info = array(
+        'format' => $str_format, 
+        'min' => $str_min, 
+        'max' => $str_max, 
+        'emptyfield' => $emptyfield,
+        'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
+      );
+      
+      if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
 
       /* other date selections */
+      $weekdayFormat = NULL;
       for($i = 0; $i < strlen($str_format); $i++)
       {
-
-        if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
-        else if (!$obligatory) $emptyfield=true;
-        else $emptyfield=false;
-
         /* javascript method */
-        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."', '$str_format', $str_min, $str_max, ".($emptyfield==true ? "true" : "false").", ".($this->hasFlag(AF_DATE_EDIT_NO_DAY) ? "false" : "true").");";
+        if (!$pda) $str_script = "AdjustDate(this, '".$fieldname."');";
 
         if (count($this->m_onchangecode))
         {
@@ -448,6 +460,12 @@
             $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
         }
+        
+        /* weekday format */
+        elseif ($str_format[$i] == 'D' || $str_format[$i] == 'l')
+        {
+          $weekdayFormat = $str_format[$i];
+        }
 
         /* day input box */
         elseif ($str_format[$i] == "j" || $str_format[$i] == "d")
@@ -463,11 +481,11 @@
               $tmp_date = adodb_getdate(adodb_mktime(0,0,0, $current["mon"], $j, $current["year"]));
               if (($current['year']!="") && ($current['mon']!=""))
               {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i], !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
+                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? '' : "$weekdayFormat {$str_format[$i]}"), !$this->hasFlag(AF_DATE_EDIT_NO_DAY));
               }
               else
               {
-                $str_day = $this->formatDate($tmp_date, $str_format[$i],0);
+                $str_day = $this->formatDate($tmp_date, (empty($weekdayFormat) ? '' : "$weekdayFormat {$str_format[$i]}"), 0);
               }
               $result .= '<option value="'.$j.'" '.($current !== NULL && $j == $current["mday"] ? "selected" : "").'>'.$str_day.'</option>';
             }

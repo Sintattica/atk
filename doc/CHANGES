@@ -100,6 +100,12 @@ Changed in ATK 5.6.1
   function. [Guido]
 * Only relevant attributes should be loaded/updated when generating/mailing
   a new password. [Guido]
+* Added JavaScript based listener support for atkDateAttributes. 
+* Added support for modifying the date range (minimum / maximum) 
+  of an atkDateAttribute using JavaScript. [Peter] E
+* Improved atkDateAttribute / calendar integration (calendar now knows 
+  everything it needs to know to adjust the field boxes). [Peter]
+
 
 Changed in ATK 5.6
 ------------------
