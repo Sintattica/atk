@@ -48,11 +48,17 @@
      */
     function edit($record="", $fieldprefix="")
     {
+      $id = $this->getHtmlId($fieldprefix);
+      $onchange='';
+      if (count($this->m_onchangecode))
+      {
+        $onchange = 'onChange="'.$id.'_onChange(this);" ';
+        $this->_renderChangeHandler($fieldprefix);
+      }
       $checked = "";
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()]>0) $checked="checked";
-      $id = $fieldprefix.$this->fieldName();
       $this->registerKeyListener($id, KB_CTRLCURSOR|KB_CURSOR);
-      return '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$checked.'>';
+      return '<input type="checkbox" id="'.$id.'" name="'.$id.'" value="1" '.$onchange.$checked.' />';
     }
 
 
