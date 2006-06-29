@@ -78,6 +78,22 @@ function showTab(tab)
 		{
 		  document.getElementById('tab_'+tabs[j]).className = 'passivetab';
 		}
+	}	
+	
+	makeFCKEditable();
+}
+
+/**
+ * Because the FCK editor does not always agree with 
+ * tabbing and no longer becomes editable if you switch 
+ */
+function makeFCKEditable()
+{
+  iframes = document.getElementsByTagName("iframe");
+	for (i = 0; i < iframes.length; i++)
+	{
+	  obj = frames[iframes[i].id];
+	  if (obj && obj.FCK && obj.FCK.MakeEditable) obj.FCK.MakeEditable();
 	}
 }
 
