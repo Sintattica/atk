@@ -105,6 +105,10 @@ Changed in ATK 5.6.1
   of an atkDateAttribute using JavaScript. [Peter] E
 * Improved atkDateAttribute / calendar integration (calendar now knows 
   everything it needs to know to adjust the field boxes). [Peter]
+* Because the FCK editor does not always agree with tabbing and no longer becomes 
+  editable if you switch (only in firefox), a custom method is add to enable all
+  fck-editors. Added name element in FckEditor-code so that we can access the frame 
+  from the parent (code change request emailed to fckeditor.net) [Jeroen]  
 
 
 Changed in ATK 5.6
