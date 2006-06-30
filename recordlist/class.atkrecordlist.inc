@@ -128,7 +128,7 @@
         {
           $headercols[] = array("content"=>'<img src="'.atkconfig("atkroot").'atk/images/lock_head.gif">');
         }
-        if ($orientation == "left" || $orientation == "both")
+        if (($orientation == "left" || $orientation == "both") && $this->hasActionsinList($list))
         {
           $headercols[] = array("content"=>"");
         }
@@ -150,7 +150,7 @@
           }
         }
 
-        if ($orientation == "right" || $orientation == "both")
+        if (($orientation == "right" || $orientation == "both")&& $this->hasActionsinList($list))
         {
           $headercols[] = array("content"=>"");
         }
@@ -284,6 +284,7 @@
                        session_form(SESSION_DEFAULT).
                        '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">';
+            $listend = '</form>';
           }
 
           if (hasFlag($flags, RL_MRA))
@@ -402,11 +403,11 @@
           /* actions (left) */
           if ($orientation == "left" || $orientation == "both")
           {
-            if (!empty($str_actions))
+            if (!empty($list["rows"][$i]["actions"]))
             {
               $record["cols"][] = array("content"=>$str_actions);
             }
-            else  $record["cols"][] = array("content"=>"");
+//            else  $record["cols"][] = array("content"=>"");
 
           }
 
@@ -417,7 +418,7 @@
           /* actions (right) */
           if ($orientation=="right"||$orientation=="both")
           {
-            if (!empty($str_actions)) $record["cols"][] = array("content"=>$str_actions);
+            if (!empty($list["rows"][$i]["actions"])) $record["cols"][] = array("content"=>$str_actions);
             else $record["cols"][] = array("content"=>"");
           }
 
@@ -474,11 +475,6 @@
             $mra= $this->getCustomMraHtml().'<input type="hidden" name="'.$listName.'_atkaction" value="'.$this->m_node->m_priority_actions[0].'">'.
                        '<input type="button" class="btn" value="'.atktext($this->m_node->m_priority_actions[0]).'" onclick="atkSubmitMRPA(\''.$listName.'\', this.form, \''.$target.'\')">';
           }
-
-          if (!hasFlag($flags, RL_EMBED))
-          {
-            $listend= '</form>';
-          }
         }
 
         /****************************************/
@@ -493,7 +489,7 @@
                       '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.atktext("deselect_all").'</a> / '.
                       '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.atktext("select_invert").'</a>'
                      :
-                      '<img src="'.atkconfig("atkroot").'atk/images/dummy.gif" border="0" height="1" width="1">');
+                      '');
 
           /* multiple actions -> dropdown */
           if (count($list["mra"]) > 1)
@@ -523,8 +519,6 @@
                          '<input type="button" class="btn" value="'.atktext($list["mra"][0],$this->m_node->m_module, $this->m_node->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
             }
           }
-
-          if (!hasFlag($flags, RL_EMBED)) $listend = '</form>';
         }
 
         if (atkconfig("use_keyboard_handler"))
@@ -549,6 +543,21 @@
                                                    "mra"=>$mra));
         return $res;
       }
+    }
+    
+    /**
+     * Checks wether there are any actions in the recordlist data
+     *
+     * @param Array $list The recordlist data
+     * @return bool Wether the list has actions
+     */
+    function hasActionsInList($list)
+    {
+      foreach ($list["rows"] as $record)
+      {
+        if (!empty($record['actions'])) return true;
+      }
+      return false;
     }
 
     function getCustomMraHtml()
