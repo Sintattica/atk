@@ -30,6 +30,9 @@ Changed in ATK 5.6.1
   class for the button. [Harrie]
 + Backported include/exclude parameters for updateDb in atkNode from
   tommorow branch. [Guido]
++ DocumentWriter: convert Html bullets (fck-editor) to XML (tab + *)
+  Only 1 level deep supported (deeper levels in html will be converted to 
+  level 1 in the generated document) [Jeroen]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]

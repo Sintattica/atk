@@ -180,6 +180,8 @@
       $inputString = $this->convertFirefoxHtmlToXML($inputString);
 
       $inputString = $this->convertIEHtmlToXML($inputString);
+      
+      $inputString = $this->convertGeneralHtmlToXML($inputString);
 
       return $inputString;
     }
@@ -192,7 +194,7 @@
       $xmlItalic     = '<style:style style:name="atkitalic" style:family="text"><style:text-properties fo:font-style="italic" style:font-style-asian="italic" style:font-style-complex="italic"/></style:style>';
       $xmlBoldItalic = '<style:style style:name="atkbolditalic" style:family="text"><style:text-properties fo:font-style="italic" fo:font-weight="bold" style:font-style-asian="italic" style:font-weight-asian="bold" style:font-style-complex="italic" style:font-weight-complex="bold"/></style:style>';
       $xmlUnderline  = '<style:style style:name="atkunderline" style:family="text"><style:text-properties style:text-underline-style="solid" style:text-underline-width="auto" style:text-underline-color="font-color"/></style:style>';
-
+      
       $inputString = str_replace($xmlAutomaticStyleTag , $xmlBold.$xmlItalic.$xmlBoldItalic.$xmlUnderline.$xmlAutomaticStyleTag, $inputString);
 
       return $inputString;
@@ -236,9 +238,10 @@
 
       // substitute html- by xml-'span' tags
       $inputString = str_replace('&lt;/span&gt;' , '</text:span>', $inputString);
-
+      
       // replace end-of-line/paragraph chars by xml-newline
       $inputString = str_replace('&lt;br /&gt;' , '<text:line-break/>', $inputString);
+      $inputString = str_replace('<br />' , '<text:line-break/>', $inputString);
 
       return $inputString;
     }
@@ -269,6 +272,25 @@
       $inputString = str_replace('&lt;p&gt;', '', $inputString);
       $inputString = str_replace('&lt;/p&gt;', '<text:line-break/>', $inputString);
 
+      return $inputString;
+    }
+    
+    function convertGeneralHtmlToXML($inputString)
+    {
+      /**************************************************************
+       * Convert general-html tags to xml tags (same for IE/Firefox *
+       **************************************************************/
+      
+      // Convert all html bullets to an XML-tab + *
+      // Only 1 level deep supported (deeper levels will be converted to level 1 in the generated document)
+      $inputString = str_replace("\r" , '', $inputString);
+      $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/><text:line-break/>" , '', $inputString); // first <ul>
+      $inputString = str_replace("&lt;ul&gt;<text:line-break/><text:line-break/>"  , '',               $inputString);                      //  sub <ul>'s
+      $inputString = str_replace('&lt;li&gt;'                                      , '<text:tab/> * ', $inputString);                      // use '*' as bullet
+      $inputString = str_replace('&lt;/li&gt;<text:line-break/>'                   , '',               $inputString);                      // end bullet
+      $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>' , '',               $inputString);                      // main closing </ul>
+      $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s 
+      
       return $inputString;
     }
   }
