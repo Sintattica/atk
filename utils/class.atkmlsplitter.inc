@@ -207,7 +207,8 @@
         {
           $p_attrib = &$relations[$attribname];
           
-          if($p_attrib->createDestination()
+          if(method_exists($p_attrib,"createDestination")
+              && $p_attrib->createDestination()
               && $p_attrib->m_destInstance->hasFlag(NF_ML)
               && (!$p_attrib->hasFlag(AF_HIDE_LIST) || $p_attrib->hasFlag(AF_FORCE_LOAD))
               && $this->needsMlCondition($node,$query,$attribname,$excludeList,$includeList, $mode))
