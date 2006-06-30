@@ -79,6 +79,32 @@
      */
     function adminPage($actions="")
     {
+      $ui = &$this->getUi();
+      if (is_object($ui))
+      {
+        $output = $ui->renderBox(array("title"=>$this->m_node->actionTitle('admin'),
+                                    "content"=>$this->renderAdminList()));
+        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) 
+        {
+          $recordlistcache = $this->getRecordlistCache();
+          $recordlistcache->writeCache($output, $recordlist->m_actionloader);
+        }
+      }
+      else
+      {
+        atkerror("Failed to create ui object");
+      }
+      return $output;
+    }
+    
+    /**
+     * Renders the recordlist for the admin mode
+     *
+     * @param Array $actions An array with the actions for the admin mode
+     * @return String The HTML for the admin recordlist
+     */
+    function renderAdminList($actions="")
+    {
       $node = &$this->m_node;
       $node->addStyle("style.css");
 
@@ -172,15 +198,7 @@
 
         $params["footer"] = $this->invoke("adminFooter");
 
-        $output = $ui->renderList("admin", $params);
-
-        $output = $ui->renderBox(array("title"=>$node->actionTitle('admin'),
-                                    "content"=>$output));
-        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) $recordlistcache->writeCache($output, $recordlist->m_actionloader);
-      }
-      else
-      {
-        atkerror("Failed to create ui object");
+        $output.= $ui->renderList("admin", $params);
       }
       return $output;
     }

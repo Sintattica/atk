@@ -109,7 +109,8 @@ Changed in ATK 5.6.1
   editable if you switch (only in firefox), a custom method is add to enable all
   fck-editors. Added name element in FckEditor-code so that we can access the frame 
   from the parent (code change request emailed to fckeditor.net) [Jeroen]  
-
+* Performed functional decomposition on atkAdminHandler adminPage method,
+  rendering of admin recordlist is now done by renderAdminList method. [Boy]
 
 Changed in ATK 5.6
 ------------------
