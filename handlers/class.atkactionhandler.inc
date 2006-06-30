@@ -38,7 +38,10 @@
    */
   class atkActionHandler
   {
-    /** @access private */
+    /**
+     * @var atkNode 
+     * @access private 
+     */
     var $m_node = NULL;
 
     /** @access private */
