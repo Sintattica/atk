@@ -37,8 +37,58 @@ class GetFoldersAndFiles {
 		$this->real_cwd=str_replace("//","/",($this->fckphp_config['basedir']."/".$this->actual_cwd));
 	}
 	
+	
+	function sortedResourcesList()
+	{
+	  $files   = array();
+	  $folders = array();
+	  
+	  if ($dh=opendir($this->real_cwd)) 
+	  {
+	  	while (($filename=readdir($dh))!==false) 
+	  	{
+  		  if (($filename!=".")&&($filename!="..")) 
+  		  {
+			if (is_dir($this->real_cwd."/$filename")) 
+			{
+			  $hide=false;
+			  
+			  for($i=0;$i<sizeof($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders']);$i++) 
+			  {
+				$hide=(ereg($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders'][$i],$filename)?true:$hide);
+			  }	
+				
+			  if (!$hide)
+			  {
+			  	$folders[] = $filename;
+			  }
+			  			
+			  //if (!$hide) echo "\t\t<Folder name=\"$filename\" />\n";
+		    } 
+		    else
+		    {
+			  $files[] = $filename;
+			}
+		   }
+		 }
+		 
+		 closedir($dh); 
+	  }
+	  
+	  natcasesort($files);
+	  natcasesort($folders);
+	  
+	  
+	  return array("files"   => array_values($files),
+	               "folders" => array_values($folders));	 
+	}
+	
 	function run() {
 
+		$resources = $this->sortedResourcesList();
+		$folders   = $resources["folders"];
+		$files     = $resources["files"];
+		
 		header ("Content-Type: application/xml; charset=utf-8");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
 		?>
@@ -70,28 +120,14 @@ class GetFoldersAndFiles {
 	<CurrentFolder path="<?php echo $this->raw_cwd; ?>" url="<?php echo $this->fckphp_config['urlprefix'] . $this->actual_cwd; ?>" />
 	<Folders>
 <?php
-			$files=array();
-			if ($dh=opendir($this->real_cwd)) {
-				while (($filename=readdir($dh))!==false) {
-					
-					if (($filename!=".")&&($filename!="..")) {
-						if (is_dir($this->real_cwd."/$filename")) {
-							//check if$fckphp_configured not to show this folder
-							$hide=false;
-							for($i=0;$i<sizeof($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders']);$i++) 
-								$hide=(ereg($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders'][$i],$filename)?true:$hide);
-							
-							if (!$hide) echo "\t\t<Folder name=\"$filename\" />\n";
-							
-						} else {
-							array_push($files,$filename);
-						}
-					}
-				}
-				closedir($dh); 
-			}
-			echo "\t</Folders>\n";
-			echo "\t<Files>\n";
+          foreach ($folders AS $key=>$folder)
+		  {
+		    echo "<Folder name=\"$folder\" />\n";
+		  }
+?>
+    </Folders>
+    <Files>
+<?php
 
 			for ($i=0;$i<sizeof($files);$i++) {
 				

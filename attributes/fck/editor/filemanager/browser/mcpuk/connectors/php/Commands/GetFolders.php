@@ -34,7 +34,46 @@ class GetFolders {
 		$this->real_cwd=str_replace("//","/",($this->fckphp_config['basedir']."/".$this->actual_cwd));
 	}
 	
-	function run() {
+	function sortedFolderList()
+	{
+	  $folders = array();
+	  	
+      if ($dh=opendir($this->real_cwd)) 
+      {
+		while (($filename=readdir($dh))!==false) 
+		{
+		  if (($filename!=".")&&($filename!="..")) 
+		  {
+			if (is_dir($this->real_cwd."/$filename")) 
+			{
+			  $hide=false;
+		      for($i=0;$i<sizeof($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders']);$i++) 
+		      {
+			    $hide=(ereg($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders'][$i],$filename)?true:$hide);
+		      }
+		       							
+			  if (!$hide)
+			  {
+			  	$folders[] = $filename;
+			  }
+			}
+		  }
+		 }
+		 
+		 closedir($dh);
+	  }
+	  
+	  natcasesort($folders);
+	  $folders = array_values($folders);  
+	  
+	  return $folders;
+	}
+	
+	
+	function run() 
+	{
+		$folders = $this->sortedFolderList();
+		
 		header ("content-type: text/xml");
 		echo "<?xml version=\"1.0\" encoding=\"utf-8\" ?>\n";
 		?>
@@ -42,22 +81,10 @@ class GetFolders {
 	<CurrentFolder path="<?php echo $this->raw_cwd; ?>" url="<?php echo $this->actual_cwd; ?>" />
 	<Folders>
 		<?php
-			if ($dh=opendir($this->real_cwd)) {
-				while (($filename=readdir($dh))!==false) {
-					if (($filename!=".")&&($filename!="..")) {
-						if (is_dir($this->real_cwd."/$filename")) {
-							
-							//check if$fckphp_configured not to show this folder
-							$hide=false;
-							for($i=0;$i<sizeof($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders']);$i++) 
-								$hide=(ereg($this->fckphp_config['ResourceAreas'][$this->type]['HideFolders'][$i],$filename)?true:$hide);
-							
-							if (!$hide) echo "<Folder name=\"$filename\" />\n";
-						}
-					}
-				}
-				closedir($dh);
-			}
+		  foreach ($folders AS $key=>$folder)
+		  {
+		    echo "<Folder name=\"$folder\" />\n";
+		  }
 		?>
 	</Folders>
 </Connector>
