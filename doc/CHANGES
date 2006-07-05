@@ -31,8 +31,15 @@ Changed in ATK 5.6.1
 + Backported include/exclude parameters for updateDb in atkNode from
   tommorow branch. [Guido]
 + DocumentWriter: convert Html bullets (fck-editor) to XML (tab + *)
-  Only 1 level deep supported (deeper levels in html will be converted to 
+  Only 1 level deep supported (deeper levels in html will be converted to
   level 1 in the generated document) [Jeroen]
++ Added function assignRecordByNodeAndSelector($nodename, $selector,
+  $prefix = "") in atkDocumentWriter to allow a record to be assigned to the
+  document by just supplying the nodename and selector as strings. This
+  eliminates the need to do the atkGetNode, selectDb and
+  assignDocumentSingleRecord calls over and over again. [Guido]
++ Added a space between the hours and minutes dropdown box of an
+  atkDurationAttributes edit output. [Guido]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -103,18 +110,18 @@ Changed in ATK 5.6.1
   function. [Guido]
 * Only relevant attributes should be loaded/updated when generating/mailing
   a new password. [Guido]
-* Added JavaScript based listener support for atkDateAttributes. 
-* Added support for modifying the date range (minimum / maximum) 
+* Added JavaScript based listener support for atkDateAttributes.
+* Added support for modifying the date range (minimum / maximum)
   of an atkDateAttribute using JavaScript. [Peter] E
-* Improved atkDateAttribute / calendar integration (calendar now knows 
+* Improved atkDateAttribute / calendar integration (calendar now knows
   everything it needs to know to adjust the field boxes). [Peter]
-* Because the FCK editor does not always agree with tabbing and no longer becomes 
+* Because the FCK editor does not always agree with tabbing and no longer becomes
   editable if you switch (only in firefox), a custom method is add to enable all
-  fck-editors. Added name element in FckEditor-code so that we can access the frame 
-  from the parent (code change request emailed to fckeditor.net) [Jeroen]  
+  fck-editors. Added name element in FckEditor-code so that we can access the frame
+  from the parent (code change request emailed to fckeditor.net) [Jeroen]
 * Performed functional decomposition on atkAdminHandler adminPage method,
   rendering of admin recordlist is now done by renderAdminList method. [Boy]
-* If recordlist does not have any actions available, the action column in 
+* If recordlist does not have any actions available, the action column in
   the recordlist is now no longer shown. [Boy]
 
 Changed in ATK 5.6
