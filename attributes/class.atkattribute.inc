@@ -601,7 +601,7 @@
      */
     function isEmpty($record)
     {
-      return (!isset($record[$this->fieldName()])||$record[$this->fieldName()]=="");
+      return (!isset($record[$this->fieldName()])||(is_string($record[$this->fieldName()]) && $record[$this->fieldName()]===""));
     }
 
     /**
@@ -790,18 +790,19 @@
      * @param String $prefix   the fieldprefix
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
-    {
+    {      
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
-      {
-        /* when adding, there's nothing to hide... */
-        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))
+      {        
+        /* when adding, there's nothing to hide... */        
+        if ($mode=="edit" || ($mode=="add" && !$this->isEmpty($defaults)))        
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
+        
       }
 
       /* edit */
       else
-      {
+      {        
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
