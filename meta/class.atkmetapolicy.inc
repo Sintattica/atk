@@ -125,12 +125,12 @@ class atkMetaPolicy
     }
     else if ($name==='country')
     {
-      $result['type']='atkcountryattribute';
+      $type='atkcountryattribute';
     }
     else if ($meta['type']==='int' && $meta['len']===1 && 
              (substr($name,0,3)==='is_' ||substr($name,0,4)==='has_'))
     {
-      $result['type']='atkboolattribute';
+      $type='atkboolattribute';
     }
 
     else
