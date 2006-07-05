@@ -24,10 +24,14 @@
   $config_atkroot      = $config_platformroot;
 
   include_once($config_atkroot."atk.inc");
+  atksession("admin");
+
+  $editingurl  = sessionLoad("editingurl", "admin");
   $theme       = &atkinstance('atk.ui.atktheme');
   $themeDir    = $theme->themeDir();
   $cssFile     = "styles/fck_mcpuk_browser.css";
-  $frameParams = "?lng=".$config_language."&themecss=".urlencode($themeDir.$cssFile);
+  $frameParams = "?lng=".$config_language."&themecss=".urlencode($themeDir.$cssFile)."&editingurl=".urlencode($editingurl);
+  
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>

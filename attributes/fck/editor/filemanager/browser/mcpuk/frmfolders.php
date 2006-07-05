@@ -172,7 +172,8 @@ function GetFoldersCallBack( fckXml )
 function SetResourceType( type )
 {
 	oConnector.ResourceType = type ;
-	LoadFolders( '/' ) ;
+	alert('<?php echo urldecode($_GET["editingurl"]); ?>');
+	LoadFolders('<?php echo urldecode($_GET["editingurl"]); ?>') ;
 }
 
 window.onload = function()
@@ -182,7 +183,7 @@ window.onload = function()
 	if ( oConnector.ResourceType.length = 0 )
 		SetResourceType( 'File' ) ;
 	else
-		LoadFolders( '/' ) ;
+		LoadFolders('<?php echo urldecode($_GET["editingurl"]); ?>') ;
 }
 		</script>
 	</head>
