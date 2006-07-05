@@ -108,7 +108,7 @@
         if ($this->m_maxtime_min>=1&&$this->m_resolution_min<60)
         {
           $this->registerKeyListener($id.'_minutes', KB_CTRLCURSOR|KB_LEFTRIGHT);
-          $result .= '<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->formName().'[minutes]">';
+          $result .= '&nbsp;<select id="'.$id.'_minutes" name="'.$fieldprefix.$this->formName().'[minutes]">';
           for ($m=0;$m<60||($this->m_maxtime_min<60 && $m<$this->m_maxtime_min);)
           {
             $result .= '<option value="'.$m.'" ';
