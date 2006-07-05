@@ -239,9 +239,8 @@
       // substitute html- by xml-'span' tags
       $inputString = str_replace('&lt;/span&gt;' , '</text:span>', $inputString);
       
-      // replace end-of-line/paragraph chars by xml-newline
-      $inputString = str_replace('&lt;br /&gt;' , '<text:line-break/>', $inputString);
-      $inputString = str_replace('<br />' , '<text:line-break/>', $inputString);
+      // replace <br .*/> chars by xml-newline (also take font-styles in account)
+      $inputString = preg_replace("/(<|&lt;)br.*\/(>|&gt;)/iU","<text:line-break/>", $inputString);
 
       return $inputString;
     }
@@ -268,9 +267,12 @@
       $inputString = str_replace('&lt;u&gt;', '<text:span text:style-name="atkunderline">', $inputString);
       $inputString = str_replace('&lt;/u&gt;', '</text:span>', $inputString);
 
-      // replace end-of-line/paragraph chars by xml-newline
+      // remove paragraph chars, since they create extra newlines
       $inputString = str_replace('&lt;p&gt;', '', $inputString);
-      $inputString = str_replace('&lt;/p&gt;', '<text:line-break/>', $inputString);
+      $inputString = str_replace('&lt;/p&gt;', '', $inputString);
+
+      // replace &nbsp; by space
+      $inputString = str_replace('&nbsp;', ' ', $inputString);
 
       return $inputString;
     }
@@ -280,8 +282,7 @@
       /**************************************************************
        * Convert general-html tags to xml tags (same for IE/Firefox *
        **************************************************************/
-      
-      // Convert all html bullets to an XML-tab + *
+      // Convert all html bullets to an XML-tab + -
       // Only 1 level deep supported (deeper levels will be converted to level 1 in the generated document)
       $inputString = str_replace("\r" , '', $inputString);
       $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/><text:line-break/>" , '', $inputString); // first <ul>
