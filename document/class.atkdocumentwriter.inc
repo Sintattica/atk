@@ -189,6 +189,37 @@
     }
 
     /**
+     * Assigns data to the document based on only a nodename and a selector
+     *
+     * @param string $nodename Name (module.node) for the node
+     * @param string $selector Selector containing a SQL expression
+     * @param string $prefix Prefix to be used when assigning variables to the document
+     * @return boolean True if a record is found and assigned, false if not
+     */
+    function assignRecordByNodeAndSelector($nodename, $selector, $prefix = "")
+    {
+      // Do not continue and return false if no selector given
+      if ($selector == "")
+        return false;
+
+      // Assign the quotation owner to the document
+      $node = &atkGetNode($nodename);
+
+      // Get the record from the database
+      $records = $node->selectDb($selector, "", "", "", "", "view");
+
+      // Do not continue and return false if no records were found
+      if (count($records) == 0)
+        return false;
+
+      // Assign the record to the document.
+      $this->assignDocumentSingleRecord($node, $records[0], $prefix);
+
+      // Return succesfully
+      return true;
+    }
+
+    /**
      * Assigns commonly used variables to a documentWriter
      *
      * @param unknown_type $prefix Prefix to be used when assigning the variables (used to avoid conflicting names)
