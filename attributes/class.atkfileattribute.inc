@@ -227,7 +227,6 @@
       {
         return escapeSQL($rec[$this->fieldName()]["filename"]);
       }
-
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
 
       if(isset($del[$this->fieldName()]) && $del[$this->fieldName()] == "on")
@@ -447,7 +446,7 @@
       // while updating images was not allways visible due to caching
       $randval = mt_rand();
 
-      $filename    = $record[$this->fieldName()]["orgfilename"];
+      $filename    = $record[$this->fieldName()]["filename"];
       atkdebug($this->fieldname()." - File: $filename");
       $prev_type     = Array("jpg","jpeg","gif","tif","png","bmp","htm","html","txt");  // file types for preview
       $imgtype_prev = Array("jpg","jpeg","gif","png");  // types whitch are supported by GetImageSize
