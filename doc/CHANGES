@@ -112,7 +112,7 @@ Changed in ATK 5.6.1
   a new password. [Guido]
 * Added JavaScript based listener support for atkDateAttributes.
 * Added support for modifying the date range (minimum / maximum)
-  of an atkDateAttribute using JavaScript. [Peter] E
+  of an atkDateAttribute using JavaScript. [Peter]
 * Improved atkDateAttribute / calendar integration (calendar now knows
   everything it needs to know to adjust the field boxes). [Peter]
 * Because the FCK editor does not always agree with tabbing and no longer becomes
@@ -125,8 +125,9 @@ Changed in ATK 5.6.1
   the recordlist is now no longer shown. [Boy]
 * Made atkQuery::create() return query object instantiated with atknew 
   instead of with a normal normal new, making it possible to call it without
-  first importing the database object. [Boy]
-  
+  first importing the query class. [Boy]
+* Made atkNodeValidator use the query object of unique fieldset validation
+  instead of doing a hardcoded query thus making it quote reserved names. [Boy]
 
 Changed in ATK 5.6
 ------------------
