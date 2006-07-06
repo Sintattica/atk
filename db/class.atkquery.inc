@@ -644,12 +644,14 @@
     /**
      * Static factory method. This method returns a new instance of a query
      * object for the current database.
+     * @param $basepath The basepath for the database object (defaults to 'atk.db')
+     * @return atkQuery A Query object for the appropriate database
      */
-    function &create()
+    function &create($basepath="atk.db.")
     {
       $dbconfig = atkconfig("db");
       $name = "atk" . $dbconfig["default"]["driver"] . "query";
-      return new $name();
+      return atknew(($basepath?$basepath.'.':'').$name);
     }
 
     /**
