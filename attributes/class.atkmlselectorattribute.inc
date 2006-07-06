@@ -160,5 +160,14 @@
     {
       return "";
     }
+    
+    function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
+    {
+      $lngs = $this->getLanguages();
+      if (count($lngs)<=1)
+      {
+        return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
+      }
+    }
   }
 ?>

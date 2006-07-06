@@ -115,10 +115,11 @@ Changed in ATK 5.6.1
   of an atkDateAttribute using JavaScript. [Peter]
 * Improved atkDateAttribute / calendar integration (calendar now knows
   everything it needs to know to adjust the field boxes). [Peter]
-* Because the FCK editor does not always agree with tabbing and no longer becomes
-  editable if you switch (only in firefox), a custom method is add to enable all
-  fck-editors. Added name element in FckEditor-code so that we can access the frame
-  from the parent (code change request emailed to fckeditor.net) [Jeroen]
+* Because the FCK editor does not always agree with tabbing and no longer 
+  becomes editable if you switch (only in firefox), a custom method is add 
+  to enable all fck-editors. Added name element in FckEditor-code so that
+  we can access the frame from the parent (code change request emailed 
+  to fckeditor.net) [Jeroen]
 * Performed functional decomposition on atkAdminHandler adminPage method,
   rendering of admin recordlist is now done by renderAdminList method. [Boy]
 * If recordlist does not have any actions available, the action column in
@@ -131,6 +132,8 @@ Changed in ATK 5.6.1
 * The atkFileAttribute now uses 'filename' in display instead of 'orgfilename'
   which caused the strange behaviour of still showing the file you had just
   deleted until you went out of edit mode for the record and back again. [Boy]
+* If there are only 2 or less supported languages, atkMlSelectorAttribute hides
+  itself. [Ivo]
 
 Changed in ATK 5.6
 ------------------
