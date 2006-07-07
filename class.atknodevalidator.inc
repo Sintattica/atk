@@ -214,18 +214,16 @@
         $query->addTable($this->m_nodeObj->m_table);
         foreach($uniqueFieldSet as $field)
         { 
-          if ($this->m_nodeObj->m_attribList[$field])
+          $attrib = &$this->m_nodeObj->m_attribList[$field];
+          if ($attrib)
           {
-            if (strstr(strtolower(get_class($this->m_nodeObj->m_attribList[$field])),'attribute'))
+            if (strstr(strtolower(get_class($attrib)),'attribute'))
             {
-              $query->addCondition($query->quoteField($field)." = '".$this->m_nodeObj->m_attribList[$field]->value2db($record)."'");
+              $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");
             }
-            else if (strstr(strtolower(get_class($this->m_nodeObj->m_attribList[$field])),'relation'))
+            else if (strstr(strtolower(get_class($attrib)),'manytoonerelation') && $attrib->createDestination())
             {
-              foreach($record[$field] as $name => $value)
-              {
-                $query->addCondition($query->quoteField($name)." = '".escapeSQL($value)."'");
-              }
+              $query->addCondition($query->quoteField($field)." = '".escapeSQL($record[$attrib->fieldName()][$attrib->m_destInstance->primaryKeyField()])."'");
             }
             else $query->addCondition($query->quoteField($field)." = '".escapeSQL($record[$field])."'");
           }
