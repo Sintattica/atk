@@ -210,7 +210,7 @@
       foreach($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet)
       {
         $query = &atkQuery::create();
-        $query->addField('1');
+        $query->addField('*');
         $query->addTable($this->m_nodeObj->m_table);
         foreach($uniqueFieldSet as $field)
         { 
@@ -230,6 +230,7 @@
           else 
             atkerror("Field $field is mentioned in uniquefieldset but does not exist in ".$this->m_nodeObj->atknodetype());
         }
+        $query->addCondition("NOT (".$this->m_nodeObj->primaryKey($record).")");
         
         if (count($db->getRows($query->buildSelect()))> 0)
         {	
