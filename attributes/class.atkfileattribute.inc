@@ -203,8 +203,8 @@
         if(count($file_arr) > 0) $result .= "</select>";
       }
       if(!$this->hasFlag(AF_FILE_NO_DELETE)
-         && isset($record[$this->fieldname()]['filename'])
-         && $record[$this->fieldname()]['filename']!='')
+         && isset($record[$this->fieldname()]['orgfilename'])
+         && $record[$this->fieldname()]['orgfilename']!='')
       {
        $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
        $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.atktext("remove_current_file", "atk");
@@ -250,6 +250,7 @@
             unlink($this->m_dir.$file);
           }
         }
+//        echo ':::::return leeg::::';
         return '';
       }
       else
@@ -298,7 +299,9 @@
      */
     function db2value($rec)
     {
-      return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],"orgfilename"=>$rec[$this->fieldName()],"filename"=>$rec[$this->fieldName()],"filesize"=>"?");
+      return Array("tmpfile"=>$this->m_dir.$rec[$this->fieldName()],
+                   "orgfilename"=>$rec[$this->fieldName()],
+                   "filename"=>$rec[$this->fieldName()],"filesize"=>"?");
     }
 
     function validate(&$record, $mode)
@@ -374,10 +377,17 @@
           }
           else
           {
-            $result = array("tmpfile"=>"",
-                          "filename"=>"",
-                          "filesize"=>0,
-                          "orgfilename"=>(isset($rec[$basename."_orgfilename"]))?$rec[$basename."_orgfilename"]:"");
+            $filename = (isset($rec[$basename."_orgfilename"]))?$rec[$basename."_orgfilename"]:"";
+            
+            if (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on")
+            {
+              $filename = '';
+            }
+            
+            $result = array("tmpfile"=>$this->m_dir.$filename,
+                          "filename"=>$filename,
+                          "filesize"=>filesize($this->m_dir.$filename),
+                          "orgfilename"=>$filename);
           }
         }
         else
@@ -394,7 +404,6 @@
                           "filesize"=>$_FILES[$postfiles_basename]["size"],
                           "orgfilename"=>$realname);
         }
-
         return $result;
       }
     }

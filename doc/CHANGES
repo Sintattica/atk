@@ -134,6 +134,9 @@ Changed in ATK 5.6.1
   deleted until you went out of edit mode for the record and back again. [Boy]
 * If there are only 2 or less supported languages, atkMlSelectorAttribute hides
   itself. [Ivo]
+* Fixed a bug when you remove a file and fileattribute has the flag 
+  'AF_FILE_NO_SELECT', the file will still be displayed in the admin. 
+  [dennisjan]
 
 Changed in ATK 5.6
 ------------------
