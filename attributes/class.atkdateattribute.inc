@@ -288,6 +288,17 @@
     }
 
     /**
+     * Default date.
+     *
+     * @param boolean $obligatory
+     * @return default date
+     */
+    function getDefaultDate($obligatory)
+    {
+      return $obligatory ? adodb_date("Y-m-d") : "";
+    }
+
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
      * @todo We can't show a calendar when we have a year dropdown?
@@ -312,8 +323,7 @@
         $value = &$record[$this->fieldName()];
 
         if (is_array($value)) $value = adodb_date("Y-m-d", adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-        elseif ($obligatory) $value = adodb_date("Y-m-d");
-        else $value = "";
+        else $value = $this->getDefaultDate($obligatory);
         $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$fieldname.'" class="atkdateattribute" name="'.$fieldname.'" value="'.$value.'" size="10">';
 
