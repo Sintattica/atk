@@ -32,7 +32,7 @@
    * Do not add null option ever
    */
   define("AF_LIST_NO_NULL_ITEM", AF_SPECIFIC_3);
-  
+
   /**
     * Add a default null option to obligatory items
     */
@@ -146,7 +146,7 @@
       if(isset($this->m_lookup[$record[$this->fieldName()]]))
       {
         if($this->hasFlag(AF_NO_TRANSLATION)) $res = $this->m_lookup[$record[$this->fieldName()]];
-        else $res = atktext($this->m_lookup[$record[$this->fieldName()]],$this->m_ownerInstance->m_module, $this->m_owner);
+        else $res = $this->text($this->m_lookup[$record[$this->fieldName()]]);
 
         return $res;
       }
@@ -174,7 +174,7 @@
       $result = '<select id="'.$id.'" name="'.$id.'"  class="atklistattribute" '.$onchange.($this->m_width?" style='width: {$this->m_width}px'":"").'>';
 
       $result.=$this->_addEmptyListOption();
-      
+
       for ($i=0;$i<count($this->m_values);$i++)
       {
         // If the current value is selected or occurs in the record
@@ -188,14 +188,14 @@
           $sel = "";
         }
         if ($this->hasFlag(AF_NO_TRANSLATION)) $option=$this->m_options[$i];
-        else $option = atktext($this->m_options[$i],is_object($this->m_ownerInstance) ? $this->m_ownerInstance->m_module : "", $this->m_owner);
+        else $option = $this->text($this->m_options[$i]);
 
         $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$option.'</option>';
       }
       $result.='</select>';
       return $result;
     }
-    
+
     /**
      * If this attribute is NOT obligatory
      * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
@@ -208,12 +208,12 @@
     {
       $ret='';
       if (!$this->hasFlag(AF_OBLIGATORY) ||
-           ($this->hasFlag(AF_OBLIGATORY) && 
+           ($this->hasFlag(AF_OBLIGATORY) &&
            // CONFIG IS DEPRECATED
           ((atkconfig("list_obligatory_null_item")&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))||
            ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM)))))
       {
-        $ret = '<option value="'.$this->m_emptyvalue.'">'.atktext("list_null_value", "", is_object($this->m_ownerInstance) ? $this->m_ownerInstance->m_type : "");
+        $ret = '<option value="'.$this->m_emptyvalue.'">'.$this->text("list_null_value");
       }
       return $ret;
     }
@@ -250,7 +250,7 @@
           $sel = "";
         }
         if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
-        else $string = atktext($this->m_options[$i], $this->m_ownerInstance->m_module);
+        else $string = $this->text($this->m_options[$i]);
 
         $result.= '<option value="'.$this->m_values[$i].'" '.$sel.'>'.$string;
       }
