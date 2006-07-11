@@ -269,10 +269,11 @@
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
           // magical stuff..
+          $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+          $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
           $newrecord = $this->m_destInstance->initial_values();
-          $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $record[$this->fieldName()][$i][$this->getRemoteKey()];
-
-          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+          $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; // $record[$this->fieldName()][$i][$this->getRemoteKey()];
+          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey; // $record[$this->m_ownerInstance->primaryKeyField()];
 
           // First check if the record does not exist yet.
           /* @var $rel atkNode */
@@ -397,6 +398,26 @@
         }
       }
     }
+
+
+    /**
+     * Checks if a key is not an array 
+     * @param $key   field containing the key values
+     * @param $field field to return if an array
+     * @return value of $field
+     */
+    function checkKeyDimension($key, $field="id")
+    {
+      if (is_array($key))
+      {
+        return $key[$field];
+      }
+      return $key;
+    }
+
+
+
+
 
   }
 
