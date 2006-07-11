@@ -286,18 +286,7 @@
     {
       return $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
     }
-
-    /**
-     * Default date.
-     *
-     * @param boolean $obligatory
-     * @return default date
-     */
-    function getDefaultDate($obligatory)
-    {
-      return $obligatory ? adodb_date("Y-m-d") : "";
-    }
-
+    
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
@@ -323,7 +312,7 @@
         $value = &$record[$this->fieldName()];
 
         if (is_array($value)) $value = adodb_date("Y-m-d", adodb_mktime(0, 0, 0, $value["month"], $value["day"], $value["year"]));
-        else $value = $this->getDefaultDate($obligatory);
+        else $value = $obligatory ? adodb_date("Y-m-d") : "";
         $this->registerKeyListener($fieldname, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$fieldname.'" class="atkdateattribute" name="'.$fieldname.'" value="'.$value.'" size="10">';
 
