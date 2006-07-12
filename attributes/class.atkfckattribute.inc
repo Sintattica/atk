@@ -115,7 +115,8 @@
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
       {
-        $dbval = escapeSQL(preg_replace("/\&quot;/Ui","\"",$rec[$this->fieldName()]));
+        $db = &$this->m_ownerInstance->getDb();
+        $dbval = $db->escapeSQL(preg_replace("/\&quot;/Ui","\"",$rec[$this->fieldName()]));
         return $dbval;
       }
       return NULL;

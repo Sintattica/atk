@@ -143,6 +143,9 @@ Changed in ATK 5.6.1
   [dennisjan]
 * Loading of tabs when the first tab is not the selected one is now smoother.
   [Jeroen, Ivo]
+* Fixed lots of multi-database issues. [Peter]
+* Debugger now directly looks at $_REQUEST['atkstackid'] instead 
+  of atkStackId(). [Peter]
 
 Changed in ATK 5.6
 ------------------

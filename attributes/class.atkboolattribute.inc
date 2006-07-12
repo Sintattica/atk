@@ -107,7 +107,8 @@
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       if (is_array($value)) $value = $value[$this->fieldName()];
-      if (isset($value)) return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+      $db = &$this->m_ownerInstance->getDb();
+      if (isset($value)) return $query->exactCondition($table.".".$this->fieldName(),$db->escapeSQL($value));
     }
 
     /**

@@ -89,7 +89,8 @@
         fclose($fp);
         atkdebug("[".$this->fieldName()."] succesfully wrote $filename..");
       }      
-      return escapeSQL($contents);
+      $db = &$this->m_ownerInstance->getDb();
+      return $db->escapeSQL($contents);
     }
     
     function db2value($record)

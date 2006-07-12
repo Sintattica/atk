@@ -620,7 +620,8 @@
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
       {
-        return escapeSQL($rec[$this->fieldName()]);
+        $db = &$this->m_ownerInstance->getDb();        
+        return $db->escapeSQL($rec[$this->fieldName()]);
       }
       return NULL;
     }
@@ -1118,7 +1119,8 @@
       $func = $searchmode."Condition";
       if (method_exists($query,$func) && $value)
       {
-        return $query->$func($table.".".$this->fieldName(),escapeSQL($value));
+        $db = &$this->m_ownerInstance->getDb();
+        return $query->$func($table.".".$this->fieldName(),$db->escapeSQL($value));
       }
       else
       {

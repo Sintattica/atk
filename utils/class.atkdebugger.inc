@@ -105,11 +105,16 @@
       return false;
     }
 
-    function consoleLink($text, $action="", $params=array(), $popup=false)
+    function consoleLink($text, $action="", $params=array(), $popup=false, $stackId=NULL)
     {
+      if ($stackId == NULL)
+      {
+        $stackId = atkStackId();
+      }
+      
       static $s_first = true;
       $res = "";
-      $url = atkconfig("atkroot").'debugger.php?atkstackid='.atkStackID().'&action='.$action.'&atkprevlevel='.atkLevel().$this->urlParams($params);
+      $url = atkconfig("atkroot").'debugger.php?atkstackid='.$stackId.'&action='.$action.'&atkprevlevel='.atkLevel().$this->urlParams($params);
 
       if ($popup)
       {
@@ -146,7 +151,7 @@
       $page = &atkinstance("atk.ui.atkpage");
       $theme = &atkinstance("atk.ui.atktheme");
       $page->register_style($theme->stylePath("debugger.css"));
-      $data = &$this->getDebuggerData();
+      $data = &$this->getDebuggerData(false, $_REQUEST['atkstackid']);
       $res = $this->consoleControls().'<br/><br/>';
       switch ($_REQUEST["action"])
       {
@@ -164,7 +169,7 @@
 
     function consoleControls()
     {
-      return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index').' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
+      return '<div id="console"><table width="100%" border="0"><tr><td align="left">ATK Debug Console</td><td align="right">'.$this->consoleLink('Console index', '', array(), false, $_REQUEST['atkstackid']).' | <a href="javascript:window.close()">Close console</a></td></tr></table></div>';
     }
 
     function queryDetails($queries, $id)
@@ -254,14 +259,19 @@
     }
 
 
-    function &getDebuggerData($clean=false)
+    function &getDebuggerData($clean=false, $stackId=NULL)
     {
+      if ($stackId == NULL)
+      {
+        $stackId = atkStackId();
+      }      
+      
       global $g_sessionManager;
       if (is_object($g_sessionManager))
       {
         $session = &$g_sessionManager->getSession();
-        if ($clean) $session['debugger'] = array();        
-        $var= &$session["debugger"][atkStackID()];
+        if ($clean) $session['debugger'] = array();  
+        $var= &$session["debugger"][$stackId];
         return $var;
       }
       $data = array();

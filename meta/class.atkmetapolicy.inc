@@ -169,12 +169,7 @@ class atkMetaPolicy
           break;
       }
     }
-    
-    if ($this->m_node->hasFlag(NF_ML))
-    {
-      useattrib('atkmlselectorattribute');
-      $this->m_node->add(new atkMlSelectorAttribute());
-    }
+
     return array("type" => $type, "params" => $params);
   }
 
@@ -727,13 +722,23 @@ class atkMetaPolicy
    */
   function apply()
   {
-    foreach ($this->m_attrs as $name => $data)
-      $this->_applyAttribute($name, 
-                             (isset($data["type"])?$data["type"]:''), 
-                             (isset($data["params"])?$data["params"]:''), 
-                             (isset($data["flags"])?$data["flags"]:''), 
-                             (isset($data["tabs"])?$data["tabs"]:''), 
-                             (isset($data["order"])?$data["order"]:''));
+    foreach ($this->m_attrs as $name => $data) 
+    {
+      $this->_applyAttribute(
+        $name, 
+        isset($data["type"]) ? $data["type"] : '', 
+        isset($data["params"]) ? $data["params"] : '', 
+        isset($data["flags"]) ? $data["flags"] : '', 
+        isset($data["tabs"]) ? $data["tabs"] : '', 
+        isset($data["order"]) ? $data["order"] : ''
+      );
+    }
+    
+    if ($this->m_node->hasFlag(NF_ML))
+    {
+      useattrib('atkmlselectorattribute');
+      $this->m_node->add(new atkMlSelectorAttribute());
+    }                             
   }
 }
 ?>

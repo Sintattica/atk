@@ -216,10 +216,9 @@
     */
     function executeUpdate()
     {
-      $db = &atkGetDb();
-      
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();      
       $query = $this->buildUpdate();
-      return $db->query($query, 0, 0, $this->m_bind_vars);      
+      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
  /**
@@ -227,10 +226,9 @@
     */
     function executeInsert()
     {
-      $db = &atkGetDb();
-      
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildInsert();
-      return $db->query($query, 0, 0, $this->m_bind_vars);      
+      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);      
     }
 
 

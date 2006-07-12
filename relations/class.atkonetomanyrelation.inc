@@ -662,7 +662,7 @@
       {
         // empty. It might be that the record has not yet been fetched. In this case, we do
         // a forced load to see if it's really empty.
-        $recs = $this->load(atkGetDb(), $record);
+        $recs = $this->load($this->m_ownerInstance->getDb(), $record);
         return (count($recs)==0);
       }
       return false;

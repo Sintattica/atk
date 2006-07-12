@@ -77,7 +77,7 @@
       return $result;
     }
 
-    function store($db, $record, $mode)
+    function store(&$db, $record, $mode)
     {
       global $g_user;
 
@@ -115,7 +115,7 @@
           foreach ($validActions as $action)
           {
             $query = "INSERT INTO ".atkconfig("auth_accesstable")." (node, action, ".atkconfig("auth_levelfield").") ";
-            $query.= "VALUES ('".escapeSQL($node)."','".escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
+            $query.= "VALUES ('".$db->escapeSQL($node)."','".$db->escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
 
             if (!$db->query($query))
             {
@@ -128,7 +128,7 @@
           {
             $query = "DELETE FROM ".atkconfig("auth_accesstable")." ".
                      "WHERE ".atkconfig("auth_levelfield")." IN (".implode(",", $children).") ".
-                     "AND node = '".escapeSQL($node)."' ".
+                     "AND node = '".$db->escapeSQL($node)."' ".
                      "AND action NOT IN ('".implode("','", $validActions)."')";
 
             if (!$db->query($query))

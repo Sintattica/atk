@@ -274,7 +274,8 @@
         {
           for ($i=0,$_i=count($languages);$i<$_i;$i++)
           {
-            $query->addField($this->fieldName().'_'.$languages[$i],escapeSQL($rec[$this->fieldName()][$languages[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
+            $db = &$this->m_ownerInstance->getDb();
+            $query->addField($this->fieldName().'_'.$languages[$i],$db->escapeSQL($rec[$this->fieldName()][$languages[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
           }   
         }
         else
@@ -322,7 +323,8 @@
       $func = $searchmode."Condition";
       if (method_exists($query,$func))
       {
-        $searchcondition = $query->$func($table.".".$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:''),escapeSQL($value));
+        $db = &$this->m_ownerInstance->getDb();
+        $searchcondition = $query->$func($table.".".$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:''),$db->escapeSQL($value));
       }
       else
       {
