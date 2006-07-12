@@ -81,6 +81,13 @@ function showTab(tab)
 	}	
 	
 	makeFCKEditable();
+	
+	// make tabs visible (to avoid reload quirks, they load invisible from the html
+	wrapper = document.getElementById('tabtable');
+	if (wrapper)
+	{
+	  wrapper.style.display='';
+	}
 }
 
 /**

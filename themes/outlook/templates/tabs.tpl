@@ -12,8 +12,7 @@ var tabSelectedBackgroundImage = "{$themedir}images/tab_back_s.gif";
 var tabColor = "#FFFFFF";
 var tabSelectedColor = "#000000";
 </script>
-
-<table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="98%" align="center" valign="top">
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#606060" width="98%" align="center" valign="top" id="tabtable" style="display: none;">
   <tr>
     <td width="100%" bgcolor="#EEEEE0">
       <table border="0" cellpadding="0" cellspacing="0">

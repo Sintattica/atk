@@ -141,6 +141,8 @@ Changed in ATK 5.6.1
 * Fixed a bug when you remove a file and fileattribute has the flag 
   'AF_FILE_NO_SELECT', the file will still be displayed in the admin. 
   [dennisjan]
+* Loading of tabs when the first tab is not the selected one is now smoother.
+  [Jeroen, Ivo]
 
 Changed in ATK 5.6
 ------------------
