@@ -113,13 +113,13 @@
       $attachmentword = ((strpos($useragent, "MSIE") !== false) || (strpos($useragent, "Internet Explorer") !== false)) ? "Atachment" : "Attachment";
 
       // Add additional http response headers to set proper content type, filename and filesize
-      $file = $this->m_tbsooo->GetPathnameDoc();
-      header('Content-Type: ' . ($forcedownload ? 'application/octet-stream' : $this->m_tbsooo->GetMimetypeDoc()));
-      header('Content-Length: ' . filesize($file));
-      header('Content-Disposition: ' . $attachmentword . '; Filename="' . (is_null($outputfilename) ? substr($file, strrpos($file, '/') + 1) : $outputfilename) . '"');
-
-      // Send the document to the user agent
-      $this->m_tbsooo->FlushDoc();
+//      $file = $this->m_tbsooo->GetPathnameDoc();
+//      header('Content-Type: ' . ($forcedownload ? 'application/octet-stream' : $this->m_tbsooo->GetMimetypeDoc()));
+//      header('Content-Length: ' . filesize($file));
+//      header('Content-Disposition: ' . $attachmentword . '; Filename="' . (is_null($outputfilename) ? substr($file, strrpos($file, '/') + 1) : $outputfilename) . '"');
+//
+//      // Send the document to the user agent
+//      $this->m_tbsooo->FlushDoc();
 
       // Remove the document from disk
       $this->m_tbsooo->RemoveDoc();
@@ -273,6 +273,7 @@
 
       // replace &nbsp; by space
       $inputString = str_replace('&nbsp;', ' ', $inputString);
+      $inputString = str_replace('&amp;nbsp;', ' ', $inputString);
 
       return $inputString;
     }
