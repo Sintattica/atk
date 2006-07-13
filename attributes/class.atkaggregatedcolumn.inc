@@ -161,8 +161,7 @@
         foreach ($this->m_searchfields as $field)
         {
           $p_attrib = $this->m_ownerInstance->m_attribList[$field];
-          $db = &$this->m_ownerInstance->getDb();
-          $searchconditions[] = $query->$func($table.".".$p_attrib->fieldName(),$db->escapeSQL($value));
+          $searchconditions[] = $query->$func($table.".".$p_attrib->fieldName(),$this->escapeSQL($value));
         }
         return "(".implode(" OR ",$searchconditions).")";
       }

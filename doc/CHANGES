@@ -48,6 +48,10 @@ Changed in ATK 5.6.1
   to disable the encoding of passwords using the md5 algorithm. Moved
   the encoding also to a separate method (encode) which allows the
   use of different algorithms. [Peter]
++ Added getDb method to atkAttribute (retrieves the db instance from
+  the owner instance with a fallback to the default instance). [Peter]
++ Added escapeSQL method to atkAttribute (uses the correct database
+  instead of the default database). [Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]

@@ -278,8 +278,7 @@
       {
         if (count($value)==1) // exactly one value
         {
-          $db = &$this->m_ownerInstance->getDb();
-          $searchcondition = $query->exactCondition($table.".".$this->fieldName(),$db->escapeSQL($value[0]));
+          $searchcondition = $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
         }
         else // search for more values using IN()
         {

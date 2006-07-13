@@ -390,7 +390,7 @@
 
         if (count($value)==1) // exactly one value
         {
-          $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),escapeSQL($value[0])));
+          $query->addSearchCondition($query->exactCondition($this->fieldName().".".$this->getRemoteKey(),$this->escapeSQL($value[0])));
         }
         else // search for more values using IN()
         {

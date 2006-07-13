@@ -225,8 +225,7 @@
          && !$this->hasFlag(AF_FILE_NO_SELECT)
          && (!isset($del[$this->fieldName()]) || $del[$this->fieldName()]!="on"))
       {
-        $db = &$this->m_ownerInstance->getDb();
-        return $db->escapeSQL($rec[$this->fieldName()]["filename"]);
+        return $this->escapeSQL($rec[$this->fieldName()]["filename"]);
       }
       if($this->hasFlag(AF_FILE_NO_DELETE)) unset($del);  // Make sure if flag is set $del unset!
 
@@ -266,8 +265,7 @@
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
                 $this->processFile($this->m_dir, $filename);
-                $db = &$this->m_ownerInstance->getDb();
-                return $db->escapeSQL($filename);
+                return $this->escapeSQL($filename);
               }
               else
               {
@@ -276,8 +274,8 @@
               }
             }
         }
-        $db = &$this->m_ownerInstance->getDb();
-        return $db->escapeSQL($rec[$this->fieldName()]["orgfilename"]);
+
+        return $this->escapeSQL($rec[$this->fieldName()]["orgfilename"]);
       }
     }
 

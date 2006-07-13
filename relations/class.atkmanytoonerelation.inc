@@ -611,7 +611,7 @@
           {
             if ($value[0]!="")
             {
-              return $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value[0]));
+              return $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
             }
           }
           else // search for more values using IN()
@@ -621,7 +621,7 @@
         }
         else
         {
-          $cond= $query->exactCondition($table.".".$this->fieldName(),escapeSQL($value));
+          $cond= $query->exactCondition($table.".".$this->fieldName(),$this->escapeSQL($value));
           atkdebug($cond, "condition");
           return $cond;
         }

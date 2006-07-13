@@ -279,8 +279,8 @@
             // User entered fields in wrong order. Let's fix that.
             $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
           }
-          $db = &$this->m_ownerInstance->getDb();
-          $searchcondition = $query->betweenCondition($fieldname,$db->escapeSQL($value["from"]), $db->escapeSQL($value["to"]));
+
+          $searchcondition = $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
         }
         else if ($value["from"]!="" && $value["to"]=="")
         {

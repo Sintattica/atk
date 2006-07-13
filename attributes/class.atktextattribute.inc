@@ -139,14 +139,7 @@
      */
     function value2db($rec)
     {
-      if (is_object($this->m_ownerInstance))
-      {
-        $db = &$this->m_ownerInstance->getDb();
-      }
-      else
-      {
-        $db = &atkGetDb();
-      }
+      $db = &$this->getDb();
       if ($db->getType() != "oci9")
         return $db->escapeSQL($rec[$this->fieldName()]);
       else

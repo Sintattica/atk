@@ -620,8 +620,7 @@
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
       {
-        $db = &$this->m_ownerInstance->getDb();        
-        return $db->escapeSQL($rec[$this->fieldName()]);
+        return $this->escapeSQL($rec[$this->fieldName()]);
       }
       return NULL;
     }
@@ -1119,8 +1118,7 @@
       $func = $searchmode."Condition";
       if (method_exists($query,$func) && $value)
       {
-        $db = &$this->m_ownerInstance->getDb();
-        return $query->$func($table.".".$this->fieldName(),$db->escapeSQL($value));
+        return $query->$func($table.".".$this->fieldName(),$this->escapeSQL($value));
       }
       else
       {
@@ -1899,6 +1897,32 @@
         return $this->m_ownerInstance->text($string, $this->getModule());
       else
         return atktext($string, $this->getModule());
+    }
+    
+    /**
+     * Get database instance for this attribute. Will return the owner
+     * instance database instance unless the owner instance is not set
+     * in which case the default instance will be returned.
+     * 
+     * @return atkDb database instance
+     */
+    function &getDb()
+    {
+      if (is_object($this->m_ownerInstance))
+        return $this->m_ownerInstance->getDb();
+      else return atkGetDb();
+    }
+    
+    /**
+     * Escape string for use in a query.
+     * 
+     * @param string value value to escape
+     * @param boolean escape wildcards too?
+     */
+    function escapeSQL($value, $wildcards=false)
+    {
+      $db = &$this->getDb();
+      return $db->escapeSQL($value, $wildcards);
     }
   }
 ?>

@@ -86,8 +86,7 @@
       //atkdebug("multiselectattribute::value2db()");
       if(is_array($rec[$this->fieldName()]) && count($rec[$this->fieldName()]>=1))
       {
-        $db = &$this->m_ownerInstance->getDb();
-        return $db->escapeSQL(implode("|",$rec[$this->fieldName()]));
+        return $this->escapeSQL(implode("|",$rec[$this->fieldName()]));
       }
       else return "";
     }
@@ -169,16 +168,15 @@
 
       if(is_array($value) && $value[0]!="" && count($value)>0)
       {
-        $db = &$this->m_ownerInstance->getDb();
         if (count($value)==1)
         {
-          $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$db->escapeSQL($value[0]));
+          $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$this->escapeSQL($value[0]));
         }
         else
         {
           foreach($value as $str)
           {
-            $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$db->escapeSQL($str));
+            $searchcondition = $query->substringCondition($table.".".$this->fieldName(),$this->escapeSQL($str));
           }
         }
       }
