@@ -270,7 +270,7 @@
       if (is_object($g_sessionManager))
       {
         $session = &$g_sessionManager->getSession();
-        if ($clean) $session['debugger'] = array();  
+        //if ($clean) $session['debugger'] = array();  
         $var= &$session["debugger"][$stackId];
         return $var;
       }

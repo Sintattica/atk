@@ -152,6 +152,8 @@ Changed in ATK 5.6.1
   atkStackId() (fixes issue with lost debugger data). [Peter]
 * Fixed obligatory check in metadata oci8/9 database driver. [Peter]
 * Fixed relation detection in atkOneToOneRelation. [Peter]
+* Properly initialize attributes in atkMLSplitter (set owner instance
+  and call init method). [Peter]
 
 Changed in ATK 5.6
 ------------------

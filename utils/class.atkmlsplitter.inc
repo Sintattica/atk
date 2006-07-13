@@ -100,6 +100,8 @@
             $attribvalue=$p_attrib->m_destInstance->m_attribList[$p_attrib->m_destInstance->primaryKeyField()]->value2db($record[$attribname]);
             $record[$p_attrib->fieldName()]=$attribvalue;
             $p_attrib=new atkAttribute($attribname);
+            $p_attrib->m_ownerInstance = &$node;
+            $p_attrib->init();            
           }
           else  $excludelist[] = $attribname;
         }
