@@ -164,10 +164,8 @@
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $lngs = $this->getLanguages();
-      if (count($lngs)>=1)
-      {
-        return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
-      }
+      if (count($lngs)<=2) $this->addFlag(AF_HIDE);
+      return parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
     }
   }
 ?>
