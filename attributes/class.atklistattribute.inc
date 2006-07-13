@@ -179,7 +179,7 @@
       {
         // If the current value is selected or occurs in the record
         if ((!is_null($this->m_selected) && $this->m_values[$i] == $this->m_selected) ||
-            ( is_null($this->m_selected) && $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=""))
+            ( is_null($this->m_selected) && isset($record[$this->fieldName()]) && $this->m_values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=""))
         {
           $sel = "selected";
         }
