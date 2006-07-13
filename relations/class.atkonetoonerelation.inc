@@ -569,7 +569,7 @@
     {
       if ($this->createDestination())
       {
-        if (isset($this->m_refKey) && !empty($this->m_refkey))
+        if (isset($this->m_refKey) && !empty($this->m_refKey))
         {
           // foreign key is in the destination node.
           $attrib = $this->m_destInstance->m_attribList[$this->m_refKey];

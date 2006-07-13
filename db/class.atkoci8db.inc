@@ -437,7 +437,7 @@
           c.data_type AS type,
           c.data_length AS length,
           c.data_default AS default_value,
-          (CASE WHEN c.nullable = 'Y' THEN 1 ELSE 0 END) AS is_not_null,
+          (CASE WHEN c.nullable = 'Y' THEN 0 ELSE 1 END) AS is_not_null,
           (
             SELECT COUNT(1)
             FROM user_constraints uc

@@ -44,6 +44,10 @@ Changed in ATK 5.6.1
   assignDocumentSingleRecord calls over and over again. [Guido]
 + Added a space between the hours and minutes dropdown box of an
   atkDurationAttributes edit output. [Guido]
++ Added AF_PASSWORD_NO_ENCODE flag for atkPasswordAttribute, allows you
+  to disable the encoding of passwords using the md5 algorithm. Moved
+  the encoding also to a separate method (encode) which allows the
+  use of different algorithms. [Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -144,8 +148,10 @@ Changed in ATK 5.6.1
 * Loading of tabs when the first tab is not the selected one is now smoother.
   [Jeroen, Ivo]
 * Fixed lots of multi-database issues. [Peter]
-* Debugger now directly looks at $_REQUEST['atkstackid'] instead 
-  of atkStackId(). [Peter]
+* Debugger now directly looks at $_REQUEST['atkstackid'] instead of 
+  atkStackId() (fixes issue with lost debugger data). [Peter]
+* Fixed obligatory check in metadata oci8/9 database driver. [Peter]
+* Fixed relation detection in atkOneToOneRelation. [Peter]
 
 Changed in ATK 5.6
 ------------------
