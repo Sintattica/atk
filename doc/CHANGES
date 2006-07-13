@@ -52,6 +52,10 @@ Changed in ATK 5.6.1
   the owner instance with a fallback to the default instance). [Peter]
 + Added escapeSQL method to atkAttribute (uses the correct database
   instead of the default database). [Peter]
++ Added support for many-to-many relations to atkMetaPolicy. Example:
+  $policy->hasMany('people', array('through' => 'organisations_people'));
+  By default the shuttle relation will be used, you can specify type
+  bool(ean) in the options array for a many-bool relation. [Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]

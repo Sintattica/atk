@@ -18,31 +18,34 @@
 /**
  * @internal Include the base class.
  */
-userelation("atkonetomanyrelation");
+userelation("atkshuttlerelation");
   
 /**
- * Implementation of one-to-many relationships for meta nodes.
+ * Implementation of many-to-many relationships using a shuttle for meta nodes.
  *
  * @author Peter C. Verhage <peter@achievo.org>
  * @package atk
  * @subpackage meta.relations
  */        
-class atkMetaOneToManyRelation extends atkOneToManyRelation
+class atkMetaShuttleRelation extends atkShuttleRelation
 {
   var $m_accessor;
+  var $m_through;
   var $m_options;
 
   /**
    * Default constructor.    
    */
-  function atkMetaOneToManyRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaShuttleRelation($name, $accessor, $template, $options, $flags)
   {
-    $this->atkOneToManyRelation($name, $accessor, "?", $flags);
+    $this->atkManyToManyRelation($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;
+    $this->m_through = $options['through'];
     $this->m_options = $options;
     
     $this->setDescriptorTemplate($template);
-    if (isset($options["filter"])) $this->setDestinationFilter($options["filter"]);
+    if (isset($options["filter"])) 
+      $this->setDestinationFilter($options["filter"]);
   }
   
   /**
@@ -59,17 +62,32 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
     $policy = &$this->m_ownerInstance->getMetaPolicy();
 
     $this->m_destination = $policy->findDestination($this->m_accessor, true);
-    atkdebug("atkMetaOneToManyRelation: {$this->m_accessor} destination {$this->m_destination}");
+    atkdebug("atkMetaShuttleRelation: {$this->m_accessor} destination {$this->m_destination}");
     if ($this->m_destination == NULL) return FALSE;
     else if (!parent::createDestination()) return FALSE;
-    
-    $this->m_refKey = $policy->findDestinationAttribute($this);
-    atkdebug("atkMetaOneToManyRelation: {$this->m_accessor} reference key {$this->m_refKey}");    
-    if ($this->m_refKey == NULL)
-      $this->m_destInstance = NULL;
-    else $this->m_refKey = array($this->m_refKey);
       
-    return $this->m_refKey != NULL;
+    return TRUE;
   }
+  
+  /**
+   * Create instance of the intermediairy link node.
+   *
+   * If succesful, the instance is stored in the m_linkInstance member variable.
+   * 
+   * @return boolean true if succesful, false if something went wrong.
+   */
+  function createLink()
+  {
+    if ($this->m_linkInstance != "") return TRUE;
+
+    $policy = &$this->m_ownerInstance->getMetaPolicy();
+
+    $this->m_link = $policy->findDestination($this->m_through, true);
+    atkdebug("atkMetaShuttleRelation: {$this->m_through} link {$this->m_destination}");
+    if ($this->m_link == NULL) return FALSE;
+    else if (!parent::createLink()) return FALSE;
+      
+    return TRUE;    
+  }  
 }  
 ?>

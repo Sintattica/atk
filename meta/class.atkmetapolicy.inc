@@ -431,18 +431,18 @@ class atkMetaPolicy
  /**
    * Find destination node for the given meta relation.
    *
-   * @param $relation  meta relation
+   * @param $accessor  accessor name
+   * @param $toMany    accessor name might be in plural form?
    *
    * @return destination node name for the given relation
    */
-  function findDestination(&$relation)
+  function findDestination($accessor, $toMany)
   {
-    $module = getNodeModule($relation->m_accessor);
+    $module = getNodeModule($accessor);
     if ($module == "")
       $module = $this->m_node->m_module;
 
-    $node = getNodeType($relation->m_accessor);
-    $toMany = is_a($relation, "atkmetaonetomanyrelation");
+    $node = getNodeType($accessor);
 
     if ($module != "")
     {
@@ -515,25 +515,30 @@ class atkMetaPolicy
   }
 
   /**
-   * One-to-many relation support. You can call the hasMany method to indicate
-   * that this node has a one-to-many relation with another node. The meta
-   * policy will then try to guess, amongst other things, which fields should
-   * be used for this relation.
+   * One-to-many / many-to-many relation support. You can call the hasMany 
+   * method to indicate that this node has a one-to-many or a many-to-many 
+   * relationship with another node. The meta policy will then try to guess, 
+   * amongst other things, which fields should be used for this relation.
    *
-   * This method uses a smart name guessing scheme for the destination node.
-   * If you enter the plural form of the (singular) node name it will still
-   * be able to find the node. You can ommit the module name prefix if the
-   * destination node resides in the same module as the source node. Ofcourse
-   * you can also just use the real module/node name combination.
+   * This method uses a smart name guessing scheme for the (optional
+   * intermediate) and destination node. If you enter the plural form of 
+   * the (singular) node name it will still be able to find the node. 
+   * You can ommit the module name prefix if the destination node resides 
+   * in the same module as the source node. Ofcourse you can also just use 
+   * the real module/node name combination.
    *
    * The options list may contain several parameters to make more complex
    * relations work. The supported parameters are as follows:
    *
    * - dest(-ination)  destination attribute name
    * - filter          destination filter
+   * - through         intermediate node name (for many-to-many relations)
+   * - type            type of many-to-many relation (shuttle or bool(ean), defaults to shuttle)
+   * - cols/columns    number of columns (many-bool relations only)
    *
-   * @param $accessor  accessor name (complete description is given above)
-   * @param $options   list op options (complete description is given above)
+   * @param $accessor          accessor name (complete description is given above)
+   * @param $templateOrOptions template or list of options (complete description is given above)
+   * @param $options           list op options (complete description is given above)
    */
   function hasMany($accessor, $templateOrOptions=array(), $options=array())
   {
@@ -541,12 +546,30 @@ class atkMetaPolicy
     if (is_array($templateOrOptions))
       $options = $templateOrOptions;
     else $template = $templateOrOptions;
-
+    
+    if (isset($options['through']))
+    {
+      switch ($options['type'])
+      {
+        case 'bool':
+        case 'boolean':
+          $type = "atk.meta.relations.atkmetamanyboolrelation";
+          break;
+        case 'shuttle':
+        default:
+          $type = "atk.meta.relations.atkmetashuttlerelation";          
+      }
+    }
+    else 
+    {
+      $type = "atk.meta.relations.atkmetaonetomanyrelation";
+    }
+    
     $this->m_attrs[getNodeType($accessor)] =
       array(
-        "type" => "atk.meta.relations.atkmetaonetomanyrelation",
+        "type" => $type,
         "params" => array($accessor, $template, $options),
-        "flags" => AF_HIDE_LIST,
+        "flags" => AF_HIDE_LIST|AF_HIDE_ADD,
         "tabs" => NULL,
         "order" => $this->_getMaxOrder() + 100
       );
