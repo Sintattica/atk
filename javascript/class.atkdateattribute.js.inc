@@ -72,6 +72,10 @@ function getDays(date)
  */
 function AdjustDate(el, arr, newDate)
 {
+  if (arguments.length == 2) {
+    newDate = false;
+  }
+  
   var info = eval('atkdateattribute_' + arr);
   setTimeout(function() { RealAdjustDate(el, arr, info.format, info.min, info.max, info.emptyfield, info.weekday, newDate) }, 1);
 }
@@ -101,9 +105,9 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, 
 
   /* currently selected date */
   current = Array();
-  current["d"] = newDate != null ? newDate.day   : parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
-  current["m"] = newDate != null ? newDate.month : parseInt(input["m"].options[input["m"].selectedIndex].value, 10);
-  current["y"] = newDate != null ? newDate.year  : parseInt(input["y"].type == "select-one" ? input["y"].options[input["y"].selectedIndex].value : input["y"].value, 10);
+  current["d"] = typeof(newDate) == 'object' ? newDate.day   : parseInt(input["d"].options[input["d"].selectedIndex].value, 10);
+  current["m"] = typeof(newDate) == 'object' ? newDate.month : parseInt(input["m"].options[input["m"].selectedIndex].value, 10);
+  current["y"] = typeof(newDate) == 'object' ? newDate.year  : parseInt(input["y"].type == "select-one" ? input["y"].options[input["y"].selectedIndex].value : input["y"].value, 10);
   if (current["y"].toString() == "NaN") current["y"] = 0;
 
   /* check month format */
@@ -121,7 +125,7 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, 
   else format_weekday = "l";
 
   /* we just changed one of the fields to null */
-  if (emptyfield && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == "")))
+  if (emptyfield && (newDate == null || (typeof(newDate) != 'object' && ((el.type == "select-one" && el.selectedIndex == 0) || (el.type != "select-one" && el.value == "")))))
   {
     for (i = input["d"].options.length; i >= 0; i--) input["d"].options[i] = null;
     input["d"].options[0] = new Option("", 0);
