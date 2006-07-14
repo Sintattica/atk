@@ -27,6 +27,10 @@ atkimport("atk.meta.atkmetatools");
  */
 class atkMetaPolicy
 {
+  /**
+   * @var atkNode The node which is being created by the policy
+   * @access private
+   */
   var $m_node = NULL;
   var $m_grammar = NULL;
 
