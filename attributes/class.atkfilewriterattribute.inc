@@ -96,7 +96,8 @@
     function db2value($record)
     {
       // determine filename.
-      $filename = stringparse($this->m_filename, $record);
+      $parser = new atkStringParser($this->m_filename);
+      $filename = $parser->parse($record);
         
       if (!file_exists($filename))
       {
