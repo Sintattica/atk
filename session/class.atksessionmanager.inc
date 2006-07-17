@@ -639,11 +639,8 @@
      */
     function &getSession()
     {
-      if (!is_array($_SESSION[atkconfig("identifier")]))
-      {
-        atkdebug("\$_SESSION[\"".atkconfig("identifier")."\"] is not an array! Assigning an empty array to it.", DEBUG_WARNING);
+      if (!isset($_SESSION[atkconfig("identifier")]) || !is_array($_SESSION[atkconfig("identifier")]))
         $_SESSION[atkconfig("identifier")] = array();
-      }
       return $_SESSION[atkconfig("identifier")];
     }
 
