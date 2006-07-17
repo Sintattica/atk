@@ -1150,8 +1150,9 @@
    */
   function atkPopup($target,$params,$winName,$width,$height,$scroll='no',$resize='no')
   {
-    $url ="javascript:NewWindow('include.php?file=".$target."&".$params."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
-    return $url;
+    $url = session_url("include.php?file=".$target."&".$params, SESSION_NESTED);
+    $popupurl ="javascript:NewWindow('".$url."','".$winName."',".$height.",".$width.",'".$scroll."','".$resize."')";
+    return $popupurl;
   }
 
   /**
