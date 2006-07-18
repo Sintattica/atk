@@ -37,7 +37,6 @@
       $page = &$this->getPage();
 
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
-      atk_var_dump($recordset,'recordset in editHandler');
       if ($this->m_node->hasFlag(NF_LOCK))
       {
         if ($this->m_node->m_lock->lock($this->m_node->primaryKey($recordset[0]), $this->m_node->m_table))
@@ -199,7 +198,6 @@
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
-        atkdebug('TEKNO: '.$field['name']);
         $tplfield = array();
 
 		    $tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":implode("|", $field["tabs"]));
