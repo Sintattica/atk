@@ -1,0 +1,99 @@
+.activetab
+{
+  cursor: default;
+  height: 100%;
+  background-image: url('../images/tab_back_s.png');
+}
+
+.passivetab
+{
+  cursor: pointer;
+  display: none;
+  height: 100%;
+  height: 100%;
+  background-image: url('../images/tab_back.png');
+  background-position: top;
+}
+
+#tabs
+{
+  text-align: left;
+  font-family: "Times New Roman", "Courier", "Garamond", "serif";
+  color: #ba0000;
+  text-transform: uppercase;
+  font-size: 1.1em;
+  margin:0px auto;
+}
+
+#tab-content
+{
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  background: #fff;
+}
+
+#tab-screen
+{
+}
+
+#editform
+{
+  text-align: left;
+}
+
+
+.tabs
+{
+  display: block;
+  float: left;
+  border: 1px solid green;
+}
+
+.tabs2
+{
+  display: block;
+  float: left;
+  border: 1px solid red;
+}
+
+
+#tabContent
+{
+	padding: 12px;
+}
+
+#tabContainer
+{
+  padding: 0px 24px;
+}
+
+.tabOn, .tabOff
+{
+  padding: 0px 12px;
+  margin-bottom: 12px;
+}
+
+.tabOn
+{
+	color: #ba0000 !important;
+	border-bottom: 4px solid #666;
+	background: #fff;
+}
+
+.tabOff
+{
+	border: 0px;
+	color: #000;
+}
+
+.tabInnerDiv
+{
+  text-align: left;
+  position: relative;
+}
+
+.tabOuterDiv
+{
+  border-bottom: 2px solid #666; 
+  text-align: left;
+}

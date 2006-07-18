@@ -1,0 +1,355 @@
+BODY
+{
+  background-color: #eeeeee;
+  color: #000000;
+  font-size: 11px;
+  font-family: Verdana,Helvetica,Arial;
+}
+
+A:link,
+A:visited,
+A:active,
+TD
+{
+  color: #000000;
+  font-size: 11px;
+}
+
+A:hover
+{
+  color: #660000;
+  font-size: 11px;
+}
+
+.stacktrace,
+A.stacktrace:link,
+A.stacktrace:visited
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #555555;
+}
+
+.stacktrace_end
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  font-style: italic;
+  color: #000000;
+}
+
+.fieldlabel
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  color: #444;
+  text-align: left;
+  font-weight: normal;
+  padding: 3px 0px 3px 0px;
+}
+
+.field
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+  color: #000000;
+  text-align: left;
+  padding-left: 12px;
+  padding: 3px 0px 3px 0px;
+}
+
+.field a
+{
+  color: #ba0000;
+}
+
+.tab
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.tab_selected
+{
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000000;
+}
+
+INPUT,
+SELECT,
+TEXTAREA
+{
+  background-color: #ffffff;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+}
+
+INPUT.btn,
+INPUT.btn_save,
+INPUT.btn_cancel,
+INPUT.btn_saveandclose,
+INPUT.btn_saveandnext
+{
+  background-color: #CCCCCC;
+  height: 25px;
+}
+
+INPUT.btn_saveandclose
+{
+  font-weight: bold;
+}
+
+.topbg
+{
+  background: #52006A;
+
+}
+
+.menubg
+{
+  background: #F00;
+}
+
+.error,
+.errorlabel
+{
+  color: #FF0000;
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  text-align: left;
+}
+
+.atkmessages
+{
+  background-color: #EEEEEE;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+}
+
+#action-buttons
+{
+  text-align: right;
+}
+
+
+
+/* nieuwe stylen ivm theme */
+
+.tableHeader
+{
+  height: 23px;
+  background: url(../images/tabBg2.gif) repeat-x left top;
+  margin-top: 12px;
+  margin-right: 22px;
+  margin-left: 28px;
+}
+
+.tableHeader img
+{
+  display: block;
+  float: left;
+}
+
+.tableHeaderTitle
+{
+  color: #BA0000;
+  font-size: 11px;
+  font-family: georgia, times, serif;
+  text-transform: uppercase;
+  font-weight: normal;
+  margin: 0px;
+  letter-spacing: 0.4px;
+  background: #fff url(../images/tabLeft.gif) repeat-x left top;
+  padding: 9px 4px 0px 12px;
+  display: table;
+  height: 11px;
+  margin-left: 8px;
+  float: left;
+}
+
+.contentBlock
+{
+  background: #fff url(../images/contentBlockBg.gif) repeat-x left bottom;
+  padding: 12px;
+  margin-right: 22px;
+  margin-left: 28px;
+  margin-bottom: 36px;
+}
+
+#banner
+{
+  
+}
+
+#topLinks
+{
+  
+}
+
+
+/* editform styles */
+
+#editform td
+{
+  padding-right: 12px;
+  /* white-space: nowrap; */
+}
+
+#editform input, 
+#editform textarea, 
+#editform select,
+.contentBlock input,
+.contentBlock textarea,
+.contentBlock select
+{
+  border: 1px solid #7E7E7E;
+  padding: 2px;
+}
+
+#changeView
+{
+  position: absolute;
+  right: 12px;
+  top: -38px;
+  text-align: right;
+}
+
+#changeView a
+{
+  color: #B80103;
+}
+
+.currentDate
+{
+  padding: 4px 0px;
+  color: #333;
+}
+
+.currentDate a
+{
+  text-decoration: none;
+}
+
+
+/* loginform styles */
+
+#loginform
+{
+  width: 360px;
+  border: 1px solid #666;	
+  padding: 24px;
+  padding-left: 228px;
+  margin: 0px auto;
+  
+}
+
+#loginform form
+{
+	border: 1px solid #fff;
+	padding: 24px;
+	background: #fff;
+}
+
+#loginform-title
+{
+	font-weight: bold;
+	margin-bottom: 8px;
+}
+
+.loginformField
+{
+	vertical-align: middle;
+	padding: 4px 0px;
+}
+
+.loginformLabel
+{
+	padding-right: 12px;
+	vertical-align: middle;
+}
+
+.atkonetomanyrelation
+{
+	color: #ba0000 ! important;
+	display: block;
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
+
+/* button styles */
+
+#action-buttons
+{
+  text-align: center;
+}
+
+
+.btn_saveandclose, .btn_save, .btn_cancel
+{
+  padding: 2px !important;
+  margin: 0px !important;
+}
+
+.btn_save
+{
+
+}
+
+.btn_cancel
+{
+
+}
+
+#editform td
+{
+  padding-top: 2px;
+  padding-bottom: 2px;
+  vertical-align: middle;
+}
+
+
+
+hr 
+{
+  border: none 0;
+  border-top: 1px dashed #666;
+  height: 1px;/*whatever the total width of the border-top and border-bottom equal*/
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+#tab_default
+{
+}
+
+#remark
+{
+  width: 95%;
+}
+
+
+.field select
+{
+}
+
+input[type="checkbox"]
+{
+  width: auto;
+  border: 1px solid red ! important;
+}
+
+.atkboolattribute
+{
+  border: 0px ! important;
+  width: auto ! important;
+  border: 1px solid red;
+}

@@ -1,0 +1,37 @@
+INPUT,
+SELECT,
+TEXTAREA
+{
+  background-color: #eeeeee;
+  color: #000000;
+  font-family: verdana, helvetica, arial;
+  font-size: 11px;
+}
+
+#searchbutton
+{
+  vertical-align: bottom;
+}
+
+#banner
+{
+  position: relative;
+  background: #fff url(../images/bannerBg.jpg) repeat-x left top;
+  height: 113px;
+}
+
+#topLinks
+{
+  position: absolute;
+  right: 100px;
+  top: 30px;
+  text-align: right;
+}
+
+#loginBox
+{
+  position: absolute;
+  right: 100px;
+  top: 92px;
+  text-align: right;
+}

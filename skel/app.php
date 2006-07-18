@@ -37,10 +37,10 @@
 
   atkimport("atk.menu.atkmenu");
   atkimport("atk.utils.atkframeset");
+  
   $menu = &atkMenu::getMenu();
-
-  /* @var $menu atkmenuinterface */
-
+  $theme = &atkinstance('atk.ui.atktheme');
+  
   $position = $menu->getPosition();
   $scrolling = ($menu->getScrollable()==MENU_SCROLLABLE?FRAME_SCROLL_AUTO:FRAME_SCROLL_NO);
   if(isset($ATK_VARS["atknodetype"]) && isset($ATK_VARS["atkaction"]))
@@ -53,9 +53,11 @@
     $destination = "welcome.php";
   }
 
-  $topframe = &new atkFrame("75", "top", "top.php", FRAME_SCROLL_NO, true);
+  $frame_top_height = $theme->getAttribute('frame_top_height');
+  $frame_menu_width = $theme->getAttribute('frame_menu_width');
+  $topframe = &new atkFrame($frame_top_height?$frame_top_height:"75", "top", "top.php", FRAME_SCROLL_NO, true);
   $mainframe = &new atkFrame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
-  $menuframe = &new atkFrame(($position==MENU_LEFT||$position==MENU_RIGHT?190:$menu->getHeight()), "menu", "menu.php", $scrolling);
+  $menuframe = &new atkFrame(($position==MENU_LEFT||$position==MENU_RIGHT?($frame_menu_width?$frame_menu_width:190):$menu->getHeight()), "menu", "menu.php", $scrolling);
   $noframes = '<p>Your browser doesnt support frames, but this is required to run '.text('app_title')."</p>\n";
 
   $root = &new atkRootFrameset();

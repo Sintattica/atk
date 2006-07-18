@@ -56,6 +56,7 @@ Changed in ATK 5.6.1
   $policy->hasMany('people', array('through' => 'organisations_people'));
   By default the shuttle relation will be used, you can specify type
   bool(ean) in the options array for a many-bool relation. [Peter]
++ Added achievo_modern theme. [Norman,Boy]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -168,6 +169,12 @@ Changed in ATK 5.6.1
 * Fixed using of cache id by delete method of atkOneToOneRelation. [Boy]
 * Made atkMultiSelectAttribute db2value method return an empty array
   when there is no value instead of an array with 1 empty value. [Boy]
+* Made it possible to specify top frame height and menu frame width in 
+  themes with the 'frame_top_height' and 'frame_menu_width' attributes
+  in themedefinition. [Boy]
+* Made app.php check wether a menu exists before attempting 
+  to instantiate it, if it does not exist it throws an error and renders
+  the plain menu. [Boy]
 
 Changed in ATK 5.6
 ------------------
