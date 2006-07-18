@@ -93,7 +93,7 @@
 
     function db2value($rec)
     {
-      if (isset($rec[$this->fieldName()]))
+      if (isset($rec[$this->fieldName()]) && $rec[$this->fieldName()]!=='')
         return explode("|",$rec[$this->fieldName()]);
       else return array();
     }

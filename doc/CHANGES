@@ -165,6 +165,9 @@ Changed in ATK 5.6.1
 * Moved required-image from handler to template ({$field.obligatory}).
   Note that custom 'editform.tpl' templates should take this into account.
   [Ivo] 
+* Fixed using of cache id by delete method of atkOneToOneRelation. [Boy]
+* Made atkMultiSelectAttribute db2value method return an empty array
+  when there is no value instead of an array with 1 empty value. [Boy]
 
 Changed in ATK 5.6
 ------------------
