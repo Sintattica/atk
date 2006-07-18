@@ -48,6 +48,8 @@
     var $m_amount = 1;
     var $m_cols=false;
     var $m_rows=false;
+    
+    var $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
      * Constructor
@@ -93,7 +95,6 @@
      */
     function edit($record="", $fieldprefix="")
     {
-
       $total_items = count($this->m_values);
       if($this->m_cols && !$this->hasFlag(AF_DISPLAY_VERT))
       {
@@ -131,7 +132,16 @@
         $labelID = $fieldprefix.$this->formName()."_".$this->m_values[$i];
         if($this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
         $this->registerKeyListener($labelID, KB_CTRLCURSOR|KB_CURSOR);
-        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$sel.'>
+        $id = $this->getHtmlId($fieldprefix);
+        
+        $onchange='';
+        if (count($this->m_onchangecode))
+        {
+          $onchange = 'onChange="'.$id.'_onChange(this);" ';
+          $this->_renderChangeHandler($fieldprefix);
+        }
+        
+        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$onchange.$sel.'>
         <label for="'.$labelID.'">'.atktext($this->m_options[$i], $this->m_ownerInstance->m_module).'</label></td>';
         if($this->hasflag(AF_DISPLAY_VERT))
         {
