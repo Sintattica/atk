@@ -162,6 +162,9 @@ Changed in ATK 5.6.1
 * Fixed relation detection in atkOneToOneRelation. [Peter]
 * Properly initialize attributes in atkMLSplitter (set owner instance
   and call init method). [Peter]
+* Moved required-image from handler to template ({$field.obligatory}).
+  Note that custom 'editform.tpl' templates should take this into account.
+  [Ivo] 
 
 Changed in ATK 5.6
 ------------------
