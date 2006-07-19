@@ -175,6 +175,9 @@ Changed in ATK 5.6.1
 * Made app.php check wether a menu exists before attempting 
   to instantiate it, if it does not exist it throws an error and renders
   the plain menu. [Boy]
+* Fixed broken preUpdate call in updateDB (preUpdate was called after
+  the update query was already created). [Peter]
+* Fixed saving 0 value in atkNumberAttribute as 0 instead of NULL. [Peter]
 
 Changed in ATK 5.6
 ------------------

@@ -2523,6 +2523,9 @@
           $this->m_flags = $flags;
           $record["atkorgrec"] = $recordset[0];
         }
+        
+        if($exectrigger) $this->executeTrigger("preUpdate",$record);        
+        
         $query->addCondition($pk);
 
         $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
@@ -2550,8 +2553,6 @@
           $p_attrib = &$this->m_attribList[$storelist["query"][$i]];
           $p_attrib->addToQuery($query,$this->m_table,"",$record,1,"update"); // start at level 1
         }
-
-        if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
         if (count($query->m_fields) && !$query->executeUpdate()) return false;
 

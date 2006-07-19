@@ -130,7 +130,7 @@
 
     function value2db($rec)
     {
-      if($rec[$this->fieldName()]==""&&!$this->hasFlag(AF_OBLIGATORY))
+      if(($rec[$this->fieldName()]==="" || $rec[$this->fieldName()]===NULL) && !$this->hasFlag(AF_OBLIGATORY))
         return "NULL";
 
       if($this->m_decimals>0)
