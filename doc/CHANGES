@@ -57,6 +57,10 @@ Changed in ATK 5.6.1
   By default the shuttle relation will be used, you can specify type
   bool(ean) in the options array for a many-bool relation. [Peter]
 + Added achievo_modern theme. [Norman,Boy]
++ Added variable support to atktext smarty plug-in. Variables can be
+  specified as follows: {atktext id='...' var1=$x var2=$y}. sprintf
+  is used to fill the variables in the translation. So your translation
+  can look like the following: 'x: %d, y: %d'. [Peter] 
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
