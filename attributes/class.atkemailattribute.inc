@@ -61,8 +61,11 @@
      * @param array $record The record to display
      * @return String
      */
-    function display($record)
+    function display($record, $mode="")
     {
+      if ($mode == "csv")
+        return parent::display($record, $mode);
+      
       if ($record[$this->fieldName()]!="")
       {
         return '<a href="mailto:'.$record[$this->fieldName()].'">'.$record[$this->fieldName()].'</a>';

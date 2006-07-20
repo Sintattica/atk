@@ -184,6 +184,8 @@ Changed in ATK 5.6.1
 * Fixed saving 0 value in atkNumberAttribute as 0 instead of NULL. [Peter]
 * Removed edit/delete actions in the atkFileEditor when a file isn't 
   writable. [Sandy]
+* Don't add link surrounding e-mail adres if mode is "csv" in
+  display function of atkEmailAttribute. [Peter]
 
 Changed in ATK 5.6
 ------------------
