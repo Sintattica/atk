@@ -56,10 +56,8 @@
         $selectedPk[] = $newselected;
       }
 
-      $filter = $this->parseFilter($this->m_destinationFilter,$record);
-      // now select all records
-      $recordset = $this->m_destInstance->selectDb($filter, "", "", "", atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
-
+      $recordset = $this->_getSelectableRecords($record, $mode);
+        
       $left = array();
       $right = array();
       $width=100;

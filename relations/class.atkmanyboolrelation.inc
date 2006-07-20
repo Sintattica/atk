@@ -44,7 +44,7 @@
      * @param $record Current record
      * @return String piece of html code
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode="")
     {
       $cols = $this->m_cols;
       $modcols = $cols-1;
@@ -65,9 +65,7 @@
         $selectedPk[] = $newselected;
        }
 
-      $filter = $this->parseFilter($this->m_destinationFilter,$record);
-      // now select all records
-      $recordset = $this->m_destInstance->selectDb($filter);
+      $recordset = $this->_getSelectableRecords($record, $mode);
 
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
