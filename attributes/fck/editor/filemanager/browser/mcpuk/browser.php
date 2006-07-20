@@ -30,6 +30,11 @@
   $theme       = &atkinstance('atk.ui.atktheme');
   $themeDir    = $theme->themeDir();
   $cssFile     = "styles/fck_mcpuk_browser.css";
+  
+  // add trailingslash to editingurl when needed
+  if (strlen($editingurl) > 1 && substr($editingurl,-1) != "/")
+    $editingurl .= "/";
+  
   $frameParams = "?lng=".$config_language."&themecss=".urlencode($themeDir.$cssFile)."&editingurl=".urlencode($editingurl);
   
 ?>
