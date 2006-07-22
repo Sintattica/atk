@@ -6,9 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.6.1
 --------------------
-+ Added function checkKeyDimension() in the atkManyToManyRelation class 
-  to fix a problem with local / remote keys being a multi-dimensional 
-  array which resulted in invalid queries (mostly occurred in 
++ Added function checkKeyDimension() in the atkManyToManyRelation class
+  to fix a problem with local / remote keys being a multi-dimensional
+  array which resulted in invalid queries (mostly occurred in
   combination with atkmanyboolrelation / atkshuttlerelation). [Wim]
 + Added the function getAttributes to get all the attributes of a node in
   an array. [dennisjan]
@@ -60,11 +60,11 @@ Changed in ATK 5.6.1
 + Added variable support to atktext smarty plug-in. Variables can be
   specified as follows: {atktext id='...' var1=$x var2=$y}. sprintf
   is used to fill the variables in the translation. So your translation
-  can look like the following: 'x: %d, y: %d'. [Peter] 
-+ Added selectable records override to atkManyBoolRelation and 
-  atkShuttleRelation. Usage: create a function named 
-  <attribname>_selection($record, $mode) in your node and return 
-  the selectable records. [Peter]  
+  can look like the following: 'x: %d, y: %d'. [Peter]
++ Added selectable records override to atkManyBoolRelation and
+  atkShuttleRelation. Usage: create a function named
+  <attribname>_selection($record, $mode) in your node and return
+  the selectable records. [Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -140,16 +140,16 @@ Changed in ATK 5.6.1
   of an atkDateAttribute using JavaScript. [Peter]
 * Improved atkDateAttribute / calendar integration (calendar now knows
   everything it needs to know to adjust the field boxes). [Peter]
-* Because the FCK editor does not always agree with tabbing and no longer 
-  becomes editable if you switch (only in firefox), a custom method is add 
+* Because the FCK editor does not always agree with tabbing and no longer
+  becomes editable if you switch (only in firefox), a custom method is add
   to enable all fck-editors. Added name element in FckEditor-code so that
-  we can access the frame from the parent (code change request emailed 
+  we can access the frame from the parent (code change request emailed
   to fckeditor.net) [Jeroen]
 * Performed functional decomposition on atkAdminHandler adminPage method,
   rendering of admin recordlist is now done by renderAdminList method. [Boy]
 * If recordlist does not have any actions available, the action column in
   the recordlist is now no longer shown. [Boy]
-* Made atkQuery::create() return query object instantiated with atknew 
+* Made atkQuery::create() return query object instantiated with atknew
   instead of with a normal normal new, making it possible to call it without
   first importing the query class. [Boy]
 * Made atkNodeValidator use the query object of unique fieldset validation
@@ -159,13 +159,13 @@ Changed in ATK 5.6.1
   deleted until you went out of edit mode for the record and back again. [Boy]
 * If there are only 2 or less supported languages, atkMlSelectorAttribute hides
   itself. [Ivo]
-* Fixed a bug when you remove a file and fileattribute has the flag 
-  'AF_FILE_NO_SELECT', the file will still be displayed in the admin. 
+* Fixed a bug when you remove a file and fileattribute has the flag
+  'AF_FILE_NO_SELECT', the file will still be displayed in the admin.
   [dennisjan]
 * Loading of tabs when the first tab is not the selected one is now smoother.
   [Jeroen, Ivo]
 * Fixed lots of multi-database issues. [Peter]
-* Debugger now directly looks at $_REQUEST['atkstackid'] instead of 
+* Debugger now directly looks at $_REQUEST['atkstackid'] instead of
   atkStackId() (fixes issue with lost debugger data). [Peter]
 * Fixed obligatory check in metadata oci8/9 database driver. [Peter]
 * Fixed relation detection in atkOneToOneRelation. [Peter]
@@ -173,23 +173,25 @@ Changed in ATK 5.6.1
   and call init method). [Peter]
 * Moved required-image from handler to template ({$field.obligatory}).
   Note that custom 'editform.tpl' templates should take this into account.
-  [Ivo] 
+  [Ivo]
 * Fixed using of cache id by delete method of atkOneToOneRelation. [Boy]
 * Made atkMultiSelectAttribute db2value method return an empty array
   when there is no value instead of an array with 1 empty value. [Boy]
-* Made it possible to specify top frame height and menu frame width in 
+* Made it possible to specify top frame height and menu frame width in
   themes with the 'frame_top_height' and 'frame_menu_width' attributes
   in themedefinition. [Boy]
-* Made app.php check wether a menu exists before attempting 
+* Made app.php check wether a menu exists before attempting
   to instantiate it, if it does not exist it throws an error and renders
   the plain menu. [Boy]
 * Fixed broken preUpdate call in updateDB (preUpdate was called after
   the update query was already created). [Peter]
 * Fixed saving 0 value in atkNumberAttribute as 0 instead of NULL. [Peter]
-* Removed edit/delete actions in the atkFileEditor when a file isn't 
+* Removed edit/delete actions in the atkFileEditor when a file isn't
   writable. [Sandy]
 * Don't add link surrounding e-mail adres if mode is "csv" in
   display function of atkEmailAttribute. [Peter]
+* atkTotalizer now adds subtotals for all subtotalfields when it's the
+  last record. [Sandy]
 
 Changed in ATK 5.6
 ------------------
