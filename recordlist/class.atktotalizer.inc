@@ -70,11 +70,14 @@
         $result[] = $rowset[$i];
 
       }
-
       // leftovers, subtotals of last rows
       if (count($rowset))
       {
-        $result[] = $this->_subTotalRow($rowset[count($rowset)-1], $totals, $fieldname, $totalizers);
+        for ($j=count($subtotalfields)-1; $j>=0; $j--) // reverse loop, to ensure right-to-left subtotalling
+        {
+          $fieldname = $subtotalfields[$j];
+          $result[] = $this->_subTotalRow($rowset[count($rowset)-1], $totals, $fieldname, $totalizers);
+        }
       }
       // end of leftovers
 
