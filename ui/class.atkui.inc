@@ -98,7 +98,7 @@
 
     /**
      * Renders top template
-     * Deprecated, use renderBox($vars, "top")
+     * @deprecated Use renderBox($vars, "top") instead
      * @param array $vars the variables for the template
      */
     function renderTop($vars)
