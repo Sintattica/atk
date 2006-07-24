@@ -128,6 +128,7 @@
       $page = &atkPage::getInstance();
       $page->register_script($config_atkroot."atk/javascript/class.atkprofileattribute.js.php");
 
+      $result = "";
       if (!$this->hasFlag(AF_LINKS_BOTTOM)) $result.=$this->_addLinks($fieldprefix);
 
       $result .="\n<table><tr>\n";

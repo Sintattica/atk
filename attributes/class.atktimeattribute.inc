@@ -169,7 +169,7 @@
       // close dropdown structures
       $m_hourBox .= "</select>";
       $m_minBox  .= "</select>";
-      $m_secBox  .= "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
+      $m_secBox  = "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
 
       // assemble display version
       return $m_hourBox.":".$m_minBox.$m_secBox;
