@@ -749,9 +749,8 @@
 
             $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
 
-            /* errors and hidden fields */
-            if (is_array($a["error"]) && !empty($a["error"])) $error = array_merge($error, $a["error"]);
-              $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+            /* hidden fields */
+            $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
 
             /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
              * same name as the relation we don't display a label
@@ -807,6 +806,7 @@
         if ($this->createDestination())
 	      {
           $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
+          $record["atkerror"] = array_merge($record["atkerror"], $record[$this->fieldName()]["atkerror"]);
 	      }
       }
     }
@@ -1073,7 +1073,7 @@
     {
       if (!is_array($currentSearchMode))
         $currentSearchMode = array();
-      
+
       if ($this->hasFlag(AF_ONETOONE_INTEGRATE) && $this->createDestination())
       {
         foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
