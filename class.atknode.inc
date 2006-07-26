@@ -1514,7 +1514,7 @@
               }
               else
               {
-                atkerror("Attribute '$attribname' doens't exist in the attributelist");
+                atkerror("Attribute '$attribname' doesn't exist in the attributelist");
               }
             }
           }
@@ -2523,9 +2523,9 @@
           $this->m_flags = $flags;
           $record["atkorgrec"] = $recordset[0];
         }
-        
-        if($exectrigger) $this->executeTrigger("preUpdate",$record);        
-        
+
+        if($exectrigger) $this->executeTrigger("preUpdate",$record);
+
         $query->addCondition($pk);
 
         $storelist = array("pre"=>array(), "post"=>array(), "query"=>array());
