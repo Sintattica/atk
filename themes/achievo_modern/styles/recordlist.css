@@ -19,11 +19,6 @@
   width: 95%;
 }
 
-.recordListThFirst, .recordListTdFirst
-{
-  width: 95% ! important;
-}
-
 .searchform input
 {
   width: 95%;
@@ -102,7 +97,7 @@ input[type="checkbox"]
   border: 0px;
 }
 
-.checkBox 
+.checkBox
 {
   width: auto ! important;
 }
