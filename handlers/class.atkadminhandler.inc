@@ -84,7 +84,7 @@
       {
         $output = $ui->renderBox(array("title"=>$this->m_node->actionTitle('admin'),
                                     "content"=>$this->renderAdminList()));
-        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST)) 
+        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
         {
           $recordlistcache = $this->getRecordlistCache();
           $recordlistcache->writeCache($output, $recordlist->m_actionloader);
@@ -96,7 +96,7 @@
       }
       return $output;
     }
-    
+
     /**
      * Renders the recordlist for the admin mode
      *
@@ -122,6 +122,7 @@
       }
 
       $ui = &$this->getUi();
+      $output = "";
       if (is_object($ui))
       {
         $params = array();
