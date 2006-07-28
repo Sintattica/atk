@@ -489,16 +489,23 @@
         }
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
-          atkdebug("Adding new one2one record for mode $mode");
-          $this->m_destInstance->preAdd($vars);
-          $result = $this->m_destInstance->addDb($vars, true, $mode);
-
+          if (isset($vars["atkprimkey"]) && $mode!="copy")
+          {
+            // destination record already exists, and we are not copying.
+            $result = true;
+          }
+          else 
+          {                        
+            atkdebug("Adding new one2one record for mode $mode");
+            $this->m_destInstance->preAdd($vars);
+            $result = $this->m_destInstance->addDb($vars, true, $mode);
+          }
           if ($this->m_refKey=="")
           {
             // Foreign key is in source node, so we must update the record value with
             $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $vars[$this->m_destInstance->m_primaryKey[0]];
           }
-
+          
           return $result;
         }
         else
