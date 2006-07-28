@@ -293,7 +293,7 @@
       $inputString = str_replace('&lt;/li&gt;<text:line-break/>'                   , '',               $inputString);                      // end bullet
       $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>' , '',               $inputString);                      // main closing </ul>
       $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s
-
+      $inputString = str_replace('&lt;/ul&gt;'                                     , '',               $inputString);                      // remove remaining </ul>'s
       return $inputString;
     }
   }
