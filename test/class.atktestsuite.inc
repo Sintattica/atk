@@ -101,23 +101,23 @@
 
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
-      
+
       if ($module!="")
-      {        
+      {
         if ($module=="atk") // make it possible to only test atk.
         {
           $dir = atkconfig("atkroot")."atk/";
         }
-        else 
+        else
         {
           $dir = moduleDir($module);
         }
         $traverser->traverse($dir);
       }
-      else 
+      else
       {
         $traverser->traverse(".");
-        $this->_traverseExtraModules();
+        $this->_traverseExtraModules($traverser);
       }
       if($reporttype=="html")
       {
@@ -128,15 +128,17 @@
         $test->run(new TextReporter());
       }
     }
-    
+
     /**
      * Traverse modules that are outside the root
-     * 
+     *
      * Here we actually change directories to all the module directories
      * then check if the directory is inside the application root.
      * If it is, we leave it alone, otherwise we traverse that too.
+     *
+     * @param object $traverser Object of the Traverser
      */
-    function _traverseExtraModules()
+    function _traverseExtraModules(&$traverser)
     {
       global $g_modules;
       $curdir = getcwd();
