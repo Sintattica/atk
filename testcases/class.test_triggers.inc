@@ -20,6 +20,7 @@
    * Utility node class for testing the atknode triggers
    * @access private
    */
+  atkimport("atk.atknode");
   class triggerNode extends atkNode
   {
     var $m_counter = 0;
