@@ -72,6 +72,18 @@
         return $this->m_results["getTabs"]; 
       return parent::getTabs($action);
     }
+
+    function checkTabRights(&$tablist)
+    { 
+      if (isset($this->m_results["checkTabRights"]))
+      {
+        $tablist = $this->m_results["checkTabRights"];
+      }
+      else
+      {
+        parent::checkTabRights($tablist);
+      }
+    }
           
   }
 
