@@ -1066,7 +1066,7 @@
     {
       $list = &$this->m_tabList[$action];
 
-      $this->checkTabRights($list);
+      $disable = $this->checkTabRights($list);
 
       $tabAttribSet = array();
       $tabCode = "";
@@ -1087,7 +1087,7 @@
         $hideme = true;
         for($i=0, $_i=sizeof($p_attrib->m_tabs); $i<$_i; $i++)
         {
-          if (is_array($list) && in_array($p_attrib->m_tabs[$i],$list))
+          if ((is_array($list) && in_array($p_attrib->m_tabs[$i],$list)) || (!is_array($disable) || !in_array($p_attrib->m_tabs[$i],$disable)))
           {
             $hideme = false;
             break;
@@ -1124,10 +1124,13 @@
      * removes tabs from the list that may not be accessed
      *
      * @param array $tablist Array containing the current tablist
+     * @return array with disable tabs
      */
     function checkTabRights(&$tablist)
     {
       global $g_nodes;
+      $disable = array();
+
       for ($i=0, $_i=count($tablist); $i<$_i; $i++)
       {
         if ($tablist[$i] == "" || $tablist[$i] == "default") continue;
@@ -1148,6 +1151,7 @@
           if (!$secMgr->allowed($this->m_module.".".$this->m_type,"tab_" . $tablist[$i]))
           {
             atkdebug("Removing TAB ". $tablist[$i] . " because access to this tab was denied");
+            $disable[] = $tablist[$i];
             unset($tablist[$i]);
           }
         }
@@ -1165,6 +1169,8 @@
           $newarray[] = $tab;
         $tablist = $newarray;
       }
+
+      return $disable;
     }
 
     /**
