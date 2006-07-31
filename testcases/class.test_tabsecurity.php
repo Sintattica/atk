@@ -38,7 +38,7 @@
 
       $tabs = array("default", "advanced");
 
-      $secMgr = &new atkMockSecurityManager();
+      $secMgr = &atkNew("atk.security.atkMockSecurityManager");
       $secMgr->setAllowed(false);
       $this->setMockSecurityManager($secMgr);
 
