@@ -4,7 +4,7 @@
 <div id="mainMenu">
 {foreach from=$menuitems item=menuitem}
 {if !$firstmenuitem}{assign var='firstmenuitem' value=$menuitem.name}{/if}
-  {if $menuitem.name!=='-'}
+  {if $menuitem.name!=='-' && $menuitem.enable}
     <a href="#" onclick="showSubMenu('{$menuitem.name}'); window.open('{$menuitem.url}','main','');" onmouseover="this.style.cursor = 'pointer'" class="menuitem_link">
       <div id="mi_{$menuitem.name}" class="menuItemLevel1">
         <span class="menu-menuitem">{$menuitem.name}</span>
@@ -14,6 +14,7 @@
         
   {if (count($menuitem.submenu)>0)}
     <div id="smi_{$menuitem.name}" style="display: none; background: url({$themedir}images/menuLevel2Bg.jpg) repeat-y top left; color: #333;">
+      {$menuitem.header}
       {foreach from=$menuitem.submenu item=submenuitem}
          {if $submenuitem.enable && $submenuitem.name!=='-'}
            <a class="menuItemLevel2" onclick="window.open('{$submenuitem.url}','main','')" onmouseover="this.style.cursor = 'pointer'; this.style.fontWeight = 'bold';" onmouseout="this.style.fontWeight = '';">
