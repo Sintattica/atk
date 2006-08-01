@@ -20,7 +20,8 @@
   /**
    * flag(s) specific for atkManyToOneRelation
    */
-  define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in a manytoonerelation dropdown.
+  define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in
+                                                 // a manytoonerelation dropdown.
   define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2);// Do not add null option ever
 
   /**
@@ -543,7 +544,22 @@
         return $result;
       }
     }
-
+    
+    /**
+     * Retrieve the default searchmode of an attribute
+     *
+     * @param boolean $extended Whether extended search is being used
+     * @return String the default searchmode for this attribute.
+     */
+    function getSearchMode($extended = false)
+    {
+      if ($this->hasFlag(AF_LARGE))
+      {
+        return parent::getSearchMode($extended);
+      }
+      return "exact"; // only support exact search when searching with dropdowns
+    }
+    
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
@@ -600,9 +616,10 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-      if (!$this->hasFlag(AF_LARGE) || !$this->createDestination())
+      atkdebug("searchmode: ".$this->m_name." - ".$searchmode);
+      if ($searchmode=="exact" || is_numeric($value))
       {
-        // We only support 'exact' matches.
+        // We only support 'exact' matches on primary key.
         // But you can select more than one value, which we search using the IN() statement,
         // which should work in any ansi compatible database.
         if (is_array($value)) // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
@@ -626,7 +643,7 @@
           return $cond;
         }
       }
-      else // in theory, this never happens.
+      else // other search modes work with descriptor fields.
       {
         $descfields = array();
         $descfields = $this->m_destInstance->descriptorFields();
@@ -690,7 +707,7 @@
      * @param  string   $value      the search value
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      */
-    function _getAttribSearchCondition($p_attrib, &$query, $table, $value, $searchmode)
+    function _getAttribSearchCondition(&$p_attrib, &$query, $table, $value, $searchmode)
     {
       // checking for the getSearchCondition
       // for backwards compatibility

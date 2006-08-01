@@ -953,6 +953,7 @@
           {
             $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix);
           }
+          $arr["search"][$key].='<input type="hidden" name="atksearchmode['.$this->formName().']" value="'.$this->getSearchMode(false).'">';
         }
       }
     }
@@ -1032,8 +1033,25 @@
       $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-
+                   
       return $result;
+    }
+           
+    /**
+     * Retrieve the default searchmode of an attribute
+     *
+     * @param boolean $extended Whether extended search is being used
+     * @return String the default searchmode for this attribute.
+     */
+    function getSearchMode($extended=false)
+    {
+      $searchmode = $this->m_ownerInstance->getSearchMode();
+      
+      if (is_array($searchmode))
+      {
+        return $searchmode[$this->fieldName()];
+      }
+      return $searchmode;
     }
 
     /**
@@ -1081,7 +1099,6 @@
       	// auto wildcard detection
       	$searchmode = "wildcard";
       }
-
 
       $searchCondition = &$this->getSearchCondition($query, $table, $value, $searchmode);
       if ($searchCondition)

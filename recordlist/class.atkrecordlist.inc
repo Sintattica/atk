@@ -201,27 +201,11 @@
         $searchcols = array();
         $searchstart=""; $searchend="";
         if (!hasFlag($flags, RL_NO_SEARCH))
-        {
-          if (isset($this->m_node->m_postvars["atksearchmode"]))
-          {
-            $searchmode = $this->m_node->m_postvars["atksearchmode"];
-          }
-          if (empty($searchmode)) $searchmode = atkconfig("search_defaultmode");
-
-          /* Get the first one, because they are all the same for now
-           * TODO: every attrib needs to get his own searchmode
-           */
-          if (is_array($searchmode))
-          {
-            $keys = array_keys($searchmode);
-            $searchmode = $searchmode[$keys[0]];
-          }
-
+        {          
           $button = '<input type="submit" class="btn_search" value="'.atktext("search").'">';
           if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
           {
-            $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->m_node->atkNodeType()."&atkaction=".$node->getExtendedSearchAction()."&atksearchmode=".
-                                               $searchmode,"(".atktext("search_extended").")",SESSION_NESTED);
+            $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->m_node->atkNodeType()."&atkaction=".$node->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
           }
 
           $searchstart = '<a name="searchform"></a>';
@@ -229,9 +213,7 @@
           {
             $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();
             $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
-                           '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
-                           '<input type="hidden" name="atksearchmode" value="'.$searchmode.'">'.
-                           '<input type="hidden" name="atksmartsearch" value="clear">'.
+                           '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.                                   '<input type="hidden" name="atksmartsearch" value="clear">'.
                            '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
           }
 

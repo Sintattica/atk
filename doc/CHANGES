@@ -201,6 +201,11 @@ Changed in ATK 5.6.1
   values. Added support for <fieldname>_filename function in owner node
   to generate filename. [Peter]
 * atkMetaNode: Introduced $filter var for setting set a default filter. [Peter]
+* Search API improvements: Refactored atkNode search conditions to 
+  applySearchConditions() method, cleaned up some search code, made every 
+  column in list mode have its own search method. [Ivo]
+* atkNode's setIndex method now also works on atkManyToOneRelations (uses the
+  descriptor to match the alphabet). [Ivo]
 
 Changed in ATK 5.6
 ------------------
