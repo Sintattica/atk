@@ -2307,14 +2307,18 @@
      * @param array $vars The request variables that were posted from a form.
      * @return array A valid record.
      */
-    function updateRecord($vars ="")
+    function updateRecord($vars ="", $includes=NULL, $excludes=NULL)
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
       foreach (array_keys($this->m_attribList) as $attribname)
       {
-        $p_attrib = &$this->m_attribList[$attribname];
-        $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
+        if ((!is_array($includes) || in_array($attribname, $includes)) &&
+            (!is_array($excludes) || !in_array($attribname, $excludes)))
+        {
+          $p_attrib = &$this->m_attribList[$attribname];
+          $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
+        }
       }
       $record["atkprimkey"] = $vars["atkprimkey"];
       return $record;

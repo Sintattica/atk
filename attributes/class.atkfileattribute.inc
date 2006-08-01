@@ -262,6 +262,13 @@
         {
             if ($filename!="")
             {
+              $dirname = dirname($this->m_dir.$filename);
+              if (!$this->mkdir($dirname))
+              {
+                atkerror("File could not be saved");
+                return "";                
+              }
+              
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
                 $this->processFile($this->m_dir, $filename);
@@ -277,6 +284,30 @@
 
         return $this->escapeSQL($rec[$this->fieldName()]["orgfilename"]);
       }
+    }
+    
+    /**
+     * Recursive mdir.
+     * 
+     * @see http://nl2.php.net/mkdir
+     *
+     * @param string $path path to create
+     * @return success/failure
+     */
+    function mkdir($path)
+    {
+      $path = preg_replace('/(\/){2,}|(\\\){1,}/','/', $path); //only forward-slash
+      $dirs = explode("/", $path);
+      
+      $path = "";
+      foreach ($dirs as $element)
+      {
+        $path .= $element."/";
+        if(!is_dir($path) && !mkdir($path)) 
+          return false;
+      }
+      
+      return true;
     }
 
     /**
@@ -508,10 +539,36 @@
     }
 
     /**
-     * Determine the real filename of a file (based on m_filenameTpl).
+     * Set filename template.
+     */
+    function setFilenameTemplate($template)
+    {
+      $this->m_filenameTpl = $template;
+    }
+    
+    /**
+     * Determine the real filename of a file. 
+     * 
+     * If a method <fieldname>_filename exists in the owner instance this method 
+     * is called with the record and default filename to determine the filename. Else 
+     * if a file template is set this is used instead and otherwise the default
+     * filename is returned.
+     * 
      * @access private
      */
     function _filenameMangle($rec, $default)
+    {
+      $method = $this->fieldName().'_filename';
+      if (method_exists($this->m_ownerInstance, $method))
+        return $this->m_ownerInstance->$method($rec, $default);
+      else return $this->filenameMangle($rec, $default);
+    }
+
+    /**
+     * Determine the real filename of a file (based on m_filenameTpl).
+     * @access public
+     */
+    function filenameMangle($rec, $default)
     {
       if ($this->m_filenameTpl == "")
       {
@@ -519,10 +576,12 @@
       }
       else
       {
+        $record = $this->m_ownerInstance->updateRecord($rec, NULL, array($this->fieldName()));
+        $record[$this->fieldName()] = substr($default, 0, strrpos($default,'.'));
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_filenameTpl);
         $ext = $this->getFileExtension($default);
-        $filename = $parser->parse($rec).".".$ext;
+        $filename = $parser->parse($record).".".$ext;
       }
       return str_replace(' ','_',$filename);
     }

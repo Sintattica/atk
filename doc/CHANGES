@@ -194,6 +194,13 @@ Changed in ATK 5.6.1
   last record. [Sandy]
 * atkOneToOneRelation: when destination record already exists, do not create
   a new row in destinationrecord [Ivo,Jeroen]
+* atkOneToOneRelation: Respect AF_HIDE_LIST flag if AF_ONETOONE_INTEGRATE
+  flag is set. Properly prefix row attribute names for list view to prevent
+  overwriting columns from the master node. [Peter]
+* atkFileAttribute: File mangling template can now reference all fetched
+  values. Added support for <fieldname>_filename function in owner node
+  to generate filename. [Peter]
+* atkMetaNode: Introduced $filter var for setting set a default filter. [Peter]
 
 Changed in ATK 5.6
 ------------------

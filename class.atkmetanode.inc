@@ -54,6 +54,7 @@ class atkMetaNode extends atkNode
    * - flags       node flags
    * - descriptor  descriptor template for this node
    * - order       (default) order to sort fields
+   * - filter      filter
    * 
    * All of these variables can also be specified by creating a class variable with
    * the same name. If you do so for flags, and have to use multiple flags, use
@@ -147,6 +148,11 @@ class atkMetaNode extends atkNode
       $this->setOrder($this->order);
     else if (array_key_exists("order", $args))
       $this->setOrder($args["order"]); 
+    
+    if (isset($this->filter))
+      $this->addFilter($this->filter);
+    else if (array_key_exists("filter", $args))
+      $this->addFilter($args["filter"]);       
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }

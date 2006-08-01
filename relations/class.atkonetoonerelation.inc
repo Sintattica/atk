@@ -912,7 +912,7 @@
         // regular behaviour.
         parent::addToListArrayHeader($action, $arr, $fieldprefix, $flags, $atksearch, $atkorderby);
       }
-      else
+      else if (!$this->hasFlag(AF_HIDE_LIST))
       {
         // integrated version, don't add ourselves, but add all columns from the destination.
         if ($this->createDestination())
@@ -953,7 +953,7 @@
       {
         parent::addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
       }
-      else
+      else if (!$this->hasFlag(AF_HIDE_LIST))
       {
         // integrated version, don't add ourselves, but add all columns from the destination.
         if ($this->createDestination())
@@ -965,8 +965,9 @@
           $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
+            $pref = $fieldprefix . "_AE_" .$this->fieldName();            
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
-            $p_attrib->addToListArrayRow($action, $arr, $nr, $fieldprefix, $flags);
+            $p_attrib->addToListArrayRow($action, $arr, $nr, $pref, $flags);
           }
           $arr["rows"][$nr]["record"] = $oldrecord;
         }
