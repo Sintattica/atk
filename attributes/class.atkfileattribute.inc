@@ -468,7 +468,7 @@
     {
       if($this->hasFlag(AF_FILE_PHYSICAL_DELETE)&&($record[$this->fieldname()]["orgfilename"]!=""))
       {
-        if(!@unlink($this->m_dir.$record[$this->fieldName()]["orgfilename"]))
+        if(file_exists($this->m_dir.$record[$this->fieldName()]["orgfilename"]) && !@unlink($this->m_dir.$record[$this->fieldName()]["orgfilename"]))
         {
           return false;
         }

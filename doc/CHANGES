@@ -206,6 +206,8 @@ Changed in ATK 5.6.1
   column in list mode have its own search method. [Ivo]
 * atkNode's setIndex method now also works on atkManyToOneRelations (uses the
   descriptor to match the alphabet). [Ivo]
+* atkFileAttribute: Silently ignore that a file has already been 
+  removed when the AF_FILE_PHYSICAL_DELETE flag is set. [Peter]
 
 Changed in ATK 5.6
 ------------------
