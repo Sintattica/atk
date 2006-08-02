@@ -474,7 +474,6 @@
       if ($this->createDestination())
       {
         $vars = &$this->_getStoreValue($record);
-
         if ($vars["mode"]=="edit")
         {
           atkdebug("Updating existing one2one record");
@@ -489,14 +488,14 @@
         }
         elseif ($vars["mode"]=="add" || $mode == "add" || $mode == "copy")
         {
-          if (isset($vars["atkprimkey"]) && $mode!="copy")
+          if (!empty($vars["atkprimkey"]) && $mode!="copy")
           {
             // destination record already exists, and we are not copying.
             $result = true;
           }
-          else 
-          {                        
-            atkdebug("Adding new one2one record for mode $mode");
+          else
+          {
+            atkdebug("atkonetoonerelation->store(): Adding new one2one record for mode $mode");
             $this->m_destInstance->preAdd($vars);
             $result = $this->m_destInstance->addDb($vars, true, $mode);
           }
@@ -505,12 +504,11 @@
             // Foreign key is in source node, so we must update the record value with
             $record[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]] = $vars[$this->m_destInstance->m_primaryKey[0]];
           }
-          
           return $result;
         }
         else
         {
-          atkdebug("Nothing to store in one2one record");
+          atkdebug("atkonetoonerelation->store(): Nothing to store in one2one record");
           return true;
         }
       }
@@ -965,7 +963,7 @@
           $arr["rows"][$nr]["record"] = $arr["rows"][$nr]["record"][$this->fieldName()];
           foreach (array_keys($this->m_destInstance->m_attribList) as $attribname)
           {
-            $pref = $fieldprefix . "_AE_" .$this->fieldName();            
+            $pref = $fieldprefix . "_AE_" .$this->fieldName();
             $p_attrib = &$this->m_destInstance->getAttribute($attribname);
             $p_attrib->addToListArrayRow($action, $arr, $nr, $pref, $flags);
           }
