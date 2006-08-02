@@ -29,7 +29,7 @@ License (LGPL).
 
 ATK uses functions from the ADOdb Date Library, for date support prior to
 1970. The ADOdb Date Library (http://php.weblogs.com/adodb_date_time_library)
-is Copyright (c) 2003 John Lim and maide available under a BSD-style license.
+is Copyright (c) 2003 John Lim and made available under a BSD-style license.
 
 ATK uses SimpleTest (http://www.lastcraft.com/simple_test.php) for unit 
 testing. SimpleTest is Copyright (c)2003-2005 Marcus Baker (lastcraft.com) and
@@ -69,3 +69,7 @@ available under the terms of an Artistic license.
 ATK uses the PHP-JSON library (http://mike.teczno.com/json.html) for JSON
 (de-)serialization. PHP-JSON is Copyright (c) 2005 Michal Migurski and
 made available under the terms of the BSD lcense.
+
+ATK uses the Rico Javascript Library (http://openrico.org/) to enrich
+the user experience. Rico is Copyright (c) 2005 Sabre Airline Solutions
+and made available under the terms of the Apache License (version 2.0).
