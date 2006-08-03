@@ -117,6 +117,7 @@
       // Add additional http response headers to set proper content type, filename and filesize
       $file = $this->m_tbsooo->GetPathnameDoc();
       header('Content-Type: ' . ($forcedownload ? 'application/octet-stream' : $this->m_tbsooo->GetMimetypeDoc()));
+      header('Content-Length: ' . filesize($file));
       header('Content-Disposition: ' . $attachmentword . '; Filename="' . (is_null($outputfilename) ? substr($file, strrpos($file, '/') + 1) : $outputfilename) . '"');
 
       // Send the document to the user agent
