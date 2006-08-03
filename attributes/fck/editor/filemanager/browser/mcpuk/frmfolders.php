@@ -172,7 +172,6 @@ function GetFoldersCallBack( fckXml )
 function SetResourceType( type )
 {
 	oConnector.ResourceType = type ;
-	alert('<?php echo urldecode($_GET["editingurl"]); ?>');
 	LoadFolders('<?php echo urldecode($_GET["editingurl"]); ?>') ;
 }
 
