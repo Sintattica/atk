@@ -32,16 +32,15 @@ $fckphp_config['prot'].="://";
 /*------------------------------------------------------------------------------*/
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['basedir']=$config_fck_documentroot_path;
-//$fckphp_config['basedir'] = 'D:\Work\FCKEditor\www\FCKeditor.V2\editor\filemanager\browser\mcpuk' ;
+$fckphp_config['basedir']=$config_fck_documentroot_path.$config_fck_documentroot_uri;
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-// $fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
-$fckphp_config['urlprefix']=(substr($config_fck_documentroot_uri,0,1) == "/") ? substr($config_fck_documentroot_uri,1) : $config_fck_documentroot_uri;
+$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
+//$fckphp_config['urlprefix']=(substr($config_fck_documentroot_uri,0,1) == "/") ? substr($config_fck_documentroot_uri,1) : $config_fck_documentroot_uri;
 /*==============================================================================*/
 
 
