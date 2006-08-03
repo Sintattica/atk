@@ -295,6 +295,10 @@
       $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>' , '',               $inputString);                      // main closing </ul>
       $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s
       $inputString = str_replace('&lt;/ul&gt;'                                     , '',               $inputString);                      // remove remaining </ul>'s
+      
+      // tbsooo_class.php (LoadXmlFromDoc) converted apostrophe (&apos; -> \') from XML file for TBS functions
+      // causes corrupt document: convert it back to &apos;
+      $inputString = str_replace('\'', '&apos;', $inputString);
       return $inputString;
     }
   }

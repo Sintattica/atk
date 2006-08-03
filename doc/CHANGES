@@ -208,6 +208,8 @@ Changed in ATK 5.6.1
   descriptor to match the alphabet). [Ivo]
 * atkFileAttribute: Silently ignore that a file has already been 
   removed when the AF_FILE_PHYSICAL_DELETE flag is set. [Peter]
+* tbsooo converted apostrophe (&apos; -> \') from XML file for TBS functions
+  causes corrupt document: convert it back to &apos; in documentwriter [Jeroen]
 
 Changed in ATK 5.6
 ------------------
