@@ -427,6 +427,12 @@
    * @var String
    */
   $config_mailreport = "";
+  
+  /**
+   * Output missing translation "errors".
+   * @var String
+   */
+  $config_debug_translations = false;
 
   /************************************ LAYOUT *******************************/
 

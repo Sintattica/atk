@@ -220,7 +220,7 @@
         // When storing, we don't add to the query.. we have our own store() method..
         // With one exception. If the foreign key is in the source node, we also need to update
         // the refkey value.
-        if ($this->m_refKey=="")// && $mode=="add")
+        if ($this->m_refKey=="" && $mode=="add")
         {
           $query->addField($this->fieldName(),$rec[$this->fieldName()][$this->m_destInstance->m_primaryKey[0]],"","",!$this->hasFlag(AF_NO_QUOTES));
         }
@@ -631,31 +631,6 @@
         return $output;
       }
       return "";
-    }
-
-    /**
-     * Put the attribute on one or more tabs.
-     * @param array $tabs An array of tabs on which the attribute should
-     *                    be displayed.
-     */
-    function setTabs($tab)
-    {
-      // normally, we would fill m_tabs with $tab
-      parent::setTabs($tab);
-
-      // but we also need to pass this on to our destinstance.
-      $this->createDestination();
-      if(is_array($this->m_destInstance->m_attribList))
-      {
-        foreach(array_keys($this->m_destInstance->m_attribList) as $attrname)
-        {
-          $p_attrib = &$this->m_destInstance->m_attribList[$attrname];
-          if (count($p_attrib->m_tabs)==1&&$p_attrib->m_tabs[0]=="default")
-          {
-            $p_attrib->setTabs($tab);
-          }
-        }
-      }
     }
 
     /**
