@@ -422,7 +422,7 @@
     {
       global $g_user, $g_sessionManager;
       $user = getUser();
-      $this->m_user = $this->m_authorization->getUser($user["userid"]);
+      $this->m_user = $this->m_authorization->getUser($user[atkconfig('auth_userfield')]);
       $g_user = &$this->m_user;
       $old_auth = $g_sessionManager->getValue("authentication", "globals");
       $old_auth["user"] = $g_user;

@@ -214,6 +214,8 @@ Changed in ATK 5.6.1
 * Fixed unnecessary instantiation of 1:1 relation destinations. [Peter]
 * Translation debugging is now by default disabled. Use 
   $config_debug_translations to enable them. [Peter]
+* Changed hardcoded 'userid' to use auth_userfield config in reloadUser method
+  of atkSecurityManager. [Boy]
 
 Changed in ATK 5.6
 ------------------
