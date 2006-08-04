@@ -1098,14 +1098,14 @@
 
         if(is_object($p_attrib))
         {
-          $list = atk_array_merge($list, $p_attrib->getAdditionalTabs($action));
+          $additional = $p_attrib->getAdditionalTabs($action);
+          $list = atk_array_merge($list, $additional);
+          
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
-          $tabCode = $this->m_attributeTabs[$attribname][0];
-          if (!isset($this->m_filledTabs[$tabCode]))
-          {
-            $this->m_filledTabs[$tabCode] = true;
-          }
+          $tabCode = $this->m_attributeTabs[$attribname][0];          
+          $this->m_filledTabs = atk_array_merge($this->m_filledTabs, array($tabCode));
+          $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
         }
         else
         {
@@ -1187,7 +1187,7 @@
       {
         foreach ($list AS $tabEntry)
         {
-          if (isset($this->m_filledTabs[$tabEntry]))
+          if (in_array($tabEntry, $this->m_filledTabs))
           {
             $tabList[] = $tabEntry;
           }
