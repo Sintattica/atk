@@ -73,3 +73,8 @@ made available under the terms of the BSD lcense.
 ATK uses the Rico Javascript Library (http://openrico.org/) to enrich
 the user experience. Rico is Copyright (c) 2005 Sabre Airline Solutions
 and made available under the terms of the Apache License (version 2.0).
+
+ATK uses the prototype window Javascript Library 
+(http://prototype-window.xilinus.com/) for window support. 
+The prototype window class is Copyright (c) 2006 Sébastien Gruhier  
+and made available under the terms of an MIT-style license.

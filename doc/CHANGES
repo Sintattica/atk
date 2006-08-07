@@ -216,6 +216,8 @@ Changed in ATK 5.6.1
   $config_debug_translations to enable them. [Peter]
 * Changed hardcoded 'userid' to use auth_userfield config in reloadUser method
   of atkSecurityManager. [Boy]
+* Added prototype window class library and updated prototype and
+  script.aculo.us library. [Lineke]
 
 Changed in ATK 5.6
 ------------------
