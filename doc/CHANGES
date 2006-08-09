@@ -224,6 +224,8 @@ Changed in ATK 5.6.1
 * atkFileAttribute: fixed bug in atkFileAttribute; if AF_OBLIGATORY and
   AF_FILE_NO_SELECT flags where both set you always had to upload a new
   image. [Bart,Peter]
+* Made profile attribute use getUser function 
+  instead of $g_user global. [Boy,Ivo]
 
 Changed in ATK 5.6
 ------------------

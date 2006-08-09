@@ -225,12 +225,11 @@
      */
     function getEditableActions($record)
     {
-      global $g_user;
-
+      $user = getUser();
       $levels = "";
-      if (!is_array($g_user['level']))
-        $levels = "'".$g_user['level']."'";
-      else $levels = "'".implode("','",$g_user['level'])."'";
+      if (!is_array($user['level']))
+        $levels = "'".$user['level']."'";
+      else $levels = "'".implode("','",$user['level'])."'";
 
       // retrieve editable actions by user's levels
       $db = &atkGetDb();
@@ -268,8 +267,7 @@
 
     function edit($record)
     {
-      global $g_user;
-
+      $user = getUser();
       $page = &atkPage::getInstance();
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
 
@@ -283,7 +281,7 @@
              '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
                     atktext("invert_selection").'</a>]</div>';
 
-      $isAdmin =  ($g_user['name']=='administrator' || $this->canGrantAll());
+      $isAdmin =  ($user['name']=='administrator' || $this->canGrantAll());
       $allActions = $this->getAllActions($record);
       $editableActions = $this->getEditableActions($record);
       $selectedActions = $this->getSelectedActions($record);
