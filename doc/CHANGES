@@ -65,6 +65,9 @@ Changed in ATK 5.6.1
   atkShuttleRelation. Usage: create a function named
   <attribname>_selection($record, $mode) in your node and return
   the selectable records. [Peter]
++ Added AF_MANYTOONE_LAZY flag to atkManyToOneRelation, this flag makes it
+  possible to lazy load a many-to-one record in list mode. This is needed
+  for example if your destination node uses a different database. [Bart,Peter]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -218,6 +221,9 @@ Changed in ATK 5.6.1
   of atkSecurityManager. [Boy]
 * Added prototype window class library and updated prototype and
   script.aculo.us library. [Lineke]
+* atkFileAttribute: fixed bug in atkFileAttribute; if AF_OBLIGATORY and
+  AF_FILE_NO_SELECT flags where both set you always had to upload a new
+  image. [Bart,Peter]
 
 Changed in ATK 5.6
 ------------------

@@ -202,6 +202,10 @@
         }
         if(count($file_arr) > 0) $result .= "</select>";
       }
+      else if (isset($record[$this->fieldName()]['filename']) && !empty($record[$this->fieldName()]['filename']))
+      {
+        $result .= '<input type="hidden" name="'.$id.'[select]" value="'.$record[$this->fieldName()]['filename'].'">';
+      }
       if(!$this->hasFlag(AF_FILE_NO_DELETE)
          && isset($record[$this->fieldname()]['orgfilename'])
          && $record[$this->fieldname()]['orgfilename']!='')
@@ -222,7 +226,6 @@
       if(isset($_REQUEST["del"])) $del = $_REQUEST["del"];
 
       if($rec[$this->fieldName()]["tmpfile"]=="" && $rec[$this->fieldName()]["filename"]!=""
-         && !$this->hasFlag(AF_FILE_NO_SELECT)
          && (!isset($del[$this->fieldName()]) || $del[$this->fieldName()]!="on"))
       {
         return $this->escapeSQL($rec[$this->fieldName()]["filename"]);
@@ -371,11 +374,11 @@
 
       $basename = $this->fieldName();
 
-      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT)) || ($rec[$this->fieldName()]["filename"]!="")) // php4
+      if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "") || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
         // if an error occured during the upload process
         // and the error is not 'no file' while the field isn't obligatory or a file was already selected
-        $fileselected = isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != "" && !$this->hasFlag(AF_FILE_NO_SELECT);
+        $fileselected = isset($rec[$this->fieldName()]["select"]) && $rec[$this->fieldName()]["select"] != "";
         if ($_FILES[$postfiles_basename]['error'] > 0 && !((!$this->hasFlag(AF_OBLIGATORY) || $fileselected) && $_FILES[$postfiles_basename]['error'] == UPLOAD_ERR_NO_FILE))
         {
           return array('error' => $_FILES[$postfiles_basename]['error']);

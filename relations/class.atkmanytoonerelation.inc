@@ -23,6 +23,8 @@
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1); // create edit/view links for the items in
                                                  // a manytoonerelation dropdown.
   define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2);// Do not add null option ever
+  
+  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_3); // lazy load
 
   /**
    * @internal include base class
@@ -116,6 +118,11 @@
       {
         $this->m_refKey[] = $name;
         $this->atkRelation($name, $destination, $flags);
+      }
+      
+      if ($this->hasFlag(AF_MANYTOONE_LAZY) && (count($this->m_refKey) > 1 || $this->m_refKey[0] != $this->fieldName()))
+      {
+        atkerror("AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
       }
     }
 
@@ -738,6 +745,12 @@
      */
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level=0, $mode="")
     {
+      if ($this->hasFlag(AF_MANYTOONE_LAZY))
+      {
+        parent::addToQuery($query, $tablename, $fieldaliasprefix, $rec, $level, $mode);
+        return;
+      }
+      
       if ($this->createDestination())
       {
         if ($mode != "update" && $mode != "add")
@@ -766,6 +779,63 @@
         }
       }
     }
+    
+
+    /**
+     * Retrieve detail records from the database.
+     *
+     * Called by the framework to load the detail records.
+     *
+     * @param atkDb $db The database used by the node.
+     * @param array $record The master record
+     * @param String $mode The mode for loading (admin, select, copy, etc)
+     *
+     * @return array Recordset containing detailrecords, or NULL if no detail
+     *               records are present. Note: when $mode is edit, this
+     *               method will always return NULL. This is a framework
+     *               optimization because in edit pages, the records are
+     *               loaded on the fly.
+     */
+    function load(&$db, $record, $mode)
+    {
+      if ($this->createDestination())
+      {
+        $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField().
+                     "='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
+        list($record) = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
+        return $record;
+      }
+    }    
+    
+    /**
+     * Determine the load type of this attribute.
+     *
+     * With this method, the attribute tells the framework whether it wants
+     * to be loaded in the main query (addToQuery) or whether the attribute
+     * has its own load() implementation.
+     * For the atkOneToOneRelation, this depends on the presence of the
+     * AF_ONETOONE_LAZY flag.
+     *
+     * Framework method. It should not be necesary to call this method
+     * directly.
+     *
+     * @param String $mode The type of load (view,admin,edit etc)
+     *
+     * @return int Bitmask containing information about load requirements.
+     *             POSTLOAD|ADDTOQUERY when AF_ONETOONE_LAZY is set.
+     *             ADDTOQUERY when AF_ONETOONE_LAZY is not set.
+     */
+    function loadType($mode)
+    {
+      if ($this->hasFlag(AF_MANYTOONE_LAZY))
+      {
+        return POSTLOAD|ADDTOQUERY;
+      }
+      else
+      {
+        return ADDTOQUERY;
+      }
+    }    
 
     /**
      * Dummy function
