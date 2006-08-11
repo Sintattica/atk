@@ -85,6 +85,7 @@
   "delete" => "Delete",
   "delimiter" => "Delimiter",
   "deselect_all" => "Deselect all",
+  "document" => "Open document",
   "edit" => "Edit",
   "editcopy" => "Edit copy",
   "enclosure" => "Enclosure",

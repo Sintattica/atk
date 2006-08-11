@@ -86,6 +86,7 @@
   "delete" => "Verwijder",
   "delimiter" => "Scheidingsteken",
   "deselect_all" => "Deselecteer alles",
+  "document" => "Open document",
   "edit" => "Bewerk",
   "editcopy" => "Bewerk kopie",
   "enclosure" => "Omsluitingsteken",

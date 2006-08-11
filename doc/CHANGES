@@ -76,6 +76,7 @@ Changed in ATK 5.6.1
 + Added display function for fck attribute to prevent html tags
   from being encoded.. [Guido]
 + Added missing include in atkmanytoonetreerelation. [Guido]
++ Added translation for document action. [Guido]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
