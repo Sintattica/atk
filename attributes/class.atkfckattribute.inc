@@ -80,6 +80,11 @@
       $this->fck_opt['ToolbarSet'] = $toolbarset;
     }
 
+    function display($record="", $mode="")
+    {
+      return atkArrayNvl($record, $this->fieldName(), "");
+    }
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
