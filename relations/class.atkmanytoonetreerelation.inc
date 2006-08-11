@@ -2,7 +2,7 @@
  /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,12 +14,13 @@
    * @version $Revision$
    * $Id$
    */
-   
-  /** 
-   * @internal include base class
+
+  /**
+   * @internal includes..
    */
-  userelation("atkManyToOneRelation");  
-   
+  userelation("atkManyToOneRelation");
+  include_once(atkconfig("atkroot")."atk/atktreetools.inc");
+
   /**
    * Extension of the atkManyToOneRelation, that is aware of the treestructure
    * (parent/child relation) in the destination node, and renders items in the
@@ -29,12 +30,12 @@
    * @package atk
    * @subpackage relations
    *
-   */    
+   */
   class atkManyToOneTreeRelation extends atkManyToOneRelation
   {
-  
-  
-    var $m_current = ""; 
+
+
+    var $m_current = "";
     var $m_level = "";
 
     /**
@@ -65,7 +66,6 @@
         $this->m_destInstance->addFilter(stringparse($this->m_destinationFilter,$record));
       }
       $recordset = $this->m_destInstance->selectDb("",$this->m_destInstance->m_primaryKey[0],"","",$tmp2);
-            
       $m_current = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       $result = '<select name="'.$fieldprefix.$this->formName().'">';
 
@@ -78,7 +78,7 @@
       $result.='</select>';
       return $result;
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to search
      * @param $record Record
@@ -99,7 +99,7 @@
 
       $pkfield = $this->m_destInstance->primaryKeyField();
 
-      $result.= '<option value="">'.text('search_all');
+      $result.= '<option value="">'.atktext("search_all", "atk");
       $result.=$this->createdd($recordset);
       $result.='</select>';
       return $result;
@@ -118,7 +118,7 @@
       $tmp = $this->render($t->m_tree);
       return $tmp;
     }
-    
+
     function render($tree="",$level=0)
     {
       global $m_current,$m_level;
@@ -128,12 +128,12 @@
        if($m_current == $this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'") { $sel="SELECTED";$m_level=$level; } else { $sel=""; }
         $res.= '<option value="'.$this->m_destInstance->m_table.".".$this->m_destInstance->m_primaryKey[0]."='".$objarr->m_id."'".'" '.$sel.'>'.str_repeat("-",(2*$level))." ".$objarr->m_label;
         if (count($objarr->m_sub)>0 && $sel=="")
-        {          
+        {
           $res.=$this->render($objarr->m_sub, $level+1);
-        }              
+        }
       }
       $m_level=0;
-      return $res;    
+      return $res;
     }
   }
 ?>
