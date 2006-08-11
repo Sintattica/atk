@@ -68,6 +68,14 @@ Changed in ATK 5.6.1
 + Added AF_MANYTOONE_LAZY flag to atkManyToOneRelation, this flag makes it
   possible to lazy load a many-to-one record in list mode. This is needed
   for example if your destination node uses a different database. [Bart,Peter]
++ Added tests from ticket 615 by Yury. [Guido]
++ Added translations to Delimiter and Enclosure (for the export handler)
+  to the language files. [Guido]
++ Added translations for available and selected (used in
+  atkShuttleRelation). [Guido]
++ Added display function for fck attribute to prevent html tags
+  from being encoded.. [Guido]
++ Added missing include in atkmanytoonetreerelation. [Guido]
 * Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
@@ -204,18 +212,18 @@ Changed in ATK 5.6.1
   values. Added support for <fieldname>_filename function in owner node
   to generate filename. [Peter]
 * atkMetaNode: Introduced $filter var for setting set a default filter. [Peter]
-* Search API improvements: Refactored atkNode search conditions to 
-  applySearchConditions() method, cleaned up some search code, made every 
+* Search API improvements: Refactored atkNode search conditions to
+  applySearchConditions() method, cleaned up some search code, made every
   column in list mode have its own search method. [Ivo]
 * atkNode's setIndex method now also works on atkManyToOneRelations (uses the
   descriptor to match the alphabet). [Ivo]
-* atkFileAttribute: Silently ignore that a file has already been 
+* atkFileAttribute: Silently ignore that a file has already been
   removed when the AF_FILE_PHYSICAL_DELETE flag is set. [Peter]
 * tbsooo converted apostrophe (&apos; -> \') from XML file for TBS functions
   causes corrupt document: convert it back to &apos; in documentwriter [Jeroen]
 * Fixed problem with tabs which caused 1:1 relation tabs not to be shown. [Peter]
 * Fixed unnecessary instantiation of 1:1 relation destinations. [Peter]
-* Translation debugging is now by default disabled. Use 
+* Translation debugging is now by default disabled. Use
   $config_debug_translations to enable them. [Peter]
 * Changed hardcoded 'userid' to use auth_userfield config in reloadUser method
   of atkSecurityManager. [Boy]
@@ -224,8 +232,44 @@ Changed in ATK 5.6.1
 * atkFileAttribute: fixed bug in atkFileAttribute; if AF_OBLIGATORY and
   AF_FILE_NO_SELECT flags where both set you always had to upload a new
   image. [Bart,Peter]
-* Made profile attribute use getUser function 
+* Made profile attribute use getUser function
   instead of $g_user global. [Boy,Ivo]
+* Fixed error when calling text() on an attribute that isn't added to a
+  node yet. [Guido]
+* Use $this->text() instead of atktext(). [Guido]
+* Fixed problem when adding styles to old sxw format documents. [Guido]
+* the atkPopup target should be passed through session_url in case the
+  sessionid is passed through urls. [Guido]
+* If $_SESSION[atkconfig("identifier")] is not an array, we assign an empty
+  array to it. [Peter,Guido]
+* Fixed obligatory field checking for attributes of the onetoonerelation's
+  destination node by merging the validation errors from the destination
+  node with the ownerinstance's errors right after performing the
+  validation. [Guido]
+* Fixed sudden resize of editarray when the colorpicker gets focussed
+  and unfocussed in the Outlook theme. [Guido]
+* Fixed the background color leaking outside the example image of the
+  color picker in the achievo_modern theme. [Guido]
+* Fixed style problem where the first column would be stretched to almost
+  the full pagewidht, while other columns need that space much more than
+  the first column. [Guido]
+* Fixed css syntax error and invalid negative padding-left value in
+  achievo_modern theme. [Guido]
+* Commited fix 189 from ticket 615 by Yury. This fixes a problem where
+  attributes whould be hidden from a list because atknode falsely determines
+  you do not have the tab rights needed to see those attributes.
+* Changed 'new atkMockSecurityManager' into atkNew call to prevent unknown
+  class errors. [Guido]
+* Fixed performance problem due to incorrect selectDb parameter in
+  atkExportHandler. [Guido]
+* Fixed several PHP Notices. [Guido]
+* Added ability to implement a getExportAttributeGroup($attrname) function
+  in a node to implement custom grouping in atkExportHandler. [Guido]
+* Temporary disabled the generate title row feature in atkExportHandler as
+  it wasn't implemented. [Guido]
+* Fixed problem in atkonetoonerelation causing the record not to be
+  inserted when it should be. [Guido]
+* Fixed deprecated text() calls. [Guido]
 
 Changed in ATK 5.6
 ------------------
