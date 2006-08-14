@@ -138,7 +138,7 @@
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
 
         if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
-        atk_var_dump($record, "DJDJ record: ");
+        
         switch($mode)
         {
           case "update":
