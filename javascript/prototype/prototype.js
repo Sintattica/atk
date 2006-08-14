@@ -4,6 +4,16 @@
  *  Prototype is freely distributable under the terms of an MIT-style license.
  *  For details, see the Prototype web site: http://prototype.conio.net/
  *
+ *  *** PATCHED *** PATCHED *** PATCHED ***
+ *  Replaced:
+ *  opt.value || opt.text
+ *
+ *  By:
+ *  Try.these(
+ *    function() { return opt.attributes['value'].specified },
+ *    function() { return 'value' in opt }
+ *  ) ? opt.value : opt.text    
+ *  *** PATCHED *** PATCHED *** PATCHED *** 
 /*--------------------------------------------------------------------------*/
 
 var Prototype = {
@@ -1544,7 +1554,10 @@ Form.Element.Serializers = {
     var value = '', opt, index = element.selectedIndex;
     if (index >= 0) {
       opt = element.options[index];
-      value = opt.value || opt.text;
+      value = Try.these(
+        function() { return opt.attributes['value'].specified },
+        function() { return 'value' in opt }
+      ) ? opt.value : opt.text;      
     }
     return [element.name, value];
   },
@@ -1554,7 +1567,12 @@ Form.Element.Serializers = {
     for (var i = 0; i < element.length; i++) {
       var opt = element.options[i];
       if (opt.selected)
-        value.push(opt.value || opt.text);
+        value.push(
+          Try.these(
+            function() { return opt.attributes['value'].specified },
+            function() { return 'value' in opt }
+          ) ? opt.value : opt.text    
+        );
     }
     return [element.name, value];
   }
