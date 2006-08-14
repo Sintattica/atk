@@ -615,13 +615,13 @@
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      * @return string          a piece of the SQL where clause
      */
-    function searchCondition(&$query, $table, $value, $searchmode)
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix)
     {
-      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode);
+      $searchcondition = $this->getSearchCondition($query, $table, $fieldaliasprefix, $value, $searchmode);
       $query->addSearchCondition($searchcondition);
     }
 
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(&$query, $table, $fieldaliasprefix, $value, $searchmode)
     {
       atkdebug("searchmode: ".$this->m_name." - ".$searchmode);
       if ($searchmode=="exact" || is_numeric($value))
@@ -640,7 +640,7 @@
           }
           else // search for more values using IN()
           {
-            return $table.".".$this->fieldName()." IN ('".implode("','",$value)."')";
+            return $tableAlias.".".$this->fieldName()." IN ('".implode("','",$value)."')";
           }
         }
         else
@@ -650,90 +650,13 @@
           return $cond;
         }
       }
-      else // other search modes work with descriptor fields.
+      else // probably AF_LARGE
       {
-        $descfields = array();
-        $descfields = $this->m_destInstance->descriptorFields();
-        //$this->addToQuery($query);
-        return $this->_getSearchPerAttrib($descfields, $query, $value, $searchmode);
+        // ask the destination node for it's search condition
+        $alias = $fieldaliasprefix . $this->fieldName();
+        return $this->m_destInstance->getSearchCondition($query, $alias, $fieldaliasprefix, $value, $searchmode);
       }
       return;
-    }
-
-    /**
-     * Gets the searchconditions for attribute in the destination that we are searching on
-     * @param  Array    $attribs    the names of the attributes we are searching on
-     * @param  atkQuery $query      query to hook ourselves in to
-     * @param  string   $value      the search value
-     * @param  string   $searchmode the searchmode for the search (e.g. substring)
-     */
-    function _getSearchPerAttrib($attribs, &$query, $value, $searchmode)
-    {
-      $searchConditions = array();
-      $prevfield = "";
-
-      foreach($attribs as $field)
-      {
-        if ($field !== $prevfield)
-        {
-          $p_attrib = &$this->m_destInstance->getAttribute($field);
-          if (is_object($p_attrib))
-          {
-            if ($query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()])
-            {
-              $itsTable = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
-            }
-            else if ($p_attrib->m_destInstance)
-            {
-              $itsTable = $p_attrib->m_destInstance->m_table;
-            }
-            else
-            {
-              $itsTable = $p_attrib->m_ownerInstance->m_table;
-            }
-
-            $searchcondition = $this->_getAttribSearchCondition($p_attrib, $query, $itsTable, $value, $searchmode);
-            if ($searchcondition) $searchConditions[] = $searchcondition;
-          }
-          $prevfield = $field;
-        }
-      }
-
-      if (count($searchConditions))
-      {
-        return "(".implode(" OR ",$searchConditions).")";
-      }
-    }
-
-    /**
-     * Gets the searchcondition of an attribute or adds it if it can't return it's searchcondition
-     * also takes care the attribute get's it's own searchmode if it is set
-     * @param  Object   $p_attrib   An instance of the attribute that we want to the the searchcondition of
-     * @param  atkQuery $query      query to hook ourselves in to
-     * @param  string   $table      the table name where the attribute belongs to
-     * @param  string   $value      the search value
-     * @param  string   $searchmode the searchmode for the search (e.g. substring)
-     */
-    function _getAttribSearchCondition(&$p_attrib, &$query, $table, $value, $searchmode)
-    {
-      // checking for the getSearchCondition
-      // for backwards compatibility
-      if (method_exists($p_attrib,"getSearchCondition"))
-      {
-        $attribsearchmode = $searchmode;
-        if (is_array($searchmode))
-        {
-          $attribsearchmode = $attribsearchmode[$p_attrib->m_name];
-        }
-        $searchcondition = $p_attrib->getSearchCondition($query,$table,$value,$searchmode);
-      }
-      else
-      {
-        // if the attrib can't return it's searchcondition, we'll just add it to the query
-        // and hope for the best
-        $p_attrib->searchCondition($query,$table,$value,$searchmode);
-      }
-      return $searchcondition;
     }
 
     /**
@@ -760,7 +683,7 @@
                           $alias,
                           $this->getJoinCondition($query, $tablename, $alias),
                           $this->m_leftjoin);
-          $this->m_destInstance->addToQuery($query, $alias, $level+1);
+          $this->m_destInstance->addToQuery($query, $alias, $level+1, $mode);
         }
         else
         {
@@ -932,21 +855,19 @@
       else $realtablename = $this->m_ownerInstance->m_table;
       $joinconditions = array();
 
-      if ($fieldalias) $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $fieldalias;
-      else $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()] = $this->m_destInstance->m_table;
-
-      $alias = $query->m_joinaliases[$this->m_destInstance->m_table."*".$this->m_destInstance->primaryKeyField()];
-
       for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
       {
         $joinconditions[] = $realtablename.".".$this->m_refKey[$i].
         "=".
-        $alias.".".$this->m_destInstance->m_primaryKey[$i];
+        $fieldalias.".".$this->m_destInstance->m_primaryKey[$i];
       }
 
       if ($this->m_joinFilter!="")
       {
-        $joinconditions[] = $this->m_joinFilter;
+        atkimport('atk.utils.atkstringparser');
+        $parser = new atkStringParser($this->m_joinFilter);
+        $filter = $parser->parse(array('table' => $realtablename, 'owner' => $realtablename, 'destination' => $fieldalias));
+        $joinconditions[] = $filter;
       }
       return implode(" AND ",$joinconditions);
     }
