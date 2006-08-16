@@ -279,6 +279,8 @@ Changed in ATK 5.6.1
   tag. [Peter]
 * Fixed typo in code which would probably cause a bug in link tag [Peter].
 * Added backwards compatible support for var tag in sphTopicsPlugin [Peter].
+* Added AF_BOOL_OBLIGATORY flag (needed because in the past someone thought
+  the bool attribute wouldn't need one). [Peter]
 
 Changed in ATK 5.6
 ------------------
