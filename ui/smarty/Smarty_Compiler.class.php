@@ -1507,7 +1507,6 @@ class Smarty_Compiler extends Smarty {
      */
     function _parse_attrs($tag_args)
     {
-
         /* Tokenize tag attributes. */
         preg_match_all('~(?:' . $this->_obj_call_regexp . '|' . $this->_qstr_regexp . ' | (?>[^"\'=\s]+)
                          )+ |
@@ -1529,7 +1528,7 @@ class Smarty_Compiler extends Smarty {
                        and go to state 1. */
 
                     // SANDY HACK, the regular expression is changed, org was: !^\w+$!
-                    if (preg_match('!^((?>\w|#|/|\$)(\w|@|-|_|:|#|/|\.)*|[\'"](?>\w|/|\$)(\w|@|-|_|\?|&|=|:|#|/|\.|\s)*[\'"])$!', $token))
+                    if (preg_match('!^((?>\w|#|/|\$)(\w|@|-|_|:|#|/|\.)*|[\'"](?>\w|#|/|\$)(\w|@|-|_|\?|&|=|:|#|/|\.|\s)*[\'"])$!', $token))
                     {
                       $attr_name = str_replace(array("'", '"'), '', $token);
                       $state = 1;
