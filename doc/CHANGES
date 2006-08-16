@@ -277,6 +277,8 @@ Changed in ATK 5.6.1
   prototype library. [Peter]
 * Fixed regular expression in Smarty_Compiler class to allow usage of anchor
   tag. [Peter]
+* Fixed typo in code which would probably cause a bug in link tag [Peter].
+* Added backwards compatible support for var tag in sphTopicsPlugin [Peter].
 
 Changed in ATK 5.6
 ------------------
