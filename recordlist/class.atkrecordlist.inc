@@ -120,6 +120,10 @@
         /**************/
         $headercols = array();
 
+        if (!hasFlag($flags, RL_NO_SEARCH) && count($list["rows"]) == 0)
+        {          
+          $headercols[] = array("content"=>"&nbsp;"); // empty cell above search button, if zero rows
+        }
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {
           $headercols[] = array("content"=>""); // Empty leader on top of mra action list.
@@ -155,6 +159,7 @@
           $headercols[] = array("content"=>"");
         }
 
+        
         /**************/
         /* SORT   ROW */
         /**************/
