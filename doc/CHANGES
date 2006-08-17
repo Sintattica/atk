@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.6.1
 --------------------
+* Fixed bug in recordlist: added missing (empty) cell above search button 
+  if no records are found. [Bart]
 + Added function checkKeyDimension() in the atkManyToManyRelation class
   to fix a problem with local / remote keys being a multi-dimensional
   array which resulted in invalid queries (mostly occurred in
