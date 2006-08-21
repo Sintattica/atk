@@ -40,12 +40,27 @@
 
      // Call base class constructor. Size of boolean value is always 1.
       $this->atkAttribute($name,$flags, 1);
-  atkdebug("CONSTRUCTOR $name / $flags");
       if ($this->hasFlag(AF_BOOL_OBLIGATORY)) 
       {
-        atkdebug("BOOL OBLIG $name");
         $this->addFlag(AF_OBLIGATORY);
       }
+    }
+
+    /**
+     * Is empty?
+     *
+     * @param array $record
+     * @return boolean empty?
+     */
+    function isEmpty($record)
+    {
+      $empty = parent::isEmpty($record);
+      
+      // if bool_obligatory flag is set the value must be true else we treat this record as empty
+      if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()])
+        $empty = true;
+        
+      return $empty;
     }
     
     /**
