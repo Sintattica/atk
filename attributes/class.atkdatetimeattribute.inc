@@ -229,7 +229,7 @@
         if ($result_time == NULL)
           $result_time = array('hours' => 0, 'minutes' => 0, 'seconds' => 0);
 
-        return array_merge($result_date,$result_time);
+        return array_merge((array)$result_date,(array)$result_time);
       }
       else return NULL;
     }
