@@ -283,6 +283,10 @@ Changed in ATK 5.6.1
 * Added backwards compatible support for var tag in sphTopicsPlugin [Peter].
 * Added AF_BOOL_OBLIGATORY flag (needed because in the past someone thought
   the bool attribute wouldn't need one). [Peter]
+* Fixed small bug in SmartyCompiler which causes nameless tag attributes
+  to be interpreted as an integer (sometimes) even though the value is
+  surrounded by quotes. Also added some fixes for invalid quotes surrounding
+  attribute names. [Peter]
 
 Changed in ATK 5.6
 ------------------

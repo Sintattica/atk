@@ -1527,14 +1527,35 @@ class Smarty_Compiler extends Smarty {
                       /* If the token is a valid identifier, we set attribute name
                        and go to state 1. */
 
-                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!
+                    // PETER HACK, balance quotes and make html quotes normal quotes
+                    if (substr($token, 0, 6) == "&quot;")
+                      $token = substr($token, 6);
+                      
+                    if (substr($token, -6) == "&quot;")
+                      $token = substr($token, 0, -6);
+                      
+                    if ($token{0} == '"' && $token{strlen($token) -1} != '"')
+                      $token .= '"';
+                      
+                    if ($token{0} == "'" && $token{strlen($token) -1} != "'")
+                      $token .= "'";
+                      
+                    if ($token{0} != '"' && $token{strlen($token) -1} == '"')
+                      $token = '"'.$token;
+                      
+                    if ($token{0} != "'" && $token{strlen($token) -1} == "'")
+                      $token = $token."'";
+
+                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!                      
                     if (preg_match('!^((?>\w|#|/|\$)(\w|@|-|_|:|#|/|\.)*|[\'"](?>\w|#|/|\$)(\w|@|-|_|\?|&|=|:|#|/|\.|\s)*[\'"])$!', $token))
                     {
-                      $attr_name = str_replace(array("'", '"'), '', $token);
+                      $attr_name = $token; // Smarty will autostrip the quotes when needed
                       $state = 1;
                     }
                     else
+                    {
                       $this->_syntax_error("invalid attribute name: '$token' for tokens: ".var_export($tokens,1)." with key: $key", E_USER_ERROR, __FILE__, __LINE__);
+                    }
 
                     break;
 
