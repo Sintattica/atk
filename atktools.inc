@@ -2004,4 +2004,27 @@
     }
     return false;
   }
+  
+  /**
+   * Returns the IP of the remote client.
+   *
+   * @return string ip address
+   */
+  function atkGetClientIp()
+  {
+    static $s_ip = NULL;
+    
+    if ($s_ip === NULL)
+    {
+      if (getenv("HTTP_CLIENT_IP"))
+        $s_ip = getenv("HTTP_CLIENT_IP");
+      elseif (getenv("HTTP_X_FORWARDED_FOR"))
+        $s_ip = getenv("HTTP_X_FORWARDED_FOR");
+      elseif (getenv("REMOTE_ADDR"))
+        $s_ip = getenv("REMOTE_ADDR");    
+      else $s_ip = 'x.x.x.x';
+    }
+    
+    return $s_ip;
+  }
 ?>
