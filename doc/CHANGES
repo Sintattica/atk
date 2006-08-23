@@ -291,7 +291,8 @@ Changed in ATK 5.6.1
 * Fixed bug in recordlist: added missing (empty) cell above search button
   if no records are found. [Bart]
 * Fixed support for atkDateTimeAttribute in oci8 driver. (bug #596) [Renato]
-    
+* Altered phpMailer to support CC header when using mail() function. [Bart]    
+
 
 Changed in ATK 5.6
 ------------------
