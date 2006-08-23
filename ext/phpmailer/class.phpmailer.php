@@ -777,8 +777,14 @@ class PHPMailer
                 $result .= $this->HeaderLine("To", "undisclosed-recipients:;");
             if(count($this->cc) > 0)
                 $result .= $this->AddrAppend("Cc", $this->cc);
+        } 
+        else 
+        {
+          // add cc header when using php mail() function
+          if(count($this->cc) > 0)
+              $result .= $this->AddrAppend("Cc", $this->cc);
         }
-
+        
         $from = array();
         $from[0][0] = trim($this->From);
         $from[0][1] = $this->FromName;
