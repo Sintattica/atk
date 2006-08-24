@@ -292,6 +292,9 @@ Changed in ATK 5.6.1
   if no records are found. [Bart]
 * Fixed support for atkDateTimeAttribute in oci8 driver. (bug #596) [Renato]
 * Altered phpMailer to support CC header when using mail() function. [Bart]    
+* Fix for corrupt OpenOffice documents generated bij tbsooo.
+  zip -m sometimes caused corrupt files. -d has better results it seems.
+  [Ivo, Jeroen]
 
 
 Changed in ATK 5.6
