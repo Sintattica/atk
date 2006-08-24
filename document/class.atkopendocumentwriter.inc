@@ -92,7 +92,7 @@
       // Save the content.xml back to the copied document
       if (!$this->m_tbsooo->SaveXmlToDoc())
         return false;
-
+        
       return true;
     }
 
@@ -109,19 +109,8 @@
       // Parse template
       if (!$this->_parse($tpl_file, $tpl_vars))
         return false;
-
-      // Fix for internet explorer misbehaviour when using attachment as content disposition
-      $useragent = getenv("HTTP_USER_AGENT");
-      $attachmentword = ((strpos($useragent, "MSIE") !== false) || (strpos($useragent, "Internet Explorer") !== false)) ? "Atachment" : "Attachment";
-
-      // Add additional http response headers to set proper content type, filename and filesize
-      $file = $this->m_tbsooo->GetPathnameDoc();
-      header('Content-Type: ' . ($forcedownload ? 'application/octet-stream' : $this->m_tbsooo->GetMimetypeDoc()));
-      header('Content-Length: ' . filesize($file));
-      header('Content-Disposition: ' . $attachmentword . '; Filename="' . (is_null($outputfilename) ? substr($file, strrpos($file, '/') + 1) : $outputfilename) . '"');
-
-      // Send the document to the user agent
-      $this->m_tbsooo->FlushDoc();
+        
+      exportFile($this->m_tbsooo->GetPathnameDoc(), $outputfilename, ($forcedownload?"application/octet-stream":$this->m_tbsooo->GetMimetypeDoc()));
 
       // Remove the document from disk
       $this->m_tbsooo->RemoveDoc();
