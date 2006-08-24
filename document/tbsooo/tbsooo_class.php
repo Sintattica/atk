@@ -177,12 +177,14 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     }
 
     // zip and remove the file
-    exec($this->_zip_bin.' -j -m '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
+    // Jeroen/Ivo hack: -m sometimes caused corrupt files. -d has better results it seems. 
+    exec($this->_zip_bin.' -d '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
+    exec($this->_zip_bin.' -j '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
 
     if ($return_code!=0) {
       atkerror(sprintf("clsTinyButStrongOOo->SaveXmlToDoc: Error while adding to zip file (return code %s), please check if the zip executable is in your path", $return_code));
       return false;
-    }
+    }       
 
     return true;
   }
