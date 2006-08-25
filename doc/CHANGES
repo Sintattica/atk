@@ -295,7 +295,7 @@ Changed in ATK 5.6.1
 * Fix for corrupt OpenOffice documents generated bij tbsooo.
   zip -m sometimes caused corrupt files. -d has better results it seems.
   [Ivo, Jeroen]
-
+* Moved getTable method from atkMetaNode to atkNode. [Peter]
 
 Changed in ATK 5.6
 ------------------

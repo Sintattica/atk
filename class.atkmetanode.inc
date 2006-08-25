@@ -182,14 +182,6 @@ class atkMetaNode extends atkNode
   }  
   
   /**
-   * Returns the table.
-   */
-  function getTable()
-  {
-    return $this->m_table;
-  }
-
-  /**
    * Returns the meta policy.
    */
   function &getMetaPolicy()

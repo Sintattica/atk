@@ -844,7 +844,16 @@
         unset($this->m_attribIndexList[$listindex]);
       }
     }
-
+    
+    /**
+     * Returns the table name for this node.
+     * @return string table name
+     */
+    function getTable()
+    {
+      return $this->m_table;
+    }
+    
     /**
      * Get an attribute by name.
      * @param String $name The name of the attribute to retrieve.
