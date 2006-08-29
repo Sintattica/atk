@@ -1340,7 +1340,7 @@
     $fp = @fopen($file,"rb");
     if ($fp!=NULL)
     {
-      header('Content-Type: '. $ctype);
+      header('Content-Type: '. $mime);
       header("Content-Length: ".filesize($file));
       header('Content-Disposition:  '.$disp.'; filename="'.$filename.'"');
       if(eregi("ie", $browser["browser"])) header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
