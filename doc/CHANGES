@@ -296,6 +296,8 @@ Changed in ATK 5.6.1
   zip -m sometimes caused corrupt files. -d has better results it seems.
   [Ivo, Jeroen]
 * Moved getTable method from atkMetaNode to atkNode. [Peter]
+* 'Content-Type: ' wasn't set to the correct value. Caused .odt files to be
+  opened as .zip for instance [Jeroen]
 
 Changed in ATK 5.6
 ------------------
