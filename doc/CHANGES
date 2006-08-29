@@ -230,7 +230,8 @@ Changed in ATK 5.6.1
   removed when the AF_FILE_PHYSICAL_DELETE flag is set. [Peter]
 * tbsooo converted apostrophe (&apos; -> \') from XML file for TBS functions
   causes corrupt document: convert it back to &apos; in documentwriter [Jeroen]
-* Fixed problem with tabs which caused 1:1 relation tabs not to be shown. [Peter]
+* Fixed problem with tabs which caused 1:1 relation tabs not to be shown. 
+  [Peter]
 * Fixed unnecessary instantiation of 1:1 relation destinations. [Peter]
 * Translation debugging is now by default disabled. Use
   $config_debug_translations to enable them. [Peter]
@@ -299,8 +300,8 @@ Changed in ATK 5.6.1
   zip -m sometimes caused corrupt files. -d has better results it seems.
   [Ivo, Jeroen]
 * Moved getTable method from atkMetaNode to atkNode. [Peter]
-* 'Content-Type: ' wasn't set to the correct value. Caused .odt files to be
-  opened as .zip for instance [Jeroen]
+* Fixed 'Content-Type' header in exportFile() method, so browsers can 
+  determine the correct file type when downloading/opening. [Jeroen]
 
 Changed in ATK 5.6
 ------------------
