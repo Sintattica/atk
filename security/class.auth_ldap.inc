@@ -30,7 +30,7 @@
     function validateUser($user, $passwd)
     {
        if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
-  
+
        if($ldap = ldap_connect(atkconfig("auth_ldap_host")))
        {
         atkdebug("successful connection to ".atkconfig("auth_ldap_host"));
@@ -48,20 +48,43 @@
         }
 
         // find the dn for this uid, the uid is not always in the dn
-        $filter = (atkconfig("auth_ldap_search_filter") != "" ? atkconfig("auth_ldap_search_filter") : "uid");
-        $sri = ldap_search($ldap, atkconfig("auth_ldap_context"), $filter."=$user");
-        $allValues = ldap_get_entries($ldap, $sri);
-        if($allValues["count"] > 0)
+        $filter  = (atkconfig("auth_ldap_search_filter") != "" ? atkconfig("auth_ldap_search_filter") : "uid");
+        $pattern = atkconfig("auth_ldap_context");
+
+        // Add support for searching in multiple DN's
+        if (!is_array($pattern))
         {
-          // we only care about the first dn
-      	  $userDN = $allValues[0]["dn"];
-      	  // generate a bogus password to pass if the user doesn't give us one
-	         // this gets around systems that are anonymous search enabled
-          if (empty($passwd)) $passwd = crypt(microtime());
-      	  // try to bind as the user with user suplied password
-      	  if (ldap_bind($ldap,$userDN, $passwd)) return AUTH_SUCCESS;
+          $pattern = array($pattern);
         }
-	       atkdebug("LDAP did not successfully authenticate $user");
+
+        foreach ($pattern AS $searchPattern)
+        {
+          $filterCmd = $filter."=".$user;
+          $sri       = @ldap_search($ldap, $searchPattern, $filterCmd);
+
+          if ($sri === false)
+          {
+            atkdebug("Invalid searchpattern: ".$searchPattern);
+          }
+          else
+          {
+            $allValues = ldap_get_entries($ldap, $sri);
+
+            if($allValues["count"] > 0)
+            {
+              // we only care about the first dn
+              $userDN = $allValues[0]["dn"];
+
+      	      // generate a bogus password to pass if the user doesn't give us one
+	      // this gets around systems that are anonymous search enabled
+              if (empty($passwd)) $passwd = crypt(microtime());
+
+      	      // try to bind as the user with user suplied password
+      	      if (@ldap_bind($ldap, $userDN, $passwd)) return AUTH_SUCCESS;
+            }
+          }
+        }
+        atkdebug("LDAP did not successfully authenticate $user");
 
         // dn not found or password wrong TODO/FIXME: return -1 if dn not found
         return AUTH_MISMATCH;
