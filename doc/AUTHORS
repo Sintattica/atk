@@ -149,12 +149,6 @@ Ber Dohmen <info@ibuildings.nl>
   Ber developed the DHTML menu, and created a menu abstraction layer,
   during an internship at ibuildings.nl.
 
-Boy Baukema <info@ibuildings.nl>
-
-  Boy revised internationalization features, to improve overall
-  application performance through dynamic includes, during an internship
-  at ibuildings.nl.
-
 Mark Baaijens <mark@ibuildings.nl>
 
   Mark added the atkSecureRelation (Privacy Enhancing Technology)

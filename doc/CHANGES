@@ -302,6 +302,8 @@ Changed in ATK 5.6.1
   determine the correct file type when downloading/opening. [Jeroen]
 * DocumentWriter: Convert bullets to ' -' (tabs mess up layout), add extra line
   after starting,bullet-list, replace bold and italic tags within <li [Jeroen]
+* Updated Italian translation. [Fabio]
+* Updated Dutch translation. [Guido]
 
 
 Changed in ATK 5.6
