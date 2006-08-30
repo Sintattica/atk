@@ -55,20 +55,6 @@
      $str = $fn($str);
    }
 
-   if (isset($params['arg1']))
-   {
-     $args = array();        
-     foreach ($params as $key => $value)
-     {
-       if (preg_match('/^arg(\d+)$/', $key, $match))
-         $args[(int)$match[1]] = $value;
-     }
-     
-     ksort($args, SORT_NUMERIC);
-     
-     $str = call_user_func_array('sprintf', array_merge(array($str), $args));     
-   }
-   
    // parse the rest of the params in the string
    atkimport("atk.utils.atkstringparser");
    $parser = &new atkStringParser($str);
