@@ -172,7 +172,7 @@
 
       $inputString = $this->convertIEHtmlToXML($inputString);
 
-      $inputString = $this->convertGeneralHtmlToXML($inputString);
+      $inputString = $this->convertGeneralHtmlToXML($inputString);      
 
       return $inputString;
     }
@@ -221,11 +221,18 @@
       $inputString = str_replace('&lt;span style="font-weight: bold; font-style: italic;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);
       $inputString = str_replace('&lt;span style="font-style: italic; font-weight: bold;"&gt;', '<text:span text:style-name="atkbolditalic">', $inputString);
 
+      // *BOLD* inside <li> tag: <li style="font-weight: bold;">bold bullet</li>
+      $inputString = preg_replace("/&lt;li style=\"font-weight\: bold;\"&gt;(.*)&lt;\/li&gt;/iU", "&lt;li&gt;<text:span text:style-name=\"atkbold\">$1</text:span>", $inputString);
+
+      // italic inside <li> tag: <li style="font-style: italic;">italic bullet</li>
+      $inputString = preg_replace("/&lt;li style=\"font-style\: italic;\"&gt;(.*)&lt;\/li&gt;/iU", "&lt;li&gt;<text:span text:style-name=\"atkitalic\">$1</text:span>", $inputString);
+      
       // *BOLD*
       $inputString = str_replace('&lt;span style="font-weight: bold;"&gt;', '<text:span text:style-name="atkbold">', $inputString);
 
       // /italic/
       $inputString = str_replace('&lt;span style="font-style: italic;"&gt;', '<text:span text:style-name="atkitalic">', $inputString);
+           
 
       // substitute html- by xml-'span' tags
       $inputString = str_replace('&lt;/span&gt;' , '</text:span>', $inputString);
@@ -277,9 +284,9 @@
       // Convert all html bullets to an XML-tab + -
       // Only 1 level deep supported (deeper levels will be converted to level 1 in the generated document)
       $inputString = str_replace("\r" , '', $inputString);
-      $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/><text:line-break/>" , '', $inputString); // first <ul>
+      $inputString = str_replace("<text:line-break/><text:line-break/>&lt;ul&gt;<text:line-break/>", '', $inputString);                    // first <ul>
       $inputString = str_replace("&lt;ul&gt;<text:line-break/><text:line-break/>"  , '',               $inputString);                      //  sub <ul>'s
-      $inputString = str_replace('&lt;li&gt;'                                      , '<text:tab/> - ', $inputString);                      // use '-' as bullet
+      $inputString = str_replace('&lt;li&gt;'                                      , '- ', $inputString);                      // use '-' as bullet
       $inputString = str_replace('&lt;/li&gt;<text:line-break/>'                   , '',               $inputString);                      // end bullet
       $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>' , '',               $inputString);                      // main closing </ul>
       $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s
