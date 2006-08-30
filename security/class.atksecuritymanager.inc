@@ -575,7 +575,7 @@
       }
       else
       {
-        return '<input type="text" size="15" name="auth_user" value="'.$defaultname.'">';
+        return '<input type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'">';
       }
     }
 
