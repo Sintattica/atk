@@ -188,7 +188,7 @@
   "menu" => "選單",
   "menu_main" => "主選單",
   "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Module", // Missing string!!!
+  "menu_modules" => "Modules", // Missing string!!!
   "menu_system" => "System", // Missing string!!!
   "mon" => "週一",
   "monday" => "週一",

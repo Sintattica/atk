@@ -188,7 +188,7 @@
   "menu" => "Valikko",
   "menu_main" => "Main",
   "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Module", // Missing string!!!
+  "menu_modules" => "Modules", // Missing string!!!
   "menu_system" => "System", // Missing string!!!
   "mon" => "Mon",
   "monday" => "Monday", // Missing string!!!

@@ -189,7 +189,7 @@
   "menu" => "Menu",
   "menu_main" => "G³ówne menu",
   "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Module", // Missing string!!!
+  "menu_modules" => "Modules", // Missing string!!!
   "menu_system" => "System", // Missing string!!!
   "mon" => "Pon",
   "monday" => "Monday", // Missing string!!!

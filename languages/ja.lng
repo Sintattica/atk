@@ -188,7 +188,7 @@
   "menu" => "Menu", // Missing string!!!
   "menu_main" => "Main", // Missing string!!!
   "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Module", // Missing string!!!
+  "menu_modules" => "Modules", // Missing string!!!
   "menu_system" => "System", // Missing string!!!
   "mon" => "Mon", // Missing string!!!
   "monday" => "Monday", // Missing string!!!
