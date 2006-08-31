@@ -345,15 +345,21 @@
     function hide($record="", $fieldprefix="")
     {
       $result = "";
-      if(is_array(atkArrayNvl($record,$this->fieldName())))
+      if(is_array(atkArrayNvl($record,$this->fieldName())) && $this->createDestination())
       {
         for($i=0,$_i=count($record[$this->fieldName()]);$i<$_i;$i++)
         {
           if(atkArrayNvl($record[$this->fieldName()][$i],$this->getLocalKey()))
-            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$i.']['.$this->getLocalKey().']" value="'.$record[$this->fieldName()][$i][$this->getLocalKey()].'">';
+            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
+                       '['.$i.']['.$this->getLocalKey().']" value="'.
+                       $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getLocalKey()],
+                         $this->m_ownerInstance->primaryKeyField()).'">';
 
           if(atkArrayNvl($record[$this->fieldName()][$i],$this->getRemoteKey()))
-            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().'['.$i.']['.$this->getRemoteKey().']" value="'.$record[$this->fieldName()][$i][$this->getRemoteKey()].'">';
+            $result .= '<input type="hidden" name="'.$fieldprefix.$this->formName().
+                       '['.$i.']['.$this->getRemoteKey().']" value="'.
+                       $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()],
+                         $this->m_destInstance->primaryKeyField()).'">';
         }
       }
       return $result;
