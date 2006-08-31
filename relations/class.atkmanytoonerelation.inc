@@ -683,7 +683,7 @@
                           $alias,
                           $this->getJoinCondition($query, $tablename, $alias),
                           $this->m_leftjoin);
-          $this->m_destInstance->addToQuery($query, $alias, $level+1, $mode);
+          $this->m_destInstance->addToQuery($query, $alias, $level+1, false, $mode);
         }
         else
         {

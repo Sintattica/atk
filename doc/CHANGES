@@ -288,6 +288,8 @@ Changed in ATK 5.7
   <li></li>. [Jeroen]
 * atkNode's allowed() method now also accepts a modulename in its action
   parameter (module.node.action syntax). (bug #698) [Yury]
+* Fixed bug: in an atkManyToOneRelation, all destination fields would be 
+  loaded instead of only the ones we need. (bug #702) [Yury]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
