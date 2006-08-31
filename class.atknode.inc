@@ -844,7 +844,7 @@
         unset($this->m_attribIndexList[$listindex]);
       }
     }
-    
+
     /**
      * Returns the table name for this node.
      * @return string table name
@@ -853,7 +853,7 @@
     {
       return $this->m_table;
     }
-    
+
     /**
      * Get an attribute by name.
      * @param String $name The name of the attribute to retrieve.
@@ -1107,10 +1107,10 @@
         {
           $additional = $p_attrib->getAdditionalTabs($action);
           $list = atk_array_merge($list, $additional);
-          
+
           // Keep track of the tabs that containg attribs
           // so we only display none-empty tabs
-          $tabCode = $this->m_attributeTabs[$attribname][0];          
+          $tabCode = $this->m_attributeTabs[$attribname][0];
           $this->m_filledTabs = atk_array_merge($this->m_filledTabs, array($tabCode));
           $this->m_filledTabs = atk_array_merge($this->m_filledTabs, $additional);
         }
@@ -2678,7 +2678,7 @@
       {
         /* there may be search criteria, which we also filter */
         $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;        
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
       }
 
       if(array_key_exists("atkfilter", $this->m_postvars))
@@ -2797,11 +2797,11 @@
       $this->preCopy($record);
       return $this->addDb($record, true, $mode);
     }
-    
+
     /**
-     * Get the current searchmode. 
+     * Get the current searchmode.
      *
-     * @return mixed If there is one searchmode set for all attributes, this 
+     * @return mixed If there is one searchmode set for all attributes, this
      *               method returns a string. If there are searchmodes per
      *               attribute, an array of strings is returned.
      */
@@ -2817,7 +2817,7 @@
       {
         return $this->m_postvars["atksearchmode"];
       }
-      return atkconfig("search_defaultmode");      
+      return atkconfig("search_defaultmode");
     }
 
     /**
@@ -3096,8 +3096,8 @@
       }
       return $recordset;
     }
-    
-    
+
+
     /**
      * Apply the given search criteria to the given query object.
      *
@@ -3108,7 +3108,7 @@
     {
       $searchmode = $this->getSearchMode();
       // there may be search criteria, which we also filter
-      
+
       foreach ($searchArray as $key=>$value)
       {
         if( $value!="")
@@ -3140,7 +3140,7 @@
           }
         }
       }
-    }    
+    }
 
     /**
      * Apply the given smart search criteria to the given query object.
@@ -3185,7 +3185,7 @@
     function addToQuery(&$query, $alias="", $level=0, $allfields=false, $mode="select")
     {
       if ($level>=4) return;
-      
+
       $usefieldalias = false;
 
       if ($alias=="")
@@ -3703,13 +3703,22 @@
       // Resolve action
       $action = $this->securityKey($action);
 
-      // If action contains a dot, it's a complete nodename.action alias.
+      // If action contains a dot, it's a complete nodename.action or modulename.nodename.action alias.
       // Else, it's only an action alias, and we use the default node.
-      // (TODO: make it possible to use modulename.nodename.action aliases)
+
       if (strpos($action, ".")!==false)
       {
-        list($node, $action) = explode(".", $action);
-        $alias = $this->m_module.".".$node;
+        $complete = explode(".", $action);
+        if(count($complete) == 3)
+        {
+          $alias = $complete[0].".".$complete[1];
+          $action = $complete[2];
+        }
+        else
+        {
+          $alias = $this->m_module.".".$complete[0];
+          $action = $complete[1];
+        }
       }
 
       return ($this->hasFlag(NF_NO_SECURITY)
