@@ -194,9 +194,6 @@
   "may" => "mai",
   "menu" => "Meny",
   "menu_main" => "Hoved",
-  "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Modules", // Missing string!!!
-  "menu_system" => "System", // Missing string!!!
   "mon" => "man",
   "monday" => "mandag",
   "multilanguage_choice" => "Valgt språk:",

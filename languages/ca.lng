@@ -187,9 +187,6 @@
   "may" => "Maig",
   "menu" => "Menú",
   "menu_main" => "Principal",
-  "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Modules", // Missing string!!!
-  "menu_system" => "System", // Missing string!!!
   "mon" => "Dil",
   "monday" => "Monday", // Missing string!!!
   "multilanguage_choice" => "Idioma seleccionat:",

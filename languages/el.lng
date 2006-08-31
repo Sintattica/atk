@@ -188,9 +188,6 @@
   "may" => "Μάιος",
   "menu" => "Μενού",
   "menu_main" => "Κεντρικό μενού",
-  "menu_files" => "File", // Missing string!!!
-  "menu_modules" => "Modules", // Missing string!!!
-  "menu_system" => "System", // Missing string!!!
   "mon" => "Δευ",
   "monday" => "Δευτέρα",
   "multilanguage_choice" => "Επιλεγμένη γλώσσα:",
