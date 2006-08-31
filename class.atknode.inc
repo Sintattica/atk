@@ -3894,6 +3894,7 @@
       atkimport("atk.handlers.atkactionhandler");
       $handler = &atkActionHandler::getDefaultHandler($action);
       $handler->setNode($this);
+      $handler->setPostvars($this->m_postvars);
       return $handler;
     }
 
