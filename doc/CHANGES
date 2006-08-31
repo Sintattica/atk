@@ -82,6 +82,7 @@ Changed in ATK 5.7
 + Bundled 'prototype window' class library. [Lineke]
 + Added AF_BOOL_OBLIGATORY flag to force AF_OBLIGATORY behaviour on
   atkBoolAttributes. [Peter]  
++ Added setPostvars function to the atkActionHandler class. [Sandy]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
