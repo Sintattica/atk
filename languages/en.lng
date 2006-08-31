@@ -6,7 +6,7 @@
   // Language: English (en)
   //
   // Translated by:
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -187,6 +187,9 @@
   "may" => "May",
   "menu" => "Menu",
   "menu_main" => "Main",
+  "menu_files" => "File",
+  "menu_modules" => "Module",
+  "menu_system" => "System",
   "mon" => "Mon",
   "monday" => "Monday",
   "multilanguage_choice" => "Selected language:",

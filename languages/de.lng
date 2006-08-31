@@ -196,6 +196,9 @@
   "may" => "Mai",
   "menu" => "Men&uuml;",
   "menu_main" => "Hauptmen&uuml;",
+  "menu_files" => "File", // Missing string!!!
+  "menu_modules" => "Module", // Missing string!!!
+  "menu_system" => "System", // Missing string!!!
   "mon" => "Mon",
   "monday" => "Montag",
   "multilanguage_choice" => "Ausgew&auml;hlte Sprache:",

@@ -7,7 +7,7 @@
   //
   // Translated by:
   //   Velissariou Costas <velissariouc@gmail.com>
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -188,6 +188,9 @@
   "may" => "Μάιος",
   "menu" => "Μενού",
   "menu_main" => "Κεντρικό μενού",
+  "menu_files" => "File", // Missing string!!!
+  "menu_modules" => "Module", // Missing string!!!
+  "menu_system" => "System", // Missing string!!!
   "mon" => "Δευ",
   "monday" => "Δευτέρα",
   "multilanguage_choice" => "Επιλεγμένη γλώσσα:",
