@@ -292,8 +292,9 @@ Changed in ATK 5.7
 * Fixed bug: in an atkManyToOneRelation, all destination fields would be 
   loaded instead of only the ones we need. (bug #702) [Yury]
 * Fixed atkManyToManyRelation's hide() method. (bug #691) [Yury]
-* Fixed bug (partly): don't add empty cell to header if search button is
-  not displayed. (bug #703) [Bart]
+* Fixed bug: don't add empty cell to header if search button is not
+  displayed + add empty cell when recordlist orientation=right. (bug #703) 
+  [Bart]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
