@@ -159,7 +159,7 @@
           }
         }
 
-        if (($orientation == "right" || $orientation == "both")&& $this->hasActionsinList($list))
+        if (($orientation == "right" || $orientation == "both") && $this->hasActionsinList($list))
         {
           $headercols[] = array("content"=>"");
         }
@@ -409,7 +409,7 @@
             {
               $record["cols"][] = array("content"=>$str_actions);
             }
-//            else  $record["cols"][] = array("content"=>"");
+            //else  $record["cols"][] = array("content"=>"");
 
           }
 
@@ -421,7 +421,7 @@
           if ($orientation=="right"||$orientation=="both")
           {
             if (!empty($list["rows"][$i]["actions"])) $record["cols"][] = array("content"=>$str_actions);
-            else $record["cols"][] = array("content"=>"");
+            //else $record["cols"][] = array("content"=>"");
           }
 
           $records[] = $record;
@@ -447,7 +447,8 @@
             $totalcols[] = array("content"=>(isset($list["total"][$key])?$list["total"][$key]:""));
           }
 
-          if ($orientation == "right" || $orientation == "both") $totalcols[] = array("content"=>"");
+          if (($orientation == "right" || $orientation == "both") && $this->hasActionsinList($list))
+           $totalcols[] = array("content"=>"");
         }
 
         /*************************************************/
