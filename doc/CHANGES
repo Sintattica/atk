@@ -83,6 +83,8 @@ Changed in ATK 5.7
 + Added AF_BOOL_OBLIGATORY flag to force AF_OBLIGATORY behaviour on
   atkBoolAttributes. [Peter]  
 + Added setPostvars function to the atkActionHandler class. [Sandy]
++ Fixed bug #703: don't add empty cell to header if search button is not
+  displayed. [Bart]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]

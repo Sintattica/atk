@@ -122,7 +122,12 @@
 
         if (!hasFlag($flags, RL_NO_SEARCH) && count($list["rows"]) == 0)
         {          
-          $headercols[] = array("content"=>"&nbsp;"); // empty cell above search button, if zero rows
+          if ($orientation == "left" || $orientation == "both")
+          {
+            // empty cell above search button, if zero rows
+            // if $orientation is empty, no search button is shown, so no empty cell is needed
+            $headercols[] = array("content"=>"&nbsp;"); 
+          }
         }
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {
