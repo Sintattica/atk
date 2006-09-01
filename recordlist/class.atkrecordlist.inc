@@ -163,6 +163,16 @@
         {
           $headercols[] = array("content"=>"");
         }
+        
+        if (!hasFlag($flags, RL_NO_SEARCH) && count($list["rows"]) == 0)
+        {          
+          if ($orientation == "right" || $orientation == "both")
+          {
+            // empty cell above search button, if zero rows
+            // if $orientation is empty, no search button is shown, so no empty cell is needed
+            $headercols[] = array("content"=>"&nbsp;"); 
+          }
+        }
 
         
         /**************/
