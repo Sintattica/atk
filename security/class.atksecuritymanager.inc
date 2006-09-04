@@ -518,6 +518,7 @@
         if (atkconfig("auth_enablepasswordmailer", false))
         {
           $output.='&nbsp;&nbsp;<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
+          $tplvars["forgotpasswordbutton"] = '<input name="login" class="button" type="submit" value="'.atktext('password_forgotten').'">';
         }
         $output.='</td></tr>';
 

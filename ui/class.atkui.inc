@@ -75,13 +75,10 @@
     function renderAction($action, $vars)
     {
       // todo.. action specific templates
-      switch($action)
+      $tpl = "action_$action.tpl";
+      if ($this->m_theme->tplPath($tpl)=="") // no specific theme for this action
       {
-        case "view":
-          $tpl = "action_view.tpl";
-          break;
-        default:
-          $tpl = "action.tpl";
+        $tpl = "action.tpl";
       }
       return $this->render($tpl, $vars);
     }
