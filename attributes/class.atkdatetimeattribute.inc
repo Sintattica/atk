@@ -104,6 +104,16 @@
       $this->atkAttribute($name,$flags); // base class constructor
     }
 
+    function setDateMin($min=0)
+    {
+      $this->m_date->setDateMin($min);
+    }
+
+    function setDateMax($max=0)
+    {
+      $this->m_date->setDateMax($max);
+    }    
+    
     function validate(&$record, $mode)
     {
       $this->m_date->validate($record,$mode);
