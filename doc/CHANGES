@@ -304,6 +304,8 @@ Changed in ATK 5.7
   [Bart]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
+* Initial_values() should be called on the linknode, not on the
+  destinationnode when inserting a new record in the linktable. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
