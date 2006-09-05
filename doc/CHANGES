@@ -302,6 +302,8 @@ Changed in ATK 5.7
 * Fixed bug: don't add empty cell to header if search button is not
   displayed + add empty cell when recordlist orientation=right. (bug #703) 
   [Bart]
+* Fixed sorting in recordlists when there are atkOneToManyRelations in the 
+  listx. (sort of, code needs improvement). [Ivo]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
 * Initial_values() should be called on the linknode, not on the

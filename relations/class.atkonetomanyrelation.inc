@@ -237,7 +237,7 @@
             if (!in_array($fieldname,array("atkaction","atknodetype","atkprimkey")))
             {
               $attribute = &$this->m_destInstance->getAttribute($fieldname);
-             
+
               if (in_array($fieldname,array('_lgswitch','lng')))
               {
                 $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$fieldname];
@@ -335,7 +335,7 @@
 
       return $output;
     }
-    
+
     /**
      * Get the buttons for the embedded mode of the onetomany relation.
      * @todo Move this to a template
@@ -365,17 +365,7 @@
      */
     function _getRecords($record,$paging=false)
     {
-      $ownerorderby="";
-      if (isset($this->m_ownerInstance->m_postvars['atkorderby']))
-      {
-        $ownerorderby = $this->m_ownerInstance->m_postvars['atkorderby'];
-        if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
-          $this->m_ownerInstance->m_postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
-      }
-
       $myrecords = $this->load(atkGetDb(), $record, "admin", $paging);
-
-      $this->m_ownerInstance->m_postvars['atkorderby'] = $ownerorderby;
       return $myrecords;
     }
 
@@ -636,9 +626,33 @@
               $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
             }
             ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-            $atkorderby = isset($this->m_ownerInstance->m_postvars['atkorderby']) ? $this->m_ownerInstance->m_postvars['atkorderby'] : "";
-            $recordset = $this->m_destInstance->selectDb($where,$atkorderby,
-            $limitarray,$excludes,"",$mode);
+
+            if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
+            {
+              $atkorderby = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
+              // EVIL BAD SMELL, sorting and recordlist embedding is handled in a very cumbersome way (with prefixes and embedprefixes
+              // that are hardly understandable
+              $elems = explode(" ", $atkorderby);
+              $stmt = "";
+              if (isset($this->m_destInstance->m_attribList[$elems[0]]))
+              {
+                $attr = &$this->m_destInstance->getAttribute($elems[0]);
+                $stmt = $attr->getOrderByStatement();
+
+                if (count($elems)>1)
+                {
+                  // probably asc or desc
+                  $stmt.=" ".$elems[1];
+                }
+              }
+              else
+              {
+                // not an attribute, probably custom order by
+                $stmt = $atkorderby;
+              }
+            }
+
+            $recordset = $this->m_destInstance->selectDb($where,$stmt,$limitarray,$excludes,"",$mode);
             $this->m_loadFilter = $where;
             return $recordset;
           }
@@ -836,16 +850,16 @@
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
     }
-    
-    
+
+
     /**
      * Returns the condition (SQL) that should be used when we want to join an owner
      * node with the destination node of the atkOneToManyRelation.
-     * 
+     *
      * @param atkQuery $query      The query object.
      * @param String   $ownerAlias The owner table alias.
      * @param String   $destAlias  The destination table alias.
-     * 
+     *
      * @return String SQL string for joining the owner with the destination.
      */
     function getJoinCondition(&$query, $ownerAlias="", $destAlias="")
@@ -854,10 +868,10 @@
 
       if ($ownerAlias == "")
         $ownerAlias = $this->m_ownerInstance->m_table;
-        
+
       if ($destAlias == "")
         $destAlias = $this->m_destInstance->m_table;
-        
+
       $conditions = array();
 
       for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++)
@@ -866,12 +880,12 @@
       }
 
       return implode(" AND ", $conditions);
-    }     
+    }
 
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
-     * 
+     *
      * @param Integer  $id         The unique smart search criterium identifier.
      * @param Integer  $nr         The element number in the path.
      * @param Array    $path       The remaining attribute path.
@@ -884,13 +898,13 @@
     {
       // one-to-many join means we need to perform a distinct select
       $query->setDistinct(true);
-      
+
       if (count($path) > 0)
       {
         $this->createDestination();
-        
+
         $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
-        
+
         $query->addJoin(
           $this->m_destInstance->m_table, $destAlias,
           $this->getJoinCondition($query, $ownerAlias, $destAlias),
@@ -899,17 +913,17 @@
 
         $attrName = array_shift($path);
         $attr = &$this->m_destInstance->getAttribute($attrName);
-        
+
         if (is_object($attr))
         {
           $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
         }
       }
-      else 
+      else
       {
         $this->searchCondition($query, $ownerAlias, $value, $mode);
       }
-    }    
+    }
 
     /**
      * Adds a search condition for a given search value
@@ -930,7 +944,7 @@
          }
        }
      }
-     
+
 
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
