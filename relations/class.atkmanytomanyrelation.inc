@@ -297,7 +297,7 @@
           // magical stuff..
           $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()]);
           $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
-          $newrecord = $this->m_destInstance->initial_values();
+          $newrecord = $rel->initial_values();
           $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; // $record[$this->fieldName()][$i][$this->getRemoteKey()];
           $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey; // $record[$this->m_ownerInstance->primaryKeyField()];
 
@@ -432,7 +432,7 @@
     }
 
     /**
-     * Checks if a key is not an array 
+     * Checks if a key is not an array
      * @param $key   field containing the key values
      * @param $field field to return if an array
      * @return value of $field
