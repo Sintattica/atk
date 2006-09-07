@@ -32,7 +32,7 @@ $fckphp_config['prot'].="://";
 /*------------------------------------------------------------------------------*/
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['basedir']=$config_fck_documentroot_path.$config_fck_documentroot_uri;
+$fckphp_config['basedir']=$config_fck_documentroot_path;
 /*==============================================================================*/
 
 
