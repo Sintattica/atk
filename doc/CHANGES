@@ -312,7 +312,7 @@ Changed in ATK 5.7
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
-
+* Removed redundant double quote in html input element. [Bart]
 
 Changed in ATK 5.6
 ------------------
