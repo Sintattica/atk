@@ -305,21 +305,24 @@ Changed in ATK 5.7
   displayed + add empty cell when recordlist orientation=right. (bug #703) 
   [Bart]
 * Fixed sorting in recordlists when there are atkOneToManyRelations in the 
-  listx. (sort of, code needs improvement). [Ivo]
+  list. (sort of, code needs improvement). [Ivo]
+* When adding records for an atkManyToManyRelation based relation, 
+  Initial_values() should be called on the linknode, not on the destination
+  node. [Guido]
+* Fixed bug in atkescape which would be too sticky if escaping between
+  different nodes. [Ivo]     
+* Removed redundant double quote in html input element. [Bart]
+* fixed copy for atkManyToMany relation with destination primKey other than
+  "id" (not fixed for owner-side) fixed where clause for checking if records
+  already exist. [Ivo, Jeroen]    
+* Fixed reference copy bug in atkColumnConfig and added testcase. (bug #717) 
+  [Yury]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
-* Initial_values() should be called on the linknode, not on the
-  destinationnode when inserting a new record in the linktable. [Guido]
-* Fixed bug in atkescape which would be too sticky if escaping between
-  different nodes. [Ivo]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
-* Removed redundant double quote in html input element. [Bart]
-* fixed copy for atkManyToMany relation with destination primKey other than "id"
-  (not fixed for owner-side) fixed where clause for checking if records already 
-  exist [Ivo,Jeroen]
 
 Changed in ATK 5.6
 ------------------
