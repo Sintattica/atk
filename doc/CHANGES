@@ -318,6 +318,7 @@ Changed in ATK 5.7
   already exist. [Ivo, Jeroen]    
 * Fixed reference copy bug in atkColumnConfig and added testcase. (bug #717) 
   [Yury]
+* Improved debug message on unknown mysql database error. (bug #715) [RainerG]
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as

@@ -91,7 +91,9 @@
         case 2004:
         case 2005: return DB_UNKNOWNHOST;
         default:
-                   return DB_UNKNOWNERROR;
+          atkdebug("mysqldb::translateError -> MySQL Error: ".
+                    $this->m_errno." -> ".$this->m_error);
+          return DB_UNKNOWNERROR;
       }
     }
 
