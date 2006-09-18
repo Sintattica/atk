@@ -37,12 +37,53 @@
         // Have to determine navurls ourselves.
         $navurls = $this->getNavigationUrls($node, $mode);
       }
+
+  	  if(count($navurls)==0) return "";
+
       $links=array();
       foreach ($navurls as $key=>$nav)
       {
         $links[] = href($nav["url"], $nav["title"], SESSION_DEFAULT, $embedded);
       }
-      return implode("&nbsp;|&nbsp;", $links);
+  	  return implode("&nbsp;|&nbsp;", $links)."&nbsp;".$this->getSummary($node, $mode);
+    }
+
+    function getSummary(&$node, $mode="")
+    {
+      $count = $this->getCount($node, $mode);
+  	  $curpage = $this->getCurrentPage($node);
+  	  $start = (($curpage-1)*atkconfig("recordsperpage"))+1;
+  	  $end = min($start+atkconfig("recordsperpage")-1, $count);
+
+  	  $total = "(".atktext("record","atk")."&nbsp;".$start."-".$end."/".$count.")";
+
+  	  atkimport("atk.utils.atkstringparser");
+  	  $str = &new atkStringParser(atktext("recordlistsummary", "atk"));
+  	  return "(".$str->parse(array("start"=>$start, "end"=>$end, "count"=>$count)).") ";
+    }
+
+    function getCount(&$node, $mode="", $filter="")
+    {
+      static $s_count = array();
+
+      $type = $node->atkNodeType();
+      if (!isset($s_count[$type])) // rudimentary caching
+      {
+        if (!$filter && isset($node->m_postvars["atkfilter"])) $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
+
+        $s_count[$type] = (int)$node->countDb($filter, $node->m_listExcludes, "", $mode);
+      }
+      return $s_count[$type];
+    }
+
+    function getCurrentPage(&$node)
+    {
+      return ($node->m_postvars['atkstartat'] / $this->getLimit($node)) + 1;
+    }
+
+    function getLimit(&$node)
+    {
+      return (int)$node->m_postvars['atklimit'];
     }
 
     /**
@@ -53,26 +94,25 @@
      * @param obj   &$node   instance of the node we create the navigation bar for
      * @param string $mode   the mode we are in, defaults to ""
      * @param string $filter a filter for the destination node
-     * @return string a HTML string for navigating through records
+     * @return array of HTML string for navigating through records
      */
     function getNavigationUrls(&$node, $mode="", $filter="")
     {
       global $ATK_VARS;
 
       $res = array();
-      $limit = (int)$node->m_postvars['atklimit'];
 
-      if (!$filter && isset($node->m_postvars["atkfilter"])) $filter = $node->validateFilter($node->m_postvars["atkfilter"]);
-
-      $count = (int)$node->countDb($filter, $node->m_listExcludes, "", $mode);
+      $count = $this->getCount($node, $mode, $filter);
 
       // maximum number of bookmarks to pages.
       $max_bm = 10;
 
+      $limit = $this->getLimit($node);
+
       if (!($limit > 0 && $count > $limit && ceil($count / $limit) > 1)) return array();
 
       $pages = ceil($count / $limit);
-      $curr  = ($node->m_postvars['atkstartat'] / $limit) + 1;
+      $curr  = $this->getCurrentPage($node);
       $begpg = $curr - floor(($max_bm-1) / 2);
       $endpg = $curr + ceil(($max_bm-1) / 2);
 
