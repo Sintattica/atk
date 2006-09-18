@@ -283,7 +283,6 @@
           $checked[] = $record[$this->fieldName()][$i][$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()];
         else
           $checked[] = $record[$this->fieldName()][$i][$this->getRemoteKey()];
-
       }
 
       $filter="";
@@ -295,7 +294,7 @@
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
           // magical stuff..
-          $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+          $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField());
           $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
           $newrecord = $rel->initial_values();
           $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; // $record[$this->fieldName()][$i][$this->getRemoteKey()];
@@ -306,7 +305,7 @@
           $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".
                      $record[$this->m_ownerInstance->primaryKeyField()]."'".
                      " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
-                     $record[$this->fieldName()][$i][$this->getRemoteKey()]."'";
+                     $remKey."'";
 
           $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
