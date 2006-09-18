@@ -94,7 +94,7 @@
 
       $theme = &atkinstance("atk.ui.atktheme");
       $page = &atkPage::getInstance();
-      $page->register_style($theme->stylePath("recordlist.css"));
+      $page->register_style($theme->stylePath("recordlist.css",$this->m_node->m_module));
 
       $listName = "rl_".getUniqueId("normalRecordList");
       $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
@@ -552,7 +552,7 @@
                                                    "liststart"=>$liststart,
                                                    "listend"=>$listend,
                                                    "listid"=>$listName,
-                                                   "mra"=>$mra));
+                                                   "mra"=>$mra),$this->m_node->m_module);
         return $res;
       }
     }
