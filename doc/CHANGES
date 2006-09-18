@@ -317,6 +317,9 @@ Changed in ATK 5.7
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
 * Removed redundant double quote in html input element. [Bart]
+* fixed copy for atkManyToMany relation with destination primKey other than "id"
+  (not fixed for owner-side) fixed where clause for checking if records already 
+  exist [Ivo,Jeroen]
 
 Changed in ATK 5.6
 ------------------
