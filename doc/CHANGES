@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
++ Added pre-action support in atkNode and atkActionListener classes. [patrick]
 + Added support to the LDAP authentication class for searching in 
   multiple locations (DN's) instead of one base DN as it was previously
   [Wim].

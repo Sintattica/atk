@@ -2784,6 +2784,9 @@
      */
     function copyDb(&$record, $mode="copy")
     {
+      //notify precopy listeners
+      $this->preNotify("precopy", $record);
+
       // remove primarykey (copied record will get a new primary key)
       unset($record["atkprimkey"]);
 
@@ -4143,6 +4146,20 @@
       for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
       {
         $this->m_listeners[$i]->notify($action, $record);
+      }
+    }
+
+    /**
+     * Notify all listeners in advance of the occurance of a certain action.
+     *
+     * @param String $action The action that will occur
+     * @param array $record The record on which the action will be performed
+     */
+    function preNotify($action, &$record)
+    {
+      for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
+      {
+        $this->m_listeners[$i]->preNotify($action, $record);
       }
     }
 
