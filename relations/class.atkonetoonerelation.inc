@@ -211,10 +211,10 @@
           }
 
           $condition.= $this->getDestinationFilterCondition($fieldaliasprefix);
-          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true);
+          $query->addJoin($this->m_destInstance->m_table, $fieldaliasprefix.$this->fieldName(),$condition, true,$mode);
 
           // we pass true as the last param to addToQuery, because we need all fields..
-          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true);
+          $this->m_destInstance->addToQuery($query, $fieldaliasprefix.$this->fieldName(), $level+1, true,$mode);
         }
 
         // When storing, we don't add to the query.. we have our own store() method..
