@@ -337,7 +337,6 @@ Changed in ATK 5.7
   exist [Ivo,Jeroen]
 * Fixed warning in atkManyToOneRelation (occured after searching)
   Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
-=======
 
 Changed in ATK 5.6
 ------------------
