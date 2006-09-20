@@ -345,7 +345,11 @@
     function _getSampleValue($attributename, $value)
     {
       $attr = &$this->getUsableAttribute($attributename);
-      $newval = $attr->parseStringValue($value);
+      
+      if(method_exists($attr, "parseTime"))
+        $newval = $attr->parseTime($value);
+      else  
+        $newval = $attr->parseStringValue($value);
 
       if (method_exists($attr, "createDestination"))
       {
@@ -397,7 +401,7 @@
       $content.= '</td></tr><tr><td>';
       $content.= atktext("import_doupdate").': </td><td> <input type="checkbox" name="doupdate" value="1" '.($doupdate?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_update_key").': </td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",0).'</td>';
+      $content.= atktext("import_update_key").': </td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",2).'</td>';
       $content.= '</td></tr><tr><td>';
       $content.= atktext("import_onfalseidentifier").': </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
@@ -1008,10 +1012,14 @@
           }
         }
       }
+      else if(method_exists($attr,"parseTime"))
+      {      
+        $value = $attr->parseTime($value);
+      }
       else if (is_object($attr) && method_exists($attr,"parseStringValue"))
       {
         $value = $attr->parseStringValue($value);
-      }
+      }      
       else
       {
         $value = trim($value);
