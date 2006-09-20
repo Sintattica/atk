@@ -615,7 +615,7 @@
      * @param  string   $searchmode the searchmode for the search (e.g. substring)
      * @return string          a piece of the SQL where clause
      */
-    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix)
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
       $searchcondition = $this->getSearchCondition($query, $table, $fieldaliasprefix, $value, $searchmode);
       $query->addSearchCondition($searchcondition);
