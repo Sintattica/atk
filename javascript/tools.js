@@ -112,3 +112,35 @@ function reloadapp()
     }
   } 
 }
+
+function showTr(tab)
+{
+	if (tab == null) { tab = "default" };
+	
+  // First, get the class names of all elements
+	var tags = document.getElementsByTagName("tr");
+
+	// Every element that does not have the current tab as class or 'alltabs'
+	// is set to display: none
+	for (i = 0; i < tags.length; i++)
+	{
+		var tabclass = tags.item(i).className;
+		var id = tags.item(i).id;
+
+		if (id.substring(0,3)=="ar_")
+		{
+		  if (tabclass.indexOf(tab) != -1 || tabclass=="alltabs")
+		  {
+  		  tags.item(i).style.display="";
+		  }
+		  else
+		  {
+  		  tags.item(i).style.display="none";
+		  }
+		}
+		else
+		{
+		  // Don't touch any element that is not an attribute row
+		}
+	}
+}
