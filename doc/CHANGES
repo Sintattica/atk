@@ -338,6 +338,7 @@ Changed in ATK 5.7
   exist [Ivo,Jeroen]
 * Fixed warning in atkManyToOneRelation (occured after searching)
   Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
+* Functionally decomposed showTr [Jeroen]
 
 Changed in ATK 5.6
 ------------------
