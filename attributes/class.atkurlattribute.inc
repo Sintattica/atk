@@ -25,6 +25,12 @@
    * Don't display "http://". Link remains intact.
    */
   define('AF_URL_STRIPHTTP', AF_SPECIFIC_2);
+  
+  /**
+   * Validate URL, check format:
+   * http(s)://www2-dev.test_url.com
+   */
+  define('AF_VALIDATE_URL', AF_SPECIFIC_3);
 
 
   /**
@@ -40,22 +46,34 @@
   	var $m_newWindow = false;
   	var $m_allowWrap = false;
   	var $m_stripHttp = false;
+  	var $m_validateUrl = false;
 
   	function atkUrlAttribute($name, $flags = 0, $size=0)
   	{
-  		if (AF_POPUP === ($flags & AF_POPUP)) {
+  		if (AF_POPUP === ($flags & AF_POPUP)) 
+  		{
   			$this->m_newWindow = true;
   			$flags &= (~ AF_POPUP);
   		}
-  		if (AF_URL_ALLOWWRAP === ($flags & AF_URL_ALLOWWRAP)) {
+  		
+  		if (AF_URL_ALLOWWRAP === ($flags & AF_URL_ALLOWWRAP)) 
+  		{
   			$this->m_allowWrap = true;
   			$flags &= (~ AF_URL_ALLOWWRAP);
   		}
-  		if (AF_URL_STRIPHTTP === ($flags & AF_URL_STRIPHTTP)) {
+  		
+  		if (AF_URL_STRIPHTTP === ($flags & AF_URL_STRIPHTTP)) 
+  		{
   			$this->m_stripHttp = true;
   			$flags &= (~ AF_URL_STRIPHTTP);
   		}
-
+  		
+      if (AF_VALIDATE_URL === ($flags & AF_VALIDATE_URL))
+      {
+        $this->m_validateUrl = true;
+        $flags &= (~ AF_VALIDATE_URL);
+      }
+  		
   		$this->atkAttribute($name, $flags, $size);
   	}
 
@@ -84,6 +102,31 @@
   		}
 
   		return $output;
+  	}
+  	
+    /**
+     * Validates URL through regular expression:
+  	 * Address must have the format: http://www.example-url2.com
+  	 *  - Check if URL starts with: ftp(s) or http(s)
+  	 *  - digits, - and _ are permitted as well)
+  	 * 
+     * @param array $record Record that contains value to be validated.
+     *                      Errors are saved in this record, in the 'atkerror'
+     *                      field.
+     * @param String $mode Validation mode. Can be either "add" or "update"
+     */
+  	function validate(&$record, $mode)
+  	{
+  	  $result = true;
+  	  
+  	  if ($this->m_validateUrl === true)
+  	  {
+    	  $result = preg_match("/^(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,3}.*/Ui", $record[$this->fieldName()])?true:false;
+    	  
+    	  if ($result === false) triggerError($record, $this->fieldName(), 'invalid_url', atktext('invalid_url'));
+  	  }
+  	  
+  	  return ($result||parent::validate($record, $mode));
   	}
   }
 
