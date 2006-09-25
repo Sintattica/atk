@@ -339,6 +339,8 @@ Changed in ATK 5.7
 * Fixed warning in atkManyToOneRelation (occured after searching)
   Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
 * Functionally decomposed showTr [Jeroen]
+* Fixed bug in atkColumnConfig which caused the setOrderBy to 
+  be misinterpreted. [Peter]
 
 Changed in ATK 5.6
 ------------------

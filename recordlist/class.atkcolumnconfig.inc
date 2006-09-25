@@ -146,7 +146,7 @@
       }
     }
 
-    function addOrderByField($field, $direction)
+    function addOrderByField($field, $direction, $sortorder=NULL)
     {
       if ($this->getMinSort()<=1)
       {
@@ -158,7 +158,7 @@
           }
         }
       }
-      $this->m_colcfg[$field]["sortorder"] = 1;
+      $this->m_colcfg[$field]["sortorder"] = $sortorder === NULL ? 1 : $sortorder;
       $this->m_colcfg[$field]["direction"] = $direction;
 
     }
@@ -392,13 +392,15 @@
     {
       $elems = explode(" ", $orderby);
       $lastattr="";
+      $i = 0;
       foreach ($elems as $elem)
       {
+        $elem = trim($elem,",");
         if (atkArrayNvl($this->m_node->m_attribList,$elem))
         {
           // attribute reference
           $lastattr=$elem;
-          $this->addOrderByField($elem, "asc");
+          $this->addOrderByField($elem, "asc", ++$i);
         }
         else if (strtolower($elem)=="asc"||strtolower($elem)=="desc")
         {
@@ -418,7 +420,7 @@
           if (($table == $this->m_node->m_type) && is_object($this->m_node->m_attribList[$field]))
           {
             //echo 'yes';
-            $this->addOrderByField($field, "asc");
+            $this->addOrderByField($field, "asc", ++$i);
           }
         }
       }
