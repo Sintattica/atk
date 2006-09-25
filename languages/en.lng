@@ -161,6 +161,7 @@
   "import_upload" => "Upload",
   "import_upload_explanation" => "Upload a textfile with data to import into the database.",
   "import_validatefirst" => "Do not validate before importing",
+  "invalid_url" => "Invalid URL, please use this format: 'http://www.ibuildings.nl'",
   "invert_selection" => "Invert selection",
   "jan" => "Jan",
   "january" => "January",

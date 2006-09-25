@@ -121,8 +121,8 @@
   	  
   	  if ($this->m_validateUrl === true)
   	  {
-    	  $result = preg_match("/^(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,3}.*/Ui", $record[$this->fieldName()])?true:false;
-    	  
+    	  $result = preg_match("/^(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,4}.*/Ui", $record[$this->fieldName()])?true:false;
+
     	  if ($result === false) triggerError($record, $this->fieldName(), 'invalid_url', atktext('invalid_url'));
   	  }
   	  

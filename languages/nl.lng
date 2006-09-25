@@ -161,6 +161,7 @@
   "import_upload" => "Uploaden",
   "import_upload_explanation" => "Upload een tekstbestand met data om te importeren in de database.",
   "import_validatefirst" => "Niet controleren voor importeren",
+  "invalid_url" => "Ongeldig URL, gebruik het formaat: 'http://www.ibuildings.nl'",
   "invert_selection" => "Selectie omkeren",
   "jan" => "jan",
   "january" => "januari",
