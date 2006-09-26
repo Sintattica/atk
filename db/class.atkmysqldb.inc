@@ -49,14 +49,18 @@
 
     /**
      * Connect to the database
-     * @return connection status
+     *
+     * @param string $host Hostname
+     * @param string $user Username
+     * @param string $password Password
+     * @return mixed Connection status
      */
-    function connect()
+    function doConnect($host,$user,$password)
     {
       /* establish connection */
       if (empty($this->m_link_id))
       {
-        $this->m_link_id = @mysql_connect($this->m_host, $this->m_user, $this->m_password);
+        $this->m_link_id = @mysql_connect($host, $user, $password);
         if (!$this->m_link_id)
         {
           $this->halt($this->getErrorMsg());
@@ -140,8 +144,10 @@
         atkDebugger::addQuery($query);
       }
 
+      $mode = $this->getQueryMode($query);
+      atkdebug("atkmysqldb::query -> connect with mode = $mode");
       /* connect to database */
-      if ($this->connect()==DB_SUCCESS)
+      if ($this->connect($mode)==DB_SUCCESS)
       {
         /* free old results */
         if ($this->m_query_id)
@@ -222,7 +228,7 @@
     function lock($table, $mode="write")
     {
       /* connect first */
-      if ($this->connect()==DB_SUCCESS)
+      if ($this->connect("w")==DB_SUCCESS)
       {
         /* lock */
         $result = @mysql_query("lock tables $table $mode", $this->m_link_id);
@@ -241,7 +247,7 @@
     function unlock()
     {
       /* connect first */
-      if ($this->connect()==DB_SUCCESS)
+      if ($this->connect("w")==DB_SUCCESS)
       {
         /* unlock */
         $result = @mysql_query("unlock tables");
@@ -292,7 +298,7 @@
     function nextid($sequence)
     {
       /* first connect */
-      if ($this->connect()==DB_SUCCESS)
+      if ($this->connect("w")==DB_SUCCESS)
       {
         /* lock sequence table */
         if ($this->lock($this->m_seq_table))
@@ -342,7 +348,7 @@
     function metadata($table, $full=false)
     {
       /* first connect */
-      if ($this->connect()==DB_SUCCESS)
+      if ($this->connect("r")==DB_SUCCESS)
       {
         atkimport("atk.db.atkddl");
         $ddl = &atkDDL::create("mysql");

@@ -146,6 +146,12 @@
    */
   $config_pgsqlfetchmode = defined("PGSQL_ASSOC") ? PGSQL_ASSOC : 0;
 
+  /**
+   * Database Cluster nodes
+   * $config_db_cluster["default"] = array("master","slave","slave2");
+   */
+  $config_db_cluster = array();
+
   /********************************** SECURITY *******************************/
 
   /**
@@ -726,12 +732,12 @@
    * @var boolean
    */
   $config_mail_enabled = true;
-  
+
   /**
    * Default extended search action. This action can always be overriden
    * in the node by using $node->setExtendedSearchAction. At this time
    * (by default) the following values are supported: 'search' or 'smartsearch'
-   * 
+   *
    * @var string
    */
   $config_extended_search_action = 'search';
