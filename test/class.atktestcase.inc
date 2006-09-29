@@ -38,13 +38,15 @@
 
       $config_db["mock"]["driver"] = "mock";
       
-      $mockdb = &atkGetDb("mock");                       
+      $mockdb = &atkGetDb("mock");
       $this->m_restoreDb[$conn] = &atkDb::setInstance($conn, $mockdb);      
     }
     
     function restoreDb($conn="default")
     {
-      atkDb::setInstance($conn, $this->m_restoreDb[$conn]);
+      $copy =$this->m_restoreDb[$conn];
+      atkDb::setInstance($conn, $copy);
+      $this->m_restoreDb[$conn]="";
     }
     
     function &setMockNode($nodename, &$mocknode)
