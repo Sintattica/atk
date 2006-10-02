@@ -100,6 +100,7 @@ Changed in ATK 5.7
 + In atkImportHandler you aren't obligated anymore to select an identifier 
   field. [Dennis]
 + Added Mysql Cluster Master/Slave support. [Sandy]
++ Added recursive rmdir to atkFileAttribute. [Peter]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -342,6 +343,7 @@ Changed in ATK 5.7
 * Functionally decomposed showTr [Jeroen]
 * Fixed bug in atkColumnConfig which caused the setOrderBy to 
   be misinterpreted. [Peter]
+* Fixed OCI auto-increment/sequence information in metadata. [Peter]
 
 Changed in ATK 5.6
 ------------------

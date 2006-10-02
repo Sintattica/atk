@@ -488,9 +488,9 @@
           ($row['is_primary'] == 1 ? MF_PRIMARY : 0) |
           ($row['is_unique'] == 1 ? MF_UNIQUE : 0) |
           ($row['is_not_null'] == 1 ? MF_NOT_NULL : 0) |
-          ($row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
+          ($row['is_primary'] == 1 && $row['is_auto_inc'] == 1 ? MF_AUTO_INCREMENT : 0);
 
-        if ($row['is_auto_inc'] == 1)
+        if ($row['is_primary'] == 1 && $row['is_auto_inc'] == 1)
           $meta[$i]['sequence'] = $row['sequence'];
         else if ($row['default_value'] !== NULL)
         {
