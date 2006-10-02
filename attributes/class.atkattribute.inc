@@ -620,15 +620,7 @@
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
       {
-        if(is_object($this->m_ownerInstance))
-        {
-          $db = &$this->m_ownerInstance->getDb();
-          return $db->escapeSQL($rec[$this->fieldName()]);
-        }
-        else
-        {
-          return escapeSQL($rec[$this->fieldName()]);
-        }
+        return $this->escapeSQL($rec[$this->fieldName()]);
       }
       return NULL;
     }
