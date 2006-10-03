@@ -101,6 +101,7 @@ Changed in ATK 5.7
   field. [Dennis]
 + Added Mysql Cluster Master/Slave support. [Sandy]
 + Added recursive rmdir to atkFileAttribute. [Peter]
++ Added atkCreateStampAttribute for tracking record creation date. [Rich]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
