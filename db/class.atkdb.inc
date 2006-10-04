@@ -818,6 +818,7 @@
 
         $g_dbinstances[$conn] = &atknew("atk.db.atk".$dbconfig[$new_conn]["driver"]."db");
         $g_dbinstances[$conn]->m_connection = $new_conn;
+        $g_dbinstances[$conn]->m_mode     = (isset($dbconfig[$new_conn]["mode"])?$dbconfig[$new_conn]["mode"]:"rw");
         if (isset($dbconfig[$new_conn]["db"]))
         {
           $g_dbinstances[$conn]->m_database = $dbconfig[$new_conn]["db"];
@@ -826,7 +827,6 @@
           $g_dbinstances[$conn]->m_host     = $dbconfig[$new_conn]["host"];
           if (isset($dbconfig[$new_conn]["port"]))
               $g_dbinstances[$conn]->m_port     = $dbconfig[$new_conn]["port"];
-          $g_dbinstances[$conn]->m_mode     = (isset($dbconfig[$new_conn]["mode"])?$dbconfig[$new_conn]["mode"]:"rw");
           $dbcluster = atkconfig("db_cluster");
           if(is_array($dbcluster) && isset($dbcluster[$conn]))
             $g_dbinstances[$conn]->m_dbcluster = $conn;
