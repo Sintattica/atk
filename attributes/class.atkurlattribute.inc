@@ -27,12 +27,21 @@
   define('AF_URL_STRIPHTTP', AF_SPECIFIC_2);
   
   /**
-   * Validate URL, check format:
-   * http(s)://www2-dev.test_url.com
+   * Check if URL is a valid absolute URL
    */
-  define('AF_VALIDATE_URL', AF_SPECIFIC_3);
+  define('ABSOLUTE', 1);
+  
+  /**
+   * Check if URL is a valid relative URL
+   */  
+  define('RELATIVE', 2);
 
+  /**
+   * Check if URL is a valid anchor
+   */    
+  define('ANCHOR',   4);
 
+  
   /**
    * The atkUrlAttribute class represents a field containing URLs.
    *
@@ -43,10 +52,11 @@
    */
   class atkUrlAttribute extends atkAttribute
   {
+    var $m_accepts_url_flag = 0;
+    
   	var $m_newWindow = false;
   	var $m_allowWrap = false;
   	var $m_stripHttp = false;
-  	var $m_validateUrl = false;
 
   	function atkUrlAttribute($name, $flags = 0, $size=0)
   	{
@@ -67,12 +77,6 @@
   			$this->m_stripHttp = true;
   			$flags &= (~ AF_URL_STRIPHTTP);
   		}
-  		
-      if (AF_VALIDATE_URL === ($flags & AF_VALIDATE_URL))
-      {
-        $this->m_validateUrl = true;
-        $flags &= (~ AF_VALIDATE_URL);
-      }
   		
   		$this->atkAttribute($name, $flags, $size);
   	}
@@ -103,12 +107,14 @@
 
   		return $output;
   	}
+
+  	function acceptUrls($accepts_flag)
+  	{
+      $this->m_accepts_url_flag = $accepts_flag;
+  	}
   	
     /**
-     * Validates URL through regular expression:
-  	 * Address must have the format: http://www.example-url2.com
-  	 *  - Check if URL starts with: ftp(s) or http(s)
-  	 *  - digits, - and _ are permitted as well)
+     * Validates absolute, relative and anchor URL through regular expression
   	 * 
      * @param array $record Record that contains value to be validated.
      *                      Errors are saved in this record, in the 'atkerror'
@@ -119,11 +125,43 @@
   	{
   	  $result = true;
   	  
-  	  if ($this->m_validateUrl === true)
+  	 /**
+      * Validate URL, check if format is absolute (external URL's)
+      * 
+      * Example: http(s)://www2-dev.test_url.com
+      */
+  	  if (($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE)
   	  {
-    	  $result = preg_match("/^(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,4}.*/Ui", $record[$this->fieldName()])?true:false;
+  	    $local_result = preg_match("/^(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,4}.*/Ui", $record[$this->fieldName()])?true:false;
 
-    	  if ($result === false) triggerError($record, $this->fieldName(), 'invalid_url', atktext('invalid_url'));
+    	  if ($local_result === false) triggerError($record, $this->fieldName(), 'invalid_absolute_url', atktext('invalid_absolute_url'));    	  
+    	  $result = $result && $local_result;
+  	  }  	 
+
+  	 /**
+      * Validate URL, check if format is relative
+      * 
+      * Example: /mysite/guestbook/index.html
+      */  	  
+  	  if (($this->m_accepts_url_flag & RELATIVE) == RELATIVE)
+  	  {
+  	    $local_result = preg_match("/^[a-zA-Z0-9\.\-\_\/?&=%]+$/Ui", $record[$this->fieldName()])?true:false;
+  	    
+  	    if ($local_result === false) triggerError($record, $this->fieldName(), 'invalid_relative_url', atktext('invalid_relative_url'));
+  	    $result = $result && $local_result;
+  	  }
+
+  	 /**
+      * Validate URL, check if format is a valid anchor
+      * 
+      * Example: #internal_bookmark
+      */
+  	  if (($this->m_accepts_url_flag & ANCHOR) == ANCHOR)
+  	  {
+  	    $local_result = preg_match("/^#[a-zA-Z0-9\.\-\_\/?&=%]+$/Ui", $record[$this->fieldName()])?true:false;
+  	    
+  	    if ($local_result === false) triggerError($record, $this->fieldName(), 'invalid_url_anchor', atktext('invalid_url_anchor'));
+  	    $result = $result && $local_result;
   	  }
   	  
   	  return ($result||parent::validate($record, $mode));
