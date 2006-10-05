@@ -106,7 +106,9 @@ Changed in ATK 5.7
 + Added Mysql Cluster Master/Slave support. [Sandy]
 + Added recursive rmdir to atkFileAttribute. [Peter]
 + Added atkCreateStampAttribute for tracking record creation date. [Rich]
-
++ Added atkTextMarker utility class that can handle hiding elements of a 
+  string. Useful for building parsers/compilers/validators that do temporary
+  string manipulations. [Ivo]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
