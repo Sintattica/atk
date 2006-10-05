@@ -31,7 +31,9 @@
    * This attribute is automatically set to readonly, and to af_hide_add 
    * (because we only have the timestamp AFTER a record is added).
    *
-   * @author Rich Kucera (http://www.achievo.org/forum/viewtopic.php?p=8608)
+   * (the attribute was posted at www.achievo.org/forum/viewtopic.php?p=8608)
+   *
+   * @author Rich Kucera <kucerar@hhmi.org>
    * @package atk
    * @subpackage attributes
    *
