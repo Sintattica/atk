@@ -122,15 +122,16 @@
      * @param String $fieldprefix  If set, each form element is prefixed with
      *                             the specified prefix (used in embedded
      *                             forms)
+     * @param boolean $ignoreTab   Ignore the tabs an attribute should be shown on.
      *
      * @return String the edit form as a string
      */
-    function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="",$template="")
+    function editForm($mode="add", $record = NULL, $forceList="", $suppressList="", $fieldprefix="",$template="",$ignoreTab=false)
     {
       $node = &$this->m_node;
 
       /* get data, transform into form, return */
-      $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix);
+      $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix, $ignoreTab);
       // Format some things for use in tpl.
       /* check for errors and display them */
       $tab = $node->getActiveTab();

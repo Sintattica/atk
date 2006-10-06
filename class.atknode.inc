@@ -1431,10 +1431,11 @@
      * @param String $fieldprefix Of set, each form element is prefixed with
      *                            the specified prefix (used in embedded form
      *                            fields)
+     * @param boolean $ignoreTab  Ignore the tabs an attribute should be shown on.
      * @return array List of edit fields (per field ( name, html, obligatory,
      *               error, label })
      */
-    function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="")
+    function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="", $ignoreTab=false)
     {
       global $g_sessionData;
 
@@ -1562,7 +1563,14 @@
           /* sometimes a field is hidden although not specified by the field itself */
 
           $theme = &atkinstance("atk.ui.atktheme");
-          if ($theme->getAttribute("tabtype") == "dhtml") { $notOnTab = FALSE; } else { $notOnTab = !$p_attrib->showOnTab($tab); }
+          if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab)
+          {
+            $notOnTab = FALSE;
+          }
+          else
+          {
+            $notOnTab = !$p_attrib->showOnTab($tab);
+          }
 
           if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)
           {

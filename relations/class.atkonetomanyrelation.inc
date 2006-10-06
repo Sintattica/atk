@@ -322,7 +322,8 @@
         atkimport("atk.handlers.atkedithandler");
         $handler = new atkEditHandler();
         $handler->m_node = &$destInstanceCopy;
-        $output.=$handler->editForm("add",$editrecord,"","",$fname."_AE_","integratededitform.tpl");
+
+        $output.=$handler->editForm("add",$editrecord,"","",$fname."_AE_","integratededitform.tpl",true);
 
         $output.= $this->_getEmbeddedButtons($fname);
         $text = atktext("link_".$fname."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);
