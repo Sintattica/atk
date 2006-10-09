@@ -742,8 +742,12 @@
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
               $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
             }
-            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-
+            
+            if (is_array($a["fields"]))
+            {
+              $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+            }
+            
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* separator */
