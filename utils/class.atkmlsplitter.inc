@@ -138,7 +138,7 @@
         $record["atkprimkey"] = $node->primaryKey($record)." AND ".$node->m_table.".".$node->m_lngfield."='$language' ";
 
         if($atklngrecordmodes[$language]["mode"]=="add") $mode="add"; // override the mode in case of missing lngrecords
-        
+
         switch($mode)
         {
           case "update":
@@ -187,7 +187,7 @@
       if($node->hasFlag(NF_ML) && $mode!="edit" && $mode!="copy")
       {
         $fieldname = $joinalias.".".$node->m_lngfield;
-        $query->addCondition("({$fieldname} IS NULL OR UPPER({$fieldname})='{$lng}')");
+        $query->addCondition("({$fieldname} IS NULL OR UPPER({$fieldname})='".strtoupper($lng)."')");
       }
     }
 
