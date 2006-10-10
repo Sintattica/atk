@@ -69,7 +69,7 @@
      */
     function _getInitHtml()
     {
-      $action = dispatch_url($this->m_node->m_type.'.'.$this->m_node->m_module, "export");
+      $action = dispatch_url($this->m_node->m_module.'.'.$this->m_node->m_type, "export");
       $content = atktext("export_config_explanation", "atk", $this->m_node->m_type);
       $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">';
       $content.= session_form();
