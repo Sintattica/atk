@@ -464,7 +464,8 @@ Changed in ATK 5.7
 * Fixed support for returning the newly created record for a many-to-one
   relation even after an edit-after-add action has been performed. [Peter]
 * Added $mergeSelectors parameter to atkNode::confirmAction (defaults to
-  true to be backwards compatible). [Peter]  
+  true to be backwards compatible). [Peter] 
+* Use select mode for retrieval of records for atkManyToOneRelation. [Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

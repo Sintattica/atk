@@ -134,7 +134,7 @@
     {
       if (atkconfig("manytoone_autocomplete_default", false))
         $flags |= AF_RELATION_AUTOCOMPLETE;
-        
+
       if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flags, AF_LARGE))
         $flags |= AF_RELATION_AUTOCOMPLETE;
 
@@ -387,17 +387,17 @@
     {
       $links = array();
 
-      $newsel = $id.'_newsel';            
+      $newsel = $id.'_newsel';
       $filter = $this->parseFilter($this->m_destinationFilter, $record);
-      $links[] = $this->_getSelectLink($newsel, $filter); 
-                             
+      $links[] = $this->_getSelectLink($newsel, $filter);
+
       if ($this->hasFlag(AF_RELATION_AUTOLINK)) // auto edit/view link
       {
         if ($this->m_destInstance->allowed("add"))
         {
           $links[] = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_newsel".($filter!=""?"&atkfilter=".rawurlencode($filter):""),atktext("new"),SESSION_NESTED,true);
         }
-        
+
         if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL)
         {
           //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
@@ -405,11 +405,11 @@
           $editUrl = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
           $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
         }
-      }       
-      
+      }
+
       return implode("&nbsp;", $links);
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
@@ -446,19 +446,19 @@
           $page->register_scriptcode($js);
           $this->_renderChangeHandler($fieldprefix);
         }
-        
+
         $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
 
         // handle evil select and new handler return value
         global $ATK_VARS;
         if (isset($ATK_VARS[$id.'_newsel']))
         {
-          list($row) = $this->m_destInstance->selectDb($ATK_VARS[$id.'_newsel'], '', '', '', atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey));
+          list($row) = $this->m_destInstance->selectDb($ATK_VARS[$id.'_newsel'], '', '', '', atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey), 'select');
           $record[$this->fieldName()] = $row;
         }
-        
-        if (!$this->_isSelectableRecord($record))
-          $record[$this->fieldName()] = NULL;                    
+
+        if (!$this->_isSelectableRecord($record, 'select'))
+          $record[$this->fieldName()] = NULL;
 
         $afterUpdate = ($afterUpdateFunc!="") ? $afterUpdateFunc : "null";
         $code = "ATK.ManyToOneRelation.autoupdate('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, $this->m_autocomplete_minchars);";
@@ -469,23 +469,23 @@
         $page->register_loadscript($code);
 
         $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-        
-        if ($record[$this->fieldName()] != NULL) 
+
+        if ($record[$this->fieldName()] != NULL)
         {
-          $selectedDisplay = '';          
-          $selectedValue = $this->m_destInstance->primaryKey($record[$this->fieldName()]);          
+          $selectedDisplay = '';
+          $selectedValue = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
         }
-        else 
+        else
         {
           $selectedDisplay = 'display: none';
           $selectedValue = '';
         }
-        
+
         $theme = &atkinstance("atk.ui.atktheme");
         $resetIcon = sprintf('<img width="16" height="16" border="0" valign="absmiddle" src="%1$s" alt="%2$s" title="%2$s">',
                         $theme->iconPath('delete',"recordlist", $this->m_node->m_module),
                         atktext("reset", $this->m_node->m_module, $this->m_node->m_type));
-            
+
         $links = $this->createSelectAndAutoLinks($id, $record);
 
         return
@@ -512,7 +512,7 @@
           if(isset($record[$this->fieldName()]))
             $value = $record[$this->fieldName()];
           $currentPk = $this->m_destInstance->primaryKey($value);
-          $recordset = $this->_getSelectableRecords($record, $mode);
+          $recordset = $this->_getSelectableRecords($record, 'select');
           if(count($recordset)==0) $editflag = false;
 
           // autoselect if there is only one record (if obligatory is not set,
@@ -672,7 +672,7 @@
       {
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkmanytoonerelation.js");
-       
+
         if ($this->m_destInstance->allowed("edit"))
         {
           $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
@@ -1092,24 +1092,24 @@
      * Returns the selectable records for this many-to-one relation. Uses
      * the owner instance $this->fieldName()."_selection" method if it exists.
      */
-    function _getSelectableRecords($record=array(), $mode="")
+    function _getSelectableRecords($record=array(), $mode="select")
     {
       $method = $this->fieldName()."_selection";
       if (method_exists($this->m_ownerInstance, $method))
         return $this->m_ownerInstance->$method($record, $mode);
       else return $this->getSelectableRecords($record, $mode);
     }
-    
+
     /**
      * Is selectable record? Uses the owner instance $this->fieldName()."_selectable"
      * method if it exists.
      */
-    function _isSelectableRecord($record=array(), $mode="")
+    function _isSelectableRecord($record=array(), $mode="select")
     {
       $method = $this->fieldName()."_selectable";
       if (method_exists($this->m_ownerInstance, $method))
         return $this->m_ownerInstance->$method($record, $mode);
-      else return $this->isSelectableRecord($record, $mode);      
+      else return $this->isSelectableRecord($record, $mode);
     }
 
     /**
@@ -1126,7 +1126,7 @@
         $parser = new atkStringParser($this->m_destinationFilter);
         return $parser->parse($record);
       }
-      else 
+      else
       {
         return "";
       }
@@ -1134,18 +1134,18 @@
 
     /**
      * Is selectable record?
-     * 
+     *
      * Use this one from your selectable override when needed.
      */
-    function isSelectableRecord($record=array(), $mode="")
+    function isSelectableRecord($record=array(), $mode="select")
     {
       if ($record[$this->fieldName()] == NULL) return false;
-      
+
       $this->createDestination();
-      
+
       $selectedKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       if ($selectedKey == NULL) return false;
-      
+
       // If custom selection method exists we use this one, although this is
       // way more inefficient, so if you create a selection override you should
       // also think about creating a selectable override!
@@ -1158,30 +1158,30 @@
           $key = $this->m_destInstance->primaryKey($row);
           if ($key == $selectedKey) return true;
         }
-        
+
         return false;
       }
-      
+
       // No selection override exists, simply add the record key to the selector.
       $filter = $this->createFilter($record);
       $selector = "($selectedKey)".($filter != NULL ? " AND ($filter)" : "");
-      list($result) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->m_primaryKey);      
-      
+      list($result) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->m_primaryKey,$mode);
+
       return $result != NULL;
     }
 
     /**
      * Returns the selectable records.
-     * 
+     *
      * Use this one from your selection override when needed.
      */
-    function getSelectableRecords($record=array(), $mode="")
+    function getSelectableRecords($record=array(), $mode="select")
     {
       $this->createDestination();
-      
+
       $selector = $this->createFilter($record);
-      $result = $this->m_destInstance->selectDb($selector,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
-      
+      $result = $this->m_destInstance->selectDb($selector,"","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey),$mode);
+
       return $result;
     }
 
@@ -1259,7 +1259,7 @@
         // only check if hidewhenempty is set to true
         if ($this->m_hidewhenempty)
         {
-          $recs = $this->_getSelectableRecords($defaults, $mode);
+          $recs = $this->_getSelectableRecords($defaults, 'select');
           if (count($recs)==0) return $this->hide($defaults, $fieldprefix);
         }
       }
@@ -1474,13 +1474,13 @@
       $filter = $this->createSearchFilter($searchvalue,$descriptor_fields);
       $this->addDestinationFilter($filter);
 
-      $records = $this->_getSelectableRecords($record, $mode);
-      
+      $records = $this->_getSelectableRecords($record, 'select');
+
       if (count($records) == 0)
       {
         $result = '<li class="no_results">'.$this->text('no_results').'</li>';
       }
-      else 
+      else
       {
         $result = '';
         foreach ($records as $rec)
