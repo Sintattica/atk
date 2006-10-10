@@ -96,7 +96,12 @@
             $location="";
             if ($this->m_node->hasFlag(NF_EDITAFTERADD))
             {
-              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)), SESSION_REPLACE);
+              // forward atkpkret for newly added records
+              $extra = "";
+              if (isset($this->m_postvars["atkpkret"]))
+                $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);              
+                
+              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)).$extra, SESSION_REPLACE);
             }
             else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
             {

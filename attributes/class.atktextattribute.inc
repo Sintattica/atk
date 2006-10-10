@@ -77,8 +77,46 @@
      * @param $size Array with field rows and cols for additional size of the text box
      * @return piece of html code with a textarea
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $mode='add')
     {
+      // list mode, show a small textarea, until it get's focus
+      // and is inflated to a big textarea
+      if ($mode == 'list')
+      {
+        $id = $fieldprefix.$this->fieldName();
+        
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');
+        
+        // NOTE: 
+        // The onblur function uses a small timeout to make sure a click on a 
+        // new element is performed earlier then the swap of fields. 
+        // If we don't do this the click might end up wrong.
+        $page->register_loadscript("
+          \$('{$id}').onfocus = function() { 
+            \$('{$id}_textarea').value = this.value; 
+            Element.hide(this); 
+            Element.show('{$id}_textarea'); 
+            \$('{$id}_textarea').focus(); 
+          };
+          
+          \$('{$id}_textarea').onblur = function() { 
+            \$('{$id}').value = this.value; 
+            window.setTimeout(function() { 
+              Element.hide('{$id}_textarea'); 
+              Element.show('{$id}'); }, 500
+            );
+          };
+        ");
+        
+        $html = 
+          '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
+          '<textarea id="'.$id.'_textarea" wrap="soft" rows="5" cols="40" style="display: none"></textarea>';
+        
+        return $html;
+      }
+
+      
       (isset($record[$this->fieldName()]))?$text=$record[$this->fieldName()]:$text="";
 
       if ($this->m_cols != 0)

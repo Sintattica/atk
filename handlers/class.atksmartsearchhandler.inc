@@ -457,7 +457,7 @@
         $valueArray = $value == NULL ? NULL : array($attr->fieldName() => $value);
         $modeArray = $mode == NULL ? NULL : array($attr->fieldName() => $mode);
         $attr->addToSearchFormFields($fields, $entry['node'], $valueArray, $prefix, $modeArray);
-        $field = array_pop($fields);
+        $field = array_shift($fields); // we only support the first field returned
         
         return $type == 'mode' ? $field['searchmode'] : $field['widget'];
       }
@@ -748,6 +748,7 @@
      */
     function smartSearchPage($name="", $criteria=array())
     {
+      atkimport("atk.atklanguage");
       $node = &$this->m_node;
       $page = &$this->getPage();
       $ui = &$this->getUi();

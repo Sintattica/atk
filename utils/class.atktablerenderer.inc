@@ -249,7 +249,24 @@
           $align = $this->_alignmentStr($this->getAlignment($row, $col));
           $colspan = $this->_spanStr($this->getSpan($row, $col));
           $class = $this->_classStr($this->getClass($row, $col));
-          $output.=$pre." ".$align." ".$class." ".$colspan.">" . $data[$row][$col] . $post;
+          
+          /* If the data contains an array, check for a value and id field. */
+          $value = "";
+          $id = "";
+          if(is_array($data[$row][$col]))
+          {
+            //Use the value field, if available
+            if(isset($data[$row][$col]['value']))
+              $value = $data[$row][$col]['value'];
+              
+            //use the id field, if available
+            if(isset($data[$row][$col]['id']))
+              $id = 'id="'.$data[$row][$col]['id'].'"';            
+          }
+          else 
+            $value = $data[$row][$col];            
+            
+          $output.=$pre." ".$align." ".$id." ".$class." ".$colspan.">" . $value . $post;
         }
 
         // Check if we must pad
@@ -370,6 +387,8 @@
      */
     function _spanStr($span)
     {
+      if ($span["span"] == "") return '';    
+    
       if($span["type"]=="row")
       {
         return 'rowspan="'.$span["span"].'"';

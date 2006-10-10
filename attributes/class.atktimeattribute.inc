@@ -71,9 +71,9 @@
     function display($record)
     {
 	  	$value = $record[$this->fieldName()];
-      if (empty($value["hours"]) ) return "";
-      $tmp_time = $value["hours"].":".$value["minutes"];
-      if ($value["seconds"]) $tmp_time.=":".$value["seconds"];
+      if ($value["hours"] === "") return "";
+      $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);
+      if ($value["seconds"]) $tmp_time.=sprintf(":%02d", $value["seconds"]);
       return $tmp_time;
     }
 
@@ -170,7 +170,7 @@
       $m_hourBox .= "</select>";
       $m_minBox  .= "</select>";
       $m_secBox  = "<input type=\"hidden\" name=\"".$fieldprefix.$this->fieldName()."[seconds]\" value=\"00\">\n";
-
+       
       // assemble display version
       return $m_hourBox.":".$m_minBox.$m_secBox;
     }

@@ -39,14 +39,6 @@
   class atkUpdateStampAttribute extends atkDateTimeAttribute
   {
     /**
-     * Var is need for save without close. In this case the record is not
-     * updated therefor we have to save the value.
-     * @access private
-     * @var String
-     */
-    var $m_stamp = "";
-
-    /**
      * Constructor
      *
      * @param String $name Name of the attribute (unique within a node, and
@@ -57,83 +49,29 @@
     function atkUpdateStampAttribute($name, $flags=0)
     {    
       $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags|AF_READONLY|AF_HIDE_ADD);
+      $this->setForceInsert(true);
+      $this->setForceUpdate(true);
     }
 
     /**
-     * Converts the internal attribute value to one that is understood by the
-     * database.
-     *
-     * In the case of atkUpdateStampAttribute, this method is used to
-     * calculate the timestamp of last modification.
-     * 
-     * @param array $rec The record that is being stored.
-     * @return String The last-modified timestamp in sql-compatible format.
+     * Value to DB.
      */
-    function value2db($rec)
+    function value2db($record)
     {
-      $timestamp = mktime();
-      $stamp = date("Y-m-d H:i:s",$timestamp);
-      $this->m_stamp = array("year"=>date("Y",$timestamp),
-                 "month"=>date("m",$timestamp),
-                 "day"=>date("d",$timestamp),
-                 "hours"=>date("H",$timestamp),
-                 "minutes"=>date("i",$timestamp),
-                 "seconds"=>date("s",$timestamp));
-      return $stamp;
+      // if record not created using a form this situation can occur, so set the value here
+      if (!is_array($record[$this->fieldName()]))
+        $record[$this->fieldName()] = $this->fetchValue();
+      return parent::value2db($record);
     }
-
+    
     /**
-     * Returns a displayable string for this value, to be used in HTML pages.
-     *
-     * In this case, the timestamp is returned in human readable format.
-     *
-     * @param array $record The record that holds the value for this attribute
-     * @param String $mode The display mode ("view" for viewpages, or "list" 
-     *                     for displaying in recordlists). The regular
-     *                     atkAttribute does not use this parameter, but
-     *                     derived attributes may use it to distinguish
-     *                     between the two display modes.
-     * @return String HTML String 
+     * Fetch value.
      */
-    function display($rec, $mode="")
+    function fetchValue()
     {
-      $stamp = ($this->m_stamp != "" ? parent::display(array($this->fieldName()=>$this->m_stamp)) : parent::display($rec,$mode));
-      return $stamp;
+      return atkDateTimeAttribute::datetimeArray();
     }
-
-    /**
-     * This function is called by the framework to determine if the attribute
-     * needs to be saved to the database in an updateDb call.
-     *
-     * In this case, true is returned in all cases, since we always want to
-     * store the last-modification stamp.
-     *
-     * @param array $record The record that is going to be saved.
-     * @return boolean true
-     */
-    function needsUpdate($rec)
-    {
-      // no matter what, we always save a new value.
-      return true;
-    }
-
-    /**
-     * This function is called by the framework to determine if the attribute
-     * needs to be saved to the database in an addDb call.
-     *
-     * In this case, true is returned in all cases, since we always want to
-     * store the last-modification stamp.
-     *
-     * @param array $record The record that is going to be saved.
-     * @return boolean true
-     */
-    function needsInsert($rec)
-    {
-      // no matter what, we always save a new value.
-      return true;
-    }
-
-
+    
     /**
      * Returns a piece of html code for hiding this attribute in an HTML form,
      * while still posting its value. (<input type="hidden">)

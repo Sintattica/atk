@@ -84,8 +84,12 @@
         parent::checkTabRights($tablist);
       }
     }
-          
+    
+    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="")
+    {
+      if(isset($this->m_results["selectDb"]))
+        return $this->m_results["selectDb"];
+      return parent::selectDb($selector,$order,$limit,$excludelist,$includelist,$mode="");
+    }
   }
-
-
 ?>

@@ -6,7 +6,7 @@ ATK.Attribute = {
   /**
    * Refresh the attribute input form using Ajax.
    */   
-  refresh: function(field, url) {
+  refresh: function(field, url, focusFirstFormEl) {
     var elements = Form.getElements('entryform');
     var queryComponents = new Array();
 
@@ -18,8 +18,13 @@ ATK.Attribute = {
       }
     }
 
-    var params = queryComponents.join('&');          
-
-    new Ajax.Updater(field, url, {method: 'post', parameters: params, evalScripts: true, asynchronous: true });        
+    var params = queryComponents.join('&');  
+            
+    var func = null;
+    if (focusFirstFormEl) {
+      func = function() { try { placeFocus(); } catch (ex) {} };
+    }
+    
+    new Ajax.Updater(field, url, { method: 'post', parameters: params, evalScripts: true, asynchronous: true, onComplete: func });        
   }
 };

@@ -57,8 +57,7 @@
    * @version $Revision$
    *
    * $Id$
-   *
-  */
+   */
 ?>
 
   /**

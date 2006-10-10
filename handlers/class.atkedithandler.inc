@@ -36,6 +36,21 @@
     {
       $page = &$this->getPage();
 
+      list($type, $attribute, $partial) = explode('.', $this->m_partial);
+      if ($type == 'attribute')
+      {
+        $attr =& $this->m_node->getAttribute($attribute);
+        if ($attr == NULL)
+        {
+          atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+          return;
+        }
+
+        $result = $attr->partial($partial, 'edit');
+        $page->addContent($result);
+        return;
+      }      
+
       $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
       if ($this->m_node->hasFlag(NF_LOCK))
       {
@@ -68,6 +83,7 @@
     {
       $node = &$this->m_node;
       $page = &$this->getPage();
+      $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');      
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $page->register_loadscript("placeFocus();");
@@ -76,7 +92,7 @@
 
       $params = $node->getDefaultActionParams($locked);
 
-      $params["formstart"] = '<form name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
+      $params["formstart"] = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                                    ' method="post" onsubmit="return globalSubmit(this)">'.
                                    session_form();
 
@@ -280,6 +296,8 @@
             $tplfield["tooltip"] = $tooltip;
             $editsrc.=$tooltip."&nbsp;";
           }
+          
+          $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["name"]);
 
           $tplfield["full"] = $editsrc;
         }

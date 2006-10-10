@@ -143,7 +143,7 @@
   "import_detectedcolumns" => "Gedetecteerde aantal kolommen",
   "import_detectedrows" => "Aantal gedetecteerde rijen",
   "import_doupdate" => "Voer update uit i.p.v. toevoegen (gebruik om bestaande gegevens te updaten i.p.v. gegevens in te voeren)",
-  "import_error_allfieldnocorrectdata" => "Het veld voor gebruik in ieder record bevat geen correcte invoer",
+  "import_error_allfieldnocorrectdata" => "Het veld voor gebruik in ieder record ('%s') bevat geen correcte invoer (%s)",
   "import_error_fieldisobligatory" => "Het volgende veld is verplicht en moet ingevuld zijn",
   "import_error_fieldsareobligatory" => "De volgende velden zijn verplicht en moeten ingevuld zijn",
   "import_error_fieldsusedtwice" => "De volgende velden zijn twee maal gebruikt",
@@ -232,6 +232,7 @@
   "save_criteria" => "Opslaan zoekopdracht als",
   "search" => "Zoeken",
   "search_all" => "Alles zoeken",
+  "search_none" => "Geen selectie",
   "search_and" => "Alle criteria voldoen",
   "search_between" => "Zoek tussen 2 waarden",
   "search_exact" => "Zoek naar een exact resultaat",
@@ -299,7 +300,10 @@
   "wysiwyg_merge_cell" => "Cellen samenvoegen",
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
-  "recordlistsummary" => "Record [start]-[end] van [count]",
+  "recordlistsummary" => "Records [start]-[end] van [count]",
+  "import_novalidatefirst"=>"Controleer importbestand niet voor importeren",
+  "show" => "Toon",
+  "all" => "Alles",
+  "no_results" => "Geen resultaten gevonden.",
 );
-
 ?>

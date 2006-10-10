@@ -79,7 +79,7 @@
             else
             {
               $location = $this->m_node->feedbackUrl("update",ACTION_FAILED, $record, $db->getErrorMsg());
-              $this->m_node->redirect($location);
+              $this->m_node->redirect($location, $record);
             }
           }
           else
@@ -92,7 +92,7 @@
             {
               // 'save and close' was clicked
               $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
-              $this->m_node->redirect($location);
+              $this->m_node->redirect($location, $record);
             }
             else
             {

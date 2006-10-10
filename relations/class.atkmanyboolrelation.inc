@@ -18,7 +18,6 @@
   /** @internal include baseclass. */
   userelation("atkmanytomanyrelation");
 
-
   /**
    * Attribute flag. When used the atkManyBoolRelation shows add links to add records for the related table
    */

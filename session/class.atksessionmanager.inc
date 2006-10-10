@@ -328,7 +328,7 @@
 
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return.
-      $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch");
+      $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atklimit","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch");
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
@@ -530,19 +530,24 @@
 
       for ($i=0;$i<count($stack);$i++)
       {
+        if (!isset($stack[$i]["atknodetype"])) continue;
+        
         $mod = getNodeModule($stack[$i]["atknodetype"]);
         $node = getNodeType($stack[$i]["atknodetype"]);
         $title = $ui->title($mod, $node, $stack[$i]["atkaction"]);
+        $descriptor = $stack[$i]["descriptor"];
         if ($i<count($stack)-1)
         {
           $res[]=array("url"=>session_url('dispatch.php?atklevel='.$i),
-                       "title"=>$title);
+                       "title"=>$title,
+                       "descriptor"=>$descriptor);
         }
         else
         {
-          $res[]=array("url"=>"", "title"=>$title);
+          $res[]=array("url"=>"", "title"=>$title, "descriptor"=>$descriptor);
         }
       }
+      
       return $res;
     }
 
@@ -585,7 +590,7 @@
         }
       }
       return $res;
-    }
+    }         
 
     /**
      * Verify the integrity of the session stack.

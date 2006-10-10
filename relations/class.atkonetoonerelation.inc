@@ -19,10 +19,26 @@
   /**
    * flags specific for atkOneToOneRelation
    */
-  define("AF_ONETOONE_ADD",             AF_SPECIFIC_1); // override the default no add flag
-  define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2); // enable error notifications / triggers
-  define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3); // invisibly integrate a onetoonerelation as if the fields where part of the current node.
-  define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4); // use lazy loading instead of query addition.
+  
+  /**
+   * Override the default no add flag
+   */
+  define("AF_ONETOONE_ADD",             AF_SPECIFIC_1);
+  
+  /**
+   * Enable error notifications / triggers
+   */
+  define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2);
+  
+  /**
+   * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
+   */
+  define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3);
+  
+  /**
+   * Use lazy loading instead of query addition.
+   */
+  define("AF_ONETOONE_LAZY",            AF_SPECIFIC_4);
 
   /**
    * @internal Include the base class.

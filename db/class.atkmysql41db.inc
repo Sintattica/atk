@@ -36,36 +36,44 @@
     */
    function atkmysql41db()
    {
-       // set type
-       parent::atkmysqldb();
-       $this->m_type = "mysql41";
+     // set type
+     parent::atkmysqldb();
+     $this->m_type = "mysql41";
    }
 
    /**
     * Connect to the database
     * @return connection status
     */
-   function connect()
+   function doConnect($host,$user,$password,$charset)
    {
      /* establish connection */
      if (empty($this->m_link_id))
      {
-       $this->m_link_id = @mysqli_connect($this->m_host, $this->m_user, $this->m_password);
+       $this->m_link_id = @mysqli_connect($host, $user, $password);
        if (!$this->m_link_id)
        {
          $this->halt($this->getErrorMsg());
        }
+       
+       /* set character set */
+       if (!empty($charset))
+       {
+         atkdebug("Set database character set to: {$charset}");
+         @mysqli_query($this->m_link_id, "SET NAMES '{$charset}'");
+       }        
+       
+       /* set autoCommit to off */
+       mysqli_autocommit($this->m_link_id, FALSE);
+  
+       /* select database */
+       if (!@mysqli_select_db( $this->m_link_id, $this->m_database))
+       {
+         $this->halt($this->getErrorMsg());
+         return $this->_translateError();
+       }       
      }
 
-     /* Set AutoCommit to Off */
-     mysqli_autocommit($this->m_link_id, FALSE);
-
-     /* select database */
-     if (!@mysqli_select_db( $this->m_link_id, $this->m_database))
-     {
-       $this->halt($this->getErrorMsg());
-       return $this->_translateError();
-     }
 
      /* return link identifier */
      return DB_SUCCESS;
@@ -128,7 +136,8 @@
      }
 
      /* connect to database */
-     if ($this->connect()==DB_SUCCESS)
+     $mode = $this->getQueryMode($query);
+     if ($this->connect($mode)==DB_SUCCESS)
      {
        /* free old results */
        if ($this->m_query_id)
@@ -206,7 +215,7 @@
    function lock($table, $mode="write")
    {
      /* connect first */
-     if ($this->connect()==DB_SUCCESS)
+     if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock */
        $result = @mysqli_query($this->m_link_id, "lock tables $table $mode");
@@ -225,7 +234,7 @@
    function unlock()
    {
      /* connect first */
-     if ($this->connect()==DB_SUCCESS)
+     if ($this->connect('w')==DB_SUCCESS)
      {
        /* unlock */
        $result = @mysqli_query($this->m_link_id, "unlock tables");
@@ -276,7 +285,7 @@
    function nextid($sequence)
    {
      /* first connect */
-     if ($this->connect()==DB_SUCCESS)
+     if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock sequence table */
        if ($this->lock($this->m_seq_table))
@@ -326,7 +335,7 @@
    function metadata($table, $full=false)
    {
      /* first connect */
-     if ($this->connect()==DB_SUCCESS)
+     if ($this->connect('r')==DB_SUCCESS)
      {
        atkimport("atk.db.atkddl");
        $ddl = &atkDDL::create("mysql41");

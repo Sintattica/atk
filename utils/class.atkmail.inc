@@ -21,6 +21,9 @@
    *
    * @package atk
    * @subpackage utils
+   * 
+   * @deprecated 
+   * @see atkMailer
    */
   class atkMail
   {
@@ -31,6 +34,9 @@
      *
      * @return bool mail succesfully sent? 
      * @static
+     * 
+     * @deprecated 
+     * @see atkMailer
      */
     function mail()
     {

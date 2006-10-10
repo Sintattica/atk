@@ -603,7 +603,7 @@
         return $this->m_ownerInstance->$method($rec, $default);
       else return $this->filenameMangle($rec, $default);
     }
-
+    
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
      * @access public
@@ -620,8 +620,8 @@
         $record[$this->fieldName()] = substr($default, 0, strrpos($default,'.'));
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_filenameTpl);
-        $ext = $this->getFileExtension($default);
-        $filename = $parser->parse($record).".".$ext;
+        $ext = $this->getFileExtension($filename);
+        $filename = $parser->parse($rec).".".$ext;
       }
       return str_replace(' ','_',$filename);
     }

@@ -56,16 +56,28 @@
       if ($s_instance==NULL)
       {     
         atkdebug("Creating a new menu instance");                
-        // Check if the menu config is one of the detail atk menus
-        if(!in_array(atkconfig("menu_layout"),array("plain","frames","outlook","dhtml",'modern')))
+        
+        $layout = atkconfig("menu_layout");
+  
+        // Check if the menu config is one of the default atk menus (deprecated)
+        if (in_array($layout, array("plain","frames","outlook","dhtml",'modern')))
         { 
-          // Check the application menu dir for a class.[menu_layout].inc file
-          $classname = "menu.".atkconfig("menu_layout");          
+          $classname = "atk.menu.atk".$layout."menu";  
         }
+  
+        // Application root menu directory (deprecated)
+        elseif (strpos($layout, '.') === FALSE)
+        {
+          // Check the application menu dir for a class.[menu_layout].inc file
+          $classname = "menu.".$layout;
+        }
+        
+        // Full class name with packages.
         else
         {
-          $classname = "atk.menu.atk".atkconfig("menu_layout")."menu";
+          $classname = $layout;        
         }
+        
         $filename = getClassPath($classname);
         if (file_exists($filename)) $s_instance = atknew($classname);
         else 

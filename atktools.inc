@@ -193,7 +193,7 @@
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
 
-      if ($level>1)
+      if ($level>2)
       {
         atkimport("atk.utils.atkdebugger");
         if (!atkDebugger::addStatement($line))
@@ -612,7 +612,9 @@
 
 
   /**
-   * Same as array_merge from php, but without duplicates..
+   * Same as array_merge from php, but without duplicates.. 
+   * Supports unlimited number of arrays as arguments.
+   * 
    * @param Array $array1 the first array
    * @param Array $array2 the second array
    * @return Array The result of the merge between $array1 and $array2
@@ -620,20 +622,19 @@
   function atk_array_merge($array1, $array2)
   {
     $res = Array();
-    for ($i=0;$i<count($array1);$i++)
+    
+    $arrays = func_get_args();
+    for ($i = 0, $_i = count($arrays); $i < $_i; $i++)
     {
-      if (!in_array($array1[$i],$res))
+      for ($j = 0, $_j = count($arrays[$i]); $j < $_j; $j++)
       {
-        $res[]=$array1[$i];
+        if (!in_array($arrays[$i][$j], $res))
+        {
+          $res[] = $arrays[$i][$j];
+        }
       }
     }
-    for ($i=0;$i<count($array2);$i++)
-    {
-      if (!in_array($array2[$i],$res))
-      {
-        $res[]=$array2[$i];
-      }
-    }
+    
     return $res;
   }
 
@@ -846,6 +847,7 @@
     atkdebug("Warning: deprecated use of stringfields(). Use atkStringParser class instead");
     $tmp = "";
     $adding = false;
+    $fields = array();
     for ($i=0;$i<strlen($string);$i++)
     {
       if ($string[$i]=="]")
@@ -1565,6 +1567,23 @@
       $url .= '&'.buildQueryString($params);
     return $url;
   }
+  
+  /**
+   * Generate a partial url.
+   *
+   * @param string $node the (module.)node name
+   * @param string $action the atkaction
+   * @param string $partial the partial name
+   * @param array $params a key/value array with extra params
+   * @return string url for the partial action
+   */
+  function partial_url($node, $action, $partial, $params=array())
+  {
+    if (!is_array($params))
+      $params = array();
+    $params['atkpartial'] = $partial;
+    return session_url(dispatch_url($node, $action, $params), SESSION_DEFAULT);
+  }   
 
   /**
    * Writes trace file to system tmp directory
@@ -1736,8 +1755,8 @@
 
     if (class_exists($classname))
     {
-      $tmp = new $classname;
-      return $tmp;
+      $obj = &new $classname();
+      return $obj;
     }
     else
     {
@@ -1952,7 +1971,7 @@
   {
     return (isset($array[$key]) ? $array[$key] : $defaultvalue);
   }
-  
+
   /**
    * Add a class overloader
    *

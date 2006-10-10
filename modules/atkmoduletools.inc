@@ -245,6 +245,7 @@
 
     $exists = is_object($module) && $module->nodeExists($node);
     $existence[$node] = $exists;
+    atkdebug("Node $node exists? ".($exists ? 'yes' : 'no'));
     return $exists;
   }
 

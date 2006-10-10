@@ -16,23 +16,31 @@
    
 function placeFocus()
 {
-  if (document.forms.length > 0) 
-  {
-    var field = document.forms[0];
-    for (i = 0; i < field.length; i++) 
-    {      
-      if (((field.elements[i].type == "text") || (field.elements[i].type =="textarea") || (field.elements[i].type.toString().charAt(0) == "s"))) 
+  if (document.forms.length == 0) return;
+
+  var fields = document.forms[0].elements;
+  for (i = 0; i < fields.length; i++) 
+  { 
+    var field = fields[i];
+    var type = field.type.toLowerCase();     
+    if (type == "text" || type == "textarea" || type.toString().charAt(0) == "s") 
+    {
+      var found = false;
+      
+      var node = field.parentNode;
+      while (node != null)
       {
-        if (field.elements[i].id) 
+        if (node.nodeName.toLowerCase() == 'tr')
         {
-          obj = get_object('ar_'+field.elements[i].id);
-          if (obj && obj.style.display!=='none')
-          {
-            document.forms[0].elements[i].focus();
-            break;
-          }
+          found = node.id != null && node.id.substring(0, 3) == 'ar_' && node.style.display != 'none';
+          field.focus();
+          break;
         }
+        
+        node = node.parentNode;
       }
+      
+      if (found) break;
     }
   }
 }

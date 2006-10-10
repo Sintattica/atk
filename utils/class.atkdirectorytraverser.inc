@@ -82,12 +82,12 @@
      */
     function traverse($path)
     {
-      if (is_file($path))
+      if (@is_file($path))
       {
         $this->_callback("visitFile", $path);
         return true;
       }
-      elseif (is_dir($path))
+      elseif (@is_dir($path))
       {
         $this->_callback("visitDir", $path);
         $filenames = $this->getDirContents($path);

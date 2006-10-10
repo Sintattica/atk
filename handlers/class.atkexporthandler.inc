@@ -126,9 +126,9 @@
           else $checked = '';
 
           $p_attr = &$this->m_node->getAttribute($item['name']);
-          $attr = &$this->m_node->getAttribute($item["name"]);
-          $label = $attr->text($item["name"]);
+          $label = $p_attr->text($item["name"]);
           $content.= '<TD align="left" width="'.(90/$cols).'%"><LABEL><INPUT TYPE="checkbox" NAME="export_'.$item['name'].'" VALUE="export_'.$item['name'].'" '.$checked.'>'.$label.'</LABEL></TD>';
+          
           $idx++;
           if($idx%$cols == 0)
           {

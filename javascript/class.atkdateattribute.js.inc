@@ -29,11 +29,9 @@
    * behaviour!
    *
    * @author Peter Verhage <peter@ibuildings.nl>
-
    * @version $Revision$
    *
    * $Id$
-   *
    */
 
   /* change dir for includes */

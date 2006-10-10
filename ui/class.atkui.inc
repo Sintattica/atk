@@ -134,7 +134,7 @@
       {
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
 
         $tabscript = "var tabs = new Array();\n";
         foreach($vars["tabs"] as $tab)
@@ -256,7 +256,7 @@
       {
         if ($actiononly)
         {
-          return atktext($action, "atk");
+          return atktext($action, $module);
         }
         else
         {
@@ -265,7 +265,7 @@
           if ($label == "")
             $label = $node->text($nodetype);
           if ($action != NULL)
-            $label .= " - ".atktext($action, "atk");
+            $label .= " - ".atktext($action, $module);
         }
       }
       return $label;

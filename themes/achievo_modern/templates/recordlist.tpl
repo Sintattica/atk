@@ -1,4 +1,4 @@
-
+{$formstart}
 <table cellspacing="0" cellpadding="0" class="recordListContainer">
   <tr>
     <td>
@@ -84,3 +84,4 @@
    </tr>
   {/if}
 </table>
+{$formend}

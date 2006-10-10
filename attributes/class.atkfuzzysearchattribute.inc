@@ -265,7 +265,7 @@
       $result = array();
       
       if ($this->createSearchNodeInstance() && $searchstring!="")
-      {      
+      {
         $tokens = explode(",", $searchstring);
         foreach ($tokens as $token)
         {

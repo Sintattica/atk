@@ -71,11 +71,12 @@
     {
       if(is_array($record[$this->fieldName()]))
       {
-        for ($i=0;$i<count($this->m_values);$i++)
+        $values = $this->getValues($record);
+        for ($i=0;$i<count($values);$i++)
         {
-          if(in_array($this->m_values[$i],$record[$this->fieldName()]))
+          if(in_array($values[$i],$record[$this->fieldName()]))
           $result .= '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[]"
-                      value="'.$this->m_values[$i].'">';
+                      value="'.$values[$i].'">';
         }
       } else parent::hide($record,$fieldprefix);
       return $result;
@@ -100,12 +101,11 @@
 
     function display($record)
     {
-       $values = $record[$this->fieldName()];
+       $values = $record[$this->fieldName()];       
        $res=array();
        for ($i=0;$i<count($values);$i++)
        {
-         if($this->hasFlag(AF_NO_TRANSLATION)) $res[] = $this->m_lookup[$values[$i]];
-         else $res[] = atktext($this->m_lookup[$values[$i]],$this->m_ownerInstance->m_module);
+         $res[] = $this->_translateValue($values[$i],$record);
        }
        return implode(', ',$res);
     }
@@ -133,21 +133,19 @@
 
       $result .="\n<table><tr>\n";
 
-      for ($i=0;$i<count($this->m_values);$i++)
+      $values = $this->getValues($record);
+      for ($i=0;$i<count($values);$i++)
       {
         if (!$this->hasFlag(AF_CHECK_ALL))
         {
-          (atk_in_array($this->m_values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
+          (atk_in_array($values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
         }
         else
         {
           $sel = "checked";
         }
 
-        if($this->hasFlag(AF_NO_TRANSLATION)) $string = $this->m_options[$i];
-        else $string = atktext($this->m_options[$i],$this->m_ownerInstance->m_module);
-
-        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$this->m_values[$i].'" '.$sel.'>'.$string.'</td>';
+        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record).'</td>';
         $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);
 
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";

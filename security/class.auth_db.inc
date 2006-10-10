@@ -27,29 +27,56 @@
    {
      var $m_rightscache = array();
 
+     
+     function buildSelectUserQuery($user,$usertable,$userfield,$passwordfield,$accountdisablefield=null,$accountenbleexpression=null)
+     {
+       $disableexpr="";
+       if($accountdisablefield) $disableexpr = ", $accountdisablefield";
+       $query = "SELECT $passwordfield $disableexpr FROM $usertable WHERE $userfield ='$user'";
+       if ($accountenbleexpression) $query .= " AND $accountenbleexpression";
+       return $query;
+     }
+     
      function validateUser($user, $passwd)
      {
        if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
 
        $db = &atkGetDb();
-       $userexpr = $db->escapeSql($user);
-       if (atkconfig("auth_accountdisablefield")!="")
-       {
-         $query = "SELECT ".atkconfig("auth_passwordfield").",".atkconfig("auth_accountdisablefield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
-         if (atkconfig("auth_accountenableexpression")!="") $query .= " AND ".atkconfig("auth_accountenableexpression");
-       }
-       else
-       {
-         $query = "SELECT ".atkconfig("auth_passwordfield")." FROM ".atkconfig("auth_usertable")." WHERE ".atkconfig("auth_userfield")." ='$userexpr'";
-         if (atkconfig("auth_accountenableexpression")!="") $query .= " AND ".atkconfig("auth_accountenableexpression");
-       }
+       $query = $this->buildSelectUserQuery($db->escapeSql($user),
+                                            atkconfig("auth_usertable"),
+                                            atkconfig("auth_userfield"),
+                                            atkconfig("auth_passwordfield"),
+                                            atkconfig("auth_accountdisablefield"),
+                                            atkconfig("auth_accountenableexpression"));
        $recs = $db->getrows($query);
-       if (isset($recs[0][atkconfig("auth_accountdisablefield")])&&$recs[0][atkconfig("auth_accountdisablefield")]==1)
+       if ($this->isLocked($recs[0]))
        {
          return AUTH_LOCKED;
        }
 
-       return ((count($recs)>0 && $user!="" && $this->matchPasswords($recs[0][atkconfig("auth_passwordfield")], $passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
+       return ((count($recs)>0 && $user!="" && $this->matchPasswords($this->getPassword($recs[0]), $passwd))?AUTH_SUCCESS:AUTH_MISMATCH);
+     }
+     
+     /**
+      * returns the users password from record
+      *
+      * @param array $rec record from database
+      * @return mixed userspw
+      */
+     function getPassword($rec)
+     {
+       return (isset($rec[atkconfig("auth_passwordfield")]))?$rec[atkconfig("auth_passwordfield")]:false;
+     }
+     
+     /**
+      * checks wether the useraccount is locked
+      *
+      * @param array $rec record from db
+      * @return bool true in case of a locked account
+      */
+     function isLocked($rec)
+     {
+       return (isset($rec[atkconfig("auth_accountdisablefield")])&&$rec[atkconfig("auth_accountdisablefield")]==1);
      }
 
      /**
@@ -80,20 +107,19 @@
        return atkconfig("authentication_md5");
      }
 
-     function getUser($user)
+     function selectUser($user)
      {
-       $db = &atkGetDb();
-
        $usertable = atkconfig("auth_usertable");
+       $userfield = atkconfig("auth_userfield");
        $leveltable = atkconfig("auth_leveltable");
        $levelfield = atkconfig("auth_levelfield");
-       $userfield = atkconfig("auth_userfield");
        $userpk = atkconfig("auth_userpk");
        $userfk = atkconfig("auth_userfk", $userpk);
        $grouptable = atkconfig("auth_grouptable");
        $groupfield = atkconfig("auth_groupfield");
        $groupparentfield = atkconfig("auth_groupparentfield");
 
+       $db = &atkGetDb();
        if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
@@ -121,14 +147,38 @@
        }
 
        $recs = $db->getrows($query);
+       return $recs;
+     }
+     
+     function getParentGroups($parents)
+     {
+       $db = &atkGetDb();
 
+       $grouptable = atkconfig("auth_grouptable");
+       $groupfield = atkconfig("auth_groupfield");
+       $groupparentfield = atkconfig("auth_groupparentfield");
+
+       $query = &$db->createQuery();
+       $query->addField($groupparentfield);
+	     $query->addTable($grouptable);
+       $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).")");
+       $recs = $db->getrows($query->buildSelect(TRUE));
+       return $recs;
+     }
+     
+     function getUser($user)
+     {
+       $grouptable = atkconfig("auth_grouptable");
+       $groupfield = atkconfig("auth_groupfield");
+       $groupparentfield = atkconfig("auth_groupparentfield");
+
+       $recs = $this->selectUser($user);
        $groups = array();
 
        // We might have more then one level, so we loop the result.
        if (count($recs)>0)
        {
          $level = array();
-
          $parents = array();
 
          for ($i=0;$i<count($recs);$i++)
@@ -143,12 +193,7 @@
          $groups = array_merge($groups, $parents);
          while (count($parents) > 0)
          {
-  	       $query = &$db->createQuery();
-  	       $query->addField($groupparentfield);
-    	     $query->addTable($grouptable);
-  	       $query->addCondition("$grouptable.$groupfield IN (".implode(',', $parents).")");
-  	       $precs = $db->getrows($query->buildSelect(TRUE));
-
+           $precs = $this->getParentGroups($parents);
            $parents = array();
   	       foreach ($precs as $prec)
   	         if ($prec[$groupparentfield] != "")
@@ -163,6 +208,17 @@
        if (count($level) == 1)
          $level = $level[0];
 
+       $userinfo = $recs[0];
+       $userinfo["name"]=$user;
+       $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
+       $userinfo["groups"]=$groups;
+       $userinfo["access_level"]=$this->getAccessLevel($recs);
+
+       return $userinfo;
+     }
+
+     function getAccessLevel($recs)
+     {
        // We might have more then one access level, so we loop the result.
        if (count($recs)>1)
        {
@@ -182,15 +238,9 @@
            $access = $recs[0][atkconfig("auth_accesslevelfield")];
          }
        }
-       $userinfo = $recs[0];
-       $userinfo["name"]=$user;
-       $userinfo["level"]=$level; // deprecated. But present for backwardcompatibility.
-       $userinfo["groups"]=$groups;
-       $userinfo["access_level"]=$access;
-
-       return $userinfo;
+       return $access;
      }
-
+     
      function getEntity($node, $action)
      {
        $db = &atkGetDb();

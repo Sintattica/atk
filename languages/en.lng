@@ -143,7 +143,7 @@
   "import_detectedcolumns" => "Detected number of columns",
   "import_detectedrows" => "Number of detected rows",
   "import_doupdate" => "Try to update existing records",
-  "import_error_allfieldnocorrectdata" => "The field for use in every record does not contain valid data",
+  "import_error_allfieldnocorrectdata" => "The field for use in every record ('%s') does not contain valid data (%s)",
   "import_error_fieldisobligatory" => "The next field is required and should contain data",
   "import_error_fieldsareobligatory" => "The next fields are required and should contain data",
   "import_error_fieldsusedtwice" => "The next fields are used twice",
@@ -232,6 +232,7 @@
   "save_criteria" => "Save search as",
   "search" => "Search",
   "search_all" => "Search all",
+  "search_none" => "Nothing selected",
   "search_and" => "Match all criteria",
   "search_between" => "Search between two values",
   "search_exact" => "Search for an exact match",
@@ -300,6 +301,8 @@
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
   "recordlistsummary" => "Record [start]-[end] out of [count]",
+  "show" => "Show",
+  "all" => "All",
+  "no_results" => "No results found.",  
 );
-
 ?>

@@ -42,7 +42,18 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
     $this->m_options = $options;
     
     $this->setDescriptorTemplate($template);
-    if (isset($options["filter"])) $this->setDestinationFilter($options["filter"]);
+
+    if (isset($options["filter"])) 
+      $this->setDestinationFilter($options["filter"]);
+    
+    $cols = array();
+    if (array_key_exists('listcols', $options))  
+      $cols = $options['listcols'];
+    else if (array_key_exists('listcolumns', $options))
+      $cols = $options['listcolumns'];
+      
+    foreach ($cols as $col)
+      $this->addListColumn($col);
   }
   
   /**
@@ -59,7 +70,8 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
     $policy = &$this->m_ownerInstance->getMetaPolicy();
 
     $this->m_destination = $policy->findDestination($this->m_accessor, false);
-    atkdebug("atkMetaManyToOneRelation: {$this->m_accessor} destination {$this->m_destination}");    
+    atkdebug("atkMetaManyToOneRelation: {$this->m_accessor} destination '{$this->m_destination}");    
+    
     if ($this->m_destination == NULL) return FALSE;
     return parent::createDestination();
   }

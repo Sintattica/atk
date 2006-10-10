@@ -55,7 +55,7 @@
      * @param string $password Password
      * @return mixed Connection status
      */
-    function doConnect($host,$user,$password)
+    function doConnect($host,$user,$password,$charset)
     {
       /* establish connection */
       if (empty($this->m_link_id))
@@ -65,6 +65,13 @@
         {
           $this->halt($this->getErrorMsg());
         }
+        
+        /* set character set */
+        if (!empty($charset))
+        {
+          atkdebug("Set database character set to: {$charset}");
+          @mysql_query($this->m_link_id, "SET NAMES '{$charset}'");
+        }        
       }
 
       /* select database */
@@ -230,8 +237,16 @@
       /* connect first */
       if ($this->connect("w")==DB_SUCCESS)
       {
+        $query = "lock tables $table $mode";
+           
+        if (atkconfig("debug")>0)
+        {               
+          atkimport("atk.utils.atkdebugger");        
+          atkDebugger::addQuery($query);
+        }        
+
         /* lock */
-        $result = @mysql_query("lock tables $table $mode", $this->m_link_id);
+        $result = @mysql_query($query, $this->m_link_id);
         if (!$result) $this->halt("$mode lock on $table failed.");
 
         /* return result */

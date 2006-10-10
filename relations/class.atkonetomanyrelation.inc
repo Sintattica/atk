@@ -141,16 +141,16 @@
 
       if ($this->createDestination())
       {
-        /* record list */
+        // record list 
         if (count($myrecords) > 0)
         {
           $result = "";
-          /* display in list mode */
+          // display in list mode 
           if (($mode == "list") || ($mode == "csv"))
             for ($i = 0; $i < count($myrecords);$i++)
               $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
 
-          /* display in view mode */
+          // display in view mode 
           else
           {
             if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
@@ -227,39 +227,22 @@
     function _checkIntegratedSave()
     {
       $error = "";
-      if ($this->hasFlag(AF_ONETOMANY_EMBED))
+      if (!$this->hasFlag(AF_ONETOMANY_NO_EMBED))
       {
         if ($this->m_ownerInstance->m_postvars[$this->fieldName()."_save"])
         {
-          $this->m_ownerInstance->m_postvars[$this->fieldName()]['lng'] = $this->m_ownerInstance->m_postvars['lng'];
-          foreach (array_keys($this->m_ownerInstance->m_postvars[$this->fieldName()]) as $fieldname)
-          {
-            if (!in_array($fieldname,array("atkaction","atknodetype","atkprimkey")))
-            {
-              $attribute = &$this->m_destInstance->getAttribute($fieldname);
+          $destCopy = $this->m_destInstance;
+          $destCopy->m_postvars = $this->m_ownerInstance->m_postvars[$this->fieldName()];
+          $record = $destCopy->updateRecord();
 
-              if (in_array($fieldname,array('_lgswitch','lng')))
-              {
-                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $this->m_ownerInstance->m_postvars[$fieldname];
-              }
-              else if (is_object($attribute))
-              {
-                $this->m_ownerInstance->m_postvars[$this->fieldName()][$fieldname] = $attribute->fetchValue($this->m_ownerInstance->m_postvars[$this->fieldName()]);
-              }
-              else
-              {
-                atkerror("$fieldname is no attribute for integrated save, is this correct?");
-              }
-            }
-          }
-          $this->m_destInstance->validate($this->m_ownerInstance->m_postvars[$this->fieldName()],"add");
-          if (!$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'])
+          $this->m_destInstance->validate($record,"add");
+          if (!$record['atkerror'])
           {
-            $this->m_destInstance->addDb($this->m_ownerInstance->m_postvars[$this->fieldName()]);
+            $this->m_destInstance->addDb($record);
           }
           else
           {
-            $error = "<span class='error'>".atktext($this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['attrib_name'],$this->m_ownerInstance->m_module).': '.$this->m_ownerInstance->m_postvars[$this->fieldName()]['atkerror'][0]['msg']."</span><br />";
+            $error = "<span class='error'>".$record['atkerror'][0]['attrib_name'].': '.$record['atkerror'][0]['msg']."</span><br />";
           }
         }
       }
@@ -307,13 +290,14 @@
 
         $destInstanceCopy = $this->m_destInstance;
         $editrecord=array();
-        foreach ($destInstanceCopy->m_attribList as $key=> $attribute)
+        foreach (array_keys($destInstanceCopy->m_attribList) as $key)
         {
-          if (strtolower($attribute->m_destination)==strtolower($this->m_ownerInstance->atknodetype()))
+          // When we're in a OTM we need to hide MTOs back to the current owner
+          $p_attrib = &$destInstanceCopy->m_attribList[$key];          
+          if (strtolower($p_attrib->m_destInstance->m_table)==strtolower($this->m_ownerInstance->m_table))
           {
             $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
-            $editrecord[$attribute->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
-            $p_attrib = &$destInstanceCopy->m_attribList[$key];
+            $editrecord[$p_attrib->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
             $p_attrib->addFlag(AF_HIDE);
           }
         }
@@ -851,16 +835,16 @@
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
       return $result;
     }
-
-
+    
+    
     /**
      * Returns the condition (SQL) that should be used when we want to join an owner
      * node with the destination node of the atkOneToManyRelation.
-     *
+     * 
      * @param atkQuery $query      The query object.
      * @param String   $ownerAlias The owner table alias.
      * @param String   $destAlias  The destination table alias.
-     *
+     * 
      * @return String SQL string for joining the owner with the destination.
      */
     function getJoinCondition(&$query, $ownerAlias="", $destAlias="")
@@ -869,10 +853,10 @@
 
       if ($ownerAlias == "")
         $ownerAlias = $this->m_ownerInstance->m_table;
-
+        
       if ($destAlias == "")
         $destAlias = $this->m_destInstance->m_table;
-
+        
       $conditions = array();
 
       for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++)
@@ -881,12 +865,12 @@
       }
 
       return implode(" AND ", $conditions);
-    }
+    }     
 
     /**
      * Creates a smart search condition for a given search value, and adds it
      * to the query that will be used for performing the actual search.
-     *
+     * 
      * @param Integer  $id         The unique smart search criterium identifier.
      * @param Integer  $nr         The element number in the path.
      * @param Array    $path       The remaining attribute path.
@@ -899,13 +883,13 @@
     {
       // one-to-many join means we need to perform a distinct select
       $query->setDistinct(true);
-
+      
       if (count($path) > 0)
       {
         $this->createDestination();
-
+        
         $destAlias = "ss_{$id}_{$nr}_".$this->fieldName();
-
+        
         $query->addJoin(
           $this->m_destInstance->m_table, $destAlias,
           $this->getJoinCondition($query, $ownerAlias, $destAlias),
@@ -914,17 +898,17 @@
 
         $attrName = array_shift($path);
         $attr = &$this->m_destInstance->getAttribute($attrName);
-
+        
         if (is_object($attr))
         {
           $attr->smartSearchCondition($id, $nr + 1, $path, $query, $destAlias, $value, $mode);
         }
       }
-      else
+      else 
       {
         $this->searchCondition($query, $ownerAlias, $value, $mode);
       }
-    }
+    }    
 
     /**
      * Adds a search condition for a given search value

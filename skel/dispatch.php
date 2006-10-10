@@ -71,7 +71,9 @@
 
     if (is_object($obj))
     {
-      $obj->dispatch($ATK_VARS);
+      atkimport("atk.ui.atkpage");
+      $flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
+      $obj->dispatch($ATK_VARS, $flags);
     }
     else
     {

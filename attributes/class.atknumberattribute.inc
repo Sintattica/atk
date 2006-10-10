@@ -130,8 +130,8 @@
 
     function value2db($rec)
     {
-      if(($rec[$this->fieldName()]==="" || $rec[$this->fieldName()]===NULL) && !$this->hasFlag(AF_OBLIGATORY))
-        return "NULL";
+      if(strlen($rec[$this->fieldName()])==0&&!$this->hasFlag(AF_OBLIGATORY))
+        return NULL;
 
       if($this->m_decimals>0)
         return round((float) $rec[$this->fieldName()], $this->m_decimals);
@@ -168,7 +168,18 @@
      * @return Piece of htmlcode
      */
     function edit($record="", $fieldprefix="")
-    {
+    { 
+      $id = $this->getHtmlId($fieldprefix);
+      if (count($this->m_onchangecode))
+      {
+        $onchange = 'onChange="'.$id.'_onChange(this);"';
+        $this->_renderChangeHandler($fieldprefix);
+      }
+      else
+      {
+        $onchange = '';
+      }      
+
       $maxsize = $this->m_maxsize;
       if ($this->m_decimals>0)
       {
@@ -184,7 +195,7 @@
       $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.
                 '" value="'.$value.'"'.
                 ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').'>';
+                ($maxsize > 0 ? ' maxlength="'.$maxsize.'"' : '').' '.$onchange.' />';
 
       return $result;
     }
@@ -279,7 +290,6 @@
             // User entered fields in wrong order. Let's fix that.
             $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
           }
-
           $searchcondition = $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
         }
         else if ($value["from"]!="" && $value["to"]=="")

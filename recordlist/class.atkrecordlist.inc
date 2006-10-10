@@ -153,6 +153,13 @@
 
         foreach (array_values($list["heading"]) as $head)
         {
+          // make old recordlist compatible with new order specification
+          if (!empty($head["order"]))
+          {
+            global $ATK_VARS;
+            $head["url"] = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($head["order"]));            
+          }
+          
           if (hasFlag($this->m_flags, RL_EMBED) && !empty($head["url"]))
           {
             $head["url"] = str_replace("atkorderby=","atkorderby{$embedprefix}=",$head["url"]);

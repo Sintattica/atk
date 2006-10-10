@@ -82,7 +82,7 @@ function makeFCKEditable()
 
 function getCurrentTab()
 {
-  return getTab(getCurrentNodetype(), getCurrentSelector());
+  return <?php echo $_REQUEST['stateful'] ? 'getTab(getCurrentNodetype(), getCurrentSelector())' : ''; ?>;
 }
 
 function getTab(nodetype, selector)
@@ -93,7 +93,25 @@ function getTab(nodetype, selector)
 
 function setCurrentTab(value)
 {
-  return setTab(getCurrentNodetype(), getCurrentSelector(), value);
+  setTab(getCurrentNodetype(), getCurrentSelector(), value);
+  
+  for (var i = 0; i < document.forms.length; i++)
+  {
+    var form = document.forms[i];
+    if (form.atktab != null)
+    {
+      form.atktab.value = value;
+    }
+    else
+    {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'hidden');
+      input.setAttribute('name', 'atktab');      
+      input.setAttribute('value', value);
+      form.appendChild(input);      
+      form.atktab = input;
+    }
+  }
 }
 
 function setTab(nodetype, selector, value)

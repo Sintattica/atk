@@ -90,6 +90,13 @@
      * @var String
      */
     var $m_port = "";
+    
+    /**
+     * The character set.
+     * @access private
+     * @var String
+     */
+    var $m_charset = "";    
 
     /**
      * The mode for the connection.
@@ -433,16 +440,17 @@
         $this->m_user = $tmp_db->m_user;
         $this->m_password = $tmp_db->m_password;
         $this->m_port = $tmp_db->m_port;
+        $this->m_charset = $tmp_db->m_charset;
         $this->m_mode = $tmp_db->m_mode;
         $this->m_dbcluster = $tmp_db->m_dbcluster;
         atkdebug("atkdb::connect -> New mode = ".$this->m_mode);
 
-        $this->doConnect($this->m_host,$this->m_user,$this->m_password);
+        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_charset);
       }
       elseif($this->m_link_id==NULL)
       {
         atkdebug("atkdb::connect -> Don't switch use current db");
-        $this->doConnect($this->m_host,$this->m_user,$this->m_password);
+        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_charset);
       }
 
     }
@@ -818,7 +826,7 @@
 
         $g_dbinstances[$conn] = &atknew("atk.db.atk".$dbconfig[$new_conn]["driver"]."db");
         $g_dbinstances[$conn]->m_connection = $new_conn;
-        $g_dbinstances[$conn]->m_mode     = (isset($dbconfig[$new_conn]["mode"])?$dbconfig[$new_conn]["mode"]:"rw");
+        $g_dbinstances[$conn]->m_mode = (isset($dbconfig[$new_conn]["mode"])?$dbconfig[$new_conn]["mode"]:"rw");
         if (isset($dbconfig[$new_conn]["db"]))
         {
           $g_dbinstances[$conn]->m_database = $dbconfig[$new_conn]["db"];
@@ -826,13 +834,13 @@
           $g_dbinstances[$conn]->m_password = $dbconfig[$new_conn]["password"];
           $g_dbinstances[$conn]->m_host     = $dbconfig[$new_conn]["host"];
           if (isset($dbconfig[$new_conn]["port"]))
-              $g_dbinstances[$conn]->m_port     = $dbconfig[$new_conn]["port"];
+            $g_dbinstances[$conn]->m_port = $dbconfig[$new_conn]["port"];
+          if (isset($dbconfig[$new_conn]["charset"]))
+            $g_dbinstances[$conn]->m_charset = $dbconfig[$new_conn]["charset"];
           $dbcluster = atkconfig("db_cluster");
           if(is_array($dbcluster) && isset($dbcluster[$conn]))
             $g_dbinstances[$conn]->m_dbcluster = $conn;
-
         }
-
       }
 
       return $g_dbinstances[$conn];
