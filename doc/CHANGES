@@ -354,6 +354,7 @@ Changed in ATK 5.7
 * Fixed OCI auto-increment/sequence information in metadata. [Peter]
 * Fixed setting m_mode in atkDb. This should always be done for atkMockDb to 
   work. [Lineke]
+* Fixed csv export for atkNodes. [patrick]
 
 Changed in ATK 5.6
 ------------------
