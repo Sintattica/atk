@@ -620,8 +620,8 @@
         $record[$this->fieldName()] = substr($default, 0, strrpos($default,'.'));
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_filenameTpl);
-        $ext = $this->getFileExtension($filename);
-        $filename = $parser->parse($rec).".".$ext;
+        $ext = $this->getFileExtension($default);
+        $filename = $parser->parse($record).".".$ext;
       }
       return str_replace(' ','_',$filename);
     }
