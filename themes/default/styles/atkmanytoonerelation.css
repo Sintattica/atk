@@ -28,16 +28,17 @@ div.atkmanytoonerelation_result ul  {
 div.atkmanytoonerelation_result li.selected 
 { 
   background-color: Highlight;
-  color: HighlightText;
+  color: HighlightText;  
 }
 
 div.atkmanytoonerelation_result li.no_results {
   font-style: italic;
-  font-weight: bold;
+  font-weight: bold;  
 }
 
 div.atkmanytoonerelation_result li {
   list-style-type: none;
+  white-space: nowrap;
   display: block;
   margin: 0px;
   padding: 2px 2px 2px 3px;

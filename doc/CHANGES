@@ -468,6 +468,8 @@ Changed in ATK 5.7
 * Use select mode for retrieval of records for atkManyToOneRelation. [Peter]
 * Fetch descriptor fields early for atkManyToOneRelation so that they can
   be displayed in the title bar etc. [Dennis,Peter]
+* Autocompletion results of manytoonerelation are not wrapped anymore, each
+  entry is now 1 line. Also added a title to the listitems. [Peter, Dennis]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
