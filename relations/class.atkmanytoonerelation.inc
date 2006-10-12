@@ -256,6 +256,12 @@
           $result[$field] = $value;
         }
 
+        // add descriptor fields, this means they can be shown in the title
+        // bar etc. when updating failed for example
+        $record = array($this->fieldName() => $result);
+        $this->populate($record);
+        $result = $record[$this->fieldName()];
+        
         return $result;
       }
       return NULL;
@@ -417,7 +423,7 @@
      * @param String $fieldprefix  Prefix for the fieldname
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function edit(&$record, $fieldprefix="", $mode="edit")
+    function edit($record, $fieldprefix="", $mode="edit")
     {
       // Two variances.. one with a dropdownbox containing all records,
       // and one with a dropdownbox that contains the last 10 used records,
