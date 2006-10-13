@@ -157,6 +157,8 @@ Changed in ATK 5.7
   can't use the default translation). [Peter]  
 + Added support for atkonetomanyrelation to use other fields of the 
   ownerinstance than the primary key(s). [Lineke]
++ Added check on absolute URL without anchor (ABSOLUTE_NO_ANCHOR) to
+  atkUrlAttribute. Created separate validateUrl function. [Jeroen]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
