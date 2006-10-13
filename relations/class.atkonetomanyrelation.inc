@@ -115,6 +115,20 @@
         $this->m_refKey[] = $refKey;
       }
     }
+    
+    function setOwnerFields($ownerfields)
+    {
+      $this->m_ownerFields = $ownerfields;
+    }
+    
+    function getOwnerFields()
+    {
+      if (is_array($this->m_ownerFields) && count($this->m_ownerFields)>0)
+      {
+        return $this->m_ownerFields;
+      }
+      return $this->m_ownerInstance->m_primaryKey;
+    }
 
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
@@ -423,26 +437,7 @@
       $url = "";
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&$this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
-        if ($this->destinationHasRelation())
-        {
-          // we need to set the filter of the record we are going to add.
-          // The referential key must be set to the value of the current
-          // primary key.
-          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
-          {
-            $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
-
-            $filterelems[] = $this->m_refKey[0].".".$this->m_ownerInstance->m_primaryKey[$i]."=".$primkeyattr->value2db($record);
-
-          }
-        }
-        else
-        {
-          for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
-          {
-            $filterelems[] = $this->m_refKey[$i]."=".$record[$this->m_ownerInstance->m_primaryKey[$i]];
-          }
-        }
+        $filterelems = $this->_getFilterElements($record);
         $strfilter = implode(" AND ", $filterelems);
         if ($this->m_destinationFilter!="")
         {
@@ -463,6 +458,30 @@
         $url = href($add_url,$label,SESSION_NESTED,$saveform,$onchange.' class="atkonetomanyrelation"');
       }
       return $url;
+    }
+    
+    function _getFilterElements($record)
+    {
+      $ownerfields = $this->getOwnerFields();
+      if ($this->destinationHasRelation())
+      {
+        // we need to set the filter of the record we are going to add.
+        // The referential key must be set to the value of the current
+        // primary key.
+        for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+        {
+          $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."=".$primkeyattr->value2db($record);
+        }
+      }
+      else
+      {
+        for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
+        {
+          $filterelems[] = $this->m_refKey[$i]."=".$record[$ownerfields[$i]];
+        }
+      }
+      return $filterelems;
     }
 
     /**
@@ -540,10 +559,11 @@
       $whereelems = array();
 
       if (count($this->m_refKey)==0||$this->m_refKey[0]=="") $this->m_refKey[0]=$this->m_owner;
+      $ownerfields = $this->getOwnerFields();
 
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
-        $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
+        $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
 
         if (!$primkeyattr->isEmpty($record))
         {
@@ -721,10 +741,11 @@
       $classname = $this->m_destination;
       $cache_id = $this->m_owner.".".$this->m_name;
       $rel = &getNode($classname,$cache_id);
+      $ownerfields = $this->getOwnerFields();
 
       for ($i=0, $_i = count($this->m_refKey); $i<$_i; $i++)
       {
-         $primkeyattr = &$this->m_ownerInstance->m_attribList[$this->m_ownerInstance->m_primaryKey[$i]];
+         $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
          $whereelems[] = $rel->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
       }
       $where = implode(" AND ", $whereelems);
@@ -758,6 +779,7 @@
         {
           if ($this->createDestination())
           {
+            $ownerfields = $this->getOwnerFields();
             for ($i=0;$i<count($onetomanyrecs);$i++)
             {
               // the referential key of the onetomanyrecs could be wrong, if we
@@ -767,14 +789,14 @@
               {
                 for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
                 {
-                  $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$this->m_ownerInstance->m_primaryKey[$j]];
+                  $onetomanyrecs[$i][$this->m_refKey[$j]] = $record[$ownerfields[$j]];
                 }
               }
               else
               {
                 for ($j=0, $_j = count($this->m_refKey); $j<$_j; $j++)
                 {
-                   $onetomanyrecs[$i][$this->m_refKey[0]][$this->m_ownerInstance->m_primaryKey[$j]] = $record[$this->m_ownerInstance->m_primaryKey[$j]];
+                   $onetomanyrecs[$i][$this->m_refKey[0]][$ownerfields[$j]] = $record[$ownerfields[$j]];
                 }
               }
 
@@ -858,10 +880,11 @@
         $destAlias = $this->m_destInstance->m_table;
 
       $conditions = array();
+      $ownerfields = $this->getOwnerFields();
 
       for ($i = 0, $_i = count($this->m_refKey); $i < $_i; $i++)
       {
-        $conditions[] = $destAlias.".".$this->m_refKey[$i]."=".$ownerAlias.".".$this->m_ownerInstance->m_primaryKey[$i];
+        $conditions[] = $destAlias.".".$this->m_refKey[$i]."=".$ownerAlias.".".$ownerfields[$i];
       }
 
       return implode(" AND ", $conditions);
@@ -975,9 +998,10 @@
          $attr->searchCondition($query, $alias, $value, $searchmode);
 
          $condition = array();
-         for ($i = 0; $i < sizeof($this->m_ownerInstance->m_primaryKey); $i++)
+         $ownerfields = $this->getOwnerFields();
+         for ($i = 0; $i < sizeof($ownerfields); $i++)
          {
-            $condition[] = $this->m_ownerInstance->m_table . "." . $this->m_ownerInstance->m_primaryKey[$i] . "=". $alias . "." . $this->m_refKey[$i];
+            $condition[] = $this->m_ownerInstance->m_table . "." . $ownerfields[$i] . "=". $alias . "." . $this->m_refKey[$i];
          }
 
          $query->addJoin($table,$alias,implode(" AND ",$condition),false);
