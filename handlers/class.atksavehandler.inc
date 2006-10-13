@@ -58,17 +58,20 @@
           $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
         }
 
-        if ($error)
+        // if an error occured, or we got back from a higher level we present the user
+        // with the add form again (instead of saving the data to the database)
+        if ($error || atkPrevLevel() > atkLevel())
         {
           $this->m_action="add";
           $this->m_node->m_action = "add";
           $page = &$this->getPage();
-          $addhandler = &$this->m_node->getHandler("add");
+          $addhandler = &$this->m_node->getHandler("add");          
           $page->addContent($this->m_node->renderActionPage("add", $addhandler->invoke("addPage", $record)));
         }
         else
         {
           $db = &$this->m_node->getDb();
+
           if(!$this->m_node->addDb($record, true, "add"))
           {
             $db->rollback();

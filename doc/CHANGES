@@ -476,6 +476,13 @@ Changed in ATK 5.7
   entry is now 1 line. Also added a title to the listitems. [Peter, Dennis]
 * A table cell can now have a Row and Col Span in the 
   atkTableRenderer. [Sandy]
+* Bug fix, if going from edit mode to view for the same record the current tab
+  is only shown if it still exists in edit mode. [Dennis,Peter]
+* Bug fix, handle saved form data at the session manager level instead on
+  a lower level (which caused all sorts of problems, e.g. forgotten data,
+  data that shouldn't be there etc.). [Dennis,Peter]
+* If add handler is called directly the user can return to a new add form
+  after saving te first one. [Dennis,Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

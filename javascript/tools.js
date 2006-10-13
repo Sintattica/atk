@@ -120,6 +120,26 @@ function showTr(tab)
   // First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
 
+	// First check if there are any attributes to show for this tab, sometimes
+	// in edit mode other tabs exist then in view mode.
+	var found = false;
+	for (i = 0; i < tags.length; i++)
+	{
+		var tabclass = tags.item(i).className;
+		var id = tags.item(i).id;
+
+		if (id.substring(0,3)=="ar_" && (tabclass.indexOf(tab) != -1 || tabclass=="alltabs"))
+		{
+		  found = true;
+		}
+	}
+	
+	// tab not found, change nothing!
+	if (!found)
+	{
+	  return;
+	}
+	
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none
 	for (i = 0; i < tags.length; i++)
@@ -132,6 +152,7 @@ function showTr(tab)
 		  if (tabclass.indexOf(tab) != -1 || tabclass=="alltabs")
 		  {
   		  tags.item(i).style.display="";
+  		  found = true;
 		  }
 		  else
 		  {

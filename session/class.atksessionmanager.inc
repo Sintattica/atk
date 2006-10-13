@@ -479,7 +479,7 @@
           }
 
           // page vars must overwrite the current stack..
-          $stack[$atklevel] = $currentitem;
+          $stack[$atklevel] = &$currentitem;
 
           // session vars need not be remembered..
           foreach ($sessionVars as $var)
@@ -495,6 +495,15 @@
         if (isset($currentitem["atkformdata"]) && is_array($currentitem["atkformdata"]))
         {
           atkdebug("Session formdata present");
+          foreach($currentitem['atkformdata'] as $var => $value)
+          {
+            // don't override what was passed in the url.
+            if (!isset($postvars[$var]))
+            {
+              $postvars[$var] = $value;
+            }
+          }          
+          unset($currentitem['atkformdata']);
           // atkformdata will be present in postvars.. editForm() has to read them..
         }
 
@@ -768,6 +777,16 @@
       $atklevel = 0; // assume bottom level.
     }
     return $atklevel;
+  }
+  
+  function atkPrevLevel()
+  {
+    global $atkprevlevel;
+    if (!isset($atkprevlevel)||$atkprevlevel=="")
+    {
+      $atkprevlevel = 0; // assume bottom level.
+    }
+    return $atkprevlevel;
   }
 
   // Below added in 5.3 but not working right!!

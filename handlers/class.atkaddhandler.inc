@@ -79,8 +79,9 @@
       $formstart ='<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$_SERVER["PHP_SELF"].'?'.SID.'"'.
                      ' method="post" onsubmit="return globalSubmit(this)">';
 
-      /* if we are on an admin page we would like to stay on the admin page after adding a new record */
-      if ($node->m_action == "admin") $formstart.=session_form(SESSION_NESTED);
+      /* if we are on an admin page we would like to stay on the admin page after adding a new record 
+         if we are on level 0, we want to present the user with a new (empty!) addition form when (s)he gets back */
+      if ($node->m_action == "admin" || atkLevel() == 0) $formstart.=session_form(SESSION_NESTED);
       else $formstart.=session_form();
 
       if (isset($node->m_postvars['atkfilter']))

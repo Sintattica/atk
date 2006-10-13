@@ -133,7 +133,7 @@
 
         $params["content"] = $node->tabulate("view", $innerform);
 
-        $params["formstart"] = '<form method="get">'.session_form(SESSION_NESTED);
+        $params["formstart"] = '<form action="dispatch.php" method="get">'.session_form(SESSION_NESTED);
         $params["buttons"]   = $node->getFormButtons("view", $record);
         $params["formend"] = '</form>';
 

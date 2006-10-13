@@ -849,7 +849,7 @@
           {
             if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = isset($this->m_tabList["add"]) ? atk_array_merge($this->m_tabList["add"], $tab) : $tab;
             if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = isset($this->m_tabList["edit"]) ? atk_array_merge($this->m_tabList["edit"], $tab) : $tab;
-            if (!$attribute->hasFlag(AF_HIDE_ADD|AF_HIDE_EDIT) && !$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = isset($this->m_tabList["view"]) ? atk_array_merge($this->m_tabList["view"], $tab) : $tab;
+            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = isset($this->m_tabList["view"]) ? atk_array_merge($this->m_tabList["view"], $tab) : $tab;
           }
         }
 
@@ -1546,15 +1546,6 @@
       /* default values */
       if (!empty($record)) $defaults = $record;
       else $defaults = array();
-
-      /* formdata from session */
-      if (isset($this->m_postvars["atkformdata"])&&is_array($this->m_postvars["atkformdata"]))
-      {
-        atkdebug("Restoring formdata from session");
-        $this->modifyRecord($defaults, $this->m_postvars["atkformdata"]);
-        $this->m_postvars["atkformdata"]="";
-        $g_sessionData[$this->m_action]['stack'][atkStackID()][atkLevel()]['atkformdata']="";
-      }
 
       /* edit mode */
       if ($mode == "edit")
@@ -2260,14 +2251,6 @@
       $this->m_action = $postvars['atkaction'];
       $this->m_partial = $postvars["atkpartial"];
       
-      /** DIRTY HACK
-          if action is something else than edit, we clear the atkformdata sessionstuff **/
-      if ($this->m_action!="edit"&&$this->m_action!="add"&&$this->m_action!="admin")
-      {
-        atkdebug("Clearing stored formdata");
-        $this->m_postvars["atkformdata"]="";
-      }
-
       $page = &$this->getPage();
 
       if ($this->allowed($this->m_action))
@@ -2458,6 +2441,7 @@
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
+      
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         if ((!is_array($includes) || in_array($attribname, $includes)) &&
@@ -2467,6 +2451,7 @@
           $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
         }
       }
+
       $record["atkprimkey"] = $vars["atkprimkey"];
       return $record;
     }
