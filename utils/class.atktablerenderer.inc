@@ -160,7 +160,14 @@
      */
     function _setSpan($row,$col,$span,$type="col")
     {
-      $this->m_span[$row][$col] = array("span"=>$span,"type"=>$type);
+      if(is_array($this->m_span[$row][$col]))
+      {
+        $this->m_span[$row][$col] = array_merge(array($type."span"=>$span),$this->m_span[$row][$col]);
+      }
+      else
+      {
+        $this->m_span[$row][$col] = array($type."span"=>$span);
+      }
     }
 
     /**
@@ -216,13 +223,15 @@
      *                       - TBL_DATA: Alias for TBL_HEADER|TBL_ALTERNATE.
      * @param string $style  The style to render the table in (without .css
      *                       extension).
+     * @param string $module The module where is style is located.
+     *
      * @return String The rendered table.
      */
-    function render($data, $flags=0, $style="")
+    function render($data, $flags=0, $style="",$module="")
     {
       if ($style!="")
       {
-        $this->registerStyle($style);
+        $this->registerStyle($style,$module);
       }
 
       // Analyze. If not all rows have the same number of columns, we should pad the end.
@@ -230,7 +239,7 @@
 
       // Render
       $output = $this->_start($style);
-
+      $rowspans=array();
       for ($row=0, $_row=count($data); $row<$_row; $row++)
       {
         $output.='<tr class="row'.(hasFlag($flags, TBL_ALTERNATE)?(($row%2)==0?1:2):1).'">';
@@ -243,13 +252,31 @@
         {
           $pre = "<td"; $post = "</td>";
         }
-
+        $total_col =0;
         for ($col=0, $_col=count($data[$row]); $col<$_col; $col++)
         {
+          if ($col == 0)
+          {
+            foreach ($rowspans as $key => $value)
+            {
+              $total_col += $value['colspan'];
+            }
+          }
+
+          $total_col++;
           $align = $this->_alignmentStr($this->getAlignment($row, $col));
-          $colspan = $this->_spanStr($this->getSpan($row, $col));
+          $span = $this->getSpan($row, $col);
+          if($span["rowspan"]!="")
+          {
+            $rowspans[] = $span;
+          }
+          if($span["colspan"]!="")
+          {
+            $total_col+=($span["colspan"]-1);
+          }
+          $colspan = $this->_spanStr($span);
           $class = $this->_classStr($this->getClass($row, $col));
-          
+
           /* If the data contains an array, check for a value and id field. */
           $value = "";
           $id = "";
@@ -258,30 +285,40 @@
             //Use the value field, if available
             if(isset($data[$row][$col]['value']))
               $value = $data[$row][$col]['value'];
-              
+
             //use the id field, if available
             if(isset($data[$row][$col]['id']))
-              $id = 'id="'.$data[$row][$col]['id'].'"';            
+              $id = 'id="'.$data[$row][$col]['id'].'"';
           }
-          else 
-            $value = $data[$row][$col];            
-            
-          $output.=$pre." ".$align." ".$id." ".$class." ".$colspan.">" . $value . $post;
+          else
+            $value = $data[$row][$col];
+
+          $output.=$pre." ".$align." ".$id." ".$class." ".$colspan.">". $value . $post;
+        }
+
+        foreach ($rowspans as $key => $value)
+        {
+          $rowspans[$key]['rowspan']--;
+          if ($rowspans[$key]['rowspan'] == 0)
+            unset($rowspans[$key]);
         }
 
         // Check if we must pad
         $align = $this->_alignmentStr($this->getAlignment($row, $col));
         $class = $this->_classStr($this->getClass($row, $col));
-        if ($col==$max-2)
+
+
+        if ($total_col==$max-1)
         {
           // Must add only one
           $output.=$pre." ".$align." ".$class.">&nbsp;".$post;
         }
-        else if ($col<$max-2)
+        else if ($total_col<$max-1)
         {
           // Must add more
-          $output.=$pre." ".$align.' '.$class.' colspan="'.($max-$col-1).'">&nbsp;'.$post;
+          $output.=$pre." ".$align.' '.$class.' colspan="'.($max-$total_col).'">&nbsp;'.$post;
         }
+
 
         $output.="</tr>\n";
       }
@@ -304,11 +341,11 @@
       return $max;
     }
 
-    function registerStyle($style)
+    function registerStyle($style,$module="")
     {
       $theme = &atkinstance("atk.ui.atktheme");
       $page = &atkPage::getInstance();
-      $page->register_style($theme->stylePath($style.".css"));
+      $page->register_style($theme->stylePath($style.".css",$module));
     }
 
     /**
@@ -387,15 +424,19 @@
      */
     function _spanStr($span)
     {
-      if ($span["span"] == "") return '';    
-    
-      if($span["type"]=="row")
+      if ($span["rowspan"]=="" && $span["colspan"]=="")  return '';
+
+      if($span["rowspan"]!="" && $span["colspan"]!="")
       {
-        return 'rowspan="'.$span["span"].'"';
+        return 'rowspan="'.$span["rowspan"].'" colspan="'.$span["colspan"].'"';
       }
-      else
+      elseif($span["rowspan"]!="")
       {
-        return 'colspan="'.$span["span"].'"';
+        return 'rowspan="'.$span["rowspan"].'"';
+      }
+      elseif($span["colspan"]!="")
+      {
+        return 'colspan="'.$span["colspan"].'"';
       }
     }
 
