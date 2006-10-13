@@ -31,7 +31,7 @@
       static $s_configs = array();
       $fn = 'config_'.$section.'_'.$tag;
       if (function_exists($fn)) return $fn();
-      if (!is_array($s_configs[$section]))
+      if (!isset($s_configs[$section]))
       {
         $s_configs[$section] = array();
         atkdebug("Loading config file for section $section");
