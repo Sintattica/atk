@@ -483,6 +483,8 @@ Changed in ATK 5.7
   data that shouldn't be there etc.). [Dennis,Peter]
 * If add handler is called directly the user can return to a new add form
   after saving te first one. [Dennis,Peter]
+* In advanced search labels are always shown (before AF_NO_LABEL was used to
+  determine if a label should be shown). [Lineke]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

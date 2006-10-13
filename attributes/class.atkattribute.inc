@@ -1865,19 +1865,8 @@
         $field["searchmode"] = $sel;
       }
 
-
       // set "label" value:
-      if ($this->hasFlag(AF_NOLABEL)==false)
-      {
-        if ($this->hasFlag(AF_BLANKLABEL))
-        $field['label'] = "";
-        else
-        $field['label'] = $this->label($record);
-      }
-      else
-      {
-        $field['line'] = $field['widget'];
-      }
+      $field['label'] = $this->label($record);
 
       // add $field to fields array
       $fields[] = $field;
