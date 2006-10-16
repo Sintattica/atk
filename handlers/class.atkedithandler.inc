@@ -51,12 +51,19 @@
         return;
       }      
 
-      $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
+      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
+      
+      // check if there are postvars set that overwrite the record contents, this can happen when a 
+      // new selection is made using the select handler etc.
+      $fetchedRecord = $this->m_node->updateRecord('', NULL, NULL, true);
+      if (is_array($record))
+        $record = array_merge($record, $fetchedRecord);
+      
       if ($this->m_node->hasFlag(NF_LOCK))
       {
-        if ($this->m_node->m_lock->lock($this->m_node->primaryKey($recordset[0]), $this->m_node->m_table))
+        if ($this->m_node->m_lock->lock($this->m_node->primaryKey($record), $this->m_node->m_table))
         {
-          $res = $this->invoke("editPage", $recordset[0], true);
+          $res = $this->invoke("editPage", $record, true);
         }
         else
         {
@@ -65,7 +72,7 @@
       }
       else
       {
-        $res = $this->invoke("editPage", $recordset[0], false);
+        $res = $this->invoke("editPage", $record, false);
       }
 
       $page->addContent($this->m_node->renderActionPage("edit", $res));

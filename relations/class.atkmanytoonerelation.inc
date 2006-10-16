@@ -393,7 +393,7 @@
     {
       $links = array();
 
-      $newsel = $id.'_newsel';
+      $newsel = $id;
       $filter = $this->parseFilter($this->m_destinationFilter, $record);
       $links[] = $this->_getSelectLink($newsel, $filter);
 
@@ -454,14 +454,6 @@
         }
 
         $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
-
-        // handle evil select and new handler return value
-        global $ATK_VARS;
-        if (isset($ATK_VARS[$id.'_newsel']))
-        {
-          list($row) = $this->m_destInstance->selectDb($ATK_VARS[$id.'_newsel'], '', '', '', atk_array_merge($this->m_destInstance->descriptorFields(), $this->m_destInstance->m_primaryKey), 'select');
-          $record[$this->fieldName()] = $row;
-        }
 
         if (!$this->_isSelectableRecord($record, 'select'))
           $record[$this->fieldName()] = NULL;

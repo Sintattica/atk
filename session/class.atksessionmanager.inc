@@ -54,6 +54,7 @@
   define("SESSION_NESTED",2);  // new item on current stack
   define("SESSION_BACK",3);    // move one level down on stack
   define("SESSION_REPLACE",4); // replace current stacklevel
+  define("SESSION_PARTIAL",5); // same as replace, but ignore atknodetype and atkaction
 
   if (isset($_REQUEST["atklevel"]))    $atklevel    = trim($_REQUEST["atklevel"]);
   if (isset($_REQUEST["atkprevlevel"]))$atkprevlevel= trim($_REQUEST["atkprevlevel"]);
@@ -329,6 +330,10 @@
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return.
       $pageVars = array("atksearch","atksearchmode","atkorderby","atkstartat","atklimit","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch");
+      
+      // lockedvars are session or page vars that will not be overwritten in partial mode
+      // e.g., the values that are already known in the session will be used
+      $lockedVars = array('atknodetype', 'atkaction');
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
@@ -391,18 +396,19 @@
         unset($currentitem['atkescape']);
 
         atk_var_dump($currentitem, "Current item in escape mode");
-
       }
       else
       {
-
-        if ($atklevel==-1||!is_array($stack))
+        // partial mode?
+        $partial = false;
+        
+        if ($atklevel==-1||!is_array($stack)) // SESSION_NEW
         {
           atkdebug("Cleaning stack");
           $stack = array();
           $atklevel = 0;
         }
-        else if ($atklevel==-2)
+        else if ($atklevel==-2) // SESSION_REPLACE
         {
           // Replace top level.
           array_pop($stack);
@@ -411,6 +417,15 @@
           // some level in the stack. We can determine the real level by
           // counting the stack.
           $atklevel = count($stack);
+        }
+        else if ($atklevel == -3) // SESSION_PARTIAL
+        {
+          $partial = true;
+          
+          // Note that the atklevel is now -3. This is actually wrong. We are at
+          // some level in the stack. We can determine the real level by 
+          // counting the stack.
+          $atklevel = count($stack) - 1;
         }
 
         if (isset($stack[$atklevel])) $currentitem = $stack[$atklevel];
@@ -472,7 +487,7 @@
 
           foreach($pageVars as $var)
           {
-            if (isset($postvars[$var])&&count($postvars[$var])>0)
+            if (isset($postvars[$var])&&count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
             {
               $currentitem[$var] = $postvars[$var];
             }
@@ -484,7 +499,7 @@
           // session vars need not be remembered..
           foreach ($sessionVars as $var)
           {
-            if (isset($postvars[$var])&&count($postvars[$var])>0)
+            if (isset($postvars[$var])&&count($postvars[$var])>0 && (!$partial || !in_array($var, $lockedVars)))
             {
               $currentitem[$var] = $postvars[$var];
             }
@@ -519,7 +534,6 @@
           }
         }
       } // end if atkescape
-
     }
 
     /**

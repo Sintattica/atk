@@ -67,6 +67,13 @@
 
       // Utility.
       $edithandler = &$node->getHandler("edit");
+      
+      // check if there are postvars set for filling the record, this 
+      // can happen when a new selection is made using the select handler etc.
+      if ($record == NULL)
+      {
+        $record = $this->m_node->updateRecord('', NULL, NULL, true);        
+      }
 
       $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');            
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
