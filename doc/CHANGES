@@ -159,6 +159,9 @@ Changed in ATK 5.7
   ownerinstance than the primary key(s). [Lineke]
 + Added check on absolute URL without anchor (ABSOLUTE_NO_ANCHOR) to
   atkUrlAttribute. Created separate validateUrl function. [Jeroen]
++ Introduced new SESSION_PARTIAL flag to indicate for partial URL's where
+  the current stack level data must be re-used without overwriting certain
+  fields. [Dennis,Peter]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -482,7 +485,12 @@ Changed in ATK 5.7
   a lower level (which caused all sorts of problems, e.g. forgotten data,
   data that shouldn't be there etc.). [Dennis,Peter]
 * If add handler is called directly the user can return to a new add form
-  after saving te first one. [Dennis,Peter]
+  after saving the first one. [Dennis,Peter]
+* Properly handle attribute postvars in add, save, edit and update handler
+  after getting back from for example the select handler. [Dennis,Peter]
+* Removed dirty hack from atkManyToOneRelation for the return value of
+  the select handler (select link) or add handler (add link). This hack
+  still exists for the classic AF_LARGE mode. [Dennis,Peter]
 * In advanced search labels are always shown (before AF_NO_LABEL was used to
   determine if a label should be shown). [Lineke]
 * Made the new 'modern' menu the default menu in new installations. [Boy]
