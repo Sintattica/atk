@@ -441,6 +441,11 @@
         $newlevel = -2;
         break;
       }
+      case SESSION_PARTIAL:
+      {
+        $newlevel = -3;
+        break;
+      }
       case SESSION_NESTED:
       {
         $newlevel = $currentlevel+1;
@@ -1582,7 +1587,8 @@
     if (!is_array($params))
       $params = array();
     $params['atkpartial'] = $partial;
-    return session_url(dispatch_url($node, $action, $params), SESSION_DEFAULT);
+
+    return session_url(dispatch_url($node, $action, $params), SESSION_PARTIAL);
   }   
 
   /**

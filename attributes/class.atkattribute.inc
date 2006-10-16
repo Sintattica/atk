@@ -661,6 +661,17 @@
     }
 
     /**
+     * Is there a value posted for this attribute?
+     *
+     * @param array $postvars
+     * @return boolean posted?
+     */
+    function isPosted($postvars)
+    {
+      return is_array($postvars)&&isset($postvars[$this->fieldName()]);
+    }
+    
+    /**
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
      *
@@ -673,7 +684,7 @@
      */
     function fetchValue($postvars)
     {
-      if (is_array($postvars)&&isset($postvars[$this->fieldName()]))
+      if ($this->isPosted($postvars))
       {
         return $postvars[$this->fieldName()];
       }
@@ -1999,10 +2010,7 @@
       $record = $this->m_ownerInstance->updateRecord();
       $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix']; 
       $this->_registerDependees($mode, $fieldprefix);          
-      $method = $this->fieldName().'_edit';
-      if (method_exists($this->m_ownerInstance, $method))     
-        return $this->m_ownerInstance->$method($record, $fieldprefix, $mode);
-      else return $this->edit($record, $fieldprefix, $mode);
+      return $this->getEdit($mode, $record, $fieldprefix);
     }
 
     /**

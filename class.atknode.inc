@@ -2435,9 +2435,12 @@
      * translate the html values into the internal values that the attributes
      * work with.
      * @param array $vars The request variables that were posted from a form.
+     * @param array $includes Only fetch the value for these attributes.
+     * @param array $excludes Don't fetch the value for these attributes.
+     * @param array $postedOnly Only fetch the value for attributes that have really been posted.
      * @return array A valid record.
      */
-    function updateRecord($vars ="", $includes=NULL, $excludes=NULL)
+    function updateRecord($vars ="", $includes=NULL, $excludes=NULL, $postedOnly=false)
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
@@ -2448,11 +2451,14 @@
             (!is_array($excludes) || !in_array($attribname, $excludes)))
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
+          if (!$postedOnly || $p_attrib->isPosted($vars))
+            $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
         }
       }
 
-      $record["atkprimkey"] = $vars["atkprimkey"];
+      if (isset($vars['atkprimkey']))
+        $record["atkprimkey"] = $vars["atkprimkey"];
+        
       return $record;
     }
 
@@ -4052,6 +4058,7 @@
       // no (valid) handler
       else
       {
+        atkdebug("Calling default handler function for '".$action."'");
         $this->m_handler = &$this->getHandler($action);
         $this->m_handler->handle($this, $action, $this->m_postvars);
       }
