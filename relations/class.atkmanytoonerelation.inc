@@ -469,7 +469,7 @@
           $record[$this->fieldName()] = NULL;
 
         $afterUpdate = ($afterUpdateFunc!="") ? $afterUpdateFunc : "null";
-        $code = "ATK.ManyToOneRelation.autoupdate('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, $this->m_autocomplete_minchars);";
+        $code = "ATK.ManyToOneRelation.autoupdate('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, 1);";
 
         $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
         $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
@@ -1471,10 +1471,16 @@
      */
     function partial_autocomplete($mode)
     {
+      $searchvalue = $this->m_ownerInstance->m_postvars['value'];
+      if (strlen($searchvalue) < $this->m_autocomplete_minchars)
+      {
+        return '<ul><li class="minimum_chars">'.sprintf($this->text('autocomplete_minimum_chars'), $this->m_autocomplete_minchars).'</li></ul>';        
+      }
+      
       $this->createDestination();
 
       $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
-      $searchvalue = $this->escapeSQL($this->m_ownerInstance->m_postvars['value']);
+      $searchvalue = $this->escapeSQL($searchvalue);
       $record = $this->m_ownerInstance->updateRecord();
 
       $descriptor_fields = $this->m_destInstance->descriptorFields();
@@ -1486,22 +1492,20 @@
 
       if (count($records) == 0)
       {
-        $result = '<li class="no_results">'.$this->text('no_results').'</li>';
+        return '<ul><li class="no_results">'.$this->text('autocomplete_no_results').'</li></ul>';
       }
-      else
+      
+      $result = '';
+      foreach ($records as $rec)
       {
-        $result = '';
-        foreach ($records as $rec)
-        {
-          $option = $this->m_destInstance->descriptor($rec);
-          $value = $this->m_destInstance->primaryKey($rec);
-          $result .= '
-            <li title="'.htmlentities($option).'">
-              '.htmlentities($option).'
-              <span class="selection" style="display: none">'.htmlentities($option).'</span>
-              <span class="value" style="display: none">'.$value.'</span>
-            </li>';
-        }
+        $option = $this->m_destInstance->descriptor($rec);
+        $value = $this->m_destInstance->primaryKey($rec);
+        $result .= '
+          <li title="'.htmlentities($option).'">
+            '.htmlentities($option).'
+            <span class="selection" style="display: none">'.htmlentities($option).'</span>
+            <span class="value" style="display: none">'.$value.'</span>
+          </li>';
       }
 
       return "<ul>$result</ul>";

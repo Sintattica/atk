@@ -305,6 +305,7 @@
   "import_novalidatefirst"=>"Controleer importbestand niet voor importeren",
   "show" => "Toon",
   "all" => "Alles",
-  "no_results" => "Geen resultaten gevonden.",
+  "autocomplete_no_results" => "Geen resultaten gevonden.",
+  "autocomplete_minimum_chars" => "Voer minimaal %d karakters in.",
 );
 ?>

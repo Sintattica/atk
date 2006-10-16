@@ -304,6 +304,7 @@
   "recordlistsummary" => "Record [start]-[end] out of [count]",
   "show" => "Show",
   "all" => "All",
-  "no_results" => "No results found.",  
+  "autocomplete_no_results" => "No results found.",
+  "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
 );
 ?>
