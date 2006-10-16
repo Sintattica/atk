@@ -162,6 +162,16 @@
         atkerror("AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
       }
     }
+    
+    /**
+     * Sets the minimum number of characters before auto-completion kicks in.
+     *
+     * @param int $chars
+     */
+    function setAutoCompleteMinChars($chars)
+    {
+      $this->m_autocomplete_minchars = $chars;
+    }
 
     /**
      * Add list column. An attribute of the destination node

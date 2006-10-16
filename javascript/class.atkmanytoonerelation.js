@@ -119,10 +119,13 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
   // See: http://dev.rubyonrails.org/ticket/4782  
   hide: function() {
     this.stopIndicator();
-    if(Element.getStyle(this.update, 'display')!='none') this.options.onHide(this.element, this.update);
+    if(Element.getStyle(this.update, 'display')!='none') 
+    {
+      this.options.onHide(this.element, this.update);
+      this.element.value = ''; // clear value      
+    }
     if(this.iefix) Element.hide(this.iefix);
     this.update.scrollTop = 0; 
-    this.element.value = ''; // clear value
   },
 
   // Fix autocompleter scrollbar support on IE.
