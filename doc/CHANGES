@@ -157,8 +157,9 @@ Changed in ATK 5.7
   can't use the default translation). [Peter]  
 + Added support for atkonetomanyrelation to use other fields of the 
   ownerinstance than the primary key(s). [Lineke]
-+ Added check on absolute URL without anchor (ABSOLUTE_NO_ANCHOR) to
-  atkUrlAttribute. Created separate validateUrl function. [Jeroen]
++ Changed handling of flags in atkUrlAttribute. Use ANCHOR|ABSOLUTE to accept 
+  anchor, absolute url and the combination (absolute URL followed by anchor)
+  Created separate validateUrl function. [Jeroen]
 + Introduced new SESSION_PARTIAL flag to indicate for partial URL's where
   the current stack level data must be re-used without overwriting certain
   fields. [Dennis,Peter]
