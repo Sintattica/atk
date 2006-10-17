@@ -104,6 +104,7 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // create unique ID
     $unique = md5(microtime());
+    
     // find path, file and extension
     $a_pathinfo = pathinfo($ooo_template_filename);
     $this->_ooo_file_ext  = $a_pathinfo['extension'];
@@ -129,7 +130,9 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
     // unzip the XML files
     exec($this->_unzip_bin.' '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' -d '.$this->_ooo_basename.' '.$this->_xml_filename, $results, $return_code);
-    if ($return_code!=0) {
+
+    //Dennis hack: On some systems unzip would return -1 instead of 0 when nothing went wrong.
+    if ($return_code>0) {
       atkerror(sprintf("clsTinyButStrongOOo->LoadXmlFromDoc: Error while extracting zip file (return code %s), please check if the unzip executable is in your path", $return_code));
       return false;
     }
@@ -181,7 +184,8 @@ class clsTinyButStrongOOo extends clsTinyButStrong
     exec($this->_zip_bin.' -d '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
     exec($this->_zip_bin.' -j '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
 
-    if ($return_code!=0) {
+    //Dennis hack: On some systems zip would return -1 instead of 0 when nothing went wrong.
+    if ($return_code>0) {
       atkerror(sprintf("clsTinyButStrongOOo->SaveXmlToDoc: Error while adding to zip file (return code %s), please check if the zip executable is in your path", $return_code));
       return false;
     }       

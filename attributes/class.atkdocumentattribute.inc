@@ -48,9 +48,9 @@
      * @param array $record The record that holds the value for this attribute.
      * @return string HTML code for selection control
      */
-    function edit($record)
+    function edit($record, $mode)
     {
-      return $this->documentSelector($record);
+      return $this->documentSelector($record, $mode, false);
     }
 
     /**
@@ -88,7 +88,7 @@
      * @param string $mode Name of the mode in which the document selector will be displayed
      * @return string Display code for this attribute in the specified mode
      */
-    function documentSelector($record, $mode = "")
+    function documentSelector($record, $mode = "", $addForm=true)
     {
       // Compose the path to use when searching for docuemnt templates
       $basepath = atkconfig("doctemplatedir", "doctemplates/");
@@ -114,12 +114,13 @@
         $html .= '</select>';
 
         // Add the button to the html
-        $selector = $this->m_ownerInstance->primaryKey($record);
+        $selector = $this->m_ownerInstance->primaryKey($record);        
         $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'atkdoctpl="+this.form.atkdoctpl.value;';
+
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\''.$onclickscript.'\'>';
 
         // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
-        if (($mode=="list")||($mode=="view")) {
+        if ((($mode=="list")||($mode=="view")) && $addForm) {
           static $documentSelectorFormCounter = 0;
           $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form(). $html . '</form>';
         }
