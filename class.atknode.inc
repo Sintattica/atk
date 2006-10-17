@@ -2201,6 +2201,12 @@
      */
     function dispatch($postvars, $flags=NULL)
     {
+      $page = &$this->getPage();
+      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");      
+      
       $this->loadDispatchPage($postvars);
       
       // backwards compatibility mode
@@ -2220,11 +2226,6 @@
       }
 
       $ui = &$this->getUi();
-      $page = &$this->getPage();
-      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
 
       if (!$page->isEmpty()) // Only output an html output if there is anything to output.
       {
