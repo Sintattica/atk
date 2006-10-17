@@ -41,10 +41,6 @@
    */    
   define('ANCHOR',   4);
 
-  /**
-   * Check if URL is a valid absolute URL, but without an anchor
-   */
-  define('ABSOLUTE_NO_ANCHOR', 8);
   
   /**
    * The atkUrlAttribute class represents a field containing URLs.
@@ -113,6 +109,14 @@
   		return $output;
   	}
 
+  	/**
+  	 * Specify which URL-types are allowed
+  	 * 
+  	 * Example: acceptUrls(ABSOLUTE) - only absolute are accepted
+  	 *          acceptUrls(ABSOLUTE|ANCHOR) - accept absolute URL's, anchors and an absolute URL followed by an anchor
+  	 *
+  	 * @param int $accepts_flag
+  	 */
   	function acceptUrls($accepts_flag)
   	{
       $this->m_accepts_url_flag = $accepts_flag;
@@ -134,26 +138,17 @@
      */
   	function validateUrl(&$record, $mode, $show_error=false)
   	{
-  	  $result = true;
+  	  $result = false;
   	  
-  	  $base_url_regex               = "(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,4}";
-  	  $relative_url_no_anchor_regex = "[a-zA-Z0-9\.\-\_\/?&=%]";
-  	  $relative_url_regex           = "[a-zA-Z0-9\.\-\_\/?&=%#]";
+  	  $absolute_result = true;
+   	  $anchor_result = true;
+    	$absolute_anchor_result = true;
+  	  $relative_result = true;
   	  
-  	 /**
-      * Validate URL, check if format is absolute (external URL's)
-      * 
-      * Example: http://www2-dev.test_url.com
-      * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
-      * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
-      */
-  	  if (($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE)
-  	  {
-  	    $local_result = preg_match("/^".$base_url_regex.$relative_url_regex."*$/Ui", $record[$this->fieldName()])?true:false;
-
-    	  if ($local_result === false && $show_error) triggerError($record, $this->fieldName(), 'invalid_absolute_url', atktext('invalid_absolute_url'));    	  
-    	  $result = $result && $local_result;
-  	  }  	 
+  	  $base_url_regex                 = "(ft|htt)ps?:\/\/[a-zA-Z0-9\.\-\_]+\.[a-zA-Z]{2,4}";
+  	  $relative_url_regex             = "[a-zA-Z0-9\.\-\_\/?&=%]";
+  	  $relative_url_regex_with_anchor = "[a-zA-Z0-9\.\-\_\/?&=%#]";
+  	  
 
   	 /**
       * Validate URL, check if format is absolute (external URL's) and has no anchor
@@ -161,27 +156,13 @@
       * Example: http://www2-dev.test_url.com
       * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
       */
-  	  if (($this->m_accepts_url_flag & ABSOLUTE_NO_ANCHOR) == ABSOLUTE_NO_ANCHOR)
+  	  if (($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE)
   	  {
-  	    $local_result = preg_match("/^".$base_url_regex.$relative_url_no_anchor_regex."*$/Ui", $record[$this->fieldName()])?true:false;
+  	    $absolute_result = preg_match("/^".$base_url_regex.$relative_url_regex."*$/Ui", $record[$this->fieldName()])?true:false;
 
-    	  if ($local_result === false && $show_error) triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', atktext('invalid_absolute_no_anchor_url'));    	  
-    	  $result = $result && $local_result;
+    	  $result = $result || $absolute_result;
   	  }  	   	  
   	  
-  	 /**
-      * Validate URL, check if format is relative
-      * 
-      * Example: /mysite/guestbook/index.html
-      */  	  
-  	  if (($this->m_accepts_url_flag & RELATIVE) == RELATIVE)
-  	  {
-  	    $local_result = preg_match("/^".$relative_url_regex."+$/Ui", $record[$this->fieldName()])?true:false;
-  	    
-  	    if ($local_result === false && $show_error) triggerError($record, $this->fieldName(), 'invalid_relative_url', atktext('invalid_relative_url'));
-  	    $result = $result && $local_result;
-  	  }
-
   	 /**
       * Validate URL, check if format is a valid anchor
       * 
@@ -189,14 +170,50 @@
       */
   	  if (($this->m_accepts_url_flag & ANCHOR) == ANCHOR)
   	  {
-  	    $local_result = preg_match("/^#".$relative_url_no_anchor_regex, $record[$this->fieldName()])?true:false;
+  	    $anchor_result = preg_match("/^#".$relative_url_regex."*$/Ui", $record[$this->fieldName()])?true:false;
   	                                   
-  	    if ($local_result === false && $show_error) triggerError($record, $this->fieldName(), 'invalid_url_anchor', atktext('invalid_url_anchor'));
-  	    $result = $result && $local_result;
+  	    $result = $result || $anchor_result;
   	  }
+
+  	 /**
+      * Validate URL, check if format is absolute (external URL's) and has (optional) anchor
+      * 
+      * Example: http://www2-dev.test_url.com
+      * or:      ftp://www2-dev.test_url.com/index.php?/feeds/index.rss2
+      * or:      https://www2-dev.test_url.com/index.php?/history.html#bookmark
+      */
+  	  if ((($this->m_accepts_url_flag & ABSOLUTE) == ABSOLUTE) && (($this->m_accepts_url_flag & ANCHOR) == ANCHOR))
+  	  {
+  	    $absolute_anchor_result = preg_match("/^".$base_url_regex.$relative_url_regex_with_anchor."*$/Ui", $record[$this->fieldName()])?true:false;
+
+    	  $result = $result || $absolute_anchor_result;
+  	  }  	 
+
+  	 /**
+      * Validate URL, check if format is relative
+      * 
+      * Example: /mysite/guestbook/index.html
+      */  	  
+  	  if (($this->m_accepts_url_flag & RELATIVE) == RELATIVE)
+  	  {
+  	    $relative_result = preg_match("/^".$relative_url_regex_with_anchor."+$/Ui", $record[$this->fieldName()])?true:false;
+  	    
+  	    $result = $result || $relative_result;
+  	  }
+
   	  
+      /**
+       * If an error occured, show applicable message(s)
+       */
+  	  if (!$result && $show_error)
+  	  {
+  	    // if result of all validations is false, display error-messages
+  	    if ($absolute_result === false)        triggerError($record, $this->fieldName(), 'invalid_absolute_no_anchor_url', atktext('invalid_absolute_no_anchor_url'));    	  
+   	    if ($anchor_result === false)          triggerError($record, $this->fieldName(), 'invalid_url_anchor',             atktext('invalid_url_anchor'));
+    	  if ($absolute_anchor_result === false) triggerError($record, $this->fieldName(), 'invalid_absolute_url',           atktext('invalid_absolute_url'));    	  
+  	    if ($relative_result === false)        triggerError($record, $this->fieldName(), 'invalid_relative_url',           atktext('invalid_relative_url'));  	    
+  	  }  	    	  
   	  return ($result||parent::validate($record, $mode));
   	}
   }
-
 ?>
