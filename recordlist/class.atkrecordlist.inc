@@ -425,8 +425,7 @@
             {
               $record["cols"][] = array("content"=>$str_actions);
             }
-            //else  $record["cols"][] = array("content"=>"");
-
+            else $record["cols"][] = array("content"=>"");
           }
 
           /* columns */
@@ -437,7 +436,7 @@
           if ($orientation=="right"||$orientation=="both")
           {
             if (!empty($list["rows"][$i]["actions"])) $record["cols"][] = array("content"=>$str_actions);
-            //else $record["cols"][] = array("content"=>"");
+            else $record["cols"][] = array("content"=>"");
           }
 
           $records[] = $record;
