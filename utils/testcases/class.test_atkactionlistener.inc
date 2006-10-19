@@ -69,7 +69,7 @@
      */
     function test_setNode()
     {
-      $this->assertReference($this->m_node, $this->m_node->m_listeners[0]->m_node);
+      $this->assertReference($this->m_node, $this->m_node->m_actionListeners[0]->m_node);
     }
   }
 ?>
