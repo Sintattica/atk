@@ -499,6 +499,8 @@ Changed in ATK 5.7
 * Fixed: Open Office document generator. On some systems unzip and zip would 
   return -1 instead of 0 on succesfull completion. However, no actual 
   information found on the internet to back this up). [Dennis, Guido]
+* Importhandler now uses charset from languagefiles to convert the importedfile
+  to the correct charset. [Lineke]
 + Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
