@@ -504,7 +504,10 @@ Changed in ATK 5.7
 * Importhandler now uses charset from languagefiles to convert the importedfile
   to the correct charset. [Lineke]
 * Fixed some tests. [Sandy]
-* Tests are only harvested in the testcases directory. [Sandy]
+* Tests are only harvested in the testcases directory. [Sandy] 
+* Moved atkselector from the default sessionmembers to the pagevars.
+  Because it caused problems when editing an user and selecting a topic.
+  [dennisjan]
 + Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
