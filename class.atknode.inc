@@ -154,7 +154,7 @@
   /**
    * No sorting possible.
    */
-  define("NF_NO_SORT",           4194304);    
+  define("NF_NO_SORT",           4194304);
 
   /**
    * Specific node flag 1
@@ -233,22 +233,22 @@
   define("TRIGGER_PRE",  2);
   define("TRIGGER_POST", 4);
   define("TRIGGER_ALL", TRIGGER_PRE|TRIGGER_POST);
-  
+
   /**
    * Multi-record-actions selection modes. These
    * modes are mutually exclusive.
    */
-  
+
   /**
    * Multiple selections possible.
    */
   define("MRA_MULTI_SELECT", 1);
-  
+
   /**
    * Only one selection possible.
    */
   define("MRA_SINGLE_SELECT", 2);
-  
+
   /**
    * No selection possible (e.g. action is always for all (visible) records!).
    */
@@ -416,7 +416,7 @@
      * @var String
      */
     var $m_action;
-    
+
     /**
      * Contains the definition of what needs to rendered partially.
      * If set to NULL not in partial rendering mode.
@@ -638,13 +638,13 @@
      * @var String
      */
     var $m_descTemplate = NULL;
-    
+
     /**
      * Descriptor handler.
      * @access protected
      * @var Object
      */
-    var $m_descHandler = NULL;    
+    var $m_descHandler = NULL;
 
     /**
      * List of action listeners
@@ -652,7 +652,7 @@
      * @var Array
      */
     var $m_actionListeners = array();
-    
+
     /**
      * List of trigger listeners
      * @access protected
@@ -668,14 +668,14 @@
      * @var String
      */
     var $m_modifier = "";
-    
+
     /**
      * List of editable list attributes.
      * @access private
      * @var Array
      */
     var $m_editableListAttributes = array();
-    
+
     /**
      * Multi-record actions, selection mode.
      * @access private
@@ -730,7 +730,7 @@
       static $attrib_order = 100;
       static $attrib_index = 0;
       $attribute->m_owner = $this->m_type;
-      
+
       // If we're running inside modifier scope, we have to tell the attribute
       // what module he originated from.
       if ($this->m_modifier!="") $attribute->m_module = $this->m_modifier;
@@ -760,7 +760,7 @@
             $attribute->m_flags |= AF_HIDE;
           }
         }
-        
+
         // check for parent fieldname (treeview)
         if($attribute->hasFlag(AF_PARENT))
         {
@@ -833,6 +833,7 @@
           $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]["order"]=$order;
         }
       }
+
       if(!$exist)
       {
         if($order==0)
@@ -860,6 +861,13 @@
         $this->m_attributeTabs[$attribute->fieldname()] = $tab;
         $attrib_index++;
       }
+
+      // Order the tablist
+
+
+
+
+
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
       if(is_subclass_of($attribute,"atkrelation"))
       {
@@ -933,7 +941,7 @@
         return $this->m_attribList;
       else return NULL;
     }
-    
+
     /**
      * Gets the attribute order.
      */
@@ -941,7 +949,7 @@
     {
       return $this->m_attribIndexList[$this->m_attribList[$name]->m_index]["order"];
     }
-    
+
 
     /**
      * Checks if the node has a certain flag set.
@@ -980,12 +988,12 @@
     {
       return $this->m_flags;
     }
-    
+
     /**
      * Sets the editable list attributes. If you supply this method
      * with one or more string arguments, all arguments are collected in
      * an array. Else the first parameter will be used.
-     * 
+     *
      * @param $attrs Array list of attribute names
      */
     function setEditableListAttributes($attrs)
@@ -994,19 +1002,19 @@
         $this->m_editableListAttributes = $attrs;
       else $this->m_editableListAttributes = func_get_args();
     }
-    
+
     /**
      * Sets the multi-record-action selection mode. Can either be
-     * MRA_MULTI_SELECT (default), MRA_SINGLE_SELECT or 
+     * MRA_MULTI_SELECT (default), MRA_SINGLE_SELECT or
      * MRA_NO_SELECT.
-     * 
+     *
      * @param $mode selection mode
      */
     function setMRASelectionMode($mode)
     {
       $this->m_mraSelectionMode = $mode;
     }
-    
+
     /**
      * Returns the multi-record-action selection mode.
      * @return Integer multi-record-action selection mode
@@ -1014,7 +1022,7 @@
     function getMRASelectionMode()
     {
       return $this->m_mraSelectionMode;
-    }    
+    }
 
     /**
      * Returns the primary key sql expression of a record.
@@ -1146,6 +1154,33 @@
     function setIndex($attribname)
     {
       $this->m_index = $attribname;
+    }
+
+    /**
+     * Set tab index
+     *
+     * @param string $tabname Tabname
+     * @param int $index Index number
+     * @param string $action Action name (add,edit,view)
+     */
+    function setTabIndex($tabname,$index,$action="")
+    {
+      atkdebug("atkNode::setTabIndex($tabname,$index,$action)");
+      $actionList=array("add","edit","view");
+      if($action!="") $actionList = array($action);
+      foreach($actionList as $action)
+      {
+        $new_index = $index;
+        $list = &$this->m_tabList[$action];
+        if($new_index<0) $new_index=0;
+        if($new_index>count($list)) $new_index = count($list);
+        $current_index = array_search($tabname,$list);
+        if($current_index!==NULL)
+        {
+          $tmp  = array_splice($list, $current_index, 1);
+          array_splice($list, $new_index, 0, $tmp);
+        }
+      }
     }
 
     /**
@@ -1811,6 +1846,7 @@
       // build navigator
       $list = &$this->getTabs($action);
 
+
       if (is_array($list))
       {
         $newtab["total"] = count($list);
@@ -1962,7 +1998,7 @@
      *                               confirmDelete() and call that method
      *                               instead.
      * @param boolean $mergeSelectors Merge all selectors to one selector string (if more then one)?
-     * 
+     *
      * @return String Complete html fragment containing a box with the
      *                confirmation page, or the output of the custom
      *                override if $checkoverride was true.
@@ -1985,7 +2021,7 @@
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
-      
+
       if ($mergeSelectors)
       {
         $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector_str.'">';
@@ -1994,10 +2030,10 @@
       {
         $formstart.='<input type="hidden" name="atkselector" value="'.$atkselector.'">';
       }
-      else 
-      {         
+      else
+      {
         foreach ($atkselector as $selector)
-          $formstart.='<input type="hidden" name="atkselector[]" value="'.$selector.'">';        
+          $formstart.='<input type="hidden" name="atkselector[]" value="'.$selector.'">';
       }
 
       $buttons = array();
@@ -2197,28 +2233,28 @@
      * handling the actual action.
      *
      * @param array $postvars The request variables for the node.
-     * @param int $flags Render flags (see class atkPage). 
+     * @param int $flags Render flags (see class atkPage).
      */
     function dispatch($postvars, $flags=NULL)
     {
       $page = &$this->getPage();
-      
+
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");      
-      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
+
       $this->loadDispatchPage($postvars);
-      
+
       // backwards compatibility mode
       if ($flags == NULL)
       {
-        $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;      
+        $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;
       }
       elseif (is_bool($flags))
       {
         $flags = $flags ? HTML_STRICT : HTML_HEADER|HTML_DOCTYPE;
       }
-      
+
       if (hasFlag($flags, HTML_PARTIAL) && !$postvars["atkdebug"]["force"])
       {
         global $config_debug;
@@ -2251,7 +2287,7 @@
       $this->m_postvars = $postvars;
       $this->m_action = $postvars['atkaction'];
       $this->m_partial = $postvars["atkpartial"];
-      
+
       $page = &$this->getPage();
 
       if ($this->allowed($this->m_action))
@@ -2445,7 +2481,7 @@
     {
       if ($vars=="") $vars = $this->m_postvars;
       $record = array();
-      
+
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         if ((!is_array($includes) || in_array($attribname, $includes)) &&
@@ -2459,7 +2495,7 @@
 
       if (isset($vars['atkprimkey']))
         $record["atkprimkey"] = $vars["atkprimkey"];
-        
+
       return $record;
     }
 
@@ -2482,7 +2518,7 @@
         $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
       }
     }
-    
+
     /**
      * Get descriptor handler.
      * @return Object descriptor handler
@@ -2491,7 +2527,7 @@
     {
       return $this->m_descHandler;
     }
-    
+
     /**
      * Set descriptor handler.
      * @param Object $handler The descriptor handler.
@@ -2500,7 +2536,7 @@
     {
       $this->m_descHandler = &$handler;
     }
-    
+
     /**
      * Returns the descriptor template for this node.
      * @return String The descriptor Template
@@ -2591,7 +2627,7 @@
       // Descriptor handler is set?
       if ($this->m_descHandler != NULL)
         return $this->m_descHandler->descriptor($rec, $this);
-      
+
       // Descriptor template is set?
       if ($this->m_descTemplate != NULL)
       {
@@ -2883,8 +2919,8 @@
               if (is_array($value) && isset($value[$key]) && count($value) == 1)
               {
                 $value = $value[$key];
-              }              
-              
+              }
+
               $searchmode = $this->getSearchMode();
               if(is_array($searchmode))
               {
@@ -3136,7 +3172,7 @@
               }
               else
               {
-                atkdebug("Using default search method for $key");                
+                atkdebug("Using default search method for $key");
                 $condition = "lower(".$this->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
                 $query->addSearchCondition($condition);
               }
@@ -3557,41 +3593,41 @@
     {
       if (!isset($record["__executed".$trigger]))
       {
-        $record["__executed".$trigger] = true;        
-        
+        $record["__executed".$trigger] = true;
+
         $return = $this->$trigger($record, $mode);
-        
+
         if ($return == NULL)
         {
           atkdebug("Undefined return:".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
           $return = true;
         }
-        
-        if (!$return) 
+
+        if (!$return)
         {
           atkdebug($this->atkNodeType().".$trigger failed!");
           return false;
         }
-        
+
         for ($i = 0, $_i = count($this->m_triggerListeners); $i < $_i; $i++)
         {
           $listener = &$this->m_triggerListeners[$i];
           $return = $listener->notify($trigger, $record, $mode);
-          
+
           if ($return == NULL)
           {
             atkdebug("Undefined return: ".$this->atkNodeType().", ".get_class($listener).".notify('$trigger', ...) doesn't return anything, it should return a boolean!", DEBUG_WARNING);
             $return = true;
           }
-          
-          if (!$return) 
+
+          if (!$return)
           {
             atkdebug($this->atkNodeType().", ".get_class($listener).".notify('$trigger', ...) failed!");
             return false;
           }
         }
       }
-      
+
       return true;
     }
 
@@ -4313,7 +4349,7 @@
     function addListener(&$listener)
     {
       $listener->setNode($this);
-      
+
       if (is_a($listener, 'atkActionListener'))
       {
         $this->m_actionListeners[] = &$listener;
