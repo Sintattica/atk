@@ -165,6 +165,7 @@ Changed in ATK 5.7
   fields. [Dennis,Peter]
 + Added script for restoring the focus after Ajax requests. [Peter]
 + Added setTabIndex function to atkNode for changing the tab order. [Sandy]
++ Added overlibmws JavaScript library. [Peter]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
