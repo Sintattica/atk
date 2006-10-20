@@ -16,7 +16,7 @@
    */
 
   /**
-   * atkTestCase is a specialization of SimpleTest's UnitTestCase. It 
+   * atkTestCase is a specialization of SimpleTest's UnitTestCase. It
    * contains utility methods that can be used by testcases, such as
    * the ability to swap the default database driver with a mock
    * version
@@ -31,39 +31,39 @@
     var $m_restoreDb = array();
     var $m_restoreNode = array();
     var $m_restoreSecMgr = NULL;
-    
+
     function setMockDb($conn="default")
     {
       global $config_db;
 
       $config_db["mock"]["driver"] = "mock";
-      
+
       $mockdb = &atkGetDb("mock");
-      $this->m_restoreDb[$conn] = &atkDb::setInstance($conn, $mockdb);      
+      $this->m_restoreDb[$conn] = &atkDb::setInstance($conn, $mockdb);
     }
-    
+
     function restoreDb($conn="default")
     {
-      $copy =$this->m_restoreDb[$conn];
-      atkDb::setInstance($conn, $copy);
-      $this->m_restoreDb[$conn]="";
+      //$copy = $this->m_restoreDb[$conn];
+      atkDb::setInstance($conn, $this->m_restoreDb[$conn]);
+      //$this->m_restoreDb[$conn]="";
     }
-    
+
     function &setMockNode($nodename, &$mocknode)
     {
-      $this->m_restoreNode[$nodename] = &atkSetNode($nodename, $mocknode);      
+      $this->m_restoreNode[$nodename] = &atkSetNode($nodename, $mocknode);
     }
-    
+
     function restoreNode($nodename)
     {
       atkSetNode($nodename, $this->m_restoreNode[$nodename]);
     }
-    
+
     function &setMockSecurityManager(&$mockmanager)
     {
-      $this->m_restoreSecMgr = &atkSetSecurityManager($mockmanager);     
+      $this->m_restoreSecMgr = &atkSetSecurityManager($mockmanager);
     }
-    
+
     function restoreSecurityManager()
     {
       atkSetSecurityManager($this->m_restoreSecMgr);
