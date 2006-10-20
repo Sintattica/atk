@@ -164,6 +164,7 @@ Changed in ATK 5.7
   the current stack level data must be re-used without overwriting certain
   fields. [Dennis,Peter]
 + Added script for restoring the focus after Ajax requests. [Peter]
++ Added setTabIndex function to atkNode for changing the tab order. [Sandy]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -501,7 +502,10 @@ Changed in ATK 5.7
   information found on the internet to back this up). [Dennis, Guido]
 * Importhandler now uses charset from languagefiles to convert the importedfile
   to the correct charset. [Lineke]
+* Fixed some tests. [Sandy]
+* Tests are only harvested in the testcases directory. [Sandy]
 + Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
+
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
