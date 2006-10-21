@@ -67,6 +67,7 @@ class mod_meta extends atkModule
     if (!$this->nodeExists($node)) return NULL;
     $table = getNodeType($node);
 
+    atkimport('atk.atkmetanode');
     $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => new atkMetaHandler(array(&$this, "initMetaPolicy"))));
     $node->m_module = "meta";
     $node->setSecurityAlias("meta.meta");
