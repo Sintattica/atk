@@ -225,16 +225,16 @@
       // $Name$ is the CVS tag.
       $version = atkversion();
       if ("\$Name$"!="\$"."Name:  $") $version.=" ($Name$)";
-      $res.= '  <META NAME="atkversion" CONTENT="'.$version.'">'."\n";
+      $res.= '  <meta name="atkversion" content="'.$version.'" />'."\n";
 
-      $res.= '  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atktext("charset","atk").'">'."\n";
+      $res.= '  <meta http-equiv="Content-Type" content="text/html; charset='.atktext("charset","atk").'" />'."\n";
       if ($extra_header != "") $res.= $extra_header."\n";
 
       $this->addScripts($res);
 
       foreach ($this->m_stylesheets as $file => $media)
       {
-        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'">'."\n";
+        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
       }
 
       for ($i = 0; $i < count($this->m_stylecode); $i++)
@@ -243,8 +243,8 @@
       $favico = atkconfig("defaultfavico");
       if ($favico!="")
       {
-        $res.= '  <link rel="icon" href="'.$favico.'" type="image/x-icon">'."\n";
-        $res.= '  <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon">'."\n";
+        $res.= '  <link rel="icon" href="'.$favico.'" type="image/x-icon" />'."\n";
+        $res.= '  <link rel="shortcut icon" href="'.$favico.'" type="image/x-icon" />'."\n";
       }
 
       $res.="</head>\n";
@@ -258,58 +258,57 @@
     function addScripts(&$res, $partial=false)
     {
       for ($i = 0; $i < count($this->m_scriptfiles); $i++)
-        $res .= '<script type="text/javascript" language="JavaScript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+        $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
 
-      $res .= '<script type="text/javascript">';      
+      $res .= '  <script type="text/javascript">';      
       
-      if (!$partial)
-      {
-        $res .= "
-          function globalSubmit(form)
-          {
-            var retval = true;\n";
-  
-        for ($i=0, $_i = count($this->m_submitscripts); $i<$_i; $i++)
-        {
-          $res .= " retval = ".$this->m_submitscripts[$i]."\n";
-          $res .= " if (retval!=true) return false;\n";
-        }
-  
-        $res .= " 
-            return retval;
-          }\n";
-  
-        if (count($this->m_loadscripts))
-        {
-          $res .= "  
-            function globalLoad()
-            {\n";
-          
-          for ($i=0, $_i=count($this->m_loadscripts); $i<$_i; $i++)
-          {
-            $res .= $this->m_loadscripts[$i]."\n";
-          }
-          
-          $res.= "
-            }\n";
-        }
-      }
+      $res.=$this->getSubmitJavascript($partial);
+      $res.=$this->getLoadJavascript($partial);
 
       // javascript code.
       for ($i=0, $_i=count($this->m_scriptcode); $i<$_i; $i++)
       {
         $res.= $this->m_scriptcode[$i]."\n";
       }
-      
-      if ($partial)
+
+      $res .= "  </script>\n\n";
+    }
+    
+    function getSubmitJavascript($partial=false)
+    {
+      $res .= "\n    function globalSubmit(form)\n";
+      $res .= "    {\n";
+      $res .= "      var retval = true;\n";
+
+      for ($i=0,$_i = count($this->m_submitscripts); $i<$_i; $i++)
       {
-        for ($i=0, $_i=count($this->m_loadscripts); $i<$_i; $i++)
-        {
-          $res .= $this->m_loadscripts[$i]."\n";
-        }        
+        $res .= "      retval = ".$this->m_submitscripts[$i]."\n";
+        $res .= "      if (retval!=true) return false;\n";
       }
 
-      $res .= "</script>\n\n";
+      $res .= "      return retval;\n";
+      $res .= "    }\n";
+      return $res;
+    }
+
+    function getLoadJavascript($partial=false)
+    {
+      if (count($this->m_loadscripts))
+      {
+        if (!$partial)
+        {
+          $res .= "    function globalLoad()\n";
+          $res .= "    {\n";
+        }
+
+        for ($i=0, $_i=count($this->m_loadscripts); $i<$_i; $i++)
+        {
+          $res .= "      {$this->m_loadscripts[$i]}\n";
+        }
+
+        if (!$partial)  $res.= "    }\n";
+      }
+      return $res;
     }
 
     /**
@@ -333,7 +332,7 @@
       $res = '<body ';
       if (count($this->m_loadscripts))
       {
-        $res.='onLoad="globalLoad();" ';
+        $res.='onload="globalLoad();" ';
       }
       $res.= $extraprops.">\n";
       return $res;
@@ -353,6 +352,9 @@
      */
     function render($title, $flags=HTML_STRICT,$extrabodyprops="", $extra_header="")
     {
+      $ui = &atkinstance('atk.ui.atkui');
+      $theme = &atkinstance('atk.ui.atktheme');
+      
       if(is_bool($flags) && $flags==true)
       {
         $flags=HTML_STRICT;
@@ -366,12 +368,15 @@
         return $this->renderPartial();
       }
       
+      if ($theme->tplPath('page.tpl')) $this->m_content= $ui->render('page.tpl',array('content'=>$this->m_content));
+      
       $page = '';
-      if(hasFlag($flags,HTML_DOCTYPE)) $page.=atkconfig("doctype");
+      if(hasFlag($flags,HTML_DOCTYPE)) $page.=$theme->getAttribute('doctype',atkconfig("doctype"));
       $page.= "\n<html>\n";
       if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title, $extra_header);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
-      $page.= $this->m_content."\n";
+      
+      $page.=$this->m_content."\n";
       $page.= $this->renderHiddenVars();
       if (hasFlag($flags,HTML_BODY)) $page.= "</body>\n";
       $page.= "</html>\n";
