@@ -94,7 +94,7 @@
   // to change the menu_delimiter to " " (menu_delimiter is what atk
   // puts between menu items).
   $config_menu_pos = "left";
-  $config_menu_delimiter = "<br>";
+  $config_menu_delimiter = "<br />";
   $config_menu_layout = "modern";
 
   // If you have a menu at either left or right, you can add an

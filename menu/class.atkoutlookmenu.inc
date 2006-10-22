@@ -92,7 +92,7 @@
     			}
 
     			/* delimiter ? */
-    			if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br>";
+    			if ($g_menu[$atkmenutop][$i]["name"] == "-") $menu .= "<br />";
 
     			/* submenu ? */
     			else if (empty($url) && $enable)
