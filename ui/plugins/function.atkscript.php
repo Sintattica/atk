@@ -25,6 +25,8 @@
  * Params:
  * file   The path of the javascript, relative to the running scripts
  *        directory.
+ * prefix The prefix for the path of the javascript file, 
+ *        for example $atkroot
  *
  * Example:
  * {atkscript file="javascript/default.js"}
@@ -33,8 +35,8 @@
  */
 function smarty_function_atkscript($params, &$smarty)
 {
-  $page = &atkPage::getInstance();    
-  $page->register_script($params["file"]);        
+  $page = &atkinstance('atk.ui.atkpage');
+  $page->register_script($params["prefix"].$params["file"]);        
   return "";
 }
 ?>
