@@ -115,9 +115,9 @@
      * @param string $attribname the name of the attribute in the themedefinition
      * @return var the value of the attribute in the themedefinition
      */
-    function getAttribute($attribname)
+    function getAttribute($attribname,$default="")
     {
-      return (isset($this->m_theme["attributes"][$attribname])?$this->m_theme["attributes"][$attribname]:"");
+      return (isset($this->m_theme["attributes"][$attribname])?$this->m_theme["attributes"][$attribname]:$default);
     }
 
     /**
@@ -181,18 +181,30 @@
      */
     function iconPath($icon, $type, $module="")
     {
-      if ($module!="" && isset($this->m_theme["modulefiles"][$module]["icons"][$type][$icon.".gif"]))
+      // Check module themes for icon
+      $iconfile = $this->getIconFileFromTheme($icon,$type,'modulefiles');
+      if ($module!="" && $iconfile) return moduleDir($module)."themes/".$iconfile;
+      
+      // Check the default theme for icon
+      $iconfile = $this->getIconFileFromTheme($icon,$type);
+      if ($iconfile) return atkTheme::absPath($iconfile);
+      
+      // Check the default theme for default icon
+      $iconfile = $this->getIconFileFromTheme('default',$type);
+      if ($iconfile) return atkTheme::absPath($iconfile);
+      
+      return false;
+    }
+    
+    function getIconFileFromTheme($iconname, $type, $location="files")
+    {
+      $allowediconext=array('png','gif','jpg');
+      foreach ($allowediconext as $ext)
       {
-        return moduleDir($module)."themes/".$this->m_theme["modulefiles"][$module]["icons"][$type][$icon.".gif"];
+        if ($this->m_theme["files"]["icons"][$type][$iconname.".".$ext]) 
+          return $this->m_theme[$location]["icons"][$type][$iconname.".".$ext];
       }
-      else if (isset($this->m_theme["files"]["icons"][$type][$icon.".gif"]))
-      {
-        return atkTheme::absPath($this->m_theme["files"]["icons"][$type][$icon.".gif"]);
-      }
-      else
-      {
-        return atkTheme::absPath($this->m_theme["files"]["icons"][$type]["default.gif"]);
-      }
+      return false;
     }
 
     /**
