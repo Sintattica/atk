@@ -169,6 +169,7 @@ Changed in ATK 5.7
 + Added overlibmws JavaScript library. [Peter]
 + Added setAutoCompleteMinChars function for 
   atkManyToOneRelations. [Peter,Dennis]
++ Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -519,13 +520,14 @@ Changed in ATK 5.7
   case-insensitive (default). [Dennis]
 * Autocompletion search can be configured to search in specific attributes 
   of the destination node or on the descriptor fields (default). [Dennis]  
-+ Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 * Added ability to pass default to getAttribute method of atkTheme and made
   atkTheme search for icons with extension .png and .jpeg too, preferring
   png over gif and gif over jpeg. [Boy]
 * Made atkPage output XHTML valid, made ATK support themes defining the doctype
   as a theme attribute, made ATK support a page.tpl, which is a general template
   to render a page in. [Boy]
+* Made login page use login.css if available and made login form more 
+  XHTML compliant. [Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

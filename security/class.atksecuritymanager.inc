@@ -458,7 +458,6 @@
      */
     function loginForm($defaultname, $lastresponse)
     {
-
       $loginattempts = sessionLoad('loginattempts');
       if($loginattempts=="") $loginattempts = 0;
 
@@ -475,10 +474,11 @@
 
       atkdebug('LoginAttempts: '.$loginattempts);
 
-      $page = &atknew("atk.ui.atkpage");
+      $page = &atkinstance("atk.ui.atkpage",true);
       $ui = &atkinstance("atk.ui.atkui");
 
       $page->register_style($ui->stylePath("style.css"));
+      $page->register_style($ui->stylePath("login.css"));
 
       $page->register_script(atkConfig('atkroot')."atk/javascript/tools.js");
 
@@ -506,8 +506,8 @@
         $tplvars["username"] = atktext("username");
         $tplvars["password"] = atktext("password");
         $tplvars["userfield"] = $userField;
-        $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="">';
-        $tplvars["submitbutton"] = '<input class="button" type="submit" value="'.atktext('login').'">';
+        $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="" />';
+        $tplvars["submitbutton"] = '<input class="button" type="submit" value="'.atktext('login').'" />';
         $tplvars["title"] = atktext('login_form');
 
         if ($lastresponse == AUTH_LOCKED)
@@ -534,7 +534,7 @@
         // generate the form
         $output.="<tr><td valign=top>".atktext('username')."</td><td>:</td><td>".$userField."</td></tr>";
         $output.="<tr><td colspan=3 height=6></td></tr>";
-        $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value=''></td></tr>";
+        $output.="<tr><td valign=top>".atktext('password')."</td><td>:</td><td><input type=password size=15 name=auth_pw value='' /></td></tr>";
         $output.='<tr><td colspan="3" align="center" height="50" valign="middle">';
         $output.='<input name="login" class="button" type="submit" value="'.atktext('login').'">';
         $tplvars["auth_enablepasswordmailer"] = atkconfig("auth_enablepasswordmailer", false);
@@ -599,7 +599,7 @@
       }
       else
       {
-        return '<input type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'">';
+        return '<input type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'" />';
       }
     }
 
