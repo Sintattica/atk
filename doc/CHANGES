@@ -528,6 +528,9 @@ Changed in ATK 5.7
   to render a page in. [Boy]
 * Made login page use login.css if available and made login form more 
   XHTML compliant. [Boy]
+* Added loadDispatch method to atkNode, which loads the output in atkOutput
+  but doesn't actually flush anything and make it support a dispatch.tpl
+  template if available. [Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

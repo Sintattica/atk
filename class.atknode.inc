@@ -2237,12 +2237,30 @@
      */
     function dispatch($postvars, $flags=NULL)
     {
+      $this->loadDispatch($postvars,$flags);
+      $ui = &$this->getUi();
       $page = &$this->getPage();
-
+      
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");      
       $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
+      
+      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
+      {
+        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
+        $output = &atkinstance('atk.ui.atkoutput');
+        $output->output($screen);
+      }
 
+      // This is the end of all things for this page..
+      // so we clean up some resources..
+      $db = &$this->getDb();
+      if (is_object($db)) $db->disconnect();
+      atkdebug("disconnected from the database");
+    }
+    
+    function loadDispatch($postvars, $flags=null)
+    {
       $this->loadDispatchPage($postvars);
 
       // backwards compatibility mode
@@ -2260,21 +2278,6 @@
         global $config_debug;
         $config_debug = 0;
       }
-
-      $ui = &$this->getUi();
-
-      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
-      {
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
-        $output = &atkOutput::getInstance();
-        $output->output($screen);
-      }
-
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $db = &$this->getDb();
-      if (is_object($db)) $db->disconnect();
-      atkdebug("disconnected from the database");
     }
 
     /**
@@ -2324,7 +2327,7 @@
       if (!is_array($content)) $content = array($title=>$content);
       $blocks = array();
       foreach($content as $itemtitle => $itemcontent)
-        $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent));
+        $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent),'dispatch');
       /**
        * @todo Don't use renderActionPage here because it tries to determine
        *       it's own title based on the title which is passed as action.
