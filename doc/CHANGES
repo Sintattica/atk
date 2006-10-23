@@ -170,6 +170,8 @@ Changed in ATK 5.7
 + Added setAutoCompleteMinChars function for 
   atkManyToOneRelations. [Peter,Dennis]
 + Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
++ Added 'web20' theme, the first theme without frames, with Web 2.0 colors,
+  rounded corners and partial XHTML 1.0 Strict compliance. [Boy]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -533,6 +535,13 @@ Changed in ATK 5.7
   template if available. [Boy]
 * Made index.php support themes with 'useframes' attribute (defaults to true), 
   loading themes with this attribute set to false without frames. [Boy]
+* atkPlainMenu now supports themes and configurations which set a different
+  'menufile' (defaults to menu.php) and different 'menu_params' 
+  (defaults to 'target="main"'). [Boy]
+* atkPlainMenu now has getMenu member function which returns the menu without
+  sending it to the output stream. [Boy]
+* Made url functions session_vars and session_url output &amp; instead of &
+  to ensure XHTML compliance. [Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
