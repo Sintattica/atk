@@ -118,7 +118,7 @@
       $output=atkOutput::getInstance();
       $res ="<html>";
       $res.='<body bgcolor="#ffffff" color="#000000">';
-      $res.="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br>\n";
+      $res.="<font color=\"$level_color\"><b>".atktext($level,"atk")."</b></font>: $msg.<br />\n";
       $res.="<b>Halted</b>";
       $output->output($res);
       $output->outputFlush();
@@ -524,21 +524,21 @@
    // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
     {
-      $vars.= "atklevel=".$newlevel."&";
+      $vars.= "atklevel=".$newlevel."&amp;";
     }
     $vars.= "atkprevlevel=".atkLevel();
     if ($sessionstatus!=SESSION_NEW)
     {
-      $vars.="&atkstackid=".atkStackID();
+      $vars.="&amp;atkstackid=".atkStackID();
     }
-    $vars.= "&".SID;
+    $vars.= "&amp;".SID;
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
       $value = $GLOBALS[$g_stickyurl[$i]];
       if ($value!="")
       {
-        if (substr($vars,-1)!="&") $vars.="&";
+        if (substr($vars,-4)!="&amp;") $vars.="&amp;";
         $vars.=$g_stickyurl[$i]."=".$value;
       }
     }
@@ -562,7 +562,7 @@
     global $g_stickyurl;
     if (strpos($url,"?")!==false)
     {
-      $start = "&";
+      $start = "&amp;";
     }
     else
     {
@@ -597,10 +597,6 @@
   {
     if ($saveform)
     {
-      //$str = "javascript:atkSubmit('".session_url($url,$sessionstatus)."')";
-    //echo $url."-".base64_encode(session_url($url,$sessionstatus))."<br>";
-      //$str = 'javascript:atkSubmit("'.session_url($url,$sessionstatus).'")';
-    //echo $url."-<br>";
       $str = 'javascript:atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     }
     else
@@ -611,7 +607,6 @@
     // note, we use single quotes instead of doublequotes in the href='',
     // because we otherwise have a problem with internet explorers buggy
     // javascript parser..
-  //echo $str;
     return "<a href='".$str."' ".$extraprops.">".$name."</a>";
   }
 
@@ -1565,8 +1560,10 @@
    * @param string $phpfile The php file to use for dispatching, defaults to dispatch.php
    * @return string url for the node with the action
    */
-  function dispatch_url($node, $action, $params="",$phpfile='dispatch.php')
+  function dispatch_url($node, $action, $params="",$phpfile='')
   {
+    $theme = &atkinstance('atk.ui.atktheme');
+    if (!$phpfile) $phpfile =  $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
     $url = $phpfile."?atknodetype=".$node."&atkaction=".$action;
     if ($params != "" && is_array($params) && count($params) > 0)
       $url .= '&'.buildQueryString($params);
