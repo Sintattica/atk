@@ -1,0 +1,26 @@
+TABLE.recordlist TH,
+TABLE.recordlist TD,
+TABLE.recordlist A
+{
+  text-align: left;     
+  border-width: 1px;
+}
+
+TABLE.recordlist TD,
+TABLE.recordlist TH
+{
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #000000;
+  border-style: solid;
+  padding: 3px;
+  margin: 0px; 
+}
+
+TABLE.recordlist TH,
+TABLE.recordlist TH A
+{
+  background-color: #006863; 
+  color: #000000; 
+  font-weight: bold;  
+}

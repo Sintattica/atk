@@ -1,0 +1,91 @@
+BODY
+{
+  background: url(../images/background.gif) repeat-x #fff;
+  font: 100% Verdana,Arial,sans-serif;
+  text-align: center;
+  color: #208BE1;
+  font-weight: bold;
+}
+
+A
+{
+  color: #FF12FF;
+  font-weight: bold;
+}
+A:hover
+{
+  color: #FFFD30;
+}
+
+#box-menu,#box-top,.box
+{
+  background: #4E789E;
+  color: #574B4B;
+  font-weight: bold;
+}
+
+#box-menu
+{
+  float:right;
+  width: 14em;
+  padding: 1em 0px 1em 0px;
+  position: relative;
+}
+
+#box-top
+{
+  margin: auto;
+  margin-bottom: 1em;
+  position: relative;
+  text-align: right;
+}
+
+#box-top-title
+{
+  text-align: center;
+}
+
+.box
+{
+  margin-bottom: 1em;
+  margin-right: 16em;
+  position: relative;
+}
+
+.box-title,#box-menu-title
+{
+  font: 100% "Bitstream Vera Sans",sans-serif;
+  background: #F3F5FF;
+  margin-bottom: 0.5em;
+  font-weight: bold;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  position: relative;
+}
+
+.box-content,#box-top-content,#box-menu-content
+{
+  font: 100% "Bitstream Vera Sans",sans-serif;
+  background: #CDE8FB;
+  margin: 0.2em;
+  padding-top: 0.7em;
+  padding-bottom: 0.8em;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+  position: relative;
+}
+
+#box-menu-content
+{
+  text-align: left;
+}
+
+img
+{
+  border: 0;
+}
+
+a
+{
+  text-decoration: none;
+}
