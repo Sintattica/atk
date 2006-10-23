@@ -510,9 +510,9 @@ Changed in ATK 5.7
   to the correct charset. [Lineke]
 * Fixed some tests. [Sandy]
 * Tests are only harvested in the testcases directory. [Sandy] 
-* Moved atkselector from the default sessionmembers to the pagevars.
-  Because it caused problems when editing an user and selecting a topic.
-  [dennisjan]
+* Moved atkselector from the default sessionmembers to the pagevars as it 
+  should not be propagated to deeper session levels. [dennisjan]
++ Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 * Added ability to pass default to getAttribute method of atkTheme and made
   atkTheme search for icons with extension .png and .jpeg too, preferring
   png over gif and gif over jpeg. [Boy]
