@@ -304,8 +304,11 @@
   "recordlistsummary" => "Records [start]-[end] van [count]",
   "import_novalidatefirst"=>"Controleer importbestand niet voor importeren",
   "show" => "Toon",
-  "all" => "Alles",
-  "autocomplete_no_results" => "Geen resultaten gevonden.",
+  "all" => "Alles",  
+  "autocomplete_no_results" => "Geen resultaten gevonden voor deze zoekopdracht.",
+  "autocomplete_no_results_exact" => "Geen exacte resultaten gevonden voor deze zoekopdracht.",
+  "autocomplete_no_results_startswith" => "Geen resultaten gevonden die beginnen met de gegeven zoekopdracht.",
+  "autocomplete_no_results_contains" => "Geen resultaten gevonden waarin de gegeven zoekopdracht voorkomt.",
   "autocomplete_minimum_chars" => "Voer minimaal %d karakters in.",
 );
 ?>

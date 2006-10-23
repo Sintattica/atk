@@ -512,6 +512,13 @@ Changed in ATK 5.7
 * Tests are only harvested in the testcases directory. [Sandy] 
 * Moved atkselector from the default sessionmembers to the pagevars as it 
   should not be propagated to deeper session levels. [dennisjan]
+* Autocompletion search can configured to search for results that: 
+  match EXACTLY, START with the search value (default) or CONTAIN the search 
+  value. [Dennis]
+* Autocompletion search can be configured to search case sensitive or 
+  case-insensitive (default). [Dennis]
+* Autocompletion search can be configured to search in specific attributes 
+  of the destination node or on the descriptor fields (default). [Dennis]  
 + Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 * Added ability to pass default to getAttribute method of atkTheme and made
   atkTheme search for icons with extension .png and .jpeg too, preferring
