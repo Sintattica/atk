@@ -528,6 +528,7 @@ Changed in ATK 5.7
   sending it to the output stream. [Boy]
 * Made url functions session_vars and session_url output &amp; instead of &
   to ensure XHTML compliance. [Boy]
+* Added atkGetModules() function. [Jeroen,Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

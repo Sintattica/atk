@@ -111,9 +111,15 @@
     return $org;
   }
 
-  function &getModule($modname)
+  function atkGetModules()
   {
-    global $g_moduleRepository, $g_modules;
+    global $g_modules;
+    return $g_modules;
+  }
+  
+  function &atkGetModule($modname)
+  {
+    global $g_moduleRepository;
     
     atkimport("atk.atknode");
     
@@ -164,11 +170,17 @@
     }
     return $g_moduleRepository[$modname];
   }
+  
+  function &getModule($modname)
+  {
+    return atkGetModule($modname);
+  }
 
   function nodeFile($node)
   {
-    global $g_modules, $config_atkroot, $config_classroot, $config_module_path;
-
+    global $config_classroot, $config_module_path;
+    $modules = atkGetModules();
+    
     /* module and type */
     $module = getNodeModule($node);
     $type = getNodeType($node);
@@ -181,10 +193,10 @@
     }
     else
     {
-      if (is_array($g_modules)&&in_array($module, array_keys($g_modules)))
+      if (is_array($modules)&&in_array($module, array_keys($modules)))
       {
 
-        $file = $g_modules[$module]."/class.$type.inc";
+        $file = $modules[$module]."/class.$type.inc";
       }
       else
       {
@@ -254,10 +266,10 @@
    */
   function moduleDir($module)
   {
-    global $g_modules;
-    if (isset($g_modules[$module]))
+    $modules = atkGetModules();
+    if (isset($modules[$module]))
     {
-      $dir = $g_modules[$module];
+      $dir = $modules[$module];
       if (substr($dir,-1)!='/') return $dir."/";
       return $dir;
     }
@@ -278,8 +290,8 @@
 
   function moduleExists($module)
   {
-    global $g_modules;
-    return (is_array($g_modules)&&in_array($module, array_keys($g_modules)));
+    $modules = atkGetModules();
+    return (is_array($modules)&&in_array($module, array_keys($modules)));
   }
 
   /**
@@ -336,9 +348,8 @@
    */
   function atkHarvestModules($function, $param="", $associative=false)
   {
-    global $g_modules;
-
-    $modulekeys = array_keys($g_modules);
+    $modules = atkGetModules();
+    $modulekeys = array_keys($modules);
     $total = array();
 
     foreach ($modulekeys as $modname)
@@ -412,9 +423,10 @@
    */
   function atkPreloadModules()
   {
-    global $g_modules, $g_modifiers, $g_overloaders, $g_moduleflags, $g_nodeListeners;
+    global $g_modifiers, $g_overloaders, $g_moduleflags, $g_nodeListeners;
+    $modules = atkGetModules();
     
-    foreach ($g_modules as $modname => $modpath)
+    foreach ($modules as $modname => $modpath)
     {
       if ((!isset($g_moduleflags[$modname])) || (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD)))
       {
