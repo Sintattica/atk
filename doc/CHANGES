@@ -167,7 +167,6 @@ Changed in ATK 5.7
 + Added setTabIndex function to atkNode for changing 
   the tab order. [Sandy]
 + Added overlibmws JavaScript library. [Peter]
-+ Added setAutoCompleteMinChars function for atkManyToOneRelations. [Peter,Dennis]
 + Added 'web20' theme, the first theme without frames, with Web 2.0 colors,
   rounded corners and partial XHTML 1.0 Strict compliance. [Boy]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
@@ -474,8 +473,6 @@ Changed in ATK 5.7
 * The atkManyToOneRelation is now configured to always use auto-completion
   support if the AF_LARGE flag is set. This can be overriden (application-wide)
   setting $config_manytoone_autocomplete_large to false. [Peter]
-* The atkManyToOneRelation ignores the AF_RELATION_AUTOCOMPLETE flag 
-  if the owner instance is not an object. [Dennis]
 * Improved placeFocus() JavaScript method (now focuses the real first
   form element, instead of a somewhat guess). [Peter]
 * Fixed support for returning the newly created record for a many-to-one
@@ -485,8 +482,6 @@ Changed in ATK 5.7
 * Use select mode for retrieval of records for atkManyToOneRelation. [Peter]
 * Fetch descriptor fields early for atkManyToOneRelation so that they can
   be displayed in the title bar etc. [Dennis,Peter]
-* Autocompletion results of manytoonerelation are not wrapped anymore, each
-  entry is now 1 line. Also added a title to the listitems. [Peter, Dennis]
 * A table cell can now have a Row and Col Span in the 
   atkTableRenderer. [Sandy]
 * Bug fix, if going from edit mode to view for the same record the current tab
