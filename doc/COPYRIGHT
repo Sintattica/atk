@@ -82,3 +82,10 @@ and made available under the terms of an MIT-style license.
 ATK uses the overlibmws Javascript Library (http://www.macridesweb.com/oltest/)
 for tooltips. overlibmws is Copyright (c) 2002-2006 Foteos Macrides and made
 available under the terms of an Artistic license.
+
+ATK uses parts of the Zend Framework (http://framework.zend.com).
+Zend Framework is Copyright (c) 2006, Zend Technologies USA, Inc. The
+Zend Framework License can be found in the atk/ext/zend subdirectory.
+The full version of Zend Framework, including full documentation can be found 
+on its homepage.
+

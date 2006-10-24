@@ -1684,6 +1684,25 @@
   }
 
   /**
+   * Imports a zend-file
+   * @param string $classname Name of class in zend-format (starting with a Capital)
+   */  
+  function zendimport($classname)
+  {        
+    $current_path = getcwd();
+    chdir(atkConfig('atkroot')."atk/ext/zend/");
+    
+    $filename = 'Zend/'.$classname.'.php';
+    
+    if (file_exists($filename))
+    {
+      require_once $filename;
+    }
+    
+    chdir($current_path);    
+  }
+
+  /**
    * Converts an ATK classname ("map1.map2.classname")
    * to a pathname ("/map1/map2/class.classname.inc")
    * @param string $fullclassname  ATK classname to be converted
