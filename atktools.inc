@@ -524,14 +524,14 @@
    // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
     {
-      $vars.= "atklevel=".$newlevel."&amp;";
+      $vars.= "atklevel=".$newlevel."&";
     }
     $vars.= "atkprevlevel=".atkLevel();
     if ($sessionstatus!=SESSION_NEW)
     {
-      $vars.="&amp;atkstackid=".atkStackID();
+      $vars.="&atkstackid=".atkStackID();
     }
-    $vars.= "&amp;".SID;
+    $vars.= "&".SID;
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
