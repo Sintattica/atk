@@ -2237,32 +2237,6 @@
      */
     function dispatch($postvars, $flags=NULL)
     {
-      $this->loadDispatch($postvars,$flags);
-      $ui = &$this->getUi();
-      $page = &$this->getPage();
-      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");      
-      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
-      
-      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
-      {
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
-        $output = &atkinstance('atk.ui.atkoutput');
-        $output->output($screen);
-      }
-
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $db = &$this->getDb();
-      if (is_object($db)) $db->disconnect();
-      atkdebug("disconnected from the database");
-    }
-    
-    function loadDispatch($postvars, $flags=null)
-    {
-      $this->loadDispatchPage($postvars);
-
       // backwards compatibility mode
       if ($flags == NULL)
       {
@@ -2278,6 +2252,24 @@
         global $config_debug;
         $config_debug = 0;
       }
+
+      $ui = &$this->getUi();
+      $page = &$this->getPage();
+
+      $this->loadDispatchPage($postvars);
+      
+      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
+      {
+        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
+        $output = &atkinstance('atk.ui.atkoutput');
+        $output->output($screen);
+      }
+
+      // This is the end of all things for this page..
+      // so we clean up some resources..
+      $db = &$this->getDb();
+      if (is_object($db)) $db->disconnect();
+      atkdebug("disconnected from the database");
     }
 
     /**
@@ -2292,6 +2284,10 @@
       $this->m_partial = $postvars["atkpartial"];
 
       $page = &$this->getPage();
+
+      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
 
       if ($this->allowed($this->m_action))
       {

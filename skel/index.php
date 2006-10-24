@@ -184,7 +184,7 @@
 
           if (is_object($obj))
           {
-            $obj->loadDispatch($ATK_VARS);
+            $obj->loadDispatchPage($ATK_VARS);
           }
           else
           {
