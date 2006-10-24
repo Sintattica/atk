@@ -538,7 +538,7 @@
       $value = $GLOBALS[$g_stickyurl[$i]];
       if ($value!="")
       {
-        if (substr($vars,-4)!="&amp;") $vars.="&amp;";
+        if (substr($vars,-1)!="&") $vars.="&";
         $vars.=$g_stickyurl[$i]."=".$value;
       }
     }
@@ -562,7 +562,7 @@
     global $g_stickyurl;
     if (strpos($url,"?")!==false)
     {
-      $start = "&amp;";
+      $start = "&";
     }
     else
     {
