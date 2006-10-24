@@ -59,6 +59,7 @@
     /**
      * The maximum number of detail records. If the number of detail records
      * exceeds this maximum, the link for adding new details disappears.
+     * @access private
      * @var int
      */
     var $m_maxRecords = 0;
@@ -67,9 +68,18 @@
     /**
      * The load method might build a custom filter. When it does, we might want
      * to use it again in other methods.
+     * @access private
      * @var string
      */
     var $m_loadFilter = "";
+
+    /**
+     * The field that the foreign key in the destination points to.
+     * Is set to the primary key if no value is provided.
+     * @access private
+     * @var array;
+     */
+    var $m_ownerFields = array();
 
     /**
      * Default constructor.
@@ -632,13 +642,13 @@
             }
             ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
 
+            $stmt = "";
             if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
             {
               $atkorderby = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
               // EVIL BAD SMELL, sorting and recordlist embedding is handled in a very cumbersome way (with prefixes and embedprefixes
               // that are hardly understandable
               $elems = explode(" ", $atkorderby);
-              $stmt = "";
               if (isset($this->m_destInstance->m_attribList[$elems[0]]))
               {
                 $attr = &$this->m_destInstance->getAttribute($elems[0]);
