@@ -241,7 +241,7 @@
     {
       $txt_date_format_edit = atktext("date_format_edit","atk","","","",true);
 
-      if (hasFlag($flags, AF_DATE_STRING) && empty($format_edit)) $this->m_date_format_edit = "Y-m-d";
+      if ($this->hasFlag(AF_DATE_STRING) && empty($format_edit)) $this->m_date_format_edit = "Y-m-d";
       elseif (!empty($format_edit)) $this->m_date_format_edit = $format_edit;
       elseif (!empty($txt_date_format_edit)) $this->m_date_format_edit = $txt_date_format_edit;
       else $this->m_date_format_edit = "F j Y";
