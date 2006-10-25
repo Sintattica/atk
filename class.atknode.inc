@@ -2782,6 +2782,7 @@
       else
       {
         atkdebug("NOT UPDATING! NO SELECTOR SET!");
+        return false;
       }
       return true;
     }
