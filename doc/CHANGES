@@ -532,6 +532,15 @@ Changed in ATK 5.7
 * Made url functions session_vars and session_url output &amp; instead of &
   to ensure XHTML compliance. [Boy]
 * Added atkGetModules() function. [Jeroen,Boy]
+* Exporthandler now decodes export to charset in languagefile. Added parameter
+  to customrecordlist to set decoding on or off. [Lineke]
+* Showtitlerow checkbox is now taken into account in customrecordlist. Added
+  parameter to customrecordlist to set showtitlerow. [Lineke]
+* Changed display function of onetomanyrelation and manytomanyrelation to 
+  correctly show data in csv export (without html). [Lineke]
+* Use assignExportData function in your node to add extra data to the export.
+  This makes it possible to do your own query and add extra info to the export.
+  [Lineke]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

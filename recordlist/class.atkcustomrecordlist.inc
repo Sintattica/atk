@@ -46,8 +46,10 @@
      *                               filename - the name of the file (without extension .csv)     
      * @param String $mode	      The mode that is passed to attributes' display() method 
      *                            (for overrides). Defaults to 'list'.
+     * @param Boolean $titlerow   Should titlerow be rendered or not
+     * @param Boolean $decode     Should data be decoded or not (for exports)
     */
-    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="", $outputparams=array(), $mode="list")
+    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="", $outputparams=array(), $mode="list", $titlerow=true, $decode=false)
     {
       $this->setNode($node);
       // example      html         csv
@@ -62,47 +64,49 @@
       $totalisable = false;
       $totals = array();
       if ($type=="0")
-       {
+      {
         $output = '<table border="1" cellspacing="0" cellpadding="4">';
         $empty = "&nbsp;";
-       }
+      }
       if ($type=="1")
-       {
+      {
         $output="";
         $empty="";
-       }
+      }
 
-       $output .= $sol;
-
-      // display a headerrow with titles.
-      // Since we are looping the attriblist anyway, we also check if there
-      // are totalisable collumns.
-      foreach (array_keys($this->m_node->m_attribList) as $attribname)
+      if ($titlerow)
       {
-        $p_attrib = &$this->m_node->m_attribList[$attribname];
-        $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-        if (
+        $output .= $sol;
+
+        // display a headerrow with titles.
+        // Since we are looping the attriblist anyway, we also check if there
+        // are totalisable collumns.
+        foreach (array_keys($this->m_node->m_attribList) as $attribname)
+        {
+          $p_attrib = &$this->m_node->m_attribList[$attribname];
+          $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
+          if (
             ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
             &&
             (
-              ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
-              ||($this->m_node->m_action!="select")
+            ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
+            ||($this->m_node->m_action!="select")
             )
             &&$musthide==false
-           )
-        {
-          $output.=$sof.atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type).$eof;
-
-          // the totalisable check..
-          if ($p_attrib->hasFlag(AF_TOTAL))
+          )
           {
-            $totalisable = true;
+            $output.=$sof.atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type).$eof;
+
+            // the totalisable check..
+            if ($p_attrib->hasFlag(AF_TOTAL))
+            {
+              $totalisable = true;
+            }
           }
-
         }
-      }
 
-      $output.=$eol;
+        $output.=$eol;
+      }
 
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
@@ -135,6 +139,7 @@
               // is called.            
               $value=$p_attrib->display($recordset[$i], $mode);
             }
+            if (atktext("charset") != "" && $decode) $value = html_entity_decode(htmlentities($value, ENT_NOQUOTES, atktext("charset")));
             $output.=$sof.($value==""?$empty:$value).$eof;
 
             // Calculate totals..

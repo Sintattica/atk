@@ -172,7 +172,7 @@
           // display in list mode
           if (($mode == "list") || ($mode == "csv"))
             for ($i = 0; $i < count($myrecords);$i++)
-              $result .= ($i > 0 ? "<br>" : "").$this->m_destInstance->descriptor($myrecords[$i]);
+              $result .= ($i > 0 && $mode == "list" ? "<br>" : ($i > 0 ? ', ' : '')).$this->m_destInstance->descriptor($myrecords[$i]);
 
           // display in view mode
           else

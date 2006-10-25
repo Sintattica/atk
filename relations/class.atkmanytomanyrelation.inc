@@ -197,25 +197,30 @@
      * @param $record
      * @return a displayable string for this value
      */
-    function display($record)
+    function display($record, $mode="")
     {
       if ($this->createDestination())
       {
         $recordset = array();
 
-        for ($i=0;$i<count($record[$this->m_name]);$i++)
+        if (is_array($record[$this->fieldName()]))
         {
-          $recordset[] = $record[$this->m_name][$i][$this->getRemoteKey()];
+          for ($i=0;$i<count($record[$this->m_name]);$i++)
+          {
+            $recordset[] = $record[$this->m_name][$i][$this->getRemoteKey()];
+          }
         }
 
         if (count($record[$this->m_name])!=0)
         {
-          $result = "<ul>";
+          if ($mode != 'csv') $result = "<ul>";
           for ($i=0;$i<count($recordset);$i++)
           {
-            $result.="<li>".$this->m_destInstance->descriptor($recordset[$i]);
+            if ($mode != 'csv') $result.="<li>";
+            elseif ($result != '') $result.=', ';
+            $result .= $this->m_destInstance->descriptor($recordset[$i]);
           }
-          $result.="</ul>";
+          if ($mode != 'csv') $result.="</ul>";
         }
         return $result;
       }
