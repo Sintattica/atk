@@ -129,14 +129,14 @@
      * @access private
      * @var String
      */
-    var $m_autocomplete_searchmode = "startswith";
+    var $m_autocomplete_searchmode = "contains";
     
     /**
      * Value determines wether the search of the autocompletion is case-sensitive.
      *
      * @var boolean
      */
-    var $m_autocomplete_search_case_sensitive = true;
+    var $m_autocomplete_search_case_sensitive = false;
     
     // override onchangehandler init
     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
@@ -163,7 +163,9 @@
         $flags |= AF_RELATION_AUTOCOMPLETE;
 
       $this->m_autocomplete_minchars = atkconfig("manytoone_autocomplete_minchars", 2);
-
+      $this->m_autocomplete_searchmode = atkconfig("manytoone_autocomplete_searchmode", "contains");
+      $this->m_autocomplete_search_case_sensitive = atkconfig("manytoone_autocomplete_search_case_sensitive", false);  
+  
       if (is_array($name))
       {
         $this->m_refKey = $name;
@@ -1582,44 +1584,53 @@
         $searchfields = $this->m_destInstance->descriptorFields();
       else 
         $searchfields = $this->m_autocomplete_searchfields;
-
-      $filter = array();
-      foreach($searchfields as $attribname)
-      {        
-        if(!$m_autocomplete_search_case_sensitive)
-          $tmp = "LOWER(".$this->m_destInstance->m_table.".".$attribname.")";
-        else 
-          $tmp = $this->m_destInstance->m_table.".".$attribname;
         
-        switch($this->m_autocomplete_searchmode)    
-        {           
-          case "exact":            
-            if(!$this->m_autocomplete_search_case_sensitive)
-              $tmp.= " = LOWER('{$searchvalue}')";
-            else 
-              $tmp.= " = '{$searchvalue}'";
-            break;
-          case "startswith":
-            if(!$this->m_autocomplete_search_case_sensitive)
-              $tmp.= " LIKE LOWER('{$searchvalue}%')";
-            else 
-              $tmp.= " LIKE '{$searchvalue}%'";
-            break;
-          case "contains":
-            if(!$this->m_autocomplete_search_case_sensitive)
-              $tmp.= " LIKE LOWER('%{$searchvalue}%')";
-            else 
-              $tmp.= " LIKE '%{$searchvalue}%'";
-            break;
-          default:            
-            $tmp.= " = LOWER('{$searchvalue}')";          
+      $parts = preg_split('/\s+/', $searchvalue);
+      
+      $mainFilter = array();
+      foreach ($parts as $part)
+      {
+        $filter = array();
+        foreach($searchfields as $attribname)
+        {        
+          if(!$this->m_autocomplete_search_case_sensitive)
+            $tmp = "LOWER(".$this->m_destInstance->m_table.".".$attribname.")";
+          else 
+            $tmp = $this->m_destInstance->m_table.".".$attribname;
+          
+          switch($this->m_autocomplete_searchmode)    
+          {           
+            case "exact":            
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " = LOWER('{$part}')";
+              else 
+                $tmp.= " = '{$part}'";
+              break;
+            case "startswith":
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " LIKE LOWER('{$part}%')";
+              else 
+                $tmp.= " LIKE '{$part}%'";
+              break;
+            case "contains":
+              if(!$this->m_autocomplete_search_case_sensitive)
+                $tmp.= " LIKE LOWER('%{$part}%')";
+              else 
+                $tmp.= " LIKE '%{$part}%'";
+              break;
+            default:            
+              $tmp.= " = LOWER('{$part}')";          
+          }
+  
+          $filter[] = $tmp;
         }
-
-        $filter[] = $tmp;
+        
+        if (count($filter) > 0)
+          $mainFilter[] = "(".implode(") OR (", $filter).")";
       }
       
-      if (count($filter) > 0)
-        return "(".implode(" OR ", $filter).")";
+      if (count($mainFilter) > 0)
+        return "(".implode(") AND (", $mainFilter).")";
       else return "";
     }
   }

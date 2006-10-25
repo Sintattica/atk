@@ -778,4 +778,19 @@
    * @var int
    */
   $config_manytoone_autocomplete_minchars = 2;
+    
+  /**
+   * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
+   *
+   * @access private
+   * @var String
+   */
+  $config_manytoone_autocomplete_searchmode = "contains";
+  
+  /**
+   * Value determines wether the search of the autocompletion is case-sensitive.
+   *
+   * @var boolean
+   */
+  $config_manytoone_autocomplete_search_case_sensitive = false;
 ?>
