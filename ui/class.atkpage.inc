@@ -260,8 +260,8 @@
       for ($i = 0; $i < count($this->m_scriptfiles); $i++)
         $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
 
-      $res .= '  <script type="text/javascript">';      
-      
+      $res .= '  <script type="text/javascript">';
+
       $res.=$this->getSubmitJavascript($partial);
       $res.=$this->getLoadJavascript($partial);
 
@@ -273,10 +273,10 @@
 
       $res .= "  </script>\n\n";
     }
-    
+
     function getSubmitJavascript($partial=false)
     {
-      $res .= "\n    function globalSubmit(form)\n";
+      $res = "\n    function globalSubmit(form)\n";
       $res .= "    {\n";
       $res .= "      var retval = true;\n";
 
@@ -295,6 +295,7 @@
     {
       if (count($this->m_loadscripts))
       {
+        $res = "";
         if (!$partial)
         {
           $res .= "    function globalLoad()\n";
@@ -354,7 +355,7 @@
     {
       $ui = &atkinstance('atk.ui.atkui');
       $theme = &atkinstance('atk.ui.atktheme');
-      
+
       if(is_bool($flags) && $flags==true)
       {
         $flags=HTML_STRICT;
@@ -367,15 +368,15 @@
       {
         return $this->renderPartial();
       }
-      
+
       if ($theme->tplPath('page.tpl')) $this->m_content= $ui->render('page.tpl',array('content'=>$this->m_content));
-      
+
       $page = '';
       if(hasFlag($flags,HTML_DOCTYPE)) $page.=$theme->getAttribute('doctype',atkconfig("doctype"));
       $page.= "\n<html>\n";
       if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title, $extra_header);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
-      
+
       $page.=$this->m_content."\n";
       $page.= $this->renderHiddenVars();
       if (hasFlag($flags,HTML_BODY)) $page.= "</body>\n";
@@ -383,7 +384,7 @@
 
       return $page;
     }
-    
+
     /**
      * Render partial.
      */
