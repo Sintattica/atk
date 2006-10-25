@@ -50,6 +50,7 @@
      /* establish connection */
      if (empty($this->m_link_id))
      {
+       if (empty($port)) $port = NULL;
        $this->m_link_id = @mysqli_connect($host, $user, $password, $database, $port);
        if (!$this->m_link_id)
        {
