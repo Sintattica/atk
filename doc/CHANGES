@@ -169,6 +169,7 @@ Changed in ATK 5.7
 + Added overlibmws JavaScript library. [Peter]
 + Added 'web20' theme, the first theme without frames, with Web 2.0 colors,
   rounded corners and partial XHTML 1.0 Strict compliance. [Boy]
++ Added support for port-specification for the mysql41 driver. [Peter,Dennis]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]

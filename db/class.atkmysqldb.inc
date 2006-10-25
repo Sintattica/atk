@@ -55,11 +55,14 @@
      * @param string $password Password
      * @return mixed Connection status
      */
-    function doConnect($host,$user,$password,$charset)
+    function doConnect($host,$user,$password,$database,$port,$charset)
     {
       /* establish connection */
       if (empty($this->m_link_id))
       {
+        if (!empty($port))
+          $host = "$host:$port";
+          
         $this->m_link_id = @mysql_connect($host, $user, $password);
         if (!$this->m_link_id)
         {

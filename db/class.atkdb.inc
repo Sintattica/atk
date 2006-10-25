@@ -445,12 +445,12 @@
         $this->m_dbcluster = $tmp_db->m_dbcluster;
         atkdebug("atkdb::connect -> New mode = ".$this->m_mode);
 
-        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_charset);
+        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
       }
       elseif($this->m_link_id==NULL)
       {
         atkdebug("atkdb::connect -> Don't switch use current db");
-        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_charset);
+        $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
       }
 
     }
@@ -459,7 +459,7 @@
      * Connect to the database
      * @abstract
      */
-    function doConnect()
+    function doConnect($host, $user, $password, $database, $port, $charset)
     {
 
     }
