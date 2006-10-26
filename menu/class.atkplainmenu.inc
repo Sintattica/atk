@@ -34,21 +34,21 @@
 
     function render()
     {
-      $page = &atknew("atk.ui.atkpage");
+      $page = &atkinstance("atk.ui.atkpage");
       $theme = &atkinstance("atk.ui.atktheme");
-      $page->addContent($this->getMenu($page,$theme));
+      $page->addContent($this->getMenu());
 
       return $page->render("Menu", true);
     }
     
-    function getMenu(&$page)
+    function getMenu()
     {
        global $ATK_VARS, $g_menu, $g_menu_parent;
        $atkmenutop = $ATK_VARS["atkmenutop"];
        $theme = &atkinstance('atk.ui.atktheme');
+       $page = &atkinstance('atk.atkpage');
        if($atkmenutop=="") $atkmenutop="main";
 
-//       $menu = "<div >";
        $menu.=$this->getHeader($atkmenutop);
         if (is_array($g_menu[$atkmenutop]))
         {

@@ -11,6 +11,7 @@ class atkModernMenu extends atkPlainMenu
   
   function render()
   {
+    $page = &atkinstance('atk.ui.atkpage');
     $theme = &atkinstance("atk.ui.atktheme");
     if ($theme->getAttribute('modern_menu_compat'))
     {
@@ -24,7 +25,7 @@ class atkModernMenu extends atkPlainMenu
     }
   }
   
-  function getMenu(&$page)
+  function getMenu()
   {
     $theme = &atkinstance("atk.ui.atktheme");
     if ($theme->getAttribute('modern_menu_compat'))
@@ -35,7 +36,6 @@ class atkModernMenu extends atkPlainMenu
 
       $menuitems = $this->getMenuItems($g_menu,'main');
 
-      $page = &atknew("atk.ui.atkpage");
       $page->register_style($theme->stylePath("style.css"));
       $page->register_style($theme->stylePath("menu.css"));
       $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
@@ -55,7 +55,7 @@ class atkModernMenu extends atkPlainMenu
     else
     {
       $oldmenu = &atknew('atk.menu.atkplainmenu');
-      return $oldmenu->getMenu($page);
+      return $oldmenu->getMenu();
     }
   }
 
