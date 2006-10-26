@@ -173,6 +173,8 @@ Changed in ATK 5.7
 + Added DEBUG_NOTICE flag which only gets shown 
   in debug level 3 or higher and made PHP notices use it. [Boy]
 + Added fpassthru convenience method to atkTmpFile. [Ivo]
++ Added atkIndexPage to ui directory. This class can be used to generate
+  an index page which loads up your app. [Boy]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
@@ -527,7 +529,8 @@ Changed in ATK 5.7
   but doesn't actually flush anything and make it support a dispatch.tpl
   template if available. [Boy]
 * Made index.php support themes with 'useframes' attribute (defaults to true), 
-  loading themes with this attribute set to false without frames. [Boy]
+  loading themes with this attribute set to false without frames,
+  please update your index.php from atk/skel/index.php. [Boy]
 * atkPlainMenu now supports themes and configurations which set a different
   'menufile' (defaults to menu.php) and different 'menu_params' 
   (defaults to 'target="main"'). [Boy]
@@ -545,10 +548,13 @@ Changed in ATK 5.7
 * Use assignExportData function in your node to add extra data to the export.
   This makes it possible to do your own query and add extra info to the export.
   [Lineke]
-* Made testreporter recognize if 'include' URL variable contains a complete
-  path relative from the atkroot 
-  (example: modules/testcases/class.test_mytest.inc) if so, don't traverse
-  the entire application, just load that testcase up. [Boy]
+* Made testreporter support finding and running the test for a single class,
+  in ATK notation (module.mymodule.utils.utilclass) by using the 'class' 
+  REQUEST variable. If found, the framework won't traverse
+  the entire application, but just check for a testcase in the underlying
+  testcases directory and load that testcase up.
+  Example: test.php?class=atk.ui.atkpage which will load up 
+  atk/ui/testcases/class.test_atkpage.inc. [Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
