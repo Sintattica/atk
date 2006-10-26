@@ -98,10 +98,12 @@
     function run($reporttype="html", $module="")
     {
       $test = &new GroupTest("Full ATK test");
+      $class = $_REQUEST['class'];
+      $testclass = $this->getTestCaseLocationForClass($class);
 
-      if ($_REQUEST['include'] && file_exists(atkconfig('platformroot').$_REQUEST['include']))
+      if ($class && file_exists(getClassPath($testclass)))
       {
-        $this->_addIncludeTestCase($test);
+        $this->_runTestCase($test,$testclass);
       }
       else 
       {
@@ -117,12 +119,17 @@
       }
     }
     
-    function _addIncludeTestCase(&$test)
+    function getTestCaseLocationForClass($class)
     {
-      include_once(atkconfig('atkroot').$_REQUEST['include']);
-      $elems = explode(".", $_REQUEST['include']);
-      array_pop($elems);
-      $test->addTestClass(array_pop($elems));
+      $exploded = explode('.',$class);
+      $class = array_pop($exploded);
+      return implode('.',$exploded).'.testcases.test_'.$class;
+    }
+    
+    function _runTestCase(&$test,$testcase)
+    {
+      atkimport($testcase,true);
+      $test->addTestClass(array_pop(explode(".", $testcase)));
     }
     
     function _addTestsByTraversing(&$test, $module)
