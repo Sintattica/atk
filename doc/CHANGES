@@ -544,6 +544,10 @@ Changed in ATK 5.7
 * Use assignExportData function in your node to add extra data to the export.
   This makes it possible to do your own query and add extra info to the export.
   [Lineke]
+* Made testreporter recognize if 'include' URL variable contains a complete
+  path relative from the atkroot 
+  (example: modules/testcases/class.test_mytest.inc) if so, don't traverse
+  the entire application, just load that testcase up. [Boy]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

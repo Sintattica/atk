@@ -99,6 +99,34 @@
     {
       $test = &new GroupTest("Full ATK test");
 
+      if ($_REQUEST['include'] && file_exists(atkconfig('platformroot').$_REQUEST['include']))
+      {
+        $this->_addIncludeTestCase($test);
+      }
+      else 
+      {
+        $this->_addTestsByTraversing($test,$module);
+      }
+      if($reporttype=="html")
+      {
+        $test->run(atknew("atk.test.atktestreporter"));
+      }
+      else
+      {
+        $test->run(new TextReporter());
+      }
+    }
+    
+    function _addIncludeTestCase(&$test)
+    {
+      include_once(atkconfig('atkroot').$_REQUEST['include']);
+      $elems = explode(".", $_REQUEST['include']);
+      array_pop($elems);
+      $test->addTestClass(array_pop($elems));
+    }
+    
+    function _addTestsByTraversing(&$test, $module)
+    {
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
 
@@ -118,14 +146,6 @@
       {
         $traverser->traverse(".");
         $this->_traverseExtraModules($traverser);
-      }
-      if($reporttype=="html")
-      {
-        $test->run(atknew("atk.test.atktestreporter"));
-      }
-      else
-      {
-        $test->run(new TextReporter());
       }
     }
 
