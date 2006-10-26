@@ -172,6 +172,7 @@ Changed in ATK 5.7
 + Added support for port-specification for the mysql41 driver. [Peter,Dennis]
 + Added DEBUG_NOTICE flag which only gets shown 
   in debug level 3 or higher and made PHP notices use it. [Boy]
++ Added fpassthru convenience method to atkTmpFile. [Ivo]
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
