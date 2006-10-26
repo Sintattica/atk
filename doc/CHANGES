@@ -170,18 +170,17 @@ Changed in ATK 5.7
 + Added 'web20' theme, the first theme without frames, with Web 2.0 colors,
   rounded corners and partial XHTML 1.0 Strict compliance. [Boy]
 + Added support for port-specification for the mysql41 driver. [Peter,Dennis]
++ Added {atkloadscript} Smarty plug-in (can be used to register javascript
+  code to run at the body onLoad event). [Boy]
++ Added parts of Zend Framwork to atk/ext. 
+  Used for processing RSS feeds. [Jeroen]  
 + Added DEBUG_NOTICE flag which only gets shown 
   in debug level 3 or higher and made PHP notices use it. [Boy]
 + Added fpassthru convenience method to atkTmpFile. [Ivo]
 + Added atkIndexPage to ui directory. This class can be used to generate
   an index page which loads up your app. [Boy]
-* Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
-  any other screen that made use of the makeHiddenPostvars method. (bug #697) 
-  [Ivo]
-+ Added {atkloadscript} Smarty plug-in (can be used to register javascript
-  code to run at the body onLoad event). [Boy]
-+ Added parts of Zend Framwork to atk/ext. Used for processing RSS feeds 
-  [Jeroen]  
++ Added atkwarning and atknotice functions, used to add warnings and
+  notices to your debug log. [Boy]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
@@ -555,6 +554,9 @@ Changed in ATK 5.7
   testcases directory and load that testcase up.
   Example: test.php?class=atk.ui.atkpage which will load up 
   atk/ui/testcases/class.test_atkpage.inc. [Boy]
+* Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
+  any other screen that made use of the makeHiddenPostvars method. (bug #697) 
+  [Ivo]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

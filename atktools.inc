@@ -219,6 +219,31 @@
       $g_debug_msg[]=$txt;
     }
   }
+  
+  /**
+   * Send a notice to the debug log.
+   * A notice doesn't get show unless your debug level is 3 or higher.
+   *
+   * @param String $txt The text that will be added to the log
+   */
+  function atknotice($txt)
+  {
+    return atkdebug($txt,DEBUG_NOTICE);
+  }
+  
+  /**
+   * Send a warning to the debug log.
+   * A warning gets shown more prominently than a normal debug line.
+   * However it does not trigger a mailreport 
+   * or anything else that an atkerror triggers.
+   *
+   * @param unknown_type $txt
+   * @return unknown
+   */
+  function atkwarning($txt)
+  {
+    return atkdebug($txt,DEBUG_WARNING);
+  }
 
   function atkGetTimingInfo()
   {
