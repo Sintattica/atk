@@ -31,6 +31,13 @@
    * clearly visible.
    */
   define("DEBUG_WARNING", 2);
+  
+  /**
+   * Hides the debug unless in level 2.
+   * This should be used for debug you only really want to see if you
+   * are developping (like deprecated warnings).
+   */
+  define("DEBUG_NOTICE", 4);
 
   /**
    * Function atkErrorHandler
@@ -74,7 +81,7 @@
     if ($errtype==E_NOTICE || error_reporting()==0)
     {
       // Just show notices in the debug log, but don't influence the program flow
-      //atkdebug("[$errortypestring] $errstr in $errfile (line $errline)");
+      atkdebug("[$errortypestring] $errstr in $errfile (line $errline)",DEBUG_NOTICE);
       return;
     }
     else if (($errtype & (E_WARNING|E_USER_WARNING)) > 0)
@@ -201,7 +208,7 @@
           $g_debug_msg[]=$line;
         }
       }
-      else
+      else if (!hasFlag($flags,DEBUG_NOTICE))
       {
         $g_debug_msg[]=$line;
       }
