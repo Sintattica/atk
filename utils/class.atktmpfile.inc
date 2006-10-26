@@ -110,6 +110,21 @@
         $this->m_fp = null;
       }
     }
+    
+    /**
+     * Send the file contents directly to the browser.
+     *
+     * @return boolean True if succesful, false on error.
+     */
+    function fpassthru()
+    {
+      if ($this->open("r"))
+      {
+        fpassthru($this->m_fp);      
+        $this->close();
+      }
+      return true;
+    }
 
     function remove()
     {
