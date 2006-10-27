@@ -181,6 +181,9 @@ Changed in ATK 5.7
   an index page which loads up your app. [Boy]
 + Added atkwarning and atknotice functions, used to add warnings and
   notices to your debug log. [Boy]
++ Added a new fileutils class where can copy a skell to a specific location
+  and you can create a destination at once for example ../dir/subdir/sudir2
+  [dennisjan]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
