@@ -90,13 +90,13 @@
      * @var String
      */
     var $m_port = "";
-    
+
     /**
      * The character set.
      * @access private
      * @var String
      */
-    var $m_charset = "";    
+    var $m_charset = "";
 
     /**
      * The mode for the connection.
@@ -876,7 +876,6 @@
       if(is_array($dbcluster) && isset($dbcluster[$conn]))
       {
          atkdebug("Database Cluster found with name: $conn");
-         atk_var_dump($dbcluster,"Cluster members");
          foreach($dbcluster[$conn] as $db)
          {
            if($dbconfig[$db]["mode"]==$mode)
@@ -903,7 +902,6 @@
          {
            $random = rand(0,($total_connections-1));
            atkdebug("<h1>Random server (".$connections[$random].") choosen from cluster $conn for mode: $mode</h1>");
-           atk_var_dump($connections,"Cluster connections pool");
            return $connections[$random];
          }
          else
