@@ -644,9 +644,9 @@
 
 
   /**
-   * Same as array_merge from php, but without duplicates.. 
+   * Same as array_merge from php, but without duplicates..
    * Supports unlimited number of arrays as arguments.
-   * 
+   *
    * @param Array $array1 the first array
    * @param Array $array2 the second array
    * @return Array The result of the merge between $array1 and $array2
@@ -654,7 +654,7 @@
   function atk_array_merge($array1, $array2)
   {
     $res = Array();
-    
+
     $arrays = func_get_args();
     for ($i = 0, $_i = count($arrays); $i < $_i; $i++)
     {
@@ -666,7 +666,7 @@
         }
       }
     }
-    
+
     return $res;
   }
 
@@ -1368,9 +1368,9 @@
       $disp = 'attachment';
     }
     if($mimetype!="") $mime=$mimetype;
-    else if ($mimetype=="" && $detectmime && function_exists('mime_content_type')) 
+    else if ($mimetype=="" && $detectmime && function_exists('mime_content_type'))
       $mime = mime_content_type($file);
-    
+
     $fp = @fopen($file,"rb");
     if ($fp!=NULL)
     {
@@ -1390,7 +1390,7 @@
 
       header("Content-Description: File Transfer");
       header("Content-Transfer-Encoding: binary");
-      
+
       fpassthru($fp);
       return true;
     }
@@ -1601,7 +1601,7 @@
       $url .= '&'.buildQueryString($params);
     return $url;
   }
-  
+
   /**
    * Generate a partial url.
    *
@@ -1618,7 +1618,7 @@
     $params['atkpartial'] = $partial;
 
     return session_url(dispatch_url($node, $action, $params), SESSION_PARTIAL);
-  }   
+  }
 
   /**
    * Writes trace file to system tmp directory
@@ -1718,20 +1718,20 @@
   /**
    * Imports a zend-file
    * @param string $classname Name of class in zend-format (starting with a Capital)
-   */  
+   */
   function zendimport($classname)
-  {        
+  {
     $current_path = getcwd();
     chdir(atkConfig('atkroot')."atk/ext/zend/");
-    
+
     $filename = 'Zend/'.$classname.'.php';
-    
+
     if (file_exists($filename))
     {
       require_once $filename;
     }
-    
-    chdir($current_path);    
+
+    chdir($current_path);
   }
 
   /**
@@ -2044,7 +2044,7 @@
     }
     return false;
   }
-  
+
   /**
    * Remove a class overloader for a class
    *
@@ -2061,7 +2061,7 @@
     }
     return false;
   }
-  
+
   /**
    * Checks wether or not a class has an overloader defined
    *
@@ -2077,7 +2077,7 @@
     }
     return false;
   }
-  
+
   /**
    * Returns the IP of the remote client.
    *
@@ -2086,7 +2086,7 @@
   function atkGetClientIp()
   {
     static $s_ip = NULL;
-    
+
     if ($s_ip === NULL)
     {
       if (getenv("HTTP_CLIENT_IP"))
@@ -2094,10 +2094,10 @@
       elseif (getenv("HTTP_X_FORWARDED_FOR"))
         $s_ip = getenv("HTTP_X_FORWARDED_FOR");
       elseif (getenv("REMOTE_ADDR"))
-        $s_ip = getenv("REMOTE_ADDR");    
+        $s_ip = getenv("REMOTE_ADDR");
       else $s_ip = 'x.x.x.x';
     }
-    
+
     return $s_ip;
   }
 ?>
