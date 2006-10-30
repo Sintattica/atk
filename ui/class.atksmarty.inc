@@ -2,7 +2,7 @@
  /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Wrapper class for the Smarty template engine.
    * This class instantiates Smarty and configures it for use in ATK.
@@ -23,10 +23,10 @@
    * @package atk
    * @subpackage ui
    *
-   */   
+   */
   class atkSmarty
-  {    
-    
+  {
+
     /**
      * Get the Smarty  instance.
      *
@@ -41,8 +41,11 @@
       if ($s_smarty == NULL)
       {
         atkdebug("Creating Smarty instance");
-        include_once(atkconfig("atkroot")."atk/ui/smarty/Smarty.class.php");
-        
+        if (!class_exists("Smarty"))
+        {
+          include_once(atkconfig("atkroot")."atk/ui/smarty/Smarty.class.php");
+        }
+
         // Warning: you'd think that the next line should read
         // $s_smarty = & new Smarty();
         // However, for some reason (php bug?) the static variable is no longer
@@ -50,16 +53,16 @@
         // call.
         $s_smarty = new Smarty();
 
-        // Initialize..        
-        
+        // Initialize..
+
         $s_smarty->template_dir    = atkconfig("tplroot"); // name of directory for templates
-        $s_smarty->compile_dir     = atkconfig("tplcompiledir"); // name of directory for compiled templates        
+        $s_smarty->compile_dir     = atkconfig("tplcompiledir"); // name of directory for compiled templates
 
         $s_smarty->autoload_filters = array();    // indicates which filters will be auto-loaded
- 
+
         $s_smarty->force_compile   = atkconfig("smarty_forcecompile");   // force templates to compile every time,
                                                                         // overrides cache settings. default false.
-  
+
         $s_smarty->caching         = atkconfig("tplcaching");     // enable caching. can be one of 0/1/2.
                                                                         // 0 = no caching
                                                                         // 1 = use class cache_lifetime value
@@ -71,9 +74,9 @@
 	  									                                                        // 0 = always regenerate cache,
                                                                               // -1 = never expires. default is one hour (3600)
         $s_smarty->cache_modified_check = true;                         // respect If-Modified-Since headers on cached content
-  
+
         $s_smarty->default_template_handler_func = 'missing_template_handler'; // function to handle missing templates
-  
+
         $s_smarty->php_handling    =  SMARTY_PHP_ALLOW;
                                           // how smarty handles php tags in the templates
                                           // possible values:
@@ -85,7 +88,7 @@
 
         $s_smarty->default_handler = atkconfig("defaulthandler");
         $s_smarty->default_modifier = atkconfig("defaultmodifier");
-        
+
         // plugin dirs
         $s_smarty->plugins_dir = array(atkconfig("atkroot")."atk/ui/smarty/plugins",
                                        atkconfig("atkroot")."atk/ui/plugins");
@@ -97,7 +100,7 @@
       }
       return $s_smarty;
     }
-        
+
     /**
      * Add a plugin dir to Smarty.
      * @static
@@ -106,9 +109,9 @@
     function addPluginDir($path)
     {
       $smarty = &atkSmarty::getInstance();
-      $smarty->plugins_dir[] = $path; 
+      $smarty->plugins_dir[] = $path;
     }
-    
+
     /**
      * Register function / tag.
      *
@@ -117,11 +120,11 @@
      */
     function addFunction($module, $tag, $name="", $cacheable=true, $cache_attrs=null)
     {
-      $smarty = &atkSmarty::getInstance();        
-      
+      $smarty = &atkSmarty::getInstance();
+
       $name = empty($name) ? $tag : $name;
       $function = "__smarty_function_$name";
-         
+
       eval('
         function '.$function.'($params, &$smarty)
         {
@@ -129,10 +132,10 @@
           return smarty_function_'.$name.'($params, $smarty);
         }
       ');
-      
+
       $smarty->register_function($tag, $function, $cacheable,$cache_attrs);
     }
-    
+
     /**
      * Register dynamic function / tag.
      */
@@ -145,15 +148,15 @@
      * Register compiler function / tag.
      *
      * NOTE: you should only use this function for
-     *       tags with special names!     
+     *       tags with special names!
      */
     function addCompilerFunction($module, $tag, $name="", $cacheable=true)
     {
-      $smarty = &atkSmarty::getInstance();        
-      
+      $smarty = &atkSmarty::getInstance();
+
       $name = empty($name) ? $tag : $name;
       $function = "__smarty_compiler_$name";
-         
+
       eval('
         function '.$function.'($tag_arg, &$smarty)
         {
@@ -161,10 +164,10 @@
           return smarty_compiler_'.$name.'($tag_arg, $smarty);
         }
       ');
-      
+
       $smarty->register_compiler_function($tag, $function, $cacheable);
     }
-    
+
     /**
      * Register block / tag.
      *
@@ -173,11 +176,11 @@
      */
     function addBlock($module, $tag, $name="", $cacheable=true)
     {
-      $smarty = &atkSmarty::getInstance();        
-      
+      $smarty = &atkSmarty::getInstance();
+
       $name = empty($name) ? $tag : $name;
       $function = "__smarty_block_$name";
-         
+
       eval('
         function '.$function.'($params, $content, &$smarty, &$repeat)
         {
@@ -185,10 +188,10 @@
           return smarty_block_'.$name.'($params, $content, $smarty, $repeat);
         }
       ');
-      
+
       $smarty->register_block($tag, $function, $cacheable);
     }
-    
+
     /**
      * Register dynamic function / tag.
      */
@@ -196,7 +199,7 @@
     {
       atkSmarty::addBlock($module, $tag, $tag, false);
     }
-    
+
     function addOutputFilter($function)
     {
       $smarty = &atkSmarty::getInstance();
