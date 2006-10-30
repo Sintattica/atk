@@ -228,7 +228,7 @@
               
               if(!$decryptedlink && $errorconfig) 
               {
-                atkdebug("Unable to decrypt link: ".$link."for record: ".atk_var_dump($records[$i])." with linkbackfield: ".$this->m_linkbackfield);
+                atkdebug("Unable to decrypt link: ".$link."for record: ".var_export($records[$i], true)." with linkbackfield: ".$this->m_linkbackfield);
                 $decrypterror=true;
               }
               else
@@ -313,7 +313,8 @@
           }
           else if (!$cryptedlink || !is_numeric($cryptedlink))
           {
-            return atk_var_dump($record,"decrypt($record, $field) failed! and yielded: $cryptedlink");
+            atkdebug("decrypt($record, $field) failed! and yielded: $cryptedlink");
+            return NULL;
           }
         }
         else

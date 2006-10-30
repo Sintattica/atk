@@ -580,7 +580,6 @@
     function saveCriteria($name, $criteria)
     {
       $this->forgetCriteria($name);
-      atk_var_dump($criteria, "Save criteria $name");      
       $db = &$this->m_node->getDb(); 
       $query = "INSERT INTO {$this->m_table} (nodetype, name, criteria) VALUES('%s', '%s', '%s')";
       $db->query(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name), escapeSQL(serialize($criteria))));
@@ -598,7 +597,6 @@
       $query = "SELECT c.criteria FROM {$this->m_table} c WHERE c.nodetype = '%s' AND UPPER(c.name) = UPPER('%s')";
       list($row) = $db->getRows(sprintf($query, $this->m_node->atkNodeType(), escapeSQL($name)));      
       $criteria = $row == NULL ? NULL : unserialize($row['criteria']);
-      atk_var_dump($criteria, "Load criteria $name");      
       return $criteria;
     }
     

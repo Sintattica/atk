@@ -48,10 +48,6 @@
       {
         atkdebug("No messages in atkMessageQueue");
       }
-      else
-      {
-        atk_var_dump($msgs, "Messages");
-      }
       return "";
     }
     return "";

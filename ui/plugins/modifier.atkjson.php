@@ -26,7 +26,6 @@
 function smarty_modifier_atkjson($data)
 {
   atkimport('atk.utils.atkjson');
-  atk_var_dump(atkJSON::encode($data), "BLUB");
   return atkJSON::encode($data);
 }
 ?>

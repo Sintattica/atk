@@ -394,8 +394,6 @@
 
         // finally, reset atkescape to prevent atk from keeping escaping upon return
         unset($currentitem['atkescape']);
-
-        atk_var_dump($currentitem, "Current item in escape mode");
       }
       else
       {
