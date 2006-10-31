@@ -428,7 +428,7 @@
      */
     function connect($mode="rw")
     {
-      atkdebug("atkdb::connect -> request mode = $mode | current mode: ".$this->m_mode);
+      atknotice("atkdb::connect -> request mode = $mode | current mode: ".$this->m_mode);
       if($this->m_mode=="r" &&
          ($mode=="w" || $mode=="rw"))
       {
