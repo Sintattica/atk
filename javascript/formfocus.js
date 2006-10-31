@@ -33,7 +33,7 @@ function placeFocus()
         if (node.nodeName.toLowerCase() == 'tr')
         {
           found = node.id != null && node.id.substring(0, 3) == 'ar_' && node.style.display != 'none';
-          field.focus();
+          if(found) field.focus();
           break;
         }
         
