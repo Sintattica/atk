@@ -2237,7 +2237,10 @@
      */
     function dispatch($postvars, $flags=NULL)
     {
-      // backwards compatibility mode
+      $ui = &$this->getUi();
+      $page = &$this->getPage();
+      
+      // backwards compatibility mode      
       if ($flags == NULL)
       {
         $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;
@@ -2252,9 +2255,6 @@
         global $config_debug;
         $config_debug = 0;
       }
-
-      $ui = &$this->getUi();
-      $page = &$this->getPage();
 
       $this->loadDispatchPage($postvars);
       
