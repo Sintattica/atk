@@ -1259,11 +1259,13 @@
      */
     function _checkPrimaryKeysForSelector(&$recordset)
     {
-      if ($this->m_ownerInstance->m_postvars['atkselector'] && $this->m_ownerInstance->m_postvars['atkselector'])
+      $sessionm = &atkGetSessionManager();
+      $atkselector = $sessionm->stackVar('atkselector');
+      if ($atkselector)
       {
         foreach ($recordset as $key=>$record)
         {
-          if (str_replace("'","\'",$this->m_ownerInstance->m_postvars['atkselector'])==$this->m_ownerInstance->m_postvars['atkselector'])
+          if ($atkselector==$record['atkprimkey'])
           {
             $recordset = array($record);
             return true;
