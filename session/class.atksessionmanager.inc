@@ -882,7 +882,7 @@
 
     for ($position=0; $position<strlen($sessionid); $position++)
     {
-      if (!eregi('[a-zA-Z0-9]', $sessionid[$position])) return false;
+      if (!eregi('[a-zA-Z0-9:]', $sessionid[$position])) return false;
     }
     return true;
   }
