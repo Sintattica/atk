@@ -66,7 +66,9 @@ class atkCurrencyAttribute extends atkNumberAttribute
    */
   function display($record, $mode="")
   {
-    return $this->m_currencysymbol."&nbsp;".number_format($record[$this->fieldName()],$this->m_decimals,$this->m_decimalseparator,$this->m_thousandsseparator);
+    $result = empty($this->m_currencysymbol) ? "" : $this->m_currencysymbol." ";
+    $result .= number_format($record[$this->fieldName()],$this->m_decimals,$this->m_decimalseparator,$this->m_thousandsseparator);
+    return $result;
   }
 }
 
