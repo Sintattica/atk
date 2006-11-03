@@ -454,6 +454,12 @@
             WHERE uc.table_name = c.table_name
             AND ucc.column_name = c.column_name
             AND uc.constraint_type = 'U'
+            AND NOT EXISTS (
+              SELECT 1
+              FROM user_cons_columns ucc1 
+              WHERE ucc1.constraint_name = uc.constraint_name
+              AND ucc1.column_name <> ucc.column_name
+            )
           ) AS is_unique,
           (
             SELECT COUNT(1)

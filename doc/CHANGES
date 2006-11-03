@@ -188,6 +188,9 @@ Changed in ATK 5.7
   and you can create a destination at once for example ../dir/subdir/sudir2
   [dennisjan]
 + Added feature to parse a directory name by a template. [dennisjan]
++ Added selected record override to atkManyToOneRelation and Usage: create 
+  a function named <attribname>_selected($record, $mode) in your node,
+  enable AF_MANYTOONE_LAZY and return the selected record. [Peter]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
@@ -565,6 +568,10 @@ Changed in ATK 5.7
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
 * It is only allowed to set the focus if the node allowes it. [dennisjan]
+* Fixed OCI db driver unique constraint information in metadata (only use the
+  unique flags for fields that are unique on their own). [Peter]
+* Use createQuery on the node db instance to create a query object for unique field 
+  set validation instead of using the default db instance. [Peter]
 * Renamed and refactored some functions in atkfileutils. [dennisjan]
 * atkManyToOneRelation::populate now support list of attribute names. [Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as

@@ -46,6 +46,8 @@ class atkMetaManyBoolRelation extends atkManyBoolRelation
     $this->setDescriptorTemplate($template);
     if (isset($options["filter"])) 
       $this->setDestinationFilter($options["filter"]);
+    if (isset($options["remote"]))
+      $this->setRemoteKey($options["remote"]);      
     if (isset($options["cols"]))
       $this->setCols($options["cols"]);
     if (isset($options["columns"]))

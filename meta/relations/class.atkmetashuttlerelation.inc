@@ -46,6 +46,8 @@ class atkMetaShuttleRelation extends atkShuttleRelation
     $this->setDescriptorTemplate($template);
     if (isset($options["filter"])) 
       $this->setDestinationFilter($options["filter"]);
+    if (isset($options["remote"]))
+      $this->setRemoteKey($options["remote"]);
   }
   
   /**

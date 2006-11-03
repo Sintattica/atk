@@ -209,7 +209,7 @@
       atkimport('atk.db.atkquery');
       foreach($this->m_nodeObj->m_uniqueFieldSets as $uniqueFieldSet)
       {
-        $query = &atkQuery::create();
+        $query = &$db->createQuery();
         $query->addField('*');
         $query->addTable($this->m_nodeObj->m_table);
         foreach($uniqueFieldSet as $field)
