@@ -187,6 +187,7 @@ Changed in ATK 5.7
 + Added a new fileutils class where can copy a skell to a specific location
   and you can create a destination at once for example ../dir/subdir/sudir2
   [dennisjan]
++ Added feature to parse a directory name by a template. [dennisjan]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
@@ -564,6 +565,7 @@ Changed in ATK 5.7
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
 * It is only allowed to set the focus if the node allowes it. [dennisjan]
+* Renamed and refactored some functions in atkfileutils. [dennisjan]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
