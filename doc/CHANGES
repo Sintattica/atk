@@ -566,6 +566,7 @@ Changed in ATK 5.7
   [Ivo]
 * It is only allowed to set the focus if the node allowes it. [dennisjan]
 * Renamed and refactored some functions in atkfileutils. [dennisjan]
+* atkManyToOneRelation::populate now support list of attribute names. [Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

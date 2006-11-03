@@ -392,18 +392,20 @@
     /**
      * Populate the record with the destination record data.
      *
-     * @param $record  record
-     * @param $full    load all data or only the descriptor fields?
+     * @param array $record        record
+     * @param mixed $fullOrFields  load all data, only the given fields or only the descriptor fields?
      */
-    function populate(&$record, $full=false)
+    function populate(&$record, $fullOrFields=false)
     {
       if ($record[$this->fieldName()] == "") return;
 
-      atkdebug("Delayed loading of ".($full ? "" : "descriptor ")."fields for ".$this->m_name);
+      atkdebug("Delayed loading of ".($fullOrFields || is_array($fullOrFields) ? "" : "descriptor ")."fields for ".$this->m_name);
       $this->createDestination();
 
       $includes = "";
-      if (!$full)
+      if (is_array($fullOrFields))
+        $includes = array_merge($this->m_destInstance->m_primaryKey, $fullOrFields);
+      else if (!$fullOrFields)
         $includes = $this->m_destInstance->descriptorFields();
 
       list($record[$this->fieldName()]) =
