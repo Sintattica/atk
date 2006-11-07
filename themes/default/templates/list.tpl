@@ -1,5 +1,18 @@
 {if isset($formstart)}{$formstart}{/if}
 <table border="0" cellspacing="0" cellpadding="2" width="100%">
+ {atkmessages}
+  {if count($atkmessages)}
+    <tr>
+      <td align="center" valign="top">
+        <br>
+        <div class="atkmessages">
+          {foreach from=$atkmessages item=message}
+            &nbsp;{$message}<br>
+          {/foreach}
+        </div>
+      </td>
+    </tr>
+  {/if}
   {if (isset($header) && !empty($header))}
   <tr>
     <td valign="top" align="left">{$header}<br><br></td>

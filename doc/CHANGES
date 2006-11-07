@@ -575,6 +575,7 @@ Changed in ATK 5.7
 * atkManyToOneRelation::populate now support list of attribute names. [Peter]
 * Bugfix in importhandler, mb_convert_encoding function is not always present.
   So we check if the function exists. [Lineke]
+* Bugfix: atkMessageQueue messages are now also displayed in adminpages. [Ivo]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
