@@ -1164,10 +1164,10 @@
    * @param String $conn The name of the connection to retrieve
    * @return atkDb Database connection instance
    */
-  function &atkGetDb($conn="default", $reset=false)
+  function &atkGetDb($conn="default", $reset=false,$mode="r")
   {
     atkimport("atk.db.atkdb");
-    $db = &atkDb::getInstance($conn, $reset);
+    $db = &atkDb::getInstance($conn, $reset,$mode);
     return $db;
   }
 
