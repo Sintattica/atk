@@ -259,7 +259,7 @@ class atkDataGrid
    */
   function setPostvar($name, $value)
   {
-    $this->m_postvars[$name = $value;
+    $this->m_postvars[$name] = $value;
   }
   
   /**
