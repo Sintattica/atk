@@ -572,7 +572,6 @@ Changed in ATK 5.7
   unique flags for fields that are unique on their own). [Peter]
 * Use createQuery on the node db instance to create a query object for unique field 
   set validation instead of using the default db instance. [Peter]
-* Renamed and refactored some functions in atkfileutils. [dennisjan]
 * atkManyToOneRelation::populate now support list of attribute names. [Peter]
 * Bugfix in importhandler, mb_convert_encoding function is not always present.
   So we check if the function exists. [Lineke]
