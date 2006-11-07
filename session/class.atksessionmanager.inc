@@ -515,6 +515,10 @@
             {
               $postvars[$var] = $value;
             }
+            else if (is_array($postvars[$var]) && is_array($value))
+            {
+              $postvars[$var] = array_merge($value, $postvars[$var]);
+            }
           }          
           unset($currentitem['atkformdata']);
           // atkformdata will be present in postvars.. editForm() has to read them..
