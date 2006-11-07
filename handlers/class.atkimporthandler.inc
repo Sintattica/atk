@@ -39,7 +39,7 @@
       if(!isset($this->m_postvars["phase"]) && isset($ATK_VARS['atkformdata']))
         foreach($ATK_VARS['atkformdata'] as $key=>$value)
           $this->m_postvars[$key] = $value;
-      
+
       $keys = array();
       //need to keep the selected item after an importerror
       if (is_array($ATK_VARS['allFields'])) $keys = array_keys($ATK_VARS['allFields']);
@@ -48,7 +48,7 @@
         if(!isset($ATK_VARS[$ATK_VARS['allFields'][$key]."_newsel"]))
           $ATK_VARS[$ATK_VARS['allFields'][$key]."_newsel"] = $ATK_VARS[$ATK_VARS['allFields'][$key]];
       }
-      
+
 
       $phase = ($this->m_postvars["phase"]!=""?$this->m_postvars["phase"]:"init");
 
@@ -386,12 +386,12 @@
       $content.= '<br /><table id="importoptions">';
       $content.= '  <tr>';
       $content.= '    <td>';
-      
+
       foreach ($allFields as $allfield)
       {
         if (!$this->m_postvars[$allfield]) $noallfieldvalue=true;
       }
-      
+
       if (empty($allFields) || !$noallfieldvalue) $allFields[] = '';
       foreach ($allFields as $allField)
       {
@@ -927,14 +927,14 @@
     {
       ini_set('max_execution_time',300);
       $fileid =       $this->m_postvars["fileid"];
-      $file =         $this->getTmpFileDestination($fileid);  
-      
+      $file =         $this->getTmpFileDestination($fileid);
+
       $validated = $this->getValidatedRecords($file);
       $this->addRecords($validated['importerrors'], $validated['validatedrecs'], $validated['fp'], $file);
       if (!$nopost) $this->postImport();
       else $this->m_node->redirect();
     }
-    
+
     function postImport()
     {
       $this->clearCache();
@@ -948,7 +948,7 @@
 
       $this->m_node->redirect();
     }
-    
+
     function getValidatedRecords($file)
     {
       $enclosure =    $this->m_postvars["enclosure"];
@@ -960,7 +960,7 @@
 
       $allFieldsValues = $this->getAllFieldsValues($col_map);
       $initial_values = $this->m_node->initial_values();
-      
+
       $validatedrecs = array();
       $validatedrecs["add"]=array();
       $validatedrecs["update"] = array();
@@ -973,7 +973,7 @@
       {
         $importerrors[0][] = $allfielderror;
       }
-      
+
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
       if($skipfirstrow == "1") $line = fgets($fp);
@@ -989,7 +989,7 @@
         set_time_limit(60);
         atkdebug('set_time_limit(60)');
 
-        if (atktext('charset') != '') $line = mb_convert_encoding($line, atktext('charset'));
+        if (atktext('charset') != '' && function_exists("mb_convert_encoding")) $line = mb_convert_encoding($line, atktext('charset'));
 
         $data = $this->fgetcsvfromline($line, $columncount, $delimiter, $enclosure);
 
@@ -1268,7 +1268,7 @@
 
         $record = array();
         $this->addToRecord($record,$field,$values[$field]);
-        
+
         $result = $attr->display($record);
 
         if(!$result)
