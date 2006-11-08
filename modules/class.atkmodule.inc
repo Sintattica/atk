@@ -116,7 +116,7 @@
       }
 
       /* no overloader */
-      else 
+      else
       {
         $tmp = NULL;
         return $tmp;
@@ -193,6 +193,11 @@
       return file_exists($file);
     }
 
+    function getModifierFunctions(&$node)
+    {
+      return array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
+    }
+
     /**
      * Modifies the given node
      *
@@ -201,7 +206,7 @@
     function modifier(&$node)
     {
       // Determine the modifier name and existance for modifiers that modify any node having the this node's type in any module
-      $specificmodifiers = array($node->m_type . "_modifier", str_replace(".", "_", $node->atknodetype()) . "_modifier");
+      $specificmodifiers = $this->getModifierFunctions($node);
 
       // Set the number of applied modifiers to zero
       $appliedmodifiers = 0;
