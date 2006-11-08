@@ -68,7 +68,7 @@
 
       // Assign the record variables to the OpenOffice.org DocumentWriter
       if (method_exists($this->m_node, "assignDocumentVars"))
-        $this->m_node->assignDocumentVars($this, $openDocumentWriter, $this->m_postvars["atkselector"]);
+        $this->m_node->assignDocumentVars($openDocumentWriter, $this->m_postvars["atkselector"]);
       else
         $this->assignDocumentVars($openDocumentWriter, $this->m_postvars["atkselector"]);
 
@@ -98,7 +98,7 @@
       // Also assign the generic (date) vars tot the documentWriter
       $documentWriter->assignDocumentGenericVars();
     }
-    
+
     /**
      * Compose the filename to be used (doctemplatedir/module/node/<docmentfilename)
      *
@@ -110,7 +110,7 @@
       $basepath = atkconfig("doctemplatedir", "doctemplates/");
       $module = $this->m_node->m_module;
       $node = $this->m_node->m_type;
-      
+
       return $basepath  . $module . "/" . $node . "/" . $template;
     }
   }
