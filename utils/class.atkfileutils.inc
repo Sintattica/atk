@@ -56,7 +56,13 @@ class atkFileUtils
       return false;
     }
 
-    atkdebug("Permission granted to write.");    
+    atkdebug("Permission granted to write.");
+    
+    if ($dest == $orgdest && $dirname != '')
+    {
+      mkdir($orgdest . "/" . $dirname,$privileges);
+      return atkFileUtils::copyDirRecursive($source,$orgdest."/".$dirname,'',$privileges);
+    }
     
     // Simple copy for a file
     if (is_file($source))
