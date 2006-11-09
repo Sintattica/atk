@@ -30,6 +30,8 @@
    */
   class atkNavigator
   {
+    var $m_displayShowAll = true;
+
     function buildNavigation(&$node, $mode="", $navurls="", $embedded=false)
     {
       if ($navurls=="")
