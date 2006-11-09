@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
++ Added m_displayShowAll var to atknavigator, so you can configure if you
+  want to show the 'show all' link in the navigation [Wim,Nico]
 + Devided render part in the atkrecordlist class into a specific render 
   part and a part which collects all needed data for rendering. 
   This way it's easy to display a recordlist in a different layout. [wim]
