@@ -17,8 +17,11 @@
  */
 session_start();
 //include_once("../../../../../../../../configs/fck.inc.php");
-if (file_exists("../../../../../../../../../../configs/fck.inc.php"))
-  include_once ("../../../../../../../../../../configs/fck.inc.php");
+if (file_exists(str_repeat("../",10)."configs/fck.inc.php"))
+  include_once (str_repeat("../",10)."configs/fck.inc.php");
+  
+  // wether or not use old-style configuration file instead of the more out-of-the-box style
+  $fck_configuration_oldstyle = ($config_fck_documentroot_path != "");  
   
 /*------------------------------------------------------------------------------*/
 /* HTTP over SSL Detection (shouldnt require changing)				*/
@@ -32,21 +35,41 @@ $fckphp_config['prot'].="://";
 /*------------------------------------------------------------------------------*/
 /* The physical path to the document root, Set manually if not using apache	*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['basedir']=$config_fck_documentroot_path;
+if ($fck_configuration_oldstyle)
+  $fckphp_config['basedir']=$config_fck_documentroot_path;
+else
+  $fckphp_config['basedir']=str_repeat("../",10).$config_fck_documentroot_path;
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Prefix added to image path before sending back to editor			*/
 /*------------------------------------------------------------------------------*/
-$fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
-//$fckphp_config['urlprefix']=(substr($config_fck_documentroot_uri,0,1) == "/") ? substr($config_fck_documentroot_uri,1) : $config_fck_documentroot_uri;
+
+if ($fck_configuration_oldstyle)
+{
+  $fckphp_config['urlprefix']=$fckphp_config['prot'].$_SERVER['SERVER_NAME'].$config_fck_documentroot_uri;
+}
+else 
+{
+  // this is a tricky one because the urlprefix can be just the server or a server
+  // with a huge path behind it. Found out where we are first by searching our atkroot.
+  $custom_prefix_path = $_SERVER['PHP_SELF'];
+  $custom_prefix_path = substr($custom_prefix_path,0,strpos($custom_prefix_path,"/atk/"));
+  
+  // up 1 more directory
+  $custom_prefix_path = substr($custom_prefix_path,0,strrpos($custom_prefix_path,"/"));
+  
+  $fckphp_config['urlprefix']=$fckphp_config['prot'].str_replace("//","/",$_SERVER['SERVER_NAME'].$custom_prefix_path."/".$config_fck_documentroot_uri);
+}
 /*==============================================================================*/
 
 
 /*------------------------------------------------------------------------------*/
 /* Path to user files relative to the document root (no trailing slash)		*/
 /*------------------------------------------------------------------------------*/
+if (!$fck_configuration_oldstyle && strlen($config_fck_uploads_dir) > 1 && substr($config_fck_uploads_dir,-1) == "/")
+  $config_fck_uploads_dir = substr($config_fck_uploads_dir,0,-1);
 $fckphp_config['UserFilesPath'] = $config_fck_uploads_dir;
 
 //HARRIEHACK
@@ -231,7 +254,7 @@ $fckphp_config['Commands'] = array(
 				"Thumbnail",
 				"DeleteFile",
 				"DeleteFolder",
-				"GetUploadProgress",
+//				"GetUploadProgress",
 				"RenameFile",
 				"RenameFolder"
 				);
