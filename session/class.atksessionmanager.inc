@@ -371,8 +371,11 @@
         $atkformdata = array();
         foreach(array_keys($postvars) as $varname)
         {
-          // only save formdata itself, hence no $atk.. variables
-          if (substr($varname,0,3)!="atk")
+          // Only save formdata itself, hence no $atk.. variables.
+          // Except atktab because it could be changed in the page load.
+          // but why don't we save all page vars here? What is the reason for
+          // not doing this? TODO: Ask Ivo.
+          if (substr($varname,0,3)!="atk" || $varname == 'atktab')
           {
             $atkformdata[$varname] = $postvars[$varname];
           }
@@ -519,9 +522,11 @@
             {
               $postvars[$var] = array_merge($value, $postvars[$var]);
             }
-          }          
-          unset($currentitem['atkformdata']);
-          // atkformdata will be present in postvars.. editForm() has to read them..
+          }
+
+          // We leave atkformdata in the current stack entry untouched so that
+          // when the stack might be forked of whatsoever the form data is still
+          // present. However, this data should not be directly accessed in the node!         
         }
 
         if (is_array($currentitem))

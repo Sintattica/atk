@@ -578,6 +578,10 @@ Changed in ATK 5.7
 * Bugfix in importhandler, mb_convert_encoding function is not always present.
   So we check if the function exists. [Lineke]
 * Bugfix: atkMessageQueue messages are now also displayed in adminpages. [Ivo]
+* Bugfix: atkformdata should be kept in the session because the window might 
+  be forked. [Jeroen,Peter]
+* Remember atktab in atkformdata because it might be changed in the current
+  edit session. [Jeroen,Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
