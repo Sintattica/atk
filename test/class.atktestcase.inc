@@ -374,15 +374,6 @@
     }
     
     /**
-     * Add the given fixtures (each argument can be the fullname of a fixture).
-     */
-    function addFixture()
-    {
-      $fixtures = func_get_args();
-      $this->m_fixtures = array_merge($this->m_fixtures, $fixtures);
-    }
-    
-    /**
      * Adds the given fixtures (each argument can be the fullname of a fixture).
      */
     function addFixtures()
