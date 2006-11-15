@@ -585,6 +585,9 @@ Changed in ATK 5.7
   edit session. [Jeroen,Peter]
 * Bugfix: atkQuery should enclose the FROM clause in parentheses due to changes
   in MySQL 5.0.15 to make MySQL more compliant with the standard. [Dennis]  
+* Fixed issue in MySQL driver which caused connections to be re-used
+  even though we connect to a different database. [Peter]
+* Fixed some PHP5 notices. [Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
