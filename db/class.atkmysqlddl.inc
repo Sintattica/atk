@@ -28,6 +28,7 @@
    */
   class atkMysqlDDL extends atkDDL
   {
+    var $m_table_type = NULL;
     
     function atkMysqlDDL()
     {
@@ -113,5 +114,43 @@
         
       return $result;
     }
+    
+    /**
+     * Set all table data at once using the given table meta data,
+     * retrieved using the metadata function of the db instance.
+     * 
+     * @param $tablemeta table meta data array
+     */    
+    function loadMetaData($tablemeta)
+    {
+    	parent::loadMetaData($tablemeta);
+      $this->setTableType($tablemeta[0]["table_type"]);
+    }
+    
+    /**
+     * Sets the table type (for databases that support different
+     * table types).
+     *
+     * @param string $tableType
+     */
+    function setTableType($type)
+    {
+    	$this->m_table_type = $type;
+    }    
+    
+    /**
+     * Build a CREATE TABLE query and return it as a string.
+     *
+     * @return The CREATE TABLE query.
+     */
+    function buildCreate()
+    {
+      $query = parent::buildCreate();
+      if (!empty($query) && !empty($this->m_table_type))
+      {
+        $query .= " TYPE=" .$this->m_table_type;
+      }
+      return $query;
+    }    
   }
 ?>

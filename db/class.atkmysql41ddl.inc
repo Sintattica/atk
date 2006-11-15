@@ -1,5 +1,4 @@
 <?php
-
  /**
   * This file is part of the Achievo ATK distribution.
   * Detailed copyright and licensing information can be found
@@ -9,73 +8,24 @@
   * @package atk
   * @subpackage db
   *
-  * @copyright (c)2005 Ibuildings.nl BV
+  * @copyright (c)2000-2004 Ibuildings.nl BV
   * @license http://www.achievo.org/atk/licensing ATK Open Source License
   *
-  * @version $Revision$
-  * $Id$
   *
   */
-
-
+  
  /**
   * @internal Include baseclass
   */
- require_once(atkconfig("atkroot")."atk/db/class.atkmysqlddl.inc");
-
+ require_once(atkconfig("atkroot")."atk/db/class.atkmysqliddl.inc");
+ 
  /**
-  * MySQL 4.1+ ddl driver.
-  *
-  * Implements mysql specific ddl statements.
-  *
-  * @author Eldad Ran <eldad@tele-concept.com>
-  * @package atk
-  * @subpackage db
-  *
-  */
- class atkMysql41DDL extends atkMysqlDDL
- {
-   
-   function getGenericType($type)
-    {
-      $type = strtolower($type);
-      switch($type)
-      {
-        case MYSQLI_TYPE_TINY:
-        case MYSQLI_TYPE_SHORT:
-        case MYSQLI_TYPE_LONG:
-        case MYSQLI_TYPE_LONGLONG:
-        case MYSQLI_TYPE_INT24:
-          return "number";
-        case MYSQLI_TYPE_DECIMAL:
-        case MYSQLI_TYPE_FLOAT:
-        case MYSQLI_TYPE_DOUBLE:
-          return "decimal";        
-        case MYSQLI_TYPE_VAR_STRING:
-        case MYSQLI_TYPE_STRING:
-          return "string";          
-        case MYSQLI_TYPE_DATE:
-          return "date";
-        case MYSQLI_TYPE_TINY_BLOB:
-        case MYSQLI_TYPE_MEDIUM_BLOB:
-        case MYSQLI_TYPE_LONG_BLOB:
-        case MYSQLI_TYPE_BLOB:
-          return "text";
-        case MYSQLI_TYPE_TIME:
-          return "time";
-        case MYSQLI_TYPE_TIMESTAMP:
-        case MYSQLI_TYPE_DATETIME:
-          return "datetime";      
-        case MYSQLI_TYPE_YEAR:
-        case MYSQLI_TYPE_NEWDATE:
-        case MYSQLI_TYPE_ENUM:
-        case MYSQLI_TYPE_SET:         
-        case MYSQLI_TYPE_GEOMETRY:
-          return ""; // NOT SUPPORTED FIELD TYPES 
-      }
-      return ""; // in case we have an unsupported type.      
-    }
-   
-   
- }
+  * This class was moved to mysqli, because the functions were not mysql 4.1 
+  * specific but mysqli specific.
+  * 
+  * @deprecated 
+  */  
+  class atkMysql41DDL extends atkMysqliDDL
+  {
+  }
 ?>

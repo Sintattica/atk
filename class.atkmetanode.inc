@@ -183,7 +183,8 @@ class atkMetaNode extends atkNode
    */
   function &_defaultMetaHandler()
   {
-    return atkMetaHandler::defaultInstance($this);  
+    $instance = &atkMetaHandler::defaultInstance($this);  
+    return $instance;
   }
   
   /**

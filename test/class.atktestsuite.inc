@@ -24,6 +24,8 @@
   atkimport("atk.test.atktestreporter");
   atkimport("atk.test.atkattributetestcase");
   atkimport("atk.test.atktestcase");
+  atkimport("atk.db.atkdb");
+  atkimport("atk.db.atkddl");
 
   /**
    * atkTestCaseCollector is a visitor that can be passed to an
@@ -97,6 +99,16 @@
      */
     function run($reporttype="html", $module="")
     {
+      $config = atkconfig('db');
+      if (isset($config['test']))
+      {
+        // setup the test database
+        $this->_setupTestDB();
+        
+        // switch the default database to the test database
+        atkDb::setDefault("test");      
+      }
+      
       $test = &new GroupTest("Full ATK test");
       $class = $_REQUEST['class'];
       $testclass = $this->getTestCaseLocationForClass($class);
@@ -118,6 +130,30 @@
         $test->run(new TextReporter());
       }
     }
+    
+    
+    /**
+     * Setup the test database. Clones the database structure of the 
+     * default database to the test database. All data in the test 
+     * database will be lost! 
+     */
+    function _setupTestDB()
+    {
+      $defaultDB = &atkGetDb('default');
+      $testDB = &atkGetDb('test');
+      
+      $testDB->dropAll();      
+      
+      $tables = $defaultDB->table_names();
+      foreach($tables as $table)
+      {
+        $ddl = $testDB->createDDL();
+        $metadata = $defaultDB->metadata($table["table_name"]);
+        $ddl->loadMetaData($metadata);
+        $query = $ddl->buildCreate();
+        $testDB->query($query);
+      }
+    }    
     
     function getTestCaseLocationForClass($class)
     {

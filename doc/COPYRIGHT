@@ -89,3 +89,6 @@ Zend Framework License can be found in the atk/ext/zend subdirectory.
 The full version of Zend Framework, including full documentation can be found 
 on its homepage.
 
+ATK uses the Spyc library for handling YAML (http://spyc.sourceforge.net/)
+Spyc is Copyright 2005-2006 Chris Wanstrath and made available under the
+terms of the MIT license.

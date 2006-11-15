@@ -236,6 +236,54 @@
     var $m_errorLookup = array();
 
     /**
+     * Set database sequence value.
+     * 
+     * @param string $seqname sequence name
+     * @param int $value sequence value
+     * 
+     * @abstract 
+     */
+    function setSequenceValue($seqname, $value)
+    {
+    	atkerror('WARNING: '.get_class($this).'.setSequenceValue NOT IMPLEMENTED!');
+    }
+    
+    /**
+     * Set the name of the default database. 
+     * This can be used for test purposes.
+     * 
+     * @param string $name default database name
+     */
+    function setDefault($name)
+    {
+      atkDb::_getOrSetDefault($name);
+    }
+    
+    /**
+     * Returns the default database name.
+     *
+     * @return string default database name
+     */
+    function getDefault()
+    {
+      return atkDb::_getOrSetDefault();
+    }
+    
+    /**
+     * Get or set the default database name.
+     *
+     * @param string $name database name
+     * @return string database name
+     */
+    function _getOrSetDefault($name=NULL)
+    {
+      static $s_default = 'default';
+      if ($name != NULL)
+        $s_default = $name;
+      else return $s_default;
+    }
+    
+    /**
      * Get the database driver type.
      * @return String driver type
      */
@@ -452,7 +500,6 @@
         atkdebug("atkdb::connect -> Don't switch use current db");
         $this->doConnect($this->m_host,$this->m_user,$this->m_password,$this->m_database,$this->m_port,$this->m_charset);
       }
-
     }
 
     /**
@@ -613,7 +660,6 @@
      */
     function metadata($table, $full=false)
     {
-
       return array();
     }
 
@@ -677,7 +723,7 @@
     {
       if (!isset($this->m_tableMeta[$table]))
       {
-        $meta = $this->metadata($table);
+        $meta = $this->metadata($table, false);
         $this->m_tableMeta[$table] = array();
         for ($i = 0, $_i = count($meta); $i < $_i; $i++)
         {
@@ -790,7 +836,30 @@
       return $query;
     }
 
-
+    /**
+     * Empty all database tables.
+     */
+    function deleteAll()
+    {
+      $tables = $this->table_names();
+      foreach($tables as $table)
+      {
+        $this->query("DELETE FROM ".$table['table_name'].";");
+      }
+    }
+    
+    /**
+     * Drop all database tables.
+     */
+    function dropAll()
+    {
+      $tables = $this->table_names();
+      foreach($tables as $table)
+      {
+        $this->query("DROP TABLE ".$table['table_name'].";");
+      }
+    }
+    
     /**
      * Create an atkDDL object for constructing ddl queries.
      * @return atkDDL DDL object
@@ -931,7 +1000,7 @@
       $g_dbinstances[$name] = &$db;
       return $olddb;
     }
-
+    
   }
 
 ?>

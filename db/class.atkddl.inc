@@ -22,7 +22,7 @@
   define("DDL_PRIMARY"       , 1);
   define("DDL_UNIQUE"        , 2);
   define("DDL_NOTNULL"       , 4);
-  //define("DDL_AUTO_INCREMENT", 8); not yet implemented..
+  //define("DDL_AUTO_INCREMENT", 8); //not yet implemented..
   //define("DDL_AUTOINCREMENT" , 8);
 
   /**
@@ -78,6 +78,18 @@
       return NULL;
     }
 
+    /**
+     * Set all table data at once using the given table meta data,
+     * retrieved using the metadata function of the db instance.
+     * 
+     * @param $tablemeta table meta data array
+     */
+    function loadMetaData($tablemeta)
+    {
+      $this->setTable($tablemeta[0]["table"]);
+      $this->addFields($tablemeta);
+    }
+    
     /**
      * Add a field to the table definition.
      *
@@ -181,7 +193,7 @@
         if ($fields!="")
         {
           $q = "CREATE TABLE ".$this->m_table."\n(";
-
+          
           $q.= $fields;
 
           $constraints = $this->buildConstraints();

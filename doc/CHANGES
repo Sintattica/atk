@@ -193,6 +193,7 @@ Changed in ATK 5.7
 + Added selected record override to atkManyToOneRelation and Usage: create 
   a function named <attribname>_selected($record, $mode) in your node,
   enable AF_MANYTOONE_LAZY and return the selected record. [Peter]
++ Added true test database support incl. support for fixtures. [Rene,Peter]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
