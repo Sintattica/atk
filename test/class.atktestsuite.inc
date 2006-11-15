@@ -125,6 +125,14 @@
       {
         $test->run(atknew("atk.test.atktestreporter"));
       }
+      elseif($reporttype=="arrayHtml")
+      {
+        return $test->run(atknew("atk.test.arrayhtmlreporter"));
+      }
+      elseif($reporttype=="arrayText")
+      {
+        return $test->run(atknew("atk.test.arraytextreporter"));
+      }
       else
       {
         $test->run(new TextReporter());
@@ -172,12 +180,16 @@
     {
       $traverser = &atknew("atk.utils.atkdirectorytraverser");
       $traverser->addCallbackObject(new atkTestCaseCollector($test));
-
       if ($module!="")
       {
         if ($module=="atk") // make it possible to only test atk.
         {
           $dir = atkconfig("atkroot")."atk/";
+        }
+        //make it possible to run all tests from another dir than the root dir. EE.g. i case test.php isn't used.
+        elseif ($module=="all") 
+        {
+        	$dir = atkconfig("atkroot")."..";
         }
         else
         {
