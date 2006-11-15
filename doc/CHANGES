@@ -582,6 +582,8 @@ Changed in ATK 5.7
   be forked. [Jeroen,Peter]
 * Remember atktab in atkformdata because it might be changed in the current
   edit session. [Jeroen,Peter]
+* Bugfix: atkQuery should enclose the FROM clause in parentheses due to changes
+  in MySQL 5.0.15 to make MySQL more compliant with the standard. [Dennis]  
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

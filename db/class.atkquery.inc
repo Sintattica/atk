@@ -285,13 +285,14 @@
         if ($fieldalias!="") $result.=" AS ".$fieldalias;
         if ($i < count($this->m_fields)-1) $result.=", ";
       }
-      $result.= " FROM ";
+      $result.= " FROM (";
       for ($i=0;$i<count($this->m_tables);$i++)
       {
         $result.= $this->quoteField($this->m_tables[$i]);
         if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
         if ($i < count($this->m_tables)-1) $result.=", ";
       }
+      $result.= ") ";
 
       for ($i=0;$i<count($this->m_joins);$i++)
       {
