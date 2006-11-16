@@ -218,6 +218,7 @@
 
     function getRecordForLng($masterrecord, $lng)
     {
+      if (empty($masterrecord)) return array();
       return array($this->m_childList[$lng]->m_name=>$masterrecord[$this->fieldName()][$lng]);
     }
 
