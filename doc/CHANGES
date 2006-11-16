@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
+* AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
 + Added m_displayShowAll var to atknavigator, so you can configure if you
   want to show the 'show all' link in the navigation [Wim,Nico]
 + Devided render part in the atkrecordlist class into a specific render 
