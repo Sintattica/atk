@@ -100,6 +100,7 @@
     function run($reporttype="html", $module="")
     {
       $config = atkconfig('db');
+      $defaultdb = atkDb::getDefault();
       if (isset($config['test']))
       {
         // setup the test database
@@ -127,16 +128,22 @@
       }
       elseif($reporttype=="arrayHtml")
       {
-        return $test->run(atknew("atk.test.arrayhtmlreporter"));
+        $testresults = $test->run(atknew("atk.test.arrayhtmlreporter"));
       }
       elseif($reporttype=="arrayText")
       {
-        return $test->run(atknew("atk.test.arraytextreporter"));
+        $testresults = $test->run(atknew("atk.test.arraytextreporter"));
       }
       else
       {
         $test->run(new TextReporter());
       }
+      if (isset($config['test']))
+      {
+        // switch the default database to the original database
+        atkDb::setDefault($defaultdb);      
+      }
+      return $testresults;
     }
     
     
