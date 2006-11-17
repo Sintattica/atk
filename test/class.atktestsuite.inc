@@ -100,14 +100,11 @@
     function run($reporttype="html", $module="")
     {
       $config = atkconfig('db');
-      $defaultdb = atkDb::getDefault();
+
       if (isset($config['test']))
       {
         // setup the test database
         $this->_setupTestDB();
-        
-        // switch the default database to the test database
-        atkDb::setDefault("test");      
       }
       
       $test = &new GroupTest("Full ATK test");
@@ -138,11 +135,7 @@
       {
         $test->run(new TextReporter());
       }
-      if (isset($config['test']))
-      {
-        // switch the default database to the original database
-        atkDb::setDefault($defaultdb);      
-      }
+
       return $testresults;
     }
     

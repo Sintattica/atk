@@ -32,6 +32,7 @@
     var $m_restoreNode = array();
     var $m_restoreSecMgr = NULL;
     
+    var $m_oldDefaultDb = NULL;
     var $m_useTestDatabase = NULL;
     var $m_fixtures = array();
     var $m_fixtureData = array();
@@ -43,6 +44,9 @@
      */
     function atkTestCase()
     {
+      // allow specifying fixtures using var $fixtures = array(...);
+      if (isset($this->fixtures) && is_array($this->fixtures))
+        $this->m_fixtures = array_merge($this->m_fixtures, $this->fixtures);
     }
     
     /**
@@ -82,6 +86,9 @@
     {
       if ($this->useTestDatabase())
       {
+        // switch the default database to the test database
+        $this->m_oldDefaultDb = atkDb::getDefault();        
+        atkDb::setDefault("test");      
         $this->_loadData();
       }
     }
@@ -97,6 +104,7 @@
     {
       if ($this->useTestDatabase())
       {
+        atkDb::setDefault($this->m_oldDefaultDb);
         $this->_cleanData();
       }
     }    
@@ -142,7 +150,9 @@
       }
       else 
       {
-        atkerror("Invalid method name $method for ".get_class($this)."!");
+        // can't put this code here directly because PHP4 doesn't know about the throw keyword
+        // and although this code will never get executed under PHP4, it will give a parse error
+        eval("throw new Exception('Invalid method name $method for ".get_class($this)."!');");
       }
     }
     
