@@ -2104,4 +2104,21 @@
 
     return $s_ip;
   }
+  
+  /**
+   * Function checks php version and clones the 
+   * given attribute in the right way
+   *
+   * @param object $attribute The attribute to clone
+   * @return object $attr
+   */
+  function atkClone($attribute)
+  {
+    if (intval(substr(phpversion(),0,1))<5)
+      $attr = $attribute;
+    else 
+      $attr = clone($attribute);
+    
+    return $attr;
+  }
 ?>
