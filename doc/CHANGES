@@ -595,6 +595,8 @@ Changed in ATK 5.7
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
++ Added 'fileExtensionToMimetype' function to get the right mimetype
+  corresponding to the file extension provided. [Harrie]
 
 Changed in ATK 5.6
 ------------------
