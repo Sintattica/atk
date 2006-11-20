@@ -184,23 +184,18 @@
       {
         if ($module=="atk") // make it possible to only test atk.
         {
-          $dir[] = atkconfig("atkroot")."atk/";
+          $dir = atkconfig("atkroot")."atk/";
         }
         //make it possible to run all tests from another dir than the root dir. EE.g. i case test.php isn't used.
         elseif ($module=="all")
         {
-          $dir[] = atkconfig("platformroot");
-          $dir[] = atkconfig("platformroot")."../platform_modules/";
-          $dir[] = atkconfig("platformroot")."../modules/";
+        	$dir = atkconfig("atkroot")."..";
         }
         else
         {
-          $dir[] = moduleDir($module);
+          $dir = moduleDir($module);
         }
-        foreach($dir as $d)
-        {
-          $traverser->traverse($d);
-        }
+        $traverser->traverse($dir);
       }
       else
       {

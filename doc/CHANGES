@@ -6,8 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
-* atktestsuite now traverses multiple dirs searching for testcases: 
-  /platform, /modules, /platform_modules.
 * AtkMlWrapper attribute clone fix: check phpversion and use right clone 
   method based on this (check http://www.acko.net/node/54) [Nico]
 * AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
