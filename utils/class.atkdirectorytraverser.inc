@@ -100,6 +100,8 @@
         }
         return true;
       }
+      elseif (@is_link($path)) return true;
+
       return false;
     }
 
