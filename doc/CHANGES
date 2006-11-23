@@ -595,8 +595,8 @@ Changed in ATK 5.7
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
-+ Create workaround for mime_content_type, so it can still be used in PHP
-  installations without this the PECL FileInfo library. [Harrie]
++ Added atkFilenameToMimetype - to get the right mimetype for the given 
+  filename. [Harrie]
 
 Changed in ATK 5.6
 ------------------
