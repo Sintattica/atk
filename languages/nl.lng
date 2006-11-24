@@ -96,7 +96,7 @@
   "error_file_unknown" => "Onbekende fout bij uploaden bestand",
   "error_format_mismatch" => "Het element op positie %d voldoet niet aan het gewenste formaat (%s)",
   "error_formdataerror" => "Opslaan mislukt om de volgende reden: ",
-  "error_invalid_email" => "Ongeldig e-mail adres",
+  "error_invalid_email" => "Ongeldig e-mailadres",
   "error_node_action_access_denied" => "Sorry, u heeft geen toestemming om deze bewerking uit te voeren.",
   "error_notnumeric" => "Geen numerieke waarde",
   "error_obligatoryfield" => "Dit veld is verplicht",
