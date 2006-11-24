@@ -591,6 +591,11 @@ Changed in ATK 5.7
 * Fixed issue in MySQL driver which caused connections to be re-used
   even though we connect to a different database. [Peter]
 * Fixed some PHP5 notices. [Peter]
+* Added getAttributes function to the atkStringParser, same as getFields but 
+  if a relation is referenced using a dot only returns the attribute name 
+  before the dot. [Sandy,Peter]
+* Fixed bug in the atkFileAttribute that made Apache segfault when uploading
+  2 or more files (and use a template). [Sandy,Peter]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
