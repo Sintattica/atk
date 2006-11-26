@@ -1583,9 +1583,9 @@
         $option = $this->m_destInstance->descriptor($rec);
         $value = $this->m_destInstance->primaryKey($rec);
         $result .= '
-          <li title="'.htmlentities($option).'">
-            '.htmlentities($option).'
-            <span class="selection" style="display: none">'.htmlentities($option).'</span>
+          <li title="'.atk_htmlentities($option).'">
+            '.atk_htmlentities($option).'
+            <span class="selection" style="display: none">'.atk_htmlentities($option).'</span>
             <span class="value" style="display: none">'.$value.'</span>
           </li>';
       }
