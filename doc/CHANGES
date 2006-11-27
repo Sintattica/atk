@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
++ Added atkcaptcha attribute for use with p.e. guestbooks to prevent 
+  spam [Nico]
 * AtkMlWrapper attribute clone fix: check phpversion and use right clone 
   method based on this (check http://www.acko.net/node/54) [Nico]
 * AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
