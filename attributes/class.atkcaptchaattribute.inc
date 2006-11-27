@@ -124,7 +124,7 @@
       $sCaptchaCode = $record["captcha"];
       if (md5(strtoupper($sCaptchaCode)) != $_SESSION['php_captcha'])
       {
-        triggerError($record, $this->fieldName(), 'error_obligatoryfield');
+        triggerError($record, $this->fieldName(), 'error_captchafield');
       }
 
       // clear to prevent re-use
