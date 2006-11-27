@@ -941,6 +941,7 @@
     {
       $dbconfig = atkconfig("db");
       $dbcluster = atkconfig("db_cluster");
+      $connections = array();
 
       if(is_array($dbcluster) && isset($dbcluster[$conn]))
       {
