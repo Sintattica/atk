@@ -680,7 +680,7 @@
    * @var Array
    */
   $config_allowed_includes = array("atk/lock/lock.php", "atk/lock/lock.js.php", "atk/javascript/class.atkdateattribute.js.inc",
-                                               "atk/popups/help.inc", "atk/popups/colorpicker.inc");
+                                   "atk/popups/help.inc", "atk/popups/colorpicker.inc", "atk/ext/captcha/img/captcha.jpg.php");
 
   /**
    * Forces the themecompiler to recompile the theme all the time
