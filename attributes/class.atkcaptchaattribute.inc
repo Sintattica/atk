@@ -56,69 +56,30 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      $html =  '<img src="'.atkConfig::get("captcha", "captcha_dir") . 'img/captcha.jpg.php'.'"><br>';
+      $target = "atk/ext/captcha/img/captcha.jpg.php";
+      $img    = session_url("include.php?file=".$target);
+      
+      $html =  '<img src="'.$img.'"><br>';
       $html .= '<br>';
       $html .= '<small>'.atktext("captcha_explain", "atk").'</small><br>';
       $html .= '<input type="text" name="'.$fieldprefix.$this->fieldName().'">';
       return $html;
     }
     
-   /**
-    * VOID implementation.. parserAttribute has no data associated with it, so you can't search it.
-    * @param $record Array with fields
-    */
-    function search($record="", $size=0, $maxsize=0)
-    {
-      return "&nbsp;";
-    }
-
-   /**
-    * Display a record
-    * Here it will only return the captcha.
-    * @param $record  Array with fields
-    * @return Parsed string
-    */
-    function display($record)
-    {
-      // create new image 
-      return "";
-    }
-    
     /**
-    * No function, but is neccesary
-    */
-    function store($a, $b)
-    {
-      return true;
-    }
-
-    function db2value($record)
-    {
-      return NULL;
-    }
+     * Make sure the value is not stored. (always calculated on the fly)
+     * @access private
+     * @return int
+     */
+    function storageType() { return NOSTORE; }
 
     /**
-    * No function, but is neccesary
-    */
-    function addToQuery(&$query, $tablename="", $fieldaliasprefix="",$level)
-    {
-    }
+     * Make sure the value is not loaded.
+     * @access private
+     * @return int
+     */
+    function loadType() { return NOLOAD; }
 
-    function getSearchModes()
-    {
-      // exact match and substring search should be supported by any database.
-      // (the LIKE function is ANSI standard SQL, and both substring and wildcard
-      // searches can be implemented using LIKE)
-      // Possible values
-      //"regexp","exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal"
-      return array();
-    }
-
-    function dbFieldType()
-    {
-      return "";
-    }
-    
     function validate(&$record, $mode)
     {
       $sCaptchaCode = $record["captcha"];
