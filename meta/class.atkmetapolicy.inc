@@ -743,7 +743,7 @@ class atkMetaPolicy
 
     $flags = $this->_getFlags($name, $meta);
 
-    $this->m_attrs[$name] = $typeAndParams + array("flags" => $flags, "tabs" => NULL, "order" => ($meta['num'] + 1) * 100, "forceUpdate" => false);
+    $this->m_attrs[$name] = $typeAndParams + array("flags" => $flags, "tabs" => NULL, "order" => ($meta['num'] + 1) * 100, "forceUpdate" => NULL);
   }
 
   /**
@@ -815,7 +815,8 @@ class atkMetaPolicy
     eval($call);
     
     $attr = &$this->m_node->add($attr, $tabs, $order);
-    $attr->setForceUpdate($forceUpdate);
+    if ($forceUpdate !== NULL)
+      $attr->setForceUpdate($forceUpdate);
     return $attr;
   }  
 
@@ -833,7 +834,7 @@ class atkMetaPolicy
         isset($data["flags"]) ? $data["flags"] : '', 
         isset($data["tabs"]) ? $data["tabs"] : '', 
         isset($data["order"]) ? $data["order"] : '',
-        isset($data["forceUpdate"]) ? $data["forceUpdate"] : false
+        isset($data["forceUpdate"]) ? $data["forceUpdate"] : NULL;
       );
     }
     
