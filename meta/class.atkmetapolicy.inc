@@ -834,7 +834,7 @@ class atkMetaPolicy
         isset($data["flags"]) ? $data["flags"] : '', 
         isset($data["tabs"]) ? $data["tabs"] : '', 
         isset($data["order"]) ? $data["order"] : '',
-        isset($data["forceUpdate"]) ? $data["forceUpdate"] : NULL;
+        isset($data["forceUpdate"]) ? $data["forceUpdate"] : NULL
       );
     }
     
