@@ -528,7 +528,7 @@
           $record[$this->fieldName()] = NULL;
 
         $afterUpdate = ($afterUpdateFunc!="") ? $afterUpdateFunc : "null";
-        $code = "ATK.ManyToOneRelation.autoupdate('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, 1);";
+        $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, 1);";
 
         $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
         $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
@@ -799,7 +799,7 @@
       if (substr($fieldprefix, -4) == "_AE_")
         $fieldprefix = "_AE_".substr($fieldprefix, 0, -4);
 
-      if (!$this->hasFlag(AF_LARGE))
+      if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
       {
         if ($this->createDestination())
         {
@@ -849,8 +849,23 @@
 
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
+          ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) ? ' onchange=""' : '').
           ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
           ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+          
+        if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+        {
+          $page = &$this->m_ownerInstance->getPage();
+          $url = partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
+          $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
+          $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");          
+          $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
+          $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
+          $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+          $page->register_loadscript($code);        
+          $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+        }
+        
         return $result;
       }
     }
@@ -929,7 +944,7 @@
     {
       if (!$this->createDestination()) return;
 
-    	if (!$this->hasFlag(AF_LARGE))
+    	if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
     	{
     		// We only support 'exact' matches.
     		// But you can select more than one value, which we search using the IN() statement,
@@ -974,7 +989,7 @@
           return $cond;
         }
       }
-      else // AF_LARGE
+      else // AF_LARGE || AF_RELATION_AUTOCOMPLETE
       {
         // ask the destination node for it's search condition
         $alias = $fieldaliasprefix . $this->fieldName();
@@ -1592,6 +1607,33 @@
 
       return "<ul>$result</ul>";
     }
+    
+    /**
+     * Auto-complete search partial.
+     */
+    function partial_autocomplete_search()
+    {
+      $this->createDestination();      
+      
+      $searchvalue = $this->m_ownerInstance->m_postvars['value'];
+      $searchvalue = $this->escapeSQL($searchvalue);
+      $filter = $this->createSearchFilter($searchvalue);
+      $this->addDestinationFilter($filter);
+
+      $record = array();      
+      $records = $this->_getSelectableRecords($record, 'search');
+      
+      $result = '';
+      foreach ($records as $rec)
+      {
+        $option = $this->m_destInstance->descriptor($rec);
+        $value = $this->m_destInstance->primaryKey($rec);
+        $result .= '
+          <li title="'.htmlentities($option).'">'.htmlentities($option).'</li>';
+      }
+
+      return "<ul>$result</ul>";
+    }    
 
     /**
      * Creates a search filter with the given search value on the given

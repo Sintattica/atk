@@ -40,9 +40,16 @@ ATK.ManyToOneRelation = {
   },  
   
   /**
-   * Auto-update the attribute input form using Ajax.
+   * Auto-complete search field using Ajax.
    */
-  autoupdate: function(searchField, resultField, selectionField, selectionBoxField, field, url, afterUpdate, minimumChars) {
+  completeSearch: function(searchField, update, url, minimumChars) {
+    new ATK.ManyToOneRelation.Autocompleter(searchField, update, url, { paramName: 'value', minChars: minimumChars, frequency: 0.5 });
+  },  
+  
+  /**
+   * Auto-complete edit field using Ajax.
+   */
+  completeEdit: function(searchField, resultField, selectionField, selectionBoxField, field, url, afterUpdate, minimumChars) {
     var elements = Form.getElements('entryform');
     var queryComponents = new Array();
 
@@ -58,61 +65,20 @@ ATK.ManyToOneRelation = {
 
     if(afterUpdate != null)
     {
-      new ATK.ManyToOneRelation.Autocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5, afterUpdateElement: afterUpdate});
+      new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5, afterUpdateElement: afterUpdate});
     }
     else
     {
-      new ATK.ManyToOneRelation.Autocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5});
+      new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5});
     }
   }
 };
 
+
 ATK.ManyToOneRelation.Autocompleter = Class.create();
 Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.Autocompleter.prototype), {
-  initialize: function(element, update, selection, selectionBox, value, url, options) {
+  initialize: function(element, update, url, options) {
     Ajax.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
-    this.selection = $(selection);
-    this.selectionBox = $(selectionBox)
-    this.value = $(value);
-    if (this.options.serializeForm)
-      this.options.callback = function(el, entry) { return Form.serialize(el.form) + '&' + entry; }
-  },
-  
-  findFirstNodeByClass: function(element, className) {
-    var nodes = $(element).childNodes;
-    for (var i = 0; i < nodes.length; i++)
-    {
-      if (nodes[i].nodeType != 3 && Element.hasClassName(nodes[i], className)) return nodes[i];
-      else if (nodes[i].nodeType != 3)
-      {
-        node = this.findFirstNodeByClass(nodes[i], className)
-        if (node != null) return node;
-      }
-    }
-    return null;
-  },  
-
-  updateElement: function(selectedElement) {
-    valueEl = this.findFirstNodeByClass(selectedElement, 'value');    
-    selectionEl = this.findFirstNodeByClass(selectedElement, 'selection');
-    
-    this.element.value = '';
-    this.element.focus();
-    
-    if (valueEl != null && selectionEl != null) {
-      var value = valueEl.innerHTML;
-      var selection = selectionEl.innerHTML;
-
-      this.value.value = value;
-    
-      this.selection.innerHTML = selection;    
-    
-      this.selectionBox.style.display = '';    
-      new Effect.Highlight(this.selectionBox);
-    
-      if (this.options.afterUpdateElement)
-        this.options.afterUpdateElement(this.element, selectedElement);       
-    }
   },
   
   // Fix for resetting the scollbar position.
@@ -122,7 +88,6 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
     if(Element.getStyle(this.update, 'display')!='none') 
     {
       this.options.onHide(this.element, this.update);
-      this.element.value = ''; // clear value      
     }
     if(this.iefix) Element.hide(this.iefix);
     this.update.scrollTop = 0; 
@@ -157,3 +122,64 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
   }
 });
 
+ATK.ManyToOneRelation.AdvancedAutocompleter = Class.create();
+Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototype, ATK.ManyToOneRelation.Autocompleter.prototype), {
+  initialize: function(element, update, selection, selectionBox, value, url, options) {
+    ATK.ManyToOneRelation.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
+    this.selection = $(selection);
+    this.selectionBox = $(selectionBox)
+    this.value = $(value);
+    if (this.options.serializeForm)
+      this.options.callback = function(el, entry) { return Form.serialize(el.form) + '&' + entry; }
+  },
+  
+  findFirstNodeByClass: function(element, className) {
+    var nodes = $(element).childNodes;
+    for (var i = 0; i < nodes.length; i++)
+    {
+      if (nodes[i].nodeType != 3 && Element.hasClassName(nodes[i], className)) return nodes[i];
+      else if (nodes[i].nodeType != 3)
+      {
+        node = this.findFirstNodeByClass(nodes[i], className)
+        if (node != null) return node;
+      }
+    }
+    return null;
+  },  
+  
+  // Fix for resetting the scollbar position.
+  // See: http://dev.rubyonrails.org/ticket/4782  
+  hide: function() {
+    this.stopIndicator();
+    if(Element.getStyle(this.update, 'display')!='none') 
+    {
+      this.options.onHide(this.element, this.update);
+      this.element.value = ''; // clear value      
+    }
+    if(this.iefix) Element.hide(this.iefix);
+    this.update.scrollTop = 0; 
+  },  
+
+  updateElement: function(selectedElement) {
+    valueEl = this.findFirstNodeByClass(selectedElement, 'value');    
+    selectionEl = this.findFirstNodeByClass(selectedElement, 'selection');
+    
+    this.element.value = '';
+    this.element.focus();
+    
+    if (valueEl != null && selectionEl != null) {
+      var value = valueEl.innerHTML;
+      var selection = selectionEl.innerHTML;
+
+      this.value.value = value;
+    
+      this.selection.innerHTML = selection;    
+    
+      this.selectionBox.style.display = '';    
+      new Effect.Highlight(this.selectionBox);
+    
+      if (this.options.afterUpdateElement)
+        this.options.afterUpdateElement(this.element, selectedElement);       
+    }
+  }
+});

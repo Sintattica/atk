@@ -257,8 +257,11 @@
      */
     function addScripts(&$res, $partial=false)
     {
-      for ($i = 0; $i < count($this->m_scriptfiles); $i++)
-        $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+      if (!$partial)
+      {
+        for ($i = 0; $i < count($this->m_scriptfiles); $i++)
+          $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
+      }
 
       $res .= '  <script type="text/javascript">';
 

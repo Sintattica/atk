@@ -37,6 +37,21 @@
     function action_admin()
     {
       $page = &$this->getPage();
+      
+      list($type, $attribute, $partial) = explode('.', $this->m_partial);
+      if ($type == 'attribute')
+      {
+        $attr =& $this->m_node->getAttribute($attribute);
+        if ($attr == NULL)
+        {
+          atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+          return;
+        }
+
+        $result = $attr->partial($partial, 'admin');
+        $page->addContent($result);
+        return;
+      }         
 
       $res = array();
       if ($this->m_node->hasFlag(NF_NO_ADD)==false&&$this->m_node->allowed("add"))
