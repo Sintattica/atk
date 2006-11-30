@@ -107,6 +107,12 @@
         $this->_setupTestDB();
       }
 
+      if (isset($config['test']))
+      {
+        // setup the test database
+        $this->_setupTestDB();
+      }
+      
       $test = &new GroupTest("Full ATK test");
       $class = $_REQUEST['class'];
       $testclass = $this->getTestCaseLocationForClass($class);

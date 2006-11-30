@@ -344,7 +344,7 @@
 
       return $output;
     }
-
+    
     /**
      * Get the buttons for the embedded mode of the onetomany relation.
      * @todo Move this to a template
@@ -432,7 +432,7 @@
       // for now, we don't support extended search in embedded one2many recordlists.
       atkimport("atk.recordlist.atkrecordlist");
       $flags  = atkRecordList::convertFlags($this->m_destInstance->getFlags());
-      $flags |= RL_EMBED|RL_NO_EXTENDED_SEARCH;
+      $flags |= RL_EMBED|RL_NO_EXTENDED_SEARCH|RL_NO_SORT|RL_NO_SEARCH;
       return $flags;
     }
 
@@ -962,8 +962,7 @@
          }
        }
      }
-
-
+     
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
        $usedfields = array();

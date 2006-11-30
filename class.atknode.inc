@@ -20,6 +20,7 @@
    * some includes
    */
   atkimport("atk.attributes.atkattribute");
+  atkimport("atk.atkcontroller");
 
   /**
    * Define some flags for nodes. Use the constructor of the atkNode
@@ -612,13 +613,6 @@
     var $m_lock = NULL;
 
     /**
-     * List of actions that should give success/failure feedback
-     * @access private
-     * @var array
-     */
-    var $m_feedback = array();
-
-    /**
      * Default language used by Multilanguage Nodes.
      * @access protected
      * @var String
@@ -670,6 +664,15 @@
     var $m_modifier = "";
 
     /**
+     * Extended search action. The action which is called if the user
+     * wants to perform an extended search.
+     *
+     * @access private
+     * @var String
+     */
+    var $m_extended_search_action = NULL;
+
+    /**
      * List of editable list attributes.
      * @access private
      * @var Array
@@ -682,15 +685,6 @@
      * @var int
      */
     var $m_mraSelectionMode = MRA_MULTI_SELECT;
-
-    /**
-     * Extended search action. The action which is called if the user
-     * wants to perform an extended search.
-     *
-     * @access private
-     * @var String
-     */
-    var $m_extended_search_action = NULL;
 
     /**
      * Constructor.
@@ -932,6 +926,26 @@
     }
 
     /**
+     * Checks if the user has filled in something:
+     * return true if he has, otherwise return false
+     *
+     * @param  -
+     * @return boolean.
+     */
+    function &filledInForm()
+    {
+      if (is_null($this->getAttributes())) return false;
+
+      $postvars = atkGetPostVar();
+      foreach ($this->m_attribList AS $name => $value)
+        if (!$value->hasFlag(AF_HIDE_LIST))
+          if (!is_array($value->fetchValue($postvars)) && $value->fetchValue($postvars)!=="")
+            return true;
+
+      return false;
+    }
+
+    /**
      * Gets all the attributes.
      * @return array Array with the attributes.
      */
@@ -941,6 +955,7 @@
         return $this->m_attribList;
       else return NULL;
     }
+
 
     /**
      * Gets the attribute order.
@@ -1236,8 +1251,8 @@
             break;
           }
         }
-        if ($hideme)
-          $p_attrib->m_flags |= AF_HIDE_LIST;
+        //if ($hideme)
+        //  $p_attrib->m_flags |= AF_HIDE_LIST;
 
         if(is_object($p_attrib))
         {
@@ -1396,43 +1411,9 @@
      */
     function getFormButtons($mode, $record)
     {
-      $result = array();
-
-      // edit mode
-      if ($mode == "edit")
-      {
-        // if atklevel is 0 or less, we are at the bottom of the session stack,
-        // which means that 'saveandclose' doesn't close anyway, so we leave out
-        // the 'saveandclose' button. Unless, a feedback screen is configured.
-        if (atkLevel() >0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
-        {
-          $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.atktext('saveandclose', "atk").'">';
-        }
-        $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="'.atktext("save", "atk").'">';
-        $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext("cancel", "atk").'">';
-      }
-      elseif ($mode == "add")
-      {
-        $result[] = '<input type="submit" class="btn_save" value="'.atktext("save", "atk").'">';
-        // if action is admin, we don't show the cancelbutton or the add next button
-        if ($this->hasFlag(NF_ADDAFTERADD) && !$this->hasFlag(NF_EDITAFTERADD))
-          $result[] = '<input type="submit" class="btn_saveandnext" name="atksaveandnext" value="'.atktext("saveandnext", "atk").'">';
-        $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext("cancel", "atk").'">';
-      }
-      elseif ($mode == "view")
-      {
-        if(atkLevel() > 0)
-          $result[] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.atktext('back').'">';
-        // if appropriate, display an edit button.
-        if (!$this->hasFlag(NF_NO_EDIT)&&$this->allowed("edit", $record))
-        {
-          $result[] = '<input type="hidden" name="atkaction" value="edit">'.
-                      '<input type="hidden" name="atknodetype" value="'.$this->atkNodeType().'">'.
-                      '&nbsp;<input type="submit" class="btn_save" value="'.atktext('edit').'">&nbsp;';
-        }
-      }
-
-      return $result;
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      return $controller->getFormButtons($mode, $record);
     }
 
     /**
@@ -1586,6 +1567,7 @@
       if ($mode == "edit")
       {
         $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="update">';
+        $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprevaction" value="'.$this->m_action.'">';
 
         /* nodes can define edit_values */
         $overrides = $this->edit_values($defaults);
@@ -1599,6 +1581,7 @@
       else
       {
         $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkaction" value="save">';
+        $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprevaction" value="'.$this->m_action.'">';
 
         /* nodes can define initial values, if they don't already have values. */
         if (!isset($defaults['atkerror'])) // only load initial values the first time (not after an error occured)
@@ -2237,39 +2220,10 @@
      */
     function dispatch($postvars, $flags=NULL)
     {
-      $ui = &$this->getUi();
-      $page = &$this->getPage();
-      
-      // backwards compatibility mode      
-      if ($flags == NULL)
-      {
-        $flags = array_key_exists("atkpartial", $postvars) ? HTML_PARTIAL : HTML_STRICT;
-      }
-      elseif (is_bool($flags))
-      {
-        $flags = $flags ? HTML_STRICT : HTML_HEADER|HTML_DOCTYPE;
-      }
-
-      if (hasFlag($flags, HTML_PARTIAL) && !$postvars["atkdebug"]["force"])
-      {
-        global $config_debug;
-        $config_debug = 0;
-      }
-
-      $this->loadDispatchPage($postvars);
-      
-      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
-      {
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
-        $output = &atkinstance('atk.ui.atkoutput');
-        $output->output($screen);
-      }
-
-      // This is the end of all things for this page..
-      // so we clean up some resources..
-      $db = &$this->getDb();
-      if (is_object($db)) $db->disconnect();
-      atkdebug("disconnected from the database");
+      atkdebug("atkNode::dispatch()");
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      return $controller->dispatch($postvars, $flags);
     }
 
     /**
@@ -2279,29 +2233,9 @@
      */
     function loadDispatchPage($postvars)
     {
-      $this->m_postvars = $postvars;
-      $this->m_action = $postvars['atkaction'];
-      $this->m_partial = $postvars["atkpartial"];
-
-      $page = &$this->getPage();
-
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
-
-      if ($this->allowed($this->m_action))
-      {
-        $secMgr = &atkGetSecurityManager();
-        $secMgr->logAction($this->m_type, $this->m_action);
-        $this->callHandler($this->m_action);
-
-        list($selector,$id) = explode("=", atkarraynvl($this->m_postvars, "atkselector", "="));
-        $page->register_hiddenvars(array("atknodetype"=>$this->m_module.".".$this->m_type, "atkselector"=>str_replace("'", "", $id)));
-      }
-      else
-      {
-        $page->addContent($this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $this->m_type)."<br><br><br>"));
-      }
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      $controller->loadDispatchPage($postvars);
     }
 
     /**
@@ -2318,19 +2252,9 @@
      */
     function genericPage($title, $content)
     {
-      $ui = &$this->getUi();
-      $this->addStyle("style.css");
-      if (!is_array($content)) $content = array($title=>$content);
-      $blocks = array();
-      foreach($content as $itemtitle => $itemcontent)
-        $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent),'dispatch');
-      /**
-       * @todo Don't use renderActionPage here because it tries to determine
-       *       it's own title based on the title which is passed as action.
-       *       Instead use something like the commented line below:
-       */
-      //return $ui->render("actionpage.tpl", array("blocks"=>$blocks, "title"=>$title));
-      return $this->renderActionPage($title, $blocks);
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      return $controller->genericPage($title, $content);
     }
 
     /**
@@ -2346,16 +2270,9 @@
      */
     function renderActionPage($action, $blocks=array())
     {
-      if(!is_array($blocks))
-      {
-        $blocks = ($blocks==""?array():array($blocks));
-      }
-
-      $ui = &$this->getUi();
-
-      // todo: overridable action templates
-      return $ui->render("actionpage.tpl", array("blocks"=>$blocks,
-                                                 "title"=>$ui->title($this->m_module, $this->m_type, $action)));
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      return $controller->renderActionPage($action, $blocks);
     }
 
     /**
@@ -2375,17 +2292,9 @@
      */
     function setFeedback($action, $statusmask)
     {
-      if (is_array($action))
-      {
-        for ($i=0, $_i=count($action); $i<$_i; $i++)
-        {
-          $this->m_feedback[$action[$i]] = $statusmask;
-        }
-      }
-      else
-      {
-        $this->m_feedback[$action] = $statusmask;
-      }
+      $controller = &atkController::getInstance();
+      $controller->setNode($this);
+      return $controller->setFeedback($action, $statusmask);
     }
 
     /**
@@ -2708,6 +2617,8 @@
       $db = &$this->getDb();
       $query = &$db->createQuery();
 
+      if($exectrigger) $this->executeTrigger("preUpdate",$record);
+
       $query->addTable($this->m_table);
 
       // The record that must be updated is indicated by 'atkorgkey'
@@ -2851,6 +2762,7 @@
      */
     function countDb($selector="", $excludeList="", $includeList="", $mode="")
     {
+      $searching = false;
       $loadlist = array();
 
       $db = &$this->getDb();
@@ -2861,6 +2773,67 @@
       if (isset($this->m_postvars['atksearchmethod']))
       {
         $query->m_searchmethod = $this->m_postvars['atksearchmethod'];
+      }
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        {
+          $searching = true;
+          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
+          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
+
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        }
+      }
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        {
+          $searching = true;
+          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
+          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
+
+          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
+        }
+      }
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+      }
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
+      }
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
+        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
       }
 
       // First we check if we are about to search and set a few things
@@ -2941,6 +2914,12 @@
             }
           }
         }
+      }
+
+      // there may be smart search criteria which we need to apply
+      if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+      {
+        $this->applySmartSearchCriteria($query, $smartSearchCriteria);
       }
 
       // there may be smart search criteria which we need to apply
@@ -3136,7 +3115,9 @@
       // Add attributes to query
       for ($i=0, $_i=count($querylist); $i<$_i; $i++)
       {
+        atkdebug("Attribute: ".$querylist[$i]);
         $p_attrib = &$this->m_attribList[$querylist[$i]];
+        atkdebug("Class $i : ".get_class($p_attrib));
         $p_attrib->addToQuery($query,$this->m_table,"",(isset($recordset[0])?$recordset[0]:array()),1,$mode); // start at level 1
       }
 
@@ -3292,7 +3273,6 @@
       }
       return $recordset;
     }
-
 
     /**
      * Apply the given search criteria to the given query object.
@@ -3562,7 +3542,6 @@
         $mltool = &atkinstance("atk.utils.atkmlsplitter");
         $mltool->updateMlRecords($this, $record,"add");
       }
-
 
       if (!$this->_storeAttributes($storelist["post"], $record, $mode))
       {
@@ -4083,13 +4062,22 @@
      */
     function callHandler($action)
     {
+      atkdebug("atkNode::callHandler(); action: ".$action);
+      //todo: should the module be taken into account
       $handler = &getNodeHandler($this->m_type, $action);
 
       // handler function
       if ($handler != NULL && function_exists($handler))
       {
-        atkdebug("Calling external handler function for '".$action."'");
+        atkdebug("atkNode::callHandler: Calling external handler function for '".$action."'");
         $handler($this, $action);
+      }
+
+      // handler object
+      elseif ($handler != NULL && is_subclass_of($handler, "atkActionHandler"))
+      {
+        atkdebug("atkNode::callHandler:Using override/existing atkActionHandler ".get_class($handler). " class for '".$action."'");
+        $handler->handle($this, $action, $this->m_postvars);
       }
 
       // no (valid) handler
@@ -4111,10 +4099,32 @@
      */
     function &getHandler($action)
     {
-      atkimport("atk.handlers.atkactionhandler");
-      $handler = &atkActionHandler::getDefaultHandler($action);
-      $handler->setNode($this);
-      $handler->setPostvars($this->m_postvars);
+      atkdebug("atkNode::getHandler(); action: ".$action);
+      //todo: should the module be taken into account
+      $handler = &getNodeHandler($this->m_type, $action);
+
+      //The node handler might return a function as nodehandler. We cannot
+      //return a function so we ignore this option.
+
+      // handler object
+      if ($handler != NULL && is_subclass_of($handler, "atkActionHandler"))
+      {
+        atkdebug("atkNode::getHandler: Using existing atkActionHandler ".get_class($handler)." class for '".$action."'");
+        $handler->setNode($this);
+      }
+      else
+      {
+        atkimport("atk.handlers.atkactionhandler");
+        $handler = &atkActionHandler::getDefaultHandler($action);
+        $handler->setNode($this);
+        $handler->setPostvars($this->m_postvars);
+
+        //If we use a default handler we need to register it to this node
+        //because we might call it a second time.
+        atkdebug("atkNode::getHandler: Register default atkActionHandler for ".$this->m_type." action: '".$action."'");
+        registerNodeHandler($this->m_type, $action, $handler);
+      }
+
       return $handler;
     }
 
@@ -4214,8 +4224,9 @@
      */
     function feedbackUrl($action, $status, $record="", $message="")
     {
-      return ((isset($this->m_feedback[$action])&&hasFlag($this->m_feedback[$action], $status))
-                      ||$status==ACTION_FAILED?session_url(dispatch_url($this->atkNodeType(),"feedback", array("atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message)),SESSION_REPLACE):"");
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this);
+      return $controller->feedbackUrl($action, $status, $record, $message);
     }
 
     /**

@@ -41,12 +41,10 @@
 
       if (!isset($this->m_postvars['atkcancel']))
       {
-
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
         $this->m_node->executeTrigger("preAdd", $record, "add");
 
         $this->m_node->validate($record, "add");
-
 
         if(!isset($record['atkerror']))
           $record['atkerror'] = array();
@@ -62,11 +60,7 @@
         // with the add form again (instead of saving the data to the database)
         if ($error || atkPrevLevel() > atkLevel())
         {
-          $this->m_action="add";
-          $this->m_node->m_action = "add";
-          $page = &$this->getPage();
-          $addhandler = &$this->m_node->getHandler("add");          
-          $page->addContent($this->m_node->renderActionPage("add", $addhandler->invoke("addPage", $record)));
+          $this->renderAddPage($record);
         }
         else
         {
@@ -78,11 +72,7 @@
             if($db->getErrorType()=="user")
             {
               triggerError($record, 'Error', $db->getErrorMsg(), '', '');
-              $this->m_action="add";
-              $this->m_node->m_action = "add";
-              $page = &$this->getPage();
-              $addhandler = &$this->m_node->getHandler("add");
-              $page->addContent($addhandler->invoke("addPage", $record));
+              $this->renderAddPage($record);
             }
             else
             {
@@ -102,8 +92,8 @@
               // forward atkpkret for newly added records
               $extra = "";
               if (isset($this->m_postvars["atkpkret"]))
-                $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);              
-                
+                $extra = "&atkpkret=".rawurlencode($this->m_postvars["atkpkret"]);
+
               $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)).$extra, SESSION_REPLACE);
             }
             else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
@@ -125,6 +115,60 @@
         $location = $this->m_node->feedbackUrl("save", ACTION_CANCELLED, $record);
         $this->m_node->redirect($location);
       }
+    }
+
+    /**
+     * Render add or admin page again
+     *
+     * @param array $record
+     */
+    function renderAddPage($record)
+    {
+      $atkaction = atkGetPostVar("atkprevaction");
+      if(!isset($atkaction)) $atkaction='add';
+
+      $this->m_action=$atkaction;
+      $this->m_node->m_action = $atkaction;
+
+      $page = &$this->getPage();
+      $handler = &$this->m_node->getHandler($this->m_node->m_action);
+      $handler->m_action = $this->m_node->m_action;
+      atkdebug("atkSaveHandler::renderAddPage() " . $this->m_node->m_action);
+      $invoke = ($this->m_node->m_action=='admin' ? "action_admin" : "addPage");
+      $page->addContent($this->m_node->renderActionPage($this->m_node->m_action, $handler->invoke($invoke, $record)));
+    }
+
+    /**
+     * Create url needed for redirect
+     *
+     * @param array $record
+     * @return string containing the url
+     */
+    function createRedirectLocation($record)
+    {
+      atkdebug("atkSaveHandler::createRedirectLocation()");
+      $location="";
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this->m_node);
+      if ($this->m_node->hasFlag(NF_EDITAFTERADD))
+      {
+        $vars = array('atknodetype'=>$this->m_node->atknodetype(), 'atkaction'=>'edit', 'atkselector' => $this->m_node->primaryKey($record));
+        $location = session_url($controller->dispatchUrl($vars), SESSION_REPLACE);
+      }
+      else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
+      {
+        $vars = array('atknodetype' => $this->m_node->atknodetype(), 'atkaction' => 'add');
+        if(isset($this->m_node->m_postvars['atkfilter']))
+          $vars['atkfilter'] = rawurlencode($this->m_node->m_postvars['atkfilter']);
+
+        $location = session_url($controller->dispatchUrl($vars), SESSION_DEFAULT);
+      }
+      else
+      {
+        $location = $this->m_node->feedbackUrl("save", ACTION_SUCCESS, $record);
+      }
+      atkdebug($location);
+      return $location;
     }
   }
 

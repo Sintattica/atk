@@ -34,8 +34,8 @@
     /**
      * The action method
      */
-    function action_admin()
-    {
+    function action_admin($record=NULL)
+    {      
       $page = &$this->getPage();
       
       list($type, $attribute, $partial) = explode('.', $this->m_partial);
@@ -58,7 +58,7 @@
       {
         if (!$this->m_node->hasFlag(NF_ADD_LINK)) // otherwise, in adminPage, an add link will be added.
         {
-          $res[]=$this->invoke("addPage");
+          $res[]=$this->invoke("addPage", $record);
         }
       }
       $res[] = $this->invoke("adminPage");
@@ -73,12 +73,12 @@
      *
      * @return String A box containing the add page.
      */
-    function addPage()
+    function addPage($record=NULL)
     {
       // Reuse the atkAddHandler for the addPage.
-      $handler = atknew("atk.handlers.atkaddhandler");
+      $handler = $this->m_node->getHandler("add");
       $handler->setNode($this->m_node);
-      return $handler->invoke("addPage");
+      return $handler->invoke("addPage", $record);
     }
 
     /**

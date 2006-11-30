@@ -458,7 +458,7 @@
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
     $currentlevel = atkLevel();
-
+    
     $newlevel = -1;
 
     switch ($sessionstatus)
@@ -552,6 +552,7 @@
     global $g_stickyurl;
 
     $newlevel = session_level($sessionstatus, $levelskip);
+    atkdebug("newlevel ". $newlevel. " atklevel() ". atklevel(). " status ".$sessionstatus);
     $vars="";
    // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
@@ -834,19 +835,6 @@
           $vars[strtolower($dimension1)][strtolower($dimension2)] = $value;
         }
       }
-
-/*    elseif (strpos(strtoupper($varname),'_BMDAE_')>0) // Now I *know* that strpos could return 0 if _AMDAE_ *is* found
-                                    // at the beginning of the string.. but since that's not a valid
-                                    // encoded var, we do nothing with it.
-      {
-        // This string is encoded.
-        list($dimension1,$dimension2) = split("_BMDAE_",strtoupper($varname));
-        // Multidimensional thing
-        while (list($key,$val) = each($value))
-        {
-          $vars[strtolower($dimension1)][strtolower($dimension2)][$key] = $val;
-        }
-      }*/
     }
   }
 
@@ -1596,13 +1584,19 @@
    * @param string $phpfile The php file to use for dispatching, defaults to dispatch.php
    * @return string url for the node with the action
    */
-  function dispatch_url($node, $action, $params="",$phpfile='')
+  function dispatch_url($node, $action, $params=array(),$phpfile='dispatch.php')
   {
-    $theme = &atkinstance('atk.ui.atktheme');
-    if (!$phpfile) $phpfile =  $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
-    $url = $phpfile."?atknodetype=".$node."&atkaction=".$action;
+    $url = $phpfile;
+    $atkparams = array();
+    if($node!="")
+      $atkparams["atknodetype"] = $node;
+    if($action!="") 
+      $atkparams["atkaction"] = $action;
+    $params = array_merge($atkparams, $params);
+    
     if ($params != "" && is_array($params) && count($params) > 0)
-      $url .= '&'.buildQueryString($params);
+      $url .= '?'.buildQueryString($params);
+
     return $url;
   }
 
@@ -1707,6 +1701,7 @@
       $filename = getClassPath($fullclassname);
     else
       $filename = $fullclassname;
+    
     if (file_exists($filename))
     {
       if ($failsafe)
@@ -1993,6 +1988,23 @@
       return strtr($str, $trans_table);
     }
   }
+  
+  /*
+   * Returns the postvars
+   * Returns a value or an array with all values
+   */
+  function atkGetPostVar($key="")
+  {
+    if(empty($key) || $key=="")
+    {
+      return $_REQUEST;
+    }
+    else
+    {
+      if (array_key_exists($key,$_REQUEST) && $_REQUEST[$key]!="") return $_REQUEST[$key];
+      return "";
+    }
+  }
 
   /**
    * ATK version of the PHP htmlentities function. Works just like PHP's
@@ -2081,7 +2093,7 @@
     }
     return false;
   }
-
+  
   /**
    * Returns the IP of the remote client.
    *
@@ -2121,5 +2133,4 @@
     
     return $attr;
   }
-  
 ?>

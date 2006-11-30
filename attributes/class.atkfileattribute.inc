@@ -269,9 +269,9 @@
               if (!$this->mkdir($dirname))
               {
                 atkerror("File could not be saved");
-                return "";
+                return "";                
               }
-
+              
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
                 $this->processFile($this->m_dir, $filename);
@@ -289,47 +289,47 @@
         return $this->escapeSQL($rec[$this->fieldName()]["orgfilename"]);
       }
     }
-
+    
     /**
-     * Recursive mdir.
-     *
+     * Recursive mkdir.
+     * 
      * @see http://nl2.php.net/mkdir
      *
      * @param string $path path to create
      * @return success/failure
-     *
+     * 
      * @static
      */
     function mkdir($path)
     {
       $path = preg_replace('/(\/){2,}|(\\\){1,}/','/', $path); //only forward-slash
       $dirs = explode("/", $path);
-
+      
       $path = "";
       foreach ($dirs as $element)
       {
         $path .= $element."/";
-        if(!is_dir($path) && !mkdir($path))
+        if(!is_dir($path) && !mkdir($path)) 
           return false;
       }
-
+      
       return true;
     }
-
+    
     /**
      * Recursive rmdir.
-     *
+     * 
      * @see http://nl3.php.net/rmdir
-     *
+     * 
      * @param string $dir path to remove
      * @return succes/failure
-     *
+     * 
      * @static
      */
     function rmdir($dir)
     {
       if (!($handle = @opendir($dir))) return false;
-
+      
       while (false !== ($item = readdir($handle)))
       {
         if ($item != "." && $item != "..")
@@ -338,7 +338,7 @@
           {
             if (!atkFileAttribute::rmdir("$dir/$item"))
               return false;
-          }
+          } 
           else
           {
             if (!@unlink("$dir/$item"))
@@ -346,7 +346,6 @@
           }
         }
       }
-
       closedir($handle);
       return @rmdir($dir);
     }
@@ -411,6 +410,7 @@
       $postfiles_basename = $rec[$this->fieldName()."_postfileskey"];
 
       $basename = $this->fieldName();
+
       if (is_array($_FILES)||($rec[$this->fieldName()]["select"] != "") || ($rec[$this->fieldName()]["filename"]!="")) // php4
       {
         // if an error occured during the upload process
@@ -450,12 +450,12 @@
           else
           {
             $filename = (isset($rec[$basename."_orgfilename"]))?$rec[$basename."_orgfilename"]:"";
-
+            
             if (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on")
             {
               $filename = '';
             }
-
+            
             $result = array("tmpfile"=>$this->m_dir.$filename,
                           "filename"=>$filename,
                           "filesize"=>filesize($this->m_dir.$filename),
@@ -585,15 +585,15 @@
     {
       $this->m_filenameTpl = $template;
     }
-
+    
     /**
-     * Determine the real filename of a file.
-     *
-     * If a method <fieldname>_filename exists in the owner instance this method
-     * is called with the record and default filename to determine the filename. Else
+     * Determine the real filename of a file. 
+     * 
+     * If a method <fieldname>_filename exists in the owner instance this method 
+     * is called with the record and default filename to determine the filename. Else 
      * if a file template is set this is used instead and otherwise the default
      * filename is returned.
-     *
+     * 
      * @access private
      */
     function _filenameMangle($rec, $default)
@@ -603,7 +603,7 @@
         return $this->m_ownerInstance->$method($rec, $default);
       else return $this->filenameMangle($rec, $default);
     }
-
+    
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
      * @access public
@@ -686,6 +686,5 @@
     {
       return "string";
     }
-
   }
 ?>

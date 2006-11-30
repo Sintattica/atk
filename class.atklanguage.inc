@@ -15,7 +15,7 @@
    * $Id$
    */
 
-  /**
+ /**
    * Class that handles userinterface internationalization.
    *
    * This class is used to retrieve the proper translations for any string

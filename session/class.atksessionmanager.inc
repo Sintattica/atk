@@ -181,7 +181,7 @@
       else
         return isset($g_sessionData[$this->m_namespace]["globals"][$var]) ? $g_sessionData[$this->m_namespace]["globals"][$var] : null;
     }
-
+    
     /**
      * Store a variable in the session stack. The variable is available in the
      * current page (even after reload), and any screen that is deeper on the
@@ -572,7 +572,7 @@
                        "title"=>$title,
                        "descriptor"=>$descriptor);
         }
-        else
+        else 
         {
           $res[]=array("url"=>"", "title"=>$title, "descriptor"=>$descriptor);
         }
@@ -596,15 +596,18 @@
 
       $stack = $g_sessionData[$this->m_namespace]["stack"][atkStackID()];
       $res = array();
-
+      
       $stackcount = count($stack);
       for ($i=0;$i<$stackcount;$i++)
       {
         if (isset($stack[$i]["descriptor"]) || $i == ($stackcount-1))
         {
-          $node = &getNode($stack[$i]["atknodetype"]);
-          $module = getNodeModule($stack[$i]["atknodetype"]);
-          $nodename = getNodeType($stack[$i]["atknodetype"]);
+          if($stack[$i]["atknodetype"] != "")
+          {
+            $node = &getNode($stack[$i]["atknodetype"]);
+            $module = getNodeModule($stack[$i]["atknodetype"]);
+            $nodename = getNodeType($stack[$i]["atknodetype"]);
+          }
 
           if (is_object($node))
           {

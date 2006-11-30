@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-  
+
   define("AF_BOOL_OBLIGATORY", AF_SPECIFIC_1); // make bool attribute obligatory (normal AF_OBLIGATORY flag is always removed).
 
   /**
@@ -40,7 +40,7 @@
 
      // Call base class constructor. Size of boolean value is always 1.
       $this->atkAttribute($name,$flags, 1);
-      if ($this->hasFlag(AF_BOOL_OBLIGATORY)) 
+      if ($this->hasFlag(AF_BOOL_OBLIGATORY))
       {
         $this->addFlag(AF_OBLIGATORY);
       }
@@ -55,14 +55,14 @@
     function isEmpty($record)
     {
       $empty = parent::isEmpty($record);
-      
+
       // if bool_obligatory flag is set the value must be true else we treat this record as empty
       if ($this->hasFlag(AF_BOOL_OBLIGATORY) && !$record[$this->fieldName()])
         $empty = true;
-        
+
       return $empty;
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.

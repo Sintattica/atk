@@ -16,8 +16,7 @@
    * @version $Revision$
    * $Id$
    */
-
-  /**
+/**
    * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1);     // create edit/view links for the items in a manytoonerelation dropdown.

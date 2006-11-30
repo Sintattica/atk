@@ -14,8 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-
-  /** @internal include baseclass. */
+/** @internal include baseclass. */
   userelation("atkmanytomanyrelation");
 
   /**
@@ -70,11 +69,11 @@
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
 
       $result ='<div align="left"><font size="-2">
-                [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
                      atktext("check_all", "atk").
-                '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+                '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
                      atktext("check_none", "atk").
-                '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+                '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
                      atktext("invert_selection", "atk").'</a>]</font></div>';
 
       $result.= '<table border="0"><tr>';
@@ -104,8 +103,8 @@
         }
         $result.= '<td class="table"><input type="checkbox" name="'.
                        $fieldprefix.$this->fieldName().
-                       '_AMDAE_'.$this->getRemoteKey().
-                       '[]" value="'.
+                       '[]['.$this->getRemoteKey().
+                       ']" value="'.
                        $recordset[$i][$this->m_destInstance->primaryKeyField()].
                        '" '.$sel.'></td><td class="table">'.
                        $this->m_destInstance->descriptor($recordset[$i]).

@@ -172,7 +172,12 @@ class atkMetaPolicy
           break;
       }
     }
-
+    
+    if ($this->m_node->hasFlag(NF_ML))
+    {
+      useattrib('atkmlselectorattribute');
+      $this->m_node->add(new atkMlSelectorAttribute());
+    }
     return array("type" => $type, "params" => $params);
   }
 

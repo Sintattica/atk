@@ -240,6 +240,8 @@ Calendar.showMonthsCombo = function () {
 	mc.style.left = cd.offsetLeft + "px";
 	mc.style.top = (cd.offsetTop + cd.offsetHeight) + "px";
 	mc.style.display = "block";
+	
+	return true;
 };
 
 Calendar.showYearsCombo = function (fwd) {
@@ -277,6 +279,7 @@ Calendar.showYearsCombo = function (fwd) {
 		yc.style.top = (cd.offsetTop + cd.offsetHeight) + "px";
 		yc.style.display = "block";
 	}
+	return true;
 };
 
 // event handlers
@@ -324,6 +327,7 @@ Calendar.tableMouseUp = function(ev) {
 		stopEvent(ev);
 		_C = null;
 	}
+	return true;
 };
 
 Calendar.tableMouseOver = function (ev) {
@@ -394,6 +398,7 @@ Calendar.calDragIt = function (ev) {
 	st.left = (posX - cal.xOffs) + "px";
 	st.top = (posY - cal.yOffs) + "px";
 	Calendar.stopEvent(ev);
+	return true;
 };
 
 Calendar.calDragEnd = function (ev) {
@@ -409,6 +414,7 @@ Calendar.calDragEnd = function (ev) {
 		tableMouseUp(ev);
 	}
 	cal.hideShowCovered();
+	return true;
 };
 
 Calendar.dayMouseDown = function(ev) {
@@ -435,6 +441,7 @@ Calendar.dayMouseDown = function(ev) {
 	} else {
 		cal.timeout = null;
 	}
+	return true;
 };
 
 Calendar.dayMouseDblClick = function(ev) {
@@ -466,6 +473,7 @@ Calendar.dayMouseOver = function(ev) {
 		}
 	}
 	Calendar.stopEvent(ev);
+	return true;
 };
 
 Calendar.dayMouseOut = function(ev) {
@@ -481,6 +489,7 @@ Calendar.dayMouseOut = function(ev) {
 		el.calendar.tooltips.firstChild.data = _TT["SEL_DATE"];
 		stopEvent(ev);
 	}
+	return true;
 };
 
 /**
@@ -815,6 +824,7 @@ Calendar._keyEvent = function(ev) {
 		return false;
 	}
 	Calendar.stopEvent(ev);
+	return true;
 };
 
 /**
@@ -991,6 +1001,7 @@ Calendar._checkCalendar = function(ev) {
 		window.calendar.callCloseHandler();
 		Calendar.stopEvent(ev);
 	}
+	return true;
 };
 
 /** Shows the calendar. */

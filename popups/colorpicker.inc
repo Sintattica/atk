@@ -25,7 +25,6 @@
   include_once($config_atkroot."atk.inc");
 
   atksession("admin");
-  atksecure();
 
   useattrib("atkcolorpickerattribute");
 

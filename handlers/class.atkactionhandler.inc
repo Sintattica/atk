@@ -51,7 +51,7 @@
     var $m_partial = NULL;
     
     /** @access private */
-    var $m_postvars = array();
+    var $m_renderBoxVars = array();
 
     /**
      * Default constructor.
@@ -164,8 +164,10 @@
       if ($this->m_node!==NULL && method_exists($this->m_node, $methodname))
       {
         atkdebug("Invoking '$methodname' override on node");
-        // We pass the original object as first parameter to the override.
+        // We pass the original object as first parameter to the override. 
+        //TODO Maurice: Get approval with Ivo to change this
         array_unshift($arguments, $this);
+        //array_push($arguments, $this);
         return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
       }
       else if (method_exists($this, $methodname))
@@ -232,6 +234,11 @@
     function notify($action, $record)
     {
       $this->m_node->notify($action, $record);
+    }
+    
+    function addRenderBoxVar($key, $value)
+    {
+      $this->m_renderBoxVars[$key] = $value;
     }
   }
 

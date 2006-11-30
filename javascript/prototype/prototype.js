@@ -4,6 +4,12 @@
  *  Prototype is freely distributable under the terms of an MIT-style license.
  *  For details, see the Prototype web site: http://prototype.conio.net/
  *
+ *  By:
+ *  Try.these(
+ *    function() { return opt.attributes['value'].specified },
+ *    function() { return 'value' in opt }
+ *  ) ? opt.value : opt.text    
+ *  *** PATCHED *** PATCHED *** PATCHED *** 
 /*--------------------------------------------------------------------------*/
 
 var Prototype = {

@@ -131,6 +131,15 @@
     }
 
     /**
+     * Return all javascript files
+     *
+     * @return array contain file paths
+     */
+    function getScripts()
+    {
+      return $this->m_scriptfiles;
+    }
+    /**
      * Register a javascript code statement which will be rendered in the
      * header.
      *
@@ -164,6 +173,20 @@
    {
      if (!in_array($code, $this->m_loadscripts)) $this->m_loadscripts[] = $code;
    }
+   
+   /**
+    * Return all javascript codes in an array
+    *
+    * @return array
+    */
+   function getScriptCodes()
+   {
+     $scriptCodes = $this->m_scriptcode;
+     $scriptCodes[] = $this->_getGlobalSubmitScriptCode();
+     $scriptCodes[] = $this->_getGlobalLoadScriptCode();
+     
+     return $scriptCodes;
+   }
 
     /**
      * Register a Cascading Style Sheet.
@@ -188,6 +211,16 @@
     }
 
     /**
+     * Return all stylesheet files
+     *
+     * @return array contain file paths
+     */
+    function getStyles()
+    {
+      return $this->m_stylesheets;
+    }
+    
+    /**
      * Register Cascading Style Sheet fragment that will be included in the
      * page header.
      * @param String $code The Cascading Style Sheet code fragment to place in
@@ -197,7 +230,17 @@
      {
        if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
      }
-
+     
+    /**
+     * Return all style codes
+     *
+     * @return array
+     */
+     function getStyleCodes()
+     {
+       return $this->m_stylecode;
+     }
+     
      /**
       * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
       * but will not be shown to the user unless he/she has a very, very old browser
@@ -231,14 +274,7 @@
       if ($extra_header != "") $res.= $extra_header."\n";
 
       $this->addScripts($res);
-
-      foreach ($this->m_stylesheets as $file => $media)
-      {
-        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
-      }
-
-      for ($i = 0; $i < count($this->m_stylecode); $i++)
-        $res.= '  <style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
+      $this->addStyles($res);
 
       $favico = atkconfig("defaultfavico");
       if ($favico!="")
@@ -253,7 +289,7 @@
 
     /**
      * Adds javascripts from the member variables to HTML output
-     * @param String $res The HTML output
+     * @param String $res Reference to the HTML output
      */
     function addScripts(&$res, $partial=false)
     {
@@ -265,8 +301,8 @@
 
       $res .= '  <script type="text/javascript">';
 
-      $res.=$this->getSubmitJavascript($partial);
-      $res.=$this->getLoadJavascript($partial);
+      $res.=$this->_getGlobalSubmitScriptCode($partial);
+      $res.=$this->_getGlobalLoadScriptCode($partial);
 
       // javascript code.
       for ($i=0, $_i=count($this->m_scriptcode); $i<$_i; $i++)
@@ -277,7 +313,7 @@
       $res .= "  </script>\n\n";
     }
 
-    function getSubmitJavascript($partial=false)
+    function _getGlobalSubmitScriptCode($partial=false)
     {
       $res = "\n    function globalSubmit(form)\n";
       $res .= "    {\n";
@@ -294,8 +330,9 @@
       return $res;
     }
 
-    function getLoadJavascript($partial=false)
+    function _getGlobalLoadScriptCode($partial=false)
     {
+      $res = '';
       if (count($this->m_loadscripts))
       {
         $res = "";
@@ -316,6 +353,22 @@
     }
 
     /**
+     * Add stylesheets and stylecodes to the HMTL output
+     *
+     * @param String $res Reference to the HTML output
+     */
+    function addStyles(&$res)
+    {
+      foreach ($this->m_stylesheets as $file => $media)
+      {
+        $res.='  <link href="'.$file.'" rel="stylesheet" type="text/css" media="'.$media.'" />'."\n";
+      }
+
+      for ($i = 0; $i < count($this->m_stylecode); $i++)
+        $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
+    }
+    
+    /**
      * Add content to the page.
      * @param String $content The content to add to the page.
      */
@@ -330,7 +383,7 @@
      * @return String The HTML body, including <body> and </body> tags.
      */
     function body($extraprops="")
-    {
+    {      
       global $ATK_VARS;
 
       $res = '<body ';
@@ -377,6 +430,7 @@
       $page = '';
       if(hasFlag($flags,HTML_DOCTYPE)) $page.=$theme->getAttribute('doctype',atkconfig("doctype"));
       $page.= "\n<html>\n";
+      
       if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title, $extra_header);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
 

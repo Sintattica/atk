@@ -38,7 +38,9 @@
     {
       $record = $this->m_node->updateRecord();
 
-      if (isset($this->m_postvars['atknoclose'])||isset($this->m_postvars['atksaveandclose']))
+      if (isset($this->m_postvars['atknoclose'])||
+          isset($this->m_postvars['atksaveandclose']) ||
+          isset($this->m_postvars['atkwizardaction']))
       {
 
         // just before we validate the record we call the preUpdate() to check if the record needs to be modified
@@ -91,8 +93,10 @@
             if (!isset($this->m_postvars['atknoclose']))
             {
               // 'save and close' was clicked
-              $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
-              $this->m_node->redirect($location, $record);
+              $controller = &atkcontroller::getInstance();
+              $controller->setNode($this->m_node);
+              $location = $controller->feedbackUrl("update", ACTION_SUCCESS, $record, "");
+              $this->m_node->redirect($location);
             }
             else
             {

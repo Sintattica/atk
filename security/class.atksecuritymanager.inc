@@ -608,7 +608,7 @@
      * node.
      * @param String $node The full nodename of the node for which to check
      *                     access privileges. (modulename.nodename notation).
-     * @param String $action The privilege to check.
+     * @param String $privilege The privilege to check (atkaction).
      * @return boolean True if the user has the privilege, false if not.
      */
     function allowed($node, $privilege)
@@ -630,8 +630,7 @@
         // all other situations
         else
         {
-
-          $required = $this->m_authorization->getEntity($node, $privilege);
+          $required = $this->m_authorization->getEntity($node, $privilege);         
 
           if (count($required)==0)
           {
