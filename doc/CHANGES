@@ -6,12 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
-* Added array initialization in class.atkdb.inc due to PHP5 notice. [Patrick]
 + Added atkcaptcha attribute for use with p.e. guestbooks to prevent 
   spam [Nico]
-* AtkMlWrapper attribute clone fix: check phpversion and use right clone 
-  method based on this (check http://www.acko.net/node/54) [Nico]
-* AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
 + Added m_displayShowAll var to atknavigator, so you can configure if you
   want to show the 'show all' link in the navigation [Wim,Nico]
 + Devided render part in the atkrecordlist class into a specific render 
@@ -201,6 +197,8 @@ Changed in ATK 5.7
   enable AF_MANYTOONE_LAZY and return the selected record. [Peter]
 + Added true test database support incl. support for fixtures. [Rene,Peter]
 + Added auto-completion support for many-to-one relation search. [Peter]
++ Added atkGetMimeTypeFromFileExtension to atkfiletools - to get the right
+  mimetype for the given filename. [Harrie]
 * When updateDb fails it has to return false in stead of true. [dennisjan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
@@ -600,12 +598,14 @@ Changed in ATK 5.7
   before the dot. [Sandy,Peter]
 * Fixed bug in the atkFileAttribute that made Apache segfault when uploading
   2 or more files (and use a template). [Sandy,Peter]
+* Added array initialization in class.atkdb.inc due to PHP5 notice. [Patrick]
+* AtkMlWrapper attribute clone fix: check phpversion and use right clone
+  method based on this (check http://www.acko.net/node/54) [Nico]
+* AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
   than the default action.tpl. [Ivo]
-+ Added atkGetMimeTypeFromFileExtension to atkfiletools - to get the right 
-  mimetype for the given filename. [Harrie]
 
 Changed in ATK 5.6
 ------------------
