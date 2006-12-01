@@ -104,11 +104,11 @@
     *
     * @param array $postvars
     */
-    function handleRequest($postvars)
+    function handleRequest($postvars, $flags=NULL)
     {
       $this->m_postvars = $postvars;
 
-      $this->invoke("dispatch", $postvars);
+      $this->invoke("dispatch", $postvars, $flags);
     }
 
     function setNode(&$node)
@@ -166,7 +166,7 @@
      *                          etc. (When $fullpage is true, these are
      *                          automatically included in the page header.
      */
-    function dispatch($postvars, $flags='')
+    function dispatch($postvars, $flags=NULL)
     {
       atkdebug("atkcontroller::dispatch()");
       $this->m_postvars = $postvars;
