@@ -171,6 +171,7 @@
       atkdebug("atkcontroller::dispatch()");
       $this->m_postvars = $postvars;
       $node = &$this->getNode();
+      $node->m_postvars = $postvars;
       if(!is_object($node)) return;
 
       $ui = $node->getUi();
@@ -237,7 +238,7 @@
 
       $node->m_postvars = $postvars;
       $node->m_action = $postvars['atkaction'];
-      $this->m_partial = $postvars["atkpartial"];
+      $node->m_partial = $postvars["atkpartial"];
 
       atkdebug("atkcontroller::loaddispatchpage " . $node->m_action);
 
