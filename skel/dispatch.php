@@ -32,6 +32,7 @@
   atksession();
 
   $session = &atkSessionManager::getSession();
+  $output = &atkOutput::getInstance();
 
   if($ATK_VARS["atknodetype"]=="" || $session["login"]!=1)
   {
@@ -40,7 +41,7 @@
     $page = &atknew("atk.ui.atkpage");
     $ui = &atkinstance("atk.ui.atkui");
     $theme = &atkTheme::getInstance();
-    $output = &atkOutput::getInstance();
+    
 
     $page->register_style($theme->stylePath("style.css"));
 
@@ -56,7 +57,6 @@
                                            <a href="index.php?atklogout=true'.$destination.'" target="_top">'.atktext("relogin").'</a><br><br>'));
 
     $page->addContent($box);
-
     $output->output($page->render(atktext("title_session_expired"), true));
   }
   else
@@ -69,17 +69,10 @@
     // Create node
     $obj = &getNode($ATK_VARS["atknodetype"]);
 
-    if (is_object($obj))
-    {
-      atkimport("atk.ui.atkpage");
-      $flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
-      $obj->dispatch($ATK_VARS, $flags);
-    }
-    else
-    {
-      atkdebug("No object created!!?!");
-    }
+    //Handle http request   
+    atkimport("atk.atkcontroller"); 
+    $controller = &atkController::getInstance();
+    $controller->handleRequest($ATK_VARS);
   }
-  $output = &atkOutput::getInstance();
   $output->outputFlush();
 ?>
