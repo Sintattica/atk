@@ -29,40 +29,28 @@
      */
     function test_Privileges()
     {
-    	$extensions = get_loaded_extensions(); //loaded php extensions on the server
       $dbs = atkconfig("db");
       $dbnamess = array_keys($dbs);
       foreach($dbnamess as $dbname)
       {
         $db = &atkGetDb($dbname);
-        
         $dbdriver = $dbs["$dbname"]["driver"];
         $grants = "";
         
-        if(ereg("oci",$dbdriver)) $grants = $this->getOracleGrants($db, $dbname);
+//TODO        if(ereg("oci",$dbdriver)) $grants = $this->getOracleGrants($db, $dbname);
+        if(ereg("oci",$dbdriver)) $grants = NULL;
         elseif(ereg("mysql",$dbdriver)) $grants = $this->getMysqlGrants($db, $dbname);
         elseif(ereg("pgsql", $dbdriver)) $grants = NULL;
-        else 
-        {
-          echo "*  unknown database driver for database: $dbname<br>";
-          return;
-        }
+        else return;
         
-        if($grants == NULL) continue;
+        if($grants == NULL) return;
         
-        if(!$db->hasMode($db, "w") && $db->hasMode($db, "r")) //readonly
+        $this->assertWantedPattern("/SELECT,|SELECT ON/", $grants, "SELECT is granted on $dbname");
+        if($db->hasMode($db, "rw"))
         {
-          $this->assertWantedPattern("/SELECT/", $grants, "SELECT is granted on $dbname");
-        }
-        else
-        {
-          $this->assertWantedPattern("/SELECT,|SELECT ON/", $grants, "SELECT is granted on $dbname");
           $this->assertWantedPattern("/UPDATE,|UPDATE ON/", $grants, "UPDATE is granted on $dbname");
           $this->assertWantedPattern("/DELETE,|DELETE ON/", $grants, "DELETE is granted on $dbname");;
-          $this->assertWantedPattern("/CREATE,|CREATE ON/", $grants, "CREATE is granted on $dbname");
-          $this->assertWantedPattern("/DROP,|DROP ON/", $grants, "DROP is granted on $dbname");
           $this->assertWantedPattern("/INSERT,|DROP ON/", $grants, "INSERT is granted on $dbname");
-          $this->assertWantedPattern("/ALTER,|ALTER ON/", $grants, "ALTER is granted on $dbname");
         }
       }
     }
@@ -72,13 +60,10 @@
      */
     function getMysqlGrants($db, $dbname)
     {
-      if(extension_loaded("mysql"))
+      if($this->assertTrue(extension_loaded("mysql"), "Mysql extension loaded"))
       {
-        if(!(@mysql_connect($db->m_host, $db->m_user, $db->m_password, true)))
-        {
-          echo "*  can't connect with configured database: $dbname, check config.inc.php<br>";
-          return NULL; 
-        } 
+        if(!$this->assertTrue(@mysql_connect($db->m_host, $db->m_user, $db->m_password, true),
+           "Connect Mysql database")) return NULL; 
         else
         {
           $rows = $db->getrows("SHOW GRANTS FOR ".$db->m_user."@".$db->m_host);
@@ -105,19 +90,12 @@
             $grants = "SELECT," .
                       "UPDATE," .
                       "DELETE," .
-                      "CREATE," .
-                      "DROP," .
-                      "INSERT," .
-                      "ALTER,";
+                      "INSERT,";
           }
           return $grants;
         } 
       }
-      else
-      {
-        echo "*  no mysql extension loaded on the server, so can't test database: $dbname<br>";
-        return NULL;
-      }
+      else return NULL;
     }
     
     /**
@@ -125,13 +103,9 @@
      */
     function getOracleGrants($db, $dbname)
     {
-      if(extension_loaded("oracle"))
+      if($this->assertTrue(extension_loaded("oracle"), "Oracle extension loaded"))
       {
-        if(!(@ocilogon($db->m_user, $db->m_password, $db->m_host)))
-        {
-          echo "*  can't connect with configured database: $dbname, check config.inc.php<br>";
-          return NULL;  
-        } 
+        if(!$this->assertTrue(@ocilogon($db->m_user, $db->m_password, $db->m_host), "Oracle database connected")) return NULL;  
         else
         {
           $rows = $db->getrows("SELECT * FROM session_privs");
@@ -144,11 +118,7 @@
           return $grants;
         }
       }
-      else
-      {
-      	echo "*  no oracle extension loaded on the server, so can't test database: $dbname<br>";
-        return NULL;
-      }
+      else return NULL;
     }
   }
 ?>
