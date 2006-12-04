@@ -69,10 +69,12 @@
     // Create node
     $obj = &getNode($ATK_VARS["atknodetype"]);
 
+    $flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
+
     //Handle http request   
     atkimport("atk.atkcontroller"); 
     $controller = &atkController::getInstance();
-    $controller->handleRequest($ATK_VARS);
+    $controller->handleRequest($ATK_VARS, $flags);
   }
   $output->outputFlush();
 ?>
