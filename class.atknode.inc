@@ -826,6 +826,7 @@
         {
           $this->m_attribIndexList[$this->m_attribList[$attribute->fieldName()]->m_index]["order"]=$order;
         }
+        $attribute->m_index = $this->m_attribList[$attribute->fieldName()]->m_index;
       }
 
       if(!$exist)
@@ -901,6 +902,7 @@
         }
 
         unset($this->m_attribIndexList[$listindex]);
+        unset($this->m_attributeTabs[$attribname]);
       }
     }
 
