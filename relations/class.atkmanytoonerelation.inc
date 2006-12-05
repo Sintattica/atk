@@ -560,7 +560,7 @@
            <input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$selectedValue.'" />&nbsp;'.$links.'<br />
            <span id="'.$id.'_selectionbox" class="atkmanytoonerelation_selection" style="'.$selectedDisplay.'">'.
              '<span id="'.$id.'_selection">'.$this->display($record).'</span>&nbsp;'.
-             '<a href="#" onClick="ATK.ManyToOneRelation.clear(\''.$id.'\', '.$afterUpdate.');">'.$resetIcon.'</a>';
+             '<a href="#" onClick="ATK.ManyToOneRelation.clear(\''.$id.'\', '.$afterUpdate.');">'.$resetIcon.'</a>'.
            '</span>';
       }
 
