@@ -716,6 +716,8 @@ Changed in ATK 5.7
 * AtkMlWrapper attribute clone fix: check phpversion and use right clone
   method based on this (check http://www.acko.net/node/54) [Nico]
 * AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
+* Fixed: Saving a node with a atkmanytomanyrelation sometimes caused an SQL
+  error. [Dennis]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

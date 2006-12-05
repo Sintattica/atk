@@ -294,16 +294,18 @@
       $filter="";
       if(count($checked) > 0)
         $filter = "NOT IN ('".implode("','",$checked)."')";
+      
+      $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"");
 
       //append the store deletion filter (if set)
       if($this->m_store_deletion_filter!="")
       {
-        if($filter!="") $filter.= " AND ";
+        if($selector!="") $selector.= " AND ";
           
-        $filter.= " ".$this->m_store_deletion_filter;
+        $selector.= " ".$this->m_store_deletion_filter;
       }
-
-      if (is_object($rel) && $rel->deleteDb($this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"")))
+      
+      if (is_object($rel) && $rel->deleteDb($selector))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
