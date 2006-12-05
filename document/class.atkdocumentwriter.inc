@@ -32,6 +32,8 @@
      */
     var $m_tpl_vars = array();
 
+    var $m_taglist = "";
+
     /**
      * atkDocumentWriter Constructor.
      *
@@ -166,6 +168,13 @@
 
       // Assign the displayvalues array to the documentwriter
       $this->Assign($prefix . $node->m_type, $displayvalues);
+
+      // Register the taglist
+      $this->m_taglist .= sprintf("%s codes (all prefixed by %s%s.)\n", $node->text($node->m_type), $prefix, $node->m_type);
+      foreach(array_keys($node->m_attribList) as $key)
+        $this->m_taglist .= "[$prefix{$node->m_type}.$key]\n";
+      $this->m_taglist .= "You can use these tags in a table. More info: http://www.achievo.org/wiki/AtkDocumentWriter\n";
+      $this->m_taglist .= "\n";
     }
 
     /**
@@ -186,6 +195,12 @@
       // Loop through all display values and assign them to the documentwriter
       foreach($displayvalues as $key => $displayvalue)
         $this->Assign($prefix . $key, $displayvalue);
+
+      // Register the taglist
+      $this->m_taglist .= sprintf("%s codes%s\n", $node->text($node->m_type), empty($prefix)?"":" (all prefixed by $prefix)");
+      foreach(array_keys($node->m_attribList) as $key)
+        $this->m_taglist .= "[$prefix$key]\n";
+      $this->m_taglist .= "\n";
     }
 
     /**
@@ -233,6 +248,9 @@
       // Assign the date in short and long format as [shortdate] and [longdate]
       $this->Assign($prefix . "shortdate", $dateattribute->formatDate($date, "d-m-Y", 0));
       $this->Assign($prefix . "longdate", $dateattribute->formatDate($date, "j F Y", 0));
+
+      // Assign the taglist
+      $this->Assign($prefix . "taglist", $this->m_taglist);
     }
 
     /**
