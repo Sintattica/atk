@@ -37,7 +37,10 @@
         $dbdriver = $dbs["$dbname"]["driver"];
         $grants = "";
         
-//TODO        if(ereg("oci",$dbdriver)) $grants = $this->getOracleGrants($db, $dbname);
+        /**
+         * @todo return Oracle grants from current user
+         */
+//        if(ereg("oci",$dbdriver)) $grants = $this->getOracleGrants($db, $dbname);
         if(ereg("oci",$dbdriver)) $grants = NULL;
         elseif(ereg("mysql",$dbdriver)) $grants = $this->getMysqlGrants($db, $dbname);
         elseif(ereg("pgsql", $dbdriver)) $grants = NULL;
@@ -46,7 +49,7 @@
         if($grants == NULL) return;
         
         $this->assertWantedPattern("/SELECT,|SELECT ON/", $grants, "SELECT is granted on $dbname");
-        if($db->hasMode($db, "rw"))
+        if($db->hasMode($db, "w") || $db->hasMode($db, "rw"))
         {
           $this->assertWantedPattern("/UPDATE,|UPDATE ON/", $grants, "UPDATE is granted on $dbname");
           $this->assertWantedPattern("/DELETE,|DELETE ON/", $grants, "DELETE is granted on $dbname");;
@@ -100,18 +103,18 @@
     
     /**
      * Return grants for current user on current oracle db
+     * @todo get grants for current user
      */
     function getOracleGrants($db, $dbname)
     {
       if($this->assertTrue(extension_loaded("oracle"), "Oracle extension loaded"))
       {
-        if(!$this->assertTrue(@ocilogon($db->m_user, $db->m_password, $db->m_host), "Oracle database connected")) return NULL;  
+        if(!$this->assertTrue($db->connect(), "Oracle database connected")) return NULL;  
         else
         {
           $rows = $db->getrows("SELECT * FROM session_privs");
           foreach($rows as $privileges)
           {
-            //TODO: get privileges..
             $privileges = stripslashes(array_shift($privileges));
             $grants .= $privileges;
           }
