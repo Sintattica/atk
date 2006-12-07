@@ -1315,7 +1315,6 @@
             unset($tablist[$i]);
           }
         }
-        else atkdebug("TAB " . $tablist[$i] . " does not need authorisation");
       }
 
       if (is_array($tablist))
