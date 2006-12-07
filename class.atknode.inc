@@ -3117,9 +3117,7 @@
       // Add attributes to query
       for ($i=0, $_i=count($querylist); $i<$_i; $i++)
       {
-        atkdebug("Attribute: ".$querylist[$i]);
         $p_attrib = &$this->m_attribList[$querylist[$i]];
-        atkdebug("Class $i : ".get_class($p_attrib));
         $p_attrib->addToQuery($query,$this->m_table,"",(isset($recordset[0])?$recordset[0]:array()),1,$mode); // start at level 1
       }
 
