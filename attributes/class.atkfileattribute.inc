@@ -248,10 +248,12 @@
             $file = $rec[$this->fieldName()]["orgfilename"];
           }
           atkdebug("file is now ".$file);
-          if ($file!="")
+          if ($file!="" && file_exists($this->m_dir.$file))
           {
             unlink($this->m_dir.$file);
           }
+          else 
+            atkdebug("File doesn't exist anymore.");
         }
 //        echo ':::::return leeg::::';
         return '';

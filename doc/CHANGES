@@ -238,6 +238,9 @@ Changed in ATK 5.7
 + Added auto-completion support for many-to-one relation search. [Peter]
 + Added atkGetMimeTypeFromFileExtension to atkfiletools - to get the right
   mimetype for the given filename. [Harrie]
+* In case of a ML node and physical_delete flag of the atkfileattribute
+  the file were delete twice. But the second it generates an error.
+  [dennisjan]
 * Changed the dispatch.php in the skel to use atkcontroller function. Note,
   the old method ($obj->dispatch) stills works but is deprecated. It is
   recommended to use the new dispatch.php from the skel directory.
