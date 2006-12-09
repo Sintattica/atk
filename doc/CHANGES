@@ -723,6 +723,9 @@ Changed in ATK 5.7
   error. [Dennis]
 * When $config_authentication is set to "none", a login box is no longer
   displayed. (bug #771) [Marlon]
+* When $config_authentication is set to "none", a forced login with a username
+  is no longer possible (so it becomes impossible to impersonate a non-existing
+  user). (bug #772) [Marlon]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

@@ -28,7 +28,10 @@
    {
      function validateUser($user, $passwd)
      {
-       return AUTH_SUCCESS;
+       if ($user == "")
+        return AUTH_SUCCESS;
+       else
+        return AUTH_MISMATCH;
      }
 
      function canMd5()
