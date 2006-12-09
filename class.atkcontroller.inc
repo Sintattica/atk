@@ -201,7 +201,7 @@
       $screen = '';
       if (!$page->isEmpty()) // Only output an html output if there is anything to output.
       {
-        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($this->m_module, $this->m_type,$this->m_postvars['atkaction']), $flags);
+        $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($node->m_module, $node->m_type,$node->m_postvars['atkaction']), $flags);
       }
 
       if(!$this->m_return_output)
