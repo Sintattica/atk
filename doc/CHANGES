@@ -17,42 +17,20 @@ Changed in ATK 5.7
   or a specific param when a key is given as parameter. [Maurice]  
 + Added atkWizardController class which is responsable for typical
   control actions for nodes being used with atkWizard. [Maurice]
-+ Added atkWizardActionLoader which convertes a atkwizardaction key array
-  to string value. [Maurice]
-+ Added to possibility to override a atkController class in atkNode. [Maurice]  
-+ Added finish functionality to atkWizard and renamed start() method to 
-  execute(). [Maurice]
-+ Added possiblity to add actionHandlers dynamicaly to atkWizardPanels. 
-  [Maurice]  
-+ Added the ability to influence the html sections to render in the atkPage
-  class, through the member var m_page_flags in atkWizardController. [Maurice]  
-+ Added 'saveandandnew', 'finish' and 'next' to dutch and english language file.
-  [Maurice]
-+ Added m_mode member var to atkWizard. This member var is used by 
-  atkWizardController to determine which buttons to show on forms. [Maurice]
-+ Added method isFinishPanel($name) to atkWizard which determines it the given
-  panel is the last one and thus should send the atkwizardaction 'finish'.
-  [Maurice]
-+ Added method showFinishButton to atkWizardPanel to explicitly set the finish
-  button for the wizard panel. [Maurice]
-+ Added getPage method to atkcontroller. This methoid returns a reference to 
-  the atkPage object. [Maurice]
 + Added member var m_renderBoxVars to atkActionHandler which is an array
 + Added 'get' functions to atkPage for javascript and stylesheets. [Maurice]
 + Implemented reuse of handlers in atknode::getHandler method, which is also 
   necessary when you want to save member vars before you use them at a later
   time in your pageload. [Maurice]
-+ Added style class for shuttlerelation [Angelo]
-+ Added AtkWizardBase class which contains wizard specific controller 
-  functionality. [Maurice]
-+ Added atkcaptcha attribute for use with p.e. guestbooks to prevent 
-  spam [Nico]
-+ Added m_displayShowAll var to atknavigator, so you can configure if you
-  want to show the 'show all' link in the navigation [Wim,Nico]
++ Added style class for atkShuttleRelation. [Angelo]
++ Added atkCaptchaAttribute for use with e.g guestbooks to prevent 
+  spam. [Nico]
++ Added m_displayShowAll var to atkNavigator, so you can configure if you
+  want to show the 'show all' link in the navigation [Wim, Nico]
 + Devided render part in the atkrecordlist class into a specific render 
   part and a part which collects all needed data for rendering. 
-  This way it's easy to display a recordlist in a different layout. [wim]
-+ Added pre-action support in atkNode and atkActionListener classes. [patrick]
+  This way it's easy to display a recordlist in a different layout. [Wim]
++ Added pre-action support in atkNode and atkActionListener classes. [Patrick]
 + Added support to the LDAP authentication class for searching in 
   multiple locations (DN's) instead of one base DN as it was previously
   [Wim].
@@ -111,8 +89,8 @@ Changed in ATK 5.7
   <attribname>_selection($record, $mode) in your node and return
   the selectable records. [Peter]
 + Added AF_MANYTOONE_LAZY flag to atkManyToOneRelation, this flag makes it
-  possible to lazy load a many-to-one record in list mode. This is needed
-  for example if your destination node uses a different database. [Bart,Peter]
+  possible to lazy load a many-to-one record in list mode. This is required
+  if your destination node uses a different database. [Bart, Peter]
 + Added some unittests. (bug #615) [Yury]
 + Added display function for fck attribute to prevent html tags from being 
   encoded. [Guido]
@@ -229,8 +207,8 @@ Changed in ATK 5.7
   notices to your debug log. [Boy]
 + Added a new fileutils class where can copy a skell to a specific location
   and you can create a destination at once for example ../dir/subdir/sudir2
-  [dennisjan]
-+ Added feature to parse a directory name by a template. [dennisjan]
+  [Dennis-Jan]
++ Added feature to parse a directory name by a template. [Dennis-Jan]
 + Added selected record override to atkManyToOneRelation and Usage: create 
   a function named <attribname>_selected($record, $mode) in your node,
   enable AF_MANYTOONE_LAZY and return the selected record. [Peter]
@@ -240,7 +218,7 @@ Changed in ATK 5.7
   mimetype for the given filename. [Harrie]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
-  [dennisjan]
+  [Dennis-Jan]
 * Changed the dispatch.php in the skel to use atkcontroller function. Note,
   the old method ($obj->dispatch) stills works but is deprecated. It is
   recommended to use the new dispatch.php from the skel directory.
@@ -258,21 +236,13 @@ Changed in ATK 5.7
   atkModule::nodeOverloaders. [Maurice]
 * Added fieldprefix for javascript in atkmanyboolrelation. [Lineke]
 * Removed unused code in atkDataDecode function. [Lineke]
-* Atkmanyboolrelation does not use AMDAE anymore, php now supports multi-
+* atkManyBoolRelation does not use AMDAE anymore, php now supports multi-
   dimensional arrays (might break in older php versions). [Lineke]
-* Added dipatchUrl method to atkController. This function should be used by
-  other classes get the url to redirect to or when creating links. [Maurice]
-* When running into errors on admin and add pages, the error was shown on an
-  add page. We now detirmine if we should show an add or admin page. [Maurice]
-* On an error atkSaveHandler now detirmines if it was in admin or add mode. 
-  [Maurice]
-* Function dispatch_url now checks if parameter $atkaction contains a value. 
-  [Maurice]
-* ManyToManyRelation now adds tablename before remoteKey when deleting.
+* atkManyToManyRelation now adds tablename before remoteKey when deleting.
   [Lineke]
 * On an error atkSaveHandler now determines if it was in admin or add mode.
   A new hidden var 'atkprevaction' is posted in add and edit pages to find
-  out. [Maurice]
+  out. This fixes failed validation to display the wrong page. [Maurice]
 * Function dispatch_url now checks if parameter $atkaction contains a value.
   [Maurice]
 * Removed atksecure from colorpicker.inc. [Lineke]  
@@ -280,46 +250,18 @@ Changed in ATK 5.7
   atkonetomanyrelation which fixes an error when using the AF_ONETOMANY_EMBED
   flag which assumes that postvars other than atkaction, atknodetype,
   atkprimkey are atkattributes. [Maurice]
-* Fixed bug when returning from adding a record in a manytoone relation 
-  which was caused by changes in dispatch_url function. The problem was
-  that the atknodetype was wrong. When you go one step back in your 
-  session, the sessionmgr determines what your atknodetype is. So
-  we should not post it in the url. [Maurice]
 * Better inplementation of dispatch_url function. [Maurice]
-* Updatehandler is now able to handle actions triggered by atkwizard buttons.
-  [Maurice]
-  containing the template vars to be rendered by smarty in box.tpl. [Maurice]
-* Fix for 'save and close' bug in atkcontroller::feedbackUrl. The message
-  'session expired' would be shown because the redirect did not contain a
-   nodetype. [Maurice]
 * Moved execution of preUpdate trigger to begin of updateDb function. This 
   way changing the record in the preUpdate function will have effect.
   [Lineke]
-* Some functional decomposition of javascript rendering to be able to fetch
-  the javascript seperately from the atkPage object. [Maurice]
-* Added m_wizardcontroller variable to atkWizard class. This variable contains
-  the name of the wizardcontroller class that should be used. This way it is
-  possible to override the atkWizardController. [Lineke]
-* Removed rawurlencode in createRedirectLocation in atksavehandler because the
-  dispatchUrl function already encodes the variables. [Lineke]  
-* It is now possible to change the php_file to which is
-  posted in forms. [Lineke]
-* Wizard stays on same panel on delete action. [Nico]
-* Wizard now determines to continue to next panel based on form. [Nico]
-* Fixed bug in genericPage caused by saruman branche merge : getUi and 
-  addStyle were not called on node [Nico]
-* Atkshuttlerelation does not use AMDAE anymore, php now supports multi-
+* It is now possible to change the php_file to which is posted in forms. 
+  [Lineke]
+* atkShuttleRelation does not use AMDAE anymore, php now supports multi-
   dimensional arrays (might break in older php versions). [Lineke]  
-* branche merge problem: $m_extended_search_action var was declared twice 
-  [Lineke,Nico]
-* AtkController is now a singleton class and has become reponsible for
-  loading atknodes and dispatching actions. AtkWizard now extends 
-  AtkController. [Maurice]
-* Removed getController function from atknode. [Lineke]  
-* When updateDb fails it has to return false in stead of true. [dennisjan]
+* When updateDb fails it has to return false in stead of true. [Dennis-Jan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
-* Bugfix in atkImportHandler (in_array takes 2 params, not 1). [Harrie]
+* Fix a potential php warning in atkImportHandler. [Harrie]
 * Fixed minor html/4.01 transitional compatibility issue in atkPage. [Guido]
 * A password should only be generated if a username is given. [Guido]
 * Added the auth_enablepasswordmailer var to the template so login,tpl
@@ -351,7 +293,7 @@ Changed in ATK 5.7
 * The atkImportHandler would hide attributes that don't use addToQuery, but
   as long as they properly handle parseStringValue, they are usable, so this
   restriction is removed. [Ivo]
-* Multilanguage splitter now also works for the atkMetaManyToOneRelation. [Boy]
+* I18N now also works for the atkMetaManyToOneRelation. [Boy]
 * Made debugger pass atkLevel() as prevlevel to debug window, thereby
   making it more likely to show debugging, although still not 100%. [Boy]
 * Performed some functional decomposition on atkOutput, adding the
@@ -406,8 +348,8 @@ Changed in ATK 5.7
 * Made atkQuery::create() return query object instantiated with atknew
   instead of with a normal 'new', making it possible to call it without
   first importing the query class. [Boy]
-* Made atkNodeValidator use the query object of unique fieldset validation
-  instead of doing a hardcoded query thus making it quote reserved names. [Boy]
+* Fixed a bug in atkNodeValidator where it didn't properly quote reserved 
+  names. [Boy]
 * The atkFileAttribute now uses 'filename' in display instead of 'orgfilename'
   which caused the strange behaviour of still showing the file you had just
   deleted until you went out of edit mode for the record and back again. [Boy]
@@ -544,9 +486,9 @@ Changed in ATK 5.7
 * Updated Dutch translation. [Guido]
 * Added mode param to addtoquery function in the oneToOneRelation. [Sandy]
 * Removed redundant double quote in html input element. [Bart]
-* fixed copy for atkManyToMany relation with destination primKey other than "id"
-  (not fixed for owner-side) fixed where clause for checking if records already 
-  exist [Ivo,Jeroen]
+* Fixed copy for atkManyToManyRelation with destination primKey other than 
+  "id" (not fixed for owner-side) and fixed where clause for checking if 
+  records already exist [Ivo, Jeroen]
 * Fixed warning in atkManyToOneRelation (occured after searching)
   Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
 * Functionally decomposed showTr [Jeroen]
@@ -599,7 +541,7 @@ Changed in ATK 5.7
   problems if you depend on the old (incorrect) behaviour! [Peter]
 * Check if a certain multi-record-action is allowed on a record. [Peter]
 * Added excludes/includes option to atkNode::updateRecord function. [Peter]
-* atkFileAttribute now uses more complete record for filename mangling. [Peter]
+* atkFileAttribute uses more complete record for filename mangling. [Peter]
 * atkManyBoolRelation does not require atkManyToOneRelations in the 
   intermediate node anymore. [Peter]
 * Logout link in menu is now configurable. [Peter]
@@ -610,11 +552,11 @@ Changed in ATK 5.7
 * Added possibility for adding an additional deletion filter for the store() 
   function of the atkmanytomanyrelation. [Dennis]
 * atkTableRenderer supports adding an id field to a TD. [Dennis]
-* The atkManyToOneRelation can be configured to always have the 
-  AF_RELATION_AUTOCOMPLETE flag set (controlled by setting the 
-  $config_manytoone_autocomplete_default to true) [Dennis]
+* atkManyToOneRelation can be configured to have AF_RELATION_AUTOCOMPLETE flag 
+  by default, by setting the value for $config_manytoone_autocomplete_default 
+  to true). [Dennis]
 * The atkManyToOneRelation is now configured to always use auto-completion
-  support if the AF_LARGE flag is set. This can be overriden (application-wide)
+  support if AF_LARGE flag is set. This can be overriden (application-wide) by
   setting $config_manytoone_autocomplete_large to false. [Peter]
 * Improved placeFocus() JavaScript method (now focuses the real first
   form element, instead of a somewhat guess). [Peter]
@@ -645,18 +587,18 @@ Changed in ATK 5.7
 * Fixed: Open Office document generator. On some systems unzip and zip would 
   return -1 instead of 0 on succesfull completion. However, no actual 
   information found on the internet to back this up). [Dennis, Guido]
-* Importhandler now uses charset from languagefiles to convert the importedfile
-  to the correct charset. [Lineke]
+* atkImportHandler now uses charset from languagefile to convert the imported
+  file to the correct charset. [Lineke]
 * Fixed some tests. [Sandy]
 * Tests are only harvested in the testcases directory. [Sandy] 
 * Moved atkselector from the default sessionmembers to the pagevars as it 
-  should not be propagated to deeper session levels. [dennisjan]
+  should not be propagated to deeper session levels. [Dennis-Jan]
 * Added ability to pass default to getAttribute method of atkTheme and made
   atkTheme search for icons with extension .png and .jpeg too, preferring
   png over gif and gif over jpeg. [Boy]
-* Made atkPage output XHTML valid, made ATK support themes defining the doctype
-  as a theme attribute, made ATK support a page.tpl, which is a general template
-  to render a page in. [Boy]
+* Made atkPage output XHTML valid, made ATK support themes defining the 
+  doctype as a theme attribute, made ATK support a page.tpl, which is a 
+  general template to render a page in. [Boy]
 * Made login page use login.css if available and made login form more 
   XHTML compliant. [Boy]
 * Added loadDispatch method to atkNode, which loads the output in atkOutput
@@ -679,8 +621,8 @@ Changed in ATK 5.7
   parameter to customrecordlist to set showtitlerow. [Lineke]
 * Changed display function of onetomanyrelation and manytomanyrelation to 
   correctly show data in csv export (without html). [Lineke]
-* Use assignExportData function in your node to add extra data to the export.
-  This makes it possible to do your own query and add extra info to the export.
+* Added assignExportData magic method to atkNode to add extra data to the CSV
+  export. This lets you use a custom query to add extra info to the export.
   [Lineke]
 * Made testreporter support finding and running the test for a single class,
   in ATK notation (module.mymodule.utils.utilclass) by using the 'class' 
@@ -692,11 +634,11 @@ Changed in ATK 5.7
 * Security: Fixed cross-site scripting (xss) vulnerability in Login screen and 
   any other screen that made use of the makeHiddenPostvars method. (bug #697) 
   [Ivo]
-* It is only allowed to set the focus if the node allowes it. [dennisjan]
+* It is only allowed to set the focus if the node allowes it. [Dennis-Jan]
 * Fixed OCI db driver unique constraint information in metadata (only use the
   unique flags for fields that are unique on their own). [Peter]
-* Use createQuery on the node db instance to create a query object for unique field 
-  set validation instead of using the default db instance. [Peter]
+* Use createQuery on the node db instance to create a query object for unique 
+  field set validation instead of using the default db instance. [Peter]
 * atkManyToOneRelation::populate now support list of attribute names. [Peter]
 * Bugfix in importhandler, mb_convert_encoding function is not always present.
   So we check if the function exists. [Lineke]
@@ -705,8 +647,9 @@ Changed in ATK 5.7
   be forked. [Jeroen,Peter]
 * Remember atktab in atkformdata because it might be changed in the current
   edit session. [Jeroen,Peter]
-* Bugfix: atkQuery should enclose the FROM clause in parentheses due to changes
-  in MySQL 5.0.15 to make MySQL more compliant with the standard. [Dennis]  
+* Bugfix: atkQuery should enclose the FROM clause in parentheses due to 
+  changes in MySQL 5.0.15 to make MySQL more compliant with the standard. 
+  [Dennis]  
 * Fixed issue in MySQL driver which caused connections to be re-used
   even though we connect to a different database. [Peter]
 * Fixed some PHP5 notices. [Peter]
@@ -724,8 +667,8 @@ Changed in ATK 5.7
 * When $config_authentication is set to "none", a login box is no longer
   displayed. (bug #771) [Marlon]
 * When $config_authentication is set to "none", a forced login with a username
-  is no longer possible (so it becomes impossible to impersonate a non-existing
-  user). (bug #772) [Marlon]
+  is no longer possible (so it becomes impossible to impersonate a 
+  non-existing user). (bug #772) [Marlon]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 
