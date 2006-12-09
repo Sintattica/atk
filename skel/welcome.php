@@ -34,8 +34,8 @@
   $output = &atkOutput::getInstance();
 
   $page->register_style($theme->stylePath("style.css"));
-  $box = $ui->renderBox(array("title"=>text("app_shorttitle"),
-                                            "content"=>"<br><br>".text("app_description")."<br><br>"));
+  $box = $ui->renderBox(array("title"=>atktext("app_shorttitle"),
+                                            "content"=>"<br><br>".atktext("app_description")."<br><br>"));
 
   $page->addContent($box);
   $output->output($page->render(text('app_shorttitle'), true));
