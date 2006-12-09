@@ -1150,7 +1150,7 @@ Changes in ATK 5.4
   visualize warnings and DEBUG_HTML to convert the debug string to html
   entities. [Guido]
 * Sorting on atkManyToOneRelation columns now sorts on the actual value
-  instead of on the id. [Ivo]
+  instead of on the id. (bug #518) [Ivo]
 * Moved addOnChangeHandler() to atkAttribute. [Boy]
 * atkNumberAttribute now renders NULL values as "" instead of 0. [Ivo]
 * Replaced some deprecated text() calls with atktext(). [Yury, Guido]
