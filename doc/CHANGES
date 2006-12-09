@@ -721,6 +721,8 @@ Changed in ATK 5.7
 * AtkMlWrapper getRecordForLng fix: first check if record is empty [Nico]
 * Fixed: Saving a node with a atkmanytomanyrelation sometimes caused an SQL
   error. [Dennis]
+* When $config_authentication is set to "none", a login box is no longer
+  displayed. (bug #771) [Marlon]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference 

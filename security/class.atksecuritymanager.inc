@@ -70,7 +70,7 @@
       else $cls=$type;
       return $cls;
     }
-    
+
     /**
      * returns an array of authentication types
      * authentication_type is a comma delimeted string with
@@ -97,7 +97,7 @@
       }
       return $types;
     }
-    
+
     /**
      * Constructor
      * @access private
@@ -108,7 +108,7 @@
 
       // required interface;
       atkimport("atk.security.auth_interface");
-      
+
       $authentication = $this->_getAuthTypes($authentication_type);
       foreach($authentication as $class)
       {
@@ -258,18 +258,16 @@
         $authenticated = false;
 
         // Check if a username was entered
-        if ((atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user))
+        if ((atkArrayNvl($ATK_VARS, "login", "") != "") && empty($auth_user) && !strstr(atkconfig("authentication"),"none"))
         {
           $response = AUTH_MISSINGUSERNAME;
         }
-
         // Email password if password forgotten and passwordmailer enabled
         else if ((!empty($auth_user)) && (atkconfig("auth_loginform")==true) && (atkconfig("auth_enablepasswordmailer", false)) && (atkArrayNvl($ATK_VARS, "login", "")==atktext('password_forgotten')))
         {
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
         }
-
         // check superuser
         else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
         {
@@ -630,7 +628,7 @@
         // all other situations
         else
         {
-          $required = $this->m_authorization->getEntity($node, $privilege);         
+          $required = $this->m_authorization->getEntity($node, $privilege);
 
           if (count($required)==0)
           {
