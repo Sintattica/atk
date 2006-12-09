@@ -557,7 +557,7 @@ Changed in ATK 5.7
   to true). [Dennis]
 * The atkManyToOneRelation is now configured to always use auto-completion
   support if AF_LARGE flag is set. This can be overriden (application-wide) by
-  setting $config_manytoone_autocomplete_large to false. [Peter]
+  setting $config_manytoone_autocomplete_large to false. (bug #411) [Peter]
 * Improved placeFocus() JavaScript method (now focuses the real first
   form element, instead of a somewhat guess). [Peter]
 * Fixed support for returning the newly created record for a many-to-one
