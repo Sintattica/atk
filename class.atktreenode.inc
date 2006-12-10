@@ -76,10 +76,10 @@
      * an add form when the flag NF_TREE_NO_ROOT_ADD. Because the add form is only
      * used to add root elements.
      */
-    function action_admin()
+    function action_admin(&$handler, $record="")
     {
       if ($this->hasFlag(NF_TREE_NO_ROOT_ADD)) $this->m_flags|=NF_NO_ADD;
-      return $this->m_handler->action_admin();
+      return $handler->action_admin($record);
     }
 
     function buildTree()
@@ -115,7 +115,6 @@
       }
 
       atkdebug("Entering treeview page.");
-      //$this->addStickyVar($p);
 
       $t = $this->buildTree();
 
@@ -124,6 +123,7 @@
       $this->m_tree[0]["expand"]=$this->hasFlag(NF_TREE_AUTO_EXPAND)?1:0;
       $this->m_tree[0]["colapse"]=0;
       $this->m_tree[0]["isleaf"]=1;
+      $this->m_tree[0]["label"]="";
 
       $this->treeToArray($t->m_tree);
 
@@ -201,30 +201,16 @@
       return "";
     }
 
-    function getIconPath()
+    /**
+     * Returns the full path to a tree icon from the current theme
+     *
+     * @param $name string Name of the icon (for example "expand" or "leaf")
+     * @return string Path to the icon file
+     */
+    function getIcon($name)
     {
-      static $s_icon_path = NULL;
-
-      if ($s_icon_path === NULL)
-      {
-        global $g_theme;
-
-        if($g_theme["TreeIcon_dir"]!=""&&is_dir(atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]))
-        {
-          $s_icon_path = atkconfig("atkroot")."atk/themes/".$g_theme["Name"]."/".$g_theme["TreeIcon_dir"]."/";
-        }
-        else
-        {
-          $s_icon_path = atkconfig("atkroot")."atk/themes/default/icons/tree/";
-        }
-      }
-
-      return $s_icon_path;
-    }
-
-    function getIcon($type)
-    {
-      return $this->getIconPath()."tree_$type.gif";
+      $theme = &atkInstance("atk.ui.atktheme");
+      return $theme->iconPath("tree_$name", "tree", $this->m_module);
     }
 
     /**
@@ -258,6 +244,7 @@
       $res="";
       $lastlevel=0;
       //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
+      $explevels = array();
       if ($this->m_tree[0]["expand"] !=1 && $this->m_tree[0]["colapse"] !=1) // normal operation
       {
         for ($i=0; $i<count($this->m_tree); $i++)
@@ -315,7 +302,6 @@
 
         }
         $this->m_tree[0]["colapse"]=0; // next time we are back in normal view mode!
-        $explevels ="";
       }
       /*********************************************/
       /*  Get Node numbers to expand               */
@@ -391,6 +377,9 @@
       {
         if ($visible[$cnt])
         {
+          $currentlevel = (isset($this->m_tree[$cnt]["level"]) ? $this->m_tree[$cnt]["level"] : 0);
+          $nextlevel = (isset($this->m_tree[$cnt+1]["level"]) ? $this->m_tree[$cnt+1]["level"] : 0);
+
           /****************************************/
           /* start new row                        */
           /****************************************/
@@ -416,7 +405,7 @@
           /****************************************/
           /* corner at end of subtree or t-split  */
           /****************************************/
-          if ($this->m_tree[$cnt]["isleaf"]==1 && $this->m_tree[$cnt+1]["level"]<$this->m_tree[$cnt]["level"])
+          if ($this->m_tree[$cnt]["isleaf"]==1 && $nextlevel<$currentlevel)
           {
             if ($cnt!=0) $res.= "<td><img src=\"".$img_end."\" border=0></td>\n";
             $levels[$this->m_tree[$cnt]["level"]-1]=0;
@@ -425,7 +414,7 @@
           {
             if ($expand[$cnt]==0)
             {
-              if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"])
+              if ($nextlevel>$currentlevel)
               {
                 /****************************************/
                 /* Create expand/collapse parameters    */
@@ -457,7 +446,7 @@
             }
             else
             {
-              if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"])
+              if ($nextlevel>$currentlevel)
               {
                 /****************************************/
                 /* Create expand/collapse parameters    */
@@ -520,7 +509,7 @@
           /********************************************/
           /* Node (with subtree) or Leaf (no subtree) */
           /********************************************/
-          if ($this->m_tree[$cnt+1]["level"]>$this->m_tree[$cnt]["level"])
+          if ($nextlevel>$currentlevel)
           {
             /****************************************/
             /* Create expand/collapse parameters    */
