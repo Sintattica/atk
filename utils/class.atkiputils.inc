@@ -1,8 +1,40 @@
 <?php
+  /**
+   * atkIpUtils class file
+   *
+   * @package atk
+   * @subpackage utils
+   *
+   * @author guido <guido@ibuildings.nl>
+   *
+   * @copyright (c) 2006 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing/ ATK open source license
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
+  /**
+   * atkIpUtils class. Contains static methods to allow numeric and string ip validation
+   * and conversion.
+   *
+   * @author guido <guido@ibuildings.nl>
+   * @package atk
+   * @subpackage utils
+   */
   class atkIpUtils
   {
 
+    /**
+     * Checks if the given ip (string or long numeric) is a valid ip
+     *
+     * A string will be valid if it contains 4 integer values between 0 and 255, glued together by dots (0.1.2.3).
+     * A number will be valid if it is between 0 and 4294967295.
+     *
+     * @static This function may be used statically
+     * @param mixed $ip String or long numeric.
+     * @return boolean True if the ip is valid, False if not.
+     */
     function ipValidate($ip)
     {
       if (is_numeric($ip))
@@ -17,6 +49,16 @@
       return false;
     }
 
+    /**
+     * Converts an ip (in number or string format) to a string
+     *
+     * The supplied ip must be a valid ip. If the given ip is not
+     * valid, then atkerror will be called.
+     *
+     * @static This function may be used statically
+     * @param mixed $ip String or long numeric IP address.
+     * @return boolean True if the ip is valid, False if not.
+     */
     function ipStringFormat($ip)
     {
       if (!atkIpUtils::ipValidate($ip))
@@ -36,6 +78,16 @@
       return $string;
     }
 
+    /**
+     * Converts an ip (in number or string format) to a long number
+     *
+     * The supplied ip must be a valid ip. If the given ip is not
+     * valid, then atkerror will be called.
+     *
+     * @static This function may be used statically
+     * @param mixed $ip String or long numeric IP address.
+     * @return boolean True if the ip is valid, False if not.
+     */
     function ipLongFormat($ip)
     {
       if (!atkIpUtils::ipValidate($ip))
