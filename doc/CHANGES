@@ -122,7 +122,7 @@ Changed in ATK 5.7
 + Added support for atkTimeAttribute in atkImportHandler. [Dennis]
 + In atkImportHandler you aren't obligated anymore to select an identifier
   field. [Dennis]
-+ Added basic URL-validation to atkUrlAttribute (only performed when 
++ Added basic URL-validation to atkUrlAttribute (only performed when
   AF_VALIDATE_URL flag is set). (bug #652) [Jeroen]
 + Added 'acceptUrl' function to atkUrlAttribute to specifiy which types of URL
   are accepted: relative, absolute and/or anchor URL. [Jeroen]
@@ -344,7 +344,7 @@ Changed in ATK 5.7
   the parent (code change request emailed to fckeditor.net) [Jeroen]
 * Performed functional decomposition on atkAdminHandler's adminPage method,
   rendering of admin recordlist is now done by renderAdminList method. [Boy]
-* If a recordlist does not have actions, and is not searchable, the action 
+* If a recordlist does not have actions, and is not searchable, the action
   column is no longer shown. (bug #556, #686, #774) [Boy, Yury, Marlon, Ivo]
 * Made atkQuery::create() return query object instantiated with atknew
   instead of with a normal 'new', making it possible to call it without
@@ -675,7 +675,7 @@ Changed in ATK 5.7
   atkModernMenu. (bug #778) [Guido]
 * Optimized atkTheme->getIconFileFromModuleTheme when
   $this->m_theme['modulefiles'] is not set. [Guido]
-* Fixed several php notices. [Guido]
+* Fixed several php notices. [Guido,Ivo]
 * atkQuery::betweenCondition method now supports a $quote parameter to toggle
   the use of quotes in the condition. (defaults to true). (bug #678) [Yury]
 * Fixed bug when NF_CACHE_RECORDLIST was used. (bug #681) [Yury]
@@ -688,6 +688,33 @@ Changed in ATK 5.7
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no different
   than the default action.tpl. [Ivo]
+* Fixed translation of tab names in error messages in an edit form. In such
+  a message only the tab_$tabname translation was attempted, now it also
+  tries to translate $tabname itself. [Guido]
+* Changed display in "plain" mode for the atkManyToManyRelation and the
+  atkOneToManyRelation. This displaymode will now give a comma-seperated
+  list of the linked records descriptors in the destinationnode (just like
+  CSV mode does). [Guido]
+* Added atkiputils class which provides functions to validate ip numbers
+  and convert them from strings to 32bit numbers and back. [Guido]
+* Added AF_IP_STORENUMERIC flag to atkIpAttribute to allow ip storage in
+  numeric (32 bit integer) format. This allows you to do database level
+  queries using ip ranges.
+* Added AF_IP_SINGLEFIELD flag to atkIpAttribute which gives you a single
+  input field instead of 4 seperate input fields for each number in add
+  and edit pages. [Guido]
+* Changed the atkIpAttribute to display proper errors when an invalid IP
+  address is entered. [Guido]
+* Fixed AF_UNIQUE checking; an empty value for a unique field should not
+  generate an error about the value not being unique. [Guido]
+* Fixed validation break when a custom validate function on a node
+  triggers an error. This caused errors not to be shown until the custom
+  validate function didn't trigger errors anymore. [Guido]
+* Added NF_TREE_AUTO_EXPAND flag to atkTreeNode. This flag causes the
+  tree to be expanded automatically when loaded. [Guido]
+* Changed achievo_modern and outlook themes to remove the padding/margin
+  from the atkManyBoolRelation and atkOneToManyRelation display output.
+  [Guido]
 
 Changed in ATK 5.6
 ------------------
