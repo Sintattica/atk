@@ -481,8 +481,6 @@ Changed in ATK 5.7
 * Fixed reference copy bug in atkColumnConfig and added testcase. (bug #717)
   [Yury]
 * Improved debug message on unknown mysql database error. (bug #715) [RainerG]
-* Updated Italian translation. [Fabio]
-* Updated Dutch translation. [Guido]
 * Added mode param to addtoquery function in the oneToOneRelation. [Sandy]
 * Removed redundant double quote in html input element. [Bart]
 * Fixed copy for atkManyToManyRelation with destination primKey other than
@@ -681,6 +679,9 @@ Changed in ATK 5.7
 * Fixed bug when NF_CACHE_RECORDLIST was used. (bug #681) [Yury]
 * When NF_EDITAFTERADD is used, the 'save' button now displays 'save and edit'
   so the user knows what will happen. (bug #684) [MichaelZ]
+* Updated Italian translation. [Fabio]
+* Updated Dutch translation. [Guido, Lineke. Ivo]
+* Updated German translation. (bug #685) [MichaelZ]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no different
