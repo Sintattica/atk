@@ -1652,7 +1652,7 @@
       /* extra submission data */
       //$result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
-      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.$record["atkprimkey"].'">';
+      $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.atkArrayNvl($record, "atkprimkey", "").'">';
 
       /* For all attributes we use the edit() method to get HTML code for editting the
        * attribute's data. If the attribute is hidden we use the hide() method method
@@ -4180,7 +4180,7 @@
       // To perform the search, we fill atksearch, so selectDb automatically
       // searches. Because an atksearch variable may have already been set,
       // we save it to restore it after the query.
-      $orgsearch = $this->m_postvars['atksearch'];
+      $orgsearch = atkArrayNvl($this->m_postvars, "atksearch");
 
       // Built whereclause.
       foreach (array_keys($this->m_attribList) as $attribname)
@@ -4194,7 +4194,7 @@
       }
 
       // We load records in admin mode, se we are certain that all fields are added.
-      $recs = $this->selectDb("", $this->m_defaultOrder, "", $this->m_listExcludes, "", "admin");
+      $recs = $this->selectDb("", "", "", $this->m_listExcludes, "", "admin");
 
       // Restore original atksearch
       $this->m_postvars['atksearch'] = $orgsearch;

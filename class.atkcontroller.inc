@@ -367,18 +367,20 @@
      */
     function feedbackUrl($action, $status, $record="", $message="")
     {
-      //Default we leave atkNodeType empty because the sessionmanager will determine
-      //which is de atkNodeType
-      $atkNodeType = "";
       if((isset($this->m_feedback[$action]) && hasFlag($this->m_feedback[$action], $status)) || $status==ACTION_FAILED)
       {
         $vars = array("atkaction"=>"feedback", "atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message);
         $node = $this->getNode();
-        $sessionStatus = SESSION_REPLACE;
         $atkNodeType = $node->atkNodeType();
+        $sessionStatus = SESSION_REPLACE;
       }
-      else $sessionStatus = SESSION_BACK;
-
+      else
+      {
+        // Default we leave atkNodeType empty because the sessionmanager will determine which is de atkNodeType
+        $vars = array();
+        $atkNodeType = "";
+        $sessionStatus = SESSION_BACK;
+      }
       return (session_url($this->dispatchUrl($vars, $atkNodeType), $sessionStatus));
     }
 
@@ -401,8 +403,8 @@
       else $phpfile = $this->getPhpFile();
 
       //$dispatch_url = dispatch_url(($atknodetype=="" ? $node->atkNodeType() : $atknodetype), $vars["atkaction"], $vars, $phpfile);
-      //When $atknodetype is empty this means that we use the atknodetype from session
-      $dispatch_url = dispatch_url($atknodetype, $vars["atkaction"], $vars, $phpfile);
+      // When $atknodetype is empty this means that we use the atknodetype from session
+      $dispatch_url = dispatch_url($atknodetype, atkArrayNvl($vars, "atkaction", ""), $vars, $phpfile);
 
       return $dispatch_url;
 
