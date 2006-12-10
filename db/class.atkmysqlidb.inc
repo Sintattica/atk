@@ -53,16 +53,16 @@
        if (!$this->m_link_id)
        {
          $this->halt($this->getErrorMsg());
-         return $this->_translateError();         
+         return $this->_translateError();
        }
-       
+
        /* set character set */
        if (!empty($charset))
        {
          atkdebug("Set database character set to: {$charset}");
          @mysqli_query($this->m_link_id, "SET NAMES '{$charset}'");
-       }        
-       
+       }
+
        /* set autoCommit to off */
        mysqli_autocommit($this->m_link_id, FALSE);
      }
@@ -87,7 +87,7 @@
      switch ($this->m_errno)
      {
        case    0: return DB_SUCCESS;
-       case 1044: return DB_ACCESSDENIED;  // todofixme: deze komt bij mysql pas na de eerste query.
+       case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
        case 1045: return DB_ACCESSDENIED_USER;
        case 1049: return DB_UNKNOWNDATABASE;
        case 2004:
@@ -335,9 +335,9 @@
 
        /* list fields */
        atkdebug("Retrieving metadata for $table");
-       
+
        // table type
-       $tableType = $this->_getTableType($table);       
+       $tableType = $this->_getTableType($table);
 
        /* get meta data */
        $id = @mysqli_query( $this->m_link_id, "SELECT * FROM {$table} LIMIT 1");
@@ -368,10 +368,10 @@
            		$result["meta"][$result[$i]["name"]] = $i;
 	      	$i++;
       	}
-      	
+
       	if ($full)
           $result["num_fields"] = $i;
-      	
+
         mysqli_free_result($id);
 
         atkdebug("Metadata for $table complete");
