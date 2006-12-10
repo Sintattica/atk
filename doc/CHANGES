@@ -343,7 +343,7 @@ Changed in ATK 5.7
 * Performed functional decomposition on atkAdminHandler's adminPage method,
   rendering of admin recordlist is now done by renderAdminList method. [Boy]
 * If recordlist does not have any actions available, the action column in
-  the recordlist is now no longer shown. [Boy]
+  the recordlist is now no longer shown. (bug #686) [Boy, Yury, Ivo]
 * Made atkQuery::create() return query object instantiated with atknew
   instead of with a normal 'new', making it possible to call it without
   first importing the query class. [Boy]
