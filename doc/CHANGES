@@ -217,6 +217,11 @@ Changed in ATK 5.7
   mimetype for the given filename. [Harrie]
 + atkMysqlDb's metadata() method now supports 'database.tablename' format for
   the $table parameter. (bug #708) [Yury]
+- Temporarily removed the 'generate title row' checkbox in atkExportHandler as
+  it isn't yet implemented. [Guido]
+- Removed default theme's action_view.tpl as it basically is no different
+  than the default action.tpl. [Ivo]
+- Removed unused summary string ($total) from atkNavigator. [Guido]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
@@ -684,10 +689,6 @@ Changed in ATK 5.7
 * Updated Italian translation. [Fabio]
 * Updated Dutch translation. [Guido, Lineke. Ivo]
 * Updated German translation. (bug #685) [MichaelZ]
-- Temporarily removed the 'generate title row' checkbox in atkExportHandler as
-  it isn't yet implemented. [Guido]
-- Removed default theme's action_view.tpl as it basically is no different
-  than the default action.tpl. [Ivo]
 * Fixed translation of tab names in error messages in an edit form. In such
   a message only the tab_$tabname translation was attempted, now it also
   tries to translate $tabname itself. [Guido]
@@ -715,6 +716,9 @@ Changed in ATK 5.7
 * Changed achievo_modern and outlook themes to remove the padding/margin
   from the atkManyBoolRelation and atkOneToManyRelation display output.
   [Guido]
+* Fixed selectDb optimization and php notice in atkViewHandler. [Guido]
+* Removed old treeicon code from atkTreeNode. [Guido]
+* Updated action_admin() api in atkTreeNode. [Guido]
 
 Changed in ATK 5.6
 ------------------
