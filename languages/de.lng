@@ -234,7 +234,7 @@
   "saturday" => "Samstag",
   "save" => "Speichern",
   "saveandclose" => "Speichern und schlie&szlig;en",
-  "saveandnext" => "Save and next", // Missing string!!!
+  "saveandnext" => "Speichern und Weiter", 
   "save_criteria" => "Save search as", // Missing string!!!
   "search" => "Suchen",
   "search_all" => "Alle suchen",
