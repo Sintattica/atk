@@ -35,19 +35,22 @@
     {
       $page = &$this->getPage();
 
-      list($type, $attribute, $partial) = explode('.', $this->m_partial);
-      if ($type == 'attribute')
+      if (isset($this->m_partial) && $this->m_partial!="")
       {
-        $attr =& $this->m_node->getAttribute($attribute);
-        if ($attr == NULL)
+        list($type, $attribute, $partial) = explode('.', $this->m_partial);
+        if ($type == 'attribute')
         {
-          atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+          $attr =& $this->m_node->getAttribute($attribute);
+          if ($attr == NULL)
+          {
+            atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+            return;
+          }
+
+          $result = $attr->partial($partial, 'add');
+          $page->addContent($result);
           return;
         }
-
-        $result = $attr->partial($partial, 'add');
-        $page->addContent($result);
-        return;
       }
 
       $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage")));
