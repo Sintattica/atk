@@ -94,7 +94,6 @@ Changed in ATK 5.7
 + Added some unittests. (bug #615) [Yury]
 + Added display function for fck attribute to prevent html tags from being
   encoded. [Guido]
-+ Added missing include in atkManyToOneTreeRelation. [Guido]
 + Added atkIpAttribute for entering ip's (optionally with wildcards). [Peter]
 + Added atkGetClientIp() function for retrieving the client's ip address, this
   includes a check for webservers behind a load balancer etc. [Peter]
@@ -671,15 +670,16 @@ Changed in ATK 5.7
   non-existing user). (bug #772) [Marlon]
 * Replaced deprecated DB_ACCESSDENIED with DB_ACCESSDENIED_DB constant in
   several drivers. (bug #640) [Ivo]
+* Added missing include in atkManyToOneTreeRelation. [Guido]
+* Bugfix: Added missing $page = &atkInstance("atk.ui.atkpage"); statement in
+  atkModernMenu. (bug #778) [Guido]
+* Optimized atkTheme->getIconFileFromModuleTheme when
+  $this->m_theme['modulefiles'] is not set. [Guido]
+* Fixed several php notices. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
 - Removed default theme's action_view.tpl as it basically is no difference
   than the default action.tpl. [Ivo]
-* Added missing $page = &atkInstance("atk.ui.atkpage"); statement in
-  atkModernMenu. [Guido]
-* Optimized atkTheme->getIconFileFromModuleTheme when
-  $this->m_theme['modulefiles'] is not set. [Guido]
-* Fixed several php notices. [Guido]
 
 Changed in ATK 5.6
 ------------------
