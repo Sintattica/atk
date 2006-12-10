@@ -193,8 +193,6 @@
           $min = min($min, $config["sortorder"]);
         }
       }
-      //echo $min;
-      atkdebug("min is ".$min);
       return $min;
     }
 
