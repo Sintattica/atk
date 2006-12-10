@@ -33,7 +33,7 @@
     function action_view($renderbox=true)
     {
       atkdebug("Action view");
-      $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_viewExcludes,"","view");
+      $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
 
       $page = &$this->getPage();
 
@@ -86,7 +86,7 @@
             $module = $node->m_attribList[$field_name]->getModule();
             if (!$module) $module = "atk";
             $ttip = atktext($node->m_type."_".$field_name."_tooltip", $module, "", "", "", true);
-  
+
             if ($ttip)
             {
               $theme = &atkinstance("atk.ui.atktheme");
