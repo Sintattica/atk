@@ -62,19 +62,19 @@
       {
         if (!empty($port))
           $host = "$host:$port";
-          
+
         $this->m_link_id = @mysql_connect($host, $user, $password, true /* ALWAYS NEW LINK */);
         if (!$this->m_link_id)
         {
           $this->halt($this->getErrorMsg());
         }
-        
+
         /* set character set */
         if (!empty($charset))
         {
           atkdebug("Set database character set to: {$charset}");
           @mysql_query($this->m_link_id, "SET NAMES '{$charset}'");
-        }        
+        }
       }
 
       /* select database */
@@ -156,7 +156,7 @@
 
       $mode = $this->getQueryMode($query);
       atkdebug("atkmysqldb::query -> connect with mode = $mode");
-      
+
       /* connect to database */
       if ($this->connect($mode)==DB_SUCCESS)
       {
@@ -242,12 +242,12 @@
       if ($this->connect("w")==DB_SUCCESS)
       {
         $query = "lock tables $table $mode";
-           
+
         if (atkconfig("debug")>0)
-        {               
-          atkimport("atk.utils.atkdebugger");        
+        {
+          atkimport("atk.utils.atkdebugger");
           atkDebugger::addQuery($query);
-        }        
+        }
 
         /* lock */
         $result = @mysql_query($query, $this->m_link_id);
@@ -357,7 +357,7 @@
         $this->halt("cannot lock ".$this->m_seq_table." - has it been created?");
       }
     }
-    
+
     /**
      * Returns the table type.
      *
@@ -366,14 +366,14 @@
      */
     function _getTableType($table)
     {
-      list($status) = $this->getRows("SHOW TABLE STATUS LIKE '" .$table ."';"); 
+      list($status) = $this->getRows("SHOW TABLE STATUS LIKE '" .$table ."';");
       return $status != NULL && isset($status['Engine']) ? $status['Engine'] : NULL;
     }
 
     /**
      * Return the meta data of a certain table
-     * @param $table the table name
-     * @param $full all meta data or not
+     * @param String $table the table name (optionally in 'database.tablename' format)
+     * @param boolean $full all meta data or not
      * @return array with meta data
      */
     function metadata($table, $full=false)
@@ -386,11 +386,21 @@
 
         /* list fields */
         atkdebug("Retrieving metadata for $table");
-        
+
         // table type
         $tableType = $this->_getTableType($table);
-        
-        $id = @mysql_list_fields($this->m_database, $table, $this->m_link_id);
+
+        // Yury: $table name may contain db name like "dbname.tablename", so we check it
+        if (strpos($table, ".")!==false)
+        {
+          list($dbname,$tablename) = explode(".",$table);
+          $id = @mysql_list_fields($dbname, $tablename);
+        }
+        else
+        {
+          $id = @mysql_list_fields($this->m_database, $table);
+        }
+
         if (!$id)
         {
           atkdebug("Metadata query failed.");
@@ -525,10 +535,10 @@
     {
       return "DATE_FORMAT($fieldname, '%Y-%m-%d %H:%i')";
     }
-    
+
     /**
      * Set database sequence value.
-     * 
+     *
      * @param string $seqname sequence name
      * @param int $value sequence value
      */

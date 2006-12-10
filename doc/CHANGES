@@ -213,8 +213,10 @@ Changed in ATK 5.7
   enable AF_MANYTOONE_LAZY and return the selected record. [Peter]
 + Added true test database support incl. support for fixtures. [Rene,Peter]
 + Added auto-completion support for many-to-one relation search. [Peter]
-+ Added atkGetMimeTypeFromFileExtension to atkfiletools - to get the right
++ Added atkGetMimeTypeFromFileExtension to atkFileTools - to get the right
   mimetype for the given filename. [Harrie]
++ atkMysqlDb's metadata() method now supports 'database.tablename' format for
+  the $table parameter. (bug #708) [Yury]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
