@@ -661,9 +661,12 @@
       }
     }
 
-    function betweenCondition($field, $value1, $value2)
+    function betweenCondition($field, $value1, $value2, $quote=true)
     {
-      return $field." BETWEEN '".$value1."' AND '".$value2."'";
+      if($quote)
+        return $field." BETWEEN '".$value1."' AND '".$value2."'";
+      else
+        return $field." BETWEEN ".$value1." AND ".$value2;
     }
 
     /**
