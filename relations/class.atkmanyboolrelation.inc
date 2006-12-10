@@ -14,7 +14,8 @@
    * @version $Revision$
    * $Id$
    */
-/** @internal include baseclass. */
+
+  /** @internal include baseclass. */
   userelation("atkmanytomanyrelation");
 
   /**
@@ -52,16 +53,19 @@
       $selectedPk = array();
 
       // first the selected records..
-      for ($i=0;$i<count($record[$this->m_name]);$i++)
+      if (isset($record[$this->fieldName()]))
       {
+        for ($i=0;$i<count($record[$this->fieldName()]);$i++)
+        {
 
-        if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
-          $newselected = $this->m_destInstance->primaryKey($record[$this->m_name][$i][$this->getRemoteKey()]);
-        else{
-          $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->m_name][$i][$this->getRemoteKey()]));
+          if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
+            $newselected = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+          else
+            $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()][$i][$this->getRemoteKey()]));
+
+          $selectedPk[] = $newselected;
         }
-        $selectedPk[] = $newselected;
-       }
+      }
 
       $recordset = $this->_getSelectableRecords($record, $mode);
 
@@ -69,11 +73,11 @@
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
 
       $result ='<div align="left"><font size="-2">
-                [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
+                [<a href="javascript:profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\')">'.
                      atktext("check_all", "atk").
-                '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
+                '</a> <a href="javascript:profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\')">'.
                      atktext("check_none", "atk").
-                '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
+                '</a> <a href="javascript:profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\')">'.
                      atktext("invert_selection", "atk").'</a>]</font></div>';
 
       $result.= '<table border="0"><tr>';
@@ -102,7 +106,7 @@
           $sel = "";
         }
         $result.= '<td class="table"><input type="checkbox" name="'.
-                       $fieldprefix.$this->fieldName().
+                       $this->getHtmlId($fieldprefix).
                        '[]['.$this->getRemoteKey().
                        ']" value="'.
                        $recordset[$i][$this->m_destInstance->primaryKeyField()].
