@@ -23,6 +23,7 @@
   define("NF_TREE_NO_ROOT_DELETE", NF_SPECIFIC_1); // No root elements can be deleted
   define("NF_TREE_NO_ROOT_COPY", NF_SPECIFIC_2); // No root elements can be copied
   define("NF_TREE_NO_ROOT_ADD", NF_SPECIFIC_3); // No root elements can be added
+  define("NF_TREE_AUTO_EXPAND", NF_SPECIFIC_4); // The tree is initially fully expanded
 
   global $g_maxlevel;
   $g_maxlevel = 0;
@@ -84,15 +85,13 @@
     function buildTree()
     {
       atkdebug("atktreenode::buildtree() ".$this->m_parent);
-      $recordset = $this->selectDb($this->m_postvars['atkfilter'],"","",$this->m_listExcludes,"", "admin");
+      $recordset = $this->selectDb(atkArrayNvl($this->m_postvars, "atkfilter", ""),"","",$this->m_listExcludes,"", "admin");
 
-      $t = new tree;
+      $treeobject = new tree;
       for($i=0;$i<count($recordset);$i++)
-      {
-        //$t->addNode($recordset[$i][$this->m_primaryKey[0]],$this->descriptor($group),$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
-        $t->addNode($recordset[$i][$this->m_primaryKey[0]],$recordset[$i],$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
-      }
-      return $t;
+        $treeobject->addNode($recordset[$i][$this->m_primaryKey[0]],$recordset[$i],$recordset[$i][$this->m_parent][$this->m_primaryKey[0]]);
+
+      return $treeobject;
     }
 
     /**
@@ -121,8 +120,9 @@
       $t = $this->buildTree();
 
       $this->m_tree[0]["level"]=0;
-      //$this->m_tree[0]["label"]="&nbsp;";
       $this->m_tree[0]["id"]='';
+      $this->m_tree[0]["expand"]=$this->hasFlag(NF_TREE_AUTO_EXPAND)?1:0;
+      $this->m_tree[0]["colapse"]=0;
       $this->m_tree[0]["isleaf"]=1;
 
       $this->treeToArray($t->m_tree);
@@ -158,7 +158,7 @@
 
     }
 
-/**
+    /**
      * Recursive funtion whitch fills an array with all the items of the tree.
      * DEPRECATED, use treeToArray instead.
      * @param $tree Tree
@@ -234,8 +234,11 @@
      */
     function GraphTreeRender($showactions=true, $expandAll=false, $foldable=true)
     {
-      global $g_maxlevel,$g_theme, $exp_index, $PHP_SELF,$config_atkroot;
+      // Load used classes (and globals? :( )
+      global $g_maxlevel,$g_theme, $exp_index, $PHP_SELF;
       atkimport("atk.utils.atkstringparser");
+
+      // Return
       if(count($this->m_tree)==1) return "";
 
       $img_expand   = $this->getIcon('expand');
@@ -254,32 +257,32 @@
 
       $res="";
       $lastlevel=0;
-     // echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
+      //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
       if ($this->m_tree[0]["expand"] !=1 && $this->m_tree[0]["colapse"] !=1) // normal operation
       {
-       for ($i=0; $i<count($this->m_tree); $i++)
-       {
-        if($this->m_tree[$i]["level"]<2)
+        for ($i=0; $i<count($this->m_tree); $i++)
         {
-          if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
+          if($this->m_tree[$i]["level"]<2)
           {
-            $expand[$i]=1;
-            $visible[$i]=1;
+            if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
+            {
+              $expand[$i]=1;
+              $visible[$i]=1;
+            }
+            else
+            {
+              $expand[$i]=0;
+              $visible[$i]=1;
+            }
           }
           else
           {
             $expand[$i]=0;
-            $visible[$i]=1;
+            $visible[$i]=0;
           }
+          $levels[$i]=0;
         }
-        else
-        {
-          $expand[$i]=0;
-          $visible[$i]=0;
-        }
-        $levels[$i]=0;
-       }
-       if ($this->m_postvars["atktree"]!="") $explevels = explode("|",$this->m_postvars["atktree"]);
+        if ($this->m_postvars["atktree"]!="") $explevels = explode("|",$this->m_postvars["atktree"]);
       }
       elseif ($this->m_tree[0]["expand"] == 1) // expand all mode!
       {
@@ -293,26 +296,26 @@
       }
       elseif ($this->m_tree[0]["colapse"]== 1) //  colapse all mode!
       {
-       for ($i=0; $i<count($this->m_tree); $i++)
-       {
-        if($this->m_tree[$i]["level"]<2)
-         {
-          if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
+        for ($i=0; $i<count($this->m_tree); $i++)
+        {
+          if($this->m_tree[$i]["level"]<2)
           {
-            $expand[$i]=1;
-            $visible[$i]=1;
+            if($this->m_tree[$i]["isleaf"]==1&&$this->m_tree[$i]["level"]<1)
+            {
+              $expand[$i]=1;
+              $visible[$i]=1;
+            }
+            else
+            {
+              $expand[$i]=0;
+              $visible[$i]=1;
+            }
           }
-          else
-          {
-            $expand[$i]=0;
-            $visible[$i]=1;
-          }
-         }
-         $levels[$i]=0;
+          $levels[$i]=0;
 
-       }
-       $this->m_tree[0]["colapse"]=0; // next time we are back in normal view mode!
-       $explevels ="";
+        }
+        $this->m_tree[0]["colapse"]=0; // next time we are back in normal view mode!
+        $explevels ="";
       }
       /*********************************************/
       /*  Get Node numbers to expand               */
@@ -391,9 +394,8 @@
           /****************************************/
           /* start new row                        */
           /****************************************/
-          if($tree_color==$tree_color1) { $tree_color=$tree_color2; } else { $tree_color=$tree_color1; }
-
           $res.="<tr>";
+
           /****************************************/
           /* vertical lines from higher levels    */
           /****************************************/
@@ -470,7 +472,7 @@
                   }
                   $i++;
                 }
-                if($this->extraparams) $params=$params.$this->extraparams;
+                if(isset($this->extraparams)) $params=$params.$this->extraparams;
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
                   if($cnt!=0)
@@ -525,7 +527,8 @@
             /****************************************/
             if ($foldable)
             {
-              $i=0; $params="atktree=";
+              $i=0;
+              $params="atktree=";
               while($i<count($expand))
               {
                 if ( ($expand[$i]==1) && ($cnt!=$i) || ($expand[$i]==0 && $cnt==$i))
@@ -535,7 +538,7 @@
                 }
                 $i++;
               }
-              if($this->extraparams) $params=$params.$this->extraparams;
+              if(isset($this->extraparams)) $params=$params.$this->extraparams;
               if ($expand[$cnt]==0)
                 $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=0>")."</td>\n";
               else
@@ -652,9 +655,9 @@
     function copyDb($record, $mode="copy")
     {
       $oldparent=$record[$this->m_primaryKey[0]];
-      
+
       parent::copyDb($record, $mode);
-      
+
       if(!empty($this->m_parent))
       {
         atkdebug("copyDb - Main Record added");
@@ -669,7 +672,7 @@
      * This is a recursive function to copy the children from a parent.
      *
      * @todo shouldn't we recursively call copyDb here? instead of ourselves
-     * 
+     *
      * @param $selector Selector
      * @param $parent Parent ID
      */
