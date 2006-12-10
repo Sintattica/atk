@@ -198,6 +198,8 @@
 
     function getIconFileFromModuleTheme($icon,$type)
     {
+      if (!isset($this->m_theme['modulefiles']))
+        return false;
       $modules = atkGetModules();
       $modulenames = array_keys($modules);
       foreach ($modulenames as $modulename)
