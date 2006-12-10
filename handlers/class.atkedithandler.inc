@@ -34,22 +34,24 @@
      */
     function action_edit()
     {
-      //atk_var_dump($this->m_renderBoxVars, "m_renderBoxVars action_edit 1");
       $page = &$this->getPage();
 
-      list($type, $attribute, $partial) = explode('.', $this->m_partial);
-      if ($type == 'attribute')
+      if (isset($this->m_partial) && $this->m_partial!="")
       {
-        $attr =& $this->m_node->getAttribute($attribute);
-        if ($attr == NULL)
+        list($type, $attribute, $partial) = explode('.', $this->m_partial);
+        if ($type == 'attribute')
         {
-          atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+          $attr =& $this->m_node->getAttribute($attribute);
+          if ($attr == NULL)
+          {
+            atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+            return;
+          }
+
+          $result = $attr->partial($partial, 'edit');
+          $page->addContent($result);
           return;
         }
-
-        $result = $attr->partial($partial, 'edit');
-        $page->addContent($result);
-        return;
       }
 
       list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
@@ -187,7 +189,7 @@
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
             if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
-              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atktext("tab_".$error["tab"],$node->m_module).'</a> )';
+              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module).'</a> )';
             else $error_tab = "";
 
             if(!is_array($error['attrib_name']))
