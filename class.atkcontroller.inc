@@ -437,7 +437,14 @@
       elseif ($mode == "add")
       {
         $node = $this->getNode();
-        $result[] = '<input type="submit" class="btn_save" value="'.atktext("save", "atk").'">';
+        if ($node->hasFlag(NF_EDITAFTERADD) === TRUE )
+        {
+          $result[] = '<input type="submit" class="btn_saveandcontinue" name="atksaveandcontinue" value="'.atktext("saveandedit", "atk").'">';
+        }
+        else
+        {
+          $result[] = '<input type="submit" class="btn_save" value="'.atktext("save", "atk").'">';
+        }
         // if action is admin, we don't show the cancelbutton or the add next button
         if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
           $result[] = '<input type="submit" class="btn_saveandnext" name="atksaveandnext" value="'.atktext("saveandnext", "atk").'">';

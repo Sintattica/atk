@@ -679,9 +679,11 @@ Changed in ATK 5.7
 * atkQuery::betweenCondition method now supports a $quote parameter to toggle
   the use of quotes in the condition. (defaults to true). (bug #678) [Yury]
 * Fixed bug when NF_CACHE_RECORDLIST was used. (bug #681) [Yury]
+* When NF_EDITAFTERADD is used, the 'save' button now displays 'save and edit'
+  so the user knows what will happen. (bug #684) [MichaelZ]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
-- Removed default theme's action_view.tpl as it basically is no difference
+- Removed default theme's action_view.tpl as it basically is no different
   than the default action.tpl. [Ivo]
 
 Changed in ATK 5.6
