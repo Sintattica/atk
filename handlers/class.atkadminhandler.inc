@@ -102,11 +102,6 @@
       {
         $output = $ui->renderBox(array("title"=>$this->m_node->actionTitle('admin'),
                                     "content"=>$this->renderAdminList()));
-        if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST))
-        {
-          $recordlistcache = $this->getRecordlistCache();
-          $recordlistcache->writeCache($output, $recordlist->m_actionloader);
-        }
       }
       else
       {
@@ -128,7 +123,7 @@
 
       $recordlistcache = $this->getRecordlistCache();
       $cached = "";
-      if ($this->m_node->hasFlag(NF_CACHE_RECORDLIST) && $recordlistcache)
+      if ($node->hasFlag(NF_CACHE_RECORDLIST) && $recordlistcache)
       {
         $cached = $recordlistcache->getCache();
       }
@@ -199,12 +194,12 @@
           $params["index"] = $navigator->buildIndex($node, (count($recordset)>0?$recordset[0][$node->m_index]:""));
         }
 
-        $navigation = $navigator->getNavigationUrls($this->m_node, "admin");
+        $navigation = $navigator->getNavigationUrls($node, "admin");
 
         if ($navigation)
         {
           if (isset($params["index"])) $params["index"].="<br />";
-          $params["navbar"] = $navigator->buildNavigation($this->m_node, "admin", $navigation);
+          $params["navbar"] = $navigator->buildNavigation($node, "admin", $navigation);
         }
 
         if(!is_array($actions))
@@ -217,7 +212,12 @@
 
         $params["footer"] = $this->invoke("adminFooter");
 
-        $output.= $ui->renderList("admin", $params);
+        $output = $ui->renderList("admin", $params);
+
+        if ($node->hasFlag(NF_CACHE_RECORDLIST)) 
+        {
+          $recordlistcache->writeCache($output, $recordlist->m_actionloader);
+        }
       }
       return $output;
     }
