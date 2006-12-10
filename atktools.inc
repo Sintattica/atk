@@ -31,7 +31,7 @@
    * clearly visible.
    */
   define("DEBUG_WARNING", 2);
-  
+
   /**
    * Hides the debug unless in level 2.
    * This should be used for debug you only really want to see if you
@@ -219,7 +219,7 @@
       $g_debug_msg[]=$txt;
     }
   }
-  
+
   /**
    * Send a notice to the debug log.
    * A notice doesn't get show unless your debug level is 3 or higher.
@@ -230,11 +230,11 @@
   {
     return atkdebug($txt,DEBUG_NOTICE);
   }
-  
+
   /**
    * Send a warning to the debug log.
    * A warning gets shown more prominently than a normal debug line.
-   * However it does not trigger a mailreport 
+   * However it does not trigger a mailreport
    * or anything else that an atkerror triggers.
    *
    * @param unknown_type $txt
@@ -458,7 +458,7 @@
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
     $currentlevel = atkLevel();
-    
+
     $newlevel = -1;
 
     switch ($sessionstatus)
@@ -552,7 +552,6 @@
     global $g_stickyurl;
 
     $newlevel = session_level($sessionstatus, $levelskip);
-    atkdebug("newlevel ". $newlevel. " atklevel() ". atklevel(). " status ".$sessionstatus);
     $vars="";
    // atklevel is already set manually, we don't append it..
     if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
@@ -1590,10 +1589,10 @@
     $atkparams = array();
     if($node!="")
       $atkparams["atknodetype"] = $node;
-    if($action!="") 
+    if($action!="")
       $atkparams["atkaction"] = $action;
     $params = array_merge($atkparams, $params);
-    
+
     if ($params != "" && is_array($params) && count($params) > 0)
       $url .= '?'.buildQueryString($params);
 
@@ -1701,7 +1700,7 @@
       $filename = getClassPath($fullclassname);
     else
       $filename = $fullclassname;
-    
+
     if (file_exists($filename))
     {
       if ($failsafe)
@@ -1988,7 +1987,7 @@
       return strtr($str, $trans_table);
     }
   }
-  
+
   /*
    * Returns the postvars
    * Returns a value or an array with all values
@@ -2093,7 +2092,7 @@
     }
     return false;
   }
-  
+
   /**
    * Returns the IP of the remote client.
    *
@@ -2116,9 +2115,9 @@
 
     return $s_ip;
   }
-  
+
   /**
-   * Function checks php version and clones the 
+   * Function checks php version and clones the
    * given attribute in the right way
    *
    * @param object $attribute The attribute to clone
@@ -2128,10 +2127,10 @@
   {
     if (intval(substr(phpversion(),0,1))<5)
       $attr = $attribute;
-    else 
+    else
       $attr = clone($attribute);
-    
+
     return $attr;
   }
-  
+
 ?>

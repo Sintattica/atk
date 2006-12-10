@@ -59,7 +59,7 @@
       static $s_object=NULL;
       if(!is_object($s_object) || $replace)
       {
-        if (empty($class))
+        if (empty($class) && isset($_REQUEST['atkcontroller']))
           $class = $_REQUEST['atkcontroller'];
         if (empty($class))
           $class = "atk.atkcontroller";
@@ -79,7 +79,6 @@
     {
       atkdebug("atkcontroller::getInstance()");
       $object = &atkcontroller::_instance();
-      atkdebug("atkcontroller::getInstance() return ".get_class($object));
       return $object;
     }
 
@@ -125,8 +124,6 @@
     {
       if(is_object($this->m_node))
       {
-        atkdebug("atkcontroller::getNode() <b>" . ($this->m_postvars["atknodetype"] != $this->m_node->m_module.".".$this->m_node->m_type ?
-                                                   "postvars[atknodetype] not equal to the current node. postvar: ". $this->m_postvars["atknodetype"] . " current: ". $this->m_node->m_module.".".$this->m_node->m_type : "Returning node ".$this->m_node->m_module.".".$this->m_node->m_type )."</b>");
         return $this->m_node;
       }
       else
@@ -176,7 +173,6 @@
 
       $ui = $node->getUi();
       $page = &$node->getPage();
-      atkdebug("atkcontroller::dispatch() call page->render");
 
       // backwards compatibility mode
       if ($flags == NULL)
@@ -190,6 +186,7 @@
 
       if (hasFlag($flags, HTML_PARTIAL) && !$postvars["atkdebug"]["force"])
       {
+        // turn off debugging in partial mode (ajax snippets)
         global $config_debug;
         $config_debug = 0;
       }
@@ -219,7 +216,6 @@
 
       if($this->m_return_output)
       {
-        atkdebug("atkController::dispatch Return output ");
         return $screen;
       }
     }
@@ -231,23 +227,22 @@
      */
     function loadDispatchPage($postvars)
     {
-      atkdebug("atkcontroller::loaddispatchpage ");
       $this->m_postvars = $postvars;
       $node = $this->getNode();
       if(!is_object($node)) return;
 
       $node->m_postvars = $postvars;
       $node->m_action = $postvars['atkaction'];
-      $node->m_partial = $postvars["atkpartial"];
-
-      atkdebug("atkcontroller::loaddispatchpage " . $node->m_action);
+      if (isset($postvars["atkpartial"]))
+      {
+        $node->m_partial = $postvars["atkpartial"];
+      }
 
       $page = &$node->getPage();
 
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
-      atkdebug("loaddispatchpage. action:" .$node->m_action) ;
 
       if ($node->allowed($node->m_action))
       {
@@ -398,7 +393,6 @@
      */
     function dispatchUrl($params=array(), $atknodetype="", $file="")
     {
-      //atkdebug("atkcontroller::dispatchurl");
 
       if (!is_array($params)) $params = array();
       $vars = array_merge($params, $this->m_hidden_vars);
@@ -425,7 +419,6 @@
      */
     function getFormButtons($mode, $record)
     {
-      atkdebug("atkController::getFormButtons()");
       $result = array();
 
       // edit mode
@@ -531,7 +524,6 @@
 
     function setReturnOutput($returnOutput)
     {
-      atkdebug("atkcontroller::setReturnOutput() Setting return output to ". ($returnOutput ? "true":"false"));
       $this->m_return_output = $returnOutput;
     }
 
