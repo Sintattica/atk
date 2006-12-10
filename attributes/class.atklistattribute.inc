@@ -64,7 +64,7 @@
      * Array for fast lookup of what value belongs to what option.
      */
     var $m_lookup = array();
-    
+
     /**
      * Array which holds the options,values and lookup array in cache
      */
@@ -131,13 +131,13 @@
       }
 
       $this->atkAttribute($name, $flags, $size); // base class constructor
-      
+
       // m_options and m_values array are still here for backwardscompatibility
       $this->m_options = $optionArray;
       $this->_set("options",$optionArray);
       $this->m_values = $valueArray;
       $this->_set("values",$valueArray);
-      
+
       $this->createLookupArray($optionArray,$valueArray);
     }
 
@@ -155,28 +155,28 @@
       }
       $this->_set("lookup",$this->m_lookup);
     }
-    
+
     /**
      * get functions to access member variables.
      * For backwards compatibility we also check the old member variables m_options,
      * m_values and m_lookup.
      */
-    function getOptions($rec=null) { 
+    function getOptions($rec=null) {
     	if(!isset($this->m_types["options"]) || count($this->m_types["options"]) == 0)
     		return $this->m_options;
-    	return $this->_get("options",$rec); 
+    	return $this->_get("options",$rec);
     }
-    function getValues($rec=null) { 
+    function getValues($rec=null) {
     	if(!isset($this->m_types["values"]) || count($this->m_types["values"]) == 0)
     		return $this->m_values;
-    	return $this->_get("values",$rec); 
+    	return $this->_get("values",$rec);
     }
-    function getLookup($rec=null) { 
+    function getLookup($rec=null) {
     	if(!isset($this->m_types["lookup"]) || count($this->m_types["lookup"]) == 0)
     		return $this->m_lookup;
-    	return $this->_get("lookup",$rec); 
+    	return $this->_get("lookup",$rec);
     }
-    
+
     /**
      * Returns one of the following arrays
      * options => optionarray
@@ -189,7 +189,7 @@
     {
       return $this->m_types[$type];
     }
-    
+
     function _set($type,$value)
     {
       $this->m_types[$type]=$value;
@@ -205,7 +205,7 @@
     {
       return $this->_translateValue($record[$this->fieldName()],$record);
     }
-    
+
     /**
      * Translates the database value
      *
@@ -246,12 +246,12 @@
       $result = '<select id="'.$id.'" name="'.$id.'"  class="atklistattribute" '.$onchange.($this->m_width?" style='width: {$this->m_width}px'":"").'>';
 
       $result.=$this->_addEmptyListOption();
-      
+
       $values = $this->getValues($record);
       for ($i=0;$i<count($values);$i++)
       {
         // If the current value is selected or occurs in the record
-        if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) || 
+        if ((!is_null($this->m_selected) && $values[$i] == $this->m_selected) ||
             ( is_null($this->m_selected) && $values[$i] == $record[$this->fieldName()] && $record[$this->fieldName()]!=""))
         {
           $sel = "selected";
@@ -266,7 +266,7 @@
       $result.='</select>';
       return $result;
     }
-    
+
     /**
      * If this attribute is NOT obligatory
      * Or if the attribute is obligatory and we set a config saying all obligatory lists should have a null item
@@ -279,7 +279,7 @@
     {
       $ret='';
       if (!$this->hasFlag(AF_OBLIGATORY) ||
-           ($this->hasFlag(AF_OBLIGATORY) && 
+           ($this->hasFlag(AF_OBLIGATORY) &&
            // CONFIG IS DEPRECATED
           ((atkconfig("list_obligatory_null_item")&&!$this->hasFlag(AF_LIST_NO_OBLIGATORY_NULL_ITEM))||
            ($this->hasFlag(AF_LIST_OBLIGATORY_NULL_ITEM)))))
@@ -297,7 +297,7 @@
     function search($record="", $extended=false, $fieldprefix="")
     {
       // todo: configurable rows
-      
+
       $values = $this->getValues($record);
       $result = '<select ';
       if ($extended)
@@ -344,6 +344,7 @@
       // We only support 'exact' matches.
       // But you can select more than one value, which we search using the IN() statement,
       // which should work in any ansi compatible database.
+      $searchcondition = "";
       if (is_array($value) && count($value)>0 && $value[0]!="") // This last condition is for when the user selected the 'search all' option, in which case, we don't add conditions at all.
       {
         if (count($value)==1) // exactly one value

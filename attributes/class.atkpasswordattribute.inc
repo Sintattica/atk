@@ -86,9 +86,9 @@
       // Set the restrictions
       $this->setRestrictions($restrictions);
     }
-    
+
     /**
-     * Encodes the given value only if the 
+     * Encodes the given value only if the
      * AF_PASSWORD_NO_ENCODE flag is not set.
      *
      * @param string $value
@@ -515,16 +515,16 @@
     */
     function fetchValue($rec)
     {
-      if ($rec[$this->fieldName()]["current"])
+      if (isset($rec[$this->fieldName()]["current"]))
       {
         $rec[$this->fieldName()]["current"] = $this->encode($rec[$this->fieldName()]["current"]);
       }
-      if ($rec[$this->fieldName()]["new"])
+      if (isset($rec[$this->fieldName()]["new"]))
       {
         $rec[$this->fieldName()]["newplain"] = $rec[$this->fieldName()]["new"];
         $rec[$this->fieldName()]["new"] = $this->encode($rec[$this->fieldName()]["new"]);
       }
-      if ($rec[$this->fieldName()]["again"])
+      if (isset($rec[$this->fieldName()]["again"]))
       {
         $rec[$this->fieldName()]["again"] = $this->encode($rec[$this->fieldName()]["again"]);
       }

@@ -101,7 +101,7 @@
 
     function display($record)
     {
-       $values = $record[$this->fieldName()];       
+       $values = $record[$this->fieldName()];
        $res=array();
        for ($i=0;$i<count($values);$i++)
        {
@@ -134,11 +134,12 @@
       $result .="\n<table><tr>\n";
 
       $values = $this->getValues($record);
+      $recordvalue = atkArrayNvl($record, $this->fieldName());
       for ($i=0;$i<count($values);$i++)
       {
         if (!$this->hasFlag(AF_CHECK_ALL))
         {
-          (atk_in_array($values[$i],$record[$this->fieldName()]))?$sel = "checked":$sel = "";
+          (atk_in_array($values[$i],$recordvalue))?$sel = "checked":$sel = "";
         }
         else
         {
