@@ -66,6 +66,7 @@
   // 0 - No debug information
   // 1 - Print some debug information at the bottom of each screen
   // 2 - Print debug information, and pause before redirects
+  // 3 - Like 2, but also adds trace information to each statement
   $config_debug = 0;
 
   // Smart debug parameters. Is used to dynamically enable debugging for
@@ -200,7 +201,7 @@
 
   // If you use "db" as authentication type, you can set the table and fields
   // from which atk should read the username and password information.
-  $config_auth_usernode    = ""; // module.nodename 
+  $config_auth_usernode    = ""; // module.nodename
   $config_auth_usertable   = "user";
   $config_auth_userfield   = "userid";
   $config_auth_passwordfield = "password";
