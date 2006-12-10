@@ -40,7 +40,7 @@
     var $m_link = "";
     var $m_linkInstance = NULL;
     var $m_store_deletion_filter = "";
-    
+
     /**
      * Constructor
      * @param String $name The name of the relation
@@ -211,16 +211,17 @@
           }
         }
 
+        $result = "";
         if (count($record[$this->m_name])!=0)
         {
-          if ($mode != 'csv') $result = "<ul>";
+          if (!in_array($mode, array("csv", "plain"))) $result = "<ul>";
           for ($i=0;$i<count($recordset);$i++)
           {
-            if ($mode != 'csv') $result.="<li>";
+            if (!in_array($mode, array("csv", "plain"))) $result.="<li>";
             elseif ($result != '') $result.=', ';
             $result .= $this->m_destInstance->descriptor($recordset[$i]);
           }
-          if ($mode != 'csv') $result.="</ul>";
+          if (!in_array($mode, array("csv", "plain"))) $result.="</ul>";
         }
         return $result;
       }
@@ -294,17 +295,17 @@
       $filter="";
       if(count($checked) > 0)
         $filter = "NOT IN ('".implode("','",$checked)."')";
-      
+
       $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"");
 
       //append the store deletion filter (if set)
       if($this->m_store_deletion_filter!="")
       {
         if($selector!="") $selector.= " AND ";
-          
+
         $selector.= " ".$this->m_store_deletion_filter;
       }
-      
+
       if (is_object($rel) && $rel->deleteDb($selector))
       {
         for ($i=0;$i<count($record[$this->fieldName()]);$i++)
@@ -445,7 +446,7 @@
         }
       }
     }
-    
+
     /**
      * Checks if a key is not an array
      * @param $key   field containing the key values
@@ -459,12 +460,12 @@
         return $key[$field];
       }
       return $key;
-    }    
-    
+    }
+
     /**
      * Fetch value. If nothing selected, return empty array instead
      * of nothing.
-     * 
+     *
      * @param array $postvars
      */
     function fetchValue($postvars)
@@ -472,18 +473,18 @@
       $value = parent::fetchValue($postvars);
       return $value == NULL ? array() : $value;
     }
-    
+
     /**
      * Function adds a custom filter that is used when deleting items during the store() function.
-     * 
+     *
      * Example:
-     * Normally the delete function would do something like this:     
+     * Normally the delete function would do something like this:
      *
      * DELETE FROM phase WHERE phase.template NOT IN (1,2,3)
-     * 
+     *
      * If the template field is NULL, although it is not specified in the NOT IN (1,2,3), it will not be deleted.
      * An extra check can be added just in case the template value is not NULL but 0 or '' (which would delete the phase).
-     * 
+     *
      * @param String $filter The filter that is used when deleting records in the store function.
      * @return none
      */

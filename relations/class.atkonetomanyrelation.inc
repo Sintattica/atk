@@ -125,12 +125,12 @@
         $this->m_refKey[] = $refKey;
       }
     }
-    
+
     function setOwnerFields($ownerfields)
     {
       $this->m_ownerFields = $ownerfields;
     }
-    
+
     function getOwnerFields()
     {
       if (is_array($this->m_ownerFields) && count($this->m_ownerFields)>0)
@@ -170,7 +170,7 @@
         {
           $result = "";
           // display in list mode
-          if (($mode == "list") || ($mode == "csv"))
+          if (in_array($mode, array("list", "csv", "plain")))
             for ($i = 0; $i < count($myrecords);$i++)
               $result .= ($i > 0 && $mode == "list" ? "<br>" : ($i > 0 ? ', ' : '')).$this->m_destInstance->descriptor($myrecords[$i]);
 
@@ -344,7 +344,7 @@
 
       return $output;
     }
-    
+
     /**
      * Get the buttons for the embedded mode of the onetomany relation.
      * @todo Move this to a template
@@ -469,7 +469,7 @@
       }
       return $url;
     }
-    
+
     function _getFilterElements($record)
     {
       $ownerfields = $this->getOwnerFields();
@@ -962,7 +962,7 @@
          }
        }
      }
-     
+
      function getSearchCondition(&$query, $table, $value, $searchmode)
      {
        $usedfields = array();
