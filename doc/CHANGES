@@ -670,7 +670,7 @@ Changed in ATK 5.7
   non-existing user). (bug #772) [Marlon]
 * Replaced deprecated DB_ACCESSDENIED with DB_ACCESSDENIED_DB constant in
   several drivers. (bug #640) [Ivo]
-* Added missing include in atkManyToOneTreeRelation. [Guido]
+* Added missing include in atkManyToOneTreeRelation. (bug #680) [Guido]
 * Bugfix: Added missing $page = &atkInstance("atk.ui.atkpage"); statement in
   atkModernMenu. (bug #778) [Guido]
 * Optimized atkTheme->getIconFileFromModuleTheme when
