@@ -140,7 +140,12 @@ INPUT.btn_saveandclose
   text-align: right;
 }
 
-
+UL,OL,LI
+{
+  margin: 0px;
+  padding: 0px;
+  list-style-position: inside;
+}
 
 /* nieuwe stylen ivm theme */
 
@@ -187,12 +192,12 @@ INPUT.btn_saveandclose
 
 #banner
 {
-  
+
 }
 
 #topLinks
 {
-  
+
 }
 
 
@@ -204,8 +209,8 @@ INPUT.btn_saveandclose
   /* white-space: nowrap; */
 }
 
-#editform input, 
-#editform textarea, 
+#editform input,
+#editform textarea,
 #editform select,
 .contentBlock input,
 .contentBlock textarea,
@@ -245,11 +250,11 @@ INPUT.btn_saveandclose
 #loginform
 {
   width: 360px;
-  border: 1px solid #666;	
+  border: 1px solid #666;
   padding: 24px;
   padding-left: 228px;
   margin: 0px auto;
-  
+
 }
 
 #loginform form
@@ -318,7 +323,7 @@ INPUT.btn_saveandclose
 
 
 
-hr 
+hr
 {
   border: none 0;
   border-top: 1px dashed #666;

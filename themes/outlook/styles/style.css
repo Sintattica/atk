@@ -91,3 +91,10 @@ INPUT.btn_saveandclose
   font-size: 12px;
   text-align: left;
 }
+
+UL,OL,LI
+{
+  margin: 0px;
+  padding: 0px;
+  list-style-position: inside;
+}
