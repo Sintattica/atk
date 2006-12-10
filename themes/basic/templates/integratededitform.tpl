@@ -4,15 +4,15 @@
       <td colspan="2" class="error">
         {$errortitle}
         {foreach from=$errors item=error}
-          <br>{$error.label}: {$error.msg} {if $error.tab!=""} ({$error.tab}){/if}          
+          <br>{$error.label}: {$error.msg} {if isset($error.tab)} ({$error.tab}){/if}
         {/foreach}
       </td>
     </tr>
-  {/if}  
+  {/if}
   {foreach from=$fields item=field}
     <tr>
       {if $field.line!=""}
-        <td colspan="2" valign="top">{$field.line}</td>      
+        <td colspan="2" valign="top">{$field.line}</td>
       {else}
       {if $field.label!=="AF_NO_LABEL"}<td>{if $field.label!=""}{$field.label}: {/if}</td>{/if}
         <td>{$field.full}</td>

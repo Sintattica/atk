@@ -1,6 +1,6 @@
 {$formstart}
 <div id="action-helplink" style="border: 0px solid red">
-{if $helplink!=""}{$helplink}{/if}
+{if isset($helplink)}{$helplink}{/if}
 </div>
   {atkmessages}
   {if count($atkmessages)}

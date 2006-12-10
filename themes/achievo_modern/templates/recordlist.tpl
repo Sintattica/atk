@@ -1,4 +1,4 @@
-{$formstart}
+{if isset($formstart)}{$formstart}{/if}
 <table cellspacing="0" cellpadding="0" class="recordListContainer">
   <tr>
     <td>
@@ -18,8 +18,8 @@
             <!-- header -->
             <tr>
               {section name=headerloop loop=$header}
-                <th valign="{$vorientation}" {if isset($header[headerloop].htmlattributes)}{$header[headerloop].htmlattributes}{/if} 
-                 {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}> 
+                <th valign="{$vorientation}" {if isset($header[headerloop].htmlattributes)}{$header[headerloop].htmlattributes}{/if}
+                 {if $smarty.section.headerloop.index===0}class="recordListThFirst"{else}class="recordListTh"{/if}>
                   {if $header[headerloop].content != ""}{$header[headerloop].content}{else}&nbsp;{/if}
                 </th>
               {/section}
@@ -47,7 +47,7 @@
                    onmouseout="resetrow(this)"
                    onclick="selectrow(this, '{$listid}', {$row.rownum})">
                {section name=colloop loop=$row.cols}
-                <{if $row.type == "subtotal"}th{else}td {if $smarty.section.colloop.index===0}class="recordListTdFirst"{else}class="recordListTd"{/if} 
+                <{if $row.type == "subtotal"}th{else}td {if $smarty.section.colloop.index===0}class="recordListTdFirst"{else}class="recordListTd"{/if}
                  {/if} valign="{$vorientation}" {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}>
                   {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
                 </td>
@@ -84,4 +84,4 @@
    </tr>
   {/if}
 </table>
-{$formend}
+{if isset($formend)}{$formend}{/if}
