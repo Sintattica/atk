@@ -69,7 +69,12 @@
            "Connect Mysql database")) return NULL; 
         else
         {
-          $rows = $db->getrows("SHOW GRANTS FOR ".$db->m_user."@".$db->m_host);
+          //check if user@% exists, because its privileges have a higher priority then user@db->host
+          if(count($db->getrows("SELECT * FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE GRANTEE LIKE \"".$db->m_user."'@'\%'\""))>0)
+            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'%'");	
+          else
+            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'".$db->m_host."'");
+          
           $specificprivilegefound = false;
           if(count($rows)>1)//check for specific grants
           {
