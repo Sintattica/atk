@@ -94,7 +94,8 @@ Changed in ATK 5.7
 + Added some unittests. (bug #615) [Yury]
 + Added display function for fck attribute to prevent html tags from being
   encoded. [Guido]
-+ Added atkIpAttribute for entering ip's (optionally with wildcards). [Peter]
++ Added atkIpAttribute for entering ip's (optionally with wildcards). 
+  [Peter, Guido]
 + Added atkGetClientIp() function for retrieving the client's ip address, this
   includes a check for webservers behind a load balancer etc. [Peter]
 + Made atkinstance() resolve the classname before using it, thereby enabling
@@ -217,11 +218,6 @@ Changed in ATK 5.7
   mimetype for the given filename. [Harrie]
 + atkMysqlDb's metadata() method now supports 'database.tablename' format for
   the $table parameter. (bug #708) [Yury]
-- Temporarily removed the 'generate title row' checkbox in atkExportHandler as
-  it isn't yet implemented. [Guido]
-- Removed default theme's action_view.tpl as it basically is no different
-  than the default action.tpl. [Ivo]
-- Removed unused summary string ($total) from atkNavigator. [Guido]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
@@ -237,11 +233,7 @@ Changed in ATK 5.7
   an atknodetype param. [Maurice]
 * Added check in atkUi::title to see if de node was really created.
   [Maurice]
-* Removed unneeded function call from newNode function. [Maurice]
-* Removed unneeded global vars from atkModule::newNode and
-  atkModule::nodeOverloaders. [Maurice]
 * Added fieldprefix for javascript in atkmanyboolrelation. [Lineke]
-* Removed unused code in atkDataDecode function. [Lineke]
 * atkManyBoolRelation does not use AMDAE anymore, php now supports multi-
   dimensional arrays (might break in older php versions). [Lineke]
 * atkManyToManyRelation now adds tablename before remoteKey when deleting.
@@ -251,7 +243,6 @@ Changed in ATK 5.7
   out. This fixes failed validation to display the wrong page. [Maurice]
 * Function dispatch_url now checks if parameter $atkaction contains a value.
   [Maurice]
-* Removed atksecure from colorpicker.inc. [Lineke]
 * Added atkprevaction check to _checkIntegratedSave method in
   atkonetomanyrelation which fixes an error when using the AF_ONETOMANY_EMBED
   flag which assumes that postvars other than atkaction, atknodetype,
@@ -481,10 +472,6 @@ Changed in ATK 5.7
   node. [Guido]
 * Fixed bug in atkescape which would be too sticky if escaping between
   different nodes. [Ivo]
-* Removed redundant double quote in html input element. [Bart]
-* fixed copy for atkManyToMany relation with destination primKey other than
-  "id" (not fixed for owner-side) fixed where clause for checking if records
-  already exist. [Ivo, Jeroen]
 * Fixed reference copy bug in atkColumnConfig and added testcase. (bug #717)
   [Yury]
 * Improved debug message on unknown mysql database error. (bug #715) [RainerG]
@@ -493,11 +480,11 @@ Changed in ATK 5.7
 * Fixed copy for atkManyToManyRelation with destination primKey other than
   "id" (not fixed for owner-side) and fixed where clause for checking if
   records already exist [Ivo, Jeroen]
-* Fixed warning in atkManyToOneRelation (occured after searching)
-  Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
-* Functionally decomposed showTr [Jeroen]
-* Fixed bug in atkColumnConfig which caused the setOrderBy to
-  be misinterpreted. [Peter]
+* Fixed warning in atkManyToOneRelation (after searching) [Peter, Jeroen]
+* Fixed smartsearching in atkMlAttribute [Peter,Jeroen]
+* Functionally decomposed showTr. [Jeroen]
+* Fixed bug in atkColumnConfig which caused the setOrderBy to be
+  misinterpreted. [Peter]
 * Fixed OCI auto-increment/sequence information in metadata. [Peter]
 * Fixed setting m_mode in atkDb. This should always be done for atkMockDb to
   work. [Lineke]
@@ -582,9 +569,6 @@ Changed in ATK 5.7
   after saving the first one. [Dennis,Peter]
 * Properly handle attribute postvars in add, save, edit and update handler
   after getting back from for example the select handler. [Dennis,Peter]
-* Removed dirty hack from atkManyToOneRelation for the return value of
-  the select handler (select link) or add handler (add link). This hack
-  still exists for the classic AF_LARGE mode. [Dennis,Peter]
 * In advanced search labels are always shown (before AF_NO_LABEL was used to
   determine if a label should be shown). [Lineke]
 * Made the new 'modern' menu the default menu in new installations. [Boy]
@@ -698,14 +682,6 @@ Changed in ATK 5.7
   CSV mode does). [Guido]
 * Added atkiputils class which provides functions to validate ip numbers
   and convert them from strings to 32bit numbers and back. [Guido]
-* Added AF_IP_STORENUMERIC flag to atkIpAttribute to allow ip storage in
-  numeric (32 bit integer) format. This allows you to do database level
-  queries using ip ranges.
-* Added AF_IP_SINGLEFIELD flag to atkIpAttribute which gives you a single
-  input field instead of 4 seperate input fields for each number in add
-  and edit pages. [Guido]
-* Changed the atkIpAttribute to display proper errors when an invalid IP
-  address is entered. [Guido]
 * Fixed AF_UNIQUE checking; an empty value for a unique field should not
   generate an error about the value not being unique. [Guido]
 * Fixed validation break when a custom validate function on a node
@@ -717,8 +693,22 @@ Changed in ATK 5.7
   from the atkManyBoolRelation and atkOneToManyRelation display output.
   [Guido]
 * Fixed selectDb optimization and php notice in atkViewHandler. [Guido]
-* Removed old treeicon code from atkTreeNode. [Guido]
 * Updated action_admin() api in atkTreeNode. [Guido]
+- Removed old treeicon code from atkTreeNode. [Guido]
+- Temporarily removed the 'generate title row' checkbox in atkExportHandler as
+  it isn't yet implemented. [Guido]
+- Removed default theme's action_view.tpl as it basically is no different
+  than the default action.tpl. [Ivo]
+- Removed unused summary string ($total) from atkNavigator. [Guido]
+- Removed dirty hack from atkManyToOneRelation for the return $value of
+  the select handler (select link) or add handler (add link). This hack
+  still exists for the classic AF_LARGE mode. [Dennis, Peter]
+- Removed atksecure from colorpicker.inc. [Lineke]
+- Removed unneeded function call from newNode function. [Maurice]
+- Removed unneeded global $vars from atkModule::newNode and
+  atkModule::nodeOverloaders. [Maurice]
+- Removed unused code in atkDataDecode function. [Lineke]
+    
 
 Changed in ATK 5.6
 ------------------
