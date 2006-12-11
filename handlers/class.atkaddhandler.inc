@@ -93,7 +93,7 @@
 
       /* if we are on an admin page we would like to stay on the admin page after adding a new record
          if we are on level 0, we want to present the user with a new (empty!) addition form when (s)he gets back */
-      if ($node->m_action == "admin" || atkLevel() == 0) $formstart.=session_form(SESSION_NESTED);
+      if (atkLevel() == 0) $formstart.=session_form(SESSION_NESTED);
       else $formstart.=session_form();
 
       $formstart .= $controller->getHiddenVarsString();

@@ -1,5 +1,7 @@
 <?php
 
+include_once(atkconfig("atkroot")."atk/ui/smarty/Smarty.class.php");
+
 /**
  * Project:     Smarty: the PHP compiling template engine
  * File:        Smarty_Compiler.class.php

@@ -18,6 +18,7 @@
    *
    * @author Maurice Maas <maurice@ibuildings.nl>
    * @package atk
+   * @todo Make this class a real singleton.
    */
   class atkController
   {
@@ -35,14 +36,6 @@
     var $m_return_output = false;
 
     /**
-     * List of actions that should give success/failure feedback
-     * @access private
-     * @var array
-     */
-    var $m_feedback = array();
-
-
-    /**
      * Key/value Array containing which are be send als post or get vars
      * @access private
      * @var Array
@@ -54,6 +47,14 @@
     {
     }
 
+    /**
+     * Create instance of controller (determined by class variable) if not yet created, return instance of atkcontroller
+     *
+     * @access private
+     * @param string $class
+     * @param boolean $replace
+     * @return instance of controller
+     */
     function &_instance($class="", $replace=false)
     {
       static $s_object=NULL;
@@ -97,77 +98,29 @@
 
 
    /**
-    * handle HTTP requests
+    * This is the wrapper method for all http requests on a node.
     *
-    * TODO fixme Do we need this function?
+    * The method looks at the atkaction from the postvars and determines what
+    * should be done. If possible, it instantiates actionHandlers for
+    * handling the actual action.
     *
-    * @param array $postvars
-    */
+    * @param array $postvars The request variables for the node.
+    * @param string $flags Render flags (see class atkPage).
+    * 
+    */ 
     function handleRequest($postvars, $flags=NULL)
     {
       $this->m_postvars = $postvars;
-
-      $this->invoke("dispatch", $postvars, $flags);
-    }
-
-    function setNode(&$node)
-    {
-      $this->m_node = &$node;
-    }
-
-    /**
-     * Make instance of atkNode class
-     *
-     * @return reference to atknode
-     */
-    function &getNode()
-    {
-      if(is_object($this->m_node))
-      {
-        return $this->m_node;
-      }
-      else
-      {
-        //if the object not yet exists, try to create it
-        $fullclassname = $this->m_postvars["atknodetype"];
-        if(isset($fullclassname) && $fullclassname != null)
-        {
-          $this->m_node = &getNode($fullclassname);
-          if (is_object($this->m_node))
-          {
-            return $this->m_node;
-          }
-          else
-          {
-            atkError("No object '".$ATK_VARS["atknodetype"]."' created!!?!");
-          }
-        }
-      }
-    }
-
-
-    /**
-     * This is the wrapper method for all http requests on a node.
-     *
-     * The method looks at the atkaction from the postvars and determines what
-     * should be done. If possible, it instantiates actionHandlers for
-     * handling the actual action.
-     *
-     * @param array $postvars The request variables for the node.
-     * @param boolean $fullpage If true (default), the dispatch function
-     *                          renders a complete html page, including
-     *                          <html><head><body> etc. If you set this to
-     *                          false, plain output is generated. Warning: If
-     *                          you set this to false, you are responsible for
-     *                          loading all the required scripts, stylesheets
-     *                          etc. (When $fullpage is true, these are
-     *                          automatically included in the page header.
-     */
-    function dispatch($postvars, $flags=NULL)
-    {
-      atkdebug("atkcontroller::dispatch()");
-      $this->m_postvars = $postvars;
       $node = &$this->getNode();
+      
+      /** This code is here for backwards compatibility reasons
+       * @todo This should be removed
+       */
+      if ($node !== NULL && method_exists($node, "dispatch"))
+      {
+        return $node->dispatch($postvars, $flags);
+      }
+      
       $node->m_postvars = $postvars;
       if(!is_object($node)) return;
 
@@ -209,7 +162,6 @@
 
       // This is the end of all things for this page..
       // so we clean up some resources..
-      $node = $this->getNode();
       $db = &$node->getDb();
       if (is_object($db)) $db->disconnect();
       atkdebug("disconnected from the database");
@@ -221,6 +173,46 @@
     }
 
     /**
+     * Set m_node variable of this class
+     *
+     * @param object $node
+     */
+    function setNode(&$node)
+    {
+      $this->m_node = &$node;
+    }
+
+    /**
+     * Get m_node variable or if not set make instance of atkNode class (determined by using the postvars)
+     *
+     * @return reference to atknode
+     */
+    function &getNode()
+    {
+      if(is_object($this->m_node))
+      {
+        return $this->m_node;
+      }
+      else
+      {
+        //if the object not yet exists, try to create it
+        $fullclassname = $this->m_postvars["atknodetype"];
+        if(isset($fullclassname) && $fullclassname != null)
+        {
+          $this->m_node = &getNode($fullclassname);
+          if (is_object($this->m_node))
+          {
+            return $this->m_node;
+          }
+          else
+          {
+            atkError("No object '".$ATK_VARS["atknodetype"]."' created!!?!");
+          }
+        }
+      }
+    }
+
+    /**
      * Does the actual loading of the dispatch page
      * And adds it to the page for the dispatch() method to render.
      * @param array $postvars The request variables for the node.
@@ -228,7 +220,7 @@
     function loadDispatchPage($postvars)
     {
       $this->m_postvars = $postvars;
-      $node = $this->getNode();
+      $node = &$this->getNode();
       if(!is_object($node)) return;
 
       $node->m_postvars = $postvars;
@@ -273,7 +265,7 @@
      */
     function genericPage($title, $content)
     {
-      $node = $this->getNode();
+      $node = &$this->getNode();
       $ui = &$node->getUi();
       $node->addStyle("style.css");
       if (!is_array($content)) $content = array($title=>$content);
@@ -307,44 +299,13 @@
         $blocks = ($blocks==""?array():array($blocks));
       }
 
-      $node = $this->getNode();
+      $node = &$this->getNode();
       $ui = &$node->getUi();
 
       // todo: overridable action templates
       return $ui->render("actionpage.tpl", array("blocks"=>$blocks,
                                                  "title"=>$ui->title($node->m_module, $node->m_type, $action)));
     }
-
-    /**
-     * Use this function to enable feedback for one or more actions.
-     *
-     * When feedback is enabled, the action does not immediately return to the
-     * previous screen, but first displays a message to the user. (e.g. 'The
-     * record has been saved').
-     *
-     * @param mixed $action The action for which feedback is enabled. You can
-     *                      either pass one action or an array of actions.
-     * @param int $statusmask The status(ses) for which feedback is enabled.
-     *                        If for example this is set to ACTION_FAILED,
-     *                        feedback is enabled only when the specified
-     *                        action failed. It is possible to specify more
-     *                        than one status by concatenating with '|'.
-     */
-    function setFeedback($action, $statusmask)
-    {
-      if (is_array($action))
-      {
-        for ($i=0, $_i=count($action); $i<$_i; $i++)
-        {
-          $this->m_feedback[$action[$i]] = $statusmask;
-        }
-      }
-      else
-      {
-        $this->m_feedback[$action] = $statusmask;
-      }
-    }
-
 
     /**
      * Determine the url for the feedbackpage.
@@ -367,10 +328,10 @@
      */
     function feedbackUrl($action, $status, $record="", $message="")
     {
-      if((isset($this->m_feedback[$action]) && hasFlag($this->m_feedback[$action], $status)) || $status==ACTION_FAILED)
+      $node = &$this->getNode();
+      if((isset($node->m_feedback[$action]) && hasFlag($node->m_feedback[$action], $status)) || $status==ACTION_FAILED)
       {
         $vars = array("atkaction"=>"feedback", "atkfbaction"=>$action, "atkactionstatus"=>$status,"atkfbmessage"=>$message);
-        $node = $this->getNode();
         $atkNodeType = $node->atkNodeType();
         $sessionStatus = SESSION_REPLACE;
       }
@@ -395,19 +356,15 @@
      */
     function dispatchUrl($params=array(), $atknodetype="", $file="")
     {
-
       if (!is_array($params)) $params = array();
       $vars = array_merge($params, $this->m_hidden_vars);
-      //atk_var_dump($vars, "atkcontroller::dispatchurl");
       if($file!="") $phpfile = $file;
       else $phpfile = $this->getPhpFile();
 
-      //$dispatch_url = dispatch_url(($atknodetype=="" ? $node->atkNodeType() : $atknodetype), $vars["atkaction"], $vars, $phpfile);
       // When $atknodetype is empty this means that we use the atknodetype from session
       $dispatch_url = dispatch_url($atknodetype, atkArrayNvl($vars, "atkaction", ""), $vars, $phpfile);
 
       return $dispatch_url;
-
     }
 
     /**
@@ -422,6 +379,7 @@
     function getFormButtons($mode, $record)
     {
       $result = array();
+      $node   = &$this->getNode();
 
       // edit mode
       if ($mode == "edit")
@@ -429,7 +387,7 @@
         // if atklevel is 0 or less, we are at the bottom of the session stack,
         // which means that 'saveandclose' doesn't close anyway, so we leave out
         // the 'saveandclose' button. Unless, a feedback screen is configured.
-        if (atkLevel() >0 || hasFlag($this->m_feedback["update"], ACTION_SUCCESS))
+        if (atkLevel() >0 || hasFlag($node->m_feedback["update"], ACTION_SUCCESS))
         {
           $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.atktext('saveandclose', "atk").'">';
         }
@@ -438,7 +396,6 @@
       }
       elseif ($mode == "add")
       {
-        $node = $this->getNode();
         if ($node->hasFlag(NF_EDITAFTERADD) === TRUE )
         {
           $result[] = '<input type="submit" class="btn_saveandcontinue" name="atksaveandcontinue" value="'.atktext("saveandedit", "atk").'">';
@@ -454,7 +411,6 @@
       }
       elseif ($mode == "view")
       {
-        $node = $this->getNode();
         if(atkLevel() > 0)
           $result[] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.atktext('back').'">';
         // if appropriate, display an edit button.
@@ -591,8 +547,8 @@
      *   $controller->invoke("dispatch", $postvars, $fullpage);
      * </code>
      *
-     * This will call dispatch(&$handler, $postvars, $fullpage) on your node class
-     * if present, or dispatch($record, $postvars, $fullpage) in the handler if the node has
+     * This will call dispatch(&$handler, $postvars, $flags) on your node class
+     * if present, or dispatch($postvars, $flags) in the handler if the node has
      * no override.
      *
      * @param String $methodname The name of the method to call.
@@ -604,7 +560,7 @@
       $arguments = func_get_args(); // Put arguments in a variable (php won't let us pass func_get_args() to other functions directly.
       // the first argument is $methodname, which we already defined by name.
       array_shift($arguments);
-      $node = $this->getNode();
+      $node = &$this->getNode();
       if ($node!==NULL && method_exists($node, $methodname))
       {
         atkdebug("atkcontroller::invoke() Invoking '$methodname' override on node");

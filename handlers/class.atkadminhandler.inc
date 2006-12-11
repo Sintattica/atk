@@ -34,7 +34,7 @@
     /**
      * The action method
      */
-    function action_admin($record=NULL)
+    function action_admin()
     {
       $page = &$this->getPage();
 
@@ -56,6 +56,18 @@
         }
       }
 
+      $res = $this->renderAdminPage();
+      $page->addContent($this->m_node->renderActionPage("admin", $res));
+    }
+    
+    /**
+     * Render the adminpage, including addpage if necessary
+     *
+     * @param array $record
+     * @return array with result of adminPage and addPage
+     */
+    function renderAdminPage($record=NULL)
+    {
       $res = array();
       if ($this->m_node->hasFlag(NF_NO_ADD)==false&&$this->m_node->allowed("add"))
       {
@@ -65,8 +77,7 @@
         }
       }
       $res[] = $this->invoke("adminPage");
-
-      $page->addContent($this->m_node->renderActionPage("admin", $res));
+      return $res;
     }
 
     /**

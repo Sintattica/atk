@@ -12,7 +12,9 @@ Changed in ATK 5.7
 + Added class atkController which controls which page to load and the sending
   of post and get vars. Several methods from atkNode have been moved to this
   class. Most importantly, methods for dispatching, page rendering and url
-  creating are moved. [Maurice]
+  creating are moved. The original dispatch method of atkNode is renamed to
+  handleRequest. Overrides on dispatch function in childnodes will still work.
+  [Maurice, Lineke]
 + Added getPostVar function which simply returns the _REQUEST params array
   or a specific param when a key is given as parameter. [Maurice]
 + Added atkWizardController class which is responsable for typical
