@@ -96,31 +96,9 @@
       return $controller;
     }
 
-
-   /**
-    * This is the wrapper method for all http requests on a node.
-    *
-    * The method looks at the atkaction from the postvars and determines what
-    * should be done. If possible, it instantiates actionHandlers for
-    * handling the actual action.
-    *
-    * @param array $postvars The request variables for the node.
-    * @param string $flags Render flags (see class atkPage).
-    * 
-    */ 
-    function handleRequest($postvars, $flags=NULL)
+    function dispatch($postvars, $flags=NULL)
     {
-      $this->m_postvars = $postvars;
       $node = &$this->getNode();
-      
-      /** This code is here for backwards compatibility reasons
-       * @todo This should be removed
-       */
-      if ($node !== NULL && method_exists($node, "dispatch"))
-      {
-        return $node->dispatch($postvars, $flags);
-      }
-      
       $node->m_postvars = $postvars;
       if(!is_object($node)) return;
 
@@ -170,6 +148,24 @@
       {
         return $screen;
       }
+    }
+
+
+   /**
+    * This is the wrapper method for all http requests on a node.
+    *
+    * The method looks at the atkaction from the postvars and determines what
+    * should be done. If possible, it instantiates actionHandlers for
+    * handling the actual action.
+    *
+    * @param array $postvars The request variables for the node.
+    * @param string $flags Render flags (see class atkPage).
+    *
+    */
+    function handleRequest($postvars, $flags=NULL)
+    {
+      $this->m_postvars = $postvars;
+      $this->invoke('dispatch', $postvars, $flags);
     }
 
     /**

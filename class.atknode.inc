@@ -611,7 +611,7 @@
      * @var atkLock
      */
     var $m_lock = NULL;
-    
+
     /**
      * List of actions that should give success/failure feedback
      * @access private
@@ -2215,6 +2215,24 @@
       }
       $this->m_attribsizesset = true;
     }
+
+    /**
+      * This is the wrapper method for all http requests on a node.
+      *
+      * The method looks at the atkaction from the postvars and determines what
+      * should be done. If possible, it instantiates actionHandlers for
+      * handling the actual action.
+      *
+      * @param array $postvars The request variables for the node.
+      * @param int $flags Render flags (see class atkPage).
+      */
+     function dispatch($postvars, $flags=NULL)
+     {
+       atkdebug("atkNode::dispatch()");
+       $controller = &atkcontroller::getInstance();
+       $controller->setNode($this);
+       return $controller->dispatch($postvars, $flags);
+     }
 
     /**
      * Render a generic page, with a box, title, stacktrace etc.
