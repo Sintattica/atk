@@ -50,7 +50,7 @@
 
     function visitFile($fullpath)
     {
-      $include = $_REQUEST["include"];
+      $include = atkArrayNvl($_REQUEST, "include");
       $includefiles = explode("|",$include);
       $filename = basename($fullpath);
       if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false)
@@ -112,7 +112,7 @@
         // setup the test database
         $this->_setupTestDB();
       }
-      
+
       $test = &new GroupTest("Full ATK test");
       $class = $_REQUEST['class'];
       $testclass = $this->getTestCaseLocationForClass($class);
