@@ -218,7 +218,8 @@ Changed in ATK 5.7
   mimetype for the given filename. [Harrie]
 + atkMysqlDb's metadata() method now supports 'database.tablename' format for
   the $table parameter. (bug #708) [Yury]
-+ Added an atkTagAttribute. [Dennis]
++ Added atkTagAttribute for tagging of records. [Dennis]
++ Added atkStateAttribute for selecting US states. [KevinLW]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
