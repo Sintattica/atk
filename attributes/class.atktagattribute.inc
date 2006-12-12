@@ -22,7 +22,7 @@
   /**
    * ...
    *
-   * @author Dennis Luitwieler <dennis@achievo.org>
+   * @author Dennis Luitwieler <dennis@ibuildings.nl>
    * @package atk
    * @subpackage attributes
    */
