@@ -19,12 +19,12 @@
    * @package atk
    * @access private
    */
-   
+
    class Test_DbConfigs extends atkTestCase
    {
     /**
      * Test database settings
-     * TODO: works only for mysql dbs now.  
+     * TODO: works only for mysql dbs now.
      *       add support for other db drivers(oracle!).
      */
     function test_Privileges()
@@ -36,7 +36,7 @@
         $db = &atkGetDb($dbname);
         $dbdriver = $dbs["$dbname"]["driver"];
         $grants = "";
-        
+
         /**
          * @todo return Oracle grants from current user
          */
@@ -45,9 +45,9 @@
         elseif(ereg("mysql",$dbdriver)) $grants = $this->getMysqlGrants($db, $dbname);
         elseif(ereg("pgsql", $dbdriver)) $grants = NULL;
         else return;
-        
+
         if($grants == NULL) return;
-        
+
         $this->assertWantedPattern("/SELECT,|SELECT ON/", $grants, "SELECT is granted on $dbname");
         if($db->hasMode($db, "w") || $db->hasMode($db, "rw"))
         {
@@ -57,7 +57,7 @@
         }
       }
     }
-    
+
     /**
      * Return grants for current user on current mysql db
      */
@@ -65,16 +65,15 @@
     {
       if($this->assertTrue(extension_loaded("mysql"), "Mysql extension loaded"))
       {
-        if(!$this->assertTrue(@mysql_connect($db->m_host, $db->m_user, $db->m_password, true),
-           "Connect Mysql database")) return NULL; 
+        if(!$this->assertEqual($db->connect(), DB_SUCCESS, "Mysql database connected")) return NULL;
         else
         {
           //check if user@% exists, because its privileges have a higher priority then user@db->host
-          if(count($db->getrows("SELECT * FROM INFORMATION_SCHEMA.USER_PRIVILEGES WHERE GRANTEE LIKE \"".$db->m_user."'@'\%'\""))>0)
-            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'%'");	
+          if(count($db->getrows("SELECT * FROM mysql.user WHERE User='".$db->m_user."' AND Host='%'"))>0)
+            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'%'");
           else
             $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'".$db->m_host."'");
-          
+
           $specificprivilegefound = false;
           if(count($rows)>1)//check for specific grants
           {
@@ -101,11 +100,11 @@
                       "INSERT,";
           }
           return $grants;
-        } 
+        }
       }
       else return NULL;
     }
-    
+
     /**
      * Return grants for current user on current oracle db
      * @todo get grants for current user
@@ -114,7 +113,7 @@
     {
       if($this->assertTrue(extension_loaded("oracle"), "Oracle extension loaded"))
       {
-        if(!$this->assertTrue($db->connect(), "Oracle database connected")) return NULL;  
+        if(!$this->assertEqual($db->connect(), DB_SUCCESS, "Oracle database connected")) return NULL;
         else
         {
           $rows = $db->getrows("SELECT * FROM session_privs");
