@@ -168,11 +168,22 @@
         // record list
         if (count($myrecords) > 0)
         {
-          $result = "";
           // display in list mode
-          if (in_array($mode, array("list", "csv", "plain")))
+          if ($mode == "list")
+          {
+            $result = "<ul>";
             for ($i = 0; $i < count($myrecords);$i++)
-              $result .= ($i > 0 && $mode == "list" ? "<br>" : ($i > 0 ? ', ' : '')).$this->m_destInstance->descriptor($myrecords[$i]);
+              $result .= sprintf("<li>%s</li>", $this->m_destInstance->descriptor($myrecords[$i]));
+            $result .= "</ul>";
+          }
+
+          // display in csv/plain mode
+          elseif (in_array($mode, array("csv", "plain")))
+          {
+            $result = "";
+            for ($i = 0; $i < count($myrecords);$i++)
+              $result .= ($i > 0 ? ', ' : '').$this->m_destInstance->descriptor($myrecords[$i]);
+          }
 
           // display in view mode
           else
