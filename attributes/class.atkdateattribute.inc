@@ -15,36 +15,6 @@
    * @version $Revision$
    * $Id$
    */
-  
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
-
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
-
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
-
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
-
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
-
-  /**
-   * @internal baseclass include
-   */
-  useattrib("atkattribute");
 
   /**
    * @internal baseclass include
@@ -95,7 +65,7 @@
       /* format month */
       $format = str_replace("M", "%-%",   $format);
       $format = str_replace("F", "%=%",   $format);
-      
+
       /* format day */
       $format = str_replace("D", "%&%", $format);
       $format = str_replace("l", "%*%", $format);
@@ -122,7 +92,7 @@
       {
         $langcache[$shortmonth] = atktext($shortmonth);
       }
-      
+
       /* replace month/week name */
       $str_date = str_replace("%-%", $langcache[$shortmonth], $str_date);
       $str_date = str_replace("%=%", $langcache[$month], $str_date);
@@ -329,7 +299,7 @@
     {
       return $this->draw($record, $fieldprefix, "", $mode, $this->hasFlag(AF_OBLIGATORY));
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value. (Month will be a dropdownbox, year and day text fields)
@@ -451,16 +421,16 @@
 
       if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
       else if (!$obligatory) $emptyfield=true;
-      else $emptyfield=false;      
-      
+      else $emptyfield=false;
+
       $info = array(
-        'format' => $str_format, 
-        'min' => $str_min, 
-        'max' => $str_max, 
+        'format' => $str_format,
+        'min' => $str_min,
+        'max' => $str_max,
         'emptyfield' => $emptyfield,
         'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
       );
-      
+
       atkimport('atk.utils.atkjson');
       if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
 
@@ -536,7 +506,7 @@
             $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
         }
-        
+
         /* weekday format */
         elseif ($str_format[$i] == 'D' || $str_format[$i] == 'l')
         {
