@@ -369,12 +369,15 @@
      */
     function getQueryMode($query)
     {
-      $type = strtolower(substr($query,0,7));
-      if($type!="select " || strpos(strtolower($query),'into')!==false)
+      $query = strtolower($query);
+      $regexes = array('^select(?!\s+into)','^show');
+      foreach ($regexes as $regex)
+      if (preg_match("/$regex/",$query))
       {
-        return "w";
+        return 'r';
       }
-      return "r";
+      atkdebug('Query mode not detected! Using write mode.');
+      return 'w';
     }
 
     /**

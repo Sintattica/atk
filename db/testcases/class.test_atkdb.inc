@@ -54,6 +54,78 @@
       $this->assertEqual($mysqldb->vendorDateFormat("Y-m-d H:i:s"), "%Y-%m-%d %H:%i:%s", "mysql dateformat check");
     }    
     
+    function testQueryMode()
+    {
+      $db = null;
+      $sql = '';
+      
+      $db = new atkDb();
+      
+      $sql = "SELECT * FROM table WHERE conditie";
+      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - select at one line');
+      
+      $sql = "SELECT
+                *
+              FROM
+                table
+              WHERE
+                conditie";
+      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - select at multiple lines');
+      
+      $sql = 'SHOW VARIABLES WHERE value > 0';
+      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - show at one line');
+      
+      $sql = 'SHOW
+                VARIABLES 
+              WHERE 
+                value > 0';
+      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - show at multiple lines');
+      
+      $sql = "INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - insert into at one line');
+      
+      $sql = "INSERT INTO 
+                table (kolom1, kolom2) 
+              VALUES 
+                (value1, value2)";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - insert into at multiple lines');
+      
+      $sql = "UPDATE table SET age='22' WHERE age='21'";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - update at one line');
+      
+      $sql = "UPDATE 
+                table 
+              SET 
+                age='22' 
+              WHERE 
+                age='21'";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - update at multiple lines');
+      
+      $sql = "DELETE table WHERE age='21'";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - delete at one line');
+      
+      $sql = "DELETE 
+                table 
+              WHERE 
+                age='21'";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - delete at multiple lines');
+      
+      $sql = "SELECT INTO table (kolom1, kolom2) VALUES (value1, value2)";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at one line');
+      
+      $sql = "SELECT INTO 
+                table (kolom1, kolom2) 
+              VALUES 
+                (value1, value2)";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at multiple lines');
+      
+      $sql = "SELECT 
+              INTO 
+                table (kolom1, kolom2) 
+              VALUES 
+                (value1, value2)";
+      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at multiple lines');
+    }
   }
 
 ?>
