@@ -224,6 +224,8 @@ Changed in ATK 5.7
   prefix for the node. [Peter]
 + Added support for specifying a ATK class path for the node action
   handler instead of an object instance. [Peter]
+* Fixed bug in getQueryMode and added testcases for the function.
+  [dennisjan]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
