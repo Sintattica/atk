@@ -220,6 +220,10 @@ Changed in ATK 5.7
   the $table parameter. (bug #708) [Yury]
 + Added atkTagAttribute for tagging of records. [Dennis]
 + Added atkStateAttribute for selecting US states. [KevinLW]
++ Added support for specifying a node action handler using the module
+  prefix for the node. [Peter]
++ Added support for specifying a ATK class path for the node action
+  handler instead of an object instance. [Peter]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]

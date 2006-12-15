@@ -865,17 +865,14 @@
       }
 
       // Order the tablist
-
-
-
-
-
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
       if(is_subclass_of($attribute,"atkrelation"))
       {
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
       $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
+      
+      
       return $attribute;
     }
 
@@ -4102,11 +4099,29 @@
     function &getHandler($action)
     {
       atkdebug("atkNode::getHandler(); action: ".$action);
-      //todo: should the module be taken into account
+      atkimport("atk.handlers.atkactionhandler");            
+      
+      // for backwards compatibility we first check if a handler exists without using the module name
       $handler = &getNodeHandler($this->m_type, $action);
 
-      //The node handler might return a function as nodehandler. We cannot
-      //return a function so we ignore this option.
+      // then check if a handler exists registered including the module name
+      if ($handler == NULL)
+      {
+        $handler = &getNodeHandler($this->atkNodeType(), $action);
+      }
+
+      // The node handler might return a class, then we need to instantiate the handler
+      if (is_string($handler) && !function_exists($handler) && atkimport($handler))
+      {
+        $handler = &atknew($handler);
+      }
+        
+      // The node handler might return a function as nodehandler. We cannot
+      // return a function so we ignore this option.
+      
+      // TODO: why not implement a base atkfunctionactionhandler which just calls the given function?
+      //       this would probably only work fine when using PHP5, but's better then nothing?
+      //       or why support functions at all?!
 
       // handler object
       if ($handler != NULL && is_subclass_of($handler, "atkActionHandler"))
@@ -4116,7 +4131,6 @@
       }
       else
       {
-        atkimport("atk.handlers.atkactionhandler");
         $handler = &atkActionHandler::getDefaultHandler($action);
         $handler->setNode($this);
         $handler->setPostvars($this->m_postvars);
@@ -4158,6 +4172,13 @@
     function attribSort()
     {
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
+      
+      // after sorting we need to update the attribute indices
+      foreach ($this->m_attribIndexList as $index => $info) 
+      {
+        $attr = &$this->getAttribute($info['name']);
+        $attr->m_index = $index;
+      }
     }
 
     /**
