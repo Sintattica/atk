@@ -55,8 +55,10 @@
    *
    * Note: this attribute is based on a microsoft component which is
    * limited in features, and only works in Internet Explorer.
-   * It is recommented to use atkFckAttribute instead, which is a much
+   * It is recommended to use atkFckAttribute instead, which is a much
    * more feature-rich editor, which works in most popular browsers.
+   * @deprecated This attribute is no longer maintained, please use the
+   * atkFckAttribute instead.
    *
    * @author Lineke Willems <lineke@ibuildings.nl>   
    * @package atk

@@ -718,6 +718,7 @@ Changed in ATK 5.7
 - Removed unneeded global $vars from atkModule::newNode and
   atkModule::nodeOverloaders. [Maurice]
 - Removed unused code in atkDataDecode function. [Lineke]
+- Deprecated atkWysiwygAttribute (in favor of atkFckAttribute). [Ivo]
 
 
 Changed in ATK 5.6
