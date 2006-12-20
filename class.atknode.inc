@@ -2793,59 +2793,6 @@
         }
       }
 
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-        {
-          $searching = true;
-          //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-          $searchmode = isset($this->m_postvars["atksinglesearchmode"]) ? $this->m_postvars["atksinglesearchmode"] : (isset($this->m_postvars["atksearchmode"]) ? $this->m_postvars["atksearchmode"] : "");
-
-          if ($searchmode=="") $searchmode = atkconfig("search_defaultmode");
-        }
-      }
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-      }
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-      }
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-      }
-
-      // First we check if we are about to search and set a few things
-      // if we are
-      if (!atkReadOptimizer())
-      {
-        /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-      }
-
       if(array_key_exists("atkfilter", $this->m_postvars))
        $query->addCondition($this->validateFilter($this->m_postvars["atkfilter"]));
 
