@@ -515,16 +515,16 @@
     */
     function fetchValue($rec)
     {
-      if (isset($rec[$this->fieldName()]["current"]))
+      if (isset($rec[$this->fieldName()]["current"]) && !empty($rec[$this->fieldName()]["current"]))
       {
         $rec[$this->fieldName()]["current"] = $this->encode($rec[$this->fieldName()]["current"]);
       }
-      if (isset($rec[$this->fieldName()]["new"]))
+      if (isset($rec[$this->fieldName()]["new"]) && !empty($rec[$this->fieldName()]["new"]))
       {
         $rec[$this->fieldName()]["newplain"] = $rec[$this->fieldName()]["new"];
         $rec[$this->fieldName()]["new"] = $this->encode($rec[$this->fieldName()]["new"]);
       }
-      if (isset($rec[$this->fieldName()]["again"]))
+      if (isset($rec[$this->fieldName()]["again"]) && !empty($rec[$this->fieldName()]["again"]))
       {
         $rec[$this->fieldName()]["again"] = $this->encode($rec[$this->fieldName()]["again"]);
       }
