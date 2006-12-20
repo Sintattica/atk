@@ -58,11 +58,40 @@
     {
       $db = null;
       $sql = '';
+      $mode = '';
+      $master = '';
+      $slave = '';
+      $cluster = null;
+      $servers = null;
       
-      $db = new atkDb();
+      $cluster = atkconfig('db_cluster');
+      $servers = atkconfig('db');
+      
+      if (is_array($cluster) && count($cluster) > 0)
+      {
+        foreach ($cluster['default'] as $server)
+        {
+          if ($servers[$server]['mode'] == 'rw')
+            $master = $server;
+          else 
+            $slave = $server;
+        }
+      }
+      else 
+      {
+        $master = 'default';
+        $slave = 'default';
+      }
+      
+      $db = atkGetDb();
       
       $sql = "SELECT * FROM table WHERE conditie";
-      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - select at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'r', 'Slave db check - select at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      
       
       $sql = "SELECT
                 *
@@ -70,28 +99,58 @@
                 table
               WHERE
                 conditie";
-      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - select at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'r', 'Slave db check - select at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      
       
       $sql = 'SHOW VARIABLES WHERE value > 0';
-      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - show at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'r', 'Slave db check - show at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      
       
       $sql = 'SHOW
                 VARIABLES 
               WHERE 
                 value > 0';
-      $this->assertEqual($db->getQueryMode($sql), 'r', 'Slave db check - show at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'r', 'Slave db check - show at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      
       
       $sql = "INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - insert into at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - insert into at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "INSERT INTO 
                 table (kolom1, kolom2) 
               VALUES 
                 (value1, value2)";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - insert into at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - insert into at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "UPDATE table SET age='22' WHERE age='21'";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - update at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - update at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "UPDATE 
                 table 
@@ -99,32 +158,61 @@
                 age='22' 
               WHERE 
                 age='21'";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - update at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - update at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "DELETE table WHERE age='21'";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - delete at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - delete at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "DELETE 
                 table 
               WHERE 
                 age='21'";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - delete at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - delete at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "SELECT INTO table (kolom1, kolom2) VALUES (value1, value2)";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at one line');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - select into at one line');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      
       
       $sql = "SELECT INTO 
                 table (kolom1, kolom2) 
               VALUES 
                 (value1, value2)";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - select into at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
       
+            
       $sql = "SELECT 
               INTO 
                 table (kolom1, kolom2) 
               VALUES 
                 (value1, value2)";
-      $this->assertEqual($db->getQueryMode($sql), 'w', 'Master db check - select into at multiple lines');
+      $mode = $db->getQueryMode($sql);
+      $this->assertEqual($mode, 'w', 'Master db check - select into at multiple lines');
+      $db->connect($mode); //switch db
+      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
+      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
     }
   }
 
