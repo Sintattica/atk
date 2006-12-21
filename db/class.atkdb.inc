@@ -370,7 +370,8 @@
     function getQueryMode($query)
     {
       $query = strtolower($query);
-      $regexes = array('^select(?!\s+into)','^show');
+
+      $regexes = array('^\\s*select(?!\\s+into)','^\\s*show');
       foreach ($regexes as $regex)
       if (preg_match("/$regex/",$query))
       {

@@ -168,6 +168,7 @@
      
      function getUser($user)
      {
+       atk_var_dump("GETUSER!!!!!!!");
        $grouptable = atkconfig("auth_grouptable");
        $groupfield = atkconfig("auth_groupfield");
        $groupparentfield = atkconfig("auth_groupparentfield");
@@ -204,7 +205,7 @@
 
          $groups = array_unique($groups);
        }
-
+atk_var_dump($level, 'Level');
        if (count($level) == 1)
          $level = $level[0];
 

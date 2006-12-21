@@ -33,11 +33,50 @@
    */
   class test_atkdb extends UnitTestCase
   {        
+    var $m_org_config_db;
+    var $m_org_config_db_cluster;
+    
+    var $m_master  = 'test_atkdb_master';
+    var $m_slave   = 'test_atkdb_slave';
+    var $m_cluster = 'test_atkdb_cluster';
+    
     /**
      * Setup the testcase.
      */
     function setup()
-    {          
+    {         
+      // Whatever we do have a cluster or not we just try to search for a database
+      // which we can use for a cluster. We create a master and a slave which connect
+      // both to the same database, but we aren't really performing any queries, so this
+      // should not be a problem.
+      global $config_db, $config_db_cluster;
+      
+      $this->m_org_config_db = $config_db;
+      $this->m_org_config_db_cluster = $config_db_cluster;
+      
+      $clone = 'test';
+      if (!isset($config_db['test']) && isset($config_db_cluster['test']))
+        $clone = $config_db_cluster['test'][0];
+      elseif (!isset($config_db['test']) && isset($config_db['default']))
+        $clone = 'default';
+      elseif (!isset($config_db['test']) && isset($config_db_cluster['default']))
+        $clone = $config_db_cluster['default'][0];
+      else
+      {
+        echo "Can't test cluster properties of atkDb.";
+        die;
+      }
+      
+      $config_db[$this->m_master] = array_merge($config_db[$clone], array("mode" => "rw"));
+      $config_db[$this->m_slave] = array_merge($config_db[$clone], array("mode" => "r"));
+      $config_db_cluster[$this->m_cluster] = array($this->m_master, $this->m_slave);      
+    }
+    
+    function teardown()
+    {
+      global $config_db, $config_db_cluster;
+      $config_db = $this->m_org_config_db;      
+      $config_db_cluster = $this->m_org_config_db_cluster;      
     }
     
     /**
@@ -54,103 +93,80 @@
       $this->assertEqual($mysqldb->vendorDateFormat("Y-m-d H:i:s"), "%Y-%m-%d %H:%i:%s", "mysql dateformat check");
     }    
     
+    function assertConnectionAndQueryMode(&$db, $query, $connection, $mode, $message)
+    {
+      $queryMode = $db->getQueryMode($query);
+      $this->assertEqual($queryMode, $mode, $message.' (mode)');
+      $db->connect($queryMode);
+      $this->assertEqual($db->m_connection, $connection, $message.' (connection)');
+      $this->assertNotNull($db->m_link_id, $message.' (connected?)');      
+    }
+    
     function testQueryMode()
     {
-      $db = null;
-      $sql = '';
-      $mode = '';
-      $master = '';
-      $slave = '';
-      $cluster = null;
-      $servers = null;
+      $db = &atkGetDb($this->m_cluster);
       
-      $cluster = atkconfig('db_cluster');
-      $servers = atkconfig('db');
+      // select
+      $query = "SELECT * FROM table WHERE conditie";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_slave, 'r', 'Slave DB check, select at one line');
       
-      if (is_array($cluster) && count($cluster) > 0)
-      {
-        foreach ($cluster['default'] as $server)
-        {
-          if ($servers[$server]['mode'] == 'rw')
-            $master = $server;
-          else 
-            $slave = $server;
-        }
-      }
-      else 
-      {
-        $master = 'default';
-        $slave = 'default';
-      }
+      $query = "  SELECT * FROM table WHERE conditie  ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_slave, 'r', 'Slave DB check, select at one line with spaces');
       
-      $db = atkGetDb();
+      $query = "SELECT 
+                  * 
+                FROM 
+                  table 
+                WHERE 
+                 conditie";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_slave, 'r', 'Slave DB check, select on multiple lines');
+
+      $query = "
+        SELECT 
+          * 
+        FROM 
+          table 
+        WHERE 
+          conditie  
+      ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_slave, 'r', 'Slave DB check, select on multiple lines with spaces');
       
-      $sql = "SELECT * FROM table WHERE conditie";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'r', 'Slave db check - select at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      $oldLinkId = $db->m_link_id;
       
+      // insert
+      $query = "INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, insert at one line');      
       
-      $sql = "SELECT
-                *
-              FROM
-                table
-              WHERE
-                conditie";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'r', 'Slave db check - select at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
+      $newLinkId = $db->m_link_id;      
       
+      $this->assertNotEqual($oldLinkId, $newLinkId, "Check if we are really connected to a different database $oldLinkId <> $newLinkId");
       
-      $sql = 'SHOW VARIABLES WHERE value > 0';
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'r', 'Slave db check - show at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
-      
-      
-      $sql = 'SHOW
-                VARIABLES 
-              WHERE 
-                value > 0';
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'r', 'Slave db check - show at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $slave, 'Slave db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Slave db check - Connected?');
-      
-      
-      $sql = "INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - insert into at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
-      
-      
-      $sql = "INSERT INTO 
-                table (kolom1, kolom2) 
-              VALUES 
-                (value1, value2)";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - insert into at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
-      
-      
-      $sql = "UPDATE table SET age='22' WHERE age='21'";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - update at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
-      
+      $query = "     INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)     ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, insert at one line with spaces');      
+
+      $query = "INSERT 
+                  INTO 
+                  table (kolom1, kolom2) 
+                VALUES 
+                 (value1, value2)";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, insert at multiple lines');      
+
+
+      $query = "   
+               INSERT 
+                  INTO 
+                  table (kolom1, kolom2) 
+                VALUES 
+                 (value1, value2)
+            ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, insert at multiple lines with spaces');      
+
+      // update
+      $query = "UPDATE table SET age='22' WHERE age='21'";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, update at one line');      
+
+      $query = "   UPDATE table SET age='22' WHERE age='21'   ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, update at one line with spaces');      
       
       $sql = "UPDATE 
                 table 
@@ -158,62 +174,124 @@
                 age='22' 
               WHERE 
                 age='21'";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - update at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, update at multiple lines');      
       
-      
-      $sql = "DELETE table WHERE age='21'";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - delete at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
-      
-      
-      $sql = "DELETE 
+      $sql = "
+             UPDATE 
                 table 
+              SET 
+                age='22' 
               WHERE 
-                age='21'";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - delete at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+                age='21'
+            ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, update at multiple lines with spaces');   
       
+      // show
+      $query = "SHOW VARIABLES WHERE value > 0";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'r', 'Master DB check (although mode r), show at one line');
       
-      $sql = "SELECT INTO table (kolom1, kolom2) VALUES (value1, value2)";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - select into at one line');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      $query = "   SHOW VARIABLES WHERE value > 0  ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'r', 'Master DB check (although mode r), show at one line with spaces');
       
+      $query = "SHOW 
+                  VARIABLES 
+                WHERE 
+                  value > 0";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'r', 'Master DB check (although mode r), show at multiple lines');
       
-      $sql = "SELECT INTO 
-                table (kolom1, kolom2) 
-              VALUES 
-                (value1, value2)";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - select into at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      $query = "
+                SHOW 
+                  VARIABLES 
+                WHERE 
+                  value > 0 
+               ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'r', 'Master DB check (although mode r), show at multiple lines with spaces');
       
-            
-      $sql = "SELECT 
-              INTO 
-                table (kolom1, kolom2) 
-              VALUES 
-                (value1, value2)";
-      $mode = $db->getQueryMode($sql);
-      $this->assertEqual($mode, 'w', 'Master db check - select into at multiple lines');
-      $db->connect($mode); //switch db
-      $this->assertEqual($db->m_connection, $master, 'Master db check - Right server selected?');
-      $this->assertNotNull($db->m_link_id, 'Master db check - Connected?');
+      // delete
+      $query = "DELETE table WHERE age='21'";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, delete at one line');      
+
+      $query = "    DELETE table WHERE age='21'  ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, delete at one line with spaces');      
+
+      $query = "DELETE 
+                  table 
+                WHERE 
+                  age='21'";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, delete at multiple lines');      
+
+      $query = "
+               DELETE 
+                  table 
+                WHERE 
+                  age='21'
+               ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, delete at multiple lines with spaces');      
+
+      // select into
+      $query = "SELECT INTO table (kolom1, kolom2) VALUES (value1, value2)";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, select into at one line');      
+
+      $query = "  SELECT INTO table (kolom1, kolom2) VALUES (value1, value2)   ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, select into at one line with spaces');      
+
+      $query = "SELECT 
+               INTO table 
+                (kolom1, kolom2) 
+                VALUES 
+                  (value1, value2)";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, select into at multiple lines');      
+      
+      $query = "
+          SELECT 
+               INTO table 
+                (kolom1, kolom2) 
+                VALUES 
+                  (value1, value2)
+           ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, select into at multiple lines with spaces');    
+      
+      // alter table
+      $query = "ALTER TABLE x ADD COLUMN y INTEGER NOT NULL";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, alter table one line');      
+
+      $query = "  ALTER TABLE x ADD COLUMN y INTEGER NOT NULL   ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, alter table at one line with spaces');      
+
+      $query = "ALTER 
+                 TABLE x 
+                ADD COLUMN 
+                 y INTEGER NOT NULL";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, alter table at multiple lines');      
+      
+      $query = "
+        ALTER TABLE x 
+        ADD COLUMN y INTEGER 
+        NOT NULL
+       ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, alter table at multiple lines with spaces');  
+      
+      // create table
+      $query = "CREATE TABLE x ( x INTEGER PRIMARY KEY )";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, create table one line');      
+
+      $query = "   CREATE TABLE x ( x INTEGER PRIMARY KEY )  ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, create table at one line with spaces');      
+
+      $query = "CREATE
+                  TABLE x 
+                ( 
+                  x INTEGER PRIMARY KEY 
+                )";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, create table at multiple lines');      
+      
+      $query = "
+        CREATE TABLE x 
+        ( 
+          x INTEGER PRIMARY KEY 
+        )
+      ";
+      $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, create table at multiple lines with spaces');  
     }
   }
-
 ?>

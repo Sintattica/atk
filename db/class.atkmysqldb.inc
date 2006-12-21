@@ -134,7 +134,12 @@
      */
     function disconnect()
     {
-      atkdebug("Disconnecting from database...");
+      if ($this->m_link_id)
+      {
+        atkdebug("Disconnecting from database...");         
+        @mysql_close($this->m_link_id);
+        $this->m_link_id = 0;
+      }
     }
 
     /**

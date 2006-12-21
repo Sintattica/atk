@@ -54,6 +54,7 @@
      function getUser($user)
      {
        global $config_user;
+       atk_var_dump('AUTH_CONFIG');
        return Array("name"=>$user, "level"=>$config_user[$user]["level"]);
      }
 
