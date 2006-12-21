@@ -629,7 +629,7 @@
 
           $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
 
-          $destrecord = $this->_getDestRecord($selname, $newlyadded, $record, $editflag);
+          $destrecord = $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
 
           if (count($destrecord))
           {
