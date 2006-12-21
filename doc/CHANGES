@@ -224,10 +224,9 @@ Changed in ATK 5.7
   prefix for the node. [Peter]  
 + Added support for specifying a ATK class path for the node action
   handler instead of an object instance. [Peter]
-+ Added test case for database clustering functionality. [Dennisjan,Peter]
-* Added more tests to test the db switching. [dennisjan]
++ Added testcase for database clustering functionality. [Dennis-Jan,Peter]
 * Fixed bug in getQueryMode and added testcases for the function.
-  [dennisjan]
+  [Dennis-Jan]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
@@ -706,7 +705,7 @@ Changed in ATK 5.7
 * Updated action_admin() api in atkTreeNode. [Guido]
 * Fixed pre mysql 5 problem in the dbconfigs user grants testcase. [Guido]
 * atk*Db->connect should return the doConnect() result. [Guido]
-* Fixed disconnect in MySQL class (contributed by Marlon Bilog). [Peter]
+* The atkMysqlDb::disconnect method now closes the MySQL link. [Marlon, Peter]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
