@@ -54,16 +54,19 @@
       $this->m_org_config_db = $config_db;
       $this->m_org_config_db_cluster = $config_db_cluster;
       
-      $clone = 'test';
-      if (!isset($config_db['test']) && isset($config_db_cluster['test']))
+      $clone = NULL;
+      if (isset($config_db_cluster['test']))
         $clone = $config_db_cluster['test'][0];
-      elseif (!isset($config_db['test']) && isset($config_db['default']))
-        $clone = 'default';
-      elseif (!isset($config_db['test']) && isset($config_db_cluster['default']))
+      else if (isset($config_db['test']))
+        $clone = 'test';
+      else if (isset($config_db_cluster['default']))
         $clone = $config_db_cluster['default'][0];
+      else if (isset($config_db['default']))
+        $clone = 'default';
       else
       {
-        echo "Can't test cluster properties of atkDb.";
+        // this will probably never happen
+        echo "Can't test cluster properties of atkDb. No valid database configuration found.";
         die;
       }
       
