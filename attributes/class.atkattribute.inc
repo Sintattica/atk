@@ -443,6 +443,13 @@
     var $m_htmlid;
 
     /**
+     * The css classes of the attribute
+     * @access private
+     * @var sttsy
+     */
+    var $m_cssclasses = array();
+
+    /**
      * The label of the attribute.
      * @access private
      * @var String
@@ -465,7 +472,7 @@
      * @var bool
      */
     var $m_forceinsert=false;
-    
+
     /**
      * Wether to force an update of the attribute
      * @access private
@@ -487,13 +494,13 @@
      * @var String
      */
     var $m_onchangehandler_init = "";
-    
+
     /**
      * Variable to store depended attributes.
      * @access private
      * @var Array
      */
-    var $m_dependees = array();    
+    var $m_dependees = array();
 
     /**
      * Constructor
@@ -522,6 +529,9 @@
       $this->m_name = $name;
       $this->m_flags = (double)$flags;
       $this->setAttribSize($size);
+
+      // default class
+      $this->addCSSClass(get_class($this));
       atkimport("atk.keyboard.atkkeyboard");
     }
 
@@ -670,7 +680,7 @@
     {
       return is_array($postvars)&&isset($postvars[$this->fieldName()]);
     }
-    
+
     /**
      * Convert values from an HTML form posting to an internal value for
      * this attribute.
@@ -716,10 +726,10 @@
       }
 
       $size = $this->m_size;
-      if ($mode == 'list' && $size > 20) 
+      if ($mode == 'list' && $size > 20)
         $size = 20;
-      
-      $result = '<input type="text" id="'.$id.'" name="'.$id.'" class="atkattribute"'.
+
+      $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute().
                 ' value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($size > 0 ? ' size="'.$size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
@@ -821,7 +831,7 @@
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $this->_registerDependees($mode, $fieldprefix);
-      
+
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -1009,7 +1019,7 @@
         $function = $this->m_name."_display";
         if (in_array($this->fieldName(), $this->m_ownerInstance->m_editableListAttributes) && $this->m_ownerInstance->allowed('edit', $arr["rows"][$nr]["record"]))
         {
-          $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] = 
+          $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] =
             $this->getEdit('list', $arr["rows"][$nr]["record"], 'atkrecordlistdata_AE_'.$arr['name'].'_AE_'.$nr.'_AE_');
         }
         elseif (method_exists($this->m_ownerInstance, $function))
@@ -1069,10 +1079,10 @@
       $result= '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$value.'"'.
                 ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-                   
+
       return $result;
     }
-           
+
     /**
      * Retrieve the default searchmode of an attribute
      *
@@ -1082,7 +1092,7 @@
     function getSearchMode($extended=false)
     {
       $searchmode = $this->m_ownerInstance->getSearchMode();
-      
+
       if (is_array($searchmode))
       {
         return $searchmode[$this->fieldName()];
@@ -1135,7 +1145,7 @@
       	// auto wildcard detection
       	$searchmode = "wildcard";
       }
-      
+
       $searchCondition = &$this->getSearchCondition($query, $table, $value, $searchmode);
       if ($searchCondition)
       {
@@ -1371,7 +1381,7 @@
     {
       return ($recA[$this->fieldName()] == $recB[$this->fieldName()]);
     }
-    
+
     /**
      * Used to force an attribute to update with every addDb() call
      * @param bool $force Wether or not to force the attribute to insert
@@ -1388,7 +1398,7 @@
     function getForceInsert()
     {
       return $this->m_forceinsert;
-    }    
+    }
 
     /**
      * Used to force an attribute to update with every updateDb() call
@@ -1955,12 +1965,12 @@
       else
         return atktext($string, $this->getModule());
     }
-    
+
     /**
      * Get database instance for this attribute. Will return the owner
      * instance database instance unless the owner instance is not set
      * in which case the default instance will be returned.
-     * 
+     *
      * @return atkDb database instance
      */
     function &getDb()
@@ -1969,10 +1979,10 @@
         return $this->m_ownerInstance->getDb();
       else return atkGetDb();
     }
-    
+
     /**
      * Escape string for use in a query.
-     * 
+     *
      * @param string value value to escape
      * @param boolean escape wildcards too?
      */
@@ -1981,7 +1991,7 @@
       $db = &$this->getDb();
       return $db->escapeSQL($value, $wildcards);
     }
-    
+
     /**
      * Handle partial.
      *
@@ -1991,15 +2001,15 @@
     function partial($partial, $mode)
     {
       $method = "partial_{$partial}";
-      
+
       if (!method_exists($this, $method))
       {
         return '<span style="color: red; font-weight: bold">Invalid partial!</span>';
       }
-      
+
       return $this->$method($mode);
     }
-    
+
     /**
      * Refreshes the add/edit field for this attribute.
      *
@@ -2008,8 +2018,8 @@
     function partial_refresh($mode)
     {
       $record = $this->m_ownerInstance->updateRecord();
-      $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix']; 
-      $this->_registerDependees($mode, $fieldprefix);          
+      $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
+      $this->_registerDependees($mode, $fieldprefix);
       return $this->getEdit($mode, $record, $fieldprefix);
     }
 
@@ -2020,7 +2030,7 @@
     {
       $this->m_dependees[] = $attribName;
     }
-    
+
     /**
      * Register change handlers for dependees.
      */
@@ -2030,23 +2040,38 @@
 
       $page = &$this->m_ownerInstance->getPage();
       $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-      
+
       foreach ($this->m_dependees as $attribName)
       {
-        $attrField = str_replace('.', '_', $this->m_ownerInstance->atkNodeType())."_$attribName";  
+        $attrField = str_replace('.', '_', $this->m_ownerInstance->atkNodeType())."_$attribName";
         $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.$attribName.refresh", array("atkfieldprefix" => $fieldprefix)));
-        
+
         $code = "ATK.Attribute.refresh('$attrField', '$url')";
         $this->addOnChangeHandler($code);
 
         $isPartial = $this->m_ownerInstance->m_partial != NULL;
         if (!$isPartial)
         {
-          $code = "ATK.Attribute.refresh('$attrField', '$url', true)";        
+          $code = "ATK.Attribute.refresh('$attrField', '$url', true)";
         }
-        
-        $page->register_loadscript($code);        
+
+        $page->register_loadscript($code);
       }
+    }
+
+    function getCSSClasses()
+    {
+      return $this->m_cssclasses;
+    }
+
+    function addCSSClass($classname)
+    {
+      if (!in_array($classname, $this->m_cssclasses)) $this->m_cssclasses[] = $classname;
+    }
+
+    function getCSSClassAttribute()
+    {
+      return 'class="'.implode(" ", $this->getCSSClasses()).'"';
     }
   }
 ?>

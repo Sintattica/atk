@@ -20,7 +20,7 @@
    */
   include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
   atkimport("atk.attributes.atkattribute");
-   
+
   /**
    * The atkTextAttribute class represents an attribute of a node
    * that is a big text field.
@@ -84,39 +84,39 @@
       if ($mode == 'list')
       {
         $id = $fieldprefix.$this->fieldName();
-        
+
         $page = &$this->m_ownerInstance->getPage();
         $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');
-        
-        // NOTE: 
-        // The onblur function uses a small timeout to make sure a click on a 
-        // new element is performed earlier then the swap of fields. 
+
+        // NOTE:
+        // The onblur function uses a small timeout to make sure a click on a
+        // new element is performed earlier then the swap of fields.
         // If we don't do this the click might end up wrong.
         $page->register_loadscript("
-          \$('{$id}').onfocus = function() { 
-            \$('{$id}_textarea').value = this.value; 
-            Element.hide(this); 
-            Element.show('{$id}_textarea'); 
-            \$('{$id}_textarea').focus(); 
+          \$('{$id}').onfocus = function() {
+            \$('{$id}_textarea').value = this.value;
+            Element.hide(this);
+            Element.show('{$id}_textarea');
+            \$('{$id}_textarea').focus();
           };
-          
-          \$('{$id}_textarea').onblur = function() { 
-            \$('{$id}').value = this.value; 
-            window.setTimeout(function() { 
-              Element.hide('{$id}_textarea'); 
+
+          \$('{$id}_textarea').onblur = function() {
+            \$('{$id}').value = this.value;
+            window.setTimeout(function() {
+              Element.hide('{$id}_textarea');
               Element.show('{$id}'); }, 500
             );
           };
         ");
-        
-        $html = 
+
+        $html =
           '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
           '<textarea id="'.$id.'_textarea" wrap="soft" rows="5" cols="40" style="display: none"></textarea>';
-        
+
         return $html;
       }
 
-      
+
       (isset($record[$this->fieldName()]))?$text=$record[$this->fieldName()]:$text="";
 
       if ($this->m_cols != 0)
@@ -140,7 +140,8 @@
 
       $result= "<textarea id='$id' name='$id' wrap='soft' ";
       if ($rows) $result.= "rows='$rows' ";
-      if ($cols) $result.= "cols='$cols'";
+      if ($cols) $result.= "cols='$cols' ";
+      $result.=$this->getCSSClassAttribute();
       $result.=">\n".htmlspecialchars($text)."</textarea>";
       return $result;
     }

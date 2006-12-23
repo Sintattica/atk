@@ -221,11 +221,15 @@ Changed in ATK 5.7
 + Added atkTagAttribute for tagging of records. [Dennis]
 + Added atkStateAttribute for selecting US states. [KevinLW]
 + Added support for specifying a node action handler using the module
-  prefix for the node. [Peter]  
+  prefix for the node. [Peter]
 + Added support for specifying a ATK class path for the node action
   handler instead of an object instance. [Peter]
 + Added testcase for database clustering functionality. [Dennis-Jan,Peter]
 + Added $before parameter to atkPage's register_script method. [Ivo]
++ Added addCSSClass, getCSSClasses, getCSSClassAttribute methods to
+  atkAttribute to customize the CSS class names of each attribute.
+  (Not supported yet by all attributes, at least atkAttribute and
+  atkTextAttribute work.) [Ivo]
 * Fixed bug in getQueryMode and added testcases for the function.
   [Dennis-Jan]
 * In case of a ML node and physical_delete flag of the atkfileattribute
