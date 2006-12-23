@@ -225,6 +225,7 @@ Changed in ATK 5.7
 + Added support for specifying a ATK class path for the node action
   handler instead of an object instance. [Peter]
 + Added testcase for database clustering functionality. [Dennis-Jan,Peter]
++ Added $before parameter to atkPage's register_script method. [Ivo]
 * Fixed bug in getQueryMode and added testcases for the function.
   [Dennis-Jan]
 * In case of a ML node and physical_delete flag of the atkfileattribute

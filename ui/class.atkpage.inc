@@ -124,10 +124,38 @@
      * If called twice for the same filename, the file is loaded only once.
      * @param String $file The (relative path and) filename of the javascript
      *                     file.
+     * @param String $before The (partial) name of a script that this script
+     *                       should be loaded in front of. This can be used
+     *                       to inject a script before another script, or to
+     *                       avoid conflicts. Usually, this parameter is not
+     *                       needed.
      */
-    function register_script($file)
+    function register_script($file, $before="")
     {
-      if (!in_array($file, $this->m_scriptfiles)) $this->m_scriptfiles[] = $file;
+      if (!in_array($file, $this->m_scriptfiles))
+      {
+        if ($before=="")
+        {
+          $this->m_scriptfiles[] = $file;
+        }
+        else
+        {
+          // lookup the dependency and inject script right before it.
+          $result = array(); $injected = false;
+          for ($i=0, $_i=count($this->m_scriptfiles); $i<$_i; $i++)
+          {
+            if (stristr($this->m_scriptfiles[$i], $before)!==false)
+            {
+              // inject the new one here.
+              $result[] = $file; $injected = true;
+            }
+            $result[] = $this->m_scriptfiles[$i];
+          }
+          if (!$injected) $result[] = $file; // inject at the end if dependency not found.
+
+          $this->m_scriptfiles = $result;
+        }
+      }
     }
 
     /**
@@ -173,7 +201,7 @@
    {
      if (!in_array($code, $this->m_loadscripts)) $this->m_loadscripts[] = $code;
    }
-   
+
    /**
     * Return all javascript codes in an array
     *
@@ -184,7 +212,7 @@
      $scriptCodes = $this->m_scriptcode;
      $scriptCodes[] = $this->_getGlobalSubmitScriptCode();
      $scriptCodes[] = $this->_getGlobalLoadScriptCode();
-     
+
      return $scriptCodes;
    }
 
@@ -219,7 +247,7 @@
     {
       return $this->m_stylesheets;
     }
-    
+
     /**
      * Register Cascading Style Sheet fragment that will be included in the
      * page header.
@@ -230,7 +258,7 @@
      {
        if (!in_array($code, $this->m_stylecode)) $this->m_stylecode[] = $code;
      }
-     
+
     /**
      * Return all style codes
      *
@@ -240,7 +268,7 @@
      {
        return $this->m_stylecode;
      }
-     
+
      /**
       * Register hidden variables. These will be accessible to javascript and DHTML functions/scripts
       * but will not be shown to the user unless he/she has a very, very old browser
@@ -367,7 +395,7 @@
       for ($i = 0; $i < count($this->m_stylecode); $i++)
         $res.= '<style type="text/css"> '.$this->m_stylecode[$i].' </style>'."\n";
     }
-    
+
     /**
      * Add content to the page.
      * @param String $content The content to add to the page.
@@ -383,7 +411,7 @@
      * @return String The HTML body, including <body> and </body> tags.
      */
     function body($extraprops="")
-    {      
+    {
       global $ATK_VARS;
 
       $res = '<body ';
@@ -430,7 +458,7 @@
       $page = '';
       if(hasFlag($flags,HTML_DOCTYPE)) $page.=$theme->getAttribute('doctype',atkconfig("doctype"));
       $page.= "\n<html>\n";
-      
+
       if(hasFlag($flags,HTML_HEADER)) $page.= $this->head($title, $extra_header);
       if (hasFlag($flags,HTML_BODY)) $page.= $this->body($extrabodyprops);
 
