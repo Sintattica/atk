@@ -706,6 +706,8 @@ Changed in ATK 5.7
 * Changed achievo_modern and outlook themes to remove the padding/margin
   from the atkManyBoolRelation and atkOneToManyRelation display output.
   [Guido]
+* Make sure Sender is set in atkMailer class so that the Return-Path header
+  in the e-mail message has a proper value. [Patrick]
 * Fixed selectDb optimization and php notice in atkViewHandler. [Guido]
 * Updated action_admin() api in atkTreeNode. [Guido]
 * Fixed pre mysql 5 problem in the dbconfigs user grants testcase. [Guido]

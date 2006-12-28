@@ -2,9 +2,9 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
-   * 
+   *
    * @package atk
    * @subpackage utils
    *
@@ -14,7 +14,7 @@
    * @version $Revision:
    * $Id$
    */
-  
+
   /**
    * @internal includes
    */
@@ -24,17 +24,17 @@
    * ATK mailer class
    *
    * This class can be used to send HTML e-mails.
-   * 
-   * This is basically an extension of the PHPMailer class, to override some 
+   *
+   * This is basically an extension of the PHPMailer class, to override some
    * basic settings.
-   * 
-   * This class also supports a $config_mail_enabled config setting, which can 
-   * be set to false to disable all outgoing emails. (useful for test 
+   *
+   * This class also supports a $config_mail_enabled config setting, which can
+   * be set to false to disable all outgoing emails. (useful for test
    * environments that shouldn't actually send the mails)
-   * 
+   *
    * @author Peter C. Verhage <peter@ibuildings.nl>
    * @version $Revision$
-   * 
+   *
    * @package atk
    * @subpackage utils
    */
@@ -42,26 +42,32 @@
   {
     var $Mailer   = "mail";
     var $WordWrap = 75;
-  
+
     /**
      * Override error handler.
      *
      * @param string $msg error message
      */
-    function error_handler($msg) 
+    function error_handler($msg)
     {
       atkerror($msg);
-    }   
-    
+    }
+
     /**
      * Send.
      */
     function Send()
     {
       if (atkconfig("mail_enabled", true))
+      {
+        // make sure Sender is set so the Return-Path header will have a decent value
+        if ($this->Sender == "") $this->Sender = $this->From;
+
         return parent::Send();
+      }
       else return true;
     }
+
   }
 
 ?>
