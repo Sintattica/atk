@@ -94,7 +94,7 @@
 
         $box = $this->m_ui->renderBox(array("title"=>text("title_session_expired"),
         "content"=>'<br><br>'.text("explain_session_expired").'<br><br><br><br>
-                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.text("relogin").'<a/><br><br>'));
+                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.text("relogin").'</a><br><br>'));
 
         $this->m_page->addContent($box);
 
