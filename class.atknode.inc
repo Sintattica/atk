@@ -4085,7 +4085,7 @@
         //If we use a default handler we need to register it to this node
         //because we might call it a second time.
         atkdebug("atkNode::getHandler: Register default atkActionHandler for ".$this->m_type." action: '".$action."'");
-        registerNodeHandler($this->m_type, $action, $handler);
+        registerNodeHandler($this->m_type, $action, &$handler);
       }
 
       return $handler;
