@@ -400,6 +400,12 @@
         {
           list($dbname,$tablename) = explode(".",$table);
           $id = @mysql_list_fields($dbname, $tablename);
+
+
+          if($this->m_database<>$dbname)
+          {
+            @mysql_select_db($this->m_database, $this->m_link_id);
+          }        
         }
         else
         {
