@@ -2228,7 +2228,7 @@
        atkdebug("atkNode::dispatch()");
        $controller = &atkcontroller::getInstance();
        $controller->setNode($this);
-       return $controller->dispatch($postvars, $flags);
+       return $controller->handleRequest($postvars, $flags);
      }
 
     /**
@@ -4010,7 +4010,7 @@
     {
       atkdebug("atkNode::callHandler(); action: ".$action);
       //todo: should the module be taken into account
-      $handler = &getNodeHandler($this->m_type, $action);
+      $handler = &atkGetNodeHandler($this->m_type, $action);
 
       // handler function
       if ($handler != NULL && function_exists($handler))
@@ -4049,12 +4049,12 @@
       atkimport("atk.handlers.atkactionhandler");            
       
       // for backwards compatibility we first check if a handler exists without using the module name
-      $handler = &getNodeHandler($this->m_type, $action);
+      $handler = &atkGetNodeHandler($this->m_type, $action);
 
       // then check if a handler exists registered including the module name
       if ($handler == NULL)
       {
-        $handler = &getNodeHandler($this->atkNodeType(), $action);
+        $handler = &atkGetNodeHandler($this->atkNodeType(), $action);
       }
 
       // The node handler might return a class, then we need to instantiate the handler
@@ -4085,7 +4085,7 @@
         //If we use a default handler we need to register it to this node
         //because we might call it a second time.
         atkdebug("atkNode::getHandler: Register default atkActionHandler for ".$this->m_type." action: '".$action."'");
-        registerNodeHandler($this->m_type, $action, &$handler);
+        atkRegisterNodeHandler($this->m_type, $action, $handler);
       }
 
       return $handler;

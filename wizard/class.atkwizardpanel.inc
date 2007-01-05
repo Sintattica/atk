@@ -133,7 +133,7 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
         //Set wizard specific controller
         atkdebug("atkWizardPanel::getPanelNode() Register controller for. Node: " . getNodeType($this->m_nodeName));
         //$wizardcontrollerclass = $this->m_wizard->m_wizardcontroller;
-        //registerNodeController(getNodeType($this->m_nodeName), new $wizardcontrollerclass($this->m_node, $this));
+        //atkRegisterNodeController(getNodeType($this->m_nodeName), new $wizardcontrollerclass($this->m_node, $this));
 
         //Add listeners to node
         for($i=0, $_i=count($this->m_listeners); $i<$_i; $i++)
@@ -147,10 +147,10 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
           $handlerName = $this->m_actionHandlers[$i]['name'];
           $handlerAction = $this->m_actionHandlers[$i]['action'];
 
-          atkdebug("atkWizardPanel::getPanelNode() registerNodeHandler for. Node: " . getNodeType($this->m_nodeName). " name: ".$handlerName. " action ". $handlerAction);
+          atkdebug("atkWizardPanel::getPanelNode() atkRegisterNodeHandler for. Node: " . getNodeType($this->m_nodeName). " name: ".$handlerName. " action ". $handlerAction);
 
           $handler = &new $handlerName();
-          registerNodeHandler($this->m_node->m_type, $handlerAction, &$handler);
+          atkRegisterNodeHandler($this->m_node->m_type, $handlerAction, $handler);
         }
 
         //todo: not sure if this needed
@@ -241,7 +241,7 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
 	    }
 
 	    //If atk renders the page itself the return value is empty
-	    $output = $controller->dispatch($ATK_VARS, false);
+	    $output = $controller->dispatch($ATK_VARS, NULL);
 
       return $output;
     }
@@ -272,7 +272,7 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
       //Save, on succes dispatch() will redirect
       //else it will return an 'add form' with error messages
       atkdebug("atkwizardpanel::save call controller_dispatch()");
-      return $controller->dispatch(atkGetPostVar(), false);
+      return $controller->dispatch(atkGetPostVar(), NULL);
     }
 
     /**

@@ -73,7 +73,7 @@
 
     //Handle http request   
     $controller = &atkinstance("atk.atkcontroller");
-    $controller->handleRequest($ATK_VARS, $flags);
+    $controller->dispatch($ATK_VARS, $flags);
   }
   $output->outputFlush();
 ?>

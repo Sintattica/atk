@@ -96,8 +96,22 @@
       return $controller;
     }
 
-    function dispatch($postvars, $flags=NULL)
+    /**
+    * This is the wrapper method for all http requests on a node.
+    *
+    * The method looks at the atkaction from the postvars and determines what
+    * should be done. If possible, it instantiates actionHandlers for
+    * handling the actual action.
+    *
+    * @param array $postvars The request variables for the node.
+    * @param string $flags Render flags (see class atkPage).
+    *
+    */
+    function handleRequest($postvars, $flags=NULL)
     {
+      // we set the m_postvars variable of the controller for backwards compatibility reasons (when using $obj->dispatch in the dispatch.php)
+      $this->m_postvars = $postvars;
+      
       $node = &$this->getNode();
       $node->m_postvars = $postvars;
       if(!is_object($node)) return;
@@ -150,22 +164,19 @@
       }
     }
 
-
-   /**
-    * This is the wrapper method for all http requests on a node.
-    *
-    * The method looks at the atkaction from the postvars and determines what
-    * should be done. If possible, it instantiates actionHandlers for
-    * handling the actual action.
-    *
-    * @param array $postvars The request variables for the node.
-    * @param string $flags Render flags (see class atkPage).
-    *
-    */
-    function handleRequest($postvars, $flags=NULL)
+    /**
+     * This method is a wrapper for calling the node dispatch function
+     * Therefore each node can define it's own dispatch function
+     * The default dispatch function of the atkNode will call the handleRequest function of the controller
+     *
+     * @param unknown_type $postvars
+     * @param unknown_type $flags
+     */
+    function dispatch($postvars, $flags=NULL)
     {
       $this->m_postvars = $postvars;
-      $this->invoke('dispatch', $postvars, $flags);
+      $node = &$this->getNode();
+      $node->dispatch($postvars, $flags);
     }
 
     /**

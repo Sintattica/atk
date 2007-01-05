@@ -235,7 +235,7 @@ Changed in ATK 5.7
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]
-* Changed the dispatch.php in the skel to use atkcontroller function. Note,
+* Changed the dispatch.php in the skel to use atkcontroller object. Note,
   the old method ($obj->dispatch) stills works but is deprecated. It is
   recommended to use the new dispatch.php from the skel directory.
   [Lineke]
@@ -713,6 +713,12 @@ Changed in ATK 5.7
 * Fixed pre mysql 5 problem in the dbconfigs user grants testcase. [Guido]
 * atk*Db->connect should return the doConnect() result. [Guido]
 * The atkMysqlDb::disconnect method now closes the MySQL link. [Marlon, Peter]
+* Renamed registerNodeHandler to atkRegisterNodeHandler and renamed 
+  getNodeHandler to atkGetNodeHandle. Old functions are still
+  available but deprecated. Also, atkRegisterNodeHandler gets handler parameter
+  by reference in stead of by value. If you want to set register the name of
+  the handler in stead of the object itself, you should pass the name in a 
+  variable. [Lineke]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
