@@ -557,6 +557,14 @@
    * @var String
    */
   $config_language_basedir = "languages/";
+  
+  /**
+   * Use browser language to detect application language.
+   * By default set to false to remain backwards compatible.
+   *
+   * @var
+   */
+  $config_use_browser_language = false;
 
   /**
    * True: one language switch attributes automatically switches all others on

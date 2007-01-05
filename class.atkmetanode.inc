@@ -65,7 +65,7 @@ class atkMetaNode extends atkNode
    */
   function atkMetaNode($args=array())
   {
-    $type = get_class($this);
+    $type = strtolower(get_class($this));
     if (isset($this->type))
       $type = $this->type;
     else if (array_key_exists("type", $args))

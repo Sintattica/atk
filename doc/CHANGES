@@ -230,6 +230,13 @@ Changed in ATK 5.7
   atkAttribute to customize the CSS class names of each attribute.
   (Not supported yet by all attributes, at least atkAttribute and
   atkTextAttribute work.) [Ivo]
++ Refactored atkModule to make it possible to easily change the default
+  node location (added method getNodeFile). [Peter]
++ Added $config_use_browser_language configuration option to control
+  whatever ATK should use the browser language or the language
+  specified in the configuration file. [Peter]
+* Fixed bug with PHP5 class name retrieval in atkMetaNode. Always
+  forcefully lowercase the class name used as node type. [Peter]
 * Fixed bug in getQueryMode and added testcases for the function.
   [Dennis-Jan]
 * In case of a ML node and physical_delete flag of the atkfileattribute
