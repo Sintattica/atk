@@ -44,7 +44,7 @@
       // set the user error's
       $this->m_type = "mysql";
       $this->m_vendor = "mysql";
-      $this->m_user_error=array();
+      $this->m_user_error=array(1369);
     }
 
     /**
@@ -95,7 +95,8 @@
      */
     function _translateError()
     {
-      $this->_setErrorVariables();
+      if ($this->m_errno === 0)
+        $this->_setErrorVariables();
       switch ($this->m_errno)
       {
         case    0: return DB_SUCCESS;
@@ -136,7 +137,7 @@
     {
       if ($this->m_link_id)
       {
-        atkdebug("Disconnecting from database...");         
+        atkdebug("Disconnecting from database...");
         @mysql_close($this->m_link_id);
         $this->m_link_id = 0;
       }
@@ -405,7 +406,7 @@
           if($this->m_database<>$dbname)
           {
             @mysql_select_db($this->m_database, $this->m_link_id);
-          }        
+          }
         }
         else
         {

@@ -7,7 +7,7 @@
  *
  * @package atk
  *
- * @copyright (c) 2004-2005 Peter C. Verhage   
+ * @copyright (c) 2004-2005 Peter C. Verhage
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
@@ -28,7 +28,7 @@ atkimport("atk.meta.atkmetahandler");
  * Makes it possible to create nodes in 1 line of code
  * using metadata from the database.
  *
- * @author Peter C. Verhage <peter@achievo.org> 
+ * @author Peter C. Verhage <peter@achievo.org>
  *
  * @package atk
  */
@@ -49,16 +49,17 @@ class atkMetaNode extends atkNode
    * - sequence       sequence name
    * - db/database    database name or instance
    * - policy         meta policy, the meta policy to use ((sub-)class atkMetaPolicy instance)
-   * - handler        meta handler, the meta handler to use ((sub-)class atkMetaPolicy instance)   
+   * - handler        meta handler, the meta handler to use ((sub-)class atkMetaPolicy instance)
    * - grammar        meta grammar, the meta grammar to use ((sub-)class atkMetaGrammar instance)
    * - flags          node flags
    * - descriptor     descriptor template for this node
    * - order          (default) order to sort fields
+   * - index          create indexed navigation on a attribute/fieldname
    * - filter         filter
    * - securityAlias  security alias for this node
    * - securityMap    security map for this node (will be added to the existing security map!)
-   
-   * 
+
+   *
    * All of these variables can also be specified by creating a class variable with
    * the same name. If you do so for flags, and have to use multiple flags, use
    * an array of flags.
@@ -69,8 +70,8 @@ class atkMetaNode extends atkNode
     if (isset($this->type))
       $type = $this->type;
     else if (array_key_exists("type", $args))
-      $type = $args["type"]; 
-    
+      $type = $args["type"];
+
     $flags = 0;
     if (isset($this->flags))
     {
@@ -80,14 +81,14 @@ class atkMetaNode extends atkNode
         $flagList = $flags;
         $flags = 0;
         foreach ($flagList as $flag)
-          $flags |= $flag;        
+          $flags |= $flag;
       }
     }
     else if (array_key_exists("flags", $args))
-      $flags = $args["flags"]; 
+      $flags = $args["flags"];
 
     $this->atkNode($type, $flags);
-    
+
     if (isset($this->db) && is_string($this->db))
       $this->m_db = $this->db;
     else if (isset($this->db) && is_object($this->db))
@@ -103,8 +104,8 @@ class atkMetaNode extends atkNode
     else if (array_key_exists("database", $args) && is_string($args["database"]))
       $this->m_db = $args["database"];
     else if (array_key_exists("database", $args) && is_object($args["database"]))
-      $this->m_db = &$args["database"];     
-    
+      $this->m_db = &$args["database"];
+
     if (isset($this->meta_policy))
       $policy = &$this->meta_policy;
     else if (array_key_exists("policy", $args))
@@ -118,64 +119,69 @@ class atkMetaNode extends atkNode
       $handler = &$args["handler"];
     else $handler = &$this->_defaultMetaHandler();
     $this->setMetaHandler($handler);
-    
+
     if (isset($this->meta_grammar) && is_object($this->meta_grammar))
       $grammar = &$this->meta_grammar;
-    else if (isset($this->meta_grammar))    
+    else if (isset($this->meta_grammar))
       $grammar = &atkMetaGrammar::getInstance($this->meta_grammar);
     else if (array_key_exists("grammar", $args) && is_object($args["grammar"]))
       $grammar = &$args["grammar"];
     else if (array_key_exists("grammar", $args))
-      $grammar = &atkMetaGrammar::getInstance($args["grammar"]);      
-    else $grammar = &atkMetaGrammar::getInstance();      
-    $this->m_metaPolicy->setGrammar($grammar);    
+      $grammar = &atkMetaGrammar::getInstance($args["grammar"]);
+    else $grammar = &atkMetaGrammar::getInstance();
+    $this->m_metaPolicy->setGrammar($grammar);
 
-    if (isset($this->table)) 
+    if (isset($this->table))
       $this->m_table = $this->table;
-    else if (array_key_exists("table", $args)) 
+    else if (array_key_exists("table", $args))
       $this->m_table = $args["table"];
     else $this->m_table = $policy->getTable();
-    
-    if (isset($this->sequence)) 
+
+    if (isset($this->sequence))
       $this->m_seq = $this->sequence;
-    else if (array_key_exists("sequence", $args)) 
+    else if (array_key_exists("sequence", $args))
       $this->m_seq = $args["sequence"];
     else $this->m_seq = $policy->getSequence();
-    
+
     if (isset($this->descriptor))
       $this->setDescriptorTemplate($this->descriptor);
     else if (array_key_exists("descriptor", $args))
       $this->setDescriptorTemplate($args["descriptor"]);
-      
+
     if (isset($this->order))
       $this->setOrder($this->order);
     else if (array_key_exists("order", $args))
-      $this->setOrder($args["order"]); 
-    
+      $this->setOrder($args["order"]);
+
+    if (isset($this->index))
+      $this->setIndex($this->index);
+    else if (array_key_exists('index',$args))
+      $this->setIndex($args['index']);
+
     if (isset($this->filter))
       $this->addFilter($this->filter);
     else if (array_key_exists("filter", $args))
-      $this->addFilter($args["filter"]);       
+      $this->addFilter($args["filter"]);
 
     if (isset($this->securityAlias))
       $this->setSecurityAlias($this->securityAlias);
     else if (array_key_exists("securityAlias", $args))
-      $this->setSecurityAlias($args["securityAlias"]);      
-      
+      $this->setSecurityAlias($args["securityAlias"]);
+
     if (isset($this->securityMap))
       $this->m_securityMap = array_merge($this->m_securityMap, $this->securityMap);
     else if (array_key_exists("securityMap", $args))
-      $this->m_securityMap = array_merge($this->m_securityMap, $args["securityMap"]);          
+      $this->m_securityMap = array_merge($this->m_securityMap, $args["securityMap"]);
 
     $this->applyMetaPolicy($this->m_metaPolicy);
   }
-  
+
   /**
    * Returns the default meta policy.
    */
   function &_defaultMetaPolicy()
   {
-    return atkMetaPolicy::defaultInstance($this);  
+    return atkMetaPolicy::defaultInstance($this);
   }
 
   /**
@@ -183,18 +189,18 @@ class atkMetaNode extends atkNode
    */
   function &_defaultMetaHandler()
   {
-    $instance = &atkMetaHandler::defaultInstance($this);  
+    $instance = &atkMetaHandler::defaultInstance($this);
     return $instance;
   }
-  
+
   /**
    * Returns the default meta grammar.
    */
   function &_defaultMetaGrammar()
   {
-    return atkMetaGrammar::defaultInstance($this);  
-  }  
-  
+    return atkMetaGrammar::defaultInstance($this);
+  }
+
   /**
    * Returns the meta policy.
    */
@@ -202,7 +208,7 @@ class atkMetaNode extends atkNode
   {
     return $this->m_metaPolicy;
   }
-  
+
   /**
    * Sets the meta policy.
    */
@@ -211,23 +217,23 @@ class atkMetaNode extends atkNode
     $this->m_metaPolicy = &$metaPolicy;
     $this->m_metaPolicy->setNode($this);
   }
-  
+
   /**
    * Sets the meta handler.
    */
   function setMetaHandler(&$metaHandler)
   {
     $this->m_metaHandler = &$metaHandler;
-  }  
-  
+  }
+
   /**
    * Sets the meta grammar.
    */
   function setMetaGrammar(&$metaGrammar)
   {
     $this->m_metaGrammar = &$metaGrammar;
-  }    
-  
+  }
+
   /**
    * Initialize the meta policy data.
    */
@@ -245,7 +251,7 @@ class atkMetaNode extends atkNode
   function meta(&$metaPolicy)
   {
   }
-  
+
   /**
    * Returns the default values for the node's attributes.
    */

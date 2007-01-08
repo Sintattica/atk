@@ -72,30 +72,23 @@
      return DB_SUCCESS;
    }
 
-   function _translateError()
-   {
-     if($this->m_link_id!="")
-     {
-       $this->m_errno = mysqli_errno($this->m_link_id);
-       $this->m_error = mysqli_error($this->m_link_id);
-     }
-     else
-     {
-       $this->m_errno = mysqli_connect_errno();
-       $this->m_error = mysqli_connect_error();
-     }
-     switch ($this->m_errno)
-     {
-       case    0: return DB_SUCCESS;
-       case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
-       case 1045: return DB_ACCESSDENIED_USER;
-       case 1049: return DB_UNKNOWNDATABASE;
-       case 2004:
-       case 2005: return DB_UNKNOWNHOST;
-       default:
-                  return DB_UNKNOWNERROR;
-     }
-   }
+    /**
+     * Store MySQL errors in internal variables
+     * @access private
+     */
+    function _setErrorVariables()
+    {
+      if($this->m_link_id!="")
+      {
+        $this->m_errno = mysqli_errno($this->m_link_id);
+        $this->m_error = mysqli_error($this->m_link_id);
+      }
+      else
+      {
+        $this->m_errno = mysqli_connect_errno();
+        $this->m_error = mysqli_connect_error();
+      }
+    }
 
    /**
     * Disconnect from database
@@ -104,7 +97,7 @@
    {
      if ($this->m_link_id)
      {
-       atkdebug("Disconnecting from database...");       
+       atkdebug("Disconnecting from database...");
        @mysqli_close($this->m_link_id);
        $this->m_link_id = 0;
      }
@@ -135,7 +128,7 @@
        /* free old results */
        if ($this->m_query_id)
        {
-         @mysqli_free_result($this->m_query_id);
+         //@mysqli_free_result($this->m_query_id);
          $this->m_query_id = 0;
        }
 
@@ -151,7 +144,7 @@
        /* invalid query */
        if (!$this->m_query_id)
        {
-         $this->halt("Invalid SQL: $query");
+         atkerror("Invalid SQL: $query");
          $this->halt($this->_translateError());
          return false;
        }

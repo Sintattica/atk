@@ -238,6 +238,11 @@ Changed in ATK 5.7
 + Added support for using multiple test databases in case your app.
   uses multiple development/production databases. [Peter]
 + Added support for setSequenceValue to OCI DB drivers. [Peter]
++ Added support for indexed navigation in the atkMetaNode by using
+  the member variable index.
+* Some code cleanup for the mysqli driver. [Martin]
+* check constraint violations are now seen as user errors by the
+  Mysqli driver. [Martin]
 * atkTestSuite doesn't display notices anymore. [Peter]
 * atkNode::deleteDb now properly checks if there is something to   
   delete or not. [Peter]
