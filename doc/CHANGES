@@ -235,10 +235,18 @@ Changed in ATK 5.7
 + Added $config_use_browser_language configuration option to control
   whatever ATK should use the browser language or the language
   specified in the configuration file. [Peter]
-* Fixed bug with PHP5 class name retrieval in atkMetaNode. Always
-  forcefully lowercase the class name used as node type. [Peter]
-* Fixed bug in getQueryMode and added testcases for the function.
-  [Dennis-Jan]
++ Added support for using multiple test databases in case your app.
+  uses multiple development/production databases. [Peter]
++ Added support for setSequenceValue to OCI DB drivers. [Peter]
+* atkTestSuite doesn't display notices anymore. [Peter]
+* atkNode::deleteDb now properly checks if there is something to   
+  delete or not. [Peter]
+* Fixed PHP notices in atkNumberAttribute. [Peter]
+* Refactored DB cloning functionality to atkDb class. [Peter]
+* A module can now specify it's default fixture path (by 
+  implementing getFixturePath). [Peter]* Fixtures are now
+  searched for in a subdirectory of the test case if no module 
+  or path is specified. [Peter]
 * In case of a ML node and physical_delete flag of the atkfileattribute
   the file were delete twice. But the second it generates an error.
   [Dennis-Jan]

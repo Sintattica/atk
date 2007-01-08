@@ -86,6 +86,20 @@
      */
     function atkTestSuite()
     {
+      error_reporting(E_ALL & ~E_NOTICE);
+    }
+
+    /**
+     * Detect if a test-database is used or not.
+     *
+     * @return boolean use test-database?
+     * @static
+     */
+    function useTestDatabase()
+    {
+      $config = atkconfig('db');
+      $mapping = atkconfig('test_db_mapping');
+      return isset($config['test']) || count($mapping) > 1 || (count($mapping) == 1 && key($mapping) != 'default');
     }
 
     /**
@@ -101,10 +115,10 @@
     {
       $config = atkconfig('db');
 
-      if (isset($config['test']))
+      if (atkTestSuite::useTestDatabase())
       {
-        // setup the test database
-        $this->_setupTestDB();
+        // setup the test database(s)
+        $this->_setupTestDatabases();
       }
 
       $test = &new GroupTest("Full ATK test");
@@ -141,25 +155,30 @@
 
 
     /**
-     * Setup the test database. Clones the database structure of the
-     * default database to the test database. All data in the test
-     * database will be lost!
+     * Setup the test database(s). Clones the database structure of the
+     * default databases to the test databases. All data in the test
+     * databases will be lost!
      */
-    function _setupTestDB()
+    function _setupTestDatabases()
     {
-      $defaultDB = &atkGetDb('default');
-      $testDB = &atkGetDb('test');
-
-      $testDB->dropAll();
-
-      $tables = $defaultDB->table_names();
-      foreach($tables as $table)
+      $mapping = atkconfig('test_db_mapping');
+      foreach ($mapping as $normal => $test)
       {
-        $ddl = $testDB->createDDL();
-        $metadata = $defaultDB->metadata($table["table_name"]);
-        $ddl->loadMetaData($metadata);
-        $query = $ddl->buildCreate();
-        $testDB->query($query);
+        $normalDb = &atkGetDb($normal);
+        $testDb = &atkGetDb($test);
+        
+        $config = atkconfig('db');
+        $clone = !isset($config[$test]['clone_structure']) || $config[$test]['clone_structure'];
+
+        if ($clone)
+        {
+          $testDb->cloneAll($normalDB);  
+        }
+        else 
+        {
+          $testDb->deleteAll();
+          $testDb->commit();
+        }
       }
     }
 

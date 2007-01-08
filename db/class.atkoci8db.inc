@@ -233,7 +233,7 @@
           $column_return = strtolower($column);
           $this->m_record[$column_return] = $result[$column];
         }
-        $m_row++;
+        $this->m_row++;
 
         return 1;
       }
@@ -412,6 +412,37 @@
         return $result[0];
       }
       return 0;
+    }
+    
+    /**
+     * Set sequence value.
+     *
+     * @param string $sequence
+     * @param int $value
+     */
+    function setSequenceValue($sequence, $value)
+    {
+      /* connect first */
+      if ($this->connect()==DB_SUCCESS)
+      {
+        $sequence = atkconfig("database_sequenceprefix").$sequence;      
+        $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
+        atkdebug($query);
+        list($row) = $this->getRows($query);
+        $diff = $value - $row['value'];
+        if ($diff > 0)
+        {
+          $query = "ALTER SEQUENCE {$sequencename} INCREMENT BY {$diff}";
+          atkdebug($query);          
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+          $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
+          atkdebug($query);          
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+          $query = "ALTER SEQUENCE {$sequence} INCREMENT BY 1";
+          atkdebug($query);          
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+        }
+      }
     }
 
     /**

@@ -130,9 +130,8 @@
 
     function value2db($rec)
     {
-      if(strlen($rec[$this->fieldName()])==0&&!$this->hasFlag(AF_OBLIGATORY))
+      if((!isset($rec[$this->fieldName()]) || strlen($rec[$this->fieldName()])==0) && !$this->hasFlag(AF_OBLIGATORY))
         return NULL;
-
       if($this->m_decimals>0)
         return round((float) $rec[$this->fieldName()], $this->m_decimals);
       else

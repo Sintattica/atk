@@ -133,6 +133,20 @@
     {
       return nodeFile($node);
     }
+    
+    /**
+     * Returns the fixture path for the given fixture.
+     * 
+     * @param string $fixture <module.fixture> string
+     * @return string path to fixture without extension
+     */
+    function getFixturePath($fixture)
+    {
+      $module = getNodeModule($fixture);
+      $fixture = getNodeType($fixture);
+      $path = moduleDir($module).'testcases/fixtures/'.$fixture;
+      return $path;
+    }
 
     /**
      * Construct a new node. A module can override this method for it's own nodes.

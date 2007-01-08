@@ -3574,6 +3574,9 @@
     function deleteDb($selector,$exectrigger=true)
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
+      
+      // nothing to delete, throw an error!
+      if (count($recordset) == 0) return false;
 
       if($exectrigger)
       {

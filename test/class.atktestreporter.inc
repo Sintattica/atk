@@ -60,6 +60,27 @@
     {
       return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
     }
+    
+    function paintDebug()
+    {
+      global $g_error_msg;
+      
+      if (count($g_error_msg) > 0 && (atkconfig("display_errors") || atkconfig("debug") > 0))
+      {
+         echo '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
+      }
+      
+      if (atkconfig("debug") > 0)
+      {
+        echo atkoutput::getDebugging();
+      }
+    }
+    
+    function paintFooter($test_name)
+    {
+      $this->paintDebug();
+      parent::paintFooter($test_name);
+    }
   }
   
   /**

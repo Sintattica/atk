@@ -131,6 +131,17 @@
    * @var String
    */
   $config_db["default"]["driver"]="mysql";
+  
+  /**
+   * Test database mapping. Maps normal databases to their test database.
+   * Most of the applications only use one database in that case the default
+   * should be sufficient. But in case you use multiple database and also
+   * want to run tests on all these database you can override this mapping
+   * or add your own mappings.
+   * 
+   * @var array
+   */
+  $config_test_db_mapping = array('default' => 'test');
 
   /**
    * Backwardscompatibility setting. Set this to MYSQL_BOTH if your
