@@ -174,7 +174,7 @@
           }
           // if flag is primary
           else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record) &&
-                   count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".$db->escapeSQL($p_attrib->value2db($record))."' AND NOT (".$this->m_nodeObj->primaryKey($record).")"))>0
+                   count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".$db->escapeSQL($p_attrib->value2db($record))."'".($this->m_mode != 'add' ? " AND NOT (".$this->m_nodeObj->primaryKey($record).")" : "")))>0
                   )
           {
             triggerError($record, $attribname, 'error_uniquefield', '', $p_attrib->m_tabs[0]);
@@ -232,7 +232,11 @@
           else
             atkerror("Field $field is mentioned in uniquefieldset but does not exist in ".$this->m_nodeObj->atknodetype());
         }
-        $query->addCondition("NOT (".$this->m_nodeObj->primaryKey($record).")");
+        
+        if ($this->m_mode != 'add')
+        {
+          $query->addCondition("NOT (".$this->m_nodeObj->primaryKey($record).")");
+        }
 
         if (count($db->getRows($query->buildSelect()))> 0)
         {

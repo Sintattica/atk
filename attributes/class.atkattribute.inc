@@ -665,7 +665,7 @@
     {
       if (isset($rec[$this->fieldName()]))
       {
-        return stripslashes($rec[$this->fieldName()]);
+        return $rec[$this->fieldName()] === NULL ? NULL : stripslashes($rec[$this->fieldName()]);
       }
       return NULL;
     }
@@ -1247,6 +1247,20 @@
     }
 
     /**
+     * Checks if this attribute is really not null in the database.
+     * This method does not look at the AF_OBLIGATORY flag, it only
+     * checks in the database if the attribute's column is really not null.
+     * 
+     * @return boolean attribute's database column not null?
+     */
+    function _isNotNullInDb()
+    {
+      $db = &$this->getDb();
+      $meta = $db->tableMeta($this->m_ownerInstance->m_table);          
+      return hasFlag($meta[$this->fieldName()]['flags'], MF_NOT_NULL);
+    }
+
+    /**
      * Adds this attribute to database queries.
      *
      * Database queries (select, insert and update) are passed to this method
@@ -1275,7 +1289,16 @@
     function addToQuery(&$query, $tablename="", $fieldaliasprefix="", $rec="", $level, $mode)
     {
       if ($mode == "add" || $mode == "update")
-        $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES),true);
+      {
+        if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->_isNotNullInDb())
+        {
+          $query->addField($this->fieldName(),'NULL',"","",false,true);          
+        }
+        else 
+        {
+          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES),true);          
+        }
+      }
       else
         $query->addField($this->fieldName(),"",$tablename,$fieldaliasprefix,!$this->hasFlag(AF_NO_QUOTES),true);
     }
@@ -1333,7 +1356,6 @@
      */
     function fetchMeta($metadata)
     {
-
       $attribname = strtolower($this->fieldName());
       // Only use meta info if size is not already set manual. (constructor or setAttribSize)
       // If both are set, use the smallest value.

@@ -811,7 +811,8 @@
       $value = &$vars[$varname];
       // We must strip all slashes from the input, since php puts slashes
       // in front of quotes that are passed by the url. (magic_quotes_gpc)
-      atk_stripslashes($value);
+      if ($value !== NULL)
+        atk_stripslashes($value);
 
       AE_decode($vars, $varname);
 
