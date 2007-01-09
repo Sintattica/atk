@@ -108,17 +108,22 @@
     
     /**
      * Returns the fixture for the given table name with the given name. 
-     * If the fixture doesn't exist
-     * NULL is returned. If no database is specified (the default)
+     * If the fixture doesn't exist NULL is returned. If no database is specified
+     * all databases will be searched. If no name is specified all fixtures for
+     * the given table will be returned.
      * 
      * @param string $table table name
      * @param string $name  fixture name
      * 
      * @return array fixture data
      */
-    function fixture($table, $name, $database=NULL)
+    function fixture($table, $name=NULL, $database=NULL)
     {
-      if ($database != NULL && isset($this->m_fixtureData[$database][$table][$name]))
+      if ($database != NULL && $name == NULL && isset($this->m_fixtureData[$database][$table]))
+      {
+        return $this->m_fixtureData[$database][$table];
+      }
+      else if ($database != NULL && $name != NULL && isset($this->m_fixtureData[$database][$table][$name]))
       {
         return $this->m_fixtureData[$database][$table][$name];
       }
@@ -150,7 +155,7 @@
       foreach (array_keys($this->m_fixtureData) as $database)
       {
         if (isset($this->m_fixtureData[$database][$method]))
-          return $this->fixture($method, $args[0], $args[1]);
+          return $this->fixture($method, isset($args[0]) ? $args[0] : NULL, isset($args[1]) ? $args[1] : NULL);
       }
       
       // can't put this code here directly because PHP4 doesn't know about the throw keyword

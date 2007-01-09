@@ -75,7 +75,7 @@
         }
 
         /* set default date format for Oracle */
-        $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD'");
+        $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD HH24:MI:SS'");
         $myresult = OCIExecute($nls);
         $error = OCIError($this->m_link_id);
         if ($err["code"]!="")

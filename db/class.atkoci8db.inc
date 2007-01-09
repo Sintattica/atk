@@ -71,7 +71,16 @@
           $this->halt("Invalid SQL: $query");
           return $this->_translateError($error);
         }
-
+        
+        /* set default timestamp format for Oracle */
+        $nls = OCIParse($this->m_link_id, "alter session set nls_timestamp_format='YYYY-MM-DD HH24:MI:SS'");
+        $myresult = OCIExecute($nls);
+        $error = OCIError($this->m_link_id);
+        if ($error["code"]!="")
+        {
+          $this->halt("Invalid SQL: $query");
+          return $this->_translateError($error);
+        }
       }
       return DB_SUCCESS;
     }
@@ -432,15 +441,15 @@
         $diff = $value - $row['value'];
         if ($diff > 0)
         {
-          $query = "ALTER SEQUENCE {$sequencename} INCREMENT BY {$diff}";
+          $query = "ALTER SEQUENCE {$sequence} INCREMENT BY {$diff}";
           atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
           atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "ALTER SEQUENCE {$sequence} INCREMENT BY 1";
           atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequencename'");
+          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
         }
       }
     }
