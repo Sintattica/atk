@@ -463,7 +463,7 @@
       global $config_db;
       
       if ($conn === NULL)
-        $conn = atkDb::getDefault();
+        $conn = "default";
 
       $config_db["mock"]["driver"] = "mock";
 
@@ -474,10 +474,8 @@
     function restoreDb($conn=NULL)
     {
       if ($conn === NULL)
-        $conn = atkDb::getDefault();      
-      //$copy = $this->m_restoreDb[$conn];
+        $conn = "default";      
       atkDb::setInstance($conn, $this->m_restoreDb[$conn]);
-      //$this->m_restoreDb[$conn]="";
     }
 
     function &setMockNode($nodename, &$mocknode)
