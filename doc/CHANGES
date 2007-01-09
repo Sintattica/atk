@@ -240,6 +240,8 @@ Changed in ATK 5.7
 + Added support for setSequenceValue to OCI DB drivers. [Peter]
 + Added support for indexed navigation in the atkMetaNode by using
   the member variable index.
+* When field.focus fails we catch the error so the user doesn't 
+  see the error. [Dennis-Jan]
 * Some code cleanup for the mysqli driver. [Martin]
 * check constraint violations are now seen as user errors by the
   Mysqli driver. [Martin]
