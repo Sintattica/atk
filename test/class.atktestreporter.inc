@@ -30,35 +30,42 @@
    */
   class atkTestReporter extends HtmlReporter
   {
+    function paintLine($message, $result)
+    {
+      $breadcrumb = $this->getTestList();      
+      array_shift($breadcrumb);
+            
+      $line = 
+        "<tr class=\"$result\">".
+          "<td valign=\"top\" class=\"date\" nowrap=\"nowrap\" width=\"5%\">".date('Y-m-d H:i:s')."</td>".
+          "<td valign=\"top\" class=\"method\" nowrap=\"nowrap\" width=\"5%\">".implode("-&gt;", $breadcrumb)."</td>".
+          "<td valign=\"top\" class=\"message\">".$message."</td>".          
+          "<td valign=\"top\" class=\"result\" nowrap=\"nowrap\" width=\"5%\">[".strtoupper($result)."]</td>".          
+        "</tr>";
+
+      echo $line;
+      flush();
+    }
+    
     function paintPass($message)
     {
       parent::paintPass($message);
-      $passline = "<i>".date('Y-m-d H:i:s')."</i>";
-      $passline.= "<span class=\"pass\">[PASS]</span> ";
-      $breadcrumb = $this->getTestList();
-      array_shift($breadcrumb);
-      $passline.= implode("-&gt;", $breadcrumb);
-      $passline.= "-&gt;$message<br />\n";
-      echo str_pad($passline, 4096);
-      flush();
+      $this->paintLine($message, "pass");
     }
 
     function paintFail($message)
     {
-      SimpleReporter::paintFail($message);
-      $failline = "<i>".date('Y-m-d H:i:s')."</i>";
-      $failline.= "<b><span class=\"fail\">[FAIL]</span> ";
-      $breadcrumb = $this->getTestList();
-      array_shift($breadcrumb);
-      $failline.= implode("-&gt;", $breadcrumb);
-      $failline.= "-&gt;$message</b><br />\n";
-      echo str_pad($failline, 4096);
-      flush();
+      SimpleScorer::paintFail($message);
+      $this->paintLine($message, "fail");      
     }
 
     function _getCss()
     {
-      return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
+      return '
+        BODY { font-family: tahoma, verdana, arial, helvetica }
+        TR.fail { background-color: red;  color: white; font-family: tahoma, verdana, arial, helvetica; } 
+        TR.pass { color: darkgreen; font-family: tahoma, verdana, arial, helvetica;}
+        TD.result { font-weight: bold }';
     }
     
     function paintDebug()
@@ -74,12 +81,28 @@
       {
         echo atkoutput::getDebugging();
       }
+      
+      flush();
+    }
+    
+    function paintHeader($test_name)
+    {
+      parent::paintHeader($test_name);
+      echo "<table border=\"1\" cellspacing=\"0\" cellpadding=\"5\" width=\"100%\">";
+      echo "<thead><tr><th>Stamp</th><th>Method</th><th>Message</th><th>Result</th></tr></thead>";
+      echo "<tbody>";
+      flush();
     }
     
     function paintFooter($test_name)
     {
-      $this->paintDebug();
+      echo "</tbody>";
+      echo "</table>";
+      flush();      
+      
       parent::paintFooter($test_name);
+      
+      $this->paintDebug();      
     }
   }
   

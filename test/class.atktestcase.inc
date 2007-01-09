@@ -41,8 +41,15 @@
      *
      * @return atkTestCase
      */
-    function atkTestCase()
+    function atkTestCase($label = false)
     {
+      $this->UnitTestCase($label);
+    }
+    
+    function getLabel()
+    {
+      $label = parent::getLabel();
+      return empty($label) ? get_class($this) : $label;
     }
     
     /**
