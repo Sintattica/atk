@@ -172,7 +172,7 @@
 
         if ($clone)
         {
-          $testDb->cloneAll($normalDB);  
+          $testDb->cloneAll($normalDb);  
         }
         else 
         {
