@@ -22,7 +22,8 @@ function placeFocus()
   for (i = 0; i < fields.length; i++) 
   { 
     var field = fields[i];
-    var type = field.type.toLowerCase();     
+    var type = field.type.toLowerCase();  
+     
     if (type == "text" || type == "textarea" || type.toString().charAt(0) == "s") 
     {
       var found = false;
@@ -32,8 +33,19 @@ function placeFocus()
       {
         if (node.nodeName.toLowerCase() == 'tr')
         {
+          
           found = node.id != null && node.id.substring(0, 3) == 'ar_' && node.style.display != 'none';
-          if(found) field.focus();
+          if(found) 
+          {
+            try 
+            {
+              field.focus();
+            }
+            catch (err)
+            {
+              // ignore error
+            }
+          }
           break;
         }
         
