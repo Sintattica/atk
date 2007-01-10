@@ -3569,14 +3569,15 @@
      * @param String $selector SQL expression used as where-clause that
      *                         indicates which records to delete.
      * @param bool $exectrigger wether to execute the pre/post triggers
+     * @param bool $failwhenempty determine whether to throw an error if there is nothing to delete
      * @returns boolean True if successful, false if not.
      */
-    function deleteDb($selector,$exectrigger=true)
+    function deleteDb($selector,$exectrigger=true,$failwhenempty=false)
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
       
-      // nothing to delete, throw an error!
-      if (count($recordset) == 0) return true;
+      // nothing to delete, throw an error (determined by $failwhenempty)!
+      if (count($recordset) == 0) return !$failwhenempty;
 
       if($exectrigger)
       {
