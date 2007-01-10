@@ -39,7 +39,7 @@
     function atkOci8Db()
     {
       // set the user error's
-      $this->m_user_error=array(1,1400,1438,2290,2291,2292,2293);
+      $this->m_user_error=array(1,1400,1407,1438,2290,2291,2292,2293);
       // Other errors are assumed to be critical errors
     }
 

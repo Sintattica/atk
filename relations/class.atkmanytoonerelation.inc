@@ -341,10 +341,12 @@
      */
     function db2value($rec)
     {
+      $this->createDestination();
+      
       if (isset($rec[$this->fieldName()]) &&
           is_array($rec[$this->fieldName()]) &&
-          isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) &&
-          empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
+          (!isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) ||
+           empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()])))
       {
         return NULL;
       }
