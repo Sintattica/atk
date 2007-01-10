@@ -250,7 +250,7 @@
 
     /**
      * Use the given mapping to translate database requests
-     * from one database to another database. This can be 
+     * from one database to another database. This can be
      * used for test purposes.
      *
      * @param array $mapping database mapping
@@ -272,7 +272,7 @@
     {
       return atkDb::_getOrUseMapping();
     }
-    
+
     /**
      * Clear the current database mapping.
      *
@@ -282,10 +282,10 @@
     {
       atkDb::_getOrUseMapping(NULL);
     }
-    
+
     /**
      * Returns the real database name. If a mapping
-     * exists the mapping is used to translate the 
+     * exists the mapping is used to translate the
      * database name to it's real database name. If
      * the database name is not part of the mapping or
      * no mapping is set the given name will be returned.
@@ -313,7 +313,7 @@
         $s_mapping = $mapping;
       else return $s_mapping;
     }
-    
+
     /**
      * Get the database driver type.
      * @return String driver type
@@ -877,9 +877,26 @@
     function deleteAll()
     {
       $tables = $this->table_names();
-      foreach($tables as $table)
+      $count = count($tables);
+
+      do
       {
-        $this->query("DELETE FROM ".$table['table_name']);
+        $prevCount = $count;
+        $count = 0;
+
+        foreach($tables as $table)
+        {
+          if (!$this->query("DELETE FROM ".$table['table_name']))
+          {
+            $count++;
+          }
+        }
+      }
+      while ($count < $prevCount && $count > 0);
+
+      if ($count > 0)
+      {
+        atkerror('atkDb::deleteAll failed, probably because of circular dependencies');
       }
     }
 
@@ -894,7 +911,7 @@
         $this->query("DROP TABLE ".$table['table_name']);
       }
     }
-    
+
     /**
      * Clones the database structure of the given database
      * to this database. This also means the complete database
@@ -904,7 +921,7 @@
      */
     function cloneAll(&$otherDb)
     {
-      $this->dropAll();          
+      $this->dropAll();
       $tables = $otherDb->table_names();
       foreach($tables as $table)
       {
@@ -1059,7 +1076,7 @@
 
       // translate connection name
       $name = atkDb::getTranslatedDatabaseName($name);
-      
+
       $olddb = &$g_dbinstances[$name];
       $g_dbinstances[$name] = &$db;
       return $olddb;

@@ -341,6 +341,14 @@
      */
     function db2value($rec)
     {
+      if (isset($rec[$this->fieldName()]) &&
+          is_array($rec[$this->fieldName()]) &&
+          isset($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]) &&
+          empty($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
+      {
+        return NULL;
+      }
+
       if (isset($rec[$this->fieldName()]))
       {
         $myrec = $rec[$this->fieldName()];
@@ -1098,10 +1106,17 @@
     }
 
     /**
-     * Dummy function
+     * Validate if the record we are referring to really exists.
+     *
+     * @param array $record
+     * @param string $mode
      */
     function validate(&$record, $mode)
     {
+      if (!$this->_isSelectableRecord($record))
+      {
+        triggerError($record, $this->fieldName(), 'error_integrity_violation');
+      }
     }
 
     function equal($recA, $recB)

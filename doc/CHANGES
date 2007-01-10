@@ -240,6 +240,9 @@ Changed in ATK 5.7
 + Added support for setSequenceValue to OCI DB drivers. [Peter]
 + Added support for indexed navigation in the atkMetaNode by using
   the member variable index.
++ Added integrity violation check to atkManyToOneRelation. 
+  NOTE: this might cause problems if your application sometimes tries
+  to save incorrect values for atkManyToOneRelation fields. [Patrick,Peter]
 * Improved ATK test suite output. [Peter]
 * Improved default Oracle date format. [Peter]
 * When field.focus fails we catch the error so the user doesn't 

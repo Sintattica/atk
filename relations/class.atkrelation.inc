@@ -46,7 +46,7 @@
      * @var String
      */
     var $m_descTemplate = NULL;
-    
+
     /**
      * Descriptor handler.
      * @var Object
@@ -95,7 +95,7 @@
       else
         $this->m_destinationFilter = $filter;
     }
-    
+
     /**
      * Get descriptor handler.
      * @return Object descriptor handler
@@ -104,7 +104,7 @@
     {
       return $this->m_descHandler;
     }
-    
+
     /**
      * Set descriptor handler.
      * @param Object $handler The descriptor handler.
@@ -131,7 +131,7 @@
     {
       $this->m_descTemplate = $template;
     }
-    
+
     /**
      * Descriptor handler. Forwards description handler calls
      * to the real description handler.
@@ -166,7 +166,7 @@
 	        return false;
 	      }
 
-        if ($this->hasFlag(AF_NO_FILTER)) 
+        if ($this->hasFlag(AF_NO_FILTER))
           $this->m_destInstance->m_flags |= NF_NO_FILTER;
 
         foreach (array_keys($this->m_destInstance->m_attribList) as $key)
@@ -181,7 +181,7 @@
           if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType())
             $attribute->m_destInstance = &$this->m_ownerInstance;
         }
-        
+
         if (!empty($this->m_descHandler))
           $this->m_destInstance->setDescriptorHandler($this);
 
@@ -219,7 +219,11 @@
     {
       if ($this->createDestination() && isset($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]))
       {
-          return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+        return empty($record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+      }
+      else if ($this->createDestination() && isset($record[$this->fieldName()]))
+      {
+        return empty($record[$this->fieldName()]);
       }
       return true; // always empty if error.
     }
@@ -293,10 +297,10 @@
       // Return the translation
       return $label;
     }
-    
+
     /**
      * Parses the destination filter
-     * 
+     *
      * @param $destfilter sting filter to parse
      * @param $record the current record
      * @return $filter string filter.
