@@ -3576,7 +3576,7 @@
       $recordset = $this->selectDb($selector,"","","","","delete");
       
       // nothing to delete, throw an error!
-      if (count($recordset) == 0) return false;
+      if (count($recordset) == 0) return true;
 
       if($exectrigger)
       {
