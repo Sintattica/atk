@@ -442,14 +442,17 @@
         if ($diff > 0)
         {
           $query = "ALTER SEQUENCE {$sequence} INCREMENT BY {$diff}";
-          atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          atkdebug($query);    
+          $queryId = OCIParse($this->m_link_id, $query);
+          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
           atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          $queryId = OCIParse($this->m_link_id, $query);
+          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "ALTER SEQUENCE {$sequence} INCREMENT BY 1";
           atkdebug($query);          
-          @OCIExecute($query) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          $queryId = OCIParse($this->m_link_id, $query);
+          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
         }
       }
     }
