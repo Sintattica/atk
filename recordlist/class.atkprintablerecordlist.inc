@@ -69,7 +69,7 @@
             &&$musthide==false
            )
         {
-          $output.='<td><b>'.text($p_attrib->fieldName(),$this->m_node->m_type).'</b></td>';
+          $output.='<td><b>'.atktext($p_attrib->fieldName(),$this->m_node->m_module, $this->m_node->m_type).'</b></td>';
 
           // the totalisable check..
           if ($p_attrib->hasFlag(AF_TOTAL))
