@@ -775,6 +775,7 @@ Changed in ATK 5.7
   atkModule::nodeOverloaders. [Maurice]
 - Removed unused code in atkDataDecode function. [Lineke]
 - Deprecated atkWysiwygAttribute (in favor of atkFckAttribute). [Ivo]
+- Deprecated "mysql41" db driver. (use the "mysqli" driver instead). [Peter]
 
 
 Changed in ATK 5.6
