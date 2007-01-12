@@ -178,57 +178,21 @@
 
         /* query database */
         $this->m_query_id = @mysql_query($query, $this->m_link_id);
-        
-        $unlock_table = false;
-        if (mysql_errno($this->m_link_id) == 1100 && $mode == "w")
-        if ($mode == "w")
-        {
-          $error = mysql_error($this->m_link_id);
-          $error = "Table 'content_page' was not locked with LOCK TABLES";
-          $matches = array();
-          preg_match("/\'(.*)\'/U",$error,$matches);
-          
-          if (is_array($matches) && sizeof($matches) == 2)
-          {
-            atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (".$this->m_link_id.").</b>");
-            $table = $matches[1];
-            
-            if ($this->m_query_id)
-            {
-              if (is_resource($this->m_query_id))
-                mysql_free_result($this->m_query_id);
-              $this->m_query_id = 0;
-            }
-            $this->m_affected_rows = 0;
-            
-            $this->lock($table);
-            $this->m_query_id = @mysql_query($query, $this->m_link_id);
-            
-            $this->m_affected_rows = mysql_affected_rows();
-            $unlock_table = true;
-          } 
-          else
-          {
-            atk_var_dump($matches,"<b>Error 1100 occured but callback was unable to get tablename from errormessage:</b>");
-          }
-        }
-        else 
-        {
-          $this->m_affected_rows = mysql_affected_rows();
-        }
-        
         $this->m_row = 0;
+
+
+        //$this->m_errno = mysql_errno();
+        //$this->m_error = mysql_error();
+        $this->m_affected_rows = mysql_affected_rows();
 
         /* invalid query */
         if (!$this->m_query_id)
         {
           $this->halt("Invalid SQL: $query");
+          $this->halt($this->_translateError());
           return false;
         }
 
-        if ($unlock_table)
-          $this->unlock();
-        
         /* return query id */
         return true;
       }
@@ -311,7 +275,7 @@
       if ($this->connect("w")==DB_SUCCESS)
       {
         /* unlock */
-        $result = @mysql_query("unlock tables",$this->m_link_id);
+        $result = @mysql_query("unlock tables");
         if (!$result) $this->halt("unlock tables failed.");
 
         /* return result */
