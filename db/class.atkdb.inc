@@ -806,7 +806,7 @@
     function func_datetochar($fieldname, $format="")
     {
       if ($format=="") $format = atkconfig("date_to_char", "Y-m-d");
-      return "TO_CHAR($fieldname, ".$this->vendorDateFormat($format).")";
+      return "TO_CHAR($fieldname, '".$this->vendorDateFormat($format)."')";
     }
 
     /**

@@ -253,10 +253,9 @@
     {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
-
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    
+    function processSearchValue($value)
     {
-      $searchcondition = "";
       if (!is_array($value))
       {
         $slash = strpos($value, "/"); // Support for 'from/to' searches.
@@ -274,6 +273,41 @@
           $value["from"] = $str; // quicksearch doesn't use an array.
         }
       }
+
+      return $value;
+    }
+    
+    function getBetweenCondition(&$query, $fieldname, $value)
+    {
+      $searchcondition = "";
+      
+      if ($value["from"]!="" && $value["to"]!="")
+      {
+        if ($value["from"]>$value["to"])
+        {
+          // User entered fields in wrong order. Let's fix that.
+          $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
+        }
+        $searchcondition = $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
+      }
+      else if ($value["from"]!="" && $value["to"]=="")
+      {
+        $searchcondition = $query->greaterthanequalCondition($fieldname, $value["from"]);
+      }
+      else if ($value["from"]=="" && $value["to"]!="")
+      {
+        $searchcondition = $query->lessthanequalCondition($fieldname, $value["to"]);
+      }
+      
+      return $searchcondition;
+    }
+
+    function getSearchCondition(&$query, $table, $value, $searchmode)
+    {
+      $searchcondition = "";
+      
+      $value = $this->processSearchValue($value);
+      
       if ($searchmode!="between")
       {
         // Use default handler, and use only the first field.
@@ -281,26 +315,9 @@
       }
       else
       {
-        $fieldname = $table.".".$this->fieldName();
-        if ($value["from"]!="" && $value["to"]!="")
-        {
-          if ($value["from"]>$value["to"])
-          {
-            // User entered fields in wrong order. Let's fix that.
-            $tmp = $value["from"]; $value["from"] = $value["to"]; $value["to"] = $tmp;
-          }
-          $searchcondition = $query->betweenCondition($fieldname,$this->escapeSQL($value["from"]), $this->escapeSQL($value["to"]));
-        }
-        else if ($value["from"]!="" && $value["to"]=="")
-        {
-          $searchcondition = $query->greaterthanequalCondition($fieldname, $value["from"]);
-        }
-        else if ($value["from"]=="" && $value["to"]!="")
-        {
-          $searchcondition = $query->lessthanequalCondition($fieldname, $value["to"]);
-        }
+        $fieldname = $table.".".$this->fieldName();        
+        return $this->getBetweenCondition($query, $fieldname, $value);
       }
-      return $searchcondition;
     }
   }
 ?>

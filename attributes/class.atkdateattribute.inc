@@ -686,7 +686,7 @@
 
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
-    	$db = &atkGetDb();
+    	$db = &$this->getDb();
 
     	// exact mode
     	if ($searchmode == 'exact' || $searchmode == 'substring')
