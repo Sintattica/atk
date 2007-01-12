@@ -479,7 +479,6 @@
      */
     function halt($message="")
     {
-      atkerror($message);
       if ($this->m_haltonerror)
       {
         if($this->getErrorType()=="system")
@@ -579,10 +578,24 @@
     }
 
     /**
-     * Rollback the current transaction.
+     * Set savepoint with the given name.
+     * 
+     * @param $name savepoint name
      * @abstract
      */
-    function rollback()
+    function savepoint($name)
+    {
+    }
+
+    /**
+     * Rollback the current transaction.
+     * (If a savepoint is given to the given savepoint.)
+     * 
+     * @param $savepoint savepoint name
+     * 
+     * @abstract
+     */
+    function rollback($savepoint="")
     {
     }
 
