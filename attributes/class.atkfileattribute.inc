@@ -252,7 +252,7 @@
           {
             unlink($this->m_dir.$file);
           }
-          else 
+          else
             atkdebug("File doesn't exist anymore.");
         }
 //        echo ':::::return leeg::::';
@@ -271,9 +271,9 @@
               if (!$this->mkdir($dirname))
               {
                 atkerror("File could not be saved");
-                return "";                
+                return "";
               }
-              
+
               if (@copy($rec[$this->fieldName()]["tmpfile"],$this->m_dir.$filename))
               {
                 $this->processFile($this->m_dir, $filename);
@@ -291,47 +291,47 @@
         return $this->escapeSQL($rec[$this->fieldName()]["orgfilename"]);
       }
     }
-    
+
     /**
      * Recursive mkdir.
-     * 
+     *
      * @see http://nl2.php.net/mkdir
      *
      * @param string $path path to create
      * @return success/failure
-     * 
+     *
      * @static
      */
     function mkdir($path)
     {
       $path = preg_replace('/(\/){2,}|(\\\){1,}/','/', $path); //only forward-slash
       $dirs = explode("/", $path);
-      
+
       $path = "";
       foreach ($dirs as $element)
       {
         $path .= $element."/";
-        if(!is_dir($path) && !mkdir($path)) 
+        if(!is_dir($path) && !mkdir($path))
           return false;
       }
-      
+
       return true;
     }
-    
+
     /**
      * Recursive rmdir.
-     * 
+     *
      * @see http://nl3.php.net/rmdir
-     * 
+     *
      * @param string $dir path to remove
      * @return succes/failure
-     * 
+     *
      * @static
      */
     function rmdir($dir)
     {
       if (!($handle = @opendir($dir))) return false;
-      
+
       while (false !== ($item = readdir($handle)))
       {
         if ($item != "." && $item != "..")
@@ -340,7 +340,7 @@
           {
             if (!atkFileAttribute::rmdir("$dir/$item"))
               return false;
-          } 
+          }
           else
           {
             if (!@unlink("$dir/$item"))
@@ -452,12 +452,12 @@
           else
           {
             $filename = (isset($rec[$basename."_orgfilename"]))?$rec[$basename."_orgfilename"]:"";
-            
+
             if (isset($del[$this->fieldName()]) && $del[$this->fieldName()]=="on")
             {
               $filename = '';
             }
-            
+
             $result = array("tmpfile"=>$this->m_dir.$filename,
                           "filename"=>$filename,
                           "filesize"=>filesize($this->m_dir.$filename),
@@ -565,9 +565,19 @@
       }
     }
 
+    /**
+     * Get the file extension
+     *
+     * @param string $filename Filename
+     * @return string The file extension
+     */
     function getFileExtension($filename)
     {
-      return strtolower(substr($filename, strrpos($filename,'.')+1,strlen($filename)));
+      if($dotPos = strrpos($filename,'.'))
+      {
+        return strtolower(substr($filename, $dotPos+1,strlen($filename)));
+      }
+      return '';
     }
 
     function getSearchModes()
@@ -587,15 +597,15 @@
     {
       $this->m_filenameTpl = $template;
     }
-    
+
     /**
-     * Determine the real filename of a file. 
-     * 
-     * If a method <fieldname>_filename exists in the owner instance this method 
-     * is called with the record and default filename to determine the filename. Else 
+     * Determine the real filename of a file.
+     *
+     * If a method <fieldname>_filename exists in the owner instance this method
+     * is called with the record and default filename to determine the filename. Else
      * if a file template is set this is used instead and otherwise the default
      * filename is returned.
-     * 
+     *
      * @access private
      */
     function _filenameMangle($rec, $default)
@@ -605,7 +615,7 @@
         return $this->m_ownerInstance->$method($rec, $default);
       else return $this->filenameMangle($rec, $default);
     }
-    
+
     /**
      * Determine the real filename of a file (based on m_filenameTpl).
      * @access public
@@ -624,7 +634,7 @@
         $record = $this->m_ownerInstance->updateRecord($rec, $includes,array($this->fieldname()));
         $record[$this->fieldName()] = substr($default, 0, strrpos($default,'.'));
         $ext = $this->getFileExtension($default);
-        $filename = $parser->parse($record).".".$ext;
+        $filename = $parser->parse($record).($ext!=''?".".$ext:'');
       }
       return str_replace(' ','_',$filename);
     }
@@ -640,27 +650,52 @@
     function _filenameUnique($rec, $filename)
     {
       // check if there's another record using this same name. If so, (re)number the filename.
-      atkdebug("unique check");
+      atkdebug("atkFileAttribute::_filenameUnique() -> unique check");
 
-      $name = substr($filename, 0, strrpos($filename,'.'));
-      $ext = substr($filename, strrpos($filename,'.')+1);
+      if ($dotPos = strrpos($filename,'.'))
+      {
+        $name = substr($filename, 0, strrpos($filename,'.'));
+        $ext = substr($filename, strrpos($filename,'.'));
+      }
+      else
+      {
+        $name = $filename;
+        $ext = "";
+      }
 
-      $selector = "(".$this->fieldName()."='$filename' OR ".$this->fieldName()." LIKE '$name-_.$ext')";
+      $selector = "(".$this->fieldName()."='$filename' OR ".$this->fieldName()." LIKE '$name-%$ext')";
       if ($rec[$this->m_ownerInstance->primaryKeyField()]!="")
       {
         $selector.= " AND NOT (".$this->m_ownerInstance->primaryKey($rec).")";
       }
 
-      $count = $this->m_ownerInstance->countDb("($selector)", "", array($this->fieldName()));
+      $records = $this->m_ownerInstance->selectDb("($selector)", "", array($this->fieldName()));
 
-      atkdebug("count ".$count);
-
-      if ($count>0)
+      if (count($records)>0)
       {
-        // file name exists, so mangle it with a number.
-        $filename = $name."-".$count.".".$ext;
-      }
+        // Check for the highest number
+        $max_count=0;
+        foreach($records as $record)
+        {
+          $dotPos = strrpos($record[$this->fieldName()]["filename"],'.');
+          $dashPos = strrpos($record[$this->fieldName()]["filename"],'-');
+          if($dotPos!==false && $dashPos!==false)
+          {
+            $number = substr($record[$this->fieldName()]["filename"],($dashPos+1),($dotPos-$dashPos)-1);
+          }
+          elseif($dotPos===false && $ext==""  && $dashPos!==false)
+          {
+            $number = substr($record[$this->fieldName()]["filename"],($dashPos+1));
+          }
+          else continue;
 
+          if(intval($number)>$max_count) $max_count=$number;
+
+        }
+        // file name exists, so mangle it with a number.
+        $filename = $name."-".($max_count+1).$ext;
+      }
+      atkdebug("atkFileAttribute::_filenameUnique() -> New filename = ".$filename);
       return $filename;
     }
 
