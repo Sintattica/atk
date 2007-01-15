@@ -65,7 +65,7 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
    */
   function createDestination()
   {
-    if ($this->m_destInstance != "") return TRUE;
+    if (is_object($this->m_destInstance)) return TRUE;
     
     $policy = &$this->m_ownerInstance->getMetaPolicy();
 

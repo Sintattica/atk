@@ -249,6 +249,8 @@ Changed in ATK 5.7
   result of arbitrary SQL expressions as an attribute. [Peter]
 + Added support for filenames without an extension in the 
   atkFileAttribute. (bug #791) [Sandy]
++ Added savepoint support to ATK DB layer (only supported
+  when using one of the OCI drivers for now). [Peter]
 * Improved ATK test suite output. [Peter]
 * Improved default Oracle date format. [Peter]
 * When field.focus fails we catch the error so the user doesn't 

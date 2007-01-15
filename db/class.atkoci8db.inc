@@ -135,22 +135,39 @@
      */
     function commit()
     {
+      atkdebug(get_class($this)."::commit");            
       if($this->m_link_id)
       {
-        atkdebug("OCICommit");
         OCICommit($this->m_link_id);
       }
       return true;
     }
 
+    /**
+     * Set savepoint with the given name.
+     * 
+     * @param $name savepoint name
+     * @abstract
+     */
+    function savepoint($name)
+    {
+      atkdebug(get_class($this)."::savepoint $name");      
+      $this->query('SAVEPOINT '.$name);
+    }
+
     /*
      * Rollback the the current transaction.
      */
-    function rollback()
+    function rollback($savepoint="")
     {
-      if($this->m_link_id)
+      atkdebug(get_class($this)."::rollback $savepoint");      
+      
+      if (!empty($savepoint))
       {
-        atkdebug("OCIRollback");
+        $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);        
+      }
+      else if($this->m_link_id)
+      {
         OCIRollback($this->m_link_id);
       }
       return true;
