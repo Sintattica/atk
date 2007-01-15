@@ -72,23 +72,48 @@
      return DB_SUCCESS;
    }
 
-    /**
-     * Store MySQL errors in internal variables
-     * @access private
-     */
-    function _setErrorVariables()
-    {
-      if($this->m_link_id!="")
-      {
-        $this->m_errno = mysqli_errno($this->m_link_id);
-        $this->m_error = mysqli_error($this->m_link_id);
-      }
-      else
-      {
-        $this->m_errno = mysqli_connect_errno();
-        $this->m_error = mysqli_connect_error();
-      }
-    }
+   /**
+    * Store MySQL errors in internal variables
+    * @access private
+    */
+   function _setErrorVariables()
+   {
+     if($this->m_link_id!="")
+     {
+       $this->m_errno = mysqli_errno($this->m_link_id);
+       $this->m_error = mysqli_error($this->m_link_id);
+     }
+     else
+     {
+       $this->m_errno = mysqli_connect_errno();
+       $this->m_error = mysqli_connect_error();
+     }
+   }
+   
+   function _translateError()
+   {
+     if($this->m_link_id!="")
+     {
+       $this->m_errno = mysqli_errno($this->m_link_id);
+       $this->m_error = mysqli_error($this->m_link_id);
+     }
+     else
+     {
+       $this->m_errno = mysqli_connect_errno();
+       $this->m_error = mysqli_connect_error();
+     }
+     switch ($this->m_errno)
+     {
+       case    0: return DB_SUCCESS;
+       case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
+       case 1045: return DB_ACCESSDENIED_USER;
+       case 1049: return DB_UNKNOWNDATABASE;
+       case 2004:
+       case 2005: return DB_UNKNOWNHOST;
+       default:
+                  return DB_UNKNOWNERROR;
+     }
+   }
 
    /**
     * Disconnect from database
@@ -97,7 +122,7 @@
    {
      if ($this->m_link_id)
      {
-       atkdebug("Disconnecting from database...");
+       atkdebug("Disconnecting from database...");       
        @mysqli_close($this->m_link_id);
        $this->m_link_id = 0;
      }
@@ -128,7 +153,7 @@
        /* free old results */
        if ($this->m_query_id)
        {
-         //@mysqli_free_result($this->m_query_id);
+         @mysqli_free_result($this->m_query_id);
          $this->m_query_id = 0;
        }
 
@@ -137,6 +162,17 @@
        /* query database */
        $this->m_query_id = @mysqli_query($this->m_link_id, $query);
 
+       $unlock_table = false;
+       if (mysqli_errno($this->m_link_id) == 1100)
+       {
+         $this->locktables_fallback_on_error($query,$mode);
+         $unlock_table = true;
+       }
+       else
+       {
+         $this->m_affected_rows = mysql_affected_rows();
+       }
+
        $this->m_row = 0;
 
        $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
@@ -144,15 +180,56 @@
        /* invalid query */
        if (!$this->m_query_id)
        {
-         atkerror("Invalid SQL: $query");
-         $this->halt($this->_translateError());
+         $this->halt("Invalid SQL: $query");
          return false;
        }
+       
+       if ($unlock_table)
+         $this->unlock();
 
        /* return query id */
        return true;
      }
      return false;
+   }
+   
+   /**
+     * This method provides a fallback when error 1100 occurs
+     * (Table ... not locked using LOCK TABLES). This method locks
+     * the table and runs the query again.
+     *
+     * @param string $query The original query that failed
+     * @param string $querymode Kind of query - 'w' for write or 'r' for read
+     */
+   function locktables_fallback_on_error($query, $querymode='w')
+   {
+     $error = mysqli_error($this->m_link_id);
+
+     $matches = array();
+     preg_match("/\'(.*)\'/U",$error,$matches);
+
+     if (is_array($matches) && sizeof($matches) == 2)
+     {
+       atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (".$this->m_link_id.").</b>");
+       $table = $matches[1];
+
+       if ($this->m_query_id)
+       {
+         if (is_resource($this->m_query_id))
+          mysqli_free_result($this->m_query_id);
+         $this->m_query_id = 0;
+       }
+       $this->m_affected_rows = 0;
+
+       $this->lock($table,($querymode == 'r' ? 'read' : 'write'));
+       $this->m_query_id = @mysqli_query($this->m_link_id, $query);
+
+       $this->m_affected_rows = mysqli_affected_rows();
+     }
+     else
+     {
+       atk_var_dump($matches,"<b>Error 1100 occured but callback was unable to get tablename from errormessage:</b>");
+     }
    }
 
    /**
@@ -204,6 +281,7 @@
      if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock */
+       atkdebug("lock tables $table $mode");
        $result = @mysqli_query($this->m_link_id, "lock tables $table $mode");
        if (!$result) $this->halt("$mode lock on $table failed.");
 
@@ -223,6 +301,7 @@
      if ($this->connect('w')==DB_SUCCESS)
      {
        /* unlock */
+       atkdebug("unlock tables");
        $result = @mysqli_query($this->m_link_id, "unlock tables");
        if (!$result) $this->halt("unlock tables failed.");
 
