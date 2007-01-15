@@ -89,31 +89,6 @@
        $this->m_error = mysqli_connect_error();
      }
    }
-   
-   function _translateError()
-   {
-     if($this->m_link_id!="")
-     {
-       $this->m_errno = mysqli_errno($this->m_link_id);
-       $this->m_error = mysqli_error($this->m_link_id);
-     }
-     else
-     {
-       $this->m_errno = mysqli_connect_errno();
-       $this->m_error = mysqli_connect_error();
-     }
-     switch ($this->m_errno)
-     {
-       case    0: return DB_SUCCESS;
-       case 1044: return DB_ACCESSDENIED_DB;  // todofixme: deze komt bij mysql pas na de eerste query.
-       case 1045: return DB_ACCESSDENIED_USER;
-       case 1049: return DB_UNKNOWNDATABASE;
-       case 2004:
-       case 2005: return DB_UNKNOWNHOST;
-       default:
-                  return DB_UNKNOWNERROR;
-     }
-   }
 
    /**
     * Disconnect from database
