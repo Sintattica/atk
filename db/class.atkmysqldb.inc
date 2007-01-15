@@ -44,7 +44,7 @@
       // set the user error's
       $this->m_type = "mysql";
       $this->m_vendor = "mysql";
-      $this->m_user_error=array(1369);
+      $this->m_user_error=array();
     }
 
     /**
@@ -95,8 +95,7 @@
      */
     function _translateError()
     {
-      if ($this->m_errno === 0)
-        $this->_setErrorVariables();
+      $this->_setErrorVariables();
       switch ($this->m_errno)
       {
         case    0: return DB_SUCCESS;
@@ -137,7 +136,7 @@
     {
       if ($this->m_link_id)
       {
-        atkdebug("Disconnecting from database...");
+        atkdebug("Disconnecting from database...");         
         @mysql_close($this->m_link_id);
         $this->m_link_id = 0;
       }
@@ -178,27 +177,75 @@
 
         /* query database */
         $this->m_query_id = @mysql_query($query, $this->m_link_id);
+        
+        $unlock_table = false;
+        if (mysql_errno($this->m_link_id) == 1100)
+        {
+          $this->locktables_fallback_on_error($query, $mode);
+          $unlock = true;
+        }
+        else 
+        {
+          $this->m_affected_rows = mysql_affected_rows();
+        }
+        
         $this->m_row = 0;
-
-
-        //$this->m_errno = mysql_errno();
-        //$this->m_error = mysql_error();
-        $this->m_affected_rows = mysql_affected_rows();
 
         /* invalid query */
         if (!$this->m_query_id)
         {
           $this->halt("Invalid SQL: $query");
-          $this->halt($this->_translateError());
           return false;
         }
 
+        if ($unlock_table)
+          $this->unlock();
+        
         /* return query id */
         return true;
       }
       return false;
     }
 
+    /**
+     * This method provides a fallback when error 1100 occurs
+     * (Table ... not locked using LOCK TABLES). This method locks
+     * the table and runs the query again.
+     *
+     * @param string $query The original query that failed
+     * @param string $querymode Kind of query - 'w' for write or 'r' for read
+     */
+    function locktables_fallback_on_error($query, $querymode='w')
+    {
+      $error = mysql_error($this->m_link_id);
+      $matches = array();
+      
+      preg_match("/\'(.*)\'/U",$error,$matches);
+          
+      if (is_array($matches) && sizeof($matches) == 2)
+      {
+        atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (".$this->m_link_id.").</b>");
+        $table = $matches[1];
+        
+        if ($this->m_query_id)
+        {
+          if (is_resource($this->m_query_id))
+            mysql_free_result($this->m_query_id);
+          $this->m_query_id = 0;
+        }
+        $this->m_affected_rows = 0;
+        
+        $this->lock($table,($querymode=='r' ? 'read' : 'write'));
+        $this->m_query_id = @mysql_query($query, $this->m_link_id);
+        
+        $this->m_affected_rows = mysql_affected_rows();
+      } 
+      else
+      {
+        atk_var_dump($matches,"<b>Error 1100 occured but callback was unable to get tablename from errormessage:</b>");
+      }
+    }
+    
     /**
      * Goto the next record in the result set
      * @return result of going to the next record
@@ -275,7 +322,7 @@
       if ($this->connect("w")==DB_SUCCESS)
       {
         /* unlock */
-        $result = @mysql_query("unlock tables");
+        $result = @mysql_query("unlock tables",$this->m_link_id);
         if (!$result) $this->halt("unlock tables failed.");
 
         /* return result */
@@ -401,12 +448,6 @@
         {
           list($dbname,$tablename) = explode(".",$table);
           $id = @mysql_list_fields($dbname, $tablename);
-
-
-          if($this->m_database<>$dbname)
-          {
-            @mysql_select_db($this->m_database, $this->m_link_id);
-          }
         }
         else
         {
