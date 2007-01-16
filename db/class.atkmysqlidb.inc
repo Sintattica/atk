@@ -145,12 +145,10 @@
        }
        else
        {
-         $this->m_affected_rows = mysql_affected_rows();
+         $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
        }
 
        $this->m_row = 0;
-
-       $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
 
        /* invalid query */
        if (!$this->m_query_id)
@@ -199,7 +197,7 @@
        $this->lock($table,($querymode == 'r' ? 'read' : 'write'));
        $this->m_query_id = @mysqli_query($this->m_link_id, $query);
 
-       $this->m_affected_rows = mysqli_affected_rows();
+       $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
      }
      else
      {

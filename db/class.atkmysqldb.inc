@@ -238,7 +238,7 @@
         $this->lock($table,($querymode=='r' ? 'read' : 'write'));
         $this->m_query_id = @mysql_query($query, $this->m_link_id);
         
-        $this->m_affected_rows = mysql_affected_rows();
+        $this->m_affected_rows = mysql_affected_rows($this->m_link_id);
       } 
       else
       {
