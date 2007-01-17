@@ -35,8 +35,7 @@
   if (atkconfig("fullscreen"))
   {
     // Fullscreen mode. Use index.php as launcher, and launch app.php fullscreen.
-    if ($theme->getAttribute('useframes',true))
-    {
+    
       atksession();
       atksecure();
 
@@ -59,18 +58,19 @@
       $output->output($page->render(text('app_launcher'), true));
 
       $output->outputFlush();
-
-    }
-    else
-    {
-      $indexpage = new atknew('atk.ui.atkindexpage');
-      $indexpage->generate();
-    }
   }
   else
   {
-    // Regular mode. app.php can be included directly.
-    include "app.php";
+    if ($theme->getAttribute('useframes',true))
+    {
+      // Regular mode. app.php can be included directly.
+      include "app.php";
+    }
+    else
+    {
+      $indexpage = &atknew('atk.ui.atkindexpage');
+      $indexpage->generate();
+    }
   }
   
 ?>
