@@ -9,7 +9,6 @@
     {if isset($auth_max_loginattempts_exceeded)}
       {$auth_max_loginattempts_exceeded}
     {else}
-      {$atksessionformvars}
       {if isset($auth_mismatch)}{$auth_mismatch}<br />{/if}
       {if isset($auth_account_locked)}{$auth_account_locked}<br />{/if}
     
