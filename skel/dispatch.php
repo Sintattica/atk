@@ -29,7 +29,7 @@
   $config_atkroot = "./";
   include_once("atk.inc");
 
-  atksession();
+  atksession();   
 
   $session = &atkSessionManager::getSession();
   $output = &atkOutput::getInstance();
@@ -62,6 +62,7 @@
   else
   {
     atksecure();
+    atkimport("atk.ui.atkpage");
 
     $lockType = atkconfig("lock_type");
     if (!empty($lockType)) atklock();
