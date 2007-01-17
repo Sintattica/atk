@@ -1,27 +1,27 @@
 <?php
 
   class atkIndexPage
-  {    
+  {
     /**
      * @var atkPage
      */
     var $m_page;
-    
+
     /**
      * @var atkTheme
      */
     var $m_theme;
-    
+
     /**
      * @var atkUi
      */
     var $m_ui;
-    
+
     /**
      * @var atkOutput
      */
     var $m_output;
-    
+
     function atkIndexPage()
     {
       $this->m_page =   &atkinstance("atk.ui.atkpage");
@@ -29,7 +29,7 @@
       $this->m_theme =  &atkinstance('atk.ui.atktheme');
       $this->m_output = &atkinstance('atk.ui.atkoutput');
     }
-    
+
     function generate()
     {
       $this->atkGenerateTop();
@@ -39,7 +39,7 @@
       $this->m_output->output($this->m_page->render(atktext('app_title')), true);
       $this->m_output->outputFlush();
     }
-    
+
     function atkGenerateMenu()
     {
       /* general menu stuff */
@@ -112,7 +112,8 @@
 
           if (is_object($obj))
           {
-            $obj->loadDispatchPage($ATK_VARS);
+            $controller = &atkinstance("atk.atkcontroller");
+            $controller->invoke("loadDispatchPage", $ATK_VARS);
           }
           else
           {

@@ -1577,11 +1577,13 @@
    * @param string $node the (module.)node name
    * @param string $action the atk action the link will perform
    * @param string $params: A key/value array with extra options for the url
-   * @param string $phpfile The php file to use for dispatching, defaults to dispatch.php
+   * @param string $phpfile The php file to use for dispatching, if not set we look at the theme for the dispatchfile
    * @return string url for the node with the action
    */
-  function dispatch_url($node, $action, $params=array(),$phpfile='dispatch.php')
+  function dispatch_url($node, $action, $params=array(),$phpfile='')
   {
+    $theme = &atkinstance('atk.ui.atktheme');
+    if (!$phpfile) $phpfile =  $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
     $url = $phpfile;
     $atkparams = array();
     if($node!="")
