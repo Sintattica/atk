@@ -94,9 +94,8 @@
         $default_date = "";
       }
 
-
       if($default_date=="") { $default_date = ""; }
-      if($default_time=="") { $default_time = date("H:i"); }
+      if($default_time=="") { $default_time = ""; }
 
       $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time, $flags);
       $this->m_date = new atkDateattribute($name,'','',0,0,$flags);
@@ -199,11 +198,10 @@
       //$tmp_rec = $rec;
       //$tmp_rec[$this->fieldname()]=$datetime[1];
       $time=$this->m_time->value2db($rec);
-
-      if($time!='NULL' && $date!='NULL')
+      if($time!=NULL && $date!=NULL)
         $result = $date." ".$time;
       else
-        $result = 'NULL';
+        $result = NULL;
      return $result;
     }
     /**
@@ -257,7 +255,7 @@
     {
       if ($mode == "add" || $mode == "update")
       {
-        if($this->value2db($rec) == '' || $this->value2db($rec) == 'NULL')
+        if($this->value2db($rec) == NULL)
         {
           $query->addField($this->fieldName(),'NULL','','',false);
         }
