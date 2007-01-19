@@ -2145,6 +2145,14 @@
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
       $this->m_initialised = true;
+      
+      // Call the attributes nodeInit method to doe some last time
+      // initialization if necessary.
+      foreach (array_keys($this->m_attribList) as $attribname)
+      {
+        $p_attrib = &$this->m_attribList[$attribname];
+        $p_attrib->nodeInit($this);
+      }
     }
 
     /**
@@ -2978,7 +2986,10 @@
       $selectlist = array();
       $loadlist = array();
 
-      if($order=="" && $this->m_default_order!="") $order=$this->m_default_order;
+      if ($order === false) 
+        $order = "";
+      else if($order=="" && $this->m_default_order!="") 
+        $order=$this->m_default_order;
 
       $db = &$this->getDb();
       $query = &$db->createQuery();

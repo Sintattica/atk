@@ -1281,7 +1281,7 @@
       // No selection override exists, simply add the record key to the selector.
       $filter = $this->createFilter($record);
       $selector = "($selectedKey)".($filter != NULL ? " AND ($filter)" : "");
-      list($result) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->m_primaryKey,$mode);
+      list($result) = $this->m_destInstance->selectDb($selector,false,"","",$this->m_destInstance->m_primaryKey,$mode);
 
       return $result != NULL;
     }

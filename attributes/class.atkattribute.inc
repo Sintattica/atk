@@ -1396,6 +1396,17 @@
     function init()
     {
     }
+    
+    /**
+     * This function is called at the end of the node's init method.
+     *
+     * The regular atkAttribute has no implementation for this method, but
+     * derived attributes may override this method to perform custom
+     * initialization.
+     */    
+    function nodeInit()
+    {
+    }
 
     /**
      * This function is called to compare if two records are considered equal
