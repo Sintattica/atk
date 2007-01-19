@@ -108,6 +108,8 @@
     {
       if (!is_array($valueArray) || count($valueArray)==0)
       {
+        if (is_numeric($valueArray))
+          $flags = $valueArray;
         $valueArray = $optionArray;
       }
 

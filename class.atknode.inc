@@ -807,7 +807,7 @@
       // handles the constructor.
       // To work around this, we reassign the this pointer to the attributes as
       // soon as possible AFTER the constructor. (the dispatcher function)
-      $attribute->m_ownerInstance = &$this;
+      $attribute->setOwnerInstance($this);
 
       if ($attribute->hasFlag(AF_PRIMARY))
       {
@@ -2110,7 +2110,7 @@
       foreach (array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
-        $p_attrib->m_ownerInstance = &$this;
+        $p_attrib->setOwnerInstance($this);
       }
 
       // See if there are modules active that modify this node, and apply the

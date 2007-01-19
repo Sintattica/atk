@@ -534,6 +534,16 @@
       $this->addCSSClass(get_class($this));
       atkimport("atk.keyboard.atkkeyboard");
     }
+    
+    /**
+     * Sets the owner instance.
+     *
+     * @param atkNodeType $instance
+     */
+    function setOwnerInstance(&$instance)
+    {
+      $this->m_ownerInstance = &$instance;
+    }
 
     /**
      * Check if the attribute has a certain flag.

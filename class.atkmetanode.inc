@@ -242,6 +242,9 @@ class atkMetaNode extends atkNode
     $metaPolicy->init();
     $this->m_metaHandler->handle($metaPolicy, $this);
     $metaPolicy->apply();
+    
+    if (method_exists($this, 'postMeta'))
+      $this->postMeta();
   }
 
   /**

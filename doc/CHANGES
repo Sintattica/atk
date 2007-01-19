@@ -251,6 +251,12 @@ Changed in ATK 5.7
   atkFileAttribute. (bug #791) [Sandy]
 + Added savepoint support to ATK DB layer (only supported
   when using one of the OCI drivers for now). [Peter]
++ Added support for postMeta function which will be called after
+  the meta function when the attributes have been added to the node
+  (when using an atkMetaNode). [Peter]
++ Added support for passing flags as the third parameter to 
+  atkListAttribute. [Peter]
+* Owner instance is now set in attributes using setOwnerInstance. [Peter]
 * Improved ATK test suite output. [Peter]
 * Improved default Oracle date format. [Peter]
 * When field.focus fails we catch the error so the user doesn't 
