@@ -114,7 +114,16 @@
     }    
     
     function validate(&$record, $mode)
-    {
+    {      
+      //if the datetime string is not an array, make it one to make sure the 
+      //validation functions of atkDateAttribute and atkTimeAttribute do not 
+      //cripple the data.
+      if(!is_array($record[$this->fieldName()]))
+      {
+        $stamp = strtotime($record[$this->fieldName()]);
+        $record[$this->fieldName()] = $this->datetimeArray(date("YmdHi",$stamp));
+      }
+      
       $this->m_date->validate($record,$mode);
       $this->m_time->validate($record,$mode);
     }
@@ -189,20 +198,20 @@
 
 
     function value2db($rec)
-    {
-      //$datetime = split(" ",$rec[$this->fieldname()]);
-      //$tmp_rec = $rec;
-      //$tmp_rec[$this->fieldname()]=$datetime[0];
-      $date=$this->m_date->value2db($rec);
-
-      //$tmp_rec = $rec;
-      //$tmp_rec[$this->fieldname()]=$datetime[1];
-      $time=$this->m_time->value2db($rec);
-      if($time!=NULL && $date!=NULL)
-        $result = $date." ".$time;
-      else
-        $result = NULL;
-     return $result;
+    { 
+      if (is_array($rec[$this->fieldName()]))
+      {
+        $date = $this->m_date->value2db($rec);
+        $time = $this->m_time->value2db($rec);
+        if ($date != NULL && $time != NULL)
+          return $date." ".$time;
+      }
+      else if (!empty($rec[$this->fieldName()]))
+      {
+        $stamp = strtotime($rec[$this->fieldName()]);        
+        return date('Y-m-d H:m:s',$stamp);
+      }
+     return NULL;
     }
     /**
      * Convert database value to datetime array

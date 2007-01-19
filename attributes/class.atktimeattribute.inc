@@ -59,7 +59,7 @@
     {
       return array("hours" => substr($time, 0, 2),
                    "minutes" => substr($time, 2, 2),
-                   "seconds" => substr($time, 4, 2));
+                   "seconds" => substr($time, 4, 2));      
     }
 
 
@@ -178,16 +178,15 @@
 
     function value2db($rec)
     {
+      $hours = $rec[$this->fieldName()]["hours"];
+      $minutes = $rec[$this->fieldName()]["minutes"];
+      $seconds = $rec[$this->fieldName()]["seconds"];
 
-     $hours = $rec[$this->fieldName()]["hours"];
-     $minutes = $rec[$this->fieldName()]["minutes"];
-     $seconds = $rec[$this->fieldName()]["seconds"];
+      if ($hours=="" || $minutes=="") return NULL;
 
-     if ($hours=="" || $minutes=="") return NULL;
+      $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
 
-     $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
-
-     return $result;
+      return $result;
     }
 
 		/**
@@ -209,7 +208,7 @@
       }
       return $retval;
     }
-
+    
     /**
      * Returns a piece of html code that can be used in a form to search values
      * @param $record Array with fields
