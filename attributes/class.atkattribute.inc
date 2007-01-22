@@ -2109,7 +2109,7 @@
         $isPartial = $this->m_ownerInstance->m_partial != NULL;
         if (!$isPartial)
         {
-          $code = "ATK.Attribute.refresh('$attrField', '$url', true)";
+          $code = "ATK.Attribute.refresh('$url', true)";
         }
 
         $page->register_loadscript($code);
