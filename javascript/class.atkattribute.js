@@ -6,7 +6,7 @@ ATK.Attribute = {
   /**
    * Refresh the attribute input form using Ajax.
    */   
-  refresh: function(field, url, focusFirstFormEl) {
+  refresh: function(url, focusFirstFormEl) {
     var elements = Form.getElements('entryform');
     var queryComponents = new Array();
 
@@ -20,9 +20,9 @@ ATK.Attribute = {
 
     var params = queryComponents.join('&');  
             
-    var func = null;
+    var func = function(transport) { transport.responseText.evalScripts(); };
     if (focusFirstFormEl) {
-      func = function() { try { placeFocus(); } catch (ex) {} };
+      func = function(transport) { transport.responseText.evalScripts(); try { placeFocus(); } catch (ex) {} };
     }
 
     
@@ -41,6 +41,6 @@ ATK.Attribute = {
     Position.clone(field, span);
     */
     
-    new Ajax.Updater(field, url, { method: 'post', parameters: params, evalScripts: true, asynchronous: true, onComplete: func });        
+    new Ajax.Request(url, { method: 'post', parameters: params, evalScripts: true, asynchronous: true, onComplete: func });        
   }
 };

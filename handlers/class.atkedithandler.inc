@@ -315,7 +315,7 @@
             $editsrc.=$tooltip."&nbsp;";
           }
 
-          $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["name"]);
+          $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["id"]);
 
           $tplfield["full"] = $editsrc;
         }

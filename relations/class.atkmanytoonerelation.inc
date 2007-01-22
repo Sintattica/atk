@@ -591,6 +591,13 @@
           $recordset = $this->_getSelectableRecords($record, 'select');
           if(count($recordset)==0) $editflag = false;
 
+          $onchange='';
+          if (count($this->m_onchangecode))
+          {
+            $onchange = 'onChange="'.$id.'_onChange(this);"';
+            $this->_renderChangeHandler($fieldprefix);
+          }          
+          
           // autoselect if there is only one record (if obligatory is not set,
           // we don't autoselect, since user may wist to select 'none' instead
           // of the 1 record.
@@ -602,13 +609,6 @@
           }
           else
           {
-            $onchange='';
-            if (count($this->m_onchangecode))
-            {
-              $onchange = 'onChange="'.$id.'_onChange(this);"';
-              $this->_renderChangeHandler($fieldprefix);
-            }
-
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
             $result.= '<select id="'.$id.'" name="'.$id.'" class="atkmanytoonerelation" '.$onchange.'>';
             if ((!$this->hasFlag(AF_OBLIGATORY) && !$this->hasFlag(AF_RELATION_NO_NULL_ITEM)) || (atkconfig("list_obligatory_null_item")&&!is_array($value)))

@@ -1404,7 +1404,7 @@
      * derived attributes may override this method to perform custom
      * initialization.
      */    
-    function nodeInit()
+    function postInit()
     {
     }
 
@@ -2063,7 +2063,22 @@
       $record = $this->m_ownerInstance->updateRecord();
       $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
       $this->_registerDependees($mode, $fieldprefix);
-      return $this->getEdit($mode, $record, $fieldprefix);
+      
+      $arr = array('fields' => array());
+      $defaults = &$record;
+      $error = array();
+      
+      $this->addToEditArray($mode, $arr, $defaults, $error, '');
+
+      $script = '';
+      foreach ($arr['fields'] as $field)
+      {
+        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = '".addslashes(htmlentities($field['html']))."'.unescapeHTML();\r\n";
+      }
+      
+      $this->_registerDependees($mode, $fieldprefix);                  
+      
+      return '<script type="text/javascript">'.$script.'</script>';
     }
 
     /**
@@ -2086,10 +2101,9 @@
 
       foreach ($this->m_dependees as $attribName)
       {
-        $attrField = str_replace('.', '_', $this->m_ownerInstance->atkNodeType())."_$attribName";
         $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.$attribName.refresh", array("atkfieldprefix" => $fieldprefix)));
 
-        $code = "ATK.Attribute.refresh('$attrField', '$url')";
+        $code = "ATK.Attribute.refresh('$url');";
         $this->addOnChangeHandler($code);
 
         $isPartial = $this->m_ownerInstance->m_partial != NULL;

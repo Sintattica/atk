@@ -256,8 +256,11 @@ Changed in ATK 5.7
   (when using an atkMetaNode). [Peter]
 + Added support for passing flags as the third parameter to 
   atkListAttribute. [Peter]
-+ Added atkAttribute::nodeInit method which is called from 
++ Added atkAttribute::postInit method which is called at the end of 
   atkNode's init method. [Peter]
+* Improved partial refresh support for attributes. Attributes can now
+  refresh an arbitrary number of fields using JavaScript code. This
+  is necessary for atkOneToOneRelations etc. [Peter]
 * Owner instance is now set in attributes using setOwnerInstance. [Peter]
 * Improved ATK test suite output. [Peter]
 * Improved default Oracle date format. [Peter]
