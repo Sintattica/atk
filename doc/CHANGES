@@ -781,6 +781,14 @@ Changed in ATK 5.7
 * Order in atkNode::selectDb can now completely be disabled by
   passing false for the order parameter. This means even the
   default order is not used. [Peter]
+* atkDateTimeAttribute atkDateAttribute and atkTimeAttribute now use NULL
+  instead of 'NULL' when checking for empty fields. [Dennis, Peter]
+* The default value for empty time fields in atkDateTimeAttribute has changed
+  from date("H:s") to "". [Dennis]
+* Fixed: The validation function of atkDateTimeAttribute now first transforms the 
+  datestring into an array (if it isn't allready) before passing the data 
+  to the validation function of dateAttribute and timeAttribute.
+  This prevents the time-part of the string from being corrupted. [Dennis]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
