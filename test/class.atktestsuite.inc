@@ -121,7 +121,7 @@
         $this->_setupTestDatabases();
       }
 
-      $test = &new GroupTest("Full ATK test");
+      $test = &new GroupTest("Test Page");
       $class = $_REQUEST['class'];
       $testclass = $this->getTestCaseLocationForClass($class);
 
