@@ -602,7 +602,11 @@
           // we don't autoselect, since user may wist to select 'none' instead
           // of the 1 record.
           $result = "";
-          if ((count($recordset)==1 || $this->_checkPrimaryKeysForSelector($recordset))&&$this->hasFlag(AF_OBLIGATORY))
+          if (count($recordset) == 0)
+          {
+            $result .= $this->getNoneLabel();
+          }
+          else if ((count($recordset)==1 || $this->_checkPrimaryKeysForSelector($recordset))&&$this->hasFlag(AF_OBLIGATORY))
           {
             $result.= $this->m_destInstance->descriptor($recordset[0])."&nbsp;&nbsp;";
             $result.= $this->hide(array($this->fieldName()=>$recordset[0]), $fieldprefix);

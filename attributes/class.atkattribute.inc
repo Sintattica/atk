@@ -527,7 +527,7 @@
     function atkAttribute($name, $flags = 0, $size = 0)
     {
       $this->m_name = $name;
-      $this->m_flags = (double)$flags;
+      $this->m_flags = (int)$flags;
       $this->setAttribSize($size);
 
       // default class

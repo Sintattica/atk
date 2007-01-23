@@ -258,6 +258,8 @@ Changed in ATK 5.7
   atkListAttribute. [Peter]
 + Added atkAttribute::postInit method which is called at the end of 
   atkNode's init method. [Peter]
+* If there is not selection possible for an atkManyToOneAttribute
+  show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now
   refresh an arbitrary number of fields using JavaScript code. This
   is necessary for atkOneToOneRelations etc. [Peter]
