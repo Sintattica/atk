@@ -49,8 +49,11 @@
     
     function paintPass($message)
     {
-      parent::paintPass($message);
-      $this->paintLine($message, "pass");
+      if($_REQUEST["showpassed"])
+      {
+        parent::paintPass($message);
+        $this->paintLine($message, "pass");
+      }
     }
 
     function paintFail($message)
