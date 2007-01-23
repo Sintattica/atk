@@ -258,6 +258,10 @@ Changed in ATK 5.7
   atkListAttribute. [Peter]
 + Added atkAttribute::postInit method which is called at the end of 
   atkNode's init method. [Peter]
++ Added setAutoCompleteSaveForm function to atkManyToOneRelation.
+  This determines if the select link should use atkSubmit or not.
+  This can be used if the autocomplete function is used in other actions
+  than add or edit. [Lineke]
 * If there is not selection possible for an atkManyToOneAttribute
   show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now
