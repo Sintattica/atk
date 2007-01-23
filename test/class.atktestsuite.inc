@@ -120,10 +120,13 @@
         // setup the test database(s)
         $this->_setupTestDatabases();
       }
-
       $test = &new GroupTest("Test Page");
-      $class = $_REQUEST['class'];
-      $testclass = $this->getTestCaseLocationForClass($class);
+      
+      if($_REQUEST['class']) $class = $_REQUEST['class'];
+      else $class = $_REQUEST['atkclass'];
+      
+      if(file_exists(getClassPath($class))) $testclass = $class;
+      else $testclass = $this->getTestCaseLocationForClass($class); 
 
       if ($class && file_exists(getClassPath($testclass)))
       {
