@@ -871,8 +871,8 @@
         $this->m_relations[strtolower(get_class($attribute))][$attribute->fieldName()]=&$attribute;
       }
       $attribute->setTabs($this->m_attributeTabs[$attribute->fieldName()]);
-      
-      
+
+
       return $attribute;
     }
 
@@ -2145,7 +2145,7 @@
       $this->m_defaultlanguage = strtoupper(atkconfig("defaultlanguage"));
 
       $this->m_initialised = true;
-      
+
       // Call the attributes postInit method to doe some last time
       // initialization if necessary.
       foreach (array_keys($this->m_attribList) as $attribname)
@@ -2767,9 +2767,11 @@
      * @param String $mode The action for which the selectDb is called.
      *                     This param is used to determine which attributes
      *                     to include in the query and which not to include.
+     * @param boolean $distinct Perform a distinct selection (no duplicate
+     *                          records). Defaults to true.
      * @return int Number of records
      */
-    function countDb($selector="", $excludeList="", $includeList="", $mode="")
+    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=true)
     {
       $searching = false;
       $loadlist = array();
@@ -2887,7 +2889,7 @@
       $mltool = &atkinstance("atk.utils.atkmlsplitter");
       $mltool->addMlCondition($query,$this,$mode,$this->m_table);
 
-      $querystring = $query->buildCount();
+      $querystring = $query->buildCount($distinct);
       $db = &$this->getDb();
       $result = $db->getrows($querystring);
 
@@ -2986,9 +2988,9 @@
       $selectlist = array();
       $loadlist = array();
 
-      if ($order === false) 
+      if ($order === false)
         $order = "";
-      else if($order=="" && $this->m_default_order!="") 
+      else if($order=="" && $this->m_default_order!="")
         $order=$this->m_default_order;
 
       $db = &$this->getDb();
@@ -3586,7 +3588,7 @@
     function deleteDb($selector,$exectrigger=true,$failwhenempty=false)
     {
       $recordset = $this->selectDb($selector,"","","","","delete");
-      
+
       // nothing to delete, throw an error (determined by $failwhenempty)!
       if (count($recordset) == 0) return !$failwhenempty;
 
@@ -4061,8 +4063,8 @@
     function &getHandler($action)
     {
       atkdebug("atkNode::getHandler(); action: ".$action);
-      atkimport("atk.handlers.atkactionhandler");            
-      
+      atkimport("atk.handlers.atkactionhandler");
+
       // for backwards compatibility we first check if a handler exists without using the module name
       $handler = &atkGetNodeHandler($this->m_type, $action);
 
@@ -4077,10 +4079,10 @@
       {
         $handler = &atknew($handler);
       }
-        
+
       // The node handler might return a function as nodehandler. We cannot
       // return a function so we ignore this option.
-      
+
       // TODO: why not implement a base atkfunctionactionhandler which just calls the given function?
       //       this would probably only work fine when using PHP5, but's better then nothing?
       //       or why support functions at all?!
@@ -4134,9 +4136,9 @@
     function attribSort()
     {
       usort($this->m_attribIndexList,array("atknode","attrib_cmp"));
-      
+
       // after sorting we need to update the attribute indices
-      foreach ($this->m_attribIndexList as $index => $info) 
+      foreach ($this->m_attribIndexList as $index => $info)
       {
         $attr = &$this->getAttribute($info['name']);
         $attr->m_index = $index;
