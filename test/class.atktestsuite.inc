@@ -59,6 +59,11 @@
         $testclassname = $elems[1];
         include_once($fullpath);
         $this->m_grouptest->addTestClass($testclassname);
+        if (isset($_REQUEST['list'])) 
+        {
+      	  $ret ='<a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">'.$fullpath.'</a><br>';
+        	echo $ret;
+        }
       }
     }
 
@@ -136,6 +141,8 @@
       {
         $this->_addTestsByTraversing($test,$module);
       }
+      if (isset($_REQUEST['list'])) return;
+      
       if($reporttype=="html")
       {
         $test->run(atknew("atk.test.atktestreporter"));
