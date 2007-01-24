@@ -701,7 +701,7 @@ Changed in ATK 5.7
   be forked. [Jeroen,Peter]
 * Remember atktab in atkformdata because it might be changed in the current
   edit session. [Jeroen,Peter]
-* Bugfix: atkQuery should enclose the FROM clause in parentheses due to
+* Bugfix: atkMysqliQuery should enclose the FROM clause in parentheses due to
   changes in MySQL 5.0.15 to make MySQL more compliant with the standard.
   [Dennis]
 * Fixed issue in MySQL driver which caused connections to be re-used
