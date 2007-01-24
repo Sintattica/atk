@@ -262,6 +262,11 @@ Changed in ATK 5.7
   This determines if the select link should use atkSubmit or not.
   This can be used if the autocomplete function is used in other actions
   than add or edit. [Lineke]
++ Added setAutoCompleteMinRecords function to atkManyToOneRelation.
+  Set the minimal number of records for using the autocomplete
+  functionality. If there are less records the normal dropdown will be
+  used. If you do not use this function, the autocomplete will always
+  be used (if the flag is set ofcourse). [Lineke]
 * If there is not selection possible for an atkManyToOneAttribute
   show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now
