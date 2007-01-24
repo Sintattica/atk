@@ -50,10 +50,8 @@
     function paintPass($message)
     {
       parent::paintPass($message);
-      if(isset($_REQUEST["showpassed"]))
-      {
-        $this->paintLine($message, "pass");
-      }
+      if(isset($_REQUEST["hidepassed"])) return;
+      $this->paintLine($message, "pass");
     }
 
     function paintFail($message)
