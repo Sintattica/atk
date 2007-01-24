@@ -326,14 +326,7 @@
         $first = false;
       }
       
-      $result.= " FROM (";
-      for ($i=0;$i<count($this->m_tables);$i++)
-      {
-        $result.= $this->quoteField($this->m_tables[$i]);
-        if ($this->m_aliases[$i]!="") $result.=" ".$this->m_aliases[$i];
-        if ($i < count($this->m_tables)-1) $result.=", ";
-      }
-      $result.= ") ";
+      $this->_addFrom($result);
 
       for ($i=0;$i<count($this->m_joins);$i++)
       {
@@ -375,6 +368,21 @@
       }
 
       return $result;
+    }
+    
+    /**
+     * Add FROM clause to query.     
+     */
+    function _addFrom(&$query)
+    {
+      $query.= " FROM ";
+      for ($i=0;$i<count($this->m_tables);$i++)
+      {
+        $query.= $this->quoteField($this->m_tables[$i]);
+        if ($this->m_aliases[$i]!="") $query.=" ".$this->m_aliases[$i];
+        if ($i < count($this->m_tables)-1) $query.=", ";
+      }
+      $query.= " ";
     }
 
     /**
