@@ -314,8 +314,17 @@
           $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField());
           $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
           $newrecord = $rel->initial_values();
-          $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; // $record[$this->fieldName()][$i][$this->getRemoteKey()];
-          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey; // $record[$this->m_ownerInstance->primaryKeyField()];
+
+          if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
+          {
+            $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; 
+          }
+          else
+          {
+            $newrecord[$this->getRemoteKey()] = $remKey;        
+          }
+
+          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey; 
 
           // First check if the record does not exist yet.
           /* @var $rel atkNode */

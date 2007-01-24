@@ -326,6 +326,9 @@ Changed in ATK 5.7
   [Lineke]
 * atkShuttleRelation does not use AMDAE anymore, php now supports multi-
   dimensional arrays (might break in older php versions). [Lineke]
+* Fix in atkShuttleRelation: if the field in the intermediairy node pointing 
+  to the destination node is a regular atkAttribute instead of an
+  atkManyToOneRelation, it will now work. [Ivo]
 * When updateDb fails it has to return false in stead of true. [Dennis-Jan]
 * Bugfix in atknode, atkmlsplitter and atkManyToOneRelation
   (m_joinaliases removed from the code) [Sandy, Peter]
