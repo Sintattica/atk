@@ -258,7 +258,7 @@ Changed in ATK 5.7
   atkListAttribute. [Peter]
 + Added atkAttribute::postInit method which is called at the end of 
   atkNode's init method. [Peter]
-+ Added function removeFilter to atkNode. [Patrick]
++ Added function removeFilter to atkNode. [Patrick, Dennis]
 * If there is not selection possible for an atkManyToOneAttribute
   show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now
