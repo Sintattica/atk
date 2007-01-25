@@ -1409,6 +1409,7 @@
      * Search and remove a recordset filter.
      * @param String $filter The filter to search for
      * @param String $value The value to search for in case it is not a fuzzy filter
+     * @return TRUE if the given filter was found and removed, FALSE otherwise.
      */
     function removeFilter($filter, $value="")
     {
@@ -1416,16 +1417,26 @@
       {
         // fuzzy
         $key = array_search($filter, $this->m_fuzzyFilters);
-        if (is_numeric($key)) unset($this->m_fuzzyFilters[$key]);
+        if (is_numeric($key)) 
+        {
+          unset($this->m_fuzzyFilters[$key]);
+          return true;
+        }
       }
       else
       {
         // not fuzzy
         foreach (array_keys($this->m_filters) as $key)
         {
-          if ($filter == $key && $value == $this->m_filters[$key]) unset($this->m_filters[$key]);
+          if ($filter == $key && $value == $this->m_filters[$key])
+          {
+            unset($this->m_filters[$key]);
+            return true;
+          }
         }
       }
+      
+      return false;
     }
 
     /**
