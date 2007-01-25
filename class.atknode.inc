@@ -1406,6 +1406,29 @@
     }
 
     /**
+     * Search and remove a recordset filter.
+     * @param String $filter The filter to search for
+     * @param String $value The value to search for in case it is not a fuzzy filter
+     */
+    function removeFilter($filter, $value="")
+    {
+      if ($value=="")
+      {
+        // fuzzy
+        $key = array_search($filter, $this->m_fuzzyFilters);
+        if (is_numeric($key)) unset($this->m_fuzzyFilters[$key]);
+      }
+      else
+      {
+        // not fuzzy
+        foreach (array_keys($this->m_filters) as $key)
+        {
+          if ($filter == $key && $value == $this->m_filters[$key]) unset($this->m_filters[$key]);
+        }
+      }
+    }
+
+    /**
      * Returns the form buttons for a certain page.
      *
      * Can be overridden by derived classes to define custom buttons.
