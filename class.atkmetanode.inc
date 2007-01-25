@@ -260,7 +260,9 @@ class atkMetaNode extends atkNode
    */
   function initial_values()
   {
-    return $this->m_metaPolicy->getDefaultValues();
+    $record = parent::initial_values();
+    $record = array_merge($record, $this->m_metaPolicy->getDefaultValues());
+    return $record;
   }
 }
 ?>

@@ -690,6 +690,17 @@
     {
       return is_array($postvars)&&isset($postvars[$this->fieldName()]);
     }
+    
+    /**
+     * Initial value. Returns the initial value for this attribute
+     * which will be used in the add form etc.
+     * 
+     * @return mixed initial value for this attribute
+     */
+    function initialValue()
+    {
+      return NULL;
+    }
 
     /**
      * Convert values from an HTML form posting to an internal value for

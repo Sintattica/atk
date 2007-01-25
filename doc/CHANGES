@@ -259,6 +259,10 @@ Changed in ATK 5.7
 + Added atkAttribute::postInit method which is called at the end of 
   atkNode's init method. [Peter]
 + Added function removeFilter to atkNode. [Patrick, Dennis]
++ An attribute can now specify it's own initial value by implementing
+  it's initialValue method. Note: this means you should always call
+  parent::initial_values in your initial values override if you want
+  to use the attribute's own initial value. [Peter]
 * If there is not selection possible for an atkManyToOneAttribute
   show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now

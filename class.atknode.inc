@@ -1758,7 +1758,15 @@
      */
     function initial_values()
     {
-      return array();
+      $record = array();
+      
+      foreach (array_keys($this->m_attribList) as $attrName)
+      {
+        $attr = &$this->getAttribute($attrName);
+        $record[$attr->fieldName()] = $attr->initialValue();
+      }
+      
+      return $record;
     }
 
     /**
