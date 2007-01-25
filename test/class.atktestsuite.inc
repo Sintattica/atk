@@ -59,9 +59,9 @@
         $testclassname = $elems[1];
         include_once($fullpath);
         $this->m_grouptest->addTestClass($testclassname);
-        if (isset($_REQUEST['list'])) 
+        if (isset($_REQUEST['list']))
         {
-      	  $ret ='<a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">'.$fullpath.'</a><br>';
+      	  $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">'.TEST.'</a><br></tr></td>';
         	echo $ret;
         }
       }
@@ -126,12 +126,12 @@
         $this->_setupTestDatabases();
       }
       $test = &new GroupTest("Test Page");
-      
+
       if($_REQUEST['class']) $class = $_REQUEST['class'];
       else $class = $_REQUEST['atkclass'];
-      
+
       if(file_exists(getClassPath($class))) $testclass = $class;
-      else $testclass = $this->getTestCaseLocationForClass($class); 
+      else $testclass = $this->getTestCaseLocationForClass($class);
 
       if ($class && file_exists(getClassPath($testclass)))
       {
@@ -142,7 +142,7 @@
         $this->_addTestsByTraversing($test,$module);
       }
       if (isset($_REQUEST['list'])) return;
-      
+
       if($reporttype=="html")
       {
         $test->run(atknew("atk.test.atktestreporter"));
@@ -176,15 +176,15 @@
       {
         $normalDb = &atkGetDb($normal);
         $testDb = &atkGetDb($test);
-        
+
         $config = atkconfig('db');
         $clone = !isset($config[$test]['clone_structure']) || $config[$test]['clone_structure'];
 
         if ($clone)
         {
-          $testDb->cloneAll($normalDb);  
+          $testDb->cloneAll($normalDb);
         }
-        else 
+        else
         {
           $testDb->deleteAll();
           $testDb->commit();
@@ -224,12 +224,34 @@
         {
           $dir = moduleDir($module);
         }
-        $traverser->traverse($dir);
+        $this->traverse($traverser, $dir);
       }
       else
       {
-        $traverser->traverse(".");
-        $this->_traverseExtraModules($traverser);
+        $this->traverse($traverser. ".", true);
+      }
+    }
+
+    function traverse($traverser, $dir, $extramods=false)
+    {
+      // pre-traverse code
+      if (isset($_REQUEST['list']))
+      {
+        $ret = "<h1>Testcase list</h1>";
+    	  $ret .='<table border="1" cellspacing="0" cellpadding="5">';
+    	  $ret .='<tr><th>Path</th><th>&nbsp;</th></tr>';
+      	echo $ret;
+      }
+
+      // traverse
+      $traverser->traverse($dir);
+      if ($extramods) $this->_traverseExtraModules($traverser);
+
+      // post-traverse code
+      if (isset($_REQUEST['list']))
+      {
+    	  $ret ='</table>';
+      	echo $ret;
       }
     }
 
