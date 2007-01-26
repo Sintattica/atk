@@ -86,6 +86,15 @@
      */
     function setUp()
     {
+      // don't let test-cases influence each other, so make sure
+      // the node repository etc. is empty when we start a new test-case
+      global $g_nodeRepository, $g_moduleRepository, $g_nodeHandlers, $g_nodeListeners, $g_nodeControllers;
+      $g_nodeRepository = array();
+      $g_moduleRepository = array();
+      $g_nodeHandlers = array();
+      $g_nodeListeners = array();
+      $g_nodeControllers = array();
+      
       if ($this->useTestDatabase())
       {
         // switch to the test databases

@@ -47,6 +47,8 @@
 
       $atkmenutop = $ATK_VARS["atkmenutop"];
       if($atkmenutop=="") $atkmenutop="main";
+      if (!is_array($g_menu[$atkmenutop]))
+        $g_menu[$atkmenutop] = array();
       usort($g_menu[$atkmenutop],array("atkplainmenu","menu_cmp"));
 
       $menu.= "<div id='nav'>\n";

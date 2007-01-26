@@ -263,6 +263,8 @@ Changed in ATK 5.7
   it's initialValue method. Note: this means you should always call
   parent::initial_values in your initial values override if you want
   to use the attribute's own initial value. [Peter]
+* atkTestCase:: clear node repository etc. between each test method
+  because test methods may *never* influence each other. [Peter]
 * If there is not selection possible for an atkManyToOneAttribute
   show the none label. Even if obligatory. [Peter]
 * Improved partial refresh support for attributes. Attributes can now
