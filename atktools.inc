@@ -671,6 +671,28 @@
   }
 
   /**
+   * Same as array_merge from php, but this function preserves key=>index
+   * association in case of numerical indexes. Supports unlimited number
+   * of arrays as arguments.
+   *
+   * @param Array $array unlimited number of arrays
+   * @return Array The result of the merge between the given arrays
+   */
+  function atk_array_merge_keys()
+  {
+    $args = func_get_args();
+    $result = array();
+    foreach($args as $array)
+    {
+      foreach($array as $key=>$value)
+      {
+        $result[$key] = $value;
+      }
+    }
+    return $result;
+  }
+
+  /**
    * Since php triggers an error if you perform an in_array on an
    * uninitialised array, we provide a small wrapper that performs
    * an is_array on the haystack first, just to make sure the user

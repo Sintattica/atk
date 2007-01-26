@@ -513,6 +513,7 @@
           atkdebug("Session formdata present");
           foreach($currentitem['atkformdata'] as $var => $value)
           {
+
             // don't override what was passed in the url.
             if (!isset($postvars[$var]))
             {
@@ -520,7 +521,9 @@
             }
             else if (is_array($postvars[$var]) && is_array($value))
             {
-              $postvars[$var] = array_merge($value, $postvars[$var]);
+              // Formdata that was posted earlier needs to be merged with the current
+              // formdata. We use a custom array_merge here to preserve key=>value pairs.
+              $postvars[$var] = atk_array_merge_keys($value, $postvars[$var]);
             }
           }
 
