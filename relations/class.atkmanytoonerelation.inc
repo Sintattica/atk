@@ -1304,8 +1304,17 @@
     function isSelectableRecord($record=array(), $mode="select")
     {
       if ($record[$this->fieldName()] == NULL) return false;
-
+      
       $this->createDestination();
+      
+      // if the value is set directly in the record field we first
+      // need to convert the value to an array
+      if (!is_array($record[$this->fieldName()]))
+      {
+        $record[$this->fieldName()] = array(
+          $this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]
+        );
+      }
 
       $selectedKey = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       if ($selectedKey == NULL) return false;

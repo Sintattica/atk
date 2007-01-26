@@ -263,6 +263,9 @@ Changed in ATK 5.7
   it's initialValue method. Note: this means you should always call
   parent::initial_values in your initial values override if you want
   to use the attribute's own initial value. [Peter]
++ Added support for atkManyToOneRelation to be able to the value of the
+  primarykeyfield directly, instead of having to pass it as an 
+  array. [Peter, Dennis]
 * atkTestCase:: clear node repository etc. between each test method
   because test methods may *never* influence each other. [Peter]
 * If there is not selection possible for an atkManyToOneAttribute
@@ -801,6 +804,8 @@ Changed in ATK 5.7
   datestring into an array (if it isn't allready) before passing the data 
   to the validation function of dateAttribute and timeAttribute.
   This prevents the time-part of the string from being corrupted. [Dennis]
+* Fixed: validateUniqueFieldSets() check did not handle manytoonrelations 
+  correctly. [Peter,Dennis]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
