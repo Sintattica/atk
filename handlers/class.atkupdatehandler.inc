@@ -93,9 +93,7 @@
             if (!isset($this->m_postvars['atknoclose']))
             {
               // 'save and close' was clicked
-              $controller = &atkcontroller::getInstance();
-              $controller->setNode($this->m_node);
-              $location = $controller->feedbackUrl("update", ACTION_SUCCESS, $record, "");
+              $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
               $this->m_node->redirect($location);
             }
             else
