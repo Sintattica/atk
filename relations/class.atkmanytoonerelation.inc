@@ -551,7 +551,7 @@
         $recordset = $this->_getSelectableRecords($record, 'select');
       }
 
-      if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords)
+      if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1))
       {
         $this->createDestination();
         $page = &$this->m_ownerInstance->getPage();
