@@ -128,7 +128,6 @@
       {
         $flags = $flags ? HTML_STRICT : HTML_HEADER|HTML_DOCTYPE;
       }
-
       if (hasFlag($flags, HTML_PARTIAL) && !$postvars["atkdebug"]["force"])
       {
         // turn off debugging in partial mode (ajax snippets)
@@ -176,7 +175,7 @@
     {
       $this->m_postvars = $postvars;
       $node = &$this->getNode();
-      $node->dispatch($postvars, $flags);
+      return $node->dispatch($postvars, $flags);
     }
 
     /**
@@ -582,6 +581,5 @@
       }
       atkerror("atkcontroller::invoke() Undefined method '$methodname' in atkController");
     }
-
   }
 ?>
