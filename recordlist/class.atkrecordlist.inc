@@ -316,7 +316,7 @@
         $listend = "";
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {
-          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");
+          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");          
 
           if (!hasFlag($flags, RL_EMBED))
           {
@@ -542,6 +542,7 @@
           /* multiple actions -> dropdown */
           if (count($list["mra"]) > 1)
           {
+            $page->register_loadscript('updateSelectable(\''.$listName.'\', document.forms[\''.$formName.'\']);');
             $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)">'.
                        '<option value="">'.atktext("with_selected").':</option>';
 

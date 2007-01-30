@@ -91,6 +91,9 @@ function atkSubmitMRA(name, form, target)
   if (typeof(index) == 'undefined') var atkaction = form.elements[name + '_atkaction'].value;
   else var atkaction = form.elements[name + '_atkaction'][index].value;
 
+  /* If no Multi-record action is selected, bail out! */
+  if(atkaction=='')    return;
+  
   /* initial target URL */
   target += '&atkaction=' + atkaction;
 
@@ -103,6 +106,7 @@ function atkSubmitMRA(name, form, target)
   /* add the selectors to the target URL */
   var selectorLength = 0;
   if (typeof(list.length) == 'undefined') list = new Array(list);
+
   for (var i = 0; i < list.length; i++)
     if (!list[i].disabled && list[i].checked)
     {
