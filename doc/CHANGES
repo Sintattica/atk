@@ -812,6 +812,7 @@ Changed in ATK 5.7
   correctly. [Peter,Dennis]
 * Fixed translation of 'error_uniquefieldset', 'this fields' should have 
   been 'these fields'. [Dennis]
+* Fixed: translation of tabs in error messages. [Dennis]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
