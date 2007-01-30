@@ -109,7 +109,7 @@
   "error_primarykey_exists" => "A record with this key already exists",
   "error_tab" => "see",
   "error_uniquefield" => "The value for this field must be unique",
-  "error_uniquefieldset" => "The values for the combination of this fields must be unique",
+  "error_uniquefieldset" => "The values for the combination of these fields must be unique",
   "error_unkown_domain" => "Unkown domain",
   "explain_session_expired" => "Your session has expired. This happens if the application is inactive for a certain amount of time. You can continue work by logging in again.",
   "export" => "Export",

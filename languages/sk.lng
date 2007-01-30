@@ -106,7 +106,7 @@
   "error_primarykey_exists" => "Záznam s tımto primárnym k¾úèom uz existuje",
   "error_tab" => "Viï",
   "error_uniquefield" => "Hodnota tohto po¾a musí by? jedineèná",
-  "error_uniquefieldset" => "The values for the combination of this fields must be unique", // Missing string!!!
+  "error_uniquefieldset" => "The values for the combination of these fields must be unique", // Missing string!!!
   "error_unkown_domain" => "Neznáma doména",
   "explain_session_expired" => "Platnos? pripojenia uplynula z dôvodu dlhej neèinnosti aplikácie. Pokraèova? v práci môete po opätovnom prihlásení.",
   "export" => "Vıstup",
