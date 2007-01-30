@@ -211,23 +211,24 @@
         $query = &$db->createQuery();
         $query->addField('*');
         $query->addTable($this->m_nodeObj->m_table);
+
         foreach($uniqueFieldSet as $field)
         {
           $attrib = &$this->m_nodeObj->m_attribList[$field];
           if ($attrib)
           {
-            if (strstr(strtolower(get_class($attrib)),'attribute'))
+            if (is_a($attrib, 'atkmanytoonerelation') && count($attrib->m_refKey) > 1)
             {
-              $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");
-            }
-            else if (strstr(strtolower(get_class($attrib)),'manytoonerelation') && $attrib->createDestination())
-            {
+              $attrib->createDestination();
               foreach ($attrib->m_refKey as $refkey)
               {
                 $query->addCondition($query->quoteField($refkey)." = '".$db->escapeSQL($record[$attrib->fieldName()][$refkey])."'");
               }
             }
-            else $query->addCondition($query->quoteField($field)." = '".$db->escapeSQL($record[$field])."'");
+            else
+            {
+              $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");              
+            }
           }
           else
             atkerror("Field $field is mentioned in uniquefieldset but does not exist in ".$this->m_nodeObj->atknodetype());
