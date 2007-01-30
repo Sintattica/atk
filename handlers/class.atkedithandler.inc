@@ -189,7 +189,7 @@
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
             if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
-              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module).'</a> )';
+              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.atktext(array("tab_".$error["tab"], $error["tab"]),$node->m_module, $node->m_type).'</a> )';
             else $error_tab = "";
 
             if(!is_array($error['attrib_name']))
