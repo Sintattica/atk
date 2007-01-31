@@ -96,3 +96,6 @@ terms of the MIT license.
 ATK uses the PhpCaptcha class by Edward Eliot. The PhpCaptcha class
 (http://www.ejeliot.com/) is copyright (c) 2005 Edward Eliot and
 available as freeware.
+
+ATK uses the json.org JSON library (http://json.org/json.js).
+

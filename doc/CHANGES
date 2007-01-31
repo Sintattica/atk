@@ -266,6 +266,8 @@ Changed in ATK 5.7
 + Added support for atkManyToOneRelation to be able to the value of the
   primarykeyfield directly, instead of having to pass it as an 
   array. [Peter, Dennis]
++ Added JSON JavaScript library for encoding / "decoding" JavaScript
+  objects to JSON and vice versa. [Peter]
 * atkTestCase:: clear node repository etc. between each test method
   because test methods may *never* influence each other. [Peter]
 * If there is not selection possible for an atkManyToOneAttribute
