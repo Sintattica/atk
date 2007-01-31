@@ -1730,10 +1730,13 @@
         $filter = array();
         foreach($searchfields as $attribname)
         {
+          if (strstr($attribname, '.')) $table = '';
+          else $table = $this->m_destInstance->m_table.".";
+
           if(!$this->m_autocomplete_search_case_sensitive)
-            $tmp = "LOWER(".$this->m_destInstance->m_table.".".$attribname.")";
+            $tmp = "LOWER(".$table.$attribname.")";
           else
-            $tmp = $this->m_destInstance->m_table.".".$attribname;
+            $tmp = $table.$attribname;
 
           switch($this->m_autocomplete_searchmode)
           {
