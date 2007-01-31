@@ -421,7 +421,7 @@
 
       // return
       // g_user always lowercase
-      $this->m_user["name"] =  strtolower($this->m_user["name"]);
+      $this->m_user["name"] =  $this->m_user["name"];
       //Send the username with the header
       //This way we can always retrieve the user from apache logs
       header('user: '.$this->m_user["name"]);
