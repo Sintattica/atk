@@ -813,6 +813,9 @@ Changed in ATK 5.7
 * Fixed translation of 'error_uniquefieldset', 'this fields' should have 
   been 'these fields'. [Dennis]
 * Fixed: translation of tabs in error messages. [Dennis]
+* In atkAttribute the registerDependees function is now only called if the 
+  attribute is not hidden. [Peter, Dennis]
+
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]

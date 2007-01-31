@@ -851,8 +851,6 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
-      $this->_registerDependees($mode, $fieldprefix);
-
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -865,6 +863,8 @@
       /* edit */
       else
       {
+        $this->_registerDependees($mode, $fieldprefix);
+      
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
