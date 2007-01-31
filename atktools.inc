@@ -341,7 +341,7 @@
                 $valArr[] = $name;
               else
               {
-                $valArr[] = $name."=".$value;
+                $valArr[] = $name."=".(is_object($value) ? "object" : $value);
               }
             }
             $stringval = "array(".implode(", ", $valArr).")";
