@@ -289,6 +289,11 @@ atk_var_dump($level, 'Level');
        return $result;
      }
 
+     function userListCompare($a, $b)
+     {
+     	 return strcmp($a["username"], $b["username"]);
+     }
+     
      function getUserList()
      {
        $db = &atkGetDb();
@@ -315,6 +320,7 @@ atk_var_dump($level, 'Level');
        {
          $userlist[] = array("userid"=>$recs[$i][atkconfig("auth_userfield")], "username"=>$stringparser->parse($recs[$i]));
        }
+       usort($userlist, array("auth_db", "userListCompare"));
        return $userlist;
 
      }
