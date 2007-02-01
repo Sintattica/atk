@@ -47,7 +47,7 @@
     {
       $this->m_grouptest = &$grouptest;
     }
-
+    
     function visitFile($fullpath)
     {
       $include = atkArrayNvl($_REQUEST, "include");
@@ -57,12 +57,16 @@
       {
         $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
         $testclassname = $elems[1];
-        include_once($fullpath);
-        $this->m_grouptest->addTestClass($testclassname);
         if (isset($_REQUEST['list']))
         {
+          $fullpath = atkCleanPath($fullpath);          
       	  $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">'.TEST.'</a><br></tr></td>';
         	echo $ret;
+        }
+        else 
+        {
+          include_once($fullpath);
+          $this->m_grouptest->addTestClass($testclassname);
         }
       }
     }

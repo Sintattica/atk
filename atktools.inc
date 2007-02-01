@@ -1752,6 +1752,43 @@
 
     chdir($current_path);
   }
+  
+  /**
+   * Clean-up the given path.
+   *
+   * @param string $path
+   * @return cleaned-up path
+   * 
+   * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
+   */
+  function atkCleanPath($path)
+  {
+    $result = array();
+    
+    $pathArray = explode('/', $path);    
+    if (empty($pathArray[0]))
+      $result[] = '';
+    
+    foreach ($pathArray AS $key => $dir) 
+    {
+      if ($dir == '..') 
+      {
+        if (end($result) == '..' || !array_pop($result)) 
+        {
+          $result[] = '..';
+        } 
+      } 
+      elseif ($dir && $dir != '.') 
+      {
+        $result[] = $dir;
+      }
+    }
+    
+    if (!end($pathArray))
+      $result[] = '';
+    
+    return implode('/', $result);
+  }   
 
   /**
    * Converts an ATK classname ("map1.map2.classname")
@@ -1788,6 +1825,7 @@
    */
   function getClassName($classpath, $class=true)
   {
+    $classpath = atkCleanPath($classpath);
     $elems = explode("/", strtolower($classpath));
     for($counter=0; $counter<=count($elems);$counter++)
     {
@@ -1807,8 +1845,7 @@
       $last = &$elems[count($elems)-2].$elems[count($elems)-1];
     }
 
-    $first = array_shift($elems);
-    $classname = $first. implode(".", $elems);
+    $classname = implode(".", $elems);
 
     return $classname;
   }
