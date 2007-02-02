@@ -296,6 +296,8 @@
     function setAlwaysShowListColumns($value)
     {
       $this->m_alwaysShowListColumns = $value;
+      if($this->m_alwaysShowListColumns)
+        $this->addFlag(AF_FORCE_LOAD);
     }
 
     /**
@@ -1500,7 +1502,7 @@
       if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
 
       foreach ($this->m_listColumns as $attribname)
-      {
+      {        
         $p_attrib = &$this->m_destInstance->getAttribute($attribname);
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
