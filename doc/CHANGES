@@ -269,6 +269,9 @@ Changed in ATK 5.7
 + Added JSON JavaScript library for encoding / "decoding" JavaScript
   objects to JSON and vice versa. [Peter]
 + Added atkCleanPath function for cleaning a given path. [Peter]
++ Added winxp theme. [Lineke]
++ Added atkconfig plugin for setting a smarty var with config variable.
+  [Lineke]
 * atkTestCase:: clear node repository etc. between each test method
   because test methods may *never* influence each other. [Peter]
 * If there is not selection possible for an atkManyToOneAttribute
