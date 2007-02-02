@@ -42,21 +42,21 @@ class atkJSON
    * @static 
    * @private
    */
-  function &_getJSONService()
+  function &_getJSONService($assoc=false)
   {
-    static $service = NULL;
+    static $services = array();
     
-    if ($service == NULL)
+    if ($services[$assoc] == NULL)
     {
       if (!class_exists("Services_JSON"))
       {
         include_once atkconfig('atkroot').'atk/ext/json/json.php';
       }
       
-      $service = new Services_JSON();
+      $services[$assoc] = new Services_JSON($assoc ? SERVICES_JSON_LOOSE_TYPE : 0);
     }
     
-    return $service;
+    return $services[$assoc];
   }
   
   /**
@@ -77,13 +77,14 @@ class atkJSON
    * Decode JSON string.
    *
    * @param string $string JSON string
+   * @param boolean $assoc return as associative array (instead of objects)
    * @return mixed PHP value
    */
-  function decode($string)
+  function decode($string, $assoc=false)
   {
     if (function_exists('json_decode'))
-      return json_decode($string);      
-    $service = atkJSON::_getJSONService();
+      return json_decode($string, $assoc);      
+    $service = atkJSON::_getJSONService($assoc);
     return $service->decode($string);
   }
 }
