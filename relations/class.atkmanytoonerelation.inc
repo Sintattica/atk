@@ -555,69 +555,7 @@
 
       if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) && (is_object($this->m_ownerInstance)) && ((is_array($recordset) && count($recordset) > $this->m_autocomplete_minrecords) || $this->m_autocomplete_minrecords == -1))
       {
-        $this->createDestination();
-        $page = &$this->m_ownerInstance->getPage();
-
-        $id = $this->getHtmlid($fieldprefix);
-
-        $afterUpdateFunc = "";
-        if (count($this->m_onchangecode))
-        {
-          $afterUpdateFunc = "{$id}_callChangeHandler";
-
-          $js = "
-            function {$afterUpdateFunc}()
-            {
-              {$id}_onChange(\$('{$id}_selection'));
-            }
-          ";
-
-          $this->m_onchangehandler_init = "newvalue = el.value;\n";
-          $page->register_scriptcode($js);
-          $this->_renderChangeHandler($fieldprefix);
-        }
-
-        $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
-
-        if (!$this->_isSelectableRecord($record, 'select'))
-          $record[$this->fieldName()] = NULL;
-
-        $afterUpdate = ($afterUpdateFunc!="") ? $afterUpdateFunc : "null";
-        $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '{$id}_selection', '{$id}_selectionbox', '$id', '$url', $afterUpdate, 1);";
-
-        $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
-        $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
-        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
-        $page->register_loadscript($code);
-
-        $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-
-        if ($record[$this->fieldName()] != NULL)
-        {
-          $selectedDisplay = '';
-          $selectedValue = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
-        }
-        else
-        {
-          $selectedDisplay = 'display: none';
-          $selectedValue = '';
-        }
-
-        $theme = &atkinstance("atk.ui.atktheme");
-        $resetIcon = sprintf('<img width="16" height="16" border="0" valign="absmiddle" src="%1$s" alt="%2$s" title="%2$s">',
-                        $theme->iconPath('delete',"recordlist", $this->m_node->m_module),
-                        atktext("reset", $this->m_node->m_module, $this->m_node->m_type));
-
-        $links = $this->createSelectAndAutoLinks($id, $record);
-
-        return
-          '<input type="text" id="'.$id.'_search" class="atkmanytoonerelation_search" size="40" />
-           <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>
-           <input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$selectedValue.'" />&nbsp;'.$links.'<br />
-           <span id="'.$id.'_selectionbox" class="atkmanytoonerelation_selection" style="'.$selectedDisplay.'">'.
-             '<span id="'.$id.'_selection">'.$this->display($record).'</span>&nbsp;'.
-             '<a href="#" onClick="ATK.ManyToOneRelation.clear(\''.$id.'\', '.$afterUpdate.');">'.$resetIcon.'</a>'.
-           '</span>';
+        return $this->drawAutoCompleteBox($record, $fieldprefix, $mode);
       }
 
       if ($this->createDestination())
@@ -1631,6 +1569,79 @@
       }
 
       return $order;
+    }
+    
+    /**
+     * Creates and registers the on change handler caller function.
+     * This method will be used to message listeners for a change
+     * event as soon as a new value is selected.
+     */
+    function createOnChangeCaller($fieldId, $fieldPrefix, $none='null')
+    {
+      $function = $none;
+      if (count($this->m_onchangecode) > 0)
+      {
+        $function = "{$fieldId}_callChangeHandler";
+
+        $js = "
+          {$fieldId}: function() {
+            {$fieldId}_onChange(\$('{$fieldId}_selection'));
+          }
+        ";
+
+        $this->m_onchangehandler_init = "newvalue = el.value;\n";
+        $page = &$this->m_ownerInstance->getPage();        
+        $page->register_scriptcode($js);
+        $this->_renderChangeHandler($fieldPrefix);
+      }   
+      
+      return $function;   
+    }
+    
+    /**
+     * Draw the auto-complete box.
+     */
+    function drawAutoCompleteBox($record, $fieldPrefix, $mode)
+    {
+      $this->createDestination();
+      
+      // register base JavaScript code and stylesheet
+      $page = &$this->m_ownerInstance->getPage();              
+      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+      $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");      
+
+      // validate is this is a selectable record and if so 
+      // retrieve the display label and hidden value
+      if ($this->_isSelectableRecord($record, 'select'))
+      {
+        $current = $record[$this->fieldName()];
+        $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+        $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
+      }
+      else 
+      {
+        $current = NULL;
+        $label = '';
+        $value = '';
+      }
+
+      // create the widget
+      $id = $this->getHtmlId($fieldPrefix);
+      $links = $this->createSelectAndAutoLinks($id, $record);
+
+      $result =
+        '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
+         <input type="text" id="'.$id.'_search" value="'.htmlentities($label).'" class="atkmanytoonerelation_search" size="40" onfocus="this.select()" />
+         <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'<br />
+         <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';      
+        
+      // register JavaScript code that attaches the auto-complete behaviour to the search box
+      $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
+      $function = $this->createOnChangeCaller($id, $fieldPrefix);      
+      $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";            
+      $page->register_loadscript($code);
+      
+      return $result;
     }
 
     /**

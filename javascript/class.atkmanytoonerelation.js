@@ -21,24 +21,12 @@ function mto_parse(link, value)
  var atkselector = value.replace("='", "_1253D_12527").replace("'", "_12527");
  return link.replace('REPLACEME', atkselector);
 }
-
- 
   
 if (!window.ATK) {
   var ATK = {};
 }
 
 ATK.ManyToOneRelation = {
-  /**
-   * Clear many-to-one auto-complete selection.
-   */
-  clear: function(id, afterUpdate) {
-    $(id).value = '';
-    $(id + '_selectionbox').style.display ='none';
-    $(id + '_selection').innerHTML = '';
-    if (afterUpdate != null) afterUpdate();
-  },  
-  
   /**
    * Auto-complete search field using Ajax.
    */
@@ -49,28 +37,8 @@ ATK.ManyToOneRelation = {
   /**
    * Auto-complete edit field using Ajax.
    */
-  completeEdit: function(searchField, resultField, selectionField, selectionBoxField, field, url, afterUpdate, minimumChars) {
-    var elements = Form.getElements('entryform');
-    var queryComponents = new Array();
-
-    for (var i = 0; i < elements.length; i++) {
-      if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
-        var queryComponent = Form.Element.serialize(elements[i]);
-        if (queryComponent)
-          queryComponents.push(queryComponent);
-      }
-    }
-
-    var params = queryComponents.join('&');
-
-    if(afterUpdate != null)
-    {
-      new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5, afterUpdateElement: afterUpdate});
-    }
-    else
-    {
-      new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, selectionField, selectionBoxField, field, url, { paramName: 'value', parameters: params, minChars: minimumChars, frequency: 0.5});
-    }
+  completeEdit: function(searchField, resultField, valueField, spinnerElement, url, afterUpdate, minimumChars) {
+    new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, valueField, url, { paramName: 'value', minChars: minimumChars, frequency: 0.5, afterUpdateElement: afterUpdate, serializeForm: true, indicator: spinnerElement});
   }
 };
 
@@ -124,13 +92,26 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
 
 ATK.ManyToOneRelation.AdvancedAutocompleter = Class.create();
 Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototype, ATK.ManyToOneRelation.Autocompleter.prototype), {
-  initialize: function(element, update, selection, selectionBox, value, url, options) {
+  initialize: function(element, update, valueElement, url, options) {
     ATK.ManyToOneRelation.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
-    this.selection = $(selection);
-    this.selectionBox = $(selectionBox)
-    this.value = $(value);
-    if (this.options.serializeForm)
-      this.options.callback = function(el, entry) { return Form.serialize(el.form) + '&' + entry; }
+    
+    this.valueElement = $(valueElement);
+    
+    if (this.options.serializeForm) {
+      this.options.callback = this.parametersCallback.bind(this);
+    }
+  },
+  
+  parametersCallback: function(element, entry) { 
+    var elements = Form.getElements(element.form).findAll(function(el) {
+      return el.name && el.name.substring(0, 3) != 'atk'
+    });
+    
+    var queryComponents = elements.collect(function(el) {
+      return Form.Element.serialize(el);
+    }).concat([entry]);
+    
+    return queryComponents.join('&');
   },
   
   findFirstNodeByClass: function(element, className) {
@@ -154,32 +135,66 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototyp
     if(Element.getStyle(this.update, 'display')!='none') 
     {
       this.options.onHide(this.element, this.update);
-      this.element.value = ''; // clear value      
+      
+      // needed to clear the value if the user has entered a search
+      // query but doesn't select anything from the list
+      if (this.clearValue) {
+        this.valueElement.value = '';
+        this.element.value = ''; // clear value      
+      }
     }
     if(this.iefix) Element.hide(this.iefix);
     this.update.scrollTop = 0; 
   },  
 
   updateElement: function(selectedElement) {
-    valueEl = this.findFirstNodeByClass(selectedElement, 'value');    
-    selectionEl = this.findFirstNodeByClass(selectedElement, 'selection');
+    var valueEl = this.findFirstNodeByClass(selectedElement, 'value');    
+    var labelEl = this.findFirstNodeByClass(selectedElement, 'selection');
     
-    this.element.value = '';
-    this.element.focus();
-    
-    if (valueEl != null && selectionEl != null) {
-      var value = valueEl.innerHTML;
-      var selection = selectionEl.innerHTML;
+    var value = valueEl != null ? valueEl.innerHTML : '';
+    var label = labelEl != null ? labelEl.innerHTML : '';
 
-      this.value.value = value;
+    this.valueElement.value = value;
+    this.element.value = label;
+    this.element.focus();
+    this.element.select();
     
-      this.selection.innerHTML = selection;    
+    this.clearValue = false;
     
-      this.selectionBox.style.display = '';    
-      new Effect.Highlight(this.selectionBox);
-    
-      if (this.options.afterUpdateElement)
-        this.options.afterUpdateElement(this.element, selectedElement);       
+    if (this.options.afterUpdateElement)
+      this.options.afterUpdateElement(this.element, selectedElement);       
+  },
+  
+  onKeyPress: function(event) {
+    if (!this.active && (event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN || 
+       (navigator.appVersion.indexOf('AppleWebKit') > 0 && event.keyCode == 0))) return;    
+       
+    this.clearValue = true;           
+       
+    ATK.ManyToOneRelation.Autocompleter.prototype.onKeyPress.apply(this, [event]);
+  },
+  
+  clear: function() {
+    this.element.value = '';
+    this.valueElement.value = '';
+    this.clearValue = false;
+      
+    if (this.options.afterUpdateElement)
+      this.options.afterUpdateElement(this.element, null);       
+  },      
+  
+  onObserverEvent: function() {
+    if (this.getToken().length < this.options.minChars) {
+      this.clear();
     }
-  }
+
+    if (!this.hasFocus) 
+    {
+      if (this.clearValue)
+        this.clear();
+      return;
+    }
+    
+    ATK.ManyToOneRelation.Autocompleter.prototype.onObserverEvent.apply(this);
+  } 
 });
