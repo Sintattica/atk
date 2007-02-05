@@ -41,6 +41,6 @@ ATK.Attribute = {
     Position.clone(field, span);
     */
     
-    new Ajax.Request(url, { method: 'post', parameters: params, evalScripts: true, asynchronous: true, onComplete: func });        
+    new Ajax.Request(url, { method: 'post', parameters: params, evalScripts: true, onComplete: func });        
   }
 };

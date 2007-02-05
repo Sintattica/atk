@@ -2099,6 +2099,14 @@
     {
       $this->m_dependees[] = $attribName;
     }
+    
+    /**
+     * Get dependees.
+     */
+    function getDependees()
+    {
+      return $this->m_dependees;
+    }
 
     /**
      * Register change handlers for dependees.
@@ -2120,11 +2128,33 @@
         $isPartial = $this->m_ownerInstance->m_partial != NULL;
         if (!$isPartial)
         {
-          $code = "ATK.Attribute.refresh('$url', true)";
+          $code = "ATK.Attribute.refresh('$url', true);";
         }
-
-        $page->register_loadscript($code);
+        
+        // only register the initial refresh on attribute load if this attribute
+        // itself doesn't depend on any other attribute or this is a partial request
+        if ($isPartial || !$this->isDepending())
+        {
+          $page->register_loadscript($code);
+        }
       }
+    }
+    
+    /**
+     * Check whatever this attribute depends on other attributes.
+     *
+     * @return this attribute depends on other attribute(s)?
+     */
+    function isDepending()
+    {
+      foreach (array_keys($this->m_ownerInstance->m_attribList) as $attrName)
+      {
+        $attr = &$this->m_ownerInstance->getAttribute($attrName);
+        if (in_array($this->fieldName(), $attr->getDependees()))
+          return true;
+      }
+      
+      return false;
     }
 
     function getCSSClasses()
