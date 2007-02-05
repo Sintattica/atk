@@ -90,7 +90,6 @@ atkimport("atk.atkcontroller");
      */
     function getFormButtons($action, $record)
     {
-      atk_var_dump("GETFORM BUTTONS");
       $result = array();
       
       if ($this->m_mode == WIZARD_MODE_ADD)

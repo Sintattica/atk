@@ -99,7 +99,6 @@
       {
         // switch to the test databases
         $mapping = atkconfig("test_db_mapping");
-        atk_var_dump($mapping, "Use test database mapping");
         atkDb::useMapping($mapping);      
         $this->_loadData();
       }
@@ -431,7 +430,6 @@
         
         if (!$query->executeInsert())
         {
-          atk_var_dump($record, 'Failed fixture for table '.$table);
           atkerror('Could not insert fixture in table '.$table);
         }
       }

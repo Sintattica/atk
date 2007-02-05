@@ -237,7 +237,6 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
 	      //TODO Fixme: Somehow we can't save the Renderboxvars in this object
 	      //why doesn't this work for override classes. Some kind of reference problem
 	      //$handler = &$this->m_node->getHandler($ATK_VARS['atkaction']);
-        //atk_var_dump($handler->m_renderBoxVars, "dispatchForm m_renderBoxVars");
 	    }
 
 	    //If atk renders the page itself the return value is empty
@@ -250,13 +249,11 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
     function save()
     {
       atkdebug("atkWizardPanel::save node: " . $this->m_nodeName);
-      atk_var_dump(atkGetPostVar(), "atkgetpostvar");
       $node = &$this->getPanelNode();
       if(!is_object($node)) return;
 
       $controller = &atkController::getInstance();
       $hiddenVars = $controller->m_redirectParams;
-      atk_var_dump($hiddenVars, "atkWizardPanel::save");
       if(count($hiddenVars))
       {
         foreach($hiddenVars as $hiddenVarName => $hiddenVarValue)
@@ -328,7 +325,6 @@ define(FINISH_BUTTON_DONT_SHOW, 3);
       $handler->addRenderBoxVar("paneltitle", $this->_getText($this->getPanelName()."_".$action, $this->getPanelName()));
       $handler->addRenderBoxVar("intro", $this->_getText($this->getPanelName()."_".$action."_intro", $this->getPanelName()."_intro"));
       atkdebug("loadRenderBoxVars actionhandler: ". get_class($handler)." action: ".$action);
-      atk_var_dump($handler->m_renderBoxVars, "loadRenderBoxVars m_renderBoxVars");
     }
 
   }

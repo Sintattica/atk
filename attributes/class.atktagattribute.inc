@@ -360,8 +360,6 @@
         {
           atkdebug("does not exist, adding new record.");
           
-          atk_var_dump($newrecord,"<b>NEWRECORD</b>");
-          
           if (!$this->m_linkInstance->addDb($newrecord, true, $mode))
           {
             atkdebug("could not add keyword");

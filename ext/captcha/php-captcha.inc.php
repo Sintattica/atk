@@ -187,7 +187,6 @@
       }
        
       // save code in session variable
-      atk_var_dump(md5(strtoupper($this->sCode)), "<b>code</b>");
       $_SESSION['php_captcha'] = md5(strtoupper($this->sCode));
     }
     

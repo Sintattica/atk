@@ -199,10 +199,6 @@
 
        $this->m_affected_rows = mysqli_affected_rows($this->m_link_id);
      }
-     else
-     {
-       atk_var_dump($matches,"<b>Error 1100 occured but callback was unable to get tablename from errormessage:</b>");
-     }
    }
 
    /**

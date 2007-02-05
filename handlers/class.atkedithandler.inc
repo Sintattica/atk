@@ -136,7 +136,6 @@
 
         $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
         $this->addRenderBoxVar("content", $output);
-        //atk_var_dump($this->m_renderBoxVars, "m_renderBoxVars");
         return $ui->renderBox($this->m_renderBoxVars);
       }
       else
