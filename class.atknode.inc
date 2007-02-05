@@ -4251,11 +4251,11 @@
      *                        failed.
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record="", $message="")
+    function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
     {
       $controller = &atkcontroller::getInstance();
       $controller->setNode($this);
-      return $controller->feedbackUrl($action, $status, $record, $message);
+      return $controller->feedbackUrl($action, $status, $record, $message, $levelskip);
     }
 
     /**

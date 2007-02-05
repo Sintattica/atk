@@ -35,7 +35,7 @@
      * The action method
      */
     function action_admin()
-    {
+    {      
       $page = &$this->getPage();
 
       if (isset($this->m_partial) && $this->m_partial!="")
@@ -66,13 +66,16 @@
      * @param array $record
      * @return array with result of adminPage and addPage
      */
-    function renderAdminPage($record=NULL)
+    function renderAdminPage()
     {
       $res = array();
       if ($this->m_node->hasFlag(NF_NO_ADD)==false&&$this->m_node->allowed("add"))
       {
         if (!$this->m_node->hasFlag(NF_ADD_LINK)) // otherwise, in adminPage, an add link will be added.
         {
+          // we could get here because of a reject.
+          $record = $this->getRejectInfo(); 
+          
           $res[]=$this->invoke("addPage", $record);
         }
       }
@@ -92,6 +95,7 @@
       // Reuse the atkAddHandler for the addPage.
       $handler = $this->m_node->getHandler("add");
       $handler->setNode($this->m_node);
+      $handler->setReturnBehaviour(ATK_ACTION_STAY); // have the save action stay on the admin page      
       return $handler->invoke("addPage", $record);
     }
 

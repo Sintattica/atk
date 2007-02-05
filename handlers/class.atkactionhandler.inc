@@ -15,6 +15,12 @@
    * @version $Revision$
    * $Id$
    */
+  
+  /**
+   * Some defines for return behaviour
+   */
+  define("ATK_ACTION_STAY", 0);
+  define("ATK_ACTION_BACK", 1);
 
   /**
    * Generic action handler base class.
@@ -52,6 +58,12 @@
     
     /** @access private */
     var $m_renderBoxVars = array();
+    
+    /** @access private */
+    var $m_rejecting = false;
+    
+    /** @access private */
+    var $m_returnbehaviour = ATK_ACTION_STAY;
 
     /**
      * Default constructor.
@@ -74,11 +86,49 @@
      */
     function handle(&$node, $action, &$postvars)
     {
+      atkdebug("HOEI");
       $this->m_postvars = &$postvars;
       $this->m_node = &$node;
       $this->m_action = $action;
       $this->m_partial = $node->m_partial;
       $this->invoke("action_".$action);
+      
+      // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
+      atkdebug("ARE WE REJECTING: ".$this->m_rejecting);
+      if (!$this->m_rejecting)
+      {
+        atkdebug("clearing the stuff");
+        $this->getRejectInfo(); // this will clear it.
+      }
+    }
+    
+    function getRejectInfo()
+    {      
+      atkdebug("looking for rejectinfo");
+      $sm = &atkGetSessionManager();
+      $session = &$sm->getSession();
+      if (isset($session["atkreject"]))
+      {
+        atkdebug("rejectinfo found");        
+        $result = $session["atkreject"];        
+        unset($session["atkreject"]);
+        return $result;
+      }
+      return NULL;
+    }
+    
+    function setRejectInfo($data)
+    {
+      atkdebug("setting rejectinfo");
+      /**
+       * @todo We're storing this globally in the session; each window should
+       * have its own rejection data so this should be a 'stack global' (but we 
+       * don't support that concept yet.
+       */
+      $sm = &atkGetSessionManager();
+      $session = &$sm->getSession();
+      $session["atkreject"] = $data;
+      $this->m_rejecting = true;
     }
 
     /**
@@ -166,6 +216,7 @@
         atkdebug("Invoking '$methodname' override on node");
         // We pass the original object as first parameter to the override. 
         array_unshift($arguments, $this);
+        $arguments[0] = &$this; // reference copy workaround;
         return call_user_func_array(array(&$this->m_node, $methodname), $arguments);
       }
       else if (method_exists($this, $methodname))
@@ -237,6 +288,16 @@
     function addRenderBoxVar($key, $value)
     {
       $this->m_renderBoxVars[$key] = $value;
+    }
+    
+    function setReturnBehaviour($returnbehaviour)
+    {
+      $this->m_returnbehaviour = $returnbehaviour;
+    }
+    
+    function getReturnBehaviour()
+    {
+      return $this->m_returnbehaviour;
     }
   }
 

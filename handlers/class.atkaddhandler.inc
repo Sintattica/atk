@@ -28,6 +28,12 @@
    */
   class atkAddHandler extends atkActionHandler
   {
+    function atkAddHandler()
+    {
+      $this->atkActionHandler();
+      $this->setReturnBehaviour(ATK_ACTION_BACK);
+    }
+    
     /**
      * The action handler.
      */
@@ -52,10 +58,13 @@
           return;
         }
       }
+      
+      // we could get here because of a reject.
+      $record = $this->getRejectInfo();     
 
-      $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage")));
+      $page->addContent($this->m_node->renderActionPage("add", $this->invoke("addPage", $record)));
     }
-
+    
     /**
      * Creates an add page.
      *
@@ -90,11 +99,8 @@
 
       $formstart ='<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$controller->getPhpFile().'?'.SID.'"'.
                      ' method="post" onsubmit="return globalSubmit(this)">';
-
-      /* if we are on an admin page we would like to stay on the admin page after adding a new record
-         if we are on level 0, we want to present the user with a new (empty!) addition form when (s)he gets back */
-      if (atkLevel() == 0) $formstart.=session_form(SESSION_NESTED);
-      else $formstart.=session_form();
+      
+      $formstart.=session_form(SESSION_NESTED, $this->getReturnBehaviour());      
 
       $formstart .= $controller->getHiddenVarsString();
 

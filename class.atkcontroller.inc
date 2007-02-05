@@ -332,7 +332,7 @@
      *                        failed.
      * @return String The feedback url.
      */
-    function feedbackUrl($action, $status, $record="", $message="")
+    function feedbackUrl($action, $status, $record="", $message="", $levelskip=1)
     {
       $node = &$this->getNode();
       if((isset($node->m_feedback[$action]) && hasFlag($node->m_feedback[$action], $status)) || $status==ACTION_FAILED)
@@ -348,7 +348,7 @@
         $atkNodeType = "";
         $sessionStatus = SESSION_BACK;
       }
-      return (session_url($this->dispatchUrl($vars, $atkNodeType), $sessionStatus));
+      return (session_url($this->dispatchUrl($vars, $atkNodeType), $sessionStatus, $levelskip));
     }
 
     /**

@@ -500,12 +500,14 @@
    * Function session_form
    *
    * Adds session information to a form
-   * @param var $sessionstatus the session flags
+   * @param int $sessionstatus the session flags
    *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
    *             SESSION_NESTED|SESSION_BACK)
+   * @param int $returnbehaviour When SESSION_NESTED is used, this is used to
+   *            indicate where to return to.
    * @return string the HTML formcode with the session info
    */
-  function session_form($sessionstatus=SESSION_DEFAULT)
+  function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL)
   {
     global $g_stickyurl;
 
@@ -522,6 +524,11 @@
     if ($sessionstatus!=SESSION_NEW)
     {
       $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
+    }
+        
+    if (!is_null($returnbehaviour))
+    {      
+      $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'">';
     }
 
     $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'">';
