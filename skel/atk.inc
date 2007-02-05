@@ -24,10 +24,11 @@
    
   /**
    * @internal This variable indicates where to get all the includes. Usually,
-   *           this is the current pc.
+   *           this is the current dir.
    */
   if ($config_atkroot =="")  $config_atkroot = "./";      
-  
+
+  // Atknode is required. Don't remove it.
   include_once($config_atkroot."atk/include/initial.inc");
   
 ?>
