@@ -2817,7 +2817,7 @@
      *                          records). Defaults to true.
      * @return int Number of records
      */
-    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=true)
+    function countDb($selector="", $excludeList="", $includeList="", $mode="", $distinct=false)
     {
       $searching = false;
       $loadlist = array();
@@ -3028,7 +3028,7 @@
      *                          records). Defaults to true.
      * @return array Array containing the retrieved records
      */
-    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=true)
+    function selectDb($selector="", $order="", $limit="", $excludeList="",$includeList="", $mode="", $distinct=false)
     {
       $searching=false;
       $selectlist = array();
