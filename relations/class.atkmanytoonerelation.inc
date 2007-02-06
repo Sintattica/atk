@@ -1578,14 +1578,16 @@
      */
     function createOnChangeCaller($fieldId, $fieldPrefix, $none='null')
     {
+      atkdebug("createOnChangeCaller");
       $function = $none;
       if (count($this->m_onchangecode) > 0)
       {
+        atkdebug("komtieindieifcount");
         $function = "{$fieldId}_callChangeHandler";
 
         $js = "
-          {$fieldId}: function() {
-            {$fieldId}_onChange(\$('{$fieldId}_selection'));
+          function {$function}() {
+            {$fieldId}_onChange(\$('{$fieldId}'));
           }
         ";
 

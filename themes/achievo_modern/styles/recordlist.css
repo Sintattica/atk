@@ -4,7 +4,7 @@
   border: 0px solid #f00;
 }
 
-.recordListSearch, .recordList
+.recordList
 {
   width: 100%;
 }
@@ -12,16 +12,6 @@
 .recordListSearch
 {
   background: #666 ! important;
-}
-
-.recordList input
-{
-  width: 95%;
-}
-
-.searchform input
-{
-  width: 95%;
 }
 
 .recordListContainer td

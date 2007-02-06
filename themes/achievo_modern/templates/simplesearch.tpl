@@ -2,5 +2,5 @@
 <input type="hidden" name="atknodetype" value="search.search">
 <input type="hidden" name="atkaction" value="search">
 {$session_form}
-<input id='top-search-input' name="searchstring" type="text" size="18" value="{$searchstring}">&nbsp;<img id='searchbutton' src="{$themedir}images/search.png" onclick="document.forms[0].submit()"/>
+<input id='top-search-input' name="searchstring" type="text" size="18" value="{$searchstring}">&nbsp;<img id='searchbutton' src="{atkthemeimg search.png}" onclick="document.forms[0].submit()"/>
 </form>

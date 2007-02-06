@@ -4,13 +4,13 @@ body
 {
 {/literal}
 	padding: 24px;
-	background: #fff url({$themedir}images/bodyPattern.gif) repeat left top;
+	background: #fff url({atkthemeimg bodyPattern.gif}) repeat left top;
 {literal}
 }
 </style>
 {/literal}
 
-<div id='loginform' style="background: #EBEBEB url({$themedir}images/logoGrijs.png) no-repeat 40px 20px;">
+<div id='loginform' style="background: #EBEBEB url({atkthemeimg logoGrijs.png}) no-repeat 40px 20px;">
 <form action="{$formurl}" method="post">
   <div id="loginform-title">{atktext login_form}</div>
   <div id="loginform-content">

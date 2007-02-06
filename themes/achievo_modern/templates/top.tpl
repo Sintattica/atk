@@ -1,5 +1,5 @@
 <div id="banner">
-  <img src="{$themedir}images/logo.jpg" alt="Logo Achievo" />
+  <img src="{atkthemeimg logo.jpg}" alt="Logo Achievo" />
   <div id="topLinks">
     <span id="top-center">{foreach  from=$centerpiece_links item=link}{$link}&nbsp;&nbsp;|&nbsp;&nbsp;{/foreach}</span>
     <span id="top-logout"><a href="index.php?atklogout=1" target="{$logouttarget}">{atktext logout}</a></span>

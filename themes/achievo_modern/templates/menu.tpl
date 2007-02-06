@@ -11,10 +11,10 @@
       </div>
     </a>
   {/if}
-        
+
   {if (count($menuitem.submenu)>0)}
-    <div id="smi_{$menuitem.name}" style="display: none; background: url({$themedir}images/menuLevel2Bg.jpg) repeat-y top left; color: #333;">
-      {$menuitem.header}
+    <div id="smi_{$menuitem.name}" style="display: none; background: url({atkthemeimg menuLevel2Bg.jpg}) repeat-y top left; color: #333;">
+      <div class="menuItemLevel2">{$menuitem.header}</div>
       {foreach from=$menuitem.submenu item=submenuitem}
          {if $submenuitem.enable && $submenuitem.name!=='-'}
            <a class="menuItemLevel2" onclick="window.open('{$submenuitem.url}','main','')" onmouseover="this.style.cursor = 'pointer'; this.style.fontWeight = 'bold';" onmouseout="this.style.fontWeight = '';">
@@ -30,14 +30,14 @@
 <script type="text/javascript">
 {literal}
 var prevSelectedMenu = '';
-var curSelectedMenu=''; 
+var curSelectedMenu='';
 
 function showSubMenu(menuitemname)
 {
   prevSelectedMenu = curSelectedMenu;
   hideAllSubMenus();
-  
-  if (menuitemname!==prevSelectedMenu) 
+
+  if (menuitemname!==prevSelectedMenu)
   {
     curSelectedMenu = menuitemname;
     displaySubMenu(menuitemname);
@@ -51,7 +51,7 @@ function showSubMenu(menuitemname)
 function displaySubMenu(menuitemname)
 {
   var tags = document.getElementsByTagName("div");
-  
+
   for (i = 0; i < tags.length; i++)
 	{
 		var id = tags.item(i).id;
@@ -61,13 +61,13 @@ function displaySubMenu(menuitemname)
  		  tags.item(i).className='menuItemLevel2Head';
 		}
 	}
-  
+
   submenu = document.getElementById('smi_'+menuitemname);
   if (submenu)
   {
     if (submenu.style.display =='')
       submenu.style.display = 'none';
-    else 
+    else
       submenu.style.display = '';
   }
 }
@@ -75,7 +75,7 @@ function displaySubMenu(menuitemname)
 function hideAllSubMenus()
 {
   var tags = document.getElementsByTagName("div");
-  
+
   for (i = 0; i < tags.length; i++)
 	{
 		var id = tags.item(i).id;
@@ -87,7 +87,7 @@ function hideAllSubMenus()
 		else if (id.substring(0,3)=="mi_")
 		{
  		  tags.item(i).className="menuItemLevel1";
-		}		
+		}
 	}
 }
 {/literal}

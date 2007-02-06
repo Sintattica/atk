@@ -2,12 +2,12 @@
 var tabs = new Array();
 {section name=i loop=$tabs}tabs[tabs.length] = "{$tabs[i].tab}"; {/section}
 
-var tabLeftImage = "{$themedir}images/tab_left.png";
-var tabRightImage = "{$themedir}images/tab_right.png";
-var tabBackgroundImage = "{$themedir}images/tab_back.png";
-var tabSelectedLeftImage = "{$themedir}images/tab_left_s.png";
-var tabSelectedRightImage = "{$themedir}images/tab_right_s.png";
-var tabSelectedBackgroundImage = "{$themedir}images/tab_back_s.png";
+var tabLeftImage = "{atkthemeimg tab_left.png}";
+var tabRightImage = "{atkthemeimg tab_right.png}";
+var tabBackgroundImage = "{atkthemeimg tab_back.png}";
+var tabSelectedLeftImage = "{atkthemeimg tab_left_s.png}";
+var tabSelectedRightImage = "{atkthemeimg tab_right_s.png}";
+var tabSelectedBackgroundImage = "{atkthemeimg tab_back_s.png}";
 
 var tabColor = "#FFFFFF";
 var tabSelectedColor = "#000000";

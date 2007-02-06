@@ -20,6 +20,4 @@
   $theme["tabtype"] = "dhtml";
   $theme["recordlist_orientation"]='right';
   $theme['modern_menu_compat']=true;
-  $theme['frame_top_height']=113;
-  $theme['frame_menu_width']=210;
 ?>
