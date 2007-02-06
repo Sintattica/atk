@@ -100,7 +100,7 @@
       $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time, $flags);
       $this->m_date = new atkDateattribute($name,'','',0,0,$flags);
 
-      $this->atkAttribute($name,$flags); // base class constructor
+      $this->atkAttribute($name,$flags|AF_SEARCHABLE); // base class constructor
     }
 
     function setDateMin($min=0)
@@ -175,14 +175,17 @@
       else
         return "";
     }
-
+    
     function fetchValue($postvars)
     {
       $date = $this->m_date->fetchValue($postvars);
-      $time = $this->m_time->fetchValue($postvars);
       if ($date == NULL) return NULL;
-      if ($time == NULL) $time = array('hours' => 0, 'minutes' => 0, 'seconds' => 0);
-      else return array_merge($date, $time);
+      
+      $time = $this->m_time->fetchValue($postvars);
+      if ($time == NULL) 
+        $time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
+      
+      return array_merge($date, $time);
     }
 
     /**
@@ -193,7 +196,9 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      return $this->m_date->edit($record,$fieldprefix)."&nbsp;&nbsp;-&nbsp;&nbsp;".$this->m_time->edit($record,$fieldprefix);
+      $dateEdit = $this->m_date->edit($record,$fieldprefix);
+      $timeEdit = $this->m_time->edit($record,$fieldprefix);
+      return $dateEdit."&nbsp;&nbsp;-&nbsp;&nbsp;".$timeEdit;
     }
 
 
@@ -244,7 +249,7 @@
         $tmp_rec[$this->fieldname()]=$datetime[1];
         $result_time = $this->m_time->db2value($tmp_rec);
         if ($result_time == NULL)
-          $result_time = array('hours' => 0, 'minutes' => 0, 'seconds' => 0);
+          $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
 
         return array_merge((array)$result_date,(array)$result_time);
       }

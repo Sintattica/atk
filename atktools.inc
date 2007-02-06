@@ -1271,10 +1271,11 @@
     if (atkconfig("debug")>0) // atkdebug checks this, but if we check it here too, it saves us
                               // a call to var_export.
     {
-      if (function_exists("var_export"))
-      {
-        atkdebug("vardump: ".($d!=""?$d." = ":"")."<pre>".var_export($a, true)."</pre>");
-      }
+      ob_start();
+      var_dump($a);
+      $data = ob_get_contents();
+      atkdebug("vardump: ".($d!=""?$d." = ":"")."<pre>".$data."</pre>");
+      ob_end_clean();
     }
   }
 

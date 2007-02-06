@@ -1707,13 +1707,12 @@
         if ($p_attrib!=NULL)
         {
           /* fields that have not yet been initialised may be overriden in the url */
-          if (!isset($defaults[$p_attrib->fieldName()]) && isset($this->m_postvars[$p_attrib->fieldName()]))
+          if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars))
           {
             $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
-          }
+          } 
 
           /* sometimes a field is hidden although not specified by the field itself */
-
           $theme = &atkinstance("atk.ui.atktheme");
           if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab)
           {
@@ -1730,6 +1729,7 @@
           }
 
           /* we let the attribute add itself to the edit array */
+          
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
         else
@@ -1763,7 +1763,9 @@
       foreach (array_keys($this->m_attribList) as $attrName)
       {
         $attr = &$this->getAttribute($attrName);
-        $record[$attr->fieldName()] = $attr->initialValue();
+        $value = $attr->initialValue();
+        if ($value !== NULL)
+          $record[$attr->fieldName()] = $value;
       }
       
       return $record;
@@ -2448,7 +2450,9 @@
         {
           $p_attrib = &$this->m_attribList[$attribname];
           if (!$postedOnly || $p_attrib->isPosted($vars))
+          {
             $record[$p_attrib->fieldName()]=$p_attrib->fetchValue($vars);
+          }
         }
       }
 

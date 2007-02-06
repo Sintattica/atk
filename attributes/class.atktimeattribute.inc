@@ -90,6 +90,19 @@
         $result["minutes"]= $exploded[1];
         if ($exploded[2]) $result["seconds"]= $exploded[2];
       }
+      else if (strlen($result['hours']) == 0 || strlen($result['minutes']) == 0)
+      {
+        return NULL;
+      }
+      else
+      {
+        $result = array(
+          'hours' => $result['hours'],
+          'minutes' => $result['minutes'],
+          'seconds' => $result['seconds']
+        );
+      }
+      
       return $result;
     }
 

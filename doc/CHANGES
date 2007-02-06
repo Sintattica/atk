@@ -834,6 +834,12 @@ Changed in ATK 5.7
   but to the previous action, whichever that was. [Ivo]
 * Added atkTimeZoneAttribute for selecting a timezone. Translations for each
   timezone are placed in the ATK language files. [Dennis]
+* atkDateTimeAttribute now supports the combination of an atkDateAttribute
+  with AF_DATE_STRING flag and the normal atkTimeAttribute. [Peter]
+* atk_var_dump now uses var_dump internally so that references 
+  are displayed properly. [Peter]
+* atkNode::editArray: fallback to postvars is only done if a field really 
+  is not set in the defaults record. [Peter]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
