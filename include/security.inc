@@ -38,9 +38,19 @@
 
   /**
    * Retrieve all known information about the currently logged-in user.
+   * @deprecated use atkGetUser instead
    * @return array Array with userinfo, or "" if no user is logged in.
    */
   function getUser()
+  {
+    return atkGetUser();
+  }
+
+  /**
+   * Retrieve all known information about the currently logged-in user.
+   * @return array Array with userinfo, or "" if no user is logged in.
+   */  
+  function atkGetUser()
   {
     global $g_sessionManager;
     $session = &atkSessionManager::getSession();
@@ -55,7 +65,23 @@
       if($user["access_level"]=="") $user["access_level"]=0;
     }
 
-    return $user;
+    return $user;    
+  }
+
+  /**
+   * Retrieve id of the currently logged-in user.
+   *
+   * @return int user id or 0 if not logged in or administrator
+   */
+  function atkGetUserId()
+  {
+    $user = atkGetUser();
+    
+    // check if logged in || logged in as administrator
+    if ($user == "" || 
+       (is_array($user) && !isset($user['id']))) return 0;
+       
+    return $user['id'];
   }
 
   /**
