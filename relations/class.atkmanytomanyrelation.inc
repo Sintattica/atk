@@ -202,15 +202,21 @@
       if ($this->createDestination())
       {
         $recordset = array();
-
         if (is_array($record[$this->fieldName()]))
         {
+          $remotekey = $this->getRemoteKey();
           for ($i=0;$i<count($record[$this->m_name]);$i++)
           {
-            $recordset[] = $record[$this->m_name][$i][$this->getRemoteKey()];
+            if(is_array($remotekey))
+            {
+              $recordset[] = $record[$this->m_name][$i][$remotekey][$this->m_destInstance->primaryKeyField()];
+            }
+            else
+            {
+              $recordset[] = $record[$this->m_name][$i][$remotekey];
+            }
           }
         }
-
         $result = "";
         if (count($record[$this->m_name])!=0)
         {
@@ -252,10 +258,32 @@
     {
       if ($this->createLink())
       {
+        $where = $this->_getLoadWhereClause($record);
         $rel = &$this->m_linkInstance;
-        return $rel->selectDb($this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
+        return $rel->selectDb($where);
       }
       return array();
+    }
+
+    function _getLoadWhereClause($record)
+    {
+      $whereelems = array();
+      $localkey = $this->getLocalKey();
+      if(!is_array($localkey)) $localkey = array($localkey);
+
+      $ownerfields = $this->m_ownerInstance->m_primaryKey;
+
+      for ($i=0, $_i = count($localkey); $i<$_i; $i++)
+      {
+        $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
+
+        if (!$primkeyattr->isEmpty($record))
+        {
+          $whereelems[] = $this->m_linkInstance->m_table.".".$localkey[$i]."='".$primkeyattr->value2db($record)."'";
+        }
+      }
+
+      return implode(" AND ", $whereelems);
     }
 
     /**
@@ -266,7 +294,9 @@
       if ($this->createLink())
       {
         $rel = &$this->m_linkInstance;
-        return $rel->deleteDb($this->m_linkInstance->m_table.".".$this->getLocalKey()."=".$record[$this->m_ownerInstance->primaryKeyField()]);
+        $where = $this->_getLoadWhereClause($record);
+        if($where!='')
+          return $rel->deleteDb($where);
       }
       return false;
     }
@@ -296,7 +326,7 @@
       if(count($checked) > 0)
         $filter = "NOT IN ('".implode("','",$checked)."')";
 
-      $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"");
+      $selector = "(".$this->_getLoadWhereClause($record).")".($filter!=""?" AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()." $filter":"");
 
       //append the store deletion filter (if set)
       if($this->m_store_deletion_filter!="")
@@ -312,24 +342,35 @@
         {
           // magical stuff..
           $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField());
-          $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
+
           $newrecord = $rel->initial_values();
 
           if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
           {
-            $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey; 
+            $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey;
           }
           else
           {
-            $newrecord[$this->getRemoteKey()] = $remKey;        
+            $newrecord[$this->getRemoteKey()] = $remKey;
           }
-
-          $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey; 
+          $localKey = $this->getLocalKey();
+          if(is_array($localKey))
+          {
+            for($j=0;$j<count($localKey);$j++)
+            {
+              $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->m_primaryKey[$j]]);
+              $newrecord[$localKey[0]][$this->m_ownerInstance->m_primaryKey[$j]] = $locKey;
+            }
+          }
+          else
+          {
+            $locKey    = $this->checkKeyDimension($record[$this->m_ownerInstance->primaryKeyField()]);
+            $newrecord[$localKey][$this->m_ownerInstance->primaryKeyField()] = $locKey;
+          }
 
           // First check if the record does not exist yet.
           /* @var $rel atkNode */
-          $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".
-                     $record[$this->m_ownerInstance->primaryKeyField()]."'".
+          $where = $this->_getLoadWhereClause($record).
                      " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
                      $remKey."'";
 
