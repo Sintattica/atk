@@ -277,6 +277,8 @@ Changed in ATK 5.7
   [Ivo]
 + Added atkDistinctFilter filter that can be added to a node to make all its
   queries be performed with 'distinct' clause. [Ivo]
++ Added support for more then one primary key in the atkmanytomany
+  relation. [Ivo, Sandy]
 * atkDb::selectDb/countDb don't set distinct on by default. In most
   cases this is not needed. And the cases which do need this can turn it
   on manually using an attribute which does so. [Peter]
