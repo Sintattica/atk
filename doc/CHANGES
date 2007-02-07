@@ -275,6 +275,8 @@ Changed in ATK 5.7
 + Added $returnbehaviour parameter to session_form() method. [Ivo]
 + Added $levelskip parameter to atNode/atkController's feedbackUrl() methods. 
   [Ivo]
++ Added atkDistinctFilter filter that can be added to a node to make all its
+  queries be performed with 'distinct' clause. [Ivo]
 * atkDb::selectDb/countDb don't set distinct on by default. In most
   cases this is not needed. And the cases which do need this can turn it
   on manually using an attribute which does so. [Peter]
