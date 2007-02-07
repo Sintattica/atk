@@ -279,6 +279,8 @@ Changed in ATK 5.7
   queries be performed with 'distinct' clause. [Ivo]
 + Added support for more then one primary key in the atkmanytomany
   relation. [Ivo, Sandy]
++ Created atkGetUser, getUser is deprecated now. Added atkGetUserId() to 
+  retrieve id of currently logged-in user [Jeroen, Sandy]
 * atkDb::selectDb/countDb don't set distinct on by default. In most
   cases this is not needed. And the cases which do need this can turn it
   on manually using an attribute which does so. [Peter]
