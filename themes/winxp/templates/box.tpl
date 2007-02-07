@@ -8,7 +8,7 @@
         </tr>
         <tr>
           <td align="center" class="block">
-            {$content}
+            <div class="contentBlock">{$content}</div>
           </td>
         </tr>
       </table>

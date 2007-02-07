@@ -9,7 +9,11 @@
 {foreach from=$menuitems item=menuitem}
   {if $menuitem.enable}
     <script language="javascript">
-      panename[panename.length] = '{$menuitem.name}';
+      {if $menuitem.url}
+        panename[panename.length] = '<a href="{$menuitem.url}" target="main">{$menuitem.name}</a>';
+      {else}
+        panename[panename.length] = '{$menuitem.name}';
+      {/if} 
       panestate[panestate.length] = false;
     </script>
   	<div class="dhtmlgoodies_panel">
