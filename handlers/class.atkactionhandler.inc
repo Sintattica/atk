@@ -86,7 +86,6 @@
      */
     function handle(&$node, $action, &$postvars)
     {
-      atkdebug("HOEI");
       $this->m_postvars = &$postvars;
       $this->m_node = &$node;
       $this->m_action = $action;
