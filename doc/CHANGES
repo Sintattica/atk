@@ -283,6 +283,8 @@ Changed in ATK 5.7
   retrieve id of currently logged-in user [Jeroen, Sandy]
 + Allowed override of mysql default columntypes by config, for example: 
   $config_db_mysql_default_text_columntype = 'longtext'. [Boy]  
++ Database authorisation does now support authentication to other databases
+  than the default database. [Peter]
 * atkDb::selectDb/countDb don't set distinct on by default. In most
   cases this is not needed. And the cases which do need this can turn it
   on manually using an attribute which does so. [Peter]
@@ -852,8 +854,6 @@ Changed in ATK 5.7
 * atkNode::editArray: fallback to postvars is only done if a field really 
   is not set in the defaults record. [Peter]
 * Fixed typo in test/class.atktestsuite.inc (bug #806) [Yury, Patrick]
-* Database authorisation does now support authentication to other databases
-  then the default database. [Peter]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
