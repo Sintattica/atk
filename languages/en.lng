@@ -341,5 +341,6 @@
   "autocomplete_no_results_contains" => "No results found that contain the given search value.",
   "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
   "saveandedit" => "Save and edit",
+  "email" => "E-mail",
 );
 ?>

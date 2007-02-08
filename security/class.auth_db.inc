@@ -41,7 +41,7 @@
      {
        if ($user=="") return AUTH_UNVERIFIED; // can't verify if we have no userid
 
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
        $query = $this->buildSelectUserQuery($db->escapeSql($user),
                                             atkconfig("auth_usertable"),
                                             atkconfig("auth_userfield"),

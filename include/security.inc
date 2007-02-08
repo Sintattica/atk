@@ -89,6 +89,7 @@
   /**
    * Wrapper method to access the security manager.
    * @todo Rewrite to a getInstance method in atkSecurityManager.
+   * @return atkSecurityManager
    */
   function &atkGetSecurityManager()
   {

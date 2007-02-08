@@ -248,6 +248,12 @@
   /************************** AUTHENTICATION *********************************/
 
   /**
+   * 
+   * @var String
+   */
+  $config_auth_database    = "default";
+  
+  /**
    *
    * @var String
    */
