@@ -849,6 +849,7 @@ Changed in ATK 5.7
   are displayed properly. [Peter]
 * atkNode::editArray: fallback to postvars is only done if a field really 
   is not set in the defaults record. [Peter]
+* Fixed typo in test/class.atktestsuite.inc (bug #806) [Yury, Patrick]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
