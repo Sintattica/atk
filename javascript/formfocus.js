@@ -14,8 +14,11 @@
    * $Id$
    */
    
-function placeFocus()
+function placeFocus(inEditForm)
 {
+  if (typeof(inEditForm) == 'undefined')
+    inEditForm = true;
+    
   if (document.forms.length == 0) return;
 
   var fields = document.forms[0].elements;
@@ -26,6 +29,12 @@ function placeFocus()
      
     if (type == "text" || type == "textarea" || type.toString().charAt(0) == "s") 
     {
+      if (!inEditForm)
+      {
+        field.focus();
+        break;
+      }
+      
       var found = false;
       
       var node = field.parentNode;
@@ -35,7 +44,7 @@ function placeFocus()
         {
           
           found = node.id != null && node.id.substring(0, 3) == 'ar_' && node.style.display != 'none';
-          if(found) 
+          if (found) 
           {
             try 
             {

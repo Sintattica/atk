@@ -276,6 +276,10 @@
           atkdebug("Administrator (configfile) logged in");
           $authenticated = true;
         }
+        else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator")
+        {
+          $response = AUTH_MISMATCH;
+        }
         // check guest user
         else if (atkconfig("guestpassword")!=""&&$auth_user=="guest"&&$auth_pw==atkconfig("guestpassword"))
         {
@@ -496,7 +500,8 @@
       }
       else
       {
-        $page->register_loadscript("document.forms[0].auth_user.focus();");
+        $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");  
+        $page->register_loadscript("placeFocus(false);");
 
         // generate the username input field
         // based upon the config_authdropdown and auth. method
@@ -505,23 +510,26 @@
         $tplvars["password"] = atktext("password");
         $tplvars["userfield"] = $userField;
         $tplvars["passwordfield"] = '<input class="loginform" type="password" size="15" name="auth_pw" value="" />';
-        $tplvars["submitbutton"] = '<input class="button" type="submit" value="'.atktext('login').'" />';
+        $tplvars["submitbutton"] = '<input name="login" class="button" type="submit" value="'.atktext('login').'" />';
         $tplvars["title"] = atktext('login_form');
 
         if ($lastresponse == AUTH_LOCKED)
         {
           $output.="<tr><td colspan=3 class=error>".atktext('auth_account_locked')."<br><br></td></tr>";
           $tplvars["auth_account_locked"] = atktext('auth_account_locked');
+          $tplvars["error"] = atktext('auth_account_locked');
         }
         else if($lastresponse == AUTH_MISMATCH)
         {
           $output.='<tr><td colspan=3 class=error>'.atktext('auth_mismatch').'<br><br></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_mismatch');
+          $tplvars["error"] = atktext('auth_mismatch');          
         }
         else if ($lastresponse == AUTH_MISSINGUSERNAME)
         {
           $output.='<tr><td colspan="3" class=error>'.atktext('auth_missingusername').'<br /><br /></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_missingusername');
+          $tplvars["error"] = atktext('auth_missingusername');          
         }
         else if ($lastresponse == AUTH_PASSWORDSENT)
         {
