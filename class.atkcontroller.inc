@@ -111,7 +111,7 @@
     {
       // we set the m_postvars variable of the controller for backwards compatibility reasons (when using $obj->dispatch in the dispatch.php)
       $this->m_postvars = $postvars;
-      
+
       $node = &$this->getNode();
       $node->m_postvars = $postvars;
       if(!is_object($node)) return;
@@ -386,6 +386,9 @@
     {
       $result = array();
       $node   = &$this->getNode();
+      $page = &$node->getPage();
+      $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
+      $page->register_loadscript("makeButtonsOneClickOnly(new Array('btn_save','btn_cancel','btn_saveandclose','btn_saveandnext'))");
 
       // edit mode
       if ($mode == "edit")

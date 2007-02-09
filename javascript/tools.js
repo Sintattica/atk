@@ -22,10 +22,10 @@ function get_object(name)
  * Toggles the display on an object
  */
 function toggleDisplay(name, obj)
-{  
+{
   if (obj.style.display=="none")
   {
-    obj.style.display="";		  
+    obj.style.display="";
   }
   else
   {
@@ -43,7 +43,7 @@ function ucfirst(stringtt)
 }
 
 /**
- * Replace an occurrence of a string 
+ * Replace an occurrence of a string
  */
 function str_replace(haystack,needle,replace,casesensitive)
 {
@@ -110,13 +110,13 @@ function reloadapp()
       top.frames[i].location.reload();
       top.reloaded[i] = 1;
     }
-  } 
+  }
 }
 
 function showTr(tab)
 {
 	if (tab == null) { tab = "default" };
-	
+
   // First, get the class names of all elements
 	var tags = document.getElementsByTagName("tr");
 
@@ -133,13 +133,13 @@ function showTr(tab)
 		  found = true;
 		}
 	}
-	
+
 	// tab not found, change nothing!
 	if (!found)
 	{
 	  return;
 	}
-	
+
 	// Every element that does not have the current tab as class or 'alltabs'
 	// is set to display: none
 	for (i = 0; i < tags.length; i++)
@@ -164,4 +164,15 @@ function showTr(tab)
 		  // Don't touch any element that is not an attribute row
 		}
 	}
+}
+
+function makeButtonsOneClickOnly(buttons)
+{
+  if (document.getElementsByClassName)
+  {
+    buttons.each(function (buttonclass)
+    {
+      document.getElementsByClassName(buttonclass).each(function(button){button.onclick=function(){this.disabled=true}});
+    });
+  }
 }
