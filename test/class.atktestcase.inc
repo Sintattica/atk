@@ -214,46 +214,31 @@
       
       if (count($this->m_fixtures) == 0) return;
 
+      atkimport('atk.fixture.atkfixturemanager');
+      $manager = &atkFixtureManager::getInstance();
+      
       $this->m_fixtureData = array();
       foreach($this->m_fixtures as $database => $fixtures)
       {
+        $db = &$this->_getTestDb($database);
         foreach ($fixtures as $fullname)
         {
-          $this->_loadFixtureData($fullname, $database);
+          $result = $manager->load($fullname, $db, $this->_getPath());
+          if ($result === false)
+          {
+            atkerror("Error loading fixture '$fullname'!");
+          }
+          
+          $table = $result['table'];
+          $data = $result['data'];
+
+          if (!isset($this->m_fixtureData[$database][$table]))
+            $this->m_fixtureData[$database][$table] = array();
+
+          $this->m_fixtureData[$database][$table] =
+            array_merge($this->m_fixtureData[$database][$table], $data);
         }
       }
-    }
-    
-    /**
-     * Load data for the given fixture into the test database.
-     * 
-     * @param string $fullname full fixture name
-     */
-    function _loadFixtureData($fullname, $database)
-    {
-      $path = $this->_getFixturePath($fullname);
-      if ($path == NULL)
-      {
-        atkerror("No fixture data file found for fixture '{$fullname}'!");
-        return;
-      }
-      
-      $type = $this->_getFixtureType($path);
-      $method = "_get{$type}FixtureData";
-      if (!method_exists($this, $method))
-      {
-        atkerror("Don't know how to load fixture data of type '{$type}' (fixture '{$fullname}')!");
-      }
-      
-      $table = $this->_getFixtureTable($fullname);
-      $db = &$this->_getTestDb($database);
-      if (!$db->tableExists($table))
-      {
-        atkerror("Table '{$table}' not found in test database (fixture '$fullname')!");
-      }
-      
-      $data = $this->$method($fullname, $path);
-      $this->_saveFixtureData($database, $table, $data);
     }
     
     /**
@@ -284,115 +269,7 @@
       if (!isset($s_path[$class]))
         atkerror('Could not determine path for test-case: '.$class);
       else return $s_path[$class];
-    }
-    
-    /**
-     * Get the fixture path for the given fixture (full-)name.
-     * 
-     * @param string $fullname full fixture name
-     * @return stringn fixture path
-     */
-    function _getFixturePath($fullname)
-    {
-      $parts = explode('.', $fullname);
-      
-      $path = NULL;
-      
-      // beneath test-case directory
-      if (count($parts) == 1)
-      {
-        $path = $this->_getPath().'fixtures/'.$fullname;
-      }
-      
-      // beneath module directory
-      else if (
-        count($parts) == 2 &&
-        !is_dir(atkconfig("atkroot").$parts[0].'/'.$parts[1]) && 
-        moduleExists($parts[0]))
-      {
-        $module = &getModule($parts[0]);
-        $path = $module->getFixturePath($fullname);
-      }
-      
-      // full path (without testcases/fixtures directory!)
-      else
-      {
-        $fullname = implode('.', array_slice(0, count($parts) - 1)).'.testcases.fixtures.'.$parts[count($parts) - 1];
-        $path = getClassPath($fullname, false);
-      }
-
-      $files = glob("{$path}.*");   
-      
-      return count($files) == 0 ? NULL : $files[0];
-    }
-    
-    /**
-     * Returns the fixture type for the given fixture path.
-     * 
-     * @param string $path fixture path
-     * @return string fixture type
-     */
-    function _getFixtureType($path)
-    {
-      return substr($path, strrpos($path, '.') + 1);
-    }
-    
-    /**
-     * Returns the fixture table for the given full fixture name.
-     * 
-     * @param string $fullname full fixture name
-     * @return string table name
-     */
-    function _getFixtureTable($fullname)
-    {
-      return end(explode('.', $fullname));
-    }
-    
-    /**
-     * Returns the YAML fixture data from the given path.
-     *
-     * @param string $fullname full fixture name
-     * @param string $path     fixture path
-     * 
-     * @return array data
-     */
-    function _getYmlFixtureData($fullname, $path)
-    {
-      $contents = file_get_contents($path);
-      $contents = $this->_parsePHP($contents);
-    	include_once(atkconfig("atkroot")."atk/ext/spyc/spyc.php");
-      $data = Spyc::YAMLLoad($contents);
-      return $data;
-    }
-    
-    /**
-     * Returns the PHP fixture data from the given path.
-     *
-     * @param string $fullname full fixture name
-     * @param string $path     fixture path
-     * 
-     * @return array data
-     */
-    function _getPHPFixtureData($fullname, $path)
-    {
-      $data = array();
-      include_once($path);
-      return $data;
-    }
-    
-    /**
-     * Parses the given string using PHP. Parsed results will be returned. 
-     * PHP code must be surrounded by PHP open and close tags. Script code
-     * has full access to all loaded ATK files.
-     */
-    function _parsePHP($contents)
-    {
-    	ob_start();
-      eval(str_replace(array("?>\r\n", "?>\n"), array("?> \r\n", "?> \n"), "?>".$contents));
-      $contents = ob_get_contents();
-      ob_end_clean();
-      return $contents;
-    }
+    }    
     
     /**
      * Get test database.
@@ -400,52 +277,6 @@
     function &_getTestDb($database)
     {
       return atkGetDb($database);
-    }
-    
-    /**
-     * Save fixture data to the database in the given table.
-     * 
-     * @param array  $database database name
-     * @param string $table    table name
-     * @param array  $data     fixture data 
-     */
-    function _saveFixtureData($database, $table, $data)
-    {
-      $db = &$this->_getTestDb($database);
-            
-      // save data
-      foreach ($data as $item => $record)
-      {
-        // make fixture data available
-        $this->m_fixtureData[$database][$table][$item] = $record;
-        
-        // insert data into database
-        $query = &$db->createQuery();
-        $query->addTable($table);
-        
-        foreach($record as $field => $value)
-        {
-          $query->addField($field, $value);
-        }
-        
-        if (!$query->executeInsert())
-        {
-          atkerror('Could not insert fixture in table '.$table);
-        }
-      }
-      
-      // set sequence value(s)
-      $metadata = $db->metadata($table);
-      foreach($metadata as $field)
-      {
-        if (hasFlag($field['flags'], MF_AUTO_INCREMENT))
-        {
-          $sequence = isset($field['sequence']) ? $field['sequence'] : $table;
-          $query = "SELECT MAX(" .$field['name'] .") AS value FROM $table";
-          list($result) = $db->getRows($query);
-          $db->setSequenceValue($sequence, $result['value']);
-        }
-      }
     }
     
     /**
