@@ -884,6 +884,16 @@
       $query->m_db = &$this;
       return $query;
     }
+    
+    /**
+     * Enable/disable all foreign key constraints.
+     * 
+     * @param boolean $enable enable/disable foreign keys?
+     */
+    function toggleForeignKeys($enable)
+    {
+      atkdebug('WARNING: '.get_class($this).'::toggleForeignKeys not implemented!');
+    }
 
     /**
      * Empty all database tables.

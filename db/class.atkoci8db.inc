@@ -129,6 +129,24 @@
         OCILogoff($this->m_link_id);
       }
     }
+    
+    /**
+     * Enable/disable all foreign key constraints.
+     * 
+     * @param boolean $enable enable/disable foreign keys?
+     */
+    function toggleForeignKeys($enable)
+    {
+      $query = "SELECT fk.constraint_name, fk.table_name FROM user_constraints fk WHERE fk.constraint_type = 'R'";
+      $keys = $this->getRows($query);
+      
+      $state = $enable ? "ENABLE" : "DISABLE";
+      
+      foreach ($keys as $key)
+      {
+        $this->query("ALTER TABLE {$key[table_name]} {$state} CONSTRAINT {$key[constraint_name]}");
+      }      
+    }    
 
     /**
      * Commit the current transaction.

@@ -109,9 +109,9 @@ class atkFixtureManager
     // full path (without testcases/fixtures directory?)
     else
     {
-      $fullname = implode('.', array_slice(0, count($parts) - 1)).'.testcases.fixtures.'.$parts[count($parts) - 1];
-      $path = getClassPath($fullname, false);
-      
+      $tmpFullname = implode('.', array_slice($parts, 0, count($parts) - 1)).'.testcases.fixtures.'.$parts[count($parts) - 1];
+      $path = getClassPath($tmpFullname, false);
+
       // full path
       if (count(glob("{$path}.*")) == 0)
       {
@@ -163,7 +163,6 @@ class atkFixtureManager
     $path = $this->getPath($fullname, $searchPath);
     if ($path == NULL)
     {
-      echo "a";
       atkdebug("No fixture data file found for fixture '{$fullname}'!");
       return false;
     }

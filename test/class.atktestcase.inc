@@ -173,9 +173,8 @@
           return $this->fixture($method, isset($args[0]) ? $args[0] : NULL, isset($args[1]) ? $args[1] : NULL);
       }
       
-      // can't put this code here directly because PHP4 doesn't know about the throw keyword
-      // and although this code will never get executed under PHP4, it will give a parse error
-      eval("throw new Exception('Invalid method name $method for ".get_class($this)."!');");
+      atkerror("Invalid method name $method for ".get_class($this)." (fixture not loaded?)!");
+      return NULL;
     }
     
     /**
@@ -195,8 +194,12 @@
         if (!isset($config[$test]["transactional_fixtures"]) || 
             !$config[$test]["transactional_fixtures"])
         {
+          $db->toggleForeignKeys(false);          
+          
           $db->deleteAll();
           $db->commit();
+          
+          $db->toggleForeignKeys(true);                    
         }
         else
         {
@@ -221,6 +224,9 @@
       foreach($this->m_fixtures as $database => $fixtures)
       {
         $db = &$this->_getTestDb($database);
+        
+        $db->toggleForeignKeys(false);
+        
         foreach ($fixtures as $fullname)
         {
           $result = $manager->load($fullname, $db, $this->_getPath());
@@ -228,16 +234,20 @@
           {
             atkerror("Error loading fixture '$fullname'!");
           }
-          
-          $table = $result['table'];
-          $data = $result['data'];
-
-          if (!isset($this->m_fixtureData[$database][$table]))
-            $this->m_fixtureData[$database][$table] = array();
-
-          $this->m_fixtureData[$database][$table] =
-            array_merge($this->m_fixtureData[$database][$table], $data);
+          else 
+          {
+            $table = $result['table'];
+            $data = $result['data'];
+  
+            if (!isset($this->m_fixtureData[$database][$table]))
+              $this->m_fixtureData[$database][$table] = array();
+  
+            $this->m_fixtureData[$database][$table] =
+              array_merge($this->m_fixtureData[$database][$table], $data);
+          }
         }
+        
+        $db->toggleForeignKeys(true);
       }
     }
     
