@@ -172,7 +172,7 @@ function makeButtonsOneClickOnly(buttons)
   {
     buttons.each(function (buttonclass)
     {
-      document.getElementsByClassName(buttonclass).each(function(button){button.onclick=function(){this.disabled=true}});
+      //document.getElementsByClassName(buttonclass).each(function(button){button.onclick=function(){this.disabled=true; this.form.submit(); }});
     });
   }
 }
