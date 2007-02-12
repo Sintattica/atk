@@ -404,6 +404,26 @@
     {
       $this->m_content.=$content;
     }
+    
+    /**
+     * Returns the current page content.
+     *
+     * @return string current page content
+     */
+    function getContent()
+    {
+      return $this->m_content;
+    }
+    
+    /**
+     * Sets the page content (overwriting current content).
+     *
+     * @param string $content new page content
+     */
+    function setContent($content)
+    {
+      $this->m_content = $content;
+    }
 
     /**
      * Generate the HTML body (<body></body>) statement for the page.

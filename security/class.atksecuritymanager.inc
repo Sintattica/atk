@@ -53,6 +53,28 @@
     // error message that caused the fatal error is put in this variable.
     var $m_fatalError = "";
 
+    
+    /**
+     * Register a new listener.
+     * 
+     * @param atkSecurityListener listener
+     */
+    function addListener(&$listener)
+    {
+      $this->m_listeners[] = $listener;
+    }
+    
+    /**
+     * Notify listeners of a certain event.
+     * 
+     * @param string event name
+     * @param string username (might be null)
+     */
+    function notifyListeners($event, $username)
+    {
+      for ($i = 0, $_i = count($this->m_listeners); $i < $_i; $i++)
+        $this->m_listeners[$i]->handleEvent($event, $username);
+    }
 
     /**
      * returns the full classname for use with atkimport
@@ -194,11 +216,16 @@
         $auth_user = $_SERVER["PHP_AUTH_USER"];
         $auth_pw = $_SERVER["PHP_AUTH_PW"];
       }
+      
+      // throw post login event?
+      $throwPostLoginEvent = false;
 
       $md5 = false; // PHP_AUTH_PW is plain text..
       // first check if we want to logout
       if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"])||$session["relogin"]!=1))
       {
+        $this->notifyListeners("preLogout", $auth_user);
+        
         session_destroy();
         $cookie_params = session_get_cookie_params();
         session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
@@ -212,6 +239,9 @@
           $cookiename = $this->_getAuthCookieName();
           if (!empty($_COOKIE[$cookiename])) setcookie($cookiename, "", 0);
         }
+        
+        $this->notifyListeners("postLogout", $auth_user);        
+        
         if($ATK_VARS["atklogout"]>1)
         {
           header("Location: logout.php");
@@ -268,108 +298,114 @@
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
         }
-        // check superuser
-        else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
+        else 
         {
-          $this->m_user = array("name"=>"administrator","level"=>-1, "access_level"=>9999999);
-          // for convenience, we also store the user as a global variable.
-          atkdebug("Administrator (configfile) logged in");
-          $authenticated = true;
-        }
-        else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator")
-        {
-          $response = AUTH_MISMATCH;
-        }
-        // check guest user
-        else if (atkconfig("guestpassword")!=""&&$auth_user=="guest"&&$auth_pw==atkconfig("guestpassword"))
-        {
-          $this->m_user = Array("name"=>"guest","level"=>-2, "access_level"=>0);
-          // for convenience, we also store the user as a global variable.
-          atkdebug("Guest (configfile) logged in");
-          $authenticated = true;
-        }
-        // other users
-        // we must first explicitly check that we are not trying to login as administrator or guest.
-        // these accounts have been validated above. If we don't check this, an account could be
-        // created in the database that provides administrator access.
-        else if ($auth_user!="administrator"&&$auth_user!="guest")
-        {
-          if(is_array($this->m_authentication))
+          $throwPostLoginEvent = true;
+          $this->notifyListeners("preLogin", $auth_user);
+          
+          // check superuser
+          if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
           {
-            // We have a username, which we must now validate against several
-            // checks. If all of these fail, we have a status of AUTH_MISMATCH.
-            foreach($this->m_authentication as $name => $obj)
+            $this->m_user = array("name"=>"administrator","level"=>-1, "access_level"=>9999999);
+            // for convenience, we also store the user as a global variable.
+            atkdebug("Administrator (configfile) logged in");
+            $authenticated = true;
+          }
+          else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator")
+          {
+            $response = AUTH_MISMATCH;
+          }
+          // check guest user
+          else if (atkconfig("guestpassword")!=""&&$auth_user=="guest"&&$auth_pw==atkconfig("guestpassword"))
+          {
+            $this->m_user = Array("name"=>"guest","level"=>-2, "access_level"=>0);
+            // for convenience, we also store the user as a global variable.
+            atkdebug("Guest (configfile) logged in");
+            $authenticated = true;
+          }
+          // other users
+          // we must first explicitly check that we are not trying to login as administrator or guest.
+          // these accounts have been validated above. If we don't check this, an account could be
+          // created in the database that provides administrator access.
+          else if ($auth_user!="administrator"&&$auth_user!="guest")
+          {
+            if(is_array($this->m_authentication))
             {
-              $obj->canMd5()&&!$md5 ? $tmp_pw=md5($auth_pw) : $tmp_pw=$auth_pw;
-              $response = $obj->validateUser($auth_user,$tmp_pw);
-              if($response==AUTH_SUCCESS)
+              // We have a username, which we must now validate against several
+              // checks. If all of these fail, we have a status of AUTH_MISMATCH.
+              foreach($this->m_authentication as $name => $obj)
               {
-                atkdebug("atkSecurityManager::authenticate() using $name authentication");
-                $authname=$name;
-                break;
+                $obj->canMd5()&&!$md5 ? $tmp_pw=md5($auth_pw) : $tmp_pw=$auth_pw;
+                $response = $obj->validateUser($auth_user,$tmp_pw);
+                if($response==AUTH_SUCCESS)
+                {
+                  atkdebug("atkSecurityManager::authenticate() using $name authentication");
+                  $authname=$name;
+                  break;
+                }
               }
             }
-          }
-          if($response==AUTH_SUCCESS) // succesful login
-          {
-            // We store the username + securitylevel of the logged in user.
-            $this->m_user = $this->m_authorization->getUser($auth_user);
-            $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
-            if (atkconfig("enable_ssl_encryption")) $this->m_user['PASS']=$auth_pw; // used by aktsecurerelation to decrypt an linkpass
-            // for convenience, we also store the user as a global variable.
-            (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
-            atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
-            $authenticated = true;
-
-            // Remember that we are logged in..
-            //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
-
-            // write cookie
-            if (atkconfig("authentication_cookie")&&$auth_user!="administrator")
+            if($response==AUTH_SUCCESS) // succesful login
             {
-              // if the authentication scheme supports md5 passwords, we can safely store
-              // the password as md5 in the cookie.
-              if ($md5) // Password is already md5 encoded
+              // We store the username + securitylevel of the logged in user.
+              $this->m_user = $this->m_authorization->getUser($auth_user);
+              $this->m_user['AUTH']=$authname; // something to see wich auth scheme is used
+              if (atkconfig("enable_ssl_encryption")) $this->m_user['PASS']=$auth_pw; // used by aktsecurerelation to decrypt an linkpass
+              // for convenience, we also store the user as a global variable.
+              (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
+              atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
+              $authenticated = true;
+  
+              // Remember that we are logged in..
+              //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
+  
+              // write cookie
+              if (atkconfig("authentication_cookie")&&$auth_user!="administrator")
               {
-                $tmppw = $auth_pw;
-                $enc = "MD5";
-              }
-              else // password is not md5 encoded
-              {
-                if ($this->m_authentication[$authname]->canMd5()) // we can encode it
-                {
-                  $tmppw = md5($auth_pw);
-                  $enc = "MD5";
-                }
-                else // authentication scheme does not support md5 encoding.
-                     // our only choice is to store the password plain text
-                     // :-(
-                     // NOTE: If you use a non-md5 enabled authentication
-                     // scheme then, for security reasons, you shouldn't use
-                     // $config_authentication_cookie at all.
+                // if the authentication scheme supports md5 passwords, we can safely store
+                // the password as md5 in the cookie.
+                if ($md5) // Password is already md5 encoded
                 {
                   $tmppw = $auth_pw;
-                  $enc = "PLAIN";
+                  $enc = "MD5";
                 }
+                else // password is not md5 encoded
+                {
+                  if ($this->m_authentication[$authname]->canMd5()) // we can encode it
+                  {
+                    $tmppw = md5($auth_pw);
+                    $enc = "MD5";
+                  }
+                  else // authentication scheme does not support md5 encoding.
+                       // our only choice is to store the password plain text
+                       // :-(
+                       // NOTE: If you use a non-md5 enabled authentication
+                       // scheme then, for security reasons, you shouldn't use
+                       // $config_authentication_cookie at all.
+                  {
+                    $tmppw = $auth_pw;
+                    $enc = "PLAIN";
+                  }
+                }
+                setcookie($cookiename,base64_encode($enc.".".$auth_user.".".$tmppw), time()+60*(atkconfig("authentication_cookie_expire")));
               }
-              setcookie($cookiename,base64_encode($enc.".".$auth_user.".".$tmppw), time()+60*(atkconfig("authentication_cookie_expire")));
             }
-          }
-          else
-          {
-            // login was incorrect. Either the supplied username/password combination is
-            // incorrect (we just try again) or there was an error (we display an error
-            // message)
-            if ($response==AUTH_ERROR)
+            else
             {
-              $this->m_fatalError = $this->m_authentication->m_fatalError;
+              // login was incorrect. Either the supplied username/password combination is
+              // incorrect (we just try again) or there was an error (we display an error
+              // message)
+              if ($response==AUTH_ERROR)
+              {
+                $this->m_fatalError = $this->m_authentication->m_fatalError;
+              }
+              $authenticated = false;
             }
-            $authenticated = false;
           }
+          
+          // we are logged in
+          if ($authenticated) $session["login"]=1;
         }
-        // we are logged in
-        if ($authenticated) $session["login"]=1;
-
       }
       else
       {
@@ -432,6 +468,10 @@
       $GLOBALS["g_user"] = $this->m_user;
       $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
       sessionStore('loginattempts',''); //reset maxloginattempts
+      
+      if ($throwPostLoginEvent) 
+        $this->notifyListeners("postLogin", $auth_user);            
+        
       return true;
     }
 

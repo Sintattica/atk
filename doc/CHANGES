@@ -288,6 +288,12 @@ Changed in ATK 5.7
 + Added toggleForeignKeys method to atkDb which can be used to enable
   or disable the foreign keys in the database. Only supported by the
   Oracle drivers for now. [Peter]
++ Added atkSecurityListener class which can be used to listen for 
+  atkSecurityManager login/logout events. [Peter]
++ Added getContent/setContent methods to atkPage. [Peter]
+* atkNode::redirect now immediately flushes the output buffer and dies
+  when debugging is turned on. This prevents weird side effects because
+  the script would normally continue to run after the redirect. [Peter]
 * atkDb::selectDb/countDb don't set distinct on by default. In most
   cases this is not needed. And the cases which do need this can turn it
   on manually using an attribute which does so. [Peter]

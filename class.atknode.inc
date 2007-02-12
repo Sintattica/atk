@@ -1009,6 +1009,16 @@
     {
       return $this->m_flags;
     }
+    
+    /**
+     * Is partial request?
+     * 
+     * @return boolean is partial
+     */
+    function isPartial()
+    {
+      return $this->m_partial;
+    }
 
     /**
      * Sets the editable list attributes. If you supply this method
@@ -2407,6 +2417,9 @@
       if (atkconfig("debug")>=2)
       {
         atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
+        $output = &atkOutput::getInstance();
+        $output->outputFlush();
+        die;
       }
       else
       {
