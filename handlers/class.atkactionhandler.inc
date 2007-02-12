@@ -93,7 +93,6 @@
       $this->invoke("action_".$action);
       
       // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
-      atkdebug("ARE WE REJECTING: ".$this->m_rejecting);
       if (!$this->m_rejecting)
       {
         atkdebug("clearing the stuff");
