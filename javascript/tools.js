@@ -166,13 +166,34 @@ function showTr(tab)
 	}
 }
 
+
 function makeButtonsOneClickOnly(buttons)
 {
-  if (document.getElementsByClassName)
+  var that = this;
+
+  disableButtons = function(event)
   {
-    buttons.each(function (buttonclass)
-    {
-      //document.getElementsByClassName(buttonclass).each(function(button){button.onclick=function(){this.disabled=true; this.form.submit(); }});
-    });
+    buttons.each(function (buttonclass){document.getElementsByClassName(buttonclass).each(function(button){button.disabled=true})});
+    button = Event.element(event);
+    input=document.createElement('input');
+    input.type='hidden';
+    input.value=1;
+    input.name = button.name;
+    input.className = button.className;
+    button.parentNode.insertBefore(input,button);
+    button.form.submit();
   }
+
+  bindEventListeners = function()
+  {
+    if (document.getElementsByClassName)
+    {
+      buttons.each(function (buttonclass)
+      {
+        document.getElementsByClassName(buttonclass).each(function(button){Event.observe(button,'click',that.disableButtons);});
+      });
+    }
+  }
+
+  bindEventListeners();
 }
