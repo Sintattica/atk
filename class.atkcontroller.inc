@@ -253,8 +253,19 @@
       }
       else
       {
-        $page->addContent($this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>"));
+        $page->addContent($this->accessDeniedPage());
       }
+    }
+
+    /**
+     * Render a generic access denied page.
+     *
+     * @return String A complete html page with generic access denied message.
+     */
+    function accessDeniedPage()
+    {
+      $node = &$this->getNode();
+      return $this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>");      
     }
 
   /**

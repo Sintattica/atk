@@ -33,11 +33,18 @@
     function action_view($renderbox=true)
     {
       atkdebug("Action view");
-      $recordset = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
+      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
 
+      // allowed to view record?
+      if (!$this->allowed($record))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
+      
       $page = &$this->getPage();
 
-      $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $recordset[0], $this->m_node, $renderbox)));
+      $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
 
     /**

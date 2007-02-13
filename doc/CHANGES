@@ -291,6 +291,8 @@ Changed in ATK 5.7
 + Added atkSecurityListener class which can be used to listen for 
   atkSecurityManager login/logout events. [Peter]
 + Added getContent/setContent methods to atkPage. [Peter]
+* Record-level allowed check is now also being performed in the
+  respective action handlers. [Peter]
 * atkNode::redirect now has a parameter to immediately exit after the
   redirect. This can prevent weird side effects because the script would 
   normally continue to run after the redirect. [Peter]

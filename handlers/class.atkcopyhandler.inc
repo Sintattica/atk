@@ -45,6 +45,13 @@
       $db = &$this->m_node->getDb();
       if(count($recordset)>0)
       {
+        // allowed to copy record?
+        if (!$this->allowed($recordset[0]))
+        {
+          $this->renderAccessDeniedPage();
+          return;
+        }
+        
         if(!$this->m_node->copyDb($recordset[0]))
         {
           atkdebug("atknode::action_copy() -> Error");          

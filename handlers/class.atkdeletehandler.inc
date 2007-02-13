@@ -33,7 +33,12 @@
      * The action handler.
      */
     function action_delete()
-    {    
+    { 
+      if (!$this->_checkAllowed())
+      {
+        $this->renderAccessDeniedPage();
+      }
+         
       if (!empty($this->m_postvars['confirm'])) $this->_doDelete();
       elseif (empty($this->m_node->m_postvars['cancel']))
       {
@@ -56,11 +61,36 @@
     }
     
     /**
+     * Check if we are allowed to remove the given records.
+     *
+     * @return boolean is delete action allowed?
+     */
+    function _checkAllowed()
+    {
+      $atkselector = $this->m_postvars['atkselector'];
+      if (is_array($atkselector))
+        $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
+      else $atkselector_str = $atkselector;
+      
+      $recordset = $this->m_node->selectDb($atkselector_str,"","","","","delete");
+      foreach ($recordset as $record)
+      {
+        if (!$this->allowed($record)) 
+        {
+          return false;
+        }
+      }
+      
+      return true;
+    }
+    
+    /**
      * We have a confirmed delete, so we proceed to delete
      */
     function _doDelete()
     {
       $db = &$this->m_node->getDb();
+      
       if($this->m_node->deleteDb($this->m_postvars['atkselector']))
       {
         $db->commit();

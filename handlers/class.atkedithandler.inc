@@ -55,6 +55,13 @@
       }
 
       list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
+      
+      // allowed to edit record?
+      if (!$this->allowed($record))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
 
       // check if there are postvars set that overwrite the record contents, this can happen when a
       // new selection is made using the select handler etc.

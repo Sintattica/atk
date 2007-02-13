@@ -37,6 +37,13 @@
 
       if(count($recordset) > 0)
       {
+        // allowed to editcopy record?
+        if (!$this->allowed($recordset[0]))
+        {
+          $this->renderAccessDeniedPage();
+          return;
+        }
+        
         $db = &$this->m_node->getDb();
         if(!$this->m_node->copyDb($recordset[0]))
         {

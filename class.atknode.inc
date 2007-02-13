@@ -3928,15 +3928,31 @@
     function allowed($action, $record="")
     {
       $secMgr = &atkGetSecurityManager();
-      if (empty($this->m_securityAlias))
-      {
-        $alias = $this->atknodetype();
-      }
-      else
+
+      $alias = $this->atkNodeType();
+      $this->resolveNodeTypeAndAction($alias, $action);
+
+      return ($this->hasFlag(NF_NO_SECURITY)
+              ||in_array($action, $this->m_unsecuredActions)
+              || $secMgr->allowed($alias,$action)
+              || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
+    }
+    
+    /**
+     * Resolves a possible node / action alias for the given node / action.
+     * The given node alias and action are updated depending on
+     * the found mapping.
+     *
+     * @param string $alias  node type
+     * @param string $action action name
+     */
+    function resolveNodeTypeAndAction(&$alias, &$action)
+    {
+      if (!empty($this->m_securityAlias))
       {
         $alias = $this->m_securityAlias;
       }
-
+      
       // Resolve action
       $action = $this->securityKey($action);
 
@@ -3956,12 +3972,7 @@
           $alias = $this->m_module.".".$complete[0];
           $action = $complete[1];
         }
-      }
-
-      return ($this->hasFlag(NF_NO_SECURITY)
-              ||in_array($action, $this->m_unsecuredActions)
-              || $secMgr->allowed($alias,$action)
-              || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
+      }      
     }
 
     /**
@@ -3980,6 +3991,16 @@
     function setSecurityAlias($alias)
     {
       $this->m_securityAlias = $alias;
+    }
+    
+    /**
+     * Returns the node's security alias (if set).
+     *
+     * @return string security alias
+     */
+    function getSecurityAlias()
+    {
+      return $this->m_securityAlias;
     }
 
     /**

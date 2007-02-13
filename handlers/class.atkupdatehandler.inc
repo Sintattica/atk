@@ -37,6 +37,13 @@
     function action_update()
     {
       $record = $this->m_node->updateRecord();
+      
+      // allowed to update record?
+      if (!$this->allowed($record))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
 
       if (isset($this->m_postvars['atknoclose'])||
           isset($this->m_postvars['atksaveandclose']) ||

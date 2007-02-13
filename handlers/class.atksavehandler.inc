@@ -38,6 +38,13 @@
     function action_save()
     {
       $record = $this->m_node->updateRecord();
+      
+      // allowed to save record?
+      if (!$this->allowed($record))
+      {
+        $this->renderAccessDeniedPage();
+        return;
+      }
 
       if (!isset($this->m_postvars['atkcancel']))
       {

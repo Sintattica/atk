@@ -297,6 +297,27 @@
     {
       return $this->m_returnbehaviour;
     }
-  }
+    
+    /**
+     * Current action allowed on the given record?
+     *
+     * @param array $record record
+     * @return boolean is action allowed on record?
+     */
+    function allowed($record)
+    {
+      return $this->m_node->allowed($this->m_action, $record);
+    }
 
+    /**
+     * Render access denied page.
+     */
+    function renderAccessDeniedPage()
+    {
+      $controller = &atkController::getInstance();
+      $controller->setNode($this->m_node);
+      $page = &$this->m_node->getPage();
+      $page->addContent($controller->accessDeniedPage());
+    }        
+  }
 ?>
