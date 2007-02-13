@@ -399,7 +399,7 @@
       $node   = &$this->getNode();
       $page = &$node->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-      $page->register_loadscript("makeButtonsOneClickOnly(new Array('btn_save','btn_cancel','btn_saveandclose','btn_saveandnext'))");
+      $page->register_loadscript("makeButtonsOneClickOnly(new Array('btn_save','btn_cancel','btn_saveandclose','btn_saveandnext'));");
 
       // edit mode
       if ($mode == "edit")
