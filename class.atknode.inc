@@ -2388,15 +2388,25 @@
      *                         If ommitted, the call automatically redirects
      *                         to the previous screen of the user. (one level
      *                         back on the session stack).
-     * @param array $record If you pass a record here, the record is passed
-     *                      as 'atkpkret' to the redirected url. Usually it's
-     *                      not necessary to pass this parameter.
+     * @param array $recordOrExit If you pass a record here, the record is passed
+     *                            as 'atkpkret' to the redirected url. Usually it's
+     *                            not necessary to pass this parameter. If you pass a
+     *                            boolean here we assume it's value must be used for
+     *                            the exit parameter.
+     * @param boolean $exit      Exit script after redirect.
      */
-    function redirect($location="", $record=array())
+    function redirect($location="", $recordOrExit=array(), $exit=false)
     {
       global $g_returnurl;
 
       atkdebug("atknode::redirect()");
+
+      $record = $recordOrExit;      
+      if (is_bool($recordOrExit))
+      {
+        $record = array();
+        $exit = $recordOrExit;
+      }
 
       if ($g_returnurl!="") $location = $g_returnurl;
 
@@ -2417,9 +2427,12 @@
       if (atkconfig("debug")>=2)
       {
         atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
-        $output = &atkOutput::getInstance();
-        $output->outputFlush();
-        die;
+        if ($exit)
+        {
+          $output = &atkOutput::getInstance();
+          $output->outputFlush();
+          exit();
+        }
       }
       else
       {
@@ -2435,6 +2448,10 @@
         }
 
         header('Location: '.$location);
+        if ($exit) 
+        {
+          exit();
+        }
       }
     }
 
