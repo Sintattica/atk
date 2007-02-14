@@ -292,6 +292,7 @@ Changed in ATK 5.7
   atkSecurityManager login/logout events. [Peter]
 + Added getContent/setContent methods to atkPage. [Peter]
 + Added atkCreatedByAttribute. (bug #747) [Yury]
+* Fixed automatic enable/disable of recordlist checkboxes. [Peter,Martin]
 * Record-level allowed check is now also being performed in the
   respective action handlers. [Peter]
 * atkNode::redirect now has a parameter to immediately exit after the

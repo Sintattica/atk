@@ -542,7 +542,6 @@
           /* multiple actions -> dropdown */
           if (count($list["mra"]) > 1)
           {
-            $page->register_loadscript('updateSelectable(\''.$listName.'\', document.forms[\''.$formName.'\']);');
             $mra .= '<select name="'.$listName.'_atkaction" onchange="javascript:updateSelectable(\''.$listName.'\', this.form)">'.
                        '<option value="">'.atktext("with_selected").':</option>';
 
