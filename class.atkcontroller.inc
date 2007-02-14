@@ -116,7 +116,7 @@
       $node->m_postvars = $postvars;
       if(!is_object($node)) return;
 
-      $ui = $node->getUi();
+      $ui = &$node->getUi();
       $page = &$node->getPage();
 
       // backwards compatibility mode
