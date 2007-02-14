@@ -388,7 +388,7 @@
             for ($j = $this->m_node->m_priority_min; $j <= $this->m_node->m_priority_max; $j++)
               $select .= '<option value="'.$j.'">'.$j.'</option>';
             $select .= '</select>';
-            $record["cols"][] = array("content" => $select);
+            $record["cols"][] = array("content" => $select, "type" => "mrpa");
           }
 
           /* multi-record-actions -> checkbox */
@@ -397,7 +397,8 @@
             if (count($list["rows"][$i]["mra"]) > 0)
               $record["cols"][] = array(
                            "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($list["rows"][$i]["selector"]).'" onclick="if (this.disabled) this.checked = false">'.
-                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>');
+                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>', 
+                            "type" => "mra");
 
             else $record["cols"][] = array("content"=>"");
           }
@@ -408,7 +409,7 @@
             if (is_array($list["rows"][$i]["lock"]))
             {
               $alt = $list["rows"][$i]["lock"]["user_id"]." / ".$list["rows"][$i]["lock"]["user_ip"];
-              $record["cols"][] = array("content"=>'<img src="'.atkconfig("atkroot").'atk/images/lock.gif" alt="'.$alt.'" border="0">');
+              $record["cols"][] = array("content"=>'<img src="'.atkconfig("atkroot").'atk/images/lock.gif" alt="'.$alt.'" border="0">', "type" => "lock");
             }
             else $record["cols"][] = array("content"=>"");
           }
@@ -446,7 +447,7 @@
           {
             if (!empty($list["rows"][$i]["actions"]))
             {
-              $record["cols"][] = array("content"=>$str_actions);
+              $record["cols"][] = array("content"=>$str_actions, "type" => "actions");
             }
             else if ($this->_hasActionColumn($list))
             {
@@ -456,12 +457,12 @@
 
           /* columns */
           foreach ($list["rows"][$i]["data"] as $html)
-            $record["cols"][] = array("content"=>$html);
+            $record["cols"][] = array("content"=>$html, "type" => "data");
 
           /* actions (right) */
           if ($orientation=="right"||$orientation=="both")
           {
-            if (!empty($list["rows"][$i]["actions"])) $record["cols"][] = array("content"=>$str_actions);
+            if (!empty($list["rows"][$i]["actions"])) $record["cols"][] = array("content"=>$str_actions, "type" => "actions");
             else if ($this->_hasActionColumn($list))
             {
               $record["cols"][] = array("content"=>"");

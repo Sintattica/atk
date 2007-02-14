@@ -663,56 +663,8 @@
 
       if (!isset($_cache[$node][$privilege]))
       {
-        // security disabled or user is superuser? (may do anything)
-        if (($this->m_scheme=="none") || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator"))
-        {
-          $allowed = true;
-        }
-        // user is guest? (guests may do nothing)
-        else if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="guest"))
-        {
-          $allowed = false;
-        }
-        // all other situations
-        else
-        {
-          $required = $this->m_authorization->getEntity($node, $privilege);
-
-          if (count($required)==0)
-          {
-            // No access restrictions found..
-            // so either nobody or anybody can perform this
-            // operation, depending on the configuration.
-            $allowed = !atkconfig("restrictive");
-          }
-          else
-          {
-            if ($this->m_scheme=="level")
-            {
-              // in level based security, only one level is specified for each node/action combination.
-              $allowed = ($this->m_user["level"] >= $required[0]);
-            }
-            else if ($this->m_scheme=="group")
-            {
-              // user may have more then one level
-              if (is_array($this->m_user["level"]))
-              {
-                $allowed = (count(array_intersect($this->m_user["level"], $required))>0);
-              }
-              else
-              {
-                // user has only one level
-                $allowed = in_array($this->m_user["level"], $required);
-              }
-
-            }
-            else // unknown scheme??
-            {
-              $allowed = false;
-            }
-          }
-        }
-
+        // ask authorization instance        
+        $allowed = $this->m_authorization->allowed($this, $node, $privilege);
         $_cache[$node][$privilege] = $allowed;
       }
       return $_cache[$node][$privilege];
@@ -729,44 +681,7 @@
      */
     function attribAllowed($node, $attribute, $mode)
     {
-      // No securityscheme, or user is superuser.
-      if (($this->m_scheme=="none") || (!atkconfig("security_attributes")) || ($this->hasLevel(-1)) || (strtolower($this->m_user["name"])=="administrator"))
-      {
-        return true;
-      }
-
-      // User is guest (may do nothing)
-      if (($this->hasLevel(-2)) || (strtolower($this->m_user["name"])=="administrator"))
-      {
-        return false;
-      }
-
-      // all other situations
-      $required = $this->m_authorization->getAttribEntity($node, $attribute, $mode);
-
-      if ($required==-1)
-      {
-        // No access restrictions found..
-        $allowed = true;
-      }
-      else
-      {
-        if ($this->m_scheme=="level")
-        {
-          $allowed = ($this->m_user["level"] >= $required);
-        }
-        else if ($this->m_scheme=="group")
-        {
-          $allowed = in_array($this->m_user["level"],$required);
-        }
-        else // unknown scheme??
-        {
-          $allowed = false;
-        }
-      }
-
-      return $allowed;
-
+      return $this->m_authorization->attribAllowed($this, $node, $attribute, $mode);
     }
 
     /**

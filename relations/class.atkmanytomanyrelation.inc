@@ -40,6 +40,7 @@
     var $m_link = "";
     var $m_linkInstance = NULL;
     var $m_store_deletion_filter = "";
+    var $m_localFilter = NULL;
 
     /**
      * Constructor
@@ -282,8 +283,11 @@
           $whereelems[] = $this->m_linkInstance->m_table.".".$localkey[$i]."='".$primkeyattr->value2db($record)."'";
         }
       }
+      
+      if ($this->m_localFilter != NULL)
+        $whereelems[] = $this->m_localFilter;
 
-      return implode(" AND ", $whereelems);
+      return "(".implode(") AND (", $whereelems).")";
     }
 
     /**
@@ -541,6 +545,19 @@
     function setStoreDeletionFilter($filter)
     {
       $this->m_store_deletion_filter = $filter;
+    }
+    
+    /**
+     * Local filter is used to only show values that are once selected
+     * that comply with the local filter. A local filter is also automatically
+     * set as store deletion filter.
+     *
+     * @param string $filter filter
+     */
+    function setLocalFilter($filter)
+    {
+      $this->setStoreDeletionFilter($filter);
+      $this->m_localFilter = $filter;
     }
   }
 ?>

@@ -292,6 +292,12 @@ Changed in ATK 5.7
   atkSecurityManager login/logout events. [Peter]
 + Added getContent/setContent methods to atkPage. [Peter]
 + Added atkCreatedByAttribute. (bug #747) [Yury]
++ Added setLinkFilter method to atkManyToManyRelation which makes
+  it possible to filter the currently selected records both on
+  load and delete. [Peter]
+* Refactored some functionality from atkSecurityManager to the
+  auth_interface class which allows for greater control from within
+  authorization classes. [Peter]
 * Fixed automatic enable/disable of recordlist checkboxes. [Peter,Martin]
 * Record-level allowed check is now also being performed in the
   respective action handlers. [Peter]

@@ -97,6 +97,124 @@
     }
     
     /**
+     * Check if the currently logged-in user has a certain privilege on a
+     * node.
+     * 
+     * @param atkSecurityManager $securityMgr The security manager instance.
+     * @param String $node The full nodename of the node for which to check
+     *                     access privileges. (modulename.nodename notation).
+     * @param String $privilege The privilege to check (atkaction).
+     * @return boolean True if the user has the privilege, false if not.
+     */    
+    function allowed(&$securityMgr, $node, $privilege)
+    {
+      // security disabled or user is superuser? (may do anything)
+      if (($securityMgr->m_scheme=="none") || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"])=="administrator"))
+      {
+        $allowed = true;
+      }
+      // user is guest? (guests may do nothing)
+      else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"])=="guest"))
+      {
+        $allowed = false;
+      }
+      // other
+      else
+      {
+        $required = $this->getEntity($node, $privilege);
+  
+        if (count($required)==0)
+        {
+          // No access restrictions found..
+          // so either nobody or anybody can perform this
+          // operation, depending on the configuration.
+          $allowed = !atkconfig("restrictive");
+        }
+        else
+        {
+          if ($securityMgr->m_scheme=="level")
+          {
+            // in level based security, only one level is specified for each node/action combination.
+            $allowed = ($securityMgr->m_user["level"] >= $required[0]);
+          }
+          else if ($securityMgr->m_scheme=="group")
+          {
+            // user may have more then one level
+            if (is_array($securityMgr->m_user["level"]))
+            {
+              $allowed = (count(array_intersect($securityMgr->m_user["level"], $required))>0);
+            }
+            else
+            {
+              // user has only one level
+              $allowed = in_array($securityMgr->m_user["level"], $required);
+            }
+  
+          }
+          else // unknown scheme??
+          {
+            $allowed = false;
+          }
+        }  
+      }
+      
+      return $allowed;    
+    }
+    
+    /**
+     * Check if the currently logged-in user has the right to view or edit
+     * an attribute of a node.
+     * @param atkSecurityManager $securityMgr The security manager instance.
+     * @param String $node The full nodename of the node for which to check
+     *                     access.
+     * @param String $attribute The name of the attribute to check.
+     * @param String $mode "edit" or "view"
+     * @return boolean True if access is granted, false if not.
+     */    
+    function attribAllowed(&$securityMgr, $node, $attribute, $mode)
+    {
+      // security disabled or user is superuser? (may do anything)
+      if (($securityMgr->m_scheme=="none") || (!atkconfig("security_attributes"))  || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"])=="administrator"))
+      {
+        $allowed = true;
+      }
+      // user is guest? (guests may do nothing)
+      else if (($securityMgr->hasLevel(-2)) || (strtolower($securityMgr->m_user["name"])=="guest"))
+      {
+        $allowed = false;
+      }
+      // other
+      else
+      {      
+        // all other situations
+        $required = $this->getAttribEntity($node, $attribute, $mode);
+  
+        if ($required==-1)
+        {
+          // No access restrictions found..
+          $allowed = true;
+        }
+        else
+        {
+          if ($securityMgr->m_scheme=="level")
+          {
+            $allowed = ($securityMgr->m_user["level"] >= $required);
+          }
+          else if ($securityMgr->m_scheme=="group")
+          {
+            $allowed = in_array($securityMgr->m_user["level"],$required);
+          }
+          else // unknown scheme??
+          {
+            $allowed = false;
+          }
+        }
+      }
+      
+      return $allowed;              
+    }
+    
+    /**
      * This function returns the level/group(s) that are allowed to perform
      * the given action on a node.
      * @param String $node The full nodename of the node for which to check
