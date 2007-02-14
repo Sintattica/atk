@@ -2084,7 +2084,7 @@
       $script = '';
       foreach ($arr['fields'] as $field)
       {
-        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = '".addslashes(htmlentities($field['html']))."'.unescapeHTML();\r\n";
+        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = '".addslashes(atk_htmlentities($field['html']))."'.unescapeHTML();\r\n";
       }
       
       $this->_registerDependees($mode, $fieldprefix);                  
