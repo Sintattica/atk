@@ -9,6 +9,6 @@
     {/if}
   </div>
   <div id="loginBox">
-    {atktext logged_in_as}: {$user}
+    {atktext logged_in_as}: {$user} {if $username}[{$username}]{/if}
   </div>
 </div>
