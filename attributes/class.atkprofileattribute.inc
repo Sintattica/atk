@@ -100,6 +100,8 @@
 
         foreach ($checked as $node => $actions)
         {
+          $actions = array_unique($actions);
+          
           $nodeModule = getNodeModule($node);
           $nodeType = getNodeType($node);
 
