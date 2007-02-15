@@ -67,7 +67,7 @@ function str_replace(haystack,needle,replace,casesensitive)
  */
 function getCurrentSelector()
 {
-  var selectorobj = get_object("atkselector");
+  var selectorobj = $("atkselector");
 
   if (selectorobj.value)
   {
