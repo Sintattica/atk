@@ -116,6 +116,7 @@
       $dir = opendir($path);
       while (($file = readdir($dir)) !== false) $result[] = $file;
       closedir($dir);
+      sort($result);
       return $result;
     }
 

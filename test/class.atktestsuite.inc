@@ -60,7 +60,7 @@
         if (isset($_REQUEST['list']))
         {
           $fullpath = atkCleanPath($fullpath);
-      	  $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">'.TEST.'</a><br></tr></td>';
+      	  $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></tr></td>';
         	echo $ret;
         }
         else
