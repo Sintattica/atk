@@ -194,12 +194,12 @@
         if (!isset($config[$test]["transactional_fixtures"]) || 
             !$config[$test]["transactional_fixtures"])
         {
-          $db->toggleForeignKeys(false);          
+          //$db->toggleForeignKeys(false);          
           
           $db->deleteAll();
           $db->commit();
           
-          $db->toggleForeignKeys(true);                    
+          //$db->toggleForeignKeys(true);                    
         }
         else
         {
@@ -225,7 +225,7 @@
       {
         $db = &$this->_getTestDb($database);
         
-        $db->toggleForeignKeys(false);
+        //$db->toggleForeignKeys(false);
         
         foreach ($fixtures as $fullname)
         {
@@ -247,7 +247,7 @@
           }
         }
         
-        $db->toggleForeignKeys(true);
+        //$db->toggleForeignKeys(true);
       }
     }
     
