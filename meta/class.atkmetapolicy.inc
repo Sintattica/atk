@@ -127,14 +127,18 @@ class atkMetaPolicy
       $type = "atk.attributes.atkemailattribute";
       $params = array(false);
     }
-    else if ($name==='country')
+    else if ($name == 'country')
     {
-      $type='atkcountryattribute';
+      $type = 'atk.attributes.atkcountryattribute';
     }
-    else if ($meta['type']==='int' && $meta['len']===1 && 
-             (substr($name,0,3)==='is_' ||substr($name,0,4)==='has_'))
+    else if ($name == 'timezone')
     {
-      $type='atkboolattribute';
+      $type = 'atk.attributes.atktimezoneattribute';
+    }
+    else if ($meta['type'] == 'int' && $meta['len'] == 1 && 
+             (substr($name, 0, 3) == 'is_' || substr($name, 0, 4) == 'has_'))
+    {
+      $type = 'atk.attributes.atkboolattribute';
     }
     else
     {
