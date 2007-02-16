@@ -272,7 +272,7 @@
     {
       global $g_modules;
       $curdir = getcwd();
-      if (chdir(atkconfig('modulepath')))
+      if (chdir(atkconfig('module_path')))
       {
         $modulepath = getcwd();
         if (chdir($curdir))
