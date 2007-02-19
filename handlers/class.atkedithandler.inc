@@ -135,6 +135,8 @@
         }
         $form =$this->editForm("edit",$record,$forceList,$suppressList);
 
+        $params["header"] = $this->invoke("editHeader");
+
         $params["content"] = $node->tabulate("edit", $form);
 
         $params["buttons"] = $node->getFormButtons("edit", $record);
@@ -382,6 +384,15 @@
         else $tplfield["label"]="$subnumber. ";
         $subnumber++;
       }
+    }
+
+    /**
+    * Overrideable function to create a header for edit mode.
+    * Similar to the admin header functionality.
+    */
+    function editHeader()
+    {
+      return "";
     }
   }
 ?>

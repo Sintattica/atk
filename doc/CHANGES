@@ -296,6 +296,9 @@ Changed in ATK 5.7
   it possible to filter the currently selected records both on
   load and delete. [Peter]
 + Added $levelskip parameter to atkNode's redirect() method [Sandy]
++ Added edit header functionality to the edit handler and the action 
+  template (default theme). Similar to the existing admin header 
+  functionality. [Patrick]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]

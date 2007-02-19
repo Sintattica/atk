@@ -14,6 +14,11 @@
       </td>
     </tr>
   {/if}
+  {if (isset($header) && !empty($header))}
+  <tr>
+    <td valign="top" align="left">{$header}<br><br></td>
+  </tr>
+  {/if}
   <tr>
     <td valign="top" align="center">{$content}<br></td>
   </tr>
