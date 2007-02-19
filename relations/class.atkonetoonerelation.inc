@@ -338,6 +338,7 @@
        // Foreign key is in the source node.
        $condition = $rel->m_table.'.'.$rel->m_primaryKey[0]."=".$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
       }
+      
       return $rel->deleteDb($condition);
     }
 
@@ -805,8 +806,13 @@
       {
         if ($this->createDestination())
 	      {
-          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
-          $record["atkerror"] = array_merge($record["atkerror"], $record[$this->fieldName()]["atkerror"]);
+          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));          
+          
+          // only add 'atkerror' record when 1:1 relation contains error
+          if (isset($record[$this->fieldName()]["atkerror"]))
+          {
+            $record["atkerror"] = array_merge((array)$record["atkerror"], (array)$record[$this->fieldName()]["atkerror"]);          
+          }
 	      }
       }
     }
