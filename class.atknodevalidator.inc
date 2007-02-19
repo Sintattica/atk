@@ -114,26 +114,7 @@
       $record = &$this->m_record;
 
       // First we check if the values for the attributes are correct
-      foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname)
-      {
-        if (!atk_in_array($attribname, $this->m_ignoreList))
-        {
-          $p_attrib = &$this->m_nodeObj->m_attribList[$attribname];
-
-          if (!( $p_attrib->isEmpty($record)))
-          {
-            $funcname = $p_attrib->m_name."_validate";
-            if (method_exists($this->m_nodeObj, $funcname))
-            {
-              $this->m_nodeObj->$funcname($record, $this->m_mode);
-            }
-            else
-            {
-              $p_attrib->validate($record, $this->m_mode);
-            }
-          }
-        }
-      }
+      $this->validateAttributes($record);
 
       if(isset($record['atkerror'])&&count($record['atkerror']) > 0)
       {
@@ -194,6 +175,30 @@
       return true;
     }
 
+    function validateAttributes(&$record)
+    {
+      foreach (array_keys($this->m_nodeObj->m_attribList) as $attribname)
+      {
+        if (!atk_in_array($attribname, $this->m_ignoreList))
+        {
+          $p_attrib = &$this->m_nodeObj->m_attribList[$attribname];
+
+          if (!( $p_attrib->isEmpty($record)))
+          {
+            $funcname = $p_attrib->m_name."_validate";
+            if (method_exists($this->m_nodeObj, $funcname))
+            {
+              $this->m_nodeObj->$funcname($record, $this->m_mode);
+            }
+            else
+            {
+              $p_attrib->validate($record, $this->m_mode);
+            }
+          }
+        }
+      }
+    }
+
     /**
      * Check unique field combinations.
      * The function is called by the validate() method automatically. It is
@@ -233,7 +238,7 @@
           else
             atkerror("Field $field is mentioned in uniquefieldset but does not exist in ".$this->m_nodeObj->atknodetype());
         }
-        
+
         if ($this->m_mode != 'add')
         {
           $query->addCondition("NOT (".$this->m_nodeObj->primaryKey($record).")");
