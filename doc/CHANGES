@@ -877,6 +877,9 @@ Changed in ATK 5.7
 * Made multiple clicks on 'save' and 'cancel' buttons impossible by disabling
   them after one click. [Boy]
 * Fixed htmlentities bug in atkAttribute (bug #807) [Yury]
+* Fixes in atkOneToOneRelation validation: Only add 'atkerror' record when 1:1 
+  relation contains error.  And array_merge returns 'null' when one of the 
+  arguments is not an array (cast to array fixes this) [Jeroen]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]
