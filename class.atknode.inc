@@ -1009,10 +1009,10 @@
     {
       return $this->m_flags;
     }
-    
+
     /**
      * Is partial request?
-     * 
+     *
      * @return boolean is partial
      */
     function isPartial()
@@ -1427,7 +1427,7 @@
       {
         // fuzzy
         $key = array_search($filter, $this->m_fuzzyFilters);
-        if (is_numeric($key)) 
+        if (is_numeric($key))
         {
           unset($this->m_fuzzyFilters[$key]);
           return true;
@@ -1445,7 +1445,7 @@
           }
         }
       }
-      
+
       return false;
     }
 
@@ -1720,7 +1720,7 @@
           if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars))
           {
             $defaults[$p_attrib->fieldName()] = $this->m_postvars[$p_attrib->fieldName()];
-          } 
+          }
 
           /* sometimes a field is hidden although not specified by the field itself */
           $theme = &atkinstance("atk.ui.atktheme");
@@ -1739,7 +1739,7 @@
           }
 
           /* we let the attribute add itself to the edit array */
-          
+
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
         }
         else
@@ -1769,7 +1769,7 @@
     function initial_values()
     {
       $record = array();
-      
+
       foreach (array_keys($this->m_attribList) as $attrName)
       {
         $attr = &$this->getAttribute($attrName);
@@ -1777,7 +1777,7 @@
         if ($value !== NULL)
           $record[$attr->fieldName()] = $value;
       }
-      
+
       return $record;
     }
 
@@ -2394,14 +2394,15 @@
      *                            boolean here we assume it's value must be used for
      *                            the exit parameter.
      * @param boolean $exit      Exit script after redirect.
+     * @param int $levelskip     Number of levels to skip
      */
-    function redirect($location="", $recordOrExit=array(), $exit=false)
+    function redirect($location="", $recordOrExit=array(), $exit=false,$levelskip=1)
     {
       global $g_returnurl;
 
       atkdebug("atknode::redirect()");
 
-      $record = $recordOrExit;      
+      $record = $recordOrExit;
       if (is_bool($recordOrExit))
       {
         $record = array();
@@ -2412,7 +2413,7 @@
 
       if ($location=="")
       {
-        $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,1);
+        $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,$levelskip);
       }
 
       if (count($record))
@@ -2448,7 +2449,7 @@
         }
 
         header('Location: '.$location);
-        if ($exit) 
+        if ($exit)
         {
           exit();
         }
@@ -3937,7 +3938,7 @@
               || $secMgr->allowed($alias,$action)
               || (isset($this->m_securityImplied[$action]) && $secMgr->allowed($alias, $this->m_securityImplied[$action])));
     }
-    
+
     /**
      * Resolves a possible node / action alias for the given node / action.
      * The given node alias and action are updated depending on
@@ -3952,7 +3953,7 @@
       {
         $alias = $this->m_securityAlias;
       }
-      
+
       // Resolve action
       $action = $this->securityKey($action);
 
@@ -3972,7 +3973,7 @@
           $alias = $this->m_module.".".$complete[0];
           $action = $complete[1];
         }
-      }      
+      }
     }
 
     /**
@@ -3992,7 +3993,7 @@
     {
       $this->m_securityAlias = $alias;
     }
-    
+
     /**
      * Returns the node's security alias (if set).
      *
