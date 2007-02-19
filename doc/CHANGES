@@ -295,6 +295,7 @@ Changed in ATK 5.7
 + Added setLinkFilter method to atkManyToManyRelation which makes
   it possible to filter the currently selected records both on
   load and delete. [Peter]
++ Added $levelskip parameter to atkNode's redirect() method [Sandy]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]
