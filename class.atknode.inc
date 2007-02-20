@@ -771,6 +771,7 @@
         // check for cascading delete flag
         if ($attribute->hasFlag(AF_CASCADE_DELETE))
         {
+          atkdebug("<h1>ADD ".$attribute->fieldName()."</h1>");
           $this->m_cascadingAttribs[]=$attribute->fieldName();
         }
 
@@ -902,7 +903,11 @@
         }
         foreach($this->m_cascadingAttribs as $i => $name)
         {
-          if ($name == $attribname) unset($this->m_cascadingAttribs[$i]);
+          if ($name == $attribname)
+          {
+            unset($this->m_cascadingAttribs[$i]);
+            sort($this->m_cascadingAttribs);
+          }
         }
 
         unset($this->m_attribIndexList[$listindex]);
@@ -3678,6 +3683,7 @@
         }
       }
 
+      atk_var_dump($this->m_cascadingAttribs, "<h1>ATTRIBS</h1>");
       if (count($this->m_cascadingAttribs)>0)
       {
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
@@ -3685,6 +3691,7 @@
           for ($j = 0, $_j = count($this->m_cascadingAttribs); $j < $_j; $j++)
           {
             $p_attrib = &$this->m_attribList[$this->m_cascadingAttribs[$j]];
+            atkdebug("<h1>ATTR = $p_attrib </h1>");
             if (is_array($recordset[$i][$this->m_cascadingAttribs[$j]]) && $recordset[$i][$this->m_cascadingAttribs[$j]] !== NULL && !$p_attrib->isEmpty($recordset[$i]))
             {
               if (!$p_attrib->delete($recordset[$i]))
