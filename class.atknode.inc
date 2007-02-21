@@ -2706,7 +2706,9 @@
     {
       $db = &$this->getDb();
       $query = &$db->createQuery();
-
+      
+      foreach ($includes as $attr) $this->getAttribute($attr)->setForceUpdate(true);
+      
       if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
       $query->addTable($this->m_table);
