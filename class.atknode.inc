@@ -8,8 +8,8 @@
    *
    * @package atk
    *
-   * @copyright (c)2000-2006 Ivo Jansch
-   * @copyright (c)2000-2006 Ibuildings.nl BV
+   * @copyright (c)2000-2007 Ivo Jansch
+   * @copyright (c)2000-2007 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -905,7 +905,7 @@
           if ($name == $attribname)
           {
             unset($this->m_cascadingAttribs[$i]);
-            sort($this->m_cascadingAttribs);
+            $this->m_cascadingAttribs = array_values($this->m_cascadingAttribs);
           }
         }
 
