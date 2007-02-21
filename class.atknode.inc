@@ -2707,7 +2707,10 @@
       $db = &$this->getDb();
       $query = &$db->createQuery();
       
-      foreach ($includes as $attr) $this->getAttribute($attr)->setForceUpdate(true);
+      if (!empty($includes) && is_array($includes))
+      {
+        foreach ($includes as $attr) $this->getAttribute($attr)->setForceUpdate(true);
+      }
       
       if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
