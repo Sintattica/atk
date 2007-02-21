@@ -137,7 +137,7 @@
             $atkorgkey = $record["atkprimkey"];
             if(($atkorgkey == '' // no orgkey, so adding this record
                 || $atkorgkey != $this->m_nodeObj->primaryKey($record)) // key has changed, so check is necessary
-               &&  count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE ".$this->m_nodeObj->primaryKey($record)))>0
+                && $this->m_nodeObj->countDb($this->m_nodeObj->primaryKey($record))>0
               )
             {
               triggerError($record, $attribname, 'error_primarykey_exists', '', $p_attrib->m_tabs[0]);
@@ -154,8 +154,8 @@
             triggerError($record, $attribname, 'error_obligatoryfield', '', $p_attrib->m_tabs[0]);
           }
           // if flag is primary
-          else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record) &&
-                   count($db->getrows("SELECT ".$p_attrib->fieldName()." FROM ".$this->m_nodeObj->m_table." WHERE $attribname='".$db->escapeSQL($p_attrib->value2db($record))."'".($this->m_mode != 'add' ? " AND NOT (".$this->m_nodeObj->primaryKey($record).")" : "")))>0
+          else if ($p_attrib->hasFlag(AF_UNIQUE) && !$p_attrib->hasFlag(AF_PRIMARY) && !$p_attrib->isEmpty($record)
+                   && $this->m_nodeObj->countDb("$attribname='".$db->escapeSQL($p_attrib->value2db($record))."'".($this->m_mode != 'add' ? " AND NOT (".$this->m_nodeObj->primaryKey($record).")" : ""))>0
                   )
           {
             triggerError($record, $attribname, 'error_uniquefield', '', $p_attrib->m_tabs[0]);
@@ -232,7 +232,7 @@
             }
             else
             {
-              $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");              
+              $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");
             }
           }
           else
