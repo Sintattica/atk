@@ -711,6 +711,7 @@
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
       $this->m_flags = $flags;
+      $this->m_module = atkModule::getModuleScope();
     }
 
     /**

@@ -189,6 +189,10 @@
       /* module */
       $module = getNodeModule($node);
 
+      // set the current module scope, this will be retrieved in atkNode
+      // to set it's $this->m_module instance variable in an early stage
+      atkModule::setModuleScope($module);  
+      
       /* now that we have included the node source file, we check
        * for overloaders (because overloaders might need the included file!)
        */
@@ -196,6 +200,7 @@
       if ($overloader != NULL)
       {
         $overloader->m_module = $module;
+        atkModule::resetModuleScope(); 
         return $overloader;
       }
 
@@ -203,7 +208,42 @@
       $type = getNodeType($node);
       $node =& new $type();
       $node->m_module = $module;
+      atkModule::resetModuleScope(); 
       return $node;
+    }
+    
+    /**
+     * Set current module scope.
+     *
+     * @param string $module current module
+     * @static
+     */
+    function setModuleScope($module)
+    {
+      global $g_atkModuleScope;
+      $g_atkModuleScope = $module;
+    }
+    
+    /**
+     * Returns the current module scope.
+     *
+     * @return string current module
+     * @static
+     */
+    function getModuleScope()
+    {
+      global $g_atkModuleScope;
+      return $g_atkModuleScope;
+    }
+    
+    /**
+     * Resets the current module scope.
+     * 
+     * @static
+     */
+    function resetModuleScope()
+    {
+      atkModule::setModuleScope(null);
     }
 
     /**
