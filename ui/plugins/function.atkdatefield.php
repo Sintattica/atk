@@ -25,6 +25,7 @@ function smarty_function_atkdatefield($params, &$smarty)
   $name = isset($params['name']) ? $params['name'] : 'date';
   $format = isset($params['format']) ? $params['format'] : atktext("date_format_edit", "atk", "", "", "", true);
   $mandatory = isset($params['mandatory']) && $params['mandatory'] || isset($params['obligatory']) && $params['obligatory'];
+  $noweekday = isset($params['noweekday']) && $params['noweekday'];
   $calendar = isset($params['calendar']) && $params['calendar'];
   $time = isset($params['time']) ? $params['time'] : ($mandatory ? mktime() : NULL);
   $min = isset($params['min']) ? $params['min'] : 0;
@@ -32,7 +33,7 @@ function smarty_function_atkdatefield($params, &$smarty)
   
   if (is_array($time))
   {
-    $data = $time;
+    $date = $time;
   }
   else if ($time == NULL)
   {
@@ -54,7 +55,7 @@ function smarty_function_atkdatefield($params, &$smarty)
   }
   
   useattrib('atkdateattribute');
-  $attr = new atkDateAttribute($name, $format, '', $min, $max, ($mandatory ? AF_OBLIGATORY : 0)|($calendar ? 0 : AF_DATE_NO_CALENDAR));
+  $attr = new atkDateAttribute($name, $format, '', $min, $max, ($noweekday ? AF_DATE_EDIT_NO_DAY : 0)|($mandatory ? AF_OBLIGATORY : 0)|($calendar ? 0 : AF_DATE_NO_CALENDAR));
   $html = $attr->edit(array($name => $date));
   return $html;
 }
