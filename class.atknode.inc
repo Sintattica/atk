@@ -2707,11 +2707,6 @@
       $db = &$this->getDb();
       $query = &$db->createQuery();
       
-      if (!empty($includes) && is_array($includes))
-      {
-        foreach ($includes as $attr) $this->getAttribute($attr)->setForceUpdate(true);
-      }
-      
       if($exectrigger) $this->executeTrigger("preUpdate",$record);
 
       $query->addTable($this->m_table);
@@ -2748,7 +2743,7 @@
   	          (!is_array($includes) || in_array($attribname, $includes)))
   	      {
   	        $p_attrib = &$this->m_attribList[$attribname];
-            if ($p_attrib->needsUpdate($record))
+            if ($p_attrib->needsUpdate($record) || atk_in_array($attribname, $includes))
             {
               $storemode = $p_attrib->storageType("update");
               if (hasFlag($storemode, PRESTORE)) $storelist["pre"][]=$attribname;
