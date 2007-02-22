@@ -181,7 +181,11 @@ function makeButtonsOneClickOnly(buttons)
     input.name = button.name;
     input.className = button.className;
     button.parentNode.insertBefore(input,button);
-    button.form.submit();
+    if (!button.form.onsubmit || button.form.onsubmit())
+    {
+      button.form.onsubmit=function(){};
+      button.form.submit();
+    }
   }
 
   bindEventListeners = function()
