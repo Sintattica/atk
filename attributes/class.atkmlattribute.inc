@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * The atkMlAttribute class represents an multilanguage attribute of an atkNode.
    *
@@ -22,14 +22,14 @@
    * @package atk
    * @subpackage attributes
    *
-   */   
+   */
   class atkMlAttribute extends atkAttribute
   {
     var $m_language = "";
     var $m_mlattribute = TRUE;
-    var $m_edited = false;    
+    var $m_edited = false;
     var $m_languages = array();
-    
+
     /**
      * Constructor
      * @param $name name of the attribute
@@ -49,7 +49,7 @@
       ($language=="")?$language=$this->m_language:$language=strtoupper($language);
       return $rec[$this->fieldName()][$language];
     }
-    
+
     /**
     *
     */
@@ -57,7 +57,7 @@
     {
       return ($this->m_ownerInstance->hasFlag(NF_ML));
     }
-    
+
     /**
     * return possible languages
     */
@@ -65,7 +65,7 @@
     {
       return atkconfig("supported_languages");
     }
-    
+
     /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value (one box which can be used for all the languages).
@@ -81,7 +81,7 @@
 
       $languages = $this->getLanguages();
       $this->m_languages = $languages; // cache.
-      
+
       /* hidden values */
       for ($i = 1; $i < sizeof($languages); $i++)
       {
@@ -93,33 +93,33 @@
       $result .= '<input type="text" name="'.$fieldprefix.$this->formName().'['.$languages[0].']"'.
                  ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[0]]).'"'.
                  ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';      
+                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
 
       return $result;
     }
-    
+
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
-            
-      if ($this->m_edited) // if we edited this attrib, we also need to add the 
+
+      if ($this->m_edited) // if we edited this attrib, we also need to add the
       {
         $key= array_search($this->m_ownerInstance->m_postvars['atkeditlng'],$this->m_languages);
         $curlng = $this->m_languages[($key!==false?$key:1)];
         $entry = array("name" => $this->m_name."_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
-        /* label? */        
+        /* label? */
         $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.text("language_".strtolower($curlng)).'</label>)';
         $entry["id"] = $this->getHtmlId($fieldprefix);
-        $entry["tabs"] = $this->m_tabs;     
+        $entry["tabs"] = $this->m_tabs;
 
         /* first language of other languages */
         $entry["html"] = '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $curlng : "multilanguage").']"'.
                    ' value="'.htmlspecialchars($defaults[$this->fieldName()][$curlng]).'"'.
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
-                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';          
-  
-        $arr["fields"][] = $entry;      
+                   ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
+
+        $arr["fields"][] = $entry;
         $this->m_edited = false;
       }
     }
@@ -138,9 +138,9 @@
         $id = "atksearch[".$fieldprefix.$this->formName();
       else
         $id = "atksearch$fieldprefix"."[".$this->formName();
-        
+
       $id .= (!$this->isMlNode()?'_'.$languages[0]:'')."]";
-      
+
       $languages = $this->getLanguages();
       $result= '<input type="text" name="'.$id.'"'.
                ' value="'.$record[$this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:'')].'"'.
@@ -150,20 +150,22 @@
       return $result;
     }
 
-    /**
-     * Check if the attribute is empty
-     * @return true if it's empty
+   /**
+     * Check if the attribute is empty for all languages
+     * @param array $record Current record
+     * @return boolean true if it's empty
      */
-    function isEmpty($postvars)
+    function isEmpty($record)
     {
       $languages = $this->getLanguages();
       for ($i=0,$_i=count($languages);$i<$_i;$i++)
       {
-        if (strlen($postvars[$this->fieldName()][$languages[$i]]) == 0) return 1;
+        if(isset($record[$this->fieldName()][$languages[$i]])) return 0;
       }
 
-      return 0;
+      return 1;
     }
+
 
     /**
      * Returns a displayable string for this value.
@@ -198,8 +200,8 @@
       {
         $result .= '<input type="hidden" name="'.$this->formName().'['.$languages[$i].']"'.
                    ' value="'.htmlspecialchars($record[$this->fieldName()][$languages[$i]]).'">';
-      }      
-      return $result;             
+      }
+      return $result;
     }
 
     /**
@@ -213,7 +215,7 @@
       }
       return parent::value2db($rec);
     }
-    
+
     /**
      * Removes slashes from the strings
      * @param $rec array with values
@@ -224,7 +226,7 @@
       $languages = $this->getLanguages();
       if($this->isMlNode())
       {
-        if(is_array($rec[$this->fieldName()])) 
+        if(is_array($rec[$this->fieldName()]))
         {
           foreach($rec[$this->fieldName()] as $lng=>$value)
           {
@@ -235,7 +237,7 @@
       else
       {
         for ($i=0,$_i=count($languages);$i<$_i;$i++)
-        {      
+        {
           $result[$languages[$i]] = stripslashes($rec[$this->fieldName().'_'.$languages[$i]]);
         }
       }
@@ -284,7 +286,7 @@
           for ($i=0,$_i=count($languages);$i<$_i;$i++)
           {
             $query->addField($this->fieldName().'_'.$languages[$i],$this->escapeSQL($rec[$this->fieldName()][$languages[$i]]),"","",!$this->hasFlag(AF_NO_QUOTES));
-          }   
+          }
         }
         else
         {
@@ -304,14 +306,14 @@
 
     /**
      * Fetch the metadata about this attrib from the table metadata
-     */    
-    function fetchMeta($metadata)    
+     */
+    function fetchMeta($metadata)
     {
       $languages = $this->getLanguages();
       $attribname = $this->fieldName().(!$this->isMlNode()?'_'.$languages[0]:'');
       $this->m_size = min($metadata[$attribname]['len'], $this->maxInputSize());
       $this->m_searchsize = min($metadata[$attribname]['len'], 20);
-      $this->m_maxsize = $metadata[$attribname]['len'];                           
+      $this->m_maxsize = $metadata[$attribname]['len'];
     }
 
      /**
@@ -324,7 +326,7 @@
     {
       $query->addSearchCondition($this->getSearchCondition($query, $table, $value, $searchmode));
     }
-    
+
     function getSearchCondition(&$query, $table, $value, $searchmode)
     {
       $languages = $this->getLanguages();
@@ -340,5 +342,5 @@
       return $searchcondition;
     }
   }
-  
+
 ?>
