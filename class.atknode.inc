@@ -1608,7 +1608,6 @@
      */
     function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="", $ignoreTab=false)
     {
-      global $g_sessionData;
 
       /* read metadata */
       $this->setAttribSizes();
@@ -1717,10 +1716,11 @@
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
-        $field = array("name" => $attribname);
         $p_attrib = &$this->m_attribList[$attribname];
         if ($p_attrib!=NULL)
         {
+          if($p_attrib->hasDisabledMode(DISABLED_EDIT)) continue;
+          $field = array("name" => $attribname);
           /* fields that have not yet been initialised may be overriden in the url */
           if (!array_key_exists($p_attrib->fieldName(), $defaults) && array_key_exists($p_attrib->fieldName(), $this->m_postvars))
           {
@@ -1854,8 +1854,6 @@
      */
     function hideForm($mode="add",$record = NULL, $forceList="", $fieldprefix="")
     {
-      global $g_sessionData;
-
       /* suppress all */
       $suppressList = array();
       foreach (array_keys($this->m_attribIndexList) as $r)

@@ -343,6 +343,20 @@
   define("ADDTOQUERY",4);
 
   /**
+   * Attribute is disable in view mode
+   *
+   * Used now only with atkTabbedPane attribute to disable default display behaviour of attribute
+   */
+  define("DISABLED_VIEW",1);
+
+  /**
+   * Attribute is disable in edit mode
+   *
+   * Used now only with atkTabbedPane attribute to disable default edit behaviour of attribute
+   */
+  define("DISABLED_EDIT",2);
+
+  /**
    * The atkAttribute class represents an attribute of an atkNode.
    * An atkAttribute has a name and a set of parameters that
    * control its behaviour, like whether an atkAttribute
@@ -503,6 +517,13 @@
     var $m_dependees = array();
 
     /**
+     * Attribute to store disabled modes.
+     * @access private
+     * @var int
+     */
+    var $m_disabledModes = 0;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>
@@ -602,6 +623,44 @@
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
     }
 
+    /**
+     * Adds a disabled mode flag to the attribute  (use DISABLED_VIEW and DISABLED_EDIT flags).
+     * @param int $flag The flag to add to the attribute
+     */
+    function addDisabledMode($flag)
+    {
+      $this->m_disabledModes |= $flag;
+    }
+    /**
+     * Check if the attribute is disable in some mode (use DISABLED_VIEW and DISABLED_EDIT flags).
+     * @param int $flag The flag you want to check
+     * @return boolean
+     */
+    function hasDisabledMode($flag)
+    {
+      return (($this->m_disabledModes & $flag) == $flag);
+    }
+    /**
+     * Sets the disabled mode flag of the attribute
+     *
+     * Note that if you assign nothing or 0, this will remove all the flags
+     * from the attribute. You can assign multiple flags by using the pipe
+     * symbol. Setting the flags will overwrite all previous flag-settings.
+     * @param int $flags The flags to be set to the attribute.
+     */
+    function setDisabledModes($flags = 0)
+    {
+      $this->m_disabledModes = $flags;
+    }
+    /**
+     * Removes a disabled mode from the attribute.
+     *
+     * @param int $flag The flag to remove from the attribute
+     */
+    function removeDisabledMode($flag)
+    {
+      if($this->hasDisabledMode($flag)) $this->m_disabledModes ^= $flag;
+    }
     /**
      * Returns the name of the attribute.
      *
@@ -2113,29 +2172,30 @@
      */
     function _registerDependees($mode="", $fieldprefix="")
     {
-      $id = $fieldprefix.$this->fieldName();
-
-      $page = &$this->m_ownerInstance->getPage();
-      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
-
-      foreach ($this->m_dependees as $attribName)
+      if(!empty($this->m_dependees))
       {
-        $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.$attribName.refresh", array("atkfieldprefix" => $fieldprefix)));
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
 
-        $code = "ATK.Attribute.refresh('$url');";
-        $this->addOnChangeHandler($code);
-
-        $isPartial = $this->m_ownerInstance->m_partial != NULL;
-        if (!$isPartial)
+        foreach ($this->m_dependees as $attribName)
         {
-          $code = "ATK.Attribute.refresh('$url', true);";
-        }
+          $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode == "add" ? "add" : "edit", "attribute.$attribName.refresh", array("atkfieldprefix" => $fieldprefix)));
+
+          $code = "ATK.Attribute.refresh('$url');";
+          $this->addOnChangeHandler($code);
+
+          $isPartial = $this->m_ownerInstance->m_partial != NULL;
+          if (!$isPartial)
+          {
+            $code = "ATK.Attribute.refresh('$url', true);";
+          }
         
-        // only register the initial refresh on attribute load if this attribute
-        // itself doesn't depend on any other attribute or this is a partial request
-        if ($isPartial || !$this->isDepending())
-        {
-          $page->register_loadscript($code);
+          // only register the initial refresh on attribute load if this attribute
+          // itself doesn't depend on any other attribute or this is a partial request
+          if ($isPartial || !$this->isDepending())
+          {
+            $page->register_loadscript($code);
+          }
         }
       }
     }

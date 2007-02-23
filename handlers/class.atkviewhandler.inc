@@ -74,7 +74,7 @@
         {
           $tplfield = array();
           $p_attrib = &$node->m_attribList[$node->m_attribIndexList[$i]["name"]];
-          if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
+          if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && !$p_attrib->hasDisabledMode(DISABLED_VIEW))
           {
 
             $field_name = $node->m_attribIndexList[$i]["name"];

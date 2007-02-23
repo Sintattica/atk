@@ -299,6 +299,7 @@ Changed in ATK 5.7
 + Added edit header functionality to the edit handler and the action 
   template (default theme). Similar to the existing admin header 
   functionality. [Patrick]
++ Adding atkTabbedPane to create subtabs on a form. [Yury]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]
