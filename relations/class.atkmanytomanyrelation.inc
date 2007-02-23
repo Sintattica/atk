@@ -62,7 +62,7 @@
     function atkManyToManyRelation($name, $link, $destination, $flags=0)
     {
       $this->m_link = $link;
-      $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE);
+      $this->atkRelation($name, $destination, $flags|AF_CASCADE_DELETE|AF_NO_SORT);
     }
 
 
@@ -283,7 +283,7 @@
           $whereelems[] = $this->m_linkInstance->m_table.".".$localkey[$i]."='".$primkeyattr->value2db($record)."'";
         }
       }
-      
+
       if ($this->m_localFilter != NULL)
         $whereelems[] = $this->m_localFilter;
 
@@ -546,7 +546,7 @@
     {
       $this->m_store_deletion_filter = $filter;
     }
-    
+
     /**
      * Local filter is used to only show values that are once selected
      * that comply with the local filter. A local filter is also automatically
