@@ -133,8 +133,7 @@
       if ($this->m_theme->getAttribute("tabtype")=="dhtml")
       {
         $page = &atkPage::getInstance();
-        $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-        $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
+        $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");        
 
         $tabscript = "var tabs = new Array();\n";
         foreach($vars["tabs"] as $tab)

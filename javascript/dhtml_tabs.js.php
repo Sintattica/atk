@@ -16,6 +16,47 @@
    */
 ?>
 
+var closedSections = [];
+
+/**
+ * Register an initially closed section.
+ *
+ * NOTE: this method does *not* close the section!
+ */
+function addClosedSection(section)
+{
+  closedSections.push(section);
+}
+
+/**
+ * Toggle section visibility.
+ */
+function handleSectionToggle(element)
+{
+  element = $(element);
+  var isClosed = closedSections.indexOf(element.id) >= 0;
+  
+  $A(document.getElementsByTagName('TR')).select(function(tr) { 
+    return $(tr).hasClassName(element.id);
+  }).each(function(tr) {
+    if (isClosed) {
+      Element.show(tr);
+      element.removeClassName('closedSection');      
+      element.addClassName('openedSection');
+      closedSections = closedSections.without(element.id);
+    } else {
+      Element.hide(tr);
+      element.removeClassName('openedSection');      
+      element.addClassName('closedSection');
+      closedSections.push(element.id);
+    }
+  });
+}
+
+function isAttributeTr(tr) {
+  return tr.id.substring(0, 3) == 'ar_';
+}
+
 /**
  * Sets the current tab
  */
@@ -39,9 +80,24 @@ function showTab(tab)
 
   // Then we store what tab we are going to visit in the parent
 	setCurrentTab(tab);
+    
+  var tabSectionName = 'section_' + tab;	
 
-  showTr(tab);
-
+  $A(document.getElementsByTagName('TR')).select(isAttributeTr).each(function(tr) {
+    var visible = 
+      $(tr).classNames().find(function(sectionName) {
+          return sectionName.substring(0, tabSectionName.length) == tabSectionName && 
+                 closedSections.indexOf(sectionName) < 0;
+      }) != null;
+    
+    if (visible) {
+      Element.show(tr);
+    }
+    else {
+      Element.hide(tr);
+    }
+  });
+  
 	// Then when set the colors or the tabs, the active tab gets a different color
 	for(j = 0; j < tabs.length; j++)
 	{

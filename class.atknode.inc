@@ -21,6 +21,7 @@
    */
   atkimport("atk.attributes.atkattribute");
   atkimport("atk.atkcontroller");
+  atkimport("atk.modules.atkmodule");  
 
   /**
    * Define some flags for nodes. Use the constructor of the atkNode
@@ -339,6 +340,14 @@
     var $m_tabList = array();
 
     /**
+     * List of available sections. Associative array structured like this:
+     * array($action=>$arrayOfSectionnames)
+     * @access private
+     * @var array
+     */
+    var $m_sectionList = array();
+    
+    /**
      * Keep track of tabs per attribute.
      * @access private
      * @var array
@@ -469,6 +478,13 @@
      */
     var $m_default_tab = "default";
 
+    /**
+     * Default sections that are expanded.
+     * @access private
+     * @var String
+     */
+    var $m_default_expanded_sections = array();
+    
     /**
      * Record filters, in attributename/required value pairs.
      * @access private
@@ -707,11 +723,47 @@
      */
     function atkNode($type="", $flags=0)
     {
-      if ($type=="") $type = get_class($this);
+      if ($type=="") $type = strtolower(get_class($this));
       atkdebug("Creating a new atkNode for $type");
       $this->m_type = $type;
       $this->m_flags = $flags;
       $this->m_module = atkModule::getModuleScope();
+    }
+
+    /**
+     * Resolve sections, tabs and the order based on the given
+     * argument to the attribute add method.
+     *
+     * @param mixed $sections
+     * @param mixed $tabs
+     * @param mixed $order
+     */
+    function resolveSectionsTabsOrder(&$sections, &$tabs, &$order)
+    {
+      // Because sections/tabs will probably be used more than the order override option
+      // the API for this method now favours the $sections argument. For backwards
+      // compatibility we still support the old API ($attribute,$order=0).
+      if (!($sections === NULL) && is_int($sections))
+      {
+        $order = $sections;
+        $sections = array($this->m_default_tab);
+      }
+      
+      // If no section/tab is specified or tabs are disabled, we use the current default tab
+      // (specified with the setDefaultTab method, or "default" otherwise)
+      elseif ($sections === NULL || strlen($sections) == 0 || !atkconfig("tabs"))
+      {
+        $sections = array($this->m_default_tab);
+      }
+      
+      // Sections should be an array.
+      else if ($sections != "*" && !is_array($sections))
+      {
+        $sections = array($sections);
+      }
+      
+      // Filter tabs from section names.
+      $tabs = $this->getTabsFromSections($sections);
     }
 
     /**
@@ -727,7 +779,7 @@
      *                   is added.
      * @return mixed the attribute just added
      */
-    function &add($attribute,$tab=NULL,$order=0)
+    function &add($attribute,$sections=NULL,$order=0)
     {
       static $attrib_order = 100;
       static $attrib_index = 0;
@@ -737,20 +789,9 @@
       // what module he originated from.
       if ($this->m_modifier!="") $attribute->m_module = $this->m_modifier;
 
-      // *** API HACK ***
-      // Because tabs will probably be used more than the order override option
-      // the API for this method now favours the $tab argument. For backwards
-      // compatibility we still support the old API ($attribute,$order=0).
       if (!atkReadOptimizer())
       {
-        if (!($tab === NULL) && is_int($tab))
-        {
-          $order = $tab;
-          $tab = $this->m_default_tab;
-        }
-        // If no tab is specified or tabs are disabled, we use the current default tab
-        // (specified with the setDefaultTab method, or "default" otherwise)
-        elseif ($tab === NULL || strlen($tab) == 0 || !atkconfig("tabs")) $tab = $this->m_default_tab;
+        $this->resolveSectionsTabsOrder($sections, $tabs, $order);
 
         $secMgr = &atkGetSecurityManager();
         if (!$secMgr->attribAllowed($this->m_type, $attribute->m_name, "edit"))
@@ -796,9 +837,10 @@
       {
         // when the read optimizer is enabled there is no active tab
         // we circument this by putting all attributes on all tabs
-        if (!($tab === NULL) && is_int($tab))
-          $order = $tab;
-        $tab = "*";
+        if (!($tabs === NULL) && is_int($tabs))
+          $order = $tabs;
+        $tabs = "*";
+        $sections = "*";
       }
 
 
@@ -848,23 +890,31 @@
         if (!atkReadOptimizer())
         {
           // add new tab(s) to the tab list ("*" isn't a tab!)
-          if (!is_array($tab) && $tab != "*") $tab = array($tab);
-          if ($tab != "*")
+          if ($tabs != "*")
           {
-            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = isset($this->m_tabList["add"]) ? atk_array_merge($this->m_tabList["add"], $tab) : $tab;
-            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = isset($this->m_tabList["edit"]) ? atk_array_merge($this->m_tabList["edit"], $tab) : $tab;
-            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = isset($this->m_tabList["view"]) ? atk_array_merge($this->m_tabList["view"], $tab) : $tab;
+            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_tabList["add"] = isset($this->m_tabList["add"]) ? atk_array_merge($this->m_tabList["add"], $tabs) : $tabs;
+            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_tabList["edit"] = isset($this->m_tabList["edit"]) ? atk_array_merge($this->m_tabList["edit"], $tabs) : $tabs;              
+            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_tabList["view"] = isset($this->m_tabList["view"]) ? atk_array_merge($this->m_tabList["view"], $tabs) : $tabs;            
+          }          
+          
+          if ($sections != "*")
+          {
+            if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_sectionList["add"] = isset($this->m_sectionList["add"]) ? atk_array_merge($this->m_sectionList["add"], $sections) : $sections;           
+            if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_sectionList["edit"] = isset($this->m_sectionList['edit']) ? atk_array_merge($this->m_sectionList["edit"], $sections) : $sections;
+            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_sectionList["view"] = isset($this->m_sectionList['edit']) ? atk_array_merge($this->m_sectionList["view"], $sections) : $sections;
           }
         }
 
         $attribute->m_order = $order;
-        $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tab,"order"=>$attribute->m_order);
+        $this->m_attribIndexList[$attrib_index]=array("name"=>$attribute->fieldName(),"tabs"=>$tabs,"sections"=>$sections,"order"=>$attribute->m_order);
         $attribute->m_index = $attrib_index;
-        $attribute->setTabs($tab);
-        $this->m_attributeTabs[$attribute->fieldname()] = $tab;
+        $attribute->setTabs($tabs);
+        $attribute->setSections($sections);
+        $this->m_attributeTabs[$attribute->fieldname()] = $tabs;
         $attrib_index++;
       }
-
+      
+      
       // Order the tablist
       $this->m_attribList[$attribute->fieldName()]=&$attribute;
       if(is_subclass_of($attribute,"atkrelation"))
@@ -876,7 +926,51 @@
 
       return $attribute;
     }
+    
+    
+    /**
+     * Retrieve the tabnames from the sections string (tab.section).
+     *
+     * @param mixed An array with sections or a section string
+     * @param string $str A section string.
+     */    
+    function getTabsFromSections($sections)
+    {
+      if($sections == "*" || $sections===NULL)
+        return $sections;
+        
+      $tabs = array();
+      
+      if(!isset($sections))
+        $section = array();
+      elseif(!is_array($sections))
+        $sections = array($sections);
+        
+      foreach($sections as $section)
+      {
+        $tabs[] = $this->getTabFromSection($section);
+      }
 
+      //when using the tab.sections notation, we can have duplicate tabs
+      //strip them out.
+      return array_unique($tabs);
+    }
+    
+    /**
+     * Strip section part from a section and return the tab.
+     * 
+     * If no tab name is provided, the default tab is returned.
+     */
+    function getTabFromSection($section)
+    {
+      $tab = ($section==NULL) ? "" : $section;
+      
+      if (strstr($tab,".") !== false)      
+        list($tab) = explode(".", $tab);
+
+      return (($tab=="") ? $this->m_default_tab : $tab);
+    }
+    
     /**
      * Remove an attribute.
      *
@@ -890,6 +984,8 @@
     {
       if (is_object($this->m_attribList[$attribname]))
       {
+        atkdebug("removing attribute $attribname");
+        
         $listindex = $this->m_attribList[$attribname]->m_index;
 
         unset($this->m_attribList[$attribname]);
@@ -1257,6 +1353,7 @@
       }
 
       // Attributes can also add tabs to the tablist.
+      $this->m_filledTabs = array();
       foreach(array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
@@ -1297,6 +1394,52 @@
       $tabList = $this->checkEmptyTabs($list);
       return $tabList;
     }
+    
+    /**
+     * Retrieve the sections for the active tab.
+     *
+     * @param String $action
+     * @return array The active sections.
+     */
+    function getSections($action)
+    {
+      $sections = array();
+
+      foreach ($this->m_sectionList[$action] as $element)
+      {
+        list($tab,$sec) = explode(".",$element);
+        
+        //if this section is on an active tab, we return it.
+        if($tab == $this->getActiveTab() && $sec!==NULL)
+          $sections[] = $sec;
+      }
+
+      //we do not want duplicate sections on the same tab.
+      return array_unique($sections);
+    }   
+    
+    /**
+     * Add sections that must be expanded by default.
+     * 
+     */
+    function addDefaultExpandedSections()
+    {
+      $sections = func_get_args();
+      
+      $this->m_default_expanded_sections = array_unique(array_merge($sections, $this->m_default_expanded_sections));     
+    }
+    
+    /**
+     * Remove sections that must be expanded by default.
+     * 
+     */
+    function removeDefaultExpandedSections()
+    {
+      $sections = func_get_args();
+      
+      $this->m_default_expanded_sections = array_diff($this->m_default_expanded_sections, $sections);
+    }
+    
 
     /**
      * Check if the user has the rights to access existing tabs and
@@ -1306,9 +1449,12 @@
      * @return array with disable tabs
      */
     function checkTabRights(&$tablist)
-    {
+    {   
       global $g_nodes;
       $disable = array();
+      
+      if (empty($this->m_module))
+        return $disable;
 
       for ($i=0, $_i=count($tablist); $i<$_i; $i++)
       {
@@ -1397,6 +1543,27 @@
       elseif (!empty($this->m_default_tab) && in_array($this->m_default_tab, $tablist)) $tab = $this->m_default_tab;
       else $tab = $tablist[0];
       return $tab;
+    }
+    
+    /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     *
+     * @param string $tab
+     * @param string $mode
+     */
+    function getActiveSections($tab, $mode)
+    {
+      $activeSections = array();
+      foreach ($this->m_sectionList[$mode] as $section)
+      {
+        if (substr($section,0,strlen($tab))==$tab && in_array($section, $this->m_default_expanded_sections))
+        {
+          $activeSections[] = $section;
+        }
+      }
+      
+      return $activeSections;
     }
 
     /**
@@ -1548,7 +1715,7 @@
 
       return $res;
     }
-
+    
     /**
      * Place a set of tabs around content.
      * @param String $action The action for which the tabs are loaded.
@@ -1558,19 +1725,30 @@
      */
     function tabulate($action, $content)
     {
+      $this->addStyle("sections.css");      
       $this->addStyle("tabs.css");
       $list = $this->getTabs($action);
-      if (count($list) > 1)
+      $sections = $this->getSections($action);          
+      $tabs = count($list);
+
+      if(count($sections) > 0 || $tabs > 1)
+      {
+        $page = &$this->getPage();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
+      }
+      
+      if ($tabs > 1 )
       {
         $ui = &$this->getUi();
         if (is_object($ui))
         {
-          return $ui->renderTabs(array("tabs"=>$this->buildTabs($action),
+          return $ui->renderTabs(array("tabs"=>$this->buildTabs($action),                                       
                                        "content"=>$content));
         }
       }
       return $content;
     }
+    
 
     /**
      * Determine the default form parameters for an action template.
@@ -1713,9 +1891,15 @@
        */
       $tab = $this->getActiveTab();
 
+      $this->orderAttributesBySection($mode);
+      
+      $addedSections = array();      
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
+
+        $field = array("name" => $attribname);
+        
         $p_attrib = &$this->m_attribList[$attribname];
         if ($p_attrib!=NULL)
         {
@@ -1741,8 +1925,24 @@
           if ((is_array($suppressList) && count($suppressList) > 0 && in_array($attribname,$suppressList)) || $notOnTab)
           {
             $p_attrib->m_flags |= ($mode == "add" ? AF_HIDE_ADD : AF_HIDE_EDIT);
+          }          
+          
+          /* we add the section link before the first attribute that is in it */
+          foreach ($this->m_sectionList[$mode] as $section)
+          {
+            $attribSections = $p_attrib->getSections();
+            if (!is_array($attribSections)) $attribSections = array($attribSections);
+            
+            //if the section is not allready added, check if it needs to be added.
+            if (!in_array($section, $addedSections) && 
+                in_array($section, $attribSections) &&
+                strpos($section, '.') !== FALSE)
+            {              
+              $result["fields"][] = array("html" => "section", "name" => $section, "tabs" => $p_attrib->getTabs($mode));
+              $addedSections[] = $section;                
+            }
           }
-
+          
           /* we let the attribute add itself to the edit array */
 
           $p_attrib->addToEditArray($mode, $result, $defaults, $record['atkerror'], $fieldprefix);
@@ -1758,6 +1958,50 @@
 
       /* return the result array */
       return $result;
+    }
+    
+    /**
+     * Order the attribIndexList by section:
+     * 
+     * At first we show the attribtues that have no section.
+     * Next we display the attributes with sections and group them by section.
+     */
+    function orderAttributesBySection($mode)
+    {
+      $list = $this->m_attribIndexList;
+      
+      $ol = array();     
+      
+      //first find sectionless attributes.      
+      foreach ($list as $attribute)
+      {        
+        if ($attribute["sections"] == "*" || 
+            (count($attribute["sections"]) == 1 && $attribute["sections"][0] == $this->m_default_tab))
+        {
+          $ol[] = $attribute;
+        }
+      }
+      
+      if(!isset($this->m_sectionList[$mode])) 
+        $this->m_sectionList[$mode] = array();
+      
+      $addedSections = array();
+      //loop through each section (except the default tab/section) of the mode we are currently in.
+      $sections = array_diff($this->m_sectionList[$mode], array($this->m_default_tab));
+      foreach ($sections as $section)
+      {
+        if(!in_array($section,$addedSections))
+          $addedSections[] = $section;
+          
+        //find an attribute for this section
+        foreach ($list as $attribute)
+        {
+          if (in_array($section,$attribute["sections"]))
+            $ol[] = $attribute;
+        }
+      }
+      
+      $this->m_attribIndexList = $ol;      
     }
 
     /**

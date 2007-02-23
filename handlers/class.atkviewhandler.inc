@@ -57,6 +57,7 @@
     {
       $ui = &$this->getUi();
       $node->addStyle("style.css");
+      
 
       if (is_object($ui))
       {
@@ -79,9 +80,24 @@
 
             $field_name = $node->m_attribIndexList[$i]["name"];
 
-            $tplfield["tab"] = $p_attrib->m_tabs[0];
-            $tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab);
-
+            $tabs = $p_attrib->getTabs();
+            atk_var_dump($tabs, "<h1>TABS</h1>");
+            
+            $classes = array();
+            if ($tabs == "*")
+            {
+              $classes[] = "alltabs";
+            }
+            else 
+            {
+              foreach ($tabs as $tab)
+                $classes[] = "section_{$tab}";
+            }
+            
+            $tplfield["class"] = implode(" ", $classes);
+            $tplfield["tab"] = $tplfield["class"];
+            $tplfield["initial_on_tab"] = $tabs == "*" || in_array($tab, $tabs);
+            
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute. If it exists we will use that method
             // else we will just use the attribute's display method.

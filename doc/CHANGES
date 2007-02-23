@@ -300,6 +300,9 @@ Changed in ATK 5.7
   template (default theme). Similar to the existing admin header 
   functionality. [Patrick]
 + Adding atkTabbedPane to create subtabs on a form. [Yury]
++ Added expandable/collapsable sections. 
+  Usage: instead of simply specifying a tab name you can also specify it's 
+  section using "tab.section". [Dennis]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]
@@ -890,7 +893,7 @@ Changed in ATK 5.7
   (if 'needsUpdate' returns false, but attribute is in $includes, update it 
   anyway) [Jeroen]
 * The module of an atkNode is now also available in the constructor of the node
-  through the atkModule::getModuleScope() method. [Peter, Dennis]  
+  through the atkModule::getModuleScope() method. [Peter, Dennis]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]

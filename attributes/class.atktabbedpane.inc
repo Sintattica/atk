@@ -91,7 +91,7 @@
      * @param String $action An action name. Don't use now
      * @return Array  $tab The array name of tab.
      */
-    function getTabs($action)
+    function getPaneTabs($action)
     {
       return $this->m_tabsList;
     }
@@ -441,7 +441,7 @@
 
     function tabulate($action, $content)
     {
-      $list = $this->getTabs($action);
+      $list = $this->getPaneTabs($action);
       if (count($list) > 1)
       {
         $node = &$this->m_ownerInstance;

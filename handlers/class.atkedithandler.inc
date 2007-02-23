@@ -176,10 +176,10 @@
       $data = $node->editArray($mode, $record, $forceList, $suppressList, $fieldprefix, $ignoreTab);
       // Format some things for use in tpl.
       /* check for errors and display them */
-      $tab = $node->getActiveTab();
+      $tab = $node->getActiveTab();      
       $error_title = "";
       $pk_err_attrib = array();
-
+      
       // Handle errors
       $errors = array();
       if (count($data['error']) > 0)
@@ -242,14 +242,39 @@
       {
         $field = &$data["fields"][$i];
         $tplfield = array();
+        
+        $classes = array();        
+        if ($field["sections"] == "*")
+        {
+          $classes[] = "alltabs";          
+        }
+        else if ($field["html"] == "section")
+        {
+          // section should only have the tab section classes
+          foreach ($field["tabs"] as $section)
+            $classes[] = "section_".str_replace('.', '_', $section);            
+        }
+        else if (is_array($field["sections"]))
+        {
+          foreach ($field["sections"] as $section)          
+            $classes[] = "section_".str_replace('.', '_', $section);          
+        }
+                
+        $tplfield["class"] = implode(" ", $classes);
+		    $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
 
-		    $tplfield["tab"] = ($field["tabs"][0]=="*"?"alltabs":implode("|", $field["tabs"]));
-
+		    // visible sections, both the active sections and the tab names (attribute that are 
+		    // part of the anonymous section of the tab)
+		    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+		    
 		    // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-		    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-		    $tplfield["initial_on_tab"] = ($tplfield["tab"]==$tab || $tplfield["tab"]=="alltabs");
+		    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.		    		    		    
+		    atk_var_dump($field["tabs"], "<h1>FIELDTABS ".$field["name"]."</h1>");
+    		$tplfield["initial_on_tab"] =
+    		   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
+           (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);    		   
 
-		    // ar_ stands voor 'attribrow'.
+        // ar_ stands voor 'attribrow'.
 		    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
 		    /* check for separator */
@@ -260,6 +285,11 @@
         /* double separator, ignore */
         elseif ($field["html"] == "-")
         {
+        }
+        /* sections */
+        elseif($field["html"] == "section")
+        {
+          $tplfield["line"] = $this->getSectionControl($field, $mode);
         }
         /* only full HTML */
         elseif (isset($field["line"]))
@@ -351,7 +381,42 @@
 
 	    return $result;
     }
+        
+    /**
+     * Create the clickable label for the section.
+     *
+     * @param array $field
+     * @return string Html
+     */
+    function getSectionControl($field, $mode)
+    { 
+      // our name
+      list($tab, $section) = explode('.', $field["name"]);
+      $name = "section_{$tab}_{$section}";
+     
+      // create onclick statement.
+      $onClick = " onClick=\"javascript:handleSectionToggle(this);\"";
 
+      // label
+      $label = atktext($name, $this->m_node->m_module, $this->m_node->m_type, '', '', true);
+      if ($label == NULL) 
+        $label = atktext("{$tab}_{$section}", $this->m_node->m_module, $this->m_node->m_type, '', '', true);
+      if ($label == NULL)
+        $label = $this->m_node->text($section);
+      
+      $initClass = "openedSection";      
+      //if the section is not active, we close it on load.
+      if (!in_array($field["name"],$this->m_node->getActiveSections($tab, $mode)))
+      {
+        $initClass =  "closedSection";
+        $page = &$this->getPage();
+        $page->register_scriptcode("addClosedSection('$name');");
+      }
+      
+      // create the clickable link
+      return '<a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a>';
+    }
+    
     /**
      * Adds numbering to the label of a field
      * @access private

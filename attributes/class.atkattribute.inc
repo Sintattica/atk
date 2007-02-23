@@ -448,7 +448,14 @@
      * @var mixed
      */
     var $m_tabs="*";
-
+    
+    /**
+     * The section(s) on which the attribute lives.
+     * @access private
+     * @var mixed
+     */
+    var $m_sections="*";    
+    
     /**
      * The id of the attribute in the HTML
      * @access private
@@ -932,7 +939,10 @@
         /* error? */
         $entry["error"] = $this->getError($error);
         // on which tab?
-        $entry["tabs"] = $this->m_tabs;
+        $entry["tabs"] = $this->getTabs($mode);
+        atk_var_dump($entry["tabs"], "GET TABS ".$this->fieldname());
+        //on which sections?
+        $entry["sections"] = $this->getSections();
         /* the actual edit contents */
         $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
         $arr["fields"][] = $entry;
@@ -946,15 +956,55 @@
      */
     function setTabs($tabs)
     {
-      if ($tabs==NULL)
+      if (empty($tabs) && isset($this->m_ownerInstance) && is_object($this->m_ownerInstance))
       {
-        $this->m_tabs = array("default");
+        $tabs = array($this->m_ownerInstance->m_default_tab);
+      }
+      else if (empty($tabs))
+      {
+        $tabs = array('default');        
+      }
+      
+      $this->m_tabs = $tabs;
+    }
+    
+    /**
+     * retrieve the tabs for this attribute.
+     *
+     * @return array
+     */
+    function getTabs()
+    {
+      return $this->m_tabs;
+    }
+    
+    /**
+     * Put the attribute on one or more tabs.
+     * @param array $tabs An array of tabs on which the attribute should
+     *                    be displayed.
+     */
+    function setSections($sections)
+    {
+      if ($sections==NULL)
+      {
+        $this->m_sections = array();
       }
       else
       {
-        $this->m_tabs = $tabs;
+        $this->m_sections = $sections;
       }
     }
+    
+    /**
+     * retrieve the tabs for this attribute.
+     *
+     * @return array
+     */
+    function getSections()
+    {
+      return $this->m_sections;
+    } 
+  
 
     /**
      * Retrieve the html code for placing this attribute in an edit page.
@@ -1905,8 +1955,8 @@
      * @return boolean
      */
     function showOnTab($tab)
-    {
-      return ($this->m_tabs == "*" || atk_in_array($tab, $this->m_tabs));
+    {      
+      return ($this->getTabs() == "*" || atk_in_array($tab, $this->getTabs()));
     }
 
     /**
