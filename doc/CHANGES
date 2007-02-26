@@ -881,8 +881,6 @@ Changed in ATK 5.7
 * atkNode::editArray: fallback to postvars is only done if a field really 
   is not set in the defaults record. [Peter]
 * Fixed typo in test/class.atktestsuite.inc (bug #806) [Yury, Patrick]
-* Made multiple clicks on 'save' and 'cancel' buttons impossible by disabling
-  them after one click. [Boy]
 * Fixed htmlentities bug in atkAttribute (bug #807) [Yury]
 * Fixes in atkOneToOneRelation validation: Only add 'atkerror' record when 1:1 
   relation contains error.  And array_merge returns 'null' when one of the 

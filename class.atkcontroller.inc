@@ -265,7 +265,7 @@
     function accessDeniedPage()
     {
       $node = &$this->getNode();
-      return $this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>");      
+      return $this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>");
     }
 
   /**
@@ -399,7 +399,6 @@
       $node   = &$this->getNode();
       $page = &$node->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-      $page->register_loadscript("makeButtonsOneClickOnly(new Array('btn_save','btn_cancel','btn_saveandclose','btn_saveandnext'));");
 
       // edit mode
       if ($mode == "edit")

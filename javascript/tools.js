@@ -165,39 +165,3 @@ function showTr(tab)
 		}
 	}
 }
-
-
-function makeButtonsOneClickOnly(buttons)
-{
-  var that = this;
-
-  disableButtons = function(event)
-  {
-    buttons.each(function (buttonclass){document.getElementsByClassName(buttonclass).each(function(button){button.disabled=true})});
-    button = Event.element(event);
-    input=document.createElement('input');
-    input.type='hidden';
-    input.value=1;
-    input.name = button.name;
-    input.className = button.className;
-    button.parentNode.insertBefore(input,button);
-    if (!button.form.onsubmit || button.form.onsubmit())
-    {
-      button.form.onsubmit=function(){};
-      button.form.submit();
-    }
-  }
-
-  bindEventListeners = function()
-  {
-    if (document.getElementsByClassName)
-    {
-      buttons.each(function (buttonclass)
-      {
-        document.getElementsByClassName(buttonclass).each(function(button){Event.observe(button,'click',that.disableButtons);});
-      });
-    }
-  }
-
-  bindEventListeners();
-}
