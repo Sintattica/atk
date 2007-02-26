@@ -86,3 +86,8 @@ INPUT.btn_saveandclose
   font-family: verdana, helvetica, arial;
   font-size: 12px;   
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

@@ -303,6 +303,10 @@ Changed in ATK 5.7
 + Added expandable/collapsable sections. 
   Usage: instead of simply specifying a tab name you can also specify it's 
   section using "tab.section". [Dennis]
++ Added setInitialHidden and isInitialHidden to atkAttribute and adapted the 
+  edit handler accordingly. Where AF_HIDE hides the attribute completely 
+  (even from the source), this feature will only make the attribute invisible.
+  [Patrick]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]

@@ -179,3 +179,8 @@ FORM TABLE TD
 {
   text-align: left;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

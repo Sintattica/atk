@@ -192,3 +192,8 @@ INPUT.btn_saveandclose  {
   color: #428EFF;
   text-decoration: underline;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

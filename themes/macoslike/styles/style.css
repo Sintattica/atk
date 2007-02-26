@@ -99,3 +99,8 @@ INPUT.btn_saveandclose
   font-size: 12px;     
   text-align: left;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

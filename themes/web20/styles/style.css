@@ -89,3 +89,8 @@ a
 {
   text-decoration: none;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

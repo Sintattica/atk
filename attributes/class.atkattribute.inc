@@ -448,14 +448,14 @@
      * @var mixed
      */
     var $m_tabs="*";
-    
+
     /**
      * The section(s) on which the attribute lives.
      * @access private
      * @var mixed
      */
-    var $m_sections="*";    
-    
+    var $m_sections="*";
+
     /**
      * The id of the attribute in the HTML
      * @access private
@@ -531,6 +531,13 @@
     var $m_disabledModes = 0;
 
     /**
+     * Whether to hide initially or not
+     * @access private
+     * @var bool
+     */
+    var $m_initial_hidden = false;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>
@@ -562,7 +569,7 @@
       $this->addCSSClass(get_class($this));
       atkimport("atk.keyboard.atkkeyboard");
     }
-    
+
     /**
      * Sets the owner instance.
      *
@@ -756,11 +763,11 @@
     {
       return is_array($postvars)&&isset($postvars[$this->fieldName()]);
     }
-    
+
     /**
      * Initial value. Returns the initial value for this attribute
      * which will be used in the add form etc.
-     * 
+     *
      * @return mixed initial value for this attribute
      */
     function initialValue()
@@ -930,7 +937,7 @@
       else
       {
         $this->_registerDependees($mode, $fieldprefix);
-      
+
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
@@ -943,8 +950,10 @@
         atk_var_dump($entry["tabs"], "GET TABS ".$this->fieldname());
         //on which sections?
         $entry["sections"] = $this->getSections();
-        /* the actual edit contents */
+        // the actual edit contents
         $entry["html"] = $this->getEdit($mode, $defaults, $fieldprefix);
+        // initially hidden
+        $entry["initial_hidden"] = $this->isInitialHidden($defaults);
         $arr["fields"][] = $entry;
       }
     }
@@ -962,12 +971,12 @@
       }
       else if (empty($tabs))
       {
-        $tabs = array('default');        
+        $tabs = array('default');
       }
-      
+
       $this->m_tabs = $tabs;
     }
-    
+
     /**
      * retrieve the tabs for this attribute.
      *
@@ -977,7 +986,7 @@
     {
       return $this->m_tabs;
     }
-    
+
     /**
      * Put the attribute on one or more tabs.
      * @param array $tabs An array of tabs on which the attribute should
@@ -994,7 +1003,7 @@
         $this->m_sections = $sections;
       }
     }
-    
+
     /**
      * retrieve the tabs for this attribute.
      *
@@ -1003,8 +1012,8 @@
     function getSections()
     {
       return $this->m_sections;
-    } 
-  
+    }
+
 
     /**
      * Retrieve the html code for placing this attribute in an edit page.
@@ -1380,13 +1389,13 @@
      * Checks if this attribute is really not null in the database.
      * This method does not look at the AF_OBLIGATORY flag, it only
      * checks in the database if the attribute's column is really not null.
-     * 
+     *
      * @return boolean attribute's database column not null?
      */
     function _isNotNullInDb()
     {
       $db = &$this->getDb();
-      $meta = $db->tableMeta($this->m_ownerInstance->m_table);          
+      $meta = $db->tableMeta($this->m_ownerInstance->m_table);
       return hasFlag($meta[$this->fieldName()]['flags'], MF_NOT_NULL);
     }
 
@@ -1422,11 +1431,11 @@
       {
         if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->_isNotNullInDb())
         {
-          $query->addField($this->fieldName(),'NULL',"","",false,true);          
+          $query->addField($this->fieldName(),'NULL',"","",false,true);
         }
-        else 
+        else
         {
-          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES),true);          
+          $query->addField($this->fieldName(),$this->value2db($rec),"","",!$this->hasFlag(AF_NO_QUOTES),true);
         }
       }
       else
@@ -1516,14 +1525,14 @@
     function init()
     {
     }
-    
+
     /**
      * This function is called at the end of the node's init method.
      *
      * The regular atkAttribute has no implementation for this method, but
      * derived attributes may override this method to perform custom
      * initialization.
-     */    
+     */
     function postInit()
     {
     }
@@ -1955,7 +1964,7 @@
      * @return boolean
      */
     function showOnTab($tab)
-    {      
+    {
       return ($this->getTabs() == "*" || atk_in_array($tab, $this->getTabs()));
     }
 
@@ -2183,11 +2192,11 @@
       $record = $this->m_ownerInstance->updateRecord();
       $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
       $this->_registerDependees($mode, $fieldprefix);
-      
+
       $arr = array('fields' => array());
       $defaults = &$record;
       $error = array();
-      
+
       $this->addToEditArray($mode, $arr, $defaults, $error, '');
 
       $script = '';
@@ -2195,9 +2204,9 @@
       {
         $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = '".addslashes(atk_htmlentities($field['html']))."'.unescapeHTML();\r\n";
       }
-      
-      $this->_registerDependees($mode, $fieldprefix);                  
-      
+
+      $this->_registerDependees($mode, $fieldprefix);
+
       return '<script type="text/javascript">'.$script.'</script>';
     }
 
@@ -2208,7 +2217,7 @@
     {
       $this->m_dependees[] = $attribName;
     }
-    
+
     /**
      * Get dependees.
      */
@@ -2239,7 +2248,7 @@
           {
             $code = "ATK.Attribute.refresh('$url', true);";
           }
-        
+
           // only register the initial refresh on attribute load if this attribute
           // itself doesn't depend on any other attribute or this is a partial request
           if ($isPartial || !$this->isDepending())
@@ -2249,7 +2258,7 @@
         }
       }
     }
-    
+
     /**
      * Check whatever this attribute depends on other attributes.
      *
@@ -2263,7 +2272,7 @@
         if (in_array($this->fieldName(), $attr->getDependees()))
           return true;
       }
-      
+
       return false;
     }
 
@@ -2280,6 +2289,28 @@
     function getCSSClassAttribute()
     {
       return 'class="'.implode(" ", $this->getCSSClasses()).'"';
+    }
+
+    /**
+     * Set whether initially hidden or not
+     *
+     * @param boolean $bool
+     */
+    function setInitialHidden($bool)
+    {
+      $this->m_initial_hidden = $bool;
+    }
+
+    /**
+     * check whether initially hidden or not
+     *
+     * @param array the record
+     *
+     * @return initially hidden
+     */
+    function isInitialHidden($record)
+    {
+      return $this->m_initial_hidden;
     }
   }
 ?>

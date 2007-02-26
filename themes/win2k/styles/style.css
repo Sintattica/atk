@@ -141,3 +141,8 @@ div.mfBoxPositioner2 {
 	border-right: #424142 1px solid;
 	padding: 0 0 0 0;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

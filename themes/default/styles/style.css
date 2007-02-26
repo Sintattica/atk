@@ -130,3 +130,8 @@ INPUT.btn_saveandclose
   text-align: left;
   line-height: 200%;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

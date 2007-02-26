@@ -370,3 +370,8 @@ input[type="checkbox"]
  width: 22px;
  padding: 8px 8px 8px 2px;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}

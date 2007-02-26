@@ -98,3 +98,8 @@ UL,OL,LI
   padding: 0px;
   list-style-position: inside;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}
