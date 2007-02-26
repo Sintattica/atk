@@ -19,6 +19,13 @@
    atkimport("atk.attributes.atkattribute");
 
   /**
+    * Custom flags
+    * 
+    * Do not hide attribute label when it is single on the tab
+    */
+   define("AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", AF_SPECIFIC_1); 
+
+  /**
    * atkTabbedPane place regular attribute to the additional tabbed pane
    *
    * @author Yury Golovnya <ygolovnya@gmail.com>
@@ -114,6 +121,26 @@
       }
     }
 
+    /**
+     * Check if attribute is single on the tab
+     * @param String $name The name of attribute
+     * @return Bool  True if single.
+     * $todo Take into accout AF_HIDE_VIEW,AF_HIDE_EDIT flag of attribute - 
+     * attribute can be placed on tab, but only in edit action - 2 attribute when edit and 1  -if view	
+     */
+    function isAttributeSingleOnTab($name)
+    {
+      $result = false;
+    
+      if(!$this->hasFlag(AF_TABBEDPANE_NO_AUTO_HIDE_LABEL))
+      {
+        $tab = $this->m_attribsList[$name];
+        $friquency = array_count_values(array_values($this->m_attribsList));
+        $result = ($friquency[$tab] == 1);
+      }
+      return $result;
+    }
+
     function _addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
       $node = &$this->m_ownerInstance;
@@ -165,7 +192,7 @@
     function edit($defaults="", $fieldprefix="", $mode="")
     {
       $node = &$this->m_ownerInstance;
-      $arr = array();
+      $arr = array("hide"=>array());
       //get data
       $data = $this->_addToEditArray($mode, $arr, $defaults, $defaults['atkerror'], $fieldprefix);
 
@@ -268,7 +295,8 @@
           }
 
           /* does the field have a label? */
-          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
+          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name']) 
+                              || !isset($field["label"]))
           {
             if ($field["label"] == "")
             {
@@ -329,7 +357,6 @@
 
       $result = "";
       
-      if(!isset($arr["hide"])) $arr["hide"] = array();
       foreach ($arr["hide"] as $hidden)
       {
         $result.= $hidden;
@@ -343,7 +370,7 @@
       if (!$template) $template = $node->getTemplate($mode, $record, $tab);
       $result .= $ui->render("tabbededitform.tpl", $params);
 
-      $content = $this->tabulate("edit", $result);
+      $content = $this->tabulate($mode, $result);
       
       return $content;
     }
@@ -409,7 +436,7 @@
   
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
-            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
+            if (!$p_attrib->hasFlag(AF_NOLABEL) && !$this->isAttributeSingleOnTab($name))
             {
               if ($p_attrib->hasFlag(AF_BLANKLABEL))
               {
