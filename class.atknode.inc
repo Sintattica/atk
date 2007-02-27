@@ -785,7 +785,6 @@
       static $attrib_index = 0;
       
       $tabs = null;
-      $order = null;
       
       $attribute->m_owner = $this->m_type;
 

@@ -17,6 +17,7 @@
    */
 
    atkimport("atk.attributes.atkattribute");
+   atkimport("atk.handlers.atkvieweditbase");
 
   /**
     * Custom flags
@@ -289,7 +290,7 @@
         {
           if ($field["attribute"]->m_ownerInstance->getNumbering())
           {
-            $this->_addNumbering($field, $tplfield, $i);
+            atkViewEditBase::_addNumbering($field, $tplfield, $i);            
           }
 
           /* does the field have a label? */
