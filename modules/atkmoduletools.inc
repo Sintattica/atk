@@ -484,7 +484,7 @@
     if (!file_exists($filename))
     {
       atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
-      continue;
+      return;
     }
 
     if ($filename != $preload)
