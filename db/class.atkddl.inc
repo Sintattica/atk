@@ -56,6 +56,7 @@
      * Static factory method for creating a new atkDDL instance. This static
      * method will determine the database type (mysql, oci, etc) and
      * instantiate the correct DDL class.
+     *
      * @return atkDDL instance of db specific DDL driver
      */
     function &create($database=NULL)
@@ -81,7 +82,7 @@
     /**
      * Set all table data at once using the given table meta data,
      * retrieved using the metadata function of the db instance.
-     * 
+     *
      * @param $tablemeta table meta data array
      */
     function loadMetaData($tablemeta)
@@ -89,7 +90,7 @@
       $this->setTable($tablemeta[0]["table"]);
       $this->addFields($tablemeta);
     }
-    
+
     /**
      * Add a field to the table definition.
      *
@@ -114,6 +115,11 @@
                                      "default"=>$default);
     }
 
+    /**
+     * Drop a field from the table definition.
+     *
+     * @param $name        The name of the field
+     */
     function dropField($name)
     {
       $this->m_remove_field=$name;
@@ -139,7 +145,7 @@
       }
     }
 
-   /**
+    /**
      * Convert an ATK generic datatype to a database specific type.
      *
      * This function will be overrided by the database specific subclasses of
@@ -151,6 +157,7 @@
      * a varchar or number to store the value.
      *
      * @param $generictype  The datatype to convert.
+     * @abstract
      */
     function getType($generictype)
     {
@@ -164,6 +171,7 @@
      * atkDb.
      *
      * @param $type  The database specific datatype to convert.
+     * @abstract
      */
     function getGenericType($type)
     {
@@ -193,7 +201,7 @@
         if ($fields!="")
         {
           $q = "CREATE TABLE ".$this->m_table."\n(";
-          
+
           $q.= $fields;
 
           $constraints = $this->buildConstraints();
@@ -256,6 +264,21 @@
           }
           return array($q);
         }
+      }
+      return "";
+    }
+
+    /**
+     * Build a DROP TABLE query and return it as a string.
+     *
+     * @return The DROP TABLE query.
+     */
+    function buildDrop()
+    {
+      if ($this->m_table!="")
+      {
+        $q = "DROP TABLE `".$this->m_table."`";
+        return $q;
       }
       return "";
     }
@@ -361,6 +384,8 @@
     /**
      * Convert all fields to string that can be used in a CREATE or ALTER
      * TABLE statement. Fields will be returned in an array. (INTERNAL USE ONLY)
+     *
+     * @access private
      */
     function _buildFieldsArray()
     {
@@ -380,6 +405,8 @@
     /**
      * Convert all fields to a string that can be used in a CREATE or ALTER
      * TABLE statement.
+     *
+     * @return String containing fields to be used in a CREATE or ALTER TABLE statement
      */
     function buildFields()
     {
@@ -390,8 +417,11 @@
     }
 
     /**
-     * Convert all constraints to a string that can be used in a CREATE or
-     * ALTER TABLE statement. Returns an array of constraints. (INTERNAL USE ONLY)
+     * Convert all constraints to an array that can be used in a CREATE or
+     * ALTER TABLE statement.
+     *
+     * @return An array of constraints
+     * @access private
      */
     function _buildConstraintsArray()
     {
@@ -401,10 +431,11 @@
       return $constraints;
     }
 
-
     /**
      * Convert all constraints to a string that can be used in a CREATE TABLE
      * statement.
+     *
+     * @return String containing constraints to be used in a CREATE or ALTER TABLE statement
      */
     function buildConstraints()
     {
@@ -471,6 +502,27 @@
       return false;
     }
 
+    /**
+     * Build and execute the DROP TABLE query.
+     *
+     * @return true  if the table was dropped successfully
+     *         false if anything went wrong, or if no table could be dropped.
+     */
+    function executeDrop()
+    {
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+
+      $query = $this->buildDrop();
+      if ($query!="")
+      {
+        return $this->m_db->query($query);
+      }
+      else
+      {
+        atkdebug("atkddl::executeDrop: nothing to do!");
+      }
+      return false;
+    }
   }
 
 ?>
