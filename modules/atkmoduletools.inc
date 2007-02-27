@@ -30,13 +30,13 @@
 
   // registered node action handlers
   $g_nodeHandlers = array();
-  
+
   // registered node listeners
   $g_nodeListeners = array();
-  
+
   // registered node controllers
   $g_nodeControllers = array();
-  
+
   /**
    * Gets the node type of a node string
    * @param $node the node string
@@ -93,10 +93,10 @@
     }
     return $g_nodeRepository[$cache_id][$node];
   }
-  
+
   /**
    * Replace, at runtime, the in-memory instance of a node.
-   * 
+   *
    * This is useful to replace nodes with mocks for testing purposes.
    *
    * @param String $nodename The full name of the node (module.nodename)
@@ -108,7 +108,7 @@
    */
   function &atkSetNode($nodename, &$node, $cache_id="default")
   {
-    global $g_nodeRepository;    
+    global $g_nodeRepository;
     $org = &$g_nodeRepository[$cache_id][$nodename];
     $g_nodeRepository[$cache_id][$nodename] = &$node;
     return $org;
@@ -119,13 +119,13 @@
     global $g_modules;
     return $g_modules;
   }
-  
+
   function &atkGetModule($modname)
   {
     global $g_moduleRepository;
-    
+
     atkimport("atk.atknode");
-    
+
     if (!isset($g_moduleRepository[$modname])||!is_object($g_moduleRepository[$modname]))
     {
       atkimport("atk.modules.atkmodule");
@@ -173,7 +173,7 @@
     }
     return $g_moduleRepository[$modname];
   }
-  
+
   function &getModule($modname)
   {
     return atkGetModule($modname);
@@ -183,12 +183,12 @@
   {
     global $config_classroot, $config_module_path;
     $modules = atkGetModules();
-    
+
     /* module and type */
     $module = getNodeModule($node);
     $type = getNodeType($node);
     $file = "class.$type.inc";
-    
+
     /* filename */
     if (empty($module))
     {
@@ -219,7 +219,7 @@
   function &newNode($node, $init=TRUE)
   {
     $module = getNodeModule($node);
-    
+
     if ($module=="")
     {
       // No module, use the default instance.
@@ -322,7 +322,7 @@
   {
     return atkRegisterNodeHandler($node, $action, $handler);
   }
-  
+
   /**
    * Returns a registered node action handler.
    * @param $node the name of the node
@@ -352,7 +352,7 @@
     else $g_nodeHandlers[$node][$action] = &$handler;
     return TRUE;
   }
-  
+
   /**
    * Returns a registered node controller.
    * @param $node the name of the node
@@ -380,7 +380,7 @@
     else $g_nodeControllers[$node] = &$controller;
     return TRUE;
   }
-  
+
   /**
    * Perform a member function on all active modules, and return the
    * collective result.
@@ -472,6 +472,48 @@
     }
   }
 
+  function atkPreloadModule($modname, $modpath)
+  {
+    global $g_modifiers, $g_overloaders, $g_nodeListeners;
+
+    $preload = "$modpath/module_preload.inc";
+    $module = "$modpath/module.inc";
+    $filename = file_exists($preload) ? $preload : $module;
+
+    // no module file exists
+    if (!file_exists($filename))
+    {
+      atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
+      continue;
+    }
+
+    if ($filename != $preload)
+    {
+      atkdebug("Loading module - $modname");
+      atkimport("atk.modules.atkmodule");
+      $corporate_base = atkconfig("corporate_module_base");
+      if ($corporate_base!="")
+      {
+        atkimport($corporate_base);
+      }
+    }
+
+    // the include file may specify modifiers.
+    $modifiers = array();
+    $overloaders = array();
+    $listeners = array();
+    include_once($filename);
+
+    for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
+      $g_modifiers[$modifiers[$i]][] = $modname;
+
+    if (count($overloaders) > 0)
+      $g_overloaders = array_merge($g_overloaders, $overloaders);
+
+    if (count($listeners) > 0)
+      $g_nodeListeners = array_merge_recursive($g_nodeListeners, $listeners);
+  }
+
   /**
    * Preloads all modules. If a module_preload.inc file exists in the
    * module directory, this file will be included. If no module_preload.inc
@@ -480,49 +522,14 @@
    */
   function atkPreloadModules()
   {
-    global $g_modifiers, $g_overloaders, $g_moduleflags, $g_nodeListeners;
+    global $g_moduleflags;
     $modules = atkGetModules();
-    
+
     foreach ($modules as $modname => $modpath)
     {
       if ((!isset($g_moduleflags[$modname])) || (!hasFlag($g_moduleflags[$modname], MF_NO_PRELOAD)))
       {
-        $preload = "$modpath/module_preload.inc";
-        $module = "$modpath/module.inc";
-        $filename = file_exists($preload) ? $preload : $module;
-
-        // no module file exists
-        if (!file_exists($filename))
-        {
-          atkdebug("Couldn't find module_preload.inc or module.inc for module '$modname' in '$modpath'");
-          continue;
-        }
-
-        if ($filename != $preload)
-        {
-          atkdebug("Loading module - $modname");
-          atkimport("atk.modules.atkmodule");
-          $corporate_base = atkconfig("corporate_module_base");
-          if ($corporate_base!="")
-          {
-            atkimport($corporate_base);
-          }
-        }
-
-        // the include file may specify modifiers.
-        $modifiers = array();
-        $overloaders = array();
-        $listeners = array();
-        include_once($filename);
-
-        for ($i=0, $_i = count($modifiers); $i < $_i; $i++)
-          $g_modifiers[$modifiers[$i]][] = $modname;
-
-        if (count($overloaders) > 0)
-          $g_overloaders = array_merge($g_overloaders, $overloaders);
-        
-        if (count($listeners) > 0)  
-          $g_nodeListeners = array_merge_recursive($g_nodeListeners, $listeners);
+        atkPreloadModule($modname, $modpath);
       }
     }
   }
