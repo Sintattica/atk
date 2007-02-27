@@ -17,6 +17,8 @@
    * $Id$
    */
 
+  atkimport("atk.handlers.atkactionhandler");
+  
   /**
    * Handler class for the edit action of a node. The handler draws a
    * generic edit form for the given node.
