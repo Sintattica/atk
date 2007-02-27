@@ -1548,11 +1548,10 @@
     }
     
     /**
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * Get the active sections.
      *
-     * @param string $tab
-     * @param string $mode
+     * @param string $tab The currently active tab 
+     * @param string $mode The current mode ("edit", "add", etc.)
      */
     function getActiveSections($tab, $mode)
     {
