@@ -18,7 +18,7 @@
    */
 
   atkimport("atk.handlers.atkactionhandler");
-  
+
   /**
    * Handler class for the edit action of a node. The handler draws a
    * generic edit form for the given node.
@@ -38,22 +38,22 @@
      * @return string Html
      */
     function getSectionControl($field, $mode)
-    { 
+    {
       // our name
       list($tab, $section) = explode('.', $field["name"]);
       $name = "section_{$tab}_{$section}";
-     
+
       // create onclick statement.
       $onClick = " onClick=\"javascript:handleSectionToggle(this);\"";
 
       // label
       $label = atktext($name, $this->m_node->m_module, $this->m_node->m_type, '', '', true);
-      if ($label == NULL) 
+      if ($label == NULL)
         $label = atktext("{$tab}_{$section}", $this->m_node->m_module, $this->m_node->m_type, '', '', true);
       if ($label == NULL)
         $label = $this->m_node->text($section);
-      
-      $initClass = "openedSection";      
+
+      $initClass = "openedSection";
       //if the section is not active, we close it on load.
       if (!in_array($field["name"],$this->m_node->getActiveSections($tab, $mode)))
       {
@@ -61,9 +61,30 @@
         $page = &$this->getPage();
         $page->register_scriptcode("addClosedSection('$name');");
       }
-      
+
       // create the clickable link
       return '<a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a>';
+    }
+
+    /**
+     * Based on the attributes that are part of this section we
+     * check if this section should initially be shown or not.
+     *
+     * @param string $section section name
+     * @param array $fields edit fields
+     * @return boolean
+     */
+    function isSectionInitialHidden($section, $fields)
+    {
+      foreach ($fields as $field)
+      {
+        if (is_array($field["sections"]) && in_array($section, $field['sections']) && (!isset($field['initial_hidden']) || !$field['initial_hidden']))
+        {
+          return false;
+        }
+      }
+
+      return true;
     }
 
     /**
@@ -99,6 +120,6 @@
         $subnumber++;
       }
     }
-        
+
   }
 ?>

@@ -1947,8 +1947,12 @@
             if (!in_array($section, $addedSections) && 
                 in_array($section, $attribSections) &&
                 strpos($section, '.') !== FALSE)
-            {              
-              $result["fields"][] = array("html" => "section", "name" => $section, "tabs" => $p_attrib->getTabs($mode));
+            {           
+              // our name/id
+              list($tabname, $sectionname) = explode('.', $section);
+              $id = "section_{$tabname}_{$sectionname}";
+
+              $result["fields"][] = array("html" => "section", "id" => $id, "name" => $section, "tabs" => $p_attrib->getTabs($mode));   
               $addedSections[] = $section;                
             }
           }

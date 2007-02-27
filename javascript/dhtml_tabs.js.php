@@ -31,22 +31,26 @@ function addClosedSection(section)
 /**
  * Toggle section visibility.
  */
-function handleSectionToggle(element)
+function handleSectionToggle(element, expand)
 {
   element = $(element);
-  var isClosed = closedSections.indexOf(element.id) >= 0;
-  
-  $A(document.getElementsByTagName('TR')).select(function(tr) { 
+
+  // automatically determine if we need to expand or collapse
+  if (expand == null) {
+    expand = closedSections.indexOf(element.id) >= 0;
+  }
+
+  $A(document.getElementsByTagName('TR')).select(function(tr) {
     return $(tr).hasClassName(element.id);
   }).each(function(tr) {
-    if (isClosed) {
+    if (expand) {
       Element.show(tr);
-      element.removeClassName('closedSection');      
+      element.removeClassName('closedSection');
       element.addClassName('openedSection');
       closedSections = closedSections.without(element.id);
     } else {
       Element.hide(tr);
-      element.removeClassName('openedSection');      
+      element.removeClassName('openedSection');
       element.addClassName('closedSection');
       closedSections.push(element.id);
     }
@@ -80,16 +84,16 @@ function showTab(tab)
 
   // Then we store what tab we are going to visit in the parent
 	setCurrentTab(tab);
-    
-  var tabSectionName = 'section_' + tab;	
+
+  var tabSectionName = 'section_' + tab;
 
   $A(document.getElementsByTagName('TR')).select(isAttributeTr).each(function(tr) {
-    var visible = 
+    var visible =
       $(tr).classNames().find(function(sectionName) {
-          return sectionName.substring(0, tabSectionName.length) == tabSectionName && 
+          return sectionName.substring(0, tabSectionName.length) == tabSectionName &&
                  closedSections.indexOf(sectionName) < 0;
       }) != null;
-    
+
     if (visible) {
       Element.show(tr);
     }
@@ -97,7 +101,7 @@ function showTab(tab)
       Element.hide(tr);
     }
   });
-  
+
 	// Then when set the colors or the tabs, the active tab gets a different color
 	for(j = 0; j < tabs.length; j++)
 	{
@@ -112,10 +116,10 @@ function showTab(tab)
 		  document.getElementById('tab_'+tabs[j]).className = 'passivetab';
 		}
 	 }
-	}	
-	
+	}
+
 	makeFCKEditable();
-	
+
 	// make tabs visible (to avoid reload quirks, they load invisible from the html
 	wrapper = document.getElementById('tabtable');
 	if (wrapper)
@@ -126,8 +130,8 @@ function showTab(tab)
 
 
 /**
- * Because the FCK editor does not always agree with 
- * tabbing and no longer becomes editable if you switch 
+ * Because the FCK editor does not always agree with
+ * tabbing and no longer becomes editable if you switch
  */
 function makeFCKEditable()
 {
@@ -153,7 +157,7 @@ function getTab(nodetype, selector)
 function setCurrentTab(value)
 {
   setTab(getCurrentNodetype(), getCurrentSelector(), value);
-  
+
   for (var i = 0; i < document.forms.length; i++)
   {
     var form = document.forms[i];
@@ -165,9 +169,9 @@ function setCurrentTab(value)
     {
       var input = document.createElement('input');
       input.setAttribute('type', 'hidden');
-      input.setAttribute('name', 'atktab');      
+      input.setAttribute('name', 'atktab');
       input.setAttribute('value', value);
-      form.appendChild(input);      
+      form.appendChild(input);
       form.atktab = input;
     }
   }

@@ -18,7 +18,7 @@
    */
 
   atkimport("atk.handlers.atkvieweditbase");
-  
+
   /**
    * Handler class for the edit action of a node. The handler draws a
    * generic edit form for the given node.
@@ -255,6 +255,8 @@
           // section should only have the tab section classes
           foreach ($field["tabs"] as $section)
             $classes[] = "section_".str_replace('.', '_', $section);
+          if ($this->isSectionInitialHidden($field['name'], $data['fields']))
+            $classes[] = "atkAttrRowHidden";
         }
         else if (is_array($field["sections"]))
         {
