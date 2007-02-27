@@ -134,13 +134,6 @@
       {
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");        
-
-        $tabscript = "var tabs = new Array();\n";
-        foreach($vars["tabs"] as $tab)
-        {
-          $tabscript.="tabs[tabs.length] = '".$tab['tab']."';\n";
-        }
-        $page->register_scriptcode($tabscript);
       }
       return $this->render("tabs.tpl", $vars);
     }

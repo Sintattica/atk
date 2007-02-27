@@ -17,6 +17,8 @@
    * $Id$
    */
 
+  atkimport("atk.handlers.atkvieweditbase");
+  
   /**
    * Handler class for the edit action of a node. The handler draws a
    * generic edit form for the given node.
@@ -27,7 +29,7 @@
    * @subpackage handlers
    *
    */
-  class atkEditHandler extends atkActionHandler
+  class atkEditHandler extends atkViewEditBase
   {
     /**
      * The action handler method.
@@ -317,7 +319,7 @@
             }
             else
             {
-              $tplfield["label"] = $field["label"];
+              $tplfield["label"] .= $field["label"];
               if ($field["error"]) // TODO KEES
               {
                 $tplfield["error"] = $field["error"];
@@ -341,18 +343,9 @@
           $editsrc = $field["html"];
 
           /* tooltip */
-          if (is_object($node->m_attribList[$field['name']]))
+          $tooltip = $field["attribute"]->getToolTip();
+          if($tooltip)
           {
-            $module = $node->m_attribList[$field['name']]->getModule();
-          }
-          if (!$module) $module = "atk";
-          $ttip = atktext($node->m_type."_".$field["name"]."_tooltip", $module, "", "", "", true);
-
-          if ($ttip)
-          {
-            $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
-            $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
-                                    '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
             $tplfield["tooltip"] = $tooltip;
             $editsrc.=$tooltip."&nbsp;";
           }
@@ -384,75 +377,6 @@
       $result.= $ui->render($template, $params);
 
 	    return $result;
-    }
-
-    /**
-     * Create the clickable label for the section.
-     *
-     * @param array $field
-     * @return string Html
-     */
-    function getSectionControl($field, $mode)
-    {
-      // our name
-      list($tab, $section) = explode('.', $field["name"]);
-      $name = "section_{$tab}_{$section}";
-
-      // create onclick statement.
-      $onClick = " onClick=\"javascript:handleSectionToggle(this);\"";
-
-      // label
-      $label = atktext($name, $this->m_node->m_module, $this->m_node->m_type, '', '', true);
-      if ($label == NULL)
-        $label = atktext("{$tab}_{$section}", $this->m_node->m_module, $this->m_node->m_type, '', '', true);
-      if ($label == NULL)
-        $label = $this->m_node->text($section);
-
-      $initClass = "openedSection";
-      //if the section is not active, we close it on load.
-      if (!in_array($field["name"],$this->m_node->getActiveSections($tab, $mode)))
-      {
-        $initClass =  "closedSection";
-        $page = &$this->getPage();
-        $page->register_scriptcode("addClosedSection('$name');");
-      }
-
-      // create the clickable link
-      return '<a href="javascript:void(0)" id="'.$name.'" class="atksection '.$initClass.'"'.$onClick.'>'.$label.'</a>';
-    }
-
-    /**
-     * Adds numbering to the label of a field
-     * @access private
-     * @param array $field    the currently handled attribute
-     * @param array $tplfield the template data for the current attribute
-     * @param int $i          the counter being used to loop the node for each attribute
-     */
-    function _addNumbering(&$field, &$tplfield, &$i)
-    {
-      static $number, $subnumber;
-
-      if (!$number && !$subnumber) $number = $field["attribute"]->m_ownerInstance->getNumbering();
-      if (!$subnumber)
-      {
-        if (strlen($number) == 1 || (floor($number) <= 9 && floor($number) >= -9 && floor($number) == $number))
-        {
-          $subnumber = $number;
-          $number = null;
-        }
-        else
-        {
-          $subnumber = substr($number, strrpos($number, ".")+1);
-          $number = substr($number, 0, strrpos($number, "."));
-        }
-      }
-
-      if ($field["label"])
-      {
-        if ($number) $tplfield["label"]="$number.$subnumber. ";
-        else $tplfield["label"]="$subnumber. ";
-        $subnumber++;
-      }
     }
 
     /**

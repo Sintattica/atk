@@ -318,6 +318,6 @@
       $controller->setNode($this->m_node);
       $page = &$this->m_node->getPage();
       $page->addContent($controller->accessDeniedPage());
-    }        
+    }
   }
 ?>

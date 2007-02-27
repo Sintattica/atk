@@ -15,6 +15,8 @@
    * @version $Revision$
    * $Id$
    */
+ 
+ atkimport("atk.handlers.atkvieweditbase");
 
   /**
    * Handler class for a readonly view action. Similar to the edit handler,
@@ -25,7 +27,7 @@
    * @subpackage handlers
    *
    */
-  class atkViewHandler extends atkActionHandler
+  class atkViewHandler extends atkViewEditBase
   {
     /**
      * The action handler method.
@@ -63,94 +65,7 @@
       {
         $params = $node->getDefaultActionParams();
 
-        $fields = array();
-
-        // get active tab
-        $tab = $node->getActiveTab();
-
-        // For all attributes we use the display() function to display the
-        // attributes current value. This may be overridden by supplying
-        // an <attributename>_display function in the derived classes.
-        foreach (array_keys($node->m_attribIndexList) as $i)
-        {
-          $tplfield = array();
-          $p_attrib = &$node->m_attribList[$node->m_attribIndexList[$i]["name"]];
-          if (!$p_attrib->hasFlag(AF_HIDE_VIEW) && !$p_attrib->hasDisabledMode(DISABLED_VIEW))
-          {
-
-            $field_name = $node->m_attribIndexList[$i]["name"];
-
-            $tabs = $p_attrib->getTabs();
-            atk_var_dump($tabs, "<h1>TABS</h1>");
-            
-            $classes = array();
-            if ($tabs == "*")
-            {
-              $classes[] = "alltabs";
-            }
-            else 
-            {
-              foreach ($tabs as $tab)
-                $classes[] = "section_{$tab}";
-            }
-            
-            $tplfield["class"] = implode(" ", $classes);
-            $tplfield["tab"] = $tplfield["class"];
-            $tplfield["initial_on_tab"] = $tabs == "*" || in_array($tab, $tabs);
-            
-            // An <attributename>_display function may be provided in a derived
-            // class to display an attribute. If it exists we will use that method
-            // else we will just use the attribute's display method.
-            $funcname = $p_attrib->m_name."_display";
-            if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
-            else $editsrc=$p_attrib->display($record, "view");
-
-            /* tooltip */
-            $module = $node->m_attribList[$field_name]->getModule();
-            if (!$module) $module = "atk";
-            $ttip = atktext($node->m_type."_".$field_name."_tooltip", $module, "", "", "", true);
-
-            if ($ttip)
-            {
-              $theme = &atkinstance("atk.ui.atktheme");
-              $tipimg = $theme->imgPath("help.gif");
-
-              $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
-              $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
-                                      '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
-              $tplfield["tooltip"] = $tooltip;
-              $editsrc.=$tooltip."&nbsp;";
-            }
-
-            $tplfield["full"] = $editsrc;
-            $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-            $tplfield["rowid"] = "ar_".$field_name; // The id of the containing row
-
-            // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
-            // For each attribute, a txt_<attributename> must be provided in the language files.
-            if ($p_attrib->hasFlag(AF_NOLABEL)==false)
-            {
-              if ($p_attrib->hasFlag(AF_BLANKLABEL))
-              {
-                $tplfield["label"] = "";
-              }
-              else
-              {
-                $tplfield["label"] = $p_attrib->label($record);
-              }
-            }
-            else
-            {
-              // Make the rest fill up the entire line
-              $tplfield["label"] = "";
-              $tplfield["line"] = $tplfield["full"];
-            }
-
-            $fields[] = $tplfield;
-
-          }
-        }
-        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
+        $innerform = $this->viewForm($record, "view");
 
         $params["activeTab"] = $tab;
 
@@ -177,6 +92,128 @@
         atkerror("ui object error");
       }
     }
-  }
+		
+    function viewForm($record, $mode="view")
+		{
+      $node = &$this->m_node;
 
+      /* get data, transform into form, return */
+      $data = $node->viewArray($mode, $record);
+
+        // get active tab
+        $tab = $node->getActiveTab();
+
+      $fields = array();
+
+        // For all attributes we use the display() function to display the
+        // attributes current value. This may be overridden by supplying
+        // an <attributename>_display function in the derived classes.
+      for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
+      {
+        $field = &$data["fields"][$i];
+        $tplfield = array();
+            
+        $classes = array();
+        if ($field["sections"] == "*")
+        {
+          $classes[] = "alltabs";
+        }
+        else if ($field["html"] == "section")
+        {
+          // section should only have the tab section classes
+          foreach ($field["tabs"] as $section)
+            $classes[] = "section_".str_replace('.', '_', $section);            
+        }
+        else if (is_array($field["sections"]))
+        {
+          foreach ($field["sections"] as $section)          
+            $classes[] = "section_".str_replace('.', '_', $section);          
+        }
+            
+        $tplfield["class"] = implode(" ", $classes);
+		$tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
+            
+		// visible sections, both the active sections and the tab names (attribute that are 
+		// part of the anonymous section of the tab)
+		$visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+
+		// Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+		// maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+    	$tplfield["initial_on_tab"] =
+    	  ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
+          (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);    		   
+
+        // ar_ stands voor 'attribrow'.
+		$tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+
+		/* check for separator */
+        if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
+        {
+          $tplfield["line"] = "<hr>";
+        }
+        /* double separator, ignore */
+        elseif ($field["html"] == "-")
+        {
+        }
+        /* sections */
+        elseif($field["html"] == "section")
+        {
+          $tplfield["line"] = $this->getSectionControl($field, $mode);
+        }
+        /* only full HTML */
+        elseif (isset($field["line"]))
+        {
+          $tplfield["line"] = $field["line"];
+        }
+        /* edit field */
+        else
+        {
+          if ($field["attribute"]->m_ownerInstance->getNumbering())
+          {
+            $this->_addNumbering($field, $tplfield, $i);
+          }
+
+          /* does the field have a label? */
+          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
+          {
+            if ($field["label"] == "")
+            {
+              $tplfield["label"] = "";
+            }
+            else
+            {
+              $tplfield["label"] .= $field["label"];
+          }
+        }
+        else
+        {
+          	$tplfield["label"]="AF_NO_LABEL";
+        }
+
+        /* html source */
+        $tplfield["widget"] = $field["html"];
+        $editsrc = $field["html"];
+
+        /* tooltip */
+        $tooltip = $field["attribute"]->getToolTip();
+        if($tooltip)
+        {
+          $tplfield["tooltip"] = $tooltip;
+          $editsrc.=$tooltip."&nbsp;";
+        }
+
+          $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["id"]);
+
+          $tplfield["full"] = $editsrc;
+      }
+        $fields[] = $tplfield; // make field available in numeric array
+        $params[$field["name"]] = $tplfield; // make field available in associative array
+      }
+      $ui = &$this->getUi();
+
+      $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
+
+      return $innerform;
+    }
+  }
 ?>

@@ -15,12 +15,12 @@ function showpanetab(classname,parentid,defaulttab)
 			if($(el).hasClassName(classname))
 			{
 				$(el).show();
-				$(el).addClassName(defaulttab);
+				$(el).addClassName('section_'+defaulttab);
 			}
 			else
 			{
 				$(el).hide();
-				$(el).removeClassName(defaulttab);
+				$(el).removeClassName('section_'+defaulttab);
 			}
 		}
 	}

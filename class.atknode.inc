@@ -783,6 +783,10 @@
     {
       static $attrib_order = 100;
       static $attrib_index = 0;
+      
+      $tabs = null;
+      $order = null;
+      
       $attribute->m_owner = $this->m_type;
 
       // If we're running inside modifier scope, we have to tell the attribute
@@ -837,8 +841,8 @@
       {
         // when the read optimizer is enabled there is no active tab
         // we circument this by putting all attributes on all tabs
-        if (!($tabs === NULL) && is_int($tabs))
-          $order = $tabs;
+        if (!($sections === NULL) && is_int($sections))
+          $order = $sections;
         $tabs = "*";
         $sections = "*";
       }
@@ -1343,7 +1347,6 @@
 
       $disable = $this->checkTabRights($list);
 
-      $tabAttribSet = array();
       $tabCode = "";
 
       if (!is_array($list))
@@ -1735,6 +1738,15 @@
       {
         $page = &$this->getPage();
         $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
+
+        
+        $fulltabs = $this->buildTabs($action);
+        $tabscript = "var tabs = new Array();\n";
+        foreach($fulltabs as $tab)
+        {
+          $tabscript.="tabs[tabs.length] = '".$tab['tab']."';\n";
+        }
+        $page->register_scriptcode($tabscript);
       }
       
       if ($tabs > 1 )
@@ -1960,6 +1972,77 @@
       return $result;
     }
     
+    
+    /**
+     * Function outputs an array with view fields. For each field the array
+     * contains the name, view HTML code etc. 
+     *
+     * @todo The viewArray method should use a set of classes to build the
+     *       form, instead of an array with an overly complex structure.
+     * @param String $mode        The edit mode ("view")
+     * @param array $record       The record currently being viewed.
+     * @return array List of edit fields (per field ( name, html, obligatory,
+     *               error, label })
+     */
+    function viewArray($mode, $record)
+    {
+      $tab = $this->getActiveTab();
+
+      $this->orderAttributesBySection($mode);
+      
+      $addedSections = array();      
+      $result = array();
+      
+      foreach (array_keys($this->m_attribIndexList) as $r)
+      {
+        $attribname = $this->m_attribIndexList[$r]["name"];
+
+        $p_attrib = &$this->m_attribList[$attribname];
+        if ($p_attrib!=NULL)
+        {
+          if($p_attrib->hasDisabledMode(DISABLED_VIEW)) continue;
+          $field = array("name" => $attribname);
+
+          /* sometimes a field is hidden although not specified by the field itself */
+          $theme = &atkinstance("atk.ui.atktheme");
+          if ($theme->getAttribute("tabtype") == "dhtml" || $ignoreTab)
+          {
+            $notOnTab = FALSE;
+          }
+          else
+          {
+            $notOnTab = !$p_attrib->showOnTab($tab);
+          }
+
+          /* we add the section link before the first attribute that is in it */
+          foreach ($this->m_sectionList[$mode] as $section)
+          {
+            $attribSections = $p_attrib->getSections();
+            if (!is_array($attribSections)) $attribSections = array($attribSections);
+            
+            //if the section is not allready added, check if it needs to be added.
+            if (!in_array($section, $addedSections) && 
+                in_array($section, $attribSections) &&
+                strpos($section, '.') !== FALSE)
+            {              
+              $result["fields"][] = array("html" => "section", "name" => $section, "tabs" => $p_attrib->getTabs($mode));
+              $addedSections[] = $section;                
+            }
+          }
+          
+          /* we let the attribute add itself to the view array */
+
+          $p_attrib->addToViewArray($mode, $result, $record);
+        }
+        else
+        {
+          atkerror("Attribute $attribname not found!");
+        }
+      }
+      /* return the result array */
+      return $result;
+    }
+
     /**
      * Order the attribIndexList by section:
      * 

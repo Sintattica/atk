@@ -909,6 +909,36 @@
     }
 
     /**
+     * Adds the attribute's view / hide HTML code to the view array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * a view form.
+     *
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the mode ("view")
+     * @param array  $arr      pointer to the view array
+     * @param array  $defaults pointer to the default values array     
+     */
+    function addToViewArray($mode, &$arr, &$defaults)
+    {
+      if(!$this->hasFlag(AF_HIDE_VIEW))
+      {
+	    	$entry = array("name" => $this->m_name, "attribute" => &$this);
+	
+	      /* label? */
+	      $entry["label"] = $this->getLabel($defaults);
+	      // on which tab?
+	      $entry["tabs"] = $this->getTabs($mode);	      
+	      //on which sections?
+	      $entry["sections"] = $this->getSections();
+	      /* the actual edit contents */
+	      $entry["html"] = $this->getView($mode, $defaults);
+	      $arr["fields"][] = $entry;
+      }
+    }
+
+    /**
      * Adds the attribute's edit / hide HTML code to the edit array.
      *
      * This method is called by the node if it wants the data needed to create
@@ -946,8 +976,7 @@
         /* error? */
         $entry["error"] = $this->getError($error);
         // on which tab?
-        $entry["tabs"] = $this->getTabs($mode);
-        atk_var_dump($entry["tabs"], "GET TABS ".$this->fieldname());
+        $entry["tabs"] = $this->getTabs($mode);        
         //on which sections?
         $entry["sections"] = $this->getSections();
         // the actual edit contents
@@ -1012,9 +1041,65 @@
     function getSections()
     {
       return $this->m_sections;
+    } 
+  
+    
+    /**
+     * Retrieve the html code for placing this attribute in a view page.
+     *     
+     * Method is 'smart', and implements custom override methodes in the node.
+     * (<attributename>_display() methods)
+     *
+     * Framework method, it should not be necessary to call this method
+     * directly.
+     *
+     * @param String $mode The mode ("view")
+     * @param array $defaults The record holding the values for this attribute
+     *      
+     * @return String the HTML code for this attribute that can be used in a
+     *                viewpage.
+     */
+    function getView($mode, &$defaults)
+    {
+      $funcname = $this->m_name."_display";
+      if (method_exists($this->m_ownerInstance, $funcname))
+      {
+        $result.= $this->m_ownerInstance->$funcname($defaults, $mode);
+      }
+      else
+      {
+        $result.= $this->display($defaults, $mode);
+      }
+      return $result;
     }
-
-
+		
+    /**
+     * Retrieve the html/javascript code for showing the tooltip for this attribute.
+     *
+     * @return HTML
+     */
+    function getToolTip()
+    {
+  	  $module = $this->getModule();
+  	  if (!$module) $module = "atk";
+  			
+  	  $node = &$this->m_ownerInstance;
+  	  $ttip = atktext($node->m_type."_".$this->fieldName()."_tooltip", $module, "", "", "", true);
+  
+  	  $tooltip = '';
+  
+      if ($ttip)
+  	  {
+  	    $theme = &atkinstance("atk.ui.atktheme");
+  	    $tipimg = $theme->imgPath("help.gif");
+  		
+  	    $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
+  	    $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
+  	    '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
+  	  }
+  	  return $tooltip;
+    }
+    
     /**
      * Retrieve the html code for placing this attribute in an edit page.
      *
@@ -1041,15 +1126,7 @@
       if (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
       {
         $result.= $this->hide($defaults, $fieldprefix);
-        $funcname = $this->m_name."_display";
-        if (method_exists($this->m_ownerInstance, $funcname))
-        {
-          $result.= $this->m_ownerInstance->$funcname($defaults, $mode);
-        }
-        else
-        {
-          $result.= $this->display($defaults, $mode);
-        }
+        $result.= $this->getView($mode, $defaults);
       }
       /* normal */
       else

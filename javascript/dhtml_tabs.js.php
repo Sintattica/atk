@@ -101,6 +101,8 @@ function showTab(tab)
 	// Then when set the colors or the tabs, the active tab gets a different color
 	for(j = 0; j < tabs.length; j++)
 	{
+	  if(document.getElementById('tab_'+tabs[j]))
+      {
 		if(tabs[j] == tab)
 		{
 			document.getElementById('tab_'+tabs[j]).className = 'activetab';
@@ -109,6 +111,7 @@ function showTab(tab)
 		{
 		  document.getElementById('tab_'+tabs[j]).className = 'passivetab';
 		}
+	 }
 	}	
 	
 	makeFCKEditable();

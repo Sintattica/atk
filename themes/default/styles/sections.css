@@ -11,6 +11,7 @@ A.atksection {
   padding: 2px;
   padding-left: 16px;    
   width: 1px;
+  white-space: nowrap;
 }
 
 A.openedSection {

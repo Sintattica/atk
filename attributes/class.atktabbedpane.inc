@@ -56,13 +56,11 @@
      * @param int $flags The flags for this attribute
      */
     function atkTabbedPane($name, $tabs=array(), $flags=0)
-    {atk_var_dump($tabs,"<h1>all teh tabs</h1>");
+    {
       foreach ($tabs as $tab=>$attribs)
-   	  {atk_var_dump($tab,"<h1>teh tab</h1>");
-   	    atk_var_dump($attribs,"<h1>teh attributes</h1>");
+   	  {
    	  	foreach ($attribs as $attrib)
     	  {
-    	    atk_var_dump($attrib,"<h1>teh attrib</h1>");
    	  		$this->add($attrib,$tab);
       	}
    	  }
@@ -403,7 +401,9 @@
           $tplfield = array();
           if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
           {
-            $tplfield["tab"] = $this->m_attribsList[$name];
+            $tplfield["class"] = $this->m_attribsList[$name];
+        	$tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
+            
             $tplfield["initial_on_tab"] = ($tplfield["tab"]==$active_tab);
   
             // An <attributename>_display function may be provided in a derived

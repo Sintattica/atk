@@ -10,7 +10,7 @@
     </tr>
   {/if}
   {foreach from=$fields item=field}
-    <tr{if $field.rowid != ""} id="{$field.rowid}"{/if}{if $field.initial_on_tab!='yes'} style="display: none"{/if} class="{$field.tab}">
+    <tr{if $field.rowid != ""} id="{$field.rowid}"{/if}{if !$field.initial_on_tab} style="display: none"{/if} class="{$field.tab}">
       {if isset($field.line) && $field.line!=""}
         <td colspan="2" valign="top" nowrap>{$field.line}</td>
       {else}

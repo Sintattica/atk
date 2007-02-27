@@ -68,14 +68,16 @@ function str_replace(haystack,needle,replace,casesensitive)
 function getCurrentSelector()
 {
   var selectorobj = get_object("atkselector");
-
-  if (selectorobj.value)
+  if(selectorobj)
   {
-    var selector = selectorobj.value;
-  }
-  else if (selectorobj.innerHTML)
-  {
-    var selector = selectorobj.innerHTML;
+    if (selectorobj.value)
+    {
+      var selector = selectorobj.value;
+    }
+    else if (selectorobj.innerHTML)
+    {
+      var selector = selectorobj.innerHTML;
+    }
   }
   return selector;
 }
@@ -87,15 +89,17 @@ function getCurrentSelector()
 function getCurrentNodetype()
 {
   var nodetypeobj  = get_object("atknodetype");
-
+  if(nodetypeobj)
+  {
   // IE works with .value, while the Gecko engine uses .innerHTML
-  if (nodetypeobj.value)
-  {
-    var nodetype = nodetypeobj.value;
-  }
-  else if (nodetypeobj.innerHTML)
-  {
-    var nodetype = nodetypeobj.innerHTML;
+    if (nodetypeobj.value)
+    {
+      var nodetype = nodetypeobj.value;
+    }
+    else if (nodetypeobj.innerHTML)
+    {
+      var nodetype = nodetypeobj.innerHTML;
+    }
   }
   return nodetype;
 }
