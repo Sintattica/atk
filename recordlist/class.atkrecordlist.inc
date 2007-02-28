@@ -316,7 +316,7 @@
         $listend = "";
         if (hasFlag($flags, RL_MRA) || hasFlag($flags, RL_MRPA))
         {
-          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");          
+          $page->register_script(atkconfig("atkroot")."atk/javascript/formselect.js");
 
           if (!hasFlag($flags, RL_EMBED))
           {
@@ -397,7 +397,7 @@
             if (count($list["rows"][$i]["mra"]) > 0)
               $record["cols"][] = array(
                            "content"=>'<input type="checkbox" name="'.$listName.'_atkselector[]" value="'.rawurlencode($list["rows"][$i]["selector"]).'" onclick="if (this.disabled) this.checked = false">'.
-                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>', 
+                                      '<script language="javascript"  type="text/javascript">'.$listName.'["'.rawurlencode($list["rows"][$i]["selector"]).'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>',
                             "type" => "mra");
 
             else $record["cols"][] = array("content"=>"");
@@ -531,7 +531,7 @@
         /****************************************/
         elseif (hasFlag($flags, RL_MRA))
         {
-          $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType(), SESSION_NESTED);
+          $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType().'&atktarget='.$this->m_node->m_postvars['atktarget'].'&atktargetvar='.$this->m_node->m_postvars['atktargetvar'].'&atktargetvartpl='.$this->m_node->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
           $mra = (count($list["rows"]) > 1 ?
                       '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.atktext("select_all").'</a> / '.

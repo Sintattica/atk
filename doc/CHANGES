@@ -307,6 +307,13 @@ Changed in ATK 5.7
   edit handler accordingly. Where AF_HIDE hides the attribute completely 
   (even from the source), this feature will only make the attribute invisible.
   [Patrick]
++ Added multiselecthandler. This handler shows a mra action for selecting 
+  multiple records, unlike the selecthandler which selects one record.
+  Send atktarget, atktargetvar and atktargetvartpl to the multiselectaction,
+  where atktarget is the target url, atktargetvar is the variable in the 
+  url which will be filled according to the selected records and 
+  atktargetvartpl is the template which is used to fill the atktargetvar.
+  [Lineke]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]
