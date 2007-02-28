@@ -43,8 +43,10 @@
       list($tab, $section) = explode('.', $field["name"]);
       $name = "section_{$tab}_{$section}";
 
+      $url = partial_url($this->m_node->atknodetype(), $mode, "sectionstate",array("atksectionname"=>$name));
+
       // create onclick statement.
-      $onClick = " onClick=\"javascript:handleSectionToggle(this);\"";
+      $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}');\"";
 
       // label
       $label = atktext($name, $this->m_node->m_module, $this->m_node->m_type, '', '', true);
@@ -54,8 +56,12 @@
         $label = $this->m_node->text($section);
 
       $initClass = "openedSection";
+
       //if the section is not active, we close it on load.
-      if (!in_array($field["name"],$this->m_node->getActiveSections($tab, $mode)))
+      $state = atknew("atk.session.atkstate");
+	    $sectionstate = $state->get(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$name));
+			
+      if( $sectionstate == 'closed' || ($sectionstate == null && !in_array($field["name"],$this->m_node->getActiveSections($tab, $mode))))  
       {
         $initClass =  "closedSection";
         $page = &$this->getPage();

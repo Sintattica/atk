@@ -54,6 +54,13 @@
           $page->addContent($result);
           return;
         }
+        elseif($type == 'sectionstate')
+        {
+        	atkimport("atk.session.atkstate");
+        	atkState::set(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$this->m_postvars['atksectionname']),$this->m_postvars['atksectionstate']);
+        	die();
+        }
+
       }
 
       list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");

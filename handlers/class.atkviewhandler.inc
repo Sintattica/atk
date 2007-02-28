@@ -35,6 +35,19 @@
     function action_view($renderbox=true)
     {
       atkdebug("Action view");
+      
+      if (isset($this->m_partial) && $this->m_partial!="")
+      {
+        list($type, $attribute, $partial) = explode('.', $this->m_partial);
+        if($type == 'sectionstate')
+        {
+        	atkimport("atk.session.atkstate");
+        	atkState::set($this->m_postvars['atksectionname'],$this->m_postvars['atksectionstate']);
+        	die();
+        }
+
+      }
+
       list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","",$this->m_node->m_viewExcludes,"","view");
 
       // allowed to view record?

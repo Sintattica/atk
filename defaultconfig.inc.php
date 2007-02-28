@@ -204,6 +204,12 @@
   $config_authentication_cookie_expire = 10080;
 
   /**
+   * The default state cookie expiry time (in minutes) (7 days)
+   * @var int
+   */
+  $config_state_cookie_expire = 10080;
+
+  /**
    *
    * @var boolean
    */

@@ -31,7 +31,7 @@ function addClosedSection(section)
 /**
  * Toggle section visibility.
  */
-function handleSectionToggle(element, expand)
+function handleSectionToggle(element, expand, url)
 {
   element = $(element);
 
@@ -55,6 +55,13 @@ function handleSectionToggle(element, expand)
       closedSections.push(element.id);
     }
   });
+  
+  if(expand)
+   var param = 'opened'
+  else
+   var param = 'closed'
+   
+  new Ajax.Request(url, { method: 'get', parameters: 'atksectionstate='+param });        
 }
 
 function isAttributeTr(tr) {
