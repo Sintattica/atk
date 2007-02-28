@@ -11,7 +11,7 @@
     <table border="0" cellspacing="0" cellpadding="0">
       <tr onclick="showpanetab('{$tab}','{$panename}','{$defaulttab}')">
         <td height="22" valign="middle" align="center" nowrap class="tabOn">
-          <span style="color: #ff0000;">{$value.title}</span>
+        {$value.title}
         </td>
       </tr>
     </table>
