@@ -6,6 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 5.7
 ------------------
++ Sessionmanager can set a cookie which spawns multiple subdomains
+  (eg .ibuildings.nl so you can be logged on to a.ibuildings.nl and to
+  b.ibuildings.nl). Param set with $config_cookiedomain. 
 + Added wizard functionality. A wizard can be constructed containing atkNode
   classes. Class atkWizard supports all atkActions but it is mainly tested
   for add, edit and admin actions. [Maurice]
