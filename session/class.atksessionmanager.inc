@@ -23,8 +23,9 @@
   $config_identifier = atkconfig("identifier");
   if (empty($config_identifier)) $config_identifier = "default";
 
-  $cookiepath = atkconfig("application_root");
-  session_set_cookie_params($cookie_params["lifetime"],$cookiepath);
+  $cookiepath   = atkconfig("application_root");
+  $cookiedomain = (atkconfig("cookiedomain") != "") ? atkconfig("cookiedomain") : NULL;
+  session_set_cookie_params($cookie_params["lifetime"],$cookiepath, $cookiedomain);
 
   // set cache expire (if function exists, or show upgrade hint if not)
   if (function_exists("session_cache_expire"))
