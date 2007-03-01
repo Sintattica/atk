@@ -1925,12 +1925,26 @@
 
   /**
    * Compares two assosiative multi dimensonal array's
-   * if arrays differ, differences are returned otherwise it returns false
+   * if arrays differ, return true, otherwise it returns false
    * @param array $array1 original array
    * @param array $array2 new array
    * @return boolean wether or not the arrays differ
    */
   function atkArrayCompare($array1, $array2)
+  {
+    $difference = atkArrayDiff($array1, $array2);
+    
+    return !is_array($difference) ? false : true;
+  }
+
+  /**
+   * Compares two assosiative multi dimensonal array's
+   * if arrays differ, return differences, otherwise it returns false
+   * @param array $array1 original array
+   * @param array $array2 new array
+   * @return mixed differences or false if they do not differ
+   */
+  function atkArrayDiff($array1, $array2)
   {
     foreach($array1 as $key => $value)
     {
@@ -1942,7 +1956,7 @@
         }
         else
         {
-          $new_diff = atkArrayCompare($value, $array2[$key]);
+          $new_diff = atkArrayDiff($value, $array2[$key]);
           if($new_diff != FALSE)
           {
             $difference[$key] = $new_diff;
@@ -1954,9 +1968,10 @@
         $difference[$key] = $value;
       }
     }
-    return !isset($difference) ? false : true;
+    
+    return !isset($difference) ? false : $difference;
   }
-
+  
   /**
    * Recursive function that checks an array for values
    * because sometimes arrays will be filled with other empty
@@ -2083,7 +2098,7 @@
    *
    * @return String encoded string
    */
-  function atk_htmlentities($string, $quote_style=null, $charset=null)
+  function atk_htmlentities($string, $quote_style=ENT_COMPAT, $charset=null)
   {
     if (empty($charset))
     {
