@@ -32,6 +32,39 @@
   class atkViewEditBase extends atkActionHandler
   {
     /**
+     * Get section label.
+     * 
+     * @param atkNode $node
+     * @param string $rawName
+     * 
+     * @return string label
+     * 
+     * @static 
+     */
+    function getSectionLabel($node, $rawName)
+    {
+      list($tab, $section) = explode('.', $rawName);
+      $strings = array("section_{$tab}_{$section}", "{$tab}_{$section}", "section_{$section}", $section);
+      return $node->text($strings);
+    }
+    
+    /**
+     * Get tab label.
+     *
+     * @param atkNode $node
+     * @param string $tab
+     * 
+     * @return string label
+     * 
+     * @static 
+     */
+    function getTabLabel($node, $tab)
+    {
+      $strings = array("tab_{$tab}", $tab);
+      return $node->text($strings);
+    }    
+    
+    /**
      * Create the clickable label for the section.
      *
      * @param array $field
@@ -39,6 +72,9 @@
      */
     function getSectionControl($field, $mode)
     {
+      // label
+      $label = atkViewEditBase::getSectionLabel($this->m_node, $field['name']);
+      
       // our name
       list($tab, $section) = explode('.', $field["name"]);
       $name = "section_{$tab}_{$section}";
@@ -47,14 +83,6 @@
 
       // create onclick statement.
       $onClick = " onClick=\"javascript:handleSectionToggle(this,null,'{$url}');\"";
-
-      // label
-      $label = atktext($name, $this->m_node->m_module, $this->m_node->m_type, '', '', true);
-      if ($label == NULL)
-        $label = atktext("{$tab}_{$section}", $this->m_node->m_module, $this->m_node->m_type, '', '', true);
-      if ($label == NULL)
-        $label = $this->m_node->text($section);
-
       $initClass = "openedSection";
 
       //if the section is not active, we close it on load.
