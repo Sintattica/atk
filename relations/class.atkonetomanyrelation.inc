@@ -274,6 +274,8 @@
           if (!$record['atkerror'])
           {
             $this->m_destInstance->addDb($record);
+            $db = &$this->m_ownerInstance->getDb();
+            $db->commit();
           }
           else
           {

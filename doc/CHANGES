@@ -319,6 +319,8 @@ Changed in ATK 5.7
   [Lineke]
 + Adding atkState class to store a value as a cookie or in the session.
   [Yury, Peter, Dennis]
+* Fixed saving Embeded o2m relations using transactional databases.
+  Added commit() statemement after saving. [Martin]
 * Refactored some functionality from atkSecurityManager to the
   auth_interface class which allows for greater control from within
   authorization classes. [Peter]
