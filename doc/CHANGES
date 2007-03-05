@@ -319,6 +319,9 @@ Changed in ATK 5.7
   [Lineke]
 + Adding atkState class to store a value as a cookie or in the session.
   [Yury, Peter, Dennis]
+* atkQuery conditions are now always surrounded by braces to make sure
+  OR conditions in other conditions can't influence the global atkQuery
+  conditions. [Peter]
 * Fixed saving Embeded o2m relations using transactional databases.
   Added commit() statemement after saving. [Martin]
 * Refactored some functionality from atkSecurityManager to the
