@@ -267,9 +267,9 @@
 		    $tplfield["tab"] =  $field["tabs"];
 
 		    $tplfield["initial_on_tab"] = $tplfield["tab"]==$tab;
-
-		    // ar_ stands voor 'attribrow'.
-		    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+		    
+		    $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field[tabs]}";
+		    $tplfield["rowid"] = "tabbedPaneAttr".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
 		    /* check for separator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
@@ -369,7 +369,7 @@
       if (!$template) $template = $node->getTemplate($mode, $record, $tab);
       $result .= $ui->render("tabbededitform.tpl", $params);
 
-      $content = $this->tabulate($mode, $result);
+      $content = $this->tabulate($mode, $result, $fieldprefix);
       
       return $content;
     }
@@ -433,7 +433,7 @@
   
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-            $tplfield["rowid"] = "ar_".$name; // The id of the containing row
+            $tplfield["rowid"] = "tabbedPaneAttr".$name; // The id of the containing row
   
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
@@ -467,8 +467,9 @@
       return $this->tabulate("view", $innerform);
     }
 
-    function tabulate($action, $content)
+    function tabulate($action, $content, $fieldprefix="")
     {
+      $activeTabName = "tabbedPaneTab".$this->getDefaultTab();
       $list = $this->getPaneTabs($action);
       if (count($list) > 1)
       {
@@ -477,17 +478,18 @@
         
         $page = &$node->getPage();
         $page->register_script(atkconfig("atkroot")."atk/javascript/atktabbedpane.js");
-        $page->register_loadscript('showpanetab("'.$this->getDefaultTab().'","'.$this->m_name.'","'.$this->m_tabs[0].'");');
+        $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
         
         $ui = &$node->getUi();
         if (is_object($ui))
         {
-          $content = $ui->renderBox(array("tabs"=>$this->buildTabs($action),
-                                       "panename" => $this->m_name,
-                                       "defaulttab" => $this->m_tabs[0],
+          $content = $ui->renderBox(array("tabs"=>$this->buildTabs($action, $fieldprefix),
+                                       "paneName" => "tabbedPane{$fieldprefix}{$this->m_name}",
+                                       "activeTabName" => $activeTabName,
                                        "content"=>$content),"panetabs");
         }
       }
+      
       return $content;
     }
     /**
@@ -500,7 +502,7 @@
      * @return array List of tabs
      * @todo Make translation of tabs module aware
      */
-    function buildTabs($action="")
+    function buildTabs($action="", $fieldprefix="")
     {
       $node = &$this->m_ownerInstance;
       $result = array();
@@ -514,7 +516,7 @@
         $newtab["title"] = atktext(array("tab_$tab", $tab),$node->m_module,$node->m_type);
         $newtab["attribute"] = $attrib;
         $newtab["selected"] = ($active_tab == $tab);
-        $result[$tab] = $newtab;
+        $result["tabbedPaneTab{$tab}"] = $newtab;
       }
       
       return $result;
