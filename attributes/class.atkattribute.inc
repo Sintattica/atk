@@ -824,7 +824,7 @@
         $size = 20;
 
       $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute().
-                ' value="'.(isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
+                ' value="'.(!is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
                 ($size > 0 ? ' size="'.$size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
@@ -918,18 +918,18 @@
      *
      * @param String $mode     the mode ("view")
      * @param array  $arr      pointer to the view array
-     * @param array  $defaults pointer to the default values array     
+     * @param array  $defaults pointer to the default values array
      */
     function addToViewArray($mode, &$arr, &$defaults)
     {
       if(!$this->hasFlag(AF_HIDE_VIEW))
       {
 	    	$entry = array("name" => $this->m_name, "attribute" => &$this);
-	
+
 	      /* label? */
 	      $entry["label"] = $this->getLabel($defaults);
 	      // on which tab?
-	      $entry["tabs"] = $this->getTabs($mode);	      
+	      $entry["tabs"] = $this->getTabs($mode);
 	      //on which sections?
 	      $entry["sections"] = $this->getSections();
 	      /* the actual edit contents */
@@ -976,7 +976,7 @@
         /* error? */
         $entry["error"] = $this->getError($error);
         // on which tab?
-        $entry["tabs"] = $this->getTabs($mode);        
+        $entry["tabs"] = $this->getTabs($mode);
         //on which sections?
         $entry["sections"] = $this->getSections();
         // the actual edit contents
@@ -1041,12 +1041,12 @@
     function getSections()
     {
       return $this->m_sections;
-    } 
-  
-    
+    }
+
+
     /**
      * Retrieve the html code for placing this attribute in a view page.
-     *     
+     *
      * Method is 'smart', and implements custom override methodes in the node.
      * (<attributename>_display() methods)
      *
@@ -1055,7 +1055,7 @@
      *
      * @param String $mode The mode ("view")
      * @param array $defaults The record holding the values for this attribute
-     *      
+     *
      * @return String the HTML code for this attribute that can be used in a
      *                viewpage.
      */
@@ -1072,7 +1072,7 @@
       }
       return $result;
     }
-		
+
     /**
      * Retrieve the html/javascript code for showing the tooltip for this attribute.
      *
@@ -1082,24 +1082,24 @@
     {
   	  $module = $this->getModule();
   	  if (!$module) $module = "atk";
-  			
+
   	  $node = &$this->m_ownerInstance;
   	  $ttip = atktext($node->m_type."_".$this->fieldName()."_tooltip", $module, "", "", "", true);
-  
+
   	  $tooltip = '';
-  
+
       if ($ttip)
   	  {
   	    $theme = &atkinstance("atk.ui.atktheme");
   	    $tipimg = $theme->imgPath("help.gif");
-  		
+
   	    $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
   	    $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
   	    '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
   	  }
   	  return $tooltip;
     }
-    
+
     /**
      * Retrieve the html code for placing this attribute in an edit page.
      *
