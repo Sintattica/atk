@@ -89,6 +89,8 @@
 	      if(is_object($p_attr))
 	      {
 	        $p_attr->addDisabledMode(DISABLED_VIEW|DISABLED_EDIT);
+	        $p_attr->setTabs($this->getTabs());
+	        $p_attr->setSections($this->getSections());
 	      }
       }
     }
@@ -117,6 +119,8 @@
       {
         $p_attr = &$this->m_ownerInstance->getAttribute($attrib);
         $p_attr->addDisabledMode(DISABLED_VIEW|DISABLED_EDIT);
+        $p_attr->setTabs($this->getTabs());
+        $p_attr->setSections($this->getSections());
       }
     }
 
@@ -381,9 +385,6 @@
     */
     function display($record, $mode="")
     {
-      //check mode first
-    	if( $mode <> "" && $mode <> 'view') return "";
-       
     	// get active tab
       $active_tab = $this->getDefaultTab();
       $fields = array();
