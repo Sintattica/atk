@@ -69,8 +69,47 @@
     }
 
     /**
+     * Create a new menu item
+     *
+     * Both main menu items, separators, submenus or submenu items can be
+     * created, depending on the parameters passed.
+     * 
      * Function that adds a menuitem to the menu. This function can be called
      * from inside the getMenuItems() function, to register a menuitem.
+     *
+     * @param String $name The menuitem name. The name that is displayed in the
+     *                     userinterface can be influenced by putting
+     *                     "menu_something" in the language files, where 'something'
+     *                     is equal to the $name parameter.
+     *                     If "-" is specified as name, the item is a separator.
+     *                     In this case, the $url parameter should be empty.
+     * @param String $url The url to load in the main application area when the
+     *                    menuitem is clicked. If set to "", the menu is treated
+     *                    as a submenu (or a separator if $name equals "-").
+     *                    The dispatch_url() method is a useful function to
+     *                    pass as this parameter.
+     * @param String $parent The parent menu. If omitted or set to "main", the
+     *                       item is added to the main menu.
+     * @param mixed $enable This parameter supports the following options:
+     *                      1: menuitem is always enabled
+     *                      0: menuitem is always disabled
+     *                         (this is useful when you want to use a function
+     *                         call to determine when a menuitem should be
+     *                         enabled. If the function returns 1 or 0, it can
+     *                         directly be passed to this method in the $enable
+     *                         parameter.
+     *                      array: when an array is passed, it should have the
+     *                             following format:
+     *                             array("node","action","node","action",...)
+     *                             When an array is passed, the menu checks user
+     *                             privileges. If the user has any of the
+     *                             node/action privileges, the menuitem is
+     *                             enabled. Otherwise, it's disabled.
+     * @param int $order The order in which the menuitem appears. If omitted,
+     *                   the items appear in the order in which they are added
+     *                   to the menu, with steps of 100. So, if you have a menu
+     *                   with default ordering and you want to place a new
+     *                   menuitem at the third position, pass 250 for $order. 
      */
     function menuitem($name="", $url="", $parent="main", $enable=1, $order=0)
     {
