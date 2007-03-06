@@ -319,6 +319,10 @@ Changed in ATK 5.7
   [Lineke]
 + Adding atkState class to store a value as a cookie or in the session.
   [Yury, Peter, Dennis]
++ Added rl_try JavaScript function which can try multiple actions on a
+  record in the recordlist. Very handy to add an onclick handler on
+  recordlist items (e.g. onclick="rl_try('{$listid}', {$row.rownum},
+  ['select', 'edit', 'view'], false);"). [Peter]
 * atkQuery conditions are now always surrounded by braces to make sure
   OR conditions in other conditions can't influence the global atkQuery
   conditions. [Peter]

@@ -9,9 +9,7 @@ ATK.TabbedPane = {
   showTab: function(paneName, tabName) {
     var pane = $(paneName);
   	var attrs = pane.getElementsBySelector('.tabbedPaneAttr');
-  	console.debug(attrs);
   	var tabs = pane.getElementsBySelector('.tabbedPaneTab');
-  	console.debug(tabs);
   	  
   	// show attribute of the curren tab
   	attrs.each(function(attr) {

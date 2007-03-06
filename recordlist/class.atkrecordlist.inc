@@ -341,7 +341,7 @@
         $records = array();
         $keys = array_keys($actions);
         $actionurl = (count($actions)>0) ? $actions[$keys[0]] : '';
-        $actionloader = "rl_a['".$listName."'] = new Array();";
+        $actionloader = "rl_a['".$listName."'] = {};";
         $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED,1,$actionurl)."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
 
@@ -415,7 +415,7 @@
           }
 
           $str_actions = "<span class=\"actions\">";
-          $actionloader.="\nrl_a['".$listName."'][".$i."] = new Array();";
+          $actionloader.="\nrl_a['".$listName."'][".$i."] = {};";
           $icons = (atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))===false ||
                     atkconfig('recordlist_icons', $theme->getAttribute("recordlist_icons"))==='false'?false:true);
 
