@@ -796,17 +796,6 @@
       {
         $this->resolveSectionsTabsOrder($sections, $tabs, $order);
 
-        $secMgr = &atkGetSecurityManager();
-        if (!$secMgr->attribAllowed($this->m_type, $attribute->m_name, "edit"))
-        {
-          $attribute->m_flags |= AF_READONLY;
-
-          if (!$secMgr->attribAllowed($this->m_type, $attribute->m_name, "view"))
-          {
-            $attribute->m_flags |= AF_HIDE;
-          }
-        }
-
         // check for parent fieldname (treeview)
         if($attribute->hasFlag(AF_PARENT))
         {
@@ -1773,6 +1762,37 @@
       $params["formend"] = '</form>';
       return $params;
     }
+    
+    /**
+     * Check attribute security.
+     * 
+     * Makes some attributes read-only, or hides the attribute based
+     * on the current mode / record.
+     * 
+     * @param string $mode current mode (add, edit, view etc.)
+     * @param array $record current record (optional)
+     */
+    function checkAttributeSecurity($mode, $record=NULL)
+    {
+      // check if an attribute needs to be read-only or 
+      // even hidden based on the current record 
+      $secMgr = &atkGetSecurityManager();    
+      foreach (array_keys($this->m_attribList) as $attrName)
+      {
+        $attr = &$this->getAttribute($attrName);
+
+        if (($mode == "add" || $mode == "edit") && 
+             !$secMgr->attribAllowed($attr, $mode, $record) &&
+             $secMgr->attribAllowed($attr, "view", $record))
+        {
+          $attr->addFlag(AF_READONLY);
+        }
+        else if (!$secMgr->attribAllowed($attr, $mode, $record))
+        {
+          $attr->addFlag(AF_HIDE);
+        }
+      }
+    }
 
     /**
      * Function outputs an array with edit fields. For each field the array
@@ -1796,7 +1816,9 @@
      */
     function editArray($mode="add", $record=NULL, $forceList="", $suppressList="", $fieldprefix="", $ignoreTab=false)
     {
-
+      // update visibility of some attributes based on the current record
+      $this->checkAttributeSecurity($mode, $record);
+      
       /* read metadata */
       $this->setAttribSizes();
 
@@ -1988,6 +2010,9 @@
      */
     function viewArray($mode, $record)
     {
+      // update visibility of some attributes based on the current record
+      $this->checkAttributeSecurity($mode, $record);      
+      
       $tab = $this->getActiveTab();
 
       $this->orderAttributesBySection($mode);
@@ -4841,5 +4866,15 @@
       if ($module==NULL) $module = $this->m_module;
       return atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
     }
+    
+    /**
+     * String representation for this node (PHP5 only).
+     *
+     * @return string ATK node type
+     */
+    function __toString()
+    {
+      return $this->atkNodeType();
+    }    
   }
 ?>

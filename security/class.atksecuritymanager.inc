@@ -671,17 +671,18 @@
     }
 
     /**
-     * Check if the currently logged-in user has the right to view or edit
+     * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
-     * @param String $node The full nodename of the node for which to check
-     *                     access.
-     * @param String $attribute The name of the attribute to check.
-     * @param String $mode "edit" or "view"
-     * @return boolean True if access is granted, false if not.
+     * 
+     * @param atkAttribute $attr    attribute reference
+     * @param string       $mode    mode (add, edit, view etc.)
+     * @param array        $record  record data
+     * 
+     * @return boolean true if access is granted, false if not.
      */
-    function attribAllowed($node, $attribute, $mode)
+    function attribAllowed(&$attr, $mode, $record=NULL)
     {
-      return $this->m_authorization->attribAllowed($this, $node, $attribute, $mode);
+      return $this->m_authorization->attribAllowed($this, &$attr, $mode, $record);
     }
 
     /**

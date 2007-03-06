@@ -323,6 +323,8 @@ Changed in ATK 5.7
   record in the recordlist. Very handy to add an onclick handler on
   recordlist items (e.g. onclick="rl_try('{$listid}', {$row.rownum},
   ['select', 'edit', 'view'], false);"). [Peter]
+* Improved attribute security, attributes can now be shown in 
+  edit / read-only state or hidden based on record data. [Peter]
 * atkQuery conditions are now always surrounded by braces to make sure
   OR conditions in other conditions can't influence the global atkQuery
   conditions. [Peter]

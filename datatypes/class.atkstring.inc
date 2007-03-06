@@ -34,6 +34,17 @@
       atk_var_dump($this->m_string,$txt);
       return $this;
     }
+
+    /**
+     * To string. Returns the string representation for this object
+     * which is ofcourse the internal string.
+     *
+     * @return string internal string
+     */
+    public function __toString()   
+    {
+      return $this->m_string;
+    }
   }
 
 ?>

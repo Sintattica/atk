@@ -161,18 +161,23 @@
       return $allowed;    
     }
     
+
     /**
-     * Check if the currently logged-in user has the right to view or edit
+     * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
-     * @param atkSecurityManager $securityMgr The security manager instance.
-     * @param String $node The full nodename of the node for which to check
-     *                     access.
-     * @param String $attribute The name of the attribute to check.
-     * @param String $mode "edit" or "view"
-     * @return boolean True if access is granted, false if not.
-     */    
-    function attribAllowed(&$securityMgr, $node, $attribute, $mode)
+     * 
+     * @param atkSecurityManager $securityMgr  the security manager
+     * @param atkAttribute       $attr         attribute reference
+     * @param string             $mode         mode (add, edit, view etc.)
+     * @param array              $record       record data
+     * 
+     * @return boolean true if access is granted, false if not.
+     */
+    function attribAllowed(&$securityMgr, &$attr, $mode, $record=NULL)   
     {
+      $node = $attr->m_ownerInstance->atkNodeType();
+      $attribute = $attr->fieldName();
+      
       // security disabled or user is superuser? (may do anything)
       if (($securityMgr->m_scheme=="none") || (!atkconfig("security_attributes"))  || ($securityMgr->hasLevel(-1)) || (strtolower($securityMgr->m_user["name"])=="administrator"))
       {

@@ -569,11 +569,22 @@
       $this->addCSSClass(get_class($this));
       atkimport("atk.keyboard.atkkeyboard");
     }
+    
+
+    /**
+     * Returns the owner instance.
+     *
+     * @return atkNode owner instance
+     */
+    function &getOwnerInstance()
+    {
+      return $this->m_ownerInstance;
+    }    
 
     /**
      * Sets the owner instance.
      *
-     * @param atkNodeType $instance
+     * @param atkNode $instance
      */
     function setOwnerInstance(&$instance)
     {
@@ -2388,6 +2399,16 @@
     function isInitialHidden($record)
     {
       return $this->m_initial_hidden;
+    }
+    
+    /**
+     * String representation for this attribute (PHP5 only).
+     *
+     * @return string attribute name prefixed with node type
+     */
+    function __toString()
+    {
+      return $this->getOwnerInstance()->atkNodeType()."::".$this->fieldName();
     }
   }
 ?>
