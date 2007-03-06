@@ -682,7 +682,7 @@
      */
     function attribAllowed(&$attr, $mode, $record=NULL)
     {
-      return $this->m_authorization->attribAllowed($this, &$attr, $mode, $record);
+      return $this->m_authorization->attribAllowed($this, $attr, $mode, $record);
     }
 
     /**
