@@ -2408,7 +2408,7 @@
      */
     function __toString()
     {
-      return $this->getOwnerInstance()->atkNodeType()."::".$this->fieldName();
+      return $this->m_ownerInstance->atkNodeType()."::".$this->fieldName();
     }
   }
 ?>
