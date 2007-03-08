@@ -84,7 +84,7 @@
     {
       $email = $record[$this->fieldName()];
       //first check complete string
-      if (!self::validateAddressSyntax($email))
+      if (!atkEmailAttribute::validateAddressSyntax($email))
       {
         triggerError($record, $this->fieldName(), 'error_invalid_email');
       }
@@ -94,7 +94,7 @@
         {
           //now check if domain exists, searches DNS for MX records
           list($username, $domain) = split('@',$email,2);
-          if ( !(self::validateAddressDomain( $domain, false)) )
+          if ( !(atkEmailAttribute::validateAddressDomain( $domain, false)) )
           {
             triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
           }
