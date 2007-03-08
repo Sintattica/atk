@@ -84,7 +84,7 @@
     {
       $email = $record[$this->fieldName()];
       //first check complete string
-      if (!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$", $email, $check)))
+      if (!self::validateAddressSyntax($email))
       {
         triggerError($record, $this->fieldName(), 'error_invalid_email');
       }
@@ -93,15 +93,64 @@
         if ($this->m_dnsSearch)
         {
           //now check if domain exists, searches DNS for MX records
-          $domain = substr(strstr($check[0], '@'), 1);
-          if (!( checkdnsrr( $domain, "ANY") ))
+          list($username, $domain) = split('@',$email,2);
+          if ( !(self::validateAddressDomain( $domain, false)) )
           {
             triggerError($record, $this->fieldName(), 'error_unkown_domain', text('error_unkown_domain')." ".$domain);
           }
         }
       }
     }
-
+    
+    /**
+     * Checks e-mail address syntax against a regular expression.
+     * 
+     * @param string email e-mail address.
+     * @return boolean e-mailaddress syntactically valid or not.
+     * @static 
+     */
+    function validateAddressSyntax($email)
+    {
+      if ((eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@([0-9a-z][0-9a-z-]*[0-9a-z]\.)+[a-z]{2,4}$", $email, $check)))
+      {
+        return true;
+      }      
+      else
+      {
+        return false;
+      }
+    }
+    
+    /**
+     * Check if the domain is valid and exists.
+     *
+     * The strict parameter decides if the MX record gets checked.
+     * 
+     * @param unknown_type $domain
+     * @param boolean $strict
+     * @return boolean $result 
+     * @static 
+     */
+    function validateAddressDomain($domain, $strict=false)
+    {
+      if ($strict)
+      {
+        $rr = 'MX';
+      }
+      else
+      {
+        $rr = 'ANY';
+      }
+      //Check if this domain has an MX host.
+      if(checkdnsrr($domain, $rr))
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
     /**
      * Called by the framework to determine the database field datatype.
      * @return String The databasefield datatype.
