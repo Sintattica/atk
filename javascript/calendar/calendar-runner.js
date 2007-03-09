@@ -8,27 +8,27 @@ function showCalendar(id, bindname, format, dateattr)
   {
     // we already have some calendar created
     calendar.hide();                 // so we hide it first.
+    calendar = null;
   } 
-  else 
+  
+  // first-time call, create the calendar.
+  var cal;
+  if (dateattr)
   {
-    // first-time call, create the calendar.
-    var cal;
-    if (dateattr)
-    {
-      // Bind calendar to dateattribute widgets
-      cal = new Calendar(false, null, changeWidget, closeHandler);
-    }
-    else
-    {
-      // Bind calendar to textfield.
-      cal = new Calendar(false, null, changeTextField, closeHandler);
-    }
-    // uncomment the following line to hide the week numbers
-    // cal.weekNumbers = false;
-    calendar = cal;                  // remember it in the global var
-    cal.setRange(1900, 2070);        // min/max year allowed.
-    cal.create();
+    // Bind calendar to dateattribute widgets
+    cal = new Calendar(false, null, changeWidget, closeHandler);
   }
+  else
+  {
+    // Bind calendar to textfield.
+    cal = new Calendar(false, null, changeTextField, closeHandler);
+  }
+  // uncomment the following line to hide the week numbers
+  // cal.weekNumbers = false;
+  calendar = cal;                  // remember it in the global var
+  cal.setRange(1900, 2070);        // min/max year allowed.
+  cal.create();
+
   calendar.setDateFormat(format);    // set the specified date format
   if (dateattr)
   {
