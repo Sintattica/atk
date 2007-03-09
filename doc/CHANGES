@@ -323,6 +323,7 @@ Changed in ATK 5.7
   record in the recordlist. Very handy to add an onclick handler on
   recordlist items (e.g. onclick="rl_try('{$listid}', {$row.rownum},
   ['select', 'edit', 'view'], false);"). [Peter]
+* Fixed export handling of (extended) search values. [Peter]
 * Changed onChange event for radioattrbiute to onClick event. It still uses
   the m_onchangecode just like the other attributes. [Lineke]
 * Improved attribute security, attributes can now be shown in 
