@@ -94,6 +94,7 @@ INPUT.btn,
 INPUT.btn_save,
 INPUT.btn_cancel,
 INPUT.btn_saveandclose,
+INPUT.btn_saveandcontinue,
 INPUT.btn_saveandnext
 {
   background-color: #CCCCCC;
@@ -299,7 +300,7 @@ INPUT.btn_saveandclose
 }
 
 
-.btn_saveandclose, .btn_save, .btn_cancel
+.btn_saveandclose, .btn_save, .btn_cancel, .btn_saveandcontinue
 {
   padding: 2px !important;
   margin: 0px !important;
