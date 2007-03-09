@@ -53,20 +53,20 @@
     // error message that caused the fatal error is put in this variable.
     var $m_fatalError = "";
 
-    
+
     /**
      * Register a new listener.
-     * 
+     *
      * @param atkSecurityListener listener
      */
     function addListener(&$listener)
     {
       $this->m_listeners[] = $listener;
     }
-    
+
     /**
      * Notify listeners of a certain event.
-     * 
+     *
      * @param string event name
      * @param string username (might be null)
      */
@@ -216,7 +216,7 @@
         $auth_user = $_SERVER["PHP_AUTH_USER"];
         $auth_pw = $_SERVER["PHP_AUTH_PW"];
       }
-      
+
       // throw post login event?
       $throwPostLoginEvent = false;
 
@@ -225,7 +225,7 @@
       if (isset($ATK_VARS["atklogout"]) && (!isset($session["relogin"])||$session["relogin"]!=1))
       {
         $this->notifyListeners("preLogout", $auth_user);
-        
+
         session_destroy();
         $cookie_params = session_get_cookie_params();
         session_set_cookie_params($cookie_params["lifetime"], dirname($_SERVER["SCRIPT_NAME"]));
@@ -239,9 +239,9 @@
           $cookiename = $this->_getAuthCookieName();
           if (!empty($_COOKIE[$cookiename])) setcookie($cookiename, "", 0);
         }
-        
-        $this->notifyListeners("postLogout", $auth_user);        
-        
+
+        $this->notifyListeners("postLogout", $auth_user);
+
         if($ATK_VARS["atklogout"]>1)
         {
           header("Location: logout.php");
@@ -298,11 +298,11 @@
           $this->mailPassword($auth_user);
           $response = AUTH_PASSWORDSENT;
         }
-        else 
+        else
         {
           $throwPostLoginEvent = true;
           $this->notifyListeners("preLogin", $auth_user);
-          
+
           // check superuser
           if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
           {
@@ -355,10 +355,10 @@
               (is_array($this->m_user['level'])) ? $dbg = implode(",",$this->m_user['level']) : $dbg = $this->m_user['level'];
               atkdebug("Logged in user: ".$this->m_user["name"]." (level: ".$dbg.")");
               $authenticated = true;
-  
+
               // Remember that we are logged in..
               //$g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
-  
+
               // write cookie
               if (atkconfig("authentication_cookie")&&$auth_user!="administrator")
               {
@@ -402,7 +402,7 @@
               $authenticated = false;
             }
           }
-          
+
           // we are logged in
           if ($authenticated) $session["login"]=1;
         }
@@ -468,10 +468,10 @@
       $GLOBALS["g_user"] = $this->m_user;
       $g_sessionManager->globalVar("authentication",array("authenticated"=>1, "user"=>$this->m_user), true);
       sessionStore('loginattempts',''); //reset maxloginattempts
-      
-      if ($throwPostLoginEvent) 
-        $this->notifyListeners("postLogin", $auth_user);            
-        
+
+      if ($throwPostLoginEvent)
+        $this->notifyListeners("postLogin", $auth_user);
+
       return true;
     }
 
@@ -540,7 +540,7 @@
       }
       else
       {
-        $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");  
+        $page->register_script(atkConfig('atkroot')."atk/javascript/formfocus.js");
         $page->register_loadscript("placeFocus(false);");
 
         // generate the username input field
@@ -563,13 +563,13 @@
         {
           $output.='<tr><td colspan=3 class=error>'.atktext('auth_mismatch').'<br><br></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_mismatch');
-          $tplvars["error"] = atktext('auth_mismatch');          
+          $tplvars["error"] = atktext('auth_mismatch');
         }
         else if ($lastresponse == AUTH_MISSINGUSERNAME)
         {
           $output.='<tr><td colspan="3" class=error>'.atktext('auth_missingusername').'<br /><br /></td></tr>';
           $tplvars["auth_mismatch"] = atktext('auth_missingusername');
-          $tplvars["error"] = atktext('auth_missingusername');          
+          $tplvars["error"] = atktext('auth_missingusername');
         }
         else if ($lastresponse == AUTH_PASSWORDSENT)
         {
@@ -645,7 +645,7 @@
       }
       else
       {
-        return '<input type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'" />';
+        return '<input class="loginform" type="text" size="15" name="auth_user" value="'.htmlentities($defaultname).'" />';
       }
     }
 
@@ -663,7 +663,7 @@
 
       if (!isset($_cache[$node][$privilege]))
       {
-        // ask authorization instance        
+        // ask authorization instance
         $allowed = $this->m_authorization->allowed($this, $node, $privilege);
         $_cache[$node][$privilege] = $allowed;
       }
