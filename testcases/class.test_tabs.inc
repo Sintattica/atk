@@ -131,14 +131,16 @@
     function test_addTabAndSectionToNode()
     {
       $node = new atkNode("testnode");
+      $node->setDefaultTab('tab1');
       $attr1 = &$node->add(new atkAttribute('test1'),array('tab1.section1', 'tab2.section1'));
       $attr2 = &$node->add(new atkAttribute('test2'),'tab2.section2');
       $attr3 = &$node->add(new atkAttribute('test3',AF_HIDE_EDIT),'tab3.section2');
       $attr4 = &$node->add(new atkAttribute('test4'));
+      $attr5 = &$node->add(new atkAttribute('test5'), '.section2');      
       
       //test tabs after calling the add function of atkNode.
-      $this->assertEqual(4,count($node->m_tabList['add']));
-      $this->assertEqual(3,count($node->m_tabList['edit']));
+      $this->assertEqual(3,count($node->m_tabList['add']));
+      $this->assertEqual(2,count($node->m_tabList['edit']));
      
       //test call to addToEditArray()
       $data = array();    $defaults = array();
@@ -156,6 +158,7 @@
       $this->assertTrue(in_array('tab1',$node->getTabs('add')));
       $this->assertTrue(in_array('tab2',$node->getTabs('add')));
       $this->assertTrue(in_array('tab3',$node->getTabs('add')));
+      $this->assertFalse(in_array('default',$node->getTabs('add')));      
       $this->assertFalse(in_array('tab3',$node->getTabs('edit')));
       
       $this->assertTrue(in_array('tab1',$fields["attribute"]->getTabs('add')));
@@ -166,8 +169,10 @@
       $this->assertTrue($attr1->showOnTab('tab2'));
       $this->assertTrue($attr2->showOnTab('tab2'));
       $this->assertFalse($attr3->showOnTab('tab2'));
-      $this->assertFalse($attr4->showOnTab('tab1'));
-      $this->assertTrue($attr4->showOnTab('default'));
+      $this->assertFalse($attr4->showOnTab('default'));
+      $this->assertTrue($attr4->showOnTab('tab1'));
+      $this->assertTrue($attr5->showOnTab('tab1'));      
+      $this->assertEqual(array('tab1.section2'), $attr5->getSections());         
 
       $this->assertTrue(in_array('tab1',$fields["tabs"]));
       $this->assertTrue(in_array('tab2',$fields["tabs"]));
