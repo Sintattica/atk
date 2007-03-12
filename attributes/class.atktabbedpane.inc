@@ -403,8 +403,13 @@
           $tplfield = array();
           if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
           {
-            $tplfield["class"] = $this->m_attribsList[$name];
-        	$tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
+            $fieldtab = $this->m_attribsList[$name];
+            
+            $tplfield["initial_on_tab"] = $fieldtab==$tab;
+		    
+            $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
+	  	      $tplfield["rowid"] = "tabbedPaneAttr".getUniqueID("anonymousattribrows"); // The id of the containing row
+            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
             
             $tplfield["initial_on_tab"] = ($tplfield["tab"]==$active_tab);
   
@@ -434,7 +439,6 @@
   
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-            $tplfield["rowid"] = "tabbedPaneAttr".$name; // The id of the containing row
   
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
@@ -478,7 +482,7 @@
         $node->addStyle("tabs.css");
         
         $page = &$node->getPage();
-        $page->register_script(atkconfig("atkroot")."atk/javascript/atktabbedpane.js");
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktabbedpane.js");
         $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
         
         $ui = &$node->getUi();
