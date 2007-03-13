@@ -57,7 +57,7 @@
     function needsUpdate($rec)
     {
       // no matter what, we NEVER save a new value.
-      return $false;
+      return false;
     }
 
   } 
