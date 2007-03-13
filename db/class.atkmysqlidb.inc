@@ -78,7 +78,7 @@
     */
    function _setErrorVariables()
    {
-     if($this->m_link_id!="")
+     if(!empty($this->m_link_id))
      {
        $this->m_errno = mysqli_errno($this->m_link_id);
        $this->m_error = mysqli_error($this->m_link_id);
@@ -97,7 +97,7 @@
    {
      if ($this->m_link_id)
      {
-       atkdebug("Disconnecting from database...");       
+       atkdebug("Disconnecting from database...");
        @mysqli_close($this->m_link_id);
        $this->m_link_id = 0;
      }
@@ -156,7 +156,7 @@
          $this->halt("Invalid SQL: $query");
          return false;
        }
-       
+
        if ($unlock_table)
          $this->unlock();
 
@@ -165,7 +165,7 @@
      }
      return false;
    }
-   
+
    /**
      * This method provides a fallback when error 1100 occurs
      * (Table ... not locked using LOCK TABLES). This method locks

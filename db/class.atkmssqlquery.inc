@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,14 +15,14 @@
    * @version $Revision$
    * $Id$
    */
-  
+
   /**
    * Base include
    */
   atkimport("atk.db.atkmysqlquery");
 
   /**
-   * SQL Builder for MSSQL databases. 
+   * SQL Builder for MSSQL databases.
    *
    * @author Harrie Verveer <harrie@ibuildings.nl>
    * @package atk
@@ -37,36 +37,36 @@
      * @param String $field The fieldname on which the regular expression
      *                      match will be performed.
      * @param String $value The regular expression to search for.
-     * @param boolean $inverse Set to false (default) to perform a normal 
-     *                         match. Set to true to generate a SQL string 
+     * @param boolean $inverse Set to false (default) to perform a normal
+     *                         match. Set to true to generate a SQL string
      *                         that searches for values dat do not match.
      * @todo fixme
      * @return String A SQL regexp expression.
-     */ 
+     */
     function regexpCondition($field, $value, $inverse=false)
     {
       // void implementation
       return "";
     }
-    
+
     /**
      * Generate an SQL searchcondition for a soundex match.
      *
-     * @param String $field The fieldname on which the soundex match will 
+     * @param String $field The fieldname on which the soundex match will
      *                      be performed.
      * @param String $value The value to search for.
-     * @param boolean $inverse Set to false (default) to perform a normal 
-     *                         match. Set to true to generate a SQL string 
+     * @param boolean $inverse Set to false (default) to perform a normal
+     *                         match. Set to true to generate a SQL string
      *                         that searches for values dat do not match.
      * @todo fixme
      * @return String A SQL soundex expression.
-     */ 
+     */
     function soundexCondition($field, $value, $inverse=false)
     {
       // void implementation
       return "";
     }
-    
+
     /**
      * Prepare the query for a limit.
      * @access private
@@ -82,12 +82,12 @@
         $query .= "\nLIMIT ".$this->m_limit." OFFSET ".$this->m_offset;
       }
     }
-    
-    function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true)
+
+    function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true)
     {
       if (strstr($name," "))
         $name = "[$name]";
-      
+
       if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;
       $this->m_fields[] = $fieldname;
@@ -103,6 +103,8 @@
 
         $this->m_generatedAlias++;
       }
+
+      return $this;
     }
   }
 

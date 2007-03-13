@@ -39,14 +39,14 @@
     * @param $table Table name
     * @param $alias Alias for the table
     * @param $condition Condition for the join
-    * @since ATK 0.5.2
+    * @return atkQuery The query object (for fluent usage).
     */
-
-    function addJoin($table, $alias, $condition, $outer)
+    function &addJoin($table, $alias, $condition, $outer)
     {
       if ($outer) $condition.=" (+)";
       $this->addtable($table,$alias);
       $this->addcondition($condition);
+      return $this;
     }
 
     function _addLimiter(&$query)

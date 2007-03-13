@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -22,7 +22,7 @@
  require_once(atkconfig("atkroot")."atk/db/class.atkmysqlquery.inc");
 
   /**
-   * SQL Builder for MySQL 4.1+ databases. 
+   * SQL Builder for MySQL 4.1+ databases.
    *
    * @author Rene van den Ouden <rene@ibuildings.nl>
    * @package atk
@@ -32,9 +32,9 @@
   class atkMysqliQuery extends atkMysqlQuery
   {
     /**
-     * Overriding the _addFrom function to support a change that was made in 
-     * MySQL 5.0.15 to make MySQL more compliant with the standard.      
-     * 
+     * Overriding the _addFrom function to support a change that was made in
+     * MySQL 5.0.15 to make MySQL more compliant with the standard.
+     *
      * See: http://bugs.mysql.com/bug.php?id=13551
      *
      * @param string $query
@@ -50,6 +50,7 @@
       }
       $query.= ") ";
     }
+
   }
 
 ?>

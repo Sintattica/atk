@@ -36,8 +36,9 @@
      * @param $table the table name
      * @param $alias alias for the table
      * @param $condition join condition
+     * @return atkQuery The query object (for fluent usage)
      */
-    function addJoin($table, $alias, $condition, $outer)
+    function &addJoin($table, $alias, $condition, $outer)
     {
       if ($outer)
       {

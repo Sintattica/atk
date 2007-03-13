@@ -323,6 +323,7 @@ Changed in ATK 5.7
   record in the recordlist. Very handy to add an onclick handler on
   recordlist items (e.g. onclick="rl_try('{$listid}', {$row.rownum},
   ['select', 'edit', 'view'], false);"). [Peter]
++ The atkQuery class now uses a fluent interface. (php5 only). [Ivo]
 * Fixed calendar-runner. Two different types of date field (one where you input
   the date and another one where you input the date using the date selection
   boxes could cause problems because the Calendar object was re-used). [Peter]  

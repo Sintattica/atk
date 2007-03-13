@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,10 +15,10 @@
    * @version $Revision$
    * $Id$
    */
-  
-  /** @internal include base class */ 
+
+  /** @internal include base class */
   require_once(atkconfig("atkroot")."atk/db/class.atkoci8query.inc");
-   
+
   /**
    * Query builder for Oracle 9i and later databases.
    *
@@ -26,14 +26,14 @@
    * @package atk
    * @subpackage db
    *
-   */   
+   */
   class atkOci9Query extends atkOci8Query
   {
 
-    var $m_bind_vars=array();  // array containing name and value of fields which 
+    var $m_bind_vars=array();  // array containing name and value of fields which
                                // need to be binded in update and insert queries
                                // Like CLOB fields
-    
+
     /**
     * Add's a field to the query
     * @param $name Field name
@@ -43,22 +43,23 @@
     * @param $quote If this parameter is true, stuff is inserted into the db
     *               using quotes, e.g. SET name = 'piet'. If it is false, it's
     *               done without quotes, e.d. SET number = 4.
+    * @return atkQuery The query object, for fluent usage.
     */
-    function addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $mode="", $fieldType="")
-    {    
+    function &addField($name, $value="", $table="", $fieldaliasprefix="", $quote=true, $mode="", $fieldType="")
+    {
       //$this->m_fields[] = strtr($name,"_",".");
       if ($table!="") $fieldname = $table.".".$name;
       else $fieldname = $name;
-      
+
       if (strtoupper($fieldType) == 'DATETIME' && $mode != 'add' && $mode != 'update')
-      {  
-        $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;     
-        $fieldname = "TO_CHAR(".$fieldname.",'YYYY-MM-DD HH24:MI:SS')";   
-        
+      {
+        $this->m_aliasLookup["al_".$this->m_generatedAlias] = $fieldaliasprefix.$name;
+        $fieldname = "TO_CHAR(".$fieldname.",'YYYY-MM-DD HH24:MI:SS')";
+
         $this->m_fieldaliases[$fieldname] = "al_".$this->m_generatedAlias;
-        $this->m_generatedAlias++;      
+        $this->m_generatedAlias++;
       }
-      
+
       $this->m_fields[] = $fieldname;
 
       if (strtoupper($fieldType) == 'DATETIME' && ($mode == 'add' || $mode == 'update'))
@@ -67,7 +68,7 @@
       }
       elseif (strtoupper($fieldType) == 'TEXT' && ($mode == 'add' || $mode == 'update'))
       {
-        //binding needed for CLOB     
+        //binding needed for CLOB
         if($value != "")
           $this->m_bind_vars[$name] = $value;
         $value = "EMPTY_CLOB()";
@@ -83,40 +84,42 @@
 
         $this->m_generatedAlias++;
       }
+
+      return $this;
     }
 
 
  /**
-    * Makes a Join SQL query for Oracle 
-    * 
+    * Makes a Join SQL query for Oracle
+    *
     * @param $table Table name
     * @param $alias Alias for the table
     * @param $condition Condition for the join
-    * @since ATK 0.5.2 
-    */ 
-    
-    function addJoin($table, $alias, $condition, $outer)
+    * @return atkQuery The query object (for fluent usage)
+    */
+
+    function &addJoin($table, $alias, $condition, $outer)
     {
       // $this->m_joins[]= ", ".$table." ".$alias." WHERE ".$condition." ";
-      
+
       //Because oracle doesn't accept aliases more than 30 characters
       //we have to replace al aliases with new aliases
       //First save the old alias en create a new one
-      //bug 137      
+      //bug 137
       if ($table != $alias)
       {
         $genAlias = "al_".$this->m_generatedAlias;
         //hmm... alias to an alias
         $this->m_aliasLookup[$genAlias] = $alias;
-        $this->m_joinaliases[$alias] = $genAlias;      
+        $this->m_joinaliases[$alias] = $genAlias;
       }
       else $alias = "";
 
-      $this->m_generatedAlias++; 
-      
+      $this->m_generatedAlias++;
+
       if ($outer)
       {
-        $join="LEFT OUTER JOIN ";  
+        $join="LEFT OUTER JOIN ";
       }
       else
       {
@@ -126,10 +129,11 @@
       }
       $this->m_joins[]= " ".$join.$table." ".$alias." ON ".$condition." ";
 
+      return $this;
     }
-    
+
     /**
-     * Builds the SQL Select query    
+     * Builds the SQL Select query
      * @param $distinct distinct records?
      * @return String SQL Query
      */
@@ -164,7 +168,7 @@
     * Converts the SQL Select query. All aliases which
     * have been added with addJoin are replaced with
     * generated aliases
-    * bug #137    
+    * bug #137
     * @param $query query string
     * @return String SQL query
     */
@@ -175,8 +179,8 @@
       for($i=0,$count=count($explodedQuery);$i<$count;$i+=2)
       {
         if ($explodedQuery[$i]!="")
-          $explodedQuery[$i] = $this->replaceAliases($explodedQuery[$i]);        
-      }      
+          $explodedQuery[$i] = $this->replaceAliases($explodedQuery[$i]);
+      }
       $result = implode("'",$explodedQuery);
       return $result;
     }
@@ -190,13 +194,13 @@
     {
       $pattern = array();
       $replace = array();
-      
-      $pattern = array_keys($this->m_joinaliases);      
+
+      $pattern = array_keys($this->m_joinaliases);
       if (count($pattern))
       {
         //usort($pattern, "sortSearchPattern");
         sort($pattern);
-    
+
         for($i=0, $count=count($pattern);$i<$count;$i++)
         {
           $replace[$i] = "\\1".$this->m_joinaliases[$pattern[$i]]."\\2";
@@ -212,23 +216,23 @@
     }
 
   /**
-    * Wrapper function to execute a query 
+    * Wrapper function to execute a query
     */
     function executeUpdate()
     {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();      
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildUpdate();
-      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);
     }
 
  /**
-    * Wrapper function to execute a query 
+    * Wrapper function to execute a query
     */
     function executeInsert()
     {
       if (!isset($this->m_db)) $this->m_db = &atkGetDb();
       $query = $this->buildInsert();
-      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);      
+      return $this->m_db->query($query, 0, 0, $this->m_bind_vars);
     }
 
 
