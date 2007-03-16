@@ -310,7 +310,7 @@
     {
       if (!isset($this->m_fixtures[$database]))
         $this->m_fixtures[$database] = array();
-      $this->m_fixtures[$database] = array_merge($this->m_fixtures[$database], $names);       
+      $this->m_fixtures[$database] = array_unique(array_merge($this->m_fixtures[$database], $names));       
     }
     
     function setMockDb($conn=NULL)
