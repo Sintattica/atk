@@ -175,6 +175,8 @@
         $atklock["stack"][] = $selectorList;
         $this->storeLockList($atklockList);
 
+        $db->commit();
+
         $success = TRUE;
       }
 
