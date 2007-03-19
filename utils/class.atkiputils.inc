@@ -63,7 +63,7 @@
     {
       if (!atkIpUtils::ipValidate($ip))
       {
-        atkError("atkIpUtils::ipStringFormat() Invalid ip given");
+        atkDebug("atkIpUtils::ipStringFormat() Invalid ip given");
         return null;
       }
       $long = is_numeric($ip) ? $ip : atkIpUtils::ipLongFormat($ip);
@@ -92,7 +92,7 @@
     {
       if (!atkIpUtils::ipValidate($ip))
       {
-        atkError("atkIpUtils::ipLongFormat() Invalid ip given");
+        atkDebug("atkIpUtils::ipLongFormat() Invalid ip given");
         return null;
       }
       if (is_numeric($ip)) return $ip;
