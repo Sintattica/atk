@@ -42,7 +42,7 @@
          */
 //        if(ereg("oci",$dbdriver)) $grants = $this->getOracleGrants($db, $dbname);
         if(ereg("oci",$dbdriver)) $grants = NULL;
-        elseif(ereg("mysql",$dbdriver)) $grants = $this->getMysqlGrants($db, $dbname);
+        elseif(ereg("mysql",$dbdriver)) $grants = NULL;
         elseif(ereg("pgsql", $dbdriver)) $grants = NULL;
         else return;
 
@@ -56,53 +56,6 @@
           $this->assertWantedPattern("/INSERT,|DROP ON/", $grants, "INSERT is granted on $dbname");
         }
       }
-    }
-
-    /**
-     * Return grants for current user on current mysql db
-     */
-    function getMysqlGrants($db, $dbname)
-    {
-      if($this->assertTrue(extension_loaded("mysql"), "Mysql extension loaded"))
-      {
-        if(!$this->assertEqual($db->connect(), DB_SUCCESS, "Mysql database connected")) return NULL;
-        else
-        {
-          //check if user@% exists, because its privileges have a higher priority then user@db->host
-          if(count($db->getrows("SELECT * FROM mysql.user WHERE User='".$db->m_user."' AND Host='%'"))>0)
-            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'%'");
-          else
-            $rows = $db->getrows("SHOW GRANTS FOR '".$db->m_user."'@'".$db->m_host."'");
-
-          $specificprivilegefound = false;
-          if(count($rows)>1)//check for specific grants
-          {
-            foreach($rows as $privileges)
-            {
-              $privileges = stripslashes(array_shift($privileges));
-              if(ereg("`".$db->m_database."`", $privileges))//if there are specific privileges for current database
-              {
-                $grants = $privileges;
-                $specificprivilegefound = true;
-                break;
-              }
-            }
-          }
-          if($specificprivilegefound == false)
-          {
-            $grants = stripslashes(array_shift($rows["0"]));
-          }
-          if(ereg("ALL PRIVILEGES", $grants))//because grants isn't a list of all privileges now
-          {
-            $grants = "SELECT," .
-                      "UPDATE," .
-                      "DELETE," .
-                      "INSERT,";
-          }
-          return $grants;
-        }
-      }
-      else return NULL;
     }
 
     /**
