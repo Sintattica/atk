@@ -324,6 +324,9 @@ Changed in ATK 5.7
   recordlist items (e.g. onclick="rl_try('{$listid}', {$row.rownum},
   ['select', 'edit', 'view'], false);"). [Peter]
 + The atkQuery class now uses a fluent interface. (php5 only). [Ivo]
++ Added atkString datatype. (php5 only). [Boy]
++ Added autoload feature. ATK will now try to load classes for you if you
+  forget to include them. (php5 only). [Boy]
 * Fixed calendar-runner. Two different types of date field (one where you input
   the date and another one where you input the date using the date selection
   boxes could cause problems because the Calendar object was re-used). [Peter]  
@@ -937,6 +940,11 @@ Changed in ATK 5.7
 * Added atkArrayDiff which returns differences (atkArrayCompare returned true 
   on differences) [Jeroen]
 * $quote_style must default to ENT_COMPAT, not to null [Jeroen]
+* Added ability to pass parmeters to atknew for constructor of class you
+  are trying to create. [Boy]
+* Improved displaying of error messages in OCI8 driver. [Boy]
+* Added ability to specify interval instead of steps 
+  in atkTimeAttribute. [Boy]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
   it isn't yet implemented. [Guido]

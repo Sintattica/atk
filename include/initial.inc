@@ -47,6 +47,7 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
+  require_once($config_atkroot.'atk/include/autoload.inc');
 
   // Once atktools is loaded, we can register our own error handler.
   if (atkconfig("use_atkerrorhandler", true))
@@ -72,4 +73,5 @@
 
   // preload modules
   atkPreloadModules();
+
 ?>

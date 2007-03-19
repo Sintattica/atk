@@ -525,9 +525,9 @@
     {
       $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
     }
-        
+
     if (!is_null($returnbehaviour))
-    {      
+    {
       $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'">';
     }
 
@@ -1760,43 +1760,43 @@
 
     chdir($current_path);
   }
-  
+
   /**
    * Clean-up the given path.
    *
    * @param string $path
    * @return cleaned-up path
-   * 
+   *
    * @see http://nl2.php.net/manual/en/function.realpath.php (comment of 21st of September 2005)
    */
   function atkCleanPath($path)
   {
     $result = array();
-    
-    $pathArray = explode('/', $path);    
+
+    $pathArray = explode('/', $path);
     if (empty($pathArray[0]))
       $result[] = '';
-    
-    foreach ($pathArray AS $key => $dir) 
+
+    foreach ($pathArray AS $key => $dir)
     {
-      if ($dir == '..') 
+      if ($dir == '..')
       {
-        if (end($result) == '..' || !array_pop($result)) 
+        if (end($result) == '..' || !array_pop($result))
         {
           $result[] = '..';
-        } 
-      } 
-      elseif ($dir && $dir != '.') 
+        }
+      }
+      elseif ($dir && $dir != '.')
       {
         $result[] = $dir;
       }
     }
-    
+
     if (!end($pathArray))
       $result[] = '';
-    
+
     return implode('/', $result);
-  }   
+  }
 
   /**
    * Converts an ATK classname ("map1.map2.classname")
@@ -1837,7 +1837,7 @@
     $elems = explode("/", strtolower($classpath));
     for($counter=0; $counter<=count($elems);$counter++)
     {
-      if($elems[$counter] == "../")
+      if(isset($elems[$counter]) && $elems[$counter] == "../")
       {
         array_shift($elems);
       }
@@ -1873,7 +1873,16 @@
 
     if (class_exists($classname))
     {
-      $obj = &new $classname();
+      $args = func_get_args();
+      unset($args[0]);
+      if (!empty($args))
+      {
+        foreach ($args as $key=>$arg) $arguments[]="\$args[$key]";
+        $arguments = implode(',',$arguments);
+        eval("\$obj = &new $classname($arguments);");
+      }
+      else $obj = &new $classname();
+
       return $obj;
     }
     else
@@ -1933,7 +1942,7 @@
   function atkArrayCompare($array1, $array2)
   {
     $difference = atkArrayDiff($array1, $array2);
-    
+
     return !is_array($difference) ? false : true;
   }
 
@@ -1968,10 +1977,10 @@
         $difference[$key] = $value;
       }
     }
-    
+
     return !isset($difference) ? false : $difference;
   }
-  
+
   /**
    * Recursive function that checks an array for values
    * because sometimes arrays will be filled with other empty
