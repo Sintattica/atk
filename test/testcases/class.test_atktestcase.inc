@@ -25,12 +25,12 @@
    * @subpackage test
    * @access private
    */
-  class test_atktestcase extends atkTestCase 
-  {    
+  class test_atktestcase extends atkTestCase
+  {
     function test_atktestcase()
     {
     }
-    
+
     function test_mockdbswap()
     {
       $db1 = &atkGetDb();
@@ -80,16 +80,16 @@
       $mockmanager = &new atkMockSecurityManager();
 
       $mgr1 = &atkGetSecurityManager();
-      $this->assertEqual(get_class($mgr1), "atksecuritymanager", "Must be of class atksecuritymanager");
+      $this->assertEqual(strtolower(get_class($mgr1)), "atksecuritymanager", "Must be of class atksecuritymanager");
 
       $this->setMockSecurityManager($mockmanager);
 
       $mgr2 = &atkGetSecurityManager();
-      $this->assertEqual(get_class($mgr2), "atkmocksecuritymanager", "Must be of class atkmocksecuritymanager");
+      $this->assertEqual(strtolower(get_class($mgr2)), "atkmocksecuritymanager", "Must be of class atkmocksecuritymanager");
 
       $this->restoreSecurityManager();
       $mgr3 = &atkGetSecurityManager();
-      $this->assertEqual(get_class($mgr3), "atksecuritymanager", "Must be of class atksecuritymanager again");
+      $this->assertEqual(strtolower(get_class($mgr3)), "atksecuritymanager", "Must be of class atksecuritymanager again");
 
       $this->assertReference($mgr1, $mgr3, "make sure securitymanager is not copied");
     }
