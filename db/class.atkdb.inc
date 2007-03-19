@@ -579,7 +579,7 @@
 
     /**
      * Set savepoint with the given name.
-     * 
+     *
      * @param $name savepoint name
      * @abstract
      */
@@ -590,9 +590,9 @@
     /**
      * Rollback the current transaction.
      * (If a savepoint is given to the given savepoint.)
-     * 
+     *
      * @param $savepoint savepoint name
-     * 
+     *
      * @abstract
      */
     function rollback($savepoint="")
@@ -884,10 +884,10 @@
       $query->m_db = &$this;
       return $query;
     }
-    
+
     /**
      * Enable/disable all foreign key constraints.
-     * 
+     *
      * @param boolean $enable enable/disable foreign keys?
      */
     function toggleForeignKeys($enable)
@@ -1071,7 +1071,7 @@
          if($total_connections>0)
          {
            $random = rand(0,($total_connections-1));
-           atkdebug("<h1>Random server (".$connections[$random].") choosen from cluster $conn for mode: $mode</h1>");
+           atkdebug("Random server (".$connections[$random].") choosen from cluster $conn for mode: $mode");
            return $connections[$random];
          }
          else
