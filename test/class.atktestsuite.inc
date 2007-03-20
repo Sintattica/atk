@@ -134,7 +134,7 @@
       if($_REQUEST['class']) $class = $_REQUEST['class'];
       else $class = $_REQUEST['atkclass'];
 
-      if(file_exists(getClassPath($class))) $testclass = $class;
+      if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
       else $testclass = $this->getTestCaseLocationForClass($class);
 
       if ($class && file_exists(getClassPath($testclass)))
@@ -198,7 +198,7 @@
 
     function getTestCaseLocationForClass($class)
     {
-      $exploded = explode('.',$class);
+      $exploded = explode('.',$class);      
       $class = array_pop($exploded);
       return implode('.',$exploded).'.testcases.test_'.$class;
     }
