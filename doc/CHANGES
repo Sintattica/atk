@@ -49,9 +49,9 @@ Changed in ATK 5.7
   in pages, based on the atkDateAttribute). [Peter]
 + Added {atkthemeimg} Smarty plug-in (can be be used to retrieve the path of
   theme images). [Ivo]
-+ Added addOverloader, removeOverloader and hasOverloader functions
-  to atktools so overloaders can be added realtime instead of only in the
-  module_preload. [Boy]
++ Added atkClassLoader::addOverloader, removeOverloader and hasOverloader 
+  methods to overload any class that is instantiated using atknew or
+  atkinstance. [Boy, Ivo]
 + Added the ability to use a bracket-template in the value for default values
   in the atkImportHandler. [Ivo]
 + Added functionalitiy to atkOpenDocumentWriter to support styles in tags of
@@ -65,8 +65,8 @@ Changed in ATK 5.7
   class for the button. [Harrie]
 + Added include/exclude parameters to atkNode::updateDb. [Peter]
 + DocumentWriter: convert Html bullets (fck-editor) to XML (tab + *)
-  Only 1 level deep supported (deeper levels in html will be converted to
-  level 1 in the generated document) [Jeroen]
+  Only 1 level deep supported (deeper levels in html will be converted to level
+  1 in the generated document). [Jeroen]
 + Added function assignRecordByNodeAndSelector($nodename, $selector,
   $prefix = "") in atkDocumentWriter to allow a record to be assigned to the
   document by just supplying the nodename and selector as strings. This

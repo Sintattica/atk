@@ -30,6 +30,79 @@
   class atkClassLoader
   {
     /**
+     * Resolve a classname to its final classname.
+     *
+     * An application can overload a class with a custom version. This
+     * method resolves the initial classname to its overloaded version
+     * (if any).
+     *
+     * @static
+     * @param String $class The name of the class to resolve
+     * @return String The resolved classname
+     */
+    function resolveClass($class)
+    {
+      global $g_overloaders;
+      if (isset($g_overloaders[$class])) return $g_overloaders[$class];
+      return $class;
+    }
+  
+    /**
+     * Add a class overloader
+     *
+     * @static
+     * @param String $original
+     * @param String $overload
+     * @param bool $overwrite
+     * @return bool Wether or not we added the overloader
+     */
+    function addOverloader($original, $overload, $overwrite=true)
+    {
+      global $g_overloaders;
+      if (!array_key_exists($original, $g_overloaders) || $overwrite)
+      {
+        $g_overloaders[$original] = $overload;
+        return true;
+      }
+      return false;
+    }
+  
+    /**
+     * Remove a class overloader for a class
+     *
+     * @static
+     * @param String $original
+     * @return bool Wether or not we removed an overloader
+     */
+    function removeOverloader($original)
+    {
+      global $g_overloaders;
+      if (array_key_exists($original, $g_overloaders))
+      {
+        unset($g_overloaders[$original]);
+        return true;
+      }
+      return false;
+    }
+  
+    /**
+     * Checks wether or not a class has an overloader defined
+     *
+     * @static
+     * @param String $original The class to check for
+     * @return bool Wether or not the class has an overloader
+     */
+    function hasOverloader($original)
+    {
+      global $g_overloaders;
+      if (array_key_exists($original, $g_overloaders))
+      {
+        return true;
+      }
+      return false;
+    }
+    
+    /**
      * Invoke a method on a class based on a string definition.
      * The string must be in the format
      * "packagename.subpackage.classname#methodname"

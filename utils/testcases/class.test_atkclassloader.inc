@@ -20,7 +20,7 @@
   /**
    * Include the class we are about to test.
    */
-  atkimport("atk.utils.atkclassloader");
+  atkimport("atk.utils.atkclassloader");  
 
   /**
    * Testcases for class atkclassloader.
@@ -30,7 +30,7 @@
    * @subpackage utils
    * @access private
    */
-  class test_atkclassloader extends UnitTestCase
+  class test_atkclassloader extends atkTestCase 
   {        
     /**
      * Setup the testcase.
@@ -40,9 +40,37 @@
     }
     
     /**
-     * Test method. 
+     * Test overloading
      */
-    function test()
+    function test_overloading()
+    {
+      // base
+      $a = &atknew("atk.utils.atkstringparser", "hmm");
+      $this->assertIsA($a, "atkStringParser", "original stringparser");
+      $this->assertFalse(atkClassLoader::hasOverloader("atk.utils.atkstringparser"), "stringparser has no overloader");
+      
+      // overloaded
+      atkClassLoader::addOverloader("atk.utils.atkstringparser", "atk.utils.atkdirectorytraverser");
+      $b = &atknew("atk.utils.atkstringparser", "hmm");
+      $this->assertIsA($b, "atkDirectoryTraverser", "overloaded stringparser with dirtraverser");
+      $this->assertTrue(atkClassLoader::hasOverloader("atk.utils.atkstringparser"), "stringparser has an overloader");
+      
+      // Info
+      $this->assertEqual(atkClassLoader::resolveClass("atk.utils.atkstringparser"), "atk.utils.atkdirectorytraverser", "atkClassLoader::resolveClass retrieves final class");
+      // Also test the bwc convenience method.
+      $this->assertEqual(atkResolveClass("atk.utils.atkstringparser"), "atk.utils.atkdirectorytraverser", "atkResolveClassretrieves final class");
+      
+      // restored
+      atkClassLoader::removeOverloader("atk.utils.atkstringparser");
+      $c = &atknew("atk.utils.atkstringparser", "hmm");
+      $this->assertIsA($c, "atkStringParser", "original stringparser back");
+      $this->assertFalse(atkClassLoader::hasOverloader("atk.utils.atkstringparser"), "stringparser has no overloader anymore");
+    }
+    
+    /**
+     * Test invokeFromString method. 
+     */
+    function test_stringinvocation()
     {  
       // Call with nonexistant class
       $this->assertFalse(atkClassLoader::invokeFromString("nonexistingclass#nomethod"));

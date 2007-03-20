@@ -1891,24 +1891,8 @@
       $tmp = NULL;
       return $tmp;
     }
-  }
-
-  /**
-   * Resolve a classname to its final classname.
-   *
-   * An application can overload a class with a custom version. This
-   * method resolves the initial classname to its overloaded version
-   * (if any).
-   *
-   * @param String $class The name of the class to resolve
-   * @return String The resolved classname
-   */
-  function atkResolveClass($class)
-  {
-    global $g_overloaders;
-    if (isset($g_overloaders[$class])) return $g_overloaders[$class];
-    return $class;
-  }
+  }  
+  
   /**
    * Return a singleton instance of the specified class.
    *
@@ -2130,57 +2114,21 @@
   {
     return (isset($array[$key]) ? $array[$key] : $defaultvalue);
   }
-
+  
   /**
-   * Add a class overloader
+   * Resolve a classname to its final classname.
    *
-   * @param String $original
-   * @param String $overload
-   * @param bool $overwrite
-   * @return bool Wether or not we added the overloader
-   */
-  function addOverloader($original, $overload, $overwrite=true)
-  {
-    global $g_overloaders;
-    if (!array_key_exists($original, $g_overloaders) || $overwrite)
-    {
-      $g_overloaders[$original] = $overload;
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Remove a class overloader for a class
+   * An application can overload a class with a custom version. This
+   * method resolves the initial classname to its overloaded version
+   * (if any).
    *
-   * @param String $original
-   * @return bool Wether or not we removed an overloader
+   * @param String $class The name of the class to resolve
+   * @return String The resolved classname
    */
-  function removeOverloader($original)
+  function atkResolveClass($class)
   {
-    global $g_overloaders;
-    if (array_key_exists($original, $g_overloaders))
-    {
-      unset($g_overloaders[$original]);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Checks wether or not a class has an overloader defined
-   *
-   * @param String $original The class to check for
-   * @return bool Wether or not the class has an overloader
-   */
-  function hasOverloader($original)
-  {
-    global $g_overloaders;
-    if (array_key_exists($original, $g_overloaders))
-    {
-      return true;
-    }
-    return false;
+    atkimport("atk.utils.atkclassloader");
+    return atkClassLoader::resolveClass($class);
   }
 
   /**
