@@ -107,7 +107,7 @@
         atkimport('atk.utils.atktmpfile');
         $cache = new atkTmpFile('classes.inc.php');
         $classes = array();
-        include(atkconfig('atkroot').$cache->getPath());
+        @include($cache->getPath());
 
         if (empty($classes) || $force)
         {
@@ -140,9 +140,9 @@
 
   /**
    * Find all files that might be classes.
-   * 
+   *
    * Made for use with the directory traverser.
-   * 
+   *
    * @author Boy Baukema <boy@achievo.org>
    *
    * @package atk
