@@ -517,29 +517,29 @@
 
     if ($newlevel!=0)
     {
-      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'">';
+      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'" />';
     }
-    $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'">';
+    $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'" />';
 
     if ($sessionstatus!=SESSION_NEW)
     {
-      $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'">';
+      $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'" />';
     }
 
     if (!is_null($returnbehaviour))
     {
-      $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'">';
+      $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'" />';
     }
 
-    $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'">';
-    $res .= '<input type="hidden" name="atkescape" value="">';
+    $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
+    $res .= '<input type="hidden" name="atkescape" value="" />';
 
     for ($i=0;$i<count($g_stickyurl);$i++)
     {
       $value = $GLOBALS[$g_stickyurl[$i]];
       if ($value!="")
       {
-        $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'">';
+        $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'" />';
       }
     }
     return $res;
@@ -1891,8 +1891,8 @@
       $tmp = NULL;
       return $tmp;
     }
-  }  
-  
+  }
+
   /**
    * Return a singleton instance of the specified class.
    *
@@ -2114,7 +2114,7 @@
   {
     return (isset($array[$key]) ? $array[$key] : $defaultvalue);
   }
-  
+
   /**
    * Resolve a classname to its final classname.
    *
