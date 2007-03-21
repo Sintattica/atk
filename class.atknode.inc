@@ -50,7 +50,7 @@
   define("NF_EDITAFTERADD",            8);
 
   /**
-   * Reocrds may not be searched
+   * Records may not be searched
    */
   define("NF_NO_SEARCH",              16);
 
