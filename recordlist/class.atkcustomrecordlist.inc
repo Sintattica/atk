@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -20,6 +20,13 @@
   atkimport("atk.recordlist.atkrecordlist");
 
   /**
+   * From export types
+   */
+  define("EXPORT_STANDARD",  "standard");
+  define("EXPORT_HTML",      "html");
+  define("EXPORT_EXCEL2003", "excel2003");
+
+  /**
    * Custom recordlist renderer.
    *
    * @author Paul Verhoef <paul@ibuildings.nl>
@@ -27,37 +34,42 @@
    * @subpackage recordlist
    *
    */
-  class atkCustomRecordList extends atkRecordList 
-  {    
+  class atkCustomRecordList extends atkRecordList
+  {
+
   	var $m_exportcsv = true;
-  	
+
     /**
      * Creates a special Recordlist that can be used for exporting to files or to make it printable
      * @param atkNode $node       The node to use as definition for the columns.
      * @param array $recordset    The records to render
-     * @param String $sol         String to use at start of each row     
+     * @param String $sol         String to use at start of each row
      * @param String $sof         String to use at start of each field
-     * @param String $eof         String to use at end of each field     
+     * @param String $eof         String to use at end of each field
      * @param String $eol         String to use at end of each row
      * @param int $type           0=Render rows in simple html tabl; 1= raw export
      * @param $compression        Compression technique (bzip / gzip)
-     * @param array $suppressList List of attributes from $node that should be ignored  
-     * @param array $outputparams Key-Value parameters for output. Currently existing: 
-     *                               filename - the name of the file (without extension .csv)     
-     * @param String $mode	      The mode that is passed to attributes' display() method 
+     * @param array $suppressList List of attributes from $node that should be ignored
+     * @param array $outputparams Key-Value parameters for output. Currently existing:
+     *                               filename - the name of the file (without extension .csv)
+     * @param String $mode	      The mode that is passed to attributes' display() method
      *                            (for overrides). Defaults to 'list'.
      * @param Boolean $titlerow   Should titlerow be rendered or not
      * @param Boolean $decode     Should data be decoded or not (for exports)
+     * @param String $fsep        String to user between fields
+     * @param String $eolreplace  String for replacing eol's in values (null = do not replace)
     */
-    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="", $outputparams=array(), $mode="list", $titlerow=true, $decode=false)
+    function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="",
+                    $outputparams=array(), $mode="list", $titlerow=true, $decode=false, $fsep="", $eolreplacement=null)
     {
       $this->setNode($node);
       // example      html         csv
 
-      // $sol     = "<tr>"         or  ""
-      // $eof     = "</td>"        or  ";"
-      // $sof     = "<td>"         or  ""
-      // $eol     = "</tr>"        or  "\r\n"
+      // $sol     = '<tr>'         or  ''
+      // $sof     = '<td>'         or  '"'
+      // $eof     = '</td>'        or  '"'
+      // $eol     = '</tr>'        or  '\r\n'
+      // $fsep    = ''             or  ';'
       //$empty  om lege tabelvelden op te vullen;
 
       // stuff for the totals row..
@@ -95,7 +107,7 @@
             &&$musthide==false
           )
           {
-            $output.=$sof.atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type).$eof;
+            $output.=$sof.$this->eolreplace(atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type), $eolreplacement).$eof.$fsep;
 
             // the totalisable check..
             if ($p_attrib->hasFlag(AF_TOTAL))
@@ -108,6 +120,7 @@
         $output.=$eol;
       }
 
+      // Display the values
       for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
       {
         $output.=$sol;
@@ -131,16 +144,16 @@
 
             if (method_exists($this->m_node,$funcname))
             {
-              $value=$this->m_node->$funcname($recordset[$i], $mode);
+              $value=$this->eolreplace($this->m_node->$funcname($recordset[$i], $mode), $eolreplacement);
             }
             else
             {
               // otherwise, the display function of the particular attribute
-              // is called.            
-              $value=$p_attrib->display($recordset[$i], $mode);
+              // is called.
+              $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $eolreplacement);
             }
             if (atktext("charset") != "" && $decode) $value = html_entity_decode(htmlentities($value, ENT_NOQUOTES, atktext("charset")));
-            $output.=$sof.($value==""?$empty:$value).$eof;
+            $output.=$sof.($value==""?$empty:$value).$eof.$fsep;
 
             // Calculate totals..
             if ($p_attrib->hasFlag(AF_TOTAL))
@@ -174,14 +187,14 @@
              )
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
-            {              
-              $value = $p_attrib->display($totals[$attribname], $mode);
-              $totalRow.=$sof.($value==""?$empty:$value).$eof;
+            {
+              $value = $this->eolreplace($p_attrib->display($totals[$attribname], $mode), $eolreplacement);
+              $totalRow.=$sof.($value=="" ? $empty : $value).$eof.$fsep;
 
             }
             else
             {
-              $totalRow.= $sof.$empty.$eof;
+              $totalRow.= $sof.$empty.$eof.$fsep;
             }
           }
         }
@@ -189,37 +202,90 @@
         $totalRow.=$eol;
 
         $output.=$totalRow;
-       
+
       }
+
+      //atk_var_dump($output, "OUTPOET");
+      $type = "1";
+      atk_var_dump($type, "TAAIP");
 
       // To the Screen
       if ($type=="0")
       {
-        
+
         $output .= "</table>";
         return $output;
       }
       // To a File
-      if ($type=="1") 
+      if ($type=="1")
       {
         if (!array_key_exists("filename", $outputparams))
           $outputparams["filename"] = "achievo";
 
         if ($this->m_exportcsv)
         {
-          $exporter = &atknew("atk.utils.atkfileexport");        
-          $exporter->export($output, $outputparams["filename"],"csv","csv",$compression);        
+          $exporter = &atknew("atk.utils.atkfileexport");
+          $exporter->export($output, $outputparams["filename"],"csv","csv",$compression);
         }
-        else 
+        else
         {
         	return $output;
         }
       }
     }
-        
+
+    /**
+     * Creates a special Recordlist that can be used for exporting to files or to make it printable
+     * @param atkNode $node       The node to use as definition for the columns.
+     * @param array $recordset    The records to render
+     * @param array $suppressList List of attributes from $node that should be ignored
+     * @param array $outputparams Key-Value parameters for output. Currently existing:
+     *                            filename - the name of the file (without extension .csv)
+     * @param String $exporttype  The type of export file
+    */
+    function renderByType(&$node, $recordset, $suppressList="", $outputparams=array(), $exporttype)
+    {
+      $output = "";
+
+      switch ($exporttype)
+      {
+        case EXPORT_EXCEL2003:
+          $output = $this->render(&$node, $recordset, '', '"', '"', "\r\n", "1", "", $suppressList="", $outputparams, "csv", true, false, ";", "|");
+          break;
+
+        case EXPORT_HTML:
+          $output = $this->render(&$node, $recordset, '<tr>', '<td>', '</td>', '</tr>\r\n', "0", "", $suppressList="", $outputparams, "list", true, false, "", "<br>");
+          break;
+
+        case EXPORT_STANDARD:
+        default:
+          $output = $this->render(&$node, $recordset, '', '"', '"', "\r\n", "1", "", $suppressList="", $outputparams, "csv", true, false, ",");
+          break;
+      }
+      return $output;
+    }
+
     function setExportingCSVToFile($export = false)
     {
     	if (is_bool($export)) $this->m_exportcsv = $export;
+    }
+
+    /**
+     * Replace any eol character(s) by something else
+     *
+     * @param String $string        The string to process
+     * @param String $replacement   The replacement string for '\r\n', '\n' and/or '\r'
+     */
+    function eolreplace($string, $replacement)
+    {
+      if (!is_null($replacement))
+      {
+        $string = str_replace("\r\n", $replacement, $string); // prevent double replacement in the next lines!
+        $string = str_replace("\n", $replacement, $string);
+        $string = str_replace("\r", $replacement, $string);
+      }
+
+      return $string;
     }
   }
 
