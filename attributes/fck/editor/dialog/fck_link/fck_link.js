@@ -150,6 +150,13 @@ window.onload = function()
 
 	// Activate the "OK" button.
 	window.parent.SetOkButton( true ) ;
+	
+	// HARRIE HACK
+	// Evil, but there does not seem to be any tidy way of achieving this:
+	if (FCKConfig.initialLinkTarget != null && document.getElementById('txtUrl').value == '')
+	{
+	  document.getElementById('cmbTarget').value = FCKConfig.initialLinkTarget;
+	}
 }
 
 var bHasAnchors ;
@@ -334,7 +341,6 @@ function SetTarget( targetType )
 			GetE('txtTargetFrame').value = '' ;
 			break ;
 	}
-
 	if ( targetType == 'popup' )
 		window.parent.SetAutoSize( true ) ;
 }
