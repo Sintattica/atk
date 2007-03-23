@@ -128,7 +128,8 @@
        /* free old results */
        if ($this->m_query_id)
        {
-         @mysqli_free_result($this->m_query_id);
+         if (is_resource($this->m_query_id))
+           mysqli_free_result($this->m_query_id);
          $this->m_query_id = 0;
        }
 

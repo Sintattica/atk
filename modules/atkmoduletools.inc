@@ -333,9 +333,10 @@
   function &atkGetNodeHandler($node, $action)
   {
     global $g_nodeHandlers;
-    if (isset($g_nodeHandlers[$node][$action])) return $g_nodeHandlers[$node][$action];
-    elseif (isset($g_nodeHandlers["*"][$action])) return $g_nodeHandlers["*"][$action];
-    else return NULL;
+    if (isset($g_nodeHandlers[$node][$action])) $handler = $g_nodeHandlers[$node][$action];
+    elseif (isset($g_nodeHandlers["*"][$action])) $handler = $g_nodeHandlers["*"][$action];
+    else $handler = NULL;
+    return $handler;
   }
 
   /**

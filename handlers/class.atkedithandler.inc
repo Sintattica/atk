@@ -63,7 +63,7 @@
 
       }
 
-      list($record) = $this->m_node->selectDb($this->m_postvars['atkselector'],"","","","","edit");
+      list($record) = $this->m_node->selectDb(atkArrayNvl($this->m_postvars, 'atkselector', ""),"","","","","edit");
 
       // allowed to edit record?
       if (!$this->allowed($record))
@@ -322,13 +322,13 @@
           /* does the field have a label? */
           if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
           {
-            if ($field["label"] == "")
+            if (!isset($field["label"]) || empty($field["label"]))
             {
               $tplfield["label"] = "";
             }
             else
             {
-              $tplfield["label"] .= $field["label"];
+              $tplfield["label"] = $field["label"];
               if ($field["error"]) // TODO KEES
               {
                 $tplfield["error"] = $field["error"];

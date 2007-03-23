@@ -207,7 +207,7 @@
       $modulenames = array_keys($modules);
       foreach ($modulenames as $modulename)
       {
-        if (isset($this->m_theme['modulefiles']))
+        if (isset($this->m_theme['modulefiles'][$modulename]))
         {
           $iconfile = $this->getIconFileFromTheme($icon,$type, $this->m_theme['modulefiles'][$modulename],$ext);
           if ($iconfile) return $iconfile;
@@ -219,7 +219,7 @@
     function getIconFileFromTheme($iconname, $type, $theme,$ext="")
     {
       if ($ext) return $this->_getIconFileWithExtFromTheme($iconname,$ext,$type,$theme);
-      
+
       $allowediconext=array('png','gif','jpg');
       foreach ($allowediconext as $ext)
       {
@@ -228,7 +228,7 @@
       }
       return false;
     }
-    
+
     function _getIconFileWithExtFromTheme($iconname,$ext,$type,$theme)
     {
       if (isset($theme['icons'][$type][$iconname.".".$ext]))
