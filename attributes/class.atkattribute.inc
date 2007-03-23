@@ -2379,7 +2379,7 @@
     function getCSSClassAttribute($additionalclasses = array())
     {
       $classes = array_merge($this->getCSSClasses(), is_array($additionalclasses) ? $additionalclasses : array($additionalclasses));
-      return 'class="'.implode(" ", $this->getCSSClasses()).'"';
+      return 'class="'.implode(" ", $classes).'"';
     }
 
     /**
