@@ -327,8 +327,8 @@ Changed in ATK 5.7
 + Added atkString datatype. (php5 only). [Boy]
 + Added autoload feature. ATK will now try to load classes for you if you
   forget to include them. (php5 only). [Boy]
-+ The atkcustomrecordlist attribute now supports exports based on preset types.
-  For now, 'standard', 'html' and 'excel2003' are supported. [Patrick]
++ The atkcustomrecordlist attribute is extended to support some standard
+  export types (csv, excelcsv, html). [Patrick]
 * Fixed calendar-runner. Two different types of date field (one where you input
   the date and another one where you input the date using the date selection
   boxes could cause problems because the Calendar object was re-used). [Peter]

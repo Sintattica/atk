@@ -20,13 +20,6 @@
   atkimport("atk.recordlist.atkrecordlist");
 
   /**
-   * From export types
-   */
-  define("EXPORT_STANDARD",  "standard");
-  define("EXPORT_HTML",      "html");
-  define("EXPORT_EXCEL2003", "excel2003");
-
-  /**
    * Custom recordlist renderer.
    *
    * @author Paul Verhoef <paul@ibuildings.nl>
@@ -56,11 +49,11 @@
      *                            (for overrides). Defaults to 'list'.
      * @param Boolean $titlerow   Should titlerow be rendered or not
      * @param Boolean $decode     Should data be decoded or not (for exports)
-     * @param String $fsep        String to user between fields
-     * @param String $eolreplace  String for replacing eol's in values (null = do not replace)
+     * @param String $fsep        String to use between fields
+     * @param String $lfreplace   String for replacing line feeds in recordset field values (null = do not replace)
     */
     function render(&$node, $recordset, $sol, $sof, $eof, $eol, $type="0", $compression="", $suppressList="",
-                    $outputparams=array(), $mode="list", $titlerow=true, $decode=false, $fsep="", $eolreplacement=null)
+                    $outputparams=array(), $mode="list", $titlerow=true, $decode=false, $fsep="", $rfeplace=null)
     {
       $this->setNode($node);
       // example      html         csv
@@ -77,7 +70,6 @@
       $totals = array();
       if ($type=="0")
       {
-        $output = '<table border="1" cellspacing="0" cellpadding="4">';
         $empty = "&nbsp;";
       }
       if ($type=="1")
@@ -107,7 +99,7 @@
             &&$musthide==false
           )
           {
-            $output.=$sof.$this->eolreplace(atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type), $eolreplacement).$eof.$fsep;
+            $output.=$sof.$this->eolreplace(atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type), $rfeplace).$eof.$fsep;
 
             // the totalisable check..
             if ($p_attrib->hasFlag(AF_TOTAL))
@@ -144,13 +136,13 @@
 
             if (method_exists($this->m_node,$funcname))
             {
-              $value=$this->eolreplace($this->m_node->$funcname($recordset[$i], $mode), $eolreplacement);
+              $value=$this->eolreplace($this->m_node->$funcname($recordset[$i], $mode), $rfeplace);
             }
             else
             {
               // otherwise, the display function of the particular attribute
               // is called.
-              $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $eolreplacement);
+              $value = $this->eolreplace($p_attrib->display($recordset[$i], $mode), $rfeplace);
             }
             if (atktext("charset") != "" && $decode) $value = html_entity_decode(htmlentities($value, ENT_NOQUOTES, atktext("charset")));
             $output.=$sof.($value==""?$empty:$value).$eof.$fsep;
@@ -188,7 +180,7 @@
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
-              $value = $this->eolreplace($p_attrib->display($totals[$attribname], $mode), $eolreplacement);
+              $value = $this->eolreplace($p_attrib->display($totals[$attribname], $mode), $rfeplace);
               $totalRow.=$sof.($value=="" ? $empty : $value).$eof.$fsep;
 
             }
@@ -199,73 +191,37 @@
           }
         }
 
-        $totalRow.=$eol;
+        $totalRow .= $eol;
 
-        $output.=$totalRow;
+        $output .= $totalRow;
 
       }
 
-      //atk_var_dump($output, "OUTPOET");
-      $type = "1";
-      atk_var_dump($type, "TAAIP");
-
-      // To the Screen
-      if ($type=="0")
+      // html requires table tags
+      if ($type == "0")
       {
-
-        $output .= "</table>";
-        return $output;
+        $output = '<table border="1" cellspacing="0" cellpadding="2">'.$output."</table>";
       }
+
+      atkdebug(html_entity_decode($output));
+
       // To a File
-      if ($type=="1")
-      {
-        if (!array_key_exists("filename", $outputparams))
-          $outputparams["filename"] = "achievo";
+      if (!array_key_exists("filename", $outputparams))
+        $outputparams["filename"] = "achievo";
 
-        if ($this->m_exportcsv)
-        {
-          $exporter = &atknew("atk.utils.atkfileexport");
-          $exporter->export($output, $outputparams["filename"],"csv","csv",$compression);
-        }
-        else
-        {
-        	return $output;
-        }
+      if ($this->m_exportcsv)
+      {
+        $ext = ($type == "0" ? "html" : "csv");
+        $exporter = &atknew("atk.utils.atkfileexport");
+        $exporter->export($output, $outputparams["filename"], $ext, $ext, $compression);
+      }
+      else
+      {
+      	return $output;
       }
     }
 
-    /**
-     * Creates a special Recordlist that can be used for exporting to files or to make it printable
-     * @param atkNode $node       The node to use as definition for the columns.
-     * @param array $recordset    The records to render
-     * @param array $suppressList List of attributes from $node that should be ignored
-     * @param array $outputparams Key-Value parameters for output. Currently existing:
-     *                            filename - the name of the file (without extension .csv)
-     * @param String $exporttype  The type of export file
-    */
-    function renderByType(&$node, $recordset, $suppressList="", $outputparams=array(), $exporttype)
-    {
-      $output = "";
-
-      switch ($exporttype)
-      {
-        case EXPORT_EXCEL2003:
-          $output = $this->render(&$node, $recordset, '', '"', '"', "\r\n", "1", "", $suppressList="", $outputparams, "csv", true, false, ";", "|");
-          break;
-
-        case EXPORT_HTML:
-          $output = $this->render(&$node, $recordset, '<tr>', '<td>', '</td>', '</tr>\r\n', "0", "", $suppressList="", $outputparams, "list", true, false, "", "<br>");
-          break;
-
-        case EXPORT_STANDARD:
-        default:
-          $output = $this->render(&$node, $recordset, '', '"', '"', "\r\n", "1", "", $suppressList="", $outputparams, "csv", true, false, ",");
-          break;
-      }
-      return $output;
-    }
-
-    function setExportingCSVToFile($export = false)
+    function setExportingCSVToFile($export=true)
     {
     	if (is_bool($export)) $this->m_exportcsv = $export;
     }

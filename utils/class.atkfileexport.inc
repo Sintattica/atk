@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * File download exporter.
    *
@@ -42,7 +42,7 @@
     * @param String $data  The content
     * @param String $fileName Filename for the download
     * @param String $ext Extension of the file
-    * @param String $type The type (csv / excel)
+    * @param String $type The type (csv / excel / xml)
     * @param String $compression Compression method (bzip / gzip)
     */
    function export($data, $fileName, $type, $ext, $compression="")
@@ -65,7 +65,7 @@
     elseif($type=="xml")
     {
       $mime_type='text/xml';
-      $ext = "xml"; 
+      $ext = "xml";
     }
     else
     {
