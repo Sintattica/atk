@@ -25,12 +25,12 @@
   {
     var $m_counter = 0;
 
-    function preAdd($record, $mode)  { $this->m_counter++; }
-    function postAdd($record, $mode) { $this->m_counter--; }
-    function preUpdate($record)      { $this->m_counter++; }
-    function postUpdate($record)     { $this->m_counter--; }
-    function preDelete($record)      { $this->m_counter++; }
-    function postDelete($record)     { $this->m_counter--; }
+    function preAdd($record, $mode)  { $this->m_counter++; return true; }
+    function postAdd($record, $mode) { $this->m_counter--; return true; }
+    function preUpdate($record)      { $this->m_counter++; return true; }
+    function postUpdate($record)     { $this->m_counter--; return true; }
+    function preDelete($record)      { $this->m_counter++; return true; }
+    function postDelete($record)     { $this->m_counter--; return true; }
 
   }
 
