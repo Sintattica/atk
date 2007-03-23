@@ -264,10 +264,10 @@
     global $g_error_msg;
     $g_error_msg[]="[".elapsed()."] ".$txt;
 
-//    if(function_exists("debug_backtrace"))
-//    {
-//      atkdebug("Trace:".atk_get_trace());
-//    }
+    if(function_exists("debug_backtrace"))
+    {
+      atkdebug("Trace:".atk_get_trace());
+    }
   }
 
   /**
@@ -283,7 +283,7 @@
       return "Incorrect php-version for atk_get_trace()";
 
     // Get the debug backtrace
-    $traceArr = array(); //debug_backtrace();
+    $traceArr = debug_backtrace();
 
     // Remove the call of atk_get_trace
     array_shift($traceArr);
