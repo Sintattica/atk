@@ -729,42 +729,42 @@
       $this->m_flags = $flags;
       $this->m_module = atkModule::getModuleScope();
     }
-    
+
     /**
      * Resolve section. If a section is only prefixed by
-     * a dot this means we need to add the default tab 
+     * a dot this means we need to add the default tab
      * before the dot.
-     * 
+     *
      * @param string section name
      * @return resolved section name
      */
     function resolveSection($section)
     {
-      list($part1, $part2) = explode('.', $section);
+      list($part1, $part2) = (strpos($section, ".") !== false) ? explode('.', $section) : array($section, "");
       if ($part2 != NULL && strlen($part2) > 0 && strlen($part1) == 0)
         return $this->m_default_tab.".".$part2;
       else if (strlen($part2) == 0 && strlen($part1) == 0)
         return $this->m_default_tab;
       else return $section;
     }
-    
+
     /**
      * Resolve sections.
-     * 
+     *
      * @param array $sections section list
      * @return array resolved section list
-     * 
+     *
      * @see resolveSection
      */
     function resolveSections($sections)
     {
       $result = array();
-      
+
       foreach ($sections as $section)
       {
         $result[] = $this->resolveSection($section);
-      }      
-      
+      }
+
       return $result;
     }
 
@@ -799,7 +799,7 @@
       {
         $sections = array($sections);
       }
-      
+
       if (is_array($sections))
       {
         $sections = $this->resolveSections($sections);
@@ -936,7 +936,7 @@
           {
             if (!$attribute->hasFlag(AF_HIDE_ADD)) $this->m_sectionList["add"] = isset($this->m_sectionList["add"]) ? atk_array_merge($this->m_sectionList["add"], $sections) : $sections;
             if (!$attribute->hasFlag(AF_HIDE_EDIT)) $this->m_sectionList["edit"] = isset($this->m_sectionList['edit']) ? atk_array_merge($this->m_sectionList["edit"], $sections) : $sections;
-            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_sectionList["view"] = isset($this->m_sectionList['edit']) ? atk_array_merge($this->m_sectionList["view"], $sections) : $sections;
+            if (!$attribute->hasFlag(AF_HIDE_VIEW)) $this->m_sectionList["view"] = isset($this->m_sectionList['view']) ? atk_array_merge($this->m_sectionList["view"], $sections) : $sections;
           }
         }
 
@@ -1441,7 +1441,7 @@
 
       foreach ($this->m_sectionList[$action] as $element)
       {
-        list($tab,$sec) = explode(".",$element);
+        list($tab,$sec) = (strpos($element, ".") !== false) ? explode(".",$element) : array($element, null);
 
         //if this section is on an active tab, we return it.
         if($tab == $this->getActiveTab() && $sec!==NULL)
@@ -1805,26 +1805,26 @@
       $params["formend"] = '</form>';
       return $params;
     }
-    
+
     /**
      * Check attribute security.
-     * 
+     *
      * Makes some attributes read-only, or hides the attribute based
      * on the current mode / record.
-     * 
+     *
      * @param string $mode current mode (add, edit, view etc.)
      * @param array $record current record (optional)
      */
     function checkAttributeSecurity($mode, $record=NULL)
     {
-      // check if an attribute needs to be read-only or 
-      // even hidden based on the current record 
-      $secMgr = &atkGetSecurityManager();    
+      // check if an attribute needs to be read-only or
+      // even hidden based on the current record
+      $secMgr = &atkGetSecurityManager();
       foreach (array_keys($this->m_attribList) as $attrName)
       {
         $attr = &$this->getAttribute($attrName);
 
-        if (($mode == "add" || $mode == "edit") && 
+        if (($mode == "add" || $mode == "edit") &&
              !$secMgr->attribAllowed($attr, $mode, $record) &&
              $secMgr->attribAllowed($attr, "view", $record))
         {
@@ -1861,7 +1861,7 @@
     {
       // update visibility of some attributes based on the current record
       $this->checkAttributeSecurity($mode, $record);
-      
+
       /* read metadata */
       $this->setAttribSizes();
 
@@ -2054,8 +2054,8 @@
     function viewArray($mode, $record)
     {
       // update visibility of some attributes based on the current record
-      $this->checkAttributeSecurity($mode, $record);      
-      
+      $this->checkAttributeSecurity($mode, $record);
+
       $tab = $this->getActiveTab();
 
       $this->orderAttributesBySection($mode);
@@ -4909,7 +4909,7 @@
       if ($module==NULL) $module = $this->m_module;
       return atktext($string, $module, $this->m_type, $lng, $firstfallback, $nodefaulttext);
     }
-    
+
     /**
      * String representation for this node (PHP5 only).
      *
@@ -4918,6 +4918,6 @@
     function __toString()
     {
       return $this->atkNodeType();
-    }    
+    }
   }
 ?>
