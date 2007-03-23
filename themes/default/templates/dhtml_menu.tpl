@@ -1,6 +1,6 @@
 <script language="JavaScript" src="{$jscode}" type="text/javascript"></script>
 
 <div id="menubody">
-  {php}echo text("logged_in_as","","atk");{/php}: <b>{$name}</b>
-    &nbsp; {if $error}{$error}{/if}
+  {atktext id="logged_in_as" module="atk"}: <b>{$name}</b>
+    &nbsp; {if isset($error)}{$error}{/if}
 </div>
