@@ -352,10 +352,10 @@
     function _getSampleValue($attributename, $value)
     {
       $attr = &$this->getUsableAttribute($attributename);
-      
+
       if(method_exists($attr, "parseTime"))
         $newval = $attr->parseTime($value);
-      else  
+      else
         $newval = $attr->parseStringValue($value);
 
       if (method_exists($attr, "createDestination"))
@@ -414,15 +414,15 @@
         $content.= '</td></tr><tr><td>';
       }
 
-      $content.= atktext("import_skipfirstrow").': </td><td><input type="checkbox" name="skipfirstrow" value="1" '.($skipfirstrow?"CHECKED":"").'/>';
+      $content.= atktext("import_skipfirstrow").': </td><td><input type="checkbox" name="skipfirstrow" class="atkcheckbox" value="1" '.($skipfirstrow?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_doupdate").': </td><td> <input type="checkbox" name="doupdate" value="1" '.($doupdate?"CHECKED":"").'/>';
+      $content.= atktext("import_doupdate").': </td><td> <input type="checkbox" name="doupdate" class="atkcheckbox" value="1" '.($doupdate?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
       $content.= atktext("import_update_key").': </td><td>'.$this->getAttributeSelector(0,$updatekey1,"updatekey1",2).'</td>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_onfalseidentifier").': </td><td> <input type="checkbox" name="onfalseid" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
+      $content.= atktext("import_onfalseidentifier").': </td><td> <input type="checkbox" name="onfalseid" class="atkcheckbox" value="1" '.($onfalseidentifier?"CHECKED":"").'/>';
       $content.= '</td></tr><tr><td>';
-      $content.= atktext("import_novalidatefirst").': </td><td> <input type="checkbox" name="novalidatefirst" value="1" '.($novalidatefirst?"CHECKED":"").'/>';
+      $content.= atktext("import_novalidatefirst").': </td><td> <input type="checkbox" name="novalidatefirst" class="atkcheckbox" value="1" '.($novalidatefirst?"CHECKED":"").'/>';
 
       $content.= '    </td>';
       $content.= '  </tr>';

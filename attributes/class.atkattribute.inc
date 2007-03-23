@@ -569,7 +569,7 @@
       $this->addCSSClass(get_class($this));
       atkimport("atk.keyboard.atkkeyboard");
     }
-    
+
 
     /**
      * Returns the owner instance.
@@ -579,7 +579,7 @@
     function &getOwnerInstance()
     {
       return $this->m_ownerInstance;
-    }    
+    }
 
     /**
      * Sets the owner instance.
@@ -834,8 +834,10 @@
       if ($mode == 'list' && $size > 20)
         $size = 20;
 
+      $value = (isset($record[$this->fieldName()]) && !is_array($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"");
+
       $result = '<input type="text" id="'.$id.'" name="'.$id.'" '.$this->getCSSClassAttribute().
-                ' value="'.(!is_array($record[$this->fieldName()]) && isset($record[$this->fieldName()])?htmlspecialchars($record[$this->fieldName()]):"").'"'.
+                ' value="'.$value.'"'.
                 ($size > 0 ? ' size="'.$size.'"' : '').
                 ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').' '.$onchange.' />';
 
@@ -1075,11 +1077,11 @@
       $funcname = $this->m_name."_display";
       if (method_exists($this->m_ownerInstance, $funcname))
       {
-        $result.= $this->m_ownerInstance->$funcname($defaults, $mode);
+        $result = $this->m_ownerInstance->$funcname($defaults, $mode);
       }
       else
       {
-        $result.= $this->display($defaults, $mode);
+        $result = $this->display($defaults, $mode);
       }
       return $result;
     }
@@ -2374,8 +2376,9 @@
       if (!in_array($classname, $this->m_cssclasses)) $this->m_cssclasses[] = $classname;
     }
 
-    function getCSSClassAttribute()
+    function getCSSClassAttribute($additionalclasses = array())
     {
+      $classes = array_merge($this->getCSSClasses(), is_array($additionalclasses) ? $additionalclasses : array($additionalclasses));
       return 'class="'.implode(" ", $this->getCSSClasses()).'"';
     }
 
@@ -2400,7 +2403,7 @@
     {
       return $this->m_initial_hidden;
     }
-    
+
     /**
      * String representation for this attribute (PHP5 only).
      *

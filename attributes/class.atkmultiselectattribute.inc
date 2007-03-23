@@ -146,7 +146,7 @@
           $sel = "checked";
         }
 
-        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" name="'.$fieldprefix.$this->fieldName().'[]" value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record).'</td>';
+        $result .= '<td class="table" valign="top"><input type="checkbox" id="'.$id.'_'.$i.'" '.$this->getCSSClassAttribute("atkcheckbox").' name="'.$fieldprefix.$this->fieldName().'[]" value="'.$values[$i].'" '.$sel.'>'.$this->_translateValue($values[$i],$record).'</td>';
         $this->registerKeyListener($id.'_'.$i, KB_CTRLCURSOR|KB_UPDOWN);
 
         if ($i%$cols == $modcols) $result .="</tr><tr>\n";

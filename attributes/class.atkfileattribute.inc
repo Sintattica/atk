@@ -211,7 +211,7 @@
          && $record[$this->fieldname()]['orgfilename']!='')
       {
        $this->registerKeyListener($id.'_del', KB_CTRLCURSOR|KB_CURSOR);
-       $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']">&nbsp;'.atktext("remove_current_file", "atk");
+       $result .= '<br><input id="'.$id.'_del" type="checkbox" name="del['.$fieldprefix.$this->fieldName().']" '.$this->getCSSClassAttribute("atkcheckbox").'>&nbsp;'.atktext("remove_current_file", "atk");
       }
       return $result;
     }

@@ -101,7 +101,7 @@
         foreach ($checked as $node => $actions)
         {
           $actions = array_unique($actions);
-          
+
           $nodeModule = getNodeModule($node);
           $nodeType = getNodeType($node);
 
@@ -170,7 +170,7 @@
     function getAllActions($record)
     {
       global $g_modules, $g_moduleflags, $g_nodes;
-      
+
       $result = array();
 
       // hierarchic groups, only return actions of parent (if this record has a parent)
@@ -291,7 +291,7 @@
       $showModule = count($allActions) > 1 && ($isAdmin || count($editableActions) > 1);
 
       $firstModule = true;
-      
+
       foreach ($allActions as $module => $nodes)
       {
         if ($showModule)
@@ -313,7 +313,7 @@
                     atktext("invert_selection", "atk").'</a>]</div>';
           $result .= "<br>";
         }
-        
+
         foreach ($nodes as $node => $actions)
         {
           $showBox = $isAdmin || count(array_intersect($actions, (is_array($editableActions[$module][$node])?$editableActions[$module][$node]:array()))) > 0;
@@ -337,7 +337,7 @@
               if (substr($action,0,4) == "tab_")
                 $display_tabs_str = true;
 
-              $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" value="'.$module.".".$node.".".$action.'" ';
+              $temp_str .= '<input type="checkbox" name="'.$this->formName().'[]" '.$this->getCSSClassAttribute("atkcheckbox").' value="'.$module.".".$node.".".$action.'" ';
               $temp_str .= ($isSelected ? ' checked="checked"' : '').'></input> ';
               $temp_str .= $this->permissionName($action, $node, $module).'&nbsp;&nbsp;&nbsp;';
             }

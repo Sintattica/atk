@@ -122,8 +122,8 @@
 
         $params = array();
         $params['searchmode_title'] = atktext("search_mode", "atk");
-        $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" value="AND" checked>'.atktext("search_and", "atk");
-        $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" value="OR">'.atktext("search_or", "atk");
+        $params['searchmode_and'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="AND" checked>'.atktext("search_and", "atk");
+        $params['searchmode_or'] = '<input type="radio" name="atksearchmethod" class="atkradio" value="OR">'.atktext("search_or", "atk");
         $params["fields"] = array();
 
         foreach (array_keys($node->m_attribList) as $attribname)

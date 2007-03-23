@@ -48,7 +48,7 @@
     var $m_amount = 1;
     var $m_cols=false;
     var $m_rows=false;
-    
+
     var $m_onchangehandler_init = "var newvalue = el.value;\n";
 
     /**
@@ -133,15 +133,15 @@
         if($this->hasFlag(AF_DISPLAY_VERT)) $result.='<tr>';
         $this->registerKeyListener($labelID, KB_CTRLCURSOR|KB_CURSOR);
         $id = $this->getHtmlId($fieldprefix);
-        
+
         $onchange='';
         if (count($this->m_onchangecode))
         {
           $onchange = 'onClick="'.$id.'_onChange(this);" ';
           $this->_renderChangeHandler($fieldprefix);
         }
-        
-        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$i].'" '.$onchange.$sel.'>
+
+        $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$this->m_values[$i].'" '.$onchange.$sel.'>
         <label for="'.$labelID.'">'.atktext($this->m_options[$i], $this->m_ownerInstance->m_module).'</label></td>';
         if($this->hasflag(AF_DISPLAY_VERT))
         {
@@ -167,7 +167,7 @@
             }
             if($this->m_values[$j]!="")
             {
-              $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" value="'.$this->m_values[$j].'" '.$sel.'>
+              $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$this->m_values[$j].'" '.$sel.'>
               <label for="'.$labelID.'">'.atktext($this->m_options[$j], $this->m_ownerInstance->m_module).'</label></td>';
             }
             else
