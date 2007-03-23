@@ -48,6 +48,7 @@
     var $m_authorization = 0;
     var $m_scheme = "none";
     var $m_user = array();
+    var $m_listeners = array();
 
     // If login really fails (no relogin box, but an errormessage), the
     // error message that caused the fatal error is put in this variable.
@@ -673,11 +674,11 @@
     /**
      * Check if the currently logged-in user has the right to view, edit etc.
      * an attribute of a node.
-     * 
+     *
      * @param atkAttribute $attr    attribute reference
      * @param string       $mode    mode (add, edit, view etc.)
      * @param array        $record  record data
-     * 
+     *
      * @return boolean true if access is granted, false if not.
      */
     function attribAllowed(&$attr, $mode, $record=NULL)
