@@ -1,5 +1,4 @@
 <?php
-
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -16,8 +15,12 @@
    * $Id$
    */
 
-  /** Theme definition */
+  /**
+   * Theme definition
+   */
   $theme["tabtype"] = "dhtml";
-  $theme["recordlist_orientation"]='right';
-  $theme['modern_menu_compat']=true;
+  $theme["recordlist_orientation"] = 'right';
+  $theme['modern_menu_compat'] = true;
+  $theme['frame_top_height'] = 113;
+  $theme['frame_menu_width'] = 210;
 ?>
