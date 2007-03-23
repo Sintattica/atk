@@ -50,13 +50,13 @@
    * Retrieve all known information about the currently logged-in user.
    * @todo move to its own 'atkUser' class
    * @return array Array with userinfo, or "" if no user is logged in.
-   */  
+   */
   function atkGetUser()
   {
-    global $g_sessionManager;
+    $sessionmanager = &atkGetSessionManager();
     $session = &atkSessionManager::getSession();
     $user = "";
-    $session_auth = $g_sessionManager->getValue("authentication", "globals");
+    $session_auth = is_object($sessionmanager) ? $sessionmanager->getValue("authentication", "globals") : array();
     if (atkconfig("authentication_session") &&
         atkArrayNvl($session, "login", 0)==1 &&
         $session_auth["authenticated"]==1 &&
@@ -66,7 +66,7 @@
       if($user["access_level"]=="") $user["access_level"]=0;
     }
 
-    return $user;    
+    return $user;
   }
 
   /**
@@ -78,11 +78,11 @@
   {
     $user = atkGetUser();
     $userpk = atkConfig('auth_userpk');
-    
+
     // check if logged in || logged in as administrator
     if ($user == "" || $userpk == "" ||
        (is_array($user) && !isset($user[$userpk]))) return 0;
-       
+
     return $user[$userpk];
   }
 
