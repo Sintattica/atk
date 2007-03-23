@@ -406,7 +406,7 @@
         // if atklevel is 0 or less, we are at the bottom of the session stack,
         // which means that 'saveandclose' doesn't close anyway, so we leave out
         // the 'saveandclose' button. Unless, a feedback screen is configured.
-        if (atkLevel() >0 || hasFlag($node->m_feedback["update"], ACTION_SUCCESS))
+        if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS))
         {
           $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.atktext('saveandclose', "atk").'">';
         }
