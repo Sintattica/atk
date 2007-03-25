@@ -41,14 +41,15 @@
        * This fraks up the autoloader.
        * If anyone has a better way to prevent this, please be my guest...
        */
-      
       if (!in_array($classname,array('Smarty','Services_JSON','pear','PEAR_Error')))
       {
         $classpath = atkClassLoader::findClass($classname);
-        if ($classpath) { if (atkimport($classpath)) atkdebug("Autoloaded: ".$classname); }
-        else if (strtolower(substr($classname,0,3))!=="atk")  atkerror("Class: $classname not found!");
+        
+        if ($classpath && atkimport($classpath)) 
+        {
+          atkdebug("Autoloaded: ".$classname);
+        } 
       }
     }
   }
-
 ?>
