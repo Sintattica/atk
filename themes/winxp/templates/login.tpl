@@ -1,13 +1,13 @@
 <br><br>
 <div align="center">
   <div class="box" style="width: 293px;">
-    <table cellspacing="0px" cellpadding="0px" border="0">
+    <table cellspacing="0" cellpadding="0" border="0">
       <tr>
         <td class="boxtitle" colspan="5" width="293" nobr nowrap>Login</td>
       </tr>
       <tr>
         <td height="100%" valign="top" align="center">
-						
+
           <table width="100%" border="0" cellpadding="2" cellspacing="0">
       	  <tr>
       	  <td>
@@ -18,7 +18,7 @@
                   {if $theme_logo != ''}
                     <img src="{$theme_logo}" alt='' align=left>
                   {/if}
-                </td>            
+                </td>
               </tr>
             </table>
       	  </td>
@@ -29,10 +29,10 @@
             <tr>
               <td align="left" class="block">
                   {$content}
-              </td>            
+              </td>
             </tr>
           </table>
-							
+
         </td>
       </tr>
     </table>
