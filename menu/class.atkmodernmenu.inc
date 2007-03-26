@@ -122,7 +122,17 @@ class atkModernMenu extends atkPlainMenu
           }
           if (!empty($submenuitem['url']))
           {
-            $menuitem['submenu'][$submenukey]['url'] = session_url($submenuitem['url']."&amp;atkmenutop={$menuitem['id']}", SESSION_NEW);
+            if (strpos($submenuitem['url'],"?")!==false)
+            {
+              $start = "&amp;";
+            }
+            else
+            {
+              $start = "?";
+            }
+            $url = $submenuitem['url'].$start."atkmenutop={$menuitem['id']}";
+
+            $menuitem['submenu'][$submenukey]['url'] = session_url($url, SESSION_NEW);
           }
         }
       }
