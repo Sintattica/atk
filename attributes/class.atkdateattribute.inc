@@ -335,7 +335,7 @@
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list')
         {
           $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
-          $result.=' <input class="button" class="atkdateattribute" type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false);">';
+          $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' class="atkdateattribute" type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false);">';
         }
         return $result;
       }
@@ -870,22 +870,22 @@
     function fetchValue($postvars)
     {
       if (!is_array($postvars) || !isset($postvars[$this->fieldName()])) return NULL;
-      
+
       $value = $postvars[$this->fieldName()];
-      
+
 
       // edit in text mode
       if (is_array($value) && array_key_exists('date', $value))
       {
         $value = $postvars[$this->fieldName()]['date'];
       }
-      
+
       // array with year / month / day
-      if (is_array($value)) 
+      if (is_array($value))
       {
         return $value;
       }
-      
+
       // text format
       else if (!empty($value))
       {
@@ -904,8 +904,8 @@
         if ($arr['day'] == 0 || $arr['month'] == 0 || $arr['year'] == 0)
           return $this->dateArray(adodb_date("Ymd", strtotime($value)));
         else return $arr;
-      }       
-      
+      }
+
       return NULL;
     }
 
