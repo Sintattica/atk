@@ -140,7 +140,7 @@
       }
 
       $orientation  = atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_orientation"));
-      $vorientation = trim(atkconfig('recordlist_orientation', $theme->getAttribute("recordlist_vorientation")));
+      $vorientation = trim(atkconfig('recordlist_vorientation', $theme->getAttribute("recordlist_vorientation")));
 
       $ui = &$this->m_node->getUi();
 
