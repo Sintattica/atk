@@ -746,7 +746,7 @@
     /**
      * Converts a database value to an internal value.
      *
-     * For the regular atkAttribute, this means stripping slashes.
+     * For the regular atkAttribute
      * Derived attributes may reimplement this for their own conversion.
      * (In which case, the return type might be 'mixed')
      *
@@ -759,7 +759,7 @@
     {
       if (isset($rec[$this->fieldName()]))
       {
-        return $rec[$this->fieldName()] === NULL ? NULL : stripslashes($rec[$this->fieldName()]);
+        return $rec[$this->fieldName()] === NULL ? NULL : $rec[$this->fieldName()];
       }
       return NULL;
     }
