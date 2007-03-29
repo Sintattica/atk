@@ -230,6 +230,10 @@
                 $query->addCondition($query->quoteField($refkey)." = '".$db->escapeSQL($record[$attrib->fieldName()][$refkey])."'");
               }
             }
+            else if (!$attrib->isNotNullInDb() && $attrib->isEmpty($record))
+            {
+              $query->addCondition($query->quoteField($field)." IS NULL");
+            }
             else
             {
               $query->addCondition($query->quoteField($field)." = '".$attrib->value2db($record)."'");

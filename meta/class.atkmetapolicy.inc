@@ -789,6 +789,64 @@ class atkMetaPolicy
 
     return true;
   }
+  
+  /**
+   * Flags string.
+   */
+  function _flagsString($flags)
+  {
+    static $attrConstants = null;
+    
+    if ($attrConstants == null) 
+    {
+      useattrib('atkattribute');
+      $allConstants = get_defined_constants();
+
+      $attrConstants = array();
+      foreach ($allConstants as $const => $value)
+      {
+        if (substr($const, 0, 3) == 'AF_' && 
+            (substr($const, 0, 12) == 'AF_SPECIFIC_' || !in_array($value, array(AF_SPECIFIC_1, AF_SPECIFIC_2, AF_SPECIFIC_3, AF_SPECIFIC_4, AF_SPECIFIC_5))) && 
+            !in_array($const, array('AF_UNIX', 'AF_INET', 'AF_INET6')))
+        {
+          $attrConstants[$value] = $const;
+        }
+      }
+ 
+      krsort($attrConstants);
+    }
+
+    $found = array();
+    foreach ($attrConstants as $value => $const)
+    {
+      if (hasFlag($flags, $value))
+      {
+        $found[] = $const;
+        $flags ^= $value;
+      }
+    }
+    
+    return count($found) > 0 ? implode('|', $found) : 0;
+  }
+  
+  /**
+   * Debug attribute.
+   */
+  function _debugAttribute($name, $type, $params, $flags, $tabs, $order)
+  {
+    if (atkconfig('debug') < 1) return;
+    
+    $paramsStrs = array();
+    foreach ($params as $param)
+      $paramsStrs[] = htmlentities(var_export($param, true));
+    $paramsStr = count($paramsStrs) > 0 ? ', '.implode(', ', $paramsStrs) : '';
+    
+    $flagsStr = $this->_flagsString($flags);
+    $tabsStr = var_export($tabs, true);
+      
+    $call = "\$this->add(new {$type}('{$name}'$paramsStr, $flagsStr), $tabsStr, $order);";
+    atkdebug("atkMetaPolicy::_applyAttribute: {$call}");
+  }
 
   /**
    * Apply attribute.
@@ -818,25 +876,46 @@ class atkMetaPolicy
     $call .= ", \$flags);";
     eval($call);
     
+    $this->_debugAttribute($name, $type, $params, $flags, $tabs, $order);
+    
     $attr = &$this->m_node->add($attr, $tabs, $order);
     if ($forceUpdate !== NULL)
       $attr->setForceUpdate($forceUpdate);
     return $attr;
   }  
+  
+  /**
+   * Compare the order of two attributes.
+   *
+   * @param array $attr1
+   * @param array $attr2
+   * @return result of ordering
+   */
+  function _cmpAttribute($attr1, $attr2)
+  {
+    if ($attr1['order'] < $attr2['order']) return -1;
+    else if ($attr1['order'] == $attr2['order']) return 0;
+    else return 1;
+  }
 
   /**
    * Build / setup node using the collected attributes.
    */
   function apply()
   {
-    foreach ($this->m_attrs as $name => $data) 
+    atkdebug("atkMetaPolicy::apply: ".$this->m_node->atkNodeType());
+    
+    $attrs = $this->m_attrs;
+    uasort($attrs, array($this, '_cmpAttribute'));
+    
+    foreach ($attrs as $name => $data) 
     {
       $this->_applyAttribute(
         $name, 
         isset($data["type"]) ? $data["type"] : '', 
         isset($data["params"]) ? $data["params"] : '', 
         isset($data["flags"]) ? $data["flags"] : '', 
-        isset($data["tabs"]) ? $data["tabs"] : '', 
+        isset($data["tabs"]) ? $data["tabs"] : $this->m_node->m_default_tab, 
         isset($data["order"]) ? $data["order"] : '',
         isset($data["forceUpdate"]) ? $data["forceUpdate"] : NULL
       );

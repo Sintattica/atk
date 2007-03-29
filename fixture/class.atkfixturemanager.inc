@@ -228,7 +228,7 @@ class atkFixtureManager
       
       if (!$query->executeInsert())
       {
-        atk_var_dump($data, 'Could not insert fixture into table '.$table);
+        atk_var_dump($record, "Could not insert fixture '{$item}' into table {$table}");
         $database->rollback($savepoint);
         return false;
       }

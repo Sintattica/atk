@@ -1227,6 +1227,9 @@ Changed in ATK 5.6
 * Updated Norwegian translation. [Olav]
 * Fixed PHP5 notice in atktools.inc: htmlentities() expects string value.
   [Patrick]
+* Fixed validation of unique fieldsets that have nullable attributes. [Peter]
+* Improved atkMetaPolicy debug information (now shows the exact calls it
+  does for adding attributes to the node). [Peter]
 - Removed atk/styles.css as this only belongs in themes. [Ivo]
 - Default styles.css file from an application's root is no longer loaded by
   default. [Ivo]

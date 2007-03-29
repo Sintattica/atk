@@ -1482,7 +1482,7 @@
      *
      * @return boolean attribute's database column not null?
      */
-    function _isNotNullInDb()
+    function isNotNullInDb()
     {
       $db = &$this->getDb();
       $meta = $db->tableMeta($this->m_ownerInstance->m_table);
@@ -1519,7 +1519,7 @@
     {
       if ($mode == "add" || $mode == "update")
       {
-        if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->_isNotNullInDb())
+        if ($this->isEmpty($rec) && !$this->hasFlag(AF_OBLIGATORY) && !$this->isNotNullInDb())
         {
           $query->addField($this->fieldName(),'NULL',"","",false,true);
         }

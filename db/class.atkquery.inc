@@ -209,7 +209,7 @@
       if ($quoteFieldName)
         $this->m_quotedfields[] = $fieldName;
 
-      $this->m_expressions[] = array('name' => $fieldName, 'expression' => $expression);
+      $this->m_expressions[] = array('name' => $fieldAliasPrefix.$fieldName, 'expression' => $expression);
 
       if (!empty($fieldAliasPrefix))
       {
