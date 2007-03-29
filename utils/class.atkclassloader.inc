@@ -46,7 +46,7 @@
       if (isset($g_overloaders[$class])) return $g_overloaders[$class];
       return $class;
     }
-  
+
     /**
      * Add a class overloader
      *
@@ -66,7 +66,7 @@
       }
       return false;
     }
-  
+
     /**
      * Remove a class overloader for a class
      *
@@ -84,7 +84,7 @@
       }
       return false;
     }
-  
+
     /**
      * Checks wether or not a class has an overloader defined
      *
@@ -101,7 +101,7 @@
       }
       return false;
     }
-    
+
     /**
      * Invoke a method on a class based on a string definition.
      * The string must be in the format
@@ -155,7 +155,7 @@
         {
           $s_forced=1;
           $classes = $classloader->getAllClasses(true);
-          if (!in_array($classname,array_keys($classes)))
+          if (in_array($classname,array_keys($classes)))
           {
             return $classes[$classname];
           }
@@ -206,7 +206,7 @@
       $traverser->addCallbackObject($classfinder);
       $traverser->traverse(atkconfig('atkroot').'atk/');
       $classes = $classfinder->getClasses();
-      atkdebug("atkClassLoader::findAllClasses($force): Found ".count($classes).' classes');
+      atkdebug("atkClassLoader::findAllClasses(): Found ".count($classes).' classes');
       return $classes;
     }
   }
