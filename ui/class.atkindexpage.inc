@@ -42,7 +42,7 @@
       $this->atkGenerateMenu();
       $this->atkGenerateDispatcher();
 
-      $this->m_output->output($this->m_page->render(atktext('app_title')), true);
+      $this->m_output->output($this->m_page->render(atkText('app_title')), true);
       $this->m_output->outputFlush();
     }
 
@@ -64,17 +64,17 @@
       $this->m_page->register_style($this->m_theme->stylePath("top.css"));
 
       //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
-      $loggedin = text("logged_in_as", "", "atk").": <b>".($this->m_user["name"]?$this->m_user['name']:'administrator')."</b>";
-      $content = '<br />'.$loggedin.' &nbsp; <a href="index.php?atklogout=1">'.ucfirst(atktext("logout")).' </a>&nbsp;<br /><br />';
+      $loggedin = atkText("logged_in_as", "atk").": <b>".($this->m_user["name"]?$this->m_user['name']:'administrator')."</b>";
+      $content = '<br />'.$loggedin.' &nbsp; <a href="index.php?atklogout=1">'.ucfirst(atkText("logout")).' </a>&nbsp;<br /><br />';
 
       $top = $this->m_ui->renderBox(array("content"=> $content,
       "logintext" => atktext("logged_in_as"),
-      "logouttext" => ucfirst(text("logout", "", "atk")),
+      "logouttext" => ucfirst(atkText("logout", "atk")),
       "logoutlink" => "index.php?atklogout=1",
       "logouttarget"=>"_top",
       "centerpiece"=>"",
       "searchpiece"=>"",
-      "title" => atktext("app_title"),
+      "title" => atkText("app_title"),
       "user"   => $this->m_user["name"]),
       "top");
 
@@ -98,13 +98,13 @@
           if (isset($ATK_VARS["atkselector"])) $destination.="&atkselector=".$ATK_VARS["atkselector"];
         }
 
-        $box = $this->m_ui->renderBox(array("title"=>text("title_session_expired"),
-        "content"=>'<br><br>'.text("explain_session_expired").'<br><br><br><br>
-                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.text("relogin").'</a><br><br>'));
+        $box = $this->m_ui->renderBox(array("title"=>atkText("title_session_expired"),
+        "content"=>'<br><br>'.atkText("explain_session_expired").'<br><br><br><br>
+                                           <a href="index.php?atklogout=true'.$destination.'" target="_top">'.atkText("relogin").'</a><br><br>'));
 
         $this->m_page->addContent($box);
 
-        $this->m_output->output($this->m_page->render(text("title_session_expired"), true));
+        $this->m_output->output($this->m_page->render(atkText("title_session_expired"), true));
       }
       else
       {
@@ -129,8 +129,8 @@
         else
         {
           $this->m_page->register_style($this->m_theme->stylePath("style.css"));
-          $box = $this->m_ui->renderBox(array("title"=>text("app_shorttitle"),
-          "content"=>"<br /><br />".text("app_description")."<br /><br />"));
+          $box = $this->m_ui->renderBox(array("title"=>atkText("app_shorttitle"),
+          "content"=>"<br /><br />".atkText("app_description")."<br /><br />"));
 
           $this->m_page->addContent($box);
         }
