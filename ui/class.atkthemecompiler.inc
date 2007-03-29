@@ -109,7 +109,8 @@
 
         if (isset($theme["basetheme"])) // If theme is derived from another theme, use that other theme as basis
         {
-          $data = $this->readStructure($theme["basetheme"]);
+          $basethemelocation = isset($theme["basethemelocation"]) ? $theme["basethemelocation"] : "auto";
+          $data = $this->readStructure($theme["basetheme"], $basethemelocation);
         }
         else if ($name!="default") // If basetheme is not explicitly defined, use default as base theme
         {
