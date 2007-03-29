@@ -1,0 +1,105 @@
+body
+{
+  background: #FFFFFF;
+  color: #cacaca;
+  padding: 0px 0px 0px 9px;
+}
+
+#mainMenu
+{
+  position: relative;
+  margin: 8px 0px 20px 0px;
+  padding: 0px;
+  color: #414141;
+  width: 192px;
+
+}
+
+/*
+.menu-submenuitem
+{
+  padding: 5px 0px 5px 25px;
+  color: #414141;
+  text-decoration: none;
+}
+*/
+
+.menuitem_link
+{
+  background: none;
+  text-decoration: none;
+  width: 192px;
+}
+
+.menu-menuitem
+{
+  padding-left: 0px;
+  color: #414141;
+  font-weight: bold;
+}
+
+.menuItemLevel1
+{
+  display: block;
+  background: url(../images/menubg.gif) no-repeat -192px top;
+  width: 192px;
+  height: 21px;
+  margin: 0px;
+  padding: 7px 0px 0px 15px;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.menuItemLevel2Head
+{
+  display: block;
+  background: url(../images/menubg.gif) no-repeat left top;
+  width: 177px;
+  height: 21px;
+  margin: 0px;
+  padding: 7px 0px 0px 15px;
+  color: #FFFFFF !important;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.menuItemLevel2
+{
+  padding: 5px 0px 5px 25px;
+  display: block;
+  font-size: 11px;
+  color: #444;
+  width: 177px;
+}
+
+.menuItemLevel2:hover
+{
+  font-size: 11px !important;
+  padding-left: 25px !important;
+  font-weight: normal !important;
+}
+
+.menuItemLevel2Head .menu-menuitem
+{
+  background: none;
+	font-size: 12px !important;
+  padding-left: 0px;
+  color: #fff !important;
+  text-decoration: none;
+}
+
+.submenuHover
+{
+  color: #9a1010;
+}
+
+.submenuHover form
+{
+  display: block;
+  padding: 0 0 0 15px;
+}
+
+.submenuHover .achievoprojectselector
+{
+  padding: 0 0 0 15px;
+}

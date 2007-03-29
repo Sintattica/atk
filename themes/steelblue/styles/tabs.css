@@ -1,0 +1,96 @@
+
+.activetab
+{
+  cursor: default;
+  height: 100%;
+}
+
+.passivetab
+{
+  cursor: pointer;
+  display: none;
+}
+
+#tabs
+{
+  text-align: left;
+  color: #ba0000;
+  text-transform: uppercase;
+  font-size: 1em;
+  margin: 0px auto;
+}
+
+#tab-content
+{
+  border-top: 1px solid;
+  border-bottom: 1px solid;
+  background: #ffffff;
+}
+
+#editform
+{
+  text-align: left;
+}
+
+.tabs
+{
+  display: block;
+  float: left;
+  border: 1px solid green;
+}
+
+.tabs2
+{
+  display: block;
+  float: left;
+  border: 1px solid red;
+}
+
+#tabContent
+{
+	padding: 12px;
+}
+
+#tabContainer
+{
+  padding: 0px;
+}
+
+.tabOn, .tabOff
+{
+  padding: 3px 0px 0px 0px;
+  margin: 0px;
+}
+
+.tabOn
+{
+	color: #414141 !important;
+	background: url(../images/subtabon.gif) no-repeat left top;
+	width: 105px;
+	margin: 0px;
+}
+
+.tabOff
+{
+	border: 0px;
+	color: #414141;
+	background: url(../images/subtaboff.gif) no-repeat left top;
+	width: 105px;
+}
+
+.tabInnerDiv
+{
+  text-align: left;
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+}
+
+.tabOuterDiv
+{
+  _position: relative;
+  border-bottom: 1px solid #e0e0e0; 
+  text-align: left;
+  margin: 0px;
+  padding: 0px 0px 0px 10px;
+}
