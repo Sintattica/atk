@@ -329,6 +329,8 @@ Changed in ATK 5.7
   forget to include them. (php5 only). [Boy]
 + The atkcustomrecordlist attribute is extended to support some standard
   export types (csv, excelcsv, html). [Patrick]
++ Added setComment function to atkradioattribute. This can be used for comments 
+  per option and are placed beneath each option. [Lineke]
 * Fixed calendar-runner. Two different types of date field (one where you input
   the date and another one where you input the date using the date selection
   boxes could cause problems because the Calendar object was re-used). [Peter]

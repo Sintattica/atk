@@ -48,6 +48,13 @@
     var $m_amount = 1;
     var $m_cols=false;
     var $m_rows=false;
+    
+    /**
+     * Array with comments per option
+     *
+     * @var array
+     */
+    var $m_comments = array();
 
     var $m_onchangehandler_init = "var newvalue = el.value;\n";
 
@@ -85,6 +92,18 @@
         }
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags,$size); // base class constructor
+    }
+    
+    /**
+     * Set comment for a specific option
+     *
+     * @param string $option The option the comment is for
+     * @param string $comment The comment itself
+     */
+    function setComment($option, $comment)
+    {
+      $key = array_search($option, $this->m_options);
+      $this->m_comments[$key] = $comment;
     }
 
     /**
@@ -140,9 +159,11 @@
           $onchange = 'onClick="'.$id.'_onChange(this);" ';
           $this->_renderChangeHandler($fieldprefix);
         }
+        
+        $commenthtml = '<br/><div class="atkradio_comment">'.$this->m_comments[$i].'</div>';
 
         $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$this->m_values[$i].'" '.$onchange.$sel.'>
-        <label for="'.$labelID.'">'.atktext($this->m_options[$i], $this->m_ownerInstance->m_module).'</label></td>';
+        <label for="'.$labelID.'">'.atktext($this->m_options[$i], $this->m_ownerInstance->m_module).'</label>'.($this->hasFlag(AF_DISPLAY_VERT) && $this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
         if($this->hasflag(AF_DISPLAY_VERT))
         {
           $tmp_items=$items;
@@ -167,8 +188,8 @@
             }
             if($this->m_values[$j]!="")
             {
-              $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$this->m_values[$j].'" '.$sel.'>
-              <label for="'.$labelID.'">'.atktext($this->m_options[$j], $this->m_ownerInstance->m_module).'</label></td>';
+              $result .= '<td><input id="'.$labelID.'" type="radio" name="'.$fieldprefix.$this->formName().'" '.$this->getCSSClassAttribute("atkradio").' value="'.$this->m_values[$j].'" '.$onchange.$sel.'>
+              <label for="'.$labelID.'">'.atktext($this->m_options[$j], $this->m_ownerInstance->m_module).'</label>'.($this->m_comments[$i] != '' ? $commenthtml : '').'</td>';
             }
             else
             {
