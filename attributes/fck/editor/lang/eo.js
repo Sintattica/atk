@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: eo.js
- * 	Esperanto language file.
- * 
- * File Authors:
- * 		Tim Morley (timsk@openoffice.org)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Esperanto language file.
  */
 
 var FCKLang =
@@ -98,8 +102,13 @@ Button			: "Butono",
 SelectionField	: "Elekta Kampo",
 ImageButton		: "Bildbutono",
 
+FitWindow		: "Maximize the editor size",	//MISSING
+
 // Context Menu
 EditLink			: "Modifier Ligilon",
+CellCM				: "Cell",	//MISSING
+RowCM				: "Row",	//MISSING
+ColumnCM			: "Column",	//MISSING
 InsertRow			: "Enmeti Linion",
 DeleteRows			: "Forigi Liniojn",
 InsertColumn		: "Enmeti Kolumnon",
@@ -125,7 +134,7 @@ SelectionFieldProp	: "Atributoj de Elekta Kampo",
 TextareaProp		: "Atributoj de Teksta Areo",
 FormProp			: "Formularaj Atributoj",
 
-FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",
+FontFormats			: "Normala;Formatita;Adreso;Titolo 1;Titolo 2;Titolo 3;Titolo 4;Titolo 5;Titolo 6;Paragrafo (DIV)",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Traktado de XHTML. Bonvolu pacienci...",
@@ -136,7 +145,7 @@ UnknownToolbarItem	: "Ilobretero nekonata \"%1\"",
 UnknownCommand		: "Komandonomo nekonata \"%1\"",
 NotImplemented		: "Komando ne ankoraŭ realigita",
 UnknownToolbarSet	: "La ilobreto \"%1\" ne ekzistas",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+NoActiveX			: "Your browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
 BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
 DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
@@ -146,12 +155,12 @@ DlgBtnCancel		: "Rezigni",
 DlgBtnClose			: "Fermi",
 DlgBtnBrowseServer	: "Foliumi en la Servilo",
 DlgAdvancedTag		: "Speciala",
-DlgOpOther			: "&lt;Alia&gt;",
+DlgOpOther			: "<Alia>",
 DlgInfoTab			: "Info",	//MISSING
 DlgAlertUrl			: "Please insert the URL",	//MISSING
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;Defaŭlta&gt;",
+DlgGenNotSet		: "<Defaŭlta>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Skribdirekto",
 DlgGenLangDirLtr	: "De maldekstro dekstren (LTR)",
@@ -215,12 +224,12 @@ DlgLnkTypeURL		: "URL",
 DlgLnkTypeAnchor	: "Ankri en tiu ĉi paĝo",
 DlgLnkTypeEMail		: "Retpoŝto",
 DlgLnkProto			: "Protokolo",
-DlgLnkProtoOther	: "&lt;alia&gt;",
+DlgLnkProtoOther	: "<alia>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Elekti Ankron",
 DlgLnkAnchorByName	: "Per Ankronomo",
 DlgLnkAnchorById	: "Per Elementidentigilo",
-DlgLnkNoAnchors		: "&lt;Ne disponeblas ankroj en la dokumento&gt;",
+DlgLnkNoAnchors		: "<Ne disponeblas ankroj en la dokumento>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "Retadreso",
 DlgLnkEMailSubject	: "Temlinio",
 DlgLnkEMailBody		: "Mesaĝa korpo",
@@ -228,8 +237,8 @@ DlgLnkUpload		: "Alŝuti",
 DlgLnkBtnUpload		: "Sendi al Servilo",
 
 DlgLnkTarget		: "Celo",
-DlgLnkTargetFrame	: "&lt;kadro&gt;",
-DlgLnkTargetPopup	: "&lt;ŝprucfenestro&gt;",
+DlgLnkTargetFrame	: "<kadro>",
+DlgLnkTargetPopup	: "<ŝprucfenestro>",
 DlgLnkTargetBlank	: "Nova Fenestro (_blank)",
 DlgLnkTargetParent	: "Gepatra Fenestro (_parent)",
 DlgLnkTargetSelf	: "Sama Fenestro (_self)",
@@ -253,6 +262,7 @@ DlgLnkPopTop		: "Pozicio de Supro",
 DlnLnkMsgNoUrl		: "Bonvolu entajpi la URL-on",
 DlnLnkMsgNoEMail	: "Bonvolu entajpi la retadreson",
 DlnLnkMsgNoAnchor	: "Bonvolu elekti ankron",
+DlnLnkMsgInvPopName	: "The popup name must begin with an alphabetic character and must not contain spaces",	//MISSING
 
 // Color Dialog
 DlgColorTitle		: "Elekti",
@@ -327,18 +337,17 @@ DlgReplaceReplAllBtn	: "Anstataŭigi Ĉiun",
 DlgReplaceWordChk		: "Tuta Vorto",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras intergluajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-V).",
 PasteErrorCut	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras eltondajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-X).",
 PasteErrorCopy	: "La sekurecagordo de via TTT-legilo ne permesas, ke la redaktilo faras kopiajn operaciojn. Bonvolu uzi la klavaron por tio (ctrl-C).",
 
 PasteAsText		: "Interglui kiel Tekston",
 PasteFromWord	: "Interglui el Word",
 
-DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<STRONG>Ctrl+V</STRONG>) and hit <STRONG>OK</STRONG>.",	//MISSING
+DlgPasteMsg2	: "Please paste inside the following box using the keyboard (<strong>Ctrl+V</strong>) and hit <strong>OK</strong>.",	//MISSING
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
 DlgPasteIgnoreFont		: "Ignore Font Face definitions",	//MISSING
 DlgPasteRemoveStyles	: "Remove Styles definitions",	//MISSING
 DlgPasteCleanBox		: "Clean Up Box",	//MISSING
-
 
 // Color Picker
 ColorAutomatic	: "Aŭtomata",
@@ -370,8 +379,11 @@ DlgSpellManyChanges		: "Literumkontrolado finita: %1 vortoj ŝanĝitaj",
 IeSpellDownload			: "Literumada Kontrolilo ne instalita. Ĉu vi volas elŝuti ĝin nun?",
 
 // Button Dialog
-DlgButtonText	: "Teksto (Valoro)",
-DlgButtonType	: "Tipo",
+DlgButtonText		: "Teksto (Valoro)",
+DlgButtonType		: "Tipo",
+DlgButtonTypeBtn	: "Button",	//MISSING
+DlgButtonTypeSbm	: "Submit",	//MISSING
+DlgButtonTypeRst	: "Reset",	//MISSING
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Nomo",
@@ -420,6 +432,7 @@ DlgHiddenValue	: "Valoro",
 // Bulleted List Dialog
 BulletedListProp	: "Atributoj de Bula Listo",
 NumberedListProp	: "Atributoj de Numera Listo",
+DlgLstStart			: "Start",	//MISSING
 DlgLstType			: "Tipo",
 DlgLstTypeCircle	: "Cirklo",
 DlgLstTypeDisc		: "Disc",	//MISSING
@@ -442,6 +455,15 @@ DlgDocLangDirLTR	: "De maldekstro dekstren (LTR)",
 DlgDocLangDirRTL	: "De dekstro maldekstren (LTR)",
 DlgDocLangCode		: "Lingvokodo",
 DlgDocCharSet		: "Signara Kodo",
+DlgDocCharSetCE		: "Central European",	//MISSING
+DlgDocCharSetCT		: "Chinese Traditional (Big5)",	//MISSING
+DlgDocCharSetCR		: "Cyrillic",	//MISSING
+DlgDocCharSetGR		: "Greek",	//MISSING
+DlgDocCharSetJP		: "Japanese",	//MISSING
+DlgDocCharSetKR		: "Korean",	//MISSING
+DlgDocCharSetTR		: "Turkish",	//MISSING
+DlgDocCharSetUN		: "Unicode (UTF-8)",	//MISSING
+DlgDocCharSetWE		: "Western European",	//MISSING
 DlgDocCharSetOther	: "Alia Signara Kodo",
 
 DlgDocDocType		: "Dokumenta Tipo",
@@ -468,14 +490,15 @@ DlgDocPreview		: "Aspekto",
 // Templates Dialog
 Templates			: "Templates",	//MISSING
 DlgTemplatesTitle	: "Content Templates",	//MISSING
-DlgTemplatesSelMsg	: "Please select the template to open in the editor<br>(the actual contents will be lost):",	//MISSING
+DlgTemplatesSelMsg	: "Please select the template to open in the editor<br />(the actual contents will be lost):",	//MISSING
 DlgTemplatesLoading	: "Loading templates list. Please wait...",	//MISSING
 DlgTemplatesNoTpl	: "(No templates defined)",	//MISSING
+DlgTemplatesReplace	: "Replace actual contents",	//MISSING
 
 // About Dialog
 DlgAboutAboutTab	: "Pri",
 DlgAboutBrowserInfoTab	: "Informoj pri TTT-legilo",
+DlgAboutLicenseTab	: "License",	//MISSING
 DlgAboutVersion		: "versio",
-DlgAboutLicense		: "Disdonata laŭ la GNU Lesser General Public License",
 DlgAboutInfo		: "Por pli da informoj, vizitu"
-}
+};

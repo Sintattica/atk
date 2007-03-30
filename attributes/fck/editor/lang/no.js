@@ -1,20 +1,24 @@
 ﻿/*
- * FCKeditor - The text editor for internet
- * Copyright (C) 2003-2005 Frederico Caldeira Knabben
- * 
- * Licensed under the terms of the GNU Lesser General Public License:
- * 		http://www.opensource.org/licenses/lgpl-license.php
- * 
- * For further information visit:
- * 		http://www.fckeditor.net/
- * 
- * "Support Open Source software. What about a donation today?"
- * 
- * File Name: no.js
- * 	Norwegian language file.
- * 
- * File Authors:
- * 		Martin Kronstad (www.siteman.no) (martin.kronstad@gmail.com)
+ * FCKeditor - The text editor for Internet - http://www.fckeditor.net
+ * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ *
+ * == BEGIN LICENSE ==
+ *
+ * Licensed under the terms of any of the following licenses at your
+ * choice:
+ *
+ *  - GNU General Public License Version 2 or later (the "GPL")
+ *    http://www.gnu.org/licenses/gpl.html
+ *
+ *  - GNU Lesser General Public License Version 2.1 or later (the "LGPL")
+ *    http://www.gnu.org/licenses/lgpl.html
+ *
+ *  - Mozilla Public License Version 1.1 or later (the "MPL")
+ *    http://www.mozilla.org/MPL/MPL-1.1.html
+ *
+ * == END LICENSE ==
+ *
+ * Norwegian language file.
  */
 
 var FCKLang =
@@ -98,8 +102,13 @@ Button			: "Knapp",
 SelectionField	: "Dropdown meny",
 ImageButton		: "Bildeknapp",
 
+FitWindow		: "Maksimer størrelsen på redigeringsverktøyet",
+
 // Context Menu
 EditLink			: "Rediger lenke",
+CellCM				: "Celle",
+RowCM				: "Rader",
+ColumnCM			: "Kolonne",
 InsertRow			: "Sett inn rad",
 DeleteRows			: "Slett rader",
 InsertColumn		: "Sett inn kolonne",
@@ -125,7 +134,7 @@ SelectionFieldProp	: "Dropdown menyegenskaper",
 TextareaProp		: "Tekstfeltegenskaper",
 FormProp			: "Skjemaegenskaper",
 
-FontFormats			: "Normal;Formatert;Adresse;Tittel 1;Tittel 2;Tittel 3;Tittel 4;Tittel 5;Tittel 6",
+FontFormats			: "Normal;Formatert;Adresse;Tittel 1;Tittel 2;Tittel 3;Tittel 4;Tittel 5;Tittel 6",		//REVIEW : Check _getfontformat.html
 
 // Alerts and Messages
 ProcessingXHTML		: "Lager XHTML. Vennligst vent...",
@@ -146,12 +155,12 @@ DlgBtnCancel		: "Avbryt",
 DlgBtnClose			: "Lukk",
 DlgBtnBrowseServer	: "Bla igjennom server",
 DlgAdvancedTag		: "Avansert",
-DlgOpOther			: "&lt;Annet&gt;",
+DlgOpOther			: "<Annet>",
 DlgInfoTab			: "Info",
 DlgAlertUrl			: "Vennligst skriv inn URL'en",
 
 // General Dialogs Labels
-DlgGenNotSet		: "&lt;ikke satt&gt;",
+DlgGenNotSet		: "<ikke satt>",
 DlgGenId			: "Id",
 DlgGenLangDir		: "Språkretning",
 DlgGenLangDirLtr	: "Venstre til høyre (VTH)",
@@ -212,15 +221,15 @@ DlgLnkTargetTab		: "Mål",
 
 DlgLnkType			: "Lenketype",
 DlgLnkTypeURL		: "URL",
-DlgLnkTypeAnchor	: "Bokmerk denne siden",
+DlgLnkTypeAnchor	: "Lenke til bokmerke i teksten",
 DlgLnkTypeEMail		: "E-Post",
 DlgLnkProto			: "Protokoll",
-DlgLnkProtoOther	: "&lt;annet&gt;",
+DlgLnkProtoOther	: "<annet>",
 DlgLnkURL			: "URL",
 DlgLnkAnchorSel		: "Velg ett anker",
 DlgLnkAnchorByName	: "Anker etter navn",
 DlgLnkAnchorById	: "Element etter ID",
-DlgLnkNoAnchors		: "&lt;Ingen anker i dokumentet&gt;",
+DlgLnkNoAnchors		: "<Ingen anker i dokumentet>",		//REVIEW : Change < and > with ( and )
 DlgLnkEMail			: "E-Post Addresse",
 DlgLnkEMailSubject	: "Meldingsemne",
 DlgLnkEMailBody		: "Melding",
@@ -228,8 +237,8 @@ DlgLnkUpload		: "Last opp",
 DlgLnkBtnUpload		: "Send til server",
 
 DlgLnkTarget		: "Mål",
-DlgLnkTargetFrame	: "&lt;ramme&gt;",
-DlgLnkTargetPopup	: "&lt;popup vindu&gt;",
+DlgLnkTargetFrame	: "<ramme>",
+DlgLnkTargetPopup	: "<popup vindu>",
 DlgLnkTargetBlank	: "Nytt vindu (_blank)",
 DlgLnkTargetParent	: "Foreldre vindu (_parent)",
 DlgLnkTargetSelf	: "Samme vindu (_self)",
@@ -253,6 +262,7 @@ DlgLnkPopTop		: "Topp posisjon",
 DlnLnkMsgNoUrl		: "Vennligst skriv inn lenkens url",
 DlnLnkMsgNoEMail	: "Vennligst skriv inn e-postadressen",
 DlnLnkMsgNoAnchor	: "Vennligst velg ett anker",
+DlnLnkMsgInvPopName	: "Popup vinduets navn må begynne med en bokstav, og kan ikke inneholde mellomrom",
 
 // Color Dialog
 DlgColorTitle		: "Velg farge",
@@ -327,7 +337,6 @@ DlgReplaceReplAllBtn	: "Erstatt alle",
 DlgReplaceWordChk		: "Finn hele ordet",
 
 // Paste Operations / Dialog
-PasteErrorPaste	: "Din nettlesers sikkerhetsinstillinger tillater ikke automatisk innliming av tekst. Vennligst brukt snareveien (Ctrl+V).",
 PasteErrorCut	: "Din nettlesers sikkerhetsinstillinger tillater ikke automatisk klipping av tekst. Vennligst brukt snareveien (Ctrl+X).",
 PasteErrorCopy	: "Din nettlesers sikkerhetsinstillinger tillater ikke automatisk kopiering av tekst. Vennligst brukt snareveien (Ctrl+C).",
 
@@ -335,10 +344,10 @@ PasteAsText		: "Lim inn som ren tekst",
 PasteFromWord	: "Lim inn fra word",
 
 DlgPasteMsg2	: "Vennligst lim inn i den følgende boksen med tastaturet (<STRONG>Ctrl+V</STRONG>) og trykk <STRONG>OK</STRONG>.",
-DlgPasteIgnoreFont		: "Ignorer fonter",
+DlgPasteSec		: "Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",	//MISSING
+DlgPasteIgnoreFont		: "Fjern skrifttyper",
 DlgPasteRemoveStyles	: "Fjern stildefinisjoner",
 DlgPasteCleanBox		: "Tøm boksen",
-
 
 // Color Picker
 ColorAutomatic	: "Automatisk",
@@ -370,8 +379,11 @@ DlgSpellManyChanges		: "Stavekontroll fullført: %1 ord endret",
 IeSpellDownload			: "Stavekontroll ikke installert, vil du laste den ned nå?",
 
 // Button Dialog
-DlgButtonText	: "Tekst",
-DlgButtonType	: "Type",
+DlgButtonText		: "Tekst",
+DlgButtonType		: "Type",
+DlgButtonTypeBtn	: "Knapp",
+DlgButtonTypeSbm	: "Send",
+DlgButtonTypeRst	: "Nullstill",
 
 // Checkbox and Radio Button Dialogs
 DlgCheckboxName		: "Navn",
@@ -420,6 +432,7 @@ DlgHiddenValue	: "Verdi",
 // Bulleted List Dialog
 BulletedListProp	: "Uordnet listeegenskaper",
 NumberedListProp	: "Ordnet listeegenskaper",
+DlgLstStart			: "Start",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Sirkel",
 DlgLstTypeDisc		: "Hel sirkel",
@@ -442,6 +455,15 @@ DlgDocLangDirLTR	: "Venstre til høyre (LTR)",
 DlgDocLangDirRTL	: "Høyre til venstre (RTL)",
 DlgDocLangCode		: "Språkkode",
 DlgDocCharSet		: "Tegnsett",
+DlgDocCharSetCE		: "Sentraleuropeisk",
+DlgDocCharSetCT		: "Tradisonell kinesisk(Big5)",
+DlgDocCharSetCR		: "Cyrillic",
+DlgDocCharSetGR		: "Gresk",
+DlgDocCharSetJP		: "Japansk",
+DlgDocCharSetKR		: "Koreansk",
+DlgDocCharSetTR		: "Tyrkisk",
+DlgDocCharSetUN		: "Unikode (UTF-8)",
+DlgDocCharSetWE		: "Vesteuropeisk",
 DlgDocCharSetOther	: "Annet tegnsett",
 
 DlgDocDocType		: "Dokumenttype header",
@@ -471,11 +493,12 @@ DlgTemplatesTitle	: "Innholdsmaler",
 DlgTemplatesSelMsg	: "Velg malen du vil åpne<br>(innholdet du har skrevet blir tapt!):",
 DlgTemplatesLoading	: "Laster malliste. Vennligst vent...",
 DlgTemplatesNoTpl	: "(Ingen maler definert)",
+DlgTemplatesReplace	: "Erstatt faktisk innold",
 
 // About Dialog
 DlgAboutAboutTab	: "Om",
 DlgAboutBrowserInfoTab	: "Nettleserinfo",
+DlgAboutLicenseTab	: "Lisens",
 DlgAboutVersion		: "versjon",
-DlgAboutLicense		: "Lisensiert under GNU Lesser General Public License",
-DlgAboutInfo		: "Oversatt av Siteman DA<br /><a target=\"_blank\" href=\"http://www.siteman.no\">www.siteman.no</a><br /><br />For mer informasjon gå til"
-}
+DlgAboutInfo		: "For further information go to"	//MISSING
+};
