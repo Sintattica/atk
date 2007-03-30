@@ -2,6 +2,7 @@
 table.recordlist
 {
   border-collapse: collapse;
+  display: block;
 }
 
 table.recordlist th,

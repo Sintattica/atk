@@ -128,20 +128,17 @@ ul, ol, li
 
 .actionpageWrapper
 {
-  position: relative;
-  width: 93%;
   padding: 8px 18px 0 18px;
 }
 
 .panelTitle
 {
-  position: relative;
   height: 26px;
 }
 
 .panelTitleText
 {
-  display: table;
+  
   margin: 0;
   padding: 7px 4px 0px 12px;
   height: 19px;
@@ -164,7 +161,6 @@ ul, ol, li
 
 .panelHeader
 {
-  position: relative;
   background: #fff url(../images/contentheaderleft.jpg) no-repeat left top;
   height: 12px;
   font-size: 1px;
@@ -191,7 +187,6 @@ ul, ol, li
 
 .panelFooter
 {
-  position: relative;
   background: #F3F3F3 url(../images/contentfooterleft.jpg) no-repeat left top;
   height: 33px;
 }
