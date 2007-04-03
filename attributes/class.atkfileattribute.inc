@@ -458,9 +458,10 @@
               $filename = '';
             }
 
+            // Note: without file_exists() check, calling filesize() generates an error message:
             $result = array("tmpfile"=>$this->m_dir.$filename,
                           "filename"=>$filename,
-                          "filesize"=>filesize($this->m_dir.$filename),
+                          "filesize"=>(file_exists(filesize($this->m_dir.$filename)) ? filesize($this->m_dir.$filename) : 0),
                           "orgfilename"=>$filename);
           }
         }
