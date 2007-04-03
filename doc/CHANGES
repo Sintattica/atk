@@ -331,6 +331,7 @@ Changed in ATK 5.7
   export types (csv, excelcsv, html). [Patrick]
 + Added setComment function to atkradioattribute. This can be used for comments 
   per option and are placed beneath each option. [Lineke]
++ Added Japanese translation (partial). (bug #506) [James]
 * Added file_exists() check to atkFileAttribute before calling the filesize() 
   function to prevent unnecessary error messages. [Patrick]
 * Fixed calendar-runner. Two different types of date field (one where you input
