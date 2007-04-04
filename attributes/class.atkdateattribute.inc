@@ -335,7 +335,7 @@
         if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && $mode != 'list')
         {
           $format = str_replace(array("y", "Y", "m", "n", "j", "d"), array("yy", "y", "mm", "m", "d", "dd"), $this->m_date_format_edit);
-          $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' class="atkdateattribute" type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false);">';
+          $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' type="button" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'\', \''.$format.'\', false);">';
         }
         return $result;
       }
@@ -602,7 +602,7 @@
 
       if (!$this->hasFlag(AF_DATE_NO_CALENDAR) && !$yeardropdown && !$pda && $mode != 'list')
       {
-        $result.=' <input class="button" type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
+        $result.=' <input '.$this->getCSSClassAttribute(array("button", "atkbutton")).' type="reset" value="..." onclick="return showCalendar(\''.$fieldname.'\', \''.$fieldname.'[year]\', \'y-mm-dd\', true);">';
       }
 
       /* return result */
