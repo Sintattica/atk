@@ -48,10 +48,12 @@
                    onmouseout="resetrow(this)"
                    onclick="selectrow(this, '{$listid}', {$row.rownum})">
                {section name=colloop loop=$row.cols}
-                <{if $row.type == "subtotal"}th{else}td {if $smarty.section.colloop.index===0}class="recordListTdFirst"{else}class="recordListTd"{/if}
-                 {/if} valign="{$vorientation}" {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}>
+               <{if $row.type == "subtotal"}th{else}td{/if} 
+                    {if $smarty.section.colloop.index===0}class="recordListTdFirst"{else}class="recordListTd"{/if} 
+                    valign="{$vorientation}"  {if isset($row.cols[colloop].htmlattributes)}{$row.cols[colloop].htmlattributes}{/if}
+                    {if $row.cols[colloop].type == "data"} onclick="rl_try('{$listid}', {$row.rownum}, ['select', 'edit', 'view'], false);"{/if}>
                   {if $row.cols[colloop].content != ""}{$row.cols[colloop].content}{else}&nbsp;{/if}
-                </td>
+                </{if $row.type == "subtotal"}th{else}td{/if}>               
               {/section}
             </tr>
             {/foreach}

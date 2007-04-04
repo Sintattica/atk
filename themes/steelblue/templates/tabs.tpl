@@ -1,56 +1,31 @@
 <script language="JavaScript" type="text/javascript">
 var tabs = new Array();
-{section name=i loop=$tabs}tabs[tabs.length] = "{$tabs[i].tab}"; {/section}
-
-var tabLeftImage = "{$themedir}images/tab_left.png";
-var tabRightImage = "{$themedir}images/tab_right.png";
-var tabBackgroundImage = "{$themedir}images/tab_back.png";
-var tabSelectedLeftImage = "{$themedir}images/tab_left_s.png";
-var tabSelectedRightImage = "{$themedir}images/tab_right_s.png";
-var tabSelectedBackgroundImage = "{$themedir}images/tab_back_s.png";
-
-var tabColor = "#FFFFFF";
-var tabSelectedColor = "#000000";
+{section name=i loop=$tabs}
+  tabs[tabs.length] = "{$tabs[i].tab}";
+{/section}
 </script>
 
-<div class="tabOuterDiv">
-<table border="0" cellpadding="0" cellspacing="0" id="tabContainer">
+<table border="0" cellpadding="0" cellspacing="0" valign="top">
   <tr>
-  {section name=i loop=$tabs}
-  <td valign="bottom">
-
-  <div class="tabInnerDiv">
-
-  <div id="tab_{$tabs[i].tab}" style="position: absolute;">
-
-    <table border="0" cellspacing="0" width="100%" cellpadding="0">
-      <tr onclick="showTab('{$tabs[i].tab}')">
-        <td height="19" valign="middle" align="center" nowrap class="tabOn">
-          <span style="color: #414141;">{$tabs[i].title}</span>
-        </td>
-      </tr>
-    </table>
-
-  </div>
-
-  <table border="0" cellspacing="0" cellpadding="0" width="100%" style="cursor: pointer;">
-    <tr onclick="showTab('{$tabs[i].tab}')">
-      <td height="19" valign="middle" align="center" nowrap class="tabOff">
-        {$tabs[i].title}
-      </td>
-    </tr>
-   </table>
-
-   </div>
-
-   </td>
-
-   {/section}
-
- </tr>
+    <td width="100%" align="left">
+      <br />
+	    <table border="0" cellpadding="0" cellspacing="0" class="tabsTabs mainTabs">
+        <tr>                              
+          {section name=i loop=$tabs}
+            <td id="tab_{$tabs[i].tab}" valign="middle" align="left" nowrap="nowrap" class="{if $tabs[i].selected}activetab{else}passivetab{/if}">	
+              <a href="javascript:void(0)" onclick="showTab('{$tabs[i].tab}')">{$tabs[i].title}</a>
+            </td>          
+            <td>&nbsp;</td>
+		      {/section}
+        </tr>
+      </table>
+      <table border="0" cellspacing="0" cellpadding="5" width="100%" class="tabsContent">
+        <tr>
+          <td>
+            {$content}
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
 </table>
-</div>
-
-<div id="tabContent">
-  {$content}
-</div>

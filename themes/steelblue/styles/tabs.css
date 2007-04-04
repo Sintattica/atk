@@ -1,16 +1,4 @@
-
-.activetab
-{
-  cursor: default;
-  height: 100%;
-}
-
-.passivetab
-{
-  cursor: pointer;
-  display: none;
-}
-
+/*
 #tabs
 {
   text-align: left;
@@ -26,29 +14,15 @@
   border-bottom: 1px solid;
   background: #ffffff;
 }
-
+*/
 #editform
 {
   text-align: left;
 }
 
-.tabs
+.mainTabs
 {
-  display: block;
-  float: left;
-  border: 1px solid green;
-}
-
-.tabs2
-{
-  display: block;
-  float: left;
-  border: 1px solid red;
-}
-
-#tabContent
-{
-	padding: 12px;
+  border-bottom: 1px solid #e0e0e0; 
 }
 
 #tabContainer
@@ -56,41 +30,51 @@
   padding: 0px;
 }
 
-.tabOn, .tabOff
+.mainTabs
 {
-  padding: 3px 0px 0px 0px;
-  margin: 0px;
+  margin: 0 0 15px 0;
 }
 
-.tabOn
+.mainTabs a
 {
-	color: #414141 !important;
+	text-decoration: none;
+}
+
+.mainTabs .activetab
+{
+  display: block;
+  padding: 3px 0px 0px 0px;
+  margin: 0px;
+	color: #414141;
 	background: url(../images/subtabon.gif) no-repeat left top;
 	width: 105px;
 	margin: 0px;
+	cursor: default;
+	height: 100%;
+	text-align: center;
 }
 
-.tabOff
+.mainTabs .passivetab
 {
+  display: block;
+  padding: 3px 0px 0px 0px;
+  margin: 0px;
 	border: 0px;
 	color: #414141;
 	background: url(../images/subtaboff.gif) no-repeat left top;
 	width: 105px;
+	cursor: pointer;
+	height: 100%;
+	text-align: center;
 }
 
-.tabInnerDiv
+.tabbedPane .tabsTabs .activetab a
 {
-  text-align: left;
-  position: relative;
-  margin: 0px;
-  padding: 0px;
+  color: #414141;
 }
 
-.tabOuterDiv
+.tabbedPane .tabsTabs .passivetab a
 {
-  _position: relative;
-  border-bottom: 1px solid #e0e0e0; 
-  text-align: left;
-  margin: 0px;
-  padding: 0px 0px 0px 10px;
+  
 }
+
