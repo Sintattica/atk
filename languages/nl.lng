@@ -320,5 +320,6 @@
   "autocomplete_no_results_contains" => "Geen resultaten gevonden waarin de gegeven zoekopdracht voorkomt.",
   "autocomplete_minimum_chars" => "Voer minimaal %d karakters in.",
   "saveandedit" => "Opslaan en bewerken",
+  "steelblue"=>"SteelBlue",
 );
 ?>

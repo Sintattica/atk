@@ -344,5 +344,6 @@
   "autocomplete_minimum_chars" => "Enter a minimum of %d characters.",
   "saveandedit" => "Save and edit",
   "email" => "E-mail",
+  "steelblue"=>"SteelBlue",
 );
 ?>
