@@ -48,6 +48,7 @@
 
     /**
      * (Multidimensional) atkArray replace function
+     * If $replace is null, remove instead of replace it
      *
      * @param mixed $search
      * @param mixed $replace
@@ -60,6 +61,7 @@
 
     /**
      * Private (Multidimensional) array replace function
+     * If $replace is null, remove instead of replace it
      *
      * @param array $array
      * @param mixed $search
@@ -76,7 +78,14 @@
         }
         elseif ($value == $search)
         {
-          $array[$key] = $replace;
+          if ($replace != null)
+          {
+            $array[$key] = $replace;
+          }
+          else
+          {
+            unset($array[$key]);
+          }
         }
       }
     }
