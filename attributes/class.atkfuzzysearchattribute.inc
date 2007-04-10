@@ -209,7 +209,7 @@
         {
           // Select one record from all matches.
           $res.= '<SELECT NAME="'.$prefix.$this->fieldName().'[]">';
-          $res.= '<OPTION VALUE="">'.text('select_none');
+          $res.= '<OPTION VALUE="">'.atktext('select_none');
           $selects = array();
           foreach($this->m_matches as $keyword => $matches)
           { 
@@ -234,7 +234,7 @@
             if (count($matches)>0)
             {
               $res.= '<tr><td>\''.$keyword.'\': </td><td><SELECT NAME="'.$prefix.$this->fieldName().'[]">';
-              $res.= '<OPTION VALUE="">'.text('select_none');
+              $res.= '<OPTION VALUE="">'.atktext('select_none');
               for ($i=0, $_i=count($matches); $i<$_i; $i++)
               {
                 $res.= '<OPTION VALUE="'.$this->m_searchnodeInstance->primaryKey($matches[$i]).'">'.$this->m_searchnodeInstance->descriptor($matches[$i]);

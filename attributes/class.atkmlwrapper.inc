@@ -201,7 +201,7 @@
         else
         {
           // other languages
-          $attr->setLabel($this->label()." (".text('language_'.strtolower($lng)).")");
+          $attr->setLabel($this->label()." (".atktext('language_'.strtolower($lng)).")");
 
           // All but the first other attrib need to be initially hidden.
           if ($cnt>1)

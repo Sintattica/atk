@@ -54,7 +54,7 @@
 
       /* options */
       for ($i = 1; $i < sizeof($languages); $i++)
-        $result .= '<option value="'.$languages[$i].'" '.(strtolower($languages[$i])==strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])?'selected':'').'>'.text('language_'.strtolower($languages[$i])).'</option>';
+        $result .= '<option value="'.$languages[$i].'" '.(strtolower($languages[$i])==strtolower($this->m_ownerInstance->m_postvars['atkeditlng'])?'selected':'').'>'.atktext('language_'.strtolower($languages[$i])).'</option>';
 
       /* close */
       $result .= '</select>';
@@ -64,7 +64,7 @@
         $script = "str_languages = new Array();\n";
         for ($i=0, $_i=count($languages); $i<$_i; $i++)
         {
-           $script.= "str_languages['".$languages[$i]."'] = '".text('language_'.strtolower($languages[$i]))."';\n";
+           $script.= "str_languages['".$languages[$i]."'] = '".atktext('language_'.strtolower($languages[$i]))."';\n";
         }
         $page = &atkPage::getInstance();
         $page->register_scriptcode($script);

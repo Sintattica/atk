@@ -1612,8 +1612,7 @@
    */
   function dispatch_url($node, $action, $params=array(),$phpfile='')
   {
-    $theme = &atkinstance('atk.ui.atktheme');
-    if (!$phpfile) $phpfile =  $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
+    if (!$phpfile) $phpfile =  getDispatchFile();
     $url = $phpfile;
     $atkparams = array();
     if($node!="")
@@ -1626,6 +1625,17 @@
       $url .= '?'.buildQueryString($params);
 
     return $url;
+  }
+  
+  /**
+   * Return the dispatch file
+   *
+   * @return string Dispatch file
+   */
+  function getDispatchFile()
+  {
+    $theme = &atkinstance('atk.ui.atktheme');
+    return $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
   }
 
   /**
@@ -2100,7 +2110,7 @@
 
     return htmlentities($string, $quote_style, $charset);
   }
-
+  
   /**
    * Looks up a value using the given key in the given array and returns
    * the value if found or a default value if not found.

@@ -466,7 +466,7 @@
         {
         	$strfilter.=' AND '.$this->parseFilter($this->m_destinationFilter,$record);
         }
-        $add_url = 'dispatch.php?atknodetype='.$this->m_destination.'&atkaction=add&atkfilter='.rawurlencode($strfilter);
+        $add_url = dispatch_url($this->m_destination,"add",array("atkfilter"=>$strfilter));
         $label = $this->getAddLabel();
 
         if (count($this->m_onchangecode))

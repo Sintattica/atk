@@ -84,7 +84,7 @@
       }
       else
       {
-        return text("no_valid_directory");
+        return atktext("no_valid_directory");
       }
 
       if(count($file_arr)>0)
@@ -177,7 +177,7 @@
         }
         else
         {
-          if(strlen($files[$i])>0) $r .= $files[$i]."(<font color=\"#ff0000\">".text("file_not_exist")."</font><br>)";
+          if(strlen($files[$i])>0) $r .= $files[$i]."(<font color=\"#ff0000\">".atktext("file_not_exist")."</font><br>)";
         }
       }
       return $r;

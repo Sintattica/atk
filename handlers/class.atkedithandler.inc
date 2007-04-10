@@ -154,6 +154,7 @@
 
         $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
         $this->addRenderBoxVar("content", $output);
+
         return $ui->renderBox($this->m_renderBoxVars);
       }
       else

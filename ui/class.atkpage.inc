@@ -175,10 +175,17 @@
      * twice, will result in the statement only being rendered and executed
      * once.
      * @param String $code The javascript code to place in the header.
+     * @param Boolean $before Include the script before the javascript files
      */
-    function register_scriptcode($code)
+    function register_scriptcode($code,$before=false)
     {
-      if (!in_array($code, $this->m_scriptcode)) $this->m_scriptcode[] = $code;
+      if(count($this->m_scriptcode)==0)
+      {
+        $this->m_scriptcode['before']=array();
+        $this->m_scriptcode['after']=array();
+      }
+      $element = ($before?'before':'after');
+      if (!in_array($code, $this->m_scriptcode[$element])) $this->m_scriptcode[$element][] = $code;
     }
 
     /**
@@ -209,7 +216,8 @@
     */
    function getScriptCodes()
    {
-     $scriptCodes = $this->m_scriptcode;
+     $scriptCodes = $this->m_scriptcode['before'];
+     $scriptCodes[] = $this->m_scriptcode['after'];
      $scriptCodes[] = $this->_getGlobalSubmitScriptCode();
      $scriptCodes[] = $this->_getGlobalLoadScriptCode();
 
@@ -321,6 +329,15 @@
      */
     function addScripts(&$res, $partial=false)
     {
+      
+      $count_scriptcode = count($this->m_scriptcode['before']);
+      if($count_scriptcode>0) $res .= '  <script type="text/javascript">'."\n";
+      for ($i=0, $_i=$count_scriptcode; $i<$_i; $i++)
+      {
+        $res.= $this->m_scriptcode['before'][$i]."\n";
+      }
+      if($count_scriptcode>0) $res .= "  </script>\n";
+      
       if (!$partial)
       {
         for ($i = 0; $i < count($this->m_scriptfiles); $i++)
@@ -333,9 +350,9 @@
       $res.=$this->_getGlobalLoadScriptCode($partial);
 
       // javascript code.
-      for ($i=0, $_i=count($this->m_scriptcode); $i<$_i; $i++)
+      for ($i=0, $_i=count($this->m_scriptcode['after']); $i<$_i; $i++)
       {
-        $res.= $this->m_scriptcode[$i]."\n";
+        $res.= $this->m_scriptcode['after'][$i]."\n";
       }
 
       $res .= "  </script>\n\n";

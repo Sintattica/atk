@@ -48,14 +48,14 @@
       $page->register_script(atkconfig("atkroot")."atk/javascript/launcher.js");
 
       $content = '<script language="javascript">atkLaunchApp(); </script>';
-      $content.= '<br><br><a href="#" onClick="atkLaunchApp()">'.text('app_reopen').'</a> &nbsp; '.
-      '<a href="#" onClick="window.close()">'.text('app_close').'</a><br><br>';
+      $content.= '<br><br><a href="#" onClick="atkLaunchApp()">'.atktext('app_reopen').'</a> &nbsp; '.
+      '<a href="#" onClick="window.close()">'.atktext('app_close').'</a><br><br>';
 
-      $box = $ui->renderBox(array("title"=>text("app_launcher"),
+      $box = $ui->renderBox(array("title"=>atktext("app_launcher"),
       "content"=>$content));
 
       $page->addContent($box);
-      $output->output($page->render(text('app_launcher'), true));
+      $output->output($page->render(atktext('app_launcher'), true));
 
       $output->outputFlush();
   }

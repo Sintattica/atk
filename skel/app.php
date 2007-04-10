@@ -32,8 +32,8 @@
   atksecure();
   $output='<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">';
   $output.="\n<html>\n <head>\n";
-  $output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.text("charset","","atk").'">';
-  $output.="\n  <title>".text('app_title')."</title>\n </head>\n";
+  $output.='  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset='.atktext("charset","","atk").'">';
+  $output.="\n  <title>".atktext('app_title')."</title>\n </head>\n";
 
   atkimport("atk.menu.atkmenu");
   atkimport("atk.utils.atkframeset");
@@ -58,7 +58,7 @@
   $topframe = &new atkFrame($frame_top_height?$frame_top_height:"75", "top", "top.php", FRAME_SCROLL_NO, true);
   $mainframe = &new atkFrame("*", "main", $destination, FRAME_SCROLL_AUTO, true);
   $menuframe = &new atkFrame(($position==MENU_LEFT||$position==MENU_RIGHT?($frame_menu_width?$frame_menu_width:190):$menu->getHeight()), "menu", "menu.php", $scrolling);
-  $noframes = '<p>Your browser doesnt support frames, but this is required to run '.text('app_title')."</p>\n";
+  $noframes = '<p>Your browser doesnt support frames, but this is required to run '.atktext('app_title')."</p>\n";
 
   $root = &new atkRootFrameset();
   if (atkconfig("top_frame"))

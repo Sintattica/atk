@@ -98,7 +98,7 @@
     {
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
-        $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = text($this->fieldName(), $this->m_ownerInstance->m_type);
+        $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = atktext($this->fieldName(), $this->m_ownerInstance->m_type);
         
         if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT))
         {

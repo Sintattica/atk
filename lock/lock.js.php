@@ -24,7 +24,7 @@
   /** @internal some defines */
   global $ATK_VARS;
   $id = (int)$ATK_VARS["id"];
-  $message = text("lock_expired");
+  $message = atktext("lock_expired");
   $stack = $ATK_VARS["stack"];
 ?>
 var atkLock = new Object();

@@ -72,7 +72,7 @@
       if ($this->hasFlag(AF_OBLIGATORY)==false)
       {
         // Relation may be empty, so we must provide an empty selectable..
-        $result.= '<option value="0">'.text('select_none');
+        $result.= '<option value="0">'.atktext('select_none');
       }
       $result.=$this->createdd($recordset);
       $result.='</select>';

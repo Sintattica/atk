@@ -109,7 +109,7 @@
       {
         if ($col==$fieldname)
         {
-          $row["data"][$col] = text("subtotal");
+          $row["data"][$col] = atktext("subtotal");
         }
         else if (isset($subtotalcolumns[$col]))
         {

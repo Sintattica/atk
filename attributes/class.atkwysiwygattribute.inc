@@ -117,8 +117,8 @@
         }
 
         $viewselectbox = '<select name="atkwwview['.$fieldprefix.$this->fieldName().']">
-                            <option value="visual">'.text("ww_visualmode").
-                            '<option value="plain" '.($wwview=="plain"?"selected":"").'>'.text("ww_sourcemode").
+                            <option value="visual">'.atktext("ww_visualmode").
+                            '<option value="plain" '.($wwview=="plain"?"selected":"").'>'.atktext("ww_sourcemode").
                          '</select>';
 
         if ($wwview!="plain")
@@ -392,7 +392,7 @@
       /*if ($this->editmode(WW_FONT_FACE))
       {
         $btn = "<select name=\"".$this->m_editorname."_FontName\" style=\"width:140\" TITLE=\"Font Name\" LANGUAGE=\"javascript\" onchange=\"obj_editor=".$this->m_editorname."; return FontName_onchange(this)\"> ";
-        $btn.= "<option value=\"0\" selected >".text('wysiwyg_fontface');
+        $btn.= "<option value=\"0\" selected >".atktext('wysiwyg_fontface');
 
         $btn.='	<option value="Verdana" >Verdana
           <option value="Arial" >Arial
@@ -408,7 +408,7 @@
       if ($this->editmode(WW_FONT_SIZE))
       {
         $btn ="<select name=\"".$this->m_editorname."_FontSize\" style=\"width:40\" TITLE=\"Font Size\" LANGUAGE=\"javascript\" onchange=\"obj_editor = ".$this->m_editorname."; return FontSize_onchange(this)\"> ";
-        $btn.= "<option value=\"0\" selected >".text('wysiwyg_fontsize');
+        $btn.= "<option value=\"0\" selected >".atktext('wysiwyg_fontsize');
 
         $btn.='    <option value="1">1
           <option value="2">2
@@ -481,7 +481,7 @@
 
     function button($name, $function)
     {
-      return "<a href='' onclick=\"obj_editor=".$this->m_editorname.";  $function(); return false;\" onmouseover=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name"."_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name.gif')\" ><img name='".$this->m_editorname."_$name' src='".$this->m_urlpath."images/$name.gif' alt='".text("wysiwyg_$name")."' border=0 align=absmiddle ></a> ";
+      return "<a href='' onclick=\"obj_editor=".$this->m_editorname.";  $function(); return false;\" onmouseover=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name"."_focus.gif');\" onmouseout=\"load_image('".$this->m_editorname."_$name','".$this->m_urlpath."images/$name.gif')\" ><img name='".$this->m_editorname."_$name' src='".$this->m_urlpath."images/$name.gif' alt='".atktext("wysiwyg_$name")."' border=0 align=absmiddle ></a> ";
     }
 
   }

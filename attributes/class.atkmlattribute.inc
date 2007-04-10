@@ -109,7 +109,7 @@
         $entry = array("name" => $this->m_name."_ml", "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
 
         /* label? */
-        $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.text("language_".strtolower($curlng)).'</label>)';
+        $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.atktext("language_".strtolower($curlng)).'</label>)';
         $entry["id"] = $this->getHtmlId($fieldprefix);
         $entry["tabs"] = $this->m_tabs;
 

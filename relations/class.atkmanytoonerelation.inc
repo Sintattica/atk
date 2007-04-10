@@ -487,7 +487,7 @@
         {
           if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$title!="")
           {
-            $result = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=view&atkselector=".rawurlencode($this->m_destInstance->primaryKey($record[$this->fieldName()])), $title, SESSION_NESTED);
+            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $title, SESSION_NESTED);
           }
         }
         return $result;
@@ -518,14 +518,15 @@
       {
         if ($this->m_destInstance->allowed("add"))
         {
-          $links[] = href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_newsel".($filter!=""?"&atkfilter=".rawurlencode($filter):""),atktext("new"),SESSION_NESTED,true);
+          $links[] = href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_newsel","atkfilter"=>($filter!=""?$filter:""))),
+                          atktext("new"),SESSION_NESTED,true);
         }
 
         if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL)
         {
           //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
           //de app crasht als er geen waarde is ingevuld.
-          $editUrl = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
+          $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
           $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
         }
       }
@@ -659,21 +660,19 @@
       $result = "";
       // we use the current level to automatically return to this page
       // when we come from the select..
-      $atktarget = rawurlencode("dispatch.php?atklevel=".atkLevel()."&".$selname."=[atkprimkey]");
+      $atktarget = rawurlencode(getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]");
       $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
       if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
       if ($this->m_destinationFilter!="")
       {
-        $result.= href("dispatch.php?atknodetype=".$this->m_destination.
-                       "&atkaction=select&atkfilter=".$filter."&atktarget=".$atktarget,
+        $result.= href(dispatch_url($this->m_destination,"select",array("atkfilter"=>$filter,"atktarget"=>$atktarget)),
                        $linkname,
                        SESSION_NESTED,
                        $this->m_autocomplete_saveform,'class="atkmanytoonerelation"');
       }
       else
       {
-        $result.= href("dispatch.php?atknodetype=".$this->m_destination.
-                       "&atkaction=select&atktarget=".$atktarget,
+        $result.= href(dispatch_url($this->m_destination,"select",array("atktarget"=>$atktarget)),
                        $linkname,
                        SESSION_NESTED,
                        $this->m_autocomplete_saveform,'class="atkmanytoonerelation"');
@@ -739,12 +738,13 @@
 
         if ($this->m_destInstance->allowed("edit"))
         {
-          $editlink = session_url("dispatch.php?atknodetype=".$this->m_destination."&atkaction=edit&atkselector=REPLACEME",SESSION_NESTED);
+          $editlink = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
           $autolink['edit'] = "&nbsp;<a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editlink)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a>";
         }
         if ($this->m_destInstance->allowed("add"))
         {
-          $autolink['add'] = "&nbsp;".href("dispatch.php?atknodetype=".$this->m_destination."&atkaction=add&atkpkret=".$id."_ret".($filter!=""?"&atkfilter=".rawurlencode($filter):""),atktext("new"),SESSION_NESTED,true);
+          $autolink['add'] = "&nbsp;".href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_ret","atkfilter"=>($filter!=""?$filter:""))),
+                                                        atktext("new"),SESSION_NESTED,true);
         }
       }
       return $autolink;

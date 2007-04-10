@@ -125,7 +125,7 @@
       $myrecord = $record[$this->fieldName()];
 
       // default result
-      $result = text("none");
+      $result = atktext("none");
 
       if ($this->createDestination())
       {
@@ -759,9 +759,10 @@
               $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
               $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
             }
-            
+            if(!is_array($arr['fields'])) $arr['fields']=array();
             if (is_array($a["fields"]))
             {
+              
               $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
             }
             

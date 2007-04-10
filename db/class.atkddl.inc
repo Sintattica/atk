@@ -109,10 +109,34 @@
         $this->m_primarykey[] = $name;
         $flags|=DDL_NOTNULL; // primary keys may never be null.
       }
+
+      // Fix the size if the type is decimal
+      if($generictype=="decimal")
+      {
+        $size = $this->calculateDecimalFieldSize($size);
+      }
+
       $this->m_fields[$name] = array("type"=>$generictype,
                                      "size"=>$size,
                                      "flags"=>$flags,
                                      "default"=>$default);
+    }
+
+    /**
+     * Calculate the correct field size for decimal fields
+     * We should add the decimals to the size, since
+     * size is specified including the decimals.
+     *
+     * @param string $size Current size
+     * @return string New size
+     */
+    function calculateDecimalFieldSize($size)
+    {
+      list($tmp_size, $decimals) = split(",", $size);
+      $tmp_size+=intval($decimals); // we should add the decimals to the size, since
+                            // size is specified including the decimals.
+      $size = $tmp_size.",".$decimals;
+      return $size;
     }
 
     /**

@@ -52,11 +52,11 @@
 
   $res = $ui->renderBox(array("title"=>$title,
                                  "content"=>$data));
-  $res.='<br><div align="right"><a href="javascript:window.close();">'.text("close").'</a></div>';
+  $res.='<br><div align="right"><a href="javascript:window.close();">'.atktext("close").'</a></div>';
 
   $page->addContent($res);
 
-  $output->output($page->render(text('txt_app_title').' - '.text('help'), true));
+  $output->output($page->render(atktext('txt_app_title').' - '.atktext('help'), true));
 
   $output->outputFlush();
 

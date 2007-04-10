@@ -572,7 +572,7 @@
         $descriptor = atkArrayNvl($stack[$i], "descriptor", "");
         if ($i<count($stack)-1)
         {
-          $res[]=array("url"=>session_url('dispatch.php?atklevel='.$i),
+          $res[]=array("url"=>session_url(getDispatchFile().'?atklevel='.$i),
                        "title"=>$title,
                        "descriptor"=>$descriptor);
         }

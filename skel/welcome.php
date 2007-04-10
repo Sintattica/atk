@@ -38,7 +38,7 @@
                                             "content"=>"<br><br>".atktext("app_description")."<br><br>"));
 
   $page->addContent($box);
-  $output->output($page->render(text('app_shorttitle'), true));
+  $output->output($page->render(atktext('app_shorttitle'), true));
 
   $output->outputFlush();
 

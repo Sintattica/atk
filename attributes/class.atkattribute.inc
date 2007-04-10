@@ -2170,7 +2170,7 @@
       {
         // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
         $cmd = ($columnConfig->hasSubTotal($this->fieldName())?"unsubtotal":"subtotal");
-        return href('dispatch.php?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
+        return href(getDispatchFile().'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
       }
       return "";
     }
@@ -2184,7 +2184,7 @@
       if ($currentOrder>0)
       {
         $direction = ($columnConfig->getSortDirection($this->fieldName())=="desc" ? "asc":"desc");
-        $res= href('dispatch.php?'.$columnConfig->getUrlCommand($fieldname, $direction), atktext("column_".$direction)).' ';
+        $res= href(getDispatchFile().'?'.$columnConfig->getUrlCommand($fieldname, $direction), atktext("column_".$direction)).' ';
       }
 
       $res.= '<select name="atkcolcmd[][setorder]['.$fieldname.']">';

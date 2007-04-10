@@ -1327,7 +1327,7 @@
           foreach ($errors as $error)
           {
             $importerrors[$counter][] = array("msg"=>$error['msg'].": ",
-                                    "spec"=>text($error['attrib_name']));
+                                    "spec"=>atktext($error['attrib_name']));
           }
         }
       }
