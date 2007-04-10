@@ -8,10 +8,7 @@
     <span id="top-search">{$searchpiece}</span>
     {/if}
   </div>
-  <div id="lastviewedBox">
-  {crmlastviewed}
-  </div>
   <div id="loginBox">
-  {atktext logged_in_as}: {$user} {if $username}[{$username}]{/if}
+  {atktext logged_in_as}: {$user}
   </div>
 </div>
