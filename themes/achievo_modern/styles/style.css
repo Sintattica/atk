@@ -1,10 +1,88 @@
-BODY
+body {
+		margin:0px 0px 0px 0px;
+		padding:0px;
+		background-color: #eeeeee;
+    color: #000000;
+    font-size: 11px;
+    font-family: Verdana,Helvetica,Arial;
+		}
+
+	#box-menu {
+		position: absolute;
+    float: left;
+		left:0px;
+		top:114px;
+		width:210px;
+		<!--background:#7f7f7f;-->
+	  color: #ffffff;
+    background: #fff url(../images/menuBgBottom.jpg) repeat-y left top;
+
+
+		}
+
+	#box-content {
+		background:#eeeeee;
+   	margin-left: 211px;
+ 	}
+
+	#box-top {
+		position: relative;
+    background: #fff url(../images/bannerBg.jpg) repeat-x left top;
+    height: 113px;
+		}
+
+  #box-footer {
+    background-color: #eeeeee;
+    clear:both;
+    }
+
+#container
 {
-  background-color: #eeeeee;
-  color: #000000;
-  font-size: 11px;
-  font-family: Verdana,Helvetica,Arial;
+width: 90%;
+margin: 10px auto;
+background-color: #fff;
+color: #333;
+border: 1px solid gray;
+line-height: 130%;
 }
+
+#top
+{
+background: #fff url(../images/bannerBg.jpg) repeat-x left top;
+padding: 0px;
+height: 113px;
+}
+
+ #leftnav
+{
+float: left;
+width: 210px;
+margin: 0;
+padding: 0px;
+color: #ffffff;
+background: #fff url(../images/menuBgBottom.jpg) repeat-y left top;
+
+}
+
+#content
+{
+margin-left: 200px;
+border-left: 1px solid gray;
+padding: 1em;
+max-width: 36em;
+}
+
+#footer
+{
+clear: both;
+margin: 0;
+padding: .5em;
+color: #333;
+background-color: #ddd;
+border-top: 1px solid gray;
+}    
+    
+
 
 A:link,
 A:visited,
@@ -192,15 +270,6 @@ INPUT.btn_saveandclose
   margin-bottom: 36px;
 }
 
-#banner
-{
-
-}
-
-#topLinks
-{
-
-}
 
 
 /* editform styles */

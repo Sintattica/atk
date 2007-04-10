@@ -35,3 +35,11 @@ TEXTAREA
   top: 92px;
   text-align: right;
 }
+
+#lastviewedBox
+{
+  position: absolute;
+  left: 215px;
+  top: 92px;
+  text-align: left;
+}

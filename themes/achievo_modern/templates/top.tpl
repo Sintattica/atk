@@ -1,4 +1,4 @@
-<div id="banner">
+<div id="top">
   <img src="{atkthemeimg logo.jpg}" alt="Logo Achievo" />
   <div id="topLinks">
     <span id="top-center">{foreach  from=$centerpiece_links item=link}{$link}&nbsp;&nbsp;|&nbsp;&nbsp;{/foreach}</span>
@@ -8,7 +8,10 @@
     <span id="top-search">{$searchpiece}</span>
     {/if}
   </div>
+  <div id="lastviewedBox">
+  {crmlastviewed}
+  </div>
   <div id="loginBox">
-    {atktext logged_in_as}: {$user}
+  {atktext logged_in_as}: {$user} {if $username}[{$username}]{/if}
   </div>
 </div>
