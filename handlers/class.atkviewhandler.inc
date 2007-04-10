@@ -58,7 +58,7 @@
       }
       
       $page = &$this->getPage();
-
+      $this->notify("view", $record);
       $page->addContent($this->m_node->renderActionPage("admin", $this->invoke("viewPage", $record, $this->m_node, $renderbox)));
     }
 
