@@ -19,22 +19,22 @@
   /**
    * flags specific for atkOneToOneRelation
    */
-  
+
   /**
    * Override the default no add flag
    */
   define("AF_ONETOONE_ADD",             AF_SPECIFIC_1);
-  
+
   /**
    * Enable error notifications / triggers
    */
   define("AF_ONETOONE_ERROR",           AF_SPECIFIC_2);
-  
+
   /**
    * Invisibly integrate a onetoonerelation as if the fields where part of the current node.
    */
   define("AF_ONETOONE_INTEGRATE",       AF_SPECIFIC_3);
-  
+
   /**
    * Use lazy loading instead of query addition.
    */
@@ -144,11 +144,11 @@
               $filter="";
               for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
               {
-                if($filter!="") $filter.=rawurlencode(" AND ");
-                $filter.= rawurlencode($this->m_destinationFilter[$i]);
+                if($filter!="") $filter.=" AND ";
+                $filter.= $this->m_destinationFilter[$i];
               }
             }
-            elseif (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+            elseif (!empty($this->m_destinationFilter)) $filter = $this->m_destinationFilter;
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
@@ -338,7 +338,7 @@
        // Foreign key is in the source node.
        $condition = $rel->m_table.'.'.$rel->m_primaryKey[0]."=".$record[$this->fieldName()][$this->m_ownerInstance->primaryKeyField()];
       }
-      
+
       return $rel->deleteDb($condition);
     }
 
@@ -762,10 +762,10 @@
             if(!is_array($arr['fields'])) $arr['fields']=array();
             if (is_array($a["fields"]))
             {
-              
+
               $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
             }
-            
+
             if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
             {
               /* separator */
@@ -807,12 +807,12 @@
       {
         if ($this->createDestination())
 	      {
-          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));          
-          
+          $this->m_destInstance->validate($record[$this->fieldName()], $mode, array($this->m_refKey));
+
           // only add 'atkerror' record when 1:1 relation contains error
           if (isset($record[$this->fieldName()]["atkerror"]))
           {
-            $record["atkerror"] = array_merge((array)$record["atkerror"], (array)$record[$this->fieldName()]["atkerror"]);          
+            $record["atkerror"] = array_merge((array)$record["atkerror"], (array)$record[$this->fieldName()]["atkerror"]);
           }
 	      }
       }

@@ -188,7 +188,7 @@
           // display in view mode
           else
           {
-            if (!empty($this->m_destinationFilter)) $filter = rawurlencode($this->m_destinationFilter);
+            if (!empty($this->m_destinationFilter)) $filter =$this->m_destinationFilter;
             if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
               $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
             else $actions = array();
