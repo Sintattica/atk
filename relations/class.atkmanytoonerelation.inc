@@ -660,7 +660,7 @@
       $result = "";
       // we use the current level to automatically return to this page
       // when we come from the select..
-      $atktarget = rawurlencode(getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]");
+      $atktarget = getDispatchFile()."?atklevel=".atkLevel()."&".$selname."=[atkprimkey]";
       $linkname = atktext("link_select_".getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination),'','',true);
       if (!$linkname) $linkname = atktext("select_a").' '.strtolower(atktext(getNodeType($this->m_destination), getNodeModule($this->m_destination),getNodeType($this->m_destination)));
       if ($this->m_destinationFilter!="")
@@ -1244,9 +1244,9 @@
     function isSelectableRecord($record=array(), $mode="select")
     {
       if ($record[$this->fieldName()] == NULL) return false;
-      
+
       $this->createDestination();
-      
+
       // if the value is set directly in the record field we first
       // need to convert the value to an array
       if (!is_array($record[$this->fieldName()]))
@@ -1440,7 +1440,7 @@
       if (!$this->createDestination() || count($this->m_listColumns) == 0) return;
 
       foreach ($this->m_listColumns as $attribname)
-      {        
+      {
         $p_attrib = &$this->m_destInstance->getAttribute($attribname);
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
@@ -1570,7 +1570,7 @@
 
       return $order;
     }
-    
+
     /**
      * Creates and registers the on change handler caller function.
      * This method will be used to message listeners for a change
@@ -1590,27 +1590,27 @@
         ";
 
         $this->m_onchangehandler_init = "newvalue = el.value;\n";
-        $page = &$this->m_ownerInstance->getPage();        
+        $page = &$this->m_ownerInstance->getPage();
         $page->register_scriptcode($js);
         $this->_renderChangeHandler($fieldPrefix);
-      }   
-      
-      return $function;   
+      }
+
+      return $function;
     }
-    
+
     /**
      * Draw the auto-complete box.
      */
     function drawAutoCompleteBox($record, $fieldPrefix, $mode)
     {
       $this->createDestination();
-      
-      // register base JavaScript code and stylesheet
-      $page = &$this->m_ownerInstance->getPage();              
-      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
-      $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");      
 
-      // validate is this is a selectable record and if so 
+      // register base JavaScript code and stylesheet
+      $page = &$this->m_ownerInstance->getPage();
+      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+      $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
+
+      // validate is this is a selectable record and if so
       // retrieve the display label and hidden value
       if ($this->_isSelectableRecord($record, 'select'))
       {
@@ -1618,7 +1618,7 @@
         $label = $this->m_destInstance->descriptor($record[$this->fieldName()]);
         $value = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       }
-      else 
+      else
       {
         $current = NULL;
         $label = '';
@@ -1633,14 +1633,14 @@
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
          <input type="text" id="'.$id.'_search" value="'.htmlentities($label).'" class="atkmanytoonerelation_search" size="40" onfocus="this.select()" />
          <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'<br />
-         <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';      
-        
+         <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
+
       // register JavaScript code that attaches the auto-complete behaviour to the search box
       $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, 'attribute.'.$this->fieldName().'.autocomplete');
-      $function = $this->createOnChangeCaller($id, $fieldPrefix);      
-      $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";            
+      $function = $this->createOnChangeCaller($id, $fieldPrefix);
+      $code = "ATK.ManyToOneRelation.completeEdit('{$id}_search', '{$id}_result', '$id', '{$id}_spinner', '$url', $function, 1);";
       $page->register_loadscript($code);
-      
+
       return $result;
     }
 
