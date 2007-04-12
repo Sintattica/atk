@@ -45,9 +45,9 @@
     {
       $this->m_tbsooo = new clsTinyButStrongOOo;
       $this->m_tbsooo->VarPrefix = "documentvar_";
-      $this->m_tbsooo->SetZipBinary(atkconfig("ziplocation", "zip"));
-      $this->m_tbsooo->SetUnzipBinary(atkconfig("unziplocation", "unzip"));
-      $this->m_tbsooo->SetProcessDir(atkconfig("atktempdir"));
+      $processdir = atkconfig("atktempdir") . "documents";
+      if (!is_dir($processdir)) mkdir($processdir);
+      $this->m_tbsooo->SetProcessDir($processdir);
     }
 
     /**
@@ -92,7 +92,7 @@
       // Save the content.xml back to the copied document
       if (!$this->m_tbsooo->SaveXmlToDoc())
         return false;
-        
+
       return true;
     }
 
@@ -109,7 +109,7 @@
       // Parse template
       if (!$this->_parse($tpl_file, $tpl_vars))
         return false;
-        
+
       exportFile($this->m_tbsooo->GetPathnameDoc(), $outputfilename, ($forcedownload?"application/octet-stream":$this->m_tbsooo->GetMimetypeDoc()));
 
       // Remove the document from disk
@@ -171,8 +171,8 @@
       $inputString = $this->convertFirefoxHtmlToXML($inputString);
 
       $inputString = $this->convertIEHtmlToXML($inputString);
-
-      $inputString = $this->convertGeneralHtmlToXML($inputString);      
+      
+      $inputString = $this->convertGeneralHtmlToXML($inputString);
 
       return $inputString;
     }
@@ -232,11 +232,11 @@
 
       // /italic/
       $inputString = str_replace('&lt;span style="font-style: italic;"&gt;', '<text:span text:style-name="atkitalic">', $inputString);
-           
+
 
       // substitute html- by xml-'span' tags
       $inputString = str_replace('&lt;/span&gt;' , '</text:span>', $inputString);
-
+      
       // replace <br .*/> chars by xml-newline (also take font-styles in account)
       $inputString = preg_replace("/(<|&lt;)br.*\/(>|&gt;)/iU","<text:line-break/>", $inputString);
 
@@ -275,7 +275,7 @@
 
       return $inputString;
     }
-
+    
     function convertGeneralHtmlToXML($inputString)
     {
       /**************************************************************
@@ -289,7 +289,7 @@
       $inputString = str_replace('&lt;li&gt;'                                      , '- ', $inputString);                      // use '-' as bullet
       $inputString = str_replace('&lt;/li&gt;<text:line-break/>'                   , '',               $inputString);                      // end bullet
       $inputString = str_replace('<text:line-break/>&lt;/ul&gt;<text:line-break/>' , '',               $inputString);                      // main closing </ul>
-      $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s
+      $inputString = str_replace('&lt;/ul&gt;<text:line-break/><text:line-break/>' , '',               $inputString);                      //  sub closing </ul>'s 
       $inputString = str_replace('&lt;/ul&gt;'                                     , '',               $inputString);                      // remove remaining </ul>'s
       
       // tbsooo_class.php (LoadXmlFromDoc) converted apostrophe (&apos; -> \') from XML file for TBS functions
