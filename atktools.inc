@@ -341,7 +341,10 @@
                 $valArr[] = $name;
               else
               {
-                $valArr[] = $name."=".(is_object($value) ? "object" : $value);
+                if (is_object($value))
+                  $valArr[] = sprintf("%s=Object(%s)", $name, get_class($val));
+                else
+                  $valArr[] = $name."=".$value;
               }
             }
             $stringval = "array(".implode(", ", $valArr).")";
@@ -1268,15 +1271,11 @@
    */
   function atk_var_dump($a, $d="")
   {
-    if (atkconfig("debug")>0) // atkdebug checks this, but if we check it here too, it saves us
-                              // a call to var_export.
-    {
-      ob_start();
-      var_dump($a);
-      $data = ob_get_contents();
-      atkdebug("vardump: ".($d!=""?$d." = ":"")."<pre>".$data."</pre>");
-      ob_end_clean();
-    }
+    ob_start();
+    var_dump($a);
+    $data = ob_get_contents();
+    atkdebug("vardump: ".($d!=""?$d." = ":"")."<pre>".$data."</pre>");
+    ob_end_clean();
   }
 
   /**
@@ -1626,7 +1625,7 @@
 
     return $url;
   }
-  
+
   /**
    * Return the dispatch file
    *
@@ -2110,7 +2109,7 @@
 
     return htmlentities($string, $quote_style, $charset);
   }
-  
+
   /**
    * Looks up a value using the given key in the given array and returns
    * the value if found or a default value if not found.
