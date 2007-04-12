@@ -136,7 +136,7 @@
     {
       if ($this->m_link_id)
       {
-        atkdebug("Disconnecting from database...");         
+        atkdebug("Disconnecting from database...");
         @mysql_close($this->m_link_id);
         $this->m_link_id = 0;
       }
@@ -153,11 +153,9 @@
       /* limit? */
       if ($offset >= 0 && $limit > 0)
         $query .= " LIMIT $offset, $limit";
-      if (atkconfig("debug")>0)
-      {
-        atkimport("atk.utils.atkdebugger");
-        atkDebugger::addQuery($query);
-      }
+
+      atkimport("atk.utils.atkdebugger");
+      atkDebugger::addQuery($query);
 
       $mode = $this->getQueryMode($query);
       atkdebug("atkmysqldb::query -> connect with mode = $mode");
@@ -177,18 +175,18 @@
 
         /* query database */
         $this->m_query_id = @mysql_query($query, $this->m_link_id);
-        
+
         $unlock_table = false;
         if (mysql_errno($this->m_link_id) == 1100)
         {
           $this->locktables_fallback_on_error($query, $mode);
           $unlock = true;
         }
-        else 
+        else
         {
           $this->m_affected_rows = mysql_affected_rows();
         }
-        
+
         $this->m_row = 0;
 
         /* invalid query */
@@ -200,7 +198,7 @@
 
         if ($unlock_table)
           $this->unlock();
-        
+
         /* return query id */
         return true;
       }
@@ -219,14 +217,14 @@
     {
       $error = mysql_error($this->m_link_id);
       $matches = array();
-      
+
       preg_match("/\'(.*)\'/U",$error,$matches);
-          
+
       if (is_array($matches) && sizeof($matches) == 2)
       {
         atkdebug("<b>Fallback feature called because error '1100' occured during the last query. Running query again using table lock for table '{$matches[1]}' (".$this->m_link_id.").</b>");
         $table = $matches[1];
-        
+
         if ($this->m_query_id)
         {
           if (is_resource($this->m_query_id))
@@ -234,14 +232,14 @@
           $this->m_query_id = 0;
         }
         $this->m_affected_rows = 0;
-        
+
         $this->lock($table,($querymode=='r' ? 'read' : 'write'));
         $this->m_query_id = @mysql_query($query, $this->m_link_id);
-        
+
         $this->m_affected_rows = mysql_affected_rows($this->m_link_id);
-      } 
+      }
     }
-    
+
     /**
      * Goto the next record in the result set
      * @return result of going to the next record
@@ -292,11 +290,8 @@
       {
         $query = "lock tables $table $mode";
 
-        if (atkconfig("debug")>0)
-        {
-          atkimport("atk.utils.atkdebugger");
-          atkDebugger::addQuery($query);
-        }
+        atkimport("atk.utils.atkdebugger");
+        atkDebugger::addQuery($query);
 
         /* lock */
         $result = @mysql_query($query, $this->m_link_id);

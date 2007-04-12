@@ -1,43 +1,43 @@
 <?php
 
- /**
-  * This file is part of the Achievo ATK distribution.
-  * Detailed copyright and licensing information can be found
-  * in the doc/COPYRIGHT and doc/LICENSE files which should be
-  * included in the distribution.
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage db
+   *
+   * @copyright (c)2000-2004 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
   *
-  * @package atk
-  * @subpackage db
-  *
-  * @copyright (c)2000-2004 Ibuildings.nl BV
-  * @license http://www.achievo.org/atk/licensing ATK Open Source License
-  *
-  *
-  */
+   */
 
   /**
-  * @internal Include baseclass
-  */
- require_once(atkconfig("atkroot")."atk/db/class.atkmysqldb.inc");
+   * @internal Include baseclass
+   */
+  require_once(atkconfig("atkroot")."atk/db/class.atkmysqldb.inc");
 
- /**
-  * Driver for MySQL databases > 4.1.3
-  *
-  * @author Eldad Ran <eldad@tele-concept.com>
-  * @package atk
-  * @subpackage db
-  */
- class atkMysqliDb extends atkMysqlDb
- {
-   /**
-    * Base constructor
-    */
-   function atkmysqlidb()
-   {
-     // set type
-     parent::atkmysqldb();
-     $this->m_type = "mysqli";
-   }
+  /**
+   * Driver for MySQL databases > 4.1.3
+   *
+   * @author Eldad Ran <eldad@tele-concept.com>
+   * @package atk
+   * @subpackage db
+   */
+  class atkMysqliDb extends atkMysqlDb
+  {
+    /**
+     * Base constructor
+     */
+    function atkmysqlidb()
+    {
+      // set type
+      parent::atkmysqldb();
+      $this->m_type = "mysqli";
+    }
 
    /**
     * Connect to the database
@@ -115,11 +115,8 @@
      if ($offset >= 0 && $limit > 0)
        $query .= " LIMIT $offset, $limit";
 
-     if (atkconfig("debug")>0)
-     {
-       atkimport("atk.utils.atkdebugger");
-       atkDebugger::addQuery($query);
-     }
+     atkimport("atk.utils.atkdebugger");
+     atkDebugger::addQuery($query);
 
      /* connect to database */
      $mode = $this->getQueryMode($query);
@@ -129,7 +126,7 @@
        if ($this->m_query_id)
        {
          if (is_resource($this->m_query_id))
-           mysqli_free_result($this->m_query_id);
+          mysqli_free_result($this->m_query_id);
          $this->m_query_id = 0;
        }
 
