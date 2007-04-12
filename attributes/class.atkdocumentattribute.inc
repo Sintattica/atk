@@ -114,8 +114,8 @@
         $html .= '</select>';
 
         // Add the button to the html
-        $selector = $this->m_ownerInstance->primaryKey($record);        
-        $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'atkdoctpl="+this.form.atkdoctpl.value;';
+        $selector = $this->m_ownerInstance->primaryKey($record);
+        $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'&atkdoctpl="+this.form.atkdoctpl.value;';
 
         $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\''.$onclickscript.'\'>';
 
