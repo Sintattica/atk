@@ -31,36 +31,14 @@ class clsTinyButStrongOOo extends clsTinyButStrong
 
   function SetZipBinary($path_binary, $test=false)
   {
-    // set the 'zip' binary to compress OOo files
-    if ($path_binary != '') {
-      $this->_zip_bin = $this->_PathQuote($path_binary);
-    }
-
-    // test if zip is present
-    if ($test) {
-      if (strlen(shell_exec($this->_zip_bin.' -h')) == 0) {
-        atkerror('clsTinyButStrongOOo->SetZipBinary: Problem to execute the command : shell_exec(\''.$this->_zip_bin.' -h\')');
-        return false;
-      }
-    }
-    return true;
+    atkdebug('clsTinyButStrongOOo->SetZipBinary: This method is deprecated', DEBUG_WARNING);
+    return false;
   }
 
   function SetUnzipBinary($path_binary, $test=false)
   {
-    // set the 'unzip binary to decompress OOo files
-    if ($path_binary != '') {
-      $this->_unzip_bin = $this->_PathQuote($path_binary);
-    }
-
-    // test if unzip is present
-    if ($test) {
-      if (strlen(shell_exec($this->_unzip_bin.' -h')) == 0) {
-        atkerror('clsTinyButStrongOOo->SetUnzipBinary: Problem to execute the command : shell_exec(\''.$this->_unzip_bin.' -h\')');
-        return false;
-      }
-    }
-    return true;
+    atkdebug('clsTinyButStrongOOo->SetUnzipBinary: This method is deprecated', DEBUG_WARNING);
+    return false;
   }
 
   function SetProcessDir($process_path)
@@ -127,29 +105,31 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   function LoadXmlFromDoc($xml_file)
   {
     $this->_xml_filename = $xml_file;
+    $xmlfilename = $this->_ooo_basename.'/'.$this->_xml_filename;
+    $ooofilename = $this->_ooo_basename.'.'.$this->_ooo_file_ext;
 
     // unzip the XML files
-    exec($this->_unzip_bin.' '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' -d '.$this->_ooo_basename.' '.$this->_xml_filename, $results, $return_code);
+    $atkzip = &atkNew("atk.utils.atkzip");
+    $extracted = $atkzip->extract($ooofilename, $this->_ooo_basename, $xml_file);
 
-    //Dennis hack: On some systems unzip would return -1 instead of 0 when nothing went wrong.
-    if ($return_code>0) {
-      atkerror(sprintf("clsTinyButStrongOOo->LoadXmlFromDoc: Error while extracting zip file (return code %s), please check if the unzip executable is in your path", $return_code));
+    if (!$extracted) {
+      atkerror("clsTinyButStrongOOo->LoadXmlFromDoc: Error while extracting the template from the document file");
       return false;
     }
 
     // test if XML file exist
-    if (!file_exists($this->_ooo_basename.'/'.$this->_xml_filename)) {
-      atkerror('clsTinyButStrongOOo->LoadXmlFromDoc: File not found: '.$this->_ooo_basename.'/'.$this->_xml_filename);
+    if (!file_exists($xmlfilename)) {
+      atkerror('clsTinyButStrongOOo->LoadXmlFromDoc: File not found: '.$xmlfilename);
       return false;
     }
     else
     {
-      atkdebug('clsTinyButStrongOOo->LoadXmlFromDoc: File exists: '.$this->_ooo_basename.'/'.$this->_xml_filename);
+      atkdebug('clsTinyButStrongOOo->LoadXmlFromDoc: File exists: '.$xmlfilename);
     }
 
     // load the template
     $this->ObjectRef = &$this;
-    $this->LoadTemplate($this->_ooo_basename.'/'.$this->_xml_filename, '=~_CharsetEncode');
+    $this->LoadTemplate($xmlfilename, '=~_CharsetEncode');
 
     // convert apostrophe from XML file for TBS functions
     $this->Source = str_replace('&apos;', '\'', $this->Source);
@@ -161,34 +141,37 @@ class clsTinyButStrongOOo extends clsTinyButStrong
   {
     // get the source result
     $this->Show(TBS_NOTHING);
+    
+    // Some variables
+    $xmlfilename = $this->_ooo_basename.'/'.$this->_xml_filename;
+    $ooofilename = $this->_ooo_basename.'.'.$this->_ooo_file_ext;
 
     // store the merge result in place of the XML source file
-    $fdw = fopen($this->_ooo_basename.'/'.$this->_xml_filename, "w");
+    $fdw = fopen($xmlfilename, "w");
     fwrite($fdw, $this->Source, strlen($this->Source));
     fclose ($fdw);
 
     // test if XML file exist
-    if (!file_exists($this->_ooo_basename.'/'.$this->_xml_filename)) {
-      atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$this->_ooo_basename.'/'.$this->_xml_filename);
+    if (!file_exists($xmlfilename)) {
+      atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$xmlfilename);
       return false;
     }
 
     // test if ZIP file exist
-    if (!file_exists($this->_ooo_basename.'.'.$this->_ooo_file_ext)) {
-      atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$this->_ooo_basename.'.'.$this->_ooo_file_ext);
+    if (!file_exists($ooofilename)) {
+      atkerror('clsTinyButStrongOOo->SaveXmlToDoc: File not found : '.$ooofilename);
       return false;
     }
 
     // zip and remove the file
-    // Jeroen/Ivo hack: -m sometimes caused corrupt files. -d has better results it seems. 
-    exec($this->_zip_bin.' -d '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
-    exec($this->_zip_bin.' -j '.$this->_ooo_basename.'.'.$this->_ooo_file_ext.' '.$this->_ooo_basename.'/'.$this->_xml_filename, $results, $return_code);
+    $atkzip = &atkNew("atk.utils.atkzip");
+    $added = $atkzip->add($ooofilename, $xmlfilename);
+    unlink($xmlfilename);
 
-    //Dennis hack: On some systems zip would return -1 instead of 0 when nothing went wrong.
-    if ($return_code>0) {
-      atkerror(sprintf("clsTinyButStrongOOo->SaveXmlToDoc: Error while adding to zip file (return code %s), please check if the zip executable is in your path", $return_code));
+    if (!$added) {
+      atkerror("clsTinyButStrongOOo->SaveXmlToDoc: Error while integrating data into the document file");
       return false;
-    }       
+    }
 
     return true;
   }
