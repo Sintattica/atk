@@ -333,6 +333,15 @@ Changed in ATK 5.7
   per option and are placed beneath each option. [Lineke]
 + Added Japanese translation (partial). (bug #506) [James]
 + Added atk.datatypes.atkarray with multidimensional replace function. [Patrick]
++ Added support for saving entered datetimes in UTC. [Peter]
++ Added atkNode::preAddToEditArray method:
+  The preAddToEditArray method is called from within the editArray
+  method prior to letting the attributes add themselves to the edit
+  array, but after the edit record values have been collected (a 
+  combination of the current record, initial/edit values and the forced 
+  values). This makes it possible to do some last-minute modifications
+  to the record data and possibly add some last-minute attributes etc.
+  [Peter]
 * Added file_exists() check to atkFileAttribute before calling the filesize() 
   function to prevent unnecessary error messages. [Patrick]
 * Fixed calendar-runner. Two different types of date field (one where you input

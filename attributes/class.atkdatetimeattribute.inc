@@ -36,6 +36,9 @@
     var $m_time = "";
     var $m_date = "";
     
+    var $m_utcOffset = null;
+    var $m_timezoneAttribute = null;
+    
 
     /**
      * Converts a date array to a timestamp
@@ -201,23 +204,29 @@
       return $dateEdit."&nbsp;&nbsp;-&nbsp;&nbsp;".$timeEdit;
     }
 
-
     function value2db($rec)
     { 
       if (is_array($rec[$this->fieldName()]))
       {
+        $value = $rec[$this->fieldName()];
+        $value = $this->toUTC($value, $rec);  
+        $rec[$this->fieldName()] = $value;
+
         $date = $this->m_date->value2db($rec);
         $time = $this->m_time->value2db($rec);
+        
         if ($date != NULL && $time != NULL)
           return $date." ".$time;
       }
       else if (!empty($rec[$this->fieldName()]))
       {
         $stamp = strtotime($rec[$this->fieldName()]);        
+        $stamp = $this->toUTC($stamp);
         return date('Y-m-d H:m:s',$stamp);
       }
      return NULL;
     }
+    
     /**
      * Convert database value to datetime array
      * @param $rec database record with date field
@@ -251,7 +260,9 @@
         if ($result_time == NULL)
           $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
 
-        return array_merge((array)$result_date,(array)$result_time);
+        $value = array_merge((array)$result_date,(array)$result_time);
+        $value = $this->fromUTC($value, $tmp_rec);   
+        return $value;
       }
       else return NULL;
     }
@@ -339,6 +350,161 @@
 		                      atkTimeAttribute::parseTime($datetime[1]));
 		  return $retval;
     }
-
+      
+   
+    /**
+     * Sets the timezone attribute. This can also be a timezone
+     * attribute retrieved from a atkManyToOneRelation. If so then please
+     * use the dot notation.
+     * 
+     * @param string $attrName attribute name
+     */
+    function setTimezoneAttribute($attrName)
+    {
+      $this->m_timezoneAttribute = $attrName;
+    }
+    
+    /**
+     * Returns the timezone attribute name.
+     * 
+     * @return string timezone attribute name
+     */
+    function getTimezoneAttribute()
+    {
+      return $this->m_timezoneAttribute;
+    }
+    
+    /**
+     * Sets the UTF offset in seconds.
+     * 
+     * @param int UTC offset in seconds
+     */
+    function setUTCOffset($offset)
+    {
+      $this->m_utcOffset = $offset;
+    }
+    
+    /**
+     * Resets the UTC offset.
+     */
+    function resetUTCOffset()
+    {
+      $this->m_utcOffset = null;
+    }
+    
+    /**
+     * Returns the UTC offset if set.
+     * 
+     * @return int UTC offset in seconds if set.
+     */
+    function getUTCOffset()
+    {
+      return $this->m_utcOffset;
+    }
+    
+    /**
+     * Returns the UTC offset in seconds. If the UTC offset is set explicitly 
+     * using the setUTCOffset method this offset is returned. Else if a timezone
+     * attribute is set the offset is determined by looking at the timezone 
+     * using the given timezone attribute. If no offset and no attribute are set
+     * an offset of 0 is returned.
+     * 
+     * @param array $record record
+     * @return int UTC offset in seconds
+     */
+    function _getUTCOffset($record)
+    {
+      if ($this->m_utcOffset !== null)
+      {
+        return $this->m_utcOffset;
+      }
+      else if ($this->m_timezoneAttribute !== null)
+      {
+        $parts = explode('.', $this->m_timezoneAttribute);
+        $node = $this->getOwnerInstance();
+        
+        while (count($parts) > 0)
+        {
+          $part = array_shift($parts);
+          $attr = $node->getAttribute($part);
+  
+          // relation, prepare for next iteration
+          if (is_a($attr, 'atkManyToOneRelation'))
+          {
+            $attr->populate($record, array($parts[0]));
+            $record = $record[$attr->fieldName()];
+            $node = $attr->m_destInstance;
+          }
+          
+          // timezone attribute, calculate and return offset
+          else if (is_a($attr, 'atkTimezoneAttribute'))
+          {
+            return atkTimeZoneAttribute::getUTCOffset($record[$attr->fieldName()]);
+          }
+          
+          // assume the attribute in question already has the offset saved in seconds
+          else 
+          {
+            return (int)$record[$attr->fieldName()];
+          }
+        }
+        
+        atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "'.$this->fieldName().'"!');
+        return 0;
+      }
+      else 
+      {
+        return 0;
+      }
+    }
+    
+    /**
+     * Convert the given ATK date/time array to a UTC date/time array.
+     *
+     * @param int|array $value UNIX timestamp or ATK date/time array
+     * @param array $record record
+     * 
+     * @return int|array UNIX timestamp or ATK date/time array (depending on input)
+     */
+    function toUTC($value, $record)
+    {
+      $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
+      $offset = $this->_getUTCOffset($record);
+      $stamp = $stamp - $offset;
+      $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
+      return $value;
+    }
+    
+    /**
+     * Convert the given UTC ATK date/time array to a date/time array in a certain timezone.
+     *
+     * @param int|array $value UNIX timestamp or ATK date/time array
+     * @param array $record record
+     * 
+     * @return int|array UNIX timestamp or ATK date/time array (depending on input)
+     */
+    function fromUTC($value, $record)
+    {
+      $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
+      $offset = $this->_getUTCOffset($record);
+      $stamp = $stamp + $offset;
+      $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
+      return $value;
+    }    
+    
+    /**
+     * If a timezone attribute is set, make sure 
+     * it's always loaded.
+     */
+    function postInit()
+    {
+      if ($this->m_timezoneAttribute !== null)
+      {
+        $node = &$this->getOwnerInstance();
+        $parts = explode('.', $this->m_timezoneAttribute);
+        $attr = &$node->getAttribute($parts[0]);
+        $attr->addFlag(AF_FORCE_LOAD);
+      }
+    }
   }
 ?>

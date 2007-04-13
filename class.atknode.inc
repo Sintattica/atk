@@ -1836,6 +1836,22 @@
         }
       }
     }
+    
+    /**
+     * The preAddToEditArray method is called from within the editArray
+     * method prior to letting the attributes add themselves to the edit
+     * array, but after the edit record values have been collected (a 
+     * combination of the current record, initial/edit values and the forced 
+     * values). This makes it possible to do some last-minute modifications to
+     * the record data and possibily add some last-minute attributes etc.
+     * 
+     * @param array $record the edit record
+     * @param string $mode edit mode (add or edit)
+     */
+    function preAddToEditArray(&$record, $mode="add")
+    {
+      // do nothing
+    }
 
     /**
      * Function outputs an array with edit fields. For each field the array
@@ -1953,6 +1969,8 @@
           }
         }
       }
+      
+      $this->preAddToEditArray($defaults, $mode);
 
       /* extra submission data */
       //$result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
@@ -3043,7 +3061,7 @@
         return $rec[$keys[0]];
       }
     }
-
+    
     /**
      * Validates a record.
      *
