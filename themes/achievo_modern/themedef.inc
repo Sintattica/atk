@@ -20,15 +20,16 @@
    */
  $theme["doctype"] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
-  
+
   $theme['modern_menu_compat']=true;
-  
+
   $theme["highlight"] = "";
   $theme["select"] = "";
   $theme['useframes']=false;
   $theme['dispatcher']='index.php';
   $theme['menufile']='index.php';
   $theme['menu_params']="class='menulink'";
+  $theme["tabtype"] = "dhtml";
 
 
 ?>
