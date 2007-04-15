@@ -342,6 +342,9 @@ Changed in ATK 5.7
   values). This makes it possible to do some last-minute modifications
   to the record data and possibly add some last-minute attributes etc.
   [Peter]
+* ZendPlatform 3.x session clustering id compatibility. ZP3.x uses a hyphen
+  in their session id which conflicted with the isValidSessionId function.
+  [Martin] 
 * Added file_exists() check to atkFileAttribute before calling the filesize() 
   function to prevent unnecessary error messages. [Patrick]
 * Fixed calendar-runner. Two different types of date field (one where you input
