@@ -64,7 +64,7 @@
 
         /* set default date format for Oracle */
         $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD HH24:MI:SS'");
-        $myresult = OCIExecute($nls);
+        $myresult = OCIExecute($nls, OCI_DEFAULT);
         $error = OCIError($this->m_link_id);
         if ($error["code"]!="")
         {
@@ -74,7 +74,7 @@
 
         /* set default timestamp format for Oracle */
         $nls = OCIParse($this->m_link_id, "alter session set nls_timestamp_format='YYYY-MM-DD HH24:MI:SS'");
-        $myresult = OCIExecute($nls);
+        $myresult = OCIExecute($nls, OCI_DEFAULT);
         $error = OCIError($this->m_link_id);
         if ($error["code"]!="")
         {
@@ -178,14 +178,14 @@
      */
     function rollback($savepoint="")
     {
-      atkdebug(get_class($this)."::rollback $savepoint");
-
       if (!empty($savepoint))
       {
+        atkdebug(get_class($this)."::rollback (rollback to savepoint $savepoint)");        
         $this->query('ROLLBACK TO SAVEPOINT '.$savepoint);
       }
       else if($this->m_link_id)
       {
+        atkdebug(get_class($this)."::rollback (global rollback)");
         OCIRollback($this->m_link_id);
       }
       return true;
@@ -335,7 +335,7 @@
         if ($mode == "write")
         {
           $m_query_id = OCIParse($this->m_link_id, "lock table $table in row exclusive mode");
-          $result = @OCIExecute($m_query_id);
+          $result = @OCIExecute($m_query_id, OCI_DEFAULT);
           if (!$result)
           {
             $this->halt("$mode lock on $table failed.");
@@ -360,7 +360,7 @@
      */
     function unlock()
     {
-      return $this->query("commit");
+      return $this->commit();
     }
 
     /**
@@ -430,7 +430,7 @@
 
         /* execute query */
         $m_query_id = OCIParse($this->m_link_id, $query);
-        $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS);
+        $id = @OCIExecute($m_query_id, OCI_DEFAULT);
 
         /* error? */
         if (empty($id))
@@ -438,12 +438,12 @@
           /* create sequence */
           $query = "CREATE SEQUENCE ".$sequencename." INCREMENT BY 1 START WITH 1 NOCYCLE NOORDER";
           $m_query_id = OCIParse($this->m_link_id, $query);
-          $id = @OCIExecute($m_query_id,OCI_COMMIT_ON_SUCCESS) or $this->halt("cannot create '$sequencename'");
+          $id = @OCIExecute($m_query_id, OCI_DEFAULT) or $this->halt("cannot create '$sequencename'");
 
           /* try again */
           $query = "SELECT ".$sequencename.".nextval AS nextid FROM dual";
           $m_query_id = OCIParse($this->m_link_id, $query);
-          $id = @OCIExecute($m_query_id) or $this->halt("cannot get nextval from sequence '$sequencename'");
+          $id = @OCIExecute($m_query_id, OCI_DEFAULT) or $this->halt("cannot get nextval from sequence '$sequencename'");
 
           /* empty? */
           if (empty($id)) return 0;
@@ -479,15 +479,15 @@
           $query = "ALTER SEQUENCE {$sequence} INCREMENT BY {$diff}";
           atkdebug($query);
           $queryId = OCIParse($this->m_link_id, $query);
-          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "SELECT {$sequence}.NEXTVAL AS value FROM DUAL";
           atkdebug($query);
           $queryId = OCIParse($this->m_link_id, $query);
-          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
           $query = "ALTER SEQUENCE {$sequence} INCREMENT BY 1";
           atkdebug($query);
           $queryId = OCIParse($this->m_link_id, $query);
-          @OCIExecute($queryId) or $this->halt("Cannot set sequence value for sequence '$sequence'");
+          @OCIExecute($queryId, OCI_DEFAULT) or $this->halt("Cannot set sequence value for sequence '$sequence'");
         }
       }
     }

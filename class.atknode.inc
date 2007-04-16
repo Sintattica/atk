@@ -820,7 +820,7 @@
      *                   If ommitted, this defaults to 100 for the first
      *                   attribute, and 100 more for each next attribute that
      *                   is added.
-     * @return mixed the attribute just added
+     * @return atkAttribute the attribute just added
      */
     function &add($attribute,$sections=NULL,$order=0)
     {
@@ -4030,9 +4030,9 @@
 
         $return = $this->$trigger($record, $mode);
 
-        if ($return == NULL)
+        if ($return === NULL)
         {
-          atkdebug("Undefined return:".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
+          atkdebug("Undefined return: ".$this->atkNodeType().".$trigger doesn't return anything, it should return a boolean!", DEBUG_WARNING);
           $return = true;
         }
 
@@ -4047,7 +4047,7 @@
           $listener = &$this->m_triggerListeners[$i];
           $return = $listener->notify($trigger, $record, $mode);
 
-          if ($return == NULL)
+          if ($return === NULL)
           {
             atkdebug("Undefined return: ".$this->atkNodeType().", ".get_class($listener).".notify('$trigger', ...) doesn't return anything, it should return a boolean!", DEBUG_WARNING);
             $return = true;

@@ -76,7 +76,7 @@
 
         /* set default date format for Oracle */
         $nls = OCIParse($this->m_link_id, "alter session set nls_date_format='YYYY-MM-DD HH24:MI:SS'");
-        $myresult = OCIExecute($nls);
+        $myresult = OCIExecute($nls, OCI_DEFAULT);
         $error = OCIError($this->m_link_id);
         if ($err["code"]!="")
         {
@@ -89,7 +89,7 @@
         // Is this a PHP bug
         // Workarround: see class.atkoci9query.inc and class.atkdatetimeattribute.inc
         $nls = OCIParse($this->m_link_id, "alter session set nls_timestamp_format='YYYY-MM-DD HH24:MI:SS'");
-        $myresult = OCIExecute($nls);
+        $myresult = OCIExecute($nls, OCI_DEFAULT);
         $err = OCIError($this->m_link_id);
         if ($err["code"]!="")
         {

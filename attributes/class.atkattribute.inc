@@ -536,7 +536,24 @@
      * @var bool
      */
     var $m_initial_hidden = false;
+    
+    /**
+     * Storage type.
+     * @access private
+     * @var int
+     * @see setStorageType
+     */
+    var $m_storageType = array();
 
+    
+    /**
+     * Load type.
+     * @access private
+     * @var int
+     * @see setLoadType
+     */
+    var $m_loadType = array();    
+    
     /**
      * Constructor
      *
@@ -1926,6 +1943,19 @@
               ||hasFlag($storagetype, PRESTORE)
               );
     }
+    
+    /**
+     * Sets the storage type.
+     *
+     * @param int $type Bitmask containg information about storage requirements.
+     * @param string $mode The storage mode ("add", "update" or null for all)
+     * 
+     * @see storageType
+     */
+    function setStorageType($type, $mode=null)
+    {
+      $this->m_storageType[$mode] = $type;
+    }
 
     /*
      * Determine the storage type of this attribute.
@@ -1956,12 +1986,30 @@
      */
     function storageType($mode)
     {
+      if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
+        return $this->m_storageType[$mode];
+      else if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null)
+        return $this->m_storageType[null];
       // Default backwardscompatible behaviour:
-      if (method_exists($this,"store"))
+      else if (method_exists($this,"store"))
         return POSTSTORE;
       else
         return ADDTOQUERY;
     }
+    
+    
+    /**
+     * Sets the load type.
+     *
+     * @param int $type Bitmask containg information about load requirements.
+     * @param string $mode The load mode ("view", "admin" etc. or null for all)
+     * 
+     * @see loadType
+     */
+    function setLoadType($type, $mode=null)
+    {
+      $this->m_loadType[$mode] = $type;
+    }    
 
     /*
      * Determine the load type of this attribute.
@@ -1992,8 +2040,12 @@
      */
     function loadType($mode, $searching=false)
     {
+      if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        return $this->m_loadType[$mode];
+      else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
+        return $this->m_loadType[null];
       // Default backwardscompatible behaviour:
-      if (method_exists($this,"load"))
+      else if (method_exists($this,"load"))
         return POSTLOAD;
       else
         return ADDTOQUERY;

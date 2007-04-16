@@ -344,6 +344,11 @@ Changed in ATK 5.7
   [Peter]
 + Added cookie data to the debug information. Also did some code cleaning. 
   [Guido, Dennis]
++ Added support for externaly setting the storage / load type of an 
+  attribute. This makes it possible to use real attributes as dummies
+  (no loading or saving) in add/edit forms. [Peter]
+* Fixed atkSaveHandler rollback/commit behaviour. [Peter]
+* Fixed atkOci8Db/atkOci9Db rollback/commit behaviour. [Peter]
 * ZendPlatform 3.x session clustering id compatibility. ZP3.x uses a hyphen
   in their session id which conflicted with the isValidSessionId function.
   [Martin] 

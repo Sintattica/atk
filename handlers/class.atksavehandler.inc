@@ -49,7 +49,11 @@
       if (!isset($this->m_postvars['atkcancel']))
       {
         // just before we validate the record we call the preAdd() to check if the record needs to be modified
-        $this->m_node->executeTrigger("preAdd", $record, "add");
+        if (!$this->m_node->executeTrigger("preAdd", $record, "add"))
+        {
+          $this->handleAddError($record);
+          return;
+        }
 
         $this->m_node->validate($record, "add");
 
@@ -66,6 +70,8 @@
         if ($error)
         {
           // something went wrong, back to where we came from
+          $db = &$this->m_node->getDb();
+          $db->rollback();
           return $this->goBack($record);
         }
         else
@@ -74,19 +80,8 @@
 
           if(!$this->m_node->addDb($record, true, "add"))
           {
-            $db->rollback();
-            if($db->getErrorType()=="user")
-            {
-              triggerError($record, 'Error', $db->getErrorMsg(), '', '');
-              
-              // still an error, back to where we came from
-              return $this->goBack($record);
-            }
-            else
-            {
-              $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $db->getErrorMsg());
-              $this->m_node->redirect($location);
-            }
+            $this->handleAddError($record);            
+            return;
           }
           else
           {
@@ -131,6 +126,30 @@
         $this->m_node->redirect($location);
       }
     }   
+    
+    /**
+     * Handle error in preAdd/addDb.
+     *
+     * @param array $record
+     */
+    function handleAddError($record)
+    {
+      $db = &$this->m_node->getDb();          
+      
+      $db->rollback();
+      if($db->getErrorType()=="user")
+      {
+        triggerError($record, 'Error', $db->getErrorMsg(), '', '');
+        
+        // still an error, back to where we came from
+        $this->goBack($record);
+      }
+      else
+      {
+        $location = $this->m_node->feedbackUrl("save", ACTION_FAILED, $record, $db->getErrorMsg());
+        $this->m_node->redirect($location);
+      }       
+    }    
     
     function _getSkip()
     {      
