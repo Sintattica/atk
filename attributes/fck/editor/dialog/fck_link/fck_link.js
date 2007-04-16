@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2007 Frederico Caldeira Knabben
  *
@@ -154,8 +154,9 @@ window.onload = function()
   if (FCKConfig.initialLinkTarget != null &&  document.getElementById('txtUrl').value == '')
   {
     document.getElementById('cmbTarget').value = FCKConfig.initialLinkTarget;
+    SetTarget(FCKConfig.initialLinkTarget);
   }
-		
+
 	// Activate the "OK" button.
 	window.parent.SetOkButton( true ) ;
 }
