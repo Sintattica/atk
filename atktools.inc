@@ -1020,7 +1020,7 @@
       $from = atkconfig("mail_sender", $defaultfrom);
 
       $body = "Hello,\n\nAn error seems to have occurred in the atk application named '$txt_app_title'.\n";
-      $body.= "\nThe errormessage was:\n\n".implode("\n",$g_error_msg)."\n";
+      $body.= "\nThe errormessage was:\n\n".implode("\n",is_array($g_error_msg)?$g_error_msg:array())."\n";
       $body.= "\nA detailed report follows:\n";
       $body.= "\nPHP Version: ".phpversion()."\n\n";
 
@@ -1033,16 +1033,7 @@
       }
       $body.= implode("\n",$lines);
 
-      if (count($_GET)>0)
-      {
-        $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
-        foreach ($_GET as $key=>$value)
-        {
-          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
-        }
-      }
-
-      if (count($_GET)>0)
+      if (is_array($_GET))
       {
         $body.= "\n\n_GET\n".str_repeat("-",70)."\n";
         foreach ($_GET as $key=>$value)
@@ -1064,7 +1055,7 @@
         }
       }
 
-      if (count($_POST)>0)
+      if (is_array($_POST))
       {
         $body.= "\n\n_POST\n".str_repeat("-",70)."\n";
         foreach ($_POST as $key=>$value)
@@ -1072,6 +1063,16 @@
           $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
+
+      if (is_array($_COOKIE))
+      {
+        $body.= "\n\n_COOKIE\n".str_repeat("-",70)."\n";
+        foreach ($_COOKIE as $key=>$value)
+        {
+          $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
+        }
+      }
+      
       $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
       foreach ($GLOBALS as $key=>$value)
       {

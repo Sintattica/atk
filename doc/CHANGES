@@ -342,6 +342,8 @@ Changed in ATK 5.7
   values). This makes it possible to do some last-minute modifications
   to the record data and possibly add some last-minute attributes etc.
   [Peter]
++ Added cookie data to the debug information. Also did some code cleaning. 
+  [Guido, Dennis]
 * ZendPlatform 3.x session clustering id compatibility. ZP3.x uses a hyphen
   in their session id which conflicted with the isValidSessionId function.
   [Martin] 
