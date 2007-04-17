@@ -719,7 +719,8 @@
     $g_sessionManager = new atkSessionManager($namespace, $usestack);
 
     atkDataDecode($_REQUEST);
-    $ATK_VARS = $_REQUEST;
+    $ATK_VARS = array_merge($_GET, $_POST);
+    atkDataDecode($ATK_VARS);
 
     $g_sessionManager->session_read($ATK_VARS);
 
