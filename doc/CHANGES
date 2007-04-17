@@ -594,7 +594,8 @@ Changed in ATK 5.7
   $config_debug_translations to enable them. [Peter]
 * Changed hardcoded 'userid' to use auth_userfield config in reloadUser method
   of atkSecurityManager. [Boy]
-* Updated prototype and scriptaculous to latest stable version. [Lineke]
+* Updated prototype and scriptaculous to latest stable version (1.5 and 1.7).
+  [Lineke,Peter]
 * atkFileAttribute: fixed bug in atkFileAttribute; if AF_OBLIGATORY and
   AF_FILE_NO_SELECT flags where both set you always had to upload a new
   image. [Bart, Peter]
