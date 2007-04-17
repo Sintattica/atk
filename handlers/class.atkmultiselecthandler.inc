@@ -32,7 +32,6 @@
      */
     function action_multiselect()
     {
-      atk_var_dump($this->m_postvars);
       if (isset($this->m_postvars['atkselector']))
       {
         $output = $this->invoke("handleMultiselect");
