@@ -321,5 +321,7 @@
   "autocomplete_minimum_chars" => "Voer minimaal %d karakters in.",
   "saveandedit" => "Opslaan en bewerken",
   "steelblue"=>"SteelBlue",
+  "notallowed_new_defaulttag" => "Gebruik alleen bestaande tags",
+  "available_default_tags" => "Bestaande tags",
 );
 ?>

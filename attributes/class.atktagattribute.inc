@@ -47,7 +47,7 @@
         $size = $this->maxInputSize();        
       }
       
-      $this->atkAttribute($name, $flags, $size);
+      $this->atkAttribute($name, $flags|AF_NO_SORT, $size);
       $this->m_destination = $destination;
       $this->m_destinationfield = $destinationfield;
       $this->m_link = $link;      
@@ -107,7 +107,7 @@
           { 
             if (!count($res))
             {
-              triggerError($rec,$this->fieldName(),"notallowed_new_defaulttag",sprintf(atktext("notallowed_new_defaulttag"),$keyword));
+              triggerError($rec,$this->fieldName(),"notallowed_new_defaulttag",sprintf($this->text("notallowed_new_defaulttag"),$keyword));
               $this->m_nonematching[] = $keyword;
             }
           }
@@ -123,7 +123,6 @@
       if ($this->createDestinationInstance())
       {         
         $html = $this->displayDefaultTags();
-        $html.= "<br />";
         
         //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
         if(!(count($this->m_nonematching) && $this->m_mode==TA_ERROR))
@@ -149,7 +148,7 @@
       
       if(count($defaults))
       { 
-        $html.= atktext("available_default_tags").": ";
+        $html.= $this->text("available_default_tags").": ";
         for($i=0,$_i=count($defaults);$i<$_i;$i++)
         { 
           $key = $defaults[$i][$this->m_destinationfield];
@@ -159,12 +158,12 @@
           $html.= "<a href=\"javascript:$jsclick\">$key</a>";
           
           if($i<($_i-1)) 
-            $html.=" | ";
+            $html.= ", ";
         }                              
       }
       else 
       {
-        return atktext("no_defaulttags_found");
+        return '';
       }
       
       $html.= "</div>";
