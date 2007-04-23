@@ -1373,7 +1373,7 @@
     if (eregi("ie", $browser["browser"]))
     {
       $mime = "application/octetstream";
-      $disp = 'inline';
+      $disp = 'attachment';
     }
     else if (eregi("opera",$browser["browser"]))
     {

@@ -347,6 +347,7 @@ Changed in ATK 5.7
 + Added support for externaly setting the storage / load type of an 
   attribute. This makes it possible to use real attributes as dummies
   (no loading or saving) in add/edit forms. [Peter]
+* Changed function exportFile for IE7. If IE => inline to attachment [Koen]
 * Fixed atkSaveHandler rollback/commit behaviour. [Peter]
 * Fixed atkOci8Db/atkOci9Db rollback/commit behaviour. [Peter]
 * ZendPlatform 3.x session clustering id compatibility. ZP3.x uses a hyphen
