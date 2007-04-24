@@ -276,11 +276,11 @@
       $this->_restoreDivStates($page);
 
       $result='<div align="right">
-                  [<a href="javascript:profile_checkAll(\''.$this->fieldName().'\')">'.
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->fieldName().'\'); return false;">'.
                     atktext("check_all").
-             '</a> <a href="javascript:profile_checkNone(\''.$this->fieldName().'\')">'.
+             '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->fieldName().'\'); return false;">'.
                     atktext("check_none").
-             '</a> <a href="javascript:profile_checkInvert(\''.$this->fieldName().'\')">'.
+             '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->fieldName().'\'); return false;">'.
                     atktext("invert_selection").'</a>]</div>';
 
       $isAdmin =  ($user['name']=='administrator' || $this->canGrantAll());
@@ -301,15 +301,15 @@
             $firstModule = false;
           else
             $result .= "</div><br>";
-          $result .= "<b><a href=\"javascript:profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."');\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext(array("title_$module", $module), $module)."<br>";
+          $result .= "<b><a href=\"javascript:void(0)\" onclick=\"profile_swapProfileDiv('div_$module','".atkConfig("atkroot")."'); return false;\"><img src='".atkConfig("atkroot")."atk/images/plus.gif' border='0' id='img_div_$module'></a>&nbsp;</b>".atktext(array("title_$module", $module), $module)."<br>";
           $result .= "<div id='div_$module' name='div_$module' style='display: none;'>";
           $result .= "<input type='hidden' name=\"divstate['div_$module']\" id=\"divstate['div_$module']\" value='closed' />";
           $result.='<div>
-                  [<a href="javascript:profile_checkAllByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+                  [<a href="javascript:void(0)" onclick="profile_checkAllByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
                     atktext("check_all", "atk").
-             '</a> <a href="javascript:profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+             '</a> <a href="javascript:void(0)" onclick="profile_checkNoneByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
                     atktext("check_none", "atk").
-             '</a> <a href="javascript:profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$module.'.\')">'.
+             '</a> <a href="javascript:void(0)" onclick="profile_checkInvertByValue(\''.$this->fieldName().'\',\''.$module.'.\'); return false;">'.
                     atktext("invert_selection", "atk").'</a>]</div>';
           $result .= "<br>";
         }

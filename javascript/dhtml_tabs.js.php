@@ -171,6 +171,7 @@ function setCurrentTab(value)
     if (form.atktab != null)
     {
       form.atktab.value = value;
+      form.atktab.defaultValue = value;
     }
     else
     {
@@ -178,6 +179,7 @@ function setCurrentTab(value)
       input.setAttribute('type', 'hidden');
       input.setAttribute('name', 'atktab');
       input.setAttribute('value', value);
+      input.defaultValue = value;
       form.appendChild(input);
       form.atktab = input;
     }

@@ -323,5 +323,6 @@
   "steelblue"=>"SteelBlue",
   "notallowed_new_defaulttag" => "Gebruik alleen bestaande tags",
   "available_default_tags" => "Bestaande tags",
+  "lose_changes_warning" => "Door het verlaten van deze pagina gaan alle gemaakte wijzigingen verloren.",  
 );
 ?>

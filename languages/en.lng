@@ -345,5 +345,6 @@
   "saveandedit" => "Save and edit",
   "email" => "E-mail",
   "steelblue"=>"SteelBlue",
+  "lose_changes_warning" => "If you navigate away from this page, all your changes will be lost.",  
 );
 ?>

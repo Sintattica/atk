@@ -824,4 +824,12 @@
    * @var boolean
    */
   $config_manytoone_autocomplete_search_case_sensitive = false;
+  
+  /**
+   * Warn the user if he/she has changed something in a form
+   * and leaves the page without pressing save or cancel.
+   * 
+   * @var bool
+   */
+  $config_lose_changes_warning = false;
 ?>

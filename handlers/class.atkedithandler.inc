@@ -208,7 +208,7 @@
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
             if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
-              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:showTab(\''.$error["tab"].'\');">'.$this->getTabLabel($node, $error["tab"]).'</a> )';
+              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a> )';
             else $error_tab = "";
 
             if(!is_array($error['attrib_name']))
@@ -372,6 +372,24 @@
       $ui = &$this->getUi();
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
+
+
+      if (atkconfig('lose_changes_warning', true))
+      {
+        // If we are in the save or update action the user has added a nested record, has done
+        // a selection using the select handler or generated an error, in either way we assume
+        // the form has been changed, so we always warn the user when leaving the page.
+        $isChanged = 'false';
+        if ((isset($record['atkerror']) && count($record['atkerror']) > 0) || 
+            (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper']))
+        {
+          $isChanged = 'true';
+        }
+        
+        $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkunloadhelper.js");      
+        $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
+      }
 
       $result = "";
 

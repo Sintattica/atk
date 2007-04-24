@@ -73,11 +73,11 @@
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
 
       $result ='<div align="left"><font size="-2">
-                [<a href="javascript:profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\')">'.
+                [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
                      atktext("check_all", "atk").
-                '</a> <a href="javascript:profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\')">'.
+                '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
                      atktext("check_none", "atk").
-                '</a> <a href="javascript:profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\')">'.
+                '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
                      atktext("invert_selection", "atk").'</a>]</font></div>';
 
       $result.= '<table border="0"><tr>';

@@ -198,11 +198,11 @@
       if (count($this->m_values)>4 && !hasFlag($this->m_flags,AF_NO_TOGGLELINKS))
       {
         return '<div align="left"><font size="-2">
-                  [<a href="javascript:profile_checkAll(\''.$fieldprefix.$this->fieldName().'\')">'.
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
                        atktext("check_all").
-                  '</a> <a href="javascript:profile_checkNone(\''.$fieldprefix.$this->fieldName().'\')">'.
+                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
                        atktext("check_none").
-                  '</a> <a href="javascript:profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\')">'.
+                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$fieldprefix.$this->fieldName().'\'); return false;">'.
                        atktext("invert_selection").'</a>]</font></div>';
       }
     }
