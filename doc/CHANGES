@@ -4,13 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changed in galactus branch
-------------------
-+ Added atkFrontController and atkDataHolder. [Peter,Martin,Boy]
-* atkTime now only returns integers for getHours, getMinutes, etc. [Boy]
-* Added ability to register modifiers. [Boy]
 Changed in ATK 5.7
 ------------------
++ Added atkFrontController and atkDataHolder. [Peter,Martin,Boy,Tjeerd]
 + Sessionmanager can set a cookie which spawns multiple subdomains
   (eg .ibuildings.nl so you can be logged on to a.ibuildings.nl and to
   b.ibuildings.nl). Param set with $config_cookiedomain.
@@ -334,7 +330,7 @@ Changed in ATK 5.7
   forget to include them. (php5 only). [Boy]
 + The atkcustomrecordlist attribute is extended to support some standard
   export types (csv, excelcsv, html). [Patrick]
-+ Added setComment function to atkradioattribute. This can be used for comments 
++ Added setComment function to atkradioattribute. This can be used for comments
   per option and are placed beneath each option. [Lineke]
 + Added Japanese translation (partial). (bug #506) [James]
 + Added atk.datatypes.atkarray with multidimensional replace function. [Patrick]
@@ -342,26 +338,28 @@ Changed in ATK 5.7
 + Added atkNode::preAddToEditArray method:
   The preAddToEditArray method is called from within the editArray
   method prior to letting the attributes add themselves to the edit
-  array, but after the edit record values have been collected (a 
-  combination of the current record, initial/edit values and the forced 
+  array, but after the edit record values have been collected (a
+  combination of the current record, initial/edit values and the forced
   values). This makes it possible to do some last-minute modifications
   to the record data and possibly add some last-minute attributes etc.
   [Peter]
-+ Added cookie data to the debug information. Also did some code cleaning. 
++ Added cookie data to the debug information. Also did some code cleaning.
   [Guido, Dennis]
-+ Added support for externaly setting the storage / load type of an 
++ Added support for externaly setting the storage / load type of an
   attribute. This makes it possible to use real attributes as dummies
   (no loading or saving) in add/edit forms. [Peter]
 + Added support for showing a warning message when leaving the
   page without saving or cancelling. To enable this functionality
   please set $config_lose_changes_warning to true. [Peter]
+* atkTime now only returns integers for getHours, getMinutes, etc. [Boy]
+* Added ability to register modifiers. [Boy]
 * Changed function exportFile for IE7. If IE => inline to attachment [Koen]
 * Fixed atkSaveHandler rollback/commit behaviour. [Peter]
 * Fixed atkOci8Db/atkOci9Db rollback/commit behaviour. [Peter]
 * ZendPlatform 3.x session clustering id compatibility. ZP3.x uses a hyphen
   in their session id which conflicted with the isValidSessionId function.
-  [Martin] 
-* Added file_exists() check to atkFileAttribute before calling the filesize() 
+  [Martin]
+* Added file_exists() check to atkFileAttribute before calling the filesize()
   function to prevent unnecessary error messages. [Patrick]
 * Fixed calendar-runner. Two different types of date field (one where you input
   the date and another one where you input the date using the date selection
@@ -983,7 +981,7 @@ Changed in ATK 5.7
 * Added ability to specify interval instead of steps in atkTimeAttribute.
   [Boy]
 * NF_LOCK now works when a database is used that supports transactions. [Ivo]
-* Remove stripslashes from db2value in atkAttribute. It is no longer needed and 
+* Remove stripslashes from db2value in atkAttribute. It is no longer needed and
   selectDb's went wrong when fields contain slashes [Ivo, Jeroen]
 * Updated FCK editor to latest version (2.41). [Harrie]
 * Fixed corrupted images of outlook theme. [Dennis]
