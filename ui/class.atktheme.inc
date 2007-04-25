@@ -127,11 +127,11 @@
      */
     function getFileLocation($type, $name, $module="")
     {
-      if ($module!="" & isset($this->m_theme["modulefiles"][$module][$type][$name]))
+      if ($module!="" && isset($this->m_theme["modulefiles"][$module][$type][$name]))
       {
         return moduleDir($module)."themes/".$this->m_theme["modulefiles"][$module][$type][$name];
       }
-      if (isset($this->m_theme["files"][$type][$name]))
+      else if (isset($this->m_theme["files"][$type][$name]))
       {
         return atkTheme::absPath($this->m_theme["files"][$type][$name]);
       }

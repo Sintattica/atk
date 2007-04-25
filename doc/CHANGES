@@ -4,6 +4,11 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changed in galactus branch
+------------------
++ Added atkFrontController and atkDataHolder. [Peter,Martin,Boy]
+* atkTime now only returns integers for getHours, getMinutes, etc. [Boy]
+* Added ability to register modifiers. [Boy]
 Changed in ATK 5.7
 ------------------
 + Sessionmanager can set a cookie which spawns multiple subdomains

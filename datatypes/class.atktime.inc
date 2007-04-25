@@ -59,7 +59,8 @@
      */
     public function __construct($time=0)
     {
-      $this->setFormat('[hours]:[minutes]:[seconds]');
+      $this->setFormat('H:i:s');
+      $this->setTemplate('[hours]:[minutes]:[seconds]');
       if (is_array($time))
       {
         $this->m_time = gmmktime($time['hours'],$time['minutes'],
@@ -170,7 +171,7 @@
      */
     public function getHours($leadingzero=false)
     {
-      $hours = ($this->m_time/3600);
+      $hours = (int)($this->m_time/3600);
       if ($leadingzero && $hours<10) $hours="0$hours";
       return $hours;
     }
@@ -187,7 +188,7 @@
      */
     public function getMinutes($leadingzero=false)
     {
-      $minutes = (($this->m_time-($this->getHours()*3600))/60);
+      $minutes = (int)(($this->m_time-($this->getHours()*3600))/60);
       if ($leadingzero && $minutes<10) $minutes="0$minutes";
       return $minutes;
     }
@@ -204,7 +205,7 @@
      */
     public function getSeconds($leadingzero=false)
     {
-      $seconds = ($this->m_time-($this->getHours()*3600) - 
+      $seconds = (int)($this->m_time-($this->getHours()*3600) - 
                                 ($this->getMinutes()*60));
       if ($leadingzero && $seconds<10) $seconds="0$seconds";
       return $seconds;

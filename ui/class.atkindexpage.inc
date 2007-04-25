@@ -26,6 +26,12 @@
      * @var Array
      */
     var $m_user;
+    
+    var $m_topsearchpiece;
+    var $m_topcenterpiecelinks;
+    var $m_title;
+    var $m_username;
+    var $m_defaultDestination;
 
     var $m_topsearchpiece;
     var $m_topcenterpiecelinks;
@@ -59,7 +65,7 @@
       atkimport("atk.menu.atkmenu");
       $menu = &atkMenu::getMenu();
 
-
+      
       if (is_object($menu)) $this->m_page->addContent($menu->getMenu());
       else atkerror("no menu object created!");;
     }
@@ -86,6 +92,27 @@
       "top");
 
       $this->m_page->addContent($top);
+    }
+    
+    function setTopCenterPieceLinks($centerpiecelinks)
+    {
+      $this->m_topcenterpiecelinks=$centerpiecelinks;
+      atk_var_dump($this->m_topcenterpiecelinks,"CENTER PIECE LINKS");
+    }
+    
+    function setTopSearchPiece($searchpiece)
+    {
+      $this->m_topsearchpiece = $searchpiece;
+    }
+    
+    function setTitle($title)
+    {
+      $this->m_title = $title;
+    }
+    
+    function setUsername($username)
+    {
+      $this->m_username = $username;
     }
 
     function setTopCenterPieceLinks($centerpiecelinks)
@@ -155,24 +182,24 @@
         }
         else
         {
-
+          
           if(is_array($this->m_defaultDestination))
           {
             $controller = &atkinstance("atk.atkcontroller");
             $controller->invoke("loadDispatchPage", $this->m_defaultDestination);
           }
-          else
+          else 
           {
             $this->m_page->register_style($this->m_theme->stylePath("style.css"));
             $box = $this->m_ui->renderBox(array("title"=>atkText("app_shorttitle"),
             "content"=>"<br /><br />".atkText("app_description")."<br /><br />"));
-
+  
             $this->m_page->addContent($box);
           }
         }
       }
     }
-
+    
     function setDefaultDestination($destination)
     {
       if(is_array($destination))

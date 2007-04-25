@@ -1626,7 +1626,7 @@
 
     return $url;
   }
-
+  
   /**
    * Return the dispatch file
    *
@@ -2110,7 +2110,7 @@
 
     return htmlentities($string, $quote_style, $charset);
   }
-
+  
   /**
    * Looks up a value using the given key in the given array and returns
    * the value if found or a default value if not found.
