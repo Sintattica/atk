@@ -43,7 +43,7 @@
       $theme = &atkinstance("atk.ui.atktheme");
       $page->register_script(atkconfig('atkroot').'atk/javascript/dropdown_menu.js');
       $page->register_style($theme->stylePath("atkdropdownmenu.css"));
-      $page->m_loadscripts[] = "activateMenu('nav');";
+      $page->m_loadscripts[] = "new DHTMLListMenu('nav');";
 
       $atkmenutop = $ATK_VARS["atkmenutop"];
       if($atkmenutop=="") $atkmenutop="main";

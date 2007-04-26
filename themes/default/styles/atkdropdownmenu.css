@@ -61,7 +61,15 @@ BODY
   float: left;
 }
 
-#nav ul li a:hover
+#nav ul li a:hover,
+#nav ul li a.hover
+{
+  background-color: #5caeff;
+  color: #fff;
+}
+
+/* same as the above, but internet explorer < 7 chokes if we add it to the above */
+#nav ul li:hover > a
 {
   background-color: #5caeff;
   color: #fff;
