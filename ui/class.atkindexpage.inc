@@ -33,12 +33,6 @@
     var $m_username;
     var $m_defaultDestination;
 
-    var $m_topsearchpiece;
-    var $m_topcenterpiecelinks;
-    var $m_title;
-    var $m_username;
-    var $m_defaultDestination;
-
     function atkIndexPage()
     {
       $this->m_page =   &atkinstance("atk.ui.atkpage");
