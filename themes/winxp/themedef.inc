@@ -1,9 +1,8 @@
 <?php
-
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -16,10 +15,12 @@
    * $Id$
    */
 
-  /** Theme definition */
+  /**
+   * Theme definition
+   */
   $theme["highlight"] = "#D6DFF7";
   $theme["select"]    = "#D6DFF7";
-
   $theme["tabtype"] = "dhtml";
-  $theme['modern_menu_compat']=true;
+  $theme["modern_menu_compat"] = true;
+  $theme['compatible_menus'] = array("modern");
 ?>
