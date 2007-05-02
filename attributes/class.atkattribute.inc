@@ -536,7 +536,7 @@
      * @var bool
      */
     var $m_initial_hidden = false;
-    
+
     /**
      * Storage type.
      * @access private
@@ -545,15 +545,15 @@
      */
     var $m_storageType = array();
 
-    
+
     /**
      * Load type.
      * @access private
      * @var int
      * @see setLoadType
      */
-    var $m_loadType = array();    
-    
+    var $m_loadType = array();
+
     /**
      * Constructor
      *
@@ -1943,13 +1943,13 @@
               ||hasFlag($storagetype, PRESTORE)
               );
     }
-    
+
     /**
      * Sets the storage type.
      *
      * @param int $type Bitmask containg information about storage requirements.
      * @param string $mode The storage mode ("add", "update" or null for all)
-     * 
+     *
      * @see storageType
      */
     function setStorageType($type, $mode=null)
@@ -1996,20 +1996,20 @@
       else
         return ADDTOQUERY;
     }
-    
-    
+
+
     /**
      * Sets the load type.
      *
      * @param int $type Bitmask containg information about load requirements.
      * @param string $mode The load mode ("view", "admin" etc. or null for all)
-     * 
+     *
      * @see loadType
      */
     function setLoadType($type, $mode=null)
     {
       $this->m_loadType[$mode] = $type;
-    }    
+    }
 
     /*
      * Determine the load type of this attribute.
@@ -2344,7 +2344,8 @@
       $script = '';
       foreach ($arr['fields'] as $field)
       {
-        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = '".addslashes(atk_htmlentities($field['html']))."'.unescapeHTML();\r\n";
+        atkimport('atk.utils.atkjson');
+        $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = ".atkJSON::encode($field['html']).";\r\n";
       }
 
       $this->_registerDependees($mode, $fieldprefix);
