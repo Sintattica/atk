@@ -64,7 +64,7 @@ class atkcookmenu extends atkModernMenu
           $target="null";
         }
         $menu_javascript.="[null, '".addslashes($item["name"])."', ".$url.", ".$target.", null";
-        if(count($item["submenu"]))
+        if(isset($item["submenu"]) && count($item["submenu"])>0)
         {
           $menu_javascript.=',';
           if($item["header"]!="")
