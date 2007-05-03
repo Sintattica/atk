@@ -32,23 +32,35 @@
     var $m_title;
     var $m_username;
     var $m_defaultDestination;
+    var $m_flags;
 
     function atkIndexPage()
     {
+      global $ATK_VARS;    
       $this->m_page =   &atkinstance("atk.ui.atkpage");
       $this->m_ui =     &atkinstance("atk.ui.atkui");
       $this->m_theme =  &atkinstance('atk.ui.atktheme');
       $this->m_output = &atkinstance('atk.ui.atkoutput');
       $this->m_user =   getUser();
+      $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
+    }
+    
+    function hasFlag($flag)
+    {
+      return hasFlag($this->m_flags, $flag);
     }
 
     function generate()
     {
-      $this->atkGenerateTop();
-      $this->atkGenerateMenu();
+      if (!$this->hasFlag(HTML_PARTIAL))
+      {
+        $this->atkGenerateTop();
+        $this->atkGenerateMenu();
+      }
+      
       $this->atkGenerateDispatcher();
 
-      $this->m_output->output($this->m_page->render(($this->m_title!=""?$this->m_title:atkText("app_title"))), true);
+      $this->m_output->output($this->m_page->render(($this->m_title!=""?$this->m_title:atkText("app_title")), $this->m_flags));
       $this->m_output->outputFlush();
     }
 
