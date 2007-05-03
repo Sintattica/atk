@@ -72,17 +72,22 @@
     {
       // Get the configured layout class
       $classname =  atkMenu::layoutToClass(atkconfig("menu_layout"));
-atkdebug("Configured menu layout class: $classname");
+      atkdebug("Configured menu layout class: $classname");
 
       // Check if the class is compatible with the current theme, if not use a compatible menu.
       $theme = &atkinstance("atk.ui.atktheme");
       $compatiblemenus = $theme->getAttribute('compatible_menus');
-      for($i=0,$_i=count($compatiblemenus); $i<$_i; $i++)
-        $compatiblemenus[$i] = atkMenu::layoutToClass($compatiblemenus[$i]);
+      // If this attribute exists then retreive them
+      if(is_array($compatiblemenus))
+      {
+        for($i=0,$_i=count($compatiblemenus); $i<$_i; $i++)
+          $compatiblemenus[$i] = atkMenu::layoutToClass($compatiblemenus[$i]);
+      }
+
       if (!empty($compatiblemenus) && is_array($compatiblemenus) && !in_array($classname, $compatiblemenus))
       {
         $classname = $compatiblemenus[0];
-atkdebug("Falling back to menu layout class: $classname");
+        atkdebug("Falling back to menu layout class: $classname");
       }
 
       // Return the layout class name
