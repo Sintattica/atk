@@ -135,6 +135,14 @@ class atkMetaPolicy
     {
       $type = 'atk.attributes.atktimezoneattribute';
     }
+    else if ($name == 'created_at' || $name == 'created_on')
+    {
+      $type = 'atk.attribute.atkcreatestampattribute';
+    }
+    else if ($name == 'updated_at' || $name == 'updated_on')
+    {
+      $type = 'atk.attribute.atkupdatestampattribute';
+    }
     else if ($meta['type'] == 'int' && $meta['len'] == 1 && 
              (substr($name, 0, 3) == 'is_' || substr($name, 0, 4) == 'has_'))
     {

@@ -163,6 +163,137 @@
         atkerror("Failed to create ui object");
       }
     }
+    
+    /**
+     * Create template field array for the given edit field.
+     *
+     * @param array  $fields all fields
+     * @param int    $index  field index
+     * @param string $mode   mode (add/edit)
+     * @param string $tab    active tab
+     * 
+     * @return array template field
+     */
+    function createTplField(&$fields, $index, $mode, $tab)
+    {
+      $field = &$fields[$index];
+
+	    // visible sections, both the active sections and the tab names (attribute that are
+	    // part of the anonymous section of the tab)
+	    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));      
+      
+      $tplfield = array();
+
+      $classes = isset($field['class']) ? explode(" ", $field['class']) : array();
+      if ($field["sections"] == "*")
+      {
+        $classes[] = "alltabs";
+      }
+      else if ($field["html"] == "section")
+      {
+        // section should only have the tab section classes
+        foreach ($field["tabs"] as $section)
+          $classes[] = "section_".str_replace('.', '_', $section);
+        if ($this->isSectionInitialHidden($field['name'], $fields))
+          $classes[] = "atkAttrRowHidden";
+      }
+      else if (is_array($field["sections"]))
+      {
+        foreach ($field["sections"] as $section)
+          $classes[] = "section_".str_replace('.', '_', $section);
+      }
+
+      if (isset($field["initial_hidden"]) && $field["initial_hidden"])
+      {
+        $classes[] = "atkAttrRowHidden";
+      }
+
+      $tplfield["class"] = implode(" ", $classes);
+	    $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
+
+	    // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
+	    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
+  		$tplfield["initial_on_tab"] =
+  		   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
+         (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
+
+      // ar_ stands voor 'attribrow'.
+	    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+
+	    /* check for separator */
+      if ($field["html"] == "-" && $index > 0 && $data["fields"][$index-1]["html"] != "-")
+      {
+        $tplfield["line"] = "<hr>";
+      }
+      /* double separator, ignore */
+      elseif ($field["html"] == "-")
+      {
+      }
+      /* sections */
+      elseif($field["html"] == "section")
+      {
+        $tplfield["line"] = $this->getSectionControl($field, $mode);
+      }
+      /* only full HTML */
+      elseif (isset($field["line"]))
+      {
+        $tplfield["line"] = $field["line"];
+      }
+      /* edit field */
+      else
+      {
+        if ($field["attribute"]->m_ownerInstance->getNumbering())
+        {
+          $this->_addNumbering($field, $tplfield, $index);
+        }
+
+        /* does the field have a label? */
+        if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
+        {
+          if (!isset($field["label"]) || empty($field["label"]))
+          {
+            $tplfield["label"] = "";
+          }
+          else
+          {
+            $tplfield["label"] = $field["label"];
+            if ($field["error"]) // TODO KEES
+            {
+              $tplfield["error"] = $field["error"];
+            }
+          }
+        }
+        else
+        {
+        	$tplfield["label"]="AF_NO_LABEL";
+        }
+
+        /* obligatory indicator */
+        if ($field["obligatory"])
+        {
+          $tplfield["label"];
+          $tplfield["obligatory"] = $reqimg;
+        }
+
+        /* html source */
+        $tplfield["widget"] = $field["html"];
+        $editsrc = $field["html"];
+
+        /* tooltip */
+        $tooltip = $field["attribute"]->getToolTip();
+        if($tooltip)
+        {
+          $tplfield["tooltip"] = $tooltip;
+          $editsrc.=$tooltip."&nbsp;";
+        }
+
+        $tplfield['id']=str_replace('.','_',$this->m_node->atknodetype().'_'.$field["id"]);
+
+        $tplfield["full"] = $editsrc;
+      }      
+      
+      return $tplfield;
+    }
 
     /**
      * Function returns a generic html form for editing a record.
@@ -252,119 +383,7 @@
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
-        $tplfield = array();
-
-        $classes = array();
-        if ($field["sections"] == "*")
-        {
-          $classes[] = "alltabs";
-        }
-        else if ($field["html"] == "section")
-        {
-          // section should only have the tab section classes
-          foreach ($field["tabs"] as $section)
-            $classes[] = "section_".str_replace('.', '_', $section);
-          if ($this->isSectionInitialHidden($field['name'], $data['fields']))
-            $classes[] = "atkAttrRowHidden";
-        }
-        else if (is_array($field["sections"]))
-        {
-          foreach ($field["sections"] as $section)
-            $classes[] = "section_".str_replace('.', '_', $section);
-        }
-
-        if (isset($field["initial_hidden"]) && $field["initial_hidden"])
-        {
-          $classes[] = "atkAttrRowHidden";
-        }
-
-        $tplfield["class"] = implode(" ", $classes);
-		    $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
-
-		    // visible sections, both the active sections and the tab names (attribute that are
-		    // part of the anonymous section of the tab)
-		    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
-
-		    // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
-		    // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
-    		$tplfield["initial_on_tab"] =
-    		   ($field["tabs"] == "*" || in_array($tab, $field["tabs"])) &&
-           (!is_array($field["sections"]) || count(array_intersect($field['sections'], $visibleSections)) > 0);
-
-        // ar_ stands voor 'attribrow'.
-		    $tplfield["rowid"] = "ar_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
-
-		    /* check for separator */
-        if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
-        {
-          $tplfield["line"] = "<hr>";
-        }
-        /* double separator, ignore */
-        elseif ($field["html"] == "-")
-        {
-        }
-        /* sections */
-        elseif($field["html"] == "section")
-        {
-          $tplfield["line"] = $this->getSectionControl($field, $mode);
-        }
-        /* only full HTML */
-        elseif (isset($field["line"]))
-        {
-          $tplfield["line"] = $field["line"];
-        }
-        /* edit field */
-        else
-        {
-          if ($field["attribute"]->m_ownerInstance->getNumbering())
-          {
-            $this->_addNumbering($field, $tplfield, $i);
-          }
-
-          /* does the field have a label? */
-          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") || !isset($field["label"]))
-          {
-            if (!isset($field["label"]) || empty($field["label"]))
-            {
-              $tplfield["label"] = "";
-            }
-            else
-            {
-              $tplfield["label"] = $field["label"];
-              if ($field["error"]) // TODO KEES
-              {
-                $tplfield["error"] = $field["error"];
-              }
-            }
-          }
-          else
-          {
-          	$tplfield["label"]="AF_NO_LABEL";
-          }
-
-          /* obligatory indicator */
-          if ($field["obligatory"])
-          {
-            $tplfield["label"];
-            $tplfield["obligatory"] = $reqimg;
-          }
-
-          /* html source */
-          $tplfield["widget"] = $field["html"];
-          $editsrc = $field["html"];
-
-          /* tooltip */
-          $tooltip = $field["attribute"]->getToolTip();
-          if($tooltip)
-          {
-            $tplfield["tooltip"] = $tooltip;
-            $editsrc.=$tooltip."&nbsp;";
-          }
-
-          $tplfield['id']=str_replace('.','_',$node->atknodetype().'_'.$field["id"]);
-
-          $tplfield["full"] = $editsrc;
-        }
+        $tplfield = $this->createTplField($data["fields"], $i, $mode, $tab);
         $fields[] = $tplfield; // make field available in numeric array
         $params[$field["name"]] = $tplfield; // make field available in associative array
       }
