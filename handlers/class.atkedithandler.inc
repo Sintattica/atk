@@ -271,6 +271,11 @@
         /* obligatory indicator */
         if ($field["obligatory"])
         {
+          // load images
+          $theme = &atkinstance("atk.ui.atktheme");
+          $reqimg = '<img align="top" src="'.$theme->imgPath("required_field.gif").'" border="0"
+                     alt="'.atktext("field_obligatory").'" title="'.atktext("field_obligatory").'">';
+          
           $tplfield["label"];
           $tplfield["obligatory"] = $reqimg;
         }
@@ -370,13 +375,6 @@
         }
 
       }
-
-      // Handle fields
-      // load images
-      $theme = &atkinstance("atk.ui.atktheme");
-      $tipimg = $theme->imgPath("help.gif");
-      $reqimg = '<img align="top" src="'.$theme->imgPath("required_field.gif").'" border="0"
-                  alt="'.atktext("field_obligatory").'" title="'.atktext("field_obligatory").'">';
 
       /* display the edit fields */
       $fields = array();
