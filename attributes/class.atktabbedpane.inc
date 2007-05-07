@@ -278,7 +278,7 @@
 		    if ($field["attribute"]->isInitialHidden($defaults))
 		        $tplfield["class"].= " atkAttrRowHidden";
 		      
-		    $tplfield["rowid"] = "tabbedPaneAttr".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
+		    $tplfield["rowid"] = "tabbedPaneAttr_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
 		    /* check for separator */
         if ($field["html"] == "-" && $i > 0 && $data["fields"][$i-1]["html"] != "-")
@@ -413,7 +413,7 @@
             $tplfield["initial_on_tab"] = $fieldtab==$tab;
 		    
             $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
-	  	      $tplfield["rowid"] = "tabbedPaneAttr".getUniqueID("anonymousattribrows"); // The id of the containing row
+	  	      $tplfield["rowid"] = "tabbedPaneAttr_".getUniqueID("anonymousattribrows"); // The id of the containing row
             $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
             
             $tplfield["initial_on_tab"] = ($tplfield["tab"]==$active_tab);
