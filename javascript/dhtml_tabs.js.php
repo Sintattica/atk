@@ -146,7 +146,11 @@ function makeFCKEditable()
 	for (i = 0; i < iframes.length; i++)
 	{
 	  obj = frames[iframes[i].id];
-	  if (obj && obj.FCK && obj.FCK.MakeEditable) obj.FCK.MakeEditable();
+	  if (obj && obj.FCK && obj.FCK.MakeEditable) 
+	  {
+	    obj.FCK.StartEditor();
+	    obj.FCK.MakeEditable();
+	  }
 	}
 }
 
