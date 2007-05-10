@@ -20,7 +20,8 @@ body {
 
 		}
 
-	#box-content {
+	#box-content, .box-dispatch 
+	{
 		background:#eeeeee;
    	margin-left: 211px;
  	}
@@ -228,7 +229,7 @@ INPUT.btn_saveandclose
 
 /* nieuwe stylen ivm theme */
 
-.tableHeader
+.tableHeader, .box-dispatch-title
 {
   height: 23px;
   background: url(../images/tabBg2.gif) repeat-x left top;
@@ -237,7 +238,7 @@ INPUT.btn_saveandclose
   margin-left: 28px;
 }
 
-.tableHeader img
+.tableHeader img 
 {
   display: block;
   float: left;
@@ -261,7 +262,7 @@ INPUT.btn_saveandclose
   position: relative;
 }
 
-.contentBlock
+.contentBlock, .box-dispatch-content
 {
   background: #fff url(../images/contentBlockBg.gif) repeat-x left bottom;
   padding: 12px;
@@ -444,4 +445,12 @@ input[type="checkbox"]
 .atkAttrRowHidden
 {
   display: none !important;
+}
+
+#box-menu
+{
+  float:left;
+  width: 14em;
+  padding: 1em 0px 1em 0px;
+  position: relative;
 }
