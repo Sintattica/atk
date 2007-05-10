@@ -68,55 +68,63 @@
       }
 
       $recordset = $this->_getSelectableRecords($record, $mode);
-
-      $page = &atkPage::getInstance();
-      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
-
-      $result ='<div align="left"><font size="-2">
-                [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                     atktext("check_all", "atk").
-                '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                     atktext("check_none", "atk").
-                '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
-                     atktext("invert_selection", "atk").'</a>]</font></div>';
-
-      $result.= '<table border="0"><tr>';
-      for ($i=0;$i<count($recordset);$i++)
+      $total_records = count($recordset);
+      if($total_records>0)
       {
-        $detaillink = "&nbsp;";
-        $selector="";
-        if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
+        $page = &atkPage::getInstance();
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
+  
+        $result ='<div align="left"><font size="-2">
+                  [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                       atktext("check_all", "atk").
+                  '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                       atktext("check_none", "atk").
+                  '</a> <a href="javascript:void(0)" onclick="profile_checkInvert(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
+                       atktext("invert_selection", "atk").'</a>]</font></div>';
+      
+        $result.= '<table border="0"><tr>';
+        for ($i=0;$i<$total_records;$i++)
         {
-          $sel = "checked";
-          if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
+          $detaillink = "&nbsp;";
+          $selector="";
+          if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
           {
-            $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
-              ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
-              "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
-
-            // Create link to details.
-            $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
-              "[".atktext("details", "atk")."]",
-              SESSION_NESTED,
-              true);
+            $sel = "checked";
+            if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
+            {
+              $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
+                ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
+                "='".$recordset[$i][$this->m_destInstance->primaryKeyField()]."'";
+  
+              // Create link to details.
+              $detaillink = href(dispatch_url($this->m_link, "edit", array("atkselector"=>$selector)),
+                "[".atktext("details", "atk")."]",
+                SESSION_NESTED,
+                true);
+            }
           }
+          else
+          {
+            $sel = "";
+          }
+          $result.= '<td class="table"><input type="checkbox" name="'.
+                         $this->getHtmlId($fieldprefix).
+                         '[]['.$this->getRemoteKey().
+                         ']" value="'.
+                         $recordset[$i][$this->m_destInstance->primaryKeyField()].
+                         '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
+                         $this->m_destInstance->descriptor($recordset[$i]).
+                         '</td><td class="table">'.$detaillink.'</td>';
+          if ($i%$cols == $modcols) $result .="</tr><tr>\n";
         }
-        else
-        {
-          $sel = "";
+        $result.="</tr></table>\n";
         }
-        $result.= '<td class="table"><input type="checkbox" name="'.
-                       $this->getHtmlId($fieldprefix).
-                       '[]['.$this->getRemoteKey().
-                       ']" value="'.
-                       $recordset[$i][$this->m_destInstance->primaryKeyField()].
-                       '" '.$this->getCSSClassAttribute("atkcheckbox").' '.$sel.'></td><td class="table">'.
-                       $this->m_destInstance->descriptor($recordset[$i]).
-                       '</td><td class="table">'.$detaillink.'</td>';
-        if ($i%$cols == $modcols) $result .="</tr><tr>\n";
+      else 
+      {
+        $nodename = $this->m_destInstance->m_type;
+        $modulename = $this->m_destInstance->m_module;;
+        return atktext('select_none', $modulename, $nodename);
       }
-      $result.="</tr></table>\n";
-
       // Add the add link if AF_MANYBOOL_AUTOLINK used
       if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
         $result.= href(dispatch_url($this->m_destination, "add"), $this->getAddLabel(), SESSION_NESTED) . "\n";
