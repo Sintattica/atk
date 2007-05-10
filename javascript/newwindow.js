@@ -28,3 +28,9 @@ function NewWindow(mypage, myname, w, h, scroll, resize, statusbar, menubar, too
   win = window.open(mypage, myname, winprops)
   if (parseInt(navigator.appVersion) >= 4) { win.window.focus(); }
 }
+
+function simplePopup(url, target)
+{
+  window.open(url, target);
+  return false;
+}
