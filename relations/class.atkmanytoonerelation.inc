@@ -591,11 +591,6 @@
           {
             $result .= $this->getNoneLabel();
           }
-          else if ((count($recordset)==1 || $this->_checkPrimaryKeysForSelector($recordset))&&$this->hasFlag(AF_OBLIGATORY))
-          {
-            $result.= $this->m_destInstance->descriptor($recordset[0])."&nbsp;&nbsp;";
-            $result.= $this->hide(array($this->fieldName()=>$recordset[0]), $fieldprefix);
-          }
           else
           {
             $this->registerKeyListener($id, KB_CTRLCURSOR|KB_LEFTRIGHT);
@@ -1297,32 +1292,6 @@
 
       return $result;
     }
-
-    /**
-     * If the primary key of one of the records is the current selected selector
-     * we should only be able to select that record so we set selectablerecords to that record
-     * and return true.
-     *
-     * @return bool Wether one of the records has the current selector or not
-     */
-    function _checkPrimaryKeysForSelector(&$recordset)
-    {
-      $sessionm = &atkGetSessionManager();
-      $atkselector = $sessionm->stackVar('atkselector');
-      if ($atkselector)
-      {
-        foreach ($recordset as $key=>$record)
-        {
-          if ($atkselector==$record['atkprimkey'])
-          {
-            $recordset = array($record);
-            return true;
-          }
-        }
-      }
-      return false;
-    }
-
 
    /**
     * Returns the condition (SQL) that should be used when we want to join a relation's

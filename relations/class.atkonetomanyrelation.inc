@@ -298,14 +298,14 @@
       if (atkconfig("onetomany_addlink_position","bottom")=="top")
       {
         if ($this->hasFlag(AF_ONETOMANY_EMBED))
-          $output=$this->_getEmbededOutput()."<br />".$output;
+          $output=$this->_getEmbededOutput($record)."<br />".$output;
         else
           $output=$this->_addAddLink($myrecords, $record)."<br />".$output;
       }
       else if (atkconfig("onetomany_addlink_position","bottom")=="bottom")
       {
         if ($this->hasFlag(AF_ONETOMANY_EMBED))
-          $output.=$this->_getEmbededOutput();
+          $output.=$this->_getEmbededOutput($record);
         else
           $output.=$this->_addAddLink($myrecords, $record)."<br />";
       }
@@ -319,32 +319,28 @@
      *        make it respect an editafteradd
      * @todo Make this work with an atkManyToOne
      */
-    function _getEmbededOutput()
+    function _getEmbededOutput($record)
     {
       if ($this->createDestination())
       {
         $output.="\n".'<div id="'.$this->fieldName().'_integrated" style="display: none;" class="onetomanyintegrated">';
 
         $destInstanceCopy = $this->m_destInstance;
-        $editrecord=array();
-        foreach (array_keys($destInstanceCopy->m_attribList) as $key)
-        {
-          // When we're in a OTM we need to hide MTOs back to the current owner
-          $p_attrib = &$destInstanceCopy->m_attribList[$key];
-          if (strtolower($p_attrib->m_destInstance->m_table)==strtolower($this->m_ownerInstance->m_table))
-          {
-            $selector = array_values(decodeKeyValuePair($this->m_ownerInstance->m_postvars["atkselector"]));
-            $editrecord[$p_attrib->fieldname()] = array($this->m_ownerInstance->primaryKeyField()=>$selector[0]);
-            $p_attrib->addFlag(AF_HIDE);
-          }
-        }
+
         $fname = $this->fieldName();
 
         atkimport("atk.handlers.atkedithandler");
         $handler = new atkEditHandler();
         $handler->m_node = &$destInstanceCopy;
 
-        $output.=$handler->editForm("add",$editrecord,"","",$fname."_AE_","integratededitform.tpl",true);
+        $filterElements = $this->_getFilterElements($record);
+        if ($this->m_destinationFilter!="")
+        {
+          $filterElements[] = $this->m_destinationFilter;
+        }
+
+        $forceList = decodeKeyValueSet(implode(' AND ', $filterElements));
+        $output.=$handler->editForm("add",array(),$forceList,'',$fname."_AE_","integratededitform.tpl",true);
 
         $output.= $this->_getEmbeddedButtons($fname);
         $text = atktext("link_".$fname."_add",$this->m_ownerInstance->m_module,$this->m_owner,"","",true);

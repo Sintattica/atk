@@ -357,6 +357,8 @@ Changed in ATK 5.7
   using {include file="theme:template.tpl} syntax. The resource will make 
   sure you get the correct file from the correct directory (even works for
   overrides at the theme level). [Peter]
+* Fixed issue with O2M and M2O relations where sometimes not all possible
+  values were shown. [Peter,Boy,Tjeerd]
 * atkTime now only returns integers for getHours, getMinutes, etc. [Boy]
 * Added ability to register modifiers. [Boy]
 * Changed function exportFile for IE7. If IE => inline to attachment [Koen]
