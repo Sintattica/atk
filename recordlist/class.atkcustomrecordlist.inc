@@ -90,7 +90,7 @@
           $p_attrib = &$this->m_node->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-            ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+            ($p_attrib->hasFlag(AF_HIDE)==false)
             &&
             (
             ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
@@ -121,7 +121,7 @@
           $p_attrib = &$this->m_node->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE)==false)
               &&
               (
                 ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
@@ -169,7 +169,7 @@
           $p_attrib = &$this->m_node->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           if (
-              ($p_attrib->hasFlag(AF_HIDE_LIST)==false)
+              ($p_attrib->hasFlag(AF_HIDE)==false)
               &&
               (
                 ($p_attrib->hasFlag(AF_HIDE_SELECT)==false)
