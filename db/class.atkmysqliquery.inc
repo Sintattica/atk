@@ -51,6 +51,39 @@
       $query.= ") ";
     }
 
+    /**
+     * Builds the SQL Insert query
+     * @return String a SQL Insert Query
+     */
+    function buildInsert()
+    {
+      
+      $result = "INSERT INTO ".$this->quoteField($this->m_tables[0])." (";
+
+      for ($i=0;$i<count($this->m_fields);$i++)
+      {
+        $result.= $this->quoteField($this->m_fields[$i]);
+        if ($i < count($this->m_fields)-1) $result.=",";
+      }
+
+      $result.=") VALUES (";
+
+      for ($i=0;$i<count($this->m_fields);$i++)
+      {
+        if (($this->m_values[$this->m_fields[$i]] === "''") and ($this->m_db->m_tableMeta[$this->m_tables[0]][$this->m_fields[$i]]["type"] == "int")){
+          atkdebug("atkMysqliQuery::buildInsert() : '' transformed in '0' for MySQL5 compatibility in field '" . $this->m_fields[$i] . "'");
+          $result.= "'0'";
+        }else{
+          $result.= $this->m_values[$this->m_fields[$i]];
+        }
+        if ($i < count($this->m_fields)-1) $result.=",";
+      }
+
+      $result.=")";
+
+      return $result;
+    }
+    
   }
 
 ?>
