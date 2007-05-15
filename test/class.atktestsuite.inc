@@ -196,11 +196,21 @@
       }
     }
 
+    function getTestClassPath($testclass)
+    {
+      $exploded = explode(".", $testclass);
+      $class = array_pop($exploded);
+      $path = implode('/',$exploded).'/class.'.$class.'.inc';
+      return $path;
+    }
+
     function getTestCaseLocationForClass($class)
     {
-      $exploded = explode('.',$class);      
+      $exploded = explode('.',$class);
+      if ($exploded[0] == 'platform') array_shift($exploded);
+      if ($exploded[0] == 'modules') $exploded[0] = 'module';
       $class = array_pop($exploded);
-      return implode('.',$exploded).'.testcases.test_'.$class;
+      return implode('.',$exploded).'.'.$class;
     }
 
     function _runTestCase(&$test,$testcase)
