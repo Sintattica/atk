@@ -109,10 +109,7 @@
           18 => "Zip could not open a specified file for reading; either it doesn't exist or the user running Zip doesn't have permission to read it.",
         );
       }
-      if (in_array($errorcode, $codes))
-        return $codes[$errorcode];
-      else
-        return "Unknown error code returned by Infozip";
+      return atkArrayNvl($codes, $errorcode, "Unknown error code returned by Infozip");
     }
 
     function test()
