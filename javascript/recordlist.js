@@ -1,7 +1,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -13,27 +13,27 @@
    * @version $Revision$
    * $Id$
    */
-   
+
 function highlightrow(row, color)
 {
-  if (typeof(row.style) != 'undefined') 
+  if (typeof(row.style) != 'undefined')
   {
-    row.oldcolor = row.style.backgroundColor;    
+    row.oldcolor = row.style.backgroundColor;
     row.style.backgroundColor = color;
   }
 }
 
 function resetrow(row)
-{  
+{
   row.style.backgroundColor = row.oldcolor;
 }
 
 function selectrow(row, rlId, rownum)
 {
-  table = document.getElementById(rlId);  
+  table = document.getElementById(rlId);
   if (table.listener && table.listener.setRow(rownum, row.oldcolor))
   {
-    row.oldcolor = row.style.backgroundColor;    
+    row.oldcolor = row.style.backgroundColor;
   }
 }
 
@@ -41,8 +41,13 @@ function selectrow(row, rlId, rownum)
  * Try to perform one of the given actions on the given row
  * until one action can be succesfully performed.
  */
-function rl_try(recordListId, rowNum, actions, confirmText)
+function rl_try(recordListId, clickEvent, rowNum, actions, confirmText)
 {
+  // Ignore click events on the checkbox because they will be  forwarded already
+  // by the toggleRecord method. We only have to do this for Firefox because
+  // Internet Explorer will only call the onClick method on the checkbox and not both.
+  if (clickEvent != null && clickEvent.target && (clickEvent.target.tagName == 'INPUT' || clickEvent.target.tagName == 'SELECT' || clickEvent.target.tagName == 'OPTION')) return;
+
   actions.each(function(action) {
     if (rl_doAndReturn(recordListId, rowNum, action, confirmText)) {
       throw $break;
@@ -58,7 +63,7 @@ function rl_doAndReturn(rlId, rownum, action, confirmtext)
     confirmed = confirm(confirmtext);
     if (confirmed) extra = "&confirm=1";
   }
-  
+
   if (rl_a[rlId][rownum][action] && (!confirmtext || confirmed))
   {
     if (!rl_a[rlId]['embed'])
@@ -69,7 +74,7 @@ function rl_doAndReturn(rlId, rownum, action, confirmtext)
     {
       atkSubmit(rl_a[rlId][rownum][action]+'&'+rl_a[rlId]['base']+extra);
     }
-    
+
     return true;
   }
   else
