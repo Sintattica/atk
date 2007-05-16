@@ -1106,6 +1106,10 @@
       return $olddb;
     }
 
+    function setHaltOnError($state=true)
+    {
+      $this->m_haltonerror = $state;
+    }
   }
 
 ?>
