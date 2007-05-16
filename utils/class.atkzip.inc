@@ -30,12 +30,12 @@
    */
 	class atkZip
   {
-  
+
     var $m_zip_bin = "";
     var $m_unzip_bin = "";
     var $m_zipmode = "auto"; // can be auto, internal or infozip
     var $m_testok = false;
-    
+
     function atkZip()
     {
     	$this->m_zipmode = atkconfig("zipmode", "auto");
@@ -44,7 +44,7 @@
     	if (!$this->test())
     		atkError("atkZip: Error while testing");
     }
-    
+
     function getInfozipCommand($type, $params)
     {
     	if ($type==ATKZIP_ZIP) $command = $this->m_zip_bin;
@@ -52,7 +52,7 @@
     	if ($params !== "") $command .= " " . $params;
     	return $command;
     }
-    
+
     function runInfozipCommand($type, $params)
     {
     	$command = $this->getInfozipCommand($type, $params);
@@ -63,12 +63,12 @@
     	atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
     	return $returncode;
     }
-    
+
     function getInfozipError($type, $errorcode)
     {
       if ($type == ATKZIP_UNZIP)
       {
-        array(
+        $codes = array(
           0 => "Normal; no errors or warnings detected. (There may still be errors in the archive, but if so, they weren't particularly relevant to UnZip's processing and are presumably quite minor.)",
           1 => "One or more warning errors were encountered, but processing completed successfully anyway. This includes zipfiles where one or more files was skipped due to unsupported compression method or encryption with an unknown password.",
           2 => "A generic error in the zipfile format was detected. Processing may have completed successfully anyway; some broken zipfiles created by other archivers have simple work-arounds.",
@@ -111,15 +111,15 @@
       }
       if (in_array($errorcode, $codes))
         return $codes[$errorcode];
-      else 
+      else
         return "Unknown error code returned by Infozip";
     }
-    
+
     function test()
     {
     	if ($this->m_testok)
     		return true;
-    		
+
     	atkdebug("atkZip->test: Testing systems zip abilities");
     	atkdebug("atkZip->test: Zipmode = ". $this->m_zipmode);
 
@@ -139,7 +139,7 @@
     	  		$this->m_zipmode = "internal";
     	  	$this->m_testok = true;
     	  	return true;
-    	  }	
+    	  }
     	}
 
     	// If previous condition wasn't met, we can test the availability of the zip and unzip
@@ -158,7 +158,7 @@
   		  	return true;
   		  }
   		}
-  		
+
   		atkdebug("atkZip->test: This system has no zip abilities, TEST FAILED!");
   		atkdebug("atkZip->test: Try upgrading to PHP 5.2 and installing the php zip extension");
   		return false;
@@ -168,7 +168,7 @@
     {
       if (!$this->test())
       	atkError("atkZip->extract: Could not extract, system is not capable of extracting from a ZIP archive");
-      
+
       if ($this->m_zipmode == "internal")
       {
         $zip = new ZipArchive;
@@ -181,7 +181,7 @@
 			     return false;
 			  }
 			}
-			
+
 			if ($this->m_zipmode == "infozip")
 			{
 			  $entriesstring = is_array($entries) ? implode(" ", $entries) : $entries;
@@ -198,12 +198,12 @@
 			  }
 			}
     }
-    
+
     function add($archive, $filename)
     {
       if (!$this->test())
       	atkError("atkZip->add: Could not add, system is not capable of add to a ZIP archive");
-      
+
       if ($this->m_zipmode == "internal")
       {
         $zip = new ZipArchive;
@@ -216,7 +216,7 @@
 			     return false;
 			  }
 			}
-			
+
 			if ($this->m_zipmode == "infozip")
 			{
 			  $params = " -j $archive $filename";
@@ -232,7 +232,7 @@
 			  }
 			}
     }
-  
+
   }
 
 ?>
