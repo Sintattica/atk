@@ -137,6 +137,7 @@
       if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
       else $testclass = $this->getTestCaseLocationForClass($class);
 
+      atk_var_dump(getClassPath($testclass), "klassepad");
       if ($class && file_exists(getClassPath($testclass)))
       {
         $this->_runTestCase($test,$testclass);
@@ -209,6 +210,7 @@
       $exploded = explode('.',$class);
       if ($exploded[0] == 'platform') array_shift($exploded);
       if ($exploded[0] == 'modules') $exploded[0] = 'module';
+      if ($exploded[0] == 'platform_modules') $exploded[0] = 'module';
       $class = array_pop($exploded);
       return implode('.',$exploded).'.'.$class;
     }
