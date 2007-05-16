@@ -43,7 +43,7 @@ body
   display: block;
   background: url(../images/menubg.gif) no-repeat -192px top;
   width: 192px;
-  height: 21px;
+  height: 20px;
   margin: 0px;
   padding: 7px 0px 0px 15px;
   font-size: 12px;
@@ -55,7 +55,7 @@ body
   display: block;
   background: url(../images/menubg.gif) no-repeat left top;
   width: 177px;
-  height: 21px;
+  height: 20px;
   margin: 0px;
   padding: 7px 0px 0px 15px;
   color: #FFFFFF !important;
@@ -65,7 +65,7 @@ body
 
 .menuItemLevel2
 {
-  padding: 5px 0px 5px 25px;
+  padding: 3px 0px 4px 25px;
   display: block;
   font-size: 11px;
   color: #444;
