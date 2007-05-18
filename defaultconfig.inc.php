@@ -131,14 +131,14 @@
    * @var String
    */
   $config_db["default"]["driver"]="mysql";
-  
+
   /**
    * Test database mapping. Maps normal databases to their test database.
    * Most of the applications only use one database in that case the default
    * should be sufficient. But in case you use multiple database and also
    * want to run tests on all these database you can override this mapping
    * or add your own mappings.
-   * 
+   *
    * @var array
    */
   $config_test_db_mapping = array('default' => 'test');
@@ -254,11 +254,11 @@
   /************************** AUTHENTICATION *********************************/
 
   /**
-   * 
+   *
    * @var String
    */
   $config_auth_database    = "default";
-  
+
   /**
    *
    * @var String
@@ -456,7 +456,7 @@
    * @var String
    */
   $config_mailreport = "";
-  
+
   /**
    * Output missing translation "errors".
    * @var String
@@ -495,10 +495,10 @@
    * @var String
    */
   $config_menu_align = "center";
-  
+
   /**
    * Auto-include logout link in menu?
-   * 
+   *
    * @var Boolean
    */
   $config_menu_logout_link = true;
@@ -526,7 +526,7 @@
    * @var boolean
    */
   $config_tabs = true;
-  
+
   /**
    * Whatever DHTML tabs should be stateful or not
    * (E.g. the current tab is saved for the current node/selector combination)
@@ -580,7 +580,7 @@
    * @var String
    */
   $config_language_basedir = "languages/";
-  
+
   /**
    * Use browser language to detect application language.
    * By default set to false to remain backwards compatible.
@@ -786,30 +786,38 @@
    * @var string
    */
   $config_extended_search_action = 'search';
-  
+
   /**
    * Should all many-to-one relations have the AF_RELATION_AUTOCOMPLETE flag set?
-   * 
+   *
    * @var boolean
    */
   $config_manytoone_autocomplete_default = false;
-  
+
   /**
-   * Should all many-to-one relations that have the AF_LARGE flag set also 
+   * Should all many-to-one relations that have the AF_LARGE flag set also
    * have the AF_RELATION_AUTOCOMPLETE flag set?
-   * 
+   *
    * @var boolean
    */
-  $config_manytoone_autocomplete_large = true;  
-  
+  $config_manytoone_autocomplete_large = true;
+
   /**
-   * Controls how many characters a user must enter before an auto-completion 
+   * Should manytoone relations having the AF_RELATION_AUTOCOMPLETE flag also
+   * use auto completion in search forms?
+   *
+   * @var boolean
+   */
+  $config_manytoone_search_autocomplete = true;
+
+  /**
+   * Controls how many characters a user must enter before an auto-completion
    * search is being performed.
-   * 
+   *
    * @var int
    */
   $config_manytoone_autocomplete_minchars = 2;
-    
+
   /**
    * The search mode of the autocomplete fields. Can be 'startswith', 'exact' or 'contains'.
    *
@@ -817,18 +825,18 @@
    * @var String
    */
   $config_manytoone_autocomplete_searchmode = "contains";
-  
+
   /**
    * Value determines wether the search of the autocompletion is case-sensitive.
    *
    * @var boolean
    */
   $config_manytoone_autocomplete_search_case_sensitive = false;
-  
+
   /**
    * Warn the user if he/she has changed something in a form
    * and leaves the page without pressing save or cancel.
-   * 
+   *
    * @var bool
    */
   $config_lose_changes_warning = false;

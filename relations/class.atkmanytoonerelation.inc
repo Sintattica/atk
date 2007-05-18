@@ -791,7 +791,8 @@
       if (substr($fieldprefix, -4) == "_AE_")
         $fieldprefix = "_AE_".substr($fieldprefix, 0, -4);
 
-      if (!$this->hasFlag(AF_LARGE) && !$this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+      $useautocompletion = atkConfig("manytoone_search_autocomplete", true) && $this->hasFlag(AF_RELATION_AUTOCOMPLETE);
+      if (!$this->hasFlag(AF_LARGE) && !$useautocompletion)
       {
         if ($this->createDestination())
         {
@@ -841,11 +842,11 @@
 
         $this->registerKeyListener($id, KB_CTRLCURSOR|KB_UPDOWN);
         $result = '<input type="text" id="'.$id.'" class="'.get_class($this).'" name="'.$id.'" value="'.$record[$this->fieldName()].'"'.
-          ($this->hasFlag(AF_RELATION_AUTOCOMPLETE) ? ' onchange=""' : '').
+          ($useautocompletion ? ' onchange=""' : '').
           ($this->m_searchsize > 0 ? ' size="'.$this->m_searchsize.'"' : '').
           ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
 
-        if ($this->hasFlag(AF_RELATION_AUTOCOMPLETE))
+        if ($useautocompletion)
         {
           $page = &$this->m_ownerInstance->getPage();
           $url = partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
