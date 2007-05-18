@@ -40,7 +40,7 @@
 
       return $page->render("Menu", true);
     }
-    
+
     function getMenu()
     {
        global $ATK_VARS, $g_menu, $g_menu_parent;
@@ -146,7 +146,7 @@
 
     function getScrollable()
     {
-      return MENU_UNSCROLLABLE;
+      return MENU_SCROLLABLE;
     }
 
 		function getMultilevel()
