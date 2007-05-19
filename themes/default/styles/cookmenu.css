@@ -5,7 +5,7 @@
 .ThemePanelMenu,.ThemePanelSubMenuTable
 {
 	font-family:	verdana, arial, sans-serif;
-	font-size:	13px;
+	font-size:	11px;
 	font-weight: bold;
 
 	cursor:		default;
@@ -62,7 +62,7 @@
 {
 	background-color:	#878787;
 	white-space:	nowrap;
-	height: 28px; <!-- menu item height -->
+	height: 15px; <!-- menu item height -->
 }
 
 .ThemePanelMainItemHover,
@@ -72,7 +72,7 @@
 {
 	background-color:	#C6C6C3;
 	white-space:	nowrap;
-	height: 28px; <!-- menu item height hover -->	
+	height: 15px; <!-- menu item height hover -->	
 }
 
 /* horizontal main menu sub components */
@@ -100,7 +100,7 @@
 	white-space:	nowrap;
 	background-color:	inherit;
 	color: #ffffff;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 
@@ -181,7 +181,7 @@
 	white-space:	nowrap;
 	background-color:	inherit;
 	color: #ffffff;
-  font-size: 13px;
+  font-size: 11px;
 }
 
 .ThemePanelMenuItemRight,
