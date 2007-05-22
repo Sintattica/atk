@@ -840,4 +840,10 @@
    * @var bool
    */
   $config_lose_changes_warning = false;
+
+/**
+ * Directories that contains modules (needed for testcases)
+ */
+
+//  $config_module_dirs = array("/modules");
 ?>
