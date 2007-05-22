@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,7 +15,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Handler for the 'delete' action of a node. It asks the user for
    * confirmation and upon actual confirmation, deletes the record (and for
@@ -27,39 +27,39 @@
    * @subpackage handlers
    *
    */
-  class atkDeleteHandler extends atkActionHandler 
+  class atkDeleteHandler extends atkActionHandler
   {
-    /** 
+    /**
      * The action handler.
      */
     function action_delete()
-    { 
+    {
       if (!$this->_checkAllowed())
       {
         $this->renderAccessDeniedPage();
       }
-         
+
       if (!empty($this->m_postvars['confirm'])) $this->_doDelete();
       elseif (empty($this->m_node->m_postvars['cancel']))
       {
       	// Confirmation page was not displayed
       	// First we check if the item is locked
         if ($this->_checkLocked()) return;
-       
+
         if (!$this->checkAttributes()) return;
         // If we got here, then the node is not locked and we haven't displayed the
         // confirmation page yet, so we display it
-        $page = &$this->getPage();        
-        $page->addContent($this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE));        
+        $page = &$this->getPage();
+        $page->addContent($this->m_node->renderActionPage("delete", $this->m_node->confirmAction($this->m_postvars['atkselector'], "delete", false, TRUE)) );
       }
       else
       {
         // Confirmation page was displayed and 'no' was clicked
         $location = $this->m_node->feedbackUrl("delete", ACTION_CANCELLED);
         $this->m_node->redirect($location);
-      }      
+      }
     }
-    
+
     /**
      * Check if we are allowed to remove the given records.
      *
@@ -71,26 +71,26 @@
       if (is_array($atkselector))
         $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
       else $atkselector_str = $atkselector;
-      
+
       $recordset = $this->m_node->selectDb($atkselector_str,"","","","","delete");
       foreach ($recordset as $record)
       {
-        if (!$this->allowed($record)) 
+        if (!$this->allowed($record))
         {
           return false;
         }
       }
-      
+
       return true;
     }
-    
+
     /**
      * We have a confirmed delete, so we proceed to delete
      */
     function _doDelete()
     {
       $db = &$this->m_node->getDb();
-      
+
       if($this->m_node->deleteDb($this->m_postvars['atkselector']))
       {
         $db->commit();
@@ -106,7 +106,7 @@
         $this->m_node->redirect($location);
       }
     }
-    
+
     /**
      * We check if the node is locked, if it is, we display the locked page,
      * if it's not but it uses the locking feature, we lock it
@@ -115,7 +115,7 @@
     function _checkLocked()
     {
     	$locked = FALSE;
-    	
+
     	if ($this->m_node->hasFlag(NF_LOCK))
       {
       	// We assume that the node is locked, unless proven otherwise
@@ -129,14 +129,14 @@
 
         // If the node is locked, we proceed to display the 'locked' page
         if (!$locked)
-        {          
+        {
           $page = &$this->getPage();
           $page->addContent($this->m_node->lockPage());
           return true;
         }
       }
     }
-    
+
     /**
      * Checks with each of the attributes of the node whose record is about to be deleted
      * if they allow the deletion
@@ -149,12 +149,12 @@
       	// Check with every attribute
       	$p_attrib = &$this->m_node->m_attribList[$this->m_node->m_attribIndexList[$counter]["name"]];
       	$allowed= $p_attrib->deleteAllowed();
-      	
+
       	// If allowed !=== true, then it returned an error message
       	if ($allowed!==true)
-      	{ 
+      	{
       	  $db = &$this->m_node->getDb();
-      		$db->rollback(); 
+      		$db->rollback();
           $location = $this->m_node->feedbackUrl("delete",ACTION_FAILED,null,sprintf(atktext("attrib_delete_not_allowed"),atktext($this->m_node->m_attribIndexList[$counter]["name"],$this->m_node->m_module,$this->m_node->m_type),$allowed));
           $this->m_node->redirect($location);
       	  return;
