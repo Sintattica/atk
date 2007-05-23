@@ -354,6 +354,21 @@
     return TRUE;
   }
 
+
+  /**
+   * Registers a new node action handler.
+   * 
+   * @param string $node the name of the node (* matches all)
+   * @param string $action the node action
+   * @param string $class node handler class ATK path
+   * 
+   * @return true if there is no known handler
+   */
+  function atkRegisterNodeHandlerClass($node, $action, $class)
+  {
+    atkRegisterNodeHandler($node, $action, $class);
+  }  
+  
   /**
    * Returns a registered node controller.
    * @param $node the name of the node

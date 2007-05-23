@@ -323,7 +323,10 @@
   "steelblue"=>"SteelBlue",
   "notallowed_new_defaulttag" => "Gebruik alleen bestaande tags",
   "available_default_tags" => "Bestaande tags",
-  "lose_changes_warning" => "Door het verlaten van deze pagina gaan alle gemaakte wijzigingen verloren.",  
+  "lose_changes_warning" => "Door het verlaten van deze pagina gaan alle gemaakte wijzigingen verloren.", 
+  "successfully_imported_x_records" => "Importeren geslaagd. %d records zijn succesvol geimporteerd.", 
+  "successfully_imported_one_record" => "Importeren geslaagd. 1 record is succesvol geimporteerd.",  
+  "no_records_to_import" => "Geen records gevonden om te importeren.",    
   "list_null_value_obligatory" => "(maak een keuze)",
 );
 ?>

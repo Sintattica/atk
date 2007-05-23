@@ -553,6 +553,14 @@
      * @see setLoadType
      */
     var $m_loadType = array();
+    
+    /**
+     * Initial value.
+     * @access private
+     * @var mixed
+     * @see setInitialValue
+     */
+    var $m_initialValue = NULL;
 
     /**
      * Constructor
@@ -793,6 +801,19 @@
     }
 
     /**
+     * Set initial value for this attribute.
+     * 
+     * NOTE: the initial value only works if there is no initial_values override
+     *       in the node or if the override properly calls parent::initial_values!
+     * 
+     * @param mixed $value initial value
+     */
+    function setInitialValue($value)
+    {
+      $this->m_initialValue = $value;
+    }
+    
+    /**
      * Initial value. Returns the initial value for this attribute
      * which will be used in the add form etc.
      *
@@ -800,7 +821,7 @@
      */
     function initialValue()
     {
-      return NULL;
+      return $this->m_initialValue;
     }
 
     /**
@@ -996,15 +1017,17 @@
       /* edit */
       else
       {
+        global $ATK_VARS;
+        
         $this->_registerDependees($mode, $fieldprefix);
 
         $entry = array("name" => $this->m_name, "obligatory" => $this->hasFlag(AF_OBLIGATORY), "attribute" => &$this);
         $entry["id"] = $this->getHtmlId($fieldprefix);
-
+        
         /* label? */
         $entry["label"] = $this->getLabel($defaults);
         /* error? */
-        $entry["error"] = $this->getError($error);
+        $entry["error"] = $this->getError($error) || in_array($entry['id'], (array)$ATK_VARS['atkerrorfields']);
         // on which tab?
         $entry["tabs"] = $this->getTabs($mode);
         //on which sections?
@@ -2339,7 +2362,7 @@
       $defaults = &$record;
       $error = array();
 
-      $this->addToEditArray($mode, $arr, $defaults, $error, '');
+      $this->addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
 
       $script = '';
       foreach ($arr['fields'] as $field)

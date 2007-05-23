@@ -406,7 +406,11 @@
 
     /**
      * Sets the selected listitem
+     * 
      * @param string $selected the listitem you want to have selected
+     * 
+     * @deprecated 
+     * @see atkNode::initial_values
      */
     function setSelected($selected)
     {
@@ -415,7 +419,11 @@
 
     /**
      * Gets the selected listattribute
+     * 
      * @return string the selected listitem
+     * 
+     * @deprecated 
+     * @see atkNode::initial_values
      */
     function getSelected()
     {

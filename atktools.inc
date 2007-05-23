@@ -1218,13 +1218,46 @@
    * @param string $err multilanguage error string
    * @param string $msg optinal error string
    */
-  function triggerError(&$rec, $attrib, $err, $msg="", $tab="")
+  function triggerError(&$rec, $attrib, $err, $msg="", $tab="", $label='')
   {
     if($msg=="")  $msg = atktext($err, "atk");
 
-    $rec['atkerror'][] = array( "attrib_name"=> $attrib, "err" => $err, "msg" => $msg, "tab"=>$tab);
+    $rec['atkerror'][] = array( "attrib_name"=> $attrib, "err" => $err, "msg" => $msg, "tab" => $tab, "label" => $label);
   }
 
+  /**
+   * Adds new element to the record error array. When no message
+   * is given the multi-language error string is used.
+   *
+   * @param array              $record  record
+   * @param atkAttribute|array $attrib attribute or array of attributes
+   * @param string             $error multi-language error string
+   * @param string             $message error message (optional)
+   */
+  function atkTriggerError(&$record, &$attrib, $error, $message='')
+  {
+    if (is_array($attrib))
+    {
+      $attribName = array();
+      $label = array();
+      
+      for ($i = 0; $i < count($attrib); $i++)
+      {
+        $attribName[$i] = $attrib[$i]->fieldName();
+        $label[$i] = $attrib[$i]->getLabel($record);
+      }
+      
+      $tab = $attrib[0]->m_tabs[0];
+    }
+    else 
+    {
+      $attribName = $attrib->fieldName();
+      $label = $attrib->getLabel($record);
+      $tab = $attrib->m_tabs[0];
+    }
+      
+    triggerError($record, $attribName, $error, $message, $tab, $label);
+  }
 
   /**
    * Adds var_export function to PHP versions older then PHP4.2
@@ -1706,7 +1739,10 @@
     $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
     static $cnt=0;
 
-    if ($cssclass != "") $cssclass = ' class="'.$cssclass.'"';
+    if ($cssclass == "")
+      $cssclass = "btn";
+      
+    $cssclass = ' class="'.$cssclass.'"';
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
 

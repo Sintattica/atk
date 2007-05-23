@@ -2,11 +2,11 @@
   {if isset($helplink)}<div id="atkhelp">{$helplink}</div>{/if}
   {atkmessages}
   {if count($atkmessages)}
-    <div id="atkmessages">
-      {foreach from=$atkmessages item=message}
-         <div class="atkmessage">{$message}</div>
-      {/foreach}
-    </div>
+  <div class="atkmessages">
+    {foreach from=$atkmessages item=message}
+      <div class="atkmessages_{$message.type}">{$message.message}</div>
+    {/foreach}
+  </div>
   {/if}
   <div id="atkcontent">
     {$content}

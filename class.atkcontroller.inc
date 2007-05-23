@@ -74,7 +74,7 @@
    /**
     * Return the one and only instance of the class
     *
-    * @return unknown
+    * @return atkController
     */
     function &getInstance()
     {

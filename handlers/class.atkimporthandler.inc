@@ -58,8 +58,83 @@
         case "upload": $this->doUpload(); break;
         case "process": $this->doProcess(); break;
       }
-      return true;
     }
+    
+    /**
+     * Create import page for the given phase.
+     *
+     * @param string $phase import phase (init, upload, process)
+     * @param string $content page content
+     */
+    function importPage($phase, $content)
+    {
+      $controller = &atkController::getInstance();
+      $action = $controller->getPhpFile().'?'.SID;   
+  
+      $formStart = 
+        '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">'.
+        session_form(atkLevel() == 0 ? SESSION_NESTED : SESSION_REPLACE).
+        $controller->getHiddenVarsString();
+      
+      $buttons = $this->invoke('getImportButtons', $phase);
+      
+      $ui = &$this->m_node->getUi();
+      $page = &$this->m_node->getPage();
+      
+      $this->m_node->addStyle("style.css");
+      
+      $params = $this->m_node->getDefaultActionParams(false);
+      $params['header'] = $this->invoke('importHeader', $phase);
+      $params['formstart'] = $formStart;
+      $params['content'] = $content;
+      $params['buttons'] = $buttons;
+      $output = $ui->renderAction('import', $params);
+      
+      $params = array();
+      $params['title'] = $this->m_node->actionTitle('import');
+      $params['content'] = $output;
+      $output = $ui->renderBox($params);
+      
+      $output = $this->m_node->renderActionPage('import', $output);
+      $page->addContent($output);      
+    }
+    
+    /**
+     * Import header.
+     * 
+     * @param $phase import phase ('init', 'upload', 'process', 'analyze')
+     */
+    function importHeader($phase)
+    {
+      return ''; 
+    } 
+    
+    /**
+     * Get import buttons.
+     * 
+     * @param $phase
+     */
+    function getImportButtons($phase)
+    {
+      $result = array();
+      
+      if ($phase == 'init')
+      {
+        $result[] = '<input class="btn" type="submit" value="'.$this->m_node->text("import_upload").'">'; 
+      }
+      else if ($phase == 'analyze')
+      {
+        $result[] = '<input type="submit" class="btn" name="analyse" value="'.$this->m_node->text("import_analyse").'">';
+        $result[] = '<input type="submit" class="btn" name="import" value="'.$this->m_node->text("import_import").'"> ';
+      }
+      
+      if (atkLevel() > 0)     
+      {
+        $result[] = atkButton($this->m_node->text("cancel","atk"), "", SESSION_BACK, true);
+      }
+      
+      return $result;
+    }    
 
     /**
      * This function shows a form to upload a .csv
@@ -67,29 +142,19 @@
      */
     function doInit()
     {
-      $content.=$this->_getInitHtml();
-      $page = &$this->getPage();
-      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
-      return true;
-    }
+      $content = '
+        <input type="hidden" name="phase" value="upload">
+        <table border="0">
+          <tr>
+            <td style="text-align: left">
+              '.$this->m_node->text("import_upload_explanation").'
+              <br /><br />
+              <input type="file" name="csvfile">
+            </td>
+          </tr>
+        </table>';
 
-    /**
-     * Gets the HTML for the initial mode of the importhandler
-     * @return String The HTML for the screen
-     */
-    function _getInitHtml()
-    {
-      global $HTTP_SERVER_VARS;
-      $content = atktext("import_upload_explanation", "atk", $this->m_node->m_type);
-      $content.= '<br><br><form name="entryform" enctype="multipart/form-data" action="'.$HTTP_SERVER_VARS['REQUEST_URI'].'?'.SID.'"'.
-                                  ' method="post">'.session_form();
-      $content.= '<input type="hidden" name="phase" value="upload">';
-      $content.= '<input type="file" name="csvfile">';
-      $content.= '<br><br><input type="submit" value="'.atktext("import_upload","atk").'"> ';
-      $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
-
-      $content.= '</form><br><br>';
-      return $content;
+      $this->invoke('importPage', 'init', $content);
     }
 
     /**
@@ -137,18 +202,16 @@
      */
     function doAnalyze($fileid,$importerrors=array())
     {
-      global $g_sessionManager;
+      $sessionMgr = &atkGetSessionManager();
       $filename = $this->getTmpFileDestination($fileid);
 
-      $content = '<div style="text-align: left; margin-left: 10px;">'; // left align, because the sample might be very wide.
-
       $rows =             $this->getSampleRows($filename);
-      $delimiter =        $g_sessionManager->pageVar("delimiter");
+      $delimiter =        $sessionMgr->pageVar("delimiter");
       if ($delimiter=="") $delimiter = $this->estimateDelimiter($rows);
-      $enclosure =        $g_sessionManager->pageVar("enclosure");
+      $enclosure =        $sessionMgr->pageVar("enclosure");
       if ($enclosure=="") $enclosure = $this->estimateEnclosure($rows);
 
-      $allFields =          $g_sessionManager->pageVar("allFields");
+      $allFields =          $sessionMgr->pageVar("allFields");
       if($allFields=="")    $allFields = array();
       $skipfirstrow =       $this->m_postvars['skipfirstrow'];
       $doupdate =           $this->m_postvars['doupdate'];
@@ -160,41 +223,44 @@
 
       $csv_data = $this->fgetcsvfromarray($rows, $columncount, $delimiter, $enclosure);
 
-      // Display sample
-      $sample = '<br><br>'.atktext("import_sample").':<br><br><table class="recordlist">';
-
       $col_map = $this->m_postvars["col_map"];
       if (!is_array($col_map))
       {
         // init colmap
-        $col_map = $this->initColmap($csv_data[0]);
+        $col_map = $this->initColmap($csv_data[0], $matchFound);
       }
 
+      if ($skipfirstrow === null)
+      {
+        $skipfirstrow = $matchFound;
+      }
+      
       if ($columncount>count($col_map))
       {
         // fill with ignored
           for ($i=0, $_i=($columncount-count($col_map)); $i<$_i; $i++) $col_map[] = "-";
       }
 
-      $sample.= $this->_getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow);
-
-      $content.=$this->_getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure, count($csv_data));
-
-      $content.=$this->_getErrors($importerrors);
-
-      $content.= $sample;
-
-      $content.=$this->_getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allFields, $novalidatefirst);
-
-      $content.=$this->_getAnalyseFooter();
-
-      $content.='</div>';
-
-      $page = &$this->getPage();
-      atkimport("atk.ui.atktheme");
-      $theme = &atkTheme::getInstance();
+      // Display sample
+      $sample = 
+        atktext("import_sample").':<br><br><table class="recordlist">'.
+        $this->_getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow);
+      
+      $content = '
+        <input type="hidden" name="phase" value="process">      
+        <div style="text-align: left; margin-left: 10px;">
+          '.$this->_getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure, count($csv_data)).'
+          <br />
+          '.$this->_getErrors($importerrors).'
+          '.$sample.'
+          <br />
+          '.$this->_getAnalyseExtraOptions($skipfirstrow, $doupdate, $updatekey1, $onfalseidentifier, $allFields, $novalidatefirst).'
+        </div>';
+      
+      $page = &$this->m_node->getPage();
+      $theme = &atkinstance("atk.ui.atktheme");
       $page->register_style($theme->stylePath("recordlist.css"));
-      $page->addContent($this->m_node->genericPage(atktext("import", "atk"), $content));
+      $this->invoke('importPage', 'analyze', $content);
     }
 
     /**
@@ -219,24 +285,24 @@
             $content.="<tr><td colSpan=2>";
             foreach ($errors as $error)
             {
-              if (!empty($error)) $content.= "<b>".text($error['msg']).$error['spec']."</b><br />";
+              if (!empty($error)) $content.= "<span class=\"error\">".text($error['msg']).$error['spec']."</span><br />";
             }
             $content.="</td></tr>";
           }
           else if (atk_value_in_array($errors) && $record<atkconfig("showmaximporterrors",50))
           {
-            $content.="<tr><td>";
-            $content.="<b> Record $record: ";
-            $content.="</td><td>";
+            $content.="<tr><td valign=\"top\" class=\"error\">";
+            $content.="<b>Record $record:</b>&nbsp;";
+            $content.="</td><td valign=\"top\" class=\"error\">";
             $counter = 0;
             for ($counter=0;$counter<count($errors)&&$counter<atkconfig("showmaximporterrors",50);$counter++)
             {
-              $content.= text($errors[$counter]['msg']).$errors[$counter]['spec']."<br />";
+              $content.= $this->m_node->text($errors[$counter]['msg']).$errors[$counter]['spec']."<br />";
             }
-            $content.="</b></td></tr>";
+            $content.="</td></tr>";
           }
         }
-        $content.="</tr></table>";
+        $content.="</tr></table><br />";
       }
       return $content;
     }
@@ -252,11 +318,7 @@
      */
     function _getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure, $rowcount)
     {
-      global $HTTP_SERVER_VARS;
-
-      $content.= '<br><form name="entryform" enctype="multipart/form-data" action="'.$HTTP_SERVER_VARS['REQUEST_URI'].'"'.
-                                  ' method="post">'.session_form();
-      $content.= '<input type="hidden" name="phase" value="process">';
+      $content = '<br>';
       $content.= '<input type="hidden" name="fileid" value="'.$fileid.'">';
       $content.= '<input type="hidden" name="columncount" value="'.$columncount.'">';
       $content.= '<table border="0">';
@@ -282,7 +344,7 @@
       for ($j=1; $j<=$columncount; $j++)
       {
         $sample.='<th>';
-        $sample.=atktext("column").' '.$j;
+        $sample.= ucfirst(atktext("column")).' '.$j;
         $sample.='</th>';
       }
       $sample.= '</tr>';
@@ -339,7 +401,7 @@
         }
         $sample.='</tr>';
       }
-      $sample.= '</table><br><br>';
+      $sample.= '</table>';
       return $sample;
     }
 
@@ -427,20 +489,6 @@
       $content.= '    </td>';
       $content.= '  </tr>';
       $content.= '</table><br /><br />';
-      return $content;
-    }
-
-    /**
-     * Returns the footer of the analysis mode
-     * @return String The HTML footer of the analysis mode
-     */
-    function _getAnalyseFooter()
-    {
-      $content.= ' <input type="submit" name="analyse" value="'.atktext("import_analyse").'">';
-      $content.= ' <input type="submit" name="import" value="'.atktext("import_import").'"> ';
-      $content.= atkButton(atktext("back","atk"), "", SESSION_BACK, true);
-
-      $content.= '</form><br><br>';
       return $content;
     }
 
@@ -644,7 +692,8 @@
     function _usableForImport($obligatoryOnly, &$attrib)
     {
       return ((!$obligatoryOnly || $this->isObligatory($attrib))
-              && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib));
+              && !$attrib->hasFlag(AF_AUTOINCREMENT) && !$this->isHide($attrib) 
+              && !is_a($attrib, 'atkdummyattribute'));
     }
 
     /**
@@ -798,6 +847,9 @@
       $attrs = $this->getUsableAttributes();
       foreach ($attrs as $attribname)
       {
+        $attr = &$this->getUsableAttribute($attribname);        
+        $label = $attr->label();
+        
         $selected = "";
         if ($value!="" && $value==$attribname)
         {
@@ -805,8 +857,8 @@
           $selected="selected";
           $hasoneselected = true;
         }
-
-        $res.= '<option value="'.$attribname.'" '.$selected.'>'.atktext($attribname, $this->m_node->m_module, $this->m_node->m_type)."\n";
+        
+        $res.= '<option value="'.$attribname.'" '.$selected.'>'.$label."\n";
         $j++;
       }
 
@@ -848,7 +900,9 @@
 
       foreach($attributes as $attribute)
       {
-        $result[] = atktext($attribute, $this->m_node->m_module, $this->m_node->m_type);
+        $attr = &$this->getUsableAttribute($attribute);        
+        $label = $attr->label();
+        $result[] = $label;
       }
 
       return $result;
@@ -859,19 +913,22 @@
      * @param Array $firstRecord The first record of the CSV file
      * @return Array The default col_map
      */
-    function initColmap($firstRecord)
+    function initColmap($firstRecord, &$matchFound)
     {
       $result = array();
 
       $attributes = $this->getUsableAttributes();
       $translations = $this->getAttributesTranslation($attributes);
 
+      $matchFound = false;
+      
       foreach($firstRecord as $value)
       {
         $key = $this->inArray($attributes,$value);
         if($key)
         {
           $result[] = $attributes[$key];
+          $matchFound = true;
         }
         else
         {
@@ -882,6 +939,7 @@
           {
 
             $result[] = $attributes[$key];
+            $matchFound = true;
           }
           else
             $result[] = "-";
@@ -934,22 +992,47 @@
       $file =         $this->getTmpFileDestination($fileid);
 
       $validated = $this->getValidatedRecords($file);
-      $this->addRecords($validated['importerrors'], $validated['validatedrecs'], $validated['fp'], $file);
-      if (!$nopost) $this->postImport();
-      else $this->m_node->redirect();
-    }
+      
+      if (!$this->m_postvars['novalidatefirst'] && $this->showErrors($validated['importerrors'])) 
+      {
+        $this->m_node->getDb()->rollback();
+        return;      
+      }
+      
+      $this->addRecords($validated['importerrors'], $validated['validatedrecs']);
+      
+      if (!$this->m_postvars['novalidatefirst'] && $this->showErrors($validated['importerrors']))
+      {
+        $this->m_node->getDb()->rollback();
+        return;        
+      }
+      
+      $this->m_node->getDb()->commit();
+      
+      // clean-up
+      @unlink($file);
 
-    function postImport()
-    {
+      // clear recordlist cache     
       $this->clearCache();
-      if ($this->showErrors($importerrors, array("msg"=>atktext("import_importedreminder")))) return;
 
-      //return;
-      fclose($fp);
-
-      // remove the csv file
-      unlink($file);
-
+      // register message
+      atkimport('atk.utils.atkmessagequeue');
+      $messageQueue = &atkMessageQueue::getInstance();
+      
+      $count = count((array)$validated['validatedrecs']['add']) + count((array)$validated['validatedrecs']['update']);
+      if ($count == 0)
+      {
+        $messageQueue->addMessage(sprintf($this->m_node->text('no_records_to_import'), $count), AMQ_GENERAL);                      
+      }
+      else if ($count == 1)
+      {
+        $messageQueue->addMessage($this->m_node->text('successfully_imported_one_record'), AMQ_SUCCESS);      
+      }
+      else 
+      {
+        $messageQueue->addMessage(sprintf($this->m_node->text('successfully_imported_x_records'), $count), AMQ_SUCCESS);      
+      }
+        
       $this->m_node->redirect();
     }
 
@@ -978,6 +1061,12 @@
         $importerrors[0][] = $allfielderror;
       }
 
+      if (count($importerrors[0]) > 0)
+      {
+        // don't start importing if even the minimum requirements haven't been met 
+        return array('importerrors'=>&$importerrors, 'validatedrecs'=>array());         
+      }
+      
       //copy the csv in a record and add it to the db
       $fp = fopen($file, "r");
       if($skipfirstrow == "1") $line = fgets($fp);
@@ -1017,7 +1106,11 @@
         }
         $this->validateRecord($rec, $validatedrecs, $importerrors, $counter);
       }
-      return array('fp'=>&$fp,'importerrors'=>&$importerrors, 'validatedrecs'=>&$validatedrecs);
+      
+      // close file
+      @fclose($fp);
+      
+      return array('importerrors'=>&$importerrors, 'validatedrecs'=>&$validatedrecs);
     }
 
     /**
@@ -1036,7 +1129,17 @@
 
       if (method_exists($attr, "createDestination") && $attr->createDestination() && !in_array($attributename,$allFields))
       {
-        $relationselect = $attr->m_destInstance->selectDb($attr->m_destInstance->m_table.".".$attr->m_destInstance->primaryKeyField().' = \''.escapeSQL($value)."'");
+        $primaryKeyAttr = $attr->m_destInstance->getAttribute($attr->m_destInstance->primaryKeyField());
+        $isNumeric = $attr->hasFlag(AF_AUTO_INCREMENT) || is_a($primaryKeyAttr, 'atknumberattribute');
+
+        $relationselect = array();
+        
+        // this check only works if either the primary key column is non-numeric or the given value is numeric
+        if (!$isNumeric || is_numeric($value))
+        {
+          $relationselect = $attr->m_destInstance->selectDb($attr->m_destInstance->m_table.".".$attr->m_destInstance->primaryKeyField().' = \''.escapeSQL($value)."'");
+        }
+        
         if (count($relationselect)==0 || count($relationselect)>1)
         {
           $searchresults = $attr->m_destInstance->searchDb($value);
@@ -1092,16 +1195,12 @@
 
     /**
      * Adds the validated records but checks for errors first
+     * 
      * @param Array  $importerrors   Errors that occurred during validation of importfile
      * @param Array  $validatedrecs  Records that were validated
-     * @param Object $fp             Pointer to the importfile
-     * @param String $file           Filename
      */
-    function addRecords(&$importerrors, &$validatedrecs, $fp, $file)
+    function addRecords(&$importerrors, &$validatedrecs)
     {
-      if (!$this->m_postvars['novalidatefirst'])
-        if ($this->showErrors($importerrors)) return;
-
       $counter=0;
       foreach ($validatedrecs as $action=>$validrecs)
       {
@@ -1123,8 +1222,8 @@
         }
         unset($validrecs);
       }
+      
       unset($validatedrecs);
-      $this->m_node->redirect();
     }
 
     /**
@@ -1235,7 +1334,8 @@
         $msg = atktext((count($errors)==1)?$singleerror:$doubleerror).": ";
         foreach ($errors as $key=>$field)
         {
-          $errors[$key] = atktext($field);
+          $attr = &$this->getUsableAttribute($field);
+          $errors[$key] = $attr->label();
         }
         $collection[] = array("msg"=>$msg,"spec"=>implode(", ",$errors));
       }
@@ -1326,8 +1426,10 @@
         {
           foreach ($errors as $error)
           {
+            $attr = &$this->getUsableAttribute($error['attrib_name']);  
+          
             $importerrors[$counter][] = array("msg"=>$error['msg'].": ",
-                                    "spec"=>atktext($error['attrib_name']));
+                                    "spec"=>$attr->label());
           }
         }
       }

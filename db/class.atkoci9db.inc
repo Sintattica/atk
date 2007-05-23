@@ -131,35 +131,25 @@
         }
 
         /* query database */
-        if (count($bindLobs))
+        $clobVars = array();
+        //$bindLobs = array();
+        if (count($bindLobs) > 0)
         {
-          $i=0;
-          foreach($bindLobs as $bind => $value)
-          {
-            $clobVar = $bind.$i;
-            $$clobVar = OCINewDescriptor($this->m_link_id, OCI_D_LOB);
-            $i++;
-            atkdebug("NewDescriptor for ".$bind);
-          }
-          $fieldNames = array();
-          $bindNames = array();
-          $fieldNames = array_keys($bindLobs);
-          foreach($fieldNames as $name) $bindNames[] = ":".$name;
-          $query .= " RETURNING ".implode(",",$fieldNames)." INTO ".implode(",",$bindNames);
+          $query .= " RETURNING ".implode(", ", array_keys($bindLobs))." INTO :".implode(", :", array_keys($bindLobs));
+          atkdebug("atkoci9db.query(), modified query to: $query");
         }
-
+        
         $this->m_query_id = OCIParse($this->m_link_id, $query);
         if ($this->m_query_id)
         {
-          if (count($bindLobs))
+          if (count($bindLobs) > 0)
           {
-            $i=0;
             foreach($bindLobs as $bind => $value)
             {
-              $clobVar = $bind.$i;
-              OCIBindByName($this->m_query_id, $bind, $$clobVar, -1, OCI_B_CLOB);
-              $i++;
-              atkdebug("Binding CLOB ".$bind);
+              atkdebug("atkoci9db.query(): new descriptor for :$bind");            
+              $clobVars[$bind] = &OCINewDescriptor($this->m_link_id, OCI_D_LOB);
+              atkdebug("atkoci9db.query(): binding (clob) :".$bind);              
+              OCIBindByName($this->m_query_id, ":$bind", $clobVars[$bind], -1, OCI_B_CLOB);
             }
           }
 
@@ -177,28 +167,23 @@
           }
           else
           {
-            if (count($bindLobs))
+            if (count($bindLobs) > 0)
             {
-              $i=0;
               foreach($bindLobs as $bind => $value)
               {
-                $clobVar = $bind.$i;
-                if (!@$$clobVar->save($value))
+                atk_var_dump($value, "atkoci9db.query(): save value for bind :$bind");                            
+                if (!@$clobVars[$bind]->save($value))
                   atkerror("Error bind save: empty value");
-                $i++;
               }
             }
           }
-          if (count($bindLobs))
+          
+          if (count($bindLobs) > 0)
           {
-            $i=0;
             foreach($bindLobs as $bind => $value)
             {
-              $clobVar = $bind.$i;
-              OCIFreeDesc($$clobVar);
-              $i++;
+              OCIFreeDesc($clobVars[$bind]);
             }
-
           }
 
           $this->m_row = 0;

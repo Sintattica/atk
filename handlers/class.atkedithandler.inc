@@ -347,17 +347,31 @@
               $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a> )';
             else $error_tab = "";
 
-            if(!is_array($error['attrib_name']))
+            if (is_array($error['label']))
             {
-              $label = atktext($error['attrib_name'], $node->m_module, $type);
+              $label = implode(', ', $error['label']);
             }
-            else
+            else if (!empty($error['label']))
+            {
+              $label = $error['label'];
+            }
+            else if (!is_array($error['attrib_name']))
+            {
+              $label = $error['label'];
+            }
+            else if (!is_array($error['attrib_name']))
+            {
+              $label = $node->text($error['attrib_name']);
+            }
+            else 
             {
               $label = array();
               foreach($error['attrib_name'] as $attrib)
-                $label[] = atktext($attrib, $node->m_module, $type);
+              {
+                $label[] = $node->text($attrib);
+              }
 
-              $label= implode(", ", $label);
+              $label = implode(", ", $label);
             }
 
             $errors[] = array("msg"=>$error['msg'].$error_tab, "label"=>$label);
@@ -378,19 +392,26 @@
 
       /* display the edit fields */
       $fields = array();
+      $errorFields = array();
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
         $tplfield = $this->createTplField($data["fields"], $i, $mode, $tab);
         $fields[] = $tplfield; // make field available in numeric array
         $params[$field["name"]] = $tplfield; // make field available in associative array
+        
+        if ($field['error'])
+          $errorFields[] = $field['id'];
       }
 
       $ui = &$this->getUi();
       $page = &$this->getPage();
       $page->register_script(atkconfig("atkroot")."atk/javascript/formsubmit.js");
 
-
+      // register fields that contain errornous values
+      atkimport('atk.utils.atkjson');
+      $page->register_scriptcode("var atkErrorFields = ".atkJSON::encode($errorFields).";");
+      
       if (atkconfig('lose_changes_warning', true))
       {
         // If we are in the save or update action the user has added a nested record, has done

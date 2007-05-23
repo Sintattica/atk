@@ -17,6 +17,11 @@ ATK.Attribute = {
           queryComponents.push(queryComponent);
       }
     }
+    
+    atkErrorFields.each(function(field) {
+      var queryComponent = $H({ 'atkerrorfields[]': field }).toQueryString();      
+      queryComponents.push(queryComponent);
+    });
 
     var params = queryComponents.join('&');  
             

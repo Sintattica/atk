@@ -37,6 +37,7 @@ class atkMetaPolicy
   var $m_includes = NULL;
   var $m_excludes = NULL;
 
+  var $m_tableAttrs = array();
   var $m_attrs = array();
 
   /**
@@ -272,6 +273,9 @@ class atkMetaPolicy
 
   /**
    * Set includes. Implicitly sets the order.
+   * 
+   * Attributes manually added through the policy 
+   * will always be included!
    */
   function setIncludes($attrs)
   {
@@ -286,6 +290,9 @@ class atkMetaPolicy
 
   /**
    * Set excludes.
+   * 
+   * Attributes manually added through the policy 
+   * will always be included!
    */
   function setExcludes($attrs)
   {
@@ -735,6 +742,16 @@ class atkMetaPolicy
         "order" => $order
       );   
   }
+  
+  /**
+   * Remove attribute.
+   * 
+   * @param $name attribute name
+   */
+  function remove($name)
+  {
+    unset($this->m_attrs[$name]);
+  }
 
   /**
    * Returns the attributes data array.
@@ -765,6 +782,7 @@ class atkMetaPolicy
   {
     $db = &$this->m_node->getDb();
     $cols = $db->tableMeta($this->m_node->getTable());
+    $this->m_tableAttrs = array_keys($cols);
     foreach ($cols as $name => $meta)
       $this->_initAttribute($name, $meta);
   }
@@ -778,6 +796,7 @@ class atkMetaPolicy
    */
   function _isAttributeIncluded($name)
   {
+    if (!in_array($name, $this->m_tableAttrs)) return true;
     if ($this->m_includes !== NULL && in_array($name, $this->m_includes)) return true;
     if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return false;
 

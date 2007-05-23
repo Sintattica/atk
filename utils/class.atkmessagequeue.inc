@@ -16,6 +16,10 @@
    * $Id$
    */
 
+  define('AMQ_GENERAL', 0);
+  define('AMQ_SUCCESS', 1);  
+  define('AMQ_FAILURE', 2);    
+  
   /**
    * This class implements the ATK message queue for showing messages
    * at the top of a page.
@@ -61,26 +65,34 @@
      * @param string $txt
      * @return boolean Success
      */
-    function addMessage($txt)
+    function addMessage($txt, $type=SMQ_GENERAL)
     {
       $instance = &atkMessageQueue::getInstance();
       if (is_object($instance))
       {
-        return $instance->_addMessage($txt);
+        return $instance->_addMessage($txt, $type);
       }
       return false;
     }
 
+    function _getTypeName($type)
+    {
+      if ($type == AMQ_SUCCESS) return 'success';
+      else if ($type == AMQ_FAILURE) return 'failure';
+      else return 'general';
+    }
+    
     /**
      * Add message to queue (private)
      *
      * @param string $txt
+     * @param int $type
      * @return boolean Success
      */
-    function _addMessage($txt)
+    function _addMessage($txt, $type)
     {
       $q = &$this->getQueue();
-      array_push($q, $txt);
+      $q[] = array('message' => $txt, 'type' => $this->_getTypeName($type));
       return true;
     }
 
