@@ -902,6 +902,7 @@
     {
       if (count($this->m_onchangecode))
       {
+        atkdebug("<h1>RENDER RADIO ONCHANGE</h1>");
         $page = &$this->m_ownerInstance->getPage();
         $page->register_scriptcode("function ".$this->getHtmlId($fieldprefix)."_onChange(el)
                                     {
@@ -909,6 +910,7 @@
                                       ".implode("\n", $this->m_onchangecode)."
                                     }\n");
       }
+      
     }
 
     /**

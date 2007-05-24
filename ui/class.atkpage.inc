@@ -332,10 +332,8 @@
       
       $count_scriptcode = count($this->m_scriptcode['before']);
       if($count_scriptcode>0) $res .= '  <script type="text/javascript">'."\n";
-      for ($i=0, $_i=$count_scriptcode; $i<$_i; $i++)
-      {
-        $res.= $this->m_scriptcode['before'][$i]."\n";
-      }
+      $res.= $this->_renderScriptCode("before");
+
       if($count_scriptcode>0) $res .= "  </script>\n";
       
       if (!$partial)
@@ -350,12 +348,19 @@
       $res.=$this->_getGlobalLoadScriptCode($partial);
 
       // javascript code.
-      for ($i=0, $_i=count($this->m_scriptcode['after']); $i<$_i; $i++)
-      {
-        $res.= $this->m_scriptcode['after'][$i]."\n";
-      }
+      $res.=$this->_renderScriptCode("after");
 
       $res .= "  </script>\n\n";
+    }
+    
+    function _renderScriptCode($position)
+    {
+      $res = "";
+      for ($i=0, $_i=count($this->m_scriptcode[$position]); $i<$_i; $i++)
+      {
+        $res.= $this->m_scriptcode[$position][$i]."\n";
+      }
+      return $res;
     }
 
     function _getGlobalSubmitScriptCode($partial=false)

@@ -133,8 +133,14 @@
 
       $result .="\n<table><tr>\n";
 
-      $values = $this->getValues($record);
-      $recordvalue = atkArrayNvl($record, $this->fieldName());
+
+      
+      $values = $this->getValues($record);     
+      if(!is_array($record[$this->fieldname()]))
+        $recordvalue = $this->db2value($record);
+      else 
+        $recordvalue = $record[$this->fieldName()];
+      
       for ($i=0;$i<count($values);$i++)
       {
         if (!$this->hasFlag(AF_CHECK_ALL))
