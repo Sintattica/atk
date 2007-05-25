@@ -241,12 +241,6 @@
       $img_spc      = $this->getIcon('space');
       $img_extfile  = $this->getIcon('extfile');
 
-      if(sessionLoad("page_move")=="1"){
-        $page_move_post = "page_move=1";
-      }else{
-        $page_move_post = "page_move=0";
-      }
-      
       $res="";
       $lastlevel=0;
       //echo $this->m_tree[0]["expand"]."--".$this->m_tree[0]["colapse"];
@@ -439,11 +433,11 @@
 
                 if($this->m_tree[$cnt]["isleaf"]==1)
                 {
-                  if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params."&".$page_move_post,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
+                  if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_plus."\" border=0>")."</td>\n";
                 }
                 else
                 {
-                  if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params."&".$page_move_post,"<img src=\"".$img_plus."\" border=0>")."</td>\n";
+                  if($cnt!=0) $res.= "<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_plus."\" border=0>")."</td>\n";
                 }
               }
               else
@@ -475,7 +469,7 @@
                   {
                     if ($foldable)
                     {
-                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params."&".$page_move_post,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
+                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_end_minus."\" border=0>")."</td>\n";
                     }
                     else
                     {
@@ -489,7 +483,7 @@
                   {
                     if ($foldable)
                     {
-                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params."&".$page_move_post,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
+                      $res.="<td>".href($PHP_SELF."?atknodetype=".$this->atknodetype()."&atkaction=".$this->m_action."&".$params,"<img src=\"".$img_minus."\" border=0>")."</td>\n";
                     }
                     else
                     {
@@ -536,9 +530,9 @@
               }
               if(isset($this->extraparams)) $params=$params.$this->extraparams;
               if ($expand[$cnt]==0)
-                $res.= "<td>".href($PHP_SELF."?".$params."&".$page_move_post,"<img src=\"".$img_expand."\" border=0>")."</td>\n";
+                $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_expand."\" border=0>")."</td>\n";
               else
-                $res.= "<td>".href($PHP_SELF."?".$params."&".$page_move_post,"<img src=\"".$img_collapse."\" border=0>")."</td>\n";
+                $res.= "<td>".href($PHP_SELF."?".$params,"<img src=\"".$img_collapse."\" border=0>")."</td>\n";
             }
             else
             {
