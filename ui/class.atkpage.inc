@@ -332,7 +332,7 @@
       
       $count_scriptcode = count($this->m_scriptcode['before']);
       if($count_scriptcode>0) $res .= '  <script type="text/javascript">'."\n";
-      $res.= $this->_renderScriptCode("before");
+      $res.= $this->renderScriptCode("before");
 
       if($count_scriptcode>0) $res .= "  </script>\n";
       
@@ -348,12 +348,12 @@
       $res.=$this->_getGlobalLoadScriptCode($partial);
 
       // javascript code.
-      $res.=$this->_renderScriptCode("after");
+      $res.=$this->renderScriptCode("after");
 
       $res .= "  </script>\n\n";
     }
     
-    function _renderScriptCode($position)
+    function renderScriptCode($position)
     {
       $res = "";
       for ($i=0, $_i=count($this->m_scriptcode[$position]); $i<$_i; $i++)
