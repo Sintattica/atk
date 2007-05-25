@@ -53,15 +53,32 @@
       $include = atkArrayNvl($_REQUEST, "include");
       $includefiles = explode("|",$include);
       $filename = basename($fullpath);
-      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false && substr($filename, -4) == '.inc')
+      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false)
       {
         $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
         $testclassname = $elems[1];
+        $fullpath = atkCleanPath($fullpath);
+        $module_dirs = atkconfig("module_dirs");
+        $testcase_in_module_dir = false;
+
+        foreach($module_dirs as $dir){
+          $dirBegin = substr($fullpath, 0, strlen($dir));
+          if($dirBegin == $dir){
+            $testcase_in_module_dir = true;
+            $module_array = explode("/", substr($fullpath, strlen($dir)));
+            $module = $module_array[1];
+            break;
+          }
+        }
+
+        if($testcase_in_module_dir and (!moduleExists($module))){
+          return; // testcase found but it is in a module that is not active
+        }
+
         if (isset($_REQUEST['list']))
         {
-          $fullpath = atkCleanPath($fullpath);
-      	  $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></tr></td>';
-        	echo $ret;
+          $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></td></tr>';
+    	    echo $ret;
         }
         else
         {
@@ -70,7 +87,6 @@
         }
       }
     }
-
   }
 
   /**
@@ -108,7 +124,8 @@
     {
       $config = atkconfig('db');
       $mapping = atkconfig('test_db_mapping');
-      return isset($config['test']) || count($mapping) > 1 || (count($mapping) == 1 && key($mapping) != 'default');
+      return ((isset($config['test']) || count($mapping) > 1 || (count($mapping) == 1 && key($mapping) != 'default'))  &&
+             !$_REQUEST['disable_test_database']);
     }
 
     /**
@@ -137,7 +154,6 @@
       if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
       else $testclass = $this->getTestCaseLocationForClass($class);
 
-      atk_var_dump(getClassPath($testclass), "klassepad");
       if ($class && file_exists(getClassPath($testclass)))
       {
         $this->_runTestCase($test,$testclass);
@@ -239,6 +255,9 @@
         else
         {
           $dir = moduleDir($module);
+          if (($dir == "") and (in_array($module, atkconfig("module_dirs")))){
+            $dir = $module;
+          }
         }
         $this->traverse($traverser, $dir);
       }
@@ -253,7 +272,7 @@
       // pre-traverse code
       if (isset($_REQUEST['list']))
       {
-        $ret = "<h1>Testcase list</h1>";
+        $ret = "<h1>Testcase list ($dir)</h1>";
     	  $ret .='<table border="1" cellspacing="0" cellpadding="5">';
     	  $ret .='<tr><th>Path</th><th>&nbsp;</th></tr>';
       	echo $ret;
