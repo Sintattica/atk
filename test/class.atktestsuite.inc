@@ -59,20 +59,22 @@
         $testclassname = $elems[1];
         $fullpath = atkCleanPath($fullpath);
         $module_dirs = atkconfig("module_dirs");
-        $testcase_in_module_dir = false;
-
-        foreach($module_dirs as $dir){
-          $dirBegin = substr($fullpath, 0, strlen($dir));
-          if($dirBegin == $dir){
-            $testcase_in_module_dir = true;
-            $module_array = explode("/", substr($fullpath, strlen($dir)));
-            $module = $module_array[1];
-            break;
+        
+        if(count($module_dirs) != 0){
+          $testcase_in_module_dir = false;
+          foreach($module_dirs as $dir){
+            $dirBegin = substr($fullpath, 0, strlen($dir));
+            if($dirBegin == $dir){
+              $testcase_in_module_dir = true;
+              $module_array = explode("/", substr($fullpath, strlen($dir)));
+              $module = $module_array[1];
+              break;
+            }
           }
-        }
 
-        if($testcase_in_module_dir and (!moduleExists($module))){
-          return; // testcase found but it is in a module that is not active
+          if($testcase_in_module_dir and (!moduleExists($module))){
+            return; // testcase found but it is in a module that is not active
+          }
         }
 
         if (isset($_REQUEST['list']))
