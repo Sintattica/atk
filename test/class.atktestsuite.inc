@@ -53,7 +53,7 @@
       $include = atkArrayNvl($_REQUEST, "include");
       $includefiles = explode("|",$include);
       $filename = basename($fullpath);
-      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false)
+      if (substr($filename, 0, 11)=="class.test_" && (!$include ||($include && in_array($filename,$includefiles))) && strpos($fullpath,"/testcases/")!==false && substr($filename, -4) == '.inc')
       {
         $elems = explode(".", $filename); // leads to 'class' 'test_...' and '.inc'
         $testclassname = $elems[1];
