@@ -349,6 +349,6 @@
   "successfully_imported_x_records" => "Successfully imported %d records.",
   "successfully_imported_one_record" => "Successfully imported 1 record.",  
   "no_records_to_import" => "No records found that needed to be imported.",    
-  "list_null_value_obligatory" => "(select a value)",
+  "list_null_value_obligatory" => "(Select a value...)",
 );
 ?>

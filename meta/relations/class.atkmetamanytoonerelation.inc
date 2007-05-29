@@ -45,6 +45,9 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
 
     if (isset($options["filter"])) 
       $this->setDestinationFilter($options["filter"]);
+      
+    if (isset($options['join_filter']))
+      $this->setJoinFilter($options['join_filter']);
     
     $cols = array();
     if (array_key_exists('listcols', $options))  

@@ -393,6 +393,8 @@
 
     function _addOrderByStatement($orderby)
     {
+      if (strpos($orderby, '(') !== false) return; // can't do anything with complex order by's
+      
       $elems = explode(" ", $orderby);
       $lastattr="";
       $i = 0;

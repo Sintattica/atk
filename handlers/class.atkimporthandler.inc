@@ -27,6 +27,8 @@
    */
   class atkImportHandler extends atkActionHandler
   {
+    var $m_importNode;
+    
     /**
      * The action handler.
      * @param bool Always true
@@ -49,7 +51,6 @@
           $ATK_VARS[$ATK_VARS['allFields'][$key]."_newsel"] = $ATK_VARS[$ATK_VARS['allFields'][$key]];
       }
 
-
       $phase = ($this->m_postvars["phase"]!=""?$this->m_postvars["phase"]:"init");
 
       switch ($phase)
@@ -58,6 +59,34 @@
         case "upload": $this->doUpload(); break;
         case "process": $this->doProcess(); break;
       }
+    }
+    
+    /**
+     * Sets the node for this handler. Implicitly sets the
+     * import node too!
+     * 
+     * @param atkNode $node node instance
+     * 
+     * @see setImportNode
+     */
+    function setNode(&$node)
+    {
+      parent::setNode($node);
+      $this->setImportNode($node);
+    }
+    
+    /**
+     * Sets the import node. By default this is the same node
+     * as set by setNode, but if you call this method after the setNode
+     * call you can override the import node.
+     *
+     * @param atkNode $node node instance
+     * 
+     * @see setNode
+     */
+    function setImportNode(&$node)
+    {
+      $this->m_importNode = &$node;
     }
     
     /**
@@ -74,6 +103,8 @@
       $formStart = 
         '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$action.'" method="post">'.
         session_form(atkLevel() == 0 ? SESSION_NESTED : SESSION_REPLACE).
+        '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'" />'.
+        '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'" />'.        
         $controller->getHiddenVarsString();
       
       $buttons = $this->invoke('getImportButtons', $phase);
@@ -655,9 +686,9 @@
     function getUsableAttributes($obligatoryOnly=false)
     {
       $attrs = array();
-      foreach (array_keys($this->m_node->m_attribList) as $attribname)
+      foreach (array_keys($this->m_importNode->m_attribList) as $attribname)
       {
-        $attrib = &$this->m_node->getAttribute($attribname);
+        $attrib = &$this->m_importNode->getAttribute($attribname);
 
         if($this->integrateAttribute($attrib))
         {
@@ -744,9 +775,9 @@
     function getIntegratedAttributes()
     {
       $attrs = array();
-      foreach (array_keys($this->m_node->m_attribList) as $attribname)
+      foreach (array_keys($this->m_importNode->m_attribList) as $attribname)
       {
-        $attrib = &$this->m_node->getAttribute($attribname);
+        $attrib = &$this->m_importNode->getAttribute($attribname);
 
         if($this->integrateAttribute($attrib))
         {
@@ -763,12 +794,12 @@
      */
     function isRelationAttribute($attrname)
     {
-      if(array_key_exists($attrname,$this->m_node->m_attribList))
+      if(array_key_exists($attrname,$this->m_importNode->m_attribList))
         return false;
 
       foreach($this->getIntegratedAttributes() as $attr)
       {
-        $relattr = $this->m_node->getAttribute($attr);
+        $relattr = $this->m_importNode->getAttribute($attr);
         $relattr->createDestination();
         if(array_key_exists($attrname,$relattr->m_destInstance->m_attribList))
           return $attr;
@@ -793,12 +824,12 @@
      */
     function &getUsableAttribute($name)
     {
-      if(array_key_exists($name,$this->m_node->m_attribList))
-        return $this->m_node->getAttribute($name);
+      if(array_key_exists($name,$this->m_importNode->m_attribList))
+        return $this->m_importNode->getAttribute($name);
 
       foreach($this->getIntegratedAttributes() as $attr)
       {
-        $relattr = $this->m_node->getAttribute($attr);
+        $relattr = $this->m_importNode->getAttribute($attr);
         $relattr->createDestination();
         if(array_key_exists($name,$relattr->m_destInstance->m_attribList))
           return $relattr->m_destInstance->getAttribute($name);
@@ -995,7 +1026,7 @@
       
       if (!$this->m_postvars['novalidatefirst'] && $this->showErrors($validated['importerrors'])) 
       {
-        $this->m_node->getDb()->rollback();
+        $this->m_importNode->getDb()->rollback();
         return;      
       }
       
@@ -1003,11 +1034,11 @@
       
       if (!$this->m_postvars['novalidatefirst'] && $this->showErrors($validated['importerrors']))
       {
-        $this->m_node->getDb()->rollback();
+        $this->m_importNode->getDb()->rollback();
         return;        
       }
       
-      $this->m_node->getDb()->commit();
+      $this->m_importNode->getDb()->commit();
       
       // clean-up
       @unlink($file);
@@ -1046,7 +1077,7 @@
       $col_map =      $this->m_postvars["col_map"];
 
       $allFieldsValues = $this->getAllFieldsValues($col_map);
-      $initial_values = $this->m_node->initial_values();
+      $initial_values = $this->m_importNode->initial_values();
 
       $validatedrecs = array();
       $validatedrecs["add"]=array();
@@ -1233,14 +1264,14 @@
      */
     function add(&$record)
     {
-      $this->m_node->preAdd($record);
+      $this->m_importNode->preAdd($record);
 
       if(isset($record['atkerror']))
       {
         return false;
       }
 
-      $this->m_node->addDb($record);
+      $this->m_importNode->addDb($record);
 
       if(isset($record['atkerror']))
       {
@@ -1257,14 +1288,14 @@
      */
     function update(&$record)
     {
-      $this->m_node->preUpdate($record);
+      $this->m_importNode->preUpdate($record);
 
       if(isset($record['atkerror']))
       {
         return false;
       }
 
-      $this->m_node->updateDb($record);
+      $this->m_importNode->updateDb($record);
 
       if(isset($record['atkerror']))
       {
@@ -1283,7 +1314,7 @@
       if ($this->m_postvars['doupdate']) $mode = "update";
       else $mode = "add";
 
-      $this->m_node->validate($record,$mode);
+      $this->m_importNode->validate($record,$mode);
 
       foreach (array_keys($record) as $key)
       {
@@ -1473,14 +1504,14 @@
         $allFieldsValues[$allField] =  $this->m_postvars[$allField];
       }
 
-      $this->m_node->m_postvars["atksearchmode"] = "exact";
-//      if (!in_array($allFieldValue)) $this->m_node->m_fuzzyFilters[] = $allFieldValue;
+      $this->m_importNode->m_postvars["atksearchmode"] = "exact";
+//      if (!in_array($allFieldValue)) $this->m_importNode->m_fuzzyFilters[] = $allFieldValue;
 
-      $dbrec = $this->m_node->searchDb(array($updatekey1=>$updatekey1val));
+      $dbrec = $this->m_importNode->searchDb(array($updatekey1=>$updatekey1val));
 
       if (count($dbrec)==1)
       {
-        $record[$this->m_node->primaryKeyField()] = $dbrec[0][$this->m_node->primaryKeyField()];
+        $record[$this->m_importNode->primaryKeyField()] = $dbrec[0][$this->m_importNode->primaryKeyField()];
         $record['atkprimkey'] = $dbrec[0]['atkprimkey'];
         return true;
       }

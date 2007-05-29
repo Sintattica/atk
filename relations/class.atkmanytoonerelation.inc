@@ -155,6 +155,14 @@
 
     // override onchangehandler init
     var $m_onchangehandler_init = "newvalue = el.options[el.selectedIndex].value;\n";
+    
+    /**
+     * Use destination filter for autolink add link?
+     * 
+     * @access private
+     * @var boolean
+     */
+    var $m_useFilterForAddLink = true;
 
     /**
      * Constructor.
@@ -202,6 +210,16 @@
       {
         atkerror("AF_MANYTOONE_LAZY flag is not supported for multi-column reference key or a reference key that uses another column.");
       }
+    }
+    
+    /**
+     * Set join filter.
+     *
+     * @param string $filter join filter
+     */
+    function setJoinFilter($filter)
+    {
+      $this->m_joinFilter = $filter;
     }
 
     /**
@@ -254,7 +272,7 @@
     {
       $this->m_autocomplete_saveform = $saveform;
     }
-
+    
     /**
      * Set the minimal number of records for the autocomplete to show
      * If there are less records the normal dropdown is shown
@@ -265,7 +283,17 @@
     {
       $this->m_autocomplete_minrecords = $minrecords;
     }
-
+    
+    /**
+     * Use destination filter for auto add link?
+     *
+     * @param boolean $useFilter use destnation filter for add link?
+     */
+    function setUseFilterForAddLink($useFilter)
+    {
+      $this->m_useFilterForAddLink = $useFilter;
+    }
+    
     /**
      * Add list column. An attribute of the destination node
      * that (only) will be displayed in the recordlist.
@@ -738,7 +766,7 @@
         }
         if ($this->m_destInstance->allowed("add"))
         {
-          $autolink['add'] = "&nbsp;".href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_ret","atkfilter"=>($filter!=""?$filter:""))),
+          $autolink['add'] = "&nbsp;".href(dispatch_url($this->m_destination,"add",array("atkpkret"=>$id."_ret","atkfilter"=>($this->m_useFilterForAddLink && $filter != "" ? $filter : ""))),
                                                         atktext("new"),SESSION_NESTED,true);
         }
       }

@@ -367,6 +367,9 @@ Changed in ATK 5.7
   please set $config_lose_changes_warning to true. [Peter]
 + Added new lesson (10) to the demo application to demonstrate ajax 
   dependencies. [Ivo]
++ Added atkManyToOneRelation::setUseFilterForAddlink method to control 
+  whatever the destination filter should be added to the add link when
+  the NF_RELATION_AUTOLINK flag is set. [Peter]
 + Added theme resource, allows you to include other Smarty theme templates 
   using {include file="theme:template.tpl} syntax. The resource will make 
   sure you get the correct file from the correct directory (even works for
