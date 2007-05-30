@@ -438,9 +438,9 @@ class atkMetaPolicy
    * attribute. If you need to pass arguments by reference you can
    * better use the setTypeAndParams method.
    *
-   * @param $attr  the attribute name
-   * @param $type  full ATK attribute class (e.g. atk.attributes.atkboolattribute)
-   * @param $...   all other arguments will be threated as parameters
+   * @param string|array $attr  the attribute name or a list of attributes
+   * @param string $type        full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   * @param mixed ...           all other arguments will be threated as parameters
    */
   function setType($attr, $type)
   {
@@ -452,14 +452,18 @@ class atkMetaPolicy
   /**
    * Sets the attribute type and parameters.
    *
-   * @param $attr    the attribute name
-   * @param $type    full ATK attribute class (e.g. atk.attributes.atkboolattribute)
-   * @param $params  parameters for the attribute (optional)
+   * @param string|array $attr the attribute name or a list of attributes
+   * @param string $type       full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   * @param array $params      parameters for the attribute (optional)
    */
   function setTypeAndParams($attr, $type, $params=array())
   {
-    $this->m_attrs[$attr]["type"] = $type;
-    $this->m_attrs[$attr]["params"] = $params;
+    $attrs = is_array($attr) ? $attr : array($attr);
+    foreach ($attrs as $attr)
+    {
+      $this->m_attrs[$attr]["type"] = $type;
+      $this->m_attrs[$attr]["params"] = $params;
+    }
   }
 
   /**
@@ -719,28 +723,32 @@ class atkMetaPolicy
   /**
    * Add / replace (custom) attribute.
    * 
-   * @param $name    attribute name
-   * @param $type    attribute type
-   * @param $params  attribute parameters, excluding flags (optional)
-   * @param $flags   attribute flags (optional)
-   * @param $tabs    tabs to display the attribute on
-   * @param $order   order of the attribute
+   * @param string|array $name  attribute name or list of attributes
+   * @param string $type        attribute type
+   * @param array $params       attribute parameters, excluding flags (optional)
+   * @param int $flags          attribute flags (optional)
+   * @param string|array $tabs  tabs to display the attribute on
+   * @param int $order          order of the attribute
    */
   function add($name, $type, $params=array(), $flags=0, $tabs=NULL, $order=NULL)
   {
-    if ($order === NULL && isset($this->m_attrs[$name]))
-      $order = $this->m_attrs[$name]['order']; 
-    else if ($order === NULL) 
-      $order = $this->_getMaxOrder() + 100;
-
-    $this->m_attrs[$name] =
-      array(
-        "type" => $type,
-        "params" => $params,
-        "flags" => $flags,
-        "tabs" => $tabs,
-        "order" => $order
-      );   
+    $names = is_array($name) ? $name : array($name);
+    foreach ($names as $name)
+    {
+      if ($order === NULL && isset($this->m_attrs[$name]))
+        $order = $this->m_attrs[$name]['order']; 
+      else if ($order === NULL) 
+        $order = $this->_getMaxOrder() + 100;
+  
+      $this->m_attrs[$name] =
+        array(
+          "type" => $type,
+          "params" => $params,
+          "flags" => $flags,
+          "tabs" => $tabs,
+          "order" => $order
+        );   
+    }
   }
   
   /**

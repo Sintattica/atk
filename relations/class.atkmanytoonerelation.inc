@@ -506,7 +506,7 @@
         }
         else
         {
-          $title = ""; // no record
+          $title = $this->getNoneLabel(); // no record
         }
 
         $result = $title; // default result is just the title.

@@ -374,6 +374,10 @@ Changed in ATK 5.7
   using {include file="theme:template.tpl} syntax. The resource will make 
   sure you get the correct file from the correct directory (even works for
   overrides at the theme level). [Peter]
+* atkMetaPolicy::add, atkMetaPolicy::setType now support an array of 
+  attribute names as argument for the attribute name parameter. [Peter]
+* atkManyToOneRelation now shows the none label when viewing the value
+  read-only and nothing is selected. [Peter]
 * Fixed path handling in atkTestCase when running single tests. [Patrick]
 * Fixed bug in atkcustomrecordlist. When a field has the flag AF_HIDE_LIST 
   it will not be visible in the csv export. [dennisjan]
