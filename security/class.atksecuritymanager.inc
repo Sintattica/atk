@@ -250,7 +250,7 @@
         }
       }
       // do we need to login?
-      else if ((!array_key_exists("login", $session)) || ($session["login"]!=1))
+      else if ((!isset($session["login"])) || ($session["login"]!=1))
       {
         // authenticated?
         $authenticated = false;
