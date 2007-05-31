@@ -353,6 +353,14 @@
       $res .= "  </script>\n\n";
     }
     
+    /**
+     * Renders the registered javascripts, if $position is set to "before" the scripts will be
+     * placed before the scripts that are already present. Otherwise they will be appended
+     * at the end.
+     *
+     * @param string $position ("before" or "after")
+     * @return string 
+     */
     function renderScriptCode($position)
     {
       $res = "";
