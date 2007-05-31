@@ -20,9 +20,8 @@ class atkYAMLFixtureLoader extends atkAbstractFixtureLoader
   {
     $contents = file_get_contents($path);
     $contents = $this->parse($contents);
-  	include_once(atkconfig("atkroot")."atk/ext/spyc/spyc.php");
-    $data = Spyc::YAMLLoad($contents);
+  	atkimport('atk.utils.atkyaml');
+    $data = atkYAML::load($contents);
     return $data;  
   }
 }
-?>

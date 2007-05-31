@@ -60,11 +60,14 @@
         $fullpath = atkCleanPath($fullpath);
         $module_dirs = atkconfig("module_dirs");
         
-        if(count($module_dirs) != 0){
+        if (is_array($module_dirs) && count($module_dirs) > 0)
+        {
           $testcase_in_module_dir = false;
-          foreach($module_dirs as $dir){
+          foreach ($module_dirs as $dir)
+          {
             $dirBegin = substr($fullpath, 0, strlen($dir));
-            if($dirBegin == $dir){
+            if($dirBegin == $dir)
+            {
               $testcase_in_module_dir = true;
               $module_array = explode("/", substr($fullpath, strlen($dir)));
               $module = $module_array[1];
@@ -72,7 +75,8 @@
             }
           }
 
-          if($testcase_in_module_dir and (!moduleExists($module))){
+          if ($testcase_in_module_dir && !moduleExists($module))
+          {
             return; // testcase found but it is in a module that is not active
           }
         }

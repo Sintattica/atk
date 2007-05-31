@@ -51,6 +51,7 @@
       $this->atkDateTimeAttribute($name, date("Y-m-d"), date("H:i:s"), $flags|AF_READONLY|AF_HIDE_ADD);
       $this->setForceInsert(true);
       $this->setForceUpdate(true);
+      $this->setInitialValue(atkDateTimeAttribute::datetimeArray());
     }
 
     /**
