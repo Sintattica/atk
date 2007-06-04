@@ -32,11 +32,15 @@
      */
     class test_atktextattribute extends atkAttributeTestCase
     {    
+      var $m_node;
+      
       /**
        * Setup the testcase.
        */
       function setup()
       {              
+        $this->m_node = new atkNode();
+        $this->m_node->add(new atkTextAttribute("remark"));
       }
       
       /**
@@ -44,7 +48,7 @@
        */
       function test_textattribute()
       {           
-        $this->apiTest(new atkTextAttribute("remark"));
+        $this->apiTest($this->m_node->getAttribute("remark"));
       }              
       
       function test_encoding()
