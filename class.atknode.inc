@@ -2845,6 +2845,8 @@
       // The actual redirect.
       if (atkconfig("debug")>=2)
       {
+        $debugger = &atkinstance('atk.utils.atkdebugger');
+        $debugger->setRedirectUrl($location);
         atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
         if ($exit)
         {

@@ -28,6 +28,7 @@
   class atkDebugger
   {
     var $m_isconsole = true;
+    var $m_redirectUrl = null;
 
     function &getInstance()
     {
@@ -369,6 +370,34 @@
     }
     
     /**
+     * Set redirect URL.
+     */
+    function setRedirectUrl($url, $force=false)
+    {
+      // normally we only save the first redirect url, but using the force 
+      // parameter you can force setting another redirect url
+      if ($this->m_redirectUrl === null || $force)
+      {
+        $this->m_redirectUrl = $url;
+      }
+    }
+    
+    /**
+     * Renders the redirect link if applicable.
+     */
+    function renderRedirectLink()
+    {
+      if ($this->m_redirectUrl == null) return '';
+      
+      $output = '
+        <div class="atkDebugRedirect">
+           Non-debug version would have redirected to <a href="'.$this->m_redirectUrl.'">'.$this->m_redirectUrl.'</a>
+        </div>';
+      
+      return $output;
+    }
+    
+    /**
      * Renders the debug and error messages to a nice HTML string.
      *
      * @return string html string
@@ -393,7 +422,7 @@
       }
       
       // render debug block
-      $block = $this->renderDebugBlock(!$isPartial);
+      $block = $this->renderDebugBlock(false);
       
       if ($isPartial)
       {
@@ -409,13 +438,16 @@
         $ui = &atkUI::getInstance();
         $stylesheet = $ui->stylePath('atkdebug.css');        
         $script = atkconfig('atkroot').'atk/javascript/class.atkdebug.js';
-                
+
+        $redirect = $this->renderRedirectLink();
+               
         $output = '
           <script type="text/javascript" src="'.$script.'"></script>
           <script type="text/javascript">
             ATK.Debug.registerStylesheet("'.$stylesheet.'");
           </script>
           <div id="atk_debugging_div">
+            '.$redirect.'
             '.$block.'
           </div>';
       }
