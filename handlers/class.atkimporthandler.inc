@@ -272,15 +272,17 @@
           for ($i=0, $_i=($columncount-count($col_map)); $i<$_i; $i++) $col_map[] = "-";
       }
 
+      $rowCount = $this->getRowCount($filename, $skipfirstrow);      
+      
       // Display sample
       $sample = 
         atktext("import_sample").':<br><br><table class="recordlist">'.
         $this->_getAnalyseSample($columncount, $col_map, $csv_data, $skipfirstrow);
-      
+        
       $content = '
         <input type="hidden" name="phase" value="process">      
         <div style="text-align: left; margin-left: 10px;">
-          '.$this->_getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure, count($csv_data)).'
+          '.$this->_getAnalyseHeader($fileid, $columncount, $delimiter, $enclosure, $rowCount).'
           <br />
           '.$this->_getErrors($importerrors).'
           '.$sample.'
@@ -609,6 +611,26 @@
       fclose($fp);
       return $result;
     }
+    
+
+    /**
+     * Returns the CSV line count.
+     * 
+     * @param string $file the path to the csv-file
+     * @return int row count
+     */
+    function getRowCount($file, $skipFirstRow)
+    {
+      $count = 0;      
+      
+      $fp = fopen($file, "r");
+      while ($line = fgets($fp))
+      {
+        $count++;
+      }
+      
+      return $count - ($count > 0 && $skipFirstRow ? 1 : 0);
+    }    
 
     /**
      * Gets the csvdata from one line

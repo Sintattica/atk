@@ -322,6 +322,104 @@
         return $output;
       }
     }
-  }
+    
+    /**
+     * Renders error messages for the user.
+     *
+     * @return string error messages string
+     * @private
+     */
+    function renderPlainErrorMessages()
+    {
+      global $g_error_msg;
+      $output = '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
+      return $output;
+    }
+    
+    /**
+     * Render debug block for the current debug information.
+     *
+     * @return string debug block string
+     * @private
+     */
+    function renderDebugBlock($expanded)
+    {
+      global $g_debug_msg, $g_error_msg, $g_startTime;
+      
+      $time = strftime("%H:%M:%S", $g_startTime);
+      $duration = sprintf("%02.05f", getmicrotime() - $g_startTime);
+      $usage = function_exists("memory_get_usage") ? sprintf("%02.02f", (memory_get_usage() / 1024 / 1024)) : "? ";
+      $method = $_SERVER['REQUEST_METHOD'];
+      $protocol = empty($_SERVER['HTTPS']) || strtolower($_SERVER['HTTPS']) == 'off' ? 'http' : 'https';
+      $url = $protocol.'://'.$_SERVER['HTTP_HOST'].($_SERVER['SERVER_PORT'] != 80 ? ':'.$_SERVER['SERVER_PORT'] : '').$_SERVER['REQUEST_URI'];
+      
+      $label = "[{$time}h / {$duration}s / {$usage}MB] $method $url";
+      
+      $output = '
+        <div class="atkDebugBlock'.(count($g_error_msg) > 0 ? " atkDebugBlockContainsErrors" : "").' atkDebug'.($expanded ? 'Expanded' : 'Collapsed').'">
+          <div class="atkDebugToggle" onclick="ATK.Debug.toggle(this)">
+           '.$label.'
+          </div>
+          <div class="atkDebugData">
+            '.(count($g_debug_msg) > 0 ? '<div class="atkDebugLine">'.implode($g_debug_msg, '</div><div class="atkDebugLine">').'</div>' : '').'            
+          </div>
+        </div>';
 
+      return $output;     
+    }
+    
+    /**
+     * Renders the debug and error messages to a nice HTML string.
+     *
+     * @return string html string
+     */
+    function renderDebugAndErrorMessages()
+    {
+      global $ATK_VARS, $g_debug_msg, $g_error_msg, $g_startTime;            
+      
+      // check if this is an Ajax request
+      $isPartial = isset($ATK_VARS['atkpartial']);
+      
+      // only display error messages
+      if (count($g_error_msg) > 0 && atkconfig('display_errors') && atkconfig('debug') <= 0 && !$isPartial)
+      {
+        return $this->renderPlainErrorMessages();
+      }
+      
+      // no debug messages or error messages to output
+      else if (atkconfig('debug') <= 0 || ($isPartial && count($g_debug_msg) == 0 && count($g_error_msg) == 0))
+      {
+        return '';
+      }
+      
+      // even though there are no debug messages to output we need to output the debug div
+      // else we are unable to add debug blocks for Ajax requests
+      else if (count($g_debug_msg) == 0 && count($g_error_msg) == 0)
+      {
+        return '<div id="atk_debugging_div"></div>';        
+      }
+      
+      // render debug block
+      $block = $this->renderDebugBlock(!$isPartial);
+      
+      if ($isPartial)
+      {
+        atkimport('atk.utils.atkjson');
+        
+        $output = 
+          '<script type="text/javascript">
+            ATK.Debug.addContent('.atkJSON::encode($block).');
+           </script>';
+      }
+      else 
+      {
+        $output = 
+          '<div id="atk_debugging_div">
+            '.$block.'
+          </div>';
+      }
+
+      return $output;
+    } 
+  }
 ?>

@@ -40,6 +40,11 @@
   define("DEBUG_NOTICE", 4);
 
   /**
+   * Error message.
+   */
+  define("DEBUG_ERROR", 8);  
+  
+  /**
    * Function atkErrorHandler
    * This function catches PHP parse errors etc, and passes
    * them to atkerror(), so errors can be mailed and output
@@ -151,32 +156,24 @@
   /**
    * Handy function that displays the time since it was last called
    *
-   * You use it as follows:
-   * first you set the time once by using elapsed()
-   * (or elapsed(true) if you want to be sure you reset the time)
-   * and echo() or atkdebug() elapsed() every time you want to know
-   * how much time has gone by.
-   *
-   * @param bool $reset if true it will reset the time
-   * @return string elapsed or current time in microseconds
+   * @return string elapsed time in microseconds
    */
-  function elapsed($reset = false)
+  function elapsed()
   {
-    static $offset="", $previous="";
-    if ($offset=="" || $reset)
+    global $g_startTime;
+    
+    static $offset=null, $previous=null;
+    
+    if ($offset === null)
     {
-      $offset = getmicrotime();
+      $offset = $g_startTime;
       $previous = $offset;
-      return strftime("%H:%M:%S")."h / 0.00000s";
     }
-    else
-    {
-      $new = getmicrotime();
-      $res = "+".sprintf("%02.05f",$new-$offset)."s / ".sprintf("%02.05f", $new-$previous)."s";
-      $previous = $new;
-      return $res;
-    }
-
+    
+    $new = getmicrotime();
+    $res = "+".sprintf("%02.05f",$new-$offset)."s / ".sprintf("%02.05f", $new-$previous)."s";
+    $previous = $new;
+    return $res;
   }
 
   /**
@@ -200,6 +197,11 @@
       atkWriteLog($txt);
       $line = atkGetTimingInfo().$txt;
 
+      if (hasFlag($flags, DEBUG_ERROR))
+      {
+        $line = '<span class="atkDebugError">'.$line.'</span>';
+      }
+      
       if ($level>2)
       {
         atkimport("atk.utils.atkdebugger");
@@ -264,10 +266,10 @@
     global $g_error_msg;
     $g_error_msg[]="[".elapsed()."] ".$txt;
 
-    if(function_exists("debug_backtrace"))
-    {
-      atkdebug("Trace:".atk_get_trace());
-    }
+    atkdebug($txt, DEBUG_ERROR);
+     
+    if (function_exists('debug_backtrace'))
+      atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
   }
 
   /**
@@ -2216,5 +2218,4 @@
 
     return $attr;
   }
-
 ?>

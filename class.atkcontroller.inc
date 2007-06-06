@@ -128,12 +128,6 @@
       {
         $flags = $flags ? HTML_STRICT : HTML_HEADER|HTML_DOCTYPE;
       }
-      if (hasFlag($flags, HTML_PARTIAL) && !$postvars["atkdebug"]["force"])
-      {
-        // turn off debugging in partial mode (ajax snippets)
-        global $config_debug;
-        $config_debug = 0;
-      }
 
       // Use invoke to be backwards compatible with overrides
       // of loadDispatchPage in atknode.
