@@ -3,6 +3,7 @@
   font-family: monospace; 
   font-size: 11px; 
   white-space: nowrap;
+  margin-top: 20px;
 }
 
 .atkDebugBlock .atkDebugToggle 
