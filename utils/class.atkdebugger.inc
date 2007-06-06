@@ -387,16 +387,9 @@
       }
       
       // no debug messages or error messages to output
-      else if (atkconfig('debug') <= 0 || ($isPartial && count($g_debug_msg) == 0 && count($g_error_msg) == 0))
+      else if (atkconfig('debug') <= 0 || (count($g_debug_msg) == 0 && count($g_error_msg) == 0))
       {
         return '';
-      }
-      
-      // even though there are no debug messages to output we need to output the debug div
-      // else we are unable to add debug blocks for Ajax requests
-      else if (count($g_debug_msg) == 0 && count($g_error_msg) == 0)
-      {
-        return '<div id="atk_debugging_div"></div>';        
       }
       
       // render debug block
@@ -413,8 +406,16 @@
       }
       else 
       {
-        $output = 
-          '<div id="atk_debugging_div">
+        $ui = &atkUI::getInstance();
+        $stylesheet = $ui->stylePath('atkdebug.css');        
+        $script = atkconfig('atkroot').'atk/javascript/class.atkdebug.js';
+                
+        $output = '
+          <script type="text/javascript" src="'.$script.'"></script>
+          <script type="text/javascript">
+            ATK.Debug.registerStylesheet("'.$stylesheet.'");
+          </script>
+          <div id="atk_debugging_div">
             '.$block.'
           </div>';
       }

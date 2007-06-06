@@ -560,14 +560,6 @@
       /** @todo: Move this to the places where the tabscript is registered. */
       // Load default tab show script.
       $this->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($ATK_VARS['atktab'])?$ATK_VARS['atktab']:'').'\');}');
-
-      if (atkconfig('debug') > 0)
-      {
-        $ui = &atkUI::getInstance();
-        $ui->stylePath('atkdebug.css');
-        $this->register_style($ui->stylePath('atkdebug.css'));
-        $this->register_script(atkconfig('atkroot').'atk/javascript/class.atkdebug.js');
-      }
     }
 
     /**

@@ -9,6 +9,13 @@ ATK.Debug = {
   COLLAPSED_CLASS: 'atkDebugCollapsed',
   
   /**
+   * Register stylesheet.
+   */
+  registerStylesheet: function(stylesheet) {
+    document.writeln('<link href="' + stylesheet + '" rel="stylesheet" type="text/css" media="all" />');
+  },
+  
+  /**
    * Add content to the debugging div.
    */
   addContent: function(content) {
