@@ -435,7 +435,7 @@
       }
       else 
       {
-        $ui = &atkUI::getInstance();
+        $ui = &atkinstance('atk.utils.atkui');
         $stylesheet = $ui->stylePath('atkdebug.css');        
         $script = atkconfig('atkroot').'atk/javascript/class.atkdebug.js';
 
