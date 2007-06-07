@@ -311,9 +311,15 @@
       if(is_array($importerrors))
       {
         $content.="\n<table>";
+
+        $errorCount = 0;
         foreach ($importerrors as $record => $errors)
         {
-          if ($record==0)
+          $errorCount++;
+          
+          if ($errorCount > atkconfig("showmaximporterrors",50)) break;
+
+          if ($record==0 && atk_value_in_array($errors))
           {
             $content.="<tr><td colSpan=2>";
             foreach ($errors as $error)
@@ -322,7 +328,7 @@
             }
             $content.="</td></tr>";
           }
-          else if (atk_value_in_array($errors) && $record<atkconfig("showmaximporterrors",50))
+          else if (atk_value_in_array($errors))
           {
             $content.="<tr><td valign=\"top\" class=\"error\">";
             $content.="<b>Record $record:</b>&nbsp;";
@@ -337,6 +343,7 @@
         }
         $content.="</tr></table><br />";
       }
+      
       return $content;
     }
 
@@ -626,6 +633,7 @@
       $fp = fopen($file, "r");
       while ($line = fgets($fp))
       {
+        if (trim($line) == "") continue;
         $count++;
       }
       
@@ -1159,7 +1167,7 @@
         }
         $this->validateRecord($rec, $validatedrecs, $importerrors, $counter);
       }
-      
+
       // close file
       @fclose($fp);
       
