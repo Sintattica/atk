@@ -1836,15 +1836,15 @@
         }
       }
     }
-    
+
     /**
      * The preAddToEditArray method is called from within the editArray
      * method prior to letting the attributes add themselves to the edit
-     * array, but after the edit record values have been collected (a 
-     * combination of the current record, initial/edit values and the forced 
+     * array, but after the edit record values have been collected (a
+     * combination of the current record, initial/edit values and the forced
      * values). This makes it possible to do some last-minute modifications to
      * the record data and possibily add some last-minute attributes etc.
-     * 
+     *
      * @param array $record the edit record
      * @param string $mode edit mode (add or edit)
      */
@@ -1969,7 +1969,7 @@
           }
         }
       }
-      
+
       $this->preAddToEditArray($defaults, $mode);
 
       /* extra submission data */
@@ -2847,7 +2847,7 @@
       {
         $debugger = &atkinstance('atk.utils.atkdebugger');
         $debugger->setRedirectUrl($location);
-        atkdebug('nondebug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
+        atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
         if ($exit)
         {
           $output = &atkOutput::getInstance();
@@ -3063,7 +3063,7 @@
         return $rec[$keys[0]];
       }
     }
-    
+
     /**
      * Validates a record.
      *
@@ -3245,7 +3245,7 @@
               || (is_array($excludeList) && !in_array($attribname,$excludeList)))
               || (!is_array($excludeList) && !is_array($includeList))
               || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
-              );
+            );
     }
 
     /**
