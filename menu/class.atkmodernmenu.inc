@@ -31,7 +31,7 @@ class atkModernMenu extends atkPlainMenu
     if ($theme->getAttribute('modern_menu_compat'))
     {
       global $g_menu;
-      $atkmenutop = ($_REQUEST['atkmenutop']?$_REQUEST['atkmenutop']:sessionLoad('atkmenutop'));
+      $atkmenutop = (isset($_REQUEST['atkmenutop'])?$_REQUEST['atkmenutop']:sessionLoad('atkmenutop'));
       sessionStore('atkmenutop',$atkmenutop);
 
       $menuitems = $this->getMenuItems($g_menu,'main');
@@ -42,7 +42,7 @@ class atkModernMenu extends atkPlainMenu
       $page->register_script(atkconfig("atkroot")."atk/javascript/menuload.js");
 
       $ui = &atkinstance("atk.ui.atkui");
-      $atkmenutop=($_REQUEST['atkmenutop']?$_REQUEST['atkmenutop']:$atkmenutop);
+      $atkmenutop=(isset($_REQUEST['atkmenutop'])?$_REQUEST['atkmenutop']:$atkmenutop);
 
       $box = $ui->renderBox(array("title"=>$this->getMenuTranslation(($atkmenutop?$atkmenutop:'main')),
       "menuitems"=>$menuitems,
@@ -100,7 +100,7 @@ class atkModernMenu extends atkPlainMenu
   function addSubMenuForMenuItem($menu,&$menuitem)
   {
     // submenu
-    if ($menu[$menuitem['name']])
+    if (isset($menu[$menuitem['name']]))
     {
       $enablesubmenu=false;
       for ($i=0;$i<count($menu[$menuitem['name']]);$i++)
