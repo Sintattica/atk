@@ -9,9 +9,6 @@ Changed in ATK 5.7
 + Added a method to enable/disable the halt_on_error method so database
   errors can also handled by a custom errorhandler. [Wim,Martin]
 + Added atkFrontController and atkDataHolder. [Peter,Martin,Boy,Tjeerd]
-+ Sessionmanager can set a cookie which spawns multiple subdomains
-  (eg .ibuildings.nl so you can be logged on to a.ibuildings.nl and to
-  b.ibuildings.nl). Param set with $config_cookiedomain.
 + Added wizard functionality. A wizard can be constructed containing atkNode
   classes. Class atkWizard supports all atkActions but it is mainly tested
   for add, edit and admin actions. [Maurice]
@@ -193,6 +190,9 @@ Changed in ATK 5.7
 + Introduced new SESSION_PARTIAL flag to indicate for partial URL's where
   the current stack level data must be re-used without overwriting certain
   fields. [Dennis,Peter]
++ Sessionmanager can set a cookie which spawns multiple subdomains
+  (eg .ibuildings.nl so you can be logged on to a.ibuildings.nl and to
+  b.ibuildings.nl). Param set with $config_cookiedomain. [Wim]
 + Added script for restoring the focus after Ajax requests. [Peter]
 + Added setTabIndex function to atkNode for changing
   the tab order. [Sandy]
@@ -347,14 +347,14 @@ Changed in ATK 5.7
   [Peter]
 + Added cookie data to the debug information. Also did some code cleaning.
   [Guido, Dennis]
-+ Added atkTriggerError method, improves upon triggerError by extracting 
-  some of the fields directly from the attribute object and by reading 
-  the attribute's label from the attribute which makes for better 
++ Added atkTriggerError method, improves upon triggerError by extracting
+  some of the fields directly from the attribute object and by reading
+  the attribute's label from the attribute which makes for better
   translations in error messages. [Peter]
 + Added setInitialValue method to atkAttribute which makes it possible
   to set the intial value for an attribute without the need to implement
   the initial_values method or overriding the attribute itself. [Peter]
-+ Added atkMetaPolicy::remove method to remove automatically added 
++ Added atkMetaPolicy::remove method to remove automatically added
   attributes. Doesn't work for manually added attributes! [Peter]
 + Added atkRegisterNodeHandlerClass which acts as a small wrapper
   around atkRegisterNodeHandler because if you want to specify a class
@@ -365,23 +365,23 @@ Changed in ATK 5.7
 + Added support for showing a warning message when leaving the
   page without saving or cancelling. To enable this functionality
   please set $config_lose_changes_warning to true. [Peter]
-+ Added new lesson (10) to the demo application to demonstrate ajax 
++ Added new lesson (10) to the demo application to demonstrate ajax
   dependencies. [Ivo]
-+ Added atkManyToOneRelation::setUseFilterForAddlink method to control 
++ Added atkManyToOneRelation::setUseFilterForAddlink method to control
   whatever the destination filter should be added to the add link when
   the NF_RELATION_AUTOLINK flag is set. [Peter]
-+ Added theme resource, allows you to include other Smarty theme templates 
-  using {include file="theme:template.tpl} syntax. The resource will make 
++ Added theme resource, allows you to include other Smarty theme templates
+  using {include file="theme:template.tpl} syntax. The resource will make
   sure you get the correct file from the correct directory (even works for
   overrides at the theme level). [Peter]
 + Added support for showing debug messages for Ajax requests. [Peter]
 * Fixed CSV row count in atkImportHandler. [Peter]
-* atkMetaPolicy::add, atkMetaPolicy::setType now support an array of 
+* atkMetaPolicy::add, atkMetaPolicy::setType now support an array of
   attribute names as argument for the attribute name parameter. [Peter]
 * atkManyToOneRelation now shows the none label when viewing the value
   read-only and nothing is selected. [Peter]
 * Fixed path handling in atkTestCase when running single tests. [Patrick]
-* Fixed bug in atkcustomrecordlist. When a field has the flag AF_HIDE_LIST 
+* Fixed bug in atkcustomrecordlist. When a field has the flag AF_HIDE_LIST
   it will not be visible in the csv export. [dennisjan]
 * Fixed issue with O2M and M2O relations where sometimes not all possible
   values were shown. [Peter,Boy,Tjeerd]
@@ -1019,23 +1019,23 @@ Changed in ATK 5.7
   selectDb's went wrong when fields contain slashes [Ivo, Jeroen]
 * Updated FCK editor to latest version (2.41). [Harrie]
 * Fixed corrupted images of outlook theme. [Dennis]
-* ATK buttons now have a default class of "btn" if no explicit class has 
+* ATK buttons now have a default class of "btn" if no explicit class has
   been specified. [Peter]
 * Fixed detection of database type for atkTextAttribute. [Peter]
 * Improved binding of variables in atkOci9Db driver. [Peter]
 * Improved atkAttribute::partial_refresh method, now only refreshes
   if a new value has been selected for the depended field and a field
   will be still marked as erroneous after a refresh. [Peter]
-* Updated some of atkImportHandler's code to the 21st century. [Peter]  
+* Updated some of atkImportHandler's code to the 21st century. [Peter]
 * atkMessageQueue::addMessage now supports a second parameter $type
-  which can be set to AMQ_SUCCESS, AMQ_FAILURE or the default 
+  which can be set to AMQ_SUCCESS, AMQ_FAILURE or the default
   AMQ_GENERAL depending on the kind of message. [Peter]
 * {atkmessages} Smarty plug-in now fills $atkmessages with an array
   for each entry containing the message and the type (as string, e.g
   'success', 'failure' or 'general'). Updated themes to reflect this
   change. [Peter]
-- Deprecated method to set the selected value for an atkListAttribute. 
-  Please use the setInitialValue method or the already existing 
+- Deprecated method to set the selected value for an atkListAttribute.
+  Please use the setInitialValue method or the already existing
   intial_value meachanism instead. [Peter]
 - Removed old treeicon code from atkTreeNode. [Guido]
 - Temporarily removed the 'generate title row' checkbox in atkExportHandler as
