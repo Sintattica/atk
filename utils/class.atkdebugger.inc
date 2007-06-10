@@ -35,11 +35,7 @@
       static $s_instance = NULL;
       if ($s_instance==NULL)
       {
-        global $g_sessionManager;
-        if (is_object($g_sessionManager)) // don't bother to create if session has not yet been initialised
-        {
-          $s_instance = new atkDebugger();
-        }
+        $s_instance = new atkDebugger();
       }
       return $s_instance;
     }
