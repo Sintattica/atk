@@ -57,7 +57,7 @@
      * @access private
      * @var array
      */
-    var $m_scriptcode = array();
+    var $m_scriptcode = array("before"=>array(),"after"=>array());
 
     /**
      * List of javascript code statements to execute when a form on
@@ -179,11 +179,6 @@
      */
     function register_scriptcode($code,$before=false)
     {
-      if(count($this->m_scriptcode)==0)
-      {
-        $this->m_scriptcode['before']=array();
-        $this->m_scriptcode['after']=array();
-      }
       $element = ($before?'before':'after');
       if (!in_array($code, $this->m_scriptcode[$element])) $this->m_scriptcode[$element][] = $code;
     }
@@ -557,6 +552,9 @@
     function atkPage()
     {
       global $ATK_VARS;
+
+      // Initialize some variables.
+ 
       /** @todo: Move this to the places where the tabscript is registered. */
       // Load default tab show script.
       $this->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($ATK_VARS['atktab'])?$ATK_VARS['atktab']:'').'\');}');
