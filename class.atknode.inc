@@ -4519,18 +4519,27 @@
     function helpUrl()
     {
       $language = atkconfig("language");
-      $file   = "help/".$language."/help.".$this->m_type.".inc";
-      if (!file_exists($file))
+      $node = $this->m_type;
+
+      $file   = moduleDir($this->m_module)."help/".$language."/help.".$node.".inc";
+      $helpmodule = "";
+      if (file_exists($file))
       {
-        // no help available..
-        return "";
+        $helpmodule = $this->m_module;
       }
       else
       {
-       $name = atktext("help");
-       $node = $this->m_type;
-       return atkPopup('atk/popups/help.inc','node='.$node,$name,650,650,'yes','no');
+        // bwc
+        $file   = "help/".$language."/help.".$node.".inc";
+        if (!file_exists($file))
+        {
+          // no help available..
+          return "";
+        }
       }
+
+      $name = atktext("help");
+      return atkPopup('atk/popups/help.inc','node='.$node.($helpmodule!=""?"&module=".$helpmodule:""),$name,650,650,'yes','no');
     }
 
     /**
