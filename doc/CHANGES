@@ -4,7 +4,7 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
-Changed in ATK 5.7
+Changed in ATK 6.0
 ------------------
 + Added a method to enable/disable the halt_on_error method so database
   errors can also handled by a custom errorhandler. [Wim,Martin]
