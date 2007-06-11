@@ -431,6 +431,12 @@ class atkMetaPolicy
       if (array_key_exists($attr, $this->m_attrs))
         $this->m_attrs[$attr]["tabs"] = $tabs;
   }
+  
+  /**
+   * Set the sections/tabs for the given attribute or list of attributes.
+   */
+  function setSection($attrs, $tab) { $params = func_get_args(); $this->_call("setTabs", $params); }
+  function setSections($attrs, $tabs)  { $params = func_get_args(); $this->_call("setTabs", $params); }
 
   /**
    * Sets the attribute type. All extra arguments after the two
