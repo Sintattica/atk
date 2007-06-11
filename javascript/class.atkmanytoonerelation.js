@@ -87,6 +87,11 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
     setTimeout(this.hide.bind(this), 250);
     this.hasFocus = false;
     this.active = false; 
+  },
+
+  onComplete: function(request) {
+    this.updateChoices(request.responseText);
+    request.responseText.evalScripts();
   }
 });
 
