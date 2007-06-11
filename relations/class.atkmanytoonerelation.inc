@@ -473,7 +473,7 @@
      */
     function populate(&$record, $fullOrFields=false)
     {
-      if ($record[$this->fieldName()] == "") return;
+      if (!is_array($record)||$record[$this->fieldName()] == "") return;
 
       atkdebug("Delayed loading of ".($fullOrFields || is_array($fullOrFields) ? "" : "descriptor ")."fields for ".$this->m_name);
       $this->createDestination();
@@ -484,8 +484,11 @@
       else if (!$fullOrFields)
         $includes = $this->m_destInstance->descriptorFields();
 
-      list($record[$this->fieldName()]) =
-        $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $includes);
+      $result = $this->m_destInstance->selectDb($this->m_destInstance->primaryKey($record[$this->fieldName()]), "", "", "", $includes);
+      if (count($result))
+      {
+        list($record[$this->fieldName()]) = $result;
+      }
     }
 
     /**
@@ -1662,7 +1665,7 @@
 
       $this->createDestination();
 
-      $fieldprefix = $this->m_ownerInstance->m_postvars['atkfieldprefix'];
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
       $searchvalue = $this->escapeSQL($searchvalue);
       $record = $this->m_ownerInstance->updateRecord();
 
