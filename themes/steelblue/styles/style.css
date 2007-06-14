@@ -7,7 +7,7 @@ body
   font-family: Lucida Sans, Lucida Sans Unicode, Tahoma, Trebuchet MS, Arial, Verdana;
 }
 
-a:link, a:visited, a:active, td
+a:link, a:visited, a:active
 {
   color: #414141;
   font-size: 12px;
