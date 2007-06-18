@@ -72,6 +72,17 @@
       return false;
     }
 
+    /**
+     * Recursively creates the directory structure for this file.
+     */
+    function createDirectoryStructure()
+    {
+      $file = atkconfig("atktempdir").$this->m_filename;
+      $path = dirname($file);
+      useattrib('atkfileattribute');
+      atkFileAttribute::mkdir($path);
+    }
+    
     function writeAsPhp($varname, $data)
     {
       $res = "<?php\n";
@@ -90,6 +101,11 @@
       }
       if (is_null($this->m_fp))
       {
+        if ($mode != 'r' && $mode != 'r+')
+        {
+          $this->createDirectoryStructure();  
+        }
+        
         $this->m_fp = fopen($this->getPath(), $mode);
         $this->m_mode = $mode;
       }

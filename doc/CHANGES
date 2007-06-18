@@ -6,6 +6,9 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
++ Added action caching support to atkFrontController. [Peter]
+* atkTmpFile now is able to recursively create the directory structure for
+  the temporary file if the directory doesn't already exist. [Peter]
 
 
 Changed in ATK 6.0
