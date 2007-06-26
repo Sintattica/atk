@@ -147,6 +147,8 @@
      */
     function getRemoteKey()
     {
+      $this->createDestination();
+
       if ($this->m_remoteKey=="")
       {
         list($module, $nodename) = explode(".", $this->m_destination);
