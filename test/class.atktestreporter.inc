@@ -32,21 +32,21 @@
   {
     function paintLine($message, $result)
     {
-      $breadcrumb = $this->getTestList();      
+      $breadcrumb = $this->getTestList();
       array_shift($breadcrumb);
-            
-      $line = 
+
+      $line =
         "<tr class=\"$result\">".
           "<td valign=\"top\" class=\"date\" nowrap=\"nowrap\" width=\"5%\">".date('Y-m-d H:i:s')."</td>".
           "<td valign=\"top\" class=\"method\" nowrap=\"nowrap\" width=\"5%\">".implode("-&gt;", $breadcrumb)."</td>".
-          "<td valign=\"top\" class=\"message\">".$message."</td>".          
-          "<td valign=\"top\" class=\"result\" nowrap=\"nowrap\" width=\"5%\">[".strtoupper($result)."]</td>".          
+          "<td valign=\"top\" class=\"message\">".$message."</td>".
+          "<td valign=\"top\" class=\"result\" nowrap=\"nowrap\" width=\"5%\">[".strtoupper($result)."]</td>".
         "</tr>";
 
       echo $line;
       flush();
     }
-    
+
     function paintPass($message)
     {
       parent::paintPass($message);
@@ -57,35 +57,35 @@
     function paintFail($message)
     {
       SimpleScorer::paintFail($message);
-      $this->paintLine($message, "fail");      
+      $this->paintLine($message, "fail");
     }
 
     function _getCss()
     {
       return '
         BODY { font-family: tahoma, verdana, arial, helvetica }
-        TR.fail { background-color: red;  color: white; font-family: tahoma, verdana, arial, helvetica; } 
+        TR.fail { background-color: red;  color: white; font-family: tahoma, verdana, arial, helvetica; }
         TR.pass { color: darkgreen; font-family: tahoma, verdana, arial, helvetica;}
         TD.result { font-weight: bold }';
     }
-    
+
     function paintDebug()
     {
       global $g_error_msg;
-      
+
       if (count($g_error_msg) > 0 && (atkconfig("display_errors") || atkconfig("debug") > 0))
       {
          echo '<br><div style="font-family: monospace; font-size: 11px; color: #FF0000" align="left">error: '.implode("<br>\nerror: ",$g_error_msg).'</div>';
       }
-      
+
       if (atkconfig("debug") > 0)
       {
-        echo atkoutput::getDebugging();
+        echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
       }
-      
+
       flush();
     }
-    
+
     function paintHeader($test_name)
     {
       parent::paintHeader($test_name);
@@ -94,23 +94,23 @@
       echo "<tbody>";
       flush();
     }
-    
+
     function paintFooter($test_name)
     {
       echo "</tbody>";
       echo "</table>";
-      flush();      
-      
+      flush();
+
       parent::paintFooter($test_name);
-      
-      $this->paintDebug();      
+
+      $this->paintDebug();
     }
   }
-  
+
   /**
    * This class is an extension to the default HtmlReporter of the SimpleTest
    * framework. The difference is that this reporter also displays succesful
-   * passes and returns an array with the tesresults. 
+   * passes and returns an array with the tesresults.
    *
    * @author Rene vd Ouden <rene@ibuildings.nl>
    *
@@ -123,7 +123,7 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
  	{
  	  $this->_results = array();
  	}
- 	
+
  	function paintException($message)
  	{
  	  SimpleReporter::paintException($message);
@@ -133,7 +133,7 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
       print implode(" -&gt; ", $breadcrumb);
       print " -&gt; " . $message . "<br />\n";
  	}
- 	
+
  	function paintPass($message)
  	{
  		SimpleReporter::paintPass($message);
@@ -149,7 +149,7 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
 		echo str_pad(nl2br("  [<span class=\"pass\">Passed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
 		flush();
  	}
- 	
+
  	function paintFail($message)
  	{
  		SimpleReporter::paintFail($message);
@@ -165,22 +165,22 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
 		echo str_pad(nl2br("  [<span class=\"fail\">Failed</span>] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n"), 4096);
 		flush();
  	}
- 	
+
  	function _getCss()
     {
       return '.fail {color: red; font-family: courier; } .pass { color: green; font-family: courier;}';
     }
- 	
+
  	function getStatus()
  	{
  		return $this->_results;
  	}
  }
- 
+
 /**
   * This class is an extension to the default SimpleReporter of the SimpleTest
   * framework. The difference is that this reporter also displays succesful
-  * passes and returns an array with the tesresults. 
+  * passes and returns an array with the tesresults.
   *
   * @author Rene vd Ouden <rene@ibuildings.nl>
   *
@@ -193,14 +193,14 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
    		$this->SimpleReporter();
    		$this->_results = array();
    	}
-   	
+
    	function paintPass($message)
    	{
    		parent::paintPass($message);
 		$breadcrumb = $this->getTestList();
 		array_shift($breadcrumb);
 		$test = implode("->", $breadcrumb);
-		
+
 		$result["time"] = date('Y-m-d H:i:s');
 		$result["status"] = "Passed";
 		$result["test"] = $test;
@@ -208,14 +208,14 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
 		$this->_results[] = $result;
 		echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
    	}
-   	
+
    	function paintFail($message)
    	{
    		parent::paintFail($message);
 		$breadcrumb = $this->getTestList();
 		array_shift($breadcrumb);
 		$test = implode("->", $breadcrumb);
-		
+
 		$result["time"] = date('Y-m-d H:i:s');
 		$result["status"] = "Failed";
 		$result["test"] = $test;
@@ -223,7 +223,7 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
 		$this->_results[] = $result;
 		echo ("  [".$result['status']."] ".$result['time']." | ".$result['test']." : ".$result['message'] ." \n");
    	}
-   	
+
    	function paintFooter($test_name)
    	{
    		echo $this->getTestCaseProgress() . "/" . $this->getTestCaseCount();
@@ -232,7 +232,7 @@ require_once(atkconfig("atkroot")."atk/test/simpletest/reporter.php");
         echo $this->getFailCount() . " fails and ";
         echo $this->getExceptionCount() . " exceptions.";
    	}
-   	
+
    	function getStatus()
    	{
    		return $this->_results;
