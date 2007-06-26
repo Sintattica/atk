@@ -202,8 +202,8 @@
     function dbFieldType()
     {
       // make sure our metadata is set
-      $this->m_ownerInstance->setAttribSizes();
-      
+      if (is_object($this->m_ownerInstance)) $this->m_ownerInstance->setAttribSizes();
+
       if ($this->m_dbfieldtype=="")
       {
         return "text";
