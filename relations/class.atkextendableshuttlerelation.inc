@@ -7,6 +7,13 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 {
   protected $m_controlsBySection = array();
 
+  public function __construct($name, $link, $destination, $flags=0)
+  {
+    parent::__construct($name, $link, $destination, $flags);
+    $this->m_controlsBySection[atkShuttleControl::AVAILABLE] = array();
+    $this->m_controlsBySection[atkShuttleControl::SELECTED] = array();
+  }
+
   public function addControl($control, $section)
   {
     $control->setSection($section);
@@ -280,6 +287,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
           $selectedPk[] = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$rec[$this->getRemoteKey()]));
       }
     }
+
     return $selectedPk;
   }
 
