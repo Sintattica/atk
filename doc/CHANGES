@@ -9,6 +9,8 @@ Changed in ATK 6.1
 + Added action caching support to atkFrontController. [Peter]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
+* Fixed debug output in atkTestReporter. [Patrick]
+* Fixed non-object error in atkTextAttribute. [Patrick]
 
 
 Changed in ATK 6.0
