@@ -223,6 +223,7 @@
 	    /* check for separator */
       if ($field["html"] == "-" && $index > 0 && $data["fields"][$index-1]["html"] != "-")
       {
+        $tplfield["type"] = "line";
         $tplfield["line"] = "<hr>";
       }
       /* double separator, ignore */
@@ -232,16 +233,22 @@
       /* sections */
       elseif($field["html"] == "section")
       {
+        $tplfield["type"] = "section";    
+        list($tab, $section) = explode('.', $field["name"]);        
+        $tplfield["section_name"] = "section_{$tab}_{$section}";
         $tplfield["line"] = $this->getSectionControl($field, $mode);
       }
       /* only full HTML */
       elseif (isset($field["line"]))
       {
+        $tplfield["type"] = "custom";
         $tplfield["line"] = $field["line"];
       }
       /* edit field */
       else
       {
+        $tplfield["type"] = "attribute";        
+                
         if ($field["attribute"]->m_ownerInstance->getNumbering())
         {
           $this->_addNumbering($field, $tplfield, $index);

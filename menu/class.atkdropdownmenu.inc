@@ -51,7 +51,7 @@
         $g_menu[$atkmenutop] = array();
       usort($g_menu[$atkmenutop],array("atkplainmenu","menu_cmp"));
 
-      $menu.= "<div id='nav'>\n";
+      $menu.= "<div id=\"nav\">\n";
       $menu.=$this->getHeader($atkmenutop);
 
       $menu.="  <ul>\n";
@@ -62,7 +62,7 @@
       
       if (atkconfig("menu_logout_link"))
       {
-        $menu.="    <li><a href='app.php?atklogout=1'>".atktext('logout')."</a></li>\n";
+        $menu.="    <li><a href=\"app.php?atklogout=1\">".atktext('logout')."</a></li>\n";
       }
       
       $menu.="  </ul>\n";
@@ -127,9 +127,9 @@
       $delimiter = atkconfig("menu_delimiter");
 
       $name = $this->getMenuTranslation($menuitem['name'],$menuitem['module']);
-      if ($menuitem['name']=='-') return "<li><a href='#'>-</a></li>\n";
+      if ($menuitem['name']=='-') return "<li><a href=\"#\">-</a></li>\n";
       if ($menuitem['url']) $href = href($menuitem['url'],$this->getMenuTranslation($menuitem['name'],$menuitem['module']), SESSION_NEW);
-      else $href = '<a href ="#">'.$name.'</a>';
+      else $href = '<a href="#">'.$name.'</a>';
 
       return "<li id='{$menuitem['module']}.{$menuitem['name']}' class='$submenuname'>".$href.$delimiter.$submenu."</li>\n";
     }

@@ -31,6 +31,8 @@
 
   class atkAdminHandler extends atkActionHandler
   {
+    var $m_actionSessionStatus = SESSION_NESTED;
+    
     /**
      * The action method
      */
@@ -58,6 +60,15 @@
 
       $res = $this->renderAdminPage();
       $page->addContent($this->m_node->renderActionPage("admin", $res));
+    }
+    
+    /**
+     * Sets the action session status for actions in the recordlist.
+     * (Defaults to SESSION_NESTED).
+     */
+    function setActionSessionStatus($sessionStatus)
+    {
+      $this->m_actionSessionStatus = $sessionStatus;
     }
     
     /**
@@ -222,6 +233,7 @@
           $actions = $node->defaultActions("admin");
         }
         $recordlist = &atknew("atk.recordlist.atkrecordlist");
+        $recordlist->setActionSessionStatus($this->m_actionSessionStatus);
         $flags = atkRecordList::convertFlags($node->getFlags());
         $params["list"] = $recordlist->render($node, $recordset, $actions, $flags, "", "", $navigation);
 

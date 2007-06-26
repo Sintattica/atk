@@ -44,13 +44,23 @@
     var $m_masternode=NULL;
     var $m_template="recordlist.tpl";
     var $m_hasActionColumn=0;
-
+    var $m_actionSessionStatus = SESSION_NESTED;
+    
     /**
      * @access private
      */
     function setNode(&$node)
     {
       $this->m_node = &$node;
+    }
+    
+    /**
+     * Sets the action session status for actions in the recordlist.
+     * (Defaults to SESSION_NESTED).
+     */
+    function setActionSessionStatus($sessionStatus)
+    {
+      $this->m_actionSessionStatus = $sessionStatus;
     }
 
     /**
@@ -342,7 +352,7 @@
         $keys = array_keys($actions);
         $actionurl = (count($actions)>0) ? $actions[$keys[0]] : '';
         $actionloader = "rl_a['".$listName."'] = {};";
-        $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars(SESSION_NESTED,1,$actionurl)."';";
+        $actionloader.= "\nrl_a['".$listName."']['base'] = '".session_vars($this->m_actionSessionStatus,1,$actionurl)."';";
         $actionloader.= "\nrl_a['".$listName."']['embed'] = ".(hasFlag($flags, RL_EMBED)?'true':'false').";";
 
         if (isset($navigation["next"]) && isset($navigation["next"]["url"]))
