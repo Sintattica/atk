@@ -6,6 +6,11 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
++ Added extendableShuttleRelation; a shuttleRelation which can be extended with
+  so called controls. Base classes for these controls are included. Controls
+  can be used, for example, to filter content in fields. Unfortunately code was
+  copied from shuttleRelation instead of extended, because it would be hard to
+  *not* break backwards compatibilty. [Tjeerd,Peter]
 + Added action caching support to atkFrontController. [Peter]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
