@@ -34,7 +34,7 @@
     var $m_php_file = "";
 
     var $m_return_output = false;
-
+    
     /**
      * Key/value Array containing which are be send als post or get vars
      * @access private
@@ -134,7 +134,7 @@
       $this->invoke("loadDispatchPage", $postvars);
 
       $screen = '';
-      if (!$page->isEmpty()) // Only output an html output if there is anything to output.
+      if (!$page->isEmpty() || hasFlag($flags, HTML_PARTIAL)) // Only output an html output if there is anything to output.
       {
         $screen = $page->render(atktext('app_shorttitle')." - ".$ui->title($node->m_module, $node->m_type,$node->m_postvars['atkaction']), $flags);
       }
@@ -234,6 +234,7 @@
 
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");      
       $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
 
       if ($node->allowed($node->m_action))
@@ -402,43 +403,127 @@
         // the 'saveandclose' and 'cancel' button. Unless, a feedback screen is configured.
         if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS))
         {
-          $result[] = '<input type="submit" class="btn_saveandclose" name="atksaveandclose" value="'.atktext('saveandclose', "atk").'">';
+          $result[] = $this->getButton('saveandclose');
         }
-        $result[] = '<input type="submit" class="btn_save" name="atknoclose" value="'.atktext("save", "atk").'">';
+        $result[] = $this->getButton('save');
+        
         if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS))
         {
-          $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext("cancel", "atk").'">';
+          $result[] = $this->getButton('cancel');
         }
       }
       elseif ($mode == "add")
       {
-        if ($node->hasFlag(NF_EDITAFTERADD) === TRUE )
-        {
-          $result[] = '<input type="submit" class="btn_saveandcontinue" name="atksaveandcontinue" value="'.atktext("saveandedit", "atk").'">';
-        }
-        else
-        {
-          $result[] = '<input type="submit" class="btn_save" value="'.atktext("save", "atk").'">';
-        }
+        $result[] = ($node->hasFlag(NF_EDITAFTERADD) === TRUE ) ? $this->getButton('saveandedit') : $this->getButton('save');
+        
         // if action is admin, we don't show the cancelbutton or the add next button
-        if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
-          $result[] = '<input type="submit" class="btn_saveandnext" name="atksaveandnext" value="'.atktext("saveandnext", "atk").'">';
-        $result[] = '<input type="submit" class="btn_cancel" name="atkcancel" value="'.atktext("cancel", "atk").'">';
+        if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))          
+          $result[] = $this->getButton('saveandnext');
+        
+        $result[] = $this->getButton('cancel');
       }
       elseif ($mode == "view")
       {
         if(atkLevel() > 0)
-          $result[] = '<input type="submit" class="btn_cancel" name="atkback" value="&lt;&lt; '.atktext('back').'">';
+          $result[] = $this->getButton('back');
+          
         // if appropriate, display an edit button.
         if (!$node->hasFlag(NF_NO_EDIT)&&$node->allowed("edit", $record))
         {
           $result[] = '<input type="hidden" name="atkaction" value="edit">'.
                       '<input type="hidden" name="atknodetype" value="'.$node->atkNodeType().'">'.
-                      '&nbsp;<input type="submit" class="btn_save" value="'.atktext('edit').'">&nbsp;';
+                      '&nbsp;'.$this->getButton('edit').'&nbsp;';
         }
       }
 
       return $result;
+    }
+
+    /**
+      * Create a button.
+      *
+      * @param String $action      
+      * @return HTML
+      */
+    function getButton($action)
+     {
+       $name = "";
+       $class = "";
+       
+       switch ($action)
+       {
+         case "save":
+           $name = "atknoclose";
+          $class = "btn_save";
+           break;
+         case "saveandclose":
+           $name = "atksaveandclose";
+          $class = "btn_saveandclose";
+           break;
+         case "cancel":
+           $name = "atkcancel";
+          $class = "btn_cancel";
+           break;
+         case "saveandedit":
+           $name = "atksaveandcontinue";
+          $class = "btn_saveandcontinue";
+           break;
+         case "saveandnext":
+           $name = "atksaveandnext";
+          $class = "btn_saveandnext";  
+           break;
+         case "back":
+           $name = "atkback";
+          $class = "btn_cancel"; 
+          $value = '&lt;&lt; '.atktext($action, 'atk');
+           break;
+         case "edit":
+           $class = "btn_save";
+           break;
+         default:
+           return "";         
+       }       
+        
+      if ($value == "")  
+        $value = atktext($action, "atk");
+    
+      if ($class != "")  
+        $class = "class=\"$class\" ";
+      
+      if ($name != "") 
+        $name = "name=\"$name\" ";
+
+       return '<input type="submit" '.$class.$name.'"value="'.$value.'">';
+     }
+    
+     /**
+      * Create a dialog button.
+      *
+      * @param String $action
+      * @param String $url
+      * @param array  $extraParams 
+      * @return HTML
+      */
+    function getDialogButton($action, $label=null, $url=null, $extraParams=array())
+    { 
+      atkimport('atk.ui.atkdialog');
+           
+      switch($action)
+      {
+        case "save":
+          $class = "btn_save";
+          $onClick = atkDialog::getSaveCall($url, 'dialogform', $extraParams);
+          break;
+        case "cancel":
+          $class = "btn_cancel";
+          $onClick = atkDialog::getCloseCall();
+          break;
+        default:
+          return "";
+      }
+
+      $label = $label == null ? atktext($action, 'atk') : $label;
+      return '<input type="button" class="'.$class.'" name="'.$label.'" value="'.$label.'" onClick="'.$onClick.'" />';
     }
 
     /**

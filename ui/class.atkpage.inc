@@ -336,6 +336,20 @@
         for ($i = 0; $i < count($this->m_scriptfiles); $i++)
           $res .= '  <script type="text/javascript" src="'.$this->m_scriptfiles[$i].'"></script>'."\n";
       }
+      else 
+      {
+        
+        $files = '';
+        for ($i = 0; $i < count($this->m_scriptfiles); $i++)
+        {
+          $files .= "ATK.Tools.loadScript('".$this->m_scriptfiles[$i]."');\n";
+        }          
+        
+        if (!empty($files))
+        {
+          $res .= '<script type="text/javascript">'.$files.'</script>';
+        }
+      }
 
       $res .= '  <script type="text/javascript">';
 
@@ -511,7 +525,7 @@
       $page.= $this->renderHiddenVars();
       if (hasFlag($flags,HTML_BODY)) $page.= "</body>\n";
       $page.= "</html>\n";
-
+      
       return $page;
     }
 

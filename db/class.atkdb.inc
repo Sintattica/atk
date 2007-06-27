@@ -333,6 +333,14 @@
     }
 
     /**
+     * Has error?
+     */
+    function hasError()
+    {
+      return $this->m_errno != 0;
+    }
+    
+    /**
      * Determine whether an error that occurred is a recoverable (user) error
      * or a system error.
      * @return String "user" or "system"

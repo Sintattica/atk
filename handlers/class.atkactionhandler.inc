@@ -64,6 +64,14 @@
     
     /** @access private */
     var $m_returnbehaviour = ATK_ACTION_STAY;
+    
+    /**
+     * Render mode, defaults to "box" but can be changed to "dialog".
+     * 
+     * @var string
+     * @access protected
+     */
+    var $m_renderMode = 'box';
 
     /**
      * Default constructor.
@@ -149,6 +157,25 @@
       $this->m_postvars = &$postvars;
     }
     
+    /**
+     * Sets the render mode ("box" or "dialog").
+     * 
+     * @param string $mode render mode
+     */
+    function setRenderMode($mode)
+    {
+      $this->m_renderMode = $mode;
+    }
+    
+    /**
+     * Returns the render mode.
+     * 
+     * @return string render mode
+     */
+    function getRenderMode()
+    {
+      return $this->m_renderMode;
+    }
 
     /**
      * Get the page instance for generating output.
@@ -314,10 +341,95 @@
      */
     function renderAccessDeniedPage()
     {
-      $controller = &atkController::getInstance();
-      $controller->setNode($this->m_node);
       $page = &$this->m_node->getPage();
-      $page->addContent($controller->accessDeniedPage());
+      $page->addContent($this->_getAccessDeniedPage());
     }
+    
+    function _getAccessDeniedPage()
+    {
+    	$controller = &atkController::getInstance();
+      $controller->setNode($this->m_node);
+      return $controller->accessDeniedPage();
+    }
+    
+    /**
+     * Render access denied dialog contents.
+     */
+    function renderAccessDeniedDialog()
+    {
+      $message = 
+        $this->m_node->text('access_denied').
+        "<br><br>".
+        $this->m_node->text("error_node_action_access_denied");
+        
+      return $this->renderMessageDialog($message);
+    }
+    
+    /**
+     * Render message dialog contents.
+     */
+    function renderMessageDialog($message)
+    {
+      $ui = &$this->m_node->getUi();      
+  	
+      $params = array();    	
+      $params["content"] = "<br />".$message."<br />";
+      $params["buttons"][] = '<input type="button" class="btn_cancel" value="'.$this->m_node->text('close').'" onClick="'.atkDialog::getCloseCall().'" />';
+      $content = $ui->renderAction($this->m_action, $params);
+      
+      $params = array();
+      $params["title"] = $this->m_node->actionTitle($this->m_action);
+      $params["content"] = $content;
+      $content = $ui->renderDialog($params);     
+      
+      return $content;
+    }
+    
+    /**
+     * Outputs JavaScript for updating the existing dialog contents.
+     *
+     * @param string $content
+     */
+    function updateDialog($content)
+    {
+      atkimport('atk.ui.atkdialog');
+      $script = atkDialog::getUpdateCall($content, false);
+      $page = &$this->getPage();
+      $page->register_loadscript($script);
+    }
+    
+    /**
+     * Output JavaScript to close the dialog.
+     */
+    function closeDialog()
+    {
+      atkimport('atk.ui.atkdialog');
+      $script = atkDialog::getCloseCall();
+      $page = &$this->getPage();
+      $page->register_loadscript($script);
+    }
+    
+    /**
+     * Handle partial.
+     *
+     * @param $partial full partial
+     */
+    function partial($partial)
+    {
+      $parts = explode(".", $partial);
+      $method = "partial_".$parts[0];
+
+      if (!method_exists($this, $method))
+      {
+        $content = '<span style="color: red; font-weight: bold">Invalid partial \''.$this->m_partial.'\'!</span>';
+      }
+      else 
+      {
+        $content = $this->$method($partial);
+      }
+      
+      $page = &$this->getPage();      
+      $page->addContent($content);
+    }     
   }
 ?>

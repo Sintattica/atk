@@ -78,6 +78,7 @@
       $tpl = "action_$action.tpl";
       if ($this->m_theme->tplPath($tpl)=="") // no specific theme for this action
       {
+      	
         $tpl = "action.tpl";
       }
       return $this->render($tpl, $vars);
@@ -118,8 +119,19 @@
       if ($name && file_exists($this->m_theme->tplPath($name.".tpl")))
       {
         return $this->render($name.".tpl", $vars);
-      }
+      }      
       return $this->render("box.tpl", $vars);
+    }
+    
+    /**
+     * Renders the insides of a dialog.
+     * 
+     * @param array $vars template variables
+     * @return string rendered dialog
+     */
+    function renderDialog($vars)
+    {
+      return $this->render("dialog.tpl", $vars);
     }
 
     /**

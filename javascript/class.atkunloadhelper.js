@@ -10,6 +10,9 @@ ATK.UnloadHelper.prototype = {
   initialize: function(form, message, isChanged) {
     // Intialize instance variables.
     this.form = $(form || 'entryform');
+    
+    if (this.form == null) return;
+    
     this.message = message || 'If you navigate away from this page, all your changes will be lost.';
     this.isChanged = isChanged || false;
     this.enabled = true;    

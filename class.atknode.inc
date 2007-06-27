@@ -157,6 +157,16 @@
    * No sorting possible.
    */
   define("NF_NO_SORT",           4194304);
+  
+  /**
+   * Use the dialog popup box when adding a new record for this node.
+   */
+  define("NF_ADD_DIALOG",        8388608);  
+  
+  /**
+   * Use the dialog add-or-copy popup box when adding a new record for this node.
+   */
+  define("NF_ADDORCOPY_DIALOG", 16777216);  
 
   /**
    * Specific node flag 1
@@ -1662,6 +1672,7 @@
      * @param array $record The record currently displayed/edited in the form.
      *                      This param can be used to define record specific
      *                      buttons.
+     * @return array
      */
     function getFormButtons($mode, $record)
     {
