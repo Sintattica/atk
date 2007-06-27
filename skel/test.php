@@ -9,23 +9,23 @@
    * @package atk
    * @subpackage skel
    *
-   * @copyright (c)2005 Ivo Jansch   
+   * @copyright (c)2005 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
-   */  
+   */
 
   /**
    * @internal includes 
    */
   $config_atkroot = "./";
   include_once("atk.inc");
-  
+
   atksession();
   atksecure();
-  
-  $suite = &atknew("atk.test.atktestsuite");  
-  $suite->run("html", $_REQUEST["atkmodule"]); 
+
+  $suite = &atknew("atk.test.atktestsuite");
+  $suite->run((PHP_SAPI != "cli") ? "html" : "text", atkArrayNvl($_REQUEST, "atkmodule"));
 
 ?>
