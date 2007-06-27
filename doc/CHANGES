@@ -12,10 +12,16 @@ Changed in ATK 6.1
   copied from shuttleRelation instead of extended, because it would be hard to
   *not* break backwards compatibilty. [Tjeerd,Peter]
 + Added action caching support to atkFrontController. [Peter]
++ Added command line support for test.php file in atk skel. [Guido]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
 * Fixed non-object error in atkTextAttribute. [Patrick]
+* Fixed example test module in atk skel. [Guido]
+* Fixed "Cannot convert object to string" error in php 5.2+ in the atkDb
+  testcase. [Guido]
+* Fixed error in atkNode testcase ($node->m_module should be a string, not an
+  object). [Guido]
 
 
 Changed in ATK 6.0
