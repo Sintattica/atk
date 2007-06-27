@@ -22,10 +22,12 @@
   $config_atkroot = "./";
   include_once("atk.inc");
 
+  // Start session
+  atksession();
+
   // Require ATK authentication if not running in text mode
   if(PHP_SAPI != "cli")
   {
-    atksession();
     atksecure();
   }
 
