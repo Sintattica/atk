@@ -353,5 +353,6 @@
   "addorcopy" => "Add or copy",
   "intro_addorcopy" => "Do you want to create a new record or copy an existing record?",
   "no_copyable_records" => "no copyable records",  
+  "error_copy_record" => "Unknown error copying record",
 );
 ?>

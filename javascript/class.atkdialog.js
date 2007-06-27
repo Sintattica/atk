@@ -37,7 +37,7 @@ ATK.Dialog.prototype = {
    */
   resize: function() {
     var element = $('modal_dialog_message');
-    console.debug('xxxx', element);
+
     var d = Element.getDimensions(element);
     var p = Position.cumulativeOffset(element);
     
