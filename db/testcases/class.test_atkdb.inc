@@ -142,7 +142,7 @@
 
       $newLinkId = $db->m_link_id;
 
-      $this->assertTrue(($oldLinkId !== $newLinkId), "Check if we are really connected to a different database $oldLinkId !== $newLinkId");
+      $this->assertTrue(($oldLinkId !== $newLinkId), "Check if we are really connected to a different database \$oldLinkId !== \$newLinkId");
 
       $query = "     INSERT INTO table (kolom1, kolom2) VALUES (value1, value2)     ";
       $this->assertConnectionAndQueryMode($db, $query, $this->m_master, 'w', 'Master DB check, insert at one line with spaces');
