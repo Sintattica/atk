@@ -33,7 +33,7 @@
       // Create a node and initialize
       $node = new atkNode("testnode");
       $module = new atkModule("testmodule");
-      $node->m_module = &$module;
+      $node->m_module = "testmodule";
       $node->init();
 
       // Add an attribute on a new tab and test its existance
