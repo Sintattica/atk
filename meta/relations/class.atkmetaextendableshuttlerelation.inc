@@ -18,7 +18,7 @@
 /**
  * @internal Include the base class.
  */
-userelation("atkshuttlerelation");
+userelation("atkextendableshuttlerelation");
   
 /**
  * Implementation of many-to-many relationships using a shuttle for meta nodes.
@@ -27,7 +27,7 @@ userelation("atkshuttlerelation");
  * @package atk
  * @subpackage meta.relations
  */        
-class atkMetaShuttleRelation extends atkShuttleRelation
+class atkMetaExtendableShuttleRelation extends atkExtendableShuttleRelation
 {
   var $m_accessor;
   var $m_through;
@@ -36,9 +36,9 @@ class atkMetaShuttleRelation extends atkShuttleRelation
   /**
    * Default constructor.    
    */
-  function atkMetaShuttleRelation($name, $accessor, $template, $options, $flags)
+  function __construct($name, $accessor, $template, $options, $flags)
   {
-    $this->atkManyToManyRelation($name, $options['through'], $accessor, $flags);
+    parent::__construct($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;
     $this->m_through = $options['through'];
     $this->m_options = $options;
@@ -66,16 +66,16 @@ class atkMetaShuttleRelation extends atkShuttleRelation
     $policy = &$this->m_ownerInstance->getMetaPolicy();
 
     $this->m_destination = $policy->findDestination($this->m_accessor, true);
-    atkdebug("atkMetaShuttleRelation: '{$this->m_accessor}' destination '{$this->m_destination}'");
+    atkdebug("atkMetaExtendableShuttleRelation: '{$this->m_accessor}' destination '{$this->m_destination}'");
     
     if ($this->m_destination == NULL) 
     {
-      atkerror("No destination found for atkMetaShuttleRelation with accessor '{$this->m_accessor}'!");
+      atkerror("No destination found for atkMetaExtendableShuttleRelation with accessor '{$this->m_accessor}'!");
       return FALSE;
     }
     else if (!parent::createDestination()) 
     {
-      atkerror("Cannot instantiate destination '{$this->m_destination}' for atkMetaShuttleRelation with accessor '{$this->m_accessor}'!");        
+      atkerror("Cannot instantiate destination '{$this->m_destination}' for atkMetaExtendableShuttleRelation with accessor '{$this->m_accessor}'!");        
       return FALSE;
     }      
     
@@ -96,18 +96,18 @@ class atkMetaShuttleRelation extends atkShuttleRelation
     $policy = &$this->m_ownerInstance->getMetaPolicy();
 
     $this->m_link = $policy->findDestination($this->m_through, true);
-    atkdebug("atkMetaShuttleRelation: '{$this->m_through}' link '{$this->m_destination}'");
+    atkdebug("atkMetaExtendableShuttleRelation: {$this->m_through} link {$this->m_destination}");
     
     if ($this->m_link == NULL) 
     {
-      atkerror("No link found for atkMetaShuttleRelation with accessor '{$this->m_through}'!");
+      atkerror("No link found for atkMetaExtendableShuttleRelation with accessor '{$this->m_through}'!");
       return FALSE;
     }
     else if (!parent::createLink()) 
     {
-      atkerror("Cannot instantiate link '{$this->m_link}' for atkMetaShuttleRelation with accessor '{$this->m_through}'!");        
+      atkerror("Cannot instantiate link '{$this->m_link}' for atkMetaExtendableShuttleRelation with accessor '{$this->m_through}'!");        
       return FALSE;
-    }      
+    }  
       
     return TRUE;    
   }  

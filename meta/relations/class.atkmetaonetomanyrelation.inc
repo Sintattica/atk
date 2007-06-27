@@ -61,15 +61,24 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
     if ($this->m_destInstance == NULL)
     {
       $this->m_destination = $policy->findDestination($this->m_accessor, true);
-      atkdebug("atkMetaOneToManyRelation: {$this->m_accessor} destination {$this->m_destination}");
-      if ($this->m_destination == NULL) return FALSE;
-      else if (!parent::createDestination()) return FALSE;
+      atkdebug("atkMetaOneToManyRelation: '{$this->m_accessor}' destination '{$this->m_destination}'");
+      
+      if ($this->m_destination == NULL) 
+      {
+        atkerror("No destination found for atkMetaOneToManyRelation with accessor '{$this->m_accessor}'!");
+        return FALSE;
+      }
+      else if (!parent::createDestination()) 
+      {
+        atkerror("Cannot instantiate destination '{$this->m_destination}' for atkMetaOneToManyRelation with accessor '{$this->m_accessor}'!");        
+        return FALSE;
+      }  
     }
     
     if (is_array($this->m_refKey) && in_array('?', $this->m_refKey))
     {
       $this->m_refKey = $policy->findDestinationAttribute($this);
-      atkdebug("atkMetaOneToManyRelation: {$this->m_accessor} reference key {$this->m_refKey}");
+      atkdebug("atkMetaOneToManyRelation: '{$this->m_accessor}' reference key '{$this->m_refKey}'");
       if ($this->m_refKey != NULL)
         $this->m_refKey = array($this->m_refKey);
     }

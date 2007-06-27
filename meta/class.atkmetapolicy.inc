@@ -630,6 +630,10 @@ class atkMetaPolicy
         case 'boolean':
           $type = "atk.meta.relations.atkmetamanyboolrelation";
           break;
+        case 'eshuttle':
+        case 'extendableshuttle':
+          $type = "atk.meta.relations.atkmetaextendableshuttlerelation";
+          break;
         case 'shuttle':
         default:
           $type = "atk.meta.relations.atkmetashuttlerelation";          
