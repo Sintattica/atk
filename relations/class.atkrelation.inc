@@ -156,7 +156,6 @@
       if (!is_object($this->m_destInstance))
       {
         $cache_id = $this->m_owner.".".$this->m_name;
-        get_class($this);
         $this->m_destInstance = &getNode($this->m_destination, true, $cache_id);
 
         // Validate if destination was created succesfully
