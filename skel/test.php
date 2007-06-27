@@ -22,9 +22,14 @@
   $config_atkroot = "./";
   include_once("atk.inc");
 
-  atksession();
-  atksecure();
+  // Require ATK authentication if not running in text mode
+  if(PHP_SAPI != "cli")
+  {
+    atksession();
+    atksecure();
+  }
 
+  // Let the atktestsuite run the requested tests in an appropriate format
   $suite = &atknew("atk.test.atktestsuite");
   $suite->run((PHP_SAPI != "cli") ? "html" : "text", atkArrayNvl($_REQUEST, "atkmodule"));
 
