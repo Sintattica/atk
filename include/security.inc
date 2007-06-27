@@ -63,7 +63,8 @@
         !empty($session_auth["user"]))
     {
       $user = $session_auth["user"];
-      if($user["access_level"]=="") $user["access_level"]=0;
+      if(!isset($user["access_level"]) || empty($user["access_level"]))
+        $user["access_level"]=0;
     }
 
     return $user;

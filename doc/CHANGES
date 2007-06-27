@@ -22,6 +22,7 @@ Changed in ATK 6.1
   testcase. [Guido]
 * Fixed error in atkNode testcase ($node->m_module should be a string, not an
   object). [Guido]
+* Fixed PHP Notice in atkGetUser(). [Guido]
 
 
 Changed in ATK 6.0
