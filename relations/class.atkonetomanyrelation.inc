@@ -419,11 +419,14 @@
     
     function _getDialogAddLink($record)
     {
+      atkimport("atk.ui.atkdialog");
+      
       $filter = $this->getAddFilterString($record);      
 
       $action = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) || $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
       
-      $ui = &$this->m_ownerInstance->getUi();
+      $ui = &$this->m_ownerInstance->getUi();      
+     
       $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.'.$action.'_dialog', array('atkfilter' => $filter));
       $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);      
       $dialog->setTitle($title);
