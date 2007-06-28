@@ -98,11 +98,12 @@
     function registerExternalFiles()
     {
       $page = &$this->getPage();
+      $ui = &$this->getUi();
       $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $page->register_loadscript("placeFocus();");
-      $page->register_style("style.css");
+      $page->register_style($ui->stylePath("style.css"));
     }
 
     function getAddParams($record=NULL)

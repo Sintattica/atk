@@ -493,7 +493,7 @@
       if ($name != "") 
         $name = "name=\"$name\" ";
 
-       return '<input type="submit" '.$class.$name.'"value="'.$value.'">';
+       return '<input type="submit" '.$class.$name.' value="'.$value.'">';
      }
     
      /**

@@ -183,7 +183,7 @@
      */
     function validate(&$record)
     {
-      $error = $this->m_node->validate($record, "add");
+      $error = (!$this->m_node->validate($record, "add"));
 
       if(!isset($record['atkerror']))
         $record['atkerror'] = array();
