@@ -177,7 +177,7 @@ FCKConfig.SmileyWindowHeight	= 240 ;
 
 if( window.console ) window.console.log( 'Config is loaded!' ) ;	// @Packager.Compactor.RemoveLine
 
-// new since version 4.2.2
+// new since version 2.4.1
 var CTRL=1000;var SHIFT=2000;var ALT=4000;
 FCKConfig.Keystrokes = [
 	[ CTRL + 65 /*A*/, true ],
