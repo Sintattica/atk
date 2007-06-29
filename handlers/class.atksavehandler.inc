@@ -33,7 +33,7 @@
   class atkSaveHandler extends atkActionHandler
   {
     var $m_dialogSaveUrl;
-    
+
     /**
      * The action handler method
      */
@@ -46,7 +46,7 @@
         $this->partial($this->m_partial);
         return;
       }
-      else 
+      else
       {
         $this->doSave();
       }
@@ -193,20 +193,20 @@
       foreach (array_keys($record) as $key)
       {
         $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
-      } 
-      
-      return $error;     
-    }    
+      }
+
+      return !$error;
+    }
 
     /**
      * Handle save of dialog.
-     * 
+     *
      * @param string $attrRefreshUrl  the attribute refresh url if not specified
      *                                the entire page is refreshed
      */
     function handleSave($attrRefreshUrl='')
     {
-      $db = &$this->m_node->getDb();      
+      $db = &$this->m_node->getDb();
       $record = $this->m_node->updateRecord();
 
       // allowed to save record?
@@ -216,7 +216,7 @@
         $this->updateDialog($content);
         return;
       }
-      
+
       // just before we validate the record we call the preAdd() to check if the record needs to be modified
       // if an error occurs in the preAdd or the validate we have to handle it properly
       if (!$this->m_node->executeTrigger("preAdd", $record, "add") ||
@@ -230,7 +230,7 @@
         {
           triggerError($record, null, '', $db->getErrorMsg());
         }
-      
+
         // re-render add dialog
         $handler = &$this->m_node->getHandler('add');
         $handler->m_partial = 'dialog';
@@ -241,29 +241,29 @@
         $this->updateDialog($content);
         return;
       }
-      
+
       // addition succesfull, commit changes and close the dialog
       $db->commit();
       $this->notify("save", $record);
       $this->clearCache();
 
-      $page = &$this->getPage();      
-      
-      $script = atkDialog::getCloseCall();     
+      $page = &$this->getPage();
+
+      $script = atkDialog::getCloseCall();
 
       if ($attrRefreshUrl == null)
       {
         $script .= "document.location.href = document.location.href;";
       }
-      else 
+      else
       {
-        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');         
+        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
         $script .= "ATK.Attribute.refresh('".$attrRefreshUrl."');";
-      }      
-      
-      $page->register_loadscript($script);      
+      }
+
+      $page->register_loadscript($script);
     }
-    
+
     /**
      * The handler for the dialog partial call.
      *
@@ -273,15 +273,15 @@
     {
       $this->handleSave();
     }
-    
+
     /**
      * Override the dialog save url
-     * 
+     *
      * @param string $url dialog save URL
      */
     function setDialogSaveUrl($url)
     {
       $this->m_dialogSaveUrl = $url;
-    }    
+    }
   }
 ?>
