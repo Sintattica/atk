@@ -73,7 +73,7 @@
 
 
       if (is_object($menu)) $this->m_page->addContent($menu->getMenu());
-      else atkerror("no menu object created!");;
+      else atkerror("no menu object created!");
     }
 
     function atkGenerateTop()
@@ -85,7 +85,7 @@
       //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
       $loggedin = atkText("logged_in_as", "atk").": <b>".($this->m_user["name"]?$this->m_user['name']:'administrator')."</b>";
       $content = '<br />'.$loggedin.' &nbsp; <a href="index.php?atklogout=1">'.ucfirst(atkText("logout")).' </a>&nbsp;<br /><br />';
-
+     
       $top = $this->m_ui->renderBox(array("content"=> $content,
       "logintext" => atktext("logged_in_as"),
       "logouttext" => ucfirst(atkText("logout", "atk")),
@@ -96,7 +96,6 @@
       "title" => ($this->m_title!=""?$this->m_title:atkText("app_title")),
       "user"   => ($this->m_username?$this->m_username:$this->m_user["name"])),
       "top");
-
       $this->m_page->addContent($top);
     }
 
