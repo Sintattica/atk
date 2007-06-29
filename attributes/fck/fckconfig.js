@@ -176,3 +176,27 @@ FCKConfig.SmileyWindowWidth		= 320 ;
 FCKConfig.SmileyWindowHeight	= 240 ;
 
 if( window.console ) window.console.log( 'Config is loaded!' ) ;	// @Packager.Compactor.RemoveLine
+
+// new since version 4.2.2
+var CTRL=1000;var SHIFT=2000;var ALT=4000;
+FCKConfig.Keystrokes = [
+	[ CTRL + 65 /*A*/, true ],
+	[ CTRL + 67 /*C*/, true ],
+	[ CTRL + 70 /*F*/, true ],
+	[ CTRL + 83 /*S*/, true ],
+	[ CTRL + 88 /*X*/, true ],
+	[ CTRL + 86 /*V*/, 'Paste' ],
+	[ SHIFT + 45 /*INS*/, 'Paste' ],
+	[ CTRL + 90 /*Z*/, 'Undo' ],
+	[ CTRL + 89 /*Y*/, 'Redo' ],
+	[ CTRL + SHIFT + 90 /*Z*/, 'Redo' ],
+	[ CTRL + 76 /*L*/, 'Link' ],
+	[ CTRL + 66 /*B*/, 'Bold' ],
+	[ CTRL + 73 /*I*/, 'Italic' ],
+	[ CTRL + 85 /*U*/, 'Underline' ],
+	[ CTRL + SHIFT + 83 /*S*/, 'Save' ],
+	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ],
+	[ CTRL + 9 /*TAB*/, 'Source' ]
+] ;
+
+FCKConfig.ProtectedTags = '' ;
