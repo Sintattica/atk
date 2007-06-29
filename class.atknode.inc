@@ -157,16 +157,16 @@
    * No sorting possible.
    */
   define("NF_NO_SORT",           4194304);
-  
+
   /**
    * Use the dialog popup box when adding a new record for this node.
    */
-  define("NF_ADD_DIALOG",        8388608);  
-  
+  define("NF_ADD_DIALOG",        8388608);
+
   /**
    * Use the dialog add-or-copy popup box when adding a new record for this node.
    */
-  define("NF_ADDORCOPY_DIALOG", 16777216);  
+  define("NF_ADDORCOPY_DIALOG", 16777216);
 
   /**
    * Specific node flag 1
@@ -2508,7 +2508,7 @@
       }
 
       $buttons = array();
-      $buttons[] = '<input name="confirm" class="btn" type="submit" value="'.atktext('yes').'">';
+      $buttons[] = '<input name="confirm" type="submit" class="btn_ok" value="'.atktext('yes').'">';
       $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.atktext('no').'">';
 
       $content = "";

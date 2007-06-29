@@ -39,6 +39,10 @@ Changed in ATK 6.1
 * Fixed error in atkNode testcase ($node->m_module should be a string, not an
   object). [Guido]
 * Fixed PHP Notice in atkGetUser(). [Guido]
+* Added class="btn_ok" to confirm button in atkNode class by default, similar
+  to the cancel button, which has class="btn_cancel". Included the class 
+  "btn_ok" into the style.css of the achievo_modern and steelblue themes. 
+  [Patrick]
 
 
 Changed in ATK 6.0

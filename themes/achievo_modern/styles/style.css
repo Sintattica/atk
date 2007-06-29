@@ -20,7 +20,7 @@ body {
 
 		}
 
-	#box-content, .box-dispatch 
+	#box-content, .box-dispatch
 	{
 		background:#eeeeee;
    	margin-left: 211px;
@@ -81,8 +81,8 @@ padding: .5em;
 color: #333;
 background-color: #ddd;
 border-top: 1px solid gray;
-}    
-    
+}
+
 
 
 A:link,
@@ -238,7 +238,7 @@ INPUT.btn_saveandclose
   margin-left: 28px;
 }
 
-.tableHeader img 
+.tableHeader img
 {
   display: block;
   float: left;
@@ -370,7 +370,7 @@ INPUT.btn_saveandclose
 }
 
 
-.btn_saveandclose, .btn_save, .btn_cancel, .btn_saveandcontinue
+.btn_saveandclose, .btn_save, .btn_ok, .btn_cancel, .btn_saveandcontinue
 {
   padding: 2px !important;
   margin: 0px !important;

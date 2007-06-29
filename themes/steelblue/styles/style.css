@@ -139,7 +139,7 @@ ul, ol, li
 
 .panelTitleText
 {
-  
+
   margin: 0;
   padding: 7px 4px 0px 12px;
   height: 19px;
@@ -364,7 +364,7 @@ input.btn_saveandclose
   text-align: center;
 }
 
-.btn_saveandclose, .btn_save, .btn_cancel
+.btn_saveandclose, .btn_save, .btn_ok, .btn_cancel
 {
   padding: 2px !important;
   margin: 0px !important;
