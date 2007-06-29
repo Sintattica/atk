@@ -75,7 +75,7 @@
           return;
         }
 
-        $error = $this->validate($record);
+        $error = !$this->validate($record);
 
         if ($error)
         {
