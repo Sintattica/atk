@@ -3,7 +3,7 @@
 <div id="box-menu-title">{$title}</div>
 <div id="box-menu-content">
 {foreach from=$menuitems item=menuitem}
-{if !$firstmenuitem}{assign var='firstmenuitem' value=$menuitem.name}{/if}
+{if !isset($firstmenuitem)}{assign var='firstmenuitem' value=$menuitem.name}{/if}
   {if $menuitem.name!=='-' && $menuitem.enable}
     <a href="#" onclick="showSubMenu('{$menuitem.name}'); {if $atkmenutop!==$menuitem.id && $menuitem.url}document.location.href= '{$menuitem.url}';{/if}" onmouseover="this.style.cursor = 'pointer'" class="menuitem_link">
       <div id="mi_{$menuitem.name}" class="menuItemLevel1">
