@@ -449,48 +449,48 @@
      {
        $name = "";
        $class = "";
-       
+
        switch ($action)
        {
          case "save":
            $name = "atknoclose";
-          $class = "btn_save";
+           $class = "btn_save";
            break;
          case "saveandclose":
            $name = "atksaveandclose";
-          $class = "btn_saveandclose";
+           $class = "btn_saveandclose";
            break;
          case "cancel":
            $name = "atkcancel";
-          $class = "btn_cancel";
+           $class = "btn_cancel";
            break;
          case "saveandedit":
            $name = "atksaveandcontinue";
-          $class = "btn_saveandcontinue";
+           $class = "btn_saveandcontinue";
            break;
          case "saveandnext":
            $name = "atksaveandnext";
-          $class = "btn_saveandnext";  
+           $class = "btn_saveandnext";  
            break;
          case "back":
            $name = "atkback";
-          $class = "btn_cancel"; 
-          $value = '&lt;&lt; '.atktext($action, 'atk');
+           $class = "btn_cancel";
+           $value = '&lt;&lt; '.atktext($action, 'atk');
            break;
          case "edit":
            $class = "btn_save";
            break;
          default:
-           return "";         
-       }       
-        
-      if ($value == "")  
+           return "";
+       }
+
+      if (!isset($value))
         $value = atktext($action, "atk");
-    
-      if ($class != "")  
+
+      if ($class != "")
         $class = "class=\"$class\" ";
-      
-      if ($name != "") 
+
+      if ($name != "")
         $name = "name=\"$name\" ";
 
        return '<input type="submit" '.$class.$name.' value="'.$value.'">';
