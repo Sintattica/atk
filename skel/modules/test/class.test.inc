@@ -13,6 +13,7 @@
 
       $this->setOrder("name");
       $this->setTable("test_test");
+      $this->setDescriptorTemplate("[name]");
     }
   }
 
