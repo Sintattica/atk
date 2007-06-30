@@ -128,8 +128,12 @@ ul, ol, li
 
 .actionpageWrapper
 {
-  padding: 8px 18px 0 18px;
   width: 93%;
+}
+
+.panel
+{
+  margin: 8px 18px 0px 18px;
 }
 
 .panelTitle
