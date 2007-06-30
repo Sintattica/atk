@@ -334,6 +334,11 @@ input.btn_saveandclose
 	margin-bottom: 8px;
 }
 
+#loginform-content
+{
+  width: 220px;
+}
+
 .loginformField
 {
 	vertical-align: middle;
