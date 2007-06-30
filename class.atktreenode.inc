@@ -108,7 +108,7 @@
 
       $content = "";
 
-      $adminHeader = $handler->adminHeader();
+      $adminHeader = $handler->invoke("adminHeader");
       if ($adminHeader!="")
       {
         $content.= $adminHeader."<br><br>";
@@ -150,6 +150,12 @@
 
       $content.= $this->GraphTreeRender();
       $content.= "</table><br>";
+
+      $adminFooter = $handler->invoke("adminFooter");
+      if ($adminFooter!="")
+      {
+        $content.= "<br>" . $adminFooter;
+      }
 
       atkdebug("Generated treeview");
 
