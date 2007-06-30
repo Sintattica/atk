@@ -116,7 +116,7 @@
       if (is_object($ui))
       {
         $params["content"] = $this->getContent($record);
-        $params["buttons"] = $this->getFormButtons();
+        $params["buttons"] = $this->getFormButtons($record);
         $params["formend"] = '</form>';
 
         return $params;
@@ -162,17 +162,17 @@
       return $node->tabulate("add", $form);
     }
 
-    function getFormButtons()
+    function getFormButtons($record=null)
     {
       if ($this->m_partial == 'dialog')
       {
         $controller = &atkController::getInstance();
         $result = array();
-        $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());                      
+        $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
         $result[] = $controller->getDialogButton('cancel');
         return $result;
       }
-      
+
       // If no custom button source is given, get the default atkController.
       if ($this->m_buttonsource===null)
       {
