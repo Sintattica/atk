@@ -31,33 +31,34 @@
   atksession();
   atksecure();
 
-  $page = &atknew("atk.ui.atkpage");
-  $ui = &atkinstance("atk.ui.atkui");
-  $theme = &atkTheme::getInstance();
-  $output = &atkOutput::getInstance();
+  $page = &atkNew("atk.ui.atkpage");
+  $ui = &atkInstance("atk.ui.atkui");
+  $theme = &atkInstance("atk.ui.atktheme");
+  $output = &atkInstance("atk.ui.atkoutput");
 
   $page->register_style($theme->stylePath("style.css"));
-  $page->register_stylecode("form{display: inline;}");
   $page->register_style($theme->stylePath("top.css"));
 
-  //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
-  $loggedin = atktext("logged_in_as", "", "atk").": <b>".$g_user["name"]."</b>";
-  $content = '<br>'.$loggedin.' &nbsp; <a href="app.php?atklogout=1" target="_top">'.ucfirst(atktext("logout")).' </a>&nbsp;<br/><br/>';
+  $vars = array("logintext" => atkText("logged_in_as", "atk"),
+                "logouttext" => ucfirst(atkText("logout", "atk")),
+                "logoutlink" => "app.php?atklogout=1",
+                "logouttarget" => "_top",
+                "centerpiece" => "",
+                "searchpiece" => "",
+                "title" => atkText("app_title"),
+                "user" => atkArrayNvl(atkGetUser(), "name"));
 
-  $top = $ui->renderBox(array("content"=> $content,
-  			      "logintext" => atktext("logged_in_as"),
-                              "logouttext" => ucfirst(atktext("logout", "", "atk")),
-                              "logoutlink" => "app.php?atklogout=1",
-                              "logouttarget"=>"_top",
-                              "centerpiece"=>"",
-                              "searchpiece"=>"",
-                              "title" => atktext("app_title"),
-  			      "user"   => $g_user["name"]),
-                              "top");
+  // Backwards compatible $vars[content], that is what will render when the
+  // box.tpl is used instead of a top.tpl. This happens in old themes.
+  $contenttpl = '<br />[logintext]: <b>[user]</b> &nbsp; <a href="[logoutlink]" target="[logouttarget]">[logouttext] </a>&nbsp;<br /><br />';
+  $stringparser = &atkNew("atk.utils.atkstringparser", $contenttpl);
+  $vars["content"] = $stringparser->parse($vars);
+
+  $top = $ui->renderBox($vars, "top");
 
   $page->addContent($top);
 
-  $output->output($page->render(atktext('app_title'), true));
+  $output->output($page->render($vars["title"], true));
 
   $output->outputFlush();
 
