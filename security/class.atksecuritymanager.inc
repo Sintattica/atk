@@ -28,7 +28,7 @@
   define ("AUTH_MISMATCH", 3);
   define ("AUTH_PASSWORDSENT", 4);
   define ("AUTH_MISSINGUSERNAME", 5);
-  define ("AUTH_ERROR",-1);
+  define ("AUTH_ERROR", -1);
 
   /**
    * The security manager for ATK applications.
@@ -304,26 +304,25 @@
           $throwPostLoginEvent = true;
           $this->notifyListeners("preLogin", $auth_user);
 
-          // check superuser
-          if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator"&&$auth_pw==atkconfig("administratorpassword"))
+          // check administrator and guest user
+          if ($auth_user == "administrator" || $auth_user == "guest")
           {
-            $this->m_user = array("name"=>"administrator","level"=>-1, "access_level"=>9999999);
-            // for convenience, we also store the user as a global variable.
-            atkdebug("Administrator (configfile) logged in");
-            $authenticated = true;
+            $config_pw = atkconfig($auth_user . "password");
+            if (!empty($config_pw) && (($auth_pw == $config_pw) || (atkConfig("authentication_md5") && (md5($auth_pw) == strtolower($config_pw)))))
+            {
+              $authenticated = true;
+              $response = AUTH_SUCCESS;
+              if ($auth_user == "administrator")
+                $this->m_user = array("name" => "administrator", "level" => -1, "access_level" => 9999999);
+              else
+                $this->m_user = array("name" => "guest", "level" => -2, "access_level" => 0);
+            }
+            else
+            {
+              $response = AUTH_MISMATCH;
+            }
           }
-          else if (atkconfig("administratorpassword")!=""&&$auth_user=="administrator")
-          {
-            $response = AUTH_MISMATCH;
-          }
-          // check guest user
-          else if (atkconfig("guestpassword")!=""&&$auth_user=="guest"&&$auth_pw==atkconfig("guestpassword"))
-          {
-            $this->m_user = Array("name"=>"guest","level"=>-2, "access_level"=>0);
-            // for convenience, we also store the user as a global variable.
-            atkdebug("Guest (configfile) logged in");
-            $authenticated = true;
-          }
+
           // other users
           // we must first explicitly check that we are not trying to login as administrator or guest.
           // these accounts have been validated above. If we don't check this, an account could be
