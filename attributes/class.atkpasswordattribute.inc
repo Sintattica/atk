@@ -72,7 +72,7 @@
       // compatiblity with old versions
       if (func_num_args() >= 3)
       {
-        $this->m_generate = $generate;
+      $this->m_generate = $generate;
       }
       else
       {
@@ -163,7 +163,7 @@
         }
         else
         {
-          $password = $this->makePassword();
+          $password = $this->generatePassword(8,TRUE);
           $this->registerKeyListener($id.'[new]', KB_CTRLCURSOR|KB_UPDOWN);
           $this->registerKeyListener($id.'[again]', KB_CTRLCURSOR|KB_UPDOWN);
           $result = '<input type="hidden" id="'.$id.'[again]" name="'.$id.'[again]"'.
