@@ -71,7 +71,7 @@ class atkModernMenu extends atkPlainMenu
   function getMenuItems($menu, $menutop)
   {
     $menuitems = array();
-    if (is_array($menu[$menutop]))
+    if (isset($menu[$menutop]) && is_array($menu[$menutop]))
     {
       usort($menu[$menutop],array("atkplainmenu","menu_cmp"));
       foreach ($menu[$menutop] as $menuitem)
