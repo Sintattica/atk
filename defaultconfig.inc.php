@@ -123,7 +123,7 @@
    *
    * Currently supported are:
    *   mysql:   MySQL (3.X ?)
-   *   mysql41: MySQL > 4.1.3
+   *   mysqli:  MySQL > 4.1.3
    *   oci8:    Oracle 8i
    *   oci9:    Oracle 9i and 10g
    *   pgsql:   PostgreSQL
