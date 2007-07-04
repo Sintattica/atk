@@ -75,7 +75,12 @@
           return;
         }
 
-        $error = !$this->validate($record);
+        $this->validate($record);
+
+        if(!isset($record['atkerror']))
+          $record['atkerror'] = array();
+
+        $error = count($record['atkerror']) > 0;
 
         if ($error)
         {
