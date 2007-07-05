@@ -62,11 +62,12 @@
   // SEVERELY FLAMED!
   // $config_mailreport = "ivo@ibuildings.net";
 
-    // The debug level.
-  // 0 - No debug information
-  // 1 - Print some debug information at the bottom of each screen
-  // 2 - Print debug information, and pause before redirects
-  // 3 - Like 2, but also adds trace information to each statement
+  // The debug level.
+  // -1 - No debug information
+  //  0 - No debug information, but still stored for atk errormails
+  //  1 - Print some debug information at the bottom of each screen
+  //  2 - Print debug information, and pause before redirects
+  //  3 - Like 2, but also adds trace information to each statement
   $config_debug = 0;
 
   // Smart debug parameters. Is used to dynamically enable debugging for
