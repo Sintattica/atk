@@ -99,7 +99,7 @@
         else return max($default, 1);
       }
 
-      return 0;
+      return $default;
     }
     
     /**
