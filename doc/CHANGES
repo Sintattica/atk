@@ -43,7 +43,8 @@ Changed in ATK 6.1
   to the cancel button, which has class="btn_cancel". Included the class 
   "btn_ok" into the style.css of the achievo_modern and steelblue themes. 
   [Patrick]
-
+* Fixed memory leak when config_debug is -1. Added debug level -1 to 
+  comments in config.inc.php [Jeroen,Sandy]
 
 Changed in ATK 6.0
 ------------------
