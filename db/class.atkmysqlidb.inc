@@ -115,8 +115,11 @@
      if ($offset >= 0 && $limit > 0)
        $query .= " LIMIT $offset, $limit";
 
-     atkimport("atk.utils.atkdebugger");
-     atkDebugger::addQuery($query);
+     if (atkconfig("debug")>=0)
+     {       
+       atkimport("atk.utils.atkdebugger");
+       atkDebugger::addQuery($query);
+     }
 
      /* connect to database */
      $mode = $this->getQueryMode($query);
@@ -248,8 +251,15 @@
      if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock */
-       atkdebug("lock tables $table $mode");
-       $result = @mysqli_query($this->m_link_id, "lock tables $table $mode");
+       $query = "lock tables $table $mode";
+       
+       if (atkconfig("debug")>=0)
+       {
+         atkimport("atk.utils.atkdebugger");
+         atkDebugger::addQuery($query);
+       }
+       
+       $result = @mysqli_query($this->m_link_id, $query);
        if (!$result) $this->halt("$mode lock on $table failed.");
 
        /* return result */
