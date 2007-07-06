@@ -28,19 +28,19 @@
   /**
    * Use pop-up dialogs for adding records
    */
-  define("AF_ONETOMANY_ADD_DIALOG", AF_SPECIFIC_2);
+  define("AF_ONETOMANY_ADD_DIALOG", AF_SPECIFIC_5);
 
   /**
    * Use embedded forms for adding records
    * @deprecated Replaced by AF_ONETOMANY_ADD_DIALOG.
    */
-  define("AF_ONETOMANY_EMBED", AF_ONETOMANY_ADD_DIALOG);
+  define("AF_ONETOMANY_EMBED", AF_SPECIFIC_2);
 
   /**
    * Use pop-up dialog for whatever a new record must be copied or must be added.
    */
   define("AF_ONETOMANY_ADDORCOPY_DIALOG", AF_SPECIFIC_3);
-  
+
   /**
    * Implementation of one-to-many relationships.
    *
@@ -241,12 +241,12 @@
             return $cache;
           }
         }
-        
+
         $output = $this->_getEditOutput($record,$fieldprefix);
         if ($this->m_recordlistcache) $this->m_recordlistcache->writeCache($output, $this->m_recordlist->m_actionloader);
         return $output;
       }
-      
+
       return "";
     }
 
@@ -386,19 +386,19 @@
      */
     function _getAddLink($myrecords, $record,$saveform=true)
     {
-      if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) || 
+      if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
           $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
           $this->m_destInstance->hasFlag(NF_ADD_DIALOG) ||
           $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG))
       {
         return $this->_getDialogAddLink($record);
       }
-      else 
+      else
       {
-        return $this->_getNestedAddLink($myrecords, $record, $saveform);        
+        return $this->_getNestedAddLink($myrecords, $record, $saveform);
       }
     }
-    
+
     /**
      * Uses the given record to create an add filter string.
      *
@@ -413,37 +413,37 @@
       {
         $strfilter.=' AND '.$this->parseFilter($this->m_destinationFilter,$record);
       }
-      
+
       return $strfilter;
-    }      
-    
+    }
+
     function _getDialogAddLink($record)
     {
       atkimport("atk.ui.atkdialog");
-      
-      $filter = $this->getAddFilterString($record);      
+
+      $filter = $this->getAddFilterString($record);
 
       $action = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) || $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
-      
-      $ui = &$this->m_ownerInstance->getUi();      
-     
+
+      $ui = &$this->m_ownerInstance->getUi();
+
       $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.'.$action.'_dialog', array('atkfilter' => $filter));
-      $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);      
+      $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, $action);
       $dialog->setTitle($title);
       $onClick = $dialog->getCall();
-      
+
       return '<a href="javascript:void(0)" onclick="'.$onClick.'" class="valignMiddle">'.$this->getAddLabel().'</a>';
     }
-    
+
     /**
      * Internal function to get the add link for a atkOneToManyRelation.
-     * 
+     *
      * @param Array $myrecords  The load of all attributes (see comment in edit() code)
      * @param Array $record     The record that holds the value for this attribute.
      * @return String  The link to add records to the onetomany
      */
-    function _getNestedAddLink($myrecords, $record,$saveform=true)    
-    {      
+    function _getNestedAddLink($myrecords, $record,$saveform=true)
+    {
       $url = "";
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&$this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
@@ -575,7 +575,7 @@
           $whereelems[] = $this->m_destInstance->m_table.".".$this->m_refKey[$i]."='".$primkeyattr->value2db($record)."'";
         }
       }
-      
+
       return implode(" AND ", $whereelems);
     }
 
@@ -1181,19 +1181,19 @@
       $page = &$this->m_ownerInstance->getPage();
       $page->addContent($result);
     }
-    
+
     /**
      * Process add dialog save action.
      */
-    function partial_add_process() 
+    function partial_add_process()
     {
-      $this->createDestination();      
+      $this->createDestination();
       $handler = &$this->m_destInstance->getHandler('save');
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
        $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_process'));
       $handler->handleSave(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
     }
-    
+
     /**
      * Add or copy dialog.
      */
@@ -1201,7 +1201,7 @@
     {
       $this->createDestination();
       $this->m_destInstance->addFilter($this->m_ownerInstance->m_postvars['atkfilter']);
-      $handler = &$this->m_destInstance->getHandler('addorcopy');      
+      $handler = &$this->m_destInstance->getHandler('addorcopy');
       $handler->setProcessUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.addorcopy_process', array('atkfilter' => $this->m_ownerInstance->m_postvars['atkfilter'])));
       $handler->handleDialog();
     }
@@ -1222,34 +1222,34 @@
         $handler->m_postvars = $this->m_ownerInstance->m_postvars;
         $handler->handleCopy(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
       }
-      
+
       // user has choosen to add a new record, depending on whatever the AF_ONETOMANY_ADD_DIALOG
       // or the destination instance NF_ADD_DIALOG flags has been set we either show the user an
       // add dialog or redirect him/her to the add page (using an atkSubmit)
-      else 
+      else
       {
         atkimport("atk.ui.atkdialog");
-      
+
         $script = atkDialog::getCloseCall();
-      
+
         if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) || $this->m_destInstance->hasFlag(NF_ADD_DIALOG))
         {
           $ui = &$this->m_ownerInstance->getUi();
           $filter = $this->m_ownerInstance->m_postvars['atkfilter'];
           $dialog = new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.add_dialog', array('atkfilter' => $filter));
-          $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');      
+          $title = $ui->title($this->m_destInstance->m_module, $this->m_destInstance->m_type, 'add');
           $dialog->setTitle($title);
           $script .= $dialog->getCall(true, false);
         }
-        else 
+        else
         {
           $url = dispatch_url($this->m_destInstance->atkNodeType(), 'add');
           $script .= "atkSubmit('".atkurlencode(session_url($url, SESSION_NESTED))."');";
-        } 
-      
+        }
+
         $page = &$this->m_ownerInstance->getPage();
-        $page->register_loadscript($script);          
-      }         
+        $page->register_loadscript($script);
+      }
     }
   }
 ?>
