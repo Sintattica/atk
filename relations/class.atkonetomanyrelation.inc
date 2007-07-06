@@ -28,13 +28,13 @@
   /**
    * Use pop-up dialogs for adding records
    */
-  define("AF_ONETOMANY_ADD_DIALOG", AF_SPECIFIC_5);
+  define("AF_ONETOMANY_ADD_DIALOG", AF_SPECIFIC_2);
 
   /**
    * Use embedded forms for adding records
    * @deprecated Replaced by AF_ONETOMANY_ADD_DIALOG.
    */
-  define("AF_ONETOMANY_EMBED", AF_SPECIFIC_2);
+  define("AF_ONETOMANY_EMBED", AF_ONETOMANY_ADD_DIALOG);
 
   /**
    * Use pop-up dialog for whatever a new record must be copied or must be added.
