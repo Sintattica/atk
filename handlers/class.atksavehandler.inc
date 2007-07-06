@@ -254,6 +254,7 @@
 
       $page = &$this->getPage();
 
+      atkimport("atk.ui.atkdialog");
       $script = atkDialog::getCloseCall();
 
       if ($attrRefreshUrl == null)
