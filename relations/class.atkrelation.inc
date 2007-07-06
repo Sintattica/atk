@@ -173,13 +173,15 @@
         {
           $attribute = &$this->m_destInstance->m_attribList[$key];
 
-          if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == "default")
-          {
-            $attribute->setTabs($this->m_tabs);
-          }
-
           if (is_subclass_of($attribute, "atkrelation") && is_object($this->m_ownerInstance) && $attribute->m_destination == $this->m_ownerInstance->atkNodeType())
+          {
             $attribute->m_destInstance = &$this->m_ownerInstance;
+
+            if (count($attribute->m_tabs) == 1 && $attribute->m_tabs[0] == "default")
+            {
+              $attribute->setTabs($this->m_tabs);
+            }
+          }
         }
 
         if (!empty($this->m_descHandler))
