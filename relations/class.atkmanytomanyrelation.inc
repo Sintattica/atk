@@ -76,15 +76,25 @@
 
     function getSelectableRecords($record=array(), $mode="",$force=false)
     {
+      static $resultList = array();
+
       if ($this->createDestination())
       {
+        $filter = "";
+
         if ($this->m_destinationFilter!="")
         {
           $filter = $this->parseFilter($this->m_destinationFilter, $record);
           $this->m_destInstance->addFilter($filter);
         }
 
-        return $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        $filterkey = md5($this->m_destInstance->m_type.".".$filter);
+        if (!array_key_exists($filterkey, $resultList))
+        {
+          $resultList[$filterkey] = $this->m_destInstance->selectDb("","","","",atk_array_merge($this->m_destInstance->descriptorFields(),$this->m_destInstance->m_primaryKey));
+        }
+
+        return $resultList[$filterkey];
       }
 
       return array();

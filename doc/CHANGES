@@ -6,8 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
-* Fixed visibility of attributes on add screen when using a O2M relation.
-  In some cases all attributes were always hidden. [Dennis, Guido]
 + Added generic Ajax DHTML dialog support to ATK (see atkDialog). [Peter]
 + Added support for add dialogs. If you set the NF_ADD_DIALOG on a node you
   will be presented with a DHTML popup dialog for entering a new record instead of
@@ -31,6 +29,9 @@ Changed in ATK 6.1
   future replace the normal atkShuttleRelation. [Tjeerd,Peter]
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
++ Implemented caching of query results by node and filter in 
+  atkmanytomanyrelation to prevent multiple identical query executions 
+  during a single request. [Patrick, Tjeerd]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
@@ -47,6 +48,8 @@ Changed in ATK 6.1
   [Patrick]
 * Fixed memory leak when config_debug is -1. Added debug level -1 to
   comments in config.inc.php [Jeroen,Sandy]
+* Fixed visibility of attributes on add screen when using a O2M relation.
+  In some cases all attributes were always hidden. [Dennis, Guido]
 
 Changed in ATK 6.0
 ------------------
