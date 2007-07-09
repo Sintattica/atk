@@ -4714,7 +4714,7 @@
       {
         $p_attrib = &$this->m_attribList[$attribname];
         // Only search in fields that aren't explicitly hidden from search
-        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH) && in_array($p_attrib->dbFieldType(), array("string", "text")))
+        if (!$p_attrib->hasFlag(AF_HIDE_SEARCH) && (in_array($p_attrib->dbFieldType(), array("string", "text"))||$p_attrib->hasFlag(AF_SEARCHABLE)))
         {
            $this->m_postvars['atksearch'][$attribname]=$expression;
         }
