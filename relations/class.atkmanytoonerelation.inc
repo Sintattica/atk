@@ -22,7 +22,9 @@
   define("AF_RELATION_AUTOLINK", AF_SPECIFIC_1);     // create edit/view links for the items in a manytoonerelation dropdown.
   define("AF_RELATION_NO_NULL_ITEM", AF_SPECIFIC_2); // do not add null option ever
   define("AF_RELATION_AUTOCOMPLETE", AF_SPECIFIC_3); // use auto-completition instead of drop-down / selection page
-  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4); // lazy load
+  define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);        // lazy load
+
+  define("AF_RELATION_EDITDIALOG", AF_SPECIFIC_5);   // edit dialog
 
   /**
    * @internal include base class
@@ -163,6 +165,11 @@
      * @var boolean
      */
     var $m_useFilterForAddLink = true;
+
+    /**
+     * editdialog filter attributes.
+     */
+    var $m_editdialog_filter_attributes = null;
 
     /**
      * Constructor.
@@ -496,7 +503,7 @@
      * @param $record Record
      * @return a displayable string
      */
-    function display($record, $mode='list')
+    function getDisplay($record, $mode='list')
     {
       if ($this->createDestination())
       {
@@ -530,6 +537,28 @@
       return "";
     }
 
+    function display($record, $mode='list')
+    {
+      $result = $this->getDisplay($record, $list);
+
+      if (!$this->isEmpty($record) && $this->hasFlag(AF_RELATION_EDITDIALOG))
+      {
+        atkimport("atk.ui.atkdialog");
+
+        $selector = $this->m_ownerInstance->primaryKey($record);
+
+        $params[$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
+        $params[$this->fieldName()] = $this->m_destInstance->primaryKey($record);
+
+        $dialog = &new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog', $params);
+        $dialog->setTitle($this->text('edit').' '.$this->getLabel($record));
+        $script = $dialog->getCall(true, true);
+        $result = '<a href="javascript:void(0);" name="label_'.$this->fieldName().'" id="label_'.$this->fieldName().'" onClick="'.$script.';" >'.$result.'</a>';
+      }
+
+      return $result;
+    }
+
     /**
      * Creates HTML for the selection and auto links.
      *
@@ -555,14 +584,19 @@
 
         if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL)
         {
-          //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
-          //de app crasht als er geen waarde is ingevuld.
-          $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
-          $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
+          $links[] = $this->_getEditLink($id);
         }
       }
 
       return implode("&nbsp;", $links);
+    }
+
+    function _getEditLink($id)
+    {
+      //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
+      //de app crasht als er geen waarde is ingevuld.
+      $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+      return "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
     }
 
     /**
@@ -1728,6 +1762,298 @@
     }
 
     /**
+     * Handler the edit dialog for this attribute.
+     *
+     * @return String HTML The dialog for this attribute.
+     */
+    function partial_editdialog($mode)
+    {
+      $page = $this->m_ownerInstance->getPage();
+      $node = &$this->m_ownerInstance;
+      $record = $node->updateRecord($node->m_postvars);
+      $handler = &$node->getHandler('edit');
+
+      // Check if there is a translation for 'select_[attributename]_for_[nodename]'
+      $introtext = $node->text('select_'.$this->fieldName().'_for_'.$node->m_type,null, "", "", true);
+      if ($introtext == "")
+      {
+        $introtext = strtolower($this->text('select').' '.$this->text($this->fieldName()).' '.$this->text('for').' '.$this->text($node->m_type));
+        $introtext .= '<br /><br />';
+      }
+
+      $html = $handler->getFormStart();
+
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
+
+      $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog_process'));
+
+      $id = $this->getHtmlId($fieldPrefix);
+
+      $page = &$this->m_ownerInstance->getPage();
+      $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
+      $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
+      $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
+      $this->_editDialogRefreshUrlHandler($mode);
+
+      $initial_values = $this->m_ownerInstance->initial_values();
+      $filterAttributes = $this->_getEditDialogFilterAttributes($initial_values);
+
+      $filterHtml = (count($filterAttribute)>0) ? implode("<br />", $filterAttributes)."<br />" : "";
+
+      // We do not want an empty option rendered in the dropdown.
+      $this->addFlag(AF_RELATION_NO_NULL_ITEM);
+
+      // If the attribute is obligatory, do not render the 'no select' option.
+      if ($this->hasFlag(AF_OBLIGATORY))
+      {
+        $html.=
+          '<div align="left">' .
+            $introtext .
+            '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
+            $filterHtml . '
+            <div id="attribute_' . $this->fieldName() . '">' . $this->edit($record, $fieldprefix, $mode).'</div><br />' .
+            '<div id="editurl_' . $this->fieldName().'">' .
+                $this->_getDialogEditUrl() .
+             '</div><br /><br />' .
+          '</div>';
+      }
+      else
+      {
+        $html.=
+          '<div align="left">' .
+            $introtext .
+            '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
+            $filterHtml .
+            $this->_getSelectOption() . '&nbsp;<div id="attribute_' . $this->fieldName() . '">' . $this->edit($record, $fieldprefix).'</div><br />' .
+            '<div id="editurl_' . $this->fieldName().'">' .
+                $this->_getDialogEditUrl($initial_values) .
+             '</div><br /><br />' .
+            $this->_getNoSelectOption() . '<br />' .
+          '</div>';
+      }
+
+      $controller = &atkController::getInstance();
+      $url = partial_url($this->m_ownerInstance->atknodetype(), "edit", "attribute.".$this->fieldName().".editdialog_process");
+      $html.= $controller->getDialogButton('save', $this->m_ownerInstance->text('save'), $url). '&nbsp;';
+      $html.= $controller->getDialogButton('cancel');
+      $html.= $handler->getFormEnd();
+      return $html;
+    }
+
+    /**
+     * Handle the editdialog_refreshattribute partial for this attribute
+     *
+     * @param String $mode The mode i.e. edit/add
+     */
+    function partial_editdialog_refreshattribute($mode)
+    {
+      atkimport('atk.utils.atkjson');
+      $node = &$this->m_ownerInstance;
+      $record = $node->updateRecord($node->m_postvars);
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
+      $page = &$node->getPage();
+      $page->addContent("<script type=\"text/javascript\">$('attribute_".$this->fieldName()."').innerHTML = ". atkJSON::encode($this->edit($record, $fieldprefix, $mode)).";</script>");
+    }
+
+    /**
+     * Handle the editdialog_refreshurl partial
+     *
+     */
+    function partial_editdialog_refreshurl()
+    {
+      atkimport('atk.utils.atkjson');
+      $url = $this->_getDialogEditUrl();
+      $page = &$this->m_ownerInstance->getPage();
+      $page->register_loadscript("$('editurl_".$this->fieldName()."').innerHTML = ". atkJSON::encode($url).";");
+    }
+
+    /**
+     * Handle the editdialog_process partial.
+     *
+     * Saves changes.
+     */
+    function partial_editdialog_process()
+    {
+      $node     = &$this->m_ownerInstance;
+      $postvars = $node->m_postvars;
+      $record   = $node->updateRecord($postvars);
+      $page     = $node->getPage();
+
+      // Get the primary  key.
+      $primKey = $node->primaryKey($record);
+
+      // Get the original record from the database.
+      $records = $node->selectDb($primKey, "", "", "", array($node->primaryKeyField(), $this->fieldName()));
+      $recNum = count($records);
+
+      // Safety check
+      if ($recNum != 1)
+      {
+        atkerror('We should have found exactly 1 record, we found \''.$recNum.'\', something is wrong. Not updating.');
+        return;
+      }
+
+      // Get the record
+      $newrec = $records[0];
+
+      // update with the selected value.
+      $newrec[$this->fieldName()] = ($postvars["selection_".$this->fieldName()] == "noselect") ? NULL : $record[$this->fieldName()];
+
+      $this->_handleUpdateEditDialog($newrec);
+    }
+
+    /**
+     * Get filtering attributes.
+     *
+     * @param array $initial_values The initial values.
+     * @return String HTML The filter Attribute
+     */
+    function _getEditDialogFilterAttributes($initial_values=null)
+    {
+      $filterattrs = &$this->getEditDialogFilterAttributes();
+
+      if (!isset($filterattrs) || $filterattrs == "")
+        return array();
+
+      $node = &$this->m_ownerInstance;
+      $record = $node->updateRecord($node->m_postvars);
+
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
+
+      $filters = array();
+
+      foreach ($filterattrs as $filterattr)
+      {
+        $filterattr->addFlag(AF_HIDE|AF_FORCE_LOAD);
+        $this->m_ownerInstance->add($filterattr);
+
+        // If there are initial values for theis filterattribute, we use that value.
+        if (isset($initial_values[$filterattr->fieldName()]))
+        {
+          $record[$filterattr->fieldName()] = $initial_values[$filterattr->fieldName()];
+        }
+
+        $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute.".$this->fieldName().".editdialog_refreshattribute");
+        $filterattr->addOnChangeHandler("ATK.ManyToOneRelation.refreshEditDialogAttribute('$url');");
+        $filterattr->_renderChangeHandler($fieldprefix);
+
+        $filters[] = $filterattr->edit($record, $fieldprefix, 'edit') . '&nbsp;' . $filterattr->getLabel();
+      }
+
+    }
+
+    /**
+     * Creates the change handler for changing the url in an editdialog.
+     *
+     * @param String $mode The current mode (i.e. edit/add)
+     */
+    function _editDialogRefreshUrlHandler($mode='edit')
+    {
+      $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
+      $url = partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute.".$this->getHtmlId($fieldprefix).".editdialog_refreshurl");
+      $this->addOnChangeHandler("ATK.ManyToOneRelation.refreshEditDialogUrl('$url');");
+      $this->_renderChangeHandler($fieldprefix);
+    }
+
+
+    /**
+     * Returns the select option.
+     *
+     * @return string option html
+     */
+    function _getSelectOption()
+    {
+      $label = $this->text($this->fieldName());
+
+      return '
+        <input type="radio" id="select_'.$this->fieldName().'" name="selection_'.$this->fieldName().'" value="select" checked="checked" />
+        <label for="select_'.$this->fieldName().'">'.$label.'</label>';
+    }
+
+    /**
+     * Return the select none option
+     *
+     * @return string option html
+     */
+    function _getNoSelectOption()
+    {
+      $label = $this->text('no_'.$this->fieldName());
+
+      return '
+        <input type="radio" id="noselect'.$this->fieldName().'" name="selection_'.$this->fieldName().'" value="noselect" />
+        <label for="noselect_'.$this->fieldName().'">'.$label.'</label>';
+    }
+
+    /**
+     * Get the url to the edit page of this attribute
+     *
+     * @todo: Instead of redirecting the user to the
+     * edit action, show a dialog with the edit actions content.
+     *
+     * @return String Html The clickable url
+     */
+    function _getDialogEditUrl()
+    {
+      $node = &$this->m_ownerInstance;
+      $record = $node->updateRecord($node->m_postvars);
+
+      $selector = $record[$this->fieldName()]['atkprimkey'];
+
+      $url = session_url(dispatch_url($this->m_destInstance->atknodetype(), 'edit', array("atkselector"=>$selector)));
+      $onClick = "document.location.href = '".($url)."';";
+      return '<a href="javascript:void(0);" onClick="'.$onClick.'">'.$this->text("view").' '.strtolower($this->text($this->fieldName())).'</a>';
+    }
+
+
+    /**
+     * Handle updating a record when using a
+     * dialog for only this attribute (the editdialog).
+     *
+     * @param unknown_type $newrec
+     */
+    function _handleUpdateEditDialog($newrec)
+    {
+      $node = &$this->m_ownerInstance;
+      $page = &$node->getPage();
+
+      $handler = &$node->getHandler('update');
+      $handler->m_partial = 'dialog';
+      $db = $node->getDb();
+      if (!$node->updateDb($newrec, false, "", array($this->fieldName())))
+      {
+        triggerError($record, $this->fieldName(), $db->getErrorType(), $db->getErrorMsg());
+        // handle failure
+        $db->rollback();
+        $content = $this->getEditDialogErrorPage($db);
+        $page->addContent($content);
+        $handler->updateDialog($content);
+      }
+      else
+      {
+        // handle succes
+        $db->commit();
+        atkimport("atk.ui.atkdialog");
+        $script = atkDialog::getCloseCall();
+        $script.= "document.location.href = document.location.href;";
+        $page->register_loadscript($script);
+      }
+    }
+
+    /**
+     * Get the error page for the editdialog.
+     *
+     * @param atkDb $db
+     * @return String Html The error page for the editdialog.
+     */
+    function getEditDialogErrorPage(&$db)
+    {
+      $controller = &atkController::getInstance();
+      $html = $db->getErrorMsg().'<br />';
+      $html.= $controller->getDialogButton('cancel', 'close');
+      return $html;
+    }
+
+    /**
      * Creates a search filter with the given search value on the given
      * descriptor fields
      *
@@ -1791,6 +2117,61 @@
       if (count($mainFilter) > 0)
         return "(".implode(") AND (", $mainFilter).")";
       else return "";
+    }
+
+
+    /**
+     * Add an attribute that is to be used as a filter in the
+     * edit dialog for this atkManyToOneRelation.
+     *
+     * @param atkAttribute $attribute The attribute
+     */
+    function addEditDialogFilterAttribute(&$attribute)
+    {
+      if (is_object($attribute) && is_a($attribute,"atkattribute"))
+      {
+        $this->m_editdialog_filter_attributes[$attribute->fieldName()] = &$attribute;
+        return;
+      }
+
+      atkerror("attribute is not an object!");
+    }
+
+    /**
+     * Remove an attribute that is to be used as a filter in the
+     * edit dialog for this atkManyToOneRelation.
+     *
+     * @param String $attribute Attribute name
+     */
+    function removeEditDialogFilterAttribute($attributename)
+    {
+      if (isset($this->m_editdialog_filter_attributes[$attributename]))
+      {
+        unset($this->m_editdialog_filter_attributes[$attributename]);
+      }
+      else
+        atkdebug("attribute does not exist");
+
+    }
+
+    /**
+     * Enter description here...
+     *
+     * @param String $attributename The attribute you wish to retrieve.
+     *
+     * @return atkAttribute The atkAttribute.
+     */
+    function &getEditDialogFilterAttributes($attributename="")
+    {
+      if ($attributename != "")
+      {
+        if (isset($this->m_editdialog_filter_attributes[$attributename]))
+          return $this->m_editdialog_filter_attributes[$attributename];
+        else
+          return null;
+      }
+      else
+        return $this->m_editdialog_filter_attributes;
     }
   }
 ?>

@@ -31,6 +31,8 @@
    */
   class atkEditHandler extends atkViewEditBase
   {
+    var $m_dialogSaveUrl = null;
+
     /**
      * The action handler method.
      */
@@ -118,16 +120,8 @@
       $node->addStyle("style.css");
 
       $params = $node->getDefaultActionParams($locked);
-      $controller = &atkcontroller::getInstance();
-      $controller->setNode($this->m_node);
 
-      $formstart = '<form id="entryform" name="entryform" enctype="multipart/form-data" action="'.$controller->getPhpFile().'?'.SID.'"'.
-                                   ' method="post" onsubmit="return globalSubmit(this)">'.
-                                   session_form();
-
-      $formstart .= $controller->getHiddenVarsString();
-
-      $params["formstart"] = $formstart;
+      $params["formstart"] = $this->getFormStart();
 
       $ui = &$node->getUi();
 
@@ -149,7 +143,7 @@
 
         $params["content"] = $node->tabulate("edit", $form);
 
-        $params["buttons"] = $node->getFormButtons("edit", $record);
+        $params["buttons"] = $this->getFormButtons($record);
 
         $output = $ui->renderAction("edit", $params);
 
@@ -163,7 +157,64 @@
         atkerror("Failed to create ui object");
       }
     }
-    
+
+
+    /**
+     * Get the start of the form.
+     *
+     * @return String HTML The forms' start
+     */
+    function getFormStart()
+    {
+      $controller = &atkcontroller::getInstance();
+      $controller->setNode($this->m_node);
+
+      $formIdentifier = ((isset($this->m_partial) && $this->m_partial!="")) ? "dialogform" : "entryform";
+      $formstart = '<form id="'.$formIdentifier.'" name="'.$formIdentifier.'" enctype="multipart/form-data" action="'.$controller->getPhpFile().'?'.SID.'"'.
+                                   ' method="post" onsubmit="return globalSubmit(this)">'.
+                                   session_form();
+
+      $formstart .= $controller->getHiddenVarsString();
+
+      return $formstart;
+    }
+
+    /**
+     * Get the end of the form.
+     *
+     * @return String HTML The forms' end
+     */
+    function getFormEnd()
+    {
+      return '</form>';
+    }
+
+    /**
+     * Get the buttons for the current action form.
+     *
+     * @param array $record
+     * @return array Array with buttons
+     */
+    function getFormButtons($record=null)
+    {
+      if ($this->m_partial == 'dialog' || $this->m_partial == 'editdialog')
+      {
+        $controller = &atkController::getInstance();
+        $result = array();
+        $result[] = $controller->getDialogButton('save', null, $this->getDialogSaveUrl(), $this->getDialogSaveParams());
+        $result[] = $controller->getDialogButton('cancel');
+        return $result;
+      }
+
+      // If no custom button source is given, get the default atkController.
+      if ($this->m_buttonsource===null)
+      {
+        $this->m_buttonsource = &$this->m_node;
+      }
+
+      return $this->m_buttonsource->getFormButtons("edit", $record);
+    }
+
     /**
      * Create template field array for the given edit field.
      *
@@ -171,7 +222,7 @@
      * @param int    $index  field index
      * @param string $mode   mode (add/edit)
      * @param string $tab    active tab
-     * 
+     *
      * @return array template field
      */
     function createTplField(&$fields, $index, $mode, $tab)
@@ -180,8 +231,8 @@
 
 	    // visible sections, both the active sections and the tab names (attribute that are
 	    // part of the anonymous section of the tab)
-	    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));      
-      
+	    $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+
       $tplfield = array();
 
       $classes = isset($field['class']) ? explode(" ", $field['class']) : array();
@@ -233,8 +284,8 @@
       /* sections */
       elseif($field["html"] == "section")
       {
-        $tplfield["type"] = "section";    
-        list($tab, $section) = explode('.', $field["name"]);        
+        $tplfield["type"] = "section";
+        list($tab, $section) = explode('.', $field["name"]);
         $tplfield["section_name"] = "section_{$tab}_{$section}";
         $tplfield["line"] = $this->getSectionControl($field, $mode);
       }
@@ -247,8 +298,8 @@
       /* edit field */
       else
       {
-        $tplfield["type"] = "attribute";        
-                
+        $tplfield["type"] = "attribute";
+
         if ($field["attribute"]->m_ownerInstance->getNumbering())
         {
           $this->_addNumbering($field, $tplfield, $index);
@@ -282,7 +333,7 @@
           $theme = &atkinstance("atk.ui.atktheme");
           $reqimg = '<img align="top" src="'.$theme->imgPath("required_field.gif").'" border="0"
                      alt="'.atktext("field_obligatory").'" title="'.atktext("field_obligatory").'">';
-          
+
           $tplfield["label"];
           $tplfield["obligatory"] = $reqimg;
         }
@@ -302,8 +353,8 @@
         $tplfield['id']=str_replace('.','_',$this->m_node->atknodetype().'_'.$field["id"]);
 
         $tplfield["full"] = $editsrc;
-      }      
-      
+      }
+
       return $tplfield;
     }
 
@@ -370,7 +421,7 @@
             {
               $label = $node->text($error['attrib_name']);
             }
-            else 
+            else
             {
               $label = array();
               foreach($error['attrib_name'] as $attrib)
@@ -406,7 +457,7 @@
         $tplfield = $this->createTplField($data["fields"], $i, $mode, $tab);
         $fields[] = $tplfield; // make field available in numeric array
         $params[$field["name"]] = $tplfield; // make field available in associative array
-        
+
         if ($field['error'])
           $errorFields[] = $field['id'];
       }
@@ -418,21 +469,21 @@
       // register fields that contain errornous values
       atkimport('atk.utils.atkjson');
       $page->register_scriptcode("var atkErrorFields = ".atkJSON::encode($errorFields).";");
-      
+
       if (atkconfig('lose_changes_warning', true))
       {
         // If we are in the save or update action the user has added a nested record, has done
         // a selection using the select handler or generated an error, in either way we assume
         // the form has been changed, so we always warn the user when leaving the page.
         $isChanged = 'false';
-        if ((isset($record['atkerror']) && count($record['atkerror']) > 0) || 
+        if ((isset($record['atkerror']) && count($record['atkerror']) > 0) ||
             (isset($this->m_node->m_postvars['__atkunloadhelper']) && $this->m_node->m_postvars['__atkunloadhelper']))
         {
           $isChanged = 'true';
         }
-        
+
         $unloadText = addslashes($this->m_node->text('lose_changes_warning'));
-        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkunloadhelper.js");      
+        $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkunloadhelper.js");
         $page->register_loadscript("new ATK.UnloadHelper('entryform', '{$unloadText}', {$isChanged});");
       }
 
@@ -460,6 +511,66 @@
     function editHeader()
     {
       return "";
+    }
+
+    function partial_dialog()
+    {
+      $record = $this->m_node->updateRecord($this->m_node->m_postvars);
+      return $this->renderEditDialog($record);
+    }
+
+    /**
+     * Render add dialog.
+     *
+     * @param array $record
+     * @return string html
+     */
+    function renderEditDialog($record=null)
+    {
+      $this->setRenderMode('dialog');
+      $result = $this->m_node->renderActionPage("edit", $this->invoke("editPage", $record));
+      return $result;
+    }
+
+    /**
+     * Override the default dialog save URL.
+     *
+     * @param string $url dialog save URL
+     */
+    function setDialogSaveUrl($url)
+    {
+      $this->m_dialogSaveUrl = $url;
+    }
+
+    /**
+     * Returns the dialog save URL.
+     *
+     * @return string dialog save URL
+     */
+    function getDialogSaveUrl()
+    {
+      if ($this->m_dialogSaveUrl != null)
+      {
+        return $this->m_dialogSaveUrl;
+      }
+      else
+      {
+        return partial_url($this->m_node->atkNodeType(), 'update', 'dialog');
+      }
+    }
+
+    /**
+     * Returns the dialog save params. These are the same params that are part of the
+     * dialog save url, but they will be appended at the end of the query string to
+     * override any form variables with the same name!
+     */
+    function getDialogSaveParams()
+    {
+      $parts = parse_url($this->getDialogSaveUrl());
+      $query = $parts['query'];
+      $params = array();
+      parse_str($query, $params);
+      return $params;
     }
   }
 ?>

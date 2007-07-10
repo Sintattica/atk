@@ -23,16 +23,21 @@ Changed in ATK 6.1
   be enabled by setting the NF_ADDORCOPY_DIALOG flag on the node or by
   specifying it using the AF_ONETOMANY_ADDORCOPY_DIALOG flag on an
   atkOneToManyRelation. [Dennis,Patrick,Peter]
-+ Added atkExtendableShuttleRelation; a shuttle relation which can be extended
++ Added support for "edit" dialogs for only 1 attribute (only supported for
+  atkManyToOneRelations for now). In recordlists a user can click on the value
+  of the attribute and a dialog appears, which makes it possible to changes only
+  the value of that attribute. This functionality can be activated with the
+  AF_RELATION_EDITDIALOG flag. [Dennis]
++ Added atkExtendableSehuttleRelation; a shuttle relation which can be extended
   with so called controls. Base classes for these controls are included. Controls
   can be used, for example, to filter content in fields. Will in the near
   future replace the normal atkShuttleRelation. [Tjeerd,Peter]
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
-+ Implemented caching of query results by node and filter in 
-  atkmanytomanyrelation to prevent multiple identical query executions 
++ Implemented caching of query results by node and filter in
+  atkmanytomanyrelation to prevent multiple identical query executions
   during a single request. [Patrick, Tjeerd]
-+ Added functions addOption and removeOption to 'atklistattribute' for easy 
++ Added functions addOption and removeOption to 'atklistattribute' for easy
   adding and removing options from a dropdown [Jeroen]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]

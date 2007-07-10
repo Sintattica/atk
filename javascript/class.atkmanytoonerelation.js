@@ -1,7 +1,7 @@
 /**
  * This file is part of the Achievo ATK distribution.
  * Detailed copyright and licensing information can be found
- * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
  * included in the distribution.
  *
  * @package atk
@@ -21,7 +21,7 @@ function mto_parse(link, value)
  var atkselector = value.replace("='", "_1253D_12527").replace("'", "_12527");
  return link.replace('REPLACEME', atkselector);
 }
-  
+
 if (!window.ATK) {
   var ATK = {};
 }
@@ -32,13 +32,23 @@ ATK.ManyToOneRelation = {
    */
   completeSearch: function(searchField, update, url, minimumChars) {
     new ATK.ManyToOneRelation.Autocompleter(searchField, update, url, { paramName: 'value', minChars: minimumChars, frequency: 0.5 });
-  },  
-  
+  },
+
   /**
    * Auto-complete edit field using Ajax.
    */
   completeEdit: function(searchField, resultField, valueField, spinnerElement, url, afterUpdate, minimumChars) {
     new ATK.ManyToOneRelation.AdvancedAutocompleter(searchField, resultField, valueField, url, { paramName: 'value', minChars: minimumChars, frequency: 0.5, afterUpdateElement: afterUpdate, serializeForm: true, indicator: spinnerElement});
+  },
+
+  refreshEditDialogUrl: function(url) {
+    var params = Form.serialize('dialogform');
+    new Ajax.Request(url, { method: 'post', parameters: params, onComplete: function(transport) { transport.responseText.evalScripts(); }});
+  },
+
+  refreshEditDialogAttribute: function(url) {
+    var params = Form.serialize('dialogform');
+    new Ajax.Request(url, { method: 'post', parameters: params, onComplete: function(transport) { transport.responseText.evalScripts(); }});
   }
 };
 
@@ -48,17 +58,17 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
   initialize: function(element, update, url, options) {
     Ajax.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
   },
-  
+
   // Fix for resetting the scollbar position.
-  // See: http://dev.rubyonrails.org/ticket/4782  
+  // See: http://dev.rubyonrails.org/ticket/4782
   hide: function() {
     this.stopIndicator();
-    if(Element.getStyle(this.update, 'display')!='none') 
+    if(Element.getStyle(this.update, 'display')!='none')
     {
       this.options.onHide(this.element, this.update);
     }
     if(this.iefix) Element.hide(this.iefix);
-    this.update.scrollTop = 0; 
+    this.update.scrollTop = 0;
   },
 
   // Fix autocompleter scrollbar support on IE.
@@ -82,11 +92,11 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.Autocompleter.prototype, Ajax.
         return;
       }
     }
-    
+
     // needed to make click events working
     setTimeout(this.hide.bind(this), 250);
     this.hasFocus = false;
-    this.active = false; 
+    this.active = false;
   },
 
   onComplete: function(request) {
@@ -99,26 +109,26 @@ ATK.ManyToOneRelation.AdvancedAutocompleter = Class.create();
 Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototype, ATK.ManyToOneRelation.Autocompleter.prototype), {
   initialize: function(element, update, valueElement, url, options) {
     ATK.ManyToOneRelation.Autocompleter.prototype.initialize.apply(this, new Array(element, update, url, options));
-    
+
     this.valueElement = $(valueElement);
-    
+
     if (this.options.serializeForm) {
       this.options.callback = this.parametersCallback.bind(this);
     }
   },
-  
-  parametersCallback: function(element, entry) { 
+
+  parametersCallback: function(element, entry) {
     var elements = Form.getElements(element.form).findAll(function(el) {
       return el.name && el.name.substring(0, 3) != 'atk'
     });
-    
+
     var queryComponents = elements.collect(function(el) {
       return Form.Element.serialize(el);
     }).concat([entry]);
-    
+
     return queryComponents.join('&');
   },
-  
+
   findFirstNodeByClass: function(element, className) {
     var nodes = $(element).childNodes;
     for (var i = 0; i < nodes.length; i++)
@@ -131,31 +141,31 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototyp
       }
     }
     return null;
-  },  
-  
+  },
+
   // Fix for resetting the scollbar position.
-  // See: http://dev.rubyonrails.org/ticket/4782  
+  // See: http://dev.rubyonrails.org/ticket/4782
   hide: function() {
     this.stopIndicator();
-    if(Element.getStyle(this.update, 'display')!='none') 
+    if(Element.getStyle(this.update, 'display')!='none')
     {
       this.options.onHide(this.element, this.update);
-      
+
       // needed to clear the value if the user has entered a search
       // query but doesn't select anything from the list
       if (this.clearValue) {
         this.valueElement.value = '';
-        this.element.value = ''; // clear value      
+        this.element.value = ''; // clear value
       }
     }
     if(this.iefix) Element.hide(this.iefix);
-    this.update.scrollTop = 0; 
-  },  
+    this.update.scrollTop = 0;
+  },
 
   updateElement: function(selectedElement) {
-    var valueEl = this.findFirstNodeByClass(selectedElement, 'value');    
+    var valueEl = this.findFirstNodeByClass(selectedElement, 'value');
     var labelEl = this.findFirstNodeByClass(selectedElement, 'selection');
-    
+
     var value = valueEl != null ? valueEl.innerHTML : '';
     var label = labelEl != null ? labelEl.innerHTML : '';
 
@@ -163,43 +173,43 @@ Object.extend(Object.extend(ATK.ManyToOneRelation.AdvancedAutocompleter.prototyp
     this.element.value = label;
     this.element.focus();
     this.element.select();
-    
+
     this.clearValue = false;
-    
+
     if (this.options.afterUpdateElement)
-      this.options.afterUpdateElement(this.element, selectedElement);       
+      this.options.afterUpdateElement(this.element, selectedElement);
   },
-  
+
   onKeyPress: function(event) {
-    if (!this.active && (event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN || 
-       (navigator.appVersion.indexOf('AppleWebKit') > 0 && event.keyCode == 0))) return;    
-       
-    this.clearValue = true;           
-       
+    if (!this.active && (event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
+       (navigator.appVersion.indexOf('AppleWebKit') > 0 && event.keyCode == 0))) return;
+
+    this.clearValue = true;
+
     ATK.ManyToOneRelation.Autocompleter.prototype.onKeyPress.apply(this, [event]);
   },
-  
+
   clear: function() {
     this.element.value = '';
     this.valueElement.value = '';
     this.clearValue = false;
-      
+
     if (this.options.afterUpdateElement)
-      this.options.afterUpdateElement(this.element, null);       
-  },      
-  
+      this.options.afterUpdateElement(this.element, null);
+  },
+
   onObserverEvent: function() {
     if (this.getToken().length < this.options.minChars) {
       this.clear();
     }
 
-    if (!this.hasFocus) 
+    if (!this.hasFocus)
     {
       if (this.clearValue)
         this.clear();
       return;
     }
-    
+
     ATK.ManyToOneRelation.Autocompleter.prototype.onObserverEvent.apply(this);
-  } 
+  }
 });
