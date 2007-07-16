@@ -91,8 +91,6 @@
     function render(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array(),$embedprefix="")
     {
         $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation,$embedprefix);
-        atk_var_dump($data, 'naam');
-        
         $ui   = &$this->m_node->getUi();
         $res  = $ui->render($this->m_template, array("vorientation"=>$data["vorientation"],
                                                      "rows"=>$data["rows"],
