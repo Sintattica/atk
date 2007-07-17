@@ -2259,6 +2259,7 @@
         case "view": return "viewform.tpl";
         case "search": return "searchform.tpl";
         case "smartsearch": return "smartsearchform.tpl";
+        case "admin": return "recordlist.tpl";
       }
     }
 

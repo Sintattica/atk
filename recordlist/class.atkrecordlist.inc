@@ -42,7 +42,6 @@
     var $m_flags=0;
     var $m_actionloader;
     var $m_masternode=NULL;
-    var $m_template="recordlist.tpl";
     var $m_hasActionColumn=0;
     var $m_actionSessionStatus = SESSION_NESTED;
     
@@ -92,7 +91,7 @@
     {
         $data = $this->getRecordlistData($node, $recordset, $actions, $flags, $suppressList, $formName, $navigation,$embedprefix);
         $ui   = &$this->m_node->getUi();
-        $res  = $ui->render($this->m_template, array("vorientation"=>$data["vorientation"],
+        $res = $ui->render($node->getTemplate("admin"), array("vorientation"=>$data["vorientation"],
                                                      "rows"=>$data["rows"],
                                                      "header"=>$data["header"],
                                                      "search"=>$data["search"],

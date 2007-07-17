@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
++ Added support for usage of custom templates in the admin actions. [Ruud]
 + Added generic Ajax DHTML dialog support to ATK (see atkDialog). [Peter]
 + Added support for add dialogs. If you set the NF_ADD_DIALOG on a node you
   will be presented with a DHTML popup dialog for entering a new record 
