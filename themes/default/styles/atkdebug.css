@@ -1,13 +1,14 @@
 #atk_debugging_div
 {
-  font-family: monospace; 
-  font-size: 11px; 
+  font-family: monospace;
+  font-size: 11px;
   white-space: nowrap;
   margin-top: 20px;
   padding: 2px;
+  text-align: left;
 }
 
-.atkDebugBlock .atkDebugToggle 
+.atkDebugBlock .atkDebugToggle
 {
   display: block;
   margin-top: 0px;
@@ -15,11 +16,11 @@
   background-position: 2px 3px;
   background-repeat: no-repeat;
   padding: 2px;
-  padding-left: 16px;    
+  padding-left: 16px;
   cursor: pointer;
 }
 
-.atkDebugBlock .atkDebugData 
+.atkDebugBlock .atkDebugData
 {
   margin-top: 2px;
   margin-left: 20px;
