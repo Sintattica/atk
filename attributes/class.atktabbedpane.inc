@@ -21,10 +21,10 @@
 
   /**
     * Custom flags
-    * 
+    *
     * Do not hide attribute label when it is single on the tab
     */
-   define("AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", AF_SPECIFIC_1); 
+   define("AF_TABBEDPANE_NO_AUTO_HIDE_LABEL", AF_SPECIFIC_1);
 
   /**
    * atkTabbedPane place regular attribute to the additional tabbed pane
@@ -77,7 +77,7 @@
     function add($attrib, $tab="")
     {
 			if(empty($tab)) $tab = $attrib;
-			
+
     	if(!in_array($tab,$this->m_tabsList))
 			{
 	    	$this->m_tabsList[] = $tab;
@@ -112,7 +112,7 @@
      //return first tab
      return $this->m_tabsList[0];
    }
-    
+
     function postInit()
     {
       foreach (array_keys($this->m_attribsList) as $attrib)
@@ -128,13 +128,13 @@
      * Check if attribute is single on the tab
      * @param String $name The name of attribute
      * @return Bool  True if single.
-     * $todo Take into accout AF_HIDE_VIEW,AF_HIDE_EDIT flag of attribute - 
-     * attribute can be placed on tab, but only in edit action - 2 attribute when edit and 1  -if view	
+     * $todo Take into accout AF_HIDE_VIEW,AF_HIDE_EDIT flag of attribute -
+     * attribute can be placed on tab, but only in edit action - 2 attribute when edit and 1  -if view
      */
     function isAttributeSingleOnTab($name)
     {
       $result = false;
-    
+
       if(!$this->hasFlag(AF_TABBEDPANE_NO_AUTO_HIDE_LABEL))
       {
         $tab = $this->m_attribsList[$name];
@@ -162,15 +162,15 @@
             if ($mode=="edit" || ($mode=="add" && !$p_attrib->isEmpty($defaults)))
               $arr["hide"][] = $p_attrib->hide($defaults, $fieldprefix, $mode);
           }
-    
+
           /* edit */
           else
           {
             $p_attrib->_registerDependees($mode, $fieldprefix);
-          
+
             $entry = array("name" => $p_attrib->m_name, "obligatory" => $p_attrib->hasFlag(AF_OBLIGATORY), "attribute" => &$p_attrib);
             $entry["id"] = $p_attrib->getHtmlId($fieldprefix);
-    
+
             /* label? */
             $entry["label"] = $p_attrib->getLabel($defaults);
             /* error? */
@@ -211,7 +211,7 @@
           {
             $error['tab'] = $this->m_attribsList[$error['attribname']];
           }
-          
+
           if ($error['err'] == "error_primarykey_exists")
           {
             $pk_err_attrib[] = $error['attrib_name'];
@@ -251,7 +251,7 @@
                             "msg"=>$pk_err_msg);
         }
       }*/
-      
+
       // Handle fields
       // load images
       $theme = &atkinstance("atk.ui.atktheme");
@@ -262,7 +262,7 @@
       /* display the edit fields */
       $fields = array();
       $tab = $this->getDefaultTab();
-      
+
       for ($i = 0, $_i= count($data["fields"]); $i<$_i; $i++)
       {
         $field = &$data["fields"][$i];
@@ -271,13 +271,13 @@
 		    $tplfield["tab"] =  $field["tabs"];
 
 		    $tplfield["initial_on_tab"] = $tplfield["tab"]==$tab;
-		    
+
 		    $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$field[tabs]}";
-		    
+
 		    // Check if there are attributes initially hidden on this tabbedpane
 		    if ($field["attribute"]->isInitialHidden($defaults))
 		        $tplfield["class"].= " atkAttrRowHidden";
-		      
+
 		    $tplfield["rowid"] = "tabbedPaneAttr_".($field['id']!=''?$field['id']:getUniqueID("anonymousattribrows")); // The id of the containing row
 
 		    /* check for separator */
@@ -299,11 +299,11 @@
         {
           if ($field["attribute"]->m_ownerInstance->getNumbering())
           {
-            atkViewEditBase::_addNumbering($field, $tplfield, $i);            
+            atkViewEditBase::_addNumbering($field, $tplfield, $i);
           }
 
           /* does the field have a label? */
-          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name']) 
+          if ((isset($field["label"]) && $field["label"]!=="AF_NO_LABEL") && !$this->isAttributeSingleOnTab($field['name'])
                               || !isset($field["label"]))
           {
             if ($field["label"] == "")
@@ -364,7 +364,7 @@
       $page = &$node->getPage();
 
       $result = "";
-      
+
       foreach ($arr["hide"] as $hidden)
       {
         $result.= $hidden;
@@ -379,14 +379,14 @@
       $result .= $ui->render("tabbededitform.tpl", $params);
 
       $content = $this->tabulate($mode, $result, $fieldprefix);
-      
+
       return $content;
     }
 
     /**
     * Display a tabbed pane with attributes
     * @param $record  Array with fields
-    * @return html code 
+    * @return html code
     */
     function display($record, $mode="")
     {
@@ -409,42 +409,40 @@
           if (!$p_attrib->hasFlag(AF_HIDE_VIEW))
           {
             $fieldtab = $this->m_attribsList[$name];
-            
-            $tplfield["initial_on_tab"] = $fieldtab==$tab;
-		    
+
             $tplfield["class"] = "tabbedPaneAttr tabbedPaneTab{$fieldtab}";
 	  	      $tplfield["rowid"] = "tabbedPaneAttr_".getUniqueID("anonymousattribrows"); // The id of the containing row
-            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility		    
-            
-            $tplfield["initial_on_tab"] = ($tplfield["tab"]==$active_tab);
-  
+            $tplfield["tab"] = $tplfield["class"]; // for backwards compatibility
+
+            $tplfield["initial_on_tab"] = ($fieldtab==$active_tab);
+
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute. If it exists we will use that method
             // else we will just use the attribute's display method.
             $funcname = $p_attrib->m_name."_display";
             if (method_exists($node, $funcname)) $editsrc = $node->$funcname($record, "view");
             else $editsrc=$p_attrib->display($record, "view");
-  
+
             /* tooltip */
             $module = $p_attrib->getModule();
             if (!$module) $module = "atk";
             $ttip = atktext($node->m_type."_".$name."_tooltip", $module, "", "", "", true);
-  
+
             if ($ttip)
             {
               $theme = &atkinstance("atk.ui.atktheme");
               $tipimg = $theme->imgPath("help.gif");
-  
+
               $onelinetip = preg_replace('/([\r\n])/e',"",$ttip);
               $tooltip = '<img align="top" src="'.$tipimg.'" border="0" alt="'.$onelinetip.'" onClick="javascript:alert(\''.str_replace("\n", '\n', addslashes($ttip)).
                                       '\')" onMouseOver="javascript:window.status=\''. addslashes($onelinetip).'\';">';
               $tplfield["tooltip"] = $tooltip;
               $editsrc.=$tooltip."&nbsp;";
             }
-  
+
             $tplfield["full"] = $editsrc;
             $tplfield["widget"] = $editsrc; // in view mode, widget and full are equal
-  
+
             // The Label of the attribute (can be suppressed with AF_NOLABEL or AF_BLANKLABEL)
             // For each attribute, a txt_<attributename> must be provided in the language files.
             if (!$p_attrib->hasFlag(AF_NOLABEL) && !$this->isAttributeSingleOnTab($name))
@@ -485,11 +483,11 @@
       {
         $node = &$this->m_ownerInstance;
         $node->addStyle("tabs.css");
-        
+
         $page = &$node->getPage();
         $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktabbedpane.js");
         $page->register_loadscript("ATK.TabbedPane.showTab('tabbedPane{$fieldprefix}{$this->m_name}', '$activeTabName');");
-        
+
         $ui = &$node->getUi();
         if (is_object($ui))
         {
@@ -499,7 +497,7 @@
                                        "content"=>$content),"panetabs");
         }
       }
-      
+
       return $content;
     }
     /**
@@ -516,7 +514,7 @@
     {
       $node = &$this->m_ownerInstance;
       $result = array();
-      
+
       // which tab is currently selected
       $active_tab = $this->getDefaultTab();
 
@@ -528,7 +526,7 @@
         $newtab["selected"] = ($active_tab == $tab);
         $result["tabbedPaneTab{$tab}"] = $newtab;
       }
-      
+
       return $result;
     }
 
@@ -550,7 +548,7 @@
     {
       return "";
     }
-    
+
     function loadType($mode, $searching=false)
     {
       return NOLOAD;
