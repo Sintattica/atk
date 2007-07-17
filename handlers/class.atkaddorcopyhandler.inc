@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -14,7 +14,7 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * Handler for the 'editcopy' action of a node. It copies the selected
    * record, and then redirects to the edit action for the copied record.
@@ -27,24 +27,24 @@
   class atkAddOrCopyHandler extends atkActionHandler
   {
     var $m_processUrl = null;
-    
+
     /**
-     * The action method. 
+     * The action method.
      */
     function action_addorcopy()
     {
       $this->setRenderMode('dialog');
-     
+
       if ($this->m_partial == 'process')
       {
         $this->handleProcess();
       }
-      else 
+      else
       {
         $this->handleDialog();
       }
     }
-    
+
     /**
      * Handle dialog partial.
      */
@@ -54,14 +54,14 @@
       $result = $this->invoke('addOrCopyPage');
       $page->addContent($result);
     }
-    
+
     /**
      * Handle process partial.
      */
     function handleProcess()
     {
       $addOrCopy = $this->m_postvars['addorcopy'];
-     
+
       if ($addOrCopy == 'copy')
       {
         $this->handleCopy();
@@ -71,7 +71,7 @@
         $this->handleAdd();
       }
     }
-    
+
     /**
      * Remove one-to-many relations which the user didn't explicitly select.
      *
@@ -85,39 +85,39 @@
       foreach (array_keys($node->getAttributes()) as $name)
       {
         $attr = &$node->getAttribute($name);
-        
-        if (!is_a($attr, 'atkonetomanyrelation')) continue;        
-        
+
+        if (!is_a($attr, 'atkonetomanyrelation')) continue;
+
         $path = $prefix.$name;
         if (!in_array($path, $includes))
         {
           unset($record[$name]);
         }
-        else 
+        else
         {
           $attr->createDestination();
-          
+
           for ($i = 0, $_i = count($record[$name]); $i < $_i; $i++)
           {
             $this->preCopy($record[$name][$i], $attr->m_destInstance, $includes, $path.".");
           }
         }
-      }      
+      }
     }
-    
+
     /**
      * Handle copy.
-     * 
+     *
      * @param string $attrRefreshUrl  the attribute refresh url if not specified
      *                                the entire page is refreshed
      */
     function handleCopy($attrRefreshUrl=null)
     {
-      $selector = $this->m_postvars['selector'];    
+      $selector = $this->m_postvars['selector'];
       $includes = $this->m_postvars['includes'];
       if ($includes == null)
         $includes = array();
-      
+
       list($record) = $this->m_node->selectDb($selector, "", 1, "", "", "copy");
       if ($record != null)
       {
@@ -126,77 +126,77 @@
           $this->updateDialog($this->renderAccessDeniedDialog());
           return;
         }
-        
+
         $this->preCopy($record, $this->m_node, $includes);
       }
 
-      atkimport("atk.ui.atkdialog");      
+      atkimport("atk.ui.atkdialog");
       $db = &$this->m_node->getDb();
-      $page = &$this->getPage();      
-      
+      $page = &$this->getPage();
+
       if ($this->m_node->copyDb($record))
       {
         $db->commit();
         $this->notify("copy", $record);
         $this->clearCache();
 
-        $script = atkDialog::getCloseCall();     
-        
+        $script = atkDialog::getCloseCall();
+
         if ($attrRefreshUrl == null)
         {
           $script .= "document.location.href = document.location.href;";
         }
-        else 
+        else
         {
-          $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');         
+          $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
           $script .= "ATK.Attribute.refresh('".$attrRefreshUrl."');";
         }
       }
-      else 
+      else
       {
         $db->rollback();
-      
-        $ui = &$this->m_node->getUi();      
-      
-        $params = array();      
+
+        $ui = &$this->m_node->getUi();
+
+        $params = array();
         $params["content"] = "<br />".$this->m_node->text('error_copy_record')."<br />";
         $params["buttons"][] = '<input type="button" class="btn_cancel" value="'.$this->m_node->text('close').'" onClick="'.atkDialog::getCloseCall().'" />';
         $content = $ui->renderAction("addorcopy", $params);
-        
+
         $params = array();
         $params["title"] = $this->m_node->actionTitle('addorcopy');
         $params["content"] = $content;
-        $content = $ui->renderDialog($params);        
-        
-        $script = atkDialog::getUpdateCall($content, false);
-      }      
+        $content = $ui->renderDialog($params);
 
-      $page->register_loadscript($script);           
+        $script = atkDialog::getUpdateCall($content, false);
+      }
+
+      $page->register_loadscript($script);
     }
-    
+
     /**
      * Handle add.
      */
     function handleAdd()
     {
       atkimport("atk.ui.atkdialog");
-      
+
       $script = atkDialog::getCloseCall();
-      
+
       if ($this->m_node->hasFlag(NF_ADD_DIALOG))
       {
         $dialog = new atkDialog($this->m_node->atkNodeType(), 'add', 'dialog');
         $script .= $dialog->getCall(true, false);
       }
-      else 
+      else
       {
         $script .= sprintf("document.location.href = %s;", atkJSON::encode(session_url(dispatch_url($this->m_node->atkNodeType(), 'add'), SESSION_NESTED)));
-      } 
-      
+      }
+
       $page = &$this->getPage();
-      $page->register_loadscript($script);      
+      $page->register_loadscript($script);
     }
-    
+
     /**
      * Add or copy page.
      */
@@ -216,17 +216,17 @@
     {
       $url = $this->getProcessUrl();
       $controller = &atkController::getInstance();
-      
-      $params = array();      
+
+      $params = array();
       $params["formstart"] = $this->getFormStart();
       $params["formend"] = '</form>';
       $params["content"] = $this->getContent();
       $params["buttons"][] = $controller->getDialogButton('save', $this->m_node->text('create'), $url);
       $params["buttons"][] = $controller->getDialogButton('cancel');
-      
-      return $this->renderAddOrCopyPage($params); 
+
+      return $this->renderAddOrCopyPage($params);
     }
-    
+
     /**
      * Render the add or copy page using the given parameters.
      *
@@ -237,15 +237,15 @@
     {
       $node = &$this->m_node;
       $ui = &$node->getUi();
-      
+
       $output = $ui->renderAction("add", $params);
       $this->addRenderBoxVar("title", $node->actionTitle('addorcopy'));
       $this->addRenderBoxVar("content", $output);
       $total = $ui->renderDialog($this->m_renderBoxVars);
-      
+
       return $total;
-    }    
-    
+    }
+
     /**
      * Returns the add or copy page contents.
      *
@@ -253,7 +253,7 @@
      */
     function getContent()
     {
-      $content = 
+      $content =
         atktext("intro_addorcopy").'
         <br />
         <br />
@@ -269,7 +269,7 @@
             </td>
           </tr>
         </table>';
-        
+
       return $content;
     }
 
@@ -284,29 +284,29 @@
       $formstart = '<form id="dialogform" name="dialogform" action="'.$controller->getPhpFile().'?'.SID.'" method="post">';
       return $formstart;
     }
-    
+
     /**
      * Returns the option label for the given action.
-     * 
+     *
      * @param string $action action (copy or add)
      * @return string option label for action
      */
     function getOptionLabel($action)
     {
       $node = $this->m_node->m_type;
-      $module = $this->m_node->m_module;    
-            
+      $module = $this->m_node->m_module;
+
       $label = $this->m_node->text("{$action}_{$module}_{$node}", null, '', '', true);
-      
-      if ($label == "")      
+
+      if ($label == "")
         $label = $this->m_node->text("{$action}_{$node}", null, '', '', true);
-      
-      if ($label == "")      
+
+      if ($label == "")
         $label = $this->m_node->text($action)." ".strtolower($this->m_node->text($this->m_node->m_type));
 
       return $label;
     }
-    
+
     /**
      * Returns the new option.
      *
@@ -319,7 +319,7 @@
         <input type="radio" id="addorcopy_new" name="addorcopy" value="new" checked="checked" />
         <label for="addorcopy_new">'.$label.'</label>';
     }
-     
+
     /**
      * Returns the copy option
      *
@@ -327,20 +327,20 @@
      */
     function getCopyOption()
     {
-      $records = $this->m_node->selectDb();      
-      
+      $records = $this->m_node->selectDb("","","","",array_merge(array($this->m_node->primaryKeyField()), $this->m_node->descriptorFields()));
+
       if (count($records) == 0)
       {
         $label = $this->getOptionLabel('copy').' ('.$this->m_node->text('no_copyable_records').')';
-        
+
         return '
           <input type="radio" id="addorcopy_copy" name="addorcopy" value="copy" disabled="disabled" />
-          <label for="addorcopy_copy">'.$label.'</label>';        
+          <label for="addorcopy_copy">'.$label.'</label>';
       }
-      else 
+      else
       {
         $label = $this->getOptionLabel('copy');
-        
+
         return '
           <input type="radio" id="addorcopy_copy" name="addorcopy" value="copy" />
           <label for="addorcopy_copy">'.$label.'</label>&nbsp;&nbsp;'.
@@ -361,12 +361,12 @@
       {
         $html .= '<option value="'.$this->m_node->primaryKey($record).'">'.$this->m_node->descriptor($record).'</option>';
       }
-      
+
       $html .= '</select>';
-      
+
       return $html;
     }
-    
+
     /**
      * Returns a HTML fragment which allows the user to select nested
      * one-to-many relations he/she wants to include in the copy.
@@ -374,11 +374,11 @@
     function getCopyIncludes($node, $prefix='', $level=0)
     {
       $result = '';
-      
+
       foreach (array_keys($node->getAttributes()) as $name)
       {
         $attr = &$node->getAttribute($name);
-        
+
         if (!is_a($attr, 'atkonetomanyrelation')) continue;
         if ($attr->hasFlag(AF_HIDE_EDIT)) continue;
         if ($attr->hasFlag(AF_READONLY_EDIT)) continue;
@@ -386,22 +386,22 @@
 
         $path = $prefix.$name;
         $id = str_replace('.', '_', $path);
-        
-        $result .= 
+
+        $result .=
           str_repeat('&nbsp;', ($level + 1) * 5).
           '<input type="checkbox" name="includes[]" value="'.$path.'" id="'.$id.'" />
           <label for="'.$id.'">'.$this->m_node->text('include').' '.strtolower($attr->label()).'</label><br />';
-        
+
         $attr->createDestination();
-        $result .= $this->getCopyIncludes($attr->m_destInstance, $path.'.', $level + 1);  
+        $result .= $this->getCopyIncludes($attr->m_destInstance, $path.'.', $level + 1);
       }
-      
+
       return $result;
     }
-    
+
     /**
      * Returns the process URL.
-     * 
+     *
      * @return string process URL
      */
     function getProcessUrl()
@@ -410,12 +410,12 @@
       {
         return $this->m_processUrl;
       }
-      else 
+      else
       {
-        return partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');            
+        return partial_url($this->m_node->atkNodeType(), 'addorcopy', 'process');
       }
     }
-    
+
     /**
      * Override the default process URL.
      *
@@ -424,6 +424,6 @@
     function setProcessUrl($url)
     {
       $this->m_processUrl = $url;
-    }    
+    }
   }
 ?>

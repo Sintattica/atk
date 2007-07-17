@@ -40,6 +40,7 @@ Changed in ATK 6.1
   during a single request. [Patrick, Tjeerd]
 + Added functions addOption and removeOption to 'atklistattribute' for easy
   adding and removing options from a dropdown [Jeroen]
+* Made a performance update in atkAddOrCopyHandler. [Tjeerd]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
