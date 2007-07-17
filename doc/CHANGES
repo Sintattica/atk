@@ -9,12 +9,12 @@ Changed in ATK 6.1
 + Added support for usage of custom templates in the admin actions. [Ruud]
 + Added generic Ajax DHTML dialog support to ATK (see atkDialog). [Peter]
 + Added support for add dialogs. If you set the NF_ADD_DIALOG on a node you
-  will be presented with a DHTML popup dialog for entering a new record 
-  instead of a separate page. Can also be used for atkOneToManyRelations and 
-  replaces the AF_ONETOMANY_EMBED functionality. Works automatically if the 
-  NF_ADD_DIALOG flag is set on the destination node but can also be enabled 
-  using the AF_ONETOMANY_ADD_DIALOG flag. Please note that this functionality 
-  should only be used for simple nodes with only a few attributes and no tabs 
+  will be presented with a DHTML popup dialog for entering a new record
+  instead of a separate page. Can also be used for atkOneToManyRelations and
+  replaces the AF_ONETOMANY_EMBED functionality. Works automatically if the
+  NF_ADD_DIALOG flag is set on the destination node but can also be enabled
+  using the AF_ONETOMANY_ADD_DIALOG flag. Please note that this functionality
+  should only be used for simple nodes with only a few attributes and no tabs
   or sections. [Dennis,Patrick,Peter]
 + Added support for "add or copy" dialogs. This special type of dialog makes it
   possible for the user to select whatever he/she want to create a new
@@ -23,10 +23,10 @@ Changed in ATK 6.1
   need to be included in the copy process (or not). This functionality can
   be enabled by setting the NF_ADDORCOPY_DIALOG flag on the node or by
   specifying it using the AF_ONETOMANY_ADDORCOPY_DIALOG flag on an
-  atkOneToManyRelation. [Dennis,Patrick,Peter]
+  atkOneToManyRelation. [Dennis,Patrick,Peter,Tjeerd]
 + Added atkExtendableShuttleRelation; a shuttle relation which can be extended
-  with so called controls. Base classes for these controls are included. 
-  Controls can be used, for example, to filter content in fields. Will in the 
+  with so called controls. Base classes for these controls are included.
+  Controls can be used, for example, to filter content in fields. Will in the
   near future replace the normal atkShuttleRelation. [Tjeerd,Peter]
 + Added support for "edit" dialogs for only 1 attribute (only supported for
   atkManyToOneRelations for now). In recordlists a user can click on the value
@@ -40,7 +40,10 @@ Changed in ATK 6.1
   during a single request. [Patrick, Tjeerd]
 + Added functions addOption and removeOption to 'atklistattribute' for easy
   adding and removing options from a dropdown [Jeroen]
-* Made a performance update in atkAddOrCopyHandler. [Tjeerd]
++ Added the actionhandler attributeEditHandler which provides a dialog for editing
+  one attribute for multiple records at the same time. The new action can be used
+  by calling the new atkNode method addDialogMRA() with 'attributeedit' as its
+  argument, which will render an extra button next to the MRA dropdown [Dennis].
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
@@ -60,6 +63,9 @@ Changed in ATK 6.1
 * Fixed italian language file. [Fabio]
 * Fixed visibility of attributes on add screen when using a O2M relation.
   In some cases all attributes were always hidden. [Dennis, Guido]
+* Columns in a recordlist now have an onclick parameter in the recordlist.tpl
+  ($col.onclick). This onclick parameter can be activated with the methods get-
+  and setHasClickableRecordList() in atkNode. [Dennis]
 
 Changed in ATK 6.0
 ------------------

@@ -44,7 +44,7 @@
     var $m_masternode=NULL;
     var $m_hasActionColumn=0;
     var $m_actionSessionStatus = SESSION_NESTED;
-    
+
     /**
      * @access private
      */
@@ -52,7 +52,7 @@
     {
       $this->m_node = &$node;
     }
-    
+
     /**
      * Sets the action session status for actions in the recordlist.
      * (Defaults to SESSION_NESTED).
@@ -330,7 +330,7 @@
           if (!hasFlag($flags, RL_EMBED))
           {
             if (empty($formName)) $formName = $listName;
-            $liststart = '<form name="'.$formName.'" method="post">'.
+            $liststart = '<form id="'.$formName.'" name="'.$formName.'" method="post">'.
                        session_form(SESSION_DEFAULT).
                        '<input type="hidden" name="atknodetype" value="'.$this->getMasterNodeType().'">'.
                        '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">';
@@ -464,9 +464,15 @@
             }
           }
 
+          $onClick = "";
+          if ($this->m_node->getHasClickableRecordList() === true)
+          {
+            $onClick = 'onClick="' . "rl_try('$listName', event, '$i', ['select', 'edit', 'view'], false);" . '"';
+          }
+
           /* columns */
           foreach ($list["rows"][$i]["data"] as $html)
-            $record["cols"][] = array("content"=>$html, "type" => "data");
+            $record["cols"][] = array("content"=>$html, "type" => "data", "onclick"=> $onClick);
 
           /* actions (right) */
           if ($orientation=="right"||$orientation=="both")
@@ -535,6 +541,7 @@
           }
         }
 
+
         /****************************************/
         /* MULTI-RECORD-ACTION FORM (CONTINUED) */
         /****************************************/
@@ -577,6 +584,32 @@
                          '<input type="button" class="btn" value="'.atktext($list["mra"][0],$this->m_node->m_module, $this->m_node->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
             }
           }
+
+          /**
+           * @todo: This code needs to be removed/replaced when we have support for all MRA
+           * actions for using dialogs. In which case we could make all the actions in an
+           * MRA dropdown open an atkDialog. For now this code just generates another button.
+           */
+          $dialogMRA = $this->m_node->getDialogMRA();
+          if (isset($dialogMRA) && is_array($dialogMRA) && count($dialogMRA) != 0)
+          {
+            // If there are other MRA actions, we prefix the dialog actions with 'or'
+            if (count($list["mra"]) > 0)
+            {
+              $mra.= '&nbsp;' . $this->m_node->text('or');
+            }
+
+            $page = &$this->m_node->getPage();
+            $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');
+            $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
+            $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattributeedithandler.js');
+
+            foreach ($dialogMRA as $mra_action)
+            {
+              $mra .= '&nbsp;' . $this->getMRADialogButton($this->m_node, $mra_action, $listName);
+            }
+          }
+          /** End of MRA dialog buttons */
         }
 
         if (atkconfig("use_keyboard_handler"))
@@ -604,6 +637,35 @@
       }
     }
 
+    /**
+     * Retrieve a button to open a dialog for a given MRA action.
+     *
+     * @todo: This code needs to be removed/replaced when we have support for all MRA
+     * actions for using dialogs. In which case we could make all the actions in a
+     * MRA dropdown open an atkDialog. For now this code just generates another button.
+     *
+     * @param String $action
+     */
+    function getMRADialogButton(&$node, $action, $listName)
+    {
+      atkimport('atk.utils.atkjson');
+      atkimport('atk.ui.atkdialog');
+
+      $url = partial_url($node->atkNodeType(), $action, $action);
+
+      $dialog = &new atkDialog($node->atkNodeType(), $action, $action);
+      $dialog->load();
+
+      $ui       = &$node->getUi();
+      $title    = $ui->title($node->m_module, $node->m_type, $action);
+      $atkTheme = &atkTheme::getInstance();
+      $theme    = $atkTheme->getAttribute('dialog_theme_name', 'alphacube');
+
+      $call = "(new ATK.Dialog('".$title."', '$url&'+Form.serialize('$listName')+'&atkformname=$listName', '".$theme."')).show();";
+      $script = vsprintf($call, $params);
+
+      return '<input type="button" class="dialogmra" value="' . $node->text($action) . '" onClick="' . $script . '" />';
+    }
 
     /**
      * Checks wether the recordlist should display a column which holds the actions.
