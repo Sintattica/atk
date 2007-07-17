@@ -8,13 +8,13 @@ Changed in ATK 6.1
 ------------------
 + Added generic Ajax DHTML dialog support to ATK (see atkDialog). [Peter]
 + Added support for add dialogs. If you set the NF_ADD_DIALOG on a node you
-  will be presented with a DHTML popup dialog for entering a new record instead of
-  a separate page. Can also be used for atkOneToManyRelations and replaces
-  the AF_ONETOMANY_EMBED functionality. Works automatically if the NF_ADD_DIALOG flag
-  is set on the destination node but can also be enabled using the
-  AF_ONETOMANY_ADD_DIALOG flag. Please note that this functionality should
-  only be used for simple nodes with only a few attributes and no tabs or
-  sections. [Dennis,Patrick,Peter]
+  will be presented with a DHTML popup dialog for entering a new record 
+  instead of a separate page. Can also be used for atkOneToManyRelations and 
+  replaces the AF_ONETOMANY_EMBED functionality. Works automatically if the 
+  NF_ADD_DIALOG flag is set on the destination node but can also be enabled 
+  using the AF_ONETOMANY_ADD_DIALOG flag. Please note that this functionality 
+  should only be used for simple nodes with only a few attributes and no tabs 
+  or sections. [Dennis,Patrick,Peter]
 + Added support for "add or copy" dialogs. This special type of dialog makes it
   possible for the user to select whatever he/she want to create a new
   record or copy an existing record. The user is presented with a dropdown of
@@ -23,6 +23,12 @@ Changed in ATK 6.1
   be enabled by setting the NF_ADDORCOPY_DIALOG flag on the node or by
   specifying it using the AF_ONETOMANY_ADDORCOPY_DIALOG flag on an
   atkOneToManyRelation. [Dennis,Patrick,Peter]
+<<<<<<< CHANGES
++ Added atkExtendableShuttleRelation; a shuttle relation which can be extended
+  with so called controls. Base classes for these controls are included. 
+  Controls can be used, for example, to filter content in fields. Will in the 
+  near future replace the normal atkShuttleRelation. [Tjeerd,Peter]
+=======
 + Added support for "edit" dialogs for only 1 attribute (only supported for
   atkManyToOneRelations for now). In recordlists a user can click on the value
   of the attribute and a dialog appears, which makes it possible to changes only
@@ -32,6 +38,7 @@ Changed in ATK 6.1
   with so called controls. Base classes for these controls are included. Controls
   can be used, for example, to filter content in fields. Will in the near
   future replace the normal atkShuttleRelation. [Tjeerd,Peter]
+>>>>>>> 5.1071
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
 + Implemented caching of query results by node and filter in
@@ -55,6 +62,7 @@ Changed in ATK 6.1
   [Patrick]
 * Fixed memory leak when config_debug is -1. Added debug level -1 to
   comments in config.inc.php [Jeroen,Sandy]
+* Fixed italian language file. [Fabio]
 * Fixed visibility of attributes on add screen when using a O2M relation.
   In some cases all attributes were always hidden. [Dennis, Guido]
 
