@@ -1807,7 +1807,7 @@
       if ($this->hasFlag(AF_OBLIGATORY))
       {
         $html.=
-          '<div align="left">' .
+          '<div id="editdialogcontent">' .
             $introtext .
             '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
             $filterHtml . '
@@ -1820,7 +1820,7 @@
       else
       {
         $html.=
-          '<div align="left">' .
+          '<div id="editdialogcontent">' .
             $introtext .
             '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
             $filterHtml .
