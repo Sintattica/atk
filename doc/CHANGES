@@ -44,6 +44,8 @@ Changed in ATK 6.1
   one attribute for multiple records at the same time. The new action can be used
   by calling the new atkNode method addDialogMRA() with 'attributeedit' as its
   argument, which will render an extra button next to the MRA dropdown [Dennis].
++ Made it possible to extend atkTimeZoneAttribute by calling it's methods non-
+  static. [Tjeerd]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]

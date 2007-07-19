@@ -35,10 +35,10 @@
   {
     var $m_time = "";
     var $m_date = "";
-    
+
     var $m_utcOffset = null;
     var $m_timezoneAttribute = null;
-    
+
 
     /**
      * Converts a date array to a timestamp
@@ -66,7 +66,7 @@
 
       if($dateValid) return adodb_mktime($hour,$min,$sec,$month,$day,$year);
       else return adodb_mktime(0,0,0);
-    }    
+    }
 
     /**
      * Constructor
@@ -114,19 +114,19 @@
     function setDateMax($max=0)
     {
       $this->m_date->setDateMax($max);
-    }    
-    
+    }
+
     function validate(&$record, $mode)
-    {      
-      //if the datetime string is not an array, make it one to make sure the 
-      //validation functions of atkDateAttribute and atkTimeAttribute do not 
+    {
+      //if the datetime string is not an array, make it one to make sure the
+      //validation functions of atkDateAttribute and atkTimeAttribute do not
       //cripple the data.
       if(!is_array($record[$this->fieldName()]))
       {
         $stamp = strtotime($record[$this->fieldName()]);
         $record[$this->fieldName()] = $this->datetimeArray(date("YmdHi",$stamp));
       }
-      
+
       $this->m_date->validate($record,$mode);
       $this->m_time->validate($record,$mode);
     }
@@ -178,16 +178,16 @@
       else
         return "";
     }
-    
+
     function fetchValue($postvars)
     {
       $date = $this->m_date->fetchValue($postvars);
       if ($date == NULL) return NULL;
-      
+
       $time = $this->m_time->fetchValue($postvars);
-      if ($time == NULL) 
+      if ($time == NULL)
         $time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
-      
+
       return array_merge($date, $time);
     }
 
@@ -205,28 +205,28 @@
     }
 
     function value2db($rec)
-    { 
+    {
       if (is_array($rec[$this->fieldName()]))
       {
         $value = $rec[$this->fieldName()];
-        $value = $this->toUTC($value, $rec);  
+        $value = $this->toUTC($value, $rec);
         $rec[$this->fieldName()] = $value;
 
         $date = $this->m_date->value2db($rec);
         $time = $this->m_time->value2db($rec);
-        
+
         if ($date != NULL && $time != NULL)
           return $date." ".$time;
       }
       else if (!empty($rec[$this->fieldName()]))
       {
-        $stamp = strtotime($rec[$this->fieldName()]);        
+        $stamp = strtotime($rec[$this->fieldName()]);
         $stamp = $this->toUTC($stamp);
         return date('Y-m-d H:m:s',$stamp);
       }
      return NULL;
     }
-    
+
     /**
      * Convert database value to datetime array
      * @param $rec database record with date field
@@ -261,7 +261,7 @@
           $result_time = array('hours' => '00', 'minutes' => '00', 'seconds' => '00');
 
         $value = array_merge((array)$result_date,(array)$result_time);
-        $value = $this->fromUTC($value, $tmp_rec);   
+        $value = $this->fromUTC($value, $tmp_rec);
         return $value;
       }
       else return NULL;
@@ -316,12 +316,12 @@
     {
      return $this->m_date->search($record, $extended, $fieldprefix);
     }
-    
+
     function searchCondition(&$query, $table, $value, $searchmode)
     {
       $this->m_date->searchCondition($query, $table, $value, $searchmode);
-    }    
-    
+    }
+
 
     function hide($record="", $fieldprefix="")
     {
@@ -350,40 +350,40 @@
 		                      atkTimeAttribute::parseTime($datetime[1]));
 		  return $retval;
     }
-      
-   
+
+
     /**
      * Sets the timezone attribute. This can also be a timezone
      * attribute retrieved from a atkManyToOneRelation. If so then please
      * use the dot notation.
-     * 
+     *
      * @param string $attrName attribute name
      */
     function setTimezoneAttribute($attrName)
     {
       $this->m_timezoneAttribute = $attrName;
     }
-    
+
     /**
      * Returns the timezone attribute name.
-     * 
+     *
      * @return string timezone attribute name
      */
     function getTimezoneAttribute()
     {
       return $this->m_timezoneAttribute;
     }
-    
+
     /**
      * Sets the UTF offset in seconds.
-     * 
+     *
      * @param int UTC offset in seconds
      */
     function setUTCOffset($offset)
     {
       $this->m_utcOffset = $offset;
     }
-    
+
     /**
      * Resets the UTC offset.
      */
@@ -391,24 +391,24 @@
     {
       $this->m_utcOffset = null;
     }
-    
+
     /**
      * Returns the UTC offset if set.
-     * 
+     *
      * @return int UTC offset in seconds if set.
      */
     function getUTCOffset()
     {
       return $this->m_utcOffset;
     }
-    
+
     /**
-     * Returns the UTC offset in seconds. If the UTC offset is set explicitly 
+     * Returns the UTC offset in seconds. If the UTC offset is set explicitly
      * using the setUTCOffset method this offset is returned. Else if a timezone
-     * attribute is set the offset is determined by looking at the timezone 
+     * attribute is set the offset is determined by looking at the timezone
      * using the given timezone attribute. If no offset and no attribute are set
      * an offset of 0 is returned.
-     * 
+     *
      * @param array $record record
      * @return int UTC offset in seconds
      */
@@ -422,12 +422,12 @@
       {
         $parts = explode('.', $this->m_timezoneAttribute);
         $node = $this->getOwnerInstance();
-        
+
         while (count($parts) > 0)
         {
           $part = array_shift($parts);
           $attr = $node->getAttribute($part);
-  
+
           // relation, prepare for next iteration
           if (is_a($attr, 'atkManyToOneRelation'))
           {
@@ -435,35 +435,35 @@
             $record = $record[$attr->fieldName()];
             $node = $attr->m_destInstance;
           }
-          
+
           // timezone attribute, calculate and return offset
           else if (is_a($attr, 'atkTimezoneAttribute'))
           {
-            return atkTimeZoneAttribute::getUTCOffset($record[$attr->fieldName()]);
+            return $attr->getUTCOffset($record[$attr->fieldName()]);
           }
-          
+
           // assume the attribute in question already has the offset saved in seconds
-          else 
+          else
           {
             return (int)$record[$attr->fieldName()];
           }
         }
-        
+
         atkdebug('WARNING: could not determine UTC offset for atkDateTimeAttribute "'.$this->fieldName().'"!');
         return 0;
       }
-      else 
+      else
       {
         return 0;
       }
     }
-    
+
     /**
      * Convert the given ATK date/time array to a UTC date/time array.
      *
      * @param int|array $value UNIX timestamp or ATK date/time array
      * @param array $record record
-     * 
+     *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
      */
     function toUTC($value, $record)
@@ -474,13 +474,13 @@
       $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
       return $value;
     }
-    
+
     /**
      * Convert the given UTC ATK date/time array to a date/time array in a certain timezone.
      *
      * @param int|array $value UNIX timestamp or ATK date/time array
      * @param array $record record
-     * 
+     *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
      */
     function fromUTC($value, $record)
@@ -490,10 +490,10 @@
       $stamp = $stamp + $offset;
       $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
       return $value;
-    }    
-    
+    }
+
     /**
-     * If a timezone attribute is set, make sure 
+     * If a timezone attribute is set, make sure
      * it's always loaded.
      */
     function postInit()
