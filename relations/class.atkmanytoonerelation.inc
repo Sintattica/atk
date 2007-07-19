@@ -544,11 +544,7 @@
       if (!$this->isEmpty($record) && $this->hasFlag(AF_RELATION_EDITDIALOG))
       {
         atkimport("atk.ui.atkdialog");
-
-        $selector = $this->m_ownerInstance->primaryKey($record);
-
-        $params[$this->m_ownerInstance->primaryKeyField()] = $record[$this->m_ownerInstance->primaryKeyField()];
-        $params[$this->fieldName()] = $this->m_destInstance->primaryKey($record);
+        $params['atkprimkey'] = $record['atkprimkey'];
 
         $dialog = &new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog', $params);
         $dialog->setTitle($this->text('edit').' '.$this->getLabel($record));
@@ -1768,9 +1764,28 @@
      */
     function partial_editdialog($mode)
     {
-      $page = $this->m_ownerInstance->getPage();
+      $controller = &atkController::getInstance();
       $node = &$this->m_ownerInstance;
-      $record = $node->updateRecord($node->m_postvars);
+      $page = &$node->getPage();
+
+      if (!$this->createDestination())
+      {
+        return $this->handleError();
+      }
+
+      /**
+       * @todo: this selectDb() could use some improvement. We retrieve all the attributes
+       * because we might need their values in filters. Is there a way to determine wether
+       * we need certain values?
+       */
+      $atkselector = $node->m_postvars['atkprimkey'];
+      list($record) = $this->m_ownerInstance->selectDb($atkselector);
+
+      if ($record==NULL)
+      {
+        return $this->handleError('incorrectselector');
+      }
+
       $handler = &$node->getHandler('edit');
 
       // Check if there is a translation for 'select_[attributename]_for_[nodename]'
@@ -1798,7 +1813,10 @@
       $initial_values = $this->m_ownerInstance->initial_values();
       $filterAttributes = $this->_getEditDialogFilterAttributes($initial_values);
 
-      $filterHtml = (count($filterAttribute)>0) ? implode("<br />", $filterAttributes)."<br />" : "";
+      $filterHtml = (count($filterAttributes)>0) ? implode("<br />", $filterAttributes)."<br />" : "";
+
+
+      $attributeHtml = $this->edit($record, $fieldprefix, $mode);
 
       // We do not want an empty option rendered in the dropdown.
       $this->addFlag(AF_RELATION_NO_NULL_ITEM);
@@ -1811,7 +1829,7 @@
             $introtext .
             '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
             $filterHtml . '
-            <div id="attribute_' . $this->fieldName() . '">' . $this->edit($record, $fieldprefix, $mode).'</div><br />' .
+            <div id="attribute_' . $this->fieldName() . '">' . $attributeHtml .'</div><br />' .
             '<div id="editurl_' . $this->fieldName().'">' .
                 $this->_getDialogEditUrl() .
              '</div><br /><br />' .
@@ -1824,7 +1842,7 @@
             $introtext .
             '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
             $filterHtml .
-            $this->_getSelectOption() . '&nbsp;<div id="attribute_' . $this->fieldName() . '">' . $this->edit($record, $fieldprefix).'</div><br />' .
+            $this->_getSelectOption() . '&nbsp;<div id="attribute_' . $this->fieldName() . '">' . $attributeHtml . '</div><br />' .
             '<div id="editurl_' . $this->fieldName().'">' .
                 $this->_getDialogEditUrl($initial_values) .
              '</div><br /><br />' .
@@ -1832,12 +1850,33 @@
           '</div>';
       }
 
-      $controller = &atkController::getInstance();
+
       $url = partial_url($this->m_ownerInstance->atknodetype(), "edit", "attribute.".$this->fieldName().".editdialog_process");
       $html.= $controller->getDialogButton('save', $this->m_ownerInstance->text('save'), $url). '&nbsp;';
       $html.= $controller->getDialogButton('cancel');
       $html.= $handler->getFormEnd();
       return $html;
+    }
+
+    /**
+     * Handles errors and returns an error page with a close (cancel) button.
+     *
+     * @return String HTML Error page.
+     */
+    function handleError($errortype="")
+    {
+      $controller = &atkController::getInstance();
+      $message = "";
+      if ($errortype == 'incorrectselector')
+      {
+        $message = 'Error: Incorrect selector.';
+      }
+      else
+      {
+        $message = 'Error: could not create dialog.';
+      }
+      atkerror($message);
+      return '<font style="color: red"><b>' . $message . '</b> </font><br /><br />' . $controller->getDialogButton('cancel', 'close');
     }
 
     /**
