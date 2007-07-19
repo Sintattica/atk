@@ -74,6 +74,9 @@ ATK.Dialog.prototype = {
     
     if (extraParams != null)
       params += '&' + $H(extraParams).toQueryString();
+      
+    if (window.getCurrentTab)
+    	params += '&atkparenttab=' + getCurrentTab();
 
     var options = options || {};  
       
