@@ -71,9 +71,19 @@
       E_USER_ERROR         => "User Error",
       E_USER_WARNING       => "User Warning",
       E_USER_NOTICE        => "User Notice",
-      E_STRICT             => "Runtime Notice",
-      E_RECOVERABLE_ERROR  => "Catchable Fatal Error"
     );
+
+    //E_STRICT is available since 5.0.0
+    if (php_version() >= '5.0.0')
+    {
+      $errortype[E_STRICT] = "Runtime Notice";
+    }
+
+    //E_RECOVERABLE is available since 5.2.0
+    if (php_version() >= '5.2.0')
+    {
+      $errortype[E_RECOVERABLE_ERROR] = "Catchable Fatal Error";
+    }
 
     if (version_compare(phpversion(), "5.0.0")>=0) $errortype[E_STRICT] = "Strict Notice";
 
