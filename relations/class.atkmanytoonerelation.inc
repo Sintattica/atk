@@ -2072,8 +2072,11 @@
         // handle succes
         $db->commit();
         atkimport("atk.ui.atkdialog");
+        
         $script = atkDialog::getCloseCall();
-        $script.= "document.location.href = document.location.href;";
+        
+        $parenttab = $this->m_ownerInstance->m_postvars['atkparenttab'];
+        $script.= "document.location.href = document.location.href + '&atktab={$parenttab}'";
         $page->register_loadscript($script);
       }
     }
