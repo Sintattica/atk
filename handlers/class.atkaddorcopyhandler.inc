@@ -201,12 +201,12 @@
      * Add or copy page.
      */
     function addOrCopyPage()
-    {
-      $page = &$this->getPage();
+    {	      
       $content = $this->getAddOrCopyPage();
+      $page = &$this->getPage();
       $page->addContent($content);
     }
-
+    
     /**
      * Returns the add or copy page contents.
      *
@@ -318,6 +318,22 @@
       return '
         <input type="radio" id="addorcopy_new" name="addorcopy" value="new" checked="checked" />
         <label for="addorcopy_new">'.$label.'</label>';
+    }
+    
+    /**
+     * Returns true if there is something to copy. This is used
+     * to determine if we can skip the whole dialog and continue to the add page
+     * directly.
+     *
+     * @param atkNode $node The node to check
+     * @param string $selector an extra selector to add to the count query
+     * @return bool true when there are records to copy, false if there are none
+     * @static
+     */
+    function hasCopyableRecords(&$node, $selector='')
+    {
+    	$count = $node->countDb($selector);    	
+    	return ($count > 0);
     }
 
     /**

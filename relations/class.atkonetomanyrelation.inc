@@ -385,13 +385,24 @@
      * @return String  The link to add records to the onetomany
      */
     function _getAddLink($myrecords, $record,$saveform=true)
-    {
-      if ($this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
-          $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
-          $this->m_destInstance->hasFlag(NF_ADD_DIALOG) ||
-          $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG))
+    {		    
+      atkimport('atk.handlers.addorcopyhandler');
+      $filter = $this->getAddFilterString($record);
+      $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
+
+      $addorcopy = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
+                   $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
+
+      $add = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
+             $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
+      
+      if ($addorcopy && $showDialog)
       {
-        return $this->_getDialogAddLink($record);
+        return $this->_getDialogAddLink($record, 'addorcopy');
+      }
+      else if ($add)
+      {
+        return $this->_getDialogAddLink($record, 'add');
       }
       else
       {
@@ -417,13 +428,11 @@
       return $strfilter;
     }
 
-    function _getDialogAddLink($record)
+    function _getDialogAddLink($record, $action)
     {
       atkimport("atk.ui.atkdialog");
 
       $filter = $this->getAddFilterString($record);
-
-      $action = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) || $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 
       $ui = &$this->m_ownerInstance->getUi();
 

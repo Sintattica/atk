@@ -307,8 +307,14 @@
           // generic text
           $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
         }
-
-				if ($this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) || $this->m_node->hasFlag(NF_ADD_DIALOG)) 
+        
+        atkimport('atk.handlers.addorcopyhandler');
+        $add = $this->m_node->hasFlag(NF_ADD_DIALOG);
+        $addorcopy = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) &&
+                     atkAddOrCopyHandler::hasCopyableRecords($this->m_node);
+        					   
+        
+        if ($add || $addorcopy) 
 				{
 				  $action = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
 				  
