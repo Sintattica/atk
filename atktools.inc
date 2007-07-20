@@ -74,27 +74,29 @@
     );
 
     //E_STRICT is available since 5.0.0
-    if (phpversion() >= '5.0.0')
+    if (version_compare(phpversion(), "5.0.0")>=0)
     {
-      $errortype[E_STRICT] = "Runtime Notice";
+      $errortype[E_STRICT] = "Strict Notice";
+      //Ignore strict notices for now.
+      return;
     }
 
     //E_RECOVERABLE is available since 5.2.0
-    if (phpversion() >= '5.2.0')
+    if (version_compare(phpversion(), "5.2.0")>=0)
     {
       $errortype[E_RECOVERABLE_ERROR] = "Catchable Fatal Error";
     }
 
-    if (version_compare(phpversion(), "5.0.0")>=0) $errortype[E_STRICT] = "Strict Notice";
 
     // Translate the given errortype into a string
     $errortypestring = $errortype[$errtype];
 
-    if ((version_compare(phpversion(), "5.0.0")>=0 && $errtype==E_STRICT))
+    if ((version_compare(phpversion(), "5.0.0")>=0) && $errtype==E_STRICT)
     {
-      // Ignore strict notices for now
+      //Ignore strict notices for now.
       return;
     }
+
     if ($errtype==E_NOTICE || error_reporting()==0)
     {
       // Just show notices in the debug log, but don't influence the program flow
