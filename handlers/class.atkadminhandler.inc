@@ -308,7 +308,7 @@
           $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
         }
         
-        atkimport('atk.handlers.addorcopyhandler');
+        atkimport('atk.handlers.atkaddorcopyhandler');
         $add = $this->m_node->hasFlag(NF_ADD_DIALOG);
         $addorcopy = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) &&
                      atkAddOrCopyHandler::hasCopyableRecords($this->m_node);
