@@ -48,6 +48,7 @@ Changed in ATK 6.1
   argument, which will render an extra button next to the MRA dropdown [Dennis].
 + Made it possible to extend atkTimeZoneAttribute by calling it's methods non-
   static. [Tjeerd]
++ Added atkvardump modifier. [Boy]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
@@ -70,6 +71,7 @@ Changed in ATK 6.1
 * Columns in a recordlist now have an onclick parameter in the recordlist.tpl
   ($col.onclick). This onclick parameter can be activated with the methods get-
   and setHasClickableRecordList() in atkNode. [Dennis]
+* atkTime datatype returns time array by default with leading zero. [Boy]
 
 Changed in ATK 6.0
 ------------------

@@ -152,7 +152,7 @@
      *                          when applicable.
      * @return array The array with the time in array format
      */
-    public function getTimeArray($leadingzero=false)
+    public function getTimeArray($leadingzero=true)
     {
       return array('hours'=>  $this->getHours($leadingzero),
                    'minutes'=>$this->getMinutes($leadingzero),
@@ -264,6 +264,7 @@
     public function getFormatted($format='')
     {
       $format = ($format?$format:$this->m_format);
+      atkdebug("formatting time: {$this->m_time} with format $format");
       return date($format,$this->m_time);
     }
     
