@@ -385,8 +385,8 @@
      * @return String  The link to add records to the onetomany
      */
     function _getAddLink($myrecords, $record,$saveform=true)
-    {		    
-      atkimport('atk.handlers.addorcopyhandler');
+    {
+      atkimport('atk.handlers.atkaddorcopyhandler');
       $filter = $this->getAddFilterString($record);
       $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
 
@@ -395,7 +395,7 @@
 
       $add = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
              $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
-      
+
       if ($addorcopy && $showDialog)
       {
         return $this->_getDialogAddLink($record, 'addorcopy');
