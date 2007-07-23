@@ -539,20 +539,53 @@
 
     function display($record, $mode='list')
     {
-      $result = $this->getDisplay($record, $list);
+      $result = $this->getDisplay($record, $mode);
 
-      if (!$this->isEmpty($record) && $this->hasFlag(AF_RELATION_EDITDIALOG))
+      // If the AF_RELATION_EDITDIALOG flag is set, we make the output a link to the editdialog.
+      if ($this->hasFlag(AF_RELATION_EDITDIALOG))
       {
-        atkimport("atk.ui.atkdialog");
-        $params['atkprimkey'] = $record['atkprimkey'];
+        $page = &$this->m_ownerInstance->getPage();
+        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattribute.js');
 
-        $dialog = &new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog', $params);
-        $dialog->setTitle($this->text('edit').' '.$this->getLabel($record));
-        $script = $dialog->getCall(true, true);
-        $result = '<a href="javascript:void(0);" name="label_'.$this->fieldName().'" id="label_'.$this->fieldName().'" onClick="'.$script.';" >'.$result.'</a>';
+        $attributeId = $this->_getUniqueId($record);
+        // Create a unique id for this field to be able to refresh it.
+        return '
+          <div id="'.$attributeId.'">
+            ' . $this->_getEditDialogLink($record, $result) .'
+          </div>';
       }
 
       return $result;
+    }
+
+    /**
+     * Method renders the link to the editdialog page for this attribute
+     *
+     * @param array $record The recird
+     * @param String $string The string that we will make clickable
+     * @return String HTML
+     */
+    function _getEditDialogLink($record, $string)
+    {
+      atkimport("atk.ui.atkdialog");
+      $params['atkprimkey'] = $record['atkprimkey'];
+      $dialog = &new atkDialog($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog', $params);
+      $dialog->setTitle($this->text('edit').' '.$this->getLabel($record));
+      $script = $dialog->getCall(true, true);
+      return '<a href="javascript:void(0);" onClick="'.$script.';" >' . $string . '</a>';
+    }
+
+    /**
+     * Generates a unique id for this attribute to make
+     * it refreshable.
+     *
+     * @param array $record
+     * @return String
+     */
+    function _getUniqueId($record)
+    {
+      $idStr = $this->m_ownerInstance->primaryKey($record) . "_" . $this->fieldName();
+      return md5($idStr);
     }
 
     /**
@@ -1802,8 +1835,6 @@
 
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog_process'));
 
-      $id = $this->getHtmlId($fieldPrefix);
-
       $page = &$this->m_ownerInstance->getPage();
       $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
       $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
@@ -1814,7 +1845,6 @@
       $filterAttributes = $this->_getEditDialogFilterAttributes($initial_values);
 
       $filterHtml = (count($filterAttributes)>0) ? implode("<br />", $filterAttributes)."<br />" : "";
-
 
       $attributeHtml = $this->edit($record, $fieldprefix, $mode);
 
@@ -1850,8 +1880,8 @@
           '</div>';
       }
 
-
-      $url = partial_url($this->m_ownerInstance->atknodetype(), "edit", "attribute.".$this->fieldName().".editdialog_process");
+      $params['atkprimkey'] = $atkselector;
+      $url = partial_url($this->m_ownerInstance->atknodetype(), "edit", "attribute.".$this->fieldName().".editdialog_process", $params);
       $html.= $controller->getDialogButton('save', $this->m_ownerInstance->text('save'), $url). '&nbsp;';
       $html.= $controller->getDialogButton('cancel');
       $html.= $handler->getFormEnd();
@@ -1904,6 +1934,38 @@
       $url = $this->_getDialogEditUrl();
       $page = &$this->m_ownerInstance->getPage();
       $page->register_loadscript("$('editurl_".$this->fieldName()."').innerHTML = ". atkJSON::encode($url).";");
+    }
+
+    /**
+     * Refreshes the display field for this attribute
+     *
+     * @param String $mode
+     */
+    function partial_refreshDisplay($mode)
+    {
+      $node = &$this->m_ownerInstance;
+
+      // We have the atkselector for the selected record
+      $selectedRecord = $node->m_postvars['atkprimkey'];
+
+      // Do we have a selector
+      if ($selectedRecord == "")
+        return "";
+
+      // Get the updated record
+      list($record) = $this->m_ownerInstance->selectDb($selectedRecord, "", "", "", array($node->primaryKeyField(), $this->fieldName()));
+
+      // Get the uniqueId that we can use to refresh the attribute in the recordlist.
+      $uniqueid = $this->_getUniqueId($record);
+
+      // Get the display of this attribute and make it clickable
+      $result = $this->getDisplay($record, $mode);
+      $result = $this->_getEditDialogLink($record, $result);
+
+      atkimport('atk.utils.atkjson');
+      $script .= "\$('".$uniqueid."').innerHTML = ".atkJSON::encode($result).";\r\n";
+
+      return '<script type="text/javascript">'.$script.'</script>';
     }
 
     /**
@@ -1994,7 +2056,6 @@
       $this->_renderChangeHandler($fieldprefix);
     }
 
-
     /**
      * Returns the select option.
      *
@@ -2043,12 +2104,11 @@
       return '<a href="javascript:void(0);" onClick="'.$onClick.'">'.$this->text("view").' '.strtolower($this->text($this->fieldName())).'</a>';
     }
 
-
     /**
      * Handle updating a record when using a
      * dialog for only this attribute (the editdialog).
      *
-     * @param unknown_type $newrec
+     * @param array $newrec The edited record
      */
     function _handleUpdateEditDialog($newrec)
     {
@@ -2072,11 +2132,11 @@
         // handle succes
         $db->commit();
         atkimport("atk.ui.atkdialog");
-        
+
+        $params['atkprimkey'] = $newrec['atkprimkey'];
+        $url = partial_url($this->m_ownerInstance->atknodetype(), $node->m_action, 'attribute.'.$this->fieldName().'.refreshDisplay', $params);
         $script = atkDialog::getCloseCall();
-        
-        $parenttab = $this->m_ownerInstance->m_postvars['atkparenttab'];
-        $script.= "document.location.href = document.location.href + '&atktab={$parenttab}'";
+        $script.= "ATK.Attribute.refreshDisplay('$url');";
         $page->register_loadscript($script);
       }
     }

@@ -34,7 +34,8 @@ Changed in ATK 6.1
   atkManyToOneRelations for now). In recordlists a user can click on the value
   of the attribute and a dialog appears, which makes it possible to changes only
   the value of that attribute. This functionality can be activated with the
-  AF_RELATION_EDITDIALOG flag. [Dennis]
+  AF_RELATION_EDITDIALOG flag. After saving the attribute, ONLY the altered cell
+  in the recordlist will be updated. [Dennis]
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
 + Implemented caching of query results by node and filter in
@@ -72,6 +73,8 @@ Changed in ATK 6.1
   ($col.onclick). This onclick parameter can be activated with the methods get-
   and setHasClickableRecordList() in atkNode. [Dennis]
 * atkTime datatype returns time array by default with leading zero. [Boy]
+* atkDateTimeAttribute does not have a AF_SEARCHABLE flag anymore at default.
+  [Peter, Dennis]
 
 Changed in ATK 6.0
 ------------------

@@ -103,7 +103,7 @@
       $this->m_time = new atkTimeattribute($name,0,23,$default_steps,$default_time, $flags);
       $this->m_date = new atkDateattribute($name,'','',0,0,$flags);
 
-      $this->atkAttribute($name,$flags|AF_SEARCHABLE); // base class constructor
+      $this->atkAttribute($name,$flags); // base class constructor
     }
 
     function setDateMin($min=0)
