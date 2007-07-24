@@ -1819,8 +1819,6 @@
         return $this->handleError('incorrectselector');
       }
 
-      $handler = &$node->getHandler('edit');
-
       // Check if there is a translation for 'select_[attributename]_for_[nodename]'
       $introtext = $node->text('select_'.$this->fieldName().'_for_'.$node->m_type,null, "", "", true);
       if ($introtext == "")
@@ -1829,11 +1827,8 @@
         $introtext .= '<br /><br />';
       }
 
-      $html = $handler->getFormStart();
 
       $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
-
-      $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.editdialog_process'));
 
       $page = &$this->m_ownerInstance->getPage();
       $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
@@ -1850,6 +1845,8 @@
 
       // We do not want an empty option rendered in the dropdown.
       $this->addFlag(AF_RELATION_NO_NULL_ITEM);
+
+      $html = '<form id="dialogform" name="dialogform">';
 
       // If the attribute is obligatory, do not render the 'no select' option.
       if ($this->hasFlag(AF_OBLIGATORY))
@@ -1884,7 +1881,7 @@
       $url = partial_url($this->m_ownerInstance->atknodetype(), "edit", "attribute.".$this->fieldName().".editdialog_process", $params);
       $html.= $controller->getDialogButton('save', $this->m_ownerInstance->text('save'), $url). '&nbsp;';
       $html.= $controller->getDialogButton('cancel');
-      $html.= $handler->getFormEnd();
+      $html.= '</form>';
       return $html;
     }
 
