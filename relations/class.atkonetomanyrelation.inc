@@ -386,9 +386,7 @@
      */
     function _getAddLink($myrecords, $record,$saveform=true)
     {
-      atkimport('atk.handlers.atkaddorcopyhandler');
       $filter = $this->getAddFilterString($record);
-      $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
 
       $addorcopy = $this->hasFlag(AF_ONETOMANY_ADDORCOPY_DIALOG) ||
                    $this->m_destInstance->hasFlag(NF_ADDORCOPY_DIALOG);
@@ -396,11 +394,16 @@
       $add = $this->hasFlag(AF_ONETOMANY_ADD_DIALOG) ||
              $this->m_destInstance->hasFlag(NF_ADD_DIALOG);
 
-      if ($addorcopy && $showDialog)
+      if ($addorcopy)
       {
-        return $this->_getDialogAddLink($record, 'addorcopy');
+        atkimport('atk.handlers.atkaddorcopyhandler');
+        $showDialog = atkAddOrCopyHandler::hasCopyableRecords($this->m_destInstance, $filter);
+
+        if ($showDialog)
+          return $this->_getDialogAddLink($record, 'addorcopy');
       }
-      else if ($add)
+
+      if ($add)
       {
         return $this->_getDialogAddLink($record, 'add');
       }
