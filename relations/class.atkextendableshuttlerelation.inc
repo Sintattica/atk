@@ -297,6 +297,28 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param String $mode for which mode we are rendering
    * @return array selected records
    */
+  function getSelectedFields($record, $mode='add')
+  {
+    return $this->_getSelectedFields($record, $mode);
+  }
+
+  /**
+   * Get array with all available fields (which are not already selected)
+   * @param array $record The record with the currently selected fields
+   * @param String $mode for which mode we are rendering
+   * @return array available records
+   */
+  function getAvailableFields($record, $mode='add')
+  {
+    return $this->_getAvailableFields($record, $mode);
+  }
+
+  /**
+   * Get array with all selected fields
+   * @param array $record The record with the currently selected fields
+   * @param String $mode for which mode we are rendering
+   * @return array selected records
+   */
   function _getSelectedFields($record, $mode='add')
   {
     $res = array();
