@@ -1770,7 +1770,8 @@
         for ($i=max(0, $cnt-3), $_i=$cnt; $i<$_i; $i++)
         {
           $desc = $descriptortrace[$i];
-          $descrtrace.= htmlentities($desc, ENT_COMPAT,atktext('charset'))." - ";
+          //$descrtrace.= htmlentities($desc, ENT_COMPAT,atktext('charset'))." - ";
+          $descrtrace.= strip_tags($desc) . " - ";
         }
         $res= $descrtrace . $res;
       }
@@ -3081,20 +3082,63 @@
       {
         atkimport("atk.utils.atkstringparser");
         $parser = new atkStringParser($this->m_descTemplate);
-          return $parser->parse($rec);
+        
+        /*
+        * This displays it in the right way
+        */
+        $attributes = $parser->getFields();
+        
+        foreach($attributes as $attr)
+        {
+          $elements = split("\.", $attr);
+          
+          if(count($elements) == 1)
+          {
+            $tmp = $this->getAttribute($elements[0]);
+            $rec[$elements[0]] = $tmp->getView($rec);
+          }
+          
+        }
+        
+        return $parser->parse($rec);
       }
       // See if node has a custom descriptor definition.
       else if (method_exists($this,"descriptor_def"))
       {
         atkimport("atk.utils.atkstringparser");
+        
         $parser = new atkStringParser($this->descriptor_def());
-          return $parser->parse($rec);
+        
+        /*
+        * This displays it in the right way
+        */
+        $attributes = $parser->getFields();
+        
+        foreach($attributes as $attr)
+        {
+          $elements = split("\.", $attr);
+          
+          if(count($elements) == 1)
+          {
+            $tmp = $this->getAttribute($elements[0]);
+            $rec[$elements[0]] = $tmp->getView("view", $rec);
+          }
+          
+        }
+        
+        return $parser->parse($rec);
       }
       else
       {
         // default descriptor.. (default is first attribute of a node)
         $keys = array_keys($this->m_attribList);
-        return $rec[$keys[0]];
+        
+        atkimport("atk.utils.atkstringparser");
+        
+        $attr = $this->getAttribute($keys[0]);
+        $dis = $attr->getView("view", $rec);
+        
+        return $dis;
       }
     }
 
