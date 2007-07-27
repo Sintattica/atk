@@ -3484,6 +3484,19 @@
     }
 
     /**
+     * Retrieve records from the database using a handy helper class. PHP5 only.
+     * 
+     * @param string $selector (optional) selector string (will be used in the where clause)
+     * 
+     * @return atkSelector
+     */
+    function select($selector='')
+    {
+      atkimport('atk.utils.atkselector');
+      return new atkSelector($this, $selector);
+    }
+    
+    /**
      * Retrieve records from the database.
      *
      * Note that if 'atksearch' is set in the request vars, the search

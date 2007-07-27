@@ -6,6 +6,10 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
++ Added select method to atkNode which returns an instance of the
+  atkSelector class which can be used to fluently build a selectDb
+  expression to retrieve a single row, all rows or the row count.
+  (PHP5 only!) [Peter]
 + Added feature that skips the addOrCopyDialog when there is no record
   to copy from. The add link will go directly to the add page instead.[Edgar]
 + Added support for usage of custom templates in the admin actions. [Ruud]
