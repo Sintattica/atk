@@ -1841,6 +1841,7 @@
 
       $filterHtml = (count($filterAttributes)>0) ? implode("<br />", $filterAttributes)."<br />" : "";
 
+      $this->addFlag(AF_RELATION_NO_NULL_ITEM);
       $attributeHtml = $this->edit($record, $fieldprefix, $mode);
 
       // We do not want an empty option rendered in the dropdown.
@@ -1859,8 +1860,8 @@
             <div id="attribute_' . $this->fieldName() . '">' . $attributeHtml .'</div><br />' .
             '<div id="editurl_' . $this->fieldName().'">' .
                 $this->_getDialogEditUrl() .
-             '</div><br /><br />' .
-          '</div>';
+             '</div><br />' .
+          '</div><br />';
       }
       else
       {
@@ -1869,12 +1870,21 @@
             $introtext .
             '<input type="hidden" id="'.$this->m_ownerInstance->primaryKeyField().'" name="'.$this->m_ownerInstance->primaryKeyField().'" value="'.$record[$this->m_ownerInstance->primaryKeyField()].'">' .
             $filterHtml .
-            $this->_getSelectOption() . '&nbsp;<div id="attribute_' . $this->fieldName() . '">' . $attributeHtml . '</div><br />' .
-            '<div id="editurl_' . $this->fieldName().'">' .
-                $this->_getDialogEditUrl($initial_values) .
-             '</div><br /><br />' .
-            $this->_getNoSelectOption() . '<br />' .
-          '</div>';
+            '<table class="editdialogtable">
+              <tr>
+                <td>' . $this->_getSelectOption() . '</td>
+                <td><div id="attribute_' . $this->fieldName() . '">' . $attributeHtml . '</div></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td><div id="editurl_' . $this->fieldName().'">' . $this->_getDialogEditUrl($initial_values) . '</div></td>
+              </tr>
+              <tr>
+                <td>' . $this->_getNoSelectOption() . '</td>
+                <td></td>
+              </tr>
+            </table>
+           </div>';
       }
 
       $params['atkprimkey'] = $atkselector;
@@ -2074,7 +2084,7 @@
      */
     function _getNoSelectOption()
     {
-      $label = $this->text('no_'.$this->fieldName());
+      $label = $this->text('no').' '.$this->text($this->fieldName());
 
       return '
         <input type="radio" id="noselect'.$this->fieldName().'" name="selection_'.$this->fieldName().'" value="noselect" />
