@@ -6,7 +6,7 @@
  * @author Peter C. Verhage <peter@ibuildings.nl>
  * @version $Revision$
  */
-class atkSelector
+class atkSelector implements ArrayAccess, Countable, SeekableIterator
 {
   /**
    * This selector's node.
@@ -23,6 +23,9 @@ class atkSelector
   protected $m_offset = 0;
   protected $m_excludes = '';
   protected $m_includes = '';
+  
+  protected $m_rows = null;
+  protected $m_rowCount = null;
   
   /**
    * Constructor.
@@ -128,7 +131,7 @@ class atkSelector
    *
    * @return array first row
    */
-  public function first()
+  public function firstRow()
   {
     list($row) = $this->limit(1, $this->m_offset)->all();
     return $row;
@@ -139,9 +142,14 @@ class atkSelector
    * 
    * @return array all rows
    */
-  public function all()
+  public function allRows()
   {
-    return $this->m_node->selectDb($this->m_selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+    if ($this->m_rows === null)
+    {
+      $this->m_rows = $this->m_node->selectDb($this->m_selector, $this->m_order, array('limit' => $this->m_limit, 'offset' => $this->m_offset), $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+    }
+    
+    return $this->m_rows;
   }
   
   /**
@@ -149,8 +157,150 @@ class atkSelector
    *
    * @return int row count
    */
+  public function rowCount()
+  {
+    if ($this->m_rowCount === null)
+    {
+      $this->m_rowCount = (int)$this->m_node->countDb($this->m_selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+    }
+    
+    return $this->m_rowCount;
+  }
+  
+  /**
+   * Does the given offset exist?
+   *
+   * @param string|int $key key
+   * @return boolean offset exists?
+   */
+  public function offsetExists($key)
+  {
+    $this->allRows();
+    return isset($this->m_rows[$key]);
+  }
+  
+  /**
+   * Returns the given offset.
+   *
+   * @param string|int $key key
+   * @return mixed
+   */
+  public function offsetGet($key)
+  {
+    $this->allRows();    
+    return $this->m_rows[$key];
+  }
+  
+  /**
+   * Sets the value for the given offset.
+   *
+   * @param string|int $key
+   * @param mixed $value
+   */
+  public function offsetSet($key, $value)
+  {
+    $this->allRows();    
+    return $this->m_rows[$key] = $value;
+  }
+  
+  /**
+   * Unset the given element.
+   *
+   * @param string|int $key
+   */
+  public function offsetUnset($key)
+  {
+    $this->allRows();    
+    unset($this->m_rows[$key]);
+  }
+  
+  /**
+   * Returns the current row.
+   *
+   * @return array|boolean current row (false if no current row)
+   */
+  public function current()
+  {
+    $this->allRows();    
+    return current($this->m_rows);
+  }
+  
+  /**
+   * Returns the current key.
+   *
+   * @return array|boolean current key (false if no current key)
+   */
+  public function key()
+  {
+    $this->allRows();    
+    return key($this->m_rows);    
+  }
+  
+  /**
+   * Moves the internal pointer to the next row and
+   * returns the new current row (false if no current row).
+   *
+   * @return array|boolean next row
+   */
+  public function next()
+  {
+    $this->allRows();    
+    return next($this->m_rows);    
+  }
+  
+  /**
+   * Reset to the first row and return.
+   *
+   * @return array|boolean first row (false if no current row)
+   */
+  public function rewind()
+  {
+    $this->allRows();    
+    return reset($this->m_rows);    
+  }
+  
+  /**
+   * Is the pointer set to a valid row?
+   *
+   * @return boolean valid row?
+   */
+  public function valid()
+  {
+    $this->allRows();    
+    return current($this->m_rows) !== false;
+  }
+  
+  /**
+   * Seek to the given index.
+   *
+   * @param int $index seek index
+   */
+  public function seek($index) 
+  {
+    $this->rewind();
+    $position = 0;
+    
+    while ($position < $index && $this->valid()) {
+      $this->next();
+      $position++;
+    }
+    
+    if (!$this->valid()) 
+    {
+      throw new OutOfBoundsException('Invalid seek position');
+    }
+  }  
+  
+  /**
+   * Returns the row count (used when calling count on an atkSelector object,
+   * don't use this if you want to efficiently retrieve the row count using
+   * a count() select statement, use rowCount instead!
+   *
+   * @return int row count
+   */
   public function count()
   {
-    return (int)$this->m_node->countDb($this->m_selector, $this->m_excludes, $this->m_includes, $this->m_mode, $this->m_distinct);
+    $this->allRows();
+    return count($this->m_rows);
   }
 }
