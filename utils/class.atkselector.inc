@@ -37,6 +37,18 @@ class atkSelector
   }
   
   /**
+   * Sets the selector.
+   * 
+   * @param string $selector where clause
+   * @return atkSelector
+   */
+  public function where($selector)
+  {
+    $this->m_selector = $selector;
+    return $this;
+  }
+  
+  /**
    * Distinct selection?
    * 
    * @param boolean $distinct distinct selection?
