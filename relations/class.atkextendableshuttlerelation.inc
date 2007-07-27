@@ -271,7 +271,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param array $record The record with the currently selected fields
    * @return array available records
    */
-  private function getSelectedFieldsFromRecord($record)
+  public function getSelectedFieldsFromRecord($record)
   {
     $selectedPk = array();
     $this->createLink();
