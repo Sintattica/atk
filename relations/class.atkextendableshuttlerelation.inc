@@ -60,25 +60,25 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
 
     if ($redraw)
     {
-      $res .= "$('".$this->getHtmlId($prefix)."_".$record[$this->fieldName()]["section"]."').innerHTML = ".atkJSON::encode($this->_renderSelectBoxes($record[$this->fieldName()]["section"],$record,$mode,$prefix)).";";
+      $res .= "$('".$this->getHtmlId($prefix)."_".$record[$this->fieldName()]["section"]."').innerHTML = ".atkJSON::encode($this->renderSelectBoxes($record[$this->fieldName()]["section"],$record,$mode,$prefix)).";";
     }
     $res .= "</script>";
 
     return $res;
   }
 
-  function _renderSelectBoxes($side,$record,$mode,$prefix)
+  private function renderSelectBoxes($side,$record,$mode,$prefix)
   {
     if ($side=='available')
     {
-      $rs = $this->_getAvailableFields($record, $mode);
+      $rs = $this->getAvailableFields($record, $mode);
       $name  = $this->getHtmlId($prefix)."[available]";
       $opp   = $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
       $sel   = 0;
     }
     else
     {
-      $rs = $this->_getSelectedFields($record);
+      $rs = $this->getSelectedFields($record);
       $opp   = $this->getHtmlId($prefix)."[available]";
       $name  = $this->getHtmlId($prefix).'[cselected][]['.$this->getRemoteKey().']';
       $sel   = 1;
@@ -100,7 +100,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * - "selected" => currently selected records (keys)
    * - "available" => currently available records (keys)
    */
-  function partial_selection()
+  public function partial_selection()
   {
     $record = $this->getOwnerInstance()->updateRecord();
     $mode   = $ATK_VARS["atkaction"];
@@ -129,7 +129,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $res;
   }
 
-  function edit($record, $fieldprefix, $mode)
+  public function edit($record, $fieldprefix, $mode)
   {
     // Add onchange handler
     $mode == "add" ? "add" : "edit";
@@ -150,14 +150,14 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     }
 
     // Get selected records
-    $right = $this->_getSelectedFields($record);
+    $right = $this->getSelectedFields($record);
     for($i=0, $_i=count($right); $i<$_i; $i++)
     {
       $selected_options[$right[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($right[$i]);
     }
 
     // Get available records
-    $left  = $this->_getAvailableFields($record, $mode);
+    $left  = $this->getAvailableFields($record, $mode);
     for($i=0, $_i=count($left); $i<$_i; $i++)
     {
       $available_options[$left[$i][$this->m_destInstance->primaryKeyField()]] = $this->m_destInstance->descriptor($left[$i]);
@@ -198,14 +198,14 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $output;
   }
 
-  function load($notused, $record)
+  public function load($notused, $record)
   {
     $res = parent::load($notused, $record);
     $ret['selected'] = $res;
     return $ret;
   }
 
-  function fetchValue($postvars)
+  public function fetchValue($postvars)
   {
     $ret = array();
     $vals = atkJSON::decode($postvars[$this->fieldName()]['selected'][0][$this->getRemoteKey()],true);
@@ -220,7 +220,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $postvars[$this->fieldName()];
   }
 
-  function store($notused, &$record, $mode)
+  public function store($notused, &$record, $mode)
   {
     $rec = $record[$this->fieldName()];
     $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
@@ -229,7 +229,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
     return $res;
   }
 
-  function display($record, $mode="")
+  public function display($record, $mode="")
   {
     $record[$this->fieldName()] = $record[$this->fieldName()]['selected'];
     return parent::display($record,$mode);
@@ -245,7 +245,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param bool $isSelected Whether or not this is the selectbox with the selectedItems (needed for onchangecode)
    * @return String piece of html code
    */
-  function _renderSelect($name, $recordset, $opposite, $prefix, $isSelected)
+  private function _renderSelect($name, $recordset, $opposite, $prefix, $isSelected)
   {
     if ($isSelected) {
       $onchangecode = $this->getHtmlId($prefix).'_onChange(\'selected\');';
@@ -271,7 +271,7 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param array $record The record with the currently selected fields
    * @return array available records
    */
-  function _getSelectedFieldsFromRecord($record)
+  private function getSelectedFieldsFromRecord($record)
   {
     $selectedPk = array();
     $this->createLink();
@@ -297,33 +297,11 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param String $mode for which mode we are rendering
    * @return array selected records
    */
-  function getSelectedFields($record, $mode='add')
-  {
-    return $this->_getSelectedFields($record, $mode);
-  }
-
-  /**
-   * Get array with all available fields (which are not already selected)
-   * @param array $record The record with the currently selected fields
-   * @param String $mode for which mode we are rendering
-   * @return array available records
-   */
-  function getAvailableFields($record, $mode='add')
-  {
-    return $this->_getAvailableFields($record, $mode);
-  }
-
-  /**
-   * Get array with all selected fields
-   * @param array $record The record with the currently selected fields
-   * @param String $mode for which mode we are rendering
-   * @return array selected records
-   */
-  function _getSelectedFields($record, $mode='add')
+  public function getSelectedFields($record, $mode='add')
   {
     $res = array();
     $recs = $this->_getSelectableRecords($record, $mode);
-    $selectedFields = $this->_getSelectedFieldsFromRecord($record);
+    $selectedFields = $this->getSelectedFieldsFromRecord($record);
 
     foreach ($recs as $rec)
     {
@@ -341,11 +319,11 @@ class atkExtendableShuttleRelation extends atkManyToManyRelation
    * @param String $mode for which mode we are rendering
    * @return array available records
    */
-  function _getAvailableFields($record, $mode='add')
+  public function getAvailableFields($record, $mode='add')
   {
     $res = array();
     $recs = $this->_getSelectableRecords($record, $mode);
-    $selectedFields = $this->_getSelectedFieldsFromRecord($record);
+    $selectedFields = $this->getSelectedFieldsFromRecord($record);
 
     foreach ($recs as $rec)
     {
