@@ -200,6 +200,19 @@
       else { $lng = atkLanguage::getUserLanguage(); }
       return strtolower($lng);
     }
+    
+    /**
+     * Change the current language.
+     * Note that his only remains set for the current request, it's not 
+     * session based.
+     * @static
+     * @param String $lng The language to set
+     */
+    function setLanguage($lng)
+    {
+      global $ATK_VARS;
+      $ATK_VARS["atklng"] = $lng;
+    }
 
     /**
      * Get the selected language of the current user if he/she set one,

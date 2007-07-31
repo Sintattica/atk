@@ -53,7 +53,8 @@ Changed in ATK 6.1
   argument, which will render an extra button next to the MRA dropdown [Dennis].
 + Made it possible to extend atkTimeZoneAttribute by calling it's methods non-
   static. [Tjeerd]
-+ Added atkvardump modifier. [Boy]
++ Added atkvardump Smarty modifier. [Boy]
++ Added setLanguage method to atkLanguage. [Ivo]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
