@@ -1311,10 +1311,7 @@
   }
 
   /**
-   * Does a var dump of an array. Makes use of atkdebug for displaying the values
-   *
-   * Note, this method uses var_export to output the data. If using a php
-   * version older than 4.2, atk_var_dump will output nothing.
+   * Does a var dump of an array. Makes use of atkdebug for displaying the values.
    *
    * @param $a data to be displayed
    * @param $d name of the data that's being displayed.
