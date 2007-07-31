@@ -442,8 +442,7 @@
 
       // We do not need certain attributes.
       foreach ($attributes as $index=>$attr)
-      {
-        atk_var_dump($attr->fieldName(),"<h1>attrneem</h1>");
+      {        
         // Attributes without labels will not be selectable.
         if ($attr->hasFlag(AF_NO_LABEL) ||  $attr->hasFlag(AF_BLANK_LABEL))
           continue;
