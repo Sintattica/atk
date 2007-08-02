@@ -1139,6 +1139,14 @@
       return $this->m_attribIndexList[$this->m_attribList[$name]->m_index]["order"];
     }
 
+    /**
+     * Sets an attributes order
+     */
+    function setAttributeOrder($name, $order)
+    {
+      $this->m_attribList[$name]->m_order = $order;
+      $this->m_attribIndexList[$this->m_attribList[$name]->m_index]["order"] = $order;
+    }
 
     /**
      * Checks if the node has a certain flag set.
