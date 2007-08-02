@@ -243,6 +243,15 @@
         return $rec[$this->fieldName()]["hours"]*60 + $rec[$this->fieldName()]["minutes"];
       }
     }
-
+    
+    /**
+     * Check if a record has an empty value for this attribute.
+     * @param array $record The record that holds this attribute's value.
+     * @return boolean
+     */
+    function isEmpty($record)
+    {    
+      return parent::isEmpty($record)||$record[$this->fieldName()]==0;
+    }
   }
 ?>

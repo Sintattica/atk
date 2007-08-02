@@ -80,6 +80,7 @@ Changed in ATK 6.1
 * atkTime datatype returns time array by default with leading zero. [Boy]
 * atkDateTimeAttribute does not have a AF_SEARCHABLE flag anymore at default.
   [Peter, Dennis]
+* atkDurationAttribute now supports the AF_OBLIGATORY flag again. [Ivo]
 
 Changed in ATK 6.0
 ------------------
