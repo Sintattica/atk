@@ -220,6 +220,21 @@
     }
 
     /**
+     * Adds a flag to the manyToOne relation
+     * Note that adding flags at any time after the constructor might not
+     * always work. There are flags that are processed only at
+     * constructor time.
+     *
+     * @param int $flag The flag to add to the attribute
+     */
+    function addFlag($flag)
+    {
+      parent::addFlag($flag);
+      if (atkconfig("manytoone_autocomplete_large", true) && hasFlag($flag, AF_LARGE))
+        $this->m_flags |= AF_RELATION_AUTOCOMPLETE;
+    }
+
+    /**
      * Set join filter.
      *
      * @param string $filter join filter
