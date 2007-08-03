@@ -55,6 +55,7 @@ Changed in ATK 6.1
   static. [Tjeerd]
 + Added atkvardump Smarty modifier. [Boy]
 + Added setLanguage method to atkLanguage. [Ivo]
++ Ported string resource from WDE to ATK. [Boy]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
