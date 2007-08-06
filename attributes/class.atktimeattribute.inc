@@ -25,7 +25,7 @@
    *
    */
   
-  define("AF_SECONDS", AF_SPECIFIC_1);
+  define("AF_TIME_SECONDS", AF_SPECIFIC_1);
   
   class atkTimeAttribute extends atkAttribute
   {
@@ -41,7 +41,7 @@
      * @param $endTime     Time to end with (eg 24)
      * @param $steps       int|Array containing possible minute or seconds values (eg array("00","15","30","45"))
      *                               or the interval (eg 5 for 00,05,10,15, etc.)
-     *                               if the flag AF_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
+     *                               if the flag AF_TIME_SECONDS is set, this is for seconds, the minutes will be range(0, 59)
      *                               else this is for the minutes and the seconds will not be displayed
 	   * @param $default  Start Time (exp: 20:30)
      * @param $flags Flags for this attribute
@@ -99,7 +99,7 @@
 	  	$value = $record[$this->fieldName()];
       if ($value["hours"] === "") return "";
       $tmp_time = sprintf("%02d:%02d", $value["hours"], $value["minutes"]);
-      if ($value["seconds"] && $this->hasFlag(AF_SECONDS)) $tmp_time.=sprintf(":%02d", $value["seconds"]);
+      if ($value["seconds"] && $this->hasFlag(AF_TIME_SECONDS)) $tmp_time.=sprintf(":%02d", $value["seconds"]);
       return $tmp_time;
     }
 
@@ -194,7 +194,7 @@
       if (!$this->hasflag(AF_OBLIGATORY))
         $m_minBox .= '<option value=""'.($m_defMin === "" ? ' selected' : '').'></option>';
       
-      if ($this->hasFlag(AF_SECONDS))
+      if ($this->hasFlag(AF_TIME_SECONDS))
       {
         $minute_steps = range(00, 59);
       }
@@ -243,7 +243,7 @@
       // close dropdown structures
       $m_hourBox .= "</select>";
       $m_minBox  .= "</select>";
-      if($this->hasFlag(AF_SECONDS))
+      if($this->hasFlag(AF_TIME_SECONDS))
       {
         $m_secBox  .= "</select>";
         $m_secBox = ":" . $m_secBox;
