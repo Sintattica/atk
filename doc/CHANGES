@@ -61,6 +61,8 @@ Changed in ATK 6.1
   the beginning of the action URL). [Peter]
 + Override prototype.js's String.evalScripts method so that JavaScript 
   gets executed in the window context. [Peter]
++ Added query execution time info to the debug for more accurate performance
+  data in db/class.atkoci9db.inc. [Patrick]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
