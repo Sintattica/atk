@@ -270,6 +270,7 @@
       $page->register_loadscript($script);
     }
 
+
     /**
      * The handler for the dialog partial call.
      *

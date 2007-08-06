@@ -233,6 +233,7 @@
       $page = &$node->getPage();
 
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");      
       $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");      
       $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");

@@ -59,7 +59,6 @@ class atkDGList extends atkDGComponent
       $listName = "rl_".getUniqueId("normalRecordList");
       
     $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
-    $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
     $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");      
 
     $defaulthighlight = $theme->getAttribute("highlight");

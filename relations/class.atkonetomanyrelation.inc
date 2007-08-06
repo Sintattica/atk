@@ -1263,5 +1263,32 @@
         $page->register_loadscript($script);
       }
     }
+    
+    /**
+     * Edit dialog.
+     */
+    function partial_edit_dialog()
+    {
+      $this->createDestination();
+      $this->m_destInstance->m_partial = 'dialog';
+      $handler = &$this->m_destInstance->getHandler('edit');
+      $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+      $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.edit_process'));
+      $result = $handler->renderEditDialog();
+      $page = &$this->m_ownerInstance->getPage();
+      $page->addContent($result);
+    }
+
+    /**
+     * Process edit dialog update action.
+     */
+    function partial_edit_process()
+    {
+      $this->createDestination();
+      $handler = &$this->m_destInstance->getHandler('update');
+      $handler->m_postvars = $this->m_ownerInstance->m_postvars;
+      $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.edit_process'));
+      $handler->handleUpdate(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
+    }    
   }
 ?>

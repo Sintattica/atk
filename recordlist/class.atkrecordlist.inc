@@ -430,8 +430,16 @@
 
           foreach ($list["rows"][$i]["actions"] as $name => $url)
           {
-            $actionloader.="\nrl_a['".$listName."'][".$i."]['".$name."'] = '".$url."';";
-
+            if (substr($url, 0, 11) == 'javascript:')
+            {
+              $call = substr($url, 11);
+              $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";              
+            }
+            else 
+            {
+              $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
+            }
+            
             $link = $name;
 
             if($icons == true)
@@ -600,7 +608,6 @@
             }
 
             $page = &$this->m_node->getPage();
-            $page->register_script(atkconfig('atkroot').'atk/javascript/prototype/prototype.js');
             $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
             $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattributeedithandler.js');
 

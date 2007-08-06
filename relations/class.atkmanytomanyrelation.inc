@@ -359,7 +359,7 @@
           // magical stuff..
           $remKey    = $this->checkKeyDimension($record[$this->fieldName()][$i][$this->getRemoteKey()], $this->m_destInstance->primaryKeyField());
 
-          $newrecord = $rel->initial_values();
+          $newrecord = array_merge($rel->initial_values(), $record[$this->fieldName()][$i]);
 
           if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
           {

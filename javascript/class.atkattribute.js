@@ -7,7 +7,10 @@ ATK.Attribute = {
    * Refresh the attribute input form using Ajax.
    */
   refresh: function(url, focusFirstFormEl) {
-    var elements = Form.getElements('entryform');
+    var form = $(ATK.Dialog && ATK.Dialog.getCurrent() != null ? 'dialogform' : 'entryform'); // TODO: find a better way to detect the correct form
+    if (form == null) return;
+    
+    var elements = Form.getElements(form);
     var queryComponents = new Array();
 
     for (var i = 0; i < elements.length; i++) {
@@ -25,9 +28,20 @@ ATK.Attribute = {
 
     var params = queryComponents.join('&');
 
-    var func = function(transport) { transport.responseText.evalScripts(); };
+    var func = function(transport) {
+      transport.responseText.evalScripts();
+      if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
+        ATK.Dialog.getCurrent().delayedResize();
+      }
+    };
     if (focusFirstFormEl) {
-      func = function(transport) { transport.responseText.evalScripts(); try { placeFocus(); } catch (ex) {} };
+      func = function(transport) {
+        transport.responseText.evalScripts();
+        try { placeFocus(); } catch (ex) {}
+        if (form == 'dialogform' && ATK.Dialog && ATK.Dialog.getCurrent() != null) {
+          ATK.Dialog.getCurrent().delayedResize();
+        }
+      };
     }
 
     /*

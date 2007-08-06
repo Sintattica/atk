@@ -16,6 +16,7 @@
    * @version $Revision$
    * $Id$
    */
+   
 /**
    * flag(s) specific for atkManyToOneRelation
    */
@@ -966,8 +967,6 @@
           $url = partial_url($this->m_ownerInstance->atkNodeType(), $this->m_ownerInstance->m_action, 'attribute.'.$this->fieldName().'.autocomplete_search');
           $code = "ATK.ManyToOneRelation.completeSearch('{$id}', '{$id}_result', '{$url}', {$this->m_autocomplete_minchars});";
           $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-          $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
-          $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
           $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
           $page->register_loadscript($code);
           $result .= '<div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
@@ -1846,8 +1845,6 @@
       $fieldprefix = (isset($this->m_ownerInstance->m_postvars['atkfieldprefix'])?$this->m_ownerInstance->m_postvars['atkfieldprefix']:"");
 
       $page = &$this->m_ownerInstance->getPage();
-      $page->register_script(atkconfig("atkroot").'atk/javascript/prototype/prototype.js');
-      $page->register_script(atkconfig("atkroot").'atk/javascript/scriptaculous/scriptaculous.js');
       $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
       $this->_editDialogRefreshUrlHandler($mode);
 

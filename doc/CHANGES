@@ -56,6 +56,11 @@ Changed in ATK 6.1
 + Added atkvardump Smarty modifier. [Boy]
 + Added setLanguage method to atkLanguage. [Ivo]
 + Ported string resource from WDE to ATK. [Boy]
++ Added support for editing records using a DHTML popup dialog. [Dennis]
++ Added support for JavaScript record actions (specify javascript: at
+  the beginning of the action URL). [Peter]
++ Override prototype.js's String.evalScripts method so that JavaScript 
+  gets executed in the window context. [Peter]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
@@ -82,6 +87,9 @@ Changed in ATK 6.1
 * atkDateTimeAttribute does not have a AF_SEARCHABLE flag anymore at default.
   [Peter, Dennis]
 * atkDurationAttribute now supports the AF_OBLIGATORY flag again. [Ivo]
+* Improved detection of clicks on the recordlist row or clicks on inputs,
+  etc.in the recordlist row. [Peter]
+* Moved prototype.js overrides to separate JavaScript file. [Peter]
 
 Changed in ATK 6.0
 ------------------

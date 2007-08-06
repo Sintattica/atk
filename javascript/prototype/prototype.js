@@ -4,22 +4,6 @@
  *  Prototype is freely distributable under the terms of an MIT-style license.
  *  For details, see the Prototype web site: http://prototype.conio.net/
  *
- *--------------------------------------------------------------------------
- *
- * PATCHED:
- *
- * Changed:
- * for (var name in headers)
- *   this.transport.setRequestHeader(name, headers[name]);
- *
- * To:
- * for (var name in headers)
- *   if (typeof headers[name] != 'function')
- *     this.transport.setRequestHeader(name, headers[name]);
- *
- * Because it was causing problems with rico.js! 
- * For more information, visit: http://forum.openrico.org/topic/2228
- *
  *--------------------------------------------------------------------------*/
 
 var Prototype = {

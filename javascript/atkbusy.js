@@ -21,7 +21,7 @@ Ajax.Responders.register({
     this.onComplete();
 
     if (typeof(console) == 'object' && console.debug) {
-      console.debug('Exception in Ajax.Request:', ex);
+      console.debug('Exception in Ajax.Request:', ex, ex.stack);
     }
   }
 });

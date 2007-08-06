@@ -158,7 +158,7 @@ class atkDialog
       atkJSON::encode($this->m_title),
       atkJSON::encode($this->getUrl()),
       atkJSON::encode($this->m_themeName),
-      atkJSON::encode($this->getOptions())
+      count($this->getOptions()) == 0 ? '{}' : atkJSON::encode($this->getOptions())
     );
 
     $result = vsprintf($call, $params);

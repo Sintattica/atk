@@ -334,7 +334,7 @@
 
       // lockedvars are session or page vars that will not be overwritten in partial mode
       // e.g., the values that are already known in the session will be used
-      $lockedVars = array('atknodetype', 'atkaction');
+      $lockedVars = array('atknodetype', 'atkaction', 'atkselector');
 
       // Mental note: We have an atkLevel() function for retrieving the atklevel,
       // but we use the global var itself here, because it gets modified in
