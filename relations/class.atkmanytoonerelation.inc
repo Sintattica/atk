@@ -577,19 +577,14 @@
 
         if ($this->m_destInstance->allowed("edit") && $record[$this->fieldName()] != NULL)
         {
-          $links[] = $this->_getEditLink($id);
+          //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
+          //de app crasht als er geen waarde is ingevuld.
+          $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
+          $links[] = "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
         }
       }
 
       return implode("&nbsp;", $links);
-    }
-
-    function _getEditLink($id)
-    {
-      //we laten nu altijd de edit link zien, maar eigenlijk mag dat niet, want
-      //de app crasht als er geen waarde is ingevuld.
-      $editUrl = session_url(dispatch_url($this->m_destination,"edit",array("atkselector"=>"REPLACEME")),SESSION_NESTED);
-      return "<span id=\"".$id."_edit\" style=\"\"><a href='javascript:atkSubmit(mto_parse(\"".atkurlencode($editUrl)."\", document.entryform.".$id.".value))'>".atktext('edit')."</a></span>";
     }
 
     /**
