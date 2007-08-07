@@ -34,12 +34,6 @@ Changed in ATK 6.1
   with so called controls. Base classes for these controls are included.
   Controls can be used, for example, to filter content in fields. Will in the
   near future replace the normal atkShuttleRelation. [Tjeerd,Peter]
-+ Added support for "edit" dialogs for only 1 attribute (only supported for
-  atkManyToOneRelations for now). In recordlists a user can click on the value
-  of the attribute and a dialog appears, which makes it possible to changes only
-  the value of that attribute. This functionality can be activated with the
-  AF_RELATION_EDITDIALOG flag. After saving the attribute, ONLY the altered cell
-  in the recordlist will be updated. [Dennis]
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
 + Implemented caching of query results by node and filter in
