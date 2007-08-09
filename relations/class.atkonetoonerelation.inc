@@ -122,41 +122,22 @@
      */
     function display($record, $mode="list")
     {
+      if ($mode == 'view')
+      {
+        return null;
+      }
+      
       $myrecord = $record[$this->fieldName()];
 
-      // default result
-      $result = atktext("none");
-
-      if ($this->createDestination())
+      if ($this->createDestination() && is_array($myrecord))
       {
-
-        if (is_array($myrecord))
-        {
-          /* display in list mode */
-          if ($mode == "list")
-            $result = $this->m_destInstance->descriptor($myrecord);
-
-          /* display in view mode */
-          else
-          {
-            if(is_array($this->m_destinationFilter))
-            {
-              $filter="";
-              for($i=0,$_i=count($this->m_destinationFilter);$i<$_i;$i++)
-              {
-                if($filter!="") $filter.=" AND ";
-                $filter.= $this->m_destinationFilter[$i];
-              }
-            }
-            elseif (!empty($this->m_destinationFilter)) $filter = $this->m_destinationFilter;
-            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
-              $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
-            else $actions = array();
-            $recordlist = &atknew("atk.recordlist.atkrecordlist");
-            $result = $recordlist->render($this->m_destInstance, array($myrecord), $actions, null, array($this->m_refKey))."<br>";
-          }
-        }
+        $result = $this->m_destInstance->descriptor($myrecord);
       }
+      else 
+      {
+        $result = $this->text('none');
+      }
+      
       return $result;
     }
 
@@ -762,7 +743,7 @@
             }
           }
 
-          $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
+          $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_", false, false);
 
           /* hidden fields */
           $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
@@ -792,6 +773,66 @@
         }
       }
     }
+    
+    /**
+     * Adds the attribute's view / hide HTML code to the view array.
+     *
+     * This method is called by the node if it wants the data needed to create
+     * a view form.
+     *
+     * This is a framework method, it should never be called directly.
+     *
+     * @param String $mode     the mode ("view")
+     * @param array  $arr      pointer to the view array
+     * @param array  $defaults pointer to the default values array
+     */
+    function addToViewArray($mode, &$arr, &$defaults)
+    {
+      if ($this->hasFlag(AF_HIDE_VIEW)) return;
+      
+      /* we first check if there is no display override method, if there
+       * is this method has the same behaviour as the atkAttribute's method
+       */
+      if (method_exists($this->m_ownerInstance, $this->m_name."_display") ||
+          $this->display($defaults, 'view') !== NULL)
+      {
+        atkAttribute::addToViewArray($mode, $arr, $defaults);
+      }
+
+      /* how we handle 1:1 relations normally */
+      else
+      {
+        if (!$this->createDestination()) return;
+
+        $record = $defaults[$this->fieldName()];
+        $a = $this->m_destInstance->viewArray($mode, $record, false);
+        
+        /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+         * same name as the relation we don't display a label
+         * TODO FIXME
+         */
+        if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+        {
+          /* separator and name */
+          $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+          $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+        }
+        
+        if (!is_array($arr['fields'])) 
+          $arr['fields']=array();
+          
+        if (is_array($a["fields"]))
+        {
+          $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+        }
+
+        if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+        {
+          /* separator */
+          $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+        }
+      }      
+    }    
 
     /**
      * Check if a record has an empty value for this attribute.

@@ -58,8 +58,10 @@ Changed in ATK 6.1
 + Added query execution time info to the debug for more accurate performance
   data in db/class.atkoci9db.inc. [Patrick]
 + Added getAttributeNames() method to atkNode. [Peter]  
+* Improved the way sections are injected into add, edit and view fields. [Peter]
 * Improved read-only mode of atkOneToOneRelation (don't display as table
   but display in-line, also check destination NF_READONLY flag). [Peter]
+* Improved view mode of atkOneToOneRelation (display in-line). [Peter]
 * atkTmpFile now is able to recursively create the directory structure for
   the temporary file if the directory doesn't already exist. [Peter]
 * Fixed debug output in atkTestReporter. [Patrick]
