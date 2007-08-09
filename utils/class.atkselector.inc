@@ -133,7 +133,7 @@ class atkSelector implements ArrayAccess, Countable, SeekableIterator
    */
   public function firstRow()
   {
-    list($row) = $this->limit(1, $this->m_offset)->all();
+    list($row) = $this->limit(1, $this->m_offset)->allRows();
     return $row;
   }
   

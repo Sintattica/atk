@@ -1129,7 +1129,16 @@
         return $this->m_attribList;
       else return NULL;
     }
-
+    
+    /**
+     * Returns a list of attribute names.
+     *
+     * @return array attribute names
+     */
+    function getAttributeNames()
+    {
+      return array_keys($this->m_attribList);
+    }
 
     /**
      * Gets the attribute order.

@@ -530,6 +530,20 @@
         }
       }
     }
+    
+    /**
+     * Needs update?
+     *
+     * @param array $record the record
+     * @return boolean needs update
+     */
+    function needsUpdate($record)
+    {
+      return $this->m_forceupdate || 
+             (parent::needsUpdate($record) && 
+              $this->createDestination() && 
+              !$this->m_destInstance->hasFlag(NF_READONLY));
+    }
 
     /**
      * Gets the value to store for the onetoonerelation
@@ -676,16 +690,9 @@
           $arr["hide"][] = $this->hide($defaults, $fieldprefix, $mode);
       }
 
-      /* readonly */
-      elseif (($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
-      {
-        parent::addToEditArray($mode, $arr, $defaults, $error, $fieldprefix);
-      }
-
       /* edit */
       else
       {
-
         /* we first check if there is no edit override method, if there
          * is this method has the same behaviour as the atkAttribute's method
          */
@@ -698,79 +705,89 @@
         /* how we handle 1:1 relations normally */
         else
         {
+          if (!$this->createDestination()) return;
 
-          if ($this->createDestination())
-	        {
-            /* we first check if the record doesn't already exist */
-            if (isset($defaults[$this->fieldName()]) && !empty($defaults[$this->fieldName()]))
+          /* readonly */
+          if ($this->m_destInstance->hasFlag(NF_READONLY) || ($mode=="edit" && $this->hasFlag(AF_READONLY_EDIT)) || ($mode=="add" && $this->hasFlag(AF_READONLY_ADD)))
+          {
+            $this->createDestination();
+            $attrNames = $this->m_destInstance->getAttributeNames();
+            foreach ($attrNames as $attrName)
             {
-              /* record has no primarykey yet, so we must add instead of update */
-              $myrecord = $defaults[$this->fieldName()];
-
-              if (empty($myrecord[$this->m_destInstance->primaryKeyField()]))
-              {
-                $mode = "add";
-              }
-              /* record exists! */
-              else
-              {
-                $mode = "edit";
-                $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
-              }
+              $attr = &$this->m_destInstance->getAttribute($attrName);  
+              $attr->addFlag(AF_READONLY);
             }
+          }             
+          
+          /* we first check if the record doesn't already exist */
+          if (isset($defaults[$this->fieldName()]) && !empty($defaults[$this->fieldName()]))
+          {
+            /* record has no primarykey yet, so we must add instead of update */
+            $myrecord = $defaults[$this->fieldName()];
 
-            /* record does not exist */
+            if (empty($myrecord[$this->m_destInstance->primaryKeyField()]))
+            {
+              $mode = "add";
+            }
+            /* record exists! */
             else
             {
-               $mode = "add";
+              $mode = "edit";
+              $myrecord["atkprimkey"] = $this->m_destInstance->primaryKey($myrecord);
             }
+          }
 
-            /* mode */
-            $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
+          /* record does not exist */
+          else
+          {
+             $mode = "add";
+          }
 
-            /* add fields */
+          /* mode */
+          $arr["hide"][] = '<input type="hidden" name="'.$fieldprefix.$this->fieldName().'[mode]" value="'.$mode.'">';
 
-            $forceList = decodeKeyValueSet($this->m_destinationFilter);
-            if ($this->m_refKey!="")
+          /* add fields */
+
+          $forceList = decodeKeyValueSet($this->m_destinationFilter);
+          if ($this->m_refKey!="")
+          {
+            if($this->destinationHasRelation())
             {
-              if($this->destinationHasRelation())
-              {
-                $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
-              }
-              else
-              {
-                 // its possible that the destination has no relation back. In that case the refKey is just an attribute
-                 $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
-              }
+              $forceList[$this->m_refKey][$this->m_ownerInstance->primaryKeyField()] = $defaults[$this->m_ownerInstance->primaryKeyField()];
             }
-
-            $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
-
-            /* hidden fields */
-            $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
-
-            /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
-             * same name as the relation we don't display a label
-             * TODO FIXME
-             */
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+            else
             {
-              /* separator and name */
-              $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
-              $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+               // its possible that the destination has no relation back. In that case the refKey is just an attribute
+               $forceList[$this->m_refKey] = $defaults[$this->m_ownerInstance->primaryKeyField()];
             }
-            if(!is_array($arr['fields'])) $arr['fields']=array();
-            if (is_array($a["fields"]))
-            {
+          }
 
-              $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
-            }
+          $a = $this->m_destInstance->editArray($mode, $myrecord, $forceList, array(), $fieldprefix.$this->fieldName()."_AE_");
 
-            if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
-            {
-              /* separator */
-              $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
-            }
+          /* hidden fields */
+          $arr["hide"] = array_merge($arr["hide"], $a["hide"]);
+
+          /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
+           * same name as the relation we don't display a label
+           * TODO FIXME
+           */
+          if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+          {
+            /* separator and name */
+            $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+            $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+          }
+          if(!is_array($arr['fields'])) $arr['fields']=array();
+          if (is_array($a["fields"]))
+          {
+
+            $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
+          }
+
+          if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
+          {
+            /* separator */
+            $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
           }
         }
       }
