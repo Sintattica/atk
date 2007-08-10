@@ -164,7 +164,7 @@
   "import_skipfirstrow" => "Eerste regel overslaan? (titelrij)",
   "import_update_key" => "Identifier veld om op te updaten",
   "import_upload" => "Uploaden",
-  "import_upload_explanation" => "Upload een tekstbestand met data om te importeren in de database.",
+  "import_upload_explanation" => "Upload een CSV (Comma Seperated Values) bestand met data om te importeren in de database.",
   "import_validatefirst" => "Niet controleren voor importeren",
   "invalid_absolute_url" => "Ongeldig URL, gebruik het formaat: 'http://www.ibuildings.nl/mypage#bookmark'",
   "invalid_absolute_no_anchor_url" => "Ongeldig URL, gebruik het formaat: 'http://www.ibuildings.nl/mypage'",
