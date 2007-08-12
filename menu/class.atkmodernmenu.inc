@@ -85,6 +85,13 @@ class atkModernMenu extends atkPlainMenu
         {
           $menuitem['name'] = $this->getMenuTranslation($menuitem['name'],$menuitem['module']);
         }
+        
+        $theme = &atkinstance("atk.ui.atktheme");
+        $menu_icon = $theme->iconPath($menutop.'_'.$menuitem['id'], "menu", $menuitem['module']);
+        if ($menu_icon)
+        {
+          $menuitem['image'] = $menu_icon;
+        }
 
         if (!empty($menuitem['url']))
         {
@@ -133,6 +140,12 @@ class atkModernMenu extends atkPlainMenu
             $url = $submenuitem['url'].$start."atkmenutop={$menuitem['id']}";
 
             $menuitem['submenu'][$submenukey]['url'] = session_url($url, SESSION_NEW);
+          }
+          $theme = &atkinstance("atk.ui.atktheme");
+          $menu_icon = $theme->iconPath($menuitem['id'].'_'.$submenuitem['name'], "menu", $submenuitem['module']);
+          if ($menu_icon)
+          {
+            $menuitem['submenu'][$submenukey]['image'] = $menu_icon;
           }
         }
       }
