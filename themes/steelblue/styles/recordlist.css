@@ -2,7 +2,7 @@
 table.recordlist
 {
   border-collapse: collapse;
-  display: block;
+  display: table;
 }
 
 table.recordlist th,
@@ -126,4 +126,25 @@ table.recordlist .row2
   display: block;
   margin-top: -2px;
   white-space: nowrap;
+}
+
+table.recordlist tbody.groupheader th.firstcol
+{
+  background-image: url(../../../images/plus.gif);;
+}
+
+table.recordlist tbody.groupheader_expanded th.firstcol
+{
+  background-image: url(../../../images/minus.gif);;
+}
+
+table.recordlist tbody.groupheader th,
+table.recordlist tbody.groupheader_expanded th
+{
+  cursor: pointer;
+  background-color: #749ABE;
+  color: #ffffff;
+  background-position: 5px 50%;
+  background-repeat: no-repeat;
+  padding-left: 22px !important
 }
