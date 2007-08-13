@@ -62,7 +62,7 @@ TEXTAREA
 	font-size : 8pt;
 	border-style : inset;
 	border-color : Silver;
-	border-width : 1pt;
+	border-width : 1px;
 }
 
 .button,
