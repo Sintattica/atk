@@ -134,13 +134,7 @@
 
       $this->atkAttribute($name, $flags, $size); // base class constructor
 
-      // m_options and m_values array are still here for backwardscompatibility
-      $this->m_options = $optionArray;
-      $this->_set("options",$optionArray);
-      $this->m_values = $valueArray;
-      $this->_set("values",$valueArray);
-
-      $this->createLookupArray($optionArray,$valueArray);
+      $this->setOptions($optionArray, $valueArray);
     }
 
     /**
@@ -242,7 +236,7 @@
       if (count($this->m_onchangecode))
       {
         $onchange = 'onChange="'.$id.'_onChange(this);"';
-        $this->renderChangeHandler($fieldprefix);
+        $this->_renderChangeHandler($fieldprefix);
       }
 
       $result = '<select id="'.$id.'" name="'.$id.'"  class="atklistattribute" '.$onchange.($this->m_width?" style='width: {$this->m_width}px'":"").'>';
@@ -381,19 +375,6 @@
       return $this->m_dbfieldtype;
     }
 
-    function renderChangeHandler($fieldprefix)
-    {
-      if (count($this->m_onchangecode))
-      {
-        $page = &$this->m_ownerInstance->getPage();
-        $page->register_scriptcode("function ".$this->getHtmlId($fieldprefix)."_onChange(el)
-                                    {
-                                      newvalue = el.options[el.selectedIndex].value;
-                                      ".implode("\n", $this->m_onchangecode)."
-                                    }\n");
-      }
-    }
-
     function setAutoHide($attrib, $valuearr)
     {
       $conditions = array();
@@ -518,7 +499,7 @@
       $this->_set("values", $currentValues);
       
       $this->createLookupArray($currentOptions,$currentValues);
-      atkdebug("atkListAttribute::addOption | added option '$option' and value '$value' to dropdown");
+      return $this;
     }
     
     /**
@@ -539,9 +520,20 @@
       
       $this->_set("options",$currentOptions);
       $this->_set("values",$currentValues);
+      return $this;
+    }
 
-      atkdebug("atkListAttribute::removeOption | remove option '$option' and corresponding value '$value' at index = $index");
-    }  
+    function setOptions($optionArray, $valueArray)
+    {
+      // m_options and m_values array are still here for backwardscompatibility
+      $this->m_options = $optionArray;
+      $this->_set("options",$optionArray);
+      $this->m_values = $valueArray;
+      $this->_set("values",$valueArray);
+
+      $this->createLookupArray($optionArray,$valueArray);
+      return $this;
+    }
   }
 
 ?>
