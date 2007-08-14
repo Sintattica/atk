@@ -47,7 +47,8 @@
                    onmouseout="resetrow(this)"
                    onclick="selectrow(this, '{$listid}', {$row.rownum})">
               {foreach from=$row.cols item=col}
-                <{if $row.type == "subtotal"}th{else}td{/if} valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
+                <{if $row.type == "subtotal"}th{else}td{/if} valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}
+                  {if $col.type == "data"} onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'], false);"{/if}>
                   {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                 </td>
               {/foreach}
