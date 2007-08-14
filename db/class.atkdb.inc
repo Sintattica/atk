@@ -339,7 +339,7 @@
     {
       return $this->m_errno != 0;
     }
-    
+
     /**
      * Determine whether an error that occurred is a recoverable (user) error
      * or a system error.
@@ -762,6 +762,23 @@
         $result[] = $this->m_record;
 
       return $result;
+    }
+
+    /**
+     * Get a single value (first row, first column) from a
+     * certain specified query
+     *
+     * @param string $query The query
+     * @param mixed $default A default value which will be returned if the query doesn't return a result
+     * @return mixed Either the result of the query or the default value
+     */
+    function getValue($query, $default=null)
+    {
+      $this->query($query, -1, 1);
+      if ($this->next_record() && count($this->m_record)>0)
+        return atkArrayNvl(array_values($this->m_record), 0);
+      else
+        return $default;
     }
 
     /**
