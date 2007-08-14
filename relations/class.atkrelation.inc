@@ -94,6 +94,7 @@
         $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
       else
         $this->m_destinationFilter = $filter;
+      return $this;
     }
 
     /**
