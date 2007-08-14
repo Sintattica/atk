@@ -3176,8 +3176,6 @@
       $db = &$this->getDb();
       $query = &$db->createQuery();
 
-      if($exectrigger) $this->executeTrigger("preUpdate",$record);
-
       $query->addTable($this->m_table);
 
       // The record that must be updated is indicated by 'atkorgkey'

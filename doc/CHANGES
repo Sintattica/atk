@@ -98,6 +98,9 @@ Changed in ATK 6.1
 * Improved detection of clicks on the recordlist row or clicks on inputs,
   etc.in the recordlist row. [Peter]
 * Moved prototype.js overrides to separate JavaScript file. [Peter]
+* Removed the first preUpdate call (it was called twice due to a merge error). 
+  This fixes the problem that in the preUpdate the atkorgrec is not filled with
+  nodes with the NF_TRACK_CHANGES flag. [Boy,Lineke]
 
 Changed in ATK 6.0
 ------------------
