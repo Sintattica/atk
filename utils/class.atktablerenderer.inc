@@ -392,7 +392,7 @@
       else
       {
         $value = (string)$cell;
-        if(empty($value))
+        if($value == '')
         {
           $value = '&nbsp;';
         }
