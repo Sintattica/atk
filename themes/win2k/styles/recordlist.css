@@ -13,7 +13,8 @@ TABLE.recordlist TH A  {
 
 TABLE.recordlist TD,
 TABLE.recordlist TH  {
-	padding : 1px;
+	padding : 0px;
+	border: 0px;
 	margin : 0px;
 }
 
@@ -30,7 +31,7 @@ TABLE.recordlist TH  {
 	padding-top : 2px;
 	padding-bottom : 2px;
 	text-align : left;
-	margin : 1pt;
+	margin : 0px;
 }
 
 TABLE.recordlist .row1  {
@@ -41,3 +42,9 @@ TABLE.recordlist .row2  {
 	background-color : #F6F6F6;
 }
 
+TABLE.recordlist {
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	border-spacing: 0px;
+}

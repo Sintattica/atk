@@ -44,6 +44,7 @@ A.stacktrace:visited  {
 	font-size : 8pt;
 	color : #000000;
 	text-align : left;
+	width: 170px;
 }
 
 .field  {
@@ -60,9 +61,10 @@ TEXTAREA
 	color : #000000;
 	font-family : verdana, helvetica, arial, serif;
 	font-size : 8pt;
-	border-style : inset;
-	border-color : Silver;
-	border-width : 1px;
+	border-bottom: #FFFFFF 1px solid;
+	border-right: #FFFFFF 1px solid;
+	border-top: #666666 1px solid;
+	border-left: #666666 1px solid;
 }
 
 .button,
@@ -70,7 +72,13 @@ INPUT.btn,
 INPUT.btn_save,
 INPUT.btn_cancel,
 INPUT.btn_saveandclose,
-INPUT.btn_search
+INPUT.btn_saveandnext,
+INPUT.btn_saveandaddnew,
+INPUT.btn_finish,
+INPUT.btn_next,
+INPUT.btn_search,
+INPUT[type=button],
+INPUT[type=submit]
 {
 	font-size : 8pt;
 	color : #303030;
