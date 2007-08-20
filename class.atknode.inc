@@ -813,7 +813,7 @@
       // Because sections/tabs will probably be used more than the order override option
       // the API for this method now favours the $sections argument. For backwards
       // compatibility we still support the old API ($attribute,$order=0).
-      if (!($sections === NULL) && is_int($sections))
+      if ($sections !== NULL && is_int($sections))
       {
         $order = $sections;
         $sections = array($this->m_default_tab);
@@ -1819,6 +1819,8 @@
         $page = &$this->getPage();
         $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
 
+        // Load default tab show script.
+        $page->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($this->m_postvars['atktab'])?$this->m_postvars['atktab']:'').'\');}');    
 
         $fulltabs = $this->buildTabs($action);
         $tabscript = "var tabs = new Array();\n";
@@ -2203,7 +2205,7 @@
         {
           $result[] = $field;
         }
-        else 
+        else if (is_array($field['sections']))
         {
           $sections = array_merge($sections, $field['sections']);
         }
