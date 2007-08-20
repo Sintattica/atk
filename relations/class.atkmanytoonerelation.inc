@@ -501,21 +501,18 @@
 
         if(!$this->isEmpty($record))
         {
-          $title = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+          $result = $this->m_destInstance->descriptor($record[$this->fieldName()]);
+          if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) // create link to edit/view screen
+          {
+            if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$result!="")
+            {
+              $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $result, SESSION_NESTED);
+            }
+          }
         }
         else
         {
-          $title = $this->getNoneLabel(); // no record
-        }
-
-        $result = $title; // default result is just the title.
-
-        if ($this->hasFlag(AF_RELATION_AUTOLINK) && (!in_array($mode, array("csv", "plain")))) // create link to edit/view screen
-        {
-          if (($this->m_destInstance->allowed("view"))&&!$this->m_destInstance->hasFlag(NF_NO_VIEW)&&$title!="")
-          {
-            $result = href(dispatch_url($this->m_destination,"view",array("atkselector"=>$this->m_destInstance->primaryKey($record[$this->fieldName()]))), $title, SESSION_NESTED);
-          }
+          $result = $this->getNoneLabel(); // no record
         }
         return $result;
       }
@@ -669,7 +666,7 @@
             {
               $pk = $this->m_destInstance->primaryKey($recordset[$i]);
               if (($newlyadded!="" && $newlyadded==$pk) || ($newlyadded=="" && $pk==$currentPk)) $sel = "selected"; else $sel = "";
-              $result.= '<option value="'.$pk.'" '.$sel.'>'.$this->m_destInstance->descriptor($recordset[$i]);
+              $result.= '<option value="'.$pk.'" '.$sel.'>'.htmlspecialchars($this->m_destInstance->descriptor($recordset[$i]));
             }
             $result.='</select>';
           }
