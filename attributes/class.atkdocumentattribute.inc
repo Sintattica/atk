@@ -97,38 +97,44 @@
       $path = $basepath . $module . "/" . $node;
 
       // Only continue if the path is valid and exists
-      if (is_dir($path))
+      if (!is_dir($path))
       {
-        // Get the list of document files
-        $contents = $this->getDocumentFiles($path, $record);
-
-        // Add the select box to the html
-        $html = '<select name="atkdoctpl">';
-        foreach ($contents as $entry)
-        {
-          if (is_file($path . "/" . $entry)) // todo: && check of tie een open office extensie heeft
-          {
-            $html .= '<option value="' . urlencode($entry) . '">' . $entry;
-          }
-        }
-        $html .= '</select>';
-
-        // Add the button to the html
-        $selector = $this->m_ownerInstance->primaryKey($record);
-        $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'&atkdoctpl="+this.form.atkdoctpl.value;';
-
-        $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\''.$onclickscript.'\'>';
-
-        // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
-        if ((($mode=="list")||($mode=="view")) && $addForm) {
-          static $documentSelectorFormCounter = 0;
-          $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form(). $html . '</form>';
-        }
-
-        // Return the generated html
-        return $html;
+      	return $this->text("invalid_path");
       }
-      return "";
+      
+      // Get the list of document files
+      $contents = $this->getDocumentFiles($path, $record);
+
+      if (empty($contents))
+      {
+      	return $this->text("no_document_templates_found");
+      }
+
+      // Add the select box to the html
+      $html = '<select name="atkdoctpl">';
+      foreach ($contents as $entry)
+      {
+        if (is_file($path . "/" . $entry)) // todo: && check of tie een open office extensie heeft
+        {
+          $html .= '<option value="' . urlencode($entry) . '">' . $entry;
+        }
+      }
+      $html .= '</select> ';
+
+      // Add the button to the html
+      $selector = $this->m_ownerInstance->primaryKey($record);
+      $onclickscript = 'window.location="'.session_url(dispatch_url($module . "." . $node, "document", array("atkselector"=>$selector)), SESSION_DEFAULT).'&atkdoctpl="+this.form.atkdoctpl.value;';
+
+      $html .= '<input type="button" class="btn_doc_open" name="atkdocument" value="' . atktext("open") . '" onclick=\''.$onclickscript.'\'>';
+
+      // Wrap the input elements in a unique session form when no form is present yet (in list and view mode)
+      if ((($mode=="list")||($mode=="view")) && $addForm) {
+        static $documentSelectorFormCounter = 0;
+        $html = '<form name="documentSelectorForm' . ++$documentSelectorFormCounter . '">' . session_form(). $html . '</form>';
+      }
+
+      // Return the generated html
+      return $html;
     }
   }
 
