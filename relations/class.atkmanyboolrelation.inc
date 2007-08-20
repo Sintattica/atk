@@ -50,22 +50,7 @@
       $this->createDestination();
       $this->createLink();
 
-      $selectedPk = array();
-
-      // first the selected records..
-      if (isset($record[$this->fieldName()]))
-      {
-        for ($i=0;$i<count($record[$this->fieldName()]);$i++)
-        {
-
-          if(is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
-            $newselected = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
-          else
-            $newselected = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()][$i][$this->getRemoteKey()]));
-
-          $selectedPk[] = $newselected;
-        }
-      }
+      $selectedPk = $this->getSelectedRecords($record);
 
       $recordset = $this->_getSelectableRecords($record, $mode);
       $total_records = count($recordset);

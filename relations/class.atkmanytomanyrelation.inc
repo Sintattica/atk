@@ -100,6 +100,37 @@
       return array();
     }
 
+    /**
+     * Returns the primary keys of the currently selected records retrieved
+     * from the given record.
+     *
+     * @param array $record current record
+     * 
+     * @return array list of selected record keys
+     */
+    function getSelectedRecords($record)
+    {
+      $keys = array();
+      
+      if (isset($record[$this->fieldName()]))
+      {
+        for ($i = 0; $i < count($record[$this->fieldName()]); $i++)
+        {
+          if (is_array($record[$this->fieldName()][$i][$this->getRemoteKey()]))
+          {
+            $key = $this->m_destInstance->primaryKey($record[$this->fieldName()][$i][$this->getRemoteKey()]);
+          }
+          else
+          {
+            $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()][$i][$this->getRemoteKey()]));
+          }
+  
+          $keys[] = $key;
+        }
+      }
+      
+      return $keys;
+    }
 
     /**
      * Create instance of the intermediairy link node.
@@ -390,6 +421,7 @@
                      " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
                      $remKey."'";
 
+                     atk_var_dump($newrecord, "<h1>NEWREC</h1>");
           $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {

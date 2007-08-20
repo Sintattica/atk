@@ -605,8 +605,10 @@ class atkMetaPolicy
    * - dest(-ination)  destination attribute name
    * - filter          destination filter
    * - through         intermediate node name (for many-to-many relations)
-   * - type            type of many-to-many relation (shuttle or bool(ean), defaults to shuttle)
-   * - cols/columns    number of columns (many-bool relations only)
+   * - type            type of many-to-many relation (shuttle, bool(ean) or list, defaults to shuttle)
+   * - cols/columns    number of columns (many-to-many bool relations only)
+   * - rows            number of rows (many-to-many list relations only)
+   * - name            name for this relation (by default getNodeType($accessor))
    *
    * @param $accessor          accessor name (complete description is given above)
    * @param $templateOrOptions template or list of options (complete description is given above)
@@ -620,8 +622,15 @@ class atkMetaPolicy
       $options = $templateOrOptions;
     else $template = $templateOrOptions;
     
-    $name = getNodeType($accessor);    
-    
+    if (isset($options['name']))
+    {
+      $name = $options['name'];
+    }
+    else 
+    {
+      $name = getNodeType($accessor);    
+    }
+
     if (isset($options['through']))
     {
       switch ($options['type'])
@@ -629,6 +638,9 @@ class atkMetaPolicy
         case 'bool':
         case 'boolean':
           $type = "atk.meta.relations.atkmetamanyboolrelation";
+          break;
+        case 'list':
+          $type = "atk.meta.relations.atkmetamanytomanylistrelation";
           break;
         case 'eshuttle':
         case 'extendableshuttle':
@@ -777,6 +789,14 @@ class atkMetaPolicy
   function &getAttributes()
   {
     return $this->m_attrs;
+  }
+  
+  /**
+   * Returns the attribute names.
+   */
+  function getAttributeNames()
+  {
+    return array_keys($this->m_attrs);
   }
 
   /**

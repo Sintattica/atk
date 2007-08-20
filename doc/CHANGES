@@ -7,11 +7,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 Changed in ATK 6.1
 ------------------
 
-+ Added a new class atkTableRendererGrouped. Renders a table with collapsable/
-  expandable groups. First used in the weektimereg module to organise projects.
-  [Edgar]
-* Refactored the atktablerenderer (backwards compatible). Functionally
-  decomposed the render method. Done to make groupedRenderer possible. [Edgar]
 + Added select method to atkNode which returns an instance of the
   atkSelector class which can be used to fluently build a selectDb
   expression to retrieve a single row, all rows or the row count.
@@ -65,6 +60,13 @@ Changed in ATK 6.1
   data in db/class.atkoci9db.inc. [Patrick]
 + Added getAttributeNames() method to atkNode. [Peter]  
 + Added support for menu images in atkmodernmenu class. [Lineke]
++ Added a new class atkTableRendererGrouped. Renders a table with collapsable/
+  expandable groups. First used in the weektimereg module to organise projects.
+  [Edgar]
++ Added atkDataNode which can be used for nodes that don't retrieve their
+  data from the database. [Peter]
++ Added atkManyToManyListRelation, a new view for the many-to-many relation
+  where the selection is done using a multiple-select select element. [Peter]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
 * Improved read-only mode of atkOneToOneRelation (don't display as table
   but display in-line, also check destination NF_READONLY flag). [Peter]
@@ -101,6 +103,9 @@ Changed in ATK 6.1
 * Removed the first preUpdate call (it was called twice due to a merge error). 
   This fixes the problem that in the preUpdate the atkorgrec is not filled with
   nodes with the NF_TRACK_CHANGES flag. [Boy,Lineke]
+* Refactored the atktablerenderer (backwards compatible). Functionally
+  decomposed the render method. Done to make groupedRenderer possible. [Edgar]
+* Added getAttributeNames() method to atkMetaPolicy. [Peter]  
 
 Changed in ATK 6.0
 ------------------
