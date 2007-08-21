@@ -63,7 +63,7 @@
         }
       }
       $this->atkListAttribute($name, $optionArray, $valueArray, $flags, $size); // base class constructor
-      $this->m_dbfieldtype = "string"; // since we store values separated by '|', we always store as string.
+      $this->m_dbfieldtype = "text"; // since we store the selection labels as values separated by '|', we always store as text.
       ($cols<1)?$this->m_cols=3:$this->m_cols=$cols;
     }
 

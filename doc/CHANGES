@@ -106,6 +106,8 @@ Changed in ATK 6.1
 * Refactored the atktablerenderer (backwards compatible). Functionally
   decomposed the render method. Done to make groupedRenderer possible. [Edgar]
 * Added getAttributeNames() method to atkMetaPolicy. [Peter]  
+* Altered storage type for atkmultiselectattribute from 'string' to 'text'
+  because 'string' appeared to be too small. [Patrick]
 
 Changed in ATK 6.0
 ------------------
