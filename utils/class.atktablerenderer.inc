@@ -71,13 +71,13 @@
     function atkTableRenderer($flags = 0, $style='', $module='')
     {
       $this->m_flags = $flags;
-      
+
       if ($style !== '')
       {
         $this->setTableStyle($style, $module);
       }
     }
-    
+
     /**
      * Sets a flag on this object. Allowed: TBL_HEADER, TBL_FOOTER,
      * TBL_ALTERNATE and TBL_DATA
@@ -182,7 +182,7 @@
     }
 
     /**
-     * Sets spanning on a specifc column. 
+     * Sets spanning on a specifc column.
      *
      * @param int $row row number
      * @param int $col row column
@@ -224,7 +224,7 @@
     {
       $this->_setSpan($row,$col,$span,"row");
     }
-    
+
     /**
      * Registers a style with the page.
      *
@@ -237,7 +237,7 @@
       $page = &atkPage::getInstance();
       $page->register_style($theme->stylePath($style.".css",$module));
     }
-    
+
     /**
      * Gets the maximum number of columns in a row
      *
@@ -253,7 +253,7 @@
       }
       return $max;
     }
-    
+
     /**
      * Render a table.
      *
@@ -298,12 +298,12 @@
         $this->setTableStyle($style, $module);
       }
       $output = $this->_renderTable($data);
-      
+
       return $output;
     }
-    
+
     /**
-     * Sets the table style class and registers it in the result page 
+     * Sets the table style class and registers it in the result page
      *
      * @param string $class styleclass name
      * @param string $module module to look for stylesheets
@@ -313,7 +313,7 @@
       $this->m_style = $class;
       $this->registerStyle($class, $module);
     }
-    
+
     /**
      * Gets the table style attribute component
      *
@@ -326,23 +326,23 @@
       {
         $class = "class=\"{$this->m_style}\"";
       }
-      
+
       return $class;
     }
-    
+
     /**
-     * Renders the table. 
+     * Renders the table.
      *
-     * @param array $data 
+     * @param array $data
      * @return html of the rendered table
      */
     function _renderTable($data)
-    {     
+    {
       $this->m_maxWidth = $this->_getMaxCols($data);
       $class = $this->_getTableStyleStr();
-      
+
       $output = "\n<table {$class}>";
-      
+
       // should render a header?
       if (hasFlag($this->m_flags, TBL_HEADER))
       {
@@ -350,13 +350,13 @@
         $rowOffset = 1;
         $output .= $this->_renderHeader($header, 0);
       }
-      
+
       // should render a footer
       if (hasFlag($this->m_flags, TBL_FOOTER))
       {
         $footer_row = count($data) - 1;
         $footer = array_pop($data);
-        
+
         $output .= $this->_renderBody($data, $rowOffset);
         $output .= $this->_renderFooter($footer, $footer_row);
       }
@@ -364,14 +364,14 @@
       {
         $output .= $this->_renderBody($data);
       }
-      
+
       $output .= "</table>\n";
-      
+
       $this->m_maxWidth = 0; // reset
-      
+
       return $output;
     }
-    
+
     /**
      * Renders the value inside one cell.
      * Supports the cell having id/value.
@@ -397,10 +397,10 @@
           $value = '&nbsp;';
         }
       }
-        
+
       return $value;
     }
-    
+
     /**
      * Renders one cell in the table.
      *
@@ -417,13 +417,13 @@
       $alignstr = $this->_alignmentStr($this->getAlignment($row, $col));
       $idstr    = $this->_getIdStr($data);
       $class    = $this->_classStr($this->getClass($row, $col));
-      
+
       $output  = "\n<{$type} {$idstr} {$class} {$spanstr} {$alignstr}>";
       $output .= $this->_renderValue($data);
       $output .= "</{$type}>";
       return $output;
     }
-    
+
     /**
      * Renders one header row.
      *
@@ -452,11 +452,11 @@
       $output .= '</tfoot>';
       return $output;
     }
-    
+
     /**
      * Gets the styleclass for a rownumber
      * Supports alternating rowclasses if TBL_ALTERNATE is set
-     * 
+     *
      * @param string|int $row row number or rowclassname
      * @return string html class string like 'class=row1'
      */
@@ -485,30 +485,30 @@
      * @return string html of the row
      */
     function _renderRow($data, $row, $columntype='td')
-    {      
+    {
       $class = $this->_getRowClassStr($row);
-      
+
       $output = "\n<tr {$class}>";
-      
+
       // render all cells inside
       $colCount = count($data);
       for ($col=0; $col<$colCount; $col++)
       {
         $output .= $this->_renderCell($data[$col], $row, $col, $columntype);
       }
-     
+
       // fill up remaining space
       $filling = $this->m_maxWidth - $colCount;
       if ($filling > 0)
       {
         $output .= $this->_renderFillingCell($filling, $columntype);
       }
-       
+
       $output .= "\n</tr>";
-      
+
       return $output;
     }
-    
+
     /**
      * Renders a filling cell used to display a correct two-dimensional table.
      *
@@ -531,20 +531,22 @@
      */
     function _renderBody($data, $rowOffset = 0)
     {
-      $output = '<tbody>';
-      
       $rowCount = count($data);
+      if ($rowOffset >= $rowCount) return "";
+
+      $output = '<tbody>';
+
       for ($row=$rowOffset; $row<$rowCount; $row++)
       {
         $rowData = $data[$row];
         $output .= $this->_renderRow($rowData, $row);
       }
-      
+
       $output .= '</tbody>';
       return $output;
     }
 
-    
+
     /**
      * Gets the cell id string if available.
      *
@@ -561,7 +563,7 @@
 
       return $id;
     }
-    
+
     /**
      * Gets the alignmentstring for an alignment flag
      *
@@ -581,7 +583,7 @@
 
       return $ret;
     }
-    
+
     /**
      * Gets the span string for a cell
      *
@@ -605,7 +607,7 @@
         return 'colspan="'.$span["colspan"].'"';
       }
     }
-    
+
     /**
      * Constructs the html class attribute string using a classname
      *
