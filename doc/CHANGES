@@ -67,6 +67,7 @@ Changed in ATK 6.1
   data from the database. [Peter]
 + Added atkManyToManyListRelation, a new view for the many-to-many relation
   where the selection is done using a multiple-select select element. [Peter]
++ Added full_rmdir to atkFileUtils to 'rm -rf' any given directory [Jeroen]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
 * Improved read-only mode of atkOneToOneRelation (don't display as table
   but display in-line, also check destination NF_READONLY flag). [Peter]
