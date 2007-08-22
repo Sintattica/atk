@@ -353,11 +353,11 @@
 
       $res .= '  <script type="text/javascript">';
 
-      $res.=$this->_getGlobalSubmitScriptCode($partial);
-      $res.=$this->_getGlobalLoadScriptCode($partial);
-
       // javascript code.
       $res.=$this->renderScriptCode("after");
+
+      $res.=$this->_getGlobalSubmitScriptCode($partial);
+      $res.=$this->_getGlobalLoadScriptCode($partial);  
 
       $res .= "  </script>\n\n";
     }

@@ -26,6 +26,7 @@ ATK.Dialog.prototype = {
    * Used internally.
    */
   onShow: function(transport) {
+    this.evalResponse(transport);
     if (this.options.width || this.options.height) {
       this.delayedResize();
     }
