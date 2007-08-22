@@ -379,6 +379,52 @@ class atkFileUtils
       return "application/octet-stream";
     }
   }
+  
+  /**
+   * Delete complete $dir
+   *
+   * @param string $dir
+   * @return result
+   */
+  function full_rmdir( $dir )
+  {
+    if ( !is_writable( $dir ) )
+    {
+      if ( !@chmod( $dir, 0777 ) )
+      {
+        return FALSE;
+      }
+    }
+
+    $d = dir( $dir );
+    while ( FALSE !== ( $entry = $d->read() ) )
+    {
+      if ( $entry == '.' || $entry == '..' )
+      {
+        continue;
+      }
+      $entry = $dir . '/' . $entry;
+      if ( is_dir( $entry ) )
+      {
+        if ( !$this->full_rmdir( $entry ) )
+        {
+          return FALSE;
+        }
+        continue;
+      }
+      if ( !@unlink( $entry ) )
+      {
+        $d->close();
+        return FALSE;
+      }
+    }
+
+    $d->close();
+
+    rmdir( $dir );
+
+    return TRUE;
+  }
 }
 
 ?>
