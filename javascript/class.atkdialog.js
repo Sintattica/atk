@@ -12,7 +12,7 @@ ATK.Dialog.prototype = {
     this.title = title;
     this.url = url;
     this.theme = theme || 'alphacube';
-    this.options = this.options || {};
+    this.options  = options || {};
  },
 
   /**
@@ -55,6 +55,24 @@ ATK.Dialog.prototype = {
   },
 
   /**
+   * Serialize form.
+   */
+  serializeForm: function() {
+    var elements = Form.getElements(this.options.serializeForm);
+    var queryComponents = new Array();
+
+    for (var i = 0; i < elements.length; i++) {
+      if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
+        var queryComponent = Form.Element.serialize(elements[i]);
+        if (queryComponent)
+          queryComponents.push(queryComponent);
+      }
+    }
+
+    return queryComponents.join('&');
+  },
+
+  /**
    * Show dialog.
    */
   show: function() {
@@ -66,8 +84,14 @@ ATK.Dialog.prototype = {
     if (this.options.height)
       windowParameters['height'] = this.options.height;
 
+    var options = {};
+    options['onSuccess'] = this.onShow.bind(this);
+    if (this.options.serializeForm) {
+      options['parameters'] = this.serializeForm();
+    }
+
     Dialog.info(
-      { url: this.url, options: { onSuccess: this.onShow.bind(this) } },
+      { url: this.url, options: options },
       { windowParameters: windowParameters }
     );
   },
