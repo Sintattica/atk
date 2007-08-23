@@ -19,6 +19,8 @@ class atkDialog
   var $m_width = null;
   var $m_height = null;
 
+  var $m_serializeForm = null;
+
   /**
    * Constructor.
    *
@@ -90,6 +92,17 @@ class atkDialog
   }
 
   /**
+   * Serialize the form with the given name.
+   * Defaults to the entryform.
+   *
+   * @param $form form name
+   */
+  function setSerializeForm($form='entryform')
+  {
+    $this->m_serializeForm = $form;
+  }
+
+  /**
    * Load JavaScript and stylesheets.
    */
   function load()
@@ -132,6 +145,8 @@ class atkDialog
       $options['width'] = $this->m_width;
     if ($this->m_height !== null)
       $options['height'] = $this->m_height;
+    if ($this->m_serializeForm != null)
+      $options['serializeForm'] = $this->m_serializeForm;
 
     return $options;
   }
