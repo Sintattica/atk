@@ -418,7 +418,7 @@
       }
       
       // render debug block
-      $block = $this->renderDebugBlock(false);
+      $block = $this->renderDebugBlock(!$isPartial);
       
       if ($isPartial)
       {
