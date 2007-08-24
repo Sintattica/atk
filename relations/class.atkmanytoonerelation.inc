@@ -1235,8 +1235,16 @@
     function getSelectedRecord($record=array(), $mode="select")
     {
       $this->createDestination();
+      
       $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField().
                    "='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
+
+      $filter = $this->createFilter($record);
+      if (!empty($filter))
+      {
+        $condition = $condition.' AND '.$filter;
+      }
+                        
       list($record) = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
       return $record;
     }

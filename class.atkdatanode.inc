@@ -29,7 +29,8 @@ class atkDataNode extends atkNode
    */
   public function __construct($type='', $flags=0)
   {
-    return parent::__construct($type, $flags|NF_NO_ADD|NF_NO_EDIT);
+    parent::__construct($type, $flags|NF_NO_ADD|NF_NO_EDIT);
+    $this->setTable($this->m_type);
   }
   
   /**
@@ -45,9 +46,11 @@ class atkDataNode extends atkNode
   /**
    * Returns the internal data.
    *
+   * @param array criteria (can be ignored in which case filterData will filter the data)
+   * 
    * @return array data list
    */
-  protected function getData()
+  protected function getData($criteria=null)
   {
     return $this->m_data;
   }
@@ -63,6 +66,8 @@ class atkDataNode extends atkNode
    */
   public function selectDb($selector=null, $order=null, $limit=null)
   {
+    atkdebug(get_class($this).'::selectDb('.$selector.')');
+    
     if ($order == null)
     {
       $order = $this->getOrder();
@@ -75,7 +80,9 @@ class atkDataNode extends atkNode
       'limit' => isset($limit['limit']) ? $limit['limit'] : -1
     );
     
-    return $this->findData($params);
+    $result = $this->findData($params);
+    atkdebug('Result '.get_class($this).'::selectDb('.$selector.') => '.count($result).' row(s)');
+    return $result;
   }
   
   /**
@@ -108,10 +115,13 @@ class atkDataNode extends atkNode
     $limit = @$params['limit'] ? $params['limit'] : -1;
     $offset = @$params['offset'] ? $params['offset'] : 0;
     $order = @$params['order'] ? $params['order'] : null;
+    
+    $selector = $this->getSelector($selector);
+    $criteria = $this->getCriteria($selector);
 
-    $data = $this->getData();
+    $data = $this->getData($criteria);
     $data = $this->filterColumns($data);
-    $data = $this->filterData($data, $selector);
+    $data = $this->filterData($data, $criteria);
     $data = $this->sortData($data, $order);
     $data = $this->limitData($data, $limit, $offset);
     return $data;
@@ -139,6 +149,30 @@ class atkDataNode extends atkNode
       }
       
       $result[] = $row;
+    }
+    
+    return $result;
+  }
+  
+  /**
+   * Returns the full selector including added filters.
+   * 
+   * @param string $selector selector
+   * 
+   * @return string full selector string
+   */
+  protected function getSelector($selector)
+  {
+    $result = $selector;
+    
+    foreach ($this->m_fuzzyFilters as $filter)
+    {
+      if (!empty($result))
+      {
+        $result .= ' AND ';
+      }
+
+      $result .= $filter;
     }
     
     return $result;
@@ -185,14 +219,12 @@ class atkDataNode extends atkNode
    * Filter data using the given selector.
    *
    * @param array  $data     data list
-   * @param string $selector selector string
+   * @param string $criteria criteria list
    * 
    * @return array filtered data
    */
-  protected function filterData($data, $selector) 
+  protected function filterData($data, $criteria) 
   {
-    $criteria = $this->getCriteria($selector);
-    
     $result = array();
     
     foreach ($data as $item)
