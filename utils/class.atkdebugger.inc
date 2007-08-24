@@ -416,9 +416,15 @@
       {
         return '';
       }
+
+      $expanded = !$isPartial;
+      if ($expanded && @$_COOKIE['atkdebugstate'] == 'collapsed')
+      {
+        $expanded = false;
+      }
       
       // render debug block
-      $block = $this->renderDebugBlock(!$isPartial);
+      $block = $this->renderDebugBlock($expanded);
       
       if ($isPartial)
       {
