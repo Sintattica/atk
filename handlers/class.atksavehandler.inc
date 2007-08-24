@@ -217,7 +217,7 @@
       // allowed to save record?
       if (!$this->allowed($record))
       {
-        $content = $this->renderAccessedDeniedDialog();
+        $content = $this->renderAccessDeniedDialog();
         $this->updateDialog($content);
         return;
       }
