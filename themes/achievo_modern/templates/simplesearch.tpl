@@ -1,4 +1,4 @@
-<form action="dispatch.php"{if $targetframe!=""}target="{$targetframe}"{/if}>
+<form action="{$dispatch}"{if $targetframe!=""}target="{$targetframe}"{/if}>
 <input type="hidden" name="atknodetype" value="search.search">
 <input type="hidden" name="atkaction" value="search">
 {$session_form}
