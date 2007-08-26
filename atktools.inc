@@ -409,7 +409,7 @@
       $fp = @fopen(atkconfig("debuglog"),"a");
       if ($fp)
       {
-        fwrite($fp,"[".elapsed()."] ".$text."\n");
+        fwrite($fp,atkGetTimingInfo()." ".$text."\n");
         fclose($fp);
       }
     }
@@ -2152,10 +2152,16 @@
    */
   function atk_htmlentities($string, $quote_style=ENT_COMPAT, $charset=null)
   {
+    $acceptedCharsets = array('iso-8859-1', 'iso-8859-15', 'utf-8', 'cp866', 'ibm866', '866', 
+                              'cp1251', 'windows-1251', 'win-1251', '1251', 'cp1252', 'windows-1252', '1252', 
+                              'koi8-r', 'koi8-ru', 'koi8r', 'big5', '950', 'gb2312', '936', 'big5-hkscs', 
+                              'shift_jis', 'sjis', '932', 'euc-jp', 'eucjp'); 
     if (empty($charset))
     {
       $charset = atktext('charset', 'atk');
     }
+    // check if charset is allowed, else use default charset for this function
+    if(!in_array(strtolower($charset),$acceptedCharsets)) $charset = 'iso-8859-1';
 
     return htmlentities($string, $quote_style, $charset);
   }
