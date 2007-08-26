@@ -1,7 +1,7 @@
 body {
 		margin:0px 0px 0px 0px;
 		padding:0px;
-		background-color: #eeeeee;
+		background-color: #e9e9e9;
     color: #000000;
     font-size: 11px;
     font-family: Verdana,Helvetica,Arial;
@@ -22,7 +22,7 @@ body {
 
 	#box-content, .box-dispatch
 	{
-		background:#eeeeee;
+		background:#e9e9e9;
    	margin-left: 211px;
  	}
 
@@ -33,7 +33,7 @@ body {
 		}
 
   #box-footer {
-    background-color: #eeeeee;
+    background-color: #e9e9e9;
     clear:both;
     }
 
@@ -61,7 +61,7 @@ width: 210px;
 margin: 0;
 padding: 0px;
 color: #ffffff;
-background: #fff url(../images/menuBgBottom.jpg) repeat-y left top;
+background: #fff url(../images/menuBgBottom.jpg) repeat-y 100% 0;
 
 }
 
