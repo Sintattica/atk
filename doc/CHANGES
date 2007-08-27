@@ -109,6 +109,9 @@ Changed in ATK 6.1
 * Added getAttributeNames() method to atkMetaPolicy. [Peter]  
 * Altered storage type for atkmultiselectattribute from 'string' to 'text'
   because 'string' appeared to be too small. [Patrick]
+* Don't eval response twice when showing a dialog. [Edgar,Peter]
+* Moved showTab() call to atkNode instead of atkPage. [Edgar,Peter]
+
 
 Changed in ATK 6.0
 ------------------
