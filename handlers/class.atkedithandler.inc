@@ -155,9 +155,6 @@
      */
     function getEditPage($record, $locked=FALSE)
     {
-      $node = &$this->m_node;
-      $page = &$this->getPage();
-
       $this->registerExternalFiles();
 
       $params = $this->getEditParams($record, $locked);
@@ -165,7 +162,7 @@
       if ($params === false)
         return false;
 
-      return $this->renderEditPage($params);
+      return $this->renderEditPage($record, $params);
     }
 
     function getContent($record)
@@ -189,7 +186,7 @@
       return $node->tabulate("edit", $form);
     }
 
-    function renderEditPage($params)
+    function renderEditPage($record, $params)
     {
       $node = &$this->m_node;
       $ui = &$node->getUi();
@@ -585,7 +582,7 @@
       {
         $record = $this->getRecord();
       }
-      
+
       $this->setRenderMode('dialog');
       $result = $this->m_node->renderActionPage("edit", $this->invoke("editPage", $record));
       return $result;
