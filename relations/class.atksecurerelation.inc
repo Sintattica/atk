@@ -319,7 +319,7 @@
         }
         else
         {
-          halt("Geen ownerinstantie gevonden voor securerelation");
+          halt("no ownerinstance found for the secure relation");
         }
       }
       else
