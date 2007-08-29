@@ -1129,7 +1129,7 @@
         return $this->m_attribList;
       else return NULL;
     }
-    
+
     /**
      * Returns a list of attribute names.
      *
@@ -1820,7 +1820,7 @@
         $page->register_script(atkconfig("atkroot")."atk/javascript/dhtml_tabs.js.php?stateful=".(atkconfig('dhtml_tabs_stateful') ? 1 : 0));
 
         // Load default tab show script.
-        $page->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($this->m_postvars['atktab'])?$this->m_postvars['atktab']:'').'\');}');    
+        $page->register_loadscript('if ( window.showTab ) {showTab(\''.(isset($this->m_postvars['atktab'])?$this->m_postvars['atktab']:'').'\');}');
 
         $fulltabs = $this->buildTabs($action);
         $tabscript = "var tabs = new Array();\n";
@@ -2077,7 +2077,7 @@
           atkerror("Attribute $attribname not found!");
         }
       }
-      
+
       if ($injectSections)
       {
         $this->injectSections($result['fields'], $mode);
@@ -2109,7 +2109,7 @@
       $tab = $this->getActiveTab();
 
       $result = array();
-      
+
       foreach (array_keys($this->m_attribIndexList) as $r)
       {
         $attribname = $this->m_attribIndexList[$r]["name"];
@@ -2139,17 +2139,17 @@
           atkerror("Attribute $attribname not found!");
         }
       }
-      
+
       /* inject sections */
       if ($injectSections)
       {
         $this->injectSections($result['fields'], $mode);
-      }      
-      
+      }
+
       /* return the result array */
       return $result;
     }
-    
+
     /**
      * Add sections to the edit/view fields array.
      *
@@ -2158,17 +2158,17 @@
     function injectSections(&$fields)
     {
       $this->groupFieldsBySection($fields);
-      
+
       $addedSections = array();
       $result = array();
       foreach ($fields as $field)
       {
         /// we add the section link before the first attribute that is in it
         $fieldSections = $field['sections'];
-        if (!is_array($fieldSections)) 
+        if (!is_array($fieldSections))
           $fieldSections = array($fieldSections);
-        
-        $newSections = array_diff($fieldSections, $addedSections);  
+
+        $newSections = array_diff($fieldSections, $addedSections);
         if (count($newSections) > 0)
         {
           foreach ($newSections as $section)
@@ -2179,11 +2179,11 @@
               $addedSections[] = $section;
             }
           }
-        }   
-        
+        }
+
         $result[] = $field;
       }
-      
+
       $fields = $result;
     }
 
@@ -2196,7 +2196,7 @@
     {
       $result = array();
       $sections = array();
-      
+
       // first find sectionless fields and collect all sections
       foreach ($fields as $field)
       {
@@ -2210,7 +2210,7 @@
           $sections = array_merge($sections, $field['sections']);
         }
       }
-      
+
       $sections = array_unique($sections);
 
       // loop through each section (except the default tab/section) of the mode we are currently in.
@@ -2369,14 +2369,14 @@
         {
           $newtab["title"] = atktext(array("tab_$t", $t),$this->m_module,$this->m_type);
           $newtab["tab"] = $t;
-          $url = $_SERVER["PHP_SELF"]."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
+          $url = atkSelf()."?atknodetype=".$this->atkNodeType()."&atkaction=".$this->m_action."&atktab=".$t;
           if ($this->m_action == "view")
           {
-            $newtab["link"] = session_url($url, SESSION_DEFAULT);
+            $newtab["link"] = atkSessionManager::sessionUrl($url, SESSION_DEFAULT);
           }
           else
           {
-            $newtab["link"] = "javascript:atkSubmit('".atkurlencode(session_url($url, SESSION_DEFAULT))."')";
+            $newtab["link"] = "javascript:atkSubmit('".atkurlencode(atkSessionManager::sessionUrl($url, SESSION_DEFAULT))."')";
           }
           $newtab["selected"] = ($t == $tab);
           $result[] = $newtab;
@@ -2426,7 +2426,7 @@
       // Changed: it used to be that you could only view if you didn't have
       // edit right. This was changed because of Achievo bug #41
       // (http://www.achievo.org/bug/41)
-      $actionbase = $_SERVER["PHP_SELF"].'?atknodetype='.$this->atknodetype().'&atkselector=[pk]'.$postfix;
+      $actionbase = atkSelf().'?atknodetype='.$this->atknodetype().'&atkselector=[pk]'.$postfix;
       if (!$this->hasFlag(NF_NO_VIEW)&&$this->allowed("view"))
       {
         $actions["view"] = $actionbase.'&atkaction=view';
@@ -2532,7 +2532,7 @@
         $atkselector_str = '(('. implode($atkselector, ') OR (').'))';
       else $atkselector_str = $atkselector;
 
-      $formstart ='<form action="'.$_SERVER["PHP_SELF"].'?"'.SID.' method="post">';
+      $formstart ='<form action="'.atkSelf().'?"'.SID.' method="post">';
       $formstart.=session_form();
       $formstart.='<input type="hidden" name="atkaction" value="'.$action.'">';
       $formstart.='<input type="hidden" name="atknodetype" value="'.$this->atknodetype().'">';
@@ -2886,7 +2886,7 @@
 
       if ($location=="")
       {
-        $location = session_url($_SERVER["PHP_SELF"],SESSION_BACK,$levelskip);
+        $location = atkSessionManager::sessionUrl(atkSelf(),SESSION_BACK,$levelskip);
       }
 
       if (count($record))
@@ -3504,9 +3504,9 @@
 
     /**
      * Retrieve records from the database using a handy helper class. PHP5 only.
-     * 
+     *
      * @param string $selector (optional) selector string (will be used in the where clause)
-     * 
+     *
      * @return atkSelector
      */
     function select($selector='')
@@ -3514,7 +3514,7 @@
       atkimport('atk.utils.atkselector');
       return new atkSelector($this, $selector);
     }
-    
+
     /**
      * Retrieve records from the database.
      *

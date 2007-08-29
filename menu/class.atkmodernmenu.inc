@@ -85,7 +85,7 @@ class atkModernMenu extends atkPlainMenu
         {
           $menuitem['name'] = $this->getMenuTranslation($menuitem['name'],$menuitem['module']);
         }
-        
+
         $theme = &atkinstance("atk.ui.atktheme");
         $menu_icon = $theme->iconPath($menutop.'_'.$menuitem['id'], "menu", $menuitem['module']);
         if ($menu_icon)

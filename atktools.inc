@@ -42,8 +42,8 @@
   /**
    * Error message.
    */
-  define("DEBUG_ERROR", 8);  
-  
+  define("DEBUG_ERROR", 8);
+
   /**
    * Function atkErrorHandler
    * This function catches PHP parse errors etc, and passes
@@ -121,14 +121,22 @@
   }
 
   /**
-   * Function halt
+   * @deprecated Use atkhalt instead.
+   */
+  function halt($msg,$level="warning")
+  {
+    return atkhalt($msg, $level);
+  }
+
+  /**
+   * Function atkhalt
    * Halts on critical errors and also on warnings if specified in the config file.
    * @param string $msg   The message to be displayed
    * @param string $level The level of the error,
    *                      ("critical"|"warning" (default))
    * @return bool false if something goes horribly wrong
    */
-  function halt($msg,$level="warning")
+  function atkhalt($msg,$level="warning")
   {
     if ($level == $GLOBALS['config_halt_on_error']||$level == "critical")
     {
@@ -158,36 +166,23 @@
   }
 
   /**
-   * Gets the microtime
+   * @deprecated Use atkDebugger::getMicroTime()
    * @return int the microtime
    */
   function getmicrotime()
   {
-    list($usec, $sec) = explode(" ",microtime());
-    return ((float)$usec + (float)$sec);
+    atkimport("atk.utils.atkdebugger");
+    return atkDebugger::getMicroTime();
   }
 
   /**
-   * Handy function that displays the time since it was last called
+   * @deprecated Use atkDebugger::elapsed();
    *
    * @return string elapsed time in microseconds
    */
   function elapsed()
   {
-    global $g_startTime;
-    
-    static $offset=null, $previous=null;
-    
-    if ($offset === null)
-    {
-      $offset = $g_startTime;
-      $previous = $offset;
-    }
-    
-    $new = getmicrotime();
-    $res = "+".sprintf("%02.05f",$new-$offset)."s / ".sprintf("%02.05f", $new-$previous)."s";
-    $previous = $new;
-    return $res;
+    return atkDebugger::elapsed();
   }
 
   /**
@@ -215,7 +210,7 @@
       {
         $line = '<span class="atkDebugError">'.$line.'</span>';
       }
-      
+
       if ($level>2)
       {
         atkimport("atk.utils.atkdebugger");
@@ -281,7 +276,7 @@
     $g_error_msg[]="[".elapsed()."] ".$txt;
 
     atkdebug($txt, DEBUG_ERROR);
-     
+
     if (function_exists('debug_backtrace'))
       atkdebug("Trace:".atk_get_trace(), DEBUG_ERROR);
   }
@@ -292,7 +287,7 @@
    * @param string $format (html|plaintext)
    * @return string Backtrace in html or plaintext format
    */
-  function atk_get_trace($format="html")
+  function atkGetTrace($format="html")
   {
     // Return if the debug_backtrace function doesn't exist
     if(!function_exists("debug_backtrace"))
@@ -397,6 +392,14 @@
   }
 
   /**
+   * @deprecated Use atkGetTrace instead
+   */
+  function atk_get_trace($format="html")
+  {
+    return atkGetTrace($format);
+  }
+
+  /**
    * Writes info to the optional debug logfile. Please notice
    * this feature will heavily decrease the performance and should
    * therefore only be used for debugging and development purposes
@@ -465,207 +468,53 @@
   }
 
   /**
-   * Calculate a new session level based on current level and
-   * a passed sessionstatus.
-   * @param var $sessionstatus the session flags
-   *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-   *             SESSION_NESTED|SESSION_BACK)
-   * @param int $levelskip how many levels to skip when we use SESSION_BACK,
-   *            default 1
-   * @return int the new session level
+   * @deprecated Use atkSession::newLevel() instead
    */
   function session_level($sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    $currentlevel = atkLevel();
-
-    $newlevel = -1;
-
-    switch ($sessionstatus)
-    {
-      case SESSION_NEW:
-      {
-        $newlevel = -1;
-        break;
-      }
-      case SESSION_REPLACE:
-      {
-        $newlevel = -2;
-        break;
-      }
-      case SESSION_PARTIAL:
-      {
-        $newlevel = -3;
-        break;
-      }
-      case SESSION_NESTED:
-      {
-        $newlevel = $currentlevel+1;
-        break;
-      }
-      case SESSION_BACK:
-      {
-        $newlevel = max(0,$currentlevel-$levelskip);
-        break;
-      }
-      default:
-      {
-        $newlevel = $currentlevel;
-      }
-    }
-    return $newlevel;
+    return atkSessionManager::newLevel($sessionstatus, $levelskip);
   }
 
   /**
-   * Function session_form
-   *
-   * Adds session information to a form
-   * @param int $sessionstatus the session flags
-   *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-   *             SESSION_NESTED|SESSION_BACK)
-   * @param int $returnbehaviour When SESSION_NESTED is used, this is used to
-   *            indicate where to return to.
-   * @return string the HTML formcode with the session info
+   * @deprecated Use atkSessionManager::formState instead.
    */
   function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL)
   {
-    global $g_stickyurl;
-
-    $res = "";
-
-    $newlevel = session_level($sessionstatus);
-
-    if ($newlevel!=0)
-    {
-      $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'" />';
-    }
-    $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'" />';
-
-    if ($sessionstatus!=SESSION_NEW)
-    {
-      $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'" />';
-    }
-
-    if (!is_null($returnbehaviour))
-    {
-      $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'" />';
-    }
-
-    $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
-    $res .= '<input type="hidden" name="atkescape" value="" />';
-
-    for ($i=0;$i<count($g_stickyurl);$i++)
-    {
-      $value = $GLOBALS[$g_stickyurl[$i]];
-      if ($value!="")
-      {
-        $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'" />';
-      }
-    }
-    return $res;
+    return atkSessionManager::formState($sessionstatus, $returnbehaviour);
   }
 
   /**
-   * Gets the session vars
-   * @param var $sessionstatus the session flags
-   *                           (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-   *                            SESSION_NESTED|SESSION_BACK)
-   * @param int $levelskip      the amount of levels to skip if we go back
-   * @param string $url         the URL
-   * @return array the vars of the session
+   * @deprecated Use atkSessionManager::sessionVars() instead.
    */
   function session_vars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
   {
-    global $g_stickyurl;
-
-    $newlevel = session_level($sessionstatus, $levelskip);
-    $vars="";
-   // atklevel is already set manually, we don't append it..
-    if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
-    {
-      $vars.= "atklevel=".$newlevel."&";
-    }
-    $vars.= "atkprevlevel=".atkLevel();
-    if ($sessionstatus!=SESSION_NEW)
-    {
-      $vars.="&atkstackid=".atkStackID();
-    }
-    $vars.= "&".SID;
-
-    for ($i=0;$i<count($g_stickyurl);$i++)
-    {
-      $value = $GLOBALS[$g_stickyurl[$i]];
-      if ($value!="")
-      {
-        if (substr($vars,-1)!="&") $vars.="&";
-        $vars.=$g_stickyurl[$i]."=".$value;
-      }
-    }
-    return $vars;
+    return atkSessionManager::sessionVars($sessionstatus, $levelskip, $url);
   }
 
   /**
-   * Function session_url
-   *
-   * Makes a session-aware URL.
-   *
-   * @param string $url         the url to make session-aware
-   * @param var $sessionstatus  the session flags
-   *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-   *                             SESSION_NESTED|SESSION_BACK)
-   * @param int $levelskip      the amount of levels to skip if we go back
-   * @return string the session aware URL
+   * @deprecated, use atkSessionManager::sessionUrl() instead.
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
-    global $g_stickyurl;
-    if (strpos($url,"?")!==false)
-    {
-      $start = "&";
-    }
-    else
-    {
-      $start = "?";
-    }
+    return atkSessionManager::sessionUrl($url, $sessionstatus, $levelskip);
 
-    $url.=$start;
-
-    $url.=session_vars($sessionstatus, $levelskip, $url);
-
-    return $url;
   }
 
   /**
-   * Function href
-   *
-   * Makes a session-aware href url.
-   * When using hrefs in the editform, you can set saveform to true. This will save your
-   * form variables in the session and restore them whenever you come back.
-   *
-   * @param string $url         the url to make session aware
-   * @param string $name        the name to display
-   * @param var $sessionstatus  the session flags
-   *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
-   *                             SESSION_NESTED|SESSION_BACK)
-   * @param bool $saveform      wether or not to save the form
-   * @param string $extraprops  extra props you can add in the link such as
-   *                            'onChange="doSomething()"'
-   * @return string the HTML link for the session aware URI
+   * @deprecated, use atkHref or atkSessionManager::href instead.
    */
   function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
   {
-    if ($saveform)
-    {
-      $str = 'javascript:atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
-    }
-    else
-    {
-      $str = session_url($url,$sessionstatus);
-    }
+    return atkSessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
+  }
 
-    // note, we use single quotes instead of doublequotes in the href='',
-    // because we otherwise have a problem with internet explorers buggy
-    // javascript parser..
-    return "<a href='".$str."' ".$extraprops.">".$name."</a>";
+  /**
+   * Convenience wrapper for atkSessionManager::href().
+   * @see atkSessionManager::href
+   */
+  function atkHref($url, $name="", $sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
+  {
+    return atkSessionManager::href($url, $name, $sessionstatus, $saveform, $extraprops);
   }
 
 
@@ -938,7 +787,8 @@
   }
 
   /**
-   * Parse strings, deprecated, please use the atkStringParser class
+   * Parse strings
+   * @deprecated, please use the atkStringParser class
    */
   function stringparse($string, $data,$encode=false)
   {
@@ -1088,7 +938,7 @@
           $body.=_wordwrap($key.str_repeat(" ",max(1,20-strlen($key)))." = ".var_export($value,1))."\n";
         }
       }
-      
+
       $body.= "\n\nATK CONFIGURATION\n".str_repeat("-",70)."\n";
       foreach ($GLOBALS as $key=>$value)
       {
@@ -1256,22 +1106,22 @@
     {
       $attribName = array();
       $label = array();
-      
+
       for ($i = 0; $i < count($attrib); $i++)
       {
         $attribName[$i] = $attrib[$i]->fieldName();
         $label[$i] = $attrib[$i]->getLabel($record);
       }
-      
+
       $tab = $attrib[0]->m_tabs[0];
     }
-    else 
+    else
     {
       $attribName = $attrib->fieldName();
       $label = $attrib->getLabel($record);
       $tab = $attrib->m_tabs[0];
     }
-      
+
     triggerError($record, $attribName, $error, $message, $tab, $label);
   }
 
@@ -1648,8 +1498,12 @@
   }
 
   /**
-   * Generate a dispatch menu URL for use with nodes
-   * and their specific actions.
+   * Generate a dispatch menu URL for use with nodes and their specific
+   * actions.
+   *
+   * Note that this does not necessarily create a link to the current php
+   * file (dispatch.php, index.php). It asks the controller which one to use.
+   *
    * @param string $node the (module.)node name
    * @param string $action the atk action the link will perform
    * @param string $params: A key/value array with extra options for the url
@@ -1658,7 +1512,8 @@
    */
   function dispatch_url($node, $action, $params=array(),$phpfile='')
   {
-    if (!$phpfile) $phpfile =  getDispatchFile();
+    $c = &atkinstance("atk.atkcontroller");
+    if (!$phpfile) $phpfile =  $c->getPhpFile();
     $url = $phpfile;
     $atkparams = array();
     if($node!="")
@@ -1672,16 +1527,14 @@
 
     return $url;
   }
-  
+
   /**
-   * Return the dispatch file
-   *
-   * @return string Dispatch file
+   * @deprecated Use atkcontroller::getPhpFile() instead.
    */
   function getDispatchFile()
   {
-    $theme = &atkinstance('atk.ui.atktheme');
-    return $theme->getAttribute('dispatcher',atkconfig("dispatcher",'dispatch.php'));
+    $c = &atkinstance("atk.atkcontroller");
+    return $c->getPhpFile();
   }
 
   /**
@@ -1754,7 +1607,7 @@
 
     if ($cssclass == "")
       $cssclass = "btn";
-      
+
     $cssclass = ' class="'.$cssclass.'"';
     $script = 'atkSubmit("'.atkurlencode(session_url($url,$sessionstatus)).'")';
     $button = '<input type="button" name="atkbtn'.(++$cnt).'" value="'.$text.'" onClick=\''.$script.'\''.$cssclass.'>';
@@ -2152,10 +2005,10 @@
    */
   function atk_htmlentities($string, $quote_style=ENT_COMPAT, $charset=null)
   {
-    $acceptedCharsets = array('iso-8859-1', 'iso-8859-15', 'utf-8', 'cp866', 'ibm866', '866', 
-                              'cp1251', 'windows-1251', 'win-1251', '1251', 'cp1252', 'windows-1252', '1252', 
-                              'koi8-r', 'koi8-ru', 'koi8r', 'big5', '950', 'gb2312', '936', 'big5-hkscs', 
-                              'shift_jis', 'sjis', '932', 'euc-jp', 'eucjp'); 
+    $acceptedCharsets = array('iso-8859-1', 'iso-8859-15', 'utf-8', 'cp866', 'ibm866', '866',
+                              'cp1251', 'windows-1251', 'win-1251', '1251', 'cp1252', 'windows-1252', '1252',
+                              'koi8-r', 'koi8-ru', 'koi8r', 'big5', '950', 'gb2312', '936', 'big5-hkscs',
+                              'shift_jis', 'sjis', '932', 'euc-jp', 'eucjp');
     if (empty($charset))
     {
       $charset = atktext('charset', 'atk');
@@ -2165,7 +2018,7 @@
 
     return htmlentities($string, $quote_style, $charset);
   }
-  
+
   /**
    * Looks up a value using the given key in the given array and returns
    * the value if found or a default value if not found.
@@ -2234,5 +2087,18 @@
       $attr = clone($attribute);
 
     return $attr;
+  }
+
+  /**
+   * Return the current script file. Like $_SERVER['PHP_SELF'], but
+   * sanitized for security reasons
+   *
+   * @return String
+   */
+  function atkSelf()
+  {
+    $self = $_SERVER['PHP_SELF'];
+    if (strpos($self, '"')!==false) $self = substr($self, 0, strpos($self, '"')); //XSS attempt
+    return htmlentities(strip_tags($self)); // just in case..
   }
 ?>

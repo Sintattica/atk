@@ -193,7 +193,7 @@
       }
 
       $params = array('atksmartsearch' => $criteria);
-      $url = dispatch_url($this->m_node->atkNodeType(), 'admin', $params, $PHP_SELF);
+      $url = dispatch_url($this->m_node->atkNodeType(), 'admin', $params, atkSelf());
       $this->m_node->redirect(session_url($url, atkLevel() == 0 ? SESSION_REPLACE : SESSION_BACK));
     }
 
@@ -411,9 +411,9 @@
           $valueName = "criterium_{$id}_value";
           $modeName = "criterium_{$id}_mode";
 
-          $fieldUrl = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), $PHP_SELF), SESSION_NEW);
-          $valueUrl = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), $PHP_SELF), SESSION_NEW);
-          $modeUrl  = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), $PHP_SELF), SESSION_NEW);
+          $fieldUrl = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumfield'), atkSelf()), SESSION_NEW);
+          $valueUrl = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriumvalue'), atkSelf()), SESSION_NEW);
+          $modeUrl  = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('criterium_id' => $id, 'field_nr' => $entry['nr'], 'atkpartial' => 'criteriummode'), atkSelf()), SESSION_NEW);
 
           $scriptCode[] = "ATK.SmartSearchHandler.registerCriteriumFieldListener('{$entry[name]}', '{$prefix}', '{$fieldName}', '{$fieldUrl}', '{$valueName}', '{$valueUrl}', '{$modeName}', '{$modeUrl}')";
         }
@@ -733,7 +733,7 @@
         $params["criteria"][] = $this->getCriterium($i, $criterium);
       }
 
-      $url = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), $PHP_SELF), SESSION_NEW);
+      $url = session_url(dispatch_url($this->m_node->atkNodeType(), 'smartsearch', array('atkpartial' => 'criterium'), atkSelf()), SESSION_NEW);
       $params["action_add"] = "ATK.SmartSearchHandler.addCriterium('".addslashes($url)."')";
 
       return $ui->render($this->getTemplate("form"), $params);
@@ -769,7 +769,7 @@
       $params = array();
 
       $params["formstart"]  =
-          '<form name="entryform" action="'.$PHP_SELF.'?'.SID.'" method="post">'
+          '<form name="entryform" action="'.atkSelf().'?'.SID.'" method="post">'
         . session_form(SESSION_REPLACE)
         . '<input type="hidden" name="atkaction" value="smartsearch">'
         . '<input type="hidden" name="atknodetype" value="'.$node->atkNodeType().'">';

@@ -10,7 +10,7 @@
  *
  * @copyright (c)2000-2006 Ibuildings.nl BV
  * @copyright (c)2000-2006 Ivo Jansch
- * 
+ *
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
 
@@ -35,21 +35,21 @@ class atkDGList extends atkDGComponent
   {
     $baseUrlData = parse_url($baseUrl);
     $baseQuery = $baseUrlData['query'];
-    
+
     if (!hasFlag($this->m_flags, RL_EMBED))
     {
-      if (empty($formName)) 
+      if (empty($formName))
         $formName = $listName;
-        
-      $formstart = 
+
+      $formstart =
         '<form name="'.$formName.'" method="post">'.
         session_form(SESSION_DEFAULT).
         '<input type="hidden" name="atknodetype" value="'.$this->m_node->atkNodeType().'">'.
         '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.
-        '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page          
-        
-      $formend = '</form>';       
-    }      
+        '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page
+
+      $formend = '</form>';
+    }
 
     $theme = &atkinstance("atk.ui.atktheme");
     $page = &atkPage::getInstance();
@@ -57,9 +57,9 @@ class atkDGList extends atkDGComponent
 
     if (empty($listName))
       $listName = "rl_".getUniqueId("normalRecordList");
-      
+
     $page->register_script(atkconfig("atkroot")."atk/javascript/recordlist.js");
-    $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");      
+    $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
 
     $defaulthighlight = $theme->getAttribute("highlight");
     $selectcolor = $theme->getAttribute("select");
@@ -200,7 +200,7 @@ class atkDGList extends atkDGComponent
 
         if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
         {
-          $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->getMasterNodeType()."&atkaction=".$node->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
+          $button .= '<br>'.href(atkSelf()."?atknodetype=".$this->getMasterNodeType()."&atkaction=".$node->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
         }
 
         //$searchstart = '<a name="searchform"></a>';
@@ -320,23 +320,23 @@ class atkDGList extends atkDGComponent
           if (count($list["rows"][$i]["mra"]) > 0)
           {
             $inputHTML = '';
-            
+
             switch($mraSelectionMode)
             {
               case MRA_SINGLE_SELECT:
                 // no atkselector array index, will be added later on using JavaScript
-                $inputHTML = '<input type="radio" name="'.$listName.'_atkselector" value="'.$list["rows"][$i]["selector"].'" onclick="if (this.disabled) this.checked = false">';                
+                $inputHTML = '<input type="radio" name="'.$listName.'_atkselector" value="'.$list["rows"][$i]["selector"].'" onclick="if (this.disabled) this.checked = false">';
                 break;
               case MRA_NO_SELECT:
-                $inputHTML = 
+                $inputHTML =
                   '<input type="checkbox" disabled="disabled" checked="checked">'.
                   '<input type="hidden" name="'.$listName.'_atkselector['.$i.']" value="'.$list["rows"][$i]["selector"].'">';
                 break;
               case MRA_MULTI_SELECT:
               default:
-                $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector['.$i.']" value="'.$list["rows"][$i]["selector"].'" onclick="if (this.disabled) this.checked = false">';                
-            }              
-            
+                $inputHTML = '<input type="checkbox" name="'.$listName.'_atkselector['.$i.']" value="'.$list["rows"][$i]["selector"].'" onclick="if (this.disabled) this.checked = false">';
+            }
+
             $record["cols"][] = array("content"=>$inputHTML.'<script language="javascript"  type="text/javascript">'.$listName.'["'.$list["rows"][$i]["selector"].'"] = new Array("'.implode($list["rows"][$i]["mra"], '","').'");</script>', "type" => "mra");
           }
           else $record["cols"][] = array("content"=>"", "type" => "mra");
@@ -396,7 +396,7 @@ class atkDGList extends atkDGComponent
         /* actions (right) */
         if ($orientation=="right"||$orientation=="both")
         {
-          if (!empty($list["rows"][$i]["actions"])) 
+          if (!empty($list["rows"][$i]["actions"]))
             $record["cols"][] = array("content"=>$str_actions, "type" => "actions");
           //else $record["cols"][] = array("content"=>"", "type" => "actions");
         }
@@ -434,7 +434,7 @@ class atkDGList extends atkDGComponent
       $mra = "";
       if (hasFlag($flags, RL_MRPA))
       {
-        $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->getMasterNodeType(), SESSION_NESTED);
+        $target = session_url(atkSelf().'?atknodetype='.$this->getMasterNodeType(), SESSION_NESTED);
 
         /* multiple actions -> dropdown */
         if (count($this->m_node->m_priority_actions) > 1)
@@ -462,7 +462,7 @@ class atkDGList extends atkDGComponent
       /****************************************/
       elseif (hasFlag($flags, RL_MRA))
       {
-        $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType(), SESSION_NESTED);
+        $target = session_url(atkSelf().'?atknodetype='.$this->m_node->atkNodeType(), SESSION_NESTED);
         $embedded = hasFlag($this->m_flags, RL_EMBED) ? 'true' : 'false';
 
         $mra = (count($list["rows"]) > 1 && $mraSelectionMode != MRA_SINGLE_SELECT && $mraSelectionMode != MRA_NO_SELECT ?
@@ -657,7 +657,7 @@ class atkDGList extends atkDGComponent
           unset($row["actions"][$name]);
         }
       }
-      
+
       $tmpMRA = array();
       foreach($row["mra"] as $name)
       {
@@ -665,8 +665,8 @@ class atkDGList extends atkDGComponent
           $tmpMRA[] = $name;
       }
       $row["mra"] = $tmpMRA;
-      
-      $result["mra"] = array_merge($result["mra"], $row["mra"]);        
+
+      $result["mra"] = array_merge($result["mra"], $row["mra"]);
 
       /* columns */
       foreach (array_keys($this->m_node->m_attribIndexList) as $r)
@@ -692,7 +692,7 @@ class atkDGList extends atkDGComponent
 
     return $result;
   }
-  
+
  /**
    * Function outputs an array with all information necessary to output a recordlist.
    *
@@ -797,7 +797,7 @@ class atkDGList extends atkDGComponent
           unset($row["actions"][$name]);
         }
       }
-      
+
       $tmpMRA = array();
       foreach($row["mra"] as $name)
       {
@@ -805,8 +805,8 @@ class atkDGList extends atkDGComponent
           $tmpMRA[] = $name;
       }
       $row["mra"] = $tmpMRA;
-      
-      $result["mra"] = array_merge($result["mra"], $row["mra"]);        
+
+      $result["mra"] = array_merge($result["mra"], $row["mra"]);
 
       /* columns */
       foreach (array_keys($this->m_node->m_attribIndexList) as $r)
@@ -831,6 +831,6 @@ class atkDGList extends atkDGComponent
       $result["mra"] = array_values(array_unique($result["mra"]));
 
     return $result;
-  }   
+  }
 }
 ?>

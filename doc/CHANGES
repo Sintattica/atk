@@ -54,11 +54,11 @@ Changed in ATK 6.1
 + Added support for editing records using a DHTML popup dialog. [Dennis]
 + Added support for JavaScript record actions (specify javascript: at
   the beginning of the action URL). [Peter]
-+ Override prototype.js's String.evalScripts method so that JavaScript 
++ Override prototype.js's String.evalScripts method so that JavaScript
   gets executed in the window context. [Peter]
 + Added query execution time info to the debug for more accurate performance
   data in db/class.atkoci9db.inc. [Patrick]
-+ Added getAttributeNames() method to atkNode. [Peter]  
++ Added getAttributeNames() method to atkNode. [Peter]
 + Added support for menu images in atkmodernmenu class. [Lineke]
 + Added a new class atkTableRendererGrouped. Renders a table with collapsable/
   expandable groups. First used in the weektimereg module to organise projects.
@@ -101,16 +101,31 @@ Changed in ATK 6.1
 * Improved detection of clicks on the recordlist row or clicks on inputs,
   etc.in the recordlist row. [Peter]
 * Moved prototype.js overrides to separate JavaScript file. [Peter]
-* Removed the first preUpdate call (it was called twice due to a merge error). 
+* Removed the first preUpdate call (it was called twice due to a merge error).
   This fixes the problem that in the preUpdate the atkorgrec is not filled with
   nodes with the NF_TRACK_CHANGES flag. [Boy,Lineke]
 * Refactored the atktablerenderer (backwards compatible). Functionally
   decomposed the render method. Done to make groupedRenderer possible. [Edgar]
-* Added getAttributeNames() method to atkMetaPolicy. [Peter]  
+* Added getAttributeNames() method to atkMetaPolicy. [Peter]
 * Altered storage type for atkmultiselectattribute from 'string' to 'text'
   because 'string' appeared to be too small. [Patrick]
 * Don't eval response twice when showing a dialog. [Edgar,Peter]
 * Moved showTab() call to atkNode instead of atkPage. [Edgar,Peter]
+* Made more code adhere to naming conventions and global function fixes. [Ivo]
+  Deprecation list:
+    halt -> atkhalt
+    getmicrotime -> atkDebugger::getMicroTime
+    elapsed -> atkDebugger::elapsed
+    session_level -> atkSessionManager::newLevel
+    session_form -> atkSessionManager::formState
+    session_vars -> atkSessionManager::sessionVars
+    atk_get_trace -> atkGetTrace
+    session_url -> atkSessionManager::sessionUrl
+    href -> atkHref
+    getDispatchFile -> atkController::getPhpFile / atkSelf
+* Cleaned up the way the dispatch file was determined for menus. [Ivo]
+* Fixed XSS bug, PHP_SELF was replaced with atkSelf, which does some anti-XSS
+  on PHP_SELF before returning. [Ivo]
 
 
 Changed in ATK 6.0

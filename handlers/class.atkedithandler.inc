@@ -32,6 +32,7 @@
   class atkEditHandler extends atkViewEditBase
   {
     var $m_dialogSaveUrl = null;
+    var $m_buttonsource = null;
 
 
     /**

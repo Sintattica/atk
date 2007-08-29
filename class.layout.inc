@@ -647,7 +647,7 @@
             if (count($node->m_tabList[$node->m_action]) > 1 &&
                  $tabs != "*" && !atk_in_array($tab, $tabs))
             {
-              $error_tab = ' ('.atktext("error_tab").' '.href($_SERVER["PHP_SELF"]."?atktab=".$tabs[0],atktext("tab_".$tabs[0], "", $node->m_type),SESSION_DEFAULT,true).')';
+              $error_tab = ' ('.atktext("error_tab").' '.atkHref(atkSelf()."?atktab=".$tabs[0],atktext("tab_".$tabs[0], "", $node->m_type),SESSION_DEFAULT,true).')';
             }
             else
             {

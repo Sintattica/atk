@@ -3,7 +3,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -15,10 +15,10 @@
    * @version $Revision$
    * $Id$
    */
-   
-  /** 
+
+  /**
    * @internal include baseclass.
-   */  
+   */
   include_once(atkconfig("atkroot")."atk/atkbrowsertools.inc");
   include_once(atkconfig("atkroot")."atk/attributes/class.atktextattribute.inc");
 
@@ -60,7 +60,7 @@
    * @deprecated This attribute is no longer maintained, please use the
    * atkFckAttribute instead.
    *
-   * @author Lineke Willems <lineke@ibuildings.nl>   
+   * @author Lineke Willems <lineke@ibuildings.nl>
    * @package atk
    * @subpackage attributes
    *
@@ -102,7 +102,7 @@
     function edit($record="", $fieldprefix="")
     {
       global $config_atkroot, $config_enable_ie_extensions;
-      global $atkwwview, $PHP_SELF;
+      global $atkwwview;
 
       if (!ieExtensions())
       {
@@ -287,7 +287,7 @@
         {
           $result.= "<!-- DEInsertTableParam Object -->";
           //$result.= "<object ID=\"ObjTableInfo\" CLASSID=\"clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C\" width=2 height=2 VIEWASTEXT>";
-          
+
           //$result.= "</object>";
           $result.= "<IFRAME ID=\"$this->m_editorname\" STYLE=\"height:350;width:630;background-color:white;\">";
           $result.= "</IFRAME>";

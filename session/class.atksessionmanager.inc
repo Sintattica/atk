@@ -691,6 +691,211 @@
       return $_SESSION[atkconfig("identifier")];
     }
 
+    /**
+     * Calculate a new session level based on current level and
+     * a passed sessionstatus.
+     * @param var $sessionstatus the session flags
+     *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *             SESSION_NESTED|SESSION_BACK)
+     * @param int $levelskip how many levels to skip when we use SESSION_BACK,
+     *            default 1
+     * @static
+     * @return int the new session level
+     */
+    function newLevel($sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    {
+      $currentlevel = atkLevel();
+
+      $newlevel = -1;
+
+      switch ($sessionstatus)
+      {
+        case SESSION_NEW:
+        {
+          $newlevel = -1;
+          break;
+        }
+        case SESSION_REPLACE:
+        {
+          $newlevel = -2;
+          break;
+        }
+        case SESSION_PARTIAL:
+        {
+          $newlevel = -3;
+          break;
+        }
+        case SESSION_NESTED:
+        {
+          $newlevel = $currentlevel+1;
+          break;
+        }
+        case SESSION_BACK:
+        {
+          $newlevel = max(0,$currentlevel-$levelskip);
+          break;
+        }
+        default:
+        {
+          $newlevel = $currentlevel;
+        }
+      }
+      return $newlevel;
+    }
+
+    /**
+     * Adds session information to a form
+     *
+     * @param int $sessionstatus the session flags
+     *            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *             SESSION_NESTED|SESSION_BACK)
+     * @param int $returnbehaviour When SESSION_NESTED is used, this is used to
+     *            indicate where to return to.
+     * @return string the HTML formcode with the session info
+     */
+    function formState($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL)
+    {
+      global $g_stickyurl;
+
+      $res = "";
+
+      $newlevel = atkSessionManager::newLevel($sessionstatus);
+
+      if ($newlevel!=0)
+      {
+        $res= '<input type="hidden" name="atklevel" value="'.$newlevel.'" />';
+      }
+      $res.='<input type="hidden" name="atkprevlevel" value="'.atkLevel().'" />';
+
+      if ($sessionstatus!=SESSION_NEW)
+      {
+        $res.='<input type="hidden" name="atkstackid" value="'.atkStackID().'" />';
+      }
+
+      if (!is_null($returnbehaviour))
+      {
+        $res.= '<input type="hidden" name="atkreturnbehaviour" value="'.$returnbehaviour.'" />';
+      }
+
+      $res .= '<input type="hidden" name="'.session_name().'" value="'.session_id().'" />';
+      $res .= '<input type="hidden" name="atkescape" value="" />';
+
+      for ($i=0;$i<count($g_stickyurl);$i++)
+      {
+        $value = $GLOBALS[$g_stickyurl[$i]];
+        if ($value!="")
+        {
+          $res.="\n".'<input type="hidden" name="'.$g_stickyurl[$i].'" value="'.$value.'" />';
+        }
+      }
+      return $res;
+    }
+
+
+    /**
+     * Gets the session vars
+     * @param var $sessionstatus the session flags
+     *                           (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *                            SESSION_NESTED|SESSION_BACK)
+     * @param int $levelskip      the amount of levels to skip if we go back
+     * @param string $url         the URL
+     * @return array the vars of the session
+     */
+    function sessionVars($sessionstatus=SESSION_DEFAULT, $levelskip=1, $url="")
+    {
+      global $g_stickyurl;
+
+      $newlevel = atkSessionManager::newLevel($sessionstatus, $levelskip);
+      $vars="";
+     // atklevel is already set manually, we don't append it..
+      if ($newlevel!=0 && !strpos($url,"atklevel=")>0)
+      {
+        $vars.= "atklevel=".$newlevel."&";
+      }
+      $vars.= "atkprevlevel=".atkLevel();
+      if ($sessionstatus!=SESSION_NEW)
+      {
+        $vars.="&atkstackid=".atkStackID();
+      }
+      $vars.= "&".SID;
+
+      for ($i=0;$i<count($g_stickyurl);$i++)
+      {
+        $value = $GLOBALS[$g_stickyurl[$i]];
+        if ($value!="")
+        {
+          if (substr($vars,-1)!="&") $vars.="&";
+          $vars.=$g_stickyurl[$i]."=".$value;
+        }
+      }
+      return $vars;
+    }
+
+    /**
+     * Makes a session-aware URL.
+     *
+     * @param string $url         the url to make session-aware
+     * @param var $sessionstatus  the session flags
+     *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *                             SESSION_NESTED|SESSION_BACK)
+     * @param int $levelskip      the amount of levels to skip if we go back
+     * @static
+     * @return string the session aware URL
+     */
+    function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
+    {
+      global $g_stickyurl;
+      if (strpos($url,"?")!==false)
+      {
+        $start = "&";
+      }
+      else
+      {
+        $start = "?";
+      }
+
+      $url.=$start;
+
+      $url.=atkSessionManager::sessionVars($sessionstatus, $levelskip, $url);
+
+      return $url;
+    }
+
+
+    /**
+     * Makes a session-aware href url.
+     * When using hrefs in the editform, you can set saveform to true. This will save your
+     * form variables in the session and restore them whenever you come back.
+     *
+     * @param string $url         the url to make session aware
+     * @param string $name        the name to display
+     * @param var $sessionstatus  the session flags
+     *                            (SESSION_DEFAULT (default)|SESSION_NEW|SESSION_REPLACE|
+     *                             SESSION_NESTED|SESSION_BACK)
+     * @param bool $saveform      wether or not to save the form
+     * @param string $extraprops  extra props you can add in the link such as
+     *                            'onChange="doSomething()"'
+     * @static
+     * @return string the HTML link for the session aware URI
+     */
+    function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
+    {
+      if ($saveform)
+      {
+        $str = 'javascript:atkSubmit("'.atkurlencode(atkSessionManager::sessionUrl($url,$sessionstatus)).'")';
+      }
+      else
+      {
+        $str = atkSessionManager::sessionUrl($url,$sessionstatus);
+      }
+
+      // note, we use single quotes instead of doublequotes in the href='',
+      // because we otherwise have a problem with internet explorers buggy
+      // javascript parser..
+      return "<a href='".$str."' ".$extraprops.">".$name."</a>";
+    }
+
+
   }
 
   /**
@@ -739,7 +944,7 @@
     {
       // When we go back, we go one level deeper than the level we came from.
       atkimport("atk.atknode");
-      atkNode::redirect(session_url($_SERVER["PHP_SELF"]."?atklevel=".($atkprevlevel-1)));
+      atkNode::redirect(session_url(atkSelf()."?atklevel=".($atkprevlevel-1)));
       $output = &atkOutput::getInstance();
       $output->outputFlush();
       exit;

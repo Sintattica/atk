@@ -137,7 +137,7 @@
       {
         $newstart = $node->m_postvars['atkstartat'] - $limit;
         $res['previous'] = array( "title"=>atktext("previous", "atk"),
-                                  "url"=>$_SERVER["PHP_SELF"].
+                                  "url"=>atkSelf().
                                           "?atknodetype=".$ATK_VARS["atknodetype"].
                                           "&atkaction=".$action.
                                           (isset($ATK_VARS["atktarget"])?"&atktarget=".rawurlencode($ATK_VARS["atktarget"]):"").
@@ -148,7 +148,7 @@
       {
          if ($i==$curr) $res[$i] = array("title"=>"<b>$i</b>", "url"=>"");
          else $res[$i] = array("title"=>$i,
-                               "url"=>$_SERVER["PHP_SELF"].
+                               "url"=>atkSelf().
                                         "?atknodetype=".$ATK_VARS["atknodetype"].
                                         "&atkaction=".$action.
                                         "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".max(0, ($i-1) * $limit).
@@ -160,7 +160,7 @@
       {
         $newstart = $node->m_postvars['atkstartat'] + $limit;
         $res['next'] = array("title"=>atktext("next", "atk"),
-                              "url"=>$_SERVER["PHP_SELF"].
+                              "url"=>atkSelf().
                                       "?atknodetype=".$ATK_VARS["atknodetype"].
                                       "&atkaction=".$node->m_action.
                                       "&atkstartat".(isset($node->m_postvars["limitPostfix"])?$node->m_postvars["limitPostfix"]:"")."=".$newstart.
@@ -195,7 +195,7 @@
         // We use wildcard search for the index. Should be supported by any database.
 
         //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-        $nav.=href($_SERVER["PHP_SELF"]."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atksearch[".$node->m_index."]=".$char."*&atksinglesearchmode[".$node->m_index."]=wildcard&atkstartat=0",$label);
+        $nav.=href(atkSelf()."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atksearch[".$node->m_index."]=".$char."*&atksinglesearchmode[".$node->m_index."]=wildcard&atkstartat=0",$label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else

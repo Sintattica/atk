@@ -14,9 +14,9 @@
    * @version $Revision$
    * $Id$
    */
-  
+
   list($usec, $sec) = explode(" ", microtime());
-  
+
   /**
    * Current microtime, to see when exactly this request started.
    * @var float
@@ -40,11 +40,6 @@
   // modifiers
   $g_modifiers = array();
   $g_overloaders = array();
-
-  // Another workaround. We use PHP_SELF a lot. Without register_globals=On, we
-  // need to make it global ourselves. Todo: replace EVERY reference to
-  // PHP_SELF with _SERVER["PHP_SELF"] eventually.
-  $PHP_SELF = $_SERVER["PHP_SELF"];
 
   require_once($config_atkroot."atk/class.atkconfig.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");

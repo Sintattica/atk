@@ -189,7 +189,7 @@
           if (!empty($head["order"]))
           {
             global $ATK_VARS;
-            $head["url"] = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($head["order"]));
+            $head["url"] = session_url(atkSelf().'?atknodetype='.$ATK_VARS["atknodetype"].'&atkaction='.$ATK_VARS["atkaction"].'&atkorderby='.rawurlencode($head["order"]));
           }
 
           if (hasFlag($this->m_flags, RL_EMBED) && !empty($head["url"]))
@@ -245,7 +245,7 @@
           }
 
           $sortstart = '<a name="sortform"></a>'.
-                         '<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.
+                         '<form action="'.atkSelf().'?'.SID.'" method="get">'.
                          session_form().
                            '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new sort
 
@@ -273,13 +273,13 @@
           $button = '<input type="submit" class="btn_search" value="'.atktext("search").'">';
           if (!hasFlag($flags, RL_NO_EXTENDED_SEARCH)&&!$this->m_node->hasFlag(NF_NO_EXTENDED_SEARCH))
           {
-            $button .= '<br>'.href($_SERVER["PHP_SELF"]."?atknodetype=".$this->getMasterNodeType()."&atkaction=".$node->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
+            $button .= '<br>'.href(atkSelf()."?atknodetype=".$this->getMasterNodeType()."&atkaction=".$node->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
           }
 
           $searchstart = '<a name="searchform"></a>';
           if (!hasFlag($this->m_flags, RL_EMBED))
           {
-            $searchstart.='<form action="'.$_SERVER["PHP_SELF"].'?'.SID.'" method="get">'.session_form();
+            $searchstart.='<form action="'.atkSelf().'?'.SID.'" method="get">'.session_form();
             $searchstart.= '<input type="hidden" name="atknodetype" value="'.$this->getMasterNodeType().'">'.
                            '<input type="hidden" name="atkaction" value="'.$this->m_node->m_action.'">'.                                   '<input type="hidden" name="atksmartsearch" value="clear">'.
                            '<input type="hidden" name="atkstartat" value="0">'; // reset atkstartat to first page after a new search;
@@ -433,13 +433,13 @@
             if (substr($url, 0, 11) == 'javascript:')
             {
               $call = substr($url, 11);
-              $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";              
+              $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = function() { $call; };";
             }
-            else 
+            else
             {
               $actionloader.="\nrl_a['{$listName}'][{$i}]['{$name}'] = '$url';";
             }
-            
+
             $link = $name;
 
             if($icons == true)
@@ -526,7 +526,7 @@
         $mra = "";
         if (hasFlag($flags, RL_MRPA))
         {
-          $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->getMasterNodeType(), SESSION_NESTED);
+          $target = session_url(atkSelf().'?atknodetype='.$this->getMasterNodeType(), SESSION_NESTED);
 
           /* multiple actions -> dropdown */
           if (count($this->m_node->m_priority_actions) > 1)
@@ -555,7 +555,7 @@
         /****************************************/
         elseif (hasFlag($flags, RL_MRA))
         {
-          $target = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atkNodeType().'&atktarget='.$this->m_node->m_postvars['atktarget'].'&atktargetvar='.$this->m_node->m_postvars['atktargetvar'].'&atktargetvartpl='.$this->m_node->m_postvars['atktargetvartpl'], SESSION_NESTED);
+          $target = session_url(atkSelf().'?atknodetype='.$this->m_node->atkNodeType().'&atktarget='.$this->m_node->m_postvars['atktarget'].'&atktargetvar='.$this->m_node->m_postvars['atktargetvar'].'&atktargetvartpl='.$this->m_node->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
           $mra = (count($list["rows"]) > 1 ?
                       '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.atktext("select_all").'</a> / '.

@@ -115,7 +115,7 @@
               $back = SESSION_BACK;
               if ($this->_getSkip()==1) $back = SESSION_REPLACE;
 
-              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)).$extra, $back);
+              $location = session_url(atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=edit&atkselector='.rawurlencode($this->m_node->primaryKey($record)).$extra, $back);
             }
             else if ($this->m_node->hasFlag(NF_ADDAFTERADD) && isset($this->m_postvars['atksaveandnext']))
             {
@@ -123,7 +123,7 @@
               if ($this->_getSkip()==1) $back = SESSION_DEFAULT;
 
               $filter = isset($this->m_node->m_postvars['atkfilter']) ? "&atkfilter=".rawurlencode($this->m_node->m_postvars['atkfilter']) : "";
-              $location = session_url($_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add'.$filter, $back);
+              $location = session_url(atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add'.$filter, $back);
             }
             else
             {

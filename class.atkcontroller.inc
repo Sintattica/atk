@@ -34,7 +34,7 @@
     var $m_php_file = "";
 
     var $m_return_output = false;
-    
+
     /**
      * Key/value Array containing which are be send als post or get vars
      * @access private
@@ -195,6 +195,7 @@
       }
       else
       {
+        atk_var_dump($this->m_postvars, 'postvars');
         //if the object not yet exists, try to create it
         $fullclassname = $this->m_postvars["atknodetype"];
         if(isset($fullclassname) && $fullclassname != null)
@@ -210,6 +211,8 @@
           }
         }
       }
+      $res = NULL;
+      return $res; // prevent notice
     }
 
     /**
@@ -233,9 +236,9 @@
       $page = &$node->getPage();
 
       $page->register_script(atkconfig("atkroot")."atk/javascript/prototype/prototype.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/prototype-ext.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/scriptaculous/scriptaculous.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");      
+      $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktools.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/atkbusy.js");
 
       if ($node->allowed($node->m_action))
@@ -407,7 +410,7 @@
           $result[] = $this->getButton('saveandclose');
         }
         $result[] = $this->getButton('save');
-        
+
         if (atkLevel() >0 || hasFlag(atkArrayNvl($node->m_feedback, "update", 0), ACTION_SUCCESS))
         {
           $result[] = $this->getButton('cancel');
@@ -416,18 +419,18 @@
       elseif ($mode == "add")
       {
         $result[] = ($node->hasFlag(NF_EDITAFTERADD) === TRUE ) ? $this->getButton('saveandedit') : $this->getButton('save');
-        
+
         // if action is admin, we don't show the cancelbutton or the add next button
-        if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))          
+        if ($node->hasFlag(NF_ADDAFTERADD) && !$node->hasFlag(NF_EDITAFTERADD))
           $result[] = $this->getButton('saveandnext');
-        
+
         $result[] = $this->getButton('cancel');
       }
       elseif ($mode == "view")
       {
         if(atkLevel() > 0)
           $result[] = $this->getButton('back');
-          
+
         // if appropriate, display an edit button.
         if (!$node->hasFlag(NF_NO_EDIT)&&$node->allowed("edit", $record))
         {
@@ -443,7 +446,7 @@
     /**
       * Create a button.
       *
-      * @param String $action      
+      * @param String $action
       * @return HTML
       */
     function getButton($action)
@@ -471,7 +474,7 @@
            break;
          case "saveandnext":
            $name = "atksaveandnext";
-           $class = "btn_saveandnext";  
+           $class = "btn_saveandnext";
            break;
          case "back":
            $name = "atkback";
@@ -496,19 +499,19 @@
 
        return '<input type="submit" '.$class.$name.' value="'.$value.'">';
      }
-    
+
      /**
       * Create a dialog button.
       *
       * @param String $action
       * @param String $url
-      * @param array  $extraParams 
+      * @param array  $extraParams
       * @return HTML
       */
     function getDialogButton($action, $label=null, $url=null, $extraParams=array())
-    { 
+    {
       atkimport('atk.ui.atkdialog');
-           
+
       switch($action)
       {
         case "save":
@@ -560,18 +563,16 @@
     }
 
     /**
-     * Return php_file if not set returns PHP_SELF
+     * Return php_file. If not set, returns theme-level dispatchfile, if not set either, return (sanitized) PHP_SELF
      *
-     * @return string
+     * @return string The name of the file to which subsequent requests should be posted.
      */
     function getPhpFile()
     {
       $theme = &atkinstance('atk.ui.atktheme');
 
       if ($this->m_php_file != "") return $this->m_php_file;
-      elseif ($theme->getAttribute('dispatcher') != '') return $theme->getAttribute('dispatcher');
-      elseif (atkconfig("dispatcher") != '') return atkconfig("dispatcher");
-      else return $_SERVER['PHP_SELF'];
+      return $theme->getAttribute('dispatcher', atkconfig("dispatcher", atkSelf()));
     }
 
     /**

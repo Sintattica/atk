@@ -36,7 +36,7 @@
 
     function atkIndexPage()
     {
-      global $ATK_VARS;    
+      global $ATK_VARS;
       $this->m_page =   &atkinstance("atk.ui.atkpage");
       $this->m_ui =     &atkinstance("atk.ui.atkui");
       $this->m_theme =  &atkinstance('atk.ui.atktheme');
@@ -44,7 +44,7 @@
       $this->m_user =   getUser();
       $this->m_flags = array_key_exists("atkpartial", $ATK_VARS) ? HTML_PARTIAL : HTML_STRICT;
     }
-    
+
     function hasFlag($flag)
     {
       return hasFlag($this->m_flags, $flag);
@@ -57,7 +57,7 @@
         $this->atkGenerateTop();
         $this->atkGenerateMenu();
       }
-      
+
       $this->atkGenerateDispatcher();
 
       $this->m_output->output($this->m_page->render(($this->m_title!=""?$this->m_title:atkText("app_title")), $this->m_flags));
@@ -85,7 +85,7 @@
       //Backwards compatible $content, that is what will render when the box.tpl is used instead of a top.tpl
       $loggedin = atkText("logged_in_as", "atk").": <b>".($this->m_user["name"]?$this->m_user['name']:'administrator')."</b>";
       $content = '<br />'.$loggedin.' &nbsp; <a href="index.php?atklogout=1">'.ucfirst(atkText("logout")).' </a>&nbsp;<br /><br />';
-     
+
       $top = $this->m_ui->renderBox(array("content"=> $content,
       "logintext" => atktext("logged_in_as"),
       "logouttext" => ucfirst(atkText("logout", "atk")),
@@ -150,7 +150,7 @@
         if (!empty($lockType)) atklock();
 
         // Create node
-        if ($ATK_VARS['atknodetype'])
+        if (isset($ATK_VARS['atknodetype']))
         {
           $obj = &getNode($ATK_VARS['atknodetype']);
 

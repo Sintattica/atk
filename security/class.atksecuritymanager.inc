@@ -454,7 +454,7 @@
       }
 
       // we are authenticated, but atklogout is still active, let's get rid of it!
-      else if (isset($ATK_VARS["atklogout"])) header("Location: ".$_SERVER["PHP_SELF"]."?");
+      else if (isset($ATK_VARS["atklogout"])) header("Location: ".atkSelf()."?");
 
       // we keep the relogin state until the atklogout variable isn't set anymore
       else if (!isset($ATK_VARS["atklogout"]) && isset($session["relogin"]) && $session["relogin"]==1) $session["relogin"]=0;
@@ -525,12 +525,12 @@
       $page->register_script(atkConfig('atkroot')."atk/javascript/tools.js");
 
       $tplvars = Array();
-      $output ='<form action="'.$_SERVER["PHP_SELF"].'" method="post">';
+      $output ='<form action="'.atkSelf.'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));
       $output.='<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
       $tplvars["atksessionformvars"] = makeHiddenPostVars(array("atklogout", "loginattempts"));
-      $tplvars["formurl"] = $_SERVER["PHP_SELF"];
+      $tplvars["formurl"] = atkSelf();
 
       // max_loginattempts of 0 means no maximum.
       if(atkconfig('max_loginattempts')>0 && $loginattempts>atkconfig('max_loginattempts'))

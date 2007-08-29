@@ -59,7 +59,7 @@
         $testclassname = $elems[1];
         $fullpath = atkCleanPath($fullpath);
         $module_dirs = atkconfig("module_dirs");
-        
+
         if (is_array($module_dirs) && count($module_dirs) > 0)
         {
           $testcase_in_module_dir = false;
@@ -83,7 +83,7 @@
 
         if (isset($_REQUEST['list']))
         {
-          $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.$_SERVER['PHP_SELF'].'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></td></tr>';
+          $ret ='<tr><td>'.$fullpath.'</td><td><a href="'.atkSelf().'?showpassed&atkclass='.getClassName($fullpath).'">Test</a><br></td></tr>';
     	    echo $ret;
         }
         else

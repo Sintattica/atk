@@ -116,6 +116,15 @@
           atkwarning('Please check your compatible_menus in themedef.inc and config_menu_layout in config.inc.php.');
           $s_instance = atknew('atk.menu.atkplainmenu');
         }
+
+        // Set the dispatchfile for this menu based on the theme setting, or to the default if not set.
+        // This makes sure that all calls to dispatch_url will generate a url for the main frame and not
+        // within the menu itself.
+        $theme = &atkinstance("atk.ui.atktheme");
+        $dispatcher = $theme->getAttribute('dispatcher', atkconfig("dispatcher", "dispatch.php")); // do not use atkSelf here!
+        $c = &atkinstance("atk.atkcontroller");
+        $c->setPhpFile($dispatcher);
+
         atkHarvestModules("getMenuItems");
       }
 

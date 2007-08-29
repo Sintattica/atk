@@ -38,7 +38,7 @@ class atkFrontControllerBridge
   public function buildUrl($uri, $vars)
   {
     $vars['uri'] = $uri;
-    $url = $_SERVER['PHP_SELF'].'?'.http_build_query($vars);
+    $url = atkSelf().'?'.http_build_query($vars);
     return $url;
   }
 

@@ -32,7 +32,7 @@
   class atkAdminHandler extends atkActionHandler
   {
     var $m_actionSessionStatus = SESSION_NESTED;
-    
+
     /**
      * The action method
      */
@@ -70,7 +70,7 @@
     {
       $this->m_actionSessionStatus = $sessionStatus;
     }
-    
+
     /**
      * Render the adminpage, including addpage if necessary
      *
@@ -201,7 +201,7 @@
           for ($i = 0, $_i = count($node->m_search_action); $i < $_i; $i++)
             if ($node->allowed($node->m_search_action[$i], $recordset[$i]))
             {
-              $node->redirect(session_url($_SERVER["PHP_SELF"].'?atknodetype='.$node->atkNodeType().
+              $node->redirect(atkSessionManager::sessionUrl(atkSelf().'?atknodetype='.$node->atkNodeType().
                               '&atkaction='.$node->m_search_action[$i].
                               '&atkselector='.rawurlencode($node->primaryKey($recordset[0])),
                                SESSION_REPLACE));
@@ -307,17 +307,17 @@
           // generic text
           $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
         }
-        
+
         atkimport('atk.handlers.atkaddorcopyhandler');
         $add = $this->m_node->hasFlag(NF_ADD_DIALOG);
         $addorcopy = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) &&
                      atkAddOrCopyHandler::hasCopyableRecords($this->m_node);
-        					   
-        
-        if ($add || $addorcopy) 
+
+
+        if ($add || $addorcopy)
 				{
 				  $action = $this->m_node->hasFlag(NF_ADDORCOPY_DIALOG) ? 'addorcopy' : 'add';
-				  
+
 					atkimport('atk.ui.atkdialog');
 					$dialog = new atkDialog($this->m_node->atkNodeType(), $action, 'dialog');
 					$onClick = $dialog->getCall();
@@ -328,32 +328,14 @@
 				}
 				elseif ($this->m_node->hasFlag(NF_ADD_LINK))
 				{
-					$addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-	        return href($addurl,$label,SESSION_NESTED);
+					$addurl = atkSelf().'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
+	        return atkHref($addurl,$label,SESSION_NESTED);
 				}
 
 			}
 
 			return "";
     }
-
-
-//
-//    function __getAddLink()
-//    {
-//      if ($this->m_node->hasFlag(NF_ADD_LINK) && !$this->m_node->hasFlag(NF_NO_ADD) && $this->m_node->allowed("add"))
-//      {
-//        $addurl = $_SERVER["PHP_SELF"].'?atknodetype='.$this->m_node->atknodetype().'&atkaction=add';
-//        $label = atktext("link_".$this->m_node->m_type."_add", $this->m_node->m_module, "", "", "", true);
-//        if (empty($label))
-//        {
-//          // generic text
-//          $label = atktext(getNodeType($this->m_node->m_type),$this->m_node->m_module,$this->m_node->m_type)." ".atktext("add","atk","");
-//        }
-//        return href($addurl,$label,SESSION_NESTED);
-//      }
-//      return "";
-//    }
 
     function getHeaderLinks()
     {

@@ -133,7 +133,7 @@
 
       if(atkLevel() > 0)
       {
-        $backlinkurl = session_url($_SERVER["PHP_SELF"].'?atklevel='.session_level(SESSION_BACK));
+        $backlinkurl = atkSessionManager::sessionUrl(atkSelf().'?atklevel='.session_level(SESSION_BACK));
         $params["footer"] = '<br><div style="text-align: center"><input type="button" onclick="window.location=\''.$backlinkurl.'\';" value="&lt;&lt; '.atktext('back').'"></div>';
       }
 
