@@ -107,7 +107,7 @@
       $oFCKeditor = new FCKeditor($fieldprefix.$this->fieldName()) ;
       $oFCKeditor->BasePath = atkconfig("atkroot")."atk/attributes/fck/";
 
-      $oFCKeditor->Value = $record[$this->fieldName()];
+      $oFCKeditor->Value = isset($record[$this->fieldName()])?$record[$this->fieldName()]:"";
       $oFCKeditor->ToolbarSet=$this->fck_opt['ToolbarSet'];
       $oFCKeditor->Width=$this->fck_opt['Width'];
       $oFCKeditor->Height=$this->fck_opt['Height'];
