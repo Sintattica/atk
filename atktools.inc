@@ -182,6 +182,7 @@
    */
   function elapsed()
   {
+    atkimport("atk.utils.atkdebugger");
     return atkDebugger::elapsed();
   }
 
