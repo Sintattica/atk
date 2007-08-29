@@ -68,7 +68,19 @@ Changed in ATK 6.1
 + Added an atkUrlVault class to protect applications against url tampering.
   Needs testing, so is not yet applied to ATK's own urls. [Ivo]
 + Added {atkdispatchfile} plugin for use in forms in Smarty templates. [Sandy]
++ Added fluent interface (method chaining) to addFlag, removeFlag,
+  addOnChangeHandler, setForceInsert, setForceUpdate, addDestinationFilter,
+  addOption, removeOption and addDependee methods. [Guido]
++ Added setOptions($options, $values) method to replace the complete
+  set of options/values in atkListAttribute. [Guido]
++ Added atkDb::getValue function to get a single value (first row, first
+  column) from a resultset. The getValue function accepts an sql query
+  string. [Guido]
++ Added setAttributeOrder method to atkNode. [Guido]
 + Added Indonesian translation. [Deus]
++ Added option to set the administrator and guest password as an md5 hash in
+  the config file for a little more security. [Guido]
++ Added adminFooter() support to atkTreeNode. [Guido]
 * Fixed XSS vulnerability, PHP_SELF was replaced with atkSelf, which does some
   anti-XSS on PHP_SELF before returning. [Ivo]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
@@ -124,6 +136,13 @@ Changed in ATK 6.1
     href -> atkHref
     getDispatchFile -> atkController::getPhpFile / atkSelf
 * Cleaned up the way the dispatch file was determined for menus. [Ivo]
+* Fixed descriptor not showing in edit page title. [Guido]
+* Fixed several styling issues in win2k theme. [Guido]
+* When using AF_RELATION_AUTOLINK on a relation, a link is no longer displayed
+  if there is no selected record. [Guido]
+* Attributes having the AF_SEARCHABLE flag will now always be searched in
+  atkNode::searchDb() calls.
+* Fixed adminHeader() support in atkTreeNode. [Guido]
 
 
 Changed in ATK 6.0
