@@ -21,8 +21,9 @@
    * @author Sandy Pleyte <sandy@achievo.org>
    *
    */
-  function smarty_function_dispatchfile($params, &$smarty)
+  function smarty_function_atkdispatchfile($params, &$smarty)
   {
-    return getDispatchFile();
+     $c = &atkinstance("atk.atkcontroller");
+     return $c->getPhpFile();
   }
 ?>
