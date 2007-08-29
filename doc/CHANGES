@@ -6,7 +6,6 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.1
 ------------------
-
 + Added select method to atkNode which returns an instance of the
   atkSelector class which can be used to fluently build a selectDb
   expression to retrieve a single row, all rows or the row count.
@@ -68,6 +67,8 @@ Changed in ATK 6.1
 + Added atkManyToManyListRelation, a new view for the many-to-many relation
   where the selection is done using a multiple-select select element. [Peter]
 + Added full_rmdir to atkFileUtils to 'rm -rf' any given directory [Jeroen]
++ Added an atkUrlVault class to protect applications against url tampering.
+  Needs testing, so is not yet applied to ATK's own urls. [Ivo]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
 * Improved read-only mode of atkOneToOneRelation (don't display as table
   but display in-line, also check destination NF_READONLY flag). [Peter]
