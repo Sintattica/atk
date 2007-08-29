@@ -525,7 +525,7 @@
       $page->register_script(atkConfig('atkroot')."atk/javascript/tools.js");
 
       $tplvars = Array();
-      $output ='<form action="'.atkSelf.'" method="post">';
+      $output ='<form action="'.atkSelf().'" method="post">';
       $output.=makeHiddenPostVars(array("atklogout", "loginattempts"));
       $output.='<br><br><table border="0" cellspacing="2" cellpadding="0" align="center">';
 
