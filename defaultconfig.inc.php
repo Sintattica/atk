@@ -585,7 +585,7 @@
    * Use browser language to detect application language.
    * By default set to false to remain backwards compatible.
    *
-   * @var
+   * @var boolean
    */
   $config_use_browser_language = false;
 

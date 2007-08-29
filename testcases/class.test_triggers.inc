@@ -19,6 +19,7 @@
   /**
    * Utility node class for testing the atknode triggers
    * @access private
+   * @package atk
    */
   atkimport("atk.atknode");
   class triggerNode extends atkNode

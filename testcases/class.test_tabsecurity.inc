@@ -24,6 +24,7 @@
    * a node. This testcase tests the functionality.
    *
    * @access private
+   * @package atk
    * @author harrie <harrie@ibuildings.nl>
    */
   class test_tabsecurity extends atkTestCase
