@@ -10,9 +10,7 @@ Changed in ATK 6.1
   atkSelector class which can be used to fluently build a selectDb
   expression to retrieve a single row, all rows or the row count.
   (PHP5 only!) [Peter]
-+ Added feature that skips the addOrCopyDialog when there is no record
-  to copy from. The add link will go directly to the add page instead.[Edgar]
-+ Added support for usage of custom templates in the admin actions. [Ruud]
++ Added support for custom templates in the admin actions. [Ruud]
 + Added generic Ajax DHTML dialog support to ATK (see atkDialog). [Peter]
 + Added support for add dialogs. If you set the NF_ADD_DIALOG on a node you
   will be presented with a DHTML popup dialog for entering a new record
@@ -21,7 +19,7 @@ Changed in ATK 6.1
   NF_ADD_DIALOG flag is set on the destination node but can also be enabled
   using the AF_ONETOMANY_ADD_DIALOG flag. Please note that this functionality
   should only be used for simple nodes with only a few attributes and no tabs
-  or sections. [Dennis,Patrick,Peter]
+  or sections. [Dennis, Patrick, Peter]
 + Added support for "add or copy" dialogs. This special type of dialog makes it
   possible for the user to select whatever he/she want to create a new
   record or copy an existing record. The user is presented with a dropdown of
@@ -29,11 +27,11 @@ Changed in ATK 6.1
   need to be included in the copy process (or not). This functionality can
   be enabled by setting the NF_ADDORCOPY_DIALOG flag on the node or by
   specifying it using the AF_ONETOMANY_ADDORCOPY_DIALOG flag on an
-  atkOneToManyRelation. [Dennis,Patrick,Peter,Tjeerd]
+  atkOneToManyRelation. [Dennis, Patrick, Peter, Tjeerd]
 + Added atkExtendableShuttleRelation; a shuttle relation which can be extended
   with so called controls. Base classes for these controls are included.
   Controls can be used, for example, to filter content in fields. Will in the
-  near future replace the normal atkShuttleRelation. [Tjeerd,Peter]
+  near future replace the normal atkShuttleRelation. [Tjeerd, Peter]
 + Added action caching support to atkFrontController. [Peter]
 + Added command line support for test.php file in atk skel. [Guido]
 + Implemented caching of query results by node and filter in
@@ -41,34 +39,38 @@ Changed in ATK 6.1
   during a single request. [Patrick, Tjeerd]
 + Added functions addOption and removeOption to 'atklistattribute' for easy
   adding and removing options from a dropdown [Jeroen]
-+ Added the actionhandler attributeEditHandler which provides a dialog for editing
-  one attribute for multiple records at the same time. The new action can be used
-  by calling the new atkNode method addDialogMRA() with 'attributeedit' as its
-  argument, which will render an extra button next to the MRA dropdown [Dennis].
-+ Made it possible to extend atkTimeZoneAttribute by calling it's methods non-
++ Added the actionhandler attributeEditHandler which provides a dialog for
+  editing one attribute for multiple records at the same time. The new action
+  can be used by calling the new atkNode method addDialogMRA() with
+  'attributeedit' as its argument, which will render an extra button next to
+  the MRA dropdown [Dennis].
++ Made it possible to extend atkTimeZoneAttribute by calling its methods non-
   static. [Tjeerd]
-+ Added atkvardump Smarty modifier. [Boy]
++ Added atkvardump Smarty modifier for debugging template variables. [Boy]
 + Added setLanguage method to atkLanguage. [Ivo]
-+ Ported string resource from WDE to ATK. [Boy]
++ Added Smarty string resource for parsing String based templates. [Boy]
 + Added support for editing records using a DHTML popup dialog. [Dennis]
 + Added support for JavaScript record actions (specify javascript: at
   the beginning of the action URL). [Peter]
 + Override prototype.js's String.evalScripts method so that JavaScript
   gets executed in the window context. [Peter]
 + Added query execution time info to the debug for more accurate performance
-  data in db/class.atkoci9db.inc. [Patrick]
+  data in oci9 database driver. [Patrick]
 + Added getAttributeNames() method to atkNode. [Peter]
 + Added support for menu images in atkmodernmenu class. [Lineke]
 + Added a new class atkTableRendererGrouped. Renders a table with collapsable/
-  expandable groups. First used in the weektimereg module to organise projects.
-  [Edgar]
+  expandable groups. [Edgar]
 + Added atkDataNode which can be used for nodes that don't retrieve their
   data from the database. [Peter]
 + Added atkManyToManyListRelation, a new view for the many-to-many relation
   where the selection is done using a multiple-select select element. [Peter]
-+ Added full_rmdir to atkFileUtils to 'rm -rf' any given directory [Jeroen]
++ Added rmdirRecursive to atkFileUtils to 'rm -rf' any given directory. [Jeroen]
 + Added an atkUrlVault class to protect applications against url tampering.
   Needs testing, so is not yet applied to ATK's own urls. [Ivo]
++ Added {atkdispatchfile} plugin for use in forms in Smarty templates. [Sandy]
++ Added Indonesian translation. [Deus]
+* Fixed XSS vulnerability, PHP_SELF was replaced with atkSelf, which does some
+  anti-XSS on PHP_SELF before returning. [Ivo]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
 * Improved read-only mode of atkOneToOneRelation (don't display as table
   but display in-line, also check destination NF_READONLY flag). [Peter]
@@ -78,40 +80,37 @@ Changed in ATK 6.1
 * Fixed debug output in atkTestReporter. [Patrick]
 * Fixed non-object error in atkTextAttribute. [Patrick]
 * Fixed example test module in atk skel. [Guido]
-* Fixed "Cannot convert object to string" error in php 5.2+ in the atkDb
-  testcase. [Guido]
-* Fixed error in atkNode testcase ($node->m_module should be a string, not an
-  object). [Guido]
-* Fixed PHP Notice in atkGetUser(). [Guido]
+* Fixed several testcases. [Guido]
+* Fixed PHP notices. [Guido, Ivo]
 * Added class="btn_ok" to confirm button in atkNode class by default, similar
   to the cancel button, which has class="btn_cancel". Included the class
   "btn_ok" into the style.css of the achievo_modern and steelblue themes.
   [Patrick]
 * Fixed memory leak when config_debug is -1. Added debug level -1 to
   comments in config.inc.php [Jeroen,Sandy]
-* Fixed italian language file. [Fabio]
-* Fixed visibility of attributes on add screen when using a O2M relation.
+* Fixed Italian language file. [Fabio]
+* Fixed attributes display in add screen when using an atkOneToManyRelation.
   In some cases all attributes were always hidden. [Dennis, Guido]
 * Columns in a recordlist now have an onclick parameter in the recordlist.tpl
   ($col.onclick). This onclick parameter can be activated with the methods get-
   and setHasClickableRecordList() in atkNode. [Dennis]
 * atkTime datatype returns time array by default with leading zero. [Boy]
-* atkDateTimeAttribute does not have a AF_SEARCHABLE flag anymore at default.
+* atkDateTimeAttribute does not have an AF_SEARCHABLE flag anymore by default.
   [Peter, Dennis]
 * atkDurationAttribute now supports the AF_OBLIGATORY flag again. [Ivo]
 * Improved detection of clicks on the recordlist row or clicks on inputs,
-  etc.in the recordlist row. [Peter]
+  etc. in the recordlist row. [Peter]
 * Moved prototype.js overrides to separate JavaScript file. [Peter]
 * Removed the first preUpdate call (it was called twice due to a merge error).
   This fixes the problem that in the preUpdate the atkorgrec is not filled with
-  nodes with the NF_TRACK_CHANGES flag. [Boy,Lineke]
-* Refactored the atktablerenderer (backwards compatible). Functionally
-  decomposed the render method. Done to make groupedRenderer possible. [Edgar]
+  nodes with the NF_TRACK_CHANGES flag. [Boy, Lineke]
+* Refactored the atkTableRenderer (backwards compatible). Functionally
+  decomposed the render method. [Edgar]
 * Added getAttributeNames() method to atkMetaPolicy. [Peter]
-* Altered storage type for atkmultiselectattribute from 'string' to 'text'
+* Altered storage type for atkMultiSelectAttribute from 'string' to 'text'
   because 'string' appeared to be too small. [Patrick]
-* Don't eval response twice when showing a dialog. [Edgar,Peter]
-* Moved showTab() call to atkNode instead of atkPage. [Edgar,Peter]
+* Don't eval response twice when showing a dialog. [Edgar, Peter]
+* Moved showTab() call to atkNode instead of atkPage. [Edgar, Peter]
 * Made more code adhere to naming conventions and global function fixes. [Ivo]
   Deprecation list:
     halt -> atkhalt
@@ -125,8 +124,6 @@ Changed in ATK 6.1
     href -> atkHref
     getDispatchFile -> atkController::getPhpFile / atkSelf
 * Cleaned up the way the dispatch file was determined for menus. [Ivo]
-* Fixed XSS bug, PHP_SELF was replaced with atkSelf, which does some anti-XSS
-  on PHP_SELF before returning. [Ivo]
 
 
 Changed in ATK 6.0
