@@ -645,11 +645,11 @@
     function addFlag($flag)
     {
       $this->m_flags |= $flag;
-      if (hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY)&&isset($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
+      if (hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY)&&is_object($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
       {
         $this->m_ownerInstance->m_listExcludes[]=$this->fieldName();
       }
-      if (hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY)&&isset($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
+      if (hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY)&&is_object($this->m_ownerInstance)&&!in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
       {
         $this->m_ownerInstance->m_viewExcludes[]=$this->fieldName();
       }
@@ -680,11 +680,11 @@
     function removeFlag($flag)
     {
       if($this->hasFlag($flag)) $this->m_flags ^= $flag;
-      if ((hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY))&&isset($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
+      if ((hasFlag($flag, AF_HIDE_LIST)&&!$this->hasFlag(AF_PRIMARY))&&is_object($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_listExcludes))
       {
         unset($this->m_ownerInstance->m_listExcludes[array_search($this->fieldName(), $this->m_ownerInstance->m_listExcludes)]);
       }
-      if ((hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY))&&isset($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
+      if ((hasFlag($flag, AF_HIDE_VIEW)&&!$this->hasFlag(AF_PRIMARY))&&is_object($this->m_ownerInstance)&&in_array($this->fieldName(),$this->m_ownerInstance->m_viewExcludes))
       {
         unset($this->m_ownerInstance->m_viewExcludes[array_search($this->fieldName(), $this->m_ownerInstance->m_viewExcludes)]);
       }
