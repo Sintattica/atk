@@ -19,7 +19,7 @@
 
 
 /**
- * This class provide functions to create, copy or check files or directories. 
+ * This class provide functions to create, copy or check files or directories.
  *
  * @author dennisjan <dennisjan@ibuildings.nl>
  * @package ATK
@@ -31,8 +31,8 @@ class atkFileUtils
 
   /**
    * This function copies everything what is in the source directory
-   * to the destination directory. 
-   * 
+   * to the destination directory.
+   *
    * @static
    * @staticvar $orgdest to     store the first original destination.
    * @param string $source      path to the skell to copy
@@ -40,15 +40,15 @@ class atkFileUtils
    * @param string $dirname     unique name for the first directory
    * @param octal  $privileges  octal number for the rights of the written
    * @return bool returns true when skell is copied to the destination.
-   */   
+   */
   function copyDirRecursive($source, $dest, $dirname='', $privileges=0777)
   {
-    static $orgdest = null;  
-      
+    static $orgdest = null;
+
     if (is_null($orgdest))
       $orgdest = $dest;
-     
-    atkdebug("Checking write permission for ".$orgdest);    
+
+    atkdebug("Checking write permission for ".$orgdest);
 
     if (!atkFileUtils::is_writable($orgdest))
     {
@@ -57,13 +57,13 @@ class atkFileUtils
     }
 
     atkdebug("Permission granted to write.");
-    
+
     if ($dest == $orgdest && $dirname != '')
     {
       mkdir($orgdest . "/" . $dirname,$privileges);
       return atkFileUtils::copyDirRecursive($source,$orgdest."/".$dirname,'',$privileges);
     }
-    
+
     // Simple copy for a file
     if (is_file($source))
     {
@@ -103,7 +103,7 @@ class atkFileUtils
 
     // Clean up
     $dir->close();
-    
+
     return true;
   }
 
@@ -112,20 +112,20 @@ class atkFileUtils
    * The difference with php native function is that this functions accepts
    * non-existing directories.
    *
-   * @static 
+   * @static
    * @param string $orgdest document parh
    * @return bool returns true if the destination is writeable.
-   */   
+   */
   function is_writable($orgdest)
   {
     if ($orgdest{0} == '/')
     {
       if (count($orgdest) == 1)
         $testdest = $orgdest;
-      else 
-        $testdest= substr($orgdest, 0, strpos($orgdest, '/', 1));    
+      else
+        $testdest= substr($orgdest, 0, strpos($orgdest, '/', 1));
     }
-    else 
+    else
     {
       if ($orgdest{strlen($orgdest)-1} != '/' && !is_file($orgdest))
       $orgdest .= '/';
@@ -142,23 +142,23 @@ class atkFileUtils
 
     atkdebug("Checking with: ".$testdest);
 
-    return is_writable($testdest);    
+    return is_writable($testdest);
   }
-  
+
   /**
    * This function creates recursively a destination. This fuction accepts
-   * a full path ../dir/subdir/subdir2/subdir3 etc. It checks if the path is writeable 
-   * and replace mis typed slashes with forward slashes. 
+   * a full path ../dir/subdir/subdir2/subdir3 etc. It checks if the path is writeable
+   * and replace mis typed slashes with forward slashes.
    *
-   * @static 
+   * @static
    * @param string $dir the fullpath
    * @param octal  $privileges  octal number for the rights of the written
    * @return bool returns true if the destination is written.
-   */   
+   */
   function mkdirRecursive($dir, $privileges=0777, $recursive=true)
    {
-     $dir = preg_replace('/(\/){2,}|(\\\){1,}/','/',$dir); //only forward-slash     
-     
+     $dir = preg_replace('/(\/){2,}|(\\\){1,}/','/',$dir); //only forward-slash
+
      if (!atkFileUtils::is_writable($dir))
      {
        atkdebug("Error no write permission!");
@@ -166,7 +166,7 @@ class atkFileUtils
      }
 
      atkdebug("Permission granted to write.");
-     
+
      if( is_null($dir) || $dir === "" ){
        return FALSE;
      }
@@ -178,12 +178,12 @@ class atkFileUtils
      }
      return FALSE;
    }
-   
+
    /**
-    * This function parse a templatestring with the data and returns 
+    * This function parse a templatestring with the data and returns
     * a string with the data parsed in the template.
     *
-    * @static 
+    * @static
     * @param string $template the template to parse
     * @param array $data array which contains the data for the template
     * @return string returns the parsed string
@@ -194,8 +194,8 @@ class atkFileUtils
      $stringparser = new atkStringParser($template);
      return $stringparser->parse($data);
    }
-   
-     
+
+
   /**
    * Returns mimetype for the given filename, based on fileextension.
    * This function is different from mime_content_type because it
@@ -203,7 +203,7 @@ class atkFileUtils
    * returns the right mimetype.
    *
    * @static
-   * @param string $filename Filename (or just the extention) we want 
+   * @param string $filename Filename (or just the extention) we want
    *                         to know the mime type for.
    * @return string          The mimetype for this file extension.
    */
@@ -379,14 +379,16 @@ class atkFileUtils
       return "application/octet-stream";
     }
   }
-  
+
   /**
-   * Delete complete $dir
+   * Delete complete directory and all of its contents.
    *
-   * @param string $dir
-   * @return result
+   * @todo If one of the subdirs/files cannot be removed, you end up with
+   * a half deleted directory structure.
+   * @param string $dir The directory to remove
+   * @return True if succesful, false if not
    */
-  function full_rmdir( $dir )
+  function rmdirRecursive( $dir )
   {
     if ( !is_writable( $dir ) )
     {
@@ -406,7 +408,7 @@ class atkFileUtils
       $entry = $dir . '/' . $entry;
       if ( is_dir( $entry ) )
       {
-        if ( !$this->full_rmdir( $entry ) )
+        if ( !$this->rmdirRecursive( $entry ) )
         {
           return FALSE;
         }
