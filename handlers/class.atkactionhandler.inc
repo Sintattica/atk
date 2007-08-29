@@ -149,6 +149,15 @@
     }
 
     /**
+     * Sets the current action.
+     * @param string $action The action name.
+     */
+    function setAction($action)
+    {
+      $this->m_action = $action;
+    }
+
+    /**
      * Set postvars of the the calling node of the current action.
      * @param array $postvars Postvars of the node on which the action should be performed.
      */

@@ -4686,12 +4686,14 @@
       {
         atkdebug("atkNode::getHandler: Using existing atkActionHandler ".get_class($handler)." class for '".$action."'");
         $handler->setNode($this);
+        $handler->setAction($action);
       }
       else
       {
         $handler = &atkActionHandler::getDefaultHandler($action);
         $handler->setNode($this);
         $handler->setPostvars($this->m_postvars);
+        $handler->setAction($action);
 
         //If we use a default handler we need to register it to this node
         //because we might call it a second time.
