@@ -4,6 +4,9 @@
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 
+Changed in ATK 6.2
+------------------
+
 Changed in ATK 6.1
 ------------------
 + Added select method to atkNode which returns an instance of the
