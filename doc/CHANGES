@@ -103,9 +103,6 @@ Changed in ATK 6.1
 * Fixed Italian language file. [Fabio]
 * Fixed attributes display in add screen when using an atkOneToManyRelation.
   In some cases all attributes were always hidden. [Dennis, Guido]
-* Columns in a recordlist now have an onclick parameter in the recordlist.tpl
-  ($col.onclick). This onclick parameter can be activated with the methods get-
-  and setHasClickableRecordList() in atkNode. [Dennis]
 * atkTime datatype returns time array by default with leading zero. [Boy]
 * atkDateTimeAttribute does not have an AF_SEARCHABLE flag anymore by default.
   [Peter, Dennis]

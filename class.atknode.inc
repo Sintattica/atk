@@ -732,16 +732,6 @@
     var $m_dialog_mra = null;
 
     /**
-     * Determines wether a node has a clickable recordlist.
-     * When this variable is true, the class atkRecordList will pass a variable onClick for each row
-     * to the recordlist.tpl template which can be used as $col.onclick to render the onCLick
-     * javascript code.
-     *
-     * @var Boolean
-     */
-    var $m_has_clickable_recordlist = true;
-
-    /**
      * Constructor.
      *
      * This initialises the node. Derived classes should always call their
@@ -5040,25 +5030,6 @@
     function getDialogMRA()
     {
       return $this->m_dialog_mra;
-    }
-
-    /**
-     * Retrieve wether this node has a clickable recordlist
-     *
-     */
-    function getHasClickableRecordList()
-    {
-      return $this->m_has_clickable_recordlist;
-    }
-
-    /**
-     * Set wether this node has a clickable recordlist
-     *
-     * @param Boolean $boolean
-     */
-    function setHasClickableRecordList($boolean)
-    {
-      $this->m_has_clickable_recordlist = $boolean;
     }
   }
 ?>

@@ -472,15 +472,9 @@
             }
           }
 
-          $onClick = "";
-          if ($this->m_node->getHasClickableRecordList() === true)
-          {
-            $onClick = 'onClick="' . "rl_try('$listName', event, '$i', ['select', 'edit', 'view'], false);" . '"';
-          }
-
           /* columns */
           foreach ($list["rows"][$i]["data"] as $html)
-            $record["cols"][] = array("content"=>$html, "type" => "data", "onclick"=> $onClick);
+            $record["cols"][] = array("content"=>$html, "type" => "data");
 
           /* actions (right) */
           if ($orientation=="right"||$orientation=="both")
