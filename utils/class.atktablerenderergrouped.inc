@@ -1,4 +1,4 @@
-<?php  
+<?php
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
@@ -8,33 +8,37 @@
    * @package atk
    * @subpackage utils
    *
-   * @copyright (c)2000-2004 Ibuildings BV
-   * @author Edgar van Ispelen
+   * @copyright (c)2007 Ibuildings BV
+   * @author Edgar van Ispelen <edgar@ibuildings.nl>
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id $
    */
-    
+
+  /**
+   * Imports
+   * @access private
+   */
   atkimport("atk.utils.atktablerenderer");
-  
+
   /**
    * Renders table with row based groups. A grouped table is a table with some rows
    * grouped together. They are visually folded and can be expanded by clicking.
-   * 
+   *
    * This feature can be used to organise (long) tables where you only want
    * to see a portion of logically grouped rows.
-   * 
+   *
    * By specifying which rows form a group the renderer can
    * fold the rows so they are invisible. A group header row is displayed so,
    * by clicking on it the visibility of the rows in the group is toggled.
    * Please note that you can mix normal rows with grouped rows. See the data
    * format example below.
-   * 
-   * 
+   *
+   *
    * Use the following data format as the first argument to the render method.
    * Format:
-   * 
+   *
    * <code>
    * $data = array(
    *  array('headercol1', 'headercol2'),  // header cannot be grouped, rendered as normal row
@@ -55,10 +59,12 @@
    *  array('footercol1', 'footercol2'), // cannot be grouped, normal row
    * )
    * </code>
-   * 
+   * @author Edgar van Ispelen <edgar@ibuildings.nl>
+   * @package atk
+   * @subpackage utils
    */
   class atkTableRendererGrouped extends atkTableRenderer
-  {  
+  {
     /**
      * Used in counting rows
      *
@@ -66,7 +72,7 @@
      * @access private
      */
     var $m_currentRow = 0;
-    
+
     /**
      * Constructor
      *
@@ -81,7 +87,7 @@
       $this->atkTableRenderer($flags, $style, $module);
       $this->setClass('groupheader', 0, 'firstcol');
     }
-    
+
     /**
      * Renders the body of the table. The body contains all rows except the
      * header and footer rows. Surrounds the body with tbody tags.
@@ -96,13 +102,13 @@
       $output = '';
       $tbodyOpened = false;
       $max = $this->_getMaxCols($data);
-      
+
       $entryCount = count($data);
       $this->m_currentRow = $rowOffset;
       for ($entry=$rowOffset; $entry<$entryCount; $entry++)
       {
         $entryData = $data[$entry];
-        
+
         // render a group or a single row
         if ($this->_isGroup($entryData))
         {
@@ -124,17 +130,17 @@
           $this->m_currentRow++;
         }
       }
-      
+
       if ($tbodyOpened)
       {
         $output .= '</tbody>';
       }
-      
+
       $this->m_currentRow = 0; // reset
-      
+
       return $output;
     }
-    
+
     /**
      * Determine if the data is a row group
      *
@@ -150,31 +156,31 @@
       }
       return false;
     }
-     
+
     /**
      * Renders the header of a group
-     * 
+     *
      * @param array $group group data to show header of
      * @param int $width span of the header cell
      * @return string html of the header
      * @access protected
      */
     function _renderRowGroupHeader($group, $width)
-    {   
+    {
       $onClick = "onClick=\"
         window.toggleDisplay('', document.getElementById('{$group['id']}'));
         if (this.className == 'groupheader')
         this.className = 'groupheader_expanded';
         else
         this.className = 'groupheader';\"";
-      
+
       $class = 'groupheader';
       if (!$this->_isCollapsedGroup($group))
       {
         $class = 'groupheader_expanded';
       }
       $output  = "<tbody class=\"$class\" {$onClick}>";
-      
+
       // try to render the header
       if (!isset($group['header']))
       {
@@ -195,12 +201,12 @@
             {$group['header']}
             </th></tr>";
       }
-            
+
       $output .= $header;
       $output .= '</tbody>';
       return $output;
     }
-    
+
     /**
      * Checks if the group should be displayed collapsed or expanded
      *
@@ -211,14 +217,14 @@
     {
       return !(array_key_exists('collapsed', $group) && $group['collapsed'] == false);
     }
-    
+
     /**
      * Renders a group of rows
      *
      * @param array $group data of the group
      * @param int $rowOffset how many real rows there were before
      * @param int $headerWidth number of columns the header has to span
-     * @return string html of the header and group 
+     * @return string html of the header and group
      * @access protected
      */
     function _renderRowGroup($group, $rowOffset, $headerWidth)
@@ -226,29 +232,29 @@
       $style = '';
       if ($this->_isCollapsedGroup($group))
       {
-        $style = 'style="display: none"'; 
+        $style = 'style="display: none"';
       }
-      
-      $output  = $this->_renderRowGroupHeader($group, $headerWidth); 
+
+      $output  = $this->_renderRowGroupHeader($group, $headerWidth);
       $output .= "<tbody id=\"{$group['id']}\" class=\"grouped\" {$style}>";
-      $rowCount = count($group['rows']); 
-      
+      $rowCount = count($group['rows']);
+
       $row = $rowOffset;
       for ($i=0;$i<$rowCount;$i++)
       {
         $row++;
         $rowData = $group['rows'][$i];
-        
+
         $output .= $this->_renderRow($rowData, $this->m_currentRow);
         $this->m_currentRow++;
       }
-      
+
       $output .= '</tbody>';
-      
+
       return $output;
     }
-    
-    
+
+
     /**
      * Gets the maximum number of columns in a row.
      *
@@ -266,8 +272,8 @@
           // check the group's rows
           for($j=0, $_j=count($data[$i]['rows']); $j<$_j; $j++)
           {
-            $max = max(count($data[$i]['rows'][$j]), $max);  
-          }          
+            $max = max(count($data[$i]['rows'][$j]), $max);
+          }
         }
         else
         {
@@ -276,9 +282,9 @@
       }
       return $max;
     }
-    
+
     /**
-     * Overloading extension of parent::getAlignment() Adds special rule for 
+     * Overloading extension of parent::getAlignment() Adds special rule for
      * groupheaders.
      *
      * @param string|int $row rownumber or name

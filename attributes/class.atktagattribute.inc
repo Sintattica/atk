@@ -2,7 +2,7 @@
   /**
    * This file is part of the Achievo ATK distribution.
    * Detailed copyright and licensing information can be found
-   * in the doc/COPYRIGHT and doc/LICENSE files which should be 
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
    * @package atk
@@ -10,15 +10,24 @@
    *
    * @copyright (c)2006 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$_COOKIE
+   * $id$
    */
 
+  /**
+   * Flags for use in atkTagAttribute constructor
+   */
   define("TA_ADD",    1);//When a none-existing tag was found, the tag is added to the defaults.
   define("TA_ERROR",  2);//When a none-existing tag was found, an error is triggered.
   define("TA_IGNORE", 3);//When a none-existing tag is found, the tag is ignored.
-  
-   /** @internal base include */
-   atkimport("atk.attributes.atkfuzzysearchattribute");
-   atkimport("atk.attributes.atktextattribute");
+
+  /**
+   * @internal base include
+   */
+  atkimport("atk.attributes.atkfuzzysearchattribute");
+  atkimport("atk.attributes.atktextattribute");
+
   /**
    * ...
    *
@@ -28,37 +37,37 @@
    */
   class atkTagAttribute extends atkFuzzySearchAttribute
   {
-    var $m_link = "";    
-    var $m_linkInstance = NULL;    
+    var $m_link = "";
+    var $m_linkInstance = NULL;
     var $m_destination ="";
     var $m_destInstance = NULL;
     var $m_destinationfield = "";
     var $m_remoteKey = "";
     var $m_localKey = "";
     var $m_nonematching = array();
-    
+
     function atkTagAttribute($name, $destination, $destinationfield ,$link, $mode=TA_ADD, $flags=0, $size=0)
     {
       $page = &atkinstance('atk.ui.atkpage');
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atktagattribute.js");
-      
+
       if ($size==0)
-      {        
-        $size = $this->maxInputSize();        
+      {
+        $size = $this->maxInputSize();
       }
-      
+
       $this->atkAttribute($name, $flags|AF_NO_SORT, $size);
       $this->m_destination = $destination;
       $this->m_destinationfield = $destinationfield;
-      $this->m_link = $link;      
-      $this->m_mode = $mode;      
-      
+      $this->m_link = $link;
+      $this->m_mode = $mode;
+
       /** @todo: if not allowed, only show the tags as text and not as an inputfield */
       /** @todo: add translations */
       /** @todo: add validation if flag OBLIGATORY is set. */
       /** @todo: add setDestinationFilter */
     }
-    
+
     /**
      * Creates an instance of the node we are searching on and stores it
      * in a member variable ($this->m_destInstance)
@@ -67,12 +76,12 @@
     {
       if (!is_object($this->m_destInstance))
       {
-        $this->m_destInstance = &getNode($this->m_destination);            
-        return is_object($this->m_destInstance);        
+        $this->m_destInstance = &getNode($this->m_destination);
+        return is_object($this->m_destInstance);
       }
       return true;
     }
-    
+
     /**
      * Create instance of the intermediairy link node.
      *
@@ -84,13 +93,13 @@
     {
       if (!is_object($this->m_linkInstance))
       {
-        $this->m_linkInstance = &getNode($this->m_link);            
-        return is_object($this->m_linkInstance);        
-      }     
+        $this->m_linkInstance = &getNode($this->m_link);
+        return is_object($this->m_linkInstance);
+      }
       return true;
     }
-    
-    
+
+
     function validate(&$rec, $mode)
     {
       if (is_array($rec[$this->fieldName()]))
@@ -100,11 +109,11 @@
       else
       {
         $this->m_matches = $this->getMatches($rec[$this->fieldName()]);
-        
+
         if($this->m_mode == TA_ERROR)
         {
           foreach($this->m_matches as $keyword=>$res)
-          { 
+          {
             if (!count($res))
             {
               triggerError($rec,$this->fieldName(),"notallowed_new_defaulttag",sprintf($this->text("notallowed_new_defaulttag"),$keyword));
@@ -115,19 +124,19 @@
       }
       return !count($this->m_nonematching);
     }
-    
+
     function edit($rec="", $prefix="", $mode="")
-    {      
+    {
       atkdebug("edit of attribute '$this->fieldName()'");
-      
+
       if ($this->createDestinationInstance())
-      {         
+      {
         $html = $this->displayDefaultTags();
-        
+
         //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
         if(!(count($this->m_nonematching) && $this->m_mode==TA_ERROR))
           $rec[$this->fieldName()] = $this->refillRecord($rec);
-        
+
         $html .= atkTextAttribute::edit($rec, $prefix, $mode);
         return $html;
       }
@@ -137,65 +146,65 @@
         return false;
       }
     }
-    
+
     function displayDefaultTags()
     {
       $id = $this->getHtmlid($prefix);
-      
+
       $defaults = $this->_getDefaultTags();
 
       $html = '<div id="'.$this->fieldName().'_tags">';
-      
+
       if(count($defaults))
-      { 
+      {
         $html.= $this->text("available_default_tags").": ";
         for($i=0,$_i=count($defaults);$i<$_i;$i++)
-        { 
+        {
           $key = $defaults[$i][$this->m_destinationfield];
 
           $jsclick = "ta_addTag('$id', '$key');";
-          
+
           $html.= "<a href=\"javascript:$jsclick\">$key</a>";
-          
-          if($i<($_i-1)) 
+
+          if($i<($_i-1))
             $html.= ", ";
-        }                              
+        }
       }
-      else 
+      else
       {
         return '';
       }
-      
+
       $html.= "</div>";
       return $html;
     }
-    
+
     function refillRecord($orgrec)
     {
       if(!$this->createLink())
         return "";
-      
+
       $values = array();
-      
+
       $objectid = $orgrec[$this->m_ownerInstance->primaryKeyField()]; //pageid or topicid
       $selector = $this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$objectid."'";
       $records = $this->m_linkInstance->selectDb($selector);
-      
+
       //loop through all the records
       foreach($records as $r)
       {
         $tagname = $r[$this->getRemoteKey()][$this->m_destinationfield];
         $tagname = trim($tagname);
-        
+
         //we do not want duplicates
         if(!in_array($tagname,$values))
           $values[] = $tagname;
-        
+
       }
-            
+
       return implode(", ",$values);
-    }   
-  
+    }
+
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
@@ -208,15 +217,15 @@
      * @return String HTML String
      */
     function display($record, $mode="")
-    {      
+    {
       if (is_array($record[$this->fieldName()]))
       {
         return $html.$this->arrayToString($record[$this->fieldName()]);
       }
-      
+
       return $html.nl2br(htmlspecialchars($record[$this->fieldName()]));
     }
-   
+
     function arrayToString($array)
     {
       $values=array();
@@ -235,7 +244,7 @@
     {
       atkdebug("Performing search");
       $result = array();
-      
+
       if ($this->createDestinationInstance() && $searchstring!="")
       {
         $tokens = explode(",", $searchstring);
@@ -243,15 +252,15 @@
         {
           $token = trim($token);
           if($token!="")
-          { 
-            $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".escapeSQL($token)."'";          
+          {
+            $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".escapeSQL($token)."'";
             $result[$token] = $this->m_destInstance->selectDb($selector);
           }
         }
       }
       return $result;
     }
-    
+
     function _getDefaultTags()
     {
       if($this->createDestinationInstance())
@@ -260,9 +269,9 @@
       }
       return array();
     }
-        
+
     function store($db, $rec, $mode)
-    {        
+    {
       $resultset = array();
 
       if(!$this->createLink())
@@ -270,33 +279,33 @@
         atkdebug("could not create an instance for the link '$this->m_link'");
         return false;
       }
-      
+
       if(!$this->createDestinationInstance())
       {
         atkdebug("could not create an instance for the destination '$this->m_destination'");
         return false;
       }
-            
-      //first delete all old tags for this object.      
+
+      //first delete all old tags for this object.
       $objectid = $rec[$this->m_ownerInstance->primaryKeyField()]; //pageid or topicid
       $selector = $this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$objectid."'";
-      
+
       if(!$this->m_linkInstance->deleteDb($selector))
       {
         atkdebug("could not delete the linked default tags");
         return false;
       }
-      
+
       $no_match = array();
-      
+
       //loop through all the matches for each keyword
       foreach($this->m_matches as $keyword=>$matches)
       {
         $cnt_matches = count($matches);
-        
+
         //We remember the none-matching ones.
         if(!$cnt_matches) $no_match[] = $keyword;
-          
+
         for ($i=0; $i<$cnt_matches; $i++)
         {
           // Make sure there are no duplicates
@@ -309,32 +318,32 @@
 
       //if we are in the TA_ADD mode, we add the none-matching keywords.
       if(count($no_match) && $this->m_mode==TA_ADD)
-      {          
+      {
         // add default keyword
         foreach($no_match as $keyword)
         {
           $defaultsRec[$this->m_destinationfield] = $keyword;
-          
+
           //if one keyword could not be added, stop adding them.
-          if(!$this->m_destInstance->addDb($defaultsRec)) 
-          {           
+          if(!$this->m_destInstance->addDb($defaultsRec))
+          {
             atkdebug("could not add default keyword");
-            return false;                        
+            return false;
           }
-          else 
+          else
           {
             $newrecord = decodeKeyValueSet($defaultsRec["atkprimkey"]);
             $newrecord[$this->m_destinationfield] = $keyword;
             $newrecord["atkprimkey"]              = $defaultsRec["atkprimkey"];
-                        
-            //add newly added record to the resultset            
+
+            //add newly added record to the resultset
             $resultset[] = $defaultsRec;
           }
-        }        
-      }      
+        }
+      }
 
-      /** we only support a primary key of one field */ 
-      
+      /** we only support a primary key of one field */
+
       //store matches
       foreach($resultset as $res)
       {
@@ -342,34 +351,34 @@
         $remKey = $res[$this->m_destInstance->primaryKeyField()];
 
         atkdebug("<h2>LOCKEY:$locKey REMKEY:$remKey</h2>");
-        
-        $newrecord = $this->m_linkInstance->initial_values();          
+
+        $newrecord = $this->m_linkInstance->initial_values();
         $newrecord[$this->getLocalKey()][$this->m_ownerInstance->primaryKeyField()] = $locKey;
         $newrecord[$this->getRemoteKey()][$this->m_destInstance->primaryKeyField()] = $remKey;
 
-        // First check if the record does not exist yet.          
+        // First check if the record does not exist yet.
         $where = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".
                    $rec[$this->m_ownerInstance->primaryKeyField()]."'".
                    " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
                    $remKey."'";
-        
+
         $existing = $this->m_linkInstance->selectDb($where, "", "", "", $this->m_linkInstance->m_primaryKey);
 
         if (!count($existing))
         {
           atkdebug("does not exist, adding new record.");
-          
+
           if (!$this->m_linkInstance->addDb($newrecord, true, $mode))
           {
             atkdebug("could not add keyword");
             return false;
           }
-        }                  
+        }
       }
-      
+
       return true;
     }
-    
+
     /**
      * load function
      * @param $notused
@@ -383,8 +392,8 @@
         return $this->m_linkInstance->selectDb($this->m_linkInstance->m_table.".".$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'");
       }
       return array();
-    }    
-    
+    }
+
     function addToQuery() {}
     function hide() {}
     function search() {}
@@ -394,7 +403,7 @@
     function fetchMeta() {}
     function dbFieldSize() {}
     function dbFieldType() {}
-    
+
     /**
      * Determine the maximum length an input field may be.
      * @return int
@@ -403,7 +412,7 @@
     {
       return 70;
     }
-    
+
     /**
      * Adds a filter on the instance of the destination
      * @param String $filter The fieldname you want to filter OR a SQL where
@@ -416,7 +425,7 @@
       if (!$this->m_destInstance) $this->createdestinationInstance();
       $this->m_destInstance->addFilter($filter, $value);
     }
-    
+
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the master node.
@@ -440,7 +449,7 @@
     {
       $this->m_localKey = $attributename;
     }
-    
+
     /**
      * Get the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
@@ -455,8 +464,8 @@
       }
       return $this->m_remoteKey;
     }
-    
-    
+
+
     /**
      * Change the name of the attribute of the intermediairy node that points
      * to the node on the other side of the relation.
@@ -466,7 +475,7 @@
     {
       $this->m_remoteKey = $attributename;
     }
-    
+
     /**
      * Determine the name of the foreign key based on the name of the
      *  relation.
@@ -494,7 +503,7 @@
       }
       return $name;
     }
-    
+
     /**
      * Checks if a key is not an array
      * @param $key   field containing the key values
@@ -508,7 +517,7 @@
         return $key[$field];
       }
       return $key;
-    }  
+    }
   }
 
 ?>

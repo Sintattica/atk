@@ -40,7 +40,7 @@
      * @var int The time in UNIX timestamp format
      */
     private $m_time=0;
-    
+
     /**
      * @var string The date format in PHP format
      *             defaults to H:i:s
@@ -48,7 +48,7 @@
     private $m_format='H:i:s';
 
     /***************** BASICS *****************/
-    
+
     /**
      * Create an atkTime datatype, accepts ATK internal format
      * (an array) or timestamps.
@@ -70,7 +70,7 @@
       else atkerror("Unknown time format! Called with: ".
                     "new atkTime($time)");
     }
-    
+
     /**
      * Factory method to create a new atkTime object
      *
@@ -81,14 +81,14 @@
     {
       return new atkTime($time);
     }
-    
+
     protected function getData()
     {
       return $this->m_time;
     }
-    
+
     /***************** OPERATIONS *****************/
-    
+
     /**
      * Add time to the current time object.
      *
@@ -112,12 +112,12 @@
       $this->m_time-=$subtract->getTotalSeconds();
       return $this;
     }
-    
+
     /***************** SETTERS *****************/
 
     /**
      * Set a description template.
-     * 
+     *
      * Description templates can be used to parse data in the string
      * the same way you do with the descriptor_def method of your node.
      *
@@ -129,7 +129,7 @@
       $this->m_template= atknew('atk.datatypes.atkstring',$template);
       return $this;
     }
-    
+
     /**
      * Set the display format (PHP date style)
      *
@@ -141,13 +141,13 @@
       $this->m_format = $format;
       return $this;
     }
-    
+
     /***************** GETTERS *****************/
 
     /**
      * Gets the time for the current time object in array (ATK) format.
      *
-     * @param bool $leadingzero Wether or not to use a leading zero 
+     * @param bool $leadingzero Wether or not to use a leading zero
      *                          in the hours, minutes and seconds
      *                          when applicable.
      * @return array The array with the time in array format
@@ -161,11 +161,11 @@
 
     /**
      * Gets the hours of the current time object.
-     * 
-     * @example atkTime::create(3677)->getHours() returns 1
-     * @example atkTime::create(3680)->getHours(true) returns "01"
      *
-     * @param bool $leadingzero Wether or not to use a leading zero 
+     * example: atkTime::create(3677)->getHours() returns 1
+     * example: atkTime::create(3680)->getHours(true) returns "01"
+     *
+     * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
      * @return string|int The hours for the current time object
      */
@@ -179,12 +179,12 @@
     /**
      * Gets the minutes of the current time object
      *
-     * @example atkTime::create(126)->getMinutes() returns 2
-     * @example atkTime::create(126)->getMinutes(true) returns "02"
-     * 
-     * @param bool $leadingzero Wether or not to use a leading zero 
+     * example: atkTime::create(126)->getMinutes() returns 2
+     * example: atkTime::create(126)->getMinutes(true) returns "02"
+     *
+     * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
-     * @return string|int The 
+     * @return string|int The
      */
     public function getMinutes($leadingzero=false)
     {
@@ -195,26 +195,26 @@
 
     /**
      * Gets the seconds for the current time object.
-     * 
-     * @example atkTime::create(45)->getSeconds() returns 45
-     * @example atkTime::create(5)->getSeconds(true) returns "05"
      *
-     * @param bool $leadingzero Wether or not to use a leading zero 
+     * example: atkTime::create(45)->getSeconds() returns 45
+     * example: atkTime::create(5)->getSeconds(true) returns "05"
+     *
+     * @param bool $leadingzero Wether or not to use a leading zero
      *                          when applicable.
      * @return string|int The seconds of the time.
      */
     public function getSeconds($leadingzero=false)
     {
-      $seconds = (int)($this->m_time-($this->getHours()*3600) - 
+      $seconds = (int)($this->m_time-($this->getHours()*3600) -
                                 ($this->getMinutes()*60));
       if ($leadingzero && $seconds<10) $seconds="0$seconds";
       return $seconds;
     }
-    
+
     /**
      * Get the total amount of minutes for the current time object
-     * 
-     * @example 2 hours would return 120
+     *
+     * example: 2 hours would return 120
      *
      * @return int The total minutes
      */
@@ -225,8 +225,8 @@
 
     /**
      * Gets the total amount of seconds for the current time object.
-     * 
-     * @example 5 minutes would return 300
+     *
+     * example: 5 minutes would return 300
      *
      * @return int The total seconds
      */
@@ -234,11 +234,11 @@
     {
       return (int)$this->m_time;
     }
-    
+
     /**
      * Get the description for the current time object.
-     * 
-     * @example atkTime::create(3666)->getDescription(
+     *
+     * example: atkTime::create(3666)->getDescription(
      *            '[hours] hours and [minutes] minutes');
      *
      * @param string $template The template to use, if none is passed
@@ -251,9 +251,9 @@
       return $this->m_template->parse($this->getTimeArray())
                               ->getString();
     }
-    
+
     /**
-     * Get the formatted time for the current time object 
+     * Get the formatted time for the current time object
      * (PHP date style).
      *
      * @param string $format The format to use, if none is passed
@@ -267,12 +267,12 @@
       atkdebug("formatting time: {$this->m_time} with format $format");
       return date($format,$this->m_time);
     }
-    
+
     /**
      * Get the difference between the current time object and
      * another time object as a time object.
-     * 
-     * @example atkTime::create(3600)->getDiff(new atkTime(600)) will
+     *
+     * example: atkTime::create(3600)->getDiff(new atkTime(600)) will
      *          return a time object with 3000 seconds or 50 minutes.
      *
      * @param atkTime $compare The time object to compare against.
@@ -284,7 +284,7 @@
       return new atkTime((int)($this->m_time -
                                $compare->getTotalSeconds()));
     }
-    
+
     /***************** QUERIES *****************/
 
     /**

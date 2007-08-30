@@ -15,10 +15,21 @@
    * $Id$
    */
 
+  /**
+   * Imports
+   * @access private
+   */
   atkimport("atk.attributes.atknumberattribute");
 
+  /**
+   * Flags for atkWeekdayAttribute
+   */
   define('AF_WEEKDAY_SMALL_EDIT', AF_SPECIFIC_1);
 
+  /**
+   * Bitwise flags for weekdays.
+   * @access private
+   */
   define('WD_MONDAY',     1);
   define('WD_TUESDAY',    2);
   define('WD_WEDNESDAY',  4);

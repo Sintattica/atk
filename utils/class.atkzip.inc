@@ -17,6 +17,10 @@
    * $Id$
    */
 
+  /**
+   * Some constants
+   * @access private
+   */
 	define("ATKZIP_ZIP", 0);
 	define("ATKZIP_UNZIP", 1);
 
@@ -24,13 +28,12 @@
    * This class provide functions to extract from and add to ZIP archives
    *
    * @author Guido van Biemen <guido@ibuildings.nl>
-   * @package ATK
-   * @subpackage Utils
+   * @package atk
+   * @subpackage utils
    *
    */
 	class atkZip
   {
-
     var $m_zip_bin = "";
     var $m_unzip_bin = "";
     var $m_zipmode = "auto"; // can be auto, internal or infozip

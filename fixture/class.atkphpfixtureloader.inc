@@ -21,6 +21,8 @@
    * files. PHP files have access to a "global" variable named
    * $data that should be filled with the fixture data.
    *
+   * @package atk
+   * @subpackage fixture
    * @author Peter C. Verhage <peter@ibuildings.nl>
    */
   class atkPHPFixtureLoader extends atkAbstractFixtureLoader

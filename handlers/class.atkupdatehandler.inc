@@ -224,8 +224,8 @@
     /**
      * Called when a record is succesfully updated.
      *
-     * @todo: refresh only the recordlist not the full page.
-     * @todo: document.location.href is problematic if you already clicked the save
+     * @todo refresh only the recordlist not the full page.
+     * @todo document.location.href is problematic if you already clicked the save
      * action on a normal edit page. If you use the editdialog after that and you
      * save the dialog, the page will redirect to the index page of the application.
      *
@@ -239,7 +239,7 @@
       $this->clearCache();
 
       atkimport("atk.ui.atkdialog");
-      
+
       $page = &$this->getPage();
 
       atkimport("atk.ui.atkdialog");

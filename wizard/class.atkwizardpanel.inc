@@ -6,6 +6,7 @@
  * included in the distribution.
  *
  * @package atk
+ * @subpackage wizard
  *
  * @author maurice <maurice@ibuildings.nl>
  *
@@ -16,26 +17,32 @@
  * $Id$
  */
 
-atkimport("atk.handlers.atkactionhandler");
-atkimport("atk.handlers.atkaddhandler");
-atkimport("atk.handlers.atksavehandler");
-atkimport("atk.wizard.atkwizardcontroller");
+  /**
+   * Imports
+   * @access private
+   */
+  atkimport("atk.handlers.atkactionhandler");
+  atkimport("atk.handlers.atkaddhandler");
+  atkimport("atk.handlers.atksavehandler");
+  atkimport("atk.wizard.atkwizardcontroller");
 
+  /**
+   * atkWizardPanel button definitions.
+   */
+  define(FINISH_BUTTON_DEFAULT, 1);
+  define(FINISH_BUTTON_SHOW, 2);
+  define(FINISH_BUTTON_DONT_SHOW, 3);
 
-define(FINISH_BUTTON_DEFAULT, 1);
-define(FINISH_BUTTON_SHOW, 2);
-define(FINISH_BUTTON_DONT_SHOW, 3);
-
-/**
- * Wizardpanel which binds to a atknodes
- *
- * Full description of the class
- *
- * @author maurice <maurice@ibuildings.nl>
- * @package atk
- *
- */
-
+  /**
+   * Wizardpanel which binds to a atknodes
+   *
+   * Full description of the class
+   *
+   * @author maurice <maurice@ibuildings.nl>
+   * @package atk
+   * @subpackage wizard
+   *
+   */
   class atkWizardPanel
   {
     /**

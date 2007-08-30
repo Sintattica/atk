@@ -24,6 +24,7 @@
    * data dynamically.
    *
    * @author Peter C. Verhage <peter@ibuildings.nl>
+   * @package atk
    */
   class atkDataNode extends atkNode
   {

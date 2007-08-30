@@ -16,6 +16,11 @@
    */
 
   /**
+   * Flags for atkTimeAttribute
+   */
+  define("AF_TIME_SECONDS", AF_SPECIFIC_1);
+
+  /**
    * The atkTimeAttribute class represents an attribute of a node
    * that has a selectbox to select from predefined time values.
    *
@@ -24,9 +29,6 @@
    * @subpackage attributes
    *
    */
-  
-  define("AF_TIME_SECONDS", AF_SPECIFIC_1);
-  
   class atkTimeAttribute extends atkAttribute
   {
     var $m_beginTime = 0;
@@ -193,7 +195,7 @@
       // generate minute dropdown
       if (!$this->hasflag(AF_OBLIGATORY))
         $m_minBox .= '<option value=""'.($m_defMin === "" ? ' selected' : '').'></option>';
-      
+
       if ($this->hasFlag(AF_TIME_SECONDS))
       {
         $minute_steps = range(00, 59);
@@ -218,7 +220,7 @@
 
        $m_minBox .= sprintf("<option value='%02d'%s>%02d</option>\n",$minute_steps[$i],$sel,$minute_steps[$i]);
       }
-      
+
       // generate second dropdown
       if (!$this->hasFlag(AF_OBLIGATORY))
         $m_secBox .= '<option value""'.($m_defSec === "" ? ' selected' : '').'></option>';
@@ -230,15 +232,15 @@
         {
           $sel = " selected";
         }
-        else 
+        else
         {
           $sel = "";
         }
-        
+
         $m_secBox .= sprintf("<option value='%02d' %s>%02d</option>\n",$this->m_steps[$i],$sel,$this->m_steps[$i]);
       }
-        
-        
+
+
 
       // close dropdown structures
       $m_hourBox .= "</select>";
@@ -265,7 +267,7 @@
       $seconds = $rec[$this->fieldName()]["seconds"];
 
       if ($hours=="" || $minutes=="" || $seconds=="") return NULL;
-      
+
       $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
 
       return $result;

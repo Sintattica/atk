@@ -12,8 +12,8 @@
    * @todo Move all these functions to relevant classes.
    * @todo Document all of the functions
    *
-   * @copyright (c)2000-2004 Ibuildings.nl BV
-   * @copyright (c)2000-2004 Ivo Jansch
+   * @copyright (c)2000-2007 Ibuildings.nl BV
+   * @copyright (c)2000-2007 Ivo Jansch
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
@@ -35,7 +35,7 @@
   /**
    * Hides the debug unless in level 2.
    * This should be used for debug you only really want to see if you
-   * are developping (like deprecated warnings).
+   * are developing (like deprecation warnings).
    */
   define("DEBUG_NOTICE", 4);
 
@@ -493,7 +493,7 @@
   }
 
   /**
-   * @deprecated, use atkSessionManager::sessionUrl() instead.
+   * @deprecated use atkSessionManager::sessionUrl() instead.
    */
   function session_url($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
   {
@@ -502,7 +502,7 @@
   }
 
   /**
-   * @deprecated, use atkHref or atkSessionManager::href instead.
+   * @deprecated use atkHref or atkSessionManager::href instead.
    */
   function href($url,$name="",$sessionstatus=SESSION_DEFAULT, $saveform=false, $extraprops="")
   {
@@ -757,8 +757,8 @@
   }
 
   /**
-   * Get the [ ] Fields out of a String, deprecated,
-   * please use the atkStringParser class
+   * Get the [ ] Fields out of a String
+   * @deprecated please use the atkStringParser class
    */
   function stringfields($string)
   {
@@ -789,7 +789,7 @@
 
   /**
    * Parse strings
-   * @deprecated, please use the atkStringParser class
+   * @deprecated please use the atkStringParser class
    */
   function stringparse($string, $data,$encode=false)
   {
