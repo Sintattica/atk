@@ -16,10 +16,13 @@
    * $Id$
    */
 
+  /**
+   * Message queue flags.
+   */
   define('AMQ_GENERAL', 0);
-  define('AMQ_SUCCESS', 1);  
-  define('AMQ_FAILURE', 2);    
-  
+  define('AMQ_SUCCESS', 1);
+  define('AMQ_FAILURE', 2);
+
   /**
    * This class implements the ATK message queue for showing messages
    * at the top of a page.
@@ -81,7 +84,7 @@
       else if ($type == AMQ_FAILURE) return 'failure';
       else return 'general';
     }
-    
+
     /**
      * Add message to queue (private)
      *

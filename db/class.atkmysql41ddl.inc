@@ -13,18 +13,20 @@
   *
   *
   */
-  
+
  /**
   * @internal Include baseclass
   */
  require_once(atkconfig("atkroot")."atk/db/class.atkmysqliddl.inc");
- 
+
  /**
-  * This class was moved to mysqli, because the functions were not mysql 4.1 
+  * This class was moved to mysqli, because the functions were not mysql 4.1
   * specific but mysqli specific.
-  * 
-  * @deprecated 
-  */  
+  *
+  * @deprecated
+  * @package atk
+  * @subpackage db
+  */
   class atkMysql41DDL extends atkMysqliDDL
   {
   }

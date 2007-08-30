@@ -8,13 +8,16 @@
    * @package atk
    * @subpackage attributes
    *
-   * @copyright (c)2006 Ibuildings.nl BV
+   * @copyright (c)2006-2007 Ibuildings.nl BV
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * @version $Revision$
    * $Id$
    */
 
+  /**
+   * Flags for the atkIpAttribute
+   */
   define("AF_IP_ALLOW_WILDCARDS", AF_SPECIFIC_1);
   define("AF_IP_STORENUMERIC", AF_SPECIFIC_2);
   define("AF_IP_SINGLEFIELD", AF_SPECIFIC_3);

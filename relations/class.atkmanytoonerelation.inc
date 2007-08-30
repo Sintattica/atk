@@ -16,19 +16,19 @@
    * @version $Revision$
    * $Id$
    */
-   
+
   /**
    * flag(s) specific for atkManyToOneRelation
    */
   define("AF_RELATION_AUTOLINK",  AF_SPECIFIC_1);     // create edit/view links for the items in a manytoonerelation dropdown.
   define("AF_MANYTOONE_AUTOLINK", AF_RELATION_AUTOLINK);     // create edit/view links for the items in a manytoonerelation dropdown.
-  
+
   define("AF_RELATION_NO_NULL_ITEM",  AF_SPECIFIC_2); // do not add null option ever
-  define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM); // do not add null option ever  
-  
+  define("AF_MANYTOONE_NO_NULL_ITEM", AF_RELATION_NO_NULL_ITEM); // do not add null option ever
+
   define("AF_RELATION_AUTOCOMPLETE",  AF_SPECIFIC_3); // use auto-completition instead of drop-down / selection page
   define("AF_MANYTOONE_AUTOCOMPLETE", AF_RELATION_AUTOCOMPLETE);
-  
+
   define("AF_MANYTOONE_LAZY", AF_SPECIFIC_4);        // lazy load
 
   /**
@@ -92,7 +92,7 @@
 
     /**
      * List columns.
-     * @Access private
+     * @access private
      * @var Array
      */
     var $m_listColumns = array();
@@ -486,7 +486,7 @@
       $modulename = $this->m_destInstance->m_module;;
       return atktext('select_none', $modulename, $nodename);
     }
-    
+
     /**
      * Returns a displayable string for this value.
      * @param $record Record
@@ -521,7 +521,7 @@
        atkdebug("Can't create destination! ($this->m_destination");
       }
       return "";
-    }    
+    }
 
     /**
      * Populate the record with the destination record data.
@@ -1235,7 +1235,7 @@
     function getSelectedRecord($record=array(), $mode="select")
     {
       $this->createDestination();
-      
+
       $condition = $this->m_destInstance->m_table.'.'.$this->m_destInstance->primaryKeyField().
                    "='".$record[$this->fieldName()][$this->m_destInstance->primaryKeyField()]."'";
 
@@ -1244,7 +1244,7 @@
       {
         $condition = $condition.' AND '.$filter;
       }
-                        
+
       list($record) = $this->m_destInstance->selectDb($condition, "", "", "", "", $mode);
       return $record;
     }

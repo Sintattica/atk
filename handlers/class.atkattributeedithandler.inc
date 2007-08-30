@@ -17,6 +17,10 @@
    * $Id$
    */
 
+  /**
+   * Some defines
+   * @access private
+   */
   define("ATTRIBUTEEDIT_ERROR_DEFAULT", 1);
   define("ATTRIBUTEEDIT_ERROR_UPDATE", 2);
   define("ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET", 4);
@@ -441,7 +445,7 @@
 
       // We do not need certain attributes.
       foreach ($attributes as $index=>$attr)
-      {        
+      {
         // Attributes without labels will not be selectable.
         if ($attr->hasFlag(AF_NO_LABEL) ||  $attr->hasFlag(AF_BLANK_LABEL))
           continue;

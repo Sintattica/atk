@@ -1,83 +1,112 @@
 <?php
-atkimport("atk.menu.atkmodernmenu");
+  /**
+   * This file is part of the Achievo ATK distribution.
+   * Detailed copyright and licensing information can be found
+   * in the doc/COPYRIGHT and doc/LICENSE files which should be
+   * included in the distribution.
+   *
+   * @package atk
+   * @subpackage menu
+   *
+   * @copyright (c)2007 Ibuildings.nl BV
+   * @license http://www.achievo.org/atk/licensing ATK Open Source License
+   *
+   * @version $Revision$
+   * $Id$
+   */
 
-class atkcookmenu extends atkModernMenu
-{
+  /**
+   * Imports
+   * @access private
+   */
+  atkimport("atk.menu.atkmodernmenu");
 
-  function getMenu()
+  /**
+   * The atkBoolAttribute class represents an attribute of a node
+   * that can either be true or false.
+   *
+   * @author Sandy Pleyte <sandy@achievo.org>
+   * @package atk
+   * @subpackage menu
+   *
+   */
+  class atkcookmenu extends atkModernMenu
   {
-    global $g_menu;
-    $atkmenutop="main";
 
-    $menuitems = $this->getMenuItems($g_menu,$atkmenutop);
-    $theme = &atkinstance("atk.ui.atktheme");
-    $page = &atkinstance("atk.ui.atkpage");
-    $page->register_style($theme->stylePath("style.css"));
-    $page->register_style($theme->stylePath("cookmenu.css"));
-    $page->register_scriptcode("var myThemePanelBase='".str_replace('arrow.gif','',$theme->imgPath("arrow.gif"))."';",true);
-    $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/JSCookMenu.js");
-    $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/effect.js");
-    $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/theme.js");
-    $ui = &atkinstance("atk.ui.atkui");
-
-     $menu_javascript= '<script language="JavaScript" type="text/javascript">
-                        var atkCookMenu =
-                        ['."\n";
-     $this->getJavascriptMenuItems($menuitems,$menu_javascript);
-     $menu_javascript.='];';
-
-
-    $menu='</script>
-
-    <div id="atkcookmenu"></div>
-    <script language="JavaScript" type="text/javascript"><!--
-    cmDraw (\'atkcookmenu\', atkCookMenu, \'vbr\', cmThemePanel, \'ThemePanel\');
-    --></script>
-    ';
-
-
-
-
-      $box = $ui->renderBox(array("menu_javascript"=>$menu_javascript,"menu"=>$menu),"menu");
-      return $box;
-
-  }
-
-  function getJavascriptMenuItems($menuitems,&$menu_javascript)
-  {
-    foreach($menuitems as $item)
+    function getMenu()
     {
-      if($item["name"]=="-")
+      global $g_menu;
+      $atkmenutop="main";
+
+      $menuitems = $this->getMenuItems($g_menu,$atkmenutop);
+      $theme = &atkinstance("atk.ui.atktheme");
+      $page = &atkinstance("atk.ui.atkpage");
+      $page->register_style($theme->stylePath("style.css"));
+      $page->register_style($theme->stylePath("cookmenu.css"));
+      $page->register_scriptcode("var myThemePanelBase='".str_replace('arrow.gif','',$theme->imgPath("arrow.gif"))."';",true);
+      $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/JSCookMenu.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/effect.js");
+      $page->register_script(atkconfig("atkroot")."atk/javascript/jscookmenu/theme.js");
+      $ui = &atkinstance("atk.ui.atkui");
+
+       $menu_javascript= '<script language="JavaScript" type="text/javascript">
+                          var atkCookMenu =
+                          ['."\n";
+       $this->getJavascriptMenuItems($menuitems,$menu_javascript);
+       $menu_javascript.='];';
+
+
+      $menu='</script>
+
+      <div id="atkcookmenu"></div>
+      <script language="JavaScript" type="text/javascript"><!--
+      cmDraw (\'atkcookmenu\', atkCookMenu, \'vbr\', cmThemePanel, \'ThemePanel\');
+      --></script>
+      ';
+
+
+
+
+        $box = $ui->renderBox(array("menu_javascript"=>$menu_javascript,"menu"=>$menu),"menu");
+        return $box;
+
+    }
+
+    function getJavascriptMenuItems($menuitems,&$menu_javascript)
+    {
+      foreach($menuitems as $item)
       {
-       $menu_javascript.="_cmSplit,\n";
-      }
-      else
-      {
-        if($item["url"]!="")
+        if($item["name"]=="-")
         {
-          $url="'".$item["url"]."'";
-          $target="'_self'";
+         $menu_javascript.="_cmSplit,\n";
         }
         else
         {
-          $url="null";
-          $target="null";
-        }
-        $menu_javascript.="[null, '".addslashes($item["name"])."', ".$url.", ".$target.", null";
-        if(isset($item["submenu"]) && count($item["submenu"])>0)
-        {
-          $menu_javascript.=',';
-          if($item["header"]!="")
+          if($item["url"]!="")
           {
-            $menu_javascript.="[_cmNoAction, '<td colspan=\"3\"".$item["header"]."</td>', null, null, null],\n";
-            $menu_javascript.="_cmSplit,\n";
-
+            $url="'".$item["url"]."'";
+            $target="'_self'";
           }
-          $this->getJavascriptMenuItems($item["submenu"],$menu_javascript);
+          else
+          {
+            $url="null";
+            $target="null";
+          }
+          $menu_javascript.="[null, '".addslashes($item["name"])."', ".$url.", ".$target.", null";
+          if(isset($item["submenu"]) && count($item["submenu"])>0)
+          {
+            $menu_javascript.=',';
+            if($item["header"]!="")
+            {
+              $menu_javascript.="[_cmNoAction, '<td colspan=\"3\"".$item["header"]."</td>', null, null, null],\n";
+              $menu_javascript.="_cmSplit,\n";
+
+            }
+            $this->getJavascriptMenuItems($item["submenu"],$menu_javascript);
+          }
+          $menu_javascript.="],\n";
         }
-        $menu_javascript.="],\n";
       }
     }
-  }
 
-}
+  }

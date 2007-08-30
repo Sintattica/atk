@@ -15,6 +15,9 @@
    * $Id$
    */
 
+  /**
+   * Flags for atkBoolAttribute
+   */
   define("AF_BOOL_OBLIGATORY", AF_SPECIFIC_1); // make bool attribute obligatory (normal AF_OBLIGATORY flag is always removed).
 
   /**

@@ -723,7 +723,7 @@
      * A list of mra actions that need to be accessed through
      * a dialog.
      *
-     * @todo: This code needs to be removed/replaced when we have support for all MRA
+     * @todo This code needs to be removed/replaced when we have support for all MRA
      * actions for using dialogs. In which case we could make all the actions in a
      * MRA dropdown open an atkDialog.
      *
@@ -4620,7 +4620,6 @@
     function callHandler($action)
     {
       atkdebug("atkNode::callHandler(); action: ".$action);
-      //todo: should the module be taken into account
       $handler = &atkGetNodeHandler($this->m_type, $action);
 
       // handler function
@@ -4677,7 +4676,7 @@
       // The node handler might return a function as nodehandler. We cannot
       // return a function so we ignore this option.
 
-      // TODO: why not implement a base atkfunctionactionhandler which just calls the given function?
+      // @todo why not implement a base atkfunctionactionhandler which just calls the given function?
       //       this would probably only work fine when using PHP5, but's better then nothing?
       //       or why support functions at all?!
 
@@ -5020,7 +5019,7 @@
     /**
      * Add an mra action that need to be accessed through a dialog.
      *
-     * @todo: This code needs to be removed/replaced when we have support for all MRA
+     * @todo This code needs to be removed/replaced when we have support for all MRA
      * actions for using dialogs. In which case we could make all the actions in a
      * MRA dropdown open an atkDialog. For now this code just generates another button.
      *
@@ -5034,7 +5033,7 @@
     /**
      * Retrieve the mra actions that need to be accessed through a dialog.
      *
-     * @todo: This code needs to be removed/replaced when we have support for all MRA
+     * @todo This code needs to be removed/replaced when we have support for all MRA
      * actions for using dialogs. In which case we could make all the actions in a
      * MRA dropdown open an atkDialog. For now this code just generates another button.
      */

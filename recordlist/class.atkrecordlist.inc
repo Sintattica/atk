@@ -594,7 +594,7 @@
           }
 
           /**
-           * @todo: This code needs to be removed/replaced when we have support for all MRA
+           * @todo This code needs to be removed/replaced when we have support for all MRA
            * actions for using dialogs. In which case we could make all the actions in an
            * MRA dropdown open an atkDialog. For now this code just generates another button.
            */
@@ -647,7 +647,7 @@
     /**
      * Retrieve a button to open a dialog for a given MRA action.
      *
-     * @todo: This code needs to be removed/replaced when we have support for all MRA
+     * @todo This code needs to be removed/replaced when we have support for all MRA
      * actions for using dialogs. In which case we could make all the actions in a
      * MRA dropdown open an atkDialog. For now this code just generates another button.
      *
