@@ -77,8 +77,6 @@
     if (version_compare(phpversion(), "5.0.0")>=0)
     {
       $errortype[E_STRICT] = "Strict Notice";
-      //Ignore strict notices for now.
-      return;
     }
 
     //E_RECOVERABLE is available since 5.2.0
