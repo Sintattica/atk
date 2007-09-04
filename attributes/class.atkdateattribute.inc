@@ -435,36 +435,6 @@
       atkimport('atk.utils.atkjson');
       if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
 
-      if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
-      else if (!$obligatory) $emptyfield=true;
-      else $emptyfield=false;
-
-      $info = array(
-        'format' => $str_format,
-        'min' => $str_min,
-        'max' => $str_max,
-        'emptyfield' => $emptyfield,
-        'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
-      );
-
-      atkimport('atk.utils.atkjson');
-      if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
-
-      if ($this->hasFlag(AF_DATE_EMPTYFIELD))  $emptyfield=true;
-      else if (!$obligatory) $emptyfield=true;
-      else $emptyfield=false;
-
-      $info = array(
-        'format' => $str_format,
-        'min' => $str_min,
-        'max' => $str_max,
-        'emptyfield' => $emptyfield,
-        'weekday' => !$this->hasFlag(AF_DATE_EDIT_NO_DAY)
-      );
-
-      atkimport('atk.utils.atkjson');
-      if (!$pda) $result .= '<script language="javascript">var atkdateattribute_'.$fieldname.' = '.atkJSON::encode($info).';</script>';
-
       /* other date selections */
       $weekdayFormat = NULL;
       for($i = 0; $i < strlen($str_format); $i++)
@@ -506,18 +476,6 @@
             $this->registerKeyListener($fieldname.'[year]', KB_CTRLCURSOR|KB_UPDOWN);
             $result .= '<input type="text" id="'.$fieldname.'[year]" name="'.$fieldname.'[year]" class="atkdateattribute" size="4" maxlength="4" onChange="'.$str_script.'" value="'.(isset($current["year"])?$current["year"]:"").'">';
           }
-        }
-
-        /* weekday format */
-        elseif ($str_format[$i] == 'D' || $str_format[$i] == 'l')
-        {
-          $weekdayFormat = $str_format[$i];
-        }
-
-        /* weekday format */
-        elseif ($str_format[$i] == 'D' || $str_format[$i] == 'l')
-        {
-          $weekdayFormat = $str_format[$i];
         }
 
         /* weekday format */
