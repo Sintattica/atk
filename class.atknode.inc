@@ -3700,7 +3700,6 @@
       $querystring = $query->buildSelect($distinct);
       if (!$querystring) return array();
 
-      $db = &$this->getDb();
       $dbrecords = $db->getrows($querystring);
 
       if($mode=="copy" && $this->hasFlag(NF_ML)) // do we have mlrecords?
@@ -3774,13 +3773,13 @@
       }
 
       // also load special storage attributes. (POST)
-      for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
+      for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
       {
-        for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
+        for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
-          $p_attrib = &$this->m_attribList[$postloadlist[$j]];
+          $p_attrib = &$this->getAttribute($postloadlist[$j]);
 
-          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
+          $recordset[$i][$postloadlist[$j]] = $p_attrib->load($db, $recordset[$i], $mode);
         }
       }
       return $recordset;
