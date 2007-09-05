@@ -4612,7 +4612,7 @@
       $handler = &atkGetNodeHandler($this->m_type, $action);
 
       // handler function
-      if ($handler != NULL && function_exists($handler))
+      if ($handler != NULL && is_string($handler) && function_exists($handler))
       {
         atkdebug("atkNode::callHandler: Calling external handler function for '".$action."'");
         $handler($this, $action);
