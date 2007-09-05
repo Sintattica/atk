@@ -41,7 +41,7 @@
       $this->m_parentAttrName = $parentAttrName;
     }
 
-    function load($db, $record)
+    function load(&$db, $record)
     {
       $query = "SELECT *
                 FROM ".atkconfig("auth_accesstable")."
