@@ -2402,7 +2402,7 @@
      */
     function addDependee($attribName)
     {
-      $this->m_dependees[] = $attribName;
+      if(!in_array($attribName, $this->m_dependees)) $this->m_dependees[] = $attribName;
       return $this;
     }
 
