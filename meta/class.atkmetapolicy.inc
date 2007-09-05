@@ -101,7 +101,7 @@ class atkMetaPolicy
       (hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
       (hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
       (hasFlag($meta['flags'], MF_AUTO_INCREMENT|MF_PRIMARY) ? AF_AUTOKEY : 0) |
-      ($meta['type'] == "text" ? AF_HIDE_LIST : 0);
+      ($meta['gentype'] == "text" ? AF_HIDE_LIST : 0);
 
     if (hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
         in_array($name, array("id", $meta['table']."id", $meta['table']."_id")))
@@ -144,7 +144,7 @@ class atkMetaPolicy
     {
       $type = 'atk.attribute.atkupdatestampattribute';
     }
-    else if ($meta['type'] == 'int' && $meta['len'] == 1 && 
+    else if ($meta['gentype'] == 'number' && $meta['len'] == 1 && 
              (substr($name, 0, 3) == 'is_' || substr($name, 0, 4) == 'has_'))
     {
       $type = 'atk.attributes.atkboolattribute';
