@@ -3775,10 +3775,9 @@
       // also load special storage attributes. (POST)
       for ($j = 0, $_j = count($postloadlist); $j < $_j; $j++)
       {
+        $p_attrib = &$this->getAttribute($postloadlist[$j]);
         for ($i = 0, $_i = count($recordset); $i < $_i; $i++)
         {
-          $p_attrib = &$this->getAttribute($postloadlist[$j]);
-
           $recordset[$i][$postloadlist[$j]] = $p_attrib->load($db, $recordset[$i], $mode);
         }
       }
