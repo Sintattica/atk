@@ -12,7 +12,7 @@ Changed in ATK 6.1
 ------------------
 + Added multi referential keys support to hasOne. Example:
   $policy->hasOne("customer",array("source"=>array("obl_cd","cstmr_cd")));
-  and obl_cd, cstmr_cd fields will be use as referential key. [Yury]
+  and obl_cd, cstmr_cd fields will be use as referential key. (bug #843)[Yury]
 + Added select method to atkNode which returns an instance of the
   atkSelector class which can be used to fluently build a selectDb
   expression to retrieve a single row, all rows or the row count.
