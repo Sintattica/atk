@@ -640,7 +640,7 @@
      */
     function _verifyStackIntegrity()
     {
-      global $g_sessionData, $atkstackid, $atklevel, $atkprevlevel;
+      global $g_sessionData, $atklevel, $atkprevlevel;
       $stack = "";
 
       if (isset($g_sessionData[$this->m_namespace]["stack"][atkStackID()]))
@@ -844,7 +844,6 @@
      */
     function sessionUrl($url,$sessionstatus=SESSION_DEFAULT, $levelskip=1)
     {
-      global $g_stickyurl;
       if (strpos($url,"?")!==false)
       {
         $start = "&";
