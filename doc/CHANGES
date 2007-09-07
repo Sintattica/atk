@@ -10,6 +10,9 @@ Changed in ATK 6.2
 
 Changed in ATK 6.1
 ------------------
++ Added multi referential keys support to hasOne. Example:
+  $policy->hasOne("customer",array("source"=>array("obl_cd","cstmr_cd")));
+  and obl_cd, cstmr_cd fields will be use as referential key. [Yury]
 + Added select method to atkNode which returns an instance of the
   atkSelector class which can be used to fluently build a selectDb
   expression to retrieve a single row, all rows or the row count.
@@ -85,6 +88,13 @@ Changed in ATK 6.1
 + Added option to set the administrator and guest password as an md5 hash in
   the config file for a little more security. [Guido]
 + Added adminFooter() support to atkTreeNode. [Guido]
+* Fix perforance issue in node->selectDb() method. We must firstly do cycle
+  by postvars attribute, then cycle by recordlist.
+* Fix warning in node->callHandler() method. (bug #844) [Yury]
+* Fix how metapolicy->_getTypeAndParams() determine atkboolattribute
+  field. (bug #834) [Yury]
+* Fix attribute->addDependee() method. Check exists dependee before add new
+ one.  (bug #831) [Yury]
 * Fixed XSS vulnerability, PHP_SELF was replaced with atkSelf, which does some
   anti-XSS on PHP_SELF before returning. [Ivo]
 * Improved the way sections are injected into add, edit and view fields. [Peter]
