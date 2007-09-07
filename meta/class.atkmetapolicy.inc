@@ -709,8 +709,17 @@ class atkMetaPolicy
     $attr = NULL;
 
     if (array_key_exists("source", $options))
-      $attr = $options["source"];
-
+    {
+      //in case of multi referential key "source" is array
+      if(is_array($options["source"]))
+      {
+        $attr = $options["source"][0];// we use first key as name of attribute 
+      }
+      else 
+      {
+        $attr = $options["source"];
+      }
+    }
     else if (!array_key_exists("dest", $options) && !array_key_exists("destination", $options))
     {
       foreach (array_keys($this->m_attrs) as $name)
