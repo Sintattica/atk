@@ -195,7 +195,6 @@
       }
       else
       {
-        atk_var_dump($this->m_postvars, 'postvars');
         //if the object not yet exists, try to create it
         $fullclassname = $this->m_postvars["atknodetype"];
         if(isset($fullclassname) && $fullclassname != null)
