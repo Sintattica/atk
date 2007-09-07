@@ -243,39 +243,37 @@
      */
     function display($record, $mode="")
     {
+      $result = "&nbsp;";
       if ($this->createDestination())
       {
         $recordset = array();
         if (is_array($record[$this->fieldName()]))
         {
           $remotekey = $this->getRemoteKey();
-          for ($i=0;$i<count($record[$this->m_name]);$i++)
+          for ($i=0;$i<count($record[$this->fieldName()]);$i++)
           {
-            if(is_array($remotekey))
+            if(!is_array($record[$this->fieldName()][$i][$remotekey]))
             {
-              $recordset[] = $record[$this->m_name][$i][$remotekey][$this->m_destInstance->primaryKeyField()];
+              $selector = $this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$i][$remotekey]."'";
+              list($rec) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->descriptorFields());
+              $recordset[] = $this->m_destInstance->descriptor($rec);
             }
             else
             {
-              $recordset[] = $record[$this->m_name][$i][$remotekey];
+              $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
             }
           }
         }
-        $result = "";
-        if (count($record[$this->m_name])!=0)
+        if (!in_array($mode, array("csv", "plain")))
         {
-          if (!in_array($mode, array("csv", "plain"))) $result = "<ul>";
-          for ($i=0;$i<count($recordset);$i++)
-          {
-            if (!in_array($mode, array("csv", "plain"))) $result.="<li>";
-            elseif ($result != '') $result.=', ';
-            $result .= $this->m_destInstance->descriptor($recordset[$i]);
-          }
-          if (!in_array($mode, array("csv", "plain"))) $result.="</ul>";
+          $result = "<ul><li>".implode("<li>",$recordset)."</ul>";
         }
-        return $result;
+        else
+        {
+          $result = implode(", ",$recordset);
+        }
       }
-      return "&nbsp;";
+      return $result;
     }
 
     /**
