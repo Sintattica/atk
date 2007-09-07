@@ -90,6 +90,8 @@ Changed in ATK 6.1
 + Added adminFooter() support to atkTreeNode. [Guido]
 * Fix perforance issue in node->selectDb() method. We must firstly do cycle
   by postvars attribute, then cycle by recordlist.
+* Fix displaing manytomanyrelation with AF_READONLY flag after pressing 
+  'save' button. (bug #692) [Yury]
 * Fix warning in node->callHandler() method. (bug #844) [Yury]
 * Fix how metapolicy->_getTypeAndParams() determine atkboolattribute
   field. (bug #834) [Yury]
