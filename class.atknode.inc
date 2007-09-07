@@ -3430,7 +3430,6 @@
       $mltool->addMlCondition($query,$this,$mode,$this->m_table);
 
       $querystring = $query->buildCount($distinct);
-      $db = &$this->getDb();
       $result = $db->getrows($querystring);
 
       // group by fix:
@@ -3620,7 +3619,7 @@
       {
         $p_attrib = &$this->m_attribList[$preloadlist[$j]];
 
-        $preloadedrecs = $p_attrib->load($this->getDb(), $recordset[$i], $mode);
+        $preloadedrecs = $p_attrib->load($db, $recordset[$i], $mode);
 
         // todo, dirty hack, if preload returns x records, we treat them as 1 record now.
         $recordset[0][$preloadlist[$j]] = $preloadedrecs;
