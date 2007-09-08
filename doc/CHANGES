@@ -20,7 +20,7 @@ Changed in ATK 6.2
   field. (bug #834) [Yury]
 * Fix attribute->addDependee() method. Check exists dependee before add new
  one.  (bug #831) [Yury]
-* Fix using $config_auth_database in class.auth_dn.inc (bug #832) [Yury]
+* Fix using $config_auth_database in class.auth_db.inc (bug #832) [Yury]
 * Added missing useattrib in test_atkdatanode testcase. [Guido]
 
 Changed in ATK 6.1
