@@ -119,7 +119,7 @@
        $groupfield = atkconfig("auth_groupfield");
        $groupparentfield = atkconfig("auth_groupparentfield");
 
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
        if ($usertable==$leveltable||$leveltable=="")
        {
          // Level and userid are stored in the same table.
@@ -152,7 +152,7 @@
 
      function getParentGroups($parents)
      {
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
 
        $grouptable = atkconfig("auth_grouptable");
        $groupfield = atkconfig("auth_groupfield");
@@ -242,7 +242,7 @@
 
      function getEntity($node, $action)
      {
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
 
        if (!isset($this->m_rightscache[$node])||count($this->m_rightscache[$node])==0)
        {
@@ -268,7 +268,7 @@
 
      function getAttribEntity($node, $attrib, $mode)
      {
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
 
        $query = "SELECT * FROM attribaccess WHERE node='$node' AND attribute='$attrib' AND mode='$mode'";
 
@@ -294,7 +294,7 @@
 
      function getUserList()
      {
-       $db = &atkGetDb();
+       $db = &atkGetDb(atkconfig("auth_database"));
        $query = "SELECT * FROM ".atkconfig("auth_usertable");
 
        $accountdisablefield = atkconfig("auth_accountdisablefield");
