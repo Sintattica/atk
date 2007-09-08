@@ -88,6 +88,8 @@ Changed in ATK 6.1
 + Added option to set the administrator and guest password as an md5 hash in
   the config file for a little more security. [Guido]
 + Added adminFooter() support to atkTreeNode. [Guido]
+* Fix parameter order when setting link charset in mysql db driver. (bug#732) [Yury]
+* Trim whitespace from string before stripQuotes (bug#752)  [Yury]
 * Fix perforance issue in node->selectDb() method. We must firstly do cycle
   by postvars attribute, then cycle by recordlist.
 * Fix displaing manytomanyrelation with AF_READONLY flag after pressing 
