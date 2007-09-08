@@ -73,7 +73,7 @@
         if (!empty($charset))
         {
           atkdebug("Set database character set to: {$charset}");
-          @mysql_query($this->m_link_id, "SET NAMES '{$charset}'");
+          @mysql_query("SET NAMES '{$charset}'", $this->m_link_id);
         }
       }
 
