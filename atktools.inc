@@ -608,6 +608,7 @@
    */
   function stripQuotes($string)
   {
+    $string = trim($string);
     if (substr($string,0,1)=="'" && substr($string,-1)=="'") return substr($string,1,-1);
     if (substr($string,0,1)=='"' && substr($string,-1)=='"') return substr($string,1,-1);
     return $string;
