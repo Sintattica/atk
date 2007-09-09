@@ -86,7 +86,12 @@
     {
       $node = &$this->m_node;
 
-      list($record) = $node->selectDb(atkArrayNvl($this->m_postvars, 'atkselector', ""),"","","","","edit");
+      $record = $this->getRejectInfo(); // Check reject info first
+      
+      if($record == null) //If reject info not set -  do select
+      {
+        list($record) = $node->selectDb(atkArrayNvl($this->m_postvars, 'atkselector', ""),"","","","","edit");
+      }
 
       return $record;
     }

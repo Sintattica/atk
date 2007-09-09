@@ -78,7 +78,7 @@
       {
         $error = count($record['atkerror']) > 0;
         foreach (array_keys($record) as $key)
-          $error = $error || (is_array($record[$key]) && count($record[$key]['atkerror']) > 0);
+          $error = $error || (is_array($record[$key]) && array_key_exists('atkerror', $record[$key]) && count($record[$key]['atkerror']) > 0);
       }
 
       return $error;
@@ -91,26 +91,9 @@
      */
     function handleError($record)
     {
-      $content = $this->getErrorPage($record);
-      $page = &$this->getPage();
-      $page->addContent($content);
-    }
-
-    /**
-     * Retrieve the error page
-     *
-     * This method retrieves the edit page and passes the record
-     * along with it. The errors that occured are available in the
-     * record and will be rendered in the editPage.
-     *
-     * @param array $record
-     * @return String HTML The editpage with errors.
-     */
-    function getErrorPage($record)
-    {
-      $this->m_node->m_action="edit";
-      $edithandler = $this->m_node->getHandler("edit");
-      return $this->m_node->renderActionPage("edit", $edithandler->invoke("editPage", $record));
+      $this->setRejectInfo($record);
+      $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit",array("atkselector"=>$this->m_node->primaryKey($record))),SESSION_REPLACE);
+      $this->m_node->redirect($location);
     }
 
     /**
@@ -138,8 +121,6 @@
       }
     }
 
-
-
     function doUpdate()
     {
        $record = $this->getRecord();
@@ -164,7 +145,8 @@
       else
       {
         // something other than one of the three buttons was pressed. Let's just refresh.
-        $this->renderEditPage($record);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit", array("atkselector"=>$this->m_node->primaryKey($record),"atktab"=>$this->m_node->getActiveTab())), SESSION_REPLACE);
+        $this->m_node->redirect($location);
       }
     }
 
@@ -286,13 +268,13 @@
       {
         // 'save and close' was clicked
         $location = $this->m_node->feedbackUrl("update", ACTION_SUCCESS, $record, "");
-        $this->m_node->redirect($location);
       }
       else
       {
         // 'save' was clicked
-        $this->renderEditPage($record);
+        $location = session_url(dispatch_url($this->m_node->atknodetype(),"edit", array("atkselector"=>$this->m_node->primaryKey($record),"atktab"=>$this->m_node->getActiveTab())), SESSION_REPLACE);
       }
+      $this->m_node->redirect($location);
     }
 
 
@@ -326,44 +308,6 @@
         $this->handleUpdateSuccess($db, $record);
       }
     }
-
-    /**
-     * Render an editpage
-     *
-     * We have to make the entire system think we are in edit mode again.
-     *
-     * @param array $record
-     */
-    function renderEditPage(&$record)
-    {
-      $editpage = $this->getEditPage($record);
-      $content = $this->m_node->renderActionPage("edit", $editpage);
-      $page = &$this->getPage();
-      $page->addContent($content);
-    }
-
-    /**
-     * Enter description here...
-     *
-     * @param unknown_type $record
-     * @return unknown
-     */
-    function getEditPage(&$record)
-    {
-      //  $this->m_action="edit";
-      //update succesful, pk value might be changed so update m_orgkey
-      $record["atkprimkey"] = $this->m_node->primaryKey($record);
-
-      $locked = ($this->m_node->hasFlag(NF_LOCK));
-
-      //$this->setOrgKeyValue($record);
-      $this->m_node->m_action = "edit";
-      // we have to make the entire system think we are in edit mode again.
-      global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
-      $edithandler = $this->m_node->getHandler("edit");
-      return $edithandler->invoke("editPage", $record, $locked);
-    }
-
 
     /**
      * Handle the dialog partial
