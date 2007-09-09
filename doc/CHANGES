@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
+* Fix sql query fails when going back from viewing role of team member. (bug #757) [Yury]
 * Fix multi referential keys support to hasOne. Example:
   $policy->hasOne("customer",array("source"=>array("obl_cd","cstmr_cd")));
   and obl_cd, cstmr_cd fields will be use as referential key. (bug #843)[Yury]
