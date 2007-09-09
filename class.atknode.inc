@@ -2250,16 +2250,16 @@
      *
      * The system calls this method to override the values of a record
      * before editing the record.
-     * The default implementation does not do anything to the record, but
-     * derived classes may override this method to make modifications to.
-     * the record.
+     * The default implementation does not do anything to the record 
+     * and return empty array, but derived classes may override this 
+     * method to make modifications to the record.
      *
      * @param array $record The record that is about to be edited.
      * @return array The manipulated record.
      */
     function edit_values($record)
     {
-      return $record;
+      return array();
     }
 
 
