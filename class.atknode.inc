@@ -2211,7 +2211,7 @@
         // find fields for this section
         foreach ($fields as $field)
         {
-          if (in_array($section, $field["sections"]))
+          if (is_array($field["sections"]) && in_array($section, $field["sections"]))
             $result[] = $field;
         }
       }

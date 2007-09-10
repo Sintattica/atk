@@ -26,6 +26,8 @@ Changed in ATK 6.2
 * Fixed a missing import statement in the atkactionhandler [Edgar]
 * Fixed atkquery to quote the tablename and alias of a (left) join.
   Also added "release" as a reserved keyword. [Edgar]
+* Fixed atknode, added an is_array check before an in_array() check  to avoid
+  warnings in section processing [Edgar]
 
 Changed in ATK 6.1
 ------------------
