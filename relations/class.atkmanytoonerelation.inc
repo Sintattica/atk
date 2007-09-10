@@ -1662,7 +1662,7 @@
 
       $result =
         '<input type="hidden" id="'.$id.'" name="'.$id.'" value="'.$value.'" />
-         <input type="text" id="'.$id.'_search" value="'.htmlentities($label).'" class="atkmanytoonerelation_search" size="40" onfocus="this.select()" />
+         <input type="text" id="'.$id.'_search" value="'.atk_htmlentities($label).'" class="atkmanytoonerelation_search" size="40" onfocus="this.select()" />
          <img id="'.$id.'_spinner" src="atk/images/spinner.gif" style="vertical-align: middle; display: none"> '.$links.'<br />
          <div id="'.$id.'_result" style="display: none" class="atkmanytoonerelation_result"></div>';
 
@@ -1746,7 +1746,7 @@
         $option = $this->m_destInstance->descriptor($rec);
         $value = $this->m_destInstance->primaryKey($rec);
         $result .= '
-          <li title="'.htmlentities($option).'">'.htmlentities($option).'</li>';
+          <li title="'.atk_htmlentities($option).'">'.atk_htmlentities($option).'</li>';
       }
 
       return "<ul>$result</ul>";
