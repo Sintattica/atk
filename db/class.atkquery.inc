@@ -132,7 +132,7 @@
      * @var Array
      * @access private
      */
-    var $m_reservedNames=array('from','select','order','group');
+    var $m_reservedNames=array('from','select','order','group','release');
 
     /**
     * Initialize all variables
@@ -246,14 +246,14 @@
       if ($outer)
       {
         $jointype="LEFT JOIN ";
-        $join = " ".$jointype.$table." ".$alias." ON ".$condition." ";
+        $join = " ".$jointype.$this->quoteField($table)." ".$this->quoteField($alias)." ON ".$condition." ";
 
         if (!in_array($join, $this->m_joins)) $this->m_joins[]= $join;
       }
       else
       {
         $jointype="JOIN ";
-        $join = " ".$jointype.$table." ".$alias;
+        $join = " ".$jointype.$this->quoteField($table)." ".$this->quoteField($alias);
         if (!in_array($join, $this->m_joins))
         {
           $this->m_joins[]= $join;
