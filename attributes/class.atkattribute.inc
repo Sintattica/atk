@@ -1467,7 +1467,7 @@
       if ($this->m_searchmode) $searchmode = $this->m_searchmode;
 
       $func = $searchmode."Condition";
-      if (method_exists($query,$func) && $value)
+      if (method_exists($query,$func) && ($value || ($value == 0)))
       {
         return $query->$func($table.".".$this->fieldName(),$this->escapeSQL($value));
       }
