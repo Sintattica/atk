@@ -64,7 +64,7 @@
   require_once($config_atkroot."atk/include/security.inc");
   require_once($config_atkroot."atk/modules/atkmoduletools.inc");
 
-  if (is_array($config_smart_debug))
+  if (atk_value_in_array($config_smart_debug))
     $config_debug = atkConfig::smartDebugLevel($config_debug, $config_smart_debug);
 
   // Include locking functionality?
