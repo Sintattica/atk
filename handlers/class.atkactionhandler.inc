@@ -379,6 +379,7 @@
      */
     function renderMessageDialog($message)
     {
+      atkimport('atk.ui.atkdialog');
       $ui = &$this->m_node->getUi();      
   	
       $params = array();    	
@@ -388,7 +389,7 @@
       
       $params = array();
       $params["title"] = $this->m_node->actionTitle($this->m_action);
-      $params["content"] = $content;
+      $params["content"] = $content;  
       $content = $ui->renderDialog($params);     
       
       return $content;

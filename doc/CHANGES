@@ -23,6 +23,7 @@ Changed in ATK 6.2
  one.  (bug #831) [Yury]
 * Fix using $config_auth_database in class.auth_db.inc (bug #832) [Yury]
 * Added missing useattrib in test_atkdatanode testcase. [Guido]
+* Fixed a missing import statement in the atkactionhandler [Edgar]
 
 Changed in ATK 6.1
 ------------------
