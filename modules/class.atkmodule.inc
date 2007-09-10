@@ -145,7 +145,7 @@
      */
     function &nodeOverloader($node)
     {
-      global $g_modules, $config_atkroot, $g_overloaders;
+      global $g_overloaders;
 
       /* overloader check */
       if (!empty($g_overloaders[$node]))
@@ -194,8 +194,6 @@
      */
     function &newNode($node)
     {
-      global $g_modules, $config_atkroot, $g_overloaders;
-
       /* include the base file */
       atkimport("atk.atknode");
 
