@@ -676,7 +676,7 @@
           // Large mode
           // TODO: Fill a dropdown box with recent records..
 
-          $newlyadded = $this->m_ownerInstance->m_postvars[$id."_ret"];
+          $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
 
           $destrecord = $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
 
@@ -742,7 +742,7 @@
     function _getDestRecord($selname, $newlyadded, &$record, &$editflag)
     {
       global $ATK_VARS;
-      if ($ATK_VARS[$selname]!="" || $newlyadded!="")
+      if (atkArrayNvl($ATK_VARS,$selname) || $newlyadded)
       // new record selected
       {
         // $ATK_VARS[$selname] contains full primary key of selected record.
@@ -1640,7 +1640,14 @@
       $page = &$this->m_ownerInstance->getPage();
       $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
       $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
+      
+      $id = $this->getHtmlId($fieldPrefix);
+      $editflag = true;
+      
+      $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
 
+      $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
+      
       // validate is this is a selectable record and if so
       // retrieve the display label and hidden value
       if ($this->_isSelectableRecord($record, 'select'))
@@ -1657,7 +1664,6 @@
       }
 
       // create the widget
-      $id = $this->getHtmlId($fieldPrefix);
       $links = $this->createSelectAndAutoLinks($id, $record);
 
       $result =
