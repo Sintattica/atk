@@ -4,17 +4,17 @@ TABLE.recordlist TD,
 TABLE.recordlist A
 {
   font-family: Verdana,Helvetica,Arial;
-  font-size: 11px;  
-  text-align: left;     
+  font-size: 11px;
+  text-align: left;
   border-width: 1px;
 }
 
 TABLE.recordlist TH,
 TABLE.recordlist TH A
 {
-  background-color: #cccccc; 
-  color: #000000; 
-  font-weight: bold;  
+  background-color: #cccccc;
+  color: #000000;
+  font-weight: bold;
 }
 
 TABLE.recordlist TD,
@@ -25,7 +25,7 @@ TABLE.recordlist TH
   border-style: solid;
   padding: 3px;
   margin: 0px;
-  
+
 }
 
 TABLE.recordlist .row1
@@ -52,9 +52,15 @@ table.recordlist tbody.groupheader th,
 table.recordlist tbody.groupheader_expanded th
 {
   background-color: #888888;
-  color: #ffffff; 
+  color: #ffffff;
   cursor: pointer;
   background-position: 5px 50%;
   background-repeat: no-repeat;
   padding-left: 22px !important
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
 }

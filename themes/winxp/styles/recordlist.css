@@ -52,3 +52,8 @@ TABLE.recordlist .row2  {
 	background-color : #E4E9F7;
 }
 
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

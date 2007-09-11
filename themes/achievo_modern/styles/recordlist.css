@@ -91,3 +91,9 @@ input[type="checkbox"]
 {
   width: auto ! important;
 }
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

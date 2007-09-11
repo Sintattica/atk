@@ -2,7 +2,7 @@ TABLE.recordlist TH,
 TABLE.recordlist TD,
 TABLE.recordlist A
 {
-  text-align: left;     
+  text-align: left;
   border-width: 1px;
 }
 
@@ -14,13 +14,19 @@ TABLE.recordlist TH
   border-color: #000000;
   border-style: solid;
   padding: 3px;
-  margin: 0px; 
+  margin: 0px;
 }
 
 TABLE.recordlist TH,
 TABLE.recordlist TH A
 {
-  background-color: #006863; 
-  color: #000000; 
-  font-weight: bold;  
+  background-color: #006863;
+  color: #000000;
+  font-weight: bold;
+}
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
 }

@@ -148,3 +148,9 @@ table.recordlist tbody.groupheader_expanded th
   background-repeat: no-repeat;
   padding-left: 22px !important
 }
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

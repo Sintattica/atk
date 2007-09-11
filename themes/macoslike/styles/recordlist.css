@@ -44,3 +44,8 @@ TABLE.recordlist .row2
   background-color: #cccccc;
 }
 
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

@@ -48,3 +48,9 @@ TABLE.recordlist {
 	padding: 0px;
 	border-spacing: 0px;
 }
+
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}

@@ -445,7 +445,7 @@
             if($icons == true)
             {
               $icon = $theme->iconPath(strtolower($name),"recordlist", $this->m_node->m_module);
-              $link = sprintf('<img width="16" height="16" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, atktext($name, $this->m_node->m_module, $this->m_node->m_type));
+              $link = sprintf('<img class="recordlist" border="0" src="%1$s" alt="%2$s" title="%2$s">', $icon, atktext($name, $this->m_node->m_module, $this->m_node->m_type));
             }
             else
             {

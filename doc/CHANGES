@@ -6,15 +6,17 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
-* Fix sql query fails when going back from viewing role of team member. (bug #757) [Yury]
+* Fix sql query fails when going back from viewing role of team member.
+  (bug #757) [Yury]
 * Fix multi referential keys support to hasOne. Example:
   $policy->hasOne("customer",array("source"=>array("obl_cd","cstmr_cd")));
   and obl_cd, cstmr_cd fields will be use as referential key. (bug #843)[Yury]
-* Fix parameter order when setting link charset in mysql db driver. (bug#732) [Yury]
+* Fix parameter order when setting link charset in mysql db driver. (bug#732)
+  [Yury]
 * Trim whitespace from string before stripQuotes (bug#752)  [Yury]
 * Fix perforance issue in node->selectDb() method. We must firstly do cycle
   by postvars attribute, then cycle by recordlist. [Yury]
-* Fix displaing manytomanyrelation with AF_READONLY flag after pressing 
+* Fix displaing manytomanyrelation with AF_READONLY flag after pressing
   'save' button. (bug #692) [Yury]
 * Fix warning in node->callHandler() method. (bug #844) [Yury]
 * Fix how metapolicy->_getTypeAndParams() determine atkboolattribute
@@ -28,6 +30,8 @@ Changed in ATK 6.2
   Also added "release" as a reserved keyword. [Edgar]
 * Fixed atknode, added an is_array check before an in_array() check  to avoid
   warnings in section processing [Edgar]
+* Moved hardcoded setting of the recordlist icon size (16x16) from the
+  recordlist class to the recordlist style to make it overrideable. [Patrick]
 
 Changed in ATK 6.1
 ------------------

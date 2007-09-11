@@ -9,3 +9,8 @@ TABLE.recordlist TH
   border-collapse: collapse;
 }
 
+img.recordlist
+{
+  width: 16px;
+  height: 16px;
+}
