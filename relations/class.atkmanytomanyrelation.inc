@@ -419,7 +419,6 @@
                      " AND ".$this->m_linkInstance->m_table.'.'.$this->getRemoteKey()."='".
                      $remKey."'";
 
-                     atk_var_dump($newrecord, "<h1>NEWREC</h1>");
           $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {
