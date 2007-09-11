@@ -37,9 +37,12 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
    */
   function atkMetaManyToOneRelation($name, $accessor, $template, $options, $flags)
   {
-    //we must use $options["source"] as name for atkManyToOneRelation, because 
+    //we must use $options["source"] (if it present) as name for atkManyToOneRelation, because 
     //in case of multi referential key $name must be array with referential keys
-    $this->atkManyToOneRelation($options["source"], $accessor, $flags);
+    if(atk_in_array("source",$options) && is_array($options["source"]))
+      $name = $options["source"];
+      
+    $this->atkManyToOneRelation($name, $accessor, $flags);
     $this->m_accessor = $accessor;
     $this->m_options = $options;
     
