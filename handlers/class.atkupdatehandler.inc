@@ -330,8 +330,46 @@
     {
       $this->m_dialogSaveUrl = $url;
     }
-
-
+    
+    /**
+    * This method is obsolete. Do not use it. It is only here for backward
+    * compatibility...
+    * Render an editpage
+    *
+    * We have to make the entire system think we are in edit mode again.
+    *
+    * @param array $record
+    */
+    function renderEditPage(&$record)
+    {
+      $editpage = $this->getEditPage($record);
+      $content = $this->m_node->renderActionPage("edit", $editpage);
+      $page = &$this->getPage();
+      $page->addContent($content);
+    }
+	 
+    /**
+    * This method is obsolete. Do not use it. It is only here for backward
+    * compatibility...
+    *
+    * @param unknown_type $record
+    * @return unknown
+    */
+    function getEditPage(&$record)
+    {
+      //  $this->m_action="edit";
+      //update succesful, pk value might be changed so update m_orgkey
+      $record["atkprimkey"] = $this->m_node->primaryKey($record);
+      
+      $locked = ($this->m_node->hasFlag(NF_LOCK));
+      
+      //$this->setOrgKeyValue($record);
+      $this->m_node->m_action = "edit";
+      // we have to make the entire system think we are in edit mode again.
+      global $ATK_VARS; $ATK_VARS["atkaction"]="edit";
+      $edithandler = $this->m_node->getHandler("edit");
+      return $edithandler->invoke("editPage", $record, $locked);
+    }
   }
 
 ?>
