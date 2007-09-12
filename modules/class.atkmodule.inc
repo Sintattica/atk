@@ -194,6 +194,8 @@
      */
     function &newNode($node)
     {
+      global $config_atkroot;
+
       /* include the base file */
       atkimport("atk.atknode");
 
