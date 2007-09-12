@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
+* Fix Ajax calls handling of "umlauten" like ä,ü,ö. (bug #880) [Yury]
 * Fix sql query fails when going back from viewing role of team member.
   (bug #757) [Yury]
 * Fix multi referential keys support to hasOne. Example:
