@@ -355,6 +355,8 @@
   "wysiwyg_merge_cell" => "Merge cells",
   "wysiwyg_split_cell" => "Split cells",
   "yes" => "Yes",
+  "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+
 );
 
 ?>
