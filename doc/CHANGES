@@ -33,6 +33,7 @@ Changed in ATK 6.2
   warnings in section processing [Edgar]
 * Moved hardcoded setting of the recordlist icon size (16x16) from the
   recordlist class to the recordlist style to make it overrideable. [Patrick]
+* Bugfix in atkpage::getScriptCodes(). [Lineke]
 
 Changed in ATK 6.1
 ------------------
