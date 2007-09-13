@@ -211,8 +211,7 @@
     */
    function getScriptCodes()
    {
-     $scriptCodes = $this->m_scriptcode['before'];
-     $scriptCodes[] = $this->m_scriptcode['after'];
+     $scriptCodes = array_merge($this->m_scriptcode['before'], $this->m_scriptcode['after']);
      $scriptCodes[] = $this->_getGlobalSubmitScriptCode();
      $scriptCodes[] = $this->_getGlobalLoadScriptCode();
 
