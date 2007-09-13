@@ -339,6 +339,7 @@
     * We have to make the entire system think we are in edit mode again.
     *
     * @param array $record
+    * @deprecated
     */
     function renderEditPage(&$record)
     {
@@ -354,6 +355,7 @@
     *
     * @param unknown_type $record
     * @return unknown
+    * @deprecated
     */
     function getEditPage(&$record)
     {
