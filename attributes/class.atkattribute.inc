@@ -2390,7 +2390,7 @@
       {
         atkimport('atk.utils.atkjson');
         //atkJSON::encode expect string in in ASCII or UTF-8 format, so convert data to UTF-8
-        $value = iconv(atktext("charset"),"UTF-8",$field['html']);
+        $value = atk_iconv(atktext("charset"),"UTF-8",$field['html']);
         $script .= "\$('".str_replace('.', '_', $this->m_ownerInstance->atkNodeType().'_'.$field['id'])."').innerHTML = ".atkJSON::encode($value).";\r\n";
       }
 
