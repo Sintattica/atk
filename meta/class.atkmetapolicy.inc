@@ -252,7 +252,7 @@ class atkMetaPolicy
         $sequence = $meta['sequence'];
 
     if ($sequence == NULL)
-      $sequence = "seq_".$this->getTable();
+      $sequence = atkConfig("database_sequenceprefix").$this->getTable();
 
     return $sequence;
   }
