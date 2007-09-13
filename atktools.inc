@@ -2101,4 +2101,28 @@
     if (strpos($self, '"')!==false) $self = substr($self, 0, strpos($self, '"')); //XSS attempt
     return htmlentities(strip_tags($self)); // just in case..
   }
+  
+  /**
+   * ATK wrapper of the PHP iconv function. Check if iconv function is present in
+   * the system. If yes - use it for converting string, if no - save string untouch
+   * and make warning about it.
+   *
+   * @param string $in_charset  from charset
+   * @param string $out_charset to charset
+   * @param string $str string to convert
+   *
+   * @return string encoded string
+   */
+  function atk_iconv($in_charset, $out_charset, $str)
+  {
+    if(function_exists(iconv))
+    {
+      $str = iconv($in_charset,$out_charset,$str);
+    }
+    else
+    {
+      atkwarning(atktext("error_iconv_not_install"));
+    }
+    return $str;
+  }
 ?>
