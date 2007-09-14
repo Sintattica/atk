@@ -11,6 +11,7 @@ Changed in ATK 6.2
 + Added ATK wrapper of the PHP iconv function - atk_iconv. Check if iconv function is present in
    * the system. If yes - use it for converting string, if no - save string untouch
    * and make warning about it. [Yury]
+* Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]
 * Fix display obligatory fields in integrated form. (bug #845) [Yury]
 * Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859) [michele.rota] [Yury]
 * Fix Ajax calls handling of "umlauten" like ä,ü,ö. (bug #880) [Yury]
