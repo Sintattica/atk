@@ -11,10 +11,11 @@
   {/if}
   {foreach from=$fields item=field}
     <tr>
-      {if $field.line!=""}
+      {if isset($field.line)}
         <td colspan="2" valign="top">{$field.line}</td>
       {else}
-      {if $field.label!=="AF_NO_LABEL"}<td>{if $field.label!=""}{$field.label}: {/if}</td>{/if}
+        {if $field.label!=="AF_NO_LABEL"}<td>{if $field.label!=""}{$field.label} {if isset($field.obligatory)}{$field.obligatory}{/if}:{/if}</td>
+        {/if}
         <td>{$field.full}</td>
       {/if}
     </tr>
