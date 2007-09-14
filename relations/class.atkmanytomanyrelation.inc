@@ -244,24 +244,21 @@
     function display($record, $mode="")
     {
       $result = "&nbsp;";
-      if ($this->createDestination())
+      if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()]))
       {
         $recordset = array();
-        if (is_array($record[$this->fieldName()]))
+        $remotekey = $this->getRemoteKey();
+        for ($i=0;$i<count($record[$this->fieldName()]);$i++)
         {
-          $remotekey = $this->getRemoteKey();
-          for ($i=0;$i<count($record[$this->fieldName()]);$i++)
+          if(!is_array($record[$this->fieldName()][$i][$remotekey]))
           {
-            if(!is_array($record[$this->fieldName()][$i][$remotekey]))
-            {
-              $selector = $this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$i][$remotekey]."'";
-              list($rec) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->descriptorFields());
-              $recordset[] = $this->m_destInstance->descriptor($rec);
-            }
-            else
-            {
-              $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
-            }
+            $selector = $this->m_destInstance->m_table.".".$this->m_destInstance->primaryKeyField()."='".$record[$this->fieldName()][$i][$remotekey]."'";
+            list($rec) = $this->m_destInstance->selectDb($selector,"","","",$this->m_destInstance->descriptorFields());
+            $recordset[] = $this->m_destInstance->descriptor($rec);
+          }
+          else
+          {
+            $recordset[] = $this->m_destInstance->descriptor($record[$this->fieldName()][$i][$remotekey]);
           }
         }
         if (!in_array($mode, array("csv", "plain")))
