@@ -183,6 +183,9 @@
       $userrecords[0][atkconfig("auth_passwordfield")]["hash"] = md5($newpassword);
       $usernode->updateDb($userrecords[0], true, "", array(atkconfig("auth_passwordfield")));
 
+      $db = &$usernode->getDB();
+      $db->commit();
+      
       // Send an email containing the new password to user
       $subject = atktext("auth_passwordmail_subjectnew_password", "atk");
       $body = atktext("auth_passwordmail_explanation", "atk") . "\n\n";
