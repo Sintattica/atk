@@ -194,6 +194,11 @@
   define("NF_SPECIFIC_5",      536870912);
 
   /**
+   * Records may be copied and open for editing
+   */
+  define("NF_EDITAFTERCOPY",   1073741824);
+
+  /**
    * Alias for NF_MULTI_RECORD_ACTIONS flag (shortcut)
    */
   define("NF_MRA",           NF_MULTI_RECORD_ACTIONS);
@@ -2437,6 +2442,10 @@
         {
           $actions["copy"] = $actionbase.'&atkaction=copy';
         }
+        if($this->hasFlag(NF_EDITAFTERCOPY)&&$this->allowed("editcopy"))
+        {
+          $actions["editcopy"] = $actionbase.'&atkaction=editcopy';
+        }        
       }
 
       return $actions;
