@@ -52,7 +52,7 @@
 
       foreach ($languages as $language)
       {
-        if (!is_numeric($value[$language]))
+        if (!is_numeric($value[$language]) && $value[$language]!="")
           triggerError($record, $this->fieldName(), 'error_notnumeric');
       }
     }

@@ -11,6 +11,7 @@ Changed in ATK 6.2
 + Added ATK wrapper of the PHP iconv function - atk_iconv. Check if iconv function is present in
    the system. If yes - use it for converting string, if no - save string untouch
    and make warning about it. [Yury]
+* Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
 * Fix saving new password to db after "password forgotten". (bug #819) [Yury]
 * Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]
 * Fix display obligatory fields in integrated form. (bug #845) [Yury]
