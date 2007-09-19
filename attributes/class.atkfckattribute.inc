@@ -113,6 +113,12 @@
       $oFCKeditor->Height=$this->fck_opt['Height'];
       $oFCKeditor->Config["AutoDetectLanguage"]=false;
       $oFCKeditor->Config["DefaultLanguage"]=$this->fck_opt["Language"];
+
+      // Make it possible to load an additional configuration file where you can override some of the default
+      // settings. Path must be relative to atkroot.
+      if (!empty($this->fck_opt['CustomConfigurationsPath']))
+        $oFCKeditor->Config["CustomConfigurationsPath"] = "../../../../".$this->fck_opt["CustomConfigurationsPath"];
+      
       return $oFCKeditor->CreateHtml();
     }
 
