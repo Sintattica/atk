@@ -2255,16 +2255,16 @@
      *
      * The system calls this method to override the values of a record
      * before editing the record.
-     * The default implementation does not do anything to the record 
-     * and return empty array, but derived classes may override this 
-     * method to make modifications to the record.
+     * The default implementation does not do anything to the record, but
+     * derived classes may override this method to make modifications to.
+     * the record.
      *
      * @param array $record The record that is about to be edited.
      * @return array The manipulated record.
      */
     function edit_values($record)
     {
-      return array();
+      return $record;
     }
 
 
@@ -4332,7 +4332,7 @@
      * record to 'Copy of ..', so the user can distinguish between the
      * original and the copy.
      *
-     * @param &$record A reference to the copied record. You can change the
+     * @param array $record A reference to the copied record. You can change the
      *                 contents of the record, since it is passed by
      *                 reference.
      */
