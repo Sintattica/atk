@@ -61,6 +61,7 @@
     	$command = $this->getInfozipCommand($type, $params);
     	$output = array();
     	atkdebug("atkZip->runInfozipCommand: Executing command: $command");
+    	$returncode = NULL; //var for catching returncode fro exec.
     	exec($command, $output, $returncode);
     	atkdebug("atkZip->runInfozipCommand: Return code was: ".$returncode);
     	atk_var_dump($output, "atkZip->runInfozipCommand: Console output");
@@ -172,14 +173,17 @@
       if ($this->m_zipmode == "internal")
       {
         $zip = new ZipArchive;
-			  if ($zip->open($archive) === TRUE) {
-			     $zip->extractTo($destination, $entries);
-			     $zip->close();
-			     return true;
-			  } else {
-			     atkError("atkZip->extract: Error while opening the zip archive ($archive)");
-			     return false;
-			  }
+        if ($zip->open($archive) === TRUE) 
+        {
+          $zip->extractTo($destination, $entries);
+          $zip->close();
+          return true;
+			  } 
+			  else 
+			  {
+          atkError("atkZip->extract: Error while opening the zip archive ($archive)");
+          return false;
+        }
 			}
 
 			if ($this->m_zipmode == "infozip")
@@ -197,6 +201,8 @@
 			    return false;
 			  }
 			}
+			
+			return false;
     }
 
     function add($archive, $filename)
@@ -231,6 +237,8 @@
 			    return false;
 			  }
 			}
+			
+			return false;
     }
 
   }
