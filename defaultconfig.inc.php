@@ -30,7 +30,7 @@
    */
   $config_application_root = "/";
 
-  if ($config_atkroot == "")
+  if ($config_atkroot == "" || isset($_REQUEST["config_atkroot"])) // may not be passed in request (register_globals danger) 
   {
     /**
      * The root of the ATK application, where the atk/ directory resides
