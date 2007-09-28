@@ -207,6 +207,10 @@
               $tplfield["label"]="AF_NO_LABEL";
           }
 
+          // Make the attribute and node names available in the template.
+          $tplfield['attribute'] = $field["attribute"]->fieldName();
+          $tplfield['node'] = $field["attribute"]->m_ownerInstance->atkNodeType();
+
           /* html source */
           $tplfield["widget"] = $field["html"];
           $editsrc = $field["html"];
