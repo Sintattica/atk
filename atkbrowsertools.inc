@@ -431,7 +431,6 @@
      */
     function detectPDA()
     {
-      global $HTTP_USER_AGENT;
       $browser=substr(trim($_SERVER["HTTP_USER_AGENT"]),0,4);
       if ($browser=="Noki" || // Nokia phones and emulators
           $browser=="Eric" || // Ericsson WAP phones and emulators
@@ -456,7 +455,9 @@
           $browser=="Wapa") // another unknown browser ("Wapalyzer"?)
         return true;
       else if (strstr($_SERVER["HTTP_USER_AGENT"],"Blazer")) // Palm's browser
+      {
         return true;
+      }
       else if (strstr($_SERVER["HTTP_USER_AGENT"],"Windows CE"))
       {
         $extrainfo = substr($_SERVER["HTTP_USER_AGENT"], strpos($_SERVER["HTTP_USER_AGENT"],"("));
