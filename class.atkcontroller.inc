@@ -114,7 +114,7 @@
 
       $node = &$this->getNode();
       $node->m_postvars = $postvars;
-      if(!is_object($node) || !method_exists($node,'getUi')) return;
+      if(!is_object($node) || !method_exists($node,'getUi')) return "";
 
       $ui = &$node->getUi();
       $page = &$node->getPage();
@@ -155,6 +155,7 @@
       {
         return $screen;
       }
+      return "";
     }
 
     /**
