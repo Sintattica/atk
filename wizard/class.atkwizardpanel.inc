@@ -29,14 +29,12 @@
   /**
    * atkWizardPanel button definitions.
    */
-  define(FINISH_BUTTON_DEFAULT, 1);
-  define(FINISH_BUTTON_SHOW, 2);
-  define(FINISH_BUTTON_DONT_SHOW, 3);
+  define("FINISH_BUTTON_DEFAULT", 1);
+  define("FINISH_BUTTON_SHOW", 2);
+  define("FINISH_BUTTON_DONT_SHOW", 3);
 
   /**
    * Wizardpanel which binds to a atknodes
-   *
-   * Full description of the class
    *
    * @author maurice <maurice@ibuildings.nl>
    * @package atk
@@ -134,7 +132,7 @@
         if(!is_object($this->m_node))
         {
           atkerror("atkWizardPanel::getPanelNode() Node could not be created. Node name: " . $this->m_nodeName);
-          return;
+          return NULL;
         }
 
         //Set wizard specific controller
@@ -193,7 +191,7 @@
      */
     function addListener(&$listener)
     {
-      $this->m_listeners[] = $listener;
+      $this->m_listeners[] = &$listener;
     }
 
 
@@ -214,7 +212,7 @@
     {
       atkdebug("atkWizardPanel::dispatchForm() panel=".$this->getPanelName() . " atknode=".$this->m_nodeName);
       $node = &$this->getPanelNode();
-      if(!is_object($node)) return;
+      if(!is_object($node)) return "";
 
       $controller = &atkController::getInstance();
 
@@ -257,7 +255,7 @@
     {
       atkdebug("atkWizardPanel::save node: " . $this->m_nodeName);
       $node = &$this->getPanelNode();
-      if(!is_object($node)) return;
+      if(!is_object($node)) return false;
 
       $controller = &atkController::getInstance();
       $hiddenVars = $controller->m_redirectParams;
@@ -271,7 +269,7 @@
       //of an error the paneltitle and intro text are known
       //in the template
       $this->loadRenderBoxVars("add");
-      if($node->m_action = 'admin') $this->loadRenderBoxVars("admin");
+      if($node->m_action == 'admin') $this->loadRenderBoxVars("admin");
 
       //Save, on succes dispatch() will redirect
       //else it will return an 'add form' with error messages

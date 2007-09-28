@@ -77,6 +77,7 @@ atkimport("atk.atkcontroller");
         atkdebug("atkController::dispatch Return output ");
         return $screen;
       }
+      return "";
     }
     
     /**
