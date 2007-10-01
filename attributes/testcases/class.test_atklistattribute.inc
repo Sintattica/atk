@@ -14,7 +14,7 @@
    * @license http://www.achievo.org/atk/licensing ATK Open Source License
    *
    * $Id$
-   * @author Yury Golovnya  <ygolovnya@achievo.org>
+   * @author Yury Golovnya  <yury@achievo.org>
    * @version $Revision$
    */
 
@@ -27,7 +27,7 @@
   /**
    * Testcases for class atkListAttribute
    *
-   * @author Yury Golovnya <ygolovnya@achievo.org>
+   * @author Yury Golovnya <yury@achievo.org>
    * @package atk
    * @subpackage utils
    * @access private
