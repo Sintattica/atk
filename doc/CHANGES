@@ -18,6 +18,7 @@ Changed in ATK 6.2
 * Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
 * Fix saving new password to db after "password forgotten". (bug #819) [Yury]
 * Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]
+* Fix and testcase for using searching number 0 in atknumberattribute field. (bug #726) [Yury]
 * Fix display obligatory fields in integrated form. (bug #845) [Yury]
 * Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859) [michele.rota] [Yury]
 * Fix Ajax calls handling of "umlauten" like ä,ü,ö. (bug #880) [Yury]
