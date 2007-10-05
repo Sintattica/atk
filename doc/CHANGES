@@ -49,6 +49,7 @@ Changed in ATK 6.2
 * Moved hardcoded setting of the recordlist icon size (16x16) from the
   recordlist class to the recordlist style to make it overrideable. [Patrick]
 * Bugfix in atkpage::getScriptCodes(). [Lineke]
+* Fixed: tabs that did not contain visible attributes were still drawn. [Peter, Dennis]
 
 Changed in ATK 6.1
 ------------------

@@ -1435,6 +1435,7 @@
       foreach(array_keys($this->m_attribList) as $attribname)
       {
         $p_attrib = &$this->m_attribList[$attribname];
+        if ($p_attrib->hasFlag(AF_HIDE)) continue; // attributes to which we don't have access are explicitly hidden
 
         // Only display the attribute if the attribute
         // resides on at least on visible tab
