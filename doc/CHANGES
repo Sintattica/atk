@@ -50,7 +50,10 @@ Changed in ATK 6.2
   recordlist class to the recordlist style to make it overrideable. [Patrick]
 * Bugfix in atkpage::getScriptCodes(). [Lineke]
 * Fixed: tabs that did not contain visible attributes were still drawn. [Peter, Dennis]
-
+* Fixed: atkBoolAttribute now uses the onClick event instead of onChange to ensure 
+  the onChangeHandler is called in Internet Explorer immediately without the need 
+  for a lose of focus on the checkbox. [Dennis]
+  
 Changed in ATK 6.1
 ------------------
 + Added select method to atkNode which returns an instance of the
