@@ -40,7 +40,7 @@
   // modifiers
   $g_modifiers = array();
   $g_overloaders = array();
-
+    
   require_once($config_atkroot."atk/class.atkconfig.inc");
   require_once($config_atkroot."atk/defaultconfig.inc.php");
 
@@ -50,6 +50,21 @@
 
   include_once($config_atkroot."config.inc.php");
   require_once($config_atkroot."atk/atktools.inc");
+
+  /**
+   * WARNING: Do NOT use this global variable, it is deprecated .
+   * Re-indroduced to ensure backwards compatibility.   
+   * @deprecated in favor of the atkSelf() function.
+   */
+  $PHP_SELF = atkSelf();
+  
+  /**
+   * WARNING: Do NOT use this global variable, it is deprecated .
+   * Set this because all PHP_SELF variables must have the same value.
+   * @deprecated in favor of the atkSelf() function.
+   */
+  $_SERVER["PHP_SELF"] = $PHP_SELF;
+  
   require_once($config_atkroot.'atk/include/autoload.inc');
 
   // Once atktools is loaded, we can register our own error handler.

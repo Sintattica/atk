@@ -53,6 +53,7 @@ Changed in ATK 6.2
 * Fixed: atkBoolAttribute now uses the onClick event instead of onChange to ensure 
   the onChangeHandler is called in Internet Explorer immediately without the need 
   for a lose of focus on the checkbox. [Dennis]
+* Re-added the deprecated $PHP_SELF for backwards compatibility with WDE. [Edgar]
   
 Changed in ATK 6.1
 ------------------
