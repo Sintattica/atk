@@ -15,6 +15,7 @@ Changed in ATK 6.2
    and make warning about it. [Yury]
 + The attributename and nodename are now available in the editform.tpl and viewform.tpl 
   templates. [Peter, Dennis]
++ Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
 * Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
 * Fix saving new password to db after "password forgotten". (bug #819) [Yury]
 * Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]

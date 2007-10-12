@@ -38,26 +38,13 @@
      */
     function action_admin()
     {
-      $page = &$this->getPage();
-
       if (isset($this->m_partial) && $this->m_partial!="")
       {
-        list($type, $attribute, $partial) = explode('.', $this->m_partial);
-        if ($type == 'attribute')
-        {
-          $attr =& $this->m_node->getAttribute($attribute);
-          if ($attr == NULL)
-          {
-            atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
-            return;
-          }
-
-          $result = $attr->partial($partial, 'admin');
-          $page->addContent($result);
-          return;
-        }
-      }
-
+        $this->partial($this->m_partial);
+        return;
+      }      
+      
+      $page = &$this->getPage();
       $res = $this->renderAdminPage();
       $page->addContent($this->m_node->renderActionPage("admin", $res));
     }
@@ -124,15 +111,19 @@
     function adminPage($actions="")
     {
       $ui = &$this->getUi();
-      if (is_object($ui))
+      
+      $vars = array("title"=>$this->m_node->actionTitle('admin'),
+                    "content"=>$this->renderAdminList());
+      
+      if ($this->getRenderMode() == 'dialog')
       {
-        $output = $ui->renderBox(array("title"=>$this->m_node->actionTitle('admin'),
-                                    "content"=>$this->renderAdminList()));
+        $output = $ui->renderDialog($vars);
       }
-      else
+      else 
       {
-        atkerror("Failed to create ui object");
+        $output = $ui->renderBox($vars);
       }
+      
       return $output;
     }
 
@@ -348,6 +339,34 @@
       if ($exportlink!="") $links[] = $exportlink;
       return implode(" | ", $links);
     }
-  }
+    
+    /**
+     * Dialog handler.
+     */
+    function partial_dialog()
+    {
+      $this->setRenderMode('dialog');
+      $result = $this->renderAdminPage();
+      return $this->m_node->renderActionPage("admin", $result);
+    }
+    
+    /**
+     * Attribute handler.
+     *
+     * @param string $partial full partial
+     */
+    function partial_attribute($partial)
+    {
+      list($type, $attribute, $partial) = explode('.', $partial);
 
+      $attr = &$this->m_node->getAttribute($attribute);
+      if ($attr == NULL)
+      {
+        atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+        return '';
+      }
+
+      return $attr->partial($partial, 'admin');
+    }
+  }
 ?>

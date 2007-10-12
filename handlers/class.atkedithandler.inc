@@ -40,12 +40,9 @@
      */
     function action_edit()
     {
-      $page = &$this->getPage();
-
       if (isset($this->m_partial) && $this->m_partial!="")
       {
-        $result = $this->partial($this->m_partial);
-        $page->addContent($result);
+        $this->partial($this->m_partial);
         return;
       }
 
@@ -79,6 +76,7 @@
         $res = $this->invoke("editPage", $record, false);
       }
 
+      $page = &$this->getPage();
       $page->addContent($node->renderActionPage("edit", $res));
     }
 
@@ -644,30 +642,18 @@
      *
      * @param string $partial full partial
      */
-    function partial_attribute($mode="")
+    function partial_attribute($partial)
     {
-      // We already know type is attribute, so we do not check it again.
-      list($type, $attribute, $partial) = explode('.', $this->m_partial);
+      list($type, $attribute, $partial) = explode('.', $partial);
 
       $attr = &$this->m_node->getAttribute($attribute);
       if ($attr == NULL)
       {
         atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
-        return;
+        return '';
       }
 
       return $attr->partial($partial, 'edit');
     }
-
-    /**
-     * Section state handler.
-     */
-    function partial_sectionstate()
-    {
-      atkimport("atk.session.atkstate");
-    	atkState::set(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$this->m_postvars['atksectionname']),$this->m_postvars['atksectionstate']);
-    	die();
-    }
-
   }
 ?>
