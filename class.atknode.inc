@@ -1783,7 +1783,7 @@
         for ($i=max(0, $cnt-3), $_i=$cnt; $i<$_i; $i++)
         {
           $desc = $descriptortrace[$i];
-          $descrtrace.= htmlentities($desc, ENT_COMPAT,atktext('charset'))." - ";
+          $descrtrace.= atk_htmlentities($desc, ENT_COMPAT)." - ";
         }
         $res= $descrtrace . $res;
       }
@@ -3341,9 +3341,13 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
+        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
+        $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
+        
+        if ( (is_array($searchArray) && count($searchArray)>0) 
+              || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+              || !is_null($indexValue) )
         {
           $searching = true;
           //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
@@ -3385,6 +3389,20 @@
       {
         $p_attrib = &$this->m_attribList[$loadlist["query"][$i]];
         $p_attrib->addToQuery($query,$this->m_table,"","",1,$mode); // start at level 1
+      }
+
+      //handle index navigation
+      if($indexValue !="")
+      {
+        $p_attrib = &$this->getAttribute($this->m_index);
+        if(is_object($p_attrib))
+        {
+           $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
+        }
+        else 
+        {
+          atkerror("Wrong_index_field");
+        }
       }
 
       if (is_array($searchArray) && count($searchArray) > 0)
@@ -3568,9 +3586,13 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = isset($this->m_postvars['atksearch']) ? $this->m_postvars['atksearch'] : null;
-        $smartSearchCriteria = isset($this->m_postvars['atksmartsearch']) ? $this->m_postvars['atksmartsearch'] : null;
-        if (is_array($searchArray) && count($searchArray)>0 || is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
+        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
+        $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
+        
+        if ( (is_array($searchArray) && count($searchArray)>0) 
+              || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+              || !is_null($indexValue) )
         {
           $searching = true;
         }
@@ -3644,6 +3666,20 @@
 
       if (!atkReadOptimizer())
       {
+        //handle index navigation
+        if($indexValue !="")
+        {
+          $p_attrib = &$this->getAttribute($this->m_index);
+          if(is_object($p_attrib))
+          {
+             $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
+          }
+          else 
+          {
+            atkerror("Wrong_index_field");
+          }
+        }
+        
         // there may be search criteria, which we also filter
         if (is_array($searchArray) && count($searchArray)>0)
         {
@@ -4837,7 +4873,7 @@
       }
 
       // All standard SQL operators
-      $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS');
+      $sqloperators = array('=','<>','>','<','>=','<=','BETWEEN','LIKE','IN', 'IS', 'NOT IN','&');
 
       // Check the filter for every operator
       foreach ($sqloperators as $sqloperator)
