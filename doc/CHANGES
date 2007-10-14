@@ -6,6 +6,12 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
++ Add 'NOT IN' and '&' to node->valiadateFilter(), so it can be used in filter from now. [Yury]
++ Adding getAvailableIndices() to atknavigator, so it display only available 
+  letter now. (bug #714) [Yury]
++ Adding atkindex to $pageVars - it contain current index letter. [Yury]
++ Adding 'clear_index' and 'clear_search' link to navigator, so we can clear search and index
+  creteria separately. [Yury]
 + For the atkFckAttribute it is now possible to load an additional configuration file 
   where you can override some of the default settings. [Tjeerd, Dennis]
 + Add NF_EDITAFTERCOPY flag and handling of 'editcopy'actions - record coping and open for 
@@ -16,6 +22,7 @@ Changed in ATK 6.2
 + The attributename and nodename are now available in the editform.tpl and viewform.tpl 
   templates. [Peter, Dennis]
 + Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
+* Don't display letter as bold, if it don't use as index. [Yury] 
 * Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
 * Fix saving new password to db after "password forgotten". (bug #819) [Yury]
 * Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]
