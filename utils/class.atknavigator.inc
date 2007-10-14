@@ -178,38 +178,183 @@
     function buildIndex(&$node, $selected="")
     {
       $nav = "";
-
-      // TODO: show only those letters that are present in the database.
-      // e.g. don't show the letter Q if there aren't any records starting
-      // with a Q.
-      // for now, we use all letters:
-      $available_letters = array('A','B','C','D','E','F','G','H','I','J','K','L','M',
-                                 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');
+      $available_letters = $this->getAvailableIndices($node);
       $count = count($available_letters);
+
+      $atksearch = atkArrayNvl($node->m_postvars,'atksearch',"");
+      $atkindex = atkArrayNvl($node->m_postvars,'atkindex',"");
+      
+       
       for ($i=0;$i<$count;$i++)
       {
         $char = $available_letters[$i];
-        if ($selected!="" && strtoupper($selected[0])==$char) $label="<b>$char</b>";
+        if ($atkindex!="" && $selected!="" && strtoupper($selected[0])==$char) $label="<b>$char</b>";
         else $label=$char;
 
-        // We use wildcard search for the index. Should be supported by any database.
-
-        //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
-        $nav.=href(atkSelf()."?atknodetype=".$node->atkNodeType()."&atkaction=".$node->m_action."&atksearch[".$node->m_index."]=".$char."*&atksinglesearchmode[".$node->m_index."]=wildcard&atkstartat=0",$label);
+        $nav .= atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atkindex"=>$char."*","atkstartat"=>0)), $label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
         if ($i!=$count-1) $nav.=" ";
       }
 
-      if ($this->m_displayShowAll == true)
+      if ($this->m_displayShowAll)
       {
-        if (isset($node->m_postvars['atksearch']))
-          $nav.=" - ".href(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"")), atktext("view_all", "atk"));
-      }
 
+        $view_all = 0;
+        
+        if($atkindex != "")
+        {
+          $clear = array("atkindex"=>"");
+          $text = atktext("clear_index","atk");
+          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,$clear), $text);
+          $view_all += 1;
+        }
+
+        if(atk_value_in_array($atksearch))
+        {
+          $clear = array("atksearch"=>"");
+          $text = atktext("clear_search","atk");
+          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,$clear), $text);
+          $view_all += 1;
+        }
+        
+        if($view_all == 2)
+        {
+          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"","atkindex"=>"")), atktext("view_all", "atk"));
+        }
+      }
+      
       return $nav;
     }
+
+    function getAvailableIndices(&$node)
+    {
+      $selector = atkArrayNvl($node->m_postvars, 'atkfilter', "");
+
+      $querylist = array();
+      $mode = "admin";
+
+      $db = &$node->getDb();
+      $query = &$db->createQuery();
+
+      $query->addTable($node->m_table);
+      $query->addCondition($selector);
+      
+      $searching = false;
+      
+      $query->m_searchmethod = atkArrayNvl($node->m_postvars,'atksearchmethod');
+
+      // First we check if we are about to search and set a few things
+      // if we are
+      if (!atkReadOptimizer())
+      {
+        /* there may be search criteria, which we also filter */
+        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
+        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
+        
+        if ( (is_array($searchArray) && count($searchArray)>0) 
+              || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0))
+        {
+          $searching = true;
+        }
+      }
+      
+      if (!$node->hasFlag(NF_NO_FILTER))
+      {
+        /* hard filters may be set */
+        foreach($node->m_filters as $key => $value)
+        {
+          $query->addCondition($key."='".$value."'");
+        }
+
+        /* fuzzy filters may be set */
+        for ($i = 0, $_i = count($node->m_fuzzyFilters); $i < $_i; $i++)
+        {
+          $query->addCondition($node->m_fuzzyFilters[$i]);
+        }
+      }
+      
+      foreach (array_keys($node->m_attribList) as $attribname)
+      {
+        $p_attrib = &$node->m_attribList[$attribname];
+        if (is_object($p_attrib) && $node->isAllowedQueryList($attribname,$node->m_listExcludes))
+        {
+          $loadmode = $p_attrib->loadType($mode,$searching);
+          if (hasFlag($loadmode, ADDTOQUERY)) $querylist[]=$attribname;
+        }
+      }
+
+      if(!in_array($node->m_index,$querylist)) $querylist[] = $node->m_index;
+      for ($i = 0, $_i = count($querylist); $i < $_i; $i++)
+      {
+        $p_attrib = &$node->m_attribList[$querylist[$i]];
+        $p_attrib->addToQuery($query,$node->m_table,"","",1,$mode); // start at level 1
+      }
+      
+      // there may be search criteria, which we also filter
+      if (is_array($searchArray) && count($searchArray)>0)
+      {
+        while (list($key,$value) = each($searchArray))
+        {
+          if( (($value!="") && ($mode=="admin")) || (($value!="") && in_array($key,$querylist)) )
+          {
+            $p_attrib = &$node->getAttribute($key);
+
+            if (is_object($p_attrib))
+            {
+              if (is_array($value) && isset($value[$key])&& count($value)==1)
+              {
+                $value = $value[$key];
+              }
+
+              $searchmode = $node->getSearchMode();
+              if(is_array($searchmode))
+              {
+                $search = $searchmode[$key];
+                if ($search=="") $search = atkconfig("search_defaultmode");
+                $p_attrib->searchCondition($query, $node->m_table, $value, $search, "");
+              }
+              else
+              {
+                $p_attrib->searchCondition($query, $node->m_table, $value, $searchmode, "");
+              }
+            }
+            else
+            {
+      			  atkdebug("Using default search method for $key"); 
+              $condition = "lower(".$node->m_table.".".$key.") LIKE lower('%".escapeSQL($value,true)."%')";
+              $query->addSearchCondition($condition);
+            }
+          }
+        }
+      }
+      
+      // there may be smart search criteria which we need to apply
+      if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
+      {
+        $node->applySmartSearchCriteria($query, $smartSearchCriteria);
+      }
+      
+      //Check indexing by table.name attribute
+      if(strpos($node->m_index,'.')!==false) $index = $node->m_index;
+      else $index = $node->m_table.".".$node->m_index; //prevent ambigouse column error
+      
+      $field = "UPPER(".$db->func_substring($index,1,1).")";
+      $query->addField($field,"","","",false);
+      $query->addGroupBy($field);
+      
+      $querystring = $query->buildSelect();
+
+      $letter = array();
+      if ($querystring)
+      {
+        $list = $db->getrows($querystring);
+        foreach ($list as $l) $letter[] = $l[$field];
+      }
+      return $letter;
+    }    
+    
   }
 
 ?>
