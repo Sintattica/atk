@@ -62,6 +62,7 @@ Changed in ATK 6.2
   the onChangeHandler is called in Internet Explorer immediately without the need 
   for a lose of focus on the checkbox. [Dennis]
 * Re-added the deprecated $PHP_SELF for backwards compatibility with WDE. [Edgar]
+* Fixed double header when using TBL_HEADER flag with the atkTableRenderer. [Sandy]
   
 Changed in ATK 6.1
 ------------------
