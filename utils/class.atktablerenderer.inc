@@ -338,6 +338,8 @@
      */
     function _renderTable($data)
     {
+      $rowOffset=0;
+      
       $this->m_maxWidth = $this->_getMaxCols($data);
       $class = $this->_getTableStyleStr();
 
@@ -362,7 +364,7 @@
       }
       else
       {
-        $output .= $this->_renderBody($data);
+        $output .= $this->_renderBody($data,$rowOffset);
       }
 
       $output .= "</table>\n";
