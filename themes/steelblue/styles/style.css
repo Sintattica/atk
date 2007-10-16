@@ -475,3 +475,8 @@ p img
 {
   margin-top: 5px;
 }
+
+.atkAttrRowHidden
+{
+  display: none !important;
+}
