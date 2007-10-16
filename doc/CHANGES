@@ -22,6 +22,8 @@ Changed in ATK 6.2
 + The attributename and nodename are now available in the editform.tpl and viewform.tpl 
   templates. [Peter, Dennis]
 + Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
+* AtkAttribute - Prevent register onChangehandler more then one time and move constant part
+  out of cycle. [Yury]
 * Add atkAttrRowHidden style to steelblue theme. [Yury]
 * Don't display letter as bold, if it don't use as index. [Yury] 
 * Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
