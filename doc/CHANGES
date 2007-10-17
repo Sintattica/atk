@@ -66,7 +66,9 @@ Changed in ATK 6.2
   for a lose of focus on the checkbox. [Dennis]
 * Re-added the deprecated $PHP_SELF for backwards compatibility with WDE. [Edgar]
 * Fixed double header when using TBL_HEADER flag with the atkTableRenderer. [Sandy]
-  
+* Added support for reloading and updating the contents of an atkDialog using 
+  an Ajax request. [Peter]
+    
 Changed in ATK 6.1
 ------------------
 + Added select method to atkNode which returns an instance of the

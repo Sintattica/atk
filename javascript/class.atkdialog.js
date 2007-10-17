@@ -145,6 +145,26 @@ ATK.Dialog.prototype = {
     var element = $('modal_dialog_message');
     element.update(content);
     this.resize();
+  },
+
+  /**
+   * Update dialog contents with the results of the given URL.
+   */
+  ajaxUpdate: function(url) {
+    var options = {};
+    options['onSuccess'] = this.onShow.bind(this);
+    if (this.options.serializeForm) {
+      options['parameters'] = this.serializeForm();
+    }
+	
+    new Ajax.Updater('modal_dialog_message', url, options);
+  },
+
+  /**
+   * Reload dialog contents.
+   */
+  reload: function() {
+	  this.ajaxUpdate(this.url);
   }
 };
 
