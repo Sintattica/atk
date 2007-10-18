@@ -264,7 +264,14 @@
     function accessDeniedPage()
     {
       $node = &$this->getNode();
-      return $this->genericPage(atktext('access_denied'), "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>");
+      
+      $content = "<br><br>".atktext("error_node_action_access_denied", "", $node->m_type)."<br><br><br>";
+      
+      // Add a cancel button to an error page if it is a dialog.
+      if ($node->m_partial == 'dialog')      
+        $content.= $this->getDialogButton('cancel', 'close');      
+      
+      return $this->genericPage(atktext('access_denied'), $content);
     }
 
   /**
@@ -287,7 +294,13 @@
       if (!is_array($content)) $content = array($title=>$content);
       $blocks = array();
       foreach($content as $itemtitle => $itemcontent)
-        $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent), 'dispatch');
+      {
+        if ($node->m_partial == 'dialog')
+          $blocks[] = $ui->renderDialog(array("title"=>$itemtitle, "content"=>$itemcontent));
+        else
+          $blocks[] = $ui->renderBox(array("title"=>$itemtitle, "content"=>$itemcontent), 'dispatch');
+      }
+      
       /**
        * @todo Don't use renderActionPage here because it tries to determine
        *       it's own title based on the title which is passed as action.

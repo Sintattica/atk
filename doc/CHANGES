@@ -22,6 +22,7 @@ Changed in ATK 6.2
 + The attributename and nodename are now available in the editform.tpl and viewform.tpl 
   templates. [Peter, Dennis]
 + Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
++ Access denied pages of dialogs now also have a close button. [Dennis]
 * AtkAttribute - Prevent register onChangehandler more then one time and move constant part
   out of cycle. [Yury]
 * Add atkAttrRowHidden style to steelblue theme. [Yury]
