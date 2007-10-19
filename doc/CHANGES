@@ -23,6 +23,8 @@ Changed in ATK 6.2
   templates. [Peter, Dennis]
 + Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
 + Access denied pages of dialogs now also have a close button. [Dennis]
+* Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags
+  methods together.(bug #889) [Yury]
 * AtkAttribute - Prevent register onChangehandler more then one time and move constant part
   out of cycle. [Yury]
 * Add atkAttrRowHidden style to steelblue theme. [Yury]
