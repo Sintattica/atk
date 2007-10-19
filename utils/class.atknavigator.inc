@@ -250,8 +250,8 @@
       if (!atkReadOptimizer())
       {
         /* there may be search criteria, which we also filter */
-        $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
-        $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
+        $searchArray = atkArrayNvl($node->m_postvars,'atksearch');
+        $smartSearchCriteria = atkArrayNvl($node->m_postvars,'atksmartsearch');
         
         if ( (is_array($searchArray) && count($searchArray)>0) 
               || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0))
