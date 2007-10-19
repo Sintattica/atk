@@ -2115,7 +2115,7 @@
    */
   function atk_iconv($in_charset, $out_charset, $str)
   {
-    if(function_exists(iconv))
+    if(function_exists("iconv"))
     {
       $str = iconv($in_charset,$out_charset,$str);
     }
