@@ -947,8 +947,9 @@ class atkMetaPolicy
     $call = "\$attr = new $type(\$name";
     foreach (array_keys($params) as $i)
       $call .= ", \$params[$i]";
-    $call .= ", \$flags);";
+    $call .= ");";
     eval($call);
+    $attr->addFlag($flags);
     
     $this->_debugAttribute($name, $type, $params, $flags, $tabs, $order);
     
