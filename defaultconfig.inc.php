@@ -278,6 +278,13 @@
   $config_auth_accesstable = "access";
 
   /**
+   * If left empty auth_levelfield is used.
+   * 
+   * @var String
+   */
+  $config_auth_accessfield = "";
+  
+  /**
    *
    * @var String
    */

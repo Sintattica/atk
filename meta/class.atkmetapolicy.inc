@@ -107,6 +107,11 @@ class atkMetaPolicy
         in_array($name, array("id", $meta['table']."id", $meta['table']."_id")))
       $flags |= AF_AUTOKEY;
 
+    if (in_array($name, array("passw", "password")))
+    {
+      $flags |= AF_HIDE_LIST;
+    }
+      
     return $flags;
   }
 
@@ -121,8 +126,10 @@ class atkMetaPolicy
     $params = array();
 
     if (in_array($name, array("passw", "password")))
+    {
       $type = "atk.attributes.atkpasswordattribute";
-
+      $params = array(true);
+    }
     else if (in_array($name, array("email", "e-mail")))
     {
       $type = "atk.attributes.atkemailattribute";
@@ -143,6 +150,14 @@ class atkMetaPolicy
     else if ($name == 'updated_at' || $name == 'updated_on')
     {
       $type = 'atk.attribute.atkupdatestampattribute';
+    }
+    else if ($name == 'created_by')
+    {
+      $type = 'atk.attribute.atkcreatedbyattribute';
+    }
+    else if ($name == 'updated_by')
+    {
+      $type = 'atk.attribute.atkupdatedbyattribute';
     }
     else if ($meta['gentype'] == 'number' && $meta['len'] == 1 && 
              (substr($name, 0, 3) == 'is_' || substr($name, 0, 4) == 'has_'))
