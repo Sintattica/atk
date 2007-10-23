@@ -76,6 +76,7 @@ Changed in ATK 6.2
 * Meta policy now detects created_by and updated_by fields. [Peter]
 * Implemented recursive (top-down) enabled check for menu's. [Peter]
 * The flag parameter of all meta relations isn't obligatory anymore. [Peter, Dennis]
+* Improved test database mechanism for use with MySQL. [Peter]
     
 Changed in ATK 6.1
 ------------------

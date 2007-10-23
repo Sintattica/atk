@@ -213,8 +213,10 @@
         }
         else
         {
+          $testDb->toggleForeignKeys(false);
           $testDb->deleteAll();
           $testDb->commit();
+          $testDb->toggleForeignKeys(true);          
         }
       }
     }

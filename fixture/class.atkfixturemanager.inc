@@ -259,7 +259,7 @@
       {
         if (hasFlag($field['flags'], MF_AUTO_INCREMENT))
         {
-          $sequence = isset($field['sequence']) ? $field['sequence'] : $table;
+          $sequence = isset($field['sequence']) ? $field['sequence'] : atkConfig("database_sequenceprefix").$table;
           $query = "SELECT MAX(" .$field['name'] .") AS value FROM $table";
           list($result) = $database->getRows($query);
           $database->setSequenceValue($sequence, $result['value']);

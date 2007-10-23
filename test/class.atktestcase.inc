@@ -193,12 +193,12 @@
         if (!isset($config[$test]["transactional_fixtures"]) ||
             !$config[$test]["transactional_fixtures"])
         {
-          //$db->toggleForeignKeys(false);
+          $db->toggleForeignKeys(false);
 
           $db->deleteAll();
           $db->commit();
 
-          //$db->toggleForeignKeys(true);
+          $db->toggleForeignKeys(true);
         }
         else
         {
@@ -216,6 +216,9 @@
 
       if (count($this->m_fixtures) == 0) return;
 
+      $config = atkconfig("db");      
+      $mapping = atkconfig("test_db_mapping");      
+      
       atkimport('atk.fixture.atkfixturemanager');
       $manager = &atkFixtureManager::getInstance();
 
@@ -224,7 +227,11 @@
       {
         $db = &$this->_getTestDb($database);
 
-        //$db->toggleForeignKeys(false);
+        if (!isset($config[$mapping[$database]]["transactional_fixtures"]) ||
+            !$config[$mapping[$database]]["transactional_fixtures"])
+        {
+          $db->toggleForeignKeys(false);
+        }
 
         foreach ($fixtures as $fullname)
         {
@@ -246,7 +253,11 @@
           }
         }
 
-        //$db->toggleForeignKeys(true);
+        if (!isset($config[$mapping[$database]]["transactional_fixtures"]) ||
+            !$config[$mapping[$database]]["transactional_fixtures"])
+        {
+          $db->toggleForeignKeys(true);
+        }
       }
     }
 
@@ -351,6 +362,137 @@
     {
       atkSetSecurityManager($this->m_restoreSecMgr);
     }
-  }
+    
+    /**
+     * Asserts the given attribute(s) value did not cause the given validation error.
+     *
+     * $attribName can contain the name of a single attributename, or an array with
+     * attributenames.
+     * 
+     * @param array  $record
+     * @param mixed $attribName
+     * @param string $error
+     */
+    function _hasValidationError($record, $attribName, $error)
+    {
+      if (!isset($record['atkerror'])) return false;
+      
+      $errors = $record['atkerror'];
 
+      $found = false;
+      
+      foreach ($errors as $entry)
+      {
+        //does the error match?
+        if($entry['err'] == $error)
+        {
+          //If both $attribName and $entry["attrib_name"] are arrays, we could have a match.
+          if(is_array($attribName) && is_array($entry["attrib_name"]))
+          {
+            //if the number of elements is not the same, we do not have a match.
+            if(count($attribName)==count($entry["attrib_name"]))
+            {
+              //check if the attributes in the arrays are the same
+              $allIn = true;
+              foreach($attribName as $att)
+              {
+                if(!in_array($att,$entry["attrib_name"]))
+                {
+                  $allIn=false;
+                  break;
+                }
+              }
+            
+              //if the arrays are the same, we have found a match
+              if($allIn)
+              {
+                $found = true;
+                break;
+              }
+            }
+          }
+          //If neither is an array, we could have a match.
+          elseif(!is_array($attribName) && !is_array($error["attrib_name"]))
+          {
+            //If the names are the same, we have a match.
+            if($entry['attrib_name'] == $attribName)
+            {
+              $found = true;
+              break;
+            }
+          }          
+        }
+      }     
+      
+      return $found;      
+    }    
+    
+    /**
+     * Asserts the given attribute(s) value did not cause the given validation error.
+     *
+     * $attribName can contain the name of a single attributename, or an array with
+     * attributenames.
+     * 
+     * @param array  $record
+     * @param mixed $attribName
+     * @param string $error
+     */    
+    function assertNoValidationError($record, $attribName, $error)
+    {   
+      $found = $this->_hasValidationError($record, $attribName, $error);
+      if(is_array($attribName))
+        $this->assertTrue(!$found, 'Validation error '.$error.' not found for attributes '.implode(", ",$attribName));
+      else
+        $this->assertTrue(!$found, 'Validation error '.$error.' not found for attribute '.$attribName);          
+    }
+    
+    /**
+     * Asserts the given attribute(s) value caused the given validation error.
+     * 
+     * $attribName can contain the name of a single attributename, or an array with
+     * attributenames.
+     *
+     * @param array  $record
+     * @param mixed $attribName
+     * @param string $error
+     */
+    function assertValidationError($record, $attribName, $error)
+    {
+      $found = $this->_hasValidationError($record, $attribName, $error);
+      if(is_array($attribName))
+        $this->assertTrue($found, 'Validation error '.$error.' for attributes '.implode(", ",$attribName));        
+      else 
+        $this->assertTrue($found, 'Validation error '.$error.' for attribute '.$attribName);        
+    }
+    
+    /**
+     * Asserts if a certain attribute in the given node has the given flag.
+     * You should pass the flag name to this method!
+     *
+     * @param atkNodeType $node
+     * @param string $attribName
+     * @param string $flagName
+     */
+    function assertAttributeHasFlag($node, $attribName, $flagName)
+    {
+      $flag = eval("return ".$flagName.";");
+      $hasFlag = $node->getAttribute($attribName)->hasFlag($flag);
+      $this->assertTrue($hasFlag, "Attribute ".$node->atkNodeType()."::$attribName has flag $flagName");
+    }
+
+    /**
+     * Asserts if a certain attribute in the given node doesn't have the given flag.
+     * You should pass the flag name to this method!
+     *
+     * @param atkNodeType $node
+     * @param string $attribName
+     * @param string $flagName
+     */
+    function assertAttributeNotHasFlag($node, $attribName, $flagName)
+    {
+      $flag = eval("return ".$flagName.";");
+      $hasFlag = $node->getAttribute($attribName)->hasFlag($flag);
+      $this->assertFalse($hasFlag, "Attribute ".$node->atkNodeType()."::$attribName not has flag $flagName");
+    }    
+  }
 ?>
