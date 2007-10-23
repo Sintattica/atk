@@ -96,14 +96,15 @@
     function getMenuItems($menu, $menutop)
     {
       $menuitems = array();
+      
       if (isset($menu[$menutop]) && is_array($menu[$menutop]))
       {
         usort($menu[$menutop],array("atkplainmenu","menu_cmp"));
         foreach ($menu[$menutop] as $menuitem)
         {
-          $this->setEnabled($menuitem);
-
           $menuitem['id'] = $menuitem['name'];
+          $menuitem['enable'] = $menuitem['name'] != '-' && $this->isEnabled($menuitem);
+          
           $this->addSubMenuForMenuitem($menu,$menuitem);
 
           if ($menuitem['name']!=='-')
@@ -132,66 +133,40 @@
     function addSubMenuForMenuItem($menu,&$menuitem)
     {
       // submenu
-      if (isset($menu[$menuitem['name']]))
-      {
-        $enablesubmenu=false;
-        for ($i=0;$i<count($menu[$menuitem['name']]);$i++)
-        {
-          if ($this->setEnabled($menu[$menuitem['name']][$i]))
-          {
-            $enablesubmenu = true;
-          }
-        }
-        if ($enablesubmenu)
-        {
-          $menuitem['submenu'] = $menu[$menuitem['name']];
-          foreach ($menuitem['submenu'] as $submenukey=>$submenuitem)
-          {
-            $menuitem['submenu'][$submenukey]['id'] = $menuitem['submenu'][$submenukey]['name'];
-            if ($menuitem['submenu'][$submenukey]['name']!=='-')
-            {
-              $menuitem['submenu'][$submenukey]['name'] = $this->getMenuTranslation($submenuitem['name'],$submenuitem['module']);
-            }
-            if (!empty($submenuitem['url']))
-            {
-              if (strpos($submenuitem['url'],"?")!==false)
-              {
-                $start = "&amp;";
-              }
-              else
-              {
-                $start = "?";
-              }
-              $url = $submenuitem['url'].$start."atkmenutop={$menuitem['id']}";
+      if (!isset($menu[$menuitem['name']])) return;
 
-              $menuitem['submenu'][$submenukey]['url'] = session_url($url, SESSION_NEW);
-            }
-            $theme = &atkinstance("atk.ui.atktheme");
-            $menu_icon = $theme->iconPath($menuitem['id'].'_'.$submenuitem['name'], "menu", $submenuitem['module']);
-            if ($menu_icon)
-            {
-              $menuitem['submenu'][$submenukey]['image'] = $menu_icon;
-            }
+      $menuitem['submenu'] = $menu[$menuitem['name']];
+      foreach ($menuitem['submenu'] as $submenukey=>$submenuitem)
+      {
+        $menuitem['submenu'][$submenukey]['id'] = $menuitem['submenu'][$submenukey]['name'];
+        if ($menuitem['submenu'][$submenukey]['name']!=='-')
+        {
+          $menuitem['submenu'][$submenukey]['name'] = $this->getMenuTranslation($submenuitem['name'],$submenuitem['module']);
+        }
+        if (!empty($submenuitem['url']))
+        {
+          if (strpos($submenuitem['url'],"?")!==false)
+          {
+            $start = "&amp;";
           }
+          else
+          {
+            $start = "?";
+          }
+          $url = $submenuitem['url'].$start."atkmenutop={$menuitem['id']}";
+
+          $menuitem['submenu'][$submenukey]['enable'] = 
+            $menuitem['submenu'][$submenukey]['name'] != '-' && 
+            $this->isEnabled($menuitem['submenu'][$submenukey]);
+          $menuitem['submenu'][$submenukey]['url'] = session_url($url, SESSION_NEW);
+        }
+        $theme = &atkinstance("atk.ui.atktheme");
+        $menu_icon = $theme->iconPath($menuitem['id'].'_'.$submenuitem['name'], "menu", $submenuitem['module']);
+        if ($menu_icon)
+        {
+          $menuitem['submenu'][$submenukey]['image'] = $menu_icon;
         }
       }
-    }
-
-    function setEnabled(&$menuitem)
-    {
-      if (is_array($menuitem["enable"]))
-      {
-        $enabled = false;
-        for ($j=0;$j<(count($menuitem["enable"])/2);$j++)
-        {
-          $enabled |= is_allowed($menuitem["enable"][(2*$j)],$menuitem["enable"][(2*$j)+1]);
-        }
-        $menuitem["enable"]=$enabled;
-      }
-      else
-        $enabled = $menuitem["enable"];
-
-      return ($menuitem["name"]==='-'?false:$enabled);
     }
 
     function getHeader($atkmenutop)

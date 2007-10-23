@@ -72,6 +72,7 @@ Changed in ATK 6.2
 * Added support for reloading and updating the contents of an atkDialog using 
   an Ajax request. [Peter]
 * Meta policy now detects created_by and updated_by fields. [Peter]
+* Implemented recursive (top-down) enabled check for menu's. [Peter]
     
 Changed in ATK 6.1
 ------------------

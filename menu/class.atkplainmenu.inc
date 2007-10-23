@@ -66,18 +66,8 @@
             $name = $g_menu[$atkmenutop][$i]["name"];
             $menuitems[$i]["name"]=$name;
             $url = $g_menu[$atkmenutop][$i]["url"];
-            $enable = $g_menu[$atkmenutop][$i]["enable"];
+            $enable = $this->isEnabled($g_menu[$atkmenutop][$i]);
             $modname = $g_menu[$atkmenutop][$i]["module"];
-
-            if (is_array($enable))
-            {
-              $enabled = false;
-              for ($j=0;$j<(count($enable)/2);$j++)
-              {
-                $enabled |= is_allowed($enable[(2*$j)],$enable[(2*$j)+1]);
-              }
-              $enable = $enabled;
-            }
 
             $menuitems[$i]["enable"]=$enable;
 
