@@ -35,7 +35,7 @@ class atkMetaOneToOneRelation extends atkOneToOneRelation
   /**
    * Default constructor.    
    */
-  function atkMetaOneToOneRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaOneToOneRelation($name, $accessor, $template, $options, $flags=0)
   {
     $this->atkOneToOneRelation($name, $accessor, "?", $flags);
     $this->m_accessor = $accessor;

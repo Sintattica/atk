@@ -115,8 +115,12 @@
     {
       global $g_menu;
       
-      $enable = $menuitem['enable'];
-      if (is_array($enable))
+      $enable = $menuitem['enable'];      
+      if (is_callable($enable))
+      {
+        $enable = call_user_func($enable);
+      }
+      else if (is_array($enable))
       {
         $enabled = false;
         for ($j=0;$j<(count($enable)/2);$j++)
@@ -125,7 +129,7 @@
         }
         $enable = $enabled;
       }
-      elseif (is_array($g_menu[$menuitem['name']]))
+      else if (is_array($g_menu[$menuitem['name']]))
       {
         $enabled = false;
         foreach ($g_menu[$menuitem['name']] as $item)

@@ -23,6 +23,8 @@ Changed in ATK 6.2
   templates. [Peter, Dennis]
 + Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
 + Access denied pages of dialogs now also have a close button. [Dennis]
++ When registering a menuitem, the enabled parameter now also supports a callback function
+  to determine wether a menu item should be enabled. [Peter, Dennis]
 * Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags
   methods together.(bug #889) [Yury]
 * AtkAttribute - Prevent register onChangehandler more then one time and move constant part
@@ -73,6 +75,7 @@ Changed in ATK 6.2
   an Ajax request. [Peter]
 * Meta policy now detects created_by and updated_by fields. [Peter]
 * Implemented recursive (top-down) enabled check for menu's. [Peter]
+* The flag parameter of all meta relations isn't obligatory anymore. [Peter, Dennis]
     
 Changed in ATK 6.1
 ------------------

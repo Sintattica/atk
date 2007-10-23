@@ -36,7 +36,7 @@ class atkMetaManyBoolRelation extends atkManyBoolRelation
   /**
    * Default constructor.    
    */
-  function atkMetaManyBoolRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaManyBoolRelation($name, $accessor, $template, $options, $flags=0)
   {
     $this->atkManyToManyRelation($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;

@@ -36,7 +36,7 @@ class atkMetaManyToManyListRelation extends atkManyToManyListRelation
   /**
    * Default constructor.    
    */
-  public function __construct($name, $accessor, $template, $options, $flags)
+  public function __construct($name, $accessor, $template, $options, $flags=0)
   {
     parent::__construct($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;

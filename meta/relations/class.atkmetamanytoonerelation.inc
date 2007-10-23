@@ -35,7 +35,7 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
   /**
    * Default constructor.    
    */
-  function atkMetaManyToOneRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaManyToOneRelation($name, $accessor, $template, $options, $flags=0)
   {
     //we must use $options["source"] (if it present) as name for atkManyToOneRelation, because 
     //in case of multi referential key $name must be array with referential keys

@@ -36,7 +36,7 @@ class atkMetaExtendableShuttleRelation extends atkExtendableShuttleRelation
   /**
    * Default constructor.    
    */
-  function __construct($name, $accessor, $template, $options, $flags)
+  function __construct($name, $accessor, $template, $options, $flags=0)
   {
     parent::__construct($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;

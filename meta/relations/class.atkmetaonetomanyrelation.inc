@@ -35,7 +35,7 @@ class atkMetaOneToManyRelation extends atkOneToManyRelation
   /**
    * Default constructor.
    */
-  function atkMetaOneToManyRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaOneToManyRelation($name, $accessor, $template, $options, $flags=0)
   {
     $this->atkOneToManyRelation($name, $accessor, "?", $flags);
     $this->m_accessor = $accessor;

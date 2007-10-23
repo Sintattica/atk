@@ -36,7 +36,7 @@ class atkMetaShuttleRelation extends atkShuttleRelation
   /**
    * Default constructor.    
    */
-  function atkMetaShuttleRelation($name, $accessor, $template, $options, $flags)
+  function atkMetaShuttleRelation($name, $accessor, $template, $options, $flags=0)
   {
     $this->atkManyToManyRelation($name, $options['through'], $accessor, $flags);
     $this->m_accessor = $accessor;
