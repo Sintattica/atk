@@ -141,7 +141,7 @@
   "feedback_save_success" => "The item has been added.", // Missing string!!!
   "feedback_update_cancelled" => "Changes have not been saved.", // Missing string!!!
   "feedback_update_failed" => "The changes could not be saved.", // Missing string!!!
-  "feedback_update_success" => "The changes have been changed.", // Missing string!!!
+  "feedback_update_success" => "The changes have been saved.", // Missing string!!!
   "field_obligatory" => "To pole jest wymagane",
   "filecontent" => "Zawarto¶æ",
   "filename" => "Nazwa pliku",

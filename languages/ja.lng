@@ -91,11 +91,11 @@
   "dec" => "Dec", // Missing string!!!
   "december" => "12",
   "decimal_separator" => ".", // Missing string!!!
-  "delete" => "íœ",
+  "delete" => "?í?œ",
   "delimiter" => "Delimiter", // Missing string!!!
   "deselect_all" => "Deselect all",
   "document" => "Open document", // Missing string!!!
-  "edit" => "•ÒW",
+  "edit" => "•Ò?W",
   "editcopy" => "Edit copy",
   "email" => "E-mail", // Missing string!!!
   "enclosure" => "Enclosure", // Missing string!!!
@@ -115,7 +115,7 @@
   "error_notnumeric" => "Value not a number",
   "error_not_a_valid_ip" => "This is not a valid IP address. An IP address consists of 4 numbers between 0 and 255.", // Missing string!!!
   "error_obligatoryfield" => "This field is required",
-  "error_password_incorrect" => "“ü—Í‚µ‚½ƒpƒXƒ[ƒh‚Í³‚µ‚­‚È‚¢‚Å‚µ‚½!",
+  "error_password_incorrect" => "“ü—Í‚µ‚½ƒpƒXƒ??[ƒh‚Í?³‚µ‚­‚È‚¢‚Å‚µ‚½!",
   "error_password_invalid" => "The password you entered is not a valid password!",
   "error_password_nomatch" => "The supplied passwords do not match.",
   "error_primarykey_exists" => "A record with this key already exists",
@@ -140,7 +140,7 @@
   "feedback_save_success" => "The item has been added.",
   "feedback_update_cancelled" => "Changes have not been saved.",
   "feedback_update_failed" => "The changes could not be saved.",
-  "feedback_update_success" => "The changes have been changed.",
+  "feedback_update_success" => "The changes have been saved.",
   "field_obligatory" => "This field is a required field",
   "filecontent" => "Content",
   "filename" => "Filename",
@@ -209,7 +209,7 @@
   "march" => "03",
   "may" => "05",
   "menu" => "Menu",
-  "menu_main" => "ƒƒCƒ“",
+  "menu_main" => "ƒ?ƒCƒ“",
   "mon" => "Mon",
   "monday" => "Monday", // Missing string!!!
   "multilanguage_choice" => "Selected language:",
@@ -238,7 +238,7 @@
   "password_hidden" => "*****",
   "password_incorrect" => "The password you entered was not correct!", // Missing string!!!
   "password_invalid" => "The supplied password is not a valid password.",
-  "password_new" => "V‹K",
+  "password_new" => "?V‹K",
   "permission_denied" => "Sorry, you don't have permission to perform this action",
   "previous" => "Previous",
   "recordlistsummary" => "Record [start]-[end] out of [count]", // Missing string!!!
@@ -256,7 +256,7 @@
   "saveandedit" => "Save and edit", // Missing string!!!
   "saveandnext" => "Save and next", // Missing string!!!
   "save_criteria" => "Save search as", // Missing string!!!
-  "search" => "ŒŸõ",
+  "search" => "ŒŸ?õ",
   "search_all" => "Search all",
   "search_and" => "Match all criteria",
   "search_between" => "Search between two values",
@@ -325,7 +325,7 @@
   "timezone_utc_-1000" => "(UTC-10:00) Hawaii", // Missing string!!!
   "timezone_utc_-1100" => "(UTC-11:00) Midway Island, Samoa", // Missing string!!!
   "timezone_utc_-1200" => "(UTC-12:00) International Date Line West", // Missing string!!!
-  "title_delete" => "íœ‚ğŠm”F‚·‚é",
+  "title_delete" => "?í?œ‚ğŠm”F‚·‚é",
   "title_multiselect" => "Multiselect", // Missing string!!!
   "title_select" => "Select", // Missing string!!!
   "title_session_expired" => "Session expired",
@@ -338,7 +338,7 @@
   "update" => "Update", // Missing string!!!
   "upperchars" => "uppercase characters", // Missing string!!!
   "username" => "Username", // Missing string!!!
-  "view" => "Ú×",
+  "view" => "?Ú?×",
   "view_all" => "View all", // Missing string!!!
   "wed" => "Wed",
   "wednesday" => "Wednesday", // Missing string!!!

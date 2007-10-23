@@ -6,7 +6,7 @@
   // Language: Finnish (fi)
   //
   // Translated by:
-  //   
+  //
   //
   // If you want to add a new language to achievo, please translate this
   // file and send it to translations@achievo.org
@@ -140,7 +140,7 @@
   "feedback_save_success" => "The item has been added.", // Missing string!!!
   "feedback_update_cancelled" => "Changes have not been saved.", // Missing string!!!
   "feedback_update_failed" => "The changes could not be saved.", // Missing string!!!
-  "feedback_update_success" => "The changes have been changed.", // Missing string!!!
+  "feedback_update_success" => "The changes have been saved.", // Missing string!!!
   "field_obligatory" => "This field is a required field",
   "filecontent" => "Content",
   "filename" => "Filename",
