@@ -250,6 +250,16 @@
     }
 
     /**
+     * Initially use an empty rights array.
+     *
+     * @return array initial rights
+     */
+    function initialValue()
+    {
+      return array();
+    }
+    
+    /**
      * Returns the currently selected actions.
      */
     function getSelectedActions($record)
