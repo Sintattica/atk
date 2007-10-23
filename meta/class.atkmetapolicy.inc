@@ -933,7 +933,8 @@ class atkMetaPolicy
     $flagsStr = $this->_flagsString($flags);
     $tabsStr = var_export($tabs, true);
       
-    $call = "\$this->add(new {$type}('{$name}'$paramsStr, $flagsStr), $tabsStr, $order);";
+    $call = "\$attr = &\$this->add(new {$type}('{$name}'$paramsStr), $tabsStr, $order); \$attr->addFlag($flagsStr);";
+    
     atkdebug("atkMetaPolicy::_applyAttribute: {$call}");
   }
 
