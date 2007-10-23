@@ -116,7 +116,8 @@
       global $g_menu;
       
       $enable = $menuitem['enable'];      
-      if (is_callable($enable))
+      if ((is_string($enable) || (is_array($enable) && count($enable) == 2 && is_object(@$enable[0]))) &&
+          is_callable($enable))
       {
         $enable = call_user_func($enable);
       }
