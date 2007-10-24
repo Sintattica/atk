@@ -259,7 +259,7 @@
        {
          if ($rights[$i]['action'] == $action)
          {
-           $result[] = $rights[$i][atkconfig('auth_accessfield', atkconfig("auth_levelfield"))];
+	   $result[] = $rights[$i][atkconfig("auth_levelfield")];
          }
        }
        
