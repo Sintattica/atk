@@ -247,17 +247,11 @@
     */
    function lock($table, $mode="write")
    {
-     if ($mode != 'write') 
-     {
-       atkdebug("Read lock on table $table ignored.");
-       return true;
-     }
-     
      /* connect first */
      if ($this->connect('w')==DB_SUCCESS)
      {
        /* lock */
-       $query = "SELECT * FROM $table FOR UPDATE";
+       $query = "lock tables $table $mode";
        
        if (atkconfig("debug")>=0)
        {
@@ -271,7 +265,6 @@
        /* return result */
        return $result;
      }
-     
      return 0;
    }
 
@@ -281,8 +274,18 @@
     */
    function unlock()
    {
-     // unlock happens automatically on commit
-     return true;
+     /* connect first */
+     if ($this->connect('w')==DB_SUCCESS)
+     {
+       /* unlock */
+       atkdebug("unlock tables");
+       $result = @mysqli_query($this->m_link_id, "unlock tables");
+       if (!$result) $this->halt("unlock tables failed.");
+
+       /* return result */
+       return $result;
+     }
+     return 0;
    }
 
    /**
@@ -474,14 +477,5 @@
      return true;
    }
 
-   /**
-    * Enable/disable all foreign key constraints.
-    *
-    * @param boolean $enable enable/disable foreign keys?
-    */
-   function toggleForeignKeys($enable)
-   {
-     $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
-   }   
  }
 ?>
