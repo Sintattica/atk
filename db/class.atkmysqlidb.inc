@@ -476,6 +476,15 @@
      }
      return true;
    }
-
+   
+   /**
+    * Enable/disable all foreign key constraints.
+    *
+    * @param boolean $enable enable/disable foreign keys?
+    */
+   function toggleForeignKeys($enable)
+   {
+     $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
+   }      
  }
 ?>

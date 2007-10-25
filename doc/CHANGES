@@ -80,6 +80,7 @@ Changed in ATK 6.2
 * Dialogbuttons are now disabled after being clicked on to prevent them from
   being clicked again and cause javascript errors or multple executions of http requests. 
   [Dennis, Peter]
+* MySQLi driver now supports toggeling foreign keys on/off. [Peter]   
     
 Changed in ATK 6.1
 ------------------
