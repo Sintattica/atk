@@ -255,11 +255,15 @@
 
        $rights = $this->m_rightscache[$node];
 
+       $field = atkconfig("auth_accessfield");
+       if (empty($field))
+         $field = atkconfig("auth_levelfield");
+         
        for ($i=0, $_i=count($rights); $i<$_i; $i++)
        {
          if ($rights[$i]['action'] == $action)
          {
-	   $result[] = $rights[$i][atkconfig("auth_levelfield")];
+	         $result[] = $rights[$i][$field];
          }
        }
        

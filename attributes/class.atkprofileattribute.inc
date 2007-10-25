@@ -28,6 +28,7 @@
   class atkProfileAttribute extends atkAttribute
   {
     var $m_parentAttrName;
+    var $m_accessField;
 
     function atkProfileAttribute($name, $parentAttrName="", $flags=0)
     {
@@ -39,13 +40,17 @@
 
       $this->atkAttribute($name, $flags|AF_HIDE_SEARCH|AF_HIDE_LIST);
       $this->m_parentAttrName = $parentAttrName;
+      
+      $this->m_accessField = atkconfig('auth_accessfield');
+      if (empty($this->m_accessField))
+        $this->m_accessField = atkconfig('auth_levelfield');
     }
 
     function load(&$db, $record)
     {
       $query = "SELECT *
                 FROM ".atkconfig("auth_accesstable")."
-                WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+                WHERE ".$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       $result = Array();
       $rows = $db->getrows($query);
@@ -87,7 +92,7 @@
       $editableActions = $this->getEditableActions($record);
 
       $delquery = "DELETE FROM ".atkconfig("auth_accesstable")."
-                   WHERE ".atkconfig("auth_levelfield")."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
+                   WHERE ".$this->m_accessField."='".$record[$this->m_ownerInstance->primaryKeyField()]."'";
 
       if ($db->query($delquery))
       {
@@ -116,7 +121,7 @@
 
           foreach ($validActions as $action)
           {
-            $query = "INSERT INTO ".atkconfig("auth_accesstable")." (node, action, ".atkconfig("auth_levelfield").") ";
+            $query = "INSERT INTO ".atkconfig("auth_accesstable")." (node, action, ".$this->m_accessField.") ";
             $query.= "VALUES ('".$db->escapeSQL($node)."','".$db->escapeSQL($action)."','".$record[$this->m_ownerInstance->primaryKeyField()]."')";
 
             if (!$db->query($query))
@@ -129,7 +134,7 @@
           if (count($children) > 0 && count($validActions) > 0)
           {
             $query = "DELETE FROM ".atkconfig("auth_accesstable")." ".
-                     "WHERE ".atkconfig("auth_levelfield")." IN (".implode(",", $children).") ".
+                     "WHERE ".$this->m_accessField." IN (".implode(",", $children).") ".
                      "AND node = '".$db->escapeSQL($node)."' ".
                      "AND action NOT IN ('".implode("','", $validActions)."')";
 
@@ -179,7 +184,7 @@
       {
         $db = &atkGetDb();
         $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable")." ".
-                 "WHERE ".atkconfig("auth_levelfield")." = ".$record[$parentAttr];
+                 "WHERE ".$this->m_accessField." = ".$record[$parentAttr];
         $rows = $db->getRows($query);
 
         foreach ($rows as $row)
@@ -235,7 +240,7 @@
 
       // retrieve editable actions by user's levels
       $db = &atkGetDb();
-      $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".atkconfig("auth_levelfield")." IN (".$levels.")";
+      $query = "SELECT DISTINCT node, action FROM ".atkconfig("auth_accesstable"). " WHERE ".$this->m_accessField." IN (".$levels.")";
       $rows = $db->getRows($query);
 
       $result = array();
