@@ -525,15 +525,18 @@
     {
       atkimport('atk.ui.atkdialog');
 
+      // Disable the button when clicked to prevent javascript errors.
+      $onClick = 'this.disabled=\'true\';';
+      
       switch($action)
       {
         case "save":
-          $class = "btn_save";
-          $onClick = atkDialog::getSaveCall($url, 'dialogform', $extraParams);
+          $class = "btn_save";          
+          $onClick.= atkDialog::getSaveCall($url, 'dialogform', $extraParams);
           break;
         case "cancel":
           $class = "btn_cancel";
-          $onClick = atkDialog::getCloseCall();
+          $onClick.= atkDialog::getCloseCall();
           break;
         default:
           return "";

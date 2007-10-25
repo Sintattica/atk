@@ -77,6 +77,9 @@ Changed in ATK 6.2
 * Implemented recursive (top-down) enabled check for menu's. [Peter]
 * The flag parameter of all meta relations isn't obligatory anymore. [Peter, Dennis]
 * Improved test database mechanism for use with MySQL. [Peter]
+* Dialogbuttons are now disabled after being clicked on to prevent them from
+  being clicked again and cause javascript errors or multple executions of http requests. 
+  [Dennis, Peter]
     
 Changed in ATK 6.1
 ------------------
