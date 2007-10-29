@@ -444,6 +444,7 @@
       $tab = $node->getActiveTab();
       $error_title = "";
       $pk_err_attrib = array();
+      $tabs = $node->getTabs($node->m_action);
 
       // Handle errors
       $errors = array();
@@ -461,7 +462,7 @@
           {
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
-            if (count($node->getTabs($node->m_action)) > 1 && $error["tab"])
+            if (count($tabs) > 1 && $error["tab"])
               $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a> )';
             else $error_tab = "";
 
@@ -558,8 +559,20 @@
       $params["fields"] = $fields; // add all fields as an numeric array.
       $params["errortitle"] = $error_title;
       $params["errors"] = $errors; // Add the list of errors.
-      if (!$template) $template = $node->getTemplate($mode, $record, $tab);
-      $result.= $ui->render($template, $params);
+
+      $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
+      $theme = &atkTheme::getInstance();
+
+      if(!$template && (count(array_unique($tabTpl))>1) && ($theme->tplPath("editform_common.tpl")>""))
+      {
+        $params['fieldspart'] = $this->_renderCustomTpl($fields, $tabTpl);
+        $result .= $ui->render("editform_common.tpl",$params);
+      }
+      else 
+      {
+        if (!$template) $template = $node->getTemplate($mode, $record, $tab);
+        $result .= $ui->render($template, $params);
+      }
 
 	    return $result;
     }

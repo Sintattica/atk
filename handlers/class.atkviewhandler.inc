@@ -124,6 +124,8 @@
 
       // get active tab
       $tab = $node->getActiveTab();
+      // get all tabs of current mode
+      $tabs = $node->getTabs($mode);
 
       $fields = array();
 
@@ -157,7 +159,7 @@
 
         // visible sections, both the active sections and the tab names (attribute that are
         // part of the anonymous section of the tab)
-        $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $this->m_node->getTabs($mode));
+        $visibleSections = array_merge($this->m_node->getActiveSections($tab, $mode), $tabs);
 
         // Todo fixme: initial_on_tab kan er uit, als er gewoon bij het opstarten al 1 keer showTab aangeroepen wordt (is netter dan aparte initial_on_tab check)
         // maar, let op, die showTab kan pas worden aangeroepen aan het begin.
@@ -241,12 +243,20 @@
       }
       $ui = &$this->getUi();
 
-      $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
-
+      $tabTpl = $this->_getTabTpl($node, $tabs,$mode,$record);
+      
+      if(count(array_unique($tabTpl))>1)
+      {
+        $tabForm = $this->_renderCustomTpl($fields, $tabTpl);
+        $innerform = implode(null,$tabForm);
+      }
+      else 
+      {
+        $innerform = $ui->render($node->getTemplate("view", $record, $tab), array("fields"=>$fields));
+      }
       return $innerform;
     }
     
-
     function partial_dialog()
     {
       return $this->renderViewDialog();

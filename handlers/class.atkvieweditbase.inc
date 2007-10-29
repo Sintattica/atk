@@ -163,6 +163,52 @@
       atkimport("atk.session.atkstate");
     	atkState::set(array("nodetype"=>$this->m_node->atknodetype(),"section"=>$this->m_postvars['atksectionname']),$this->m_postvars['atksectionstate']);
     	die;
-    }    
+    }
+
+    /**
+     * Get array with tab name as key and tab template as value
+     *
+     * @param object $node
+     * @param array $tabs
+     * @param string $mode
+     * @param array $record
+     * @return array with tab=>template pear
+     */
+    function _getTabTpl($node, $tabs, $mode, $record)
+    {
+      $tabTpl = array();
+      foreach ($tabs as $t)
+      {
+        $tabTpl['section_'.$t] = $node->getTemplate($mode, $record, $t);
+      }
+      return $tabTpl;
+    }
+    
+    /**
+     * Render tabs using custom templates
+     *
+     * @param array $fields
+     * @param array $tabTpl
+     * @return array with already rendering tabs
+     */
+    function _renderCustomTpl($fields, $tabTpl)
+    {
+      $ui = &$this->getUi();
+      
+      $tabs = array();
+      $perTabs = array();
+      
+      for($i=0,$_i=count($fields);$i<$_i;$i++)
+      {
+        $perTabs[$fields[$i]["tab"]]['fields'][] = $fields[$i];
+      }
+      
+      foreach ($tabTpl as $t => $tpl)
+      {
+        $tabs[] = $ui->render($tpl,$perTabs[$t]);  
+      }
+      
+      return $tabs;
+    }
   }
 ?>
