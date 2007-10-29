@@ -25,6 +25,8 @@ Changed in ATK 6.2
 + Access denied pages of dialogs now also have a close button. [Dennis]
 + When registering a menuitem, the enabled parameter now also supports a callback function
   to determine wether a menu item should be enabled. [Peter, Dennis]
++ The fuzzyfilters in atkNode now also support the [table] string that parsed by the 
+  atkStringParser. [Peter, Dennis]
 * Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags
   methods together.(bug #889) [Yury]
 * AtkAttribute - Prevent register onChangehandler more then one time and move constant part
@@ -81,6 +83,8 @@ Changed in ATK 6.2
   being clicked again and cause javascript errors or multple executions of http requests. 
   [Dennis, Peter]
 * MySQLi driver now supports toggeling foreign keys on/off. [Peter]   
+* Optimized: atkDateTimeAttribute now only popuplates a record for the UTC offset when 
+  it is not yet populated. [Peter, Dennis]
     
 Changed in ATK 6.1
 ------------------

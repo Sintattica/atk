@@ -3371,7 +3371,9 @@
         /* fuzzy filters may be set */
         for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
         {
-          $query->addCondition($this->m_fuzzyFilters[$i]);
+          $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
+          $filter = $parser->parse(array('table' => $this->m_table));
+          $query->addCondition($filter);
         }
       }
 
@@ -3609,7 +3611,9 @@
         /* fuzzy filters may be set */
         for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
         {
-          $query->addCondition($this->m_fuzzyFilters[$i]);
+          $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
+          $filter = $parser->parse(array('table' => $this->m_table));
+          $query->addCondition($filter);
         }
       }
 

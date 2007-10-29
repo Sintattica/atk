@@ -412,7 +412,7 @@
      * @param array $record record
      * @return int UTC offset in seconds
      */
-    function _getUTCOffset($record)
+    function _getUTCOffset(&$record)
     {
       if ($this->m_utcOffset !== null)
       {
@@ -431,7 +431,11 @@
           // relation, prepare for next iteration
           if (is_a($attr, 'atkManyToOneRelation'))
           {
-            $attr->populate($record, array($parts[0]));
+            if (count($parts) > 0 && !isset($record[$part][$parts[0]]))
+            {
+              $attr->populate($record, array($parts[0]));
+            }
+          
             $record = $record[$attr->fieldName()];
             $node = $attr->m_destInstance;
           }
@@ -466,7 +470,7 @@
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
      */
-    function toUTC($value, $record)
+    function toUTC($value, &$record)
     {
       $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
       $offset = $this->_getUTCOffset($record);
@@ -483,7 +487,7 @@
      *
      * @return int|array UNIX timestamp or ATK date/time array (depending on input)
      */
-    function fromUTC($value, $record)
+    function fromUTC($value, &$record)
     {
       $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
       $offset = $this->_getUTCOffset($record);
