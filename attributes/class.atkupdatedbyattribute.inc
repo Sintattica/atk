@@ -75,10 +75,18 @@
     /**
      * This method is overriden to make sure that when a form is posted ('save' button), the
      * current record is refreshed so the output on screen is accurate.
-     */
-    function fetchValue($rec)
+     */    
+    function initialValue()
     {
       return getUser();
+    }
+    
+    function value2db($record)
+    {
+      // if record not created using a form this situation can occur, so set the value here
+      if (!is_array($record[$this->fieldName()]))
+        $record[$this->fieldName()] = $this->initialValue();
+      return parent::value2db($record);
     }
 
   }

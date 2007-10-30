@@ -61,14 +61,16 @@
     {
       // if record not created using a form this situation can occur, so set the value here
       if (!is_array($record[$this->fieldName()]))
-        $record[$this->fieldName()] = $this->fetchValue();
+        $record[$this->fieldName()] = $this->initialValue();
       return parent::value2db($record);
     }
     
     /**
-     * Fetch value.
+     * Override the initial value
+     *
+     * @return Array
      */
-    function fetchValue()
+    function initialValue()
     {
       return atkDateTimeAttribute::datetimeArray();
     }

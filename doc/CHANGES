@@ -85,6 +85,10 @@ Changed in ATK 6.2
 * MySQLi driver now supports toggeling foreign keys on/off. [Peter]   
 * Optimized: atkDateTimeAttribute now only popuplates a record for the UTC offset when 
   it is not yet populated. [Peter, Dennis]
+* The atk attributes updatedBy, createdBy, createdAt and updatedAt: these attribute now 
+  override the method initialValue() to determine the initial value of the attribute. 
+  For all these attribute another check is performed in value2db to make sure the 
+  attributes have a value. [Dennis, Peter]
     
 Changed in ATK 6.1
 ------------------
