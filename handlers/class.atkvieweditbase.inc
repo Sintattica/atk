@@ -185,13 +185,13 @@
     }
     
     /**
-     * Render tabs using custom templates
+     * Render tabs using templates
      *
      * @param array $fields
      * @param array $tabTpl
      * @return array with already rendering tabs
      */
-    function _renderCustomTpl($fields, $tabTpl)
+    function _renderTabs($fields, $tabTpl)
     {
       $ui = &$this->getUi();
       
@@ -200,12 +200,13 @@
       
       for($i=0,$_i=count($fields);$i<$_i;$i++)
       {
-        $perTabs[$fields[$i]["tab"]]['fields'][] = $fields[$i];
+        $perTabs[$tabTpl[$fields[$i]["tab"]]]['fields'][] = $fields[$i];
       }
       
-      foreach ($tabTpl as $t => $tpl)
+      $tpls = array_unique(array_values($tabTpl));
+      foreach ($tpls as $tpl)
       {
-        $tabs[] = $ui->render($tpl,$perTabs[$t]);  
+        $tabs[] = $ui->render($tpl,$perTabs[$tpl]);  
       }
       
       return $tabs;

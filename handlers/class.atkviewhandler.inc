@@ -247,7 +247,7 @@
       
       if(count(array_unique($tabTpl))>1)
       {
-        $tabForm = $this->_renderCustomTpl($fields, $tabTpl);
+        $tabForm = $this->_renderTabs($fields, $tabTpl);
         $innerform = implode(null,$tabForm);
       }
       else 

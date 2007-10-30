@@ -560,20 +560,25 @@
       $params["errortitle"] = $error_title;
       $params["errors"] = $errors; // Add the list of errors.
 
-      $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
-      $theme = &atkTheme::getInstance();
-
-      if(!$template && (count(array_unique($tabTpl))>1) && ($theme->tplPath("editform_common.tpl")>""))
+      if($template)
       {
-        $params['fieldspart'] = $this->_renderCustomTpl($fields, $tabTpl);
-        $result .= $ui->render("editform_common.tpl",$params);
-      }
-      else 
-      {
-        if (!$template) $template = $node->getTemplate($mode, $record, $tab);
         $result .= $ui->render($template, $params);
       }
-
+      else
+      {
+        $theme = &atkTheme::getInstance();
+        if($theme->tplPath("editform_common.tpl")>"")
+        {
+          $tabTpl = $this->_getTabTpl($node, $tabs, $mode, $record);
+          $params['fieldspart'] = $this->_renderTabs($fields, $tabTpl);
+          $result .= $ui->render("editform_common.tpl",$params);
+        }
+        else 
+        {
+          $result .= $ui->render($node->getTemplate($mode, $record, $tab), $params);
+        }
+      }
+      
 	    return $result;
     }
 
