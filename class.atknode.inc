@@ -2446,7 +2446,7 @@
         if($this->hasFlag(NF_EDITAFTERCOPY)&&$this->allowed("editcopy"))
         {
           $actions["editcopy"] = $actionbase.'&atkaction=editcopy';
-        }        
+        }
       }
 
       return $actions;
@@ -3344,8 +3344,8 @@
         $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
         $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
         $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
-        
-        if ( (is_array($searchArray) && count($searchArray)>0) 
+
+        if ( (is_array($searchArray) && count($searchArray)>0)
               || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
               || !is_null($indexValue) )
         {
@@ -3401,7 +3401,7 @@
         {
            $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
         }
-        else 
+        else
         {
           atkerror("Wrong_index_field");
         }
@@ -3591,8 +3591,8 @@
         $searchArray = atkArrayNvl($this->m_postvars,'atksearch');
         $smartSearchCriteria = atkArrayNvl($this->m_postvars,'atksmartsearch');
         $indexValue = $this->m_index != "" ? atkArrayNvl($this->m_postvars,'atkindex',"") : "";
-        
-        if ( (is_array($searchArray) && count($searchArray)>0) 
+
+        if ( (is_array($searchArray) && count($searchArray)>0)
               || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
               || !is_null($indexValue) )
         {
@@ -3608,6 +3608,7 @@
           $query->addCondition($key."='".$value."'");
         }
 
+        atkimport("atk.utils.atkstringparser");
         /* fuzzy filters may be set */
         for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
         {
@@ -3678,12 +3679,12 @@
           {
              $p_attrib->searchCondition($query, $this->m_table, $indexValue, "wildcard", "");
           }
-          else 
+          else
           {
             atkerror("Wrong_index_field");
           }
         }
-        
+
         // there may be search criteria, which we also filter
         if (is_array($searchArray) && count($searchArray)>0)
         {
