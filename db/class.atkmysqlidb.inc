@@ -34,6 +34,11 @@
      */
     function atkmysqlidb()
     {
+      if (!function_exists('mysqli_connect'))
+      {
+        trigger_error('MySQLi not supported by your PHP version',E_USER_ERROR);
+      }
+
       // set type
       parent::atkmysqldb();
       $this->m_type = "mysqli";
@@ -116,7 +121,7 @@
        $query .= " LIMIT $offset, $limit";
 
      if (atkconfig("debug")>=0)
-     {       
+     {
        atkimport("atk.utils.atkdebugger");
        atkDebugger::addQuery($query);
      }
@@ -252,13 +257,13 @@
      {
        /* lock */
        $query = "lock tables $table $mode";
-       
+
        if (atkconfig("debug")>=0)
        {
          atkimport("atk.utils.atkdebugger");
          atkDebugger::addQuery($query);
        }
-       
+
        $result = @mysqli_query($this->m_link_id, $query);
        if (!$result) $this->halt("$mode lock on $table failed.");
 
@@ -476,7 +481,7 @@
      }
      return true;
    }
-   
+
    /**
     * Enable/disable all foreign key constraints.
     *
@@ -485,6 +490,6 @@
    function toggleForeignKeys($enable)
    {
      $this->query("SET FOREIGN_KEY_CHECKS = ".($enable ? 1 : 0));
-   }      
+   }
  }
 ?>
