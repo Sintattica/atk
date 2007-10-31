@@ -97,6 +97,22 @@
     var $m_ownerFields = array();
 
     /**
+     * Use destination filter for autolink add link?
+     *
+     * @access private
+     * @var boolean
+     */
+    var $m_useFilterForAddLink = true;
+    
+    /**
+     * Use destination filter for edit link (edit button)?
+     *
+     * @access private
+     * @var boolean
+     */
+    var $m_useFilterForEditLink = true;
+    
+    /**
      * Default constructor.
      *
      * <b>Example: </b> Suppose a department has many employees. To edit the
@@ -153,6 +169,26 @@
         return $this->m_ownerFields;
       }
       return $this->m_ownerInstance->m_primaryKey;
+    }
+    
+    /**
+     * Use destination filter for auto add link?
+     *
+     * @param boolean $useFilter use destnation filter for add link?
+     */
+    function setUseFilterForAddLink($useFilter)
+    {
+      $this->m_useFilterForAddLink = $useFilter;
+    }
+    
+    /**
+     * Use destination filter for edit link (edit button)?
+     *
+     * @param boolean $useFilter use destnation filter for edit link (edit button)?
+     */
+    function setUseFilterForEditLink($useFilter)
+    {
+      $this->m_useFilterForEditLink = $useFilter;
     }
 
     /**
@@ -334,7 +370,7 @@
 
         $embedprefix = "{$this->m_name}";
 
-        if ($this->m_destinationFilter!="")
+        if ($this->m_useFilterForEditLink && $this->m_destinationFilter!="")
         {
           $params["atkfilter"]=$this->m_destinationFilter;
         }
@@ -423,7 +459,7 @@
     {
       $filterelems = $this->_getFilterElements($record);
       $strfilter = implode(" AND ", $filterelems);
-      if ($this->m_destinationFilter!="")
+      if ($this->m_useFilterForAddLink && $this->m_destinationFilter!="")
       {
         $strfilter.=' AND '.$this->parseFilter($this->m_destinationFilter,$record);
       }
@@ -434,7 +470,7 @@
     function _getDialogAddLink($record, $action)
     {
       atkimport("atk.ui.atkdialog");
-
+       
       $filter = $this->getAddFilterString($record);
 
       $ui = &$this->m_ownerInstance->getUi();
@@ -460,7 +496,7 @@
       if (($this->m_maxRecords==0||$this->m_maxRecords>count($myrecords))&&$this->createDestination() && !$this->m_destInstance->hasFlag(NF_NO_ADD))
       {
         $strfilter = $this->getAddFilterString($record);
-        $add_url = dispatch_url($this->m_destination,"add",array("atkfilter"=>$strfilter));
+        $add_url = dispatch_url($this->m_destination,"add", array("atkfilter"=>$strfilter));
         $label = $this->getAddLabel();
 
         if (count($this->m_onchangecode))
