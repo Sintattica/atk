@@ -196,17 +196,18 @@
       $ui = &$this->getUi();
       
       $tabs = array();
-      $perTabs = array();
+      $perTpl = array();//per template array
       
       for($i=0,$_i=count($fields);$i<$_i;$i++)
       {
-        $perTabs[$tabTpl[$fields[$i]["tab"]]]['fields'][] = $fields[$i];
+        $perTpl[$tabTpl[$fields[$i]["tab"]]]['fields'][] = $fields[$i];//make field available in numeric array
+        $perTpl[$tabTpl[$fields[$i]["tab"]]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
       }
       
       $tpls = array_unique(array_values($tabTpl));
       foreach ($tpls as $tpl)
       {
-        $tabs[] = $ui->render($tpl,$perTabs[$tpl]);  
+        $tabs[] = $ui->render($tpl,$perTpl[$tpl]);  
       }
       
       return $tabs;
