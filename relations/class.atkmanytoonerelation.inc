@@ -1134,14 +1134,15 @@
      */
     function loadType($mode)
     {
-      if ($this->hasFlag(AF_MANYTOONE_LAZY))
-      {
+      if (isset($this->m_loadType[$mode]) && $this->m_loadType[$mode] !== null)
+        return $this->m_loadType[$mode];
+      else if (isset($this->m_loadType[null]) && $this->m_loadType[null] !== null)
+        return $this->m_loadType[null];
+      // Default backwardscompatible behaviour:
+      else if ($this->hasFlag(AF_MANYTOONE_LAZY))
         return POSTLOAD|ADDTOQUERY;
-      }
       else
-      {
         return ADDTOQUERY;
-      }
     }
 
     /**
