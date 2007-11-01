@@ -356,6 +356,8 @@
   "wysiwyg_split_cell" => "Cellen splitsen",
   "yes" => "Ja",
   "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
+  "selected"=>"Geselecteerd",
+  "available"=>"Beschikbaar",
 );
 
 ?>
