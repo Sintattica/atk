@@ -108,6 +108,7 @@
   "error_fileexists" => "File already exists on server. Please rename the file.",
   "error_file_size" => "File is too big",
   "error_file_unknown" => "Unknown error during upload of file",
+  "error_file_mime_type" => "Unsupported file uploaded please check your filetype or extension",
   "error_format_mismatch" => "The element at position %d does not match the desired format (%s)",
   "error_formdataerror" => "Save failed due to the following reason: ",
   "error_invalid_email" => "Invalid e-mail address",
