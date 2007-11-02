@@ -2125,4 +2125,24 @@
     }
     return $str;
   }
+  
+  /**
+   * Returns the first argument that is not null.
+   * 
+   * @param mixed ... arguments
+   * @return mixed first argument that is not null
+   */
+  function atkNvl()
+  {
+    for ($i = 0; $i < func_num_args(); $i++)
+    {
+      $arg = func_get_arg($i);
+      if (!is_null($arg))
+      {
+        return $arg;
+      }
+    }
+    
+    return null; 
+  }  
 ?>
