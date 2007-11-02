@@ -221,7 +221,7 @@
       else if (!empty($rec[$this->fieldName()]))
       {
         $stamp = strtotime($rec[$this->fieldName()]);
-        $stamp = $this->toUTC($stamp);
+        $stamp = $this->toUTC($stamp, $rec);
         return date('Y-m-d H:m:s',$stamp);
       }
      return NULL;
@@ -344,11 +344,11 @@
 
     function parseStringValue($stringvalue)
     {
-	    $datetime = split(" ",$stringvalue);
-		  $formatsdate = array("dd-mm-yyyy","dd-mm-yy","d-mm-yyyy","dd-m-yyyy","d-m-yyyy","yyyy-mm-dd","yyyy-mm-d","yyyy-m-dd","yyyy-m-d");
-		  $retval=array_merge(atkDateAttribute::parseDate($datetime[0],$formatsdate),
-		                      atkTimeAttribute::parseTime($datetime[1]));
-		  return $retval;
+      $datetime = split(" ",$stringvalue);
+      $formatsdate = array("dd-mm-yyyy","dd-mm-yy","d-mm-yyyy","dd-m-yyyy","d-m-yyyy","yyyy-mm-dd","yyyy-mm-d","yyyy-m-dd","yyyy-m-d");
+      $retval=array_merge(atkDateAttribute::parseDate($datetime[0],$formatsdate),
+                          atkTimeAttribute::parseTime($datetime[1]));
+      return $retval;
     }
 
 
@@ -412,7 +412,7 @@
      * @param array $record record
      * @return int UTC offset in seconds
      */
-    function _getUTCOffset(&$record)
+    function _getUTCOffset(&$record, $stamp=null)
     {
       if ($this->m_utcOffset !== null)
       {
@@ -443,7 +443,7 @@
           // timezone attribute, calculate and return offset
           else if (is_a($attr, 'atkTimezoneAttribute'))
           {
-            return $attr->getUTCOffset($record[$attr->fieldName()]);
+            return $attr->getUTCOffset($record[$attr->fieldName()], $stamp);
           }
 
           // assume the attribute in question already has the offset saved in seconds
@@ -473,7 +473,7 @@
     function toUTC($value, &$record)
     {
       $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
-      $offset = $this->_getUTCOffset($record);
+      $offset = $this->_getUTCOffset($record, $stamp);
       $stamp = $stamp - $offset;
       $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
       return $value;
@@ -490,7 +490,7 @@
     function fromUTC($value, &$record)
     {
       $stamp = is_int($value) ? $value : $this->arrayToDateTime($value);
-      $offset = $this->_getUTCOffset($record);
+      $offset = $this->_getUTCOffset($record, $stamp);
       $stamp = $stamp + $offset;
       $value = is_int($value) ? $stamp : $this->datetimeArray(date("YmdHis", $stamp));
       return $value;
