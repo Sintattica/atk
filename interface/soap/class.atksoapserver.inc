@@ -6,13 +6,13 @@
   	
   	public function __construct()
   	{
-  	  $this->m_server = new SoapServer();
+  	  $this->m_server = new SoapServer(null,array("uri"=>"http://".$_SERVER['HTTP_HOST']."/atkdemo/"));
   	  $this->m_server->setObject($this);
   	}
   	
   	public function handleRequest($request)
   	{
-  	   echo "Hello Soap World";
+  	   return "Hello Soap World";
   	   
   	}
   	
