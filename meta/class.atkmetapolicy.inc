@@ -145,19 +145,19 @@ class atkMetaPolicy
     }
     else if ($name == 'created_at' || $name == 'created_on')
     {
-      $type = 'atk.attribute.atkcreatestampattribute';
+      $type = 'atk.attributes.atkcreatestampattribute';
     }
     else if ($name == 'updated_at' || $name == 'updated_on')
     {
-      $type = 'atk.attribute.atkupdatestampattribute';
+      $type = 'atk.attributes.atkupdatestampattribute';
     }
     else if ($name == 'created_by')
     {
-      $type = 'atk.attribute.atkcreatedbyattribute';
+      $type = 'atk.attributes.atkcreatedbyattribute';
     }
     else if ($name == 'updated_by')
     {
-      $type = 'atk.attribute.atkupdatedbyattribute';
+      $type = 'atk.attributes.atkupdatedbyattribute';
     }
     else if ($meta['gentype'] == 'number' && $meta['len'] == 1 && 
              (substr($name, 0, 3) == 'is_' || substr($name, 0, 4) == 'has_'))
