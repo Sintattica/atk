@@ -100,6 +100,7 @@ Changed in ATK 6.2
   For all these attribute another check is performed in value2db to make sure the
   attributes have a value. [Dennis, Peter]
 * Fixed statically sized dialogs. [Peter]
+* Don't strip slashes in atkDataDecode if magic_quotes_gpc is off. [Peter]
 
 Changed in ATK 6.1
 ------------------
