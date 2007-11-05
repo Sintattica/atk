@@ -27,7 +27,7 @@ ATK.Dialog.prototype = {
    */
   onShow: function(transport) {
     this.evalResponse(transport);
-    if (this.options.width || this.options.height) {
+    if (!this.options.width && !this.options.height) {
       this.delayedResize();
     }
   },
@@ -37,7 +37,7 @@ ATK.Dialog.prototype = {
    * fully updated yet (you don't always know how long it takes to update the DOM).
    */
   delayedResize: function() {
-    setTimeout(this.resize.bind(this), 100);
+    setTimeout(this.resize.bind(this), 800);
   },
 
   /**
