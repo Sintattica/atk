@@ -101,6 +101,8 @@ Changed in ATK 6.2
   attributes have a value. [Dennis, Peter]
 * Fixed statically sized dialogs. [Peter]
 * Don't strip slashes in atkDataDecode if magic_quotes_gpc is off. [Peter]
+* Fix: After adding fixtures to a testdatabase, commit() needs to be called. [Peter, 
+  Dennis]
 
 Changed in ATK 6.1
 ------------------
