@@ -257,6 +257,7 @@
             !$config[$mapping[$database]]["transactional_fixtures"])
         {
           $db->toggleForeignKeys(true);
+          $db->commit();
         }
       }
     }
