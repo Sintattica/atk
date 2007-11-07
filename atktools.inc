@@ -1086,9 +1086,10 @@
    * @param string $err multilanguage error string
    * @param string $msg optinal error string
    */
-  function triggerError(&$rec, $attrib, $err, $msg="", $tab="", $label='')
+  function triggerError(&$rec, $attrib, $err, $msg="", $tab="", $label='', $module='atk')
   {
-    if($msg=="")  $msg = atktext($err, "atk");
+    if($msg=="")  $msg = atktext($err, $module);
+    if($label=="") $label = atktext($attrib, $module);
 
     $rec['atkerror'][] = array( "attrib_name"=> $attrib, "err" => $err, "msg" => $msg, "tab" => $tab, "label" => $label);
   }

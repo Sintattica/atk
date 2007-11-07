@@ -103,6 +103,7 @@ Changed in ATK 6.2
 * Don't strip slashes in atkDataDecode if magic_quotes_gpc is off. [Peter]
 * Fix: After adding fixtures to a testdatabase, commit() needs to be called. [Peter, 
   Dennis]
+* Fixed support for label and module in triggerError (workaround) [Jeroen, Ivo]
 
 Changed in ATK 6.1
 ------------------
