@@ -39,6 +39,7 @@
    function getGenericType($type)
     {
       $type = strtolower($type);
+      atkdebug("TYPE: $type");
       switch($type)
       {
         case MYSQLI_TYPE_TINY:
@@ -48,6 +49,7 @@
         case MYSQLI_TYPE_INT24:
           return "number";
         case MYSQLI_TYPE_DECIMAL:
+        case MYSQLI_TYPE_NEWDECIMAL:
         case MYSQLI_TYPE_FLOAT:
         case MYSQLI_TYPE_DOUBLE:
           return "decimal";        
