@@ -39,7 +39,6 @@
    function getGenericType($type)
     {
       $type = strtolower($type);
-      atkdebug("TYPE: $type");
       switch($type)
       {
         case MYSQLI_TYPE_TINY:
