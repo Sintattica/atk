@@ -35,6 +35,7 @@ Changed in ATK 6.2
   child node. [Martin]
 + Added the method atkNvl() to use the value of the first given argument that is not
   null. [Peter, Dennis]
++ All theme templates can now be overridden per module. [Sandy, Ivo]
 * To calculate a UTC offset you also need the datetime next to the timezone because
   of DST differences. [Tjeerd]
 * Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags
@@ -101,9 +102,13 @@ Changed in ATK 6.2
   attributes have a value. [Dennis, Peter]
 * Fixed statically sized dialogs. [Peter]
 * Don't strip slashes in atkDataDecode if magic_quotes_gpc is off. [Peter]
-* Fix: After adding fixtures to a testdatabase, commit() needs to be called. [Peter, 
-  Dennis]
-* Fixed support for label and module in triggerError (workaround) [Jeroen, Ivo]
+* Fix: After adding fixtures to a testdatabase, commit() needs to be called. 
+  [Peter, Dennis]
+* Fixed support for label and module in triggerError (workaround). [Jeroen, Ivo]
+* atkNode now gracefully handles initial_values methods that do not return an 
+  array. [Sandy, Ivo]
+* atkOneToOneRelation can now be used as primary key field in intermediary nodes. 
+  [Sandy, Ivo]
 
 Changed in ATK 6.1
 ------------------

@@ -197,7 +197,7 @@
 
       if (is_object($ui))
       {
-        $output = $ui->renderAction("edit", $params);
+        $output = $ui->renderAction("edit", $params, $node->m_module);
         $this->addRenderBoxVar("title", $node->actionTitle('edit', $record));
         $this->addRenderBoxVar("content", $output);
 

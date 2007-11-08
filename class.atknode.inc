@@ -1250,7 +1250,7 @@
         $primKey.=$this->m_table.".".$this->m_primaryKey[$i]."='".$p_attrib->value2db($rec)."'";
         if ($i<($nrOfElements-1)) $primKey.=" AND ";
       }
-
+      
       return $primKey;
     }
 
@@ -1957,9 +1957,12 @@
         if (!isset($defaults['atkerror'])) // only load initial values the first time (not after an error occured)
         {
           $overrides = $this->initial_values();
-          foreach ($overrides as $varname=>$value)
+          if (is_array($overrides) && count($overrides)>0)
           {
-            if (!isset($defaults[$varname]) || $defaults[$varname]=="") $defaults[$varname]=$value;
+            foreach ($overrides as $varname=>$value)
+            {
+              if (!isset($defaults[$varname]) || $defaults[$varname]=="") $defaults[$varname]=$value;
+            }
           }
         }
       }

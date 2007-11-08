@@ -72,7 +72,7 @@
      * @param array  $vars   the template variables
      * @return String the rendered template
      */
-    function renderAction($action, $vars)
+    function renderAction($action, $vars, $module="")
     {
       // todo.. action specific templates
       $tpl = "action_$action.tpl";
@@ -81,7 +81,7 @@
       	
         $tpl = "action.tpl";
       }
-      return $this->render($tpl, $vars);
+      return $this->render($tpl, $vars, $module);
     }
 
     /**
@@ -89,9 +89,9 @@
      * @param String $action not used (deprecated?)
      * @param array  $vars   the variables with which to parse the list template
      */
-    function renderList($action, $vars)
+    function renderList($action, $vars, $module="")
     {
-      return $this->render("list.tpl", $vars);
+      return $this->render("list.tpl", $vars, $module);
     }
 
     /**
@@ -99,10 +99,10 @@
      * @deprecated Use renderBox($vars, "top") instead
      * @param array $vars the variables for the template
      */
-    function renderTop($vars)
+    function renderTop($vars, $module="")
     {
       atkdebug("Using deprecated renderTop function, please install newer top.php from the atk/skel");
-      return $this->renderBox($vars, "top");
+      return $this->renderBox($vars, "top", $module);
     }
 
     /**
@@ -114,13 +114,13 @@
      * will make it search for a menu.tpl first and use that
      * if it's available, otherwise it will just use box.tpl
      */
-    function renderBox($vars, $name="")
+    function renderBox($vars, $name="", $module="")
     {
       if ($name && file_exists($this->m_theme->tplPath($name.".tpl")))
       {
         return $this->render($name.".tpl", $vars);
       }      
-      return $this->render("box.tpl", $vars);
+      return $this->render("box.tpl", $vars, $module);
     }
     
     /**
@@ -129,9 +129,9 @@
      * @param array $vars template variables
      * @return string rendered dialog
      */
-    function renderDialog($vars)
+    function renderDialog($vars, $module="")
     {
-      return $this->render("dialog.tpl", $vars);
+      return $this->render("dialog.tpl", $vars, $module);
     }
 
     /**
@@ -140,14 +140,14 @@
      * @param array $vars the variables with which to render the template
      * @param String the rendered template
      */
-    function renderTabs($vars)
+    function renderTabs($vars, $module="")
     {
       if ($this->m_theme->getAttribute("tabtype")=="dhtml")
       {
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");        
       }
-      return $this->render("tabs.tpl", $vars);
+      return $this->render("tabs.tpl", $vars, $module);
     }
 
     /**

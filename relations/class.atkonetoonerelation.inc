@@ -1164,6 +1164,15 @@
         parent::addToSearchformFields($fields,$node,$record, $fieldprefix, $currentSearchMode);
       }
     }
+    
+    function value2db($rec)
+    {
+      if (is_array($rec)&&isset($rec[$this->fieldName()]))
+      {        
+        return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+      }
+      return NULL;
+    }
   }
 
 ?>
