@@ -200,8 +200,10 @@
       
       for($i=0,$_i=count($fields);$i<$_i;$i++)
       {
-        $perTpl[$tabTpl[$fields[$i]["tab"]]]['fields'][] = $fields[$i];//make field available in numeric array
-        $perTpl[$tabTpl[$fields[$i]["tab"]]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
+        $allTabs = explode(' ', $fields[$i]["tab"]); // should not use "tab" here, because it actually contains the CSS class names and not only the tab names
+        $tab = $allTabs[0]; // attributes can be part of one, more than one or all tabs, at the moment it seems only one or all are supported
+        $perTpl[$tabTpl[$tab]]['fields'][] = $fields[$i];//make field available in numeric array
+        $perTpl[$tabTpl[$tab]][$fields[$i]["attribute"]] = $fields[$i];//make field available in associative array
       }
       
       $tpls = array_unique(array_values($tabTpl));
