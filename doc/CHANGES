@@ -31,11 +31,13 @@ Changed in ATK 6.2
   atkStringParser. [Peter, Dennis]
 + In the atkOneToManyRelation it is now possible to disable the use of destinationFilters
   when going to the add or edit action of the destination node. [Peter, Dennis]
-* Fixed removing a file with the atkfileattribute when using the attribute on one2one
-  child node. [Martin]
 + Added the method atkNvl() to use the value of the first given argument that is not
   null. [Peter, Dennis]
 + All theme templates can now be overridden per module. [Sandy, Ivo]
+* The store() function in atkManyToManyRelation takes the exclude list from the
+  intermediary node into account. [Patrick]
+* Fixed removing a file with the atkfileattribute when using the attribute on one2one
+  child node. [Martin]
 * To calculate a UTC offset you also need the datetime next to the timezone because
   of DST differences. [Tjeerd]
 * Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags

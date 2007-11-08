@@ -105,13 +105,13 @@
      * from the given record.
      *
      * @param array $record current record
-     * 
+     *
      * @return array list of selected record keys
      */
     function getSelectedRecords($record)
     {
       $keys = array();
-      
+
       if (isset($record[$this->fieldName()]))
       {
         for ($i = 0; $i < count($record[$this->fieldName()]); $i++)
@@ -124,11 +124,11 @@
           {
             $key = $this->m_destInstance->primaryKey(array($this->m_destInstance->primaryKeyField()=>$record[$this->fieldName()][$i][$this->getRemoteKey()]));
           }
-  
+
           $keys[] = $key;
         }
       }
-      
+
       return $keys;
     }
 
@@ -419,7 +419,7 @@
           $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {
-            if (!$rel->addDb($newrecord, true, $mode))
+            if (!$rel->addDb($newrecord, true, $mode, $rel->m_listExcludes))
             {
               return false;
             }
@@ -597,5 +597,6 @@
       $this->setStoreDeletionFilter($filter);
       $this->m_localFilter = $filter;
     }
+
   }
 ?>
