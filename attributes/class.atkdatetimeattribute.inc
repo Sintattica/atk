@@ -142,7 +142,7 @@
     function datetimeArray($datetime=NULL)
     {
       if ($datetime == NULL)
-        $datetime = date("YmdHi");
+        $datetime = date("YmdHis");
       $date = substr($datetime, 0, 8);
       $time = substr($datetime, 8, 6);
       return array_merge(atkDateAttribute::dateArray($date), atkTimeAttribute::timeArray($time));
@@ -435,7 +435,7 @@
             {
               $attr->populate($record, array($parts[0]));
             }
-          
+
             $record = $record[$attr->fieldName()];
             $node = $attr->m_destInstance;
           }
