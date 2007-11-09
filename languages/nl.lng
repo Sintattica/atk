@@ -108,7 +108,7 @@
   "error_fileexists" => "Bestand bestaat al op de server. Verander de naam van het bestand",
   "error_file_size" => "Bestand is te groot",
   "error_file_unknown" => "Onbekende fout bij uploaden bestand",
-  "error_file_mime_type"=> "Bestandformaat wordt niet ondersteund.",
+  "error_file_mime_type"=> "Bestandsformaat wordt niet ondersteund.",
   "error_format_mismatch" => "Het element op positie %d voldoet niet aan het gewenste formaat (%s)",
   "error_formdataerror" => "Opslaan mislukt om de volgende reden: ",
   "error_invalid_email" => "Ongeldig e-mailadres",
