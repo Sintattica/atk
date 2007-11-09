@@ -226,7 +226,7 @@
         $m_secBox .= '<option value""'.($m_defSec === "" ? ' selected' : '').'></option>';
       for ($i=0;$i<=count($this->m_steps)-1;$i++)
       {
-        if($i!=0) $prev= $this->m_steps[i-1];
+        if($i!=0) $prev= $this->m_steps[$i-1];
         else $prev= -1;
         if ($this->m_steps[$i] >= $m_defSec && $prev < $m_defSec&&($m_defSec!=""))
         {
