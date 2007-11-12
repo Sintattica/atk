@@ -60,8 +60,8 @@
     function value2db($record)
     {
       // if record not created using a form this situation can occur, so set the value here
-      if (!is_array($record[$this->fieldName()]))
-        $record[$this->fieldName()] = $this->initialValue();
+      // Every time we must overwrite the value of this attribute, because this is UPDATE stamp
+      $record[$this->fieldName()] = $this->initialValue();
       return parent::value2db($record);
     }
     
