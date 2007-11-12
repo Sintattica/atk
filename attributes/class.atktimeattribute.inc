@@ -265,11 +265,11 @@
       $hours = $rec[$this->fieldName()]["hours"];
       $minutes = $rec[$this->fieldName()]["minutes"];
       $seconds = $rec[$this->fieldName()]["seconds"];
-
-      if ($hours=="" || $minutes=="" || $seconds=="") return NULL;
+      
+      if ($hours=="" || $minutes=="" || ($this->hasFlag(AF_TIME_SECONDS) && $seconds=="")) return NULL;
 
       $result = sprintf("%02d",$hours).":".sprintf("%02d",$minutes).":".sprintf("%02d",$seconds);
-
+      
       return $result;
     }
 
