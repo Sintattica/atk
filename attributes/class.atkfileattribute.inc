@@ -164,7 +164,15 @@
      */
     function edit($record="", $fieldprefix="")
     {
-      $result=$this->display($record);
+      if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display'))
+      {
+        $method = $this->fieldName().'_display';
+        $result = $this->m_ownerInstance->$method($record, 'view');
+      }
+      else
+      {
+        $result=$this->display($record, 'view');
+      }
 
       if(is_dir($this->m_dir))
       {
@@ -375,7 +383,8 @@
     }
     
     /**
-     * Set the allowed mime types
+     * Set the allowed file types. This can either be mime types (detected by the / in the middle
+     * or file extensions (without the leading dot!).
      *
      * @param array $types
      * @return boolean
@@ -406,28 +415,41 @@
      */
     function isAllowedFileType(&$rec)
     {
-      
-      if(!function_exists('getimagesize'))
-      {
-        atkdebug("getimagesize() not found unable to check the filetype");
-        return true;
-      }
-      
       // detect whether the file is uploaded or is an existing file.
       $filename =  (!empty($rec[$this->fieldName()]['tmpfile'])) ? 
         $rec[$this->fieldName()]['tmpfile'] :
         $this->m_dir . $rec[$this->fieldName()]['filename'];
-      
-      if(!empty($this->m_allowedFileTypes) && !isset($rec[$this->fieldName()]['postdel']) && $filename!=$this->m_dir)
+
+      if (!empty($this->m_allowedFileTypes) && !isset($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir)
       {
-        $size = @getimagesize($filename);
-        if(!in_array($size['mime'],$this->m_allowedFileTypes))
+        $valid = false;
+        
+        if (function_exists('getimagesize'))
+        {
+          $size = @getimagesize($filename);
+          if (in_array($size['mime'], $this->m_allowedFileTypes))
+          {
+            $valid = true;
+          }
+        }
+
+        $orgFilename = @$rec[$this->fieldName()]['orgfilename'];
+        if ($orgFilename != null)
+        {
+          $extension = $this->getFileExtension($orgFilename);
+          if (in_array($extension, $this->m_allowedFileTypes))
+          {
+            $valid = true;
+          }
+        }
+        
+        if (!$valid)
         {
           $rec[$this->fieldName()]['error'] = UPLOAD_ERR_EXTENSION;
           return false;
         }
-        atkdebug("atkfileattribute::isAllowedFileType() file validated succesfully");
       }
+      
       return true;
     }
 

@@ -587,7 +587,7 @@
     function atkAttribute($name, $flags = 0, $size = 0)
     {
       $this->m_name = $name;
-      $this->m_flags = (int)$flags;
+      $this->setFlags((int)$flags);
       $this->setAttribSize($size);
 
       // default class
@@ -666,7 +666,8 @@
      */
     function setFlags($flags = 0)
     {
-      $this->m_flags = $flags;
+      $this->m_flags = 0;
+      $this->addFlag($flags); // always call addFlag
     }
 
     /**
@@ -997,7 +998,7 @@
 	    	$entry = array("name" => $this->m_name, "attribute" => &$this);
 
 	      /* label? */
-	      $entry["label"] = $this->getLabel($defaults);
+	      $entry["label"] = $this->getLabel($defaults, $mode);
 	      // on which tab?
 	      $entry["tabs"] = $this->getTabs($mode);
 	      //on which sections?
@@ -1044,7 +1045,7 @@
         $entry["id"] = $this->getHtmlId($fieldprefix);
 
         /* label? */
-        $entry["label"] = $this->getLabel($defaults);
+        $entry["label"] = $this->getLabel($defaults, $mode);
         /* error? */
         $entry["error"] = $this->getError($error) || (isset($ATK_VARS["atkerrorfields"]) && atk_in_array($entry['id'], $ATK_VARS['atkerrorfields']));
         // on which tab?
@@ -1959,7 +1960,7 @@
      *                empty string if the label should be blank, or NULL if no
      *                label at all should be displayed.
      */
-    function getLabel($record = array())
+    function getLabel($record = array(), $mode='')
     {
       if ($this->hasFlag(AF_NOLABEL)) return "AF_NO_LABEL";
       else if ($this->hasFlag(AF_BLANKLABEL)) return NULL;

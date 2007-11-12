@@ -34,6 +34,8 @@ Changed in ATK 6.2
 + Added the method atkNvl() to use the value of the first given argument that is not
   null. [Peter, Dennis]
 + All theme templates can now be overridden per module. [Sandy, Ivo]
++ Added AF_BOOL_INLINE_LABEL flag to display a label next to the checkbox. [Peter]
++ Added support for file extension validation in atkFileAttribute. [Peter]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
 * Added missing seconds to function atkDateTimeAttribute.datetimeArray(). [Patrick]
