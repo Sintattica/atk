@@ -116,6 +116,9 @@ Changed in ATK 6.2
   array. [Sandy, Ivo]
 * atkOneToOneRelation can now be used as primary key field in intermediary nodes.
   [Sandy, Ivo]
+* Fixed support for destination "records" where only the id is set and the record 
+  itself isn't converted to a real record (array) yet. Also added a testcase for
+  this functionality. [Peter, Dennis]     
 
 Changed in ATK 6.1
 ------------------
