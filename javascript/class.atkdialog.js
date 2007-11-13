@@ -19,7 +19,15 @@ ATK.Dialog.prototype = {
    * Eval JavaScript in response.
    */
   evalResponse: function(transport) {
-    setTimeout(function() { transport.responseText.evalScripts() }, 10);
+    var dialog = this;
+    
+    setTimeout(function() { 
+      transport.responseText.evalScripts();
+      
+      if (!dialog.options.width && !dialog.options.height) {
+        dialog.delayedResize();
+      }
+    }, 10);
   },
 
   /**
@@ -27,9 +35,6 @@ ATK.Dialog.prototype = {
    */
   onShow: function(transport) {
     this.evalResponse(transport);
-    if (!this.options.width && !this.options.height) {
-      this.delayedResize();
-    }
   },
 
   /**
@@ -37,7 +42,7 @@ ATK.Dialog.prototype = {
    * fully updated yet (you don't always know how long it takes to update the DOM).
    */
   delayedResize: function() {
-    setTimeout(this.resize.bind(this), 800);
+    setTimeout(this.resize.bind(this), 100);
   },
 
   /**
