@@ -39,8 +39,6 @@ Changed in ATK 6.2
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
 * Added missing seconds to function atkDateTimeAttribute.datetimeArray(). [Patrick]
-* The store() function in atkManyToManyRelation takes the exclude list from the
-  intermediary node into account. [Patrick]
 * Fixed removing a file with the atkfileattribute when using the attribute on one2one
   child node. [Martin]
 * To calculate a UTC offset you also need the datetime next to the timezone because

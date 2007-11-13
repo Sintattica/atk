@@ -419,7 +419,7 @@
           $existing = $rel->selectDb($where, "", "", "", $rel->m_primaryKey);
           if (!count($existing))
           {
-            if (!$rel->addDb($newrecord, true, $mode, $rel->m_listExcludes))
+            if (!$rel->addDb($newrecord, true, $mode))
             {
               return false;
             }
