@@ -39,7 +39,7 @@ Changed in ATK 6.2
 + Added the methods setColorMode() and getColorMode() for the atkColorPickerAttribute to
   make the colorpicker validation check based on the setting of the colormode. For now only two 
   modes are supported: CP_COLORMODE_DEFAULT (default behaviour) and CP_COLORMODE_HEX6  
-  (Only support Hex notations with 6 characters). Also added testcase for the 
+  (Only hex notations with 6 characters are valid). Also added testcase for the 
   atkColorPickerAttribute [Dennis]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
