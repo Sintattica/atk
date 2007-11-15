@@ -152,6 +152,18 @@
     {
     }
 
+    function initialValue()
+    {
+      if ($this->m_initialValue!==null) return parent::initialValue();
+
+      if ($this->createDestination())
+      {
+        return $this->m_destInstance->initial_values();
+      }
+
+      return null;
+    }
+
     /**
      * Adds this attribute to database queries.
      *
