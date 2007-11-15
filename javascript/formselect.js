@@ -80,11 +80,17 @@ function updateSelectable(name, form)
  * distinguish between the submit of the edit form, and the submit of the multi-record action.
  * This method uses the atkescape option to redirect the multi-record action to a level higher
  * on the session stack, which makes it possible to return to the edit form (saving updated values!)
+ *
+ * It is also possible to override the handling of the atkSubmit for a certain action by registering 
+ * a javascript function with the name atkMRA_<action>. Where action is the name of the action you wish
+ * override such as the attributeedit action.
+ *
  * @param name unique recordlist name
  * @param form reference to the form object
  * @param target where do we escape to?
+ * @param ignoreHandler ignore handler if it exists? (defaults to false)
  */
-function atkSubmitMRA(name, form, target)
+function atkSubmitMRA(name, form, target, ignoreHandler)
 {
   /* some stuff we need to know */
   var index  = form.elements[name + '_atkaction'].selectedIndex;
@@ -92,8 +98,24 @@ function atkSubmitMRA(name, form, target)
   else var atkaction = form.elements[name + '_atkaction'][index].value;
 
   /* If no Multi-record action is selected, bail out! */
-  if(atkaction=='')    return;
-  
+  if(atkaction=='') return;
+
+  // if there exists a function with the name atkMRA_<action> we let
+  // this function handle the MRA action instead of submitting the form
+  if (!ignoreHandler && 'atkMRA_'+atkaction)
+  {
+    try
+    {
+      var handler = eval('atkMRA_' + atkaction);
+      handler(name, form, target);
+      return;
+    }  
+    catch (ex)
+    {
+      // If the handler cannot be called, proceed as normal.
+    }     
+  }
+
   /* initial target URL */
   target += '&atkaction=' + atkaction;
 
@@ -108,20 +130,22 @@ function atkSubmitMRA(name, form, target)
   if (typeof(list.length) == 'undefined') list = new Array(list);
 
   for (var i = 0; i < list.length; i++)
+  {  
     if (!list[i].disabled && list[i].checked)
     {
       target += '&atkselector[]=' + list[i].value;
       selectorLength++;
     }
-    
-   // custom list
-   for (var i=0; i< form.elements.length; i++)
-   {    
-    if (form.elements[i].name.substring(0,7)=="custom_")
+  }
+  
+  // custom list
+  for (var j=0; j< form.elements.length; j++)
+  {    
+    if (form.elements[j].name.substring(0,7)=="custom_")
     {
-       target += "&"+form.elements[i].name+'='+form.elements[i].value; 
-     }
-   }
+      target += "&"+form.elements[j].name+'='+form.elements[i].value; 
+    }
+  }
 
   /* change atkescape value and submit form */
   if (selectorLength > 0)

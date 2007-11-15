@@ -41,6 +41,9 @@ Changed in ATK 6.2
   modes are supported: CP_COLORMODE_DEFAULT (default behaviour) and CP_COLORMODE_HEX6  
   (Only hex notations with 6 characters are valid). Also added testcase for the 
   atkColorPickerAttribute [Dennis]
++ The submit-handling of a the javascript method atkMRASubmit() can be overridden by proving 
+  a javascript method with the name atkMRA_<action>. Where action is the name of the action you 
+  wish to override. [Peter, Dennis]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
 * Added missing seconds to function atkDateTimeAttribute.datetimeArray(). [Patrick]
