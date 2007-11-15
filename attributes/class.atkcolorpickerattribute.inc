@@ -289,7 +289,7 @@
     {
       $color = $record[$this->fieldName()];
       if(!$this->check_color($color))
-        triggerError($record, $this->fieldName(), 'error_invalid_color');
+        atkTriggerError($record, $this, 'error_invalid_color');
     }
     
     /**

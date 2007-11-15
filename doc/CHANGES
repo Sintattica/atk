@@ -122,7 +122,10 @@ Changed in ATK 6.2
 * Fixed support for destination "records" in atkManyTooneRelations where only the id 
   is set and the record itself isn't converted to a real record (array) yet. Also added 
   a testcase for this functionality. [Peter, Dennis]     
-* Some code refactoring of the atkColorPickerAttribute. [Dennis]
+* Fixed translation of the name of a atkColorPickerAttribute when an error was triggered.  
+  Also some code refactoring. [Dennis]
+
+
 
 Changed in ATK 6.1
 ------------------
