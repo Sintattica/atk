@@ -36,6 +36,11 @@ Changed in ATK 6.2
 + All theme templates can now be overridden per module. [Sandy, Ivo]
 + Added AF_BOOL_INLINE_LABEL flag to display a label next to the checkbox. [Peter]
 + Added support for file extension validation in atkFileAttribute. [Peter]
++ Added the methods setColorMode() and getColorMode() for the atkColorPickerAttribute to
+  make the colorpicker validation check based on the setting of the colormode. For now only two 
+  modes are supported: CP_COLORMODE_DEFAULT (default behaviour) and CP_COLORMODE_HEX6  
+  (Only support Hex notations with 6 characters). Also added testcase for the 
+  atkColorPickerAttribute [Dennis]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
 * Added missing seconds to function atkDateTimeAttribute.datetimeArray(). [Patrick]
@@ -117,6 +122,7 @@ Changed in ATK 6.2
 * Fixed support for destination "records" in atkManyTooneRelations where only the id 
   is set and the record itself isn't converted to a real record (array) yet. Also added 
   a testcase for this functionality. [Peter, Dennis]     
+* Some code refactoring of the atkColorPickerAttribute. [Dennis]
 
 Changed in ATK 6.1
 ------------------

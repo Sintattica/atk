@@ -6,6 +6,17 @@
    * in the doc/COPYRIGHT and doc/LICENSE files which should be
    * included in the distribution.
    *
+   * @todo: The rgb color support in check_color() only works if another argument 'rgb' 
+   * is passed, which never  happens because only 1 argument is passed to that method from the 
+   * atkColorPickerAttribute. 
+   * 
+   * @todo: The colorpicker appears to support values such as 'red' to be entered in the popup 
+   * (the edit of the attribute shows the correct color) although the value never passes the 
+   * validation.
+   * 
+   * @todo: The colorpicker supports the first # to be optionally entered, but the edit of
+   * the attribute does not show the correct color.
+   * 
    * @package atk
    * @subpackage attributes
    *
@@ -18,6 +29,9 @@
 
   useattrib("atkattribute");
 
+  define("CP_COLORMODE_DEFAULT"  ,0);
+  define("CP_COLORMODE_HEX6"     ,1);
+  
   /**
    * Draws one colored <td>gif</td> box with javascript parameters in the desired height,width and color
    * @access private
@@ -137,82 +151,6 @@
   }
 
   /**
-   * Function to check if a color is correct (default is hex colors)
-   * Example:
-   * check_color("#zff, "hex"")
-   * check_color("rgb(204,255,0)", "rgb")
-   * @access private
-   * @return boolean valid color or not
-   */
-  function check_color()
-  {
-    $numargs = func_num_args();
-    if($numargs < 1) { atkerror("Error in function check_color(): No arguments passed to function."); return false; }
-    $colors = func_get_arg(0);
-    if($numargs == 2) { $type = func_get_arg(1); }else{ $type = "hex"; }
-    if($numargs > 2) { atkerror("Error in function check_color(): Too many arguments passed to function."); return false; }
-
-    // color types -
-    //          hex - hexidecimal value in form of #XXX, XXX, #XXXXXX, or XXXXXX
-    //          rgb - rgb value in form of rgb(X,Y,Z);
-    if($type == "hex")
-    {
-      $colors = strtolower(str_replace("#", "", $colors));
-      // \d is all decimal digits (0-9)
-      $t = preg_match_all("([\da-f])", $colors, $matches);
-      $length = strlen($colors);
-
-      // Have to match the preg_match_all with the length to prevent incorrect results
-      // else 3 matches in a 6 character code would make something like 123x98 valid
-      if(($t == 3 and $length == 3) or ($t == 6 and $length == 6)){ return true; } else { return false; }
-    }
-    elseif($type == "rgb")
-    {
-      $error = 0;
-      // check the start and the end of the color code to make sure it's a valid form
-      if((substr($colors, 0, 4)) != "rgb(" or substr($colors, -1) != ")"){ $error++; }
-      else
-      {
-        $len = strlen($colors);
-        // the full length - 5 characters to make up for the "rgb(" and the ")" - 5 characters total
-        $lenone = $len - 5;
-
-        // $colors is now only the values and the commas (",") that seperate them
-        // rgb(51,102,153) is now 51,102,153 - we need this to explode the data in the next step
-        $colors = substr($colors, 4, $lenone);
-
-        // explode the color substring - should be in X,Y,Z format now.
-        // $extras takes any characters more than the X,Y,Z format.
-        list($r, $g, $b, $extras) = explode(",",$colors);
-
-        // Check the rgb values that were just exploded.
-        if($r < 0 or $r > 255 or $g < 0 or $g > 255 or $b < 0 or $b > 255) { $error++; }
-
-        // Make sure that none of the values are blank  - prevents rgb(12) or rgb(12,12) from being valid
-        if($r == "" or $g == "" or $b == ""){ $error++; }
-
-        // \D in the character class means any non-decimal character except newline
-        $rt = preg_match_all("[\D]", $r, $matches);
-        $gt = preg_match_all("[\D]", $g, $matches);
-        $bt = preg_match_all("[\D]", $b, $matches);
-
-        // If we matched any characters above the values are not valid.
-        // Also is there is anything in $extras - the whole color code is an invalid form!
-        if($rt > 0 or $gt > 0 or $bt > 0 or $extras != ""){ $error++; }
-
-        // If there are any errors then the color is not valid, return false, otherwise
-        // we're okay and we retun true
-        if($error > 0) { return false; } else { return true; }
-      }
-    }
-    else
-    {
-      atkerror("Error in function check_color(): Invalid argument for color type.");
-      return false;
-    }
-  }
-
-  /**
    * The atkColorPickerAttribute class represents an attribute of an atkNode.
    * An atkColorPickerAttribute shows a box with 10 user defined colors and 90 pre-defined colors
    * from wich the user can select a color or enter the hexcode in a textfield
@@ -230,6 +168,8 @@
   {
     var $m_userColors;
     var $m_currentColor;
+    
+    var $m_colorMode = CP_COLORMODE_DEFAULT;
 
     /**
      * Constructor
@@ -261,6 +201,34 @@
       return array();
     }
 
+    /**
+     * Set the colormode (The value is checked according to the colormode that is set).
+     * 
+     * Supported values are:
+     * default (rgb, hex with 6 characters digits, hex with 3 characters, text etc.). 
+     * hex6    (only 6 digit hexadecimal)
+     * 
+     * Other modes are not supported yet, but could be implemented in the future.
+     *
+     * @param String $mode
+     */
+    function setColorMode($mode = NULL)
+    {
+      if ($mode === NULL)
+        $this->m_colorMode = CP_COLORMODE_DEFAULT;
+      else
+        $this->m_colorMode = $mode;
+    }
+    
+    /**
+     * Get the colormode for this colorpicker.
+     *
+     * @return unknown
+     */
+    function getColorMode()
+    {
+      return $this->m_colorMode;
+    }
 
     function edit($record="", $fieldprefix="")
     {
@@ -320,9 +288,158 @@
     function validate(&$record, $mode)
     {
       $color = $record[$this->fieldName()];
-      if(!check_color($color))
+      if(!$this->check_color($color))
         triggerError($record, $this->fieldName(), 'error_invalid_color');
     }
+    
+    /**
+     * Function to check if a color is correct (default is hex colors)
+     * Example:
+     * check_color("#zff, "hex"")
+     * check_color("rgb(204,255,0)", "rgb")
+     * @access private
+     * @return boolean valid color or not
+     */
+    function check_color()
+    {
+      $numargs = func_num_args();    
+      if (!$this->checkNumArgs($numargs)) 
+        return false;
+      
+      $colors = func_get_arg(0);
+      $type = ($numargs == 2) ? func_get_arg(1) : 'hex';
+  
+      if (!$this->checkTypeAndMode($type)) 
+        return false;
+      
+      // color types -
+      //          hex - hexidecimal value in form of #XXX, XXX, #XXXXXX, or XXXXXX
+      //          rgb - rgb value in form of rgb(X,Y,Z);
+      if($type == "hex")
+      {
+        $colors = strtolower(str_replace("#", "", $colors));
+        return $this->checkHexColor($colors);
+      }
+      elseif($type == "rgb")
+      {
+        $error = 0;
+        // check the start and the end of the color code to make sure it's a valid form
+        if((substr($colors, 0, 4)) != "rgb(" or substr($colors, -1) != ")"){ $error++; }
+        else
+        {
+          $len = strlen($colors);
+          // the full length - 5 characters to make up for the "rgb(" and the ")" - 5 characters total
+          $lenone = $len - 5;
+  
+          // $colors is now only the values and the commas (",") that seperate them
+          // rgb(51,102,153) is now 51,102,153 - we need this to explode the data in the next step
+          $colors = substr($colors, 4, $lenone);
+  
+          // explode the color substring - should be in X,Y,Z format now.
+          // $extras takes any characters more than the X,Y,Z format.
+          list($r, $g, $b, $extras) = explode(",",$colors);
+  
+          // Check the rgb values that were just exploded.
+          if($r < 0 or $r > 255 or $g < 0 or $g > 255 or $b < 0 or $b > 255) { $error++; }
+  
+          // Make sure that none of the values are blank  - prevents rgb(12) or rgb(12,12) from being valid
+          if($r == "" or $g == "" or $b == ""){ $error++; }
+  
+          // \D in the character class means any non-decimal character except newline
+          $rt = preg_match_all("[\D]", $r, $matches);
+          $gt = preg_match_all("[\D]", $g, $matches);
+          $bt = preg_match_all("[\D]", $b, $matches);
+  
+          // If we matched any characters above the values are not valid.
+          // Also is there is anything in $extras - the whole color code is an invalid form!
+          if($rt > 0 or $gt > 0 or $bt > 0 or $extras != ""){ $error++; }
+  
+          // If there are any errors then the color is not valid, return false, otherwise
+          // we're okay and we retun true
+          if($error > 0) { return false; } else { return true; }
+        }
+      }
+      else
+      {
+        atkerror("Error in function check_color(): Invalid argument for color type.");
+        return false;
+      }
+    }
+    
+    /**
+     * Check the amount of arguments that were passed
+     *
+     * @param Integer $numargs The number of arguments that were passed
+     * @return Boolean True if the number of arguments is valid, False otherwise
+     */
+    function checkNumArgs($numargs)
+    {
+      if($numargs < 1) 
+      { 
+        atkerror("Error in function check_color(): No arguments passed to function."); 
+        return false; 
+      }
+      
+      if($numargs > 2) 
+      { 
+        atkerror("Error in function check_color(): Too many arguments passed to function."); 
+        return false; 
+      }
+      
+      return true;
+    }
+    
+    /**
+     * Check if the determined type matches the mode that was set.
+     *
+     * @param String $type
+     * @return True if valid, false otherwise
+     */
+    function checkTypeAndMode($type)
+    { 
+      // For hex types, the colormode must be default or hex6
+      if (($type == 'hex') && 
+          in_array($this->getColorMode(), array(CP_COLORMODE_DEFAULT, CP_COLORMODE_HEX6)))
+      {
+        return true;
+      }
+      
+      // For rgb types, the colormode must be default.
+      if (($type == 'rgb') &&
+          ($this->getColorMode() == CP_COLORMODE_DEFAULT))
+      {
+        return true;
+      }
+      
+      return false;
+    }
+    
+    /**
+     * Check the hex color (also based on the mode).
+     * 
+     * @param String $color
+     * @return True if valid, false otherwise
+     */
+    function checkHexColor($colors)
+    {
+      // \d is all decimal digits (0-9)
+      $t = preg_match_all("([\da-f])", $colors, $matches);
+      $length = strlen($colors);
+  
+      // Have to match the preg_match_all with the length to prevent incorrect results
+      // else 3 matches in a 6 character code would make something like 123x98 valid      
+      $isHex3 = ($t == 3 && $length == 3);
+      $isHex6 = ($t == 6 && $length == 6);
+      
+      if ($isHex3)
+      {
+        return $this->getColorMode() != CP_COLORMODE_HEX6;
+      }
+
+      // If the color is not hex3, it must be hex6 otherwise this check fails.
+      return $isHex6;
+    }
+
 
     function dbFieldType()
     {
