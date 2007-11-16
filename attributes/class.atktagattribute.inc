@@ -131,7 +131,7 @@
 
       if ($this->createDestinationInstance())
       {
-        $html = $this->displayDefaultTags();
+        $html = $this->displayDefaultTags($prefix);
 
         //only refill the record, if we are not in TA_ERROR mode, and no errors are found.
         if(!(count($this->m_nonematching) && $this->m_mode==TA_ERROR))
@@ -147,7 +147,7 @@
       }
     }
 
-    function displayDefaultTags()
+    function displayDefaultTags($prefix='')
     {
       $id = $this->getHtmlid($prefix);
 
