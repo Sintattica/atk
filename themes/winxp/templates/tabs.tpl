@@ -94,7 +94,3 @@ function mouseOutImage(el, left, right)
     </td>
   </tr>
 </table>
-
-<script language="JavaScript" type="text/javascript">
-showTab();
-</script>
