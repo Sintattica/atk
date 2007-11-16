@@ -8,8 +8,8 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c)2000-2006 Ibuildings.nl BV
- * @copyright (c)2000-2006 Ivo Jansch
+ * @copyright (c) 2000-2007 Ibuildings.nl BV
+ * @copyright (c) 2000-2007 Peter C. Verhage
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
@@ -29,12 +29,11 @@ class atkDGIndex extends atkDGComponent
   /**
    * Returns the available indices.
    * 
-   * @param atkDataGrid $grid 
    * @return array available indices
    * 
    * @todo use database to get an overview of real available indices
    */
-  function getAvailableIndices(&$grid)
+  protected function getAvailableIndices()
   {
     return array('A','B','C','D','E','F','G','H','I','J','K','L','M',
                  'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');    
@@ -42,14 +41,13 @@ class atkDGIndex extends atkDGComponent
   
   /**
    * Returns an array with index links.
-   *
-   * @param atkDataGrid $grid 
    */
-  function getLinks(&$grid)
+  protected function getLinks()
   {
+    $grid = $this->getGrid();
     $links = array();    
     
-    $chars = $this->getAvailableIndices($grid);
+    $chars = $this->getAvailableIndices();
     $index = $grid->getIndex();  
     $search = $grid->getSearch();
     $current = isset($search[$index]) ? $search[$index]{0} : NULL;
@@ -58,16 +56,16 @@ class atkDGIndex extends atkDGComponent
     foreach ($chars as $char)
     {
       $title = $char;
-      $url = $grid->createLink(array('atkstartat' => 0, 'atksearch' => array($index => "{$char}*"), 'atksinglesearchmode' => array($index => 'wildcard')));
-      $links[] = array('type' => 'index', 'title' => $title, 'url' => $url, 'current' => $char == $current);
+      $call = $grid->getUpdateCall(array('atkstartat' => 0, 'atksearch' => array($index => "{$char}*"), 'atksinglesearchmode' => array($index => 'wildcard')));
+      $links[] = array('type' => 'index', 'title' => $title, 'call' => $call, 'current' => $char == $current);
     }
 
     // view all
     if (count($search) > 0)
     {
       $title = $grid->text('view_all');               
-      $url = $grid->createLink(array('atksearch' => ''));
-      $links[] = array('type' => 'all', 'url' => $url, 'title' => $title);      
+      $call = $grid->getUpdateCall(array('atksearch' => ''));
+      $links[] = array('type' => 'all', 'call' => $call, 'title' => $title);      
     }    
     
     return $links;
@@ -76,17 +74,12 @@ class atkDGIndex extends atkDGComponent
   /**
    * Renders the index for the given data grid.
    *
-   * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
-  function render(&$grid)
+  public function render()
   {
-    $links = $this->getLinks($grid);
-    
-    $ui = &$grid->getUi();
-    $result = $ui->render('dgindex.tpl', array('links' => $links));
-    
+    $links = $this->getLinks();
+    $result = $this->getGrid()->getUi()->render('dgindex.tpl', array('links' => $links));
     return $result;
   }
 }
-?>

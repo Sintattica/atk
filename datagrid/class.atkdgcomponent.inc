@@ -24,17 +24,75 @@ atkimport('atk.datagrid.atkdatagrid');
  * @package atk
  * @subpackage datagrid
  */
-class atkDGComponent
+abstract class atkDGComponent
 {
   /**
-   * Renders the data grid component.
+   * The atkDataGrid.
    *
-   * @param atkDataGrid $grid the data grid
-   * @return string rendered HTML
+   * @var atkDataGrid
    */
-  function render(&$grid)
+  private $m_grid;
+  
+  /**
+   * Constructor.
+   *
+   * @param atkDataGrid $grid
+   */
+  public function __construct($grid)
   {
-    return "";
+    $this->m_grid = $grid;
   }
+  
+  /**
+   * Returns the data grid.
+   *
+   * @return atkDataGrid data grid
+   */
+  protected function getGrid()
+  {
+    return $this->m_grid;
+  }
+  
+  /**
+   * Returns the data grid node.
+   * 
+   * @return atkNode node
+   */
+  protected function getNode()
+  {
+    return $this->getGrid()->getNode();
+  }
+  
+  /**
+   * Returns the page object.
+   * 
+   * @return atkPage page
+   */
+  protected function getPage()
+  {
+    return $this->getNode()->getPage();
+  }
+  
+  /**
+   * Returns the Ui object.
+   * 
+   * @return atkUi ui
+   */
+  protected function getUi()
+  {
+    return $this->getNode()->getUi();
+  }
+  
+  /**
+   * Translates the given string.
+   */
+  protected function text($string, $fallback='', $useDefault=false)
+  {
+    return $this->getGrid()->text($string, $fallback, $useDefault);
+  }
+  
+  /**
+   * Renders this component.
+   */
+  public abstract function render();
 }
-?>

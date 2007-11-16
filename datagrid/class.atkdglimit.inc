@@ -8,8 +8,8 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c)2000-2006 Ibuildings.nl BV
- * @copyright (c)2000-2006 Ivo Jansch
+ * @copyright (c) 2000-2007 Ibuildings.nl BV
+ * @copyright (c) 2000-2007 Peter C. Verhage
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
@@ -27,27 +27,41 @@ atkimport('atk.datagrid.atkdgcomponent');
 class atkDGLimit extends atkDGComponent
 {
   /**
+   * Returns a list of possible limit values.
+   *
+   * @return array list of possible limit values
+   */
+  protected function getValues()
+  {
+    $defaultLimit = $this->getGrid()->getDefaultLimit();
+    $limit = $this->getGrid()->getLimit();    
+    $values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
+    $values = array_diff($values, array(-1));
+    $values = array_unique($values);
+    sort($values);    
+    return $values;
+  }
+  
+  /**
    * Returns the possible options.
    *
-   * @param atkDataGrid $grid
+   * @param array $values possible limits
+   * 
    * @return array possible options
    */
-  function getOptions(&$grid, $defaultLimit, $limit)
+  protected function getOptions($values)
   {
     $options = array();
     
-    $defaultLimit = $grid->getDefaultLimit();
-    $limit = $grid->getLimit();    
-    
-    $values = array(5, 10, 15, 20, 25, 30, 40, 50, 100, $defaultLimit, $limit);
-    $values = array_unique($values);
-    sort($values);
-    
+    $limit = $this->getGrid()->getLimit();
+        
     foreach ($values as $value)
     {
       $current = $value == $limit;
       $options[] = array('title' => $value, 'value' => $value, 'current' => $current);
     }   
+    
+    $options[] = array('title' => $this->text('all'), 'value' => -1, 'current' => $limit == -1);
     
     return $options;
   }    
@@ -55,17 +69,20 @@ class atkDGLimit extends atkDGComponent
   /**
    * Renders the limit box for the given data grid.
    *
-   * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
-  function render(&$grid)
+  public function render()
   {
-    $options = $this->getOptions($grid);
-    $script = $grid->createLink(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
+    $values = $this->getValues();
     
-    $ui = &$grid->getUi();
-    $result = $ui->render('dglimit.tpl', array('options' => $options, 'script' => $script));
+    if ($this->getGrid()->getCount() <= $values[0])
+    {
+      return '';
+    }
     
+    $options = $this->getOptions($values);
+    $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
+    $result = $this->getUi()->render('dglimit.tpl', array('options' => $options, 'call' => $call));
     return $result;    
   }
 }

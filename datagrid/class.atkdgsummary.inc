@@ -32,15 +32,38 @@ class atkDGSummary extends atkDGComponent
    * @param atkDataGrid $grid the data grid
    * @return string rendered HTML
    */
-  function render(&$grid)
+  public function render()
   {
+    $grid = $this->getGrid();
+    
     $limit = $grid->getLimit();
     $count = $grid->getCount();
+    
+    if ($count == 0)
+    {
+      return $grid->text('datagrid_summary_no_records', '', false);
+    }
+    
+    if ($limit == -1)
+    {
+      $limit = $count;
+    }
+    
 	  $start = $grid->getOffset();
-	  $end = min($start + $limit - 1, $count);
+	  $end = min($start + $limit, $count);
+	  $page = floor(($start / $limit) + 1);
+	  $pages = ceil($count / $limit);
 
 	  $string = $grid->text('datagrid_summary');
-	  $params = array('start' => $start, 'end' => $end, 'count' => $count, 'limit' => $limit);
+
+	  $params = array(
+	    'start' => $start + 1, 
+	    'end' => $end, 
+	    'count' => $count, 
+	    'limit' => $limit, 
+	    'page' => $page, 
+	    'pages' => $pages
+	  );
 
 	  atkimport("atk.utils.atkstringparser");	  
 	  $parser = new atkStringParser($string);
