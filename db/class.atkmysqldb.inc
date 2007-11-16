@@ -418,10 +418,10 @@
         return 0;
       }
 
-      /* cannot lock */
+      /* cannot connect */
       else
       {
-        $this->halt("cannot lock ".$this->m_seq_table." - has it been created?");
+        $this->halt("cannot connect to ".$this->m_host);
       }
     }
 
