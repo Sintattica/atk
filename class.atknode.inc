@@ -3597,7 +3597,7 @@
 
         if ( (is_array($searchArray) && count($searchArray)>0)
               || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-              || !is_null($indexValue) )
+              || !empty($indexValue) )
         {
           $searching = true;
         }
