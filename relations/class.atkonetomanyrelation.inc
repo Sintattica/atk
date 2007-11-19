@@ -524,7 +524,7 @@
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."=".$primkeyattr->value2db($record);
+          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$primkeyattr->value2db($record)."'";
         }
       }
       else

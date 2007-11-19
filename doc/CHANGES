@@ -6,6 +6,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
+* Fix use of non-numeric keys in atkOneToManyRelation [Marc]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
 + Added support for image mime type validation in the atkfileattribute. [Martin]
