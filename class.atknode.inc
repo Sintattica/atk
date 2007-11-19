@@ -1789,7 +1789,7 @@
       }
       if (is_object($ui))
       {
-        $res.= $ui->title($this->m_module, $this->m_type, $action,$nomodule);
+        $res.= $ui->nodeTitle($this, $action,$nomodule);
       }
 
       return $res;

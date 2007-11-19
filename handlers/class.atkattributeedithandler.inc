@@ -40,12 +40,23 @@
   class atkAttributeEditHandler extends atkActionHandler
   {
     var $m_processUrl = null;
-
+    var $m_masterNode = null;
+    
+    function setMasterNode($node)
+    {
+      $this->m_masterNode = $node;
+    }
+        
     /**
      * The action method.
      */
     function action_attributeedit()
     {
+      if ($this->m_masterNode == null)
+      {
+        $this->m_masterNode = $this->m_node;
+      }
+      
       $this->setRenderMode('dialog');
 
       if ($this->m_partial == 'process')
@@ -81,12 +92,8 @@
      */
     function getSelector()
     {
-      // Is the selector in the atkselector postvar? ...
-      if (isset($this->m_node->m_postvars['atkselector']))
-        return $this->m_node->m_postvars['atkselector'];
-
-      // ...if not, it should be in the prefixed atkselector postvar. If not, we return null.
-      return $this->m_node->m_postvars[$this->m_node->m_postvars['atkformname'].'_'.'atkselector'];
+      // The selector should be in the atkselector postvar      
+      return $this->m_node->m_postvars['atkselector'];
     }
 
     /**
@@ -107,28 +114,20 @@
       $node = &$this->m_node;
       $page = &$this->getPage();
 
-      $atkselector = $this->getSelector();
+      $atkselector = $this->getSelector();      
 
-      if (isset($atkselector))
+      if (!isset($atkselector) || count($atkselector)==0)
       {
-        // looping and changing the atkselectors by reference caused some problems
-        // so we just use a for loop.
-        for ($i=0,$_i=count($atkselector);$i<$_i;$i++)
-        {
-          /**
-           * @todo: somehow the atkselector is encoded twice, we need
-           * to decode it twice.
-           */
-          $atkselector[$i] = urldecode(urldecode($atkselector[$i]));
-        }
+        $this->handleError(ATTRIBUTEEDIT_ERROR_NO_SELECTOR_SET);
+        return;
       }
-
+      
       $attributename  = $node->m_postvars["attributename"];
       $attributevalue = $node->m_postvars[$attributename];
       $attribute = $node->getAttribute($attributename);
-
+      
       /** check if input is correct ... */
-      if (!isset($atkselector) || count($atkselector)==0 || !is_object($attribute) || empty($attributename))
+      if (!is_object($attribute) || empty($attributename))
       {
         $this->handleError(ATTRIBUTEEDIT_ERROR_DEFAULT);
         return;
@@ -216,10 +215,14 @@
      * @param Int $error
      * @return String HTML Error page
      */
-    function getErrorPage($error, $record=null)
+    function getErrorPage($error, $record=null, $customerror='')
     {
       $errortext = '';
-      if ($error == ATTRIBUTEEDIT_ERROR_UPDATE)
+      if ($customerror != '')
+      {
+        $errortext = $customerror;
+      }
+      elseif ($error == ATTRIBUTEEDIT_ERROR_UPDATE)
       {
         $errortext = $this->m_node->text('error_attributeedit_update');
       }
@@ -294,7 +297,7 @@
       $ui = &$this->getUi();
       $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
       $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattributeedithandler.js');
-      $page->register_style($ui->stylePath("style.css"));
+      $page->register_style($ui->stylePath("style.css"));      
     }
 
     /**
@@ -370,7 +373,7 @@
 
     function onChange()
     {
-      $url = partial_url($this->m_node->atkNodeType(), 'attributeedit', 'refreshvaluefield');
+      $url = partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'refreshvaluefield');
       $script = "
         ATK.AttributeEditHandler.refreshvalues('$url');
       ";
@@ -381,8 +384,6 @@
     /**
      * Get the dropdown with the possible values for
      * the selected attribute.
-     *
-     * If no
      *
      * @param unknown_type $selectedAttribute
      * @return unknown
@@ -513,11 +514,6 @@
       {
         foreach ($atkselector as &$selector)
         {
-          /**
-           * @todo: For some reason the atkselector has been urlencoded twice.....
-           * so we need to decode it twice.
-           */
-          $selector = urldecode(urldecode($selector));
           $formstart.= '<input type="hidden" id="atkselector[]" name="atkselector[]" value="'.$selector.'">';
         }
       }
@@ -536,6 +532,7 @@
 
       $field = $this->_getDropDownValues($selectedattribute);
 
+      $keys = implode(',', array_keys($this->m_node->m_postvars));
       $content = "<script type=\"text/javascript\">$('selectedvaluediv').innerHTML = ".atkJSON::encode($field)."</script>";
 
       $page->addContent($content);
@@ -554,7 +551,7 @@
       }
       else
       {
-        return partial_url($this->m_node->atkNodeType(), 'attributeedit', 'process');
+        return partial_url($this->m_masterNode->atkNodeType(), 'attributeedit', 'process');
       }
     }
 

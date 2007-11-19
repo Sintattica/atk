@@ -67,3 +67,34 @@ Ajax.Request.prototype.setRequestHeaders = function() {
 
 // Updater extends Request, also update the setRequestHeaders method.
 Ajax.Updater.prototype.setRequestHeaders = Ajax.Request.prototype.setRequestHeaders;
+
+
+// Fix for toQueryString which encodes a value twice instead of once
+// if you are using the same key more then once.
+Object.extend(Hash, {
+  toQueryString: function(obj) {
+    var parts = [];
+
+	  this.prototype._each.call(obj, function(pair) {
+      if (!pair.key) return;
+
+      if (pair.value && pair.value.constructor == Array) {
+        var values = pair.value.compact();
+        if (values.length < 2) pair.value = values.reduce();
+        else {
+        	key = encodeURIComponent(pair.key);
+          values.each(function(value) {            
+            value = value != undefined ? encodeURIComponent(value) : '';
+            //parts.push(key + '=' + encodeURIComponent(value)); // <-- OLD VERSION
+            parts.push(key + '=' + value); // <-- NEW VERSION
+          });
+          return;
+        }
+      }
+      if (pair.value == undefined) pair[1] = '';
+      parts.push(pair.map(encodeURIComponent).join('='));
+	  });
+
+    return parts.join('&');
+  }
+});

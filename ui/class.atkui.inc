@@ -226,6 +226,12 @@
     {
       return $this->m_theme->stylePath($style, $module);
     }
+    
+    function title($module, $nodetype, $action=null, $actiononly=false)
+    {
+      if ($module == NULL || $nodetype == NULL) return "";
+      return $this->nodeTitle(atkGetNode($module.'.'.$nodetype), $action, $actiononly);
+    }
 
     /**
      * This function returns a suitable title text for an action.
@@ -238,12 +244,13 @@
      *                          if we couldn't find a specific title
      * @return String the title for the action
      */
-    function title($module, $nodetype, $action=NULL, $actiononly=false)
+    function nodeTitle($node, $action=NULL, $actiononly=false)
     {
-      if ($module == NULL || $nodetype == NULL) return "";
-      $node = &atkGetNode($module.'.'.$nodetype);
       if ($node == NULL) return "";
 
+      $nodetype = $node->m_type;
+      $module = $node->m_module;
+      
       if ($action != NULL)
       {
         $keys = array('title_'.$module.'_'.$nodetype.'_'.$action,
