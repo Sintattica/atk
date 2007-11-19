@@ -1,3 +1,4 @@
+{$header}
 {$formstart}
 <div id="action-helplink" style="border: 0px solid red">
 {if isset($helplink)}{$helplink}{/if}

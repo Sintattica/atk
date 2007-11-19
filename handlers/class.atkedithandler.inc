@@ -142,7 +142,7 @@
 
       $params               = $node->getDefaultActionParams($locked);
       $params["formstart"]  = $this->getFormStart();
-      $params["header"]     = $this->invoke("editHeader");
+      $params["header"]     = $this->invoke("editHeader", $record);
       $params["content"]    = $this->getContent($record);
       $params["buttons"]    = $this->getFormButtons($record);
       $params["formend"]    = $this->getFormEnd();

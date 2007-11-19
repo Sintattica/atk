@@ -1,4 +1,3 @@
-
 <table class="panel" cellpadding="0" cellspacing="0">
   <tr>
     <td><div class="panelTitle"><span class="panelTitleText">{$title}</span><div class="panelTitleRight"><img src="{atkthemeimg tabRight.gif}" alt="tabend"><div style="visibility: hidden" id="atkbusy"><img src="{atkthemeimg spinner.gif}" alt="Busy"/></div></div></div></td>
