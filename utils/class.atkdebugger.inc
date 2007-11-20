@@ -65,12 +65,20 @@
 
     function addQuery($query)
     {
-      $instance = &atkDebugger::getInstance();
-      if (is_object($instance))
+      if (atkconfig('debug') > 0)
       {
-        return $instance->_addQuery($query);
+        $instance = &atkDebugger::getInstance();
+        if (is_object($instance))
+        {
+          return $instance->_addQuery($query);
+        }
+        return false;
       }
-      return false;
+      else 
+      {
+        atkdebug($query);
+        return true;
+      }
     }
 
     function _addStatement($txt)

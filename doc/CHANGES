@@ -144,7 +144,7 @@ Changed in ATK 6.2
   [Peter, Dennis]
 * Added a zIndex for the calendar.js script to make sure calendars are also on top in
   dialogs. [Peter, Dennis]
-
+* Don't log query stack trace in session if $config_debug <= 0. [Peter]
 
 Changed in ATK 6.1
 ------------------
