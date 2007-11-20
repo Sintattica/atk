@@ -33,7 +33,7 @@
     /**
      * Function to get an Instance of the atkTheme class,
      * ensures that there is never more than one instance (Singleton pattern)
-     * @return obj atkTheme instance
+     * @return atkTheme theme instance
      */
     function &getInstance($reset=false)
     {
