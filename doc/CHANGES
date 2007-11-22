@@ -49,6 +49,14 @@ Changed in ATK 6.2
   wish to override. [Peter, Dennis]
 + Added method nodeTitle() to atkUI. It supports the same functionality as the title() method,
   but supports providing an object instead an atkNodeType. [Peter, Dennis]
++ Added method setEditFieldPrefix and getEditFieldPrefix to the atknode class.
+  ATK now supports a default fieldprefix for all fields. This can be set in 
+  2 ways: the setEditFieldPrefix for a specific node or the 
+  $config_edit_fieldprefix for the complete ATK application. [Lineke]
++ Added $config_alternative_loginform option. For applications that do not 
+  want to use the atk login form or the htaccess box the config variable can
+  contain an url to redirect to instead of displaying the login form of ATK.
+  [Lineke]
 * Fixed atkTagAttribute (javascript was not working when the atkTagAttribute
   was used in a relation). [Harrie]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
