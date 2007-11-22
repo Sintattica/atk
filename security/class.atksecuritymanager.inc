@@ -440,7 +440,25 @@
       // still not logged in?!
       if (!isset($session["login"])||$session["login"]!=1)
       {
-        if(atkconfig("auth_loginform"))
+        $location = atkconfig('alternative_loginform', '');
+        if ($location)
+        {
+          if (atkconfig("debug")>=2)
+          {
+            $debugger = &atkinstance('atk.utils.atkdebugger');
+            $debugger->setRedirectUrl($location);
+            atkdebug('Non-debug version would have redirected to <a href="'.$location.'">'.$location.'</a>');
+            $output = &atkOutput::getInstance();
+            $output->outputFlush();
+            exit();
+          }
+          else
+          {
+            header('Location: '.$location);
+            exit();
+          }
+        }
+        elseif(atkconfig("auth_loginform"))
         {
           $this->loginForm($auth_user, $response);
           $output = &atkOutput::getInstance();
