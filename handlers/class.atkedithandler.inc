@@ -185,7 +185,7 @@
         $suppressList = $node->m_postvars['atksuppress'];
       }
 
-      $form = $this->editForm("edit",$record,$forceList,$suppressList);
+      $form = $this->editForm("edit",$record,$forceList,$suppressList,$node->getEditFieldPrefix());
 
       return $node->tabulate("edit", $form);
     }

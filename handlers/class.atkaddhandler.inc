@@ -153,7 +153,7 @@
       $edithandler = &$node->getHandler("edit");
 
       $forceList = (isset($node->m_postvars['atkfilter'])) ? decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
-      $form = $edithandler->editForm("add",$record,$forceList);
+      $form = $edithandler->editForm("add",$record,$forceList,'',$node->getEditFieldPrefix());
 
       return $node->tabulate("add", $form);
     }

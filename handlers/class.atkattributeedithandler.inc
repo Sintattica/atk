@@ -341,6 +341,7 @@
     function _getDropDownAttributes($selectedAttribute="")
     {
       $fieldprefix = $this->m_node->m_postvars['atkfieldprefix'];
+      if ($fieldprefix == '') $fieldprefix = $this->m_node->getEditFieldPrefix();
 
       $attributes = $this->getSupportedAttributes();
 

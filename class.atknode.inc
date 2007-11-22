@@ -735,6 +735,13 @@
      * @var array
      */
     var $m_dialog_mra = null;
+    
+    /**
+     * The default edit fieldprefix to use for atk
+     * @access private
+     * @var String
+     */
+    var $m_edit_fieldprefix = '';
 
     /**
      * Constructor.
@@ -755,6 +762,8 @@
       $this->m_type = $type;
       $this->m_flags = $flags;
       $this->m_module = atkModule::getModuleScope();
+      
+      $this->setEditFieldPrefix(atkconfig('edit_fieldprefix', ''));
     }
 
     /**
@@ -1484,13 +1493,16 @@
     {
       $sections = array();
 
-      foreach ($this->m_sectionList[$action] as $element)
+      if (is_array($this->m_sectionList[$action]))
       {
-        list($tab,$sec) = (strpos($element, ".") !== false) ? explode(".",$element) : array($element, null);
-
-        //if this section is on an active tab, we return it.
-        if($tab == $this->getActiveTab() && $sec!==NULL)
-          $sections[] = $sec;
+        foreach ($this->m_sectionList[$action] as $element)
+        {
+          list($tab,$sec) = (strpos($element, ".") !== false) ? explode(".",$element) : array($element, null);
+  
+          //if this section is on an active tab, we return it.
+          if($tab == $this->getActiveTab() && $sec!==NULL)
+            $sections[] = $sec;
+        }
       }
 
       //we do not want duplicate sections on the same tab.
@@ -1633,11 +1645,14 @@
     function getActiveSections($tab, $mode)
     {
       $activeSections = array();
-      foreach ($this->m_sectionList[$mode] as $section)
+      if (is_array($this->m_sectionList[$mode]))
       {
-        if (substr($section,0,strlen($tab))==$tab && in_array($section, $this->m_default_expanded_sections))
+        foreach ($this->m_sectionList[$mode] as $section)
         {
-          $activeSections[] = $section;
+          if (substr($section,0,strlen($tab))==$tab && in_array($section, $this->m_default_expanded_sections))
+          {
+            $activeSections[] = $section;
+          }
         }
       }
 
@@ -2025,6 +2040,7 @@
 
       /* extra submission data */
       //$result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkescape">';
+      $result["hide"][] = '<input type="hidden" name="atkfieldprefix" value="'.$this->getEditFieldPrefix(false).'">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atknodetype" value="'.$this->atknodetype().'">';
       $result["hide"][] = '<input type="hidden" name="'.$fieldprefix.'atkprimkey" value="'.atkArrayNvl($record, "atkprimkey", "").'">';
 
@@ -5081,6 +5097,28 @@
     function getDialogMRA()
     {
       return $this->m_dialog_mra;
+    }
+    
+    /**
+     * Set the edit fieldprefix to use in atk
+     *
+     * @param string $prefix
+     */
+    function setEditFieldPrefix($prefix)
+    {
+      $this->m_edit_fieldprefix = $prefix;
+    }
+    
+    /**
+     * Get the edit fieldprefix to use
+     *
+     * @param boolean $atk_layout do we want the prefix in atkstyle (with _AE_) or not
+     * @return string with edit fieldprefix
+     */
+    function getEditFieldPrefix($atk_layout=true)
+    {
+      if ($this->m_edit_fieldprefix == '') return '';
+      else return $this->m_edit_fieldprefix.($atk_layout ? '_AE_' : '');
     }
   }
 ?>
