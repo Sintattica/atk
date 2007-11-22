@@ -227,7 +227,7 @@ input.btn_saveandclose
   font-weight: bold;
 }
 
-#editform td
+#editform td.field
 {
   padding-right: 12px;
   /* white-space: nowrap; */
@@ -379,7 +379,7 @@ input.btn_saveandclose
   margin: 0px !important;
 }
 
-#editform td
+#editform td.field
 {
   padding-top: 2px;
   padding-bottom: 2px;
