@@ -22,8 +22,8 @@ body
     {$auth_max_loginattempts_exceeded}
   {else}
     {$atksessionformvars}
-    {if isset($auth_mismatch)}{$auth_mismatch}<br>{/if}
-    {if isset($auth_account_locked)}{$auth_account_locked}<br>{/if}
+    {if isset($auth_mismatch)}<span class="error">{$auth_mismatch}</span><br>{/if}
+    {if isset($auth_account_locked)}<span class="error">{$auth_account_locked}</span><br>{/if}
     <table cellpadding="0" cellspacing="0" border="0"><tr>
     <td class="loginformLabel">{atktext username}:</td><td class="loginformField">{$userfield}</td>
     </tr><tr>
