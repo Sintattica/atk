@@ -3,9 +3,9 @@
     <td colspan="2" valign="top">{$field.line}</td>
   {else}
     {if $field.label != "AF_NO_LABEL"}
-      <td valign="top" class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}" nowrap="nowrap">
+      <td valign="top" class="{if isset($field.error)}errorlabel{else}fieldlabel{/if}">
         {if $field.label!=""}
-          {$field.label|wordwrap:20:"<br />\n"}
+          {$field.label}
           {if isset($field.obligatory)}{$field.obligatory}{/if}:
         {/if}
       </td>
