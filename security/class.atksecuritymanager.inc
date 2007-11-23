@@ -440,7 +440,7 @@
       // still not logged in?!
       if (!isset($session["login"])||$session["login"]!=1)
       {
-        $location = atkconfig('alternative_loginform', '');
+        $location = atkconfig('auth_loginpage', '');
         if ($location)
         {
           if (atkconfig("debug")>=2)
