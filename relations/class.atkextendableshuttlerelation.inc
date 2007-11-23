@@ -32,6 +32,8 @@
   class atkExtendableShuttleRelation extends atkManyToManyRelation
   {
     protected $m_controlsBySection = array();
+    protected $m_selectedfields = null;
+    protected $m_availablefields = null;
 
     public function __construct($name, $link, $destination, $flags=0)
     {
@@ -95,6 +97,8 @@
 
     private function renderSelectBoxes($side,$record,$mode,$prefix)
     {
+      $this->loadFieldData($record, $mode);
+      
       if ($side=='available')
       {
         $rs = $this->getAvailableFields($record, $mode);
@@ -162,7 +166,9 @@
       $url = addslashes(partial_url($this->m_ownerInstance->atkNodeType(), $mode, "attribute.".$this->getHtmlId($fieldprefix).".selection", array("atkfieldprefix" => $fieldprefix)));
       $this->addOnChangeHandler("shuttle_refresh('$url', '".$this->getHtmlId($fieldprefix).'[cselected][]['.$this->getRemoteKey().']'."', '".$prefix.$this->fieldName()."[section]', el);");
       $this->_renderChangeHandler($fieldprefix);
-
+      
+      $this->loadFieldData($record, $mode);
+      
       // Get controls for 'available' side
       foreach ($this->m_controlsBySection[atkShuttleControl::AVAILABLE] as $control)
       {
@@ -208,7 +214,7 @@
       $page->register_submitscript("shuttle_selectAll('".$rightname."');");
 
       $ui = ATKUI::getInstance();
-      return $ui->render('extendableshuttle.tpl',array(
+      $result = $ui->render('extendableshuttle.tpl',array(
                                   'leftname'=>$leftname,
                                   'rightname'=>$rightname,
                                   'name'=>$name,
@@ -221,7 +227,7 @@
                                   'selected_options'=>$selected_options,
       ));
 
-      return $output;
+      return $result;
     }
 
     public function load($notused, $record)
@@ -316,6 +322,35 @@
 
       return $selectedPk;
     }
+        
+    /**
+     * A small performance boost method to load the available- and selectedfields
+     * into two arrays. This prevents the foreach loops in both the getSelectedFields()
+     * and in getAvailableFields() to be executed.
+     *
+     * @param Array $record The record
+     * @param String $mode The current mode.
+     */
+    private function loadFieldData($record, $mode)
+    {        
+      $this->m_availablefields = array();
+      $this->m_selectedfields = array();
+      
+      $recs = $this->_getSelectableRecords($record, $mode);
+      $selectedFields = $this->getSelectedFieldsFromRecord($record);
+            
+      foreach ($recs as $rec)
+      {
+        if (in_array($this->m_destInstance->primaryKey($rec),$selectedFields))
+        {
+          $this->m_selectedfields[] = $rec;
+        }
+        else 
+        {
+          $this->m_availablefields[] = $rec;
+        }
+      }
+    }
 
     /**
      * Get array with all selected fields
@@ -325,7 +360,10 @@
      */
     public function getSelectedFields($record, $mode='add')
     {
-      $res = array();
+      if (isset($this->m_selectedfields))
+        return $this->m_selectedfields;
+
+      $this->m_selectedfields = array();
       $recs = $this->_getSelectableRecords($record, $mode);
       $selectedFields = $this->getSelectedFieldsFromRecord($record);
 
@@ -333,10 +371,10 @@
       {
         if (in_array($this->m_destInstance->primaryKey($rec),$selectedFields))
         {
-          $res[] = $rec;
+          $this->m_selectedfields[] = $rec;
         }
       }
-      return $res;
+      return $this->m_selectedfields;
     }
 
     /**
@@ -347,7 +385,10 @@
      */
     public function getAvailableFields($record, $mode='add')
     {
-      $res = array();
+      if (isset($this->m_availablefields))
+        return $this->m_availablefields;
+
+      $this->m_availablefields = array();
       $recs = $this->_getSelectableRecords($record, $mode);
       $selectedFields = $this->getSelectedFieldsFromRecord($record);
 
@@ -355,9 +396,9 @@
       {
         if (!in_array($this->m_destInstance->primaryKey($rec),$selectedFields))
         {
-          $res[] = $rec;
+          $this->m_availablefields[] = $rec;
         }
       }
-      return $res;
+      return $this->m_availablefields;
     }
   }
