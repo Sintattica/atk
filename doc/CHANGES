@@ -57,6 +57,10 @@ Changed in ATK 6.2
   want to use the atk login form or the htaccess box the config variable can
   contain an url to redirect to instead of displaying the login form of ATK.
   [Lineke]
++ Added scripts/ directory which contains utility scripts for building ATK
+  applications. [Peter]
++ Added utility scripts for dumping the contents of a table to YAML and/or
+  dumping the contents of an entire database to YAML files. [Peter]
 * Fixed atkTagAttribute (javascript was not working when the atkTagAttribute
   was used in a relation). [Harrie]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
