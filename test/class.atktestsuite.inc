@@ -15,6 +15,8 @@
    * $Id$
    */
 
+  set_time_limit(0); // no time limit
+
   /**
    * @internal Includes
    */
