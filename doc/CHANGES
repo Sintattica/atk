@@ -61,6 +61,7 @@ Changed in ATK 6.2
   applications. [Peter]
 + Added utility scripts for dumping the contents of a table to YAML and/or
   dumping the contents of an entire database to YAML files. [Peter]
+* Add support partial_refresh method and testcases for atkcalculatorattribute. [Yury]
 * Fixed atkTagAttribute (javascript was not working when the atkTagAttribute
   was used in a relation). [Harrie]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
