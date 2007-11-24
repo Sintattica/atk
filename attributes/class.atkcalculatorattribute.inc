@@ -109,6 +109,23 @@
       eval("\$result = ".$parser->parse($record).";");
       return $result;
     }
+
+    /**
+     * Returns a displayable string for this value, to be used in HTML pages.
+     * 
+     * @access public
+     * @param array $record The record that holds the value for this attribute
+     * @param String $mode The display mode.
+     * @return String HTML String
+     */
+    function display($record, $mode="")
+    {
+      if($this->m_ownerInstance->m_partial == "attribute.{$this->fieldName()}.refresh")
+      {
+        $record[$this->fieldName()] = $this->load($db, $record);
+      }
+      return parent::display($record, $mode);
+    }    
   }
 
 ?>
