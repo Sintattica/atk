@@ -3366,7 +3366,8 @@
 
         if ( (is_array($searchArray) && count($searchArray)>0)
               || (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-              || !is_null($indexValue) )
+              || !empty($indexValue) )
+
         {
           $searching = true;
           //The searchmode of an index should be used only once, therefore it uses atksinglesearchmode instead of atksearchmode.
@@ -3461,12 +3462,6 @@
             }
           }
         }
-      }
-
-      // there may be smart search criteria which we need to apply
-      if (is_array($smartSearchCriteria) && count($smartSearchCriteria) > 0)
-      {
-        $this->applySmartSearchCriteria($query, $smartSearchCriteria);
       }
 
       // there may be smart search criteria which we need to apply
