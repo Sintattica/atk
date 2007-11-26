@@ -476,10 +476,6 @@
             }
             else if (!is_array($error['attrib_name']))
             {
-              $label = $error['label'];
-            }
-            else if (!is_array($error['attrib_name']))
-            {
               $label = $node->text($error['attrib_name']);
             }
             else

@@ -838,8 +838,14 @@
         $value = $postvars[$this->fieldName()]['date'];
       }
 
+      // null
+      if (is_array($value) && $this->value2db($postvars) == null)
+      {
+        return null;
+      }
+      
       // array with year / month / day
-      if (is_array($value))
+      else if (is_array($value))
       {
         return $value;
       }

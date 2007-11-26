@@ -159,6 +159,9 @@ Changed in ATK 6.2
   dialogs. [Peter, Dennis]
 * Don't log query stack trace in session if $config_debug <= 0. [Peter]
 * Small increase in performance in atkExtendableShuttleRelation. [Dennis, Peter]
+* Fixed label display for errors registered using the deprecated
+  triggerError method. [Peter]
+* Fixed NULL detection in fetchValue of atkDateAttribute. [Peter]
 
 Changed in ATK 6.1
 ------------------

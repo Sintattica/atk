@@ -468,6 +468,7 @@
     function validate(&$record, $mode)
     {
       parent::validate($record, $mode);
+      
       $this->isAllowedFileType($record);
       $error = $record[$this->fieldName()]['error'];
       if ($error > 0)
@@ -476,15 +477,15 @@
         {
           case UPLOAD_ERR_INI_SIZE:
           case UPLOAD_ERR_FORM_SIZE:
-            triggerError($record, $this->fieldName(), 'error_file_size', atktext("error_file_size", "atk"));
+            atkTriggerError($record, $this, 'error_file_size', atktext("error_file_size", "atk"));
             break;
           case UPLOAD_ERR_EXTENSION:
-            triggerError($record, $this->fieldName(), 'error_file_mime_type', atktext("error_file_mime_type", "atk"));
+            atkTriggerError($record, $this, 'error_file_mime_type', atktext("error_file_mime_type", "atk"));
             break;
           case UPLOAD_ERR_NO_TMP_DIR:
           case UPLOAD_ERR_PARTIAL:
           default:
-            triggerError($record, $this->fieldName(), 'error_file_unknown', atktext("error_file_unknown", "atk"));
+            atkTriggerError($record, $this, 'error_file_unknown', atktext("error_file_unknown", "atk"));
         }
       }
     }
