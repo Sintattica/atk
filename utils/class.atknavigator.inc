@@ -292,6 +292,9 @@
         $p_attrib->addToQuery($query,$node->m_table,"","",1,$mode); // start at level 1
       }
       
+      //We call addToQuery() as usual, but must clear the field list and rest only index field,
+      //because in more strick db like Oracle only group by fields may be in the fields list.
+      $query->m_fields = array();
       // there may be search criteria, which we also filter
       if (is_array($searchArray) && count($searchArray)>0)
       {
@@ -340,17 +343,18 @@
       if(strpos($node->m_index,'.')!==false) $index = $node->m_index;
       else $index = $node->m_table.".".$node->m_index; //prevent ambigouse column error
       
-      $field = "UPPER(".$db->func_substring($index,1,1).")";
-      $query->addField($field,"","","",false);
-      $query->addGroupBy($field);
+      $expression = "UPPER(".$db->func_substring($index,1,1).")";
+      $query->addExpression("index",$expression,"prefix");
+      $query->addGroupBy($expression);
       
       $querystring = $query->buildSelect();
 
       $letter = array();
+      $alias = $query->m_fieldaliases["prefixindex"];
       if ($querystring)
       {
         $list = $db->getrows($querystring);
-        foreach ($list as $l) $letter[] = $l[$field];
+        foreach ($list as $l) $letter[] = $l[$alias];
       }
       return $letter;
     }    
