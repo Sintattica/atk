@@ -415,12 +415,14 @@
      */
     function isAllowedFileType(&$rec)
     {
+      if (count($this->m_allowedFileTypes) == 0) return true;
+      
       // detect whether the file is uploaded or is an existing file.
       $filename =  (!empty($rec[$this->fieldName()]['tmpfile'])) ? 
         $rec[$this->fieldName()]['tmpfile'] :
         $this->m_dir . $rec[$this->fieldName()]['filename'];
-
-      if (!empty($this->m_allowedFileTypes) && !isset($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir)
+        
+      if (@empty($rec[$this->fieldName()]['postdel']) && $filename != $this->m_dir)
       {
         $valid = false;
         
@@ -470,6 +472,7 @@
       parent::validate($record, $mode);
       
       $this->isAllowedFileType($record);
+      
       $error = $record[$this->fieldName()]['error'];
       if ($error > 0)
       {
@@ -572,24 +575,17 @@
         return $result;
       }
     }
-
+    
     /**
      * Check if the attribute is empty..
-     * @param array $postvars Array with the postvars
-     * @return boolean true if no image was uploaded
+     * 
+     * @param array $record the record
+     * 
+     * @return boolean true if empty
      */
-    function isEmpty($postvars)
+    function isEmpty($record)
     {
-      if (is_array($_FILES))
-      {
-        // php4
-        return ($_FILES[$this->fieldName()]["tmp_name"]=="none");
-      }
-      else
-      {
-        // php3
-        return ($postvars[$this->fieldName()]=="none");
-      }
+      return @empty($record[$this->fieldName()]['filename']);
     }
 
     /**

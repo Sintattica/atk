@@ -162,6 +162,8 @@ Changed in ATK 6.2
 * Fixed label display for errors registered using the deprecated
   triggerError method. [Peter]
 * Fixed NULL detection in fetchValue of atkDateAttribute. [Peter]
+* Fixed search for auto-complete atkManyToOneRelation. [Peter]
+* Fixed atkFileAttribute obligatory validation. [Peter]
 
 Changed in ATK 6.1
 ------------------

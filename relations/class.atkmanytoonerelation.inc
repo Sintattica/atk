@@ -1068,6 +1068,10 @@
           return $cond;
         }
       }
+      else if (empty($value)) // nothing to search for
+      {
+        return '';
+      }
       else // AF_LARGE || AF_RELATION_AUTOCOMPLETE
       {
         // ask the destination node for it's search condition
