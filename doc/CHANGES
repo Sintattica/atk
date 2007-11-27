@@ -61,6 +61,8 @@ Changed in ATK 6.2
   applications. [Peter]
 + Added utility scripts for dumping the contents of a table to YAML and/or
   dumping the contents of an entire database to YAML files. [Peter]
+* Improve atknavigator->getAvailableIndeces(), it now work with Oracle too. [Yury]
+* Fix atkquery - select query can contains only expression too (not only fields). [Yury]  
 * Add support partial_refresh method and testcases for atkcalculatorattribute. [Yury]
 * Fixed atkTagAttribute (javascript was not working when the atkTagAttribute
   was used in a relation). [Harrie]
