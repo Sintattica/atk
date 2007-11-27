@@ -346,7 +346,7 @@
      */
     function buildSelect($distinct = FALSE)
     {
-      if (count($this->m_fields)<1) return false;
+      if (count($this->m_fields)<1 && count($this->m_expressions)<1) return false;
       $result = "SELECT ".($distinct||$this->m_distinct ? "DISTINCT ": "");
       for ($i=0;$i<count($this->m_fields);$i++)
       {
