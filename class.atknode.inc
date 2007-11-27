@@ -3388,12 +3388,16 @@
           $query->addCondition($key."='".$value."'");
         }
 
-        /* fuzzy filters may be set */
-        for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
+        if(count($this->m_fuzzyFilters))
         {
-          $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
-          $filter = $parser->parse(array('table' => $this->m_table));
-          $query->addCondition($filter);
+          atkimport("atk.utils.atkstringparser");
+          /* fuzzy filters may be set */
+          for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
+          {
+            $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
+            $filter = $parser->parse(array('table' => $this->m_table));
+            $query->addCondition($filter);
+          }
         }
       }
 
@@ -3622,13 +3626,16 @@
           $query->addCondition($key."='".$value."'");
         }
 
-        atkimport("atk.utils.atkstringparser");
-        /* fuzzy filters may be set */
-        for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
+        if(count($this->m_fuzzyFilters))
         {
-          $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
-          $filter = $parser->parse(array('table' => $this->m_table));
-          $query->addCondition($filter);
+          atkimport("atk.utils.atkstringparser");
+          /* fuzzy filters may be set */
+          for ($i = 0, $_i = count($this->m_fuzzyFilters); $i < $_i; $i++)
+          {
+            $parser = new atkStringParser($this->m_fuzzyFilters[$i]);
+            $filter = $parser->parse(array('table' => $this->m_table));
+            $query->addCondition($filter);
+          }
         }
       }
 
