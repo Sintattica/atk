@@ -6,6 +6,8 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 
 Changed in ATK 6.2
 ------------------
+* Fixed fatal error on some occasions when using the update action on a node
+  with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation [Marc]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]

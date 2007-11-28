@@ -1181,7 +1181,10 @@
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
       {        
-        return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+        if (is_array($rec[$this->fieldName()]))
+          return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
+        else 
+          return $rec[$this->fieldName()];
       }
       return NULL;
     }
