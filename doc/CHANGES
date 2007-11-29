@@ -3,59 +3,64 @@
 * : bugfix or changed code
 Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
+Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-* Fixed fatal error on some occasions when using the update action on a node
-  with a onetoone relation. [Harrie]
-* Fix use of non-numeric keys in atkOneToManyRelation [Marc]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
 + Added support for image mime type validation in the atkfileattribute. [Martin]
 + Do display PHP Fatal errors when debugging is on. [Peter, Tjeerd]
-+ Add 'NOT IN' and '&' to node->valiadateFilter(), so it can be used in filter from now. [Yury]
++ Add 'NOT IN' and '&' to node->valiadateFilter(), so it can be used in filter
+  from now. [Yury]
 + Adding getAvailableIndices() to atknavigator, so it display only available
   letter now. (bug #714) [Yury]
 + Adding atkindex to $pageVars - it contain current index letter. [Yury]
-+ Adding 'clear_index' and 'clear_search' link to navigator, so we can clear search and index
-  creteria separately. [Yury]
-+ For the atkFckAttribute it is now possible to load an additional configuration file
-  where you can override some of the default settings. [Tjeerd, Dennis]
-+ Add NF_EDITAFTERCOPY flag and handling of 'editcopy'actions - record coping and open for
-  editing. (bug #524) [Yury]
-+ Added ATK wrapper of the PHP iconv function - atk_iconv. Check if iconv function is present in
-   the system. If yes - use it for converting string, if no - save string untouch
-   and make warning about it. [Yury]
-+ The attributename and nodename are now available in the editform.tpl and viewform.tpl
-  templates. [Peter, Dennis]
-+ Added support for dialog render mode for atkViewHandler and atkAdminHandler. [Peter]
++ Adding 'clear_index' and 'clear_search' link to navigator, so we can clear
+  search and index creteria separately. [Yury]
++ For the atkFckAttribute it is now possible to load an additional configuration
+  file where you can override some of the default settings. [Tjeerd, Dennis]
++ Add NF_EDITAFTERCOPY flag and handling of 'editcopy'actions - record coping
+  and open for editing. (bug #524) [Yury]
++ Added ATK wrapper of the PHP iconv function - atk_iconv. Check if iconv
+  function is present in the system. If yes - use it for converting string, if
+  no - save string untouch and make warning about it. [Yury]
++ The attributename and nodename are now available in the editform.tpl and
+  viewform.tpl templates. [Peter, Dennis]
++ Added support for dialog render mode for atkViewHandler and atkAdminHandler.
+  [Peter]
 + Access denied pages of dialogs now also have a close button. [Dennis]
-+ When registering a menuitem, the enabled parameter now also supports a callback function
-  to determine wether a menu item should be enabled. [Peter, Dennis]
-+ The fuzzyfilters in atkNode now also support the [table] string that parsed by the
-  atkStringParser. [Peter, Dennis]
-+ In the atkOneToManyRelation it is now possible to disable the use of destinationFilters
-  when going to the add or edit action of the destination node. [Peter, Dennis]
-+ Added the method atkNvl() to use the value of the first given argument that is not
-  null. [Peter, Dennis]
++ When registering a menuitem, the enabled parameter now also supports a
+  callback function to determine wether a menu item should be enabled.
+  [Peter, Dennis]
++ The fuzzyfilters in atkNode now also support the [table] string that parsed by
+  the atkStringParser. [Peter, Dennis]
++ In the atkOneToManyRelation it is now possible to disable the use of
+  destinationFilters when going to the add or edit action of the destination
+  node. [Peter, Dennis]
++ Added the method atkNvl() to use the value of the first given argument that is
+  not null. [Peter, Dennis]
 + All theme templates can now be overridden per module. [Sandy, Ivo]
-+ Added AF_BOOL_INLINE_LABEL flag to display a label next to the checkbox. [Peter]
++ Added AF_BOOL_INLINE_LABEL flag to display a label next to the checkbox.
+  [Peter]
 + Added support for file extension validation in atkFileAttribute. [Peter]
-+ Added the methods setColorMode() and getColorMode() for the atkColorPickerAttribute to
-  make the colorpicker validation check based on the setting of the colormode. For now only two
-  modes are supported: CP_COLORMODE_DEFAULT (default behaviour) and CP_COLORMODE_HEX6
-  (Only hex notations with 6 characters are valid). Also added testcase for the
++ Added the methods setColorMode() and getColorMode() for the
+  atkColorPickerAttribute to make the colorpicker validation check based on the
+  setting of the colormode. For now only two modes are supported:
+  CP_COLORMODE_DEFAULT (default behaviour) and CP_COLORMODE_HEX6 (Only hex
+  notations with 6 characters are valid). Also added testcase for the
   atkColorPickerAttribute [Dennis]
-+ The submit-handling of a the javascript method atkMRASubmit() can be overridden by proving
-  a javascript method with the name atkMRA_<action>. Where action is the name of the action you
-  wish to override. [Peter, Dennis]
-+ Added method nodeTitle() to atkUI. It supports the same functionality as the title() method,
-  but supports providing an object instead an atkNodeType. [Peter, Dennis]
++ The submit-handling of a the javascript method atkMRASubmit() can be
+  overridden by proving a javascript method with the name atkMRA_<action>. Where
+  action is the name of the action you wish to override. [Peter, Dennis]
++ Added method nodeTitle() to atkUI. It supports the same functionality as the
+  title() method, but supports providing an object instead an atkNodeType.
+  [Peter, Dennis]
 + Added method setEditFieldPrefix and getEditFieldPrefix to the atknode class.
-  ATK now supports a default fieldprefix for all fields. This can be set in 
-  2 ways: the setEditFieldPrefix for a specific node or the 
+  ATK now supports a default fieldprefix for all fields. This can be set in
+  2 ways: the setEditFieldPrefix for a specific node or the
   $config_edit_fieldprefix for the complete ATK application. [Lineke]
-+ Added $config_auth_loginpage option. For applications that do not 
++ Added $config_auth_loginpage option. For applications that do not
   want to use the atk login form or the htaccess box the config variable can
   contain an url to redirect to instead of displaying the login form of ATK.
   [Lineke]
@@ -63,30 +68,42 @@ Changed in ATK 6.2
   applications. [Peter]
 + Added utility scripts for dumping the contents of a table to YAML and/or
   dumping the contents of an entire database to YAML files. [Peter]
-* Improve atknavigator->getAvailableIndeces(), it now work with Oracle too. [Yury]
-* Fix atkquery - select query can contains only expression too (not only fields). [Yury]  
-* Add support partial_refresh method and testcases for atkcalculatorattribute. [Yury]
+* Made atkMessageQueue plugin dynamic to prevent it from showing messages more
+  than once. [Patrick]
+* Fixed fatal error on some occasions when using the update action on a node
+  with a onetoone relation. [Harrie]
+* Fix use of non-numeric keys in atkOneToManyRelation [Marc]
+* Improve atknavigator->getAvailableIndeces(), it now work with Oracle too.
+  [Yury]
+* Fix atkquery - select query can contains only expression too (not only
+  fields). [Yury]
+* Add support partial_refresh method and testcases for atkcalculatorattribute.
+  [Yury]
 * Fixed atkTagAttribute (javascript was not working when the atkTagAttribute
   was used in a relation). [Harrie]
 * Fix dispay seconds in edit mode - atktimeattribute. [Yury]
 * Fix decode in atkcustomrecordlist. [Yury]
-* Added missing seconds to function atkDateTimeAttribute.datetimeArray(). [Patrick]
-* Fixed removing a file with the atkfileattribute when using the attribute on one2one
-  child node. [Martin]
-* To calculate a UTC offset you also need the datetime next to the timezone because
-  of DST differences. [Tjeerd]
-* Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams and AddFlags
-  methods together.(bug #889) [Yury]
-* AtkAttribute - Prevent register onChangehandler more then one time and move constant part
-  out of cycle. [Yury]
+* Added missing seconds to function atkDateTimeAttribute.datetimeArray().
+  [Patrick]
+* Fixed removing a file with the atkfileattribute when using the attribute on
+  one2one child node. [Martin]
+* To calculate a UTC offset you also need the datetime next to the timezone
+  because of DST differences. [Tjeerd]
+* Fix meta->_applyAttribute() - setting attribute flag using setTypeAndParams
+  and AddFlags methods together.(bug #889) [Yury]
+* AtkAttribute - Prevent register onChangehandler more then one time and move
+  constant part out of cycle. [Yury]
 * Add atkAttrRowHidden style to steelblue theme. [Yury]
 * Don't display letter as bold, if it don't use as index. [Yury]
 * Fix atkmlnumberattribute->validate method. (bug #883) [Yury]
 * Fix saving new password to db after "password forgotten". (bug #819) [Yury]
-* Fix and testcase for using number 0 as index for atklistattribute. (bug #723) [Yury]
-* Fix and testcase for using searching number 0 in atknumberattribute field. (bug #726) [Yury]
+* Fix and testcase for using number 0 as index for atklistattribute. (bug #723)
+  [Yury]
+* Fix and testcase for using searching number 0 in atknumberattribute field.
+  (bug #726) [Yury]
 * Fix display obligatory fields in integrated form. (bug #845) [Yury]
-* Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859) [michele.rota] [Yury]
+* Change hard coded "seq_" to atkConfig("database_sequenceprefix"). (bug #859)
+  [michele.rota] [Yury]
 * Fix Ajax calls handling of "umlauten" like ä,ü,ö. (bug #880) [Yury]
 * Fix sql query fails when going back from viewing role of team member.
   (bug #757) [Yury]
@@ -115,28 +132,32 @@ Changed in ATK 6.2
 * Moved hardcoded setting of the recordlist icon size (16x16) from the
   recordlist class to the recordlist style to make it overrideable. [Patrick]
 * Bugfix in atkpage::getScriptCodes(). [Lineke]
-* Fixed: tabs that did not contain visible attributes were still drawn. [Peter, Dennis]
-* Fixed: atkBoolAttribute now uses the onClick event instead of onChange to ensure
-  the onChangeHandler is called in Internet Explorer immediately without the need
-  for a lose of focus on the checkbox. [Dennis]
-* Re-added the deprecated $PHP_SELF for backwards compatibility with WDE. [Edgar]
-* Fixed double header when using TBL_HEADER flag with the atkTableRenderer. [Sandy]
+* Fixed: tabs that did not contain visible attributes were still drawn.
+  [Peter, Dennis]
+* Fixed: atkBoolAttribute now uses the onClick event instead of onChange to
+  ensure the onChangeHandler is called in Internet Explorer immediately without
+  the need for a lose of focus on the checkbox. [Dennis]
+* Re-added the deprecated $PHP_SELF for backwards compatibility with WDE.
+  [Edgar]
+* Fixed double header when using TBL_HEADER flag with the atkTableRenderer.
+  [Sandy]
 * Added support for reloading and updating the contents of an atkDialog using
   an Ajax request. [Peter]
 * Meta policy now detects created_by and updated_by fields. [Peter]
 * Implemented recursive (top-down) enabled check for menu's. [Peter]
-* The flag parameter of all meta relations isn't obligatory anymore. [Peter, Dennis]
+* The flag parameter of all meta relations isn't obligatory anymore.
+  [Peter, Dennis]
 * Improved test database mechanism for use with MySQL. [Peter]
 * Dialogbuttons are now disabled after being clicked on to prevent them from
-  being clicked again and cause javascript errors or multple executions of http requests.
-  [Dennis, Peter]
+  being clicked again and cause javascript errors or multple executions of http
+  requests. [Dennis, Peter]
 * MySQLi driver now supports toggeling foreign keys on/off. [Peter]
-* Optimized: atkDateTimeAttribute now only popuplates a record for the UTC offset when
-  it is not yet populated. [Peter, Dennis]
-* The atk attributes updatedBy, createdBy, createdAt and updatedAt: these attribute now
-  override the method initialValue() to determine the initial value of the attribute.
-  For all these attribute another check is performed in value2db to make sure the
-  attributes have a value. [Dennis, Peter]
+* Optimized: atkDateTimeAttribute now only popuplates a record for the UTC
+  offset when it is not yet populated. [Peter, Dennis]
+* The atk attributes updatedBy, createdBy, createdAt and updatedAt: these
+  attributes now override the method initialValue() to determine the initial
+  value of the attribute. For all these attribute another check is performed in
+  value2db to make sure the attributes have a value. [Dennis, Peter]
 * Fixed statically sized dialogs. [Peter, Dennis]
 * Don't strip slashes in atkDataDecode if magic_quotes_gpc is off. [Peter]
 * Fix: After adding fixtures to a testdatabase, commit() needs to be called.
@@ -144,23 +165,24 @@ Changed in ATK 6.2
 * Fixed support for label and module in triggerError (workaround). [Jeroen, Ivo]
 * atkNode now gracefully handles initial_values methods that do not return an
   array. [Sandy, Ivo]
-* atkOneToOneRelation can now be used as primary key field in intermediary nodes.
-  [Sandy, Ivo]
-* Fixed support for destination "records" in atkManyTooneRelations where only the id
-  is set and the record itself isn't converted to a real record (array) yet. Also added
-  a testcase for this functionality. [Peter, Dennis]
-* Fixed translation of the name of a atkColorPickerAttribute when an error was triggered.
-  Also some code refactoring. [Dennis]
-* Removed javascript call to showTab, this call is not necessary anymore and created
-  problems in internet explorer 7. [Lineke]
-* Added setMasterNode in atkAttributeEditHandler and a testcase for it. [Dennis, Peter]
-* atkNode now uses the method nodeTitle() instead of title() to retrieve the title.
-  [Peter, Dennis]
-* Added fix for toQueryString for prototype calls which encoded a value twice instead 
-  of once, when you are using the same key more then once (an array of values).
-  [Peter, Dennis]
-* Added a zIndex for the calendar.js script to make sure calendars are also on top in
-  dialogs. [Peter, Dennis]
+* atkOneToOneRelation can now be used as primary key field in intermediary
+  nodes. [Sandy, Ivo]
+* Fixed support for destination "records" in atkManyTooneRelations where only
+  the id is set and the record itself isn't converted to a real record (array)
+  yet. Also added a testcase for this functionality. [Peter, Dennis]
+* Fixed translation of the name of a atkColorPickerAttribute when an error was
+  triggered. Also some code refactoring. [Dennis]
+* Removed javascript call to showTab, this call is not necessary anymore and
+  created problems in internet explorer 7. [Lineke]
+* Added setMasterNode in atkAttributeEditHandler and a testcase for it.
+  [Dennis, Peter]
+* atkNode now uses the method nodeTitle() instead of title() to retrieve the
+  title. [Peter, Dennis]
+* Added fix for toQueryString for prototype calls which encoded a value twice
+  instead of once, when you are using the same key more then once (an array of
+  values). [Peter, Dennis]
+* Added a zIndex for the calendar.js script to make sure calendars are also on
+  top in dialogs. [Peter, Dennis]
 * Don't log query stack trace in session if $config_debug <= 0. [Peter]
 * Small increase in performance in atkExtendableShuttleRelation. [Dennis, Peter]
 * Fixed label display for errors registered using the deprecated
