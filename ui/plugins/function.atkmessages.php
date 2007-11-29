@@ -37,41 +37,20 @@
    * @author Patrick van der Velden <patrick@ibuildings.nl>
    *
    */
-
-  atkimport("plugintools.sphplugin");
-
   function smarty_function_atkmessages($params, &$smarty)
   {
-    $plugin = sphPlugin::get("atkmessages");
-    return $plugin->handle($params, $smarty);
-  }
-
-  class sphAtkMessagesPlugin extends sphPlugin
-  {
-    var $m_cache_lifetime = 0; // handle function performs clearcache
-
-    public function sphAtkMessagesPlugin()
+    global $g_sessionManager;
+    if (is_object($g_sessionManager))
     {
-      $this->sphPlugin("atkmessages");
-    }
-
-    public function handle($params, &$smarty)
-    {
-      $this->clearCache();
-
-      global $g_sessionManager;
-      if (is_object($g_sessionManager))
+      $msgs =  atkMessageQueue::getMessages();
+      $smarty->assign("atkmessages", $msgs);
+      if (empty($msgs))
       {
-        $msgs =  atkMessageQueue::getMessages();
-        $smarty->assign("atkmessages", $msgs);
-        if (empty($msgs))
-        {
-          atkdebug("No messages in atkMessageQueue");
-        }
-        return "";
+        atkdebug("No messages in atkMessageQueue");
       }
       return "";
     }
+    return "";
   }
 
 ?>
