@@ -239,9 +239,10 @@
     * @param $table Table name
     * @param $alias Alias of table
     * @param $condition Condition for the Join
+    * @param $outer Wether to use an outer (left) join or an inner join
     * @return atkQuery The query object itself (for fluent usage)
     */
-    function &addJoin($table, $alias, $condition, $outer)
+    function &addJoin($table, $alias, $condition, $outer=false)
     {
       if ($outer)
       {
@@ -559,7 +560,7 @@
      */
     function buildInsert()
     {
-      
+
       $result = "INSERT INTO ".$this->quoteField($this->m_tables[0])." (";
 
       for ($i=0;$i<count($this->m_fields);$i++)
@@ -580,7 +581,7 @@
 
       return $result;
     }
-    
+
     /**
      * Builds the SQL Delete query
      * @return String a SQL Delete Query

@@ -192,6 +192,10 @@ Changed in ATK 6.2
 * Function atknew now uses reflection (instead of eval) to instantiate objects 
   with arguments for the constructor. [Peter]
 * Only register global submit script for the original request. [Peter]
+* atkQuery::addJoin now uses inner joins by default, instead of forcing
+  callers to specify which type of join. [Boy]
+* When a fatal application error is detected we flush 
+  the output buffer (to get debugging). [Boy]
 
 Changed in ATK 6.1
 ------------------

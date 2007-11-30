@@ -114,6 +114,7 @@
       // we must die. we can't even output anything anymore..
       // we can mail though.
       mailreport();
+      $output = atkOutput::getInstance()->outputFlush();
       die;
     }
   }
@@ -704,7 +705,7 @@
   function atkDataDecode(&$vars)
   {
     $magicQuotes = get_magic_quotes_gpc();
-    
+
     foreach (array_keys($vars) as $varname)
     {
       $value = &$vars[$varname];
@@ -2102,7 +2103,7 @@
     if (strpos($self, '"')!==false) $self = substr($self, 0, strpos($self, '"')); //XSS attempt
     return htmlentities(strip_tags($self)); // just in case..
   }
-  
+
   /**
    * ATK wrapper of the PHP iconv function. Check if iconv function is present in
    * the system. If yes - use it for converting string, if no - save string untouch
@@ -2126,10 +2127,10 @@
     }
     return $str;
   }
-  
+
   /**
    * Returns the first argument that is not null.
-   * 
+   *
    * @param mixed ... arguments
    * @return mixed first argument that is not null
    */
@@ -2143,7 +2144,7 @@
         return $arg;
       }
     }
-    
-    return null; 
-  }  
+
+    return null;
+  }
 ?>
