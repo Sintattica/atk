@@ -8,8 +8,7 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c)2000-2006 Ibuildings.nl BV
- * @copyright (c)2000-2006 Ivo Jansch
+ * @copyright (c) 2000-2007 Ibuildings.nl BV
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */

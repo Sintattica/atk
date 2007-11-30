@@ -1,178 +1,455 @@
 <?php
 /**
- * @todo recordlist cache
- * @todo actionsessions tatus
- * @todo masternode
+ * This file is part of the Achievo ATK distribution.
+ * Detailed copyright and licensing information can be found
+ * in the doc/COPYRIGHT and doc/LICENSE files which should be
+ * included in the distribution.
+ *
+ * @package atk
+ * @subpackage utils
+ *
+ * @copyright (c) 2000-2007 Ibuildings.nl BV
+ * 
+ * @license http://www.achievo.org/atk/licensing ATK Open Source License
+ */
+
+atkimport('atk.datagrid.atkdgcomponent');
+
+/**
+ * The data grid is a component based record list container.
+ * 
+ * It's main purpose is gathering the information needed for rendering the
+ * grid. The components, like for example atkDGList, are responsible for
+ * rendering the list, the pagination etc. 
+ * 
+ * The grid has built-in Ajax support for updating the grid contents. Most of
+ * the times updates are triggered by one of the grid components (for example 
+ * a pagination link). However, the grid also supports external update 
+ * triggers. For more information see atk/scripts/class.atkdatagrid.js.
+ * 
+ * @author Peter C. Verhage <peter@achievo.org>
+ * @package atk
+ * @subpackage datagrid
  */
 class atkDataGrid
-{
+{ 
+  /**
+   * Enable sorting for the datagrid.
+   */
+  const SORT = 1;
+  
+  /**
+   * Enable extended sort for the datagrid.
+   */
+  const EXTENDED_SORT = 2;    
+  
+  /**
+   * Enable searching the datagrid.
+   */
+  const SEARCH = 4;
+  
+  /**
+   * Enable extended search for the datagrid.
+   */
+  const EXTENDED_SEARCH = 8;
+  
+  /**
+   * Enable multi-record actions for the datagrid.
+   */
+  const MULTI_RECORD_ACTIONS = 16;
+  
+  /**
+   * Enable multi-record priority actions for the datagrid.
+   */
+  const MULTI_RECORD_PRIORITY_ACTIONS = 32;
+  
+  /**
+   * Enable record locking for the datagrid.
+   */
+  const LOCKING = 64;
+  
+  /**
+   * Name.
+   *
+   * @var string
+   */
   private $m_name;
+  
+  /**
+   * Node.
+   *
+   * @var atkNode
+   */
   private $m_node;
-  private $m_records;
-  private $m_actions;
-  private $m_flags;
-  private $m_formName;
-  private $m_prefix;
-  private $m_navigation;
-  private $m_suppressList;
-  private $m_defaultLimit;
-  private $m_count;
-  private $m_components = array();
+  
+  /**
+   * Flags.
+   *
+   * @var int
+   */
+  private $m_flags;  
+  
+  /**
+   * Form name.
+   *
+   * @var string
+   */
+  private $m_formName;  
+  
+  /**
+   * Embedded in edit form?
+   * 
+   * @return boolean
+   */
+  private $m_embedded;
+  
+  /**
+   * Base URL for updating the data grid using an Ajax call.
+   * 
+   * @var string
+   */
+  private $m_baseUrl;
+  
+  /**
+   * Are we updating the grid?
+   * 
+   * @var boolean
+   */
   private $m_update;
+  
+  /**
+   * Postvars for this datagrid.
+   * 
+   * @var array
+   */
+  private $m_postvars;
+  
+  /**
+   * List of datagrid components.
+   *
+   * @var array
+   */
+  private $m_components = array();
 
-  public function __construct($node)
+  /**
+   * Fields that should be excluded from the list.
+   *
+   * @var array
+   */
+  private $m_excludes = array();  
+  
+  /**
+   * Default record actions.
+   *
+   * @var array
+   */
+  private $m_defaultActions;
+
+  /**
+   * Default limit.
+   *
+   * @var array
+   */
+  private $m_defaultLimit;  
+  
+  /**
+   * Main datagrid template.
+   * 
+   * @var string
+   */
+  private $m_template;
+  
+  /**
+   * Node which handles the extended search and multi-record actions.
+   * Normally this is the same node as the grid node.
+   *
+   * @var atkNode
+   */
+  private $m_actionNode;
+  
+  /**
+   * Action session status for record actions.
+   * Normally record actions are nested.
+   *
+   * @var int
+   */
+  private $m_actionSessionStatus;  
+  
+  /**
+   * Method/function for retrieving the records for the current page.
+   *
+   * @var mixed
+   */
+  private $m_selectHandler;
+  
+  /**
+   * Method/function for retrieving the total record count.
+   *
+   * @var mixed
+   */
+  private $m_countHandler;
+  
+  /**
+   * Records (for the current page).
+   *
+   * @var array
+   */
+  private $m_records;
+  
+  /**
+   * Total record count.
+   *
+   * @var int
+   */
+  private $m_count;
+
+  /**
+   * Constructor.
+   *
+   * @param string  $name datagrid name
+   * @param atkNode $node datagrid node
+   */
+  public function __construct($name, $node)
   {
-    $this->setName('dg_'.getUniqueId(get_class($this)));    
-    $this->setDefaultLimit(atkconfig('recordsperpage')); 
-    $this->addComponent('list', 'atk.datagrid.atkdglist');
-    $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
-    $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
-    $this->addComponent('limit', 'atk.datagrid.atkdglimit');
+    $this->setName($name);    
     $this->setNode($node);
-    $this->setActions($node->defaultActions("admin"));
-    $this->setPostvars($node->m_postvars);
-    $this->setBaseUrl(partial_url($node->atkNodeType(), $node->m_action, 'recordlist'));
-    $this->setFlags(atkRecordList::convertFlags($node->getFlags()));
-    $this->setUpdate($this->getNode()->isPartial());
+
+    $this->setFlags($this->convertNodeFlags($node->getFlags()));
+    $this->setBaseUrl(partial_url($node->atkNodeType(), $node->m_action, 'datagrid'));
+    $this->setUpdate($this->getNode()->isPartial());    
+    $this->setPostvars(@$node->m_postvars['atkdg'][$name]);
+
+    $this->setDefaultLimit(atkconfig('recordsperpage')); 
+    $this->setDefaultActions($node->defaultActions("admin"));
+    $this->setTemplate('datagrid.tpl');
+    $this->setActionNode($node);
+    $this->setActionSessionStatus(SESSION_NESTED);
+    
+    $this->addComponent('list', 'atk.datagrid.atkdglist');
+    $this->addComponent('summary', 'atk.datagrid.atkdgsummary');
+    $this->addComponent('limit', 'atk.datagrid.atkdglimit');    
+    
+    if (empty($this->getNode()->m_index))
+    {
+      $this->addComponent('paginator', 'atk.datagrid.atkdgpaginator');
+    }
+    else 
+    {
+      $this->addComponent('paginator', 'atk.datagrid.atkdgindex');
+    }
   }
   
+  /**
+   * Returns the grid name.
+   *
+   * @return string grid name
+   */
   public function getName()
   {
     return $this->m_name;
   }
   
-  public function setName($name)
+  /**
+   * Sets the grid name.
+   *
+   * @param string $name grid name
+   */
+  protected function setName($name)
   {
     $this->m_name = $name;
   }
   
+  /**
+   * Returns the grid node.
+   *
+   * @return atkNode grid node
+   */
   public function getNode()
   {
     return $this->m_node;
   }
   
+  /**
+   * Sets the grid node.
+   *
+   * @param atkNode $node grid node
+   */
   protected function setNode($node)
   {
     $this->m_node = $node;
   }
   
-  public function getRecords()
+  /**
+   * Converts node flags to datagrid flags.
+   * 
+   * @param int $flags
+   */
+  protected function convertNodeFlags($nodeFlags)
   {
-    return $this->m_records;
+    $flags  = !hasFlag($nodeFlags, NF_NO_SORT)            ? self::SORT                          : 0;
+    $flags |= hasFlag($nodeFlags, NF_EXT_SORT)            ? self::EXTENDED_SORT                 : 0;
+    $flags |= !hasFlag($nodeFlags, NF_NO_SEARCH)          ? self::SEARCH                        : 0;
+    $flags |= !hasFlag($nodeFlags, NF_NO_EXTENDED_SEARCH) ? self::EXTENDED_SEARCH               : 0;
+    $flags |= hasFlag($nodeFlags, NF_MRA)                 ? self::MULTI_RECORD_ACTIONS          : 0;
+    $flags |= hasFlag($nodeFlags, NF_MRPA)                ? self::MULTI_RECORD_PRIORITY_ACTIONS : 0;
+    $flags |= hasFlag($nodeFlags, NF_LOCK)                ? self::LOCKING                       : 0;
+    
+    return $flags;
   }
   
-  public function setRecords($records)
-  {
-    $this->m_records = $records;
-  }
-  
-  public function getActions()
-  {
-    return $this->m_actions;
-  }
-  
-  public function setActions($actions)
-  {
-    $this->m_actions = $actions;
-  }
-  
+  /**
+   * Returns the grid flags.
+   *
+   * @return int grid flags.
+   */
   public function getFlags()
   {
     return $this->m_flags;
   }
   
+  /**
+   * Sets the grid flags.
+   *
+   * @param int $flags grid flags
+   */
   public function setFlags($flags)
   {
     $this->m_flags = $flags;
   }
   
-  public function getSuppressList()
+  /**
+   * Adds the given grid flag(s).
+   *
+   * @param int $flags grid flag(s)
+   */
+  public function addFlag($flag)
   {
-    return $this->m_suppressList;
+    $this->m_flags |= $flag;
   }
   
-  public function setSuppressList($list)
+  /**
+   * Removes the given grid flag(s).
+   *
+   * @param int $flags grid flag(s)
+   */
+  public function removeFlag($flag)
   {
-    $this->m_suppressList = $list;
+    $this->m_flags = ($this->m_flags|$flag) ^ $flag;
   }
   
+  /**
+   * Is/are the given flag(s) set for this grid?
+   *
+   * @param int $flag grid flag(s)
+   * 
+   * @return boolean flag(s) is/are set
+   */
+  public function hasFlag($flag)
+  {
+    return hasFlag($this->m_flags, $flag);
+  }  
+  
+  /**
+   * Returns the form name.
+   *
+   * @return string form name
+   */
   public function getFormName()
   {
     return $this->m_formName;
   }
   
+  /**
+   * Sets the form name.
+   *
+   * @param string $name form name
+   */
   public function setFormName($name)
   {
     $this->m_formName = $name;
-  }
-  
-  public function getPrefix()
-  {
-    return $this->m_prefix;
-  }
-  
-  public function setPrefix($prefix)
-  {
-    $this->m_prefix = $prefix;
-  }
-  
-  public function getNavigation()
-  {
-    return $this->m_navigation;
-  }
+  } 
 
-  public function setNavigation($navigation)
+  /**
+   * Sets whatever the grid is embedded in an edit form.
+   *
+   * @param boolean $embedded embedded in edit form?
+   */
+  public function setEmbedded($embedded)
   {
-    $this->m_navigation = $navigation;
-  }
+    $this->m_embedded = $embedded;
+  }  
   
-  public function getUpdateCall($overrides=array(), $overridesJs=array())
-  {
-    $overridesJsStr = '';
-    
-    foreach ($overridesJs as $key => $js) 
-    {
-      if (!empty($overridesJsStr)) 
-      {
-        $overridesJsStr .= ', ';
-      }
-      
-      $overridesJsStr .= "'$key': $js";  
-    }
-       
-    return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', Object.extend('.atkJSON::encode($overrides).', {'.$overridesJsStr.'}));';
-  }
-  
+  /**
+   * Is embedded in edit form?
+   *
+   * @return boolean embedded in edit form?
+   */
   public function isEmbedded()
   {
-    return false;
-  }
+    return $this->m_embedded;
+  }  
   
+  /**
+   * Returns the base URL for Ajax update requests for this grid.
+   *
+   * @return string base url
+   */ 
+  public function getBaseUrl()
+  {
+    return $this->m_baseUrl;
+  }  
+  
+  /**
+   * Sets the base URL for Ajax update requests for this grid.
+   *
+   * @param string $url base url
+   */
+  public function setBaseUrl($url)
+  {
+    $this->m_baseUrl = $url;
+  }  
+  
+  /**
+   * Set whatever we are updating the grid (or are rendering it
+   * for the first time).
+   *
+   * @param boolean $update are we updating the grid?
+   */
   public function setUpdate($update)
   {
     $this->m_update = $update;
   }
   
+  /**
+   * Are we updating the grid (or rendering it for the first time)?
+   *
+   * @return boolean are we updating the grid?
+   */
   public function isUpdate()
   {
     return $this->m_update;
-  }
+  }  
 
   /**
    * Sets the postvars.
    *
-   * @param array $postvars
+   * @param array $postvars postvars
    */
   public function setPostvars($postvars)
   {
+    if ($postvars == null)
+    {
+      $postvars = array();  
+    }
+    
     $this->m_postvars = $postvars;
   }
 
   /**
    * Sets the postvar with the given name to the given value.
    *
-   * @param string $name
-   * @param mixed $value
+   * @param string $name  name
+   * @param mixed  $value value
    */
   public function setPostvar($name, $value)
   {
@@ -180,10 +457,9 @@ class atkDataGrid
   }
 
   /**
-   * Returns the postvars. Note, if a prefix has been set this can
-   * mean only a subarray of the original set postvars will be returned.
+   * Returns the postvars.
    *
-   * @return array
+   * @return array postvars
    */
   public function getPostvars()
   {
@@ -201,154 +477,68 @@ class atkDataGrid
   public function getPostvar($name, $fallback=NULL)
   {
     return isset($this->m_postvars[$name]) ? $this->m_postvars[$name] : $fallback;
-  }
-  
-  public function setBaseUrl($url)
-  {
-    $this->m_baseUrl = $url;
-  }
-  
-  public function getLimit()
-  {
-    return $this->getPostvar('atklimit', $this->getDefaultLimit());
-  }
-  
-  public function getBaseUrl()
-  {
-    return $this->m_baseUrl;
-  }
-  
-  public function getOffset()
-  {
-    return $this->getPostvar('atkstartat', 0);
-  }
-  
-  public function setCount($count)
-  {
-    $this->m_count = $count;;
-  }
-  
-  public function getCount()
-  {
-    return $this->m_count;
-  }
-  
-  public function getDefaultLimit()
-  {
-    return $this->m_defaultLimit;
-  }
-
-  public function setDefaultLimit($limit)
-  {
-    $this->m_defaultLimit = $limit;
   }  
   
-  public function text($string, $fallback='', $useDefault=true)
+  /**
+   * Returns the grid components. 
+   * 
+   * The associative array returned contains for each named component
+   * the component class or instance. If you want all components to be
+   * instantiated first specify true for the $load parameter.
+   *
+   * @param boolean $load instantiate all components (if needed)
+   * 
+   * @return array
+   */
+  public function getComponents($load=false)
   {
-    return $this->getNode()->text($string, null, '', $fallback, !$useDefault);
+    if ($load) 
+    {
+      $this->loadComponents();
+    }
+    
+    return $this->m_components;
   }
   
   /**
-   * Sets a method/function which handles the loading of records. You can use
-   * this method instead of setRecords to load records dynamically. You can
-   * optionally add a list of parameter after the $handler parameter which are
-   * forwarded to the handler when called.
-   *
-   * @param Mixed $handler handler function
+   * Returns the component with the given name.
+   * 
+   * If the $load parameter is set to true the component will be
+   * instantiated if needed.
+   * 
+   * @param boolean $load instantiate component (if needed)
+   * 
+   * @return dgComponent
    */
-  public function setSelectHandler($handler, $params=array())
+  public function getComponent($name, $load=false)
   {
-    $this->m_selectHandler = $handler;
-    $this->m_selectHandlerParams = $params;
-  }
-  
-  protected function getSelectHandler()
-  {
-    return $this->m_selectHandler;
-  }
-  
-  protected function getSelectHandlerParams()
-  {
-    return $this->m_selectHandlerParams;
-  }
-
-  public function getFilter()
-  {
-    return $this->getPostvar('atkfilter', '');
-  }
-  
-  public function getOrderBy()
-  {
-    return $this->getNode()->getColumnConfig()->getOrderByStatement();
-  }
-  
-  protected function selectRecords()
-  {
-    return 
-      $this->getNode()
-           ->select()
-           ->excludes($this->getNode()->m_listExcludes)      
-           ->where($this->getFilter())
-           ->orderBy($this->getOrderBy())
-           ->limit($this->getLimit(), $this->getOffset())
-           ->mode('admin')
-           ->allRows();
-  }
-  
-  protected function countRecords()
-  {
-    return
-      $this->getNode()
-           ->select()
-           ->excludes($this->getNode()->m_listExcludes)      
-           ->where($this->getFilter())
-           ->orderBy($this->getOrderBy())
-           ->limit($this->getLimit(), $this->getOffset())
-           ->mode('admin')
-           ->rowCount();
-  }
-
-  public function setCountHandler($handler, $params=array())
-  {
-    $this->m_countHandler = $handler;
-    $this->m_countHandlerParams = $params;
-  }
-  
-  protected function getCountHandler()
-  {
-    return $this->m_countHandler;
-  }
-  
-  protected function getCountHandlerParams()
-  {
-    return $this->m_countHandlerParams;
-  }
-  
-  protected function loadRecords()
-  {
-    if ($this->getRecords() === null && $this->getSelectHandler() === null)
+    $classOrObject = $this->m_components[$name];
+    
+    if (is_string($classOrObject) && $load)
     {
-      $records = $this->selectRecords();
-      $this->setRecords($records);
-    }
-    else if ($this->getRecords() === null)
-    {
-      $records = call_user_func_array($this->getSelectHandler(), $this->getSelectHandlerParams());
-      $this->setRecords($records);
+      $classOrObject = atknew($classOrObject, $this);
+      $this->m_components[$name] = $classOrObject;
     }
     
-    if ($this->getCount() === null)
-    {
-      $count = $this->countRecords();
-      $this->setCount($count);
-    }
-    else if ($this->getCount() === null && $this->getCountHandler() === null)
-    {
-      $count = call_user_func_array($this->getCountHandler(), $this->getCountHandlerParams());
-      $this->setCount($count); 
-    }
+    return $classOrObject;
   }
-  
+
+  /**
+   * Add component for this grid. The component can either be specified
+   * as a full ATK class name (including packages) or as a component
+   * instance.
+   *
+   * @param string             $name          name
+   * @param string|dgComponent $classOrObject class or instance
+   */
+  public function addComponent($name, $classOrObject)
+  {
+    $this->m_components[$name] = $classOrObject;
+  }
+
+  /**
+   * Load all components.
+   */
   protected function loadComponents()
   {
     foreach ($this->m_components as $name => $classOrObject)
@@ -359,35 +549,463 @@ class atkDataGrid
         $this->m_components[$name] = $object;
       }
     }
+  }  
+  
+  /**
+   * Returns the attributes that should be excluded from the list
+   * next to the attributes that already have an AF_HIDE_LIST flag.
+   *
+   * @return array excluded attributes
+   */
+  public function getExcludes()
+  {
+    return $this->m_excludes;
   }
   
-  public function addComponent($name, $classOrObject)
+  /**
+   * Sets the attributes that should be excluded from the list
+   * next to the attribute that already have an AF_HIDE_LIST flag.
+   *
+   * @param array $excludes excluded attributes
+   */
+  public function setExcludes($excludes)
   {
-    $this->m_components[$name] = $classOrObject;
+    $this->m_excludes = $excludes;
+  }  
+  
+  /**
+   * Returns the default record actions.
+   *
+   * @return array default record actions
+   */
+  public function getDefaultActions()
+  {
+    return $this->m_defaultActions;
+  }
+  
+  /**
+   * Sets the default record actions.
+   *
+   * @param array $actions default record actions
+   */
+  public function setDefaultActions($actions)
+  {
+    $this->m_defaultActions = $actions;
+  }
+ 
+  /**
+   * Returns the default record limit.
+   *
+   * @return int default record limit
+   */
+  public function getDefaultLimit()
+  {
+    return $this->m_defaultLimit;
   }
 
-  public function getComponents()
+  /**
+   * Sets the default record limit.
+   *
+   * @param int $limit default record limit
+   */
+  public function setDefaultLimit($limit)
   {
-    return $this->m_components;
-  }
+    $this->m_defaultLimit = $limit;
+  }    
   
+  /**
+   * Returns the template name.
+   *
+   * @return string template name
+   */
   public function getTemplate()
   {
-    return 'datagrid.tpl';
+    return $this->m_template;
+  }
+
+  /**
+   * Sets the datagrid template.
+   *
+   * @param string $template template
+   */
+  public function setTemplate($template)
+  {
+    $this->m_template = $template;
+  }  
+
+  /**
+   * Returns the action node.
+   *
+   * @see atkDataGrid::setActionNode
+   * 
+   * @return atkNode action node
+   */
+  public function getActionNode()
+  {
+    return $this->m_actionNode;
   }
   
+  /**
+   * Sets the action node.
+   *
+   * The action handles the extended search and multi-record actions.
+   * Normally this is the same node as the grid node.
+   * 
+   * @param atkNode $node
+   */  
+  public function setActionNode($node)
+  {
+    $this->m_actionNode = $node;
+  }
+  
+  /**
+   * Returns the record action session status.
+   *
+   * @see atkDataGrid::setActionSessionStatus
+   * 
+   * @return int action session status
+   */
+  public function getActionSessionStatus()
+  {
+    return $this->m_actionSessionStatus;
+  }
+  
+  /**
+   * Sets the record action session status.
+   *
+   * Normally record actions are nested.
+   * 
+   * @param int status session status (e.g. SESSION_NESTED etc.)
+   */  
+  public function setActionSessionStatus($status)
+  {
+    $this->m_actionSessionStatus = $status;
+  }    
+
+  /**
+   * Returns the current limit.
+   *
+   * @return int limit 
+   */
+  public function getLimit()
+  {
+    return $this->getPostvar('atklimit', $this->getDefaultLimit());
+  }
+
+  /**
+   * Returns the current offset.
+   *
+   * @return int offset
+   */
+  public function getOffset()
+  {
+    return $this->getPostvar('atkstartat', 0);
+  }
+  
+  /**
+   * Returns the current filter.
+   *
+   * @return string filter
+   */
+  public function getFilter()
+  {
+    return $this->getPostvar('atkfilter', '');
+  }
+  
+  /**
+   * Returns the current order by statement.
+   *
+   * @return string order by
+   */
+  public function getOrderBy()
+  {
+    return $this->getNode()->getColumnConfig()->getOrderByStatement();
+  }   
+  
+  /**
+   * Returns the records for the current page of the grid.
+   *
+   * @param boolean $load load the records (if needed)
+   * 
+   * @return array records
+   */
+  public function getRecords($load=false)
+  {
+    if ($load)
+    {
+      $this->loadRecords();
+    }
+    
+    return $this->m_records;
+  }
+  
+  /**
+   * Sets the records for the current page.
+   * 
+   * This method is not publicly callable because the grid controls amongst 
+   * others the postvars (atksearch etc.) used for retrieving the records.
+   * If you want to have more control on the records retrieved please register
+   * a custom select handler (and probably also a custom count handler).
+   * 
+   * @see atkDataGrid::setSelectHandler
+   * @see atkDataGrid::setCountHandler 
+   *
+   * @param array $records records
+   */
+  protected function setRecords($records)
+  {
+    $this->m_records = $records;
+  }
+  
+  /**
+   * Returns the total record count for the grid.
+   * 
+   * @param boolean $load load the record count (if needed)
+   * 
+   * @return int record count
+   */
+  public function getCount($load=false)
+  {
+    if ($load)
+    {
+      $this->loadRecords();
+    }
+    
+    return $this->m_count;
+  }
+
+  /**
+   * Sets the record count.
+   * 
+   * This method is not publicly callable because the grid controls amongst 
+   * others the postvars (atksearch etc.) used for retrieving the record count.
+   * If you want to have more control on the record count please register a 
+   * custom count handler (and probably also a custom select handler).
+   * 
+   * @see atkDataGrid::setCountHandler
+   * @see atkDataGrid::setSelectHandler 
+   *
+   * @param int $count record count
+   */
+  protected function setCount($count)
+  {
+    $this->m_count = $count;;
+  }  
+  
+  /**
+   * Sets a method/function which handles the record loading. 
+   * 
+   * The handler should return an array of records for the current page when 
+   * called and will receive the grid instance as argument.
+   *
+   * @param mixed $handler select handler
+   */
+  public function setSelectHandler($handler)
+  {
+    $this->m_selectHandler = $handler;
+  }
+
+  /**
+   * Returns the select handler
+   *
+   * @see atkDataGrid::setSelectHandler
+   * 
+   * @return mixed select handler
+   */
+  protected function getSelectHandler()
+  {
+    return $this->m_selectHandler;
+  }
+  
+  /**
+   * Sets a method/function which handles the record count. 
+   * 
+   * The handler should return the record count when called and will receive
+   * the grid instance as argument.
+   *
+   * @param mixed $handler count handler
+   */
+  public function setCountHandler($handler)
+  {
+    $this->m_countHandler = $handler;
+  }
+  
+  /**
+   * Returns the count handler.
+   * 
+   * @see atkDataGrid::setCountHandler
+   *
+   * @return mixed count handler
+   */
+  protected function getCountHandler()
+  {
+    return $this->m_countHandler;
+  }  
+
+  /**
+   * Default implementation for selecting the records for the current page.
+   * 
+   * This method uses the grid node to retrieve a list of records for the
+   * current page and will take the currently set filter, order by, limit
+   * etc. into account. 
+   *
+   * @return array list of records
+   */
+  protected function selectRecords()
+  {
+    return 
+      $this->getNode()
+           ->select()
+           ->excludes(array_merge($this->getNode()->m_listExcludes, $this->getExcludes()))      
+           ->where($this->getFilter())
+           ->orderBy($this->getOrderBy())
+           ->limit($this->getLimit(), $this->getOffset())
+           ->mode('admin')
+           ->allRows();
+  }
+  
+  /**
+   * Default implementation for counting the records for this grid.
+   * 
+   * This method uses the grid node to retrieve a record count.
+   *
+   * @return unknown
+   */
+  protected function countRecords()
+  {
+    return
+      $this->getNode()
+           ->select()
+           ->excludes(array_merge($this->getNode()->m_listExcludes, $this->getExcludes()))      
+           ->where($this->getFilter())
+           ->mode('admin')
+           ->rowCount();
+  }
+  
+  /**
+   * Loads the grid records for the current page and retrieves the total number
+   * of rows for the grid. This method is called automatically by the render()
+   * method but can be called manually if necessary.
+   * 
+   * If the records are already loaded no loading will occur unless the $force 
+   * parameter is set to true. If the record count is already known no new
+   * record count will be retrieved, unless the $force parameter is set to true.
+   *
+   * @param boolean $force force record and count retrieval?
+   */
+  public function loadRecords($force=false)
+  {
+    // temporarily overwrite the node postvars so that selectDb and countDb
+    // have access to the atksearch, atkfilter, atklimit etc. parameters
+    $oldPostvars = $this->getNode()->m_postvars;
+    $this->getNode()->m_postvars = $this->m_postvars;    
+    
+    // retrieve records using the default implementation
+    if ($force || ($this->getRecords() === null && $this->getSelectHandler() === null))
+    {
+      $records = $this->selectRecords();
+      $this->setRecords($records);
+    }
+    
+    // retrieve records using a custom select handler
+    else if ($force || $this->getRecords() === null)
+    {
+      $records = call_user_func_array($this->getSelectHandler(), $this->getSelectHandlerParams());
+      $this->setRecords($records);
+    }
+    
+    // retrieve record count using the default implementation
+    if ($force || ($this->getCount() === null && $this->getCountHandler() === null))
+    {
+      $count = $this->countRecords();
+      $this->setCount($count);
+    }
+    
+    // retrieve record count using a custom cont handler
+    else if ($force || $this->getCount() === null)
+    {
+      $count = call_user_func_array($this->getCountHandler(), $this->getCountHandlerParams());
+      $this->setCount($count); 
+    }
+        
+    // restore previous postvars
+    $this->getNode()->m_postvars = $oldPostvars;    
+  }
+
+  /**
+   * Returns a JavaScript call to update the grid using it's current
+   * parameters and optionally overwriting some of the parameters with 
+   * the given overrides.
+   * 
+   * The overrides are split in simple overrides (key/value array) and
+   * JavaScript overrides. The simply overrides are used directly, the
+   * JavaScript overrides are evaluated at run-time.
+   *
+   * @param array $overrides   key/value overrides
+   * @param array $overridesJs key/value run-time overrides
+   * 
+   * @return string JavaScript call (might need escaping when used in HTML code)
+   */
+  public function getUpdateCall($overrides=array(), $overridesJs=array())
+  {
+    $overridesJsStr = '';
+    
+    foreach ($overridesJs as $key => $js) 
+    {
+      $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '')."'$key': $js";  
+    }
+       
+    return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', '.atkJSON::encode($overrides).', {'.$overridesJsStr.'});';
+  }  
+  
+  /**
+   * Translate the given string using the grid node. 
+   * 
+   * The value of $fallback will be returned if no translation can be found.
+   * If you want NULL to be returned when no translation can be found then
+   * leave the fallback empty and set $useDefault to false.  
+   *
+   * @param string $string      string to translate
+   * @param string $fallback    fallback in-case no translation can be found
+   * @param boolean $useDefault use default ATK translation if no translation can be found?
+   * 
+   * @return string translation 
+   */
+  public function text($string, $fallback='', $useDefault=true)
+  {
+    return $this->getNode()->text($string, null, '', $fallback, !$useDefault);
+  }  
+  
+  /**
+   * Renders the grid.
+   *
+   * @return string grid HTML
+   */
   public function render()
   {
+    // if we are not embedded in an edit form and no form name
+    // is set we generate the form name based on the grid name
     if (!$this->isEmbedded() && $this->getFormName() == null)
     {
       $this->setFormName($this->getName().'_form');
     }
     
+    // temporarily overwrite the node postvars so that selectDb and countDb
+    // have access to the atksearch, atkfilter, atklimit etc. parameters
+    $oldPostvars = $this->getNode()->m_postvars;
+    $this->getNode()->m_postvars = $this->m_postvars;
+   
+    // load records
     $this->loadRecords();
-    $this->loadComponents();
 
+    // render the grid
     atkimport('atk.datagrid.atkdgrenderer');
     $renderer = new atkDGRenderer($this);
-    return $renderer->render();
+    $result = $renderer->render();
+    
+    // restore previous postvars
+    $this->getNode()->m_postvars = $oldPostvars;
+    
+    return $result;
   }
 }

@@ -8,13 +8,10 @@
  * @package atk
  * @subpackage utils
  *
- * @copyright (c)2000-2006 Ibuildings.nl BV
- * @copyright (c)2000-2006 Ivo Jansch
+ * @copyright (c) 2000-2007 Ibuildings.nl BV
  * 
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  */
-
-atkimport('atk.datagrid.atkdatagrid');
 
 /**
  * The data grid component base class. All data grid component extend this
@@ -74,7 +71,7 @@ abstract class atkDGComponent
   }
   
   /**
-   * Returns the Ui object.
+   * Returns the UI object.
    * 
    * @return atkUi ui
    */
@@ -84,7 +81,25 @@ abstract class atkDGComponent
   }
   
   /**
-   * Translates the given string.
+   * Return the theme object.
+   * 
+   * @return atkTheme theme
+   */
+  protected function getTheme()
+  {
+    return atkinstance("atk.ui.atktheme");
+  } 
+  
+  /**
+   * Translate the given string using the grid node. 
+   * 
+   * The value of $fallback will be returned if no translation can be found.
+   * If you want NULL to be returned when no translation can be found then
+   * leave the fallback empty and set $useDefault to false.  
+   *
+   * @param string $string      string to translate
+   * @param string $fallback    fallback in-case no translation can be found
+   * @param boolean $useDefault use default ATK translation if no translation can be found?
    */
   protected function text($string, $fallback='', $useDefault=false)
   {
@@ -92,7 +107,9 @@ abstract class atkDGComponent
   }
   
   /**
-   * Renders this component.
+   * Renders the component.
+   * 
+   * @return string component HTML
    */
   public abstract function render();
 }
