@@ -234,6 +234,11 @@
     {
       return "atkcolcmd[][$command]=".$attribute;
     }
+    
+    function getUrlCommandParams($attribute, $command)
+    {
+      return array("atkcolcmd[][$command]" => $attribute);
+    }    
 
     function doUrlCommand($cmd)
     {
@@ -258,22 +263,20 @@
 
     function doUrlCommands()
     {
-      global $ATK_VARS;
-
-      if (isset($ATK_VARS["atkcolcmd"]) && is_array($ATK_VARS["atkcolcmd"]))
+      if (isset($this->m_node->m_postvars["atkcolcmd"]) && is_array($this->m_node->m_postvars["atkcolcmd"]))
       {
-        foreach($ATK_VARS["atkcolcmd"] as $command)
+        foreach($this->m_node->m_postvars["atkcolcmd"] as $command)
         {
           $this->doUrlCommand($command);
         }
       }
-      else if (isset($ATK_VARS["atkorderby"]) && ($ATK_VARS["atkorderby"]!=""))
+      else if (isset($this->m_node->m_postvars["atkorderby"]) && ($this->m_node->m_postvars["atkorderby"]!=""))
       {
         // oldfashioned order by.
-        $this->m_custom_atkorderby = $ATK_VARS["atkorderby"];
+        $this->m_custom_atkorderby = $this->m_node->m_postvars["atkorderby"];
 
         // try to parse..
-        $this->_addOrderByStatement($ATK_VARS["atkorderby"]);
+        $this->_addOrderByStatement($this->m_node->m_postvars["atkorderby"]);
       }
 
       // Cleanup structure
