@@ -198,7 +198,8 @@ class atkDGList extends atkDGComponent
     if ($grid->hasFlag(atkDataGrid::SEARCH))
     {
       $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0)));
-      $button = '<input type="submit" class="btn_search" value="'.atktext("search").'" onclick="'.$call.' return false;">';
+      $buttonType = $grid->isEmbedded() ? "button" : "submit";
+      $button = '<input type="'.$buttonType.'" class="btn_search" value="'.atktext("search").'" onclick="'.$call.' return false;">';
       if ($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH))
       {
         $button .= '<br>'.href(atkSelf()."?atknodetype=".$grid->getActionNode()->atkNodeType()."&atkaction=".$grid->getActionNode()->getExtendedSearchAction(),"(".atktext("search_extended").")",SESSION_NESTED);
