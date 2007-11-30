@@ -108,6 +108,16 @@
       }
     }
     
+    /**
+     * Returns the node object.
+     *
+     * @return atkNode
+     */
+    public function getNode()
+    {
+      return $this->m_node;
+    }
+    
     function getRejectInfo()
     {      
       atkdebug("looking for rejectinfo");
