@@ -381,6 +381,12 @@
 
     function _getGlobalSubmitScriptCode($partial=false)
     {
+      // global submit script can only be registered in the original request
+      if ($partial)
+      {
+        return "";
+      }
+      
       $res = "\n    function globalSubmit(form)\n";
       $res .= "    {\n";
       $res .= "      var retval = true;\n";

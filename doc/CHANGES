@@ -191,6 +191,7 @@ Changed in ATK 6.2
 * Fixed layout of recordlists with navigation in tabbedpanes. [Dennis]
 * Function atknew now uses reflection (instead of eval) to instantiate objects 
   with arguments for the constructor. [Peter]
+* Only register global submit script for the original request. [Peter]
 
 Changed in ATK 6.1
 ------------------
