@@ -361,6 +361,8 @@
   "error_iconv_not_install" => "iconv module don't install in your system, but it needs for right functionality",
   "available"=>"Available",
   "selected"=>"Selected",
+  "datagrid_summary" => "(Records [start] - [end] of [count])",
+  "datagrid_summary_no_records" => "",
 );
 
 ?>
