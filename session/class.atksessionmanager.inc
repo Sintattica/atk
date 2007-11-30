@@ -330,7 +330,7 @@
 
       // pagevars are valid on a page. if you go a session level higher, the pagevars are no longer
       // visible until you return.
-      $pageVars = array("atksearch","atkselector","atksearchmode","atkorderby","atkstartat","atklimit","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch","atkindex");
+      $pageVars = array("atkdg", "atksearch","atkselector","atksearchmode","atkorderby","atkstartat","atklimit","atktarget","atkformdata","atktree","atksuppress","atktab","atksmartsearch","atkindex");
 
       // lockedvars are session or page vars that will not be overwritten in partial mode
       // e.g., the values that are already known in the session will be used
