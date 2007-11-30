@@ -412,7 +412,13 @@
 	        $result[$i]["gentype"]    = $ddl->getGenericType($finfo->type);
 	        $result[$i]["len"]        = $finfo->length;
 	        $result[$i]["flags"]      = 0;
-
+	       
+	        if ($result[$i]["gentype"] == "decimal")
+	        {
+	          $result[$i]["len"] -= ($finfo->decimals * 2);
+	          $result[$i]["len"] .= "," . $finfo->decimals;
+	        }
+	         
 	        if($finfo->flags & MYSQLI_PRI_KEY_FLAG) $result[$i]["flags"]|= MF_PRIMARY;
 	        if($finfo->flags & MYSQLI_UNIQUE_KEY_FLAG) $result[$i]["flags"]|= MF_UNIQUE;
 	        if($finfo->flags & MYSQLI_NOT_NULL_FLAG ) $result[$i]["flags"]|= MF_NOT_NULL;
