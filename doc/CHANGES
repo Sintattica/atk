@@ -188,6 +188,7 @@ Changed in ATK 6.2
 * Fixed NULL detection in fetchValue of atkDateAttribute. [Peter]
 * Fixed search for auto-complete atkManyToOneRelation. [Peter]
 * Fixed atkFileAttribute obligatory validation. [Peter]
+* Fixed layout of recordlists with navigation in tabbedpanes. [Dennis]
 
 Changed in ATK 6.1
 ------------------
