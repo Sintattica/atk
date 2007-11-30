@@ -55,7 +55,7 @@
 
 .tabbedPane a
 {
-  display: block;
+  
 }
 
 .tabbedPane .tabsTabs .activetab
@@ -70,7 +70,7 @@
 
 .tabbedPane .tabsTabs .activetab a
 {
-display: block;
+  display: block;
   color: #414141;
   text-decoration: none;
   font-size: 10px;
@@ -79,8 +79,7 @@ display: block;
 
 .tabbedPane .tabsTabs .passivetab a
 {
-display: block;
+  display: block;
   text-decoration: none;
   font-size: 10px;
 }
-
