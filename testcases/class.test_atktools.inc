@@ -27,6 +27,29 @@
 
   class test_atktools extends atkTestCase
   {
+    /**
+     * Test instantiation of classes using atknew.
+     */
+    function test_atknew()
+    {
+      $object1 = atknew('atk.testcases.stubs.stub_atknew');
+      $this->assertTrue(class_exists("stub_atknew"));      
+      $this->assertNotNull($object1);
+      $this->assertIsA($object1, "stub_atknew");
+      $this->assertEqual(0, count($object1->getArgs()));
+      
+      $object2 = atknew('atk.testcases.stubs.stub_atknew', 'a', 2, $object1, array('a', 'b', 'c'));
+      $this->assertNotNull($object2);
+      $this->assertIsA($object2, "stub_atknew");
+      $args = $object2->getArgs();
+      $this->assertEqual(4, count($args));
+      $this->assertEqual('a', $args[0]);
+      $this->assertEqual(2, $args[1]);
+      $this->assertEqual($object1, $args[2]);
+      $this->assertEqual(array('a', 'b', 'c'), $args[3]);            
+    }
+    
+    
     function test_stripQuotes()
     {      
       $this->assertEqual(stripQuotes("'1836'"),"1836","check stripQuotes '");

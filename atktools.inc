@@ -1776,7 +1776,7 @@
    * @param string $fullclassname the ATK classname of the class ("map1.map2.classname")
    * @return obj instance of the class
    */
-  function &atknew($fullclassname)
+  function atknew($fullclassname)
   {
     $fullclassname = atkResolveClass($fullclassname);
     atkimport($fullclassname, true);
@@ -1787,22 +1787,22 @@
     if (class_exists($classname))
     {
       $args = func_get_args();
-      unset($args[0]);
-      if (!empty($args))
-      {
-        foreach ($args as $key=>$arg) $arguments[]="\$args[$key]";
-        $arguments = implode(',',$arguments);
-        eval("\$obj = &new $classname($arguments);");
-      }
-      else $obj = &new $classname();
+      array_shift($args);
 
-      return $obj;
+      if (count($args) == 0)
+      {
+        return new $classname();
+      }
+      else 
+      {
+        $class = new ReflectionClass($classname);      
+        return $class->newInstanceArgs($args);
+      }
     }
     else
     {
       atkerror("Class $fullclassname not found.");
-      $tmp = NULL;
-      return $tmp;
+      return null;
     }
   }
 

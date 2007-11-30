@@ -189,6 +189,8 @@ Changed in ATK 6.2
 * Fixed search for auto-complete atkManyToOneRelation. [Peter]
 * Fixed atkFileAttribute obligatory validation. [Peter]
 * Fixed layout of recordlists with navigation in tabbedpanes. [Dennis]
+* Function atknew now uses reflection (instead of eval) to instantiate objects 
+  with arguments for the constructor. [Peter]
 
 Changed in ATK 6.1
 ------------------
