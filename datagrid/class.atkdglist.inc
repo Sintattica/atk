@@ -39,7 +39,7 @@ class atkDGList extends atkDGComponent
   function render()
   {
     $grid = $this->getGrid();
-    $data = $this->getRecordlistData($grid->getNode(), $grid->getRecords(), $grid->getDefaultActions(), $grid->getFlags(), $grid->getExcludes(), $grid->getFormName(), "", /* $grid->getPrefix() */ "");
+    $data = $this->getRecordlistData($grid->getNode(), $grid->getRecords(), $grid->getDefaultActions(), $grid->getFlags(), $grid->getExcludes(), array(), /* $grid->getPrefix() */ "");
     $ui = $grid->getNode()->getUi();
     return $ui->render($grid->getNode()->getTemplate("admin"), $data, $grid->getNode()->m_module);
   }  
@@ -55,7 +55,7 @@ class atkDGList extends atkDGComponent
    * @param String  $embedprefix  The prefix for embeded fields
    * @return String The rendered recordlist
    */
-  private function getRecordlistData(&$node, $recordset, $actions, $flags=0, $suppressList="", $formName="", $navigation=array(),$embedprefix="")
+  private function getRecordlistData(&$node, $recordset, $actions, $flags=0, $suppressList="", $navigation=array(),$embedprefix="")
   {
     $grid = $this->getGrid();
     $theme = $this->getTheme();
@@ -162,7 +162,7 @@ class atkDGList extends atkDGComponent
     $sortend="";
     if ($grid->hasFlag(atkDataGrid::EXTENDED_SORT))
     {
-      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0)));
+      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractExtendedSortOverrides'));
       $button = '<input type="button" value="'.atktext("sort").'" onclick="'.$call.'">';
       if ($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS) || $grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS))
       {
@@ -197,7 +197,7 @@ class atkDGList extends atkDGComponent
     $searchend="";
     if ($grid->hasFlag(atkDataGrid::SEARCH))
     {
-      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0)));
+      $call = htmlentities($grid->getUpdateCall(array('atkstartat' => 0), array(), 'ATK.DataGrid.extractSearchOverrides'));
       $buttonType = $grid->isEmbedded() ? "button" : "submit";
       $button = '<input type="'.$buttonType.'" class="btn_search" value="'.atktext("search").'" onclick="'.$call.' return false;">';
       if ($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH))
@@ -462,9 +462,9 @@ class atkDGList extends atkDGComponent
       $target = session_url(atkSelf().'?atknodetype='.$grid->getNode()->atkNodeType().'&atktarget='.$grid->getNode()->m_postvars['atktarget'].'&atktargetvar='.$grid->getNode()->m_postvars['atktargetvar'].'&atktargetvartpl='.$grid->getNode()->m_postvars['atktargetvartpl'], SESSION_NESTED);
 
       $mra = (count($list["rows"]) > 1 ?
-                  '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'all\')">'.atktext("select_all").'</a> / '.
-                  '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'none\')">'.atktext("deselect_all").'</a> / '.
-                  '<a href="javascript:updateSelection(\''.$listName.'\', document.forms[\''.$formName.'\'], \'invert\')">'.atktext("select_invert").'</a> '
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'all\')">'.atktext("select_all").'</a> / '.
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'none\')">'.atktext("deselect_all").'</a> / '.
+                  '<a href="javascript:void(0)" onclick="updateSelection(\''.$listName.'\', $(this).up(\'form\'), \'invert\')">'.atktext("select_invert").'</a> '
                  :
                   '');
 
@@ -630,7 +630,7 @@ class atkDGList extends atkDGComponent
     $columnConfig = &$grid->getNode()->getColumnConfig();
 
     /* get the heading and search columns */
-    $atksearchpostvar = isset($grid->getNode()->m_postvars["atksearch"]) ? $grid->getNode()->m_postvars["atksearch"] : null;
+    $atksearchpostvar = $grid->getPostvar("atksearch");
     if ($grid->hasFlag(atkDataGrid::SEARCH)) $grid->getNode()->setAttribSizes();
     foreach (array_keys($grid->getNode()->m_attribIndexList) as $r)
     {

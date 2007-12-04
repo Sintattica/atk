@@ -80,8 +80,8 @@ class atkDGLimit extends atkDGComponent
     }
     
     $options = $this->getOptions($values);
-    $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0));
-    $result = $this->getUi()->render('dglimit.tpl', array('name' => 'atklimit', 'options' => $options, 'call' => $call));
+    $call = $this->getGrid()->getUpdateCall(array('atkstartat' => 0), array('atklimit' => '$F(this)'));
+    $result = $this->getUi()->render('dglimit.tpl', array('options' => $options, 'call' => $call));
     return $result;    
   }
 }

@@ -202,6 +202,25 @@ class atkDataGrid
    * @var int
    */
   private $m_count;
+  
+  /**
+   * The number of times we "tried" to override the node postvars.
+   * 
+   * @see atkDataGrid::overrideNodePostvars
+   *
+   * @var int
+   */
+  private $m_overrideNodePostvarsLevel = 0;
+  
+  /**
+   * Backup of the original node postvars in case the postvars
+   * have been overriden.
+   * 
+   * @see atkDataGrid::overrideNodePostvars
+   *
+   * @var array
+   */
+  private $m_overrideNodePostvarsBackup = null;
 
   /**
    * Constructor.
@@ -214,10 +233,15 @@ class atkDataGrid
     $this->setName($name);    
     $this->setNode($node);
 
+    $this->registerGlobalOverrides();
+    
     $this->setFlags($this->convertNodeFlags($node->getFlags()));
     $this->setBaseUrl(partial_url($node->atkNodeType(), $node->m_action, 'datagrid'));
-    $this->setUpdate($this->getNode()->isPartial());    
-    $this->setPostvars(@$node->m_postvars['atkdg'][$name]);
+    $this->setUpdate($this->getNode()->isPartial());
+
+    $vars = @$node->m_postvars['atkdg'][$name];
+    $vars = !is_array($vars) ? array() : $vars;
+    $this->setPostvars(array_merge($node->m_postvars, $vars));
 
     $this->setDefaultLimit(atkconfig('recordsperpage')); 
     $this->setDefaultActions($node->defaultActions("admin"));
@@ -237,6 +261,37 @@ class atkDataGrid
     {
       $this->addComponent('paginator', 'atk.datagrid.atkdgindex');
     }
+  }
+  
+  /**
+   * It's allowed to use the request variables atkstartat, atklimit, atksearch,
+   * atksmartsearch, atksearchmode, atkorderby and atkindex directly. If they
+   * are used directly we need to store their values in the datagrid session 
+   * entry and override existing values if needed.
+   */
+  protected function registerGlobalOverrides()
+  {
+    $request = array_merge($_GET, $_POST);
+    atkDataDecode($request);
+    
+    $vars = array('atkstartat', 'atklimit', 'atksearch', 'atksmartsearch', 'atksearchmode', 'atkorderby', 'atkindex');
+    
+    $sessionData = atkGetSessionManager()->pageVar('atkdg');
+    if ($sessionData == null)
+    {
+      $sessionData = array();
+    }
+    
+    foreach ($vars as $var)
+    {
+      if (isset($request[$var]))
+      {
+        $sessionData[$this->getName()][$var] = $request[$var];
+      }
+    }
+    
+    $this->getNode()->m_postvars['atkdg'] = $sessionData;
+    atkGetSessionManager()->pageVar('atkdg', $sessionData);
   }
   
   /**
@@ -364,13 +419,16 @@ class atkDataGrid
    *
    * @param string $name form name
    */
-  public function setFormName($name)
+  protected function setFormName($name)
   {
     $this->m_formName = $name;
   } 
 
   /**
    * Sets whatever the grid is embedded in an edit form.
+   * 
+   * If set to true and no form name is specified yet a default form name
+   * of "entryform" is used.
    *
    * @param boolean $embedded embedded in edit form?
    */
@@ -441,7 +499,7 @@ class atkDataGrid
     {
       $postvars = array();  
     }
-    
+
     $this->m_postvars = $postvars;
   }
 
@@ -534,6 +592,16 @@ class atkDataGrid
   public function addComponent($name, $classOrObject)
   {
     $this->m_components[$name] = $classOrObject;
+  }
+  
+  /**
+   * Remove a component from the grid.
+   * 
+   * @param string $name name
+   */
+  public function removeComponent($name)
+  {
+    unset($this->m_components[$name]);
   }
 
   /**
@@ -897,8 +965,7 @@ class atkDataGrid
   {
     // temporarily overwrite the node postvars so that selectDb and countDb
     // have access to the atksearch, atkfilter, atklimit etc. parameters
-    $oldPostvars = $this->getNode()->m_postvars;
-    $this->getNode()->m_postvars = $this->m_postvars;    
+    $this->overrideNodePostvars();  
     
     // retrieve records using the default implementation
     if ($force || ($this->getRecords() === null && $this->getSelectHandler() === null))
@@ -910,7 +977,7 @@ class atkDataGrid
     // retrieve records using a custom select handler
     else if ($force || $this->getRecords() === null)
     {
-      $records = call_user_func_array($this->getSelectHandler(), $this->getSelectHandlerParams());
+      $records = call_user_func_array($this->getSelectHandler(), array($this));
       $this->setRecords($records);
     }
     
@@ -924,12 +991,12 @@ class atkDataGrid
     // retrieve record count using a custom cont handler
     else if ($force || $this->getCount() === null)
     {
-      $count = call_user_func_array($this->getCountHandler(), $this->getCountHandlerParams());
+      $count = call_user_func_array($this->getCountHandler(), array($this));
       $this->setCount($count); 
     }
         
     // restore previous postvars
-    $this->getNode()->m_postvars = $oldPostvars;    
+    $this->restoreNodePostvars();   
   }
 
   /**
@@ -941,12 +1008,13 @@ class atkDataGrid
    * JavaScript overrides. The simply overrides are used directly, the
    * JavaScript overrides are evaluated at run-time.
    *
-   * @param array $overrides   key/value overrides
-   * @param array $overridesJs key/value run-time overrides
+   * @param array $overrides           key/value overrides
+   * @param array $overridesJs         key/value run-time overrides
+   * @param array $overridesJsCallback JavaScript function which returns an overrides Hash
    * 
    * @return string JavaScript call (might need escaping when used in HTML code)
    */
-  public function getUpdateCall($overrides=array(), $overridesJs=array())
+  public function getUpdateCall($overrides=array(), $overridesJs=array(), $overridesJsCallback='null')
   {
     $overridesJsStr = '';
     
@@ -954,8 +1022,8 @@ class atkDataGrid
     {
       $overridesJsStr .= (!empty($overridesJsStr) ? ', ' : '')."'$key': $js";  
     }
-       
-    return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', '.atkJSON::encode($overrides).', {'.$overridesJsStr.'});';
+    
+    return 'ATK.DataGrid.update('.atkJSON::encode($this->getName()).', '.atkJSON::encode($overrides).', {'.$overridesJsStr.'}, '.$overridesJsCallback.');';
   }  
   
   /**
@@ -974,7 +1042,39 @@ class atkDataGrid
   public function text($string, $fallback='', $useDefault=true)
   {
     return $this->getNode()->text($string, null, '', $fallback, !$useDefault);
-  }  
+  } 
+
+  /**
+   * (Temporarily) override the node postvars so we can apply the grid
+   * specific search conditions etc.
+   */
+  protected function overrideNodePostvars()
+  {
+    $this->m_overrideNodePostvarsLevel += 1;    
+    
+    // only override once
+    if ($this->m_overrideNodePostvarsLevel == 1) 
+    {
+      $this->m_overrideNodePostvarsBackup = $this->getNode()->m_postvars;
+      $this->getNode()->m_postvars = $this->getPostvars();
+    }
+  }
+
+  /**
+   * Restore override node postvars.
+   * 
+   * @see atkDataGrid::overrideNodePostvars
+   */
+  protected function restoreNodePostvars()
+  {
+    $this->m_overrideNodePostvarsLevel -= 1;
+
+    if ($this->m_overrideNodePostvarsLevel == 0)
+    {  
+      $this->getNode()->m_postvars = $this->m_overrideNodePostvarsBackup;
+      $this->m_overrideNodePostvarsBackup = null;
+    }
+  }
   
   /**
    * Renders the grid.
@@ -983,17 +1083,16 @@ class atkDataGrid
    */
   public function render()
   {
-    // if we are not embedded in an edit form and no form name
-    // is set we generate the form name based on the grid name
-    if (!$this->isEmbedded() && $this->getFormName() == null)
+    // if we are not embedded in an edit form we generate 
+    // the form name based on the grid name
+    if (!$this->isEmbedded())
     {
       $this->setFormName($this->getName().'_form');
     }
     
     // temporarily overwrite the node postvars so that selectDb and countDb
     // have access to the atksearch, atkfilter, atklimit etc. parameters
-    $oldPostvars = $this->getNode()->m_postvars;
-    $this->getNode()->m_postvars = $this->m_postvars;
+    $this->overrideNodePostvars();
    
     // load records
     $this->loadRecords();
@@ -1004,7 +1103,7 @@ class atkDataGrid
     $result = $renderer->render();
     
     // restore previous postvars
-    $this->getNode()->m_postvars = $oldPostvars;
+    $this->restoreNodePostvars();
     
     return $result;
   }
