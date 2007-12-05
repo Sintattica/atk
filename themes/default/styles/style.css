@@ -95,12 +95,6 @@ INPUT.btn_next
   height: 25px;
 }
 
-INPUT.dialogmra
-{
-  background-color: #CCCCCC;
-  height: 25px;
-}
-
 INPUT.btn_saveandclose
 {
   font-weight: bold;
