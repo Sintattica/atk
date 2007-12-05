@@ -222,7 +222,7 @@
       {
         $stamp = strtotime($rec[$this->fieldName()]);
         $stamp = $this->toUTC($stamp, $rec);
-        return date('Y-m-d H:m:s',$stamp);
+        return date('Y-m-d H:i:s',$stamp);
       }
      return NULL;
     }
