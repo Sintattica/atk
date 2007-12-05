@@ -196,6 +196,9 @@ Changed in ATK 6.2
   callers to specify which type of join. [Boy]
 * When a fatal application error is detected we flush 
   the output buffer (to get debugging). [Boy]
+* Removed dirty addDialogMRA functionality from atkNode and atkRecordList.
+  since it is now also possible to override the submit-handling of the javascript 
+  method atkMRASubmit(). [Dennis]
 
 Changed in ATK 6.1
 ------------------

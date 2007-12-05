@@ -586,31 +586,6 @@
                          '<input type="button" class="btn" value="'.atktext($list["mra"][0],$this->m_node->m_module, $this->m_node->m_type).'" onclick="atkSubmitMRA(\''.$listName.'\', this.form, \''.$target.'\')">';
             }
           }
-
-          /**
-           * @todo This code needs to be removed/replaced when we have support for all MRA
-           * actions for using dialogs. In which case we could make all the actions in an
-           * MRA dropdown open an atkDialog. For now this code just generates another button.
-           */
-          $dialogMRA = $this->m_node->getDialogMRA();
-          if (isset($dialogMRA) && is_array($dialogMRA) && count($dialogMRA) != 0)
-          {
-            // If there are other MRA actions, we prefix the dialog actions with 'or'
-            if (count($list["mra"]) > 0)
-            {
-              $mra.= '&nbsp;' . $this->m_node->text('or');
-            }
-
-            $page = &$this->m_node->getPage();
-            $page->register_script(atkconfig("atkroot")."atk/javascript/tools.js");
-            $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkattributeedithandler.js');
-
-            foreach ($dialogMRA as $mra_action)
-            {
-              $mra .= '&nbsp;' . $this->getMRADialogButton($this->m_node, $mra_action, $listName);
-            }
-          }
-          /** End of MRA dialog buttons */
         }
 
         if (atkconfig("use_keyboard_handler"))
@@ -636,36 +611,6 @@
 
         return $recordListData;
       }
-    }
-
-    /**
-     * Retrieve a button to open a dialog for a given MRA action.
-     *
-     * @todo This code needs to be removed/replaced when we have support for all MRA
-     * actions for using dialogs. In which case we could make all the actions in a
-     * MRA dropdown open an atkDialog. For now this code just generates another button.
-     *
-     * @param String $action
-     */
-    function getMRADialogButton(&$node, $action, $listName)
-    {
-      atkimport('atk.utils.atkjson');
-      atkimport('atk.ui.atkdialog');
-
-      $url = partial_url($node->atkNodeType(), $action, $action);
-
-      $dialog = &new atkDialog($node->atkNodeType(), $action, $action);
-      $dialog->load();
-
-      $ui       = &$node->getUi();
-      $title    = $ui->title($node->m_module, $node->m_type, $action);
-      $atkTheme = &atkTheme::getInstance();
-      $theme    = $atkTheme->getAttribute('dialog_theme_name', 'alphacube');
-
-      $call = "(new ATK.Dialog('".$title."', '$url&'+Form.serialize('$listName')+'&atkformname=$listName', '".$theme."')).show();";
-      $script = vsprintf($call, $params);
-
-      return '<input type="button" class="dialogmra" value="' . $node->text($action) . '" onClick="' . $script . '" />';
     }
 
     /**
@@ -856,5 +801,3 @@
       return $node->atkNodeType();
     }
   }
-
-?>

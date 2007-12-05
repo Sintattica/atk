@@ -725,18 +725,6 @@
     var $m_mraSelectionMode = MRA_MULTI_SELECT;
 
     /**
-     * A list of mra actions that need to be accessed through
-     * a dialog.
-     *
-     * @todo This code needs to be removed/replaced when we have support for all MRA
-     * actions for using dialogs. In which case we could make all the actions in a
-     * MRA dropdown open an atkDialog.
-     *
-     * @var array
-     */
-    var $m_dialog_mra = null;
-    
-    /**
      * The default edit fieldprefix to use for atk
      * @access private
      * @var String
@@ -5073,32 +5061,6 @@
     function __toString()
     {
       return $this->atkNodeType();
-    }
-
-    /**
-     * Add an mra action that need to be accessed through a dialog.
-     *
-     * @todo This code needs to be removed/replaced when we have support for all MRA
-     * actions for using dialogs. In which case we could make all the actions in a
-     * MRA dropdown open an atkDialog. For now this code just generates another button.
-     *
-     * @param String $action
-     */
-    function addDialogMRA($action)
-    {
-      $this->m_dialog_mra[] = $action;
-    }
-
-    /**
-     * Retrieve the mra actions that need to be accessed through a dialog.
-     *
-     * @todo This code needs to be removed/replaced when we have support for all MRA
-     * actions for using dialogs. In which case we could make all the actions in a
-     * MRA dropdown open an atkDialog. For now this code just generates another button.
-     */
-    function getDialogMRA()
-    {
-      return $this->m_dialog_mra;
     }
     
     /**
