@@ -199,6 +199,7 @@ Changed in ATK 6.2
 * Removed dirty addDialogMRA functionality from atkNode and atkRecordList.
   since it is now also possible to override the submit-handling of the javascript 
   method atkMRASubmit(). [Dennis]
+* Don't fetch meta data for atkDataNode. [Peter]
 
 Changed in ATK 6.1
 ------------------
