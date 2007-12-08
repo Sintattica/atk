@@ -119,7 +119,7 @@ Changed in ATK 6.2
 * Fix how metapolicy->_getTypeAndParams() determine atkboolattribute
   field. (bug #834) [Yury]
 * Fix attribute->addDependee() method. Check exists dependee before add new
- one.  (bug #831) [Yury]
+  one. (bug #831) [Yury]
 * Fix using $config_auth_database in class.auth_db.inc (bug #832) [Yury]
 * Added missing useattrib in test_atkdatanode testcase. [Guido]
 * Fixed a missing import statement in the atkactionhandler [Edgar]
@@ -182,7 +182,7 @@ Changed in ATK 6.2
 * Added a zIndex for the calendar.js script to make sure calendars are also on
   top in dialogs. [Peter, Dennis]
 * Don't log query stack trace in session if $config_debug <= 0. [Peter]
-* Small increase in performance in atkExtendableShuttleRelation. [Dennis, Peter]
+* Small performance increase in atkExtendableShuttleRelation. [Dennis, Peter]
 * Fixed label display for errors registered using the deprecated
   triggerError method. [Peter]
 * Fixed NULL detection in fetchValue of atkDateAttribute. [Peter]
@@ -197,9 +197,10 @@ Changed in ATK 6.2
 * When a fatal application error is detected we flush 
   the output buffer (to get debugging). [Boy]
 * Removed dirty addDialogMRA functionality from atkNode and atkRecordList.
-  since it is now also possible to override the submit-handling of the javascript 
-  method atkMRASubmit(). [Dennis]
+  since it is now also possible to override the submit-handling of the 
+  javascript method atkMRASubmit(). [Dennis]
 * Don't fetch meta data for atkDataNode. [Peter]
+* Fixed javascript error in atkDateAttribute when using french language. [Ivo]
 
 Changed in ATK 6.1
 ------------------
