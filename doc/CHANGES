@@ -7,7 +7,6 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-+ Add currencysymbol (EUR) to lng file. It used by atkcurrency attribute. [Yury]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
 + Added support for image mime type validation in the atkfileattribute. [Martin]
