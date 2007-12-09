@@ -120,7 +120,7 @@
      */
     function display($record, $mode="")
     {
-      if($this->m_ownerInstance->m_partial == "attribute.{$this->fieldName()}.refresh")
+      if($this->m_ownerInstance->m_partial == "attribute.".$this->fieldName().".refresh")
       {
         $record[$this->fieldName()] = $this->load($db, $record);
       }
