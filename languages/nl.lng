@@ -361,6 +361,8 @@
   "available"=>"Beschikbaar",
   "datagrid_summary" => "(Records [start] - [end] van [count])",
   "datagrid_summary_no_records" => "",
+  "currencysymbol"=>'EUR',
+
 );
 
 ?>

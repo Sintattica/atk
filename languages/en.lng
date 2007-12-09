@@ -363,6 +363,7 @@
   "selected"=>"Selected",
   "datagrid_summary" => "(Records [start] - [end] of [count])",
   "datagrid_summary_no_records" => "",
+  "currencysymbol"=>'EUR',
 );
 
 ?>
