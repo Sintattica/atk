@@ -40,7 +40,11 @@
   // we don't have a session...
   if (isValidSessionId())
   {
-    session_name(atkconfig("identifier"));
+    $sessionName = atkconfig("session_name");
+    if (empty($sessionName))
+      $sessionName = atkconfig("identifier");
+    
+    session_name($sessionName);
     session_start();
 
   // backwardscompatibility hacks. g_sessionData and g_sessionData are obsolete actually.
@@ -1087,7 +1091,10 @@
    */
   function isValidSessionId()
   {
-    $name = atkconfig("identifier");
+    $name = atkconfig("session_name");
+    if (empty($name))
+      $name = atkconfig("identifier");
+      
     $sessionid = "";
     global ${$name};
 

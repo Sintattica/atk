@@ -677,7 +677,16 @@
   /****************** MISCELLANEOUS CONFIGURATION OPTIONS ********************/
 
   /**
-   * The application identifier (used for sessions)
+   * The session name. If this configuration option is not set the 
+   * $config_identifier option is used instead.
+   * 
+   * @var string
+   */
+  $config_session_name = "";
+  
+  /**
+   * The application identifier. 
+   *  
    * @var String
    * @todo update this bit of documentation as it doesn't really say much
    */

@@ -201,6 +201,8 @@ Changed in ATK 6.2
   javascript method atkMRASubmit(). [Dennis]
 * Don't fetch meta data for atkDataNode. [Peter]
 * Fixed javascript error in atkDateAttribute when using french language. [Ivo]
+* Session name can now optionally differ from the application identifier
+  by setting $config_session_name. [Peter]
 
 Changed in ATK 6.1
 ------------------
