@@ -231,7 +231,7 @@
     function getAvailableIndices(&$node)
     {
       $selector = atkArrayNvl($node->m_postvars, 'atkfilter', "");
-
+      $selector = $node->validateFilter($selector);
       $querylist = array();
       $mode = "admin";
 
