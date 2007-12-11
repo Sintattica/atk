@@ -1,16 +1,16 @@
 // This function shows the calendar under the element having the given id.
 // It takes care of catching "mousedown" signals on document and hiding the
 // calendar if the click was outside.
-function showCalendar(id, bindname, format, dateattr) 
+function showCalendar(id, bindname, format, dateattr)
 {
   var el = document.getElementById(bindname);
-  if (calendar != null) 
+  if (calendar != null)
   {
     // we already have some calendar created
     calendar.hide();                 // so we hide it first.
     calendar = null;
-  } 
-  
+  }
+
   // first-time call, create the calendar.
   var cal;
   if (dateattr)
@@ -25,6 +25,8 @@ function showCalendar(id, bindname, format, dateattr)
   }
   // uncomment the following line to hide the week numbers
   // cal.weekNumbers = false;
+  cal.dateattrId = id;
+  cal.setDisabledHandler(ATK.DateAttribute.checkDisabled);
   calendar = cal;                  // remember it in the global var
   cal.setRange(1900, 2070);        // min/max year allowed.
   cal.create();
@@ -49,20 +51,20 @@ function showCalendar(id, bindname, format, dateattr)
 }
 
 // This function gets called when the end-user clicks on some date.
-function changeWidget(cal, date) 
+function changeWidget(cal, date)
 {
-  ATK.DateAttribute.setValue(cal.dateattrId, { year: date.substr(0,4), month: parseInt(date.substr(5,2), 10), day: parseInt(date.substr(8,2), 10) });  
+  ATK.DateAttribute.setValue(cal.dateattrId, { year: date.substr(0,4), month: parseInt(date.substr(5,2), 10), day: parseInt(date.substr(8,2), 10) });
 }
 
 function changeTextField(cal, date)
 {
-  cal.sel.value = date; // just update the date in the input field.  
+  cal.sel.value = date; // just update the date in the input field.
 }
 
 // And this gets called when the end-user clicks on the _selected_ date,
 // or clicks on the "Close" button.  It just hides the calendar without
 // destroying it.
-function closeHandler(cal) 
+function closeHandler(cal)
 {
   cal.hide();                        // hide the calendar
 }

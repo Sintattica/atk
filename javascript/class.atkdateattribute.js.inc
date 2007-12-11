@@ -73,7 +73,7 @@ function AdjustDate(el, arr, newDate)
   if (arguments.length == 2) {
     newDate = false;
   }
-  
+
   var info = eval('atkdateattribute_' + arr);
   setTimeout(function() { RealAdjustDate(el, arr, info.format, info.min, info.max, info.emptyfield, info.weekday, newDate) }, 1);
 }
@@ -117,7 +117,7 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, 
   /* check day format */
   if (format.indexOf("d") >= 0) format_day = "d";
   else format_day = "j";
-  
+
   /* check weekday format */
   if (format.indexOf("D") >= 0) format_weekday = "D";
   else format_weekday = "l";
@@ -281,7 +281,7 @@ function RealAdjustDate(el, arr, format, str_min, str_max, emptyfield, weekday, 
     }
   }
   else input["y"].value = current["y"];
-  
+
   ATK.DateAttribute.notifyListeners(arr);
 }
 
@@ -291,7 +291,7 @@ if (!window.ATK) {
 
 ATK.DateAttribute = {
   listeners: {},
-  
+
   /**
    * Notify listeners of refresh / new value.
    */
@@ -302,7 +302,7 @@ ATK.DateAttribute = {
       listeners[i]({ name: name, value: ATK.DateAttribute.getValue(name)});
     }
   },
-  
+
   /**
    * Register listener for the attribute with the given name.
    */
@@ -310,7 +310,7 @@ ATK.DateAttribute = {
     if (!ATK.DateAttribute.listeners[name]) {
       ATK.DateAttribute.listeners[name] = [];
     }
-    
+
     ATK.DateAttribute.listeners[name].push(callback);
   },
 
@@ -321,16 +321,16 @@ ATK.DateAttribute = {
     var dayEl = document.getElementById(name + "[day]");
     var monthEl = document.getElementById(name + "[month]");
     var yearEl = document.getElementById(name + "[year]");
-    
-    var value = { 
-      year: yearEl.value, 
-      month: monthEl.options[monthEl.selectedIndex].value, 
-      day: dayEl.options[dayEl.selectedIndex].value 
+
+    var value = {
+      year: yearEl.value,
+      month: monthEl.options[monthEl.selectedIndex].value,
+      day: dayEl.options[dayEl.selectedIndex].value
     };
-    
+
     return value;
   },
-  
+
   /**
    * Set value of attribute with the given name.
    */
@@ -338,19 +338,19 @@ ATK.DateAttribute = {
     var dayEl = document.getElementById(name + "[day]");
     var monthEl = document.getElementById(name + "[month]");
     var yearEl = document.getElementById(name + "[year]");
-  
+
     AdjustDate(yearEl, name, value);
-    AdjustDate(monthEl, name, value);  
-    AdjustDate(dayEl, name, value);  
+    AdjustDate(monthEl, name, value);
+    AdjustDate(dayEl, name, value);
   },
-  
+
   /**
    * Refresh.
    */
   refresh: function(name) {
     ATK.DateAttribute.setValue(name, ATK.DateAttribute.getValue(name));
   },
-  
+
   /**
    * Set minimum.
    */
@@ -358,14 +358,52 @@ ATK.DateAttribute = {
     min = min == null ? null : '' + min.year + (min.month < 10 ? '0' + min.month : min.month) + (min.day < 10 ? '0' + min.day : min.day);
     eval('atkdateattribute_' + name + '.min = min;');
     ATK.DateAttribute.refresh(name);
-  }, 
-  
+  },
+
   /**
    * Set maximum.
    */
   setMaximum: function(name, max) {
     max = max == null ? null : '' + max.year + (max.month < 10 ? '0' + max.month : max.month) + (max.day < 10 ? '0' + max.day : max.day);
-    eval('atkdateattribute_' + name + '.max = max;');  
-    ATK.DateAttribute.refresh(name);    
+    eval('atkdateattribute_' + name + '.max = max;');
+    ATK.DateAttribute.refresh(name);
+  },
+
+  getMaximum: function(name) {
+    eval('var val = atkdateattribute_' + name + '.max');
+    val = ATK.DateAttribute.stringToDate(val);
+    return val;
+  },
+
+  getMinimum: function(name) {
+    eval('var val = atkdateattribute_' + name + '.min');
+    val = ATK.DateAttribute.stringToDate(val);
+    return val;
+  },
+
+  checkDisabled: function(date) {
+    var name = this.dateattrId;
+    var max = ATK.DateAttribute.getMaximum(name);
+    var min = ATK.DateAttribute.getMinimum(name);
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+
+    if ((min && date<min) || (max && date>max)) return true;
+    return false;
+  },
+
+  stringToDate: function(str) {
+    var str = new String(str);
+
+    if (str.length == 8)
+    {
+      var obj=new Date();
+      obj.setFullYear(parseInt(str.substr(0, 4), 10),parseInt(str.substr(4, 2), 10)-1,parseInt(str.substr(6, 2), 10));
+      obj.setHours(0);
+      obj.setMinutes(0);
+      obj.setSeconds(0);
+    }
+    return obj;
   }
 }
