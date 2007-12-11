@@ -51,7 +51,7 @@
    * @todo move to its own 'atkUser' class
    * @return array Array with userinfo, or "" if no user is logged in.
    */
-  function atkGetUser()
+  function atkGetUser($key='')
   {
     $sessionmanager = &atkGetSessionManager();
     $session = &atkSessionManager::getSession();
@@ -67,6 +67,7 @@
         $user["access_level"]=0;
     }
 
+    if ($key) return $user[$key];
     return $user;
   }
 

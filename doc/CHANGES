@@ -203,6 +203,8 @@ Changed in ATK 6.2
 * Fixed javascript error in atkDateAttribute when using french language. [Ivo]
 * Session name can now optionally differ from the application identifier
   by setting $config_session_name. [Peter]
+* Made atkGetUser accept 'key' parameter, allowing you to only get 
+  one bit of data from the user data. [Boy]
 
 Changed in ATK 6.1
 ------------------
