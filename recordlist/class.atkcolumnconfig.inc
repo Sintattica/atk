@@ -409,7 +409,7 @@
 
         if(strpos($elem,".")!==false)
           list($part1, $part2) = explode(".", $elem, 2);
-
+          
         if (isset($this->m_node->m_attribList[$elem]))
         {
           // attribute reference
@@ -421,6 +421,12 @@
           // attribute reference
           $lastattr=$part1;
           $this->addOrderByField($part1, "asc", $part2, ++$i);
+        }
+        else if (strtolower($this->m_node->m_table) == $part1 && isset($this->m_node->m_attribList[$part2]))
+        {
+          // attribute reference
+          $lastattr=$part2;
+          $this->addOrderByField($part2, "asc", "", ++$i);          
         }
         else if (strtolower($elem)=="asc"||strtolower($elem)=="desc")
         {

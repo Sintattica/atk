@@ -2559,8 +2559,8 @@
       }
 
       $buttons = array();
-      $buttons[] = '<input name="confirm" type="submit" class="btn_ok" value="'.atktext('yes').'">';
-      $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.atktext('no').'">';
+      $buttons[] = '<input name="confirm" type="submit" class="btn_ok" value="'.$this->text('yes').'">';
+      $buttons[] = '<input name="cancel" type="submit" class="btn_cancel" value="'.$this->text('no').'">';
 
       $content = "";
       $recs = $this->selectDb($atkselector_str, "", "", "", $this->descriptorFields());

@@ -1112,7 +1112,7 @@
       for ($i = 0; $i < count($attrib); $i++)
       {
         $attribName[$i] = $attrib[$i]->fieldName();
-        $label[$i] = $attrib[$i]->getLabel($record);
+        $label[$i] = $attrib[$i]->label($record);
       }
 
       $tab = $attrib[0]->m_tabs[0];

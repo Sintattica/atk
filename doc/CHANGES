@@ -207,8 +207,10 @@ Changed in ATK 6.2
   by setting $config_session_name. [Peter]
 * Made atkGetUser accept 'key' parameter, allowing you to only get 
   one bit of data from the user data. [Boy]
-* Made DHTML Calendar use ATKs maxdate and mindate 
-  to disable dates. [Boy]
+* Made DHTML Calendar use ATKs maxdate and mindate  to disable dates. [Boy]
+* Fixed label retrieval for error messages. [Peter]
+* Fixed detection of order direction for default order by statements
+  which use a combination of table name and field name. [Peter]
 
 Changed in ATK 6.1
 ------------------
