@@ -60,13 +60,28 @@
     function query($query, $offset=-1, $limit=-1)
     {
       $this->m_query_history[] = $query;
-
+      
       if (isset($this->m_results[$offset][$limit][$query])) return $this->m_results[$offset][$limit][$query];
       if (!empty($this->m_regex_results))
       {
         foreach ($this->m_regex_results[$offset][$limit] as $regex => $result)
         {
-          if (preg_match($regex, $query)) return $result;
+          if (strpos($query, 'content_pageitem')!==false)
+          {
+            atk_var_dump('CHEKKING:'.$query);
+            atk_var_dump('WITH:'.$regex);
+          }
+          if (preg_match($regex, $query)) 
+          {
+            if (strpos($query, 'content_pageitem')!==false)
+              atk_var_dump('<b>MATCH</b>');
+            return $result;
+          }
+          else 
+          {
+            if (strpos($query, 'content_pageitem')!==false)
+              atk_var_dump('<b>NO MATCH</b>');
+          }
         }
       }
       return true;
@@ -101,6 +116,24 @@
     function setRegexResult($result, $regex, $offset=-1, $limit=-1)
     {
       $this->m_regex_results[$offset][$limit][$regex] = $result;
+    }
+    
+    /**
+     * Retrieve the query history.
+     *
+     * @return Array
+     */
+    function getQueryHistory()
+    {
+      return $this->m_query_history;
+    }
+    
+    /**
+     * Clear the query history.
+     */
+    function clearQueryHistory()
+    {
+      $this->m_query_history = array();
     }
   }
 
