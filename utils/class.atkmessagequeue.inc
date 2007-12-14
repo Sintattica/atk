@@ -68,7 +68,7 @@
      * @param string $txt
      * @return boolean Success
      */
-    function addMessage($txt, $type=SMQ_GENERAL)
+    function addMessage($txt, $type=AMQ_GENERAL)
     {
       $instance = &atkMessageQueue::getInstance();
       if (is_object($instance))
