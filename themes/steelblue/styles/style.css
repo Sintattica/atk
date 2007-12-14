@@ -109,6 +109,26 @@ a:hover
   text-align: left;
 }
 
+.atkmessages_general,
+.atkmessages_success,
+.atkmessages_failure 
+{
+	margin-bottom: 1px;
+	padding: 3px;
+}
+
+.atkmessages_success
+{
+	background-color: #339900;
+  color: #fff;
+}
+
+.atkmessages_failure
+{
+	background-color: #ff0000;
+	color: #fff;
+}
+
 #action-buttons
 {
   text-align: right;
