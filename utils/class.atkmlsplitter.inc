@@ -90,8 +90,8 @@
           // assume all onetomanyrelations are stored in the PRESTORE so we MUST NOT use addDb()
           // on this node if its contains relations to others
           // but for 1:n and n:1 we need to save the refkey
-          if(is_a($node->m_attribList[$attribname],"atkManyToOneRelation")
-             || is_a($node->m_attribList[$attribname],"atkOneToOneRelation"))
+          if((is_a($node->m_attribList[$attribname],"atkManyToOneRelation")
+	               || is_a($node->m_attribList[$attribname],"atkOneToOneRelation")) && hasFlag($node->m_attribList[$attribname]->storageType(), ADDTOQUERY))
           {
           	$relations[$attribname] = $node->m_attribList[$attribname];
 
