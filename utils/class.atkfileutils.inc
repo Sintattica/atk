@@ -408,7 +408,7 @@ class atkFileUtils
       $entry = $dir . '/' . $entry;
       if ( is_dir( $entry ) )
       {
-        if ( !$this->rmdirRecursive( $entry ) )
+        if ( !atkFileUtils::rmdirRecursive( $entry ) )
         {
           return FALSE;
         }
