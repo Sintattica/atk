@@ -212,6 +212,7 @@ Changed in ATK 6.2
 * Fixed label retrieval for error messages. [Peter]
 * Fixed detection of order direction for default order by statements
   which use a combination of table name and field name. [Peter]
+* Moved buttons from confirmAction to getFormButtons function. [Peter Bottenberg]
 
 Changed in ATK 6.1
 ------------------
