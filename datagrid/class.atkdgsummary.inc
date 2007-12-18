@@ -40,7 +40,7 @@ class atkDGSummary extends atkDGComponent
     
     if ($count == 0)
     {
-      return $grid->text('datagrid_summary_no_records', '', false);
+      return null;
     }
     
     if ($limit == -1)

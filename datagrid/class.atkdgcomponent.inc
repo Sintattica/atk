@@ -31,13 +31,34 @@ abstract class atkDGComponent
   private $m_grid;
   
   /**
+   * The component options.
+   * 
+   * @var array
+   */
+  private $m_options;
+  
+  /**
    * Constructor.
    *
-   * @param atkDataGrid $grid
+   * @param atkDataGrid $grid    grid
+   * @param array       $options component options
    */
-  public function __construct($grid)
+  public function __construct($grid, $options=array())
   {
     $this->m_grid = $grid;
+    $this->m_options = $options;
+  }
+  
+  /**
+   * Returns the value for the component option with the given name.
+   * 
+   * @param string $name option name
+   * 
+   * @return mixed option value
+   */
+  protected function getOption($name)
+  {
+    return $this->m_options[$name];
   }
   
   /**

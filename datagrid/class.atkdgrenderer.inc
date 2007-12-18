@@ -74,9 +74,9 @@ class atkDGRenderer extends atkDGComponent
   {
     $vars = array();
     
-    foreach ($this->getGrid()->getComponents(true) as $name => $component)
+    foreach ($this->getGrid()->getComponents() as $name => $info)
     {
-      $vars[$name] = $component->render();
+      $vars[$name] = atknew($info['class'], $this->getGrid(), $info['options'])->render();
     }
 
     return $this->getUi()->render($this->getGrid()->getTemplate(), $vars);
@@ -90,13 +90,12 @@ class atkDGRenderer extends atkDGComponent
     atkimport('atk.utils.atkjson');
     
     $name = atkJSON::encode($this->getGrid()->getName());
-    $formName = atkJSON::encode($this->getGrid()->getFormName());
     $baseUrl = atkJSON::encode($this->getGrid()->getBaseUrl());
     $embedded = $this->getGrid()->isEmbedded() ? 'true' : 'false';
     
     $this->getPage()->register_script(atkconfig('atkroot').'atk/javascript/class.atkdatagrid.js');
     $this->getPage()->register_loadscript("
-      ATK.DataGrid.register($name, $formName, $baseUrl, $embedded);
+      ATK.DataGrid.register($name, $baseUrl, $embedded);
     ");  
   }
   
@@ -109,8 +108,8 @@ class atkDGRenderer extends atkDGComponent
   {
     $this->registerScript();
     $result = $this->renderGrid();
+    $result = $this->renderContainer($result);       
     $result = $this->renderForm($result);
-    $result = $this->renderContainer($result);   
     return $result;
   }
 }

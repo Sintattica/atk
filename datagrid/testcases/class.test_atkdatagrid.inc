@@ -13,7 +13,7 @@ class test_atkDataGrid extends atkTestCase
   {
     $node = new atkNode("test");
 
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertTrue($grid->hasFlag(atkDataGrid::SEARCH));
     $this->assertTrue($grid->hasFlag(atkDataGrid::SORT));
     $this->assertTrue($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH));
@@ -23,31 +23,31 @@ class test_atkDataGrid extends atkTestCase
     $this->assertFalse($grid->hasFlag(atkDataGrid::EXTENDED_SORT));      
     
     $node->addFlag(NF_NO_SEARCH);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertFalse($grid->hasFlag(atkDataGrid::SEARCH));
     
     $node->addFlag(NF_NO_SORT);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertFalse($grid->hasFlag(atkDataGrid::SORT));
 
     $node->addFlag(NF_NO_EXTENDED_SEARCH);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertFalse($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH));
 
     $node->addFlag(NF_MRA);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertTrue($grid->hasFlag(atkDataGrid::MULTI_RECORD_ACTIONS));
     
     $node->addFlag(NF_MRPA);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertTrue($grid->hasFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS));
     
     $node->addFlag(NF_LOCK);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertTrue($grid->hasFlag(atkDataGrid::LOCKING));    
     
     $node->addFlag(NF_EXT_SORT);
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertFalse($grid->hasFlag(atkDataGrid::SEARCH));
     $this->assertFalse($grid->hasFlag(atkDataGrid::SORT));
     $this->assertFalse($grid->hasFlag(atkDataGrid::EXTENDED_SEARCH));
@@ -64,39 +64,32 @@ class test_atkDataGrid extends atkTestCase
   {
     $node = new atkNode("test");
 
-    $grid = new atkDataGrid('test', $node);
-    $this->assertEqual('atk.datagrid.atkdglist', $grid->getComponent('list'));
-    $this->assertEqual('atk.datagrid.atkdgsummary', $grid->getComponent('summary'));
-    $this->assertEqual('atk.datagrid.atkdglimit', $grid->getComponent('limit'));
-    $this->assertEqual('atk.datagrid.atkdgpaginator', $grid->getComponent('paginator'));
-    $this->assertIsA($grid->getComponent('list', true), 'atkDGList');
-    $this->assertIsA($grid->getComponent('summary', true), 'atkDGSummary');
-    $this->assertIsA($grid->getComponent('limit', true), 'atkDGLimit');
-    $this->assertIsA($grid->getComponent('paginator', true), 'atkDGPaginator');
+    $grid = atkDataGrid::create($node, 'test');
+    $this->assertEqual(5, count($grid->getComponents()));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdglist', 'options' => array()), $grid->getComponent('list'));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdgsummary', 'options' => array()), $grid->getComponent('summary'));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdglimit', 'options' => array()), $grid->getComponent('limit'));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdgpaginator', 'options' => array()), $grid->getComponent('paginator'));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdgnorecordsfound', 'options' => array()), $grid->getComponent('norecordsfound'));
     
     $node->m_index = 'test';
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $components = $grid->getComponents();
-    $this->assertEqual('atk.datagrid.atkdgindex', $components['paginator']);
-    $this->assertEqual('atk.datagrid.atkdgindex', $grid->getComponent('paginator'));
-    $components = $grid->getComponents(true);
-    $this->assertIsA($components['list'], 'atkDGList');
-    $this->assertIsA($components['summary'], 'atkDGSummary');
-    $this->assertIsA($components['limit'], 'atkDGLimit');
-    $this->assertIsA($components['paginator'], 'atkDGIndex');   
-
-    $grid = new atkDataGrid('test', $node);
+    $this->assertEqual(6, count($components));
+    $this->assertEqual(array('class' => 'atk.datagrid.atkdgindex', 'options' => array()), $grid->getComponent('index'));
+    
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertNotNull($grid->getComponent('list'));    
-    $this->assertEqual(4, count($grid->getComponents()));    
+    $this->assertEqual(6, count($grid->getComponents()));    
     $grid->removeComponent('list');   
-    $this->assertEqual(3, count($grid->getComponents()));
+    $this->assertEqual(5, count($grid->getComponents()));
     $this->assertNull($grid->getComponent('list'));
     
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     $this->assertNull($grid->getComponent('another_paginator'));    
-    $this->assertEqual(4, count($grid->getComponents()));        
+    $this->assertEqual(6, count($grid->getComponents()));        
     $grid->addComponent('another_paginator', 'atk.datagrid.atkdgpaginator');
-    $this->assertEqual(5, count($grid->getComponents()));
+    $this->assertEqual(7, count($grid->getComponents()));
     $this->assertNotNull($grid->getComponent('another_paginator'));    
   }
   
@@ -105,24 +98,29 @@ class test_atkDataGrid extends atkTestCase
    */
   public function test_postvars()
   {
+    global $ATK_VARS;
+    
     $node = new atkNode("test");
     
-    $node->m_postvars = array();
-    $grid = new atkDataGrid('test', $node);
-    $this->assertEqual(array(), $grid->getPostvars());
+    $backup = $ATK_VARS;
+    
+    $ATK_VARS = array();
+    $grid = atkDataGrid::create($node, 'test');
+    $this->assertEqual(1, count($grid->getPostvars()));
+    $this->assertNotNull($grid->getPostvar('atkdg'));
     $this->assertNull($grid->getPostvar('test'));
     $this->assertEqual('value', $grid->getPostvar('test', 'value'));  
 
     $node->m_postvars = array('test' => 'value');
-    $grid = new atkDataGrid('test', $node);    
-    $this->assertEqual(array(), $grid->getPostvars());
-    $this->assertNull($grid->getPostvar('test'));
+    $grid = atkDataGrid::create($node, 'test');    
+    $this->assertEqual('value', $grid->getPostvar('test'));
     
-    $node->m_postvars = array('atkdg' => array('test' => array('test' => 'value')));
-    $grid = new atkDataGrid('test', $node);    
-    $this->assertEqual($node->m_postvars['atkdg']['test'], $grid->getPostvars());
+    $ATK_VARS = array('atkdg' => array('test' => array('test' => 'value')));
+    $grid = atkDataGrid::create($node, 'test');    
     $this->assertEqual('value', $grid->getPostvar('test'));
     $this->assertEqual('value', $grid->getPostvar('test', 'fallback'));
+    
+    $ATK_VARS = $backup;
   }
   
   /**
@@ -151,7 +149,7 @@ class test_atkDataGrid extends atkTestCase
   public function test_select_and_count_handlers()
   {
     $node = new atkNode("test");
-    $grid = new atkDataGrid('test', $node);
+    $grid = atkDataGrid::create($node, 'test');
     
     $grid->setSelectHandler(array($this, 'handleSelect'));
     $grid->setCountHandler(array($this, 'handleCount'));  

@@ -360,7 +360,8 @@
   "selected"=>"Geselecteerd",
   "available"=>"Beschikbaar",
   "datagrid_summary" => "(Records [start] - [end] van [count])",
-  "datagrid_summary_no_records" => "",
+  "datagrid_norecordsfound_general" => "Er zijn geen bestaande records gevonden.",
+  "datagrid_norecordsfound_search"  => "Er zijn geen resultaten gevonden voor de huidige zoekopdracht.",  
   "currencysymbol"=>'EUR',
 
 );

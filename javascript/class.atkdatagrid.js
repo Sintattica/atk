@@ -8,8 +8,8 @@ ATK.DataGrid = {
   /**
    * Registers a data grid.
    */
-  register: function(name, formName, baseUrl, embedded) {
-    this.grids[name] = { name: name, formName: formName, baseUrl: baseUrl, embedded: embedded, locked: false };
+  register: function(name, baseUrl, embedded) {
+    this.grids[name] = { name: name, baseUrl: baseUrl, embedded: embedded, locked: false };
   },
   
   /**
@@ -26,6 +26,13 @@ ATK.DataGrid = {
     return $(name + '_container');
   },
   
+  /**
+   * Returns the form for the grid with the given name.<b> 
+   */
+  getForm: function(name) {
+    return this.getContainer(name).up('form');
+  },
+    
   /**
    * Returns the grid form elements.
    */
@@ -71,7 +78,7 @@ ATK.DataGrid = {
     
     // if embedded we also serialize the edit data form fields
     if (grid.embedded) {
-      var elements = Form.getElements(grid.formName);
+      var elements = Form.getElements(this.getForm(grid.name));
       for (var i = 0; i < elements.length; i++) {
         if (elements[i].name && elements[i].name.substring(0, 3) != 'atk') {
           var queryComponent = Form.Element.serialize(elements[i]);
@@ -80,6 +87,8 @@ ATK.DataGrid = {
         }
       }
     }      
+    
+    queryComponents.push('atkdatagrid=' + encodeURIComponent(name));
 
     var params = queryComponents.join('&');   
     var options = { parameters: params, evalScripts: true, onComplete: this.updateCompleted.bind(this, name) };
@@ -95,19 +104,26 @@ ATK.DataGrid = {
   },
   
   /**
-   * Extracts fields from the datagrid form with the given name prefix
-   * and returns them as overrides for use in the update method.
+   * Extracts fields from the datagrid form with the given needle in 
+   * the name and returns them as overrides for use in the update method.
+   *
+   * It would be better to be able to check for a certain prefix, 
+   * unfortunately not all atksearch* / atkcolcmd fields necessarily
+   * have the needle at the start of the name. So for backwards 
+   * compatibility we search the entire string for the needle. Luckily
+   * the strings we are searching for are pretty unique within a form.
    */  
-  extractOverrides: function(name, prefix) {
+  extractOverrides: function(name, needle) {
     var overrides = {};
     
     var elements = this.getElements(name);
     elements.each(function(el) {
-      if (el.name.substring(0, prefix.length) == prefix) {
+      if (el.name.indexOf(needle) >= 0) {
         overrides[el.name] = $F(el);
       }
     });
     
+    console.debug(overrides);
     return overrides;  
   },  
   
@@ -123,7 +139,7 @@ ATK.DataGrid = {
    * Extracts the extended sort fields from the datagrid form and returns them
    * as overrides for use in the update method.
    */  
-  extractExtendendSortOverrides: function(name) {
+  extractExtendedSortOverrides: function(name) {
     return ATK.DataGrid.extractOverrides(name, 'atkcolcmd');
   }
 }

@@ -362,8 +362,8 @@
   "available"=>"Available",
   "selected"=>"Selected",
   "datagrid_summary" => "(Records [start] - [end] of [count])",
-  "datagrid_summary_no_records" => "",
-
+  "datagrid_norecordsfound_general" => "No records found.",
+  "datagrid_norecordsfound_search"  => "No results found for the current search query.",
 );
 
 ?>

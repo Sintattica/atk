@@ -30,12 +30,15 @@ class atkDGIndex extends atkDGComponent
    * 
    * @return array available indices
    * 
-   * @todo use database to get an overview of real available indices
+   * @todo Implement retrieval of available indices ourselves either
+   *       part of this class or atkDataGrid. But first selectDb and
+   *       countDb of atkNode should be refactored so we can create
+   *       a small clean implementation.
    */
   protected function getAvailableIndices()
   {
-    return array('A','B','C','D','E','F','G','H','I','J','K','L','M',
-                 'N','O','P','Q','R','S','T','U','V','W','X','Y','Z');    
+    atkimport('atk.utils.atknavigator');
+    return atkNavigator::getAvailableIndices($this->getNode());  
   }
   
   /**
@@ -47,23 +50,21 @@ class atkDGIndex extends atkDGComponent
     $links = array();    
     
     $chars = $this->getAvailableIndices();
-    $index = $grid->getIndex();  
-    $search = $grid->getSearch();
-    $current = isset($search[$index]) ? $search[$index]{0} : NULL;
+    $current = $grid->getIndex();  
     
     // indices
     foreach ($chars as $char)
     {
       $title = $char;
-      $call = $grid->getUpdateCall(array('atkstartat' => 0, 'atksearch' => array($index => "{$char}*"), 'atksinglesearchmode' => array($index => 'wildcard')));
-      $links[] = array('type' => 'index', 'title' => $title, 'call' => $call, 'current' => $char == $current);
+      $call = $grid->getUpdateCall(array('atkstartat' => 0, 'atkindex' => "{$char}*"));
+      $links[] = array('type' => 'index', 'title' => $title, 'call' => $call, 'current' => "{$char}*" == $current);
     }
 
     // view all
-    if (count($search) > 0)
+    if (!empty($current))
     {
       $title = $grid->text('view_all');               
-      $call = $grid->getUpdateCall(array('atksearch' => ''));
+      $call = $grid->getUpdateCall(array('atkindex' => ''));
       $links[] = array('type' => 'all', 'call' => $call, 'title' => $title);      
     }    
     
@@ -78,7 +79,7 @@ class atkDGIndex extends atkDGComponent
   public function render()
   {
     $links = $this->getLinks();
-    $result = $this->getGrid()->getUi()->render('dgindex.tpl', array('links' => $links));
+    $result = $this->getUi()->render('dgindex.tpl', array('links' => $links));
     return $result;
   }
 }
