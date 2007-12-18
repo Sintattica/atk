@@ -355,28 +355,38 @@ ATK.DateAttribute = {
    * Set minimum.
    */
   setMinimum: function(name, min) {
-    min = min == null ? null : '' + min.year + (min.month < 10 ? '0' + min.month : min.month) + (min.day < 10 ? '0' + min.day : min.day);
-    eval('atkdateattribute_' + name + '.min = min;');
-    ATK.DateAttribute.refresh(name);
+    try {
+      min = min == null ? null : '' + min.year + (min.month < 10 ? '0' + min.month : min.month) + (min.day < 10 ? '0' + min.day : min.day);
+      eval('atkdateattribute_' + name + '.min = min;');
+      ATK.DateAttribute.refresh(name);
+    } catch(e) {}
   },
 
   /**
    * Set maximum.
    */
   setMaximum: function(name, max) {
-    max = max == null ? null : '' + max.year + (max.month < 10 ? '0' + max.month : max.month) + (max.day < 10 ? '0' + max.day : max.day);
-    eval('atkdateattribute_' + name + '.max = max;');
-    ATK.DateAttribute.refresh(name);
+    try {
+      max = max == null ? null : '' + max.year + (max.month < 10 ? '0' + max.month : max.month) + (max.day < 10 ? '0' + max.day : max.day);
+      eval('atkdateattribute_' + name + '.max = max;');
+      ATK.DateAttribute.refresh(name);
+    } catch(e) {}
   },
 
   getMaximum: function(name) {
-    eval('var val = atkdateattribute_' + name + '.max');
+    try { eval('var data = atkdateattribute_' + name); } catch(e) {}
+    if (!data) return false;
+    else var val = data.max;
+
     val = ATK.DateAttribute.stringToDate(val);
     return val;
   },
 
   getMinimum: function(name) {
-    eval('var val = atkdateattribute_' + name + '.min');
+    try { eval('var data = atkdateattribute_' + name); } catch(e) {}
+    if (!data) return false;
+    else var val = data.min;
+
     val = ATK.DateAttribute.stringToDate(val);
     return val;
   },
