@@ -148,15 +148,18 @@
      */
     function getUsableAttributes()
     {
-      $node = &$this->m_node;
       $atts = array();
-      foreach($node->m_attribList as $key => $value){
+      $attriblist = $this->invoke('getExportAttributes');
+      foreach($attriblist as $key => $value)
+      {
         $flags = $value->m_flags;
-        $class = get_class($value);
+        $class = strtolower(get_class($value));
         if($value->hasFlag(AF_AUTOKEY) ||
            $value->hasFlag(AF_HIDE_VIEW) ||
            !(strpos($class, "dummy") === FALSE) ||
-           !(strpos($class, "image") === FALSE))
+           !(strpos($class, "image") === FALSE) ||
+           !(strpos($class,'tabbedpane') === FALSE)
+           )
           continue;
         if (method_exists($this->m_node, "getExportAttributeGroup"))
         {
@@ -173,6 +176,18 @@
         $atts[$group][] = array('name' => $key, 'text' => $value->label(), 'checked' => !$value->hasFlag(AF_HIDE_LIST));
       }
       return $atts;
+    }
+
+    /**
+     * Return all attributes that can be exported
+     *
+     * @param object $handler atkExport
+     * @return array Array with attribs that needs to be exported
+     */
+    function getExportAttributes()
+    {
+      $attribs = $this->m_node->getAttributes();
+      if(is_null($attribs)) { return array(); } else { return $attribs; }
     }
 
     /**
