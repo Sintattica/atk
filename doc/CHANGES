@@ -71,6 +71,7 @@ Changed in ATK 6.2
   dumping the contents of an entire database to YAML files. [Peter]
 + Adding methods for retrieving and clearing the query history in 
   atkMockDb. [Dennis]
++ Added feature to specify which attributes you want to export. [Sandy]
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation [Marc]
