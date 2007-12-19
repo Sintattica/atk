@@ -512,7 +512,7 @@
         }
         else
         {
-          $result = $this->getNoneLabel(); // no record
+          $result = (!in_array($mode, array("csv", "plain"))?$this->getNoneLabel():''); // no record
         }
         return $result;
       }
@@ -809,36 +809,36 @@
     function hide($record="", $fieldprefix="")
     {
       if (!$this->createDestination()) return '';
-      
+
       $currentPk = "";
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null)
       {
         $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       }
-        
-      $result = 
-        '<input type="hidden" id="'.$fieldprefix.$this->formName().'" 
-                name="'.$fieldprefix.$this->formName().'" 
+
+      $result =
+        '<input type="hidden" id="'.$fieldprefix.$this->formName().'"
+                name="'.$fieldprefix.$this->formName().'"
                 value="'.$currentPk.'">';
-        
+
       return $result;
     }
 
     /**
-     * Support for destination "records" where only the id is set and the 
+     * Support for destination "records" where only the id is set and the
      * record itself isn't converted to a real record (array) yet
      */
     function fixDestinationRecord(&$record)
     {
-      if ($this->createDestination() && 
-          isset($record[$this->fieldName()]) && 
-          $record[$this->fieldName()] != null && 
+      if ($this->createDestination() &&
+          isset($record[$this->fieldName()]) &&
+          $record[$this->fieldName()] != null &&
           !is_array($record[$this->fieldName()]))
       {
         $record[$this->fieldName()] = array($this->m_destInstance->primaryKeyField() => $record[$this->fieldName()]);
       }
     }
-    
+
     /**
      * Retrieve the html code for placing this attribute in an edit page.
      *
@@ -862,7 +862,7 @@
     {
       $this->fixDestinationRecord($record);
       return parent::getEdit($mode, $record, $fieldprefix);
-    }    
+    }
 
     /**
      * Returns a piece of html code that can be used in a form to search
@@ -1678,14 +1678,14 @@
       $page = &$this->m_ownerInstance->getPage();
       $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkmanytoonerelation.js');
       $this->m_ownerInstance->addStyle("atkmanytoonerelation.css");
-      
+
       $id = $this->getHtmlId($fieldPrefix);
       $editflag = true;
-      
+
       $newlyadded = atkArrayNvl($this->m_ownerInstance->m_postvars,$id."_ret");
 
       $this->_getDestRecord($id."_newsel", $newlyadded, $record, $editflag);
-      
+
       // validate is this is a selectable record and if so
       // retrieve the display label and hidden value
       if ($this->_isSelectableRecord($record, 'select'))
