@@ -243,7 +243,7 @@
      */
     function display($record, $mode="")
     {
-      $result = "&nbsp;";
+      if (!in_array($mode, array("csv", "plain"))) { $result = "&nbsp;"; } else { $result=''; }
       if ($this->createDestination() && atk_value_in_array($record[$this->fieldName()]))
       {
         $recordset = array();
