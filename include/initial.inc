@@ -85,6 +85,9 @@
   if ($config_debug > 0)
     ini_set('display_errors', 1);
 
+  // show server info in debug (useful in clustered environments)
+  atkdebug("Server info: ".$_SERVER['SERVER_NAME']." (".$_SERVER['SERVER_ADDR'].")");
+
   // Include locking functionality?
   $lockType = atkconfig("lock_type");
   if (!empty($lockType))
