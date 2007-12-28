@@ -24,6 +24,11 @@
   define("AF_MANYBOOL_AUTOLINK", AF_SPECIFIC_1);
 
   /**
+   * Attribute flag. When used the atkManyBoolRelation doesn't show 'details' links for every option
+   */
+  define("AF_MANYBOOL_NODETAILS", AF_SPECIFIC_2);
+
+  /**
    * Many-to-many relation.
    *
    * The relation shows a list of available records, and a set of checkboxes
@@ -75,7 +80,7 @@
           if (in_array($this->m_destInstance->primaryKey($recordset[$i]),$selectedPk))
           {
             $sel = "checked";
-            if (!$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
+            if (!$this->hasflag(AF_MANYBOOL_NODETAILS) && !$this->m_linkInstance->hasFlag(NF_NO_EDIT)&&$this->m_linkInstance->allowed("edit"))
             {
               $selector = $this->m_linkInstance->m_table.'.'.$this->getLocalKey()."='".$record[$this->m_ownerInstance->primaryKeyField()]."'".
                 ' AND '.$this->m_linkInstance->m_table.'.'.$this->getRemoteKey().
