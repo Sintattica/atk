@@ -88,6 +88,11 @@
     {
       return $this->m_text;
     }
+    
+    function setText($text)
+    {
+      $this->m_text = $text;
+    }
 
     /**
     * No function, but is neccesary

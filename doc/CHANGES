@@ -74,6 +74,12 @@ Changed in ATK 6.2
 + Adding methods for retrieving and clearing the query history in 
   atkMockDb. [Dennis]
 + Added feature to specify which attributes you want to export. [Sandy]
++ Added manual paint feature to atkAttribute. Manually painted attributes will
+  not be rendered. If this is set to true, you are responsible for calling 
+  the attribute's edit() method to paint it on screen. [Ivo, Sandy]
++ Added setText function to atkDummyAttribute to change the text. [Sandy]
++ Added setClickableLabel to the atkRadioAttribute to turn it of 
+  (default this is on). [Sandy]
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation [Marc]
@@ -216,6 +222,8 @@ Changed in ATK 6.2
 * Fixed detection of order direction for default order by statements
   which use a combination of table name and field name. [Peter]
 * Moved buttons from confirmAction to getFormButtons function. [Peter Bottenberg]
+* Improved the atkRadioAttribute so it can use the same functions like the list
+  attribute to fill the items dynamicly (with the addOption function) [Sandy]
 
 Changed in ATK 6.1
 ------------------

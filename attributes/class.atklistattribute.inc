@@ -489,8 +489,7 @@
      */
     function addOption($option, $value="")
     {
-      if (empty($value)) $value = $option;
-      
+      if ($value!=0 && empty($value)) $value = $option;
       $currentOptions = $this->_get("options");
       $currentOptions[] = $option;
       $this->_set("options", $currentOptions);

@@ -563,6 +563,12 @@
     var $m_initialValue = NULL;
 
     /**
+     * Manually painted attribute. Will not be rendered. If this is set to true, you are responsible
+     * for calling the attribute's edit() method to paint it on screen.
+     */
+    var $m_manual_paint = false;
+
+    /**
      * Constructor
      *
      * <b>Example:</b>
@@ -943,6 +949,7 @@
      */
     function hide($record="", $fieldprefix="")
     {
+      atkdebug("<h1>HIDE ATTRIBUTE -> {$this->fieldName()}</h1>");
       // the next if-statement is a workaround for derived attributes which do
       // not override the hide() method properly. This will not give them a
       // working hide() functionality but at least it will not give error messages.
@@ -1025,6 +1032,10 @@
      */
     function addToEditArray($mode, &$arr, &$defaults, &$error, $fieldprefix)
     {
+      /* Attribute manually paints itself? */
+      if ($this->m_manual_paint) return;
+
+
       /* hide */
       if (($mode=="edit" && $this->hasFlag(AF_HIDE_EDIT)) || ($mode=="add" && $this->hasFlag(AF_HIDE_ADD)))
       {
@@ -2504,6 +2515,13 @@
     {
       return $this->m_initial_hidden;
     }
+
+    function setManualPaint($bool)
+    {
+      $this->m_manual_paint = $bool;
+    }
+
+    function isManualPaint() { return $this->m_manual_paint; }
 
     /**
      * String representation for this attribute (PHP5 only).
