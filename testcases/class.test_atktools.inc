@@ -62,5 +62,46 @@
       $this->assertEqual(decodeKeyValueSet("id='1836'"),array("id"=>"1836"),"check decodeKeyValueSet");
       $this->assertEqual(decodeKeyValueSet("id = '1836'"),array("id"=>"1836"),"check decodeKeyValueSet with more spaces");
     }
+    
+    function test_atkArrayDiff()
+    {
+      $array1 = array();
+      $array2 = array('element1'=>1,'element2'=>2);
+      $this->assertFalse(atkArrayDiff($array1,$array2),'Diff arrays, param1 empty array');
+      $this->assertEqual(atkArrayDiff($array2,$array1),$array2,'Diff arrays, param2 empty array');
+      $array1 = $array2;
+      $this->assertFalse(atkArrayDiff($array1,$array2),'Diff arrays, both arrays are the same');
+      $array2= array('element3'=>3);
+      $this->assertTrue(atkArrayDiff($array1,$array2),'Diff arrays, array1 has one element less');
+      
+      $array1 = array('elements'=>array('element1'=>1,
+                                        'element2'=>array('name'=>'test')));
+      $array2 = $array1;
+      $this->assertFalse(atkArrayDiff($array1,$array2),'Diff arrays, both multidimensional arrays are the same');
+      $array2['elements']['element3']=3;
+      $this->assertFalse(atkArrayDiff($array1,$array2),'Diff arrays, multidimensional arrays are not the same');
+      var_dump(atkArrayDiff($array1,$array2));
+      
+    }
+    
+    function test_atkArrayCompare()
+    {
+      $array1 = array();
+      $array2 = array('element1'=>1,'element2'=>2);
+      $this->assertFalse(atkArrayCompare($array1,$array2),'Compare arrays, array1 empty');
+      $this->assertTrue(atkArrayCompare($array2,$array1),'Compare arrays, array2 empty');
+      $array1 = $array2;
+      $this->assertFalse(atkArrayCompare($array1,$array2),'Compare arrays, both arrays are the same');
+      $array2= array('element3'=>3);
+      $this->assertTrue(atkArrayCompare($array1,$array2),'Compare arrays, array1 has one element less');
+      
+      $array1 = array('elements'=>array('element1'=>1,
+                                        'element2'=>array('name'=>'test')));
+      $array2 = $array1;
+      $this->assertFalse(atkArrayCompare($array1,$array2),'Compare arrays, both multidimensional arrays are the same');
+      $array2['elements']['element3']=3;
+      $this->assertFalse(atkArrayCompare($array1,$array2),'Compare arrays, multidimensional arrays are not the same');
+            
+    }
   }
 ?>
