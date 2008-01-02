@@ -443,6 +443,9 @@
         $location = atkconfig('auth_loginpage', '');
         if ($location)
         {
+          $location.= (strpos($location,'?')===false) ? '?' : '&';
+          $location.='login='.$auth_user.'&error='.$response;
+                    
           if (atkconfig("debug")>=2)
           {
             $debugger = &atkinstance('atk.utils.atkdebugger');
