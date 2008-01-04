@@ -16,6 +16,8 @@
    * @version $Revision$
    * $Id$
    */
+  
+  atkimport("atk.handlers.atkactionhandler");
 
   /**
    * Some defines

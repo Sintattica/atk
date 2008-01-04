@@ -1,5 +1,8 @@
 <?php
 
+atkimport('atk.atkmocknode');
+atkimport('atk.handlers.atkattributeedithandler');
+
 /**
  * atkAttributeEditHandler test-case.
  */
