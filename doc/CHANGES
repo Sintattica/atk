@@ -7,8 +7,6 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-* Cached pages now have a lastmodified attribute based on data from the 
-  smarty cache info [Erik]
 * Fixed non static call to atkFileUtils. [Yannick]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
