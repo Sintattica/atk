@@ -59,29 +59,15 @@
      */
     function query($query, $offset=-1, $limit=-1)
     {
+      atk_var_dump($query,'inatkmockdb teh query');
       $this->m_query_history[] = $query;
       
       if (isset($this->m_results[$offset][$limit][$query])) return $this->m_results[$offset][$limit][$query];
       if (!empty($this->m_regex_results))
       {
         foreach ($this->m_regex_results[$offset][$limit] as $regex => $result)
-        {
-          if (strpos($query, 'content_pageitem')!==false)
-          {
-            atk_var_dump('CHEKKING:'.$query);
-            atk_var_dump('WITH:'.$regex);
-          }
-          if (preg_match($regex, $query)) 
-          {
-            if (strpos($query, 'content_pageitem')!==false)
-              atk_var_dump('<b>MATCH</b>');
-            return $result;
-          }
-          else 
-          {
-            if (strpos($query, 'content_pageitem')!==false)
-              atk_var_dump('<b>NO MATCH</b>');
-          }
+        {         
+          if (preg_match($regex, $query)) return $result;        
         }
       }
       return true;
