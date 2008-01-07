@@ -174,7 +174,7 @@
         $result=$this->display($record, 'view');
       }
 
-      if(is_dir($this->m_dir))
+      if(is_dir($this->m_dir) && is_writable($this->m_dir))
       {
         $file_arr=array();
         $d = dir($this->m_dir);
