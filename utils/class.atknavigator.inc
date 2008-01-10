@@ -191,7 +191,7 @@
         if ($atkindex!="" && $selected!="" && strtoupper($selected[0])==$char) $label="<b>$char</b>";
         else $label=$char;
 
-        $nav .= atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atkindex"=>$char."*","atkstartat"=>0)), $label);
+        $nav .= atkHref(dispatch_url("$node->m_module.$node->m_type", $node->m_action,array("atkindex"=>$char."*","atkstartat"=>0)), $label);
 
         // uncomment the following line if 26 letters seems to become too wide.
         //if ($count>13 && ($i+1)==floor($count/2)) $nav.='<br>'; else
@@ -207,7 +207,7 @@
         {
           $clear = array("atkindex"=>"");
           $text = atktext("clear_index","atk");
-          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,$clear), $text);
+          $nav.=" - ".atkHref(dispatch_url("$node->m_module.$node->m_type", $node->m_action,$clear), $text);
           $view_all += 1;
         }
 
@@ -215,13 +215,13 @@
         {
           $clear = array("atksearch"=>"");
           $text = atktext("clear_search","atk");
-          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,$clear), $text);
+          $nav.=" - ".atkHref(dispatch_url("$node->m_module.$node->m_type", $node->m_action,$clear), $text);
           $view_all += 1;
         }
         
         if($view_all == 2)
         {
-          $nav.=" - ".atkHref(dispatch_url("{$node->m_module}.{$node->m_type}", $node->m_action,array("atksearch"=>"","atkindex"=>"")), atktext("view_all", "atk"));
+          $nav.=" - ".atkHref(dispatch_url("$node->m_module.$node->m_type", $node->m_action,array("atksearch"=>"","atkindex"=>"")), atktext("view_all", "atk"));
         }
       }
       
