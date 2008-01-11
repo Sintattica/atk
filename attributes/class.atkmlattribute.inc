@@ -112,13 +112,14 @@
         $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.atktext("language_".strtolower($curlng)).'</label>)';
         $entry["id"] = $this->getHtmlId($fieldprefix);
         $entry["tabs"] = $this->m_tabs;
-
+        $entry["sections"] = $this->m_sections;
+        
         /* first language of other languages */
         $entry["html"] = '<input type="text" name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $curlng : "multilanguage").']"'.
                    ' value="'.htmlspecialchars($defaults[$this->fieldName()][$curlng]).'"'.
                    ($this->m_size > 0 ? ' size="'.$this->m_size.'"' : '').
                    ($this->m_maxsize > 0 ? ' maxlength="'.$this->m_maxsize.'"' : '').'>';
-
+                   
         $arr["fields"][] = $entry;
         $this->m_edited = false;
       }
