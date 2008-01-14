@@ -44,9 +44,13 @@
             {foreach from=$rows item=row}
               <tr id="{$row.id}" class="row{if $row.rownum % 2 == 0 }1{else}2{/if}" {if $row.background!=""}style="background-color:{$row.background}" {/if}
                    onmouseover="highlightrow(this, '{$row.highlight}')"
-                   onmouseout="resetrow(this)">
+                   onmouseout="resetrow(this)"
+                   onclick="selectrow(this, '{$listid}', {$row.rownum})">
               {foreach from=$row.cols item=col name=i}
-                <{if $row.type == "subtotal"}th{else}td{/if} {if $smarty.foreach.i.index > 0}onclick="rl_do('rl_1',{$row.rownum},'edit',false, true);"{/if} valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
+                <{if $row.type == "subtotal"}th{else}td{/if} 
+                  {if $smarty.foreach.i.index > 0}
+                    onclick="rl_try('{$listid}', event, {$row.rownum}, ['select', 'edit', 'view'], false);"{/if} 
+                  valign="{$vorientation}" {if isset($col.htmlattributes)}{$col.htmlattributes}{/if}>
                   {if $col.content != ""}{$col.content}{else}&nbsp;{/if}
                 </td>
               {/foreach}
