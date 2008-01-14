@@ -139,7 +139,7 @@
       }
       else
       {
-        throw new Exception("Can't find controller for: '$uri' expecting '$importpath'");
+        throw new Exception("Can't find controller for: '$uri' expecting '$importPath'");
       }
     }
 
