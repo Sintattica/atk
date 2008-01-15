@@ -91,6 +91,7 @@
         $entry["label"] = $this->label($defaults).' (<label id="'.$fieldprefix.$this->formName().'_label">'.atktext("language_".strtolower($curlng)).'</label>)';
         $entry["id"] = $this->getHtmlId($fieldprefix);
         $entry["tabs"] = $this->m_tabs;     
+        $entry["sections"] = $this->m_sections;
 
         /* first language of other languages */
         $entry["html"] = '<textarea name="'.$fieldprefix.$this->formName().'['.(count($this->m_languages)==2 ? $curlng: "multilanguage").']"'.
