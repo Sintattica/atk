@@ -476,21 +476,34 @@
       $error = $record[$this->fieldName()]['error'];
       if ($error > 0)
       {
+        $error_text = $this->fetchErrorType($error);
+        atkTriggerError($record, $this, $error_text, atktext($error_text, "atk"));
+      }
+    }
+    
+    /**
+     * Tests the $_FILE error code and returns the corresponding atk error text token.
+     *
+     * @param int $error
+     * @return string error text token
+     */
+    static function fetchFileErrorType($error) {
         switch ($error)
         {
           case UPLOAD_ERR_INI_SIZE:
           case UPLOAD_ERR_FORM_SIZE:
-            atkTriggerError($record, $this, 'error_file_size', atktext("error_file_size", "atk"));
+            $error = 'error_file_size';
             break;
           case UPLOAD_ERR_EXTENSION:
-            atkTriggerError($record, $this, 'error_file_mime_type', atktext("error_file_mime_type", "atk"));
+            $error = 'error_file_mime_type';
             break;
           case UPLOAD_ERR_NO_TMP_DIR:
           case UPLOAD_ERR_PARTIAL:
           default:
-            atkTriggerError($record, $this, 'error_file_unknown', atktext("error_file_unknown", "atk"));
+            $error = 'error_file_unknown';
         }
-      }
+        
+        return $error;
     }
 
     /**

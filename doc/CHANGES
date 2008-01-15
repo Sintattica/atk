@@ -7,6 +7,9 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Took the file error check out of the validate function so that it can be
+  called statically from outside of atkfileattribute. It returns the
+  corresponding error. fetchFileErrorType($_FILES[0]['error']) [Erik]
 * Fixed non static call to atkFileUtils. [Yannick]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
