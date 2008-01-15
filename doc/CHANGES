@@ -222,6 +222,9 @@ Changed in ATK 6.2
 * Moved buttons from confirmAction to getFormButtons function. [Peter Bottenberg]
 * Improved the atkRadioAttribute so it can use the same functions like the list
   attribute to fill the items dynamicly (with the addOption function) [Sandy]
+* Added dutch, english, german and french translations. [Boy]
+* Added getDebugging method to atkOutput class. [Boy]
+* Improved winXP theme. [Boy]
 
 Changed in ATK 6.1
 ------------------
