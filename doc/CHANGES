@@ -228,6 +228,8 @@ Changed in ATK 6.2
 * Added dutch, english, german and french translations. [Boy]
 * Added getDebugging method to atkOutput class. [Boy]
 * Improved winXP theme. [Boy]
+* Added fieldprefix to atkreturnbehaviour field. [Lineke]
+* Added stacks for rejectinfo in atkactionhandler. [Lineke]
 
 Changed in ATK 6.1
 ------------------
