@@ -120,14 +120,16 @@
     
     function getRejectInfo()
     {      
+      global $atklevel;
       atkdebug("looking for rejectinfo");
       $sm = &atkGetSessionManager();
       $session = &$sm->getSession();
-      if (isset($session["atkreject"]))
+      $stackid = atkStackID(($atklevel==-1));
+      if (isset($session["atkreject"][$sm->m_namespace][$stackid][atkLevel()]))
       {
         atkdebug("rejectinfo found");        
-        $result = $session["atkreject"];        
-        unset($session["atkreject"]);
+        $result = $session["atkreject"][$sm->m_namespace][$stackid][atkLevel()];        
+        unset($session["atkreject"][$sm->m_namespace][$stackid][atkLevel()]);
         return $result;
       }
       return NULL;
@@ -135,15 +137,12 @@
     
     function setRejectInfo($data)
     {
+      global $atklevel;
       atkdebug("setting rejectinfo");
-      /**
-       * @todo We're storing this globally in the session; each window should
-       * have its own rejection data so this should be a 'stack global' (but we 
-       * don't support that concept yet.
-       */
       $sm = &atkGetSessionManager();
       $session = &$sm->getSession();
-      $session["atkreject"] = $data;
+      $stackid = atkStackID(($atklevel==-1));
+      $session["atkreject"][$sm->m_namespace][$stackid][atkPrevLevel()] = $data;
       $this->m_rejecting = true;
     }
 

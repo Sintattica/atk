@@ -134,7 +134,7 @@
                      ' method="post" onsubmit="return globalSubmit(this)">';
 
 
-      $formstart .= session_form(SESSION_NESTED, $this->getReturnBehaviour());
+      $formstart .= session_form(SESSION_NESTED, $this->getReturnBehaviour(), $node->getEditFieldPrefix());
       $formstart .= $controller->getHiddenVarsString();
 
       if (isset($node->m_postvars['atkfilter']))
