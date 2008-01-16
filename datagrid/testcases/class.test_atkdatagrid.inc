@@ -1,4 +1,7 @@
 <?php
+
+if (false)
+{
 atkimport('atk.datagrid.atkdatagrid');
 
 /**
@@ -160,3 +163,9 @@ class test_atkDataGrid extends atkTestCase
     $this->assertEqual(84, $grid->getCount());        
   }
 }
+}
+else
+{
+  class test_atkdatagrid extends atkTestCase {}
+}
+?>
