@@ -478,9 +478,9 @@
   /**
    * @deprecated Use atkSessionManager::formState instead.
    */
-  function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL)
+  function session_form($sessionstatus=SESSION_DEFAULT, $returnbehaviour=NULL, $fieldprefix='')
   {
-    return atkSessionManager::formState($sessionstatus, $returnbehaviour);
+    return atkSessionManager::formState($sessionstatus, $returnbehaviour, $fieldprefix);
   }
 
   /**
