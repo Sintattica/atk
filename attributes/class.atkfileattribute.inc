@@ -476,7 +476,7 @@
       $error = $record[$this->fieldName()]['error'];
       if ($error > 0)
       {
-        $error_text = $this->fetchErrorType($error);
+        $error_text = $this->fetchFileErrorType($error);
         atkTriggerError($record, $this, $error_text, atktext($error_text, "atk"));
       }
     }
