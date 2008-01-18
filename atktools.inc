@@ -1722,7 +1722,7 @@
   function getClassPath($fullclassname, $class = true)
   {
     $elems = explode(".", strtolower($fullclassname));
-    if(($elems[0] == "module") || ($elems[0] == "modules"))
+    if($elems[0] == "module")
     {
       array_shift($elems);
       $prefix = moduleDir(array_shift($elems));
