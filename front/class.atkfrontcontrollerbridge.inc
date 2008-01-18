@@ -96,4 +96,9 @@
     {
       atkinstance('atk.ui.atkpage')->register_scriptcode($code);
     }
+
+    public function getApplicationRoot()
+    {
+      return atkconfig('atkroot');
+    }
   }

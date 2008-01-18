@@ -1009,9 +1009,10 @@
      */
     protected function getTemplatePath($template, $directory='templates')
     {
-      if (file_exists(atkconfig('atkroot')."$directory/$template"))
+      $root = $this->m_bridge->getApplicationRoot();
+      if (file_exists($root."$directory/$template"))
       {
-        return atkconfig('atkroot')."$directory/$template";
+        return $root."$directory/$template";
       }
       else if (file_exists(moduleDir($this->m_module)."$directory/$template"))
       {
