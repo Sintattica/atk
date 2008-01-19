@@ -45,6 +45,17 @@
       function test_attribute()
       {           
         $this->apiTest(new atkMultiSelectAttribute("name",array('option1','option2')));
-      }              
+      }           
+      
+      /**
+       * Check if isEmpty returns true for empty records.
+       * @access private
+       */
+      function _testIsEmpty()
+      {
+        parent::_testIsEmpty();
+        $this->assertFalse($this->m_attribute->isEmpty(array($this->m_attribute->m_name=>array(0=>1,1=>2))), "isempty");
+      }
+         
     }   
  ?>
