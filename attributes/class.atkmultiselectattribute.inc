@@ -212,5 +212,15 @@
                        atktext("invert_selection").'</a>]</font></div>';
       }
     }
+    
+    /**
+     * Check if a record has an empty value for this attribute.
+     * @param array $record The record that holds this attribute's value.
+     * @return boolean
+     */
+    function isEmpty($record)
+    {
+      return (!isset($record[$this->fieldName()])||(!is_array($record[$this->fieldName()]))||(is_array($record[$this->fieldName()]) && count($record[$this->fieldName()])===0));
+    }
   }
 ?>
