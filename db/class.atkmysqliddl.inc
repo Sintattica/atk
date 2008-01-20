@@ -76,7 +76,27 @@
       }
       return ""; // in case we have an unsupported type.      
     }
-   
+    
+    function buildView($name, $select)
+    {
+      return "CREATE VIEW $name AS ".$select;
+    }
+
+    function executeCreateView($name, $select)
+    {
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+
+      $query = $this->buildView($name, $select);
+      if ($query!="")
+      {
+        return $this->m_db->query($query);
+      }
+      else
+      {
+        atkdebug("atkddl::executeCreateView: nothing to do!");
+      }
+      return false;
+    }
    
  }
 ?>
