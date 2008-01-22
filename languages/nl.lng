@@ -123,6 +123,7 @@
   "error_password_nomatch" => "De ingevoerde wachtwoorden komen niet met elkaar overeen!",
   "error_primarykey_exists" => "Er bestaat al een record met deze sleutel",
   "error_tab" => "zie",
+  "error_tag_illegalvalue" => "Een tag mag geen HTML of enters bevatten",
   "error_uniquefield" => "De waarde voor dit veld moet uniek zijn",
   "error_uniquefieldset" => "De waarden voor de combinaties tussen deze velden moeten uniek zijn",
   "error_unkown_domain" => "Onbekend domein",

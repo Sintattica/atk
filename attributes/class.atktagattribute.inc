@@ -100,29 +100,50 @@
     }
 
 
+    /**
+     * Validate the input based on the current mode.
+     *
+     * @param Array $rec
+     * @param String $mode
+     * @return True on validation, False otherwise.
+     */
     function validate(&$rec, $mode)
     {
-      if (is_array($rec[$this->fieldName()]))
-      {
-        // Coming from selectscreen, no search necessary anymore.
-      }
-      else
-      {
-        $this->m_matches = $this->getMatches($rec[$this->fieldName()]);
+      $valid = true;
+      
+      // If coming from selectscreen, no search necessary anymore.
+      if (is_array($rec[$this->fieldName()]))      
+        return true;      
+      
+      $this->m_matches = $this->getMatches($rec[$this->fieldName()]);
+      $this->m_nonematching = $this->getNoneMatching();
 
-        if($this->m_mode == TA_ERROR)
+      foreach ($this->m_nonematching as $keyword)
+      {
+        if ($this->m_mode == TA_ERROR)
         {
-          foreach($this->m_matches as $keyword=>$res)
-          {
-            if (!count($res))
-            {
-              triggerError($rec,$this->fieldName(),"notallowed_new_defaulttag",sprintf($this->text("notallowed_new_defaulttag"),$keyword));
-              $this->m_nonematching[] = $keyword;
-            }
-          }
+          atkTriggerError($rec,$this,"notallowed_new_defaulttag",sprintf($this->text("notallowed_new_defaulttag"),$keyword));
+          $valid = false;
+        }
+        elseif($this->m_mode == TA_ADD && !$this->isValidKeyWord($keyword))
+        {
+          atkTriggerError($rec, $this, 'error_tag_illegalvalue', sprintf($this->text('error_tag_illegalvalue'), $keyword));
+          $valid = false;
         }
       }
-      return !count($this->m_nonematching);
+    
+      return $valid;
+    }
+    
+    /**
+     * A keyword field may not contain HTML or linefeeds
+     *     
+     * @param String $keyword
+     */
+    function isValidKeyWord($keyword)
+    {
+      $replaced = strip_tags(str_replace("\n",'', str_replace("\r\n",'',$keyword)));      
+      return (strlen($keyword) == strlen($replaced));    
     }
 
     function edit($rec="", $prefix="", $mode="")
@@ -253,12 +274,36 @@
           $token = trim($token);
           if($token!="")
           {
-            $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".escapeSQL($token)."'";
-            $result[$token] = $this->m_destInstance->selectDb($selector);
+            $result[$token] = $this->getDestinationRecords($token);            
           }
         }
       }
       return $result;
+    }
+    
+    function getDestinationRecords($token)
+    {
+      $selector = $this->m_destInstance->m_table.".".$this->m_destinationfield."='".escapeSQL($token)."'";
+      return $this->m_destInstance->selectDb($selector);
+    }
+    
+    /**
+     * Get the keywords that did not match. 
+     *
+     * @return array
+     */
+    function getNoneMatching()
+    {      
+      $no_match = array();
+      
+      //loop through all the matches for each keyword
+      foreach($this->m_matches as $keyword=>$matches)
+      {
+        $cnt_matches = count($matches);
+        //We remember the none-matching ones.
+        if(!$cnt_matches) $no_match[] = $keyword;
+      }
+      return $no_match;
     }
 
     function _getDefaultTags()
@@ -323,9 +368,10 @@
         foreach($no_match as $keyword)
         {
           $defaultsRec[$this->m_destinationfield] = $keyword;
-
+          
+          
           //if one keyword could not be added, stop adding them.
-          if(!$this->m_destInstance->addDb($defaultsRec))
+          if(!$this->m_destInstance->validate($defaultsRec, 'add') || !$this->m_destInstance->addDb($defaultsRec))
           {
             atkdebug("could not add default keyword");
             return false;
@@ -343,7 +389,6 @@
       }
 
       /** we only support a primary key of one field */
-
       //store matches
       foreach($resultset as $res)
       {
@@ -377,7 +422,8 @@
       }
 
       return true;
-    }
+    }   
+    
 
     /**
      * load function
@@ -519,5 +565,3 @@
       return $key;
     }
   }
-
-?>

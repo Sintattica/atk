@@ -81,6 +81,8 @@ Changed in ATK 6.2
 + Added setText function to atkDummyAttribute to change the text. [Sandy]
 + Added setClickableLabel to the atkRadioAttribute to turn it of 
   (default this is on). [Sandy]
++ Added validation of tags, they may not contain HTML or linefeeds. Also
+  added testcase for validation. [Dennis]
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation [Marc]

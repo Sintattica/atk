@@ -124,6 +124,7 @@
   "error_password_nomatch" => "The supplied passwords do not match.",
   "error_primarykey_exists" => "A record with this key already exists",
   "error_tab" => "see",
+  "error_tag_illegalvalue" => "A tag may not contain HTML or linefeeds.",
   "error_uniquefield" => "The value for this field must be unique",
   "error_uniquefieldset" => "The values for the combination of these fields must be unique",
   "error_unkown_domain" => "Unkown domain",
