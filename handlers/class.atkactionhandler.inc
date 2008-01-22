@@ -85,7 +85,9 @@
      *
      * The default implementation invokes an action_$action override (if
      * present) and stores the postvars. Custom handlers may override this
-     * behavior.
+     * behavior. If there is no node action override and a partial is set 
+     * for the action we don't invoke the action_$action override but 
+     * instead let the partial method handle the action.
      *
      * @param atkNode $node The node on which the action should be performed.
      * @param String $action The action that is being performed.
@@ -98,8 +100,9 @@
       $this->m_node = &$node;
       $this->m_action = $action;
       $this->m_partial = $node->m_partial;
-      $this->invoke("action_".$action);
       
+      $this->invoke("action_".$action);
+           
       // when we're finished, cleanup any atkrejects (that we haven't set ourselves).
       if (!$this->m_rejecting)
       {

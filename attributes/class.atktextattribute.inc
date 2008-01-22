@@ -37,6 +37,8 @@
     var $m_rows = 10;
     var $m_cols;
     var $m_autoadjust;
+    
+    private $m_wrapMode = 'soft';
 
     /**
      * Constructor
@@ -68,6 +70,26 @@
       }
 
       $this->atkAttribute($name,$flags); // base class constructor
+    }
+    
+    /**
+     * Returns the current wrap mode.
+     * 
+     * @return string wrap mode
+     */
+    public function getWrapMode()
+    {
+      return $this->m_wrapMode;
+    }
+    
+    /**
+     * Sets the wrap mode for the text area.
+     *
+     * @param string $mode wrap mode ('soft', 'hard' or 'off')
+     */
+    public function setWrapMode($mode)
+    {
+      $this->m_wrapMode = $mode;
     }
 
     /**
@@ -110,7 +132,7 @@
 
         $html =
           '<textarea id="'.$id.'" name="'.$id.'" wrap="soft" rows="1" cols="20">'."\n".htmlspecialchars($record[$this->fieldName()]).'</textarea>'.
-          '<textarea id="'.$id.'_textarea" wrap="soft" rows="5" cols="40" style="display: none"></textarea>';
+          '<textarea id="'.$id.'_textarea" wrap="'.$this->getWrapMode().'" rows="5" cols="40" style="display: none"></textarea>';
 
         return $html;
       }
@@ -137,7 +159,7 @@
         $this->doAutoAdjust(htmlspecialchars($text), $rows, $cols);
       }
 
-      $result= "<textarea id='$id' name='$id' wrap='soft' ";
+      $result= "<textarea id='$id' name='$id' wrap='".$this->getWrapMode()."' ";
       if ($rows) $result.= "rows='$rows' ";
       if ($cols) $result.= "cols='$cols' ";
       $result.=$this->getCSSClassAttribute();

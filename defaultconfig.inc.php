@@ -80,6 +80,11 @@
    * @var String
    */
   $config_meta_grammar = "atk.meta.grammar.atkmetagrammar";
+  
+  /**
+   * Use the given class for creating datagrids.
+   */
+  $config_datagrid_class = "atk.datagrid.atkdatagrid";
 
   /************************** DATABASE SETTINGS ******************************/
 

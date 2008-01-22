@@ -190,12 +190,12 @@ class atkDataGrid
   private $m_actionSessionStatus;  
   
   /**
-   * Node filter. Only used when the select handler and count
+   * Node filters. Only used when the select handler and count
    * handlers are not overridden.
    * 
    * @var string
    */
-  private $m_filter;
+  private $m_filters;
   
   /**
    * Selection mode.
@@ -252,6 +252,13 @@ class atkDataGrid
   private $m_overrideNodePostvarsBackup = null;
   
   /**
+   * Use session to store the properties of this datagrid?
+   * 
+   * @var boolean
+   */
+  private $m_useSession;
+  
+  /**
    * Session manager. We store a reference to the session manager in our
    * object instance variable to make sure we have access to it in the
    * destructor.
@@ -277,20 +284,23 @@ class atkDataGrid
   /**
    * Create a new atkDataGrid instance.
    * 
-   * @param atkNode node
-   * @param string  name (will be auto-generated if left empty)
-   * @param string  class (by default the atkDataGrid class) 
+   * @param atkNode $node       node
+   * @param string  $name       name (will be auto-generated if left empty)
+   * @param string  $class      class (by default the atkDataGrid class) 
+   * @param boolean $useSession use session
    */
-  public static function create($node, $name=null, $class=null)
+  public static function create($node, $name=null, $class=null, $useSession=true)
   {
+    $useSession = $useSession && atkGetSessionManager() != null;
     $name = $name == null ? uniqid('atkdatagrid') : $name; 
     $class = $class == null ? atkconfig('datagrid_class') : $class;
     $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
     $sessions[$name] = array('class' => $class, 'custom' => array(), 'system' => array());
-    atkGetSessionManager()->pageVar('atkdgsession', $sessions);
+    if ($useSession)
+      atkGetSessionManager()->pageVar('atkdgsession', $sessions);
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
-    return new $class($node, $name, self::CREATE);
+    return new $class($node, $name, self::CREATE, $useSession);
   }
   
   /**
@@ -298,7 +308,8 @@ class atkDataGrid
    * 
    * Most of the datagrid parameters are simply retrieved from the session
    * (including the datagrid class). You can however configure the datagrid 
-   * even more by adjusting options on the object returned.
+   * even more by adjusting options on the object returned. If the session
+   * manager does not exist, this method will fail!
    *
    * @return atkDataGrid datagrid instance
    */
@@ -315,17 +326,19 @@ class atkDataGrid
   /**
    * Constructor.
    *
-   * @param string  $name datagrid name
-   * @param atkNode $node datagrid node
-   * @param int     $mode creation mode
+   * @param string  $name       datagrid name
+   * @param atkNode $node       datagrid node
+   * @param int     $mode       creation mode
+   * @param boolean $useSession use session?
    */
-  protected function __construct($node, $name, $mode=self::CREATE)
+  protected function __construct($node, $name, $mode=self::CREATE, $useSession=true)
   {   
     $this->setName($name);    
     $this->setNode($node);
     $this->setActionNode($this->getNode());    
 
-    $this->m_sessionMgr = atkGetSessionManager();
+    $this->m_useSession = $useSession;
+    $this->m_sessionMgr = $useSession ? atkGetSessionManager() : null;
     
     $this->registerGlobalOverrides();
     $this->setUpdate($mode == self::RESUME);
@@ -407,11 +420,13 @@ class atkDataGrid
     
     $sessions = &$GLOBALS['ATK_VARS']['atkdg'];
     unset($sessions[$this->getName()]);
-    $this->m_sessionMgr->pageVar('atkdg', $sessions);
+    if ($this->m_useSession)
+      $this->m_sessionMgr->pageVar('atkdg', $sessions);
 
     $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
     unset($sessions[$this->getName()]);
-    $this->m_sessionMgr->pageVar('atkdgsession', $sessions);
+    if ($this->m_useSession)
+      $this->m_sessionMgr->pageVar('atkdgsession', $sessions);
   }
   
   /**
@@ -452,7 +467,8 @@ class atkDataGrid
     }
     
     $this->getNode()->m_postvars['atkdg'] = $sessions;
-    $this->m_sessionMgr->pageVar('atkdg', $sessions);
+    if ($this->m_useSession)
+      $this->m_sessionMgr->pageVar('atkdg', $sessions);
   }
   
   /**
@@ -473,7 +489,8 @@ class atkDataGrid
     }
     
     $this->getNode()->m_postvars['atkdg'] = $sessions;
-    $this->m_sessionMgr->pageVar('atkdg', $sessions);      
+    if ($this->m_useSession)
+      $this->m_sessionMgr->pageVar('atkdg', $sessions);      
   }
 
   /**
@@ -493,7 +510,7 @@ class atkDataGrid
   {
     $this->m_session['system'] = array();
     
-    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'template', 'actionSessionStatus', 'filter');
+    $vars = array('flags', 'formName', 'embedded', 'baseUrl', 'components', 'excludes', 'defaultActions', 'defaultLimit', 'template', 'actionSessionStatus', 'filters', 'mode');
     foreach ($vars as $var)
     {
       $fullVar = "m_{$var}";
@@ -502,7 +519,8 @@ class atkDataGrid
     
     $sessions = &$GLOBALS['ATK_VARS']['atkdgsession'];
     $sessions[$this->getName()] = $this->m_session;
-    $this->m_sessionMgr->pageVar('atkdgsession', $sessions);    
+    if ($this->m_useSession)
+      $this->m_sessionMgr->pageVar('atkdgsession', $sessions);    
   }
   
   /**
@@ -945,26 +963,36 @@ class atkDataGrid
   }    
   
   /**
-   * Returns the current node filter.
+   * Returns the current node filters.
    *
-   * @return string filter
+   * @return string filters
    */
-  public function getFilter()
+  public function getFilters()
   {
-    return $this->m_filter;
+    return $this->m_filters;
   }
   
   /**
-   * Set node filter (only used if no custom select and
+   * Add node filter  (only used if no custom select and
    * count handlers are used!).
    *
    * @param string $filter
    */
-  public function setFilter($filter)
+  public function addFilter($filter)
   {
-    $this->m_filter = $filter;
+    $this->m_filters[] = $filter;
   }
-  
+
+  /**
+   * Returns the complete filter string based on the different
+   * filters set on the grid.
+   *
+   * @return string filter string
+   */
+  protected function getFilter()
+  {
+    return count($this->m_filters) == 0 ? '' : '('.implode(') AND (', $this->getFilters()).')';
+  }  
   
   /**
    * Returns the mode.
@@ -995,10 +1023,6 @@ class atkDataGrid
   {
     return $this->getPostvar('atkindex');
   }
-  
-  /**
-   * Sets the index column (attr
-   */
   
   /**
    * Returns the current limit.

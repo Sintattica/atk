@@ -1263,7 +1263,7 @@
      * @param atkColumnConfig $columnConfig Column configuration object
      * @see atkNode::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig)
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, &$columnConfig, $grid=null)
     {
       global $g_sessionManager, $ATK_VARS;
 
@@ -1275,12 +1275,12 @@
 
         if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT))
         {
-          $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig);
+          $arr["heading"][$key]["order"] = $this->listHeaderSortOrder($columnConfig, $fieldprefix);
         }
 
         if (hasFlag($flags, RL_EXT_SORT))
         {
-          $arr["sort"][$key] = $this->extendedSort($columnConfig);
+          $arr["sort"][$key] = $this->extendedSort($columnConfig, $fieldprefix, $grid);
         }
 
         if (!hasFlag($flags, RL_NO_SEARCH) && $this->hasFlag(AF_SEARCHABLE))
@@ -1288,13 +1288,13 @@
           $fn = $this->fieldName()."_search";
           if (method_exists($this->m_ownerInstance, $fn))
           {
-            $arr["search"][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix);
+            $arr["search"][$key] = $this->m_ownerInstance->$fn($atksearch, false, $fieldprefix, $grid);
           }
           else
           {
-            $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix);
+            $arr["search"][$key] = $this->search($atksearch, false, $fieldprefix, $grid);
           }
-          $arr["search"][$key].='<input type="hidden" name="atksearchmode['.$this->formName().']" value="'.$this->getSearchMode(false).'">';
+          $arr["search"][$key].='<input type="hidden" name="'.$fieldprefix.'atksearchmode['.$this->formName().']" value="'.$this->getSearchMode(false).'">';
         }
       }
     }
@@ -1315,25 +1315,24 @@
     {
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
-        /* an <attributename>_display function may be provided in a derived class to display an attribute */
-        $function = $this->m_name."_display";
         if (in_array($this->fieldName(), $this->m_ownerInstance->m_editableListAttributes) && $this->m_ownerInstance->allowed('edit', $arr["rows"][$nr]["record"]))
         {
           $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] =
             $this->getEdit('list', $arr["rows"][$nr]["record"], 'atkrecordlistdata_AE_'.$arr['name'].'_AE_'.$nr.'_AE_');
         }
-        elseif (method_exists($this->m_ownerInstance, $function))
-          $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] = $this->m_ownerInstance->$function($arr["rows"][$nr]["record"], "list");
-        else $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] = $this->display($arr["rows"][$nr]["record"], "list");
+        else
+        {
+          $arr["rows"][$nr]["data"][$fieldprefix.$this->fieldName()] =
+            $this->getView('list', $arr["rows"][$nr]["record"]);
+        }
 
         /* totalisable? */
         if ($this->hasFlag(AF_TOTAL))
         {
           $sum = $this->sum($arr["totalraw"], $arr["rows"][$nr]["record"], $fieldprefix);
           $arr["totalraw"][$this->fieldName()] = $sum[$this->fieldName()];
-          if (method_exists($this->m_ownerInstance, $function))
-            $arr["total"][$fieldprefix.$this->fieldName()] = $this->m_ownerInstance->$function($sum, "list");
-          else $arr["total"][$fieldprefix.$this->fieldName()] = $this->display($sum, "list");
+          $arr["total"][$fieldprefix.$this->fieldName()] =
+            $this->getView('list', $sum);                     
         }
       }
     }
@@ -1362,12 +1361,7 @@
      */
     function search($record=array(), $extended=false, $fieldprefix="")
     {
-      // Evil bit to get searching in one-to-manys to work alongside
-      // searching on normal recordlists.
-      if (strstr($fieldprefix, "]["))
-        $id = "atksearch[".$fieldprefix.$this->formName()."]";
-      else
-        $id = "atksearch$fieldprefix"."[".$this->formName()."]";
+      $id = "{$fieldprefix}atksearch[".$this->formName()."]";
 
       $value="";
       if (is_array($record)&&isset($record[$this->fieldName()]))
@@ -2263,27 +2257,35 @@
       $fields[] = $field;
     }
 
-    function extendedSort(&$columnConfig)
+    function extendedSort(&$columnConfig, $fieldprefix='', $grid=null)
     {
-      $result = $this->sortOptions($columnConfig).' '.$this->sortOrder($columnConfig);
+      $result = $this->sortOptions($columnConfig, $fieldprefix, $grid).' '.$this->sortOrder($columnConfig, $fieldprefix, $grid);
       return $result;
     }
 
     /**
      * Default atkAttribute does not have fancy sort options.
      */
-    function sortOptions(&$columnConfig)
+    function sortOptions(&$columnConfig, $fieldprefix='', $grid=null)
     {
       if (!$this->hasFlag(AF_TOTAL) && $columnConfig->totalizable())
       {
         // if we are not the sumcolumn itself, but there are totalcolumns present, we can perform subtotalling
         $cmd = ($columnConfig->hasSubTotal($this->fieldName())?"unsubtotal":"subtotal");
-        return href(getDispatchFile().'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
+        if ($grid == null)
+        {
+          return href(getDispatchFile().'?'.$columnConfig->getUrlCommand($this->fieldName(), $cmd), atktext("column_".$cmd)).' ';
+        }
+        else 
+        {
+          $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($this->fieldName(), $cmd));
+          $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
+        }          
       }
       return "";
     }
 
-    function sortOrder(&$columnConfig)
+    function sortOrder(&$columnConfig, $fieldprefix='', $grid=null)
     {
       $fieldname = $this->fieldName();
       $currentOrder = $columnConfig->getOrder($fieldname);
@@ -2292,10 +2294,18 @@
       if ($currentOrder>0)
       {
         $direction = ($columnConfig->getSortDirection($this->fieldName())=="desc" ? "asc":"desc");
-        $res= href(getDispatchFile().'?'.$columnConfig->getUrlCommand($fieldname, $direction), atktext("column_".$direction)).' ';
+        if ($grid == null)
+        {
+          $res= href(getDispatchFile().'?'.$columnConfig->getUrlCommand($fieldname, $direction), atktext("column_".$direction)).' ';
+        }
+        else
+        {
+          $call = $grid->getUpdateCall($columnConfig->getUrlCommandParams($fieldname, $direction));
+          $res = '<a href="javascript:void(0)" onclick="'.htmlentities($call).'">'.$this->text("column_".$direction).'</a>';
+        }
       }
 
-      $res.= '<select name="atkcolcmd[][setorder]['.$fieldname.']">';
+      $res.= '<select name="atkcolcmd[][setorder]['.$fieldprefix.$fieldname.']">';
       $res.= '<option value="">';
       for ($i=1; $i<6; $i++)
       {

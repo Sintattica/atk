@@ -40,12 +40,12 @@
      */
     function action_edit()
     {
-      if (isset($this->m_partial) && $this->m_partial!="")
+      if (!empty($this->m_partial))
       {
         $this->partial($this->m_partial);
         return;
-      }
-
+      }      
+      
       $node = &$this->m_node;
 
       $record = $this->getRecord();
@@ -649,25 +649,6 @@
       $params = array();
       parse_str($query, $params);
       return $params;
-    }
-
-    /**
-     * Attribute handler.
-     *
-     * @param string $partial full partial
-     */
-    function partial_attribute($partial)
-    {
-      list($type, $attribute, $partial) = explode('.', $partial);
-
-      $attr = &$this->m_node->getAttribute($attribute);
-      if ($attr == NULL)
-      {
-        atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
-        return '';
-      }
-
-      return $attr->partial($partial, 'edit');
     }
   }
 ?>

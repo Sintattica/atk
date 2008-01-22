@@ -83,6 +83,11 @@ Changed in ATK 6.2
   (default this is on). [Sandy]
 + Added validation of tags, they may not contain HTML or linefeeds. Also
   added testcase for validation. [Dennis]
++ Added the atkDataGrid which replaces atkRecordList for the admin and
+  select handlers and the atkOneToManyRelation. The atkDataGrid allows
+  browsing through records without page reloads. [Peter]
++ Added atkTextAttribute::setWrapMode to specify the wrap mode for
+  the textarea (by default "soft"). [Peter]
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation [Marc]

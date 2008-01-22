@@ -62,6 +62,76 @@
       $this->assertEqual(decodeKeyValueSet("id='1836'"),array("id"=>"1836"),"check decodeKeyValueSet");
       $this->assertEqual(decodeKeyValueSet("id = '1836'"),array("id"=>"1836"),"check decodeKeyValueSet with more spaces");
     }
+        
+    /**
+     * Tests the atk_array_merge_recursive.
+     */
+    public function test_atk_array_merge_recursive()
+    {
+      $arr1 = array('a' => 'a', 'b' => array('c' => array('d' => 'd')));
+      
+      $arr2 = array('b' => 'b');
+      $test = atk_array_merge_recursive($arr1, $arr2);
+      $this->assertEqual(2, count($test));
+      $this->assertEqual('a', $test['a']); 
+      $this->assertEqual('b', $test['b']);
+      
+      $arr2 = array('b' => array('e' => 'e'));
+      $test = atk_array_merge_recursive($arr1, $arr2);
+      $this->assertEqual(2, count($test));
+      $this->assertEqual(2, count($test['b'])); 
+      $this->assertEqual('d', $test['b']['c']['d']); 
+      $this->assertEqual('e', $test['b']['e']);
+  
+      $arr2 = array('b' => array('c' => array('e' => 'e')));
+      $test = atk_array_merge_recursive($arr1, $arr2);
+      $this->assertEqual(2, count($test));
+      $this->assertEqual(2, count($test['b']['c'])); 
+      $this->assertEqual('d', $test['b']['c']['d']); 
+      $this->assertEqual('e', $test['b']['c']['e']);
+      
+      $arr2 = array('b' => array('c' => array('e' => 'e')));
+      $test = atk_array_merge_recursive($arr1, $arr2);
+      $this->assertEqual(2, count($test));
+      $this->assertEqual(2, count($test['b']['c'])); 
+      $this->assertEqual('d', $test['b']['c']['d']); 
+      $this->assertEqual('e', $test['b']['c']['e']);
+      
+      $arr2 = array('b' => array('c' => array('e' => 'e'), 'f' => 'f'));
+      $test = atk_array_merge_recursive($arr1, $arr2);
+      $this->assertEqual(2, count($test));
+      $this->assertEqual(2, count($test['b']));    
+      $this->assertEqual(2, count($test['b']['c'])); 
+      $this->assertEqual('d', $test['b']['c']['d']); 
+      $this->assertEqual('e', $test['b']['c']['e']);
+      $this->assertEqual('f', $test['b']['f']);
+    }    
+       
+    /**
+     * Tests the atkDataDecode method.
+     */
+    public function test_atkdatadecode()
+    {
+      $vars = array('prefix_AE_var1' => 'value1', 'prefix_AE_var2' => 'value2');
+      $expected = array('prefix' => array('var1' => 'value1', 'var2' => 'value2'));
+      atkDataDecode($vars);      
+      $this->assertEqual($expected, $vars);
+      
+      $vars = array('prefix_AE_var1' => array('subvar1' => 'value1'), 'prefix_AE_var1_AE_subvar2' => 'value2');
+      $expected = array('prefix' => array('var1' => array('subvar1' => 'value1', 'subvar2' => 'value2')));
+      atkDataDecode($vars);
+      $this->assertEqual($expected, $vars);
+      
+      $vars = array('prefix_AE_var1_AE_subvar2' => 'value2', 'prefix_AE_var1' => array('subvar1' => 'value1'));
+      $expected = array('prefix' => array('var1' => array('subvar1' => 'value1', 'subvar2' => 'value2')));
+      atkDataDecode($vars);
+      $this->assertEqual($expected, $vars);     
+
+      $vars = array('prefix_AE_var1_AE_subvar2' => 'value2', 'prefix_AE_var1' => array('subvar2' => 'value1'));
+      $expected = array('prefix' => array('var1' => array('subvar2' => 'value1')));
+      atkDataDecode($vars);
+      $this->assertEqual($expected, $vars);      
+    }    
     
     function test_atkArrayDiff()
     {

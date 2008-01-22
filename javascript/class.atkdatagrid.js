@@ -92,7 +92,7 @@ ATK.DataGrid = {
 
     var params = queryComponents.join('&');   
     var options = { parameters: params, evalScripts: true, onComplete: this.updateCompleted.bind(this, name) };
-    new Ajax.Updater(name + '_container', grid.baseUrl, options);
+    new Ajax.Updater(this.getContainer(name), grid.baseUrl, options);
   },
   
   /**
@@ -123,7 +123,6 @@ ATK.DataGrid = {
       }
     });
     
-    console.debug(overrides);
     return overrides;  
   },  
   

@@ -1,15 +1,15 @@
-<table border="0" cellspacing="0" cellpadding="2" width="100%">
+<table border="0" cellspacing="0" cellpadding="2">
 {if $index}
   <tr>
     <td align="left" valign="top">
       {$index}
-    </td
+    </td>
   </tr>
 {elseif $paginator || $limit}
   <tr>
     <td align="left" valign="middle">
       {if $paginator}{$paginator}{/if}
-    </td
+    </td>
     <td align="right" valign="middle">
       {if $limit}{$limit}{/if}
     </td>
@@ -18,7 +18,7 @@
 <tr>
   <td align="left" valign="top" colspan="2">
     {$list}
-  </td
+  </td>
 </tr>
 {if $norecordsfound}
   <tr>
@@ -31,7 +31,7 @@
   <tr>
     <td align="left" valign="middle">
       {if $paginator}{$paginator}{/if}
-    </td
+    </td>
     <td align="right" valign="middle">
       {if $summary}{$summary}{/if}
     </td>

@@ -544,6 +544,39 @@
 
     return $res;
   }
+  
+  /**
+   * Same as array_merge_recursive from PHP but without duplicates.
+   * Supports unlimited number of arrays as arguments.
+   *
+   * @param array $array1 first array
+   * @param array $array2 second array
+   * 
+   * @return array merged arrays
+   */
+  function atk_array_merge_recursive($array1, $array2)
+  {
+    $arrays = func_get_args();
+    
+    $result = array();
+    
+    foreach ($arrays as $array)
+    {
+      foreach ($array as $key => $value)
+      {
+        if (isset($result[$key]) && is_array($result[$key]) && is_array($value))
+        {
+          $result[$key] = atk_array_merge_recursive($result[$key], $value);
+        }
+        else 
+        {
+          $result[$key] = $value; 
+        }
+      }
+    }
+    
+    return $result;
+  }    
 
   /**
    * Same as array_merge from php, but this function preserves key=>index
@@ -752,9 +785,22 @@
   {
     $items = explode("_AE_", $var);
     if (count($items) <= 1) return;
+    
     $current = &$dest;
-    foreach ($items as $key) $current = &$current[$key];
-    $current = $dest[$var];
+    foreach ($items as $key) 
+    {
+      $current = &$current[$key];
+    }
+    
+    if (is_array($dest[$var])) 
+    {
+      $current = atk_array_merge_recursive((array)$current, $dest[$var]);
+    }
+    else
+    {
+      $current = $dest[$var];
+    }
+    
     unset($dest[$var]);
   }
 

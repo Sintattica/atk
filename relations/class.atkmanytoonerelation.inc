@@ -411,6 +411,11 @@
           $result[$field] = $value;
         }
 
+        if (count($result) == 0)
+        {
+          return null;
+        }        
+        
         // add descriptor fields, this means they can be shown in the title
         // bar etc. when updating failed for example
         $record = array($this->fieldName() => $result);
@@ -865,13 +870,40 @@
     }
 
     /**
+     * Converts a record filter to a record array.
+     *
+     * @param string $filter filter string
+     * @return array record
+     */
+    protected function filterToArray($filter)
+    {
+      $result = array();
+
+      $values = decodeKeyValueSet($filter);
+      foreach ($values as $field => $value)
+      {
+        $parts = explode('.', $field);
+        $ref = &$result;
+ 
+        foreach ($parts as $part)
+        {
+          $ref = &$ref[$part];
+        } 
+
+        $ref = $value;
+      }
+
+      return $result;
+    }
+
+    /**
      * Returns a piece of html code that can be used in a form to search
      * @param $record Record
      * @param $size Size of the editbox
      * @param $maxsize Maxsize of the editbox
      * @return Piece of html code that can  be used in a form to edit this
      */
-    function search($record=array(), $extended=false, $fieldprefix="")
+    function search($record=array(), $extended=false, $fieldprefix="", $grid=null)
     {
       // ugly workaround in addToListArrayHeader we define the prefix with
       // _AE_ at the end, this is correct, unfortuanately the search field needs
@@ -886,8 +918,29 @@
         {
           if ($this->m_destinationFilter!="")
           {
-            $filter = $this->parseFilter($this->m_destinationFilter,$record);
-            $this->m_destInstance->addFilter($filter);
+            $filterRecord = array();
+
+            if ($grid != null)
+            {
+              foreach ($grid->getFilters() as $filter)
+              {
+                $arr = $this->filterToArray($filter);
+                $arr = is_array($arr[$this->getOwnerInstance()->m_table]) ? $arr[$this->getOwnerInstance()->m_table] : array();
+                foreach ($arr as $attrName => $value)
+                {
+                  $attr = $this->getOwnerInstance()->getAttribute($attrName);
+                  if (!is_array($value) && is_a($attr, 'atkManyToOneRelation') && count($attr->m_refKey) == 1)
+                  {
+                    $attr->createDestination();
+                    $arr[$attrName] = array($attr->getDestination()->primaryKeyField() => $value);
+                  }
+                }
+
+                $filterRecord = array_merge($filterRecord, $arr);
+              }
+            }
+   
+            $record = array_merge($filterRecord, is_array($record) ? $record : array());
           }
 
           $recordset = $this->_getSelectableRecords($record, 'search');
@@ -1497,12 +1550,12 @@
      * @param String $atkorderby the current ATK orderby string (if not empty)
      * @see atkNode::listArray
      */
-    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby)
+    function addToListArrayHeader($action, &$arr, $fieldprefix, $flags, $atksearch, $atkorderby, $grid=null)
     {
       $prefix = $fieldprefix.$this->fieldName()."_AE_";
 
       // regular behaviour.
-      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby);
+      parent::addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
 
       // only add extra columns when needed
       if ($this->hasFlag(AF_HIDE_LIST) && !$this->m_alwaysShowListColumns) return;
@@ -1513,7 +1566,7 @@
         $p_attrib = &$this->m_destInstance->getAttribute($attribname);
         $p_attrib->m_flags |= AF_HIDE_LIST;
         $p_attrib->m_flags ^= AF_HIDE_LIST;
-        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby);
+        $p_attrib->addToListArrayHeader($action, $arr, $prefix, $flags, $atksearch[$this->fieldName()], $atkorderby, $grid);
 
         $needle = $prefix.$attribname;
         foreach (array_keys($arr['heading']) as $key)

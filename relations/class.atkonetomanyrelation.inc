@@ -190,12 +190,61 @@
     {
       $this->m_useFilterForEditLink = $useFilter;
     }
+    
+    /**
+     * Create the datagrid for the edit and display actions. The datagrid is
+     * configured with the correct node filter, excludes etc. 
+     * 
+     * The datagrid uses for both the edit and display actions the partial_grid
+     * method to update it's view.
+     *
+     * @param array  $record      the record
+     * @param string  $mode       the mode
+     * @param string  $action     the action
+     * @param boolean $useSession use session?
+     * 
+     * @return atkDataGrid grid
+     */
+    protected function createGrid($record, $mode, $action, $useSession=true)
+    {
+      $this->createDestination();
+      
+      atkimport('atk.datagrid.atkdatagrid');
+      $grid = atkDataGrid::create($this->m_destInstance, null, null, $useSession);
+      $grid->setMode($mode);
+      $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
+      $grid->setBaseUrl(partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.'.$this->fieldName().'.grid'));
 
+      if ($mode != 'copy') // don't exclude ref key in copy mode, we use it for atkorgrec!
+        $grid->setExcludes($this->m_refKey); 
+
+      $grid->addFilter($this->_getLoadWhereClause($record));
+      if ($this->m_destinationFilter != '')
+      {
+        $grid->addFilter($this->parseFilter($this->m_destinationFilter, $record));
+      }
+
+      return $grid;     
+    }
+    
+    /**
+     * Updates the datagrid for the edit and display actions.
+     *
+     * @return string grid html
+     */
+    public function partial_grid()
+    {
+      $this->createDestination();
+      $node = $this->getDestination();
+      atkimport('atk.datagrid.atkdatagrid');      
+      return atkDataGrid::resume($node)->render();
+    }    
+      
     /**
      * Returns a displayable string for this value, to be used in HTML pages.
      *
      * The atkOneToManyRelation displays a list of detail records in "view"
-     * mode, in the form of a readonly recordlist. In "list" mode, a plain
+     * mode, in the form of a read-only data grid. In "list" mode, a plain
      * list of detail record descriptors is displayed.
      *
      * @param array $record The record that holds the value for this attribute
@@ -203,52 +252,73 @@
      *                     for displaying in recordlists)
      * @return String HTML String
      */
-    function display($record, $mode="list")
+    public function display($record, $mode="list")
     {
-      $myrecords = $record[$this->fieldName()];
-
-      if (!is_array($myrecords))
+      // for the view mode we use the datagrid and load the records ourselves
+      if ($mode == 'view')
       {
-        $myrecords = $this->load(atkGetDb(), $record, "admin",true);
-      }
+        $grid = $this->createGrid($record, $mode, 'view');
+        $grid->loadRecords(); // load records early
 
-      if (!in_array($mode, array("csv", "plain"))) { $result = atktext("none"); } else { $result=''; }
-
-      if ($this->createDestination())
-      {
-        // record list
-        if (count($myrecords) > 0)
+        // no records
+        if ($grid->getCount() == 0)
         {
-          // display in list mode
-          if ($mode == "list")
-          {
-            $result = "<ul>";
-            for ($i = 0; $i < count($myrecords);$i++)
-              $result .= sprintf("<li>%s</li>", $this->m_destInstance->descriptor($myrecords[$i]));
-            $result .= "</ul>";
+          if (!in_array($mode, array("csv", "plain"))) 
+          { 
+            return $this->text("none"); 
+          } 
+          else 
+          { 
+            return '';
           }
-
-          // display in csv/plain mode
-          elseif (in_array($mode, array("csv", "plain")))
-          {
-            $result = "";
-            for ($i = 0; $i < count($myrecords);$i++)
-              $result .= ($i > 0 ? ', ' : '').$this->m_destInstance->descriptor($myrecords[$i]);
-          }
-
-          // display in view mode
-          else
-          {
-            if (!empty($this->m_destinationFilter)) $filter =$this->m_destinationFilter;
-            if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
-              $actions = array("view" => dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $filter)));
-            else $actions = array();
-            $recordlist = &atknew("atk.recordlist.atkrecordlist");
-            $result = $recordlist->render($this->m_destInstance, $myrecords, $actions, RL_NO_SORT|RL_NO_SEARCH, $this->m_refKey)."<br>";
-          }
+        }        
+        
+        $actions = array();
+        if (!$this->m_destInstance->hasFlag(NF_NO_VIEW))
+        {
+          $actions['view'] = dispatch_url($this->m_destination, "view", array("atkselector" => "[pk]", "atkfilter" => $this->m_destinationFilter));
         }
+
+        $grid->setDefaultActions($actions);
+        return $grid->render();
       }
-      return $result;
+  
+      // records should be loaded inside the load method
+      $records = $record[$this->fieldName()];
+      
+      // no records
+      if (count($records) == 0)
+      {
+        return $this->text('none');
+      }
+      
+      // list mode
+      if ($mode == "list")
+      {
+        $result = "<ul>";
+        
+        foreach ($records as $current)
+        {
+          $result .= sprintf("<li>%s</li>", $this->m_destInstance->descriptor($current));
+        }
+        
+        $result .= "</ul>";
+        
+        return $result;
+      }
+
+      // cvs / plain mode
+      else 
+      {
+        $result = "";
+        
+        foreach ($records as $i => $current)
+        {
+          $result .= ($i > 0 ? ', ' : '').$this->m_destInstance->descriptor($current);
+        }
+        
+        return $result;
+      }
     }
 
     /**
@@ -261,46 +331,35 @@
      * @param array $record The record that holds the value for this attribute.
      * @param String $fieldprefix The fieldprefix to put in front of the name
      *                            of any html form element for this attribute.
+     * 
      * @return String A piece of htmlcode for editing this attribute
      */
-    function edit($record="", $fieldprefix="")
+    public function edit($record="", $fieldprefix="", $mode='')
     {
-      if ($this && $this->createDestination())
+      $grid = $this->createGrid($record, $mode, $mode);
+      $grid->setEmbedded(true);
+      
+      $params = array();
+      if ($this->m_useFilterForEditLink && $this->m_destinationFilter != "")
       {
-        if ($this->m_destInstance->hasFlag(NF_CACHE_RECORDLIST))
-        {
-          $this->_setRecordlistCache();
-          $cache = $this->m_recordlistcache->getCache();
-          if ($cache)
-          {
-            atkdebug("Using recordlist cache: {$this->m_recordlistcache->m_cacheid}");
-            return $cache;
-          }
-        }
-
-        $output = $this->_getEditOutput($record,$fieldprefix);
-        if ($this->m_recordlistcache) $this->m_recordlistcache->writeCache($output, $this->m_recordlist->m_actionloader);
-        return $output;
+        $params["atkfilter"] = $this->m_destinationFilter;
       }
 
-      return "";
-    }
+      $actions = $this->m_destInstance->defaultActions("relation", $params);      
+      $grid->setDefaultActions($actions);      
+      
+      $grid->loadRecords(); // force early load of records
 
-    function _getEditOutput($record="", $fieldprefix="")
-    {
-      $myrecords = $this->_getRecords($record,true);
-
-      $output=$this->editHeader($record, $myrecords);
-
-      $output.= $this->_getRecordList($myrecords);
-
-      $output.=$this->editFooter($record, $myrecords);
-      $this->_fetchNavigationLinks($output);
-
-      if($this->m_destInstance->allowed("add"))
+      $output = 
+        $this->editHeader($record, $grid->getRecords()).
+        ($grid->getCount() > 0 ? $grid->render() : "").
+        $this->editFooter($record, $grid->getRecords());
+        
+      if ($this->m_destInstance->allowed("add"))
       {
-        $this->_addAddToEditOutput($output, $myrecords, $record);
+        $this->_addAddToEditOutput($output, $grid->getRecords(), $record);
       }
+
       return $output;
     }
 
@@ -335,83 +394,6 @@
       return $output.'<input type="button" onClick="toggleAddForm(\''.$fname."_integrated',
                                                                '".$fname."_integrated_link');\"
                                        class=\"otm_add\" name=\"".$fname."_cancel\" value=\"".atktext("cancel").'">';
-    }
-
-    /**
-     * If someone pressed 'save', no records are loaded from the db.
-     * Since we don't post all records in this relation like we do with
-     * other attributes, we have to load them at 'edit' time.
-     * We pass 'admin' as mode, since we show a recordlist, and we need
-     * all fields that we also get when we would be on an admin screen.
-     * Also, because the load looks to the owner for it's orderby but we have special orderbys
-     * for each onetomany, we fake it.
-     *
-     * @param array $record the current master record
-     & @param bool $paging divide the result on multiple pages (based on $config_recordsperpage)
-     * @return array records from database
-     */
-    function _getRecords($record,$paging=false)
-    {
-      $myrecords = $this->load(atkGetDb(), $record, "admin", $paging);
-      return $myrecords;
-    }
-
-    /**
-     * Gets the recordlist.
-     * @param Array $myrecords The records that are loaded into the recordlist
-     * @return String The generated recordlist
-     */
-    function _getRecordList($myrecords)
-    {
-      if (count($myrecords)!=0 || isset($this->m_ownerInstance->m_postvars['atksearch']))
-      {
-        $actions = array();
-        $params = array();
-
-        $embedprefix = "{$this->m_name}";
-
-        if ($this->m_useFilterForEditLink && $this->m_destinationFilter!="")
-        {
-          $params["atkfilter"]=$this->m_destinationFilter;
-        }
-
-        $actions = $this->m_destInstance->defaultActions("relation", $params);
-
-        $recordlist = &atknew("atk.recordlist.atkrecordlist");
-
-        $flags = $this->_getRecordListFlags();
-
-        if (isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
-          $this->m_destInstance->m_postvars['atkorderby'] =     $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
-
-        if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
-          $this->m_destInstance->m_postvars['atksearch'] =      $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-
-        if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
-          $this->m_destInstance->m_postvars['atksearchmode'] =  $this->m_ownerInstance->m_postvars['atksearchmode'];
-
-
-        $output = $recordlist->render($this->m_destInstance, $myrecords,
-                                    $actions,              $flags,
-                                    $this->m_refKey,       "entryform",
-                                    array(),               $embedprefix);
-        $this->m_recordlist = $recordlist;
-        return $output;
-      }
-      return "";
-    }
-
-    /**
-     * Determine the flags that the embedded recordlist should have.
-     * @return int The flags for the recordlist.
-     */
-    function _getRecordListFlags()
-    {
-      // for now, we don't support extended search in embedded one2many recordlists.
-      atkimport("atk.recordlist.atkrecordlist");
-      $flags  = atkRecordList::convertFlags($this->m_destInstance->getFlags());
-      $flags |= RL_EMBED|RL_NO_EXTENDED_SEARCH|RL_NO_SORT|RL_NO_SEARCH;
-      return $flags;
     }
 
     /**
@@ -624,7 +606,8 @@
         }
       }
 
-      return implode(" AND ", $whereelems);
+      $result = implode(" AND ", $whereelems);
+      return $result == '' ? '1=0' : $result;      
     }
 
     /**
@@ -645,78 +628,22 @@
      */
     function load(&$db, $record, $mode="", $paging=false)
     {
-      if ($mode=="edit")
+      $result = null;
+      
+      // for edit and view mode we don't load any records unless a display override exists
+      // we use the grid to load records because it makes things easier
+      if (($mode != 'add' && $mode != 'edit' && $mode != 'view') ||
+          ($mode == 'view' && method_exists($this->getOwnerInstance(), $this->fieldName()."_display")))
       {
-        // when editing a record with a onetomanyrelation, we don't
-        // need to load anything, since that is done in the edit()
-        // function.
-        return NULL;
-      }
-      else
-      {
-        if ($this->createDestination())
-        {
-          $where = $this->_getLoadWhereClause($record);
-
-          if ($where!="")
-          {
-            if ($this->m_destinationFilter!="")
-            {
-              $this->m_destInstance->addFilter($this->parseFilter($this->m_destinationFilter,$record));
-            }
-
-            if ($mode=="admin" || $mode=="select" || $mode=="view")
-            {
-              // we only need fields that are displayed in the descriptor.
-              $excludes = $this->m_destInstance->m_listExcludes;
-            }
-            else
-            {
-              // we probably need everything
-              $excludes = "";
-            }
-            if (isset($this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()]))
-            {
-              $this->m_destInstance->m_postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-            }
-            if (isset($this->m_ownerInstance->m_postvars['atksearchmode']))
-            {
-              $this->m_destInstance->m_postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-            }
-            ($paging==true)?$limitarray=$this->fetchLimitArray():$limitarray="";
-
-            $stmt = "";
-            if(isset($this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()]))
-            {
-              $atkorderby = $this->m_ownerInstance->m_postvars['atkorderby'.$this->fieldName()];
-              // EVIL BAD SMELL, sorting and recordlist embedding is handled in a very cumbersome way (with prefixes and embedprefixes
-              // that are hardly understandable
-              $elems = explode(" ", $atkorderby);
-              if (isset($this->m_destInstance->m_attribList[$elems[0]]))
-              {
-                $attr = &$this->m_destInstance->getAttribute($elems[0]);
-                $stmt = $attr->getOrderByStatement();
-
-                if (count($elems)>1)
-                {
-                  // probably asc or desc
-                  $stmt.=" ".$elems[1];
-                }
-              }
-              else
-              {
-                // not an attribute, probably custom order by
-                $stmt = $atkorderby;
-              }
-            }
-
-            $recordset = $this->m_destInstance->selectDb($where,$stmt,$limitarray,$excludes,"",$mode);
-            $this->m_loadFilter = $where;
-            return $recordset;
-          }
-        }
-      }
-      return NULL;
+        $grid = $this->createGrid($record, $mode, $mode, false);
+        $grid->setPostvar('atklimit', -1); // all records
+        $grid->setCountHandler(create_function('', '')); // don't count
+        $grid->loadRecords();
+        $result = $grid->getRecords();
+        $grid->destroy(); // clean-up    
+      }      
+      
+      return $result;
     }
 
     /**
@@ -738,44 +665,6 @@
         return (count($recs)==0);
       }
       return false;
-    }
-
-    /**
-     * Returns an array to pass as limit parameter to the selectdb function
-     *
-     * @return array an array to pass to the selectdb function
-     */
-    function fetchLimitArray()
-    {
-      global $ATK_VARS;
-
-      // limitVarPostfix was introduced to make a difference when
-      // there is more than one item with pagenumbers on the page
-      $postfix = $this->fieldName();
-
-      $retArray = array();
-
-      if (!isset($ATK_VARS["atkstartat" . $postfix]))
-      {
-        $retArray["offset"] = 0;
-      }
-      else
-      {
-        $retArray["offset"] = $ATK_VARS["atkstartat" . $postfix];
-      }
-
-      // If we didn't pass along our own limit (atklimit var with postfix)
-      // we'll use the recordsperpage config value and if THAT fails,
-      // we use 25
-      if (!isset($ATK_VARS["atklimit" . $postfix]))
-      {
-        $retArray["limit"] = atkconfig("recordsperpage", 25);
-      }
-      else
-      {
-        $retArray["limit"] = $ATK_VARS["atklimit" . $postfix];
-      }
-      return $retArray;
     }
 
     /**
@@ -835,6 +724,10 @@
             $ownerfields = $this->getOwnerFields();
             for ($i=0;$i<count($onetomanyrecs);$i++)
             {
+              // original record
+              $original = $onetomanyrecs[$i];
+              $onetomanyrecs[$i]['atkorgrec'] = $original; 
+              
               // the referential key of the onetomanyrecs could be wrong, if we
               // are called for example from a copy function. So just in case,
               // we reset the correct key.
@@ -1145,74 +1038,6 @@
       }
       // We never found a value, something is wrong with the filter
       return "";
-    }
-
-   /**
-    * Retrieves navigation links (prev/pagenumbers/next) and puts it
-    * on the top and the bottom of the output string
-    *
-    * @param string &$output Pointer to the output string
-    */
-    function _fetchNavigationLinks(&$output)
-    {
-      global $ATK_VARS;
-
-      // create temporary node and set the right parameters
-      $this->createDestination();
-
-      $limitArray = $this->fetchLimitArray();
-      $this->m_destInstance->m_postvars["atklimit"]     = $limitArray["limit"];
-      $this->m_destInstance->m_postvars["atkstartat"]   = $limitArray["offset"];
-      $this->m_destInstance->m_postvars["limitPostfix"] = $this->fieldName();
-      $this->m_destInstance->m_action                   = $ATK_VARS["atkaction"];
-
-      // If we build a custom loadFilter (in the load method), use this filter
-      if ($this->m_loadFilter) $destfilter=$this->m_loadFilter;
-      // If not, a destinationFilter takes precedense over all other filters
-      elseif ($this->m_destinationFilter) $destfilter = $this->m_destinationFilter;
-      // If we have a selector, we need to make sure the navigator filters on this
-      elseif ($ATK_VARS['atkselector'])
-      {
-        // if the filter is valid on the destination (highly unlikely) we just use it
-        if ($this->m_destInstance->validateFilter($ATK_VARS['atkselector']))
-        {
-          $destfilter = $ATK_VARS['atkselector'];
-        }
-        // if the filter is on the owner, we translate it back to the destination
-        else if ($this->m_ownerInstance->validateFilter($ATK_VARS['atkselector']))
-        {
-          $destfilter = $this->m_destInstance->validateFilter($this->translateSelector($ATK_VARS['atkselector']));
-        }
-        // otherwise we just don't set a filter
-      }
-
-      if ($destfilter)
-      {
-        // create a navigator and let it create the navigation links using the temporary node
-        $navigator  = &atknew("atk.utils.atknavigator");
-        $navigation = $navigator->getNavigationUrls($this->m_destInstance,"admin", $destfilter);
-        $navstr     = $navigator->buildNavigation($this->m_destInstance,"admin",$navigation, true);
-      }
-
-      // add the navigation to the top and bottom of the page
-      if ($navstr) $output = $navstr . "<br />" . $output . $navstr."<br />";
-      else return $output;
-    }
-
-    function _setRecordlistCache()
-    {
-      if (!$this->m_recordlistcache && $this->createDestination())
-      {
-        $this->m_recordlistcache = &atknew("atk.recordlist.atkrecordlistcache");
-        $this->m_recordlistcache->setNode($this->m_destInstance);
-        $postvars = $this->m_destInstance->m_postvars;
-        $postvars['atksearch'] = $this->m_ownerInstance->m_postvars['atksearch'][$this->fieldName()];
-        $postvars['atksearchmode'] = $this->m_ownerInstance->m_postvars['atksearchmode'];
-        $postvars['atkorderby'] = $this->m_ownerInstance->m_postvars['atkorderby'];
-        $this->m_recordlistcache->setPostvars($postvars);
-        $this->m_recordlistcache->addCacheIdentifier(array('key'=>"embeded"));
-      }
-      return true;
     }
 
     /**

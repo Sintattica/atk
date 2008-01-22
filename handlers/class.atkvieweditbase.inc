@@ -214,5 +214,24 @@
       
       return $tabs;
     }
+    
+    /**
+     * Attribute handler.
+     *
+     * @param string $partial full partial
+     */
+    public function partial_attribute($partial)
+    {
+      list(, $attribute, $partial) = explode('.', $partial);
+
+      $attr = $this->m_node->getAttribute($attribute);
+      if ($attr == NULL)
+      {
+        atkerror("Unknown / invalid attribute '$attribute' for node '".$this->m_node->atkNodeType()."'");
+        return '';
+      }
+
+      return $attr->partial($partial, $this->m_action);
+    }    
   }
 ?>

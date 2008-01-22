@@ -66,7 +66,7 @@
         $s_instances[$id] = &new atkColumnConfig();
         $s_instances[$id]->setNode($node);
 
-        $colcfg = $g_sessionManager->pageVar("atkcolcfg_".$id);
+        $colcfg = $g_sessionManager != null ? $g_sessionManager->pageVar("atkcolcfg_".$id) : null;
 
         if (!is_array($colcfg))
         {
@@ -86,7 +86,8 @@
 
       }
 
-      $g_sessionManager->pageVar("atkcolcfg_".$id, $s_instances[$id]->m_colcfg);
+      if ($g_sessionManager != null)
+        $g_sessionManager->pageVar("atkcolcfg_".$id, $s_instances[$id]->m_colcfg);
 
       return $s_instances[$id];
     }
