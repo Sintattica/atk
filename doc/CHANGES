@@ -91,7 +91,7 @@ Changed in ATK 6.2
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation. [Marc]
-* Improve atknavigator->getAvailableIndeces(), it now work with Oracle too.
+* Improve atknavigator->getAvailableIndeces(), it now works with Oracle too.
   [Yury]
 * Fix atkquery - select query can contains only expression too (not only
   fields). [Yury]
