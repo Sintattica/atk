@@ -25,7 +25,7 @@
      *
      * @param string $classname The name of the class PHP can't find
      */
-    function __autoload($classname)
+    function ATK_autoload($classname)
     {
       /**
        * We exempt some external libraries from autoloading because 
@@ -51,5 +51,7 @@
         } 
       }
     }
+
+    spl_autoload_register('ATK_autoload');
   }
 ?>
