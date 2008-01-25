@@ -1177,39 +1177,45 @@ class atkDataGrid
 
   /**
    * Default implementation for selecting the records for the current page.
-   * 
+   *
    * This method uses the grid node to retrieve a list of records for the
    * current page and will take the currently set filter, order by, limit
-   * etc. into account. 
+   * etc. into account.
    *
    * @return array list of records
    */
   protected function selectRecords()
   {
-    return 
+    $excludes = $this->getMode() == 'copy' ? array() :  $this->getNode()->m_listExcludes;
+    $excludes = array_merge($excludes, $this->getExcludes());
+
+    return
       $this->getNode()
            ->select()
-           ->excludes(array_merge($this->getNode()->m_listExcludes, $this->getExcludes()))      
+           ->excludes($excludes)
            ->where($this->getFilter())
            ->orderBy($this->getOrderBy())
            ->limit($this->getLimit(), $this->getOffset())
            ->mode($this->getMode())
            ->allRows();
   }
-  
+
   /**
    * Default implementation for counting the records for this grid.
-   * 
+   *
    * This method uses the grid node to retrieve a record count.
    *
    * @return unknown
    */
   protected function countRecords()
   {
+    $excludes = $this->getMode() == 'copy' ? array() :  $this->getNode()->m_listExcludes;
+    $excludes = array_merge($excludes, $this->getExcludes());
+
     return
       $this->getNode()
            ->select()
-           ->excludes(array_merge($this->getNode()->m_listExcludes, $this->getExcludes()))      
+           ->excludes($excludes)
            ->where($this->getFilter())
            ->mode($this->getMode())
            ->rowCount();
