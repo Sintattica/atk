@@ -547,6 +547,32 @@
       }
       return false;
     }
+
+    /**
+     * Build and execute CREATE VIEW query
+     *
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
+     * @param string $with_check_option - use SQL WITH CHECK OPTION
+     * @return  true  if view create successfully
+     *          false if error take place
+     */
+    function executeCreateView($name, $select, $with_check_option)
+    {
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+
+      $query = $this->buildView($name, $select, $with_check_option);
+      if ($query!="")
+      {
+        return $this->m_db->query($query);
+      }
+      else
+      {
+        atkdebug("atkddl::executeCreateView: nothing to do!");
+      }
+      return false;
+    }
+    
   }
 
 ?>
