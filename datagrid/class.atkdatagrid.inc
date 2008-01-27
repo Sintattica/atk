@@ -193,9 +193,9 @@ class atkDataGrid
    * Node filters. Only used when the select handler and count
    * handlers are not overridden.
    * 
-   * @var string
+   * @var array
    */
-  private $m_filters;
+  private $m_filters = array();
   
   /**
    * Selection mode.
