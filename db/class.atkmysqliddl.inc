@@ -77,26 +77,19 @@
       return ""; // in case we have an unsupported type.      
     }
     
-    function buildView($name, $select)
+    /**
+     * Build CREATE VIEW query
+     *
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
+     * @param string $with_check_option - use SQL WITH CHECK OPTION
+     * @return string CREATE VIEW query string
+     */
+    function buildView($name, $select, $with_check_option)
     {
-      return "CREATE VIEW $name AS ".$select;
+      return "CREATE VIEW $name AS ".$select.($with_check_option ? " WITH CHECK OPTION" : "");
     }
 
-    function executeCreateView($name, $select)
-    {
-      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
-
-      $query = $this->buildView($name, $select);
-      if ($query!="")
-      {
-        return $this->m_db->query($query);
-      }
-      else
-      {
-        atkdebug("atkddl::executeCreateView: nothing to do!");
-      }
-      return false;
-    }
    
  }
 ?>
