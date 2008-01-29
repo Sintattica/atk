@@ -1067,12 +1067,12 @@
      */
     function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
-      $searchcondition = $this->getSearchCondition($query, $table, $fieldaliasprefix, $value, $searchmode);
+      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
       if (!empty($searchcondition))
         $query->addSearchCondition($searchcondition);
     }
 
-    function getSearchCondition(&$query, $table, $fieldaliasprefix, $value, $searchmode)
+    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix)
     {
       if (!$this->createDestination()) return;
 
