@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ Adding to atkaggregatedcolumn support using relation field as searching 
+  field. [Yury]
 + Took the file error check out of the validate function so that it can be
   called statically from outside of atkfileattribute. It returns the
   corresponding error. fetchFileErrorType($_FILES[0]['error']) [Erik]
@@ -88,6 +90,9 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
+* Atkaggregatedcolumn use method label() for lebel generation. [Yury]
+* Fix parameter order in atkmanytoonerelation->getSearchCondition() - the same
+  as in other attribute/relation. [Yury]
 * Fixed fatal error on some occasions when using the update action on a node
   with a onetoone relation. [Harrie]
 * Fix use of non-numeric keys in atkOneToManyRelation. [Marc]
