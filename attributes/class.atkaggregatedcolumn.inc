@@ -75,8 +75,6 @@
       else $this->m_searchfields = $searchfields;
     }
 
-
-
     function display($record, $mode="")
 
     {
@@ -98,7 +96,7 @@
     {
       if (!$this->hasFlag(AF_HIDE_LIST) && !($this->hasFlag(AF_HIDE_SELECT) && $action == "select"))
       {
-        $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = atktext($this->fieldName(), $this->m_ownerInstance->m_type);
+        $arr["heading"][$fieldprefix.$this->fieldName()]["title"] = $this->label();
 
         if (!hasFlag($flags, RL_NO_SORT) && !$this->hasFlag(AF_NO_SORT))
         {
@@ -140,6 +138,13 @@
       }
     }
 
+    function searchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
+    {
+      $searchcondition = $this->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix='');
+      if (!empty($searchcondition))
+        $query->addSearchCondition($searchcondition);
+    }
+
     /**
      * Creates a searchcondition for the field,
      * was once part of searchCondition, however,
@@ -153,27 +158,18 @@
      *                              of the supported modes, as returned by this
      *                              attribute's getSearchModes() method.
      */
-    function getSearchCondition(&$query, $table, $value, $searchmode)
+    function getSearchCondition(&$query, $table, $value, $searchmode, $fieldaliasprefix='')
     {
-      if ($this->m_searchmode) $searchmode = $this->m_searchmode;
-
-      $func = $searchmode."Condition";
-      if (method_exists($query,$func))
+      foreach ($this->m_searchfields as $field)
       {
-        $searchconditions = array();
-        foreach ($this->m_searchfields as $field)
+        $p_attrib = &$this->m_ownerInstance->getAttribute($field);
+        
+        if(is_object($p_attrib))
         {
-          $p_attrib = $this->m_ownerInstance->m_attribList[$field];
-          $searchconditions[] = $query->$func($table.".".$p_attrib->fieldName(),$this->escapeSQL($value));
+          $searchconditions[] = $p_attrib->getSearchCondition($query, $table, $value, $searchmode, $fieldaliasprefix);
         }
-        return "(".implode(" OR ",$searchconditions).")";
       }
-      else
-      {
-
-        atkdebug("Database doesn't support searchmode '$searchmode' for ".$this->fieldName().", ignoring condition.");
-
-      }
+      return "(".implode(" OR ",$searchconditions).")";
     }
 
     function getSearchModes()
