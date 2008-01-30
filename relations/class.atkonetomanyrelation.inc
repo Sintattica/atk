@@ -113,6 +113,14 @@
     var $m_useFilterForEditLink = true;
 
     /**
+     * Function names for recordlist header/footer generation
+     *
+     * @access private
+     * @var string
+     */
+    var $m_headerName = "";
+    var $m_footerName = "";
+    /**
      * Default constructor.
      *
      * <b>Example: </b> Suppose a department has many employees. To edit the
@@ -560,7 +568,12 @@
      */
     function editHeader($record=NULL, $childrecords=NULL)
     {
-      return "";
+      if(!empty($this->m_headerName))
+      {
+        $methodname = $this->m_headerName;
+        return $this->m_ownerInstance->$methodname($record, $childrecords, $this);
+      }
+      else return "";
     }
 
     /**
@@ -578,7 +591,12 @@
      */
     function editFooter($record=NULL, $childrecords=NULL)
     {
-      return "";
+      if(!empty($this->m_footerName))
+      {
+        $methodname = $this->m_footerName;
+        return $this->m_ownerInstance->$methodname($record, $childrecords, $this);
+      }
+      else return "";
     }
 
     /**
@@ -1150,6 +1168,24 @@
       $handler->m_postvars = $this->m_ownerInstance->m_postvars;
       $handler->setDialogSaveUrl(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.edit_process'));
       $handler->handleUpdate(partial_url($this->m_ownerInstance->atkNodeType(), 'edit', 'attribute.'.$this->fieldName().'.refresh'));
+    }
+
+    /**
+     * Set header generation function name.
+     * @param String $name The header generation function name.
+     */
+    function setHeader($name)
+    {
+      $this->m_headerName = $name;
+    }
+
+    /**
+     * Set footer generation function name.
+     * @param String $name The footder generation function name.
+     */
+    function setFooter($name)
+    {
+      $this->m_footerName = $name;
     }
   }
 ?>
