@@ -463,7 +463,7 @@
             $type = (empty($error["node"]) ? $node->m_type : $error["node"]);
 
             if (count($tabs) > 1 && $error["tab"])
-              $error_tab = ' ('.atktext("error_tab").' '.'<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a> )';
+              $error_tab = ' ('.atktext("error_tab").' '.$this->getTabLink($node, $error).' )';
             else $error_tab = "";
 
             if (is_array($error['label']))
@@ -489,7 +489,16 @@
               $label = implode(", ", $label);
             }
 
-            $errors[] = array("msg"=>$error['msg'].$error_tab, "label"=>$label);
+            /* Error messages should be rendered in templates using message, label and the link to the tab. */
+            $err = array("message"=>$error['msg'], "tablink"=>$this->getTabLink($node, $error), "label"=>$label);
+            
+            /** 
+             * @deprecated: For backwards compatibility, we still support the msg variable as well. 
+             * Although the message, tablink variables should be used instead of msg and tab.
+             */
+            $err = array_merge($err, array("msg"=>$error['msg'].$error_tab));
+            
+            $errors[] = $err;            
           }
         }
         if (count($pk_err_attrib)>0) // Make primary key error message
@@ -576,6 +585,11 @@
       }
       
 	    return $result;
+    }
+    
+    function getTabLink(&$node, $error)
+    {
+      return '<a href="javascript:void(0)" onclick="showTab(\''.$error["tab"].'\'); return false;">'.$this->getTabLabel($node, $error["tab"]).'</a>';
     }
 
     /**

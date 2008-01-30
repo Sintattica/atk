@@ -242,6 +242,11 @@ Changed in ATK 6.2
 * Improved winXP theme. [Boy]
 * Added fieldprefix to atkreturnbehaviour field. [Lineke]
 * Added stacks for rejectinfo in atkactionhandler. [Lineke]
+* The display of error messages in templates can now be customized using the 
+  fields message, tablink and label. Note that the msg variable where the 
+  tab and message are concatenated still exists for backwardscompatibility 
+  with custom templates. All ATK templates now use the message, tablink and
+  label fields to display error messages. [Dennis]
 
 Changed in ATK 6.1
 ------------------

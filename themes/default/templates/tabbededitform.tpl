@@ -4,7 +4,7 @@
       <td colspan="2" class="error">
         {$errortitle}
         {foreach from=$errors item=error}
-          <br>{$error.label}: {$error.msg} {if isset($error.tab)} ({$error.tab}){/if}
+          <br>{$error.label}: {$error.message} {if isset($error.tablink)} ({atktext "error_tab"} {$error.tablink}){/if}
         {/foreach}
       </td>
     </tr>
