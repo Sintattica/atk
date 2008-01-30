@@ -42,8 +42,8 @@
       {
         $this->partial($this->m_partial);
         return;
-      }      
-      
+      }
+
       $page = &$this->getPage();
       $res = $this->renderAdminPage();
       $page->addContent($this->m_node->renderActionPage("admin", $res));
@@ -111,19 +111,19 @@
     function adminPage($actions="")
     {
       $ui = &$this->getUi();
-      
+
       $vars = array("title"=>$this->m_node->actionTitle('admin'),
                     "content"=>$this->renderAdminList());
-      
+
       if ($this->getRenderMode() == 'dialog')
       {
         $output = $ui->renderDialog($vars);
       }
-      else 
+      else
       {
         $output = $ui->renderBox($vars);
       }
-      
+
       return $output;
     }
 
@@ -139,12 +139,12 @@
 
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::create($this->getNode(), 'admin');
-      
+
       if (is_array($actions))
       {
         $grid->setDefaultActions($actions);
       }
-      
+
       if ($this->redirectToSearchAction($grid))
       {
         return '';
@@ -157,7 +157,7 @@
       $output = $this->getUi()->renderList("admin", $params);
       return $output;
     }
-    
+
     /**
      * Update the admin datagrid.
      *
@@ -167,15 +167,15 @@
     {
       atkimport('atk.datagrid.atkdatagrid');
       $grid = atkDataGrid::resume($this->getNode());
-      
+
       if ($this->redirectToSearchAction($grid))
       {
-        return '';  
+        return '';
       }
-      
-      return $grid->render();     
+
+      return $grid->render();
     }
-    
+
     /**
      * If a search action has been defined and a search only returns one result
      * the user will be automatically redirected to the search action.
@@ -187,7 +187,7 @@
     {
       $node = $this->getNode();
       $search = $grid->getPostvar('atksearch');
-      
+
       // check if we are searching and a search action has been defined
       if (!is_array($search) || count($search) == 0 || !is_array($node->m_search_action) || count($node->m_search_action) == 0)
       {
@@ -202,30 +202,30 @@
       }
 
       $records = $grid->getRecords();
-      
+
       foreach ($node->m_search_action as $action)
       {
-        if (!$node->allowed($action, $records[0])) 
+        if (!$node->allowed($action, $records[0]))
         {
           continue;
         }
 
         // reset search so we can back to the normal admin screen if we want
-        $grid->setPostvar('atksearch', array());        
-        
+        $grid->setPostvar('atksearch', array());
+
         $url = session_url(dispatch_url($node->atkNodeType(), $action, array('atkselector' => $node->primaryKey($records[0]))), SESSION_NESTED);
-        
+
         if ($grid->isUpdate())
         {
           atkimport('atk.utils.atkjson');
-          $script = 'document.location.href = '.atkJSON::encode($url).';'; 
+          $script = 'document.location.href = '.atkJSON::encode($url).';';
           $node->getPage()->register_loadscript($script);
         }
-        else 
+        else
         {
           $node->redirect($url);
         }
-        
+
         return true;
       }
 
@@ -273,7 +273,7 @@
     function getExportLink()
     {
       $link = "";
-      if ($this->m_node->allowed("view")&& $this->m_node->hasFlag(NF_EXPORT))
+      if ($this->m_node->allowed("view") && $this->m_node->allowed("export") && $this->m_node->hasFlag(NF_EXPORT))
       {
         $link.= href(dispatch_url($this->m_node->atkNodeType(), "export"), atktext("export", "atk", $this->m_node->m_type), SESSION_NESTED);
       }
@@ -331,7 +331,7 @@
       if ($exportlink!="") $links[] = $exportlink;
       return implode(" | ", $links);
     }
-    
+
     /**
      * Dialog handler.
      */
@@ -341,7 +341,7 @@
       $result = $this->renderAdminPage();
       return $this->m_node->renderActionPage("admin", $result);
     }
-    
+
     /**
      * Attribute handler.
      *
