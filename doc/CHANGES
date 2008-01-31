@@ -7,6 +7,11 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
+* Added html entities to the country definitions in atkCountryAttribute and
+  html_decode them before putting them in the array so that it should contain
+  the right character. [Erik]
++ atkCountryAttribute now includes a world shortlist that includes US+EU15 
+  [Erik]
 + Adding to atkaggregatedcolumn support using relation field as searching 
   field. [Yury]
 + Took the file error check out of the validate function so that it can be
