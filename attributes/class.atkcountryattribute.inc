@@ -34,7 +34,9 @@
                                         'LU','MC','NL','NO','PL','PT','RO','SK','SI','ES','SE','CH','TR','YU');
     var $m_benelux_countries   = array( 'NL','BE','LU');
 
-
+    
+    var $m_world_countries_shortlist = array( 'AT', 'BE', 'DK', 'FI', 'FR', 'GB', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'UK', 'US' );
+    
     var $m_world_countries     = array( 'AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
                                         'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
                                         'BG', 'BF', 'BI', 'BT', 'KH', 'CM', 'CA', 'CV', 'KY', 'CF', 'TD', 'CL', 'CN', 'CX', 'CC', 'CO',
@@ -51,6 +53,9 @@
                                         'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UM', 'UG', 'UA', 'AE', 'UK', 'US',
                                         'UY', 'UZ', 'VU', 'VA', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'YU', 'ZR', 'ZM', 'ZW');
 
+                                        
+                                        
+                                        
    var $m_defaulttocurrent=true;
 
 
@@ -122,6 +127,11 @@
         foreach($this->m_world_countries as $iso)
           $tmp_array[]=$this->getCountryOption($iso);
       }
+      elseif($switch=="world_shortlist")
+      {
+        foreach($this->m_world_countries_shortlist as $iso)
+          $tmp_array[]=$this->getCountryOption($iso);
+      }
       else
       {
         foreach($this->m_country as $iso => $value)
@@ -144,6 +154,10 @@
       {
         return $this->m_world_countries;
       }
+      elseif($switch=="world_shortlist")
+      {
+        return $this->m_world_countries_shortlist;
+      }
       else
       {
         $tmp_array=array();
@@ -160,7 +174,7 @@
 
     function fillCountriesArray()
     {
-      $this->m_country["AL"]["nl"] = "Albanië";
+      $this->m_country["AL"]["nl"] = html_entity_decode("Albani&euml;");
       $this->m_country["AL"]["de"] = "Albania";
       $this->m_country["AL"]["en"] = "Albania";
 
@@ -168,11 +182,11 @@
       $this->m_country["AT"]["de"] = "Austria";
       $this->m_country["AT"]["en"] = "Austria";
 
-      $this->m_country['BE']['nl'] = "België";
+      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;");
       $this->m_country['BE']['de'] = "Belgien";
       $this->m_country['BE']['en'] = "Belgium";
 
-      $this->m_country["BA"]["nl"] = "Bosnië-Herzegovina";
+      $this->m_country["BA"]["nl"] = html_entity_decode("Bosni&euml;-Herzegovina");
       $this->m_country["BA"]["de"] = "Bosnia-Herzegovina";
       $this->m_country["BA"]["en"] = "Bosnia-Herzegovina";
 
@@ -188,7 +202,7 @@
       $this->m_country["CY"]["de"] = "Cyprus";
       $this->m_country["CY"]["en"] = "Cyprus";
 
-      $this->m_country["CZ"]["nl"] = "Tsjechië";
+      $this->m_country["CZ"]["nl"] = html_entity_decode("Tsjechi&euml;");
       $this->m_country["CZ"]["de"] = "Czech Republic";
       $this->m_country["CZ"]["en"] = "Czech Republic";
 
@@ -216,7 +230,7 @@
       $this->m_country['FR']['de'] = "Frankreich";
       $this->m_country['FR']['en'] = "France";
 
-      $this->m_country['GB']['nl'] = "Groot-Brittannië";
+      $this->m_country['GB']['nl'] = html_entity_decode("Groot-Brittanni&euml;");
       $this->m_country['GB']['de'] = "England";
       $this->m_country['GB']['en'] = "Great Britain";
 
@@ -224,7 +238,7 @@
       $this->m_country["GR"]["de"] = "Greece";
       $this->m_country["GR"]["en"] = "Greece";
 
-      $this->m_country["HR"]["nl"] = "Kroatië";
+      $this->m_country["HR"]["nl"] = html_entity_decode("Kroati&euml;");
       $this->m_country["HR"]["de"] = "Croatia";
       $this->m_country["HR"]["en"] = "Croatia";
 
@@ -240,7 +254,7 @@
       $this->m_country['IE']['de'] = "Irland";
       $this->m_country['IE']['en'] = "Ireland";
 
-      $this->m_country['IT']['nl'] = "Italië";
+      $this->m_country['IT']['nl'] = html_entity_decode("Itali&euml;");
       $this->m_country['IT']['de'] = "Italien";
       $this->m_country['IT']['en'] = "Italy";
 
@@ -272,7 +286,7 @@
       $this->m_country["PT"]["de"] = "Portugal";
       $this->m_country["PT"]["en"] = "Portugal";
 
-      $this->m_country["RO"]["nl"] = "Roemenië";
+      $this->m_country["RO"]["nl"] = html_entity_decode("Roemeni&euml;");
       $this->m_country["RO"]["de"] = "Romania";
       $this->m_country["RO"]["en"] = "Romania";
 
@@ -280,11 +294,11 @@
       $this->m_country['SE']['de'] = "Schweden";
       $this->m_country['SE']['en'] = "Sweden";
 
-      $this->m_country["SK"]["nl"] = "Slowakijë";
+      $this->m_country["SK"]["nl"] = html_entity_decode("Slowakij&euml;");
       $this->m_country["SK"]["de"] = "Slovak Republic";
       $this->m_country["SK"]["en"] = "Slovak Republic";
 
-      $this->m_country["SI"]["nl"] = "Slovenië";
+      $this->m_country["SI"]["nl"] = html_entity_decode("Sloveni&euml;");
       $this->m_country["SI"]["de"] = "Slovenia";
       $this->m_country["SI"]["en"] = "Slovenia";
 
@@ -292,7 +306,7 @@
       $this->m_country["TR"]["de"] = "Turkey";
       $this->m_country["TR"]["en"] = "Turkey";
 
-      $this->m_country['YU']['nl'] = "Joegoslavië";
+      $this->m_country['YU']['nl'] = html_entity_decode("Joegoslavi&euml;");
       $this->m_country['YU']['de'] = "Jugoslawien";
       $this->m_country['YU']['en'] = "Yugoslavia";
     }
