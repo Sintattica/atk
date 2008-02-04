@@ -394,9 +394,9 @@
       $this->m_country["BY"]["de"] ="Belarus";
       $this->m_country["BY"]["en"] ="Belarus";
 
-      $this->m_country["BE"]["nl"] ="Belgie";
-      $this->m_country["BE"]["de"] ="Belgie";
-      $this->m_country["BE"]["en"] ="Belgie";
+      $this->m_country['BE']['nl'] = html_entity_decode("Belgi&euml;");
+      $this->m_country['BE']['de'] = "Belgien";
+      $this->m_country['BE']['en'] = "Belgium";
 
       $this->m_country["BZ"]["nl"] ="Belize";
       $this->m_country["BZ"]["de"] ="Belize";
@@ -898,9 +898,9 @@
       $this->m_country["NR"]["de"] ="Nauru";
       $this->m_country["NR"]["en"] ="Nauru";
 
-      $this->m_country["NL"]["nl"] ="Nederland";
-      $this->m_country["NL"]["de"] ="Nederland";
-      $this->m_country["NL"]["en"] ="Nederland";
+      $this->m_country['NL']['nl'] = "Nederland";
+      $this->m_country['NL']['de'] = "Die Niederlande";
+      $this->m_country['NL']['en'] = "The Netherlands";
 
       $this->m_country["AN"]["nl"] ="Nederlandse Antillen";
       $this->m_country["AN"]["de"] ="Nederlandse Antillen";
