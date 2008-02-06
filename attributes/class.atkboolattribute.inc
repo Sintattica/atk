@@ -111,7 +111,7 @@
       
       if ($this->hasFlag(AF_BOOL_INLINE_LABEL))
       {
-        $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array($this->fieldName().'_label', $this->fieldName())).'</label>';
+        $result .= '&nbsp;<label for="'.$id.'">'.$this->text(array($this->fieldName().'_label', $this->getLabel($record))).'</label>';
       }
       
       return $result;

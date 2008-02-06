@@ -195,7 +195,7 @@
       if(file_exists(getClassPath($class)) && strpos($class, "test_")!=false) $testclass = $class;
       else $testclass = $this->getTestCaseLocationForClass($class);
 
-      if ($class && file_exists(getClassPath($testclass)))
+      if ($class)
       {
         $this->_runTestCase($test,$testclass);
       }

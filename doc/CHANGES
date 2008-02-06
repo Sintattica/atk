@@ -7,12 +7,14 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-* Added html entities to the country definitions in atkCountryAttribute and
-  html_decode them before putting them in the array so that it should contain
-  the right character. [Erik]
-+ atkCountryAttribute now includes a world shortlist that includes US+EU15 
++ Added unregister_style() method to atkPage to unregister a stylesheet.
+  [Tjeerd]
++ atkBoolAttribute now uses getLabel for displaying it's label if it uses the
+  AF_BOOL_INLINE_LABEL flag. [Tjeerd]
++ atkAttribute's HTML input box now has an id attribute by default. [Tjeerd]
++ atkCountryAttribute now includes a world shortlist that includes US+EU15
   [Erik]
-+ Adding to atkaggregatedcolumn support using relation field as searching 
++ Adding to atkaggregatedcolumn support using relation field as searching
   field. [Yury]
 + Took the file error check out of the validate function so that it can be
   called statically from outside of atkfileattribute. It returns the
@@ -79,14 +81,14 @@ Changed in ATK 6.2
   applications. [Peter]
 + Added utility scripts for dumping the contents of a table to YAML and/or
   dumping the contents of an entire database to YAML files. [Peter]
-+ Adding methods for retrieving and clearing the query history in 
++ Adding methods for retrieving and clearing the query history in
   atkMockDb. [Dennis]
 + Added feature to specify which attributes you want to export. [Sandy]
 + Added manual paint feature to atkAttribute. Manually painted attributes will
-  not be rendered. If this is set to true, you are responsible for calling 
+  not be rendered. If this is set to true, you are responsible for calling
   the attribute's edit() method to paint it on screen. [Ivo, Sandy]
 + Added setText function to atkDummyAttribute to change the text. [Sandy]
-+ Added setClickableLabel to the atkRadioAttribute to turn it of 
++ Added setClickableLabel to the atkRadioAttribute to turn it of
   (default this is on). [Sandy]
 + Added validation of tags, they may not contain HTML or linefeeds. Also
   added testcase for validation. [Dennis]
@@ -95,6 +97,14 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
+* Added html entities to the country definitions in atkCountryAttribute and
+  html_decode them before putting them in the array so that it should contain
+  the right character. [Erik]
+* A test will now fail if a specified class cannot be found. [Peter]
+* Refactored atkDateAttribute a bit, so we don't need the include.php file to
+  register it's javascript. This makes the use of class.atkdateattribute.js.inc
+  deprecated. Also added a call to the onChange handler for the input field if
+  the AF_DATE_STRING flag is used. [Tjeerd,Peter]
 * Atkaggregatedcolumn use method label() for lebel generation. [Yury]
 * Fix parameter order in atkmanytoonerelation->getSearchCondition() - the same
   as in other attribute/relation. [Yury]
@@ -219,21 +229,21 @@ Changed in ATK 6.2
 * Fixed search for auto-complete atkManyToOneRelation. [Peter]
 * Fixed atkFileAttribute obligatory validation. [Peter]
 * Fixed layout of recordlists with navigation in tabbedpanes. [Dennis]
-* Function atknew now uses reflection (instead of eval) to instantiate objects 
+* Function atknew now uses reflection (instead of eval) to instantiate objects
   with arguments for the constructor. [Peter]
 * Only register global submit script for the original request. [Peter]
 * atkQuery::addJoin now uses inner joins by default, instead of forcing
   callers to specify which type of join. [Boy]
-* When a fatal application error is detected we flush 
+* When a fatal application error is detected we flush
   the output buffer (to get debugging). [Boy]
 * Removed dirty addDialogMRA functionality from atkNode and atkRecordList.
-  since it is now also possible to override the submit-handling of the 
+  since it is now also possible to override the submit-handling of the
   javascript method atkMRASubmit(). [Dennis]
 * Don't fetch meta data for atkDataNode. [Peter]
 * Fixed javascript error in atkDateAttribute when using french language. [Ivo]
 * Session name can now optionally differ from the application identifier
   by setting $config_session_name. [Peter]
-* Made atkGetUser accept 'key' parameter, allowing you to only get 
+* Made atkGetUser accept 'key' parameter, allowing you to only get
   one bit of data from the user data. [Boy]
 * Made DHTML Calendar use ATKs maxdate and mindate  to disable dates. [Boy]
 * Fixed label retrieval for error messages. [Peter]
@@ -247,9 +257,9 @@ Changed in ATK 6.2
 * Improved winXP theme. [Boy]
 * Added fieldprefix to atkreturnbehaviour field. [Lineke]
 * Added stacks for rejectinfo in atkactionhandler. [Lineke]
-* The display of error messages in templates can now be customized using the 
-  fields message, tablink and label. Note that the msg variable where the 
-  tab and message are concatenated still exists for backwardscompatibility 
+* The display of error messages in templates can now be customized using the
+  fields message, tablink and label. Note that the msg variable where the
+  tab and message are concatenated still exists for backwardscompatibility
   with custom templates. All ATK templates now use the message, tablink and
   label fields to display error messages. [Dennis]
 

@@ -757,11 +757,8 @@
       $page->register_script(atkconfig("atkroot")."atk/javascript/formfocus.js");
       $page->register_script(atkconfig("atkroot")."atk/javascript/class.atksmartsearchhandler.js");
 
-      // TODO: find some other way to pre-load required JavaScript / CSS files
-      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc&atklng=".atkLanguage::getLanguage(), SESSION_NEW));
-      $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
-      $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("language").".js");
+      useattrib('atkdateattribute');
+      atkDateAttribute::registerScriptsAndStyles();
 
       $theme = &atkinstance("atk.ui.atktheme");
       $page->register_style($theme->stylePath("atkdateattribute.css"));

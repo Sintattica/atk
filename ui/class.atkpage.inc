@@ -239,6 +239,19 @@
         $this->m_stylesheets[$file] = $media;
       }
     }
+    
+    /**
+     * Unregister a Cascading Style Sheet.
+     *
+     * @param String $file  The (relative path and) filename of the stylesheet.
+     */
+    function unregister_style($file)
+    {
+      if (array_key_exists($file, $this->m_stylesheets))
+      {
+        unset($this->m_stylesheets[$file]);
+      }
+    }
 
     /**
      * Return all stylesheet files

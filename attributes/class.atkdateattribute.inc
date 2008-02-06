@@ -44,6 +44,13 @@
    */
   class atkDateAttribute extends atkAttribute
   {
+    /**
+     * Static var to keep track if js scripts are already registered.
+     *
+     * @var bool
+     */
+    protected static $s_baseScriptsRegistered = false;
+
     var $m_date_min;
     var $m_date_max;
     var $m_date_format_edit;
@@ -315,7 +322,10 @@
       $pda = browserInfo::detectPDA();
       $yeardropdown = false;
 
-      if (!$pda) $this->_registerScripts();
+      if (!$pda)
+      {
+        self::registerScriptsAndStyles(!$this->hasFlag(AF_DATE_NO_CALENDAR));
+      }
 
       $fieldname = $fieldprefix.$this->fieldName().$postfix;
 
@@ -568,23 +578,47 @@
     }
 
     /**
-    * Registers the javascripts (and 1 stylesheet) for the atkDateAttribute
-    */
-    function _registerScripts()
+     * Registers the scripts and styles for the date attribute. Can be used
+     * to load the scripts beforehand from another location.
+     *
+     * @param boolean $useCalendar use calendar widget? (defaults to true)
+     */
+    public static function registerScriptsAndStyles($useCalendar=true)
     {
-      $page = &atkinstance('atk.ui.atkpage');
+      $page = atkinstance('atk.ui.atkpage');
 
-      /* register javascript */
-      atkimport("atk.atklanguage");
-      $page->register_script(session_url("include.php?file=atk/javascript/class.atkdateattribute.js.inc&atklng=".atkLanguage::getLanguage(), SESSION_NEW));
+      // make sure we register the script code with translations for the months etc. only once!
+      if (!self::$s_baseScriptsRegistered)
+      {
+        self::$s_baseScriptsRegistered = true;
 
-      if (!$this->hasFlag(AF_DATE_NO_CALENDAR))
+        $m_months_short   = array(1 => "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec");
+        $m_months_long    = array(1 => "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december");
+        $m_weekdays_long  = array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
+        $m_weekdays_short = array("sun", "mon", "tue", "wed", "thu", "fri", "sat");
+
+        foreach ($m_months_short   as &$m) {$m = atktext($m,"atk");}
+        foreach ($m_months_long    as &$m) {$m = atktext($m,"atk");}
+        foreach ($m_weekdays_long  as &$m) {$m = atktext($m,"atk");}
+        foreach ($m_weekdays_short as &$m) {$m = atktext($m,"atk");}
+
+        $page->register_scriptcode('
+          var m_months_long    = Array("'.implode('","',$m_months_long).'");
+          var m_months_short   = Array("'.implode('","',$m_months_short).'");
+          var m_weekdays_long  = Array("'.implode('","',$m_weekdays_long).'");
+          var m_weekdays_short = Array("'.implode('","',$m_weekdays_short).'");
+        ', true);
+
+        $page->register_script(atkconfig('atkroot').'atk/javascript/class.atkdateattribute.js');
+      }
+
+      if ($useCalendar)
       {
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/calendar-runner.js");
         $page->register_script(atkconfig("atkroot")."atk/javascript/calendar/lang/calendar-".atkconfig("language").".js");
 
-        $theme = &atkinstance("atk.ui.atktheme");
+        $theme = atkinstance("atk.ui.atktheme");
         $page->register_style($theme->stylePath("atkdateattribute.css"));
       }
     }
@@ -843,7 +877,7 @@
       {
         return null;
       }
-      
+
       // array with year / month / day
       else if (is_array($value))
       {
