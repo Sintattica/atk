@@ -403,7 +403,7 @@
     /**
      * Register styles and scripts using the bridge.
      */
-    private function registerStylesAndScripts()
+    protected function registerStylesAndScripts()
     {
       foreach ($this->m_styleSheets as $entry)
         $this->m_bridge->registerStyleSheet($entry['file'], $entry['media']);
