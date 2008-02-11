@@ -87,6 +87,8 @@ class atkDGRenderer extends atkDGComponent
    */
   protected function registerScript() 
   {
+    if ($this->getGrid()->isUpdate()) return;
+    
     atkimport('atk.utils.atkjson');
     
     $name = atkJSON::encode($this->getGrid()->getName());
