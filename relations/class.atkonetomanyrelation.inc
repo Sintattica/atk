@@ -218,9 +218,19 @@
       $this->createDestination();
       
       atkimport('atk.datagrid.atkdatagrid');
+      
       $grid = atkDataGrid::create($this->m_destInstance, null, null, $useSession);
+      $grid->setEmbedded(true);
       $grid->setMode($mode);
+      
       $grid->removeFlag(atkDataGrid::EXTENDED_SEARCH);
+      if ($mode == 'view')
+      {
+        $grid->removeFlag(atkDataGrid::MULTI_RECORD_ACTIONS);
+        $grid->removeFlag(atkDataGrid::MULTI_RECORD_PRIORITY_ACTIONS);
+        $grid->removeFlag(atkDataGrid::LOCKING);
+      }      
+      
       $grid->setBaseUrl(partial_url($this->getOwnerInstance()->atkNodeType(), $action, 'attribute.'.$this->fieldName().'.grid'));
 
       if ($mode != 'copy') // don't exclude ref key in copy mode, we use it for atkorgrec!
@@ -345,7 +355,6 @@
     public function edit($record="", $fieldprefix="", $mode='')
     {
       $grid = $this->createGrid($record, $mode, $mode);
-      $grid->setEmbedded(true);
       
       $params = array();
       if ($this->m_useFilterForEditLink && $this->m_destinationFilter != "")
