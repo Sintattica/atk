@@ -65,7 +65,7 @@
 
     function addQuery($query)
     {
-      if (atkconfig('debug') > 0)
+      if (atkconfig('debug') > 2)
       {
         $instance = &atkDebugger::getInstance();
         if (is_object($instance))
@@ -461,7 +461,7 @@
             '.$block.'
           </div>';
       }
-
+      
       return $output;
     }
 

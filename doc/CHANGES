@@ -21,7 +21,6 @@ Changed in ATK 6.2
 + Took the file error check out of the validate function so that it can be
   called statically from outside of atkfileattribute. It returns the
   corresponding error. fetchFileErrorType($_FILES[0]['error']) [Erik]
-* Fixed non static call to atkFileUtils. [Yannick]
 + Initial values are now filled as well for the destination of an
   atkOneToOnerelation during a call to initial_values. [Tjeerd,Peter]
 + Added support for image mime type validation in the atkfileattribute. [Martin]
@@ -107,6 +106,8 @@ Changed in ATK 6.2
   register it's javascript. This makes the use of class.atkdateattribute.js.inc
   deprecated. Also added a call to the onChange handler for the input field if
   the AF_DATE_STRING flag is used. [Tjeerd,Peter]
+* atkDebugger now only stores query traces if debuglevel > 2. [Tjeerd]
+* Fixed non static call to atkFileUtils. [Yannick]
 * Atkaggregatedcolumn use method label() for lebel generation. [Yury]
 * Fix parameter order in atkmanytoonerelation->getSearchCondition() - the same
   as in other attribute/relation. [Yury]
