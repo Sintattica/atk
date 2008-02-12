@@ -902,7 +902,10 @@
      */
     protected function registerStyleSheet($file, $media='all')
     {
-      $this->m_styleSheets[] = array('file' => $file, 'media' => $media);
+      if (is_object($this->m_parent))
+        $this->m_parent->registerStyleSheet($file,$media);
+      else
+        $this->m_styleSheets[] = array('file' => $file, 'media' => $media);
     }
 
     /**
@@ -912,7 +915,10 @@
      */
     protected function registerStyleCode($code)
     {
-      $this->m_styleCodes[] = array('code' => $code);
+      if (is_object($this->m_parent))
+        $this->m_parent->registerStyleCode($code);
+      else
+        $this->m_styleCodes[] = array('code' => $code);
     }
 
     /**
@@ -922,7 +928,10 @@
      */
     protected function registerScriptFile($file)
     {
-      $this->m_scriptFiles[] = array('file' => $file);
+      if (is_object($this->m_parent))
+        $this->m_parent->registerScriptFile($file);
+      else
+        $this->m_scriptFiles[] = array('file' => $file);
     }
 
     /**
@@ -932,7 +941,10 @@
      */
     protected function registerScriptCode($code)
     {
-      $this->m_scriptCodes[] = array('code' => $code);
+      if (is_object($this->m_parent))
+        $this->m_parent->registerScriptCode($code);
+      else
+        $this->m_scriptCodes[] = array('code' => $code);
     }
 
     /**

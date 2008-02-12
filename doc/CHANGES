@@ -7,6 +7,8 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ atkFrontController will now register scripts and styles in child
+  controllers after the main controller [Harrie]
 + Added unregister_style() method to atkPage to unregister a stylesheet.
   [Tjeerd]
 + atkBoolAttribute now uses getLabel for displaying it's label if it uses the
