@@ -572,6 +572,20 @@
       }
       return false;
     }
+
+    /**
+     * Build CREATE VIEW query
+     *
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
+     * @param string $with_check_option - use SQL WITH CHECK OPTION
+     * @return string CREATE VIEW query string
+     */
+    function buildView($name, $select, $with_check_option)
+    {
+      atkerror("buildView don't support by this db or by this db driver");
+      return "";
+    }
     
   }
 
