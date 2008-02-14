@@ -103,6 +103,9 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
+* Fixed a possible error situation in Smarty, which caused fatal errors on some
+  occasions. This was caused by a &nbsp; directly after an open tag, added there
+  for example by the FCK Editor. [Peter,Tjeerd]
 * In atkCountryAttribute i changed the world_countries_shortlist. 
   Germany was missing and the UK was listed twice, and canada is added now.
   [Erik]

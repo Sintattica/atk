@@ -430,6 +430,9 @@ class Smarty_Compiler extends Smarty {
         if (substr($template_tag, 0, 1) == '*' && substr($template_tag, -1) == '*')
             return '';
 
+        // PETER / TJEERD HACK: replace &nbsp; which is directly behind a funciton call
+        $template_tag = preg_replace("/^({$this->_func_regexp})&nbsp;/", "\\1 ", $template_tag);
+
         /* Split tag into two three parts: command, command modifiers and the arguments. */
         if(! preg_match('~^(?:(' . $this->_num_const_regexp . '|' . $this->_obj_call_regexp . '|' . $this->_var_regexp
                 . '|\/?' . $this->_reg_obj_regexp . '|\/?' . $this->_func_regexp . ')(' . $this->_mod_regexp . '*))
@@ -437,6 +440,7 @@ class Smarty_Compiler extends Smarty {
                     ~xs', $template_tag, $match)) {
             $this->_syntax_error("unrecognized tag: $template_tag", E_USER_ERROR, __FILE__, __LINE__);
         }
+
 
         $tag_command = $match[1];
         $tag_modifier = isset($match[2]) ? $match[2] : null;
@@ -723,9 +727,16 @@ class Smarty_Compiler extends Smarty {
         $this->_add_plugin('block', $tag_command);
 
         if ($start_tag)
+        {
             $this->_push_tag($tag_command);
+        }
         else
-            $this->_pop_tag($tag_command);
+        {
+            // PETER / TJEERD HACK, because _pop_tag doesn't kill the entire script anymore
+            // we must somehow prevent the close tag from being parsed because it can lead to
+            // parse errors (blocks of codes that get closed which were never opened etc.)
+            if ($this->_pop_tag($tag_command) === false) return true;
+        }
 
         if ($start_tag) {
             $output = '<?php ' . $this->_push_cacheable_state('block', $tag_command);
@@ -1532,23 +1543,23 @@ class Smarty_Compiler extends Smarty {
                     // PETER HACK, balance quotes and make html quotes normal quotes
                     if (substr($token, 0, 6) == "&quot;")
                       $token = substr($token, 6);
-                      
+
                     if (substr($token, -6) == "&quot;")
                       $token = substr($token, 0, -6);
-                      
+
                     if ($token{0} == '"' && $token{strlen($token) -1} != '"')
                       $token .= '"';
-                      
+
                     if ($token{0} == "'" && $token{strlen($token) -1} != "'")
                       $token .= "'";
-                      
+
                     if ($token{0} != '"' && $token{strlen($token) -1} == '"')
                       $token = '"'.$token;
-                      
+
                     if ($token{0} != "'" && $token{strlen($token) -1} == "'")
                       $token = $token."'";
 
-                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!                      
+                    // SANDY HACK, the regular expression is changed, org was: !^\w+$!
                     if (preg_match('!^((?>\w|#|/|\$)(\w|@|-|_|:|#|/|\.)*|[\'"](?>\w|#|/|\$)(\w|@|-|_|\?|&|=|:|#|/|\.|\s)*[\'"])$!', $token))
                     {
                       $attr_name = $token; // Smarty will autostrip the quotes when needed
@@ -2311,6 +2322,7 @@ class Smarty_Compiler extends Smarty {
         $message = '';
         if (count($this->_tag_stack)>0) {
             list($_open_tag, $_line_no) = array_pop($this->_tag_stack);
+
             if ($close_tag == $_open_tag) {
                 return $_open_tag;
             }
@@ -2334,8 +2346,12 @@ class Smarty_Compiler extends Smarty {
             }
             $message = " expected {/$_open_tag} (opened line $_line_no).";
         }
+
         $this->_syntax_error("mismatched tag {/$close_tag}.$message",
                              E_USER_ERROR, __FILE__, __LINE__);
+
+        // PETER / TJEERD HACK: explicitly return false, see _compile_block_tag
+        return false;
     }
 
 }
