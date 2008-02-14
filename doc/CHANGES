@@ -7,6 +7,11 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
++ atkCountryAttribute now has a new list type called "custom", this custom 
+  list can be customised by calling the new method "setList" with as parameter
+  a array of country iso codes. After setting the list you can just request
+  the custom list like you would with the "world" or "europe" list.
+  [Erik]
 + atkFrontController will now register scripts and styles in child
   controllers after the main controller [Harrie]
 + Added unregister_style() method to atkPage to unregister a stylesheet.
@@ -98,6 +103,9 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
+* In atkCountryAttribute i changed the world_countries_shortlist. 
+  Germany was missing and the UK was listed twice, and canada is added now.
+  [Erik]
 * Added html entities to the country definitions in atkCountryAttribute and
   html_decode them before putting them in the array so that it should contain
   the right character. [Erik]

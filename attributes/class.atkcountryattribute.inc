@@ -35,7 +35,7 @@
     var $m_benelux_countries   = array( 'NL','BE','LU');
 
     
-    var $m_world_countries_shortlist = array( 'AT', 'BE', 'DK', 'FI', 'FR', 'GB', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'UK', 'US' );
+    var $m_world_countries_shortlist = array( 'AT', 'BE', 'CA', 'DK', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LU', 'NL', 'PT', 'ES', 'SE', 'UK', 'US' );
     
     var $m_world_countries     = array( 'AF', 'AL', 'DZ', 'AS', 'AD', 'AO', 'AI', 'AQ', 'AG', 'AR', 'AM', 'AW', 'AU', 'AT', 'AZ',
                                         'BS', 'BH', 'BD', 'BB', 'BY', 'BE', 'BZ', 'BJ', 'BM', 'BO', 'BA', 'BW', 'BV', 'BR', 'IO', 'BN',
@@ -53,9 +53,8 @@
                                         'TH', 'TG', 'TK', 'TO', 'TT', 'TN', 'TR', 'TM', 'TC', 'TV', 'UM', 'UG', 'UA', 'AE', 'UK', 'US',
                                         'UY', 'UZ', 'VU', 'VA', 'VE', 'VN', 'VG', 'VI', 'WF', 'EH', 'YE', 'YU', 'ZR', 'ZM', 'ZW');
 
-                                        
-                                        
-                                        
+   var $m_custom_countries = array();
+   
    var $m_defaulttocurrent=true;
 
 
@@ -102,6 +101,39 @@
       $this->m_defaulttocurrent = $defaulttocurrent;
       $this->atkListAttribute($name,$optionsArray,$valueArray, $flags|AF_NO_TRANSLATION, 0);
     }
+    
+    /**
+     * With this function you can set the "custom" list with a array of country ISO codes 
+     * that are KNOWN to this class. (they should be in the world list atleast)
+     *
+     * @param array $countries  CountryIso codes, like NL BE LU etc...
+     * @return bool             It will return false when the resulting custom list is empty.
+     */
+    function setList($countries)
+    {
+      $custom_list = array();
+      foreach ($countries as $countryIso)
+      {
+        $countryIso = strtoupper($countryIso);
+        if (in_array($countryIso,$this->m_world_countries))
+        {
+          array_push($custom_list,$countryIso);
+        }
+        else 
+        {
+          atkwarning('atkCountryAttribute: setList: '.$countryIso.' is a unknown country and will be ignored');
+        }
+      }
+      
+      if (count($custom_list)==0)
+      {
+        atkerror('atkCountryAttribute: setList: empty custom country list');
+        return false;
+      }
+      
+      $this->m_custom_countries = $custom_list;
+      return true;
+    }
 
     function edit($record="",$fieldprefix="")
     {
@@ -132,6 +164,11 @@
         foreach($this->m_world_countries_shortlist as $iso)
           $tmp_array[]=$this->getCountryOption($iso);
       }
+      elseif($switch=="custom")
+      {
+        foreach($this->m_custom_countries as $iso)
+          $tmp_array[]=$this->getCountryOption($iso);
+      }
       else
       {
         foreach($this->m_country as $iso => $value)
@@ -157,6 +194,10 @@
       elseif($switch=="world_shortlist")
       {
         return $this->m_world_countries_shortlist;
+      }
+      elseif($switch=="custom")
+      {
+        return $this->m_custom_countries;
       }
       else
       {
@@ -542,9 +583,9 @@
       $this->m_country["DK"]["de"] ="Denmark";
       $this->m_country["DK"]["en"] ="Denmark";
 
-      $this->m_country["DE"]["nl"] ="Deutschland";
+      $this->m_country["DE"]["nl"] ="Duitsland";
       $this->m_country["DE"]["de"] ="Deutschland";
-      $this->m_country["DE"]["en"] ="Deutschland";
+      $this->m_country["DE"]["en"] ="Germany";
 
       $this->m_country["DJ"]["nl"] ="Djibouti";
       $this->m_country["DJ"]["de"] ="Djibouti";
