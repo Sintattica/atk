@@ -273,6 +273,8 @@ Changed in ATK 6.2
   tab and message are concatenated still exists for backwardscompatibility
   with custom templates. All ATK templates now use the message, tablink and
   label fields to display error messages. [Dennis]
+* Changes in atkcolorpickerattribute for using this attribute in a dialog. 
+  [Lineke]  
 
 Changed in ATK 6.1
 ------------------

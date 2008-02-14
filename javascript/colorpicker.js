@@ -38,9 +38,9 @@ function remoteUpdate(a, imgPrefix)
 {
   var formname = "document.entryform."+a+".value";
   var color    = eval(formname);
-  var formname = "opener.document.entryform."+a+".value='"+color+"'";
+  var formname = "opener.document.getElementById('"+a+"').value='"+color+"'";
   var example  = opener.document.getElementById("example_"+a);
-  var img      = eval("opener.document.entryform.img_"+a);
+  var img      = eval("opener.document.getElementById('img_"+a+"')");
 
   if (color != "")
   {
