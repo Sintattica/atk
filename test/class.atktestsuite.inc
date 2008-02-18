@@ -228,7 +228,10 @@
         else
         {
           $testDb->toggleForeignKeys(false);
-          $testDb->deleteAll();
+          
+          if ($config['default']['db'] == $config[$test]['db']) atkerror("atkTestSuite::_setupTestDatabases() | testdatabase equals default database: '{$config['default']['db']}'! Database will not be emptied");
+          else $testDb->deleteAll();           
+
           $testDb->commit();
           $testDb->toggleForeignKeys(true);          
         }
