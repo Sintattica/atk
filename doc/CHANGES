@@ -278,6 +278,7 @@ Changed in ATK 6.2
   label fields to display error messages. [Dennis]
 * Changes in atkcolorpickerattribute for using this attribute in a dialog. 
   [Lineke]  
+* Do not empty testdatabase when its name equals the default database [Jeroen]
 
 Changed in ATK 6.1
 ------------------
