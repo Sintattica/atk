@@ -49,6 +49,7 @@
       $modcols = $cols-1;
       $this->createDestination();
       $this->createLink();
+      $result = "";
 
       $selectedPk = $this->getSelectedRecords($record);
 
@@ -59,7 +60,7 @@
         $page = &atkPage::getInstance();
         $page->register_script(atkconfig("atkroot")."atk/javascript/class.atkprofileattribute.js.php");
   
-        $result ='<div align="left"><font size="-2">
+        $result .='<div align="left"><font size="-2">
                   [<a href="javascript:void(0)" onclick="profile_checkAll(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
                        atktext("check_all", "atk").
                   '</a> <a href="javascript:void(0)" onclick="profile_checkNone(\''.$this->getHtmlId($fieldprefix).'\'); return false;">'.
@@ -108,7 +109,7 @@
       {
         $nodename = $this->m_destInstance->m_type;
         $modulename = $this->m_destInstance->m_module;;
-        return atktext('select_none', $modulename, $nodename);
+        $result .= atktext('select_none', $modulename, $nodename)." ";
       }
       // Add the add link if AF_MANYBOOL_AUTOLINK used
       if (($this->hasFlag(AF_MANYBOOL_AUTOLINK)) && ($this->m_destInstance->allowed("add")))
