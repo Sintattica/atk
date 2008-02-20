@@ -121,7 +121,8 @@
           $this->m_colcfg[$this->m_node->m_attribIndexList[$i]["name"]] = array();
         }
       }
-      if($this->m_node->getOrder()<>"") $this->_addOrderByStatement($this->m_node->getOrder());
+
+      if($this->m_node->getOrder() != "") $this->_addOrderByStatement($this->m_node->getOrder());
     }
 
     function hideCol($attribute)
@@ -153,7 +154,7 @@
 
     function addOrderByField($field, $direction, $extra="", $sortorder=NULL)
     {
-      if ($this->getMinSort()<=1)
+      if (is_null($sortorder) && $this->getMinSort()<=1)
       {
         foreach($this->m_colcfg as $fld=>$config)
         {
@@ -163,10 +164,10 @@
           }
         }
       }
+
       $this->m_colcfg[$field]["sortorder"] = $sortorder === NULL ? 1 : $sortorder;
       $this->m_colcfg[$field]["direction"] = $direction;
       $this->m_colcfg[$field]["extra"] = $extra;
-
     }
 
     function flatten()
@@ -235,11 +236,11 @@
     {
       return "atkcolcmd[][$command]=".$attribute;
     }
-    
+
     function getUrlCommandParams($attribute, $command)
     {
       return array("atkcolcmd[][$command]" => $attribute);
-    }    
+    }
 
     function doUrlCommand($cmd)
     {
@@ -398,7 +399,7 @@
     function _addOrderByStatement($orderby)
     {
       if (strpos($orderby, '(') !== false) return; // can't do anything with complex order by's
-      
+
       $elems = explode(" ", $orderby);
       $lastattr="";
       $i = 0;
@@ -410,7 +411,7 @@
 
         if(strpos($elem,".")!==false)
           list($part1, $part2) = explode(".", $elem, 2);
-          
+
         if (isset($this->m_node->m_attribList[$elem]))
         {
           // attribute reference
@@ -427,7 +428,7 @@
         {
           // attribute reference
           $lastattr=$part2;
-          $this->addOrderByField($part2, "asc", "", ++$i);          
+          $this->addOrderByField($part2, "asc", "", ++$i);
         }
         else if (strtolower($elem)=="asc"||strtolower($elem)=="desc")
         {

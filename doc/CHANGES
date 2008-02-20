@@ -7,7 +7,7 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.2
 ------------------
-+ atkCountryAttribute now has a new list type called "custom", this custom 
++ atkCountryAttribute now has a new list type called "custom", this custom
   list can be customised by calling the new method "setList" with as parameter
   a array of country iso codes. After setting the list you can just request
   the custom list like you would with the "world" or "europe" list.
@@ -103,10 +103,12 @@ Changed in ATK 6.2
   browsing through records without page reloads. [Peter]
 + Added atkTextAttribute::setWrapMode to specify the wrap mode for
   the textarea (by default "soft"). [Peter]
+* Fixed issue with ordering in recordlist when multiple ordercolumns were
+  specified. [Tjeerd]
 * Fixed a possible error situation in Smarty, which caused fatal errors on some
   occasions. This was caused by a &nbsp; directly after an open tag, added there
   for example by the FCK Editor. [Peter,Tjeerd]
-* In atkCountryAttribute i changed the world_countries_shortlist. 
+* In atkCountryAttribute i changed the world_countries_shortlist.
   Germany was missing and the UK was listed twice, and canada is added now.
   [Erik]
 * Added html entities to the country definitions in atkCountryAttribute and
@@ -276,8 +278,8 @@ Changed in ATK 6.2
   tab and message are concatenated still exists for backwardscompatibility
   with custom templates. All ATK templates now use the message, tablink and
   label fields to display error messages. [Dennis]
-* Changes in atkcolorpickerattribute for using this attribute in a dialog. 
-  [Lineke]  
+* Changes in atkcolorpickerattribute for using this attribute in a dialog.
+  [Lineke]
 * Do not empty testdatabase when its name equals the default database [Jeroen]
 
 Changed in ATK 6.1
