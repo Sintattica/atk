@@ -3298,17 +3298,25 @@
     * @param string attribname name of the attribute
     * @param array list of exclueded attribs
     * @param array list of inclueded attribs
+    * @param string the action for which the selectDb is called
     * @return bool true in case the attribute needs to be in the select
     */
-    function isAllowedQueryList($attribname,$excludeList="",$includeList="")
+    function isAllowedQueryList($attribname,$excludeList="",$includeList="", $mode = "")
     {
-      return (
-                 in_array($attribname, $this->m_primaryKey)
-              || ((is_array($includeList) && in_array($attribname,$includeList))
+      if($mode == "export")
+      {
+        return (((is_array($includeList) && in_array($attribname,$includeList))
               || (is_array($excludeList) && !in_array($attribname,$excludeList)))
-              || (!is_array($excludeList) && !is_array($includeList))
-              || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
-            );
+              || (!is_array($excludeList) && !is_array($includeList)));
+      } else {
+        return (
+                   in_array($attribname, $this->m_primaryKey)
+                || ((is_array($includeList) && in_array($attribname,$includeList))
+                || (is_array($excludeList) && !in_array($attribname,$excludeList)))
+                || (!is_array($excludeList) && !is_array($includeList))
+                || ($this->m_attribList[$attribname]->hasFlag(AF_FORCE_LOAD))
+              );  
+      }
     }
 
     /**
@@ -3817,17 +3825,21 @@
         foreach (array_keys($this->m_attribList) as $attribname)
         {
           $p_attrib = &$this->m_attribList[$attribname];
-          if(in_array($attribname, $cpylist))
+          
+          if ($this->isAllowedQueryList($attribname,$excludeList,$includeList,$mode))
           {
-            $therecord[$attribname] = $recordcopy[$attribname];
-          }
-          else if ($p_attrib)
-          {
-            $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
-          }
-          else
-          {
-            atkerror("Attribute with name: $attribname and node: ".$this->m_type." is empty in attributelist or does not support db2value method");
+            if(in_array($attribname, $cpylist))
+            {
+              $therecord[$attribname] = $recordcopy[$attribname];
+            }
+            else if ($p_attrib)
+            {
+              $therecord[$attribname] = $p_attrib->db2value($dbrecords[$i]);
+            }
+            else
+            {
+              atkerror("Attribute with name: $attribname and node: ".$this->m_type." is empty in attributelist or does not support db2value method");
+            }
           }
         }
 
