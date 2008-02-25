@@ -47,6 +47,7 @@
     */
    function export($data, $fileName, $type, $ext, $compression="")
    {
+    ob_end_clean();
     if($compression=="bzip")
     {
       $mime_type='application/x-bzip';
@@ -110,6 +111,8 @@
     {
       echo $data;
     }
+    
+    flush();
 
     exit;
    }
