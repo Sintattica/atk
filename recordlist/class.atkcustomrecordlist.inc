@@ -89,7 +89,7 @@
         {
           $p_attrib = &$this->m_node->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-          if (!$this->hasHideFlag($p_attrib) && !$musthide)
+          if (!$this->isHidden($p_attrib) && !$musthide)
           {
             $output.=$sof.$this->eolreplace(atktext($p_attrib->fieldName(), $this->m_node->m_module, $this->m_node->m_type), $rfeplace).$eof.$fsep;
 
@@ -113,7 +113,7 @@
           $p_attrib = &$this->m_node->m_attribList[$attribname];
           $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
           
-          if (!$this->hasHideFlag($p_attrib) && !$musthide)
+          if (!$this->isHidden($p_attrib) && !$musthide)
           {
             // An <attributename>_display function may be provided in a derived
             // class to display an attribute.
@@ -153,7 +153,7 @@
         {
           $p_attrib = &$this->m_node->m_attribList[$attribname];
         $musthide=(is_array($suppressList)&&count($suppressList)>0&&in_array($attribname,$suppressList));
-          if (!$this->hasHideFlag($p_attrib) && !$musthide)
+          if (!$this->isHidden(($p_attrib) && !$musthide)
           {
             if ($p_attrib->hasFlag(AF_TOTAL))
             {
@@ -198,7 +198,7 @@
       }
     }
     
-    protected function hasHideFlag(atkAttribute $attribute)
+    protected function isHidden(atkAttribute $attribute)
     {
       if ($attribute->hasFlag(AF_HIDE)) return true;
       if ($attribute->hasFlag(AF_HIDE_SELECT) && $this->m_node->m_action==='select') return true;
