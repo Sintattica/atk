@@ -287,9 +287,10 @@ class atkDataGrid
    * @param atkNode $node       node
    * @param string  $name       name (will be auto-generated if left empty)
    * @param string  $class      class (by default the atkDataGrid class)
+   * @param boolean $isEmbedded is embedded?
    * @param boolean $useSession use session
    */
-  public static function create($node, $name=null, $class=null, $useSession=true)
+  public static function create($node, $name=null, $class=null, $isEmbedded=false, $useSession=true)
   {
     $useSession = $useSession && atkGetSessionManager() != null;
     $name = $name == null ? uniqid('atkdatagrid') : $name;
@@ -300,7 +301,7 @@ class atkDataGrid
       atkGetSessionManager()->pageVar('atkdgsession', $sessions);
     atkimport($class);
     $class = substr($class, strrpos($class, '.') + 1);
-    return new $class($node, $name, self::CREATE, $useSession);
+    return new $class($node, $name, self::CREATE, $isEmbedded, $useSession);
   }
 
   /**
@@ -329,26 +330,36 @@ class atkDataGrid
    * @param string  $name       datagrid name
    * @param atkNode $node       datagrid node
    * @param int     $mode       creation mode
+   * @param boolean $isEmbedded is embedded?
    * @param boolean $useSession use session?
    */
-  protected function __construct($node, $name, $mode=self::CREATE, $useSession=true)
+  protected function __construct($node, $name, $mode=self::CREATE, $isEmbedded=false, $useSession=true)
   {
     $this->setName($name);
     $this->setNode($node);
     $this->setActionNode($this->getNode());
-
+    $this->setEmbedded($isEmbedded);
+    
     $this->m_useSession = $useSession;
     $this->m_sessionMgr = $useSession ? atkGetSessionManager() : null;
 
     $this->registerGlobalOverrides();
     $this->setUpdate($mode == self::RESUME);
 
-    $allVars = $node->m_postvars == null || count($node->m_postvars) == 0 ? $GLOBALS['ATK_VARS'] : $node->m_postvars;
-    $vars = @$allVars['atkdg'][$name];
+    if (!$this->isEmbedded() && empty($node->m_postvars))
+    {
+      $allVars = $GLOBALS['ATK_VARS'];
+    }
+    else 
+    {
+      $allVars = (array)$node->m_postvars;
+    }
+    
+    $vars = @$GLOBALS['ATK_VARS']['atkdg'][$name];
 
     $vars = !is_array($vars) ? array() : $vars;
     $this->setPostvars(array_merge($allVars, $vars));
-
+    
     $this->loadSession();
 
     if ($mode == self::RESUME)
@@ -447,6 +458,8 @@ class atkDataGrid
    */
   protected function registerGlobalOverrides()
   {
+    if ($this->isEmbedded()) return;  
+    
     $request = array_merge($_GET, $_POST);
     atkDataDecode($request);
 
