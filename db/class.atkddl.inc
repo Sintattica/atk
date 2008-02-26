@@ -586,6 +586,43 @@
       atkerror("buildView don't support by this db or by this db driver");
       return "";
     }
+
+    /**
+     * Build and execute DROP VIEW query
+     *
+     * @param string $name - name of view
+     * @param string $select - SQL SELECT statement
+     * @param string $with_check_option - use SQL WITH CHECK OPTION
+     * @return  true  if view create successfully
+     *          false if error take place
+     */
+    function executeDropView($name)
+    {
+      if (!isset($this->m_db)) $this->m_db = &atkGetDb();
+
+      $query = $this->dropView($name);
+      if ($query!="")
+      {
+        return $this->m_db->query($query);
+      }
+      else
+      {
+        atkdebug("atkddl::executeDropView: nothing to do!");
+      }
+      return false;
+    }
+
+    /**
+     * Build DROP VIEW query
+     *
+     * @param string $name - name of view
+     * @return string CREATE VIEW query string
+     */
+    function dropView($name)
+    {
+      atkerror("dropView don't support by this db or by this db driver");
+      return "";
+    }
     
   }
 
