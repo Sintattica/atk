@@ -2035,8 +2035,12 @@
      */
     function storageType($mode = null)
     {
+      // Mode specific storage type.
       if (isset($this->m_storageType[$mode]) && $this->m_storageType[$mode] !== null)
         return $this->m_storageType[$mode];
+      // Global storage type (key null is special!)
+      else if (isset($this->m_storageType[null]) && $this->m_storageType[null] !== null)
+        return $this->m_storageType[null];        
       // Default backwardscompatible behaviour:
       else if (method_exists($this,"store"))
         return POSTSTORE;

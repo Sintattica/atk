@@ -126,7 +126,6 @@
     function edit($record="", $fieldprefix="")
     {
       $values = $this->getValues($record);
-      atk_var_dump($record,'EDIT RECORD');
       
       $total_items = count($values);
       if($this->m_cols && !$this->hasFlag(AF_DISPLAY_VERT))
