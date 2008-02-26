@@ -90,6 +90,16 @@
       return "CREATE VIEW $name AS ".$select.($with_check_option ? " WITH CHECK OPTION" : "");
     }
 
+    /**
+     * Build DROP VIEW query
+     *
+     * @param string $name - name of view
+     * @return string CREATE VIEW query string
+     */
+    function dropView($name)
+    {
+      return "DROP VIEW $name";
+    }
    
  }
 ?>
