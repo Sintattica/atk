@@ -597,15 +597,23 @@
         $node = getNodeType($stack[$i]["atknodetype"]);
         $title = $ui->title($mod, $node, $stack[$i]["atkaction"]);
         $descriptor = atkArrayNvl($stack[$i], "descriptor", "");
+        $action = text($stack[$i]["atkaction"],$node,$mod);        
+        
         if ($i<count($stack)-1)
         {
           $res[]=array("url"=>session_url(getDispatchFile().'?atklevel='.$i),
                        "title"=>$title,
-                       "descriptor"=>$descriptor);
+                       "descriptor"=>$descriptor,
+                       "node"=>$node,
+                       "action"=>$action);
         }
         else
         {
-          $res[]=array("url"=>"", "title"=>$title, "descriptor"=>$descriptor);
+          $res[]=array("url"=>"", 
+                       "title"=>$title, 
+                       "descriptor"=>$descriptor,
+                       "node"=>$node,
+                       "action"=>$action);
         }
       }
 
