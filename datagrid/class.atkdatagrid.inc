@@ -339,7 +339,7 @@ class atkDataGrid
     $this->setNode($node);
     $this->setActionNode($this->getNode());
     $this->setEmbedded($isEmbedded);
-    
+
     $this->m_useSession = $useSession;
     $this->m_sessionMgr = $useSession ? atkGetSessionManager() : null;
 
@@ -350,16 +350,16 @@ class atkDataGrid
     {
       $allVars = $GLOBALS['ATK_VARS'];
     }
-    else 
+    else
     {
       $allVars = (array)$node->m_postvars;
     }
-    
+
     $vars = @$GLOBALS['ATK_VARS']['atkdg'][$name];
 
     $vars = !is_array($vars) ? array() : $vars;
     $this->setPostvars(array_merge($allVars, $vars));
-    
+
     $this->loadSession();
 
     if ($mode == self::RESUME)
@@ -458,8 +458,8 @@ class atkDataGrid
    */
   protected function registerGlobalOverrides()
   {
-    if ($this->isEmbedded()) return;  
-    
+    if ($this->isEmbedded()) return;
+
     $request = array_merge($_GET, $_POST);
     atkDataDecode($request);
 
@@ -993,7 +993,8 @@ class atkDataGrid
    */
   public function addFilter($filter)
   {
-    $this->m_filters[] = $filter;
+    if (!empty($filter))
+      $this->m_filters[] = $filter;
   }
 
   /**
@@ -1199,8 +1200,15 @@ class atkDataGrid
    */
   protected function selectRecords()
   {
-    $excludes = $this->getMode() == 'copy' ? array() :  $this->getNode()->m_listExcludes;
-    $excludes = array_merge($excludes, $this->getExcludes());
+    $excludes = array();
+
+    // Ignore excludes for copy or if we don't now which mode we are in
+    $mode = $this->getMode();
+    if ($mode != "copy" && !empty($mode))
+    {
+      $excludes = $this->getNode()->m_listExcludes;
+      $excludes = array_merge($excludes, $this->getExcludes());
+    }
 
     return
       $this->getNode()

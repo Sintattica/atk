@@ -7,8 +7,9 @@ Please do not exceed 80 characters per line.
 
 Changed in ATK 6.3
 ------------------
-+ Added node, nodetitle, action and actiontitle as separate entries to 
++ Added node, nodetitle, action and actiontitle as separate entries to
   the stack-trace array. (Achievo Bug 942) [Peter]
+* Fixed issue with copying records. [Tjeerd]
 
 Changed in ATK 6.2
 ------------------
