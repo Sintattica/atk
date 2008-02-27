@@ -36,7 +36,8 @@
      * Setup the testcase.
      */
     function setup()
-    {          
+    {        
+      parent::setUp();   
     }
     
     /**
