@@ -13,6 +13,7 @@ class test_atkCalculatorAttribute extends atkTestCase
    */
   function setup()
   {              
+    parent::setUp(); 
     useattrib('atkcalculatorattribute');
     $this->m_node = new atkNode();
     $this->m_attr = &$this->m_node->add(new atkCalculatorAttribute("total", ""));
