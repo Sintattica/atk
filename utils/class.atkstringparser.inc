@@ -54,9 +54,20 @@
         $databin = $data;
         for($j=0;$j<count($elements);$j++)
         {
-          if (is_array($databin) && !array_key_exists($elements[$j],$databin)) $databin[$elements[$j]]='';
-          $value = $databin[$elements[$j]];
-          $databin = $databin[$elements[$j]];
+          if (is_array($databin) || $databin instanceof ArrayAccess)
+          {
+            if (@!isset($databin[$elements[$j]]))
+            {
+              atknotice("atkStringparser({$this->m_string})->parse(): Attempting to get element '{$elements[$j]}', but ".$elements[$j-1]." is not an array!");
+              $databin[$elements[$j]] = '';
+              $value = '';
+            }
+            else
+            {
+              $value = $databin[$elements[$j]];
+              $databin = $databin[$elements[$j]];
+            }
+          }
         }
         if ($encode)
         {

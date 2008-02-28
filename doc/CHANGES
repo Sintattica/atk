@@ -9,6 +9,8 @@ Changed in ATK 6.3
 ------------------
 + Added node, nodetitle, action and actiontitle as separate entries to
   the stack-trace array. (Achievo Bug 942) [Peter]
++ Added support for objects tat implement the ArrayAccess interface in
+  atkStringParser and don't threat strings as an array anymore. [Peter]
 * Fixed issue with copying records. [Tjeerd]
 
 Changed in ATK 6.2
