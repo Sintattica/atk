@@ -81,7 +81,36 @@
      */
     function setDestinationFilter($filter)
     {
-      $this->m_destinationFilter = $filter;
+      $this->m_destinationFilter = $this->_cleanupDestinationFilter($filter);
+    }
+
+    /**
+     * Remove redundant (more than 1 subsequently) spaces from the filter string.
+     *
+     * This prevents the filter from rapidly becoming too long to be passed in the URL if
+     * enters are used in code to make the filter readable.
+     *
+     * @param string $filter
+     * @return string
+     */
+    function _cleanupDestinationFilter($filter)
+    {
+      for ($i = 0; $i < strlen($filter); $i++)
+      {
+        $currentChar = $filter[$i];
+        // spaces are never removed if they are enclosed by quotes:
+        if ((($currentChar == "'" || $currentChar == '"') && !$withinQuotes) || ($withinQuotes && $currentChar == $quoteChar))
+        {
+          $withinQuotes = !$withinQuotes;
+          $quoteChar = !$withinQuotes ? $currentChar : '';
+        }
+        if (($currentChar !== ' ' || $lastChar !== ' ') || $withinQuotes)
+        {
+          $result .= $currentChar;
+        }
+        $lastChar = $currentChar;
+      }
+      return $result;
     }
 
     /**
@@ -90,6 +119,7 @@
      */
     function addDestinationFilter($filter)
     {
+      $filter = $this->_cleanupDestinationFilter($filter);
       if($this->m_destinationFilter != "")
         $this->m_destinationFilter = "({$this->m_destinationFilter}) AND ({$filter})";
       else
