@@ -95,24 +95,37 @@
      */
     function _cleanupDestinationFilter($filter)
     {
-      for ($i = 0; $i < strlen($filter); $i++)
+      $result = '';
+      $filter_length = strlen($filter);
+      $quotes = array("'",'"','`');
+      $quoteStack = array();
+      $lastChar = '';
+      
+      for ($i = 0; $i < $filter_length; $i++)
       {
         $currentChar = $filter[$i];
-        // spaces are never removed if they are enclosed by quotes:
-        if ((($currentChar == "'" || $currentChar == '"') && !$withinQuotes) || ($withinQuotes && $currentChar == $quoteChar))
+        
+        if(in_array($currentChar,$quotes))
         {
-          $withinQuotes = !$withinQuotes;
-          $quoteChar = !$withinQuotes ? $currentChar : '';
+          if(sizeof($quoteStack) > 0 && $currentChar == $quoteStack[sizeof($quoteStack) - 1])
+          {
+            array_pop($quoteStack);
+          } 
+          else
+          {
+            array_push($quoteStack,$currentChar);
+          }
         }
-        if (($currentChar !== ' ' || $lastChar !== ' ') || $withinQuotes)
+        
+        // not between quotes
+        if(!($currentChar === ' ' && $lastChar === ' ' && sizeof($quoteStack) == 0))
         {
-          $result .= $currentChar;
+          if($currentChar != "\n") $result .= $currentChar;
         }
         $lastChar = $currentChar;
       }
-      return $result;
+      return $result;      
     }
-
     /**
      * Adds a filter value to the destination filter.
      * @param String $filter Filter to be added to the destination filter.

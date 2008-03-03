@@ -12,7 +12,7 @@ class test_atkRelation extends atkTestCase
    */
   public function test_filter_cleanup()
   {
-    // Test a normal string with extra spaces between quotes
+     // Test a normal string with extra spaces between quotes
     $testFilter     = 'SELECT foo FROM bar WHERE foo = "  1  "';
     $expectedResult = $testFilter;
     $attr = new atkRelation('test', '');
@@ -24,7 +24,7 @@ class test_atkRelation extends atkTestCase
     $testFilter     = 'SELECT foo
                        FROM bar
                        WHERE     foo = "  1  "';
-    $expectedResult = "SELECT foo\n FROM bar\n WHERE foo = \"  1  \"";
+    $expectedResult = "SELECT foo FROM bar WHERE foo = \"  1  \"";
     $attr = new atkRelation('test2', '');
     $attr->setDestinationFilter($testFilter);
     $result = $attr->getDestinationFilter();
@@ -34,11 +34,26 @@ class test_atkRelation extends atkTestCase
     $testFilter     = "SELECT foo
                        FROM bar
                        WHERE foo = 'v  a  l  u  e'";
-    $expectedResult = "SELECT foo\n FROM bar\n WHERE foo = 'v  a  l  u  e'";
+    $expectedResult = "SELECT foo FROM bar WHERE foo = 'v  a  l  u  e'";
     $attr = new atkRelation('test2', '');
     $attr->setDestinationFilter($testFilter);
     $result = $attr->getDestinationFilter();
     $this->assertEqual($result, $expectedResult, 'Filter with need for cleanup');
+    
+        
+    $testFilter = "person.id != '[id]' AND
+                    EXISTS( SELECT 1
+                             FROM `participation` p
+                            JOIN corps_participation cp on p.corps_participation_id = cp.id
+                            WHERE p.person_id = person.id
+                             AND cp.participation_type_id = '      3')";
+    
+    $expectedResult = "person.id != '[id]' AND EXISTS( SELECT 1 FROM `participation` p JOIN corps_participation cp on p.corps_participation_id = cp.id WHERE p.person_id = person.id AND cp.participation_type_id = '      3')";
+    $attr = new atkRelation('test2', '');
+    $attr->setDestinationFilter($testFilter);
+    $result = $attr->getDestinationFilter();
+    
+    $this->assertEqual($result, $expectedResult, 'Filter with multiple quoting');
 
    }
 }
