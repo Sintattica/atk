@@ -35,6 +35,7 @@
       static $s_instance = NULL;
       if ($s_instance==NULL)
       {
+        if (!atkGetSessionManager()) atkwarning("Instantiating debugger without sessionmanager, debugger will not do anything until session is started. Also, the debugging info already in the session will not be cleaned, this could lead to monster sessions over time!");
         $s_instance = new atkDebugger();
       }
       return $s_instance;
@@ -55,10 +56,13 @@
 
     function addStatement($txt)
     {
-      $instance = &atkDebugger::getInstance();
-      if (is_object($instance))
+      if (atkGetSessionManager())
       {
-        return $instance->_addStatement($txt);
+        $instance = &atkDebugger::getInstance();
+        if (is_object($instance))
+        {
+          return $instance->_addStatement($txt);
+        }
       }
       return false;
     }
@@ -67,18 +71,21 @@
     {
       if (atkconfig('debug') > 2)
       {
-        $instance = &atkDebugger::getInstance();
-        if (is_object($instance))
+        if (atkGetSessionManager())
         {
-          return $instance->_addQuery($query);
+          $instance = &atkDebugger::getInstance();
+          if (is_object($instance))
+          {
+            return $instance->_addQuery($query);
+          }
         }
-        return false;
       }
-      else 
+      else
       {
         atkdebug($query);
         return true;
       }
+      return false;
     }
 
     function _addStatement($txt)
@@ -271,10 +278,10 @@
         $stackId = atkStackId();
       }
 
-      global $g_sessionManager;
-      if (is_object($g_sessionManager))
+      $sessionmanager = atkGetSessionManager();
+      if (is_object($sessionmanager))
       {
-        $session = &$g_sessionManager->getSession();
+        $session = &$sessionmanager->getSession();
         if ($clean) $session['debugger'] = array();
         $var= &$session["debugger"][$stackId];
         return $var;
@@ -461,7 +468,7 @@
             '.$block.'
           </div>';
       }
-      
+
       return $output;
     }
 

@@ -484,6 +484,8 @@
 
           echo $this->m_result;
 
+          echo atkDebugger::getInstance()->renderDebugAndErrorMessages();
+
           die;
         }
       }
@@ -1058,15 +1060,15 @@
     }
 
     /**
-     * Render template.
+     * Transform the template to use to a filename
      *
-     * @param string $template template name
-     * @param array $vars template variables
-     * @param boolean $partial render partial?
+     * @example getFileForTemplate('tekno'): module/controller/tekno.tpl
      *
-     * @return string rendered template
+     * @param string $template
+     * @param bool   $partial
+     * @return string Filename for the template
      */
-    protected function _render($template, $vars, $partial)
+    protected function getFileForTemplate($template, $vars, $partial=false)
     {
       if ($template{0} != '/')
       {
@@ -1078,7 +1080,21 @@
         $template = implode('/', array_slice($parts, 0, count($parts) - 1)).'/'.($partial ? '_' : '').$parts[count($parts) - 1];
       }
 
-      $template = "{$template}.tpl";
+      return "{$template}.tpl";
+    }
+
+    /**
+     * Render template.
+     *
+     * @param string $template template name
+     * @param array $vars template variables
+     * @param boolean $partial render partial?
+     *
+     * @return string rendered template
+     */
+    protected function _render($template, $vars, $partial)
+    {
+      $template = $this->getFileForTemplate($template, $vars, $partial);
 
       /* @var $smarty Smarty */
       $smarty = atkinstance('atk.ui.atksmarty');

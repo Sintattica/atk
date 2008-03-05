@@ -126,18 +126,18 @@
       {
         return null;
       }
-      
+
       $myrecord = $record[$this->fieldName()];
 
       if ($this->createDestination() && is_array($myrecord))
       {
         $result = $this->m_destInstance->descriptor($myrecord);
       }
-      else 
+      else
       {
         $result = $this->text('none');
       }
-      
+
       return $result;
     }
 
@@ -523,7 +523,7 @@
         }
       }
     }
-    
+
     /**
      * Needs update?
      *
@@ -532,9 +532,9 @@
      */
     function needsUpdate($record)
     {
-      return $this->m_forceupdate || 
-             (parent::needsUpdate($record) && 
-              $this->createDestination() && 
+      return $this->m_forceupdate ||
+             (parent::needsUpdate($record) &&
+              $this->createDestination() &&
               !$this->m_destInstance->hasFlag(NF_READONLY));
     }
 
@@ -707,11 +707,11 @@
             $attrNames = $this->m_destInstance->getAttributeNames();
             foreach ($attrNames as $attrName)
             {
-              $attr = &$this->m_destInstance->getAttribute($attrName);  
+              $attr = &$this->m_destInstance->getAttribute($attrName);
               $attr->addFlag(AF_READONLY);
             }
-          }             
-          
+          }
+
           /* we first check if the record doesn't already exist */
           if (isset($defaults[$this->fieldName()]) && !empty($defaults[$this->fieldName()]))
           {
@@ -764,28 +764,33 @@
            * same name as the relation we don't display a label
            * TODO FIXME
            */
+          if(!is_array($arr['fields'])) $arr['fields']=array();
           if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
           {
             /* separator and name */
-            $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
-            $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+            if ($arr['fields'][count($arr['fields'])-1]['html']!=='-') $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
+            $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
           }
-          if(!is_array($arr['fields'])) $arr['fields']=array();
           if (is_array($a["fields"]))
           {
-
             $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
           }
 
           if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
           {
             /* separator */
-            $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+            $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
+          }
+
+          $fields = $arr['fields'];
+          foreach ($fields as &$field)
+          {
+            $field['attribute']='';
           }
         }
       }
     }
-    
+
     /**
      * Adds the attribute's view / hide HTML code to the view array.
      *
@@ -801,7 +806,7 @@
     function addToViewArray($mode, &$arr, &$defaults)
     {
       if ($this->hasFlag(AF_HIDE_VIEW)) return;
-      
+
       /* we first check if there is no display override method, if there
        * is this method has the same behaviour as the atkAttribute's method
        */
@@ -818,21 +823,19 @@
 
         $record = $defaults[$this->fieldName()];
         $a = $this->m_destInstance->viewArray($mode, $record, false);
-        
+
         /* editable fields, if AF_NOLABEL is specified or if there is just 1 field with the
          * same name as the relation we don't display a label
          * TODO FIXME
          */
+        if (!is_array($arr['fields'])) $arr['fields']=array();
         if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
         {
           /* separator and name */
-          $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
-          $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs);
+          if ($arr['fields'][count($arr['fields'])-1]['html']!=='-') $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
+          $arr["fields"][] = array("line"=>"<b>".atktext($this->m_name, $this->m_ownerInstance->m_module, $this->m_ownerInstance->m_type)."</b>", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
         }
-        
-        if (!is_array($arr['fields'])) 
-          $arr['fields']=array();
-          
+
         if (is_array($a["fields"]))
         {
           $arr["fields"] = array_merge($arr["fields"], $a["fields"]);
@@ -841,10 +844,10 @@
         if (!$this->hasFlag(AF_ONETOONE_INTEGRATE) && !$this->hasFlag(AF_NOLABEL) && !(count($a["fields"]) == 1 && $a["fields"][0]["name"] == $this->m_name))
         {
           /* separator */
-          $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs);
+          $arr["fields"][] = array("html"=>"-", "tabs"=>$this->m_tabs,'sections'=>$this->getSections());
         }
-      }      
-    }    
+      }
+    }
 
     /**
      * Check if a record has an empty value for this attribute.
@@ -1176,14 +1179,14 @@
         parent::addToSearchformFields($fields,$node,$record, $fieldprefix, $currentSearchMode);
       }
     }
-    
+
     function value2db($rec)
     {
       if (is_array($rec)&&isset($rec[$this->fieldName()]))
-      {        
+      {
         if (is_array($rec[$this->fieldName()]))
           return $this->escapeSQL($rec[$this->fieldName()][$this->m_destInstance->primaryKeyField()]);
-        else 
+        else
           return $rec[$this->fieldName()];
       }
       return NULL;

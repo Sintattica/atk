@@ -196,8 +196,8 @@
           $db->toggleForeignKeys(false);
 
           if ($config['default']['db'] == $config[$test]['db']) atkerror("atkTestCase::_cleanData() | testdatabase equals default database: '{$config['default']['db']}'! Database will not be emptied");
-          else $db->deleteAll();   
-          
+          else $db->deleteAll();
+
           $db->commit();
 
           $db->toggleForeignKeys(true);
@@ -218,9 +218,9 @@
 
       if (count($this->m_fixtures) == 0) return;
 
-      $config = atkconfig("db");      
-      $mapping = atkconfig("test_db_mapping");      
-      
+      $config = atkconfig("db");
+      $mapping = atkconfig("test_db_mapping");
+
       atkimport('atk.fixture.atkfixturemanager');
       $manager = &atkFixtureManager::getInstance();
 
@@ -365,13 +365,13 @@
     {
       atkSetSecurityManager($this->m_restoreSecMgr);
     }
-    
+
     /**
      * Asserts the given attribute(s) value did not cause the given validation error.
      *
      * $attribName can contain the name of a single attributename, or an array with
      * attributenames.
-     * 
+     *
      * @param array  $record
      * @param mixed $attribName
      * @param string $error
@@ -379,11 +379,11 @@
     function _hasValidationError($record, $attribName, $error)
     {
       if (!isset($record['atkerror'])) return false;
-      
+
       $errors = $record['atkerror'];
 
       $found = false;
-      
+
       foreach ($errors as $entry)
       {
         //does the error match?
@@ -405,7 +405,7 @@
                   break;
                 }
               }
-            
+
               //if the arrays are the same, we have found a match
               if($allIn)
               {
@@ -423,35 +423,35 @@
               $found = true;
               break;
             }
-          }          
+          }
         }
-      }     
-      
-      return $found;      
-    }    
-    
+      }
+
+      return $found;
+    }
+
     /**
      * Asserts the given attribute(s) value did not cause the given validation error.
      *
      * $attribName can contain the name of a single attributename, or an array with
      * attributenames.
-     * 
+     *
      * @param array  $record
      * @param mixed $attribName
      * @param string $error
-     */    
+     */
     function assertNoValidationError($record, $attribName, $error)
-    {   
+    {
       $found = $this->_hasValidationError($record, $attribName, $error);
       if(is_array($attribName))
         $this->assertTrue(!$found, 'Validation error '.$error.' not found for attributes '.implode(", ",$attribName));
       else
-        $this->assertTrue(!$found, 'Validation error '.$error.' not found for attribute '.$attribName);          
+        $this->assertTrue(!$found, 'Validation error '.$error.' not found for attribute '.$attribName);
     }
-    
+
     /**
      * Asserts the given attribute(s) value caused the given validation error.
-     * 
+     *
      * $attribName can contain the name of a single attributename, or an array with
      * attributenames.
      *
@@ -463,11 +463,11 @@
     {
       $found = $this->_hasValidationError($record, $attribName, $error);
       if(is_array($attribName))
-        $this->assertTrue($found, 'Validation error '.$error.' for attributes '.implode(", ",$attribName));        
-      else 
-        $this->assertTrue($found, 'Validation error '.$error.' for attribute '.$attribName);        
+        $this->assertTrue($found, 'Validation error '.$error.' for attributes '.implode(", ",$attribName));
+      else
+        $this->assertTrue($found, 'Validation error '.$error.' for attribute '.$attribName);
     }
-    
+
     /**
      * Asserts if a certain attribute in the given node has the given flag.
      * You should pass the flag name to this method!
@@ -496,6 +496,6 @@
       $flag = eval("return ".$flagName.";");
       $hasFlag = $node->getAttribute($attribName)->hasFlag($flag);
       $this->assertFalse($hasFlag, "Attribute ".$node->atkNodeType()."::$attribName not has flag $flagName");
-    }    
+    }
   }
 ?>

@@ -131,7 +131,7 @@ Changed in ATK 6.2
   the AF_DATE_STRING flag is used. [Tjeerd,Peter]
 * atkDebugger now only stores query traces if debuglevel > 2. [Tjeerd]
 * Fixed non static call to atkFileUtils. [Yannick]
-* Atkaggregatedcolumn use method label() for lebel generation. [Yury]
+* Atkaggregatedcolumn use method label() for label generation. [Yury]
 * Fix parameter order in atkmanytoonerelation->getSearchCondition() - the same
   as in other attribute/relation. [Yury]
 * Fixed fatal error on some occasions when using the update action on a node
@@ -290,6 +290,15 @@ Changed in ATK 6.2
   label fields to display error messages. [Dennis]
 * Changes in atkcolorpickerattribute for using this attribute in a dialog.
   [Lineke]
+* Added html entities to the country definitions in atkCountryAttribute and
+  html_decode them before putting them in the array so that it should contain
+  the right character. [Erik]
+* Fixed atkStringParser issue: When the string supposes something is an array
+  when it is not, we no longer return the first character,
+  we stop parsing and throw a notice. [Boy,Ivo]
+* Fixed failing unittests for atkStringParser and added a new one for the
+  feature that broke 2 other tests. [Sandy]
+* Changes in colorattribute for using this attribute in a dialog. [Lineke]
 * Do not empty testdatabase when its name equals the default database [Jeroen]
 
 Changed in ATK 6.1
