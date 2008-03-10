@@ -162,7 +162,7 @@
 
       if($reporttype=="html")
       {
-        $test->run(atknew("atk.test.atktestreporter"));
+        $testresults = $test->run(atknew("atk.test.atktestreporter"));
       }
       elseif($reporttype=="arrayHtml")
       {
@@ -174,7 +174,7 @@
       }
       else
       {
-        $test->run(new TextReporter());
+        $testresults = $test->run(new TextReporter());
       }
 
       return $testresults;
@@ -218,6 +218,12 @@
         $normalDb = &atkGetDb($normal);
         $testDb = &atkGetDb($test);
 
+        if($testDb->getDbStatus() <> DB_SUCCESS)
+        {
+          atkerror("test db '$test' is not acceptable");
+          break;
+        }
+        
         $config = atkconfig('db');
         $clone = !isset($config[$test]['clone_structure']) || $config[$test]['clone_structure'];
 
