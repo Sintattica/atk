@@ -13,6 +13,7 @@ Changed in ATK 6.3
   the stack-trace array. (Achievo Bug 942) [Peter]
 + Added support for objects tat implement the ArrayAccess interface in
   atkStringParser and don't threat strings as an array anymore. [Peter]
+* Fixed issue with htmlencoding in the old recordlist. [Tjeerd]
 * Fixed issue with copying records. [Tjeerd]
 * Removed executable bit (svn:executable property in svn) from files that
   aren't executable. [Guido]
