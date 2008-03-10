@@ -239,10 +239,13 @@
       {
         foreach($row as $name => $value)
         {
-          $value = str_replace("\r\n", "\\n", $value);
-          $value = str_replace("\n", "\\n", $value);
-          $value = str_replace("\t", "\\t", $value);
-          $row[$name] = $value;
+          if(in_array($name, $list_includes))
+          {
+            $value = str_replace("\r\n", "\\n", $value);
+            $value = str_replace("\n", "\\n", $value);
+            $value = str_replace("\t", "\\t", $value);
+            $row[$name] = $value;
+          }
         }
         $recordset_new[] = $row;
       }
