@@ -35,6 +35,7 @@
     var $m_useTestDatabase = NULL;
     var $m_fixtures = array();
     var $m_fixtureData = array();
+    var $m_usesFixture = NULL;
 
     /**
      * Constructor.
@@ -190,6 +191,13 @@
       foreach ($mapping as $normal => $test)
       {
       	$db = &$this->_getTestDb($normal);
+        
+      	if($db->getDbStatus() <> DB_SUCCESS)
+        {
+          atkerror("test db '$normal' is not acceptable");
+          break;
+        }
+
         if (!isset($config[$test]["transactional_fixtures"]) ||
             !$config[$test]["transactional_fixtures"])
         {
@@ -228,6 +236,12 @@
       foreach($this->m_fixtures as $database => $fixtures)
       {
         $db = &$this->_getTestDb($database);
+        
+        if($db->getDbStatus() <> DB_SUCCESS)
+        {
+          atkerror("test db '$database' is not acceptable");
+          break;
+        }
 
         if (!isset($config[$mapping[$database]]["transactional_fixtures"]) ||
             !$config[$mapping[$database]]["transactional_fixtures"])
@@ -496,6 +510,70 @@
       $flag = eval("return ".$flagName.";");
       $hasFlag = $node->getAttribute($attribName)->hasFlag($flag);
       $this->assertFalse($hasFlag, "Attribute ".$node->atkNodeType()."::$attribName not has flag $flagName");
+    }
+
+    /**
+     * Check if currect testcase use fixture
+     *
+     * @return boolean
+     */
+    function useFixture()
+    {
+      if($this->m_usesFixture === null) return (count($this->m_fixtures) > 0);
+      else return $this->m_usesFixture;
+    }
+    
+    /**
+     * Set if currect testcase use fixture
+     *
+     */
+    function setUseFixture($value)
+    {
+      $this->m_usesFixture = $value;
+    }
+    
+    function run(&$reporter)
+    {
+      if(!$this->useTestDatabase() && $this->useFixture())
+      {
+        $reporter->paintCaseStart($this->getLabel());
+        $reporter->paintFail("test database didn't configure");
+        $reporter->paintCaseEnd($this->getLabel());
+
+        return false;
+      }
+      elseif($this->useTestDatabase() && $this->useFixture() && !$this->_checkFixtureDb())
+      {
+        $reporter->paintCaseStart($this->getLabel());
+        $reporter->paintFail("test database is not acceptable");
+        $reporter->paintCaseEnd($this->getLabel());
+
+        return false;
+      }
+      
+      return parent::run($reporter);
+    }
+    
+    /**
+     * Check if database(s), used by fixture, are acceptable
+     *
+     * @return boolean
+     */
+    function _checkFixtureDb()
+    {
+      $mapping = atkconfig("test_db_mapping");
+      atkDb::useMapping($mapping);
+      foreach($this->m_fixtures as $database=>$fixture)
+      {
+        $db = &$this->_getTestDb($database);
+        
+        if($db->getDbStatus() <> DB_SUCCESS)
+        {
+          atkerror("test db '$database' is not acceptable");
+          return false;
+        }
+      }
+      return true;
     }
   }
 ?>
