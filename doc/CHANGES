@@ -5,7 +5,7 @@ Bug numbers are references to bugs in http://www.achievo.org/bugzilla
 [names] are references to people in the AUTHORS file.
 Please do not exceed 80 characters per line.
 
-Changed in ATK 6.3
+Changed in ATK 6.2
 ------------------
 * atkimport function now keeps a list of already included files by itself
   instead of using include_once, causing less file I/O [Harrie]
@@ -17,9 +17,6 @@ Changed in ATK 6.3
 * Fixed issue with copying records. [Tjeerd]
 * Removed executable bit (svn:executable property in svn) from files that
   aren't executable. [Guido]
-
-Changed in ATK 6.2
-------------------
 + atkCountryAttribute now has a new list type called "custom", this custom
   list can be customised by calling the new method "setList" with as parameter
   a array of country iso codes. After setting the list you can just request
