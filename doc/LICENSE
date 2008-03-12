@@ -1,90 +1,28 @@
-The following is the license that applies to this copy of the Achievo 
-Toolkit (ATK) software. For a license to use the ATK software under 
-conditions other than those described here, or to purchase support 
-for this software, please contact Ibuildings.nl BV at one of the 
-following addresses:
+The Achievo Toolkit (ATK) software is licensed under the terms of the
+LGPL, a copy of which can be found in the file called 'LGPL'.
+
+For a license to use the ATK software under conditions other than those 
+described here, or to purchase support for this software, please contact 
+Ibuildings.nl BV at one of the following addresses:
 
   Ibuildings.nl BV        info@ibuildings.nl	
   Gildeweg 39A            +31 (118) 429550
   4383 NJ Vlissingen      http://www.ibuildings.nl
   Netherlands
 
-The license is based on the Sleepycat Software License, and therefor
-compliant with the terms of the Open Source Initiative.
-(http://www.opensource.org/licenses/sleepycat.php)
-
 More information about ATK's licensing policy can be found on the 
 following url: http://www.achievo.org/atk/license/policy
 
+For licensing of the bundled libraries, please refer to the COPYRIGHT
+file.
+
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
- Copyright (c) 2000-2007
+ Copyright (c) 2000-2008
 	Ibuildings.nl BV. All rights reserved.
 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-3. Redistributions in any form must be accompanied by information on
-    how to obtain complete source code for ATK and any accompanying
-    software that uses the ATK software. The source code must either be 
-    included in the distribution or be available for no more than the 
-    cost of distribution plus a nominal fee, and must be freely
-    redistributable under reasonable conditions.  For an executable file, 
-    complete source code means the source code for all modules it contains.  
-    It does not include source code for modules or files that typically
-    accompany the major components of the operating system on which the 
-    executable file runs.
-
- THIS SOFTWARE IS PROVIDED BY IBUILDINGS.NL BV ``AS IS'' AND ANY EXPRESS
- OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
- NON-INFRINGEMENT, ARE DISCLAIMED.  IN NO EVENT SHALL IBUILDINGS.NL BV
- BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- THE POSSIBILITY OF SUCH DAMAGE.
-
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
- Copyright (c) 2000-2006
+ Copyright (c) 2000-2008
 	Ivo Jansch. All rights reserved.
-
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions
- are met:
- 1. Redistributions of source code must retain the above copyright
-    notice, this list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
- 3. Redistributions in any form must be accompanied by information on
-    how to obtain complete source code for ATK and any accompanying
-    software that uses the ATK software. The source code must either be 
-    included in the distribution or be available for no more than the 
-    cost of distribution plus a nominal fee, and must be freely
-    redistributable under reasonable conditions.  For an executable file, 
-    complete source code means the source code for all modules it contains.  
-    It does not include source code for modules or files that typically
-    accompany the major components of the operating system on which the 
-    executable file runs.
-
- THIS SOFTWARE IS PROVIDED BY IVO JANSCH ``AS IS'' AND ANY EXPRESS
- OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR
- NON-INFRINGEMENT, ARE DISCLAIMED.  IN NO EVENT SHALL IVO JANSCH
- BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- THE POSSIBILITY OF SUCH DAMAGE.
 
