@@ -300,6 +300,7 @@ Changed in ATK 6.2
   feature that broke 2 other tests. [Sandy]
 * Changes in colorattribute for using this attribute in a dialog. [Lineke]
 * Do not empty testdatabase when its name equals the default database [Jeroen]
+* Fixed PHP Short open tag in atkmssqlquery. [Guido]
 
 Changed in ATK 6.1
 ------------------
