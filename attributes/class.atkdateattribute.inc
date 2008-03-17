@@ -395,13 +395,15 @@
       else $str_max = 0;
 
       /* did we select a valid date? */
-      if     ($current === NULL && !$this->hasFlag(AF_OBLIGATORY)); // NULL date selection; ignore this if statement
-      elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
-      elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
-      elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
-      elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
-      elseif (empty($current)) $current = time();
-
+      if ($current !== NULL)
+      {
+        if     (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
+        elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
+        elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
+        elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;
+        elseif (empty($current)) $current = time();
+      }
+      
       /* get dates in array format */
       if ($current !== NULL) $current = adodb_getdate($current);
       if (!empty($minimum))  $minimum = adodb_getdate($minimum);
