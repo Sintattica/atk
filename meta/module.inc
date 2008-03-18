@@ -62,13 +62,15 @@ class mod_meta extends atkModule
    * @param $node the node type
    * @return new node object
    */
-  function &newNode($node)
+  function newNode($node)
   {
     if (!$this->nodeExists($node)) return NULL;
     $table = getNodeType($node);
-
+    
     atkimport('atk.atkmetanode');
-    $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => new atkMetaHandler(array(&$this, "initMetaPolicy"))));
+    atkModule::setModuleScope('meta');
+    $node = new atkMetaNode(array("type" => $table, "table" => $table, "handler" => array($this, 'initMetaPolicy')));
+    atkModule::resetModuleScope();     
     $node->m_module = "meta";
     $node->setSecurityAlias("meta.meta");
 
@@ -89,7 +91,7 @@ class mod_meta extends atkModule
   /**
    * Initialize meta policy.
    */
-  function initMetaPolicy(&$policy)
+  function initMetaPolicy($policy)
   {
     $attrs = &$policy->getAttributes();
 

@@ -28,8 +28,6 @@ atkimport("atk.atknode");
  */
 class atkMetaNode extends atkNode
 {
-  public static $descriptor = 'blub';
-  
   /**
    * Meta options.
    *
@@ -77,8 +75,8 @@ class atkMetaNode extends atkNode
   
     parent::__construct($type);
 
-    if (!$this->constructFromCache())
-      $this->constructFromPolicy();
+    if (!$this->_constructFromCache())
+      $this->_constructFromPolicy();
     
     $this->postMeta();
   }
@@ -125,7 +123,7 @@ class atkMetaNode extends atkNode
    */
   public function isCacheable()
   {
-    if (!atkconfig('meta_cache', true)) return false;
+    if (!atkconfig('meta_caching', true)) return false;
     if (strtolower(get_class($this)) == 'atkmetanode') return false;
     if (!method_exists($this, 'meta')) return true;    
     $method = new ReflectionMethod(get_class($this), 'meta');
@@ -138,7 +136,7 @@ class atkMetaNode extends atkNode
    * 
    * @return boolean is the node constructed from the cache?
    */
-  private function constructFromCache()
+  private function _constructFromCache()
   {
     if (!$this->isCacheable()) return false;
     
@@ -159,7 +157,7 @@ class atkMetaNode extends atkNode
    * 
    * @return atkMetaPolicy policy
    */
-  protected function createPolicy()
+  protected function _createPolicy()
   {
     atkimport('atk.meta.atkmetapolicy');
     $policy = $this->getMetaOption('policy');
@@ -169,9 +167,9 @@ class atkMetaNode extends atkNode
   /**
    * Constructs the meta node using the meta policy.
    */
-  protected function constructFromPolicy()
+  protected function _constructFromPolicy()
   {
-    $policy = $this->createPolicy();
+    $policy = $this->_createPolicy();
     $policy->apply();
   }
   

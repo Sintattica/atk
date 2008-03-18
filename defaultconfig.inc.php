@@ -85,7 +85,7 @@
    * Cache compiled meta node code?
    * @var bool
    */
-  $config_meta_cache = true;
+  $config_meta_caching = true;
   
   /**
    * Use the given class for creating datagrids.

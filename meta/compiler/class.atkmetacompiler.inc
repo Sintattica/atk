@@ -66,7 +66,7 @@ class atkMetaCompiler
    * 
    * @return string flags string
    */
-  protected function getFlagsString($flags, $prefix, $specificExcludes=array(), $constExcludes=array())
+  protected function _getFlagsString($flags, $prefix, $specificExcludes=array(), $constExcludes=array())
   {
     static $constants = array();
     
@@ -108,9 +108,9 @@ class atkMetaCompiler
    * 
    * @return string flags string
    */
-  protected function getAttributeFlagsString($flags)
+  protected function _getAttributeFlagsString($flags)
   {
-    return $this->getFlagsString($flags, 'AF_', array(AF_SPECIFIC_1, AF_SPECIFIC_2, AF_SPECIFIC_3, AF_SPECIFIC_4, AF_SPECIFIC_5), array('AF_UNIX', 'AF_INET', 'AF_INET6'));
+    return $this->_getFlagsString($flags, 'AF_', array(AF_SPECIFIC_1, AF_SPECIFIC_2, AF_SPECIFIC_3, AF_SPECIFIC_4, AF_SPECIFIC_5), array('AF_UNIX', 'AF_INET', 'AF_INET6'));
   }
   
   /**
@@ -120,9 +120,9 @@ class atkMetaCompiler
    * 
    * @return string flags string
    */
-  protected function getNodeFlagsString($flags)
+  protected function _getNodeFlagsString($flags)
   {
-    return $this->getFlagsString($flags, 'NF_', array(NF_SPECIFIC_1, NF_SPECIFIC_2, NF_SPECIFIC_3, NF_SPECIFIC_4, NF_SPECIFIC_5));
+    return $this->_getFlagsString($flags, 'NF_', array(NF_SPECIFIC_1, NF_SPECIFIC_2, NF_SPECIFIC_3, NF_SPECIFIC_4, NF_SPECIFIC_5));
   }  
   
   /**
@@ -135,7 +135,7 @@ class atkMetaCompiler
    * 
    * @return bool attribute included?
    */
-  protected function isIncluded(atkMetaPolicy $policy, $name)
+  protected function _isIncluded(atkMetaPolicy $policy, $name)
   {
     $includes = $policy->getIncludes();
     $excludes = $policy->getExcludes();
@@ -157,7 +157,7 @@ class atkMetaCompiler
    * 
    * @param string attribute code
    */
-  protected function compileAttribute(atkMetaPolicy $policy, $name, $data)
+  protected function _compileAttribute(atkMetaPolicy $policy, $name, $data)
   {
     $type = $data['type'];
     $params = $data['params'];
@@ -183,7 +183,7 @@ class atkMetaCompiler
     
     if ((atkconfig('debug') > 0 || $policy->getNode()->isCacheable()) && $flags > 0)
     {
-      $flags = $this->getAttributeFlagsString($flags);
+      $flags = $this->_getAttributeFlagsString($flags);
     }
     
     $code .= "\$attr->addFlag({$flags});\n";
@@ -230,7 +230,7 @@ class atkMetaCompiler
    * 
    * @return string code
    */
-  protected function compileAttributes(atkMetaPolicy $policy)
+  protected function _compileAttributes(atkMetaPolicy $policy)
   {
     $attrs = $policy->getAttributes();
     uasort($attrs, array(__CLASS__, 'compareAttributes'));
@@ -246,12 +246,12 @@ class atkMetaCompiler
     
     foreach ($attrs as $name => $data) 
     {
-      if ($data['type'] == null || !$this->isIncluded($policy, $name))
+      if ($data['type'] == null || !$this->_isIncluded($policy, $name))
       {
         continue;
       }
       
-      $code .= $this->compileAttribute($policy, $name, $data);
+      $code .= $this->_compileAttribute($policy, $name, $data);
     }
 
     return $code;    
@@ -264,13 +264,13 @@ class atkMetaCompiler
    * 
    * @return string code
    */
-  protected function compileBase(atkMetaPolicy $policy)
+  protected function _compileBase(atkMetaPolicy $policy)
   {
     $nodeFlags = (int)$policy->getNodeFlags();
     
     if ((atkconfig('debug') > 0 || $policy->getNode()->isCacheable()) && $nodeFlags > 0)
     {
-      $nodeFlags = $this->getNodeFlagsString($nodeFlags);
+      $nodeFlags = $this->_getNodeFlagsString($nodeFlags);
     }
     
     $code = 
@@ -312,8 +312,8 @@ class atkMetaCompiler
   public function compile(atkMetaPolicy $policy)
   {
     $code = 
-      $this->compileBase($policy).
-      $this->compileAttributes($policy);
+      $this->_compileBase($policy).
+      $this->_compileAttributes($policy);
     
     return $code;
   }
