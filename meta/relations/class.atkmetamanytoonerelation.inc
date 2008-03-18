@@ -29,22 +29,18 @@ userelation("atkmanytoonerelation");
  */        
 class atkMetaManyToOneRelation extends atkManyToOneRelation
 {
-  var $m_accessor;
-  var $m_options;
-  
   /**
    * Default constructor.    
    */
-  function atkMetaManyToOneRelation($name, $accessor, $template, $options, $flags=0)
+  public function __construct($name, $destination, $template, $options, $flags=0)
   {
-    //we must use $options["source"] (if it present) as name for atkManyToOneRelation, because 
-    //in case of multi referential key $name must be array with referential keys
-    if(atk_in_array("source",$options) && is_array($options["source"]))
+    // we must use $options["source"] (if it is present) as name for the 
+    // atkManyToOneRelation, because for multi referential keys $name 
+    // must be array with referential key columns
+    if (atk_in_array("source", $options) && is_array($options["source"]))
       $name = $options["source"];
       
-    $this->atkManyToOneRelation($name, $accessor, $flags);
-    $this->m_accessor = $accessor;
-    $this->m_options = $options;
+    parent::__construct($name, $destination, $flags);
     
     $this->setDescriptorTemplate($template);
 
@@ -63,35 +59,4 @@ class atkMetaManyToOneRelation extends atkManyToOneRelation
     foreach ($cols as $col)
       $this->addListColumn($col);
   }
-  
-  /**
-   * Create the instance of the destination. 
-   *
-   * If succesful, the instance is stored in the m_destInstance member variable.
-   * 
-   * @return boolean true if succesful, false if something went wrong.
-   */
-  function createDestination()
-  {
-    if (is_object($this->m_destInstance)) return TRUE;
-    
-    $policy = &$this->m_ownerInstance->getMetaPolicy();
-
-    $this->m_destination = $policy->findDestination($this->m_accessor, false);
-    atkdebug("atkMetaManyToOneRelation: {$this->m_accessor} destination '{$this->m_destination}'");    
-    
-    if ($this->m_destination == NULL) 
-    {
-      atkerror("No destination found for atkMetaManyToOneRelation with accessor '{$this->m_accessor}'!");
-      return FALSE;
-    }
-    else if (!parent::createDestination()) 
-    {
-      atkerror("Cannot instantiate destination '{$this->m_destination}' for atkMetaManyToOneRelation with accessor '{$this->m_accessor}'!");        
-      return FALSE;
-    }    
-    
-    return TRUE;
-  }
-}  
-?>
+} 

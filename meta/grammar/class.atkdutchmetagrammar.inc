@@ -30,7 +30,7 @@ class atkDutchMetaGrammar extends atkMetaGrammar
    *
    * @return list of singular rules
    */
-  function getSingularRules()
+  public function getSingularRules()
   {
     return array(
       '/ven$/i' => 'f',    
@@ -49,7 +49,7 @@ class atkDutchMetaGrammar extends atkMetaGrammar
    *
    * @return list of plural rules
    */
-  function getPluralRules()
+  public function getPluralRules()
   {
     return array(
       '/f$/i' => 'ven',

@@ -846,7 +846,7 @@
      *                   is added.
      * @return atkAttribute the attribute just added
      */
-    function &add($attribute,$sections=NULL,$order=0)
+    function add($attribute,$sections=NULL,$order=0)
     {
       static $attrib_order = 100;
       static $attrib_index = 0;
@@ -896,7 +896,7 @@
       {
         // when the read optimizer is enabled there is no active tab
         // we circument this by putting all attributes on all tabs
-        if (!($sections === NULL) && is_int($sections))
+        if ($sections !== NULL && is_int($sections))
           $order = $sections;
         $tabs = "*";
         $sections = "*";
@@ -1072,6 +1072,7 @@
 
     /**
      * Returns the table name for this node.
+     * 
      * @return string table name
      */
     function getTable()
@@ -1185,6 +1186,16 @@
     function getFlags()
     {
       return $this->m_flags;
+    }
+    
+    /**
+     * Set node flags.
+     *
+     * @param int $flags node flags
+     */
+    public function setFlags($flags)
+    {
+      $this->m_flags = $flags;
     }
 
     /**
@@ -1331,10 +1342,20 @@
     }
 
     /**
+     * Sets the database connection.
+     *
+     * @param string|atkDb $db database name or object
+     */
+    public function setDb($db)
+    {
+      $this->m_db = $db;
+    }    
+    
+    /**
      * Get the database connection for this node.
      * @return atkDb Database connection instance
      */
-    function &getDb()
+    function getDb()
     {
       if ($this->m_db == NULL)
       {
@@ -4451,10 +4472,30 @@
     }
 
     /**
+     * Returns the type of this node (this is *not* the full ATK node type!)
+     * 
+     * @return string type
+     */
+    public function getType()
+    {
+      return $this->m_type;
+    }
+    
+    /**
+     * Returns the module for this node.
+     * 
+     * @return string node
+     */
+    public function getModule()
+    {
+      return $this->m_module;
+    }
+    
+    /**
      * Get the full atknodetype of this node (module.nodetype notation).
      * @return String The atknodetype of the node.
      */
-    function atknodetype()
+    function atkNodeType()
     {
       return (empty($this->m_module) ? "" : $this->m_module.".").$this->m_type;
     }

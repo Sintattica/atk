@@ -8,14 +8,14 @@
  * @package atk
  * @subpackage meta
  *
- * @copyright (c) 2004-2005 Peter C. Verhage
+ * @copyright (c) 2004-2008 Peter C. Verhage
  * @license http://www.achievo.org/atk/licensing ATK Open Source License
  *
  * @version $Revision$
  * $Id$
  */
-
-atkimport("atk.meta.atkmetatools");
+atkimport("atk.meta.grammar.atkmetagrammar");
+atkimport("atk.meta.compiler.atkmetacompiler");
 
 /**
  * The default meta policy.
@@ -28,36 +28,194 @@ atkimport("atk.meta.atkmetatools");
 class atkMetaPolicy
 {
   /**
-   * @var atkNode The node which is being created by the policy
-   * @access private
+   * No default value.
    */
-  var $m_node = NULL;
-  var $m_grammar = NULL;
-
-  var $m_includes = NULL;
-  var $m_excludes = NULL;
-
-  var $m_tableAttrs = array();
-  var $m_attrs = array();
+  const NO_DEFAULT_VALUE = '!@NO_DEFAULT_VALUE@!';
+  
+  /**
+   * The node which is being constructed by the policy.
+   * 
+   * @var atkMetaNode
+   */
+  protected $m_node = null;
+  
+  /**
+   * The meta grammar which is being used by the policy.
+   *
+   * @var atkMetaGrammar
+   */
+  protected $m_grammar = null;
+  
+  /**
+   * The meta compiler which is being used by the policy.
+   *
+   * @var atkMetaCompiler
+   */
+  protected $m_compiler = null;  
+  
+  /**
+   * The meta handler which is begin used by the policy. A function name or
+   * handler array (class/object and method name). If set to null we will check
+   * if the meta node contains a method called meta and will call this instead.
+   * 
+   * @var mixed
+   */
+  protected $m_handler = null;
+  
+  /**
+   * Table meta data.
+   *
+   * @var array
+   */
+  protected $m_metaData = null;    
+  
+  /**
+   * Node database name.
+   *
+   * @var string
+   */
+  protected $m_nodeDatabase = null;
+  
+  /**
+   * Node table name.
+   *
+   * @var string
+   */
+  protected $m_nodeTable = null;
+  
+  /**
+   * Node sequence name.
+   *
+   * @var string
+   */
+  protected $m_nodeSequence = null;
+  
+  /**
+   * Node flags.
+   *
+   * @var int
+   */
+  protected $m_nodeFlags = null;  
+  
+  /**
+   * Node descriptor.
+   *
+   * @var string
+   */
+  protected $m_nodeDescriptor = null;
+  
+  /**
+   * Node (default) order.
+   *
+   * @var string
+   */
+  protected $m_nodeOrder = null;
+  
+  /**
+   * Node index column.
+   *
+   * @var string
+   */
+  protected $m_nodeIndex = null;
+  
+  /**
+   * Node filter.
+   *
+   * @var string
+   */
+  protected $m_nodeFilter = null;
+  
+  /**
+   * Node security alias.
+   *
+   * @var string
+   */
+  protected $m_nodeSecurityAlias = null;
 
   /**
-   * Returns an instance of the default meta policy determined
-   * using the $config_meta_policy variable or if not set uses itself.
+   * Node security map.
    *
-   * @static
+   * @var string
+   */  
+  protected $m_nodeSecurityMap = null;  
+  
+  /**
+   * Included attributes.
+   *
+   * @var array|null
    */
-  function &defaultInstance(&$node)
+  protected $m_includes = null;
+
+  /**
+   * Excluded attributes.
+   *
+   * @var array|null
+   */  
+  protected $m_excludes = null;
+  
+  /**
+   * Node attributes.
+   *
+   * @var array
+   */
+  protected $m_attrs = array();
+
+  /**
+   * Returns an instance of the meta policy using the given class. If no class
+   * is specified the default meta policy is used determined using the 
+   * $config_meta_policy variable.
+   *
+   * @param atkMetaNode $node  policy node
+   * @param string      $class full ATK policy class path
+   * 
+   * @return atkMetaPolicy meta policy
+   */
+  public static function create(atkMetaNode $node, $class=null)
   {
-    $instance = &atknew(atkconfig("meta_policy", "atk.meta.atkmetapolicy"));
-    return $instance;
+    if (!is_string($class) || strlen($class) == 0)
+    {
+      $class = atkconfig("meta_policy", "atk.meta.atkmetapolicy");
+    }
+    
+    return atknew($class, $node);
   }
+  
+  /**
+   * Constructor.
+   * 
+   * @param atkMetaNode policy node
+   */
+  public function __construct(atkMetaNode $node)
+  {
+    $this->setNode($node);
+  }
+  
+  /**
+   * Returns the node for this policy.
+   *
+   * @return atkNode policy node
+   */
+  public function getNode()
+  {
+    return $this->m_node;
+  }
+  
+  /**
+   * Sets the node for this policy.
+   * 
+   * @param atkNode policy node
+   */
+  public function setNode(atkMetaNode $node)
+  {
+    $this->m_node = $node;
+  }  
 
   /**
    * Returns the meta grammar.
    *
    * @return atkMetaGrammar the meta grammar
    */
-  function &getGrammar()
+  public function getGrammar()
   {
     return $this->m_grammar;
   }
@@ -67,60 +225,287 @@ class atkMetaPolicy
    *
    * @param atkMetaGrammar $grammar the meta grammar
    */
-  function setGrammar(&$grammar)
+  public function setGrammar(atkMetaGrammar $grammar)
   {
-    $this->m_grammar = &$grammar;
-  }
-
+    $this->m_grammar = $grammar;
+  }  
+  
   /**
-   * Calls a method of this object with the given parameters.
+   * Returns the meta compiler.
    *
-   * @param String $method the method name
-   * @param Array $params the method parameters
-   * @return unknown
+   * @return atkMetaCompiler the meta compiler
    */
-  function _call($method, $params)
+  public function getCompiler()
   {
-    // unfortunately call_user_func_array(array($this, $method), $params) makes
-    // a copy of $this, instead of calling the method on the original $this
-    // so we use eval instead...
-    $call = "\$this->$method(";
-    foreach (array_keys($params) as $i)
-      $call .= ($i > 0 ? ", " : "")."\$params[$i]";
-    $call .= ");";
-    return eval($call);
+    return $this->m_compiler;
   }
 
   /**
-   * Get auto-detected flags for the given attribute.
+   * Sets the meta compiler.
+   *
+   * @param atkMetaCompiler $compiler the meta compiler
    */
-  function _getFlags($name, $meta)
+  public function setCompiler(atkMetaCompiler $compiler)
   {
-    $flags =
-      (hasFlag($meta['flags'], MF_PRIMARY) ? AF_PRIMARY : 0) |
-      (hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
-      (hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
-      (hasFlag($meta['flags'], MF_AUTO_INCREMENT|MF_PRIMARY) ? AF_AUTOKEY : 0) |
-      ($meta['gentype'] == "text" ? AF_HIDE_LIST : 0);
+    $this->m_compiler = $compiler;
+  } 
 
-    if (hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
-        in_array($name, array("id", $meta['table']."id", $meta['table']."_id")))
-      $flags |= AF_AUTOKEY;
-
-    if (in_array($name, array("passw", "password")))
-    {
-      $flags |= AF_HIDE_LIST;
-    }
-      
-    return $flags;
+  /**
+   * Returns the meta handler.
+   *
+   * @return mixed the meta handler
+   */
+  public function getHandler()
+  {
+    return $this->m_handler;
   }
 
   /**
-   * Get attribute type and params for the given attribute.
-   * Returns an array which looks like the following:
+   * Sets the meta handler.
+   *
+   * @param mixed $handler the meta compiler
+   */
+  public function setHandler($handler)
+  {
+    $this->m_handler = $handler;
+  } 
+  
+  /**
+   * Returns the meta data for this policy's table.
+   * 
+   * @return array meta data
+   */
+  public function getMetaData()
+  {
+    return $this->m_metaData;
+  }
+  
+  /**
+   * Sets the meta data for this policy's table.
+   * 
+   * @param array meta data
+   */
+  protected function setMetaData($metaData)
+  {
+    $this->m_metaData = $metaData;
+  }
+  
+  /**
+   * Returns the node database.
+   * 
+   * @return string database name
+   */
+  public function getNodeDatabase()
+  {
+    return $this->m_nodeDatabase;
+  }
+  
+  /**
+   * Sets the node database.
+   * 
+   * Only for internal use, because it's too late to set this from inside the meta method.
+   *
+   * @param string $database database name
+   */
+  protected function setNodeDatabase($database)
+  {
+    $this->m_nodeDatabase = $database;
+  }
+  
+  /**
+   * Returns the node table.
+   * 
+   * @return string table name
+   */
+  public function getNodeTable()
+  {
+    return $this->m_nodeTable;
+  }
+  
+  /**
+   * Sets the node table name.
+   * 
+   * Only for internal use, because it's too late to set this from inside the meta method.
+   *
+   * @param string $table table name
+   */
+  protected function setNodeTable($table)
+  {
+    $this->m_nodeTable = $table;
+  }
+
+  /**
+   * Returns the node sequence.
+   * 
+   * @return string sequence name
+   */
+  public function getNodeSequence()
+  {
+    return $this->m_nodeSequence;
+  }  
+  
+  /**
+   * Sets the node sequence name.
+   *
+   * @param string $sequence sequence name
+   */
+  public function setNodeSequence($sequence)
+  {
+    $this->m_nodeSequence = $sequence;
+  }   
+  
+  /**
+   * Returns the node flags.
+   * 
+   * @return int node flags
+   */
+  public function getNodeFlags()
+  {
+    return $this->m_nodeFlags;
+  }
+  
+  /**
+   * Sets the node flags
+   *
+   * @param int $flags node flags
+   */
+  public function setNodeFlags($flags)
+  {
+    $this->m_nodeFlags = $flags;
+  }  
+    
+  /**
+   * Returns the node descriptor.
+   * 
+   * @return string descriptor
+   */
+  public function getNodeDescriptor()
+  {
+    return $this->m_nodeDescriptor;
+  }  
+  
+  /**
+   * Sets the node descriptor.
+   *
+   * @param string $descriptor descriptor
+   */
+  public function setNodeDescriptor($descriptor)
+  {
+    $this->m_nodeDescriptor = $descriptor;
+  }     
+  
+  /**
+   * Returns the (default) node order.
+   * 
+   * @return string node order
+   */
+  public function getNodeOrder()
+  {
+    return $this->m_nodeOrder;
+  }  
+  
+  /**
+   * Sets the (default) node order.
+   *
+   * @param string $order node order
+   */
+  public function setNodeOrder($order)
+  {
+    $this->m_nodeOrder = $order;
+  }  
+
+  /**
+   * Returns the index column.
+   * 
+   * @return string index column
+   */
+  public function getNodeIndex()
+  {
+    return $this->m_nodeIndex;
+  }
+  
+  /**
+   * Sets the node index column.
+   *
+   * @param string $column index column
+   */
+  public function setNodeIndex($column)
+  {
+    $this->m_nodeIndex = $column;
+  }    
+  
+  /**
+   * Returns the node filter.
+   * 
+   * @return string filter
+   */
+  public function getNodeFilter()
+  {
+    return $this->m_nodeFilter;
+  }  
+  
+  /**
+   * Sets the node filter.
+   *
+   * @param string $filter filter
+   */
+  public function setNodeFilter($filter)
+  {
+    $this->m_nodeFilter = $filter;
+  }    
+  
+  /**
+   * Returns the node security alias.
+   * 
+   * @return string security alias
+   */
+  public function getNodeSecurityAlias()
+  {
+    return $this->m_nodeSecurityAlias;
+  }  
+  
+  /**
+   * Sets the node security alias.
+   *
+   * @param string $alias security alias
+   */
+  public function setNodeSecurityAlias($alias)
+  {
+    $this->m_nodeSecurityAlias = $alias;
+  }    
+  
+  /**
+   * Returns the additional node security map
+   * 
+   * @return array security map
+   */
+  public function getNodeSecurityMap()
+  {
+    return $this->m_nodeSecurityMap;
+  }  
+  
+  /**
+   * Sets the node additional security map.
+   *
+   * @param array $map security map array
+   */
+  public function setNodeSecurityMap($map)
+  {
+    $this->m_nodeSecurityMap = $map;
+  }     
+
+  /**
+   * Get attribute type and params for the given attribute/column.
+   * 
+   * Returns an array which looks like the following: 
    * array("type" => ..., "params" => array(...))
+   * 
+   * @param string $name attribute/column name
+   * @param array  $meta column meta data
+   * 
+   * @return array type and params
    */
-  function _getTypeAndParams($name, $meta)
+  protected function getTypeAndParams($name, $meta)
   {
     $type = NULL;
     $params = array();
@@ -205,9 +590,57 @@ class atkMetaPolicy
   }
 
   /**
-   * Get default value for the given attribute.
+   * Returns the auto-detected flags for the given attribute.
+   * 
+   * @param string $name attribute/column name
+   * @param array  $meta column meta data
+   * 
+   * @return int flags
    */
-  function _getDefaultValue($name, $meta)
+  protected function getFlags($name, $meta)
+  {
+    $flags =
+      (hasFlag($meta['flags'], MF_PRIMARY) ? AF_PRIMARY : 0) |
+      (hasFlag($meta['flags'], MF_UNIQUE) ? AF_UNIQUE : 0) |
+      (hasFlag($meta['flags'], MF_NOT_NULL) ? AF_OBLIGATORY : 0) |
+      (hasFlag($meta['flags'], MF_AUTO_INCREMENT|MF_PRIMARY) ? AF_AUTOKEY : 0) |
+      ($meta['gentype'] == "text" ? AF_HIDE_LIST : 0);
+
+    if (hasFlag($flags, AF_PRIMARY) && $meta['num'] == 0 &&
+        in_array($name, array("id", $meta['table']."id", $meta['table']."_id")))
+      $flags |= AF_AUTOKEY;
+
+    if (in_array($name, array("passw", "password")))
+    {
+      $flags |= AF_HIDE_LIST;
+    }
+      
+    return $flags;
+  }  
+  
+  /**
+   * Get auto-detected order for the given attribute.
+   *
+   * @param string $name column/attribute name
+   * @param array  $meta column meta data
+   * 
+   * @return int order
+   */
+  protected function getOrder($name, $meta)
+  {
+    return ($meta['num'] + 1) * 100;    
+  }
+  
+  
+  /**
+   * Get auto-detected default value for the given attribute.
+   * 
+   * @param string $name column/attribute name
+   * @param array  $meta column meta data
+   * 
+   * @return mixed default value
+   */
+  protected function getDefaultValue($name, $meta)
   {
     if ($meta['default'] == "NOW" && in_array($meta['gentype'], array('date', 'time', 'datetime')))
     {
@@ -216,83 +649,51 @@ class atkMetaPolicy
       $time = array('hours' => $stamp['hours'], 'minutes' => $stamp['minutes'], 'seconds' => $stamp['seconds']);
       return array_merge($meta['gentype'] == 'time' ? array() : $date, $meta['gentype'] == 'date' ? array() : $time);
     }
-
     else if (array_key_exists('default', $meta))
+    {
       return $meta['default'];
-
-    else return NULL;
+    }
+    else 
+    {
+      return self::NO_DEFAULT_VALUE;
+    }
   }
 
   /**
-   * Sets the node.
-   */
-  function setNode(&$node)
-  {
-    $this->m_node = &$node;
-  }
-
-  /**
-   * Returns the table.
-   */
-  function getTable()
-  {
-    // table is already set
-    if ($this->m_node->getTable() !== NULL)
-      return $this->m_node->getTable();
-
-    $type = $this->m_node->m_type;
-    if ($type == NULL)
-      $type = get_class($this->m_node);
-
-    $db = $this->m_node->getDb();
-    if ($db->tableExists($type)) return $type;
-    elseif ($db->tableExists($this->m_grammar->singularize($type)))
-      return $this->m_grammar->singularize($type);
-    elseif ($db->tableExists($this->m_grammar->pluralize($type)))
-      return $this->m_grammar->pluralize($type);
-  }
-
-  /**
-   * Returns the sequence.
-   */
-  function getSequence()
-  {
-    $sequence = NULL;
-
-    $db = &$this->m_node->getDb();
-    $cols = $db->tableMeta($this->getTable());
-
-    foreach ($cols as $name => $meta)
-      if (isset($meta['sequence']) && strlen($meta['sequence']) > 0)
-        $sequence = $meta['sequence'];
-
-    if ($sequence == NULL)
-      $sequence = atkConfig("database_sequenceprefix").$this->getTable();
-
-    return $sequence;
-  }
-
-  /**
-   * Returns the default values for the node's attributes.
-   */
-  function getDefaultValues()
-  {
-    $result = array();
-    $db = &$this->m_node->getDb();
-    $cols = $db->tableMeta($this->m_node->getTable());
-    foreach ($cols as $name => $meta)
-      if (array_key_exists('default', $meta))
-        $result[$name] = $this->_getDefaultValue($name, $meta);
-    return $result;
-  }
-
-  /**
-   * Set includes. Implicitly sets the order.
+   * Calls a method of this object with the given parameters.
+   *
+   * @param string $method the method name
+   * @param array  $params the method parameters
    * 
-   * Attributes manually added through the policy 
-   * will always be included!
+   * @return mixed result
    */
-  function setIncludes($attrs)
+  protected function call($method, $params)
+  {
+    return call_user_func_array(array($this, $method), $params);
+  }  
+  
+  /**
+   * Returns the currently set includes (if applicable).
+   * 
+   * @return array includes list
+   */
+  public function getIncludes()
+  {
+    return $this->m_includes;
+  }
+
+  /**
+   * Set includes. Implicitly sets the order!
+   * 
+   * NOTE: Attributes manually added through the policy will always be 
+   *       included unless they are explicitly removed using the remove 
+   *       method!
+   * 
+   * This method can also be called with multiple attribute string arguments.
+   * 
+   * @param string|array $attrs attribute name(s)
+   */
+  public function setIncludes($attrs)
   {
     if (!is_array($attrs))
       $attrs = func_get_args();
@@ -302,14 +703,29 @@ class atkMetaPolicy
 
     $this->setOrder($attrs);
   }
+  
+  /**
+   * Returns the currently set excludes (if applicable).
+   * 
+   * @return array excludes list
+   */
+  public function getExcludes()
+  {
+    return $this->m_excludes;
+  }  
 
   /**
    * Set excludes.
    * 
-   * Attributes manually added through the policy 
-   * will always be included!
+   * NOTE: Attributes manually added through the policy will always be 
+   *       included unless they are explicitly removed using the remove 
+   *       method!
+   * 
+   * This method can also be called with multiple attribute string arguments.
+   * 
+   * @param string|array $attrs attribute name(s)
    */
-  function setExcludes($attrs)
+  public function setExcludes($attrs)
   {
     if (!is_array($attrs))
       $attrs = func_get_args();
@@ -319,10 +735,14 @@ class atkMetaPolicy
   }
 
   /**
-   * Sets the attribute order. All attributes not mentioned
-   * will be put at the bottom using their current order.
+   * Sets the attribute order. All attributes not mentioned will be moved to 
+   * the bottom using their current order.
+   * 
+   * This method can also be called with multiple attribute string arguments.
+   * 
+   * @param string|array $attrs attribute name(s)
    */
-  function setOrder($attrs)
+  public function setOrder($attrs)
   {
     if (func_num_args() > 1)
       $attrs = func_get_args();
@@ -334,15 +754,63 @@ class atkMetaPolicy
     foreach ($order as $i => $key)
       $this->m_attrs[$key]['order'] = ($i + 1) * 100;
   }
+  
+  /**
+   * Set the default value for the given attribute(s).
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the default value.
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param mixed $value         default value
+   */  
+  public function setDefaultValue($attrs, $value)
+  {
+    if (func_num_args() > 2)
+    {
+      $attrs = func_get_args();
+      $tabs = array_pop($attrs);
+    }
+
+    else if (!is_array($attrs))
+      $attrs = array($attrs);
+
+    foreach ($attrs as $attr)
+      if (array_key_exists($attr, $this->m_attrs))
+        $this->m_attrs[$attr]["default"] = $value;
+  }  
 
   /**
    * Set flag(s) for the given attribute or list of attributes.
-   * If $autoDetect is set to FALSE (defaults to TRUE) no
-   * auto-detected flags will be added later on.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * NOTE: this method will overwrite all currently set flags, including 
+   *       automatically detected flags!
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
    */
-
-  function setFlag($attrs, $flag) { $params = func_get_args(); $this->_call("setFlags", $params); }
-  function setFlags($attrs, $flags)
+  public function setFlag($attrs, $flags) 
+  { 
+    $params = func_get_args(); 
+    $this->call("setFlags", $params); 
+  }
+  
+  /**
+   * Set flag(s) for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * NOTE: this method will overwrite all currently set flags, including 
+   *       automatically detected flags!
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
+   */  
+  public function setFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
     {
@@ -359,10 +827,30 @@ class atkMetaPolicy
   }
 
   /**
-   * Add flag(s) to the given attribute or list of attributes.
+   * Add flag(s) for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
    */
-  function addFlag($attrs, $flag) { $params = func_get_args(); $this->_call("addFlags", $params); }
-  function addFlags($attrs, $flags)
+  public function addFlag($attrs, $flags) 
+  { 
+    $params = func_get_args(); 
+    $this->call("addFlags", $params); 
+  }
+  
+  /**
+   * Add flag(s) for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
+   */  
+  public function addFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
     {
@@ -379,9 +867,29 @@ class atkMetaPolicy
 
   /**
    * Remove flag(s) from the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
    */
-  function removeFlag($attrs, $flag) { $params = func_get_args(); $this->_call("removeFlags", $params); }
-  function removeFlags($attrs, $flags)
+  public function removeFlag($attrs, $flags)
+  { 
+    $params = func_get_args();
+    $this->call("removeFlags", $params); 
+  }
+
+  /**
+   * Remove flag(s) from the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the flag(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param int          $flags  flag(s)
+   */
+  public function removeFlags($attrs, $flags)
   {
     if (func_num_args() > 2)
     {
@@ -398,11 +906,47 @@ class atkMetaPolicy
   }  
   
   /**
-   * Enable force update for the given attribute or list of attributes.
+   * Enable force insert for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments.
    *
-   * @param unknown_type $attrs
+   * @param string|array $attrs attribute name(s)
    */
-  function addForceUpdate($attrs) 
+  public function addForceInsert($attrs) 
+  { 
+    if (!is_array($attrs))
+      $attrs = func_get_args();
+
+    foreach ($attrs as $attr)
+      if (array_key_exists($attr, $this->m_attrs))
+        $this->m_attrs[$attr]["forceInsert"] = true;
+  }  
+  
+  /**
+   * Disable force insert for the given attribute or list of attributes.
+   *
+   * This method can also be called with multiple attribute string arguments.
+   *
+   * @param string|array $attrs attribute name(s)
+   */
+  public function removeForceInsert($attrs) 
+  { 
+    if (!is_array($attrs))
+      $attrs = func_get_args();
+
+    foreach ($attrs as $attr)
+      if (array_key_exists($attr, $this->m_attrs))
+        $this->m_attrs[$attr]["forceInsert"] = false;
+  } 
+    
+  /**
+   * Enable force update for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments.
+   *
+   * @param string|array $attrs attribute name(s)
+   */
+  public function addForceUpdate($attrs) 
   { 
     if (!is_array($attrs))
       $attrs = func_get_args();
@@ -415,9 +959,11 @@ class atkMetaPolicy
   /**
    * Disable force update for the given attribute or list of attributes.
    *
-   * @param unknown_type $attrs
+   * This method can also be called with multiple attribute string arguments.
+   *
+   * @param string|array $attrs attribute name(s)
    */
-  function removeForceUpdate($attrs) 
+  public function removeForceUpdate($attrs) 
   { 
     if (!is_array($attrs))
       $attrs = func_get_args();
@@ -428,10 +974,30 @@ class atkMetaPolicy
   }   
 
   /**
-   * Set the tab(s) for the given attribute or list of attributes.
-   */
-  function setTab($attrs, $tab) { $params = func_get_args(); $this->_call("setTabs", $params); }
-  function setTabs($attrs, $tabs)
+   * Set the sections/tabs for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the section name(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param array|string $tabs   tab name(s)
+   */  
+  function setTab($attrs, $tabs) 
+  { 
+    $params = func_get_args(); 
+    $this->call("setTabs", $params); 
+  }
+  
+  /**
+   * Set the sections/tabs for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the section name(s).
+   * 
+   * @param array|string $attrs  list of attribute names or single attribute name
+   * @param array|string $tabs   tab name(s)
+   */  
+  public function setTabs($attrs, $tabs)
   {
     if (func_num_args() > 2)
     {
@@ -449,9 +1015,33 @@ class atkMetaPolicy
   
   /**
    * Set the sections/tabs for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the section name(s).
+   * 
+   * @param array|string $attrs    list of attribute names or single attribute name
+   * @param array|string $sections section name(s)
    */
-  function setSection($attrs, $tab) { $params = func_get_args(); $this->_call("setTabs", $params); }
-  function setSections($attrs, $tabs)  { $params = func_get_args(); $this->_call("setTabs", $params); }
+  public function setSection($attrs, $sections) 
+  { 
+    $params = func_get_args(); 
+    $this->call("setTabs", $params); 
+  }
+  
+  /**
+   * Set the sections/tabs for the given attribute or list of attributes.
+   * 
+   * This method can also be called with multiple attribute string arguments
+   * as long as the last argument contains the section name(s).
+   * 
+   * @param array|string $attrs    list of attribute names or single attribute name
+   * @param array|string $sections section name(s)
+   */  
+  public function setSections($attrs, $sections)  
+  { 
+    $params = func_get_args(); 
+    $this->call("setTabs", $params); 
+  }
 
   /**
    * Sets the attribute type. All extra arguments after the two
@@ -463,7 +1053,7 @@ class atkMetaPolicy
    * @param string $type        full ATK attribute class (e.g. atk.attributes.atkboolattribute)
    * @param mixed ...           all other arguments will be threated as parameters
    */
-  function setType($attr, $type)
+  public function setType($attr, $type)
   {
     $params = func_get_args();
     $params = array_slice($params, 2);
@@ -473,11 +1063,11 @@ class atkMetaPolicy
   /**
    * Sets the attribute type and parameters.
    *
-   * @param string|array $attr the attribute name or a list of attributes
-   * @param string $type       full ATK attribute class (e.g. atk.attributes.atkboolattribute)
-   * @param array $params      parameters for the attribute (optional)
+   * @param string|array $attr   the attribute name or a list of attributes
+   * @param string       $type   full ATK attribute class (e.g. atk.attributes.atkboolattribute)
+   * @param array        $params parameters for the attribute (optional)
    */
-  function setTypeAndParams($attr, $type, $params=array())
+  public function setTypeAndParams($attr, $type, $params=array())
   {
     $attrs = is_array($attr) ? $attr : array($attr);
     foreach ($attrs as $attr)
@@ -489,8 +1079,10 @@ class atkMetaPolicy
 
   /**
    * Returns the current maximum order in the attribute list.
+   * 
+   * @return int max order
    */
-  function _getMaxOrder()
+  protected function getMaxOrder()
   {
     $max = 0;
 
@@ -508,12 +1100,12 @@ class atkMetaPolicy
  /**
    * Find destination node for the given meta relation.
    *
-   * @param $accessor  accessor name
-   * @param $toMany    accessor name might be in plural form?
+   * @param string $accessor  accessor name
+   * @param bool   $toMany    accessor name might be in plural form?
    *
-   * @return destination node name for the given relation
+   * @return string destination node name for the given relation
    */
-  function findDestination($accessor, $toMany)
+  public function findDestination($accessor, $toMany)
   {
     $module = getNodeModule($accessor);
     if ($module == "")
@@ -526,79 +1118,106 @@ class atkMetaPolicy
       if (nodeExists("$module.$node"))
         return "$module.$node";
 
-      if ($toMany && nodeExists("$module.".$this->m_grammar->singularize($node)))
-        return "$module.".$this->m_grammar->singularize($node);
+      if ($toMany && nodeExists("$module.".$this->getGrammar()->singularize($node)))
+        return "$module.".$this->getGrammar()->singularize($node);
 
-      if (!$toMany && nodeExists("$module.".$this->m_grammar->pluralize($node)))
-        return "$module.".$this->m_grammar->pluralize($node);
+      if (!$toMany && nodeExists("$module.".$this->getGrammar()->pluralize($node)))
+        return "$module.".$this->getGrammar()->pluralize($node);
     }
 
     if (nodeExists($node))
       return $node;
 
-    if ($toMany && nodeExists($this->m_grammar->singularize($node)))
-      return $this->m_grammar->singularize($node);
+    if ($toMany && nodeExists($this->getGrammar()->singularize($node)))
+      return $this->getGrammar()->singularize($node);
 
-    if (!$toMany && nodeExists($this->m_grammar->pluralize($node)))
-      return $this->m_grammar->pluralize($node);
+    if (!$toMany && nodeExists($this->getGrammar()->pluralize($node)))
+      return $this->getGrammar()->pluralize($node);
 
     return NULL;
   }
   
   /**
-   * Find destination attribute with the give $name
-   * (as starting point) in the given $attrs array.
+   * Returns a list of possible attribute variants in the destination relation
+   * of one-to-many relations which reference back to this node.
    *
-   * @param $name attribute name starting point
-   * @param $attrs attribute names array 
-   * @return attribute name
+   * @return array list of attribute variants
    */
-  function _findDestinationAttribute($name, $attrs)
+  protected function getDestinationAttributeVariants()
   {
-    $attr = NULL;
-    if (in_array("{$name}_id", $attrs))
-      $attr = "{$name}_id";
-    else if (in_array($this->m_grammar->singularize($name)."_id", $attrs))
-      $attr = $this->m_grammar->singularize($name)."_id";
-    else if (in_array("{$name}id", $attrs))
-      $attr = "{$name}id";
-    else if (in_array($this->m_grammar->singularize($name)."id", $attrs))
-      $attr = $this->m_grammar->singularize($name)."id";      
-    else if (in_array($name, $attrs))
-      $attr = $name;
-    else if (in_array($this->m_grammar->singularize($name), $attrs))
-      $attr = $this->m_grammar->singularize($name);
-    return $attr;
-  }
-
-  /**
-   * Find destination attribute for the given relation.
-   *
-   * @param $relation  meta relation
-   *
-   * @return destination attribute name for the given relation
-   */
-  function findDestinationAttribute(&$relation)
-  {
-    $table = $this->getTable();
-    $node = getNodeType($this->m_node->atkNodeType());
-    $attrs = array_keys($relation->m_destInstance->m_attribList);
-
-    if (array_key_exists("dest", $relation->m_options))
-      return $relation->m_options["dest"];
-    else if (array_key_exists("destination", $relation->m_options))
-      return $relation->m_options["destination"];      
-    else if (($attr = $this->_findDestinationAttribute($table, $attrs)) != NULL) 
-      return $attr;
+    $base = array();
+    $base[] = $this->getNodeTable();
+    $base[] = getNodeType($this->getNode()->atkNodeType());
     
-    while ($node != NULL && !in_array($node, array('atknode', 'atkmetanode')))
+    for ($class = get_class($this->getNode()); stripos($class, 'metanode') === false; $class = get_parent_class($class))
     {
-      if (($attr = $this->_findDestinationAttribute($node, $attrs)) != NULL) 
-        return $attr;
-      else $node = get_parent_class($node);
+      $base[] = strtolower($class);
     }
-      
-    return NULL;
+    
+    $base = array_unique($base);
+    
+    if ($this->getNode()->getModule() != null)
+    {
+      // add variants for each base with the module as prefix, explicitly 
+      // make copy of base so that new entries don't mess up the loop
+      foreach (array_values($base) as $entry)
+      {
+        $base[] = $this->getNode()->getModule()."_".$entry;
+      }
+    }
+
+    $variants = array();
+
+    foreach ($base as $entry)
+    {
+      $variants[] = "{$entry}_id";
+      $variants[] = $this->getGrammar()->singularize($entry)."_id";
+      $variants[] = "{$entry}id";
+      $variants[] = $this->getGrammar()->singularize($entry)."id";
+      $variants[] = $entry;      
+      $variants[] = $this->getGrammar()->singularize($entry);
+    }
+    
+    $variants = array_values(array_unique($variants));
+
+    return $variants;
+  }
+  
+  /**
+   * Find source attribute for a many-to-one relation that point to the 
+   * given destination node.
+   *
+   * @param string $destination destination node type
+   * 
+   * @return string source attribute name
+   */
+  protected function findSourceAttribute($destination)
+  {
+    $module = getNodeModule($destination);
+    $type = getNodeType($destination);
+    
+    $prefixes = $module == null ? array('') : array('', "{$module}_");
+
+    foreach ($prefixes as $prefix)
+    {
+      foreach (array_keys($this->m_attrs) as $name)
+      {
+        if ($name == "{$prefix}{$type}_id")
+          return "{$prefix}{$type}_id";
+        else if ($name == "{$prefix}{$type}id")
+          return "{$prefix}{$type}id";
+        else if ($name == $prefix.$this->getGrammar()->singularize($type)."_id")
+          return $prefix.$this->getGrammar()->singularize($type)."_id";
+        else if ($name == $prefix.$this->getGrammar()->singularize($type)."id")
+          return $prefix.$this->getGrammar()->singularize($type)."id";
+        else if ($name == $prefix.$type)
+          return $prefix.$type;
+        else if ($name == $prefix.$this->getGrammar()->singularize($type))
+          return $prefix.$this->getGrammar()->singularize($type);
+      } 
+    }
+    
+    return null;   
   }
 
   /**
@@ -625,12 +1244,12 @@ class atkMetaPolicy
    * - rows            number of rows (many-to-many list relations only)
    * - name            name for this relation (by default getNodeType($accessor))
    *
-   * @param $accessor          accessor name (complete description is given above)
-   * @param $templateOrOptions template or list of options (complete description is given above)
-   * @param $options           list op options (complete description is given above)
-   * @param $flags 	           the flags for the relation [DEPRECATED!]
+   * @param string       $accessor          accessor name (complete description is given above)
+   * @param string|array $templateOrOptions template or list of options (complete description is given above)
+   * @param array        $options           list op options (complete description is given above)
+   * @param int          $flags 	          the flags for the relation
    */
-  function hasMany($accessor, $templateOrOptions=array(), $options=array(), $flags=0)
+  public function hasMany($accessor, $templateOrOptions=array(), $options=array(), $flags=0)
   {
     $template = NULL;
     if (is_array($templateOrOptions))
@@ -646,6 +1265,8 @@ class atkMetaPolicy
       $name = getNodeType($accessor);    
     }
 
+    $destination = $this->findDestination($accessor, true);
+    
     if (isset($options['through']))
     {
       switch ($options['type'])
@@ -665,16 +1286,24 @@ class atkMetaPolicy
         default:
           $type = "atk.meta.relations.atkmetashuttlerelation";          
       }
+      
+      $through = $this->findDestination($options['through'], true);
+      
+      $params = array($destination, $through, $template, $options);
     }
     else 
     {
       $type = "atk.meta.relations.atkmetaonetomanyrelation";
+      
+      $variants = $this->getDestinationAttributeVariants();
+      $options['variants'] = $variants;
+      
+      $params = array($destination, $template, $options);
     }
     
-    $params = array($accessor, $template, $options);
     $flags  = AF_HIDE_LIST|AF_HIDE_ADD|$flags;
     $tabs   = NULL;
-    $order  = $this->_getMaxOrder() + 100 ;
+    $order  = $this->getMaxOrder() + 100 ;
     
     $this->add($name, $type, $params, $flags, $tabs, $order);      
   }
@@ -710,58 +1339,54 @@ class atkMetaPolicy
    *                   records in case of a many-to-one relation, same as
    *                   the AF_LARGE flag (defaults to false)
    *
-   * @param $accessor  accessor name (complete description is given above)
-   * @param $options   list op options (complete description is given above)
+   * @param string       $accessor          accessor name (complete description is given above)
+   * @param string|array $templateOrOptions template or list of options (complete description is given above)
+   * @param array        $options           list op options (complete description is given above)
+   * @param int          $flags 	          the flags for the relation
    */
-  function hasOne($accessor, $templateOrOptions=array(), $options=array())
+  public function hasOne($accessor, $templateOrOptions=array(), $options=array(), $flags=0)
   {
     $template = NULL;
     if (is_array($templateOrOptions))
       $options = $templateOrOptions;
     else $template = $templateOrOptions;
+    
+    // look-up destination node
+    $destination = $this->findDestination($accessor, false);
 
-    $node = getNodeType($accessor);
-    $attr = NULL;
-
+    // explicit source given
     if (array_key_exists("source", $options))
     {
-      //in case of multi referential key "source" is array
-      if(is_array($options["source"]))
+      // in case of multi referential key "source" is array
+      if (is_array($options["source"]))
       {
-        $attr = $options["source"][0];// we use first key as name of attribute 
+        $attr = $options["source"][0]; // we use the first key as name of attribute 
       }
       else 
       {
         $attr = $options["source"];
       }
     }
+    
+    // no source and no destination given, still try to find a source attribute just to be sure
+    // note that findSourceAttribute probably returns null for one-to-one relations
     else if (!array_key_exists("dest", $options) && !array_key_exists("destination", $options))
     {
-      foreach (array_keys($this->m_attrs) as $name)
-      {
-        if ($name == "{$node}_id")
-          $attr = "{$node}_id";
-        else if ($name == "{$node}id")
-          $attr = "{$node}id";
-        else if ($name == $this->m_grammar->singularize($node)."_id")
-          $attr = $this->m_grammar->singularize($node)."_id";
-        else if ($name == $this->m_grammar->singularize($node)."id")
-          $attr = $this->m_grammar->singularize($node)."id";
-        else if ($name == $node)
-          $attr = $node;
-        else if ($name == $this->m_grammar->singularize($node))
-          $attr = $this->m_grammar->singularize($node);
-
-        if ($attr != NULL) break;
-      }
+      $attr = $this->findSourceAttribute($destination);
+    }
+    
+    // one-to-one relation, lookup possible destination attribute variants
+    if ($attr == null && !array_key_exists("dest", $options) && !array_key_exists("destination", $options))
+    {
+      $options['variants'] = $this->getDestinationAttributeVariants();
     }
 
-    $name   = $attr != NULL ? $attr : $node;
+    $name   = $attr != NULL ? $attr : getNodeType($accessor);
     $type   = "atk.meta.relations.atkmeta".($attr != NULL ? 'many' : 'one')."toonerelation";
-    $params = array($accessor, $template, $options);
-    $flags  = ($attr != NULL ? $this->m_attrs[$attr]["flags"] : 0) | (array_key_exists("large", $options) && $options["large"] ? AF_LARGE : 0);
+    $params = array($destination, $template, $options);
+    $flags  = ($attr != NULL ? $this->m_attrs[$attr]["flags"] : 0) | (array_key_exists("large", $options) && $options["large"] ? AF_LARGE : 0) | $flags;
     $tabs   = $attr != NULL ? $this->m_attrs[$attr]["tabs"] : NULL;
-    $order  = $attr != NULL ? $this->m_attrs[$attr]["order"] : $this->_getMaxOrder() + 100;
+    $order  = $attr != NULL ? $this->m_attrs[$attr]["order"] : $this->getMaxOrder() + 100;
 
     $this->add($name, $type, $params, $flags, $tabs, $order);
   }
@@ -769,14 +1394,15 @@ class atkMetaPolicy
   /**
    * Add / replace (custom) attribute.
    * 
-   * @param string|array $name  attribute name or list of attributes
-   * @param string $type        attribute type
-   * @param array $params       attribute parameters, excluding flags (optional)
-   * @param int $flags          attribute flags (optional)
-   * @param string|array $tabs  tabs to display the attribute on
-   * @param int $order          order of the attribute
+   * @param string|array $name    attribute name or list of attributes
+   * @param string       $type    attribute type
+   * @param array        $params  attribute parameters, excluding flags (optional)
+   * @param int          $flags   attribute flags (optional)
+   * @param string|array $tabs    tabs to display the attribute on
+   * @param int          $order   order of the attribute
+   * @param mixed        $default default value
    */
-  function add($name, $type, $params=array(), $flags=0, $tabs=NULL, $order=NULL)
+  public function add($name, $type, $params=array(), $flags=0, $tabs=NULL, $order=NULL, $default=self::NO_DEFAULT_VALUE)
   {
     $names = is_array($name) ? $name : array($name);
     foreach ($names as $name)
@@ -784,7 +1410,7 @@ class atkMetaPolicy
       if ($order === NULL && isset($this->m_attrs[$name]))
         $order = $this->m_attrs[$name]['order']; 
       else if ($order === NULL) 
-        $order = $this->_getMaxOrder() + 100;
+        $order = $this->getMaxOrder() + 100;
   
       $this->m_attrs[$name] =
         array(
@@ -794,229 +1420,266 @@ class atkMetaPolicy
           "tabs" => $tabs,
           "order" => $order
         );   
+        
+      if ($default != self::NO_DEFAULT_VALUE)
+      {
+        $this->m_attrs[$name]['default'] = $default;
+      }
     }
   }
   
   /**
    * Remove attribute.
    * 
-   * @param $name attribute name
+   * @param string $name attribute name
    */
-  function remove($name)
+  public function remove($name)
   {
     unset($this->m_attrs[$name]);
   }
 
   /**
-   * Returns the attributes data array.
+   * Returns a reference to the attributes array.
+   * 
+   * Be very careful when using this array, modifying it might void your warranty!
+   * 
+   * @return array reference to the attributes array
    */
-  function &getAttributes()
+  public function &getAttributes()
   {
     return $this->m_attrs;
   }
   
   /**
    * Returns the attribute names.
+   * 
+   * @return array string attribute names
    */
-  function getAttributeNames()
+  public function getAttributeNames()
   {
     return array_keys($this->m_attrs);
   }
 
   /**
-   * Intialize attribute for node using
-   * the given column meta data.
-   */
-  function _initAttribute($name, $meta)
-  {
-    $typeAndParams = $this->_getTypeAndParams($name, $meta);
-    if ($typeAndParams["type"] === NULL) return;
-
-    $flags = $this->_getFlags($name, $meta);
-
-    $this->m_attrs[$name] = $typeAndParams + array("flags" => $flags, "tabs" => NULL, "order" => ($meta['num'] + 1) * 100, "forceUpdate" => NULL);
-  }
-
-  /**
-   * Initialize attributes using policy.
-   */
-  function init()
-  {
-    $db = &$this->m_node->getDb();
-    $cols = $db->tableMeta($this->m_node->getTable());
-    $this->m_tableAttrs = array_keys($cols);
-    foreach ($cols as $name => $meta)
-      $this->_initAttribute($name, $meta);
-  }
-
-  /**
-   * Checks if a certain attribute should be included or not.
-   * Checks both the include and exclude lists.
+   * Utility method to bit-or two integers.
    *
-   * @param String $name
-   * @return Boolean attribute included?
+   * @param int $a integer a
+   * @param int $b integer b
+   * 
+   * @return int result of bit-or
    */
-  function _isAttributeIncluded($name)
+  public static function bitOr($a, $b)
   {
-    if (!in_array($name, $this->m_tableAttrs)) return true;
-    if ($this->m_includes !== NULL && in_array($name, $this->m_includes)) return true;
-    if ($this->m_excludes !== NULL && in_array($name, $this->m_excludes)) return false;
-
-    if ($this->m_includes !== NULL)
-    {
-      foreach ($this->m_includes as $include)
-        if ($include{0} == '/' && preg_match($include, $name)) return true;
-      return false;
-    }
-
-    if ($this->m_excludes !== NULL)
-    {
-      foreach ($this->m_excludes as $exclude)
-        if ($exclude{0} == '/' && preg_match($exclude, $name)) return false;
-      return true;
-    }
-
-    return true;
-  }
-  
-  /**
-   * Flags string.
-   */
-  function _flagsString($flags)
-  {
-    static $attrConstants = null;
-    
-    if ($attrConstants == null) 
-    {
-      useattrib('atkattribute');
-      $allConstants = get_defined_constants();
-
-      $attrConstants = array();
-      foreach ($allConstants as $const => $value)
-      {
-        if (substr($const, 0, 3) == 'AF_' && 
-            (substr($const, 0, 12) == 'AF_SPECIFIC_' || !in_array($value, array(AF_SPECIFIC_1, AF_SPECIFIC_2, AF_SPECIFIC_3, AF_SPECIFIC_4, AF_SPECIFIC_5))) && 
-            !in_array($const, array('AF_UNIX', 'AF_INET', 'AF_INET6')))
-        {
-          $attrConstants[$value] = $const;
-        }
-      }
- 
-      krsort($attrConstants);
-    }
-
-    $found = array();
-    foreach ($attrConstants as $value => $const)
-    {
-      if (hasFlag($flags, $value))
-      {
-        $found[] = $const;
-        $flags ^= $value;
-      }
-    }
-    
-    return count($found) > 0 ? implode('|', $found) : 0;
-  }
-  
-  /**
-   * Debug attribute.
-   */
-  function _debugAttribute($name, $type, $params, $flags, $tabs, $order)
-  {
-    if (atkconfig('debug') < 1) return;
-    
-    $paramsStrs = array();
-    foreach ($params as $param)
-      $paramsStrs[] = htmlentities(var_export($param, true));
-    $paramsStr = count($paramsStrs) > 0 ? ', '.implode(', ', $paramsStrs) : '';
-    
-    $flagsStr = $this->_flagsString($flags);
-    $tabsStr = var_export($tabs, true);
-      
-    $call = "\$attr = &\$this->add(new {$type}('{$name}'$paramsStr), $tabsStr, $order); \$attr->addFlag($flagsStr);";
-    
-    atkdebug("atkMetaPolicy::_applyAttribute: {$call}");
-  }
-
-  /**
-   * Apply attribute.
-   */
-  function &_applyAttribute($name, $type, $params, $flags, $tabs, $order, $forceUpdate)
-  {
-    if (!$this->_isAttributeIncluded($name)) return;
-    
-    if ($type == NULL)
-    {
-      atkdebug('atkMetaPolicy::_applyAttribute: '.$this->m_node->atkNodeType().' / '.$name. ' (no type set, ignoring!)');
-      return;
-    }
-
-    if (atkexists("attribute", $type))
-      atkuse("attribute", $type);
-    elseif (atkexists("relation", $type))
-      atkuse("relation", $type);
-    else atkimport($type);
-
-    if (strrpos($type, ".") !== FALSE)
-      $type = substr($type, strrpos($type, ".") + 1);
-
-    $call = "\$attr = new $type(\$name";
-    foreach (array_keys($params) as $i)
-      $call .= ", \$params[$i]";
-    $call .= ");";
-    eval($call);
-    $attr->addFlag($flags);
-    
-    $this->_debugAttribute($name, $type, $params, $flags, $tabs, $order);
-    
-    $attr = &$this->m_node->add($attr, $tabs, $order);
-    if ($forceUpdate !== NULL)
-      $attr->setForceUpdate($forceUpdate);
-    return $attr;
+    return $a|$b;
   }  
   
   /**
-   * Compare the order of two attributes.
+   * Detect node table name.
    *
-   * @param array $attr1
-   * @param array $attr2
-   * @return result of ordering
+   * @return string table name
    */
-  function _cmpAttribute($attr1, $attr2)
+  protected function detectNodeTable()
   {
-    if ($attr1['order'] < $attr2['order']) return -1;
-    else if ($attr1['order'] == $attr2['order']) return 0;
-    else return 1;
+    $module = $this->getNode()->getModule();
+    
+    $base = array();
+    $base[] = $this->getNode()->getType();
+    $base[] = $module."_".$this->getNode()->getType();    
+    
+    for ($class = get_class($this->getNode()); stripos($class, 'metanode') === false; $class = get_parent_class($class))
+    {
+      $base[] = strtolower($class);
+      $base[] = $module."_".strtolower($class);
+    }
+    
+    $db = atkGetDb($this->getNodeDatabase());
+    foreach ($base as $entry)
+    {
+      if ($db->tableExists($entry)) 
+        return $entry;
+      else if ($db->tableExists($this->getGrammar()->singularize($entry)))
+        return $this->getGrammar()->singularize($table);
+      else if ($db->tableExists($this->getGrammar()->pluralize($entry)))
+        return $this->getGrammar()->pluralize($entry);    
+    }
+    
+    return null;
+  }
+  
+  /**
+   * Detect node sequence name.
+   * 
+   * @return string sequence name
+   */
+  protected function detectNodeSequence()
+  {
+    $db = atkGetDb($this->getNodeDatabase());
+    $cols = $this->getMetaData();
+
+    foreach ($cols as $name => $meta)
+      if (isset($meta['sequence']) && strlen($meta['sequence']) > 0)
+        $sequence = $meta['sequence'];
+
+    if ($sequence == NULL)
+      $sequence = atkConfig("database_sequenceprefix").$this->getNodeTable();
+
+    return $sequence;      
+  }  
+
+  /**
+   * Intialize attribute for node using the given column meta data.
+   * 
+   * @param string $name column name
+   * @param array  $meta column meta data
+   */
+  protected function initAttribute($name, $meta)
+  {
+    $typeAndParams = $this->getTypeAndParams($name, $meta);
+    if ($typeAndParams["type"] === NULL) return;
+
+    $type = $typeAndParams['type'];
+    $params = $typeAndParams['params'];
+    $flags = $this->getFlags($name, $meta);
+    $order = $this->getOrder($name, $meta);
+    $default = $this->getDefaultValue($name, $meta);
+
+    $this->add($name, $type, $params, $flags, null, $order, $default);
+  }
+  
+  /**
+   * Initialize attributes using policy.
+   */
+  protected function init()
+  {
+    $grammar = $this->getNode()->getMetaOption('grammar');
+    $grammar = atkMetaGrammar::get($grammar);
+    $this->setGrammar($grammar);
+    
+    $compiler = $this->getNode()->getMetaOption('compiler');
+    $compiler = atkMetaCompiler::get($compiler);
+    $this->setCompiler($compiler);    
+    
+    $handler = $this->getNode()->getMetaOption('handler');
+    $this->setHandler($handler);
+
+    $database = $this->getNode()->getMetaOption('database', $this->getNode()->getMetaOption('db', 'default'));
+    $this->setNodeDatabase($database);
+    
+    $table = $this->getNode()->getMetaOption('table');
+    if ($table == null)
+      $table = $this->detectNodeTable();
+    $this->setNodeTable($table);
+    
+    $db = atkGetDb($database);
+    $metaData = $db->tableMeta($table);
+    $this->setMetaData($metaData);    
+      
+    $sequence = $this->getNode()->getMetaOption('sequence');
+    if ($sequence == null)
+      $sequence = $this->detectNodeSequence();
+    $this->setNodeSequence($sequence);
+    
+    $flags = $this->getNode()->getMetaOption('flags', 0);
+    if (is_array($flags))
+      $flags = array_reduce($flags, array('atkMetaPolicy', 'bitOr'), 0);   
+    $this->setNodeFlags($flags);
+    
+    $descriptor = $this->getNode()->getMetaOption('descriptor');
+    $this->setNodeDescriptor($descriptor);
+    
+    $order = $this->getNode()->getMetaOption('order');
+    $this->setNodeOrder($order);
+    
+    $index = $this->getNode()->getMetaOption('index');
+    $this->setNodeIndex($index);
+    
+    $filter = $this->getNode()->getMetaOption('filter');
+    $this->setNodeFilter($filter);
+    
+    $securityAlias = $this->getNode()->getMetaOption('securityAlias');
+    $this->setNodeSecurityAlias($securityAlias);
+    
+    $securityMap = $this->getNode()->getMetaOption('securityMap');
+    $this->setNodeSecurityMap($securityMap);
+
+    foreach ($metaData as $name => $meta)
+      $this->initAttribute($name, $meta);
   }
 
   /**
-   * Build / setup node using the collected attributes.
+   * Modify meta policy, by default the meta method of the node is called.
    */
-  function apply()
+  protected function meta()
   {
-    atkdebug("atkMetaPolicy::apply: ".$this->m_node->atkNodeType());
-    
-    $attrs = $this->m_attrs;
-    uasort($attrs, array($this, '_cmpAttribute'));
-    
-    foreach ($attrs as $name => $data) 
+    // handler / callback is set, call the handler
+    if ($this->getHandler() != null)
     {
-      $this->_applyAttribute(
-        $name, 
-        isset($data["type"]) ? $data["type"] : '', 
-        isset($data["params"]) ? $data["params"] : '', 
-        isset($data["flags"]) ? $data["flags"] : '', 
-        isset($data["tabs"]) ? $data["tabs"] : $this->m_node->m_default_tab, 
-        isset($data["order"]) ? $data["order"] : '',
-        isset($data["forceUpdate"]) ? $data["forceUpdate"] : NULL
-      );
+      call_user_func($this->getHandler(), $this);
+      return;
     }
     
-    if ($this->m_node->hasFlag(NF_ML))
+    // no handler set, try to call the node's meta method if it exists
+    if (!method_exists($this->getNode(), 'meta')) return;
+    
+    $method = new ReflectionMethod($this->getNode(), 'meta');
+    
+    if ($method->isStatic())
     {
-      useattrib('atkmlselectorattribute');
-      $this->m_node->add(new atkMlSelectorAttribute());
-    }                             
+      $method->invoke(get_class($this->getNode()), $this);
+    }
+    else
+    {
+      $this->getNode()->meta($this);
+    }
+  }
+  
+  /**
+   * Compile policy.
+   * 
+   * @return string code compiled code
+   */
+  protected function compile()
+  {
+    return $this->getCompiler()->compile($this);
+  }
+  
+  /**
+   * Write compiled meta node code to cache.
+   *
+   * @param string $code compiled code
+   * 
+   * @return string file path
+   */
+  protected function cache($code)
+  {
+    atkimport('atk.utils.atktmpfile');
+    $node = $this->getNode();
+    $file = new atkTmpFile("meta/".$this->getNode()->getModule()."/".$this->getNode()->getType().".php");
+    $file->writeFile("<?php\n$code");
+    return $file->getPath();
+  }
+  
+  /**
+   * Build / setup node using the collected attributes.
+   */
+  public function apply()
+  {
+    $this->init();
+    $this->meta();
+    $code = $this->compile();
+    
+    atk_var_dump("\n\n$code", "atkMetaPolicy::apply - ".$this->getNode()->atkNodeType());
+
+    $node = $this->getNode(); 
+    
+    if ($this->getNode()->isCacheable())
+    {
+      $file = $this->cache($code);
+      include($file);
+    }
+    else 
+    {
+      eval($code);
+    }
   }
 }
-?>

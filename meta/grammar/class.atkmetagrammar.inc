@@ -20,7 +20,7 @@
  *
  * The singularize and pluralize methods are inspired by the methods with
  * the same name in the Inflector module of the Ruby on Rails framework
- * (Copyright ï¿½ 2004 David Heinemeier Hansson). The Ruby on Rails framework
+ * (Copyright © 2004 David Heinemeier Hansson). The Ruby on Rails framework
  * can be found at http://www.rubyonrails.com
  *
  * @author Peter C. Verhage <peter@achievo.org>
@@ -31,23 +31,34 @@
 class atkMetaGrammar
 {
   /**
-   * Returns the instance of the grammar with the
-   * given class. If no class given the default
-   * instance is returned ($config_meta_grammar).
+   * Grammar instances.
    *
-   * @static
+   * @var array instances
    */
-  function &getInstance($class=NULL)
+  static $instances;
+  
+  /**
+   * Returns an instance of the meta grammar with the given class. If no class
+   * is specified the default meta grammar is used determined using the 
+   * $config_meta_grammar variable.
+   *
+   * @param string $class full ATK grammar class path
+   * 
+   * @return atkMetaGrammar meta grammar
+   */
+  public static function get($class=null)
   {
-    static $instances = array();
+    if (!is_string($class) || strlen($class) == 0)
+    {
+      $class = atkconfig("meta_grammar", "atk.meta.grammar.atkmetagrammar");
+    }
     
-    if ($class == NULL)
-      $class = atkconfig("meta_grammar");
-
-    if (!isset($instances[$class]) || $instances[$class] == NULL)
-      $instances[$class] = &atknew($class);
-      
-    return $instances[$class];
+    if (!isset(self::$instances[$class]))
+    {
+      self::$instances[$class] = atknew($class);
+    }
+    
+    return self::$instances[$class];
   }  
   
   /**
@@ -60,7 +71,7 @@ class atkMetaGrammar
    *
    * @return transformed word
    */
-  function transform($word, $rules)
+  public function transform($word, $rules)
   {
     foreach ($rules as $rule => $replacement)
       if (preg_match($rule, $word))
@@ -73,7 +84,7 @@ class atkMetaGrammar
    *
    * @return list of singular rules
    */
-  function getSingularRules()
+  public function getSingularRules()
   {
     return array(
       '/(f)ish$/i' => '\1\2ish',
@@ -100,7 +111,7 @@ class atkMetaGrammar
    *
    * @return list of plural rules
    */
-  function getPluralRules()
+  public function getPluralRules()
   {
     return array(
       '/(fish)$/i' => '\1\2',                  // fish
@@ -126,7 +137,7 @@ class atkMetaGrammar
    *
    * @return singularized word
    */
-  function singularize($word)
+  public function singularize($word)
   { 
     static $rules = NULL;
     if ($rules == NULL)
@@ -141,7 +152,7 @@ class atkMetaGrammar
    *
    * @return pluralized word
    */
-  function pluralize($word)
+  public function pluralize($word)
   {
     static $rules = NULL;
     if ($rules == NULL)
@@ -149,4 +160,3 @@ class atkMetaGrammar
     return $this->transform($word, $rules);
   }
 }
-?>

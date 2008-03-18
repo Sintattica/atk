@@ -29,45 +29,46 @@ userelation("atkonetoonerelation");
  */        
 class atkMetaOneToOneRelation extends atkOneToOneRelation
 {
-  var $m_accessor;
-  var $m_options;
- 
   /**
    * Default constructor.    
    */
-  function atkMetaOneToOneRelation($name, $accessor, $template, $options, $flags=0)
+  public function __construct($name, $destination, $template, $options, $flags=0)
   {
-    $this->atkOneToOneRelation($name, $accessor, "?", $flags);
-    $this->m_accessor = $accessor;
-    $this->m_options = $options;
+    $refKey = isset($options['dest']) ? $options['dest'] : isset($options['destination']) ? $options['destination'] : '?';
+    
+    parent::__construct($name, $destination, $refKey, $flags);
+
+    $this->m_variants = (array)@$options['variants'];
     
     $this->setDescriptorTemplate($template);
+
     if (isset($options["filter"])) 
-      $this->setDestinationFilter($options["filter"]);   
+      $this->setDestinationFilter($options["filter"]);
   }
-  
+
   /**
-   * Create the instance of the destination. 
+   * Create the instance of the destination.
    *
    * If succesful, the instance is stored in the m_destInstance member variable.
-   * 
+   *
    * @return boolean true if succesful, false if something went wrong.
    */
-  function createDestination()
+  public function createDestination()
   {
-    if ($this->m_destInstance != "") return TRUE;
+    $result = parent::createDestination();
     
-    $policy = &$this->m_ownerInstance->getMetaPolicy();
-    
-    $this->m_destination = $policy->findDestination($this->m_accessor, false);
-    atkdebug("atkMetaOneToOneRelation: {$this->m_accessor} destination {$this->m_destination}");        
-    if ($this->m_destination == NULL) return FALSE;
-    else if (!parent::createDestination()) return FALSE;
-    
-    $this->m_refKey = $policy->findDestinationAttribute($this);
-    atkdebug("atkMetaOneToOneRelation: {$this->m_accessor} reference key {$this->m_refKey}");        
-      
-    return $this->m_refKey != NULL;
+    if ($result && is_array($this->m_refKey) && in_array('?', $this->m_refKey))
+    {
+      foreach ($this->m_variants as $variant)
+      {
+        // we *must* use $this->m_destInstance (not $this->getDestination()) else we will create an infinite loop    
+        if ($this->m_destInstance->getAttribute($variant) != null)
+        {
+          $this->m_refKey = array($variant);
+        }
+      }
+    }
+
+    return $result && $this->m_refKey != NULL;
   }
 }  
-?>

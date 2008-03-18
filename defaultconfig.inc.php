@@ -64,22 +64,28 @@
   $config_configdir = $config_atkroot."configs/";
 
   /**
-   * Use the given meta policy as the default meta policy
+   * Use the given meta policy as the default meta policy.
    * @var String
    */
   $config_meta_policy = "atk.meta.atkmetapolicy";
 
   /**
-   * Use the given meta handler as the default meta handler
-   * @var String
-   */
-  $config_meta_handler = "atk.meta.atkmetahandler";
-
-  /**
-   * Use the given meta grammar as the default meta grammar
+   * Use the given meta grammar as the default meta grammar.
    * @var String
    */
   $config_meta_grammar = "atk.meta.grammar.atkmetagrammar";
+
+  /**
+   * Use the given meta compiler as the default meta compiler.
+   * @var String
+   */
+  $config_meta_compiler = "atk.meta.compiler.atkmetacompiler";
+  
+  /**
+   * Cache compiled meta node code?
+   * @var bool
+   */
+  $config_meta_cache = true;
   
   /**
    * Use the given class for creating datagrids.
