@@ -200,7 +200,7 @@
     function value2db($rec)
     {
       $db = &$this->getDb();
-      if ($db->getType() != "oci9")
+      if ($db->getType() != "oci9" || $this->dbFieldType() != 'text')
         return $db->escapeSQL($rec[$this->fieldName()]);
       else
         return $rec[$this->fieldName()]; //CLOB in oci9 don't need quotes to be escaped EVIL HACK! THIS IS NOT ATKTEXTATTRIBUTE's PROBLEM!
@@ -234,7 +234,7 @@
 
     function fetchMeta($metadata)
     {
-      $this->m_dbfieldtype = $metadata[$this->fieldName()]["type"];
+      $this->m_dbfieldtype = $metadata[$this->fieldName()]["gentype"];
     }
 
     /**
