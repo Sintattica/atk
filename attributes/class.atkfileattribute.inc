@@ -156,13 +156,46 @@
 
 
     /**
+     * Returns an array containing files in specified directory
+     * optionally filtered by settings from setAllowedFileTypes method.
+     * 
+     * @param string $dir Directory to read files from
+     * @return array Array with files in specified dir
+     */
+    function getFiles($dir)
+    {
+      $dirHandle = dir($this->m_dir);
+      $file_arr  = array();
+ 
+      while($item = $dirHandle->read())
+      {
+        if (count($this->m_allowedFileTypes) == 0)
+        {
+          if(is_file($this->m_dir.$item)) $file_arr[] = $item;
+        }
+        else
+        {
+          $extension = $this->getFileExtension($item);
+
+          if (in_array($extension, $this->m_allowedFileTypes))
+          {
+            if(is_file($this->m_dir.$item)) $file_arr[] = $item;
+          }
+        }
+      }
+      $dirHandle->close();
+      return $file_arr;       
+    }
+
+
+    /**
      * Returns a piece of html code that can be used in a form to edit this
      * attribute's value.
      * @param array $record Record
      * @param string $fieldprefix Field prefix
      * @return string piece of html code with a browsebox
      */
-    function edit($record="", $fieldprefix="")
+    function edit($record="", $fieldprefix="", $regex="")
     {
       if (method_exists($this->getOwnerInstance(), $this->fieldName().'_display'))
       {
@@ -176,13 +209,7 @@
 
       if(is_dir($this->m_dir) && is_writable($this->m_dir))
       {
-        $file_arr=array();
-        $d = dir($this->m_dir);
-        while($item = $d->read())
-        {
-          if(is_file($this->m_dir.$item)) $file_arr[] = $item;
-        }
-        $d->close();
+        $file_arr = $this->getFiles($this->m_dir);
         if(count($file_arr)>0) natcasesort($file_arr);
       }
       else
