@@ -67,7 +67,14 @@
         {
           $db = $this->m_database; // tnsnames based connect
         }
-        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db);
+        
+        if (empty($this->m_charset)) 
+        {    
+          $this->m_charset = null;
+        }    
+        
+        $this->m_link_id = $connectfunc($this->m_user, $this->m_password, $db, $this->m_charset);
+        
         if (!$this->m_link_id)
         {
           $err = OCIError();
