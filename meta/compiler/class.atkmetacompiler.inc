@@ -140,9 +140,9 @@ class atkMetaCompiler
     $includes = $policy->getIncludes();
     $excludes = $policy->getExcludes();
     $columns = array_keys($policy->getMetaData());    
-    
+
     if (!in_array($name, $columns)) return true;
-    if ($includes !== NULL && in_array($name, $includes)) return true;
+    if ($includes !== NULL && !in_array($name, $includes)) return false;
     if ($excludes !== NULL && in_array($name, $excludes)) return false;
 
     return true;
