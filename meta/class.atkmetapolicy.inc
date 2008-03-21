@@ -1459,6 +1459,14 @@ class atkMetaPolicy
   {
     return array_keys($this->m_attrs);
   }
+  
+  /**
+   * Translate using the node's module and type.
+   */
+  public function text($string, $module=NULL, $language='', $firstFallback="", $nodeDefaultText=false)
+  {
+    return $this->getNode()->text($string, $module, $language, $firstFallback, $nodeDefaultText);
+  }  
 
   /**
    * Utility method to bit-or two integers.
