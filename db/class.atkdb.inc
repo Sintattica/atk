@@ -793,20 +793,74 @@
       return array("exact","substring", "wildcard","greaterthan","greaterthanequal","lessthan","lessthanequal","between");
     }
 
-    function tableMeta($table)
+    /**
+     * Fetches table meta data from database
+     *
+     * @param string $table
+     * @return array
+     */
+    public function tableMeta($table)
     {
-      if (!isset($this->m_tableMeta[$table]))
+      if (isset($this->m_tableMeta[$table]))
       {
-        $meta = $this->metadata($table, false);
-        $this->m_tableMeta[$table] = array();
-        for ($i = 0, $_i = count($meta); $i < $_i; $i++)
-        {
-          $meta[$i]['num'] = $i;
-          $this->m_tableMeta[$table][$meta[$i]['name']] = &$meta[$i];
-        }
+        return $this->m_tableMeta[$table];
+      }
+
+      if (atkconfig('meta_caching'))
+      {
+        $this->m_tableMeta[$table] = $this->_getTableMetaFromCache($table);
+      }
+      else
+      {
+        $this->m_tableMeta[$table] = $this->_getTableMetaFromDb($table);
       }
 
       return $this->m_tableMeta[$table];
+    }
+
+    /**
+     * If cached it'll return the table metadata
+     * from cache.
+     *
+     * @param string $table
+     * @return array
+     */
+    private function _getTableMetaFromCache($table)
+    {
+      atkimport('atk.utils.atktmpfile');
+      $tmpfile = new atkTmpFile('tablemeta/' . $this->m_connection . "/" . $table . ".php");
+
+      if ($tmpfile->exists())
+      {
+        include($tmpfile->getPath());
+      }
+      else
+      {
+        $tablemeta = $this->_getTableMetaFromDb($table);
+        $tmpfile->writeAsPhp("tablemeta",$this->m_tableMeta[$table]);
+      }
+
+      return $tablemeta;
+    }
+
+    /**
+     * Returns the tablemetadata directly from db
+     *
+     * @param string $table
+     * @return array
+     */
+    protected function _getTableMetaFromDb($table)
+    {
+      $meta = $this->metadata($table, false);
+
+      $result = array();
+      for ($i = 0, $_i = count($meta); $i < $_i; $i++)
+      {
+        $meta[$i]['num'] = $i;
+        $result[$meta[$i]['name']] = &$meta[$i];
+      }
+
+      return $result;
     }
 
     /**
@@ -1135,11 +1189,11 @@
     {
       $this->m_haltonerror = $state;
     }
-    
+
     /**
      * Check if current db is present and acceptable for current user
      *
-     * @return DB_SUCCESS if 
+     * @return DB_SUCCESS if
      */
     function getDbStatus()
     {
