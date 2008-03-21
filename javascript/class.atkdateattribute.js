@@ -269,9 +269,9 @@ ATK.DateAttribute = {
     var yearEl = document.getElementById(name + "[year]");
 
     var value = {
-      year: yearEl.value,
+      year : yearEl.value,
       month: monthEl.options[monthEl.selectedIndex].value,
-      day: dayEl.options[dayEl.selectedIndex].value
+      day  : dayEl.selectedIndex>=0 ? dayEl.options[dayEl.selectedIndex].value : 0
     };
 
     return value;
