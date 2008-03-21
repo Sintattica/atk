@@ -276,8 +276,7 @@ class atkMetaCompiler
     $code = 
       "// initialize node\n".
       "\$node->setFlags({$nodeFlags});\n".
-      '$node->setDb('.var_export($policy->getNodeDatabase(), true).");\n".
-      '$node->setTable('.var_export($policy->getNodeTable(), true).', '.var_export($policy->getNodeSequence(), true).");\n";
+      '$node->setTable('.var_export($policy->getNodeTable(), true).', '.var_export($policy->getNodeSequence(), true).', '.var_export($policy->getNodeDatabase(), true).");\n";
       
     if ($policy->getNodeDescriptor() != null)
       $code .= '$node->setDescriptorTemplate('.var_export($policy->getNodeDescriptor(), true).");\n";
