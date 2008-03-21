@@ -837,7 +837,7 @@
       else
       {
         $tablemeta = $this->_getTableMetaFromDb($table);
-        $tmpfile->writeAsPhp("tablemeta",$this->m_tableMeta[$table]);
+        $tmpfile->writeAsPhp("tablemeta", $tablemeta);
       }
 
       return $tablemeta;
@@ -857,7 +857,7 @@
       for ($i = 0, $_i = count($meta); $i < $_i; $i++)
       {
         $meta[$i]['num'] = $i;
-        $result[$meta[$i]['name']] = &$meta[$i];
+        $result[$meta[$i]['name']] = $meta[$i];
       }
 
       return $result;
