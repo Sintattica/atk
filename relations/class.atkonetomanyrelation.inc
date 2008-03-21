@@ -519,17 +519,18 @@
         // we need to set the filter of the record we are going to add.
         // The referential key must be set to the value of the current
         // primary key.
+        $this->createDestination();
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
           $primkeyattr = &$this->m_ownerInstance->m_attribList[$ownerfields[$i]];
-          $filterelems[] = $this->m_refKey[0].".".$ownerfields[$i]."='".$primkeyattr->value2db($record)."'";
+          $filterelems[] = $this->m_destInstance->getTable().".".$this->m_refKey[$i]."='".$this->escapeSQL($primkeyattr->value2db($record))."'";
         }
       }
       else
       {
         for ($i=0, $_i=count($this->m_refKey); $i<$_i; $i++)
         {
-          $filterelems[] = $this->m_refKey[$i]."=".$record[$ownerfields[$i]];
+          $filterelems[] = $this->m_destInstance->getTable().".".$this->m_refKey[$i]."='".$this->escapeSQL($record[$ownerfields[$i]])."'";
         }
       }
       return $filterelems;
