@@ -152,7 +152,24 @@
       // Utility.
       $edithandler = &$node->getHandler("edit");
 
-      $forceList = (isset($node->m_postvars['atkfilter'])) ? decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
+      $forceList = array();
+      $filterList = (isset($node->m_postvars['atkfilter'])) ? decodeKeyValueSet($node->m_postvars['atkfilter']) : array();
+      foreach ($filterList as $field => $value)
+      {
+         list($table, $column) = explode('.', $field);
+         if ($column == null)
+         {
+           $forceList[$table] = $value;
+         }
+         else if ($table == $this->getNode()->getTable())
+         {
+           $forceList[$column] = $value;
+         }
+         else
+         {
+           $forceList[$table][$column] = $value;
+         }
+      }   
       $form = $edithandler->editForm("add",$record,$forceList,'',$node->getEditFieldPrefix());
 
       return $node->tabulate("add", $form);

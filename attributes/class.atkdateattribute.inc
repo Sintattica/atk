@@ -394,10 +394,13 @@
       if ($maximum != 0) $str_max = adodb_date("Ymd", $maximum);
       else $str_max = 0;
 
-      /* did we select a valid date? */
-      if ($current !== NULL)
+      
+      /* mode is empty when in extended search */
+      if(!empty($mode))
       {
-        if     (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
+        /* did we select a valid date? */
+        if ($current === NULL && !$this->hasFlag(AF_OBLIGATORY)); // NULL date selection; ignore this if statement
+        elseif (!empty($current) && !empty($minimum) && $current < $minimum) $current = $minimum;
         elseif (!empty($current) && !empty($maximum) && $current > $maximum) $current = $maximum;
         elseif (empty($current)  && !empty($minimum) && time() < $minimum) $current = $minimum;
         elseif (empty($current)  && !empty($maximum) && time() > $maximum) $current = $maximum;

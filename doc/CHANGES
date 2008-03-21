@@ -127,6 +127,9 @@ Changed in ATK 6.2
 + Added support for caching database table meta data. This is in addition
   to the AtkMetaNode caching. [Martin]
 + Added support for specifying the character set for the atkOci9Db driver. [Peter] 
+* Fixed issue with atkDateAttribute when date is obligatory. [Marc/Martijn]
+* Fix re-aliassen with multiple sortfields in atkManyToOneRelation. [Martijn]
+* Fixed issue with adding o2m relation with a set filter. [Peter/Tjeerd]
 * Fixed issue with ordering in recordlist when multiple ordercolumns were
   specified. [Tjeerd]
 * Fixed a possible error situation in Smarty, which caused fatal errors on some

@@ -818,6 +818,7 @@
       $currentPk = "";
       if (isset($record[$this->fieldName()]) && $record[$this->fieldName()] != null)
       {
+        $this->fixDestinationRecord($record);
         $currentPk = $this->m_destInstance->primaryKey($record[$this->fieldName()]);
       }
 
@@ -1516,11 +1517,19 @@
       $order = $this->m_destInstance->getOrder();
       if (!empty($order))
       {
-        // realias if destination order contains a tablename.
-        if (strpos($order, $this->m_destInstance->m_table.'.') !== FALSE)
-          $order = str_replace($this->m_destInstance->m_table.'.', $this->fieldName().'.', $order);
-        else $order = $this->fieldName().".".$order;
-        return $order;
+        // check for multiple order fields
+        $orderfields = explode(",",$order);
+        $neworderfields = array();
+        
+        foreach ($orderfields as $field) 
+        {
+          // realias if destination order contains a tablename.
+          if (strpos($field, $this->m_destInstance->m_table.'.') !== FALSE)
+            $neworderfields[] = str_replace($this->m_destInstance->m_table.'.', $this->fieldName().'.', $field);
+          else $neworderfields[] = str_replace(trim($field), $this->fieldName().".".trim($field), $field);
+        }
+        
+        return implode(",",$neworderfields);
       }
       else
       {

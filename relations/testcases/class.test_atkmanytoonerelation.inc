@@ -37,4 +37,34 @@ class test_atkManyToOneRelation extends atkTestCase
     $this->assertFalse(is_array($record['test']));
     $this->assertNull($record['test']);
   }
+  
+  /**
+   * Tests the getOrderByStatement method of the atkManyToOneRelation 
+   */
+  public function test_get_order_by_statement()
+  {
+    $attr = new atkManyToOneRelation('test', '');
+    $attr->m_destInstance = new atkNode();
+    $attr->m_destInstance->add(new atkNumberAttribute('id', AF_PRIMARY));
+    $attr->m_destInstance->add(new atkNumberAttribute('sortorder', AF_OBLIGATORY));
+    $attr->m_destInstance->add(new atkAttribute('name', AF_PRIMARY));
+    
+    $this->assertEqual($attr->getOrderByStatement(), "test.id");
+    $this->assertEqual($attr->getOrderByStatement(null), "test.id");
+    $this->assertEqual($attr->getOrderByStatement("id"), "test.id");
+    $this->assertEqual($attr->getOrderByStatement("doesntexists"), "test.id");
+    $this->assertEqual($attr->getOrderByStatement("name"), "test.id");
+    
+    $attr->m_destInstance->setOrder("name");
+    $this->assertEqual($attr->getOrderByStatement(), "test.name");
+    
+    $attr->m_destInstance->setOrder("sortorder desc");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder desc");
+    
+    $attr->m_destInstance->setOrder("sortorder, name");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder, test.name");
+    
+    $attr->m_destInstance->setOrder("sortorder asc , name desc");
+    $this->assertEqual($attr->getOrderByStatement(), "test.sortorder asc , test.name desc");
+  }
 }
