@@ -200,7 +200,7 @@ class atkMetaCompiler
      
     if (isset($data['default']))
     {
-      $code .= '$attr->setInitialValue('.var_export($data['default']).");\n";
+      $code .= '$attr->setInitialValue('.var_export($data['default'], true).");\n";
     }
     
     $code .= '$node->add($attr, '.var_export($tabs, true).', '.var_export($order, true).");\n\n";
