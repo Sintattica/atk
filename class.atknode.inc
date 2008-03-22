@@ -3683,12 +3683,12 @@
           {
             $querylist[]=$attribname;
           }
-        }
 
-        // ML hack
-        if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
-        {
-          $cpylist[]=$attribname;
+          // ML hack
+          if(is_subclass_of($p_attrib,"atkrelation") && $p_attrib->createDestination() && $p_attrib->m_destInstance->hasFlag(NF_ML))
+          {
+            $cpylist[]=$attribname;
+          }
         }
       }
 
